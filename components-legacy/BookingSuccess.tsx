@@ -172,7 +172,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       </div>
 
       {/* Cancellation policy mini-banner */}
-      <p className="mt-3 font-body text-[11px] text-s-ink/55 text-center">
+      <p className="mt-3 font-body text-[11px] text-s-ink-2 text-center">
         Kostenlos bis {props.cancellationHours ?? 24}h vorher stornieren.
       </p>
 
@@ -208,7 +208,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <button
         type="button"
         onClick={() => router.push(`/${locale}/profile/bookings`)}
-        className="mt-4 w-full text-center py-3 font-body text-[13px] text-s-ink/60 hover:text-s-ink transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
+        className="mt-4 w-full text-center py-3 font-body text-[13px] text-s-ink-2 hover:text-s-ink transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
       >
         Zur Buchung →
       </button>

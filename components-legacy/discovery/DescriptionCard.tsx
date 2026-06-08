@@ -15,7 +15,7 @@ function getLocalizedDescription(item: DiscoveryItem, locale: string): string | 
 
 const MAINTENANCE_CONFIG = {
   low: { label: "Low maintenance", color: "bg-s-success-bg text-s-success border-s-success/20" },
-  medium: { label: "Medium maintenance", color: "bg-s-amber/10 text-s-amber border-s-amber/20" },
+  medium: { label: "Medium maintenance", color: "bg-s-amber/10 text-s-star border-s-amber/20" },
   high: { label: "High maintenance", color: "bg-s-error-bg text-s-error border-s-error/20" },
 };
 
@@ -74,7 +74,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
             <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Works for face shapes</p>
             <div className="flex flex-wrap gap-1">
               {item.face_shapes.map((shape) => (
-                <span key={shape} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">
+                <span key={shape} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">
                   {shape}
                 </span>
               ))}

@@ -224,14 +224,14 @@ export default function EditPanel({
             Edit Panel
           </h3>
           <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken transition-colors">
-            <X size={16} className="text-s-ink/50" />
+            <X size={16} className="text-s-ink-2" />
           </button>
         </div>
 
         {/* Selected Elements with area info */}
         {selectedElements.length > 0 ? (
           <div className="space-y-1.5">
-            <p className="text-[10px] text-s-ink/50">
+            <p className="text-[10px] text-s-ink-2">
               {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""} selected — click more in preview to add
             </p>
             {selectedElements.map((el) => (
@@ -271,7 +271,7 @@ export default function EditPanel({
             <p className="text-xs font-medium text-s-blue">
               General page feedback
             </p>
-            <p className="text-xs text-s-ink/50">
+            <p className="text-xs text-s-ink-2">
               Page: <span className="font-mono">{pageUrl}</span>
             </p>
             <p className="text-[10px] text-s-ink/40">
@@ -307,7 +307,7 @@ export default function EditPanel({
                 className={`flex-1 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   priority === p
                     ? "bg-s-ink text-white"
-                    : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
+                    : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-surface"
                 }`}
               >
                 {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -346,7 +346,7 @@ export default function EditPanel({
                 Copy for Claude Code
               </p>
             </div>
-            <p className="text-[10px] text-s-ink/50">
+            <p className="text-[10px] text-s-ink-2">
               Copy requests and paste into Claude Code to generate a roadmap.
             </p>
 
@@ -385,7 +385,7 @@ export default function EditPanel({
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-ink transition-colors"
+            className="flex items-center gap-1 text-xs text-s-ink-2 hover:text-s-ink transition-colors"
           >
             {showHistory ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
             Request History ({pageRequests.length})
@@ -400,19 +400,19 @@ export default function EditPanel({
                       type="checkbox"
                       checked={selectedRequestIds.has(r.id)}
                       onChange={() => toggleRequestSelection(r.id)}
-                      className="rounded border-s-ink/20 text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5"
+                      className="rounded border-s-border text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5"
                     />
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
                       r.status === "roadmap_generated" ? "bg-s-blue/10 text-s-blue" :
-                      r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-ink/5 text-s-ink/50"
+                      r.status === "in_progress" ? "bg-s-amber-subtle text-s-star-text" :
+                      "bg-s-ink/5 text-s-ink-2"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
-                      r.priority === "medium" ? "bg-s-amber-subtle text-s-amber-text" :
+                      r.priority === "medium" ? "bg-s-amber-subtle text-s-star-text" :
                       "bg-s-ink/5 text-s-ink/40"
                     }`}>
                       {r.priority}

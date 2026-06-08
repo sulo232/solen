@@ -125,7 +125,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
         ))}
         <button
           onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken text-s-ink/50 hover:bg-s-sand:bg-s-ink/60 transition-colors"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken text-s-ink-2 hover:bg-s-sand:bg-s-ink/60 transition-colors"
         >
           <Plus size={10} /> {t("addTag")}
         </button>

@@ -209,7 +209,7 @@ function FilterRow<T extends string>({
           className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors duration-150 ${
             value === opt.value
               ? "bg-s-ink text-white border-s-accent"
-              : "bg-[--raised] text-s-ink/70 border-s-ink/10 hover:border-s-accent/30"
+              : "bg-[--raised] text-s-ink/70 border-s-border hover:border-s-accent/30"
           }`}
         >
           {opt.label}

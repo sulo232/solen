@@ -49,7 +49,7 @@ export default function StaffListSheet({
     >
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-s-border bg-white px-4 py-3">
         <span className="font-heading text-[16px] font-bold text-s-ink">Stylist:in wählen</span>
-        <button type="button" onClick={onClose} aria-label="Schließen" className="grid h-9 w-9 place-items-center rounded-full bg-s-bg-sunken hover:bg-s-ink/[0.08]">
+        <button type="button" onClick={onClose} aria-label="Schließen" className="grid h-9 w-9 place-items-center rounded-full bg-s-bg-sunken hover:bg-s-bg-sunken">
           <X size={20} className="text-s-ink" />
         </button>
       </header>

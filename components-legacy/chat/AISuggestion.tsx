@@ -97,7 +97,7 @@ export default function AISuggestion({
                 </button>
                 <button
                   onClick={() => setDismissed(true)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken text-s-ink/60 text-xs font-medium hover:bg-s-sand:bg-s-ink/60 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken text-s-ink-2 text-xs font-medium hover:bg-s-sand:bg-s-ink/60 transition-colors"
                 >
                   <X size={12} /> {t("dismiss")}
                 </button>

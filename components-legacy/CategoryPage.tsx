@@ -82,24 +82,24 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
         <h3 className="font-heading text-s-ink text-sm leading-tight mb-1">{entry.name}</h3>
         {entry.google_rating != null && (
           <div className="flex items-center gap-1 mb-3">
-            <Star className="w-3 h-3 fill-s-amber text-s-amber" />
+            <Star className="w-3 h-3 fill-s-star text-s-star" />
             <span className="text-xs data-text font-bold text-s-ink/70">{entry.google_rating}</span>
             {entry.google_review_count != null && entry.google_review_count > 0 && (
               <span className="text-xs text-s-ink/45">({entry.google_review_count})</span>
             )}
-            <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/50 ml-1">Google</span>
+            <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink-2 ml-1">Google</span>
           </div>
         )}
         <div className="flex gap-2">
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Phone className="w-3 h-3 inline mr-1" />{t("call")}
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Globe className="w-3 h-3 inline mr-1" />{t("website")}
             </a>
           )}
@@ -351,15 +351,15 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading uppercase tracking-[.12em] flex-wrap">
-              <li><Link href={`/${locale}`} className="text-s-ink/50 hover:text-s-ink/55 transition-colors duration-150">{tCategory("homepage")}</Link></li>
+              <li><Link href={`/${locale}`} className="text-s-ink-2 hover:text-s-ink-2 transition-colors duration-150">{tCategory("homepage")}</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
                 <>
-                  <li><span className="text-s-ink/50">{cityName}</span></li>
+                  <li><span className="text-s-ink-2">{cityName}</span></li>
                   <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
                 </>
               )}
-              <li className="text-s-ink/60" aria-current="page">{categoryLabel}</li>
+              <li className="text-s-ink-2" aria-current="page">{categoryLabel}</li>
             </ol>
           </nav>
 
@@ -380,7 +380,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
-            <p className="font-body italic text-s-ink/50 mt-3 text-base leading-relaxed">
+            <p className="font-body italic text-s-ink-2 mt-3 text-base leading-relaxed">
               {total} {tCategory("salonCountSingular", { count: total })} {city ? `in ${cityName}` : tCategory("inSwitzerland")} {tCategory("onSolen")}
               {dirTotal > 0 && ` · ${dirTotal} ${tCategory("more")}`}
             </p>
@@ -493,7 +493,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <button
             onClick={() => setFiltersExpanded(!filtersExpanded)}
             aria-expanded={filtersExpanded}
-            className="text-xs font-heading text-s-ink/60 hover:text-s-ink transition-colors mb-2"
+            className="text-xs font-heading text-s-ink-2 hover:text-s-ink transition-colors mb-2"
           >
             {filtersExpanded ? t("lessFilters") : t("moreFiltersToggle")}
           </button>
@@ -522,7 +522,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               params.set("view", "map");
               routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
             }}
-            className="relative w-full h-[200px] rounded-[12px] overflow-hidden border border-s-ink/10"
+            className="relative w-full h-[200px] rounded-[12px] overflow-hidden border border-s-border"
           >
             <MapView
               salons={salons.slice(0, 20)}

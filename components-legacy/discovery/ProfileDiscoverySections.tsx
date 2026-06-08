@@ -78,40 +78,40 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
         {editing ? (
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-s-ink/60 mb-1 block">{t("gender.label")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("gender.label")}</label>
               <div className="flex gap-1.5">
                 {GENDER_OPTIONS.map((g) => (
-                  <button key={g} onClick={() => setForm({ ...form, disc_gender: g })} className={`px-3 py-1.5 rounded-pill text-xs font-medium ${form.disc_gender === g ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={g} onClick={() => setForm({ ...form, disc_gender: g })} className={`px-3 py-1.5 rounded-pill text-xs font-medium ${form.disc_gender === g ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                     {g === "female" ? t("gender.women") : t("gender.men")}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs text-s-ink/60 mb-1 block">{t("texture")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("texture")}</label>
               <div className="flex flex-wrap gap-1.5">
                 {TEXTURE_OPTIONS.map((t) => (
-                  <button key={t} onClick={() => setForm({ ...form, disc_hair_texture: t })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_texture === t ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={t} onClick={() => setForm({ ...form, disc_hair_texture: t })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_texture === t ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                     {t}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs text-s-ink/60 mb-1 block">{t("length") ?? "Hair Length"}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("length") ?? "Hair Length"}</label>
               <div className="flex gap-1.5">
                 {LENGTH_OPTIONS.map((l) => (
-                  <button key={l} onClick={() => setForm({ ...form, disc_hair_length: l })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_length === l ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={l} onClick={() => setForm({ ...form, disc_hair_length: l })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_length === l ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                     {l}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs text-s-ink/60 mb-1 block">{t("faceShape") ?? "Face Shape"}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("faceShape") ?? "Face Shape"}</label>
               <div className="flex flex-wrap gap-1.5">
                 {FACE_SHAPE_OPTIONS.map((f) => (
-                  <button key={f} onClick={() => setForm({ ...form, disc_face_shape: f })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_face_shape === f ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={f} onClick={() => setForm({ ...form, disc_face_shape: f })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_face_shape === f ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                     {f}
                   </button>
                 ))}
@@ -120,10 +120,10 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            {profile.disc_gender && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">{profile.disc_gender}</span>}
-            {profile.disc_hair_texture && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">{profile.disc_hair_texture}</span>}
-            {profile.disc_hair_length && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">{profile.disc_hair_length}</span>}
-            {profile.disc_face_shape && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">{profile.disc_face_shape}</span>}
+            {profile.disc_gender && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">{profile.disc_gender}</span>}
+            {profile.disc_hair_texture && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">{profile.disc_hair_texture}</span>}
+            {profile.disc_hair_length && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">{profile.disc_hair_length}</span>}
+            {profile.disc_face_shape && <span className="text-xs px-2 py-1 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">{profile.disc_face_shape}</span>}
             {!profile.disc_gender && !profile.disc_hair_texture && (
               <span className="text-xs text-s-ink/30">{t("notSet")}</span>
             )}

@@ -99,7 +99,7 @@ export default function FilterBar({
                 hoverLift,
                 active
                   ? 'bg-s-ink text-white border border-s-ink'
-                  : 'bg-white/70 border border-s-border text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
+                  : 'bg-white/70 border border-s-border text-s-ink-2 hover:border-s-ink/40 hover:text-s-ink',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -126,8 +126,8 @@ export default function FilterBar({
               motionClass,
               hoverLift,
               drawerOpen
-                ? 'bg-s-ink/[0.06] border-s-ink/30 text-s-ink'
-                : 'text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
+                ? 'bg-s-bg-sunken border-s-ink/30 text-s-ink'
+                : 'text-s-ink-2 hover:border-s-ink/40 hover:text-s-ink',
             ].join(' ')}
             aria-expanded={drawerOpen}
             aria-label={t('moreFilters', { count: overflowNonSortCount })}
@@ -144,7 +144,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-border rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink-2 bg-transparent border border-s-border rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (
@@ -175,7 +175,7 @@ export default function FilterBar({
           ))}
           <button
             onClick={clearAll}
-            className="text-xs text-s-ink/50 hover:text-s-ink underline underline-offset-2 font-body"
+            className="text-xs text-s-ink-2 hover:text-s-ink underline underline-offset-2 font-body"
           >
             {t('clearAll')}
           </button>

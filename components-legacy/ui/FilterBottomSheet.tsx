@@ -88,7 +88,7 @@ export default function FilterBottomSheet({
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-pill hover:bg-s-ink/5 text-s-ink/60"
+            className="p-2 rounded-pill hover:bg-s-ink/5 text-s-ink-2"
             aria-label={t('close')}
           >
             <X size={18} aria-hidden />
@@ -127,7 +127,7 @@ export default function FilterBottomSheet({
             onClick={() =>
               onFilterChange(activeFilters.filter((f) => f.pillId !== pill.id))
             }
-            className="flex-1 py-2.5 rounded-pill border border-s-border text-sm font-heading text-s-ink/60 hover:text-s-ink"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-sm font-heading text-s-ink-2 hover:text-s-ink"
           >
             {t('reset')}
           </button>

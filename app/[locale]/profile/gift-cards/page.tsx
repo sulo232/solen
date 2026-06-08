@@ -63,7 +63,7 @@ export default function MyGiftCardsPage() {
         {/* Header — V3-D285: fix corrupted dark-mode hover + swap retired s-coral icon → ink */}
         <div className="flex items-center gap-3 mb-8">
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
-            <ChevronLeft size={20} className="text-s-ink/60" />
+            <ChevronLeft size={20} className="text-s-ink-2" />
           </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <Gift size={20} className="text-s-ink" />
@@ -108,7 +108,7 @@ export default function MyGiftCardsPage() {
                   </div>
 
                   <div className="mb-4">
-                    <p className="text-xs text-s-ink/50 mb-1">Online Code</p>
+                    <p className="text-xs text-s-ink-2 mb-1">Online Code</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 px-3 py-2 bg-s-bg-surface border border-s-border rounded-btn font-mono text-sm tracking-widest text-s-ink">
                         {card.code}
@@ -119,7 +119,7 @@ export default function MyGiftCardsPage() {
                         className="p-2.5 rounded-btn bg-s-bg-sunken hover:bg-s-border transition-colors"
                         title="Code kopieren"
                       >
-                        {copiedCode === card.code ? <Check size={16} className="text-s-success" /> : <Copy size={16} className="text-s-ink/60" />}
+                        {copiedCode === card.code ? <Check size={16} className="text-s-success" /> : <Copy size={16} className="text-s-ink-2" />}
                       </button>
                     </div>
                   </div>
@@ -127,12 +127,12 @@ export default function MyGiftCardsPage() {
                   {(card.expires_at || card.recipient_name) && (
                     <div className="pt-3 border-t border-s-border space-y-1.5 pt-3 mt-auto">
                       {card.recipient_name && (
-                        <p className="text-xs text-s-ink/50">
+                        <p className="text-xs text-s-ink-2">
                           Für: <span className="font-medium text-s-ink">{card.recipient_name}</span>
                         </p>
                       )}
                       {card.expires_at && (
-                        <p className="flex items-center gap-1 text-xs text-s-ink/50">
+                        <p className="flex items-center gap-1 text-xs text-s-ink-2">
                           <Clock size={12} />
                           Gültig bis {new Date(card.expires_at).toLocaleDateString(localeFmt)}
                         </p>

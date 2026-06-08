@@ -522,7 +522,7 @@ export default function UpchargeApproveView({
         {/* sticky CTA bar — "appointment unchanged" note + red retry (mockup state-5 .cta-bar) */}
         <div className="sticky bottom-0 mt-auto border-t border-s-border bg-gradient-to-t from-white from-[78%] to-transparent px-4 pb-[18px] pt-3.5 md:px-8">
           <div className="mx-auto w-full max-w-[460px]">
-            <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink/50">
+            <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink-2">
               <Info size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
               <span>{t("upUnchanged")}</span>
             </div>
@@ -627,7 +627,7 @@ export default function UpchargeApproveView({
               translated fragments rather than a new hardcoded sentence. The whole line is
               subdued grey (mockup's connective text); only the AMOUNT carries weight
               (mockup emphasizes the charge amount, not a label). */}
-          <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink/50">
+          <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink-2">
             <CreditCard size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
             <span>
               {t("upSavedCard")}

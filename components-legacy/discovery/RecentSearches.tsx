@@ -81,7 +81,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onSelect(term)}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-ink/[0.04]"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
             >
               {thumb ? (
                 <span className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[14px] bg-s-bg-sunken">

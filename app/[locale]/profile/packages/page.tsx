@@ -68,7 +68,7 @@ export default function MyPackagesPage() {
         {/* Header — V3-D288: fix corrupted dark-mode hover + swap retired s-coral icon → ink */}
         <div className="flex items-center gap-3 mb-8">
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
-            <ChevronLeft size={20} className="text-s-ink/60" />
+            <ChevronLeft size={20} className="text-s-ink-2" />
           </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <Package size={20} className="text-s-ink" />
@@ -104,7 +104,7 @@ export default function MyPackagesPage() {
                       <h3 className="font-heading text-base text-s-ink">
                         {pkg.name}
                       </h3>
-                      <p className="text-xs text-s-ink/50 mt-1">
+                      <p className="text-xs text-s-ink-2 mt-1">
                         Gekauft am {new Date(p.purchased_at).toLocaleDateString(localeFmt)}
                       </p>
                     </div>
@@ -138,7 +138,7 @@ export default function MyPackagesPage() {
 
                   {expireDate && !isUsedUp && (
                     <div className="mt-4 pt-3 border-t border-s-border flex flex-wrap gap-4 text-xs">
-                      <span className="flex items-center gap-1 text-s-ink/50">
+                      <span className="flex items-center gap-1 text-s-ink-2">
                         <Clock size={12} />
                         Gültig bis {expireDate.toLocaleDateString(localeFmt)}
                       </span>

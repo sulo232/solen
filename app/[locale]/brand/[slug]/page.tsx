@@ -54,7 +54,7 @@ export default function BrandPage() {
   if (!group) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-s-ink/50">Marke nicht gefunden</p>
+        <p className="text-s-ink-2">Marke nicht gefunden</p>
       </div>
     );
   }

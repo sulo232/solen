@@ -78,7 +78,7 @@ export default function ShareButton({ item, trigger = "share" }: ShareButtonProp
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 bg-[--raised] border border-s-ink/10 rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
+          <div className="absolute right-0 top-full mt-1 z-50 bg-[--raised] border border-s-border rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
             <button onClick={copyLink} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5">
               {copied ? <Check size={14} className="text-s-success" /> : <Link2 size={14} />}
               {copied ? t.copied : t.copyLink}

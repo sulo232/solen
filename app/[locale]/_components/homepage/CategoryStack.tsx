@@ -86,7 +86,7 @@ export default function CategoryStack() {
     <Section>
       <SectionFrame>
         <SectionTitle title="Was steht heute an?" />
-        <ul className="mt-3 divide-y divide-black/[0.08] rounded-[14px] border border-black/[0.08] bg-white">
+        <ul className="mt-3 divide-y divide-black/[0.08] rounded-[14px] border border-s-border bg-white">
           {ROWS.map((row) => {
             const { head, tail } = splitLast(row.label);
             const Icon = row.Icon;

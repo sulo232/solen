@@ -54,7 +54,7 @@ export function NotificationItem({
     <Link
       href={href}
       className={`block p-4 border-b border-s-border last:border-0 hover:bg-s-ink/5:bg-white/5 transition-colors ${
-        !notification.read ? "bg-s-ink/[0.03]" : ""
+        !notification.read ? "bg-s-bg-sunken" : ""
       }`}
     >
       <div className="flex gap-3">
@@ -65,7 +65,7 @@ export function NotificationItem({
           <p className={`text-sm ${!notification.read ? "font-semibold text-s-ink" : "font-medium text-s-ink/80"}`}>
             {notification.title}
           </p>
-          <p className="text-sm text-s-ink/50 mt-1">{notification.body}</p>
+          <p className="text-sm text-s-ink-2 mt-1">{notification.body}</p>
           <p className="text-xs text-s-ink/40 mt-2">{timeAgo}</p>
         </div>
       </div>

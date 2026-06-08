@@ -109,12 +109,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="min-w-0">
           {/* Q26: Anton uppercase for card name */}
           <p className="font-heading text-sm uppercase text-s-ink truncate leading-[1.05]" style={{ letterSpacing: "0.01em" }}>{salon.name}</p>
-          <p className="text-xs text-s-ink/60 font-body truncate">{salon.address}</p>
+          <p className="text-xs text-s-ink-2 font-body truncate">{salon.address}</p>
           {(salon.average_rating > 0 || salon.review_count > 0) ? (
             <div className="flex items-center gap-1 mt-0.5">
               {/* Q43 + SOLEN_UI #5b: stars are amber, NOT coral */}
-              <Star className="w-3 h-3 fill-s-amber text-s-amber" aria-hidden />
-              <span className="text-xs text-s-ink/60 tabular-nums">{salon.average_rating.toFixed(1)}</span>
+              <Star className="w-3 h-3 fill-s-star text-s-star" aria-hidden />
+              <span className="text-xs text-s-ink-2 tabular-nums">{salon.average_rating.toFixed(1)}</span>
             </div>
           ) : (
             <div className="flex items-center gap-1 mt-0.5">
@@ -177,7 +177,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-1 right-1 z-10 p-2 hover:bg-s-ink/[0.06] active:scale-[0.92] transition-[transform,background-color] duration-150 rounded-full flex items-center justify-center"
+              className="absolute top-1 right-1 z-10 p-2 hover:bg-s-bg-sunken active:scale-[0.92] transition-[transform,background-color] duration-150 rounded-full flex items-center justify-center"
               aria-pressed={isFavorited}
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
               style={{ minWidth: "44px", minHeight: "44px" }}
@@ -266,9 +266,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {salon.average_rating > 0 ? (
               /* Q43 + SOLEN_UI #5b: stars are amber `#F3A864`, NOT coral. Tabular numerics on rating + count. */
               <span className="shrink-0 flex items-center gap-0.5 text-sm font-semibold text-s-ink leading-6">
-                <Star className="w-3.5 h-3.5 fill-s-amber text-s-amber mb-0.5" aria-hidden />
+                <Star className="w-3.5 h-3.5 fill-s-star text-s-star mb-0.5" aria-hidden />
                 <span className="tabular-nums">{salon.average_rating.toFixed(1)}</span>
-                <span className="text-s-ink/60 font-normal text-xs tabular-nums">({salon.review_count})</span>
+                <span className="text-s-ink-2 font-normal text-xs tabular-nums">({salon.review_count})</span>
               </span>
             ) : salon.review_count === 0 ? (
               <span className="shrink-0 text-xs font-heading text-white bg-s-ink px-2 py-0.5 rounded-pill uppercase tracking-[.06em]">
@@ -288,7 +288,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {priceToShow != null && (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return (
-              <p className="text-sm text-s-ink/65 leading-5 tabular-nums">
+              <p className="text-sm text-s-ink-2 leading-5 tabular-nums">
                 {tCommon("fromPrice", { price: formatPrice(priceToShow, currencyLocale) })}
               </p>
             );
@@ -319,7 +319,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
           {/* Line 5: Social proof (Phase 3.5) */}
           {(salon.booking_count_week ?? 0) >= 3 && (
-            <p className="text-xs text-s-ink/60 leading-5">
+            <p className="text-xs text-s-ink-2 leading-5">
               {t("bookedTimesThisWeek", { count: salon.booking_count_week })}
             </p>
           )}

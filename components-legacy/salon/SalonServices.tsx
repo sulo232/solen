@@ -62,7 +62,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
       <div>
         {Object.entries(filteredServicesByCategory).map(([cat, svcs]) => (
           <div key={cat} className="mb-4 mt-3 md:mt-0">
-            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-3 mt-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star mb-3 mt-1">
               {cat}
             </p>
             <div className="divide-y divide-s-ink/5">
@@ -79,7 +79,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                   }}
                   className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-[background-color,border-color] duration-[200ms] ${
                     selectedServiceId === svc.id
-                      ? "bg-s-ink/[0.08] border border-s-accent/20"
+                      ? "bg-s-bg-sunken border border-s-accent/20"
                       : "hover:bg-s-bg-surface border border-transparent"
                   }`}
                 >

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  *
  * REUSES the review-card visual language from /salon/[slug]/reviews
  * (components-legacy/salon/SalonReviews.tsx): avatar circle (s-accent-pale
- * + initial), name, 5-star row (fill-s-amber), comment with read-more
+ * + initial), name, 5-star row (fill-s-star), comment with read-more
  * truncation, date. The ONLY addition over the salon-scoped card is a
  * salon-link row — on the marketplace page each review must point back to
  * its salon's reviews page, which the per-salon card never needed.
@@ -32,7 +32,7 @@ export interface MarketplaceReview {
   salon_name: string;
 }
 
-// Stars — copied 1:1 from the /salon/[slug]/reviews card (fill-s-amber, 0.5 gap).
+// Stars — copied 1:1 from the /salon/[slug]/reviews card (fill-s-star, 0.5 gap).
 function Stars({ rating }: { rating: number }) {
   const rounded = Math.round(rating);
   return (
@@ -42,7 +42,7 @@ function Stars({ rating }: { rating: number }) {
           key={i}
           className={cn(
             "w-3 h-3",
-            i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"
+            i <= rounded ? "fill-s-star text-s-star" : "text-s-ink/20"
           )}
         />
       ))}
@@ -97,7 +97,7 @@ function ReviewCard({
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="ml-1 text-s-ink/60 font-medium hover:text-s-ink hover:underline"
+            className="ml-1 text-s-ink-2 font-medium hover:text-s-ink hover:underline"
           >
             {expanded ? t("readLess") : t("readMore")}
           </button>

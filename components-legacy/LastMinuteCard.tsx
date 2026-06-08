@@ -70,7 +70,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
               <Zap size={14} className="text-s-accent shrink-0 mt-0.5 fill-s-accent" />
             )}
           </div>
-          <p className="text-xs text-s-ink/50 mt-0.5 font-body">{serviceName}</p>
+          <p className="text-xs text-s-ink-2 mt-0.5 font-body">{serviceName}</p>
 
           {/* Time */}
           <div className="mt-3 flex items-center gap-1.5">

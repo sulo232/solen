@@ -171,7 +171,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
               className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150"
               aria-label={t("close")}
             >
-              <X size={20} strokeWidth={2} className="text-s-ink/60" />
+              <X size={20} strokeWidth={2} className="text-s-ink-2" />
             </button>
           </div>
 
@@ -179,7 +179,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
           <div className="px-6 py-4 space-y-6">
             {/* HAAR */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
+              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('hair')}
               </h3>
               <div className="space-y-2">
@@ -205,7 +205,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* NÄGEL */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
+              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('nails')}
               </h3>
               <div className="space-y-2">
@@ -226,7 +226,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* HAUT */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
+              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('skin')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* STYLIST */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
+              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('stylist')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -252,7 +252,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* STYLE */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
+              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('style')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -268,7 +268,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
           <div className="sticky bottom-0 bg-[--raised] border-t border-s-border px-6 py-4 flex gap-3 rounded-b-[18px]">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 rounded-pill border border-s-border text-s-ink/60 text-[14px] font-medium hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+              className="flex-1 px-4 py-3 rounded-pill border border-s-border text-s-ink-2 text-[14px] font-medium hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               aria-label={t("cancel")}
             >
               {t("cancel")}

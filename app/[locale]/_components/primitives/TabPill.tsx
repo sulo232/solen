@@ -70,7 +70,7 @@ const tabPillVariants = cva(
       // FLAT with no lift (V3-D420 CONTROL_ELEVATION: calm controls on white never cast a shadow).
       {
         variant: "outline", tone: "inactive",
-        className: "border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-ink/20",
+        className: "border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-border",
       },
       // ghost + active = soft gray fill, no border
       {

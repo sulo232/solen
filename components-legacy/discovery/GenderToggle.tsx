@@ -26,7 +26,7 @@ export default function GenderToggle({ selected, onSelect }: GenderToggleProps) 
             "px-3 py-2 rounded-pill text-[11px] font-heading font-medium transition-[background-color,color] duration-150",
             selected === key
               ? "bg-s-ink text-white shadow-warm-sm"
-              : "text-s-ink/40 hover:text-s-ink/60",
+              : "text-s-ink/40 hover:text-s-ink-2",
           ].join(" ")}
         >
           {t(key === "female" ? "women" : key === "male" ? "men" : key)}

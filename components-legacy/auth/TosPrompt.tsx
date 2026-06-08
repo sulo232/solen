@@ -82,7 +82,7 @@ export default function TosPrompt() {
             <FileText size={24} className="text-s-accent" />
           </div>
           <h2 className="font-heading text-xl text-s-ink mb-2">{t("title")}</h2>
-          <p className="text-sm text-s-ink/60 font-body">
+          <p className="text-sm text-s-ink-2 font-body">
             {t("description")}
           </p>
         </div>

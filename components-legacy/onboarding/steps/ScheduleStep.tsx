@@ -56,7 +56,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Calendar size={22} className="text-s-ink/60" />
+          <Calendar size={22} className="text-s-ink-2" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -69,7 +69,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
       </div>
 
       <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
-        <p className="text-sm text-s-ink/60">
+        <p className="text-sm text-s-ink-2">
           {t("schedule.description")}
         </p>
 

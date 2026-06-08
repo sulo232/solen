@@ -179,7 +179,7 @@ export default function SettingsForm({
           <Field label={tp("bio")} htmlFor="bio" optional>
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className="block w-full font-body font-normal text-[16px] text-s-ink bg-white border border-s-ink/10 rounded-[12px] px-4 py-3 placeholder:text-s-ink-3 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:border-s-ink transition-colors duration-150" />
+              className="block w-full font-body font-normal text-[16px] text-s-ink bg-white border border-s-border rounded-[12px] px-4 py-3 placeholder:text-s-ink-3 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:border-s-ink transition-colors duration-150" />
           </Field>
           <div className="space-y-1.5">
             <FieldLabel>{tp("language")}</FieldLabel>
@@ -289,7 +289,7 @@ function ActionButton({ onClick, busy, disabled, children }: { onClick: () => vo
   return (
     <button type="button" onClick={onClick} disabled={disabled || busy}
       className="shrink-0 h-14 px-4 rounded-[12px] border border-s-border text-s-ink text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-bg-sunken disabled:opacity-40 disabled:hover:bg-white">
-      {busy && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-ink/20 border-t-s-ink animate-spin" />}
+      {busy && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-border border-t-s-ink animate-spin" />}
       {children}
     </button>
   );

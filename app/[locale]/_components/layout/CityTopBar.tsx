@@ -172,7 +172,7 @@ export default function CityTopBar({ locale }: Props) {
       // V3-D149-fix (2026-05-25): relative z-[60] keeps the bar's dropdown
       // above Header's sticky z-50 stacking context so it isn't shadowed
       // by header content if they overlap.
-      className="relative z-[60] flex items-center gap-2.5 border-b border-black/[0.07] bg-s-bg-sunken px-4 py-2.5"
+      className="relative z-[60] flex items-center gap-2.5 border-b border-s-border bg-s-bg-sunken px-4 py-2.5"
     >
       {/* ✕ dismiss — sets dismissal cookie for 30 days */}
       <button
@@ -199,7 +199,7 @@ export default function CityTopBar({ locale }: Props) {
           aria-label={copy.aria_dropdown}
           aria-expanded={open}
           aria-haspopup="listbox"
-          className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.07] bg-white py-1 pl-1 pr-2.5 font-body text-[13px] font-semibold text-s-ink transition-[border-color,transform] duration-150 ease-glide hover:-translate-y-[1px] hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+          className="inline-flex items-center gap-1.5 rounded-full border border-s-border bg-white py-1 pl-1 pr-2.5 font-body text-[13px] font-semibold text-s-ink transition-[border-color,transform] duration-150 ease-glide hover:-translate-y-[1px] hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
         >
           <span
             aria-hidden
@@ -219,7 +219,7 @@ export default function CityTopBar({ locale }: Props) {
           <div
             role="listbox"
             aria-label={copy.aria_dropdown}
-            className="absolute right-0 top-full z-10 mt-1 w-[160px] overflow-hidden rounded-xl border border-black/[0.07] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
+            className="absolute right-0 top-full z-10 mt-1 w-[160px] overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
           >
             {CITY_SLUGS.map((slug) => {
               const isActive = slug === city;

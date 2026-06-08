@@ -73,7 +73,7 @@ export default function ForYouSection() {
                 ? `Weil du „${item.style_name || item.category}" gespeichert hast`
                 : `Because you saved "${item.style_name || item.category}"`}
             </p>
-            <div className="flex-1 h-px bg-s-ink/[0.05]" />
+            <div className="flex-1 h-px bg-s-bg-sunken" />
           </div>
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide">
             {similar.map((sim) => (

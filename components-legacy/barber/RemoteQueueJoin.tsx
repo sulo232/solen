@@ -73,7 +73,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           {t("position")} <strong>{result.position}</strong> · {t("estimatedWait")}{" "}
           <strong>~{result.estimated_wait_minutes} {t("minutes")}</strong>
         </p>
-        <p className="text-xs text-s-ink/50">
+        <p className="text-xs text-s-ink-2">
           {t("trackingCode")}: <code className="font-mono">{result.tracking_token}</code>
         </p>
       </div>
@@ -99,7 +99,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           onChange={(e) => setName(e.target.value)}
           required
           maxLength={100}
-          className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
+          className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
           placeholder={t("namePlaceholder")}
           aria-label={t("nameLabel")}
         />
@@ -114,7 +114,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           maxLength={20}
-          className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
+          className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
           placeholder={t("phonePlaceholder")}
           aria-label={t("phoneLabel")}
         />
@@ -128,7 +128,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={preferredBarberId}
             onChange={(e) => setPreferredBarberId(e.target.value)}
-            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
+            className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
             aria-label={t("preferredBarberLabel")}
           >
             <option value="">{t("noFavorite")}</option>
@@ -147,7 +147,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
-            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
+            className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
             aria-label={t("serviceLabel")}
           >
             <option value="">{t("pleaseSelect")}</option>

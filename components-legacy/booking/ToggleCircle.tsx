@@ -18,7 +18,7 @@ export default function ToggleCircle({
   return (
     <span
       className={`relative shrink-0 ${box} rounded-full grid place-items-center transition-colors duration-300 ${
-        selected ? 'bg-s-ink text-white' : 'border border-s-border text-s-ink/50'
+        selected ? 'bg-s-ink text-white' : 'border border-s-border text-s-ink-2'
       }`}
       aria-hidden
     >

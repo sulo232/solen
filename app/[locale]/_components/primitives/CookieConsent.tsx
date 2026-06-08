@@ -210,7 +210,7 @@ function CookieBanner() {
         // slab. The cream was reading as a third surface color that didn't
         // match anything else; white-glass mirrors the header so the page
         // feels bookended by the same material at top + bottom.
-        "bg-white/80 backdrop-blur-[22px] backdrop-saturate-[1.7] border border-s-ink/10",
+        "bg-white/80 backdrop-blur-[22px] backdrop-saturate-[1.7] border border-s-border",
         "md:border-t md:border-l-0 md:border-r-0 md:border-b-0",
         "shadow-[0_8px_32px_rgba(50,47,44,0.12)]",
         "md:shadow-[0_-4px_16px_rgba(50,47,44,0.08)]",

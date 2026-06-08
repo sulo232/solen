@@ -58,7 +58,7 @@ export default function SalonScript({ item, locale }: SalonScriptProps) {
       <div className="flex gap-2 mt-3">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 text-xs text-s-ink/60 hover:bg-s-ink/10 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 text-xs text-s-ink-2 hover:bg-s-ink/10 transition-colors"
         >
           {copied ? <Check size={12} className="text-s-success" /> : <Copy size={12} />}
           {copied ? "Copied!" : "Copy"}

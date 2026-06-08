@@ -364,7 +364,7 @@ export function SearchBar() {
           )}
         >
           {/* Header w segment tabs + close */}
-          <div className="flex items-center justify-between gap-2 border-b border-black/5 px-5 py-4">
+          <div className="flex items-center justify-between gap-2 border-b border-s-border px-5 py-4">
             <div className="flex gap-1">
               <SegmentTab
                 active={active === "service"}
@@ -412,7 +412,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-black/5 focus-visible:shadow-none"
+                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -460,7 +460,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-black/5 focus-visible:shadow-none"
+                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the
@@ -473,7 +473,7 @@ export function SearchBar() {
                       setStadt("Aktueller Standort");
                       setActive("zeit");
                     }}
-                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-colors hover:bg-s-ink/[0.10]"
+                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-colors hover:bg-s-bg-sunken"
                   >
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
                       <Navigation size={16} strokeWidth={2.5} />
@@ -565,7 +565,7 @@ export function SearchBar() {
           </div>
 
           {/* Footer w submit */}
-          <div className="border-t border-black/5 p-3 flex items-center justify-between">
+          <div className="border-t border-s-border p-3 flex items-center justify-between">
             <button
               type="button"
               onClick={() => {
@@ -646,7 +646,7 @@ function CollapsedRow({
     >
       {/* V3-D90 (2026-05-21): icon-to-text gap pr-3 (12 CSS) per Fresha spec.
           Desktop keeps inline divider for the horizontal segmented pill. */}
-      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
+      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-s-border">
         {icon}
       </span>
       <span

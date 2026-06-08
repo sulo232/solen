@@ -65,7 +65,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
             </button>
             
             <h3 className="font-heading text-lg mb-1">Inhalt melden</h3>
-            <p className="text-sm text-s-ink/60 mb-5">
+            <p className="text-sm text-s-ink-2 mb-5">
               Helfen Sie uns, solen.ch sicher zu halten. (AGB §6.5)
             </p>
 
@@ -80,7 +80,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                 {error && <div className="text-xs text-s-error bg-s-error-bg p-2 rounded-btn">{error}</div>}
                 
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/60 mb-1">Grund</label>
+                  <label className="block text-xs font-medium text-s-ink-2 mb-1">Grund</label>
                   <select 
                     value={reason} onChange={e => setReason(e.target.value)}
                     className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
@@ -94,7 +94,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/60 mb-1">Details (Optional)</label>
+                  <label className="block text-xs font-medium text-s-ink-2 mb-1">Details (Optional)</label>
                   <textarea 
                     value={details} onChange={e => setDetails(e.target.value)}
                     rows={4}

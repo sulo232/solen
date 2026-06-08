@@ -99,7 +99,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
             >
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken text-s-ink-2 hover:bg-s-sand transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -148,7 +148,7 @@ function SheetContent({
 
       {/* Today's hours */}
       {todayHours && (
-        <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink/50">
+        <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink-2">
           <Clock className="w-3 h-3" />
           <span>{t("today")}: {todayHours.open}–{todayHours.close}</span>
         </div>

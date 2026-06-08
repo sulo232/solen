@@ -71,7 +71,7 @@ export function BarbershopAboveGrid() {
       <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[.62] backdrop-blur-[16px] saturate-[1.2] border border-white/55 rounded-[20px] shadow-warm-md" style={{ boxShadow: "var(--sh-md), var(--glass-shadow-inset)" }}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 rounded-pill bg-s-amber/15 flex items-center justify-center shrink-0">
-            <Users size={16} className="text-s-amber" />
+            <Users size={16} className="text-s-star" />
           </div>
           <div className="min-w-0">
             <p className="font-heading text-s-ink text-sm flex items-center gap-2">
@@ -81,7 +81,7 @@ export function BarbershopAboveGrid() {
                 <span className="relative inline-flex rounded-pill h-2.5 w-2.5 bg-s-success" />
               </span>
             </p>
-            <p className="text-xs text-s-ink/50 font-body">
+            <p className="text-xs text-s-ink-2 font-body">
               {t("walkin_desc")}
             </p>
           </div>
@@ -146,13 +146,13 @@ export function BarbershopBelowGrid() {
           <h2 className="font-heading text-[clamp(22px,2.8vw,26px)] tracking-[0.01em] text-s-ink">
             {t("roster_title")}
           </h2>
-          <p className="text-sm text-s-ink/50 font-body mt-1">
+          <p className="text-sm text-s-ink-2 font-body mt-1">
             {ts("roster_subtitle")}
           </p>
         </div>
         <Link
           href={`/${locale}/barbershop`}
-          className="flex items-center gap-1 text-sm text-s-amber hover:underline font-body shrink-0"
+          className="flex items-center gap-1 text-sm text-s-star hover:underline font-body shrink-0"
         >
           {ts("roster_all")} <ChevronRight size={14} />
         </Link>
@@ -164,13 +164,13 @@ export function BarbershopBelowGrid() {
             className="rounded-[16px] bg-white border border-s-ink/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             <div className="w-14 h-14 rounded-pill bg-s-amber/10 flex items-center justify-center mb-3">
-              <span className="font-heading text-s-amber text-lg">{barber.initials}</span>
+              <span className="font-heading text-s-star text-lg">{barber.initials}</span>
             </div>
             <p className="font-heading text-s-ink text-sm">{barber.name}</p>
-            <p className="text-xs text-s-ink/50 font-body mt-0.5">{barber.speciality}</p>
+            <p className="text-xs text-s-ink-2 font-body mt-0.5">{barber.speciality}</p>
             <div className="flex gap-1 flex-wrap justify-center mt-2">
               {barber.styles.map((s) => (
-                <span key={s} className="text-[9px] px-2 py-0.5 rounded-pill bg-s-amber-subtle text-s-amber-text font-heading uppercase tracking-[.10em]">
+                <span key={s} className="text-[9px] px-2 py-0.5 rounded-pill bg-s-amber-subtle text-s-star-text font-heading uppercase tracking-[.10em]">
                   {s}
                 </span>
               ))}

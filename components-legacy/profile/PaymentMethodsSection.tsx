@@ -57,7 +57,7 @@ function AddCardForm({ clientSecret, onSuccess, onCancel }: { clientSecret: stri
           type="button"
           onClick={onCancel}
           disabled={processing}
-          className="px-4 py-2 text-sm text-s-ink/60 disabled:opacity-50"
+          className="px-4 py-2 text-sm text-s-ink-2 disabled:opacity-50"
         >
           {t("cancel")}
         </button>
@@ -180,7 +180,7 @@ export function PaymentMethodsSection() {
               <p className="text-sm font-heading text-s-ink">{label}</p>
               <p className="text-xs text-s-ink/40 mt-0.5">{sub}</p>
             </div>
-            <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-amber">
+            <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-star">
               {t("comingSoon")}
             </span>
           </div>

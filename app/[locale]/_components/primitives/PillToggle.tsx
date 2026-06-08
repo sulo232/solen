@@ -67,7 +67,7 @@ export const PillToggle = React.forwardRef<HTMLButtonElement, PillToggleProps>(
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           active
             ? "bg-s-ink text-white border-s-ink font-semibold"
-            : "bg-s-bg-base text-s-ink border-s-border font-medium hover:border-s-ink/10",
+            : "bg-s-bg-base text-s-ink border-s-border font-medium hover:border-s-border",
           disabled && "opacity-40 cursor-not-allowed",
           !disabled && "cursor-pointer",
           className,

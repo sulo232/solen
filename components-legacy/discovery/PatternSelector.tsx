@@ -89,7 +89,7 @@ export default function PatternSelector({ category, selected, onSelect, heading 
                 "flex min-h-[60px] min-w-[64px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-transparent px-3 py-2.5 text-[11px] font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",
                 active
                   ? "bg-s-ink text-white"
-                  : "bg-s-bg-sunken text-s-ink hover:bg-s-ink/[0.06]"
+                  : "bg-s-bg-sunken text-s-ink hover:bg-s-bg-sunken"
               )}
             >
               {glyph}

@@ -29,7 +29,7 @@ export default function ProductRecommendations({ products, locale }: ProductReco
           {products.map((product) => (
             <span
               key={product}
-              className="text-xs px-3 py-1.5 rounded-pill bg-s-ink/[0.05] text-s-ink/70 border border-s-border font-medium"
+              className="text-xs px-3 py-1.5 rounded-pill bg-s-bg-sunken text-s-ink/70 border border-s-border font-medium"
             >
               {product}
             </span>

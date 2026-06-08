@@ -378,7 +378,7 @@ function DiscoverPageContent() {
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-xs font-heading font-medium transition-colors duration-150 ${
                   texture
                     ? "bg-s-ink text-white"
-                    : "bg-s-bg-sunken text-s-ink border border-s-border hover:bg-s-ink/[0.06]"
+                    : "bg-s-bg-sunken text-s-ink border border-s-border hover:bg-s-bg-sunken"
                 }`}
               >
                 {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}

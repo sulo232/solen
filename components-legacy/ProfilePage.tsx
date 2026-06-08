@@ -94,7 +94,7 @@ const CancelModal = memo(function CancelModal({
 
   return (
     <GlassModal open title={t("cancelBooking")} onClose={onClose} maxWidth="max-w-md">
-        <p className="text-sm text-s-ink/60 mb-1">
+        <p className="text-sm text-s-ink-2 mb-1">
           {salonName} — {dateFmt} {timeFmt}
         </p>
         <p className="text-xs text-s-ink/40 mb-4">{t("cancelFreeHint")}</p>
@@ -113,7 +113,7 @@ const CancelModal = memo(function CancelModal({
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
@@ -187,7 +187,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         <Gift className="w-5 h-5 text-s-accent shrink-0" />
         <div>
           <p className="text-sm font-heading text-s-ink">{t("inviteFriends")}</p>
-          <p className="text-xs text-s-ink/50">{t("bothGetCredit")}</p>
+          <p className="text-xs text-s-ink-2">{t("bothGetCredit")}</p>
         </div>
       </div>
 
@@ -232,7 +232,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.04em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -241,7 +241,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       {/* Reward tracking */}
       <div className="flex items-center justify-between pt-3 border-t border-s-border">
         <div className="flex items-center gap-2">
-          <Trophy size={13} className="text-s-amber" />
+          <Trophy size={13} className="text-s-star" />
           <div>
             <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">
               Eingeladen
@@ -329,7 +329,7 @@ const BookingCard = memo(function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:text-s-accent hover:border-s-accent/40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:text-s-accent hover:border-s-accent/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -339,7 +339,7 @@ const BookingCard = memo(function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-ink/[0.05] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
             >
               <X size={12} />
               {t("cancelAction")}
@@ -349,7 +349,7 @@ const BookingCard = memo(function BookingCard({
           {b.status === "completed" && (
             <Link
               href={`/${locale}/bookings/${b.id}/report`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-ink/[0.05] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
             >
               <AlertTriangle size={12} />
               {t("reportProblem")}
@@ -464,24 +464,24 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("name")} *</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("name")} *</label>
         <input required value={name} onChange={(e) => setName(e.target.value)} className={INPUT_CLS} />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("bio")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("bio")}</label>
         <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={2} className={`${INPUT_CLS} resize-none`} />
       </div>
 
       {/* Birthday */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("birthday")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("birthday")}</label>
         <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} className={INPUT_CLS} />
       </div>
 
       {/* Notifications */}
       <div className="pt-2 border-t border-s-border space-y-3">
-        <p className="text-xs font-medium text-s-ink/50">{t("emailNotifications")}</p>
+        <p className="text-xs font-medium text-s-ink-2">{t("emailNotifications")}</p>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-s-ink">{t("notifBookings")}</p>
@@ -499,7 +499,7 @@ const SettingsSection = memo(function SettingsSection({
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium text-s-ink">{t("notifDeals")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink/60 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
             <p className="text-xs text-s-ink/40 mt-0.5">{t("notifDealsDesc")}</p>
           </div>
@@ -512,7 +512,7 @@ const SettingsSection = memo(function SettingsSection({
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium text-s-ink">{t("notifNewSalons")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink/60 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
             <p className="text-xs text-s-ink/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
           </div>
@@ -536,7 +536,7 @@ const SettingsSection = memo(function SettingsSection({
                 "px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
                   ? "bg-s-ink text-white border-s-accent"
-                  : "border-s-border text-s-ink/60 hover:border-s-accent hover:text-s-accent",
+                  : "border-s-border text-s-ink-2 hover:border-s-accent hover:text-s-accent",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -554,7 +554,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Allergies */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("allergies_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{tPrefs("allergies_label")}</label>
           <input
             type="text"
             value={allergies}
@@ -566,7 +566,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Skin Type */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("skin_type_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{tPrefs("skin_type_label")}</label>
           <input
             type="text"
             value={skinType}
@@ -578,7 +578,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Stylist Gender */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-2">{tPrefs("stylist_gender_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-2">{tPrefs("stylist_gender_label")}</label>
           <div className="flex gap-2">
             {(["male", "female", "no-preference"] as const).map((option) => (
               <button
@@ -588,7 +588,7 @@ const SettingsSection = memo(function SettingsSection({
                 className={`flex-1 px-4 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
                   stylistGender === option
                     ? "border-s-accent bg-s-ink text-white"
-                    : "border-s-border text-s-ink/60 hover:border-s-accent hover:text-s-accent"
+                    : "border-s-border text-s-ink-2 hover:border-s-accent hover:text-s-accent"
                 }`}
               >
                 {tPrefs(`stylist_gender_${option}`)}
@@ -599,7 +599,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Accessibility Needs */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("accessibility_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{tPrefs("accessibility_label")}</label>
           <input
             type="text"
             value={accessibilityNeeds}
@@ -611,7 +611,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Preferred Language */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("language_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{tPrefs("language_label")}</label>
           <input
             type="text"
             value={prefLanguage}
@@ -623,7 +623,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("notes_label")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{tPrefs("notes_label")}</label>
           <textarea
             value={prefNotes}
             onChange={(e) => setPrefNotes(e.target.value)}
@@ -1064,7 +1064,7 @@ export default function ProfilePage() {
                 await supabase.auth.signOut();
                 window.location.href = `/${locale}`;
               }}
-              className="w-full text-center py-3 mt-4 text-s-ink/50 text-sm font-body hover:text-s-error transition-colors duration-150"
+              className="w-full text-center py-3 mt-4 text-s-ink-2 text-sm font-body hover:text-s-error transition-colors duration-150"
             >
               Abmelden
             </button>

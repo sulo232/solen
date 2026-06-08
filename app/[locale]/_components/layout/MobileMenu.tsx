@@ -190,7 +190,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
                   "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
                   "transition-colors duration-150 ease-glide",
-                  "active:bg-s-ink/[0.04]",
+                  "active:bg-s-bg-sunken",
                 )}
               >
                 <span
@@ -218,7 +218,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                         onClick={() => handleCityPick(slug)}
                         className={cn(
                           "block w-full px-4 py-3 text-left font-body text-[14px]",
-                          "transition-colors active:bg-s-ink/[0.03]",
+                          "transition-colors active:bg-s-bg-sunken",
                           isActive ? "font-bold text-s-ink" : "font-medium text-s-ink",
                         )}
                       >
@@ -349,7 +349,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                     "border border-s-border",
                     "px-4 py-2.5 font-body text-[13px] font-semibold text-s-ink",
                     "transition-colors duration-150 ease-glide",
-                    "active:bg-s-ink/[0.04]",
+                    "active:bg-s-bg-sunken",
                   )}
                 >
                   {c.label}
@@ -418,7 +418,7 @@ function MenuRow({
         // row density. Border kept for separator clarity.
         "flex w-full items-center justify-between gap-3 px-4 py-3.5",
         !isLast && "border-b border-s-border",
-        "transition-colors duration-150 ease-glide active:bg-s-ink/[0.03]",
+        "transition-colors duration-150 ease-glide active:bg-s-bg-sunken",
         "font-body text-[15px]",
         primary ? "font-bold text-s-ink" : "font-semibold text-s-ink",
       )}

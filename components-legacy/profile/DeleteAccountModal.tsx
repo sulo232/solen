@@ -71,13 +71,13 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
         </div>
 
         {/* Active bookings message */}
-        <p className="text-xs text-s-ink/60">
+        <p className="text-xs text-s-ink-2">
           {t("deleteAccountActiveBookings")}
         </p>
 
         {/* Confirmation input */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-2">
+          <label className="block text-xs font-medium text-s-ink-2 mb-2">
             {t("deleteAccountConfirmLabel")}
           </label>
           <input
@@ -101,7 +101,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
 
         {/* 30-day grace period info */}
         <div className="p-3 rounded-input bg-s-ink/5 border border-s-border">
-          <p className="text-xs text-s-ink/60">
+          <p className="text-xs text-s-ink-2">
             {t("deleteAccount30Days")}
           </p>
         </div>
@@ -111,7 +111,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
           <button
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("cancel")}
           </button>

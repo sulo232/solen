@@ -70,7 +70,7 @@ export default function EmptyStateFTU({
         <h2 className="mt-1 font-heading text-[22px] sm:text-[28px] md:text-[32px] leading-[0.95] text-s-ink uppercase">
           {headline}
         </h2>
-        <p className="mt-3 font-body text-[12px] sm:text-[13px] leading-[1.5] text-s-ink/65">
+        <p className="mt-3 font-body text-[12px] sm:text-[13px] leading-[1.5] text-s-ink-2">
           {subCopy}
         </p>
         <Link

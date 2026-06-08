@@ -93,7 +93,7 @@ export default function FilterDrawer({
           </span>
           <button
             onClick={onClose}
-            className="p-1 rounded-pill hover:bg-s-ink/5 text-s-ink/50"
+            className="p-1 rounded-pill hover:bg-s-ink/5 text-s-ink-2"
             aria-label={t('closeFilter')}
           >
             <X size={16} aria-hidden />
@@ -104,7 +104,7 @@ export default function FilterDrawer({
       {allPills.map((p) => (
         <div key={p.id} className={mode === 'drawer' ? 'mb-4' : ''}>
           {mode === 'drawer' && (
-            <p className="text-xs font-heading uppercase tracking-[0.12em] text-s-ink/50 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[0.12em] text-s-ink-2 mb-2">
               {p.label}
             </p>
           )}

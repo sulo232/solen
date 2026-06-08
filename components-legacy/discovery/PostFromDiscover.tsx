@@ -198,14 +198,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   <button
                     aria-pressed={mode === "photo"}
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>
@@ -217,7 +217,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     value={tiktokUrl}
                     onChange={(e) => setTiktokUrl(e.target.value)}
                     placeholder="https://www.tiktok.com/@user/video/..."
-                    className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
+                    className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30"
                   />
                 )}
 
@@ -226,7 +226,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-label={t.uploadPhoto} />
                     <button
                       onClick={() => fileRef.current?.click()}
-                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-ink/30 transition-colors"
+                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-border text-sm text-s-ink/40 hover:border-s-ink/30 transition-colors"
                     >
                       {t.uploadPhoto}
                     </button>
@@ -235,13 +235,13 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
 
                 {/* Category */}
                 <div>
-                  <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t.categoryLabel}</label>
+                  <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t.categoryLabel}</label>
                   <div className="flex flex-wrap gap-1.5">
                     {CATEGORIES.map(({ key, label }) => (
                       <button
                         key={key}
                         onClick={() => setCategory(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                       >
                         {label}
                       </button>
@@ -251,13 +251,13 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
 
                 {/* Gender */}
                 <div>
-                  <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t.genderLabel}</label>
+                  <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t.genderLabel}</label>
                   <div className="flex gap-1.5">
                     {GENDERS.map(({ key, label }) => (
                       <button
                         key={key}
                         onClick={() => setGender(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                       >
                         {label}
                       </button>
@@ -270,7 +270,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   value={styleName}
                   onChange={(e) => setStyleName(e.target.value)}
                   placeholder={t.styleNamePh}
-                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30"
                 />
 
                 <textarea
@@ -278,7 +278,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t.descPh}
                   rows={2}
-                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 resize-none"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 resize-none"
                 />
 
                 <input
@@ -286,7 +286,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder={t.tagsPh}
-                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30"
                 />
 
                 <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />

@@ -72,7 +72,7 @@ export default function MyIntakeFormsPage() {
         {/* Header — V3-D286: fix corrupted dark-mode hover + swap undefined s-amber → s-warning (defined token per LOCKFILE §1) */}
         <div className="flex items-center gap-3 mb-8">
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
-            <ChevronLeft size={20} className="text-s-ink/60" />
+            <ChevronLeft size={20} className="text-s-ink-2" />
           </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <ClipboardList size={20} className="text-s-ink" />
@@ -110,7 +110,7 @@ export default function MyIntakeFormsPage() {
                             <p className="font-medium text-sm text-s-ink">
                               {form.salons?.name ?? "Unbekannter Salon"}
                             </p>
-                            <p className="text-xs text-s-ink/50 flex items-center gap-1 mt-1">
+                            <p className="text-xs text-s-ink-2 flex items-center gap-1 mt-1">
                               <Clock size={12} />
                               {new Date(form.filled_at).toLocaleDateString(localeFmt)}
                             </p>
@@ -137,7 +137,7 @@ export default function MyIntakeFormsPage() {
                             <div className="space-y-4">
                               {Object.entries(responses).map(([q, a]) => (
                                 <div key={q}>
-                                  <p className="text-xs font-medium text-s-ink/60 mb-0.5">
+                                  <p className="text-xs font-medium text-s-ink-2 mb-0.5">
                                     {q.replace(/_/g, " ")}
                                   </p>
                                   <p className="text-sm text-s-ink bg-s-bg-surface px-3 py-2 rounded-btn">

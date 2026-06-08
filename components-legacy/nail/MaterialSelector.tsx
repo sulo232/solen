@@ -34,7 +34,7 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
             className={`flex items-start gap-2.5 p-3 rounded-[16px] border text-left transition-[border-color,background-color] duration-150 ${
               value === v
                 ? "border-s-accent bg-s-ink/5 ring-1 ring-s-accent/30"
-                : "border-s-ink/10 bg-[--raised] hover:border-s-accent/20"
+                : "border-s-border bg-[--raised] hover:border-s-accent/20"
             }`}
           >
             <Icon

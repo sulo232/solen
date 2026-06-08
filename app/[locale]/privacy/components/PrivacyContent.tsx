@@ -42,7 +42,7 @@ export default function PrivacyContent() {
         <Article titleDe="4.1 Weitergabe an Dritte" titleEn="4.1 Sharing with Third Parties">
           <ParDe>Wir geben Ihre Daten nur an Dienstleister weiter, soweit dies für den Betrieb der Plattform erforderlich ist. Es werden keine Daten verkauft.</ParDe>
           <ParEn>We only share your data with service providers to the extent necessary to operate the platform. No data is sold.</ParEn>
-          {/* V3-D304: border-s-ink/10 → border-s-border; bg-s-ink/5 → bg-s-bg-sunken (canonical neutrals per LOCKFILE §1) */}
+          {/* V3-D304: border-s-border → border-s-border; bg-s-ink/5 → bg-s-bg-sunken (canonical neutrals per LOCKFILE §1) */}
           <div className="overflow-x-auto mt-4">
             <table className="min-w-full text-sm text-left border border-s-border rounded-[12px] overflow-hidden block md:table">
               <thead className="bg-s-bg-sunken border-b border-s-border">
@@ -140,7 +140,7 @@ export default function PrivacyContent() {
 
 // Helper components for consistent layout
 
-// V3-D304: border-s-ink/10 → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
+// V3-D304: border-s-border → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">

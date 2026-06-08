@@ -82,7 +82,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
   return (
     <div className="relative flex items-center gap-3">
       {/* Label */}
-      <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading shrink-0 min-w-[60px]">
+      <span className="text-[11px] tracking-[0.2em] uppercase text-s-star font-heading shrink-0 min-w-[60px]">
         {label}
       </span>
 
@@ -102,7 +102,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                   className={`w-10 h-10 rounded-pill flex items-center justify-center border transition-colors duration-150 cursor-pointer ${
                     activeValue === opt.value
                       ? "bg-s-ink border-s-accent text-white"
-                      : "bg-white/70 border-s-border text-s-ink/50 hover:border-s-accent/40 hover:text-s-accent"
+                      : "bg-white/70 border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent"
                   }`}
                 >
                   {opt.icon}
@@ -111,7 +111,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                   className={`text-[10px] font-heading leading-none transition-colors ${
                     activeValue === opt.value
                       ? "text-s-accent"
-                      : "text-s-ink/50"
+                      : "text-s-ink-2"
                   }`}
                 >
                   {opt.label}
@@ -125,7 +125,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                 className={`shrink-0 px-3.5 py-1.5 rounded-pill text-[12px] font-heading border transition-colors duration-150 whitespace-nowrap cursor-pointer ${
                   activeValue === opt.value
                     ? "bg-s-ink border-s-accent text-white"
-                    : "bg-white/70 border-s-border text-s-ink/65 hover:border-s-accent/40 hover:text-s-accent"
+                    : "bg-white/70 border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent"
                 }`}
               >
                 {opt.label}

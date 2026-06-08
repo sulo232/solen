@@ -58,7 +58,7 @@ export default function ReviewBreakdown({
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-amber text-s-amber" : "text-s-ink/20"}`}
+                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-star text-s-star" : "text-s-ink/20"}`}
               />
             ))}
           </span>
@@ -101,7 +101,7 @@ export default function ReviewBreakdown({
         <div className="mt-4 pt-4 border-t border-s-border space-y-2">
           {subCategories.map(({ label, avg }, index) => (
             <div key={label} className="flex items-center gap-3 text-xs">
-              <span className="text-s-ink/50 w-24 shrink-0">{label}</span>
+              <span className="text-s-ink-2 w-24 shrink-0">{label}</span>
               <div className="flex-1 h-1.5 bg-s-bg-sunken rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-s-ink rounded-full"
@@ -114,7 +114,7 @@ export default function ReviewBreakdown({
                   }}
                 />
               </div>
-              <span className="text-s-ink/60 w-6 text-right font-medium">{avg.toFixed(1)}</span>
+              <span className="text-s-ink-2 w-6 text-right font-medium">{avg.toFixed(1)}</span>
             </div>
           ))}
         </div>

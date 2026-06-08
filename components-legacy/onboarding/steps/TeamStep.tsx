@@ -61,7 +61,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
       <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">
               <Mail size={12} className="inline mr-1" />
               {t("team.emailLabel")}
             </label>
@@ -74,7 +74,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">
               <UserPlus size={12} className="inline mr-1" />
               {t("team.nameLabel")}
             </label>

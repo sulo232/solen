@@ -161,7 +161,7 @@ function SmartSearchTab() {
     <div className="space-y-4">
       {/* Description input */}
       <div className="space-y-2">
-        <label className="text-xs font-medium text-s-ink/60">
+        <label className="text-xs font-medium text-s-ink-2">
           {t("describeLabel")}
         </label>
         <div className="flex gap-2">
@@ -171,12 +171,12 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-2 py-2 text-xs rounded-[16px] border border-s-ink/10 bg-white text-s-ink"
+            className="px-2 py-2 text-xs rounded-[16px] border border-s-border bg-white text-s-ink"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -198,7 +198,7 @@ function SmartSearchTab() {
         <div className="flex flex-wrap gap-1">
           <span className="text-[10px] text-s-ink/40 mr-1">{t("queries")}</span>
           {queries.map((q, i) => (
-            <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60">
+            <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
               {q}
             </span>
           ))}
@@ -209,7 +209,7 @@ function SmartSearchTab() {
       {results.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-s-ink/60">
+            <span className="text-xs text-s-ink-2">
               {t("resultsSelected", { count: results.length, selected: selected.size })}
             </span>
             <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ function SmartSearchTab() {
                 className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-200 ${
                   selected.has(photo.id)
                     ? "border-s-accent ring-2 ring-s-accent/30"
-                    : "border-transparent hover:border-s-ink/10:border-white/10"
+                    : "border-transparent hover:border-s-border:border-white/10"
                 }`}
               >
                 <NextImage
@@ -305,7 +305,7 @@ function TikTokImportTab() {
   return (
     <div className="space-y-3">
       <div className="space-y-1">
-        <label className="text-xs font-medium text-s-ink/60">
+        <label className="text-xs font-medium text-s-ink-2">
           {t("tiktokLabel")}
         </label>
         <textarea
@@ -313,7 +313,7 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-border bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none font-mono"
         />
       </div>
 
@@ -382,7 +382,7 @@ function CategoryImportTab() {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-s-ink/60">
+      <p className="text-xs text-s-ink-2">
         {t("quickImportDesc")}
       </p>
 
@@ -395,7 +395,7 @@ function CategoryImportTab() {
             className={`flex items-center justify-center gap-2 px-3 py-3 rounded-pill border text-sm font-medium transition-[transform,filter] duration-150 ${
               importing === cat
                 ? "border-s-accent bg-s-ink/10 text-s-accent"
-                : "border-s-ink/10 text-s-ink hover:border-s-accent hover:bg-s-ink/5"
+                : "border-s-border text-s-ink hover:border-s-accent hover:bg-s-ink/5"
             } disabled:opacity-50`}
           >
             {importing === cat ? (

@@ -37,14 +37,14 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
         <div>
           <p className="font-heading text-s-ink">{member.name}</p>
           {member.specialties?.length > 0 && (
-            <p className="text-xs text-s-ink/50">{member.specialties.join(", ")}</p>
+            <p className="text-xs text-s-ink-2">{member.specialties.join(", ")}</p>
           )}
         </div>
       </div>
 
       {/* Bio */}
       {(member as StaffMember & { bio?: string }).bio && (
-        <p className="text-sm text-s-ink/60 mb-3 leading-relaxed">
+        <p className="text-sm text-s-ink-2 mb-3 leading-relaxed">
           {(member as StaffMember & { bio?: string }).bio}
         </p>
       )}

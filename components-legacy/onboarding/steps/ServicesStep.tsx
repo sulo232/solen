@@ -130,7 +130,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                 </button>
               </div>
               <div>
-                <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.name")} *</label>
+                <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("services.name")} *</label>
                 <input
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
@@ -140,7 +140,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.duration")}</label>
+                  <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("services.duration")}</label>
                   <input
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
@@ -149,7 +149,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.price")}</label>
+                  <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("services.price")}</label>
                   <input
                     type="number" min={0}
                     value={newService.price}
@@ -179,7 +179,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
 
           {suggestions.length > 0 && (
             <div className="pt-2">
-              <p className="text-xs font-medium text-s-ink/60 mb-3 px-1">{t("services.aiSuggestions")}</p>
+              <p className="text-xs font-medium text-s-ink-2 mb-3 px-1">{t("services.aiSuggestions")}</p>
               <div className="grid gap-2">
                 {suggestions.map((s, i) => (
                   <div key={i} className="flex justify-between items-center bg-s-ink/5 border border-s-accent/10 rounded-[12px] px-4 py-3">

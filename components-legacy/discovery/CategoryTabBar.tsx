@@ -52,7 +52,7 @@ export default function CategoryTabBar({ activeCategory, onChange, trailing }: C
               "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",
               isActive
                 ? "bg-s-ink text-white"
-                : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]",
+                : "bg-s-bg-surface text-s-ink/70 border border-s-border hover:bg-s-bg-sunken",
             ].join(" ")}
           >
             {t(tab.labelKey as any)}

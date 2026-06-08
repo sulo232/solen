@@ -191,15 +191,15 @@ export default function BottomTabBar() {
               <button
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
                 aria-label={tAuth("close")}
-                className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full bg-s-bg-surface hover:bg-s-ink/[0.08] transition-colors"
+                className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full bg-s-bg-surface hover:bg-s-bg-sunken transition-colors"
               >
-                <X size={15} className="text-s-ink/60" />
+                <X size={15} className="text-s-ink-2" />
               </button>
 
               <h2 className="font-heading text-xl text-s-ink mb-1">
                 {t("loginCta") ?? "Jetzt anmelden"}
               </h2>
-              <p className="text-sm font-body text-s-ink/60 mb-7 leading-snug">
+              <p className="text-sm font-body text-s-ink-2 mb-7 leading-snug">
                 {contextMessage}
               </p>
 

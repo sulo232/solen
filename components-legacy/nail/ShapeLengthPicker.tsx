@@ -50,13 +50,13 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
                   ? "border-s-accent bg-s-ink/5 shadow-elevation-2"
-                  : "border-s-ink/10 bg-[--raised] hover:border-s-accent/20"
+                  : "border-s-border bg-[--raised] hover:border-s-accent/20"
               }`}
             >
               <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-accent/20 stroke-s-accent" : "fill-s-ink/5 stroke-s-ink/30"}`} strokeWidth="1">
                 <path d={svg} />
               </svg>
-              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-accent font-medium" : "text-s-ink/50"}`}>
+              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-accent font-medium" : "text-s-ink-2"}`}>
                 {t(key)}
               </span>
             </button>

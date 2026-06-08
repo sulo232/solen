@@ -435,7 +435,7 @@ export default function TermsContent() {
 
 // Helper components for consistent layout
 
-// V3-D303: border-s-ink/10 → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
+// V3-D303: border-s-border → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">

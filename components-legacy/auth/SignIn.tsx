@@ -101,7 +101,7 @@ export default function SignIn() {
             E-Mail gesendet
           </p>
           <p className="font-heading text-lg text-s-ink">Link gesendet</p>
-          <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">
+          <p className="text-xs font-body text-s-ink-2 mt-1 leading-relaxed">
             Schau in deinem Postfach nach einem Link zum Zurücksetzen.
           </p>
         </div>
@@ -123,7 +123,7 @@ export default function SignIn() {
             Konto-Wiederherstellung
           </p>
           <p className="font-heading text-lg text-s-ink">Passwort vergessen?</p>
-          <p className="text-xs font-body text-s-ink/50 mt-1">
+          <p className="text-xs font-body text-s-ink-2 mt-1">
             Gib deine E-Mail ein und wir senden dir einen Reset-Link.
           </p>
         </div>

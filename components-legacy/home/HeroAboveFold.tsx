@@ -104,7 +104,7 @@ export default function HeroAboveFold() {
               <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Was
               </span>
-              <span className="block font-body text-[14px] text-s-ink/55 truncate mt-0.5">
+              <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">
                 Service oder Salon
               </span>
             </div>
@@ -116,7 +116,7 @@ export default function HeroAboveFold() {
               <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wo
               </span>
-              <span className="block font-body text-[14px] text-s-ink/55 truncate mt-0.5">
+              <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">
                 Stadt oder Quartier
               </span>
             </div>
@@ -128,7 +128,7 @@ export default function HeroAboveFold() {
               <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wann
               </span>
-              <span className="block font-body text-[14px] text-s-ink/55 truncate mt-0.5">
+              <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">
                 Heute, morgen, oder ein Datum
               </span>
             </div>

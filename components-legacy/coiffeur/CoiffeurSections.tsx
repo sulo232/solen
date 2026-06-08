@@ -155,7 +155,7 @@ export function CoiffeurBelowGrid() {
                   {t("trending_title")}
                 </h2>
               </div>
-              <p className="text-sm text-s-ink/50 font-body">
+              <p className="text-sm text-s-ink-2 font-body">
                 {t("trending_subtitle")}
               </p>
             </div>
@@ -173,7 +173,7 @@ export function CoiffeurBelowGrid() {
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
                 className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               >
-                <span className="text-[9px] font-heading uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink/60 self-start">
+                <span className="text-[9px] font-heading uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink-2 self-start">
                   {style.tag}
                 </span>
                 <p className="font-heading text-s-ink text-sm">
@@ -193,7 +193,7 @@ export function CoiffeurBelowGrid() {
             <p className="font-heading text-s-ink">
               {t("ai_teaser")}
             </p>
-            <p className="text-sm text-s-ink/50 font-body mt-1">
+            <p className="text-sm text-s-ink-2 font-body mt-1">
               {t("ai_desc")}
             </p>
           </div>

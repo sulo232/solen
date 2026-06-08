@@ -253,7 +253,7 @@ export default function VouchersPage() {
                       <p className="font-heading text-sm text-s-ink">
                         {locale === "en" ? salon.name_en : salon.name_de}
                       </p>
-                      <p className="text-xs text-s-ink/50 mt-1">
+                      <p className="text-xs text-s-ink-2 mt-1">
                         {t("selectToGift")}
                       </p>
                     </div>

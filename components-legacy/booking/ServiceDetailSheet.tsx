@@ -104,7 +104,7 @@ export default function ServiceDetailSheet({
           type="button"
           onClick={onClose}
           aria-label={t('close')}
-          className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken transition-colors hover:bg-s-ink/[0.08]"
+          className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken transition-colors hover:bg-s-bg-sunken"
         >
           <X size={22} className="text-s-ink" />
         </button>
@@ -115,7 +115,7 @@ export default function ServiceDetailSheet({
           {name(service)}
         </h2>
         {desc && (
-          <p className="mt-2.5 text-[15px] leading-relaxed text-s-ink/60">{desc}</p>
+          <p className="mt-2.5 text-[15px] leading-relaxed text-s-ink-2">{desc}</p>
         )}
 
         {/* Required options — single-select */}
@@ -124,7 +124,7 @@ export default function ServiceDetailSheet({
             <p className="font-heading text-[17px] font-bold text-s-ink">
               {t('chooseOption')}
             </p>
-            <p className="mb-1.5 text-[13px] font-medium text-s-ink/55">
+            <p className="mb-1.5 text-[13px] font-medium text-s-ink-2">
               {t('required')}
             </p>
             <div className="divide-y divide-s-ink/[0.06]">
@@ -141,7 +141,7 @@ export default function ServiceDetailSheet({
                       <span className="block text-[16px] font-semibold text-s-ink">
                         {name(o)}
                       </span>
-                      <span className="block text-[13px] text-s-ink/55 tabular-nums">
+                      <span className="block text-[13px] text-s-ink-2 tabular-nums">
                         {formatCurrency(o.price, locale)} · {o.duration_minutes}{' '}
                         {t('minutes')}
                       </span>
@@ -166,7 +166,7 @@ export default function ServiceDetailSheet({
             <p className="font-heading text-[17px] font-bold text-s-ink">
               {t('addOns')}
             </p>
-            <p className="mb-1.5 text-[13px] text-s-ink/55">{t('optional')}</p>
+            <p className="mb-1.5 text-[13px] text-s-ink-2">{t('optional')}</p>
             <div className="divide-y divide-s-ink/[0.06]">
               {addons.map((a) => (
                 <button
@@ -179,7 +179,7 @@ export default function ServiceDetailSheet({
                     <span className="block text-[16px] font-semibold text-s-ink">
                       {name(a)}
                     </span>
-                    <span className="block text-[13px] text-s-ink/55 tabular-nums">
+                    <span className="block text-[13px] text-s-ink-2 tabular-nums">
                       +{formatCurrency(a.price, locale)} · {a.duration_minutes}{' '}
                       {t('minutes')}
                     </span>
@@ -206,7 +206,7 @@ export default function ServiceDetailSheet({
               : formatCurrency(total.price, locale)}
           </motion.p>
           {!showFrom && (
-            <p className="mt-1.5 text-[13px] text-s-ink/55">
+            <p className="mt-1.5 text-[13px] text-s-ink-2">
               {total.duration} {t('minutes')}
             </p>
           )}

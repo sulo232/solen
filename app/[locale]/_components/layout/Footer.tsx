@@ -139,7 +139,7 @@ export default function Footer({ locale }: { locale: string }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid h-9 w-9 place-items-center rounded-[10px] bg-s-ink/[0.06] text-s-ink-3 transition-colors duration-200 ease-glide hover:bg-s-ink hover:text-white"
+                  className="grid h-9 w-9 place-items-center rounded-[10px] bg-s-bg-sunken text-s-ink-3 transition-colors duration-200 ease-glide hover:bg-s-ink hover:text-white"
                 >
                   <Icon size={16} aria-hidden />
                 </a>

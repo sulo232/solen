@@ -397,7 +397,7 @@ function VisualAnalyticsTabbed() {
         {/* Subtle horizontal grid lines */}
         <div aria-hidden className="absolute inset-0 flex flex-col justify-between pointer-events-none">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-px w-full bg-s-ink/[0.05]" />
+            <div key={i} className="h-px w-full bg-s-bg-sunken" />
           ))}
         </div>
 

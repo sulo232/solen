@@ -74,10 +74,10 @@ export default function PackageRedeemBanner({
       style={{ background: "rgba(243,168,100,.08)", border: "1px solid rgba(243,168,100,.20)" }}>
       <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
         style={{ background: "rgba(243,168,100,.14)" }}>
-        <Package size={15} className="text-s-amber" />
+        <Package size={15} className="text-s-star" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading text-s-amber-text truncate">{packageName}</p>
+        <p className="text-xs font-heading text-s-star-text truncate">{packageName}</p>
         <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">
           {t("sessionsUsed", { used: sessionsUsed, total: totalSessions })}
         </p>

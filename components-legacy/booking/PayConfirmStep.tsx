@@ -248,7 +248,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             <p className="font-heading text-[14px] uppercase text-s-ink leading-[1.05]" style={{ letterSpacing: '0.01em' }}>
               {salon.name}
             </p>
-            <p className="font-body text-[11px] text-s-ink/55 truncate mt-0.5">{salon.address}</p>
+            <p className="font-body text-[11px] text-s-ink-2 truncate mt-0.5">{salon.address}</p>
           </div>
         </div>
 
@@ -261,12 +261,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           ))}
           {staff && (
             <div className="flex items-baseline justify-between gap-2">
-              <span className="font-body text-s-ink/60">Mit</span>
+              <span className="font-body text-s-ink-2">Mit</span>
               <span className="font-body font-semibold text-s-ink">{staff.name}</span>
             </div>
           )}
           <div className="flex items-baseline justify-between gap-2">
-            <span className="font-body text-s-ink/60">Wann</span>
+            <span className="font-body text-s-ink-2">Wann</span>
             <span className="font-body font-semibold text-s-ink tabular-nums">
               {dateLabel} · {timeLabel}
             </span>
@@ -282,8 +282,8 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* (c) Cancellation policy mini-banner */}
       <div className="flex items-start gap-2 rounded-[10px] px-3 py-2.5 bg-s-warning-bg">
-        <ShieldCheck size={14} className="text-s-amber shrink-0 mt-[1px]" aria-hidden />
-        <p className="font-body text-[11px] text-s-ink/65 leading-[1.5]">
+        <ShieldCheck size={14} className="text-s-star shrink-0 mt-[1px]" aria-hidden />
+        <p className="font-body text-[11px] text-s-ink-2 leading-[1.5]">
           Kostenlos bis {cancellationHours}h vorher stornieren.
         </p>
       </div>
@@ -322,7 +322,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             <Wallet size={20} className="text-s-ink shrink-0 mt-0.5" aria-hidden />
             <div>
               <p className="font-body text-[14px] font-semibold text-s-ink">Zahlung im Salon</p>
-              <p className="font-body text-[12px] text-s-ink/55 mt-0.5">
+              <p className="font-body text-[12px] text-s-ink-2 mt-0.5">
                 Du bezahlst {formatPrice(totalPrice, localeCode)} direkt vor Ort. Keine Online-Zahlung nötig.
               </p>
             </div>

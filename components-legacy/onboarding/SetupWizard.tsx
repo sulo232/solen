@@ -139,7 +139,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
           <button
             onClick={goPrev}
             disabled={currentStep === 0}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink/50 hover:text-s-ink transition-colors disabled:opacity-0 disabled:pointer-events-none"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink-2 hover:text-s-ink transition-colors disabled:opacity-0 disabled:pointer-events-none"
           >
             <ChevronLeft size={16} />
             {t("setup.back")}

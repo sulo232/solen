@@ -89,7 +89,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={handleClose}
-            className="px-4 py-2 text-sm rounded-pill border border-s-border text-s-ink/60 hover:text-s-ink transition-colors duration-150"
+            className="px-4 py-2 text-sm rounded-pill border border-s-border text-s-ink-2 hover:text-s-ink transition-colors duration-150"
           >
             {t("cancel")}
           </button>

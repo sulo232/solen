@@ -92,7 +92,7 @@ export default function VouchersPage() {
             <AlertCircle className="w-6 h-6 text-s-error" />
           </div>
           <p className="text-s-error text-sm font-heading mb-1">FEHLER</p>
-          <p className="text-s-ink/60 text-sm">{error}</p>
+          <p className="text-s-ink-2 text-sm">{error}</p>
         </div>
       </div>
     );
@@ -106,7 +106,7 @@ export default function VouchersPage() {
           Profil
         </Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink/60">Meine Gutscheine</span>
+        <span className="text-s-ink-2">Meine Gutscheine</span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-6">
@@ -118,7 +118,7 @@ export default function VouchersPage() {
           <h1 className="font-heading text-xl text-s-ink mb-1">
             Meine Gutscheine
           </h1>
-          <p className="text-sm text-s-ink/60 max-w-xs mx-auto">
+          <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
             {data?.total ?? 0} {(data?.total ?? 0) === 1 ? "Gutschein" : "Gutscheine"} insgesamt
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function VouchersPage() {
             <div className="w-12 h-12 rounded-full bg-s-ink/5 flex items-center justify-center mx-auto mb-3">
               <Gift className="w-6 h-6 text-s-ink/30" />
             </div>
-            <p className="text-s-ink/60 text-sm">
+            <p className="text-s-ink-2 text-sm">
               Du hast noch keine Gutscheine. Bestelle einen als Geschenk!
             </p>
             <Link
@@ -226,7 +226,7 @@ function VoucherCard({
     statusLabel = "Verwendet";
   } else {
     statusIcon = <X className="w-4 h-4" />;
-    statusColor = "border-s-ink/10 bg-s-ink/5";
+    statusColor = "border-s-border bg-s-ink/5";
     statusLabel = "Abgelaufen";
   }
 
@@ -250,7 +250,7 @@ function VoucherCard({
 
           {/* Code and amount */}
           <div className="flex items-center justify-between mb-2">
-            <code className="text-xs font-mono font-bold text-s-ink/60 tracking-[.06em]">
+            <code className="text-xs font-mono font-bold text-s-ink-2 tracking-[.06em]">
               {voucher.code}
             </code>
             <span className="text-sm font-heading text-s-ink">
@@ -280,7 +280,7 @@ function VoucherCard({
 
           {/* Message */}
           {voucher.message && (
-            <p className="text-xs text-s-ink/50 italic mt-2 line-clamp-2">
+            <p className="text-xs text-s-ink-2 italic mt-2 line-clamp-2">
               "{voucher.message}"
             </p>
           )}

@@ -83,7 +83,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
 
       <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">
             {t("profile.name")} *
           </label>
           <input
@@ -95,7 +95,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">
             {t("profile.description")} *
           </label>
           <textarea
@@ -109,7 +109,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
           <p className="text-[10px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-2">
+          <label className="block text-xs font-medium text-s-ink-2 mb-2">
             {t("profile.categories")}
             <span className="ml-1 text-s-ink/30 font-normal">{t("profile.multipleChoice")}</span>
           </label>
@@ -125,7 +125,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                     "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                     active
                       ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
-                      : "border-s-border text-s-ink/55 hover:border-s-accent/50",
+                      : "border-s-border text-s-ink-2 hover:border-s-accent/50",
                   ].join(" ")}
                 >
                   <span className="text-[13px] leading-none">{opt.emoji}</span>
@@ -140,7 +140,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
           )}
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">
             <Phone size={12} className="inline mr-1" />
             {t("profile.phone")}
           </label>
@@ -153,7 +153,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">
             <Camera size={12} className="inline mr-1" />
             {t("profile.coverUrl")}
           </label>

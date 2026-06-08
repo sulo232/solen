@@ -59,7 +59,7 @@ export default function ErrorState({
       </div>
       <h3 className="font-heading text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (
-        <p className="font-body text-s-ink/50 text-sm max-w-xs leading-relaxed mb-5">{message}</p>
+        <p className="font-body text-s-ink-2 text-sm max-w-xs leading-relaxed mb-5">{message}</p>
       )}
       <button
         onClick={onRetry}

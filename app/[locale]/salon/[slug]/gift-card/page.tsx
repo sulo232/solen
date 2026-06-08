@@ -75,7 +75,7 @@ export default function GiftCardPage() {
             <Check size={32} className="text-s-success" />
           </div>
           <h1 className="font-heading text-xl text-s-ink mb-2">Geschenkkarte gesendet!</h1>
-          <p className="text-sm text-s-ink/50 mb-4">
+          <p className="text-sm text-s-ink-2 mb-4">
             {formatCurrency(amount / 100)} für {recipientName}
           </p>
           <div className="bg-white rounded-[16px] p-4 border border-s-border">
@@ -100,7 +100,7 @@ export default function GiftCardPage() {
         <div className="bg-white rounded-[16px] shadow-warm-md p-5 space-y-4">
           {/* Amount */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 mb-2 block">Betrag</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-2 block">Betrag</label>
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}

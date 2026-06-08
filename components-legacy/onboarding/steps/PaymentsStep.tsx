@@ -78,7 +78,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
 
       {/* Payment mode selection */}
       <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 mb-2">
+        <p className="text-xs font-medium text-s-ink-2 mb-2">
           {t("payments.mode")}
         </p>
         {modeOptions.map((opt) => (
@@ -89,12 +89,12 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               "w-full rounded-[12px] border p-4 text-left transition-[background-color,border-color,box-shadow] flex items-center gap-3",
               paymentMode === opt.id
                 ? "border-s-accent bg-s-ink/5 shadow-warm-sm"
-                : "border-s-border hover:border-s-ink/20:border-white/20",
+                : "border-s-border hover:border-s-border:border-white/20",
             ].join(" ")}
           >
             <div className={[
               "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
-              paymentMode === opt.id ? "border-s-accent" : "border-s-ink/20",
+              paymentMode === opt.id ? "border-s-accent" : "border-s-border",
             ].join(" ")}>
               {paymentMode === opt.id && <div className="w-2.5 h-2.5 rounded-full bg-s-ink" />}
             </div>
@@ -123,7 +123,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               </span>
             )}
           </div>
-          <p className="text-xs text-s-ink/50">
+          <p className="text-xs text-s-ink-2">
             {t("payments.stripeDesc")}
           </p>
           {connectStatus !== "connected" && (

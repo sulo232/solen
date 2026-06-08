@@ -92,8 +92,8 @@ export default function StaffInvitePage() {
               <Check size={24} className="text-s-accent" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.success}</h2>
-            {salonName && <p className="text-sm text-s-ink/50 mb-1">{salonName}</p>}
-            <p className="text-sm text-s-ink/50 mb-6">{l.successDesc}</p>
+            {salonName && <p className="text-sm text-s-ink-2 mb-1">{salonName}</p>}
+            <p className="text-sm text-s-ink-2 mb-6">{l.successDesc}</p>
             <Link href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
               {l.goToDashboard}
             </Link>
@@ -117,7 +117,7 @@ export default function StaffInvitePage() {
               </div>
             </div>
 
-            <p className="text-sm text-s-ink/60 mb-6">{l.desc}</p>
+            <p className="text-sm text-s-ink-2 mb-6">{l.desc}</p>
 
             <button
               onClick={handleAccept}

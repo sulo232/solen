@@ -192,7 +192,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
         {query && (
           <button
             onClick={() => { setQuery(""); setOpen(false); setServices([]); setSalons([]); }}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink/60"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink-2"
           >
             <X size={14} />
           </button>
@@ -221,7 +221,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                    activeIndex === i ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
+                    activeIndex === i ? "bg-s-bg-sunken text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
@@ -246,7 +246,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-bg-sunken text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
@@ -297,7 +297,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-bg-sunken text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <span className="font-medium truncate">{result.name}</span>
@@ -314,7 +314,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {suggestedCategory && suggestedCategory !== category && (
             <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-border">
               <Search size={14} className="text-s-accent shrink-0" />
-              <span className="text-xs text-s-ink/60 font-body">
+              <span className="text-xs text-s-ink-2 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>
               <Link

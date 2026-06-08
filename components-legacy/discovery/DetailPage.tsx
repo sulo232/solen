@@ -127,7 +127,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         } />
         {/* V3-D390: same junk-handle filter as the feed cards (formatCreator) — a scraped "@☆" reads as broken. */}
         {creator && (
-          <span className="text-xs text-s-ink/50">
+          <span className="text-xs text-s-ink-2">
             {item.author_url ? (
               <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-ink transition-colors">@{creator}</a>
             ) : `@${creator}`}
@@ -154,7 +154,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           <div className="flex flex-wrap gap-1.5 mt-2">
             {/* V3-D390: cap to 6 — the raw 14-tag cloud read cluttered. */}
             {item.tags.slice(0, 6).map((tag) => (
-              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60">
+              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
                 #{tag}
               </span>
             ))}
@@ -209,7 +209,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           </button>
           {showCutGuide && (
             <div className="mt-2 p-4 rounded-[16px] bg-s-bg-surface border border-s-ink/5">
-              <p className="text-xs text-s-ink/60 font-mono leading-relaxed whitespace-pre-line">
+              <p className="text-xs text-s-ink-2 font-mono leading-relaxed whitespace-pre-line">
                 {item.cut_guide}
               </p>
             </div>

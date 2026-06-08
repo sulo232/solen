@@ -81,7 +81,7 @@ export function NailsBelowGrid() {
             <h2 className="font-heading text-[clamp(22px,2.8vw,26px)] tracking-[0.01em] text-s-ink">
               {t("inspo_heading")}
             </h2>
-            <p className="text-sm text-s-ink/50 font-body mt-1">
+            <p className="text-sm text-s-ink-2 font-body mt-1">
               {t("inspo_subheading")}
             </p>
           </div>
@@ -100,7 +100,7 @@ export function NailsBelowGrid() {
               className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               aria-label={item.label}
             >
-              <span className="text-xs font-body text-s-ink/60 leading-tight">
+              <span className="text-xs font-body text-s-ink-2 leading-tight">
                 {item.label}
               </span>
             </Link>
@@ -117,7 +117,7 @@ export function NailsBelowGrid() {
           <p className="font-heading text-s-ink">
             {t("ai_teaser_title")}
           </p>
-          <p className="text-sm text-s-ink/50 font-body mt-1">
+          <p className="text-sm text-s-ink-2 font-body mt-1">
             {t("ai_teaser_body")}
           </p>
         </div>

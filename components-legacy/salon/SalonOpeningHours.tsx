@@ -41,7 +41,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
       }}
     >
       <h2 className="font-heading text-base text-s-ink mb-3 flex items-center gap-2">
-        <Clock className="w-4 h-4 text-s-ink/60" />
+        <Clock className="w-4 h-4 text-s-ink-2" />
         {t("openingHours")}
       </h2>
 
@@ -74,7 +74,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                 <div
                   key={key}
                   className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${
-                    isToday ? "bg-s-ink/[0.08]" : ""
+                    isToday ? "bg-s-bg-sunken" : ""
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                         isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                       }`}
                     />
-                    <span className={isToday ? "font-heading text-s-ink" : "text-s-ink/50"}>
+                    <span className={isToday ? "font-heading text-s-ink" : "text-s-ink-2"}>
                       {label}
                     </span>
                   </div>
@@ -111,7 +111,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
             <div
               key={key}
               className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${
-                isToday ? "bg-s-ink/[0.08]" : ""
+                isToday ? "bg-s-bg-sunken" : ""
               }`}
             >
               <div className="flex items-center gap-2">
@@ -120,7 +120,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                     isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                   }`}
                 />
-                <span className={isToday ? "font-heading text-s-ink" : "text-s-ink/50"}>
+                <span className={isToday ? "font-heading text-s-ink" : "text-s-ink-2"}>
                   {label}
                 </span>
               </div>

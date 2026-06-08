@@ -73,8 +73,8 @@ export default function SalonMobileCTA({
               </span>
             )}
             {averageRating > 0 && (
-              <span className="flex items-center gap-1 font-body text-[12px] text-s-ink/55">
-                <Star className="w-[10px] h-[10px] fill-s-amber text-s-amber" aria-hidden />
+              <span className="flex items-center gap-1 font-body text-[12px] text-s-ink-2">
+                <Star className="w-[10px] h-[10px] fill-s-star text-s-star" aria-hidden />
                 <span className="font-semibold tabular-nums">{averageRating.toFixed(1)}</span>
                 <span className="tabular-nums">({reviewCount})</span>
               </span>

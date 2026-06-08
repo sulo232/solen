@@ -37,7 +37,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
             "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
             !selected
               ? "border-s-ink bg-s-ink text-white"
-              : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-ink/40"
+              : "border-s-ink/[0.07] text-s-ink-2 hover:border-s-ink/40"
           )}
         >
           {t("all_styles")}
@@ -51,7 +51,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
               "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
               selected === s.name
                 ? "border-s-ink bg-s-ink text-white"
-                : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-ink/40"
+                : "border-s-ink/[0.07] text-s-ink-2 hover:border-s-ink/40"
             )}
           >
             {s.name} ({s.count})

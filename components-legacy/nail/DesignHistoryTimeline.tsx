@@ -106,15 +106,15 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   {/* Color swatch */}
                   {d.color_primary && (
                     <div className="flex items-center gap-1.5 mb-1">
-                      <div className="w-4 h-4 rounded-full border border-s-ink/10" style={{ backgroundColor: d.color_primary }} />
+                      <div className="w-4 h-4 rounded-full border border-s-border" style={{ backgroundColor: d.color_primary }} />
                       {d.color_secondary && (
-                        <div className="w-4 h-4 rounded-full border border-s-ink/10" style={{ backgroundColor: d.color_secondary }} />
+                        <div className="w-4 h-4 rounded-full border border-s-border" style={{ backgroundColor: d.color_secondary }} />
                       )}
                     </div>
                   )}
 
                   {d.notes && (
-                    <p className="text-xs text-s-ink/50 line-clamp-2">{d.notes}</p>
+                    <p className="text-xs text-s-ink-2 line-clamp-2">{d.notes}</p>
                   )}
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                     onClick={() => handlePublish(d)}
                     disabled={publishingId === d.id}
                     aria-label={publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}
-                    className="flex items-center gap-1 text-xs text-s-ink/50 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-1 text-xs text-s-ink-2 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
                   >
                     <Share2 size={10} />
                     {publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}

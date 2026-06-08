@@ -48,7 +48,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="border-2 border-dashed border-s-ink/10 rounded-[16px] p-4 text-center hover:border-s-accent/30 transition-colors"
+        className="border-2 border-dashed border-s-border rounded-[16px] p-4 text-center hover:border-s-accent/30 transition-colors"
       >
         <Upload size={24} className="mx-auto text-s-ink/20 mb-2" />
         <p className="text-xs text-s-ink/40 mb-3">
@@ -58,7 +58,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-ink/10 text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-border text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
           >
             <Upload size={12} />
             {t("inspo_choose_file")}
@@ -66,7 +66,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
           <button
             type="button"
             onClick={() => cameraRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-ink/10 text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-border text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
           >
             <Camera size={12} />
             {t("inspo_camera")}

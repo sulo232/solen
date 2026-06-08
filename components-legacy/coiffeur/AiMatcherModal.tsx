@@ -145,7 +145,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
             className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150"
             aria-label={t("close")}
           >
-            <X size={18} className="text-s-ink/50" />
+            <X size={18} className="text-s-ink-2" />
           </button>
         </div>
 
@@ -213,7 +213,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <h2 className="font-heading text-xl text-s-ink mb-2">
                 {t("result_heading")}
               </h2>
-              <p className="text-sm text-s-ink/50 font-body mb-6">
+              <p className="text-sm text-s-ink-2 font-body mb-6">
                 {t("result_desc")}
               </p>
               <Link

@@ -54,7 +54,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
         <button
           onClick={() => handleChange("")}
           aria-label="Clear search"
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 transition-colors duration-150 hover:text-s-ink/60"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 transition-colors duration-150 hover:text-s-ink-2"
         >
           <X size={14} />
         </button>

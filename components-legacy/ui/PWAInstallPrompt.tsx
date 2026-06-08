@@ -73,18 +73,18 @@ export default function PWAInstallPrompt() {
               <p className="font-heading text-sm text-s-ink">
                 {t("title")}
               </p>
-              <p className="text-xs text-s-ink/50 mt-0.5">
+              <p className="text-xs text-s-ink-2 mt-0.5">
                 {t("subtitle")}
               </p>
             </div>
           </div>
-          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink/60 p-1">
+          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink-2 p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 bg-s-bg-surface rounded-input p-2.5">
+          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink-2 bg-s-bg-surface rounded-input p-2.5">
             <Share className="w-4 h-4 shrink-0 text-s-accent" />
             <span>{t("iosInstructions")}</span>
           </div>

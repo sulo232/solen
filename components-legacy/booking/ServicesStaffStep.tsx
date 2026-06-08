@@ -413,12 +413,12 @@ export default function ServicesStaffStep({
                       <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
                         {serviceName(service)}
                       </h4>
-                      <p className="text-xs text-s-ink/55 mt-1">
+                      <p className="text-xs text-s-ink-2 mt-1">
                         {service.duration_minutes} {t('minutes')}
                         {gLabel && <> · {gLabel}</>}
                       </p>
                       {desc && (
-                        <p className="text-[13px] text-s-ink/55 leading-relaxed mt-1.5 line-clamp-2">
+                        <p className="text-[13px] text-s-ink-2 leading-relaxed mt-1.5 line-clamp-2">
                           {desc}
                         </p>
                       )}
@@ -470,7 +470,7 @@ export default function ServicesStaffStep({
             <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none">
               {formatCurrency(formData.totalPrice, locale)}
             </p>
-            <p className="flex items-center gap-1.5 text-xs text-s-ink/55 mt-1.5">
+            <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5">
               <ShoppingCart size={13} aria-hidden />
               {formData.services.length} {t('items')} · {formData.totalDuration}{' '}
               {t('minutes')}
@@ -515,7 +515,7 @@ export default function ServicesStaffStep({
                   type="button"
                   onClick={() => setShowCatSheet(false)}
                   aria-label={t('categories')}
-                  className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-ink/[0.06]"
+                  className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken"
                 >
                   <X size={20} className="text-s-ink" />
                 </button>

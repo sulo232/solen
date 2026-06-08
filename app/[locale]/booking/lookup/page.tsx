@@ -502,7 +502,7 @@ function ExchangingView({ t }: { t: ReturnType<typeof useTranslations> }) {
   return (
     <main className="mx-auto flex w-full max-w-[460px] flex-1 flex-col items-center justify-center px-5 py-24 text-center">
       <span
-        className="mb-4 h-8 w-8 animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-s-ink/10 border-t-s-ink/60"
+        className="mb-4 h-8 w-8 animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-s-border border-t-s-ink/60"
         role="status"
         aria-label={t("opening")}
       />

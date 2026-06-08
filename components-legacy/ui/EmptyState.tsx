@@ -81,7 +81,7 @@ export default function EmptyState({
       )}
       <h3 className="font-heading text-s-ink text-lg mb-1.5 uppercase">{title}</h3>
       {message && (
-        <p className="font-body text-s-ink/50 text-sm max-w-xs leading-relaxed">{message}</p>
+        <p className="font-body text-s-ink-2 text-sm max-w-xs leading-relaxed">{message}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </motion.div>

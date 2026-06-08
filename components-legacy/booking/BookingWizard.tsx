@@ -172,7 +172,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
               type="button"
               onClick={handleBack}
               aria-label={t('back')}
-              className="w-9 h-9 -ml-2 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1"
+              className="w-9 h-9 -ml-2 rounded-full flex items-center justify-center hover:bg-s-bg-sunken transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1"
             >
               <ChevronLeft size={18} className="text-s-ink" />
             </button>

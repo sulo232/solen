@@ -114,7 +114,7 @@ export default function RequestList({
             className={`px-3 py-1.5 text-xs font-medium rounded-pill whitespace-nowrap transition-colors ${
               activeTab === tab
                 ? "bg-s-ink text-white"
-                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
+                : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-surface"
             }`}
           >
             {STATUS_LABELS[tab]}
@@ -131,7 +131,7 @@ export default function RequestList({
               Copy for Claude Code
             </p>
           </div>
-          <p className="text-[10px] text-s-ink/50">
+          <p className="text-[10px] text-s-ink-2">
             Select requests with checkboxes, then copy and paste into Claude Code.
           </p>
           <div className="flex gap-1.5 flex-wrap">
@@ -184,10 +184,10 @@ export default function RequestList({
                     type="checkbox"
                     checked={selectedIds.has(r.id)}
                     onChange={() => toggleSelection(r.id)}
-                    className="mt-1 rounded border-s-ink/20 text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5 flex-shrink-0"
+                    className="mt-1 rounded border-s-border text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-mono text-s-ink/50 truncate">
+                    <p className="text-xs font-mono text-s-ink-2 truncate">
                       {r.page_url}
                     </p>
                     <p className="text-sm text-s-ink mt-0.5 line-clamp-2">
@@ -202,14 +202,14 @@ export default function RequestList({
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
-                      r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-bg-sunken text-s-ink/50"
+                      r.status === "in_progress" ? "bg-s-amber-subtle text-s-star-text" :
+                      "bg-s-bg-sunken text-s-ink-2"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
-                      r.priority === "medium" ? "bg-s-amber-subtle text-s-amber-text" :
+                      r.priority === "medium" ? "bg-s-amber-subtle text-s-star-text" :
                       "bg-s-bg-sunken text-s-ink/40"
                     }`}>
                       {r.priority}
@@ -229,7 +229,7 @@ export default function RequestList({
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
                     >
                       Reset
                     </button>
@@ -237,7 +237,7 @@ export default function RequestList({
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
                     >
                       In Progress
                     </button>
@@ -267,7 +267,7 @@ export default function RequestList({
                   {/* Expand details */}
                   <button
                     onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink/50 hover:text-s-ink transition-colors flex items-center gap-1"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink-2 hover:text-s-ink transition-colors flex items-center gap-1"
                   >
                     {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
                     Details
@@ -289,19 +289,19 @@ export default function RequestList({
                   <div className="space-y-2 pl-5.5 pt-1 border-t border-s-border mt-1">
                     {r.element_selector && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink/50">Selector</p>
+                        <p className="text-[10px] font-medium text-s-ink-2">Selector</p>
                         <p className="text-[10px] font-mono text-s-ink/40 break-all">{r.element_selector}</p>
                       </div>
                     )}
                     {r.component_hint && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink/50">Component</p>
+                        <p className="text-[10px] font-medium text-s-ink-2">Component</p>
                         <p className="text-[10px] font-mono text-s-ink/40">{r.component_hint}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[10px] font-medium text-s-ink/50 mb-1">Claude Prompt Preview</p>
-                      <pre className="text-[10px] bg-s-bg-sunken rounded-btn p-2 overflow-auto max-h-40 text-s-ink/60 whitespace-pre-wrap">
+                      <p className="text-[10px] font-medium text-s-ink-2 mb-1">Claude Prompt Preview</p>
+                      <pre className="text-[10px] bg-s-bg-sunken rounded-btn p-2 overflow-auto max-h-40 text-s-ink-2 whitespace-pre-wrap">
                         {formatRequestForClaude(r)}
                       </pre>
                     </div>
@@ -318,7 +318,7 @@ export default function RequestList({
         <button
           onClick={onLoadMore}
           disabled={loading}
-          className="w-full py-2 text-xs text-s-ink/50 hover:text-s-ink transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2 text-xs text-s-ink-2 hover:text-s-ink transition-colors flex items-center justify-center gap-2"
         >
           {loading ? <Spinner size="sm" /> : null}
           {loading ? "Loading..." : "Load more"}

@@ -77,7 +77,7 @@ export default function ResetPasswordPage() {
             Erfolgreich
           </p>
           <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
-          <p className="text-xs font-body text-s-ink/50 mt-2">
+          <p className="text-xs font-body text-s-ink-2 mt-2">
             Du wirst zur Anmeldung weitergeleitet…
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function ResetPasswordPage() {
               Konto-Wiederherstellung
             </p>
             <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
-            <p className="text-xs font-body text-s-ink/50 mt-1">
+            <p className="text-xs font-body text-s-ink-2 mt-1">
               Wähle ein neues Passwort für dein Konto.
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
           {!sessionReady ? (
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="md" />
-              <p className="text-xs font-body text-s-ink/50">Link wird überprüft…</p>
+              <p className="text-xs font-body text-s-ink-2">Link wird überprüft…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink-2 hover:text-s-ink-2 transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}

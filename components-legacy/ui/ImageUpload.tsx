@@ -247,7 +247,7 @@ export default function ImageUpload({
           {pending.map((item) => (
             <div
               key={item.id}
-              className="relative w-20 h-20 rounded-[10px] overflow-hidden border border-s-ink/10 bg-s-bg-sunken flex-shrink-0 animate-[fadeIn_0.2s_ease]"
+              className="relative w-20 h-20 rounded-[10px] overflow-hidden border border-s-border bg-s-bg-sunken flex-shrink-0 animate-[fadeIn_0.2s_ease]"
             >
               {item.previewUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -330,7 +330,7 @@ export default function ImageUpload({
             "w-full h-36 rounded-[16px] border-2 border-dashed flex flex-col items-center justify-center gap-2.5 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
             isDragOver
               ? "border-s-accent bg-s-ink/5"
-              : "border-s-border hover:border-s-accent/40 hover:bg-s-ink/[0.02]",
+              : "border-s-border hover:border-s-accent/40 hover:bg-s-bg-sunken",
           ].join(" ")}
         >
           <div
@@ -341,7 +341,7 @@ export default function ImageUpload({
             <Camera size={20} className="text-s-accent" />
           </div>
           <div className="text-center px-4">
-            <p className="text-sm font-medium text-s-ink/60">
+            <p className="text-sm font-medium text-s-ink-2">
               {t("dropZoneTitle")}
             </p>
             <p className="text-xs text-s-ink/35 mt-0.5">

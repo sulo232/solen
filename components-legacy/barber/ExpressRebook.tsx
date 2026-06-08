@@ -149,7 +149,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           )}
 
           {step === "searching" && (
-            <p className="mt-2 text-sm text-s-ink/50 animate-pulse">
+            <p className="mt-2 text-sm text-s-ink-2 animate-pulse">
               {t("express.searching")}
             </p>
           )}
@@ -161,7 +161,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
                   <CalendarCheck size={14} className="text-s-success" />
                   <span className="font-medium">{formatDate(suggested.starts_at)}</span>
                 </div>
-                <p className="text-s-ink/60">
+                <p className="text-s-ink-2">
                   {t("express.staffAt")} {suggested.staff_name} · {formatCurrency(suggested.price)}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           )}
 
           {step === "booking" && (
-            <p className="mt-2 text-sm text-s-ink/50 animate-pulse">
+            <p className="mt-2 text-sm text-s-ink-2 animate-pulse">
               {t("express.booking")}
             </p>
           )}

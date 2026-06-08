@@ -55,7 +55,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                 {/* Rating badge overlay */}
                 {m.average_rating != null && m.average_rating > 0 && (
                   <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-white px-1.5 py-0.5 rounded-full shadow-sm border border-s-ink/[0.08]">
-                    <Star size={8} className="fill-s-amber text-s-amber-text" />
+                    <Star size={8} className="fill-s-star text-s-star-text" />
                     <span className="text-[9px] font-semibold text-s-ink">
                       {m.average_rating.toFixed(1)}
                     </span>
@@ -91,7 +91,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-border">
               {m.average_rating != null && m.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
-                  <Star size={12} className="fill-s-amber text-s-amber-text" />
+                  <Star size={12} className="fill-s-star text-s-star-text" />
                   <span className="text-[12px] font-medium text-s-ink">{m.average_rating.toFixed(1)}</span>
                 </div>
               ) : (

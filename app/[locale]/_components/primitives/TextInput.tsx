@@ -144,7 +144,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               <span
                 role="status"
                 aria-label="Wird geprüft"
-                className="w-[14px] h-[14px] rounded-full border-2 border-s-ink/20 border-t-s-brand animate-spin"
+                className="w-[14px] h-[14px] rounded-full border-2 border-s-border border-t-s-brand animate-spin"
               />
             )}
             {showSuccessCheck && (

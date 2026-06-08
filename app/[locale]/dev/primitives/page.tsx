@@ -604,7 +604,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setConfirmOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
                   >
                     Abbrechen
                   </button>
@@ -648,7 +648,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setLoginOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
                   >
                     Abbrechen
                   </button>
@@ -692,7 +692,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setReportOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
                   >
                     Abbrechen
                   </button>
@@ -732,7 +732,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setDestructiveOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
                     autoFocus
                   >
                     Abbrechen
@@ -951,7 +951,7 @@ function PrimitivesDevPageInner() {
             </Card>
 
             <Card tag="in app-header context">
-              <div className="bg-white border border-s-ink/10 rounded-xl px-6 py-4 flex items-center justify-between">
+              <div className="bg-white border border-s-border rounded-xl px-6 py-4 flex items-center justify-between">
                 <Logo size="md" />
                 <div className="flex items-center gap-4 text-[14px] text-s-ink-2 font-medium">
                   <span>Entdecken</span>
@@ -1270,7 +1270,7 @@ function ToastDemo() {
             onClick={() => {
               toast.success({ title: "Mit Aktion", action: "Rückgängig", onAction: () => alert("Undone") });
             }}
-            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-border hover:bg-s-bg-sunken transition-colors"
           >
             With action
           </button>
@@ -1279,7 +1279,7 @@ function ToastDemo() {
             onClick={() => {
               toast.success({ title: "Title only — no description" });
             }}
-            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-border hover:bg-s-bg-sunken transition-colors"
           >
             Title only
           </button>
@@ -1288,7 +1288,7 @@ function ToastDemo() {
             onClick={() => {
               toast.dismissAll();
             }}
-            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-ink/10 hover:text-s-ink transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-border hover:text-s-ink transition-colors"
           >
             Dismiss all
           </button>

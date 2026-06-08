@@ -104,7 +104,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
                 "relative shrink-0 px-4 py-4 text-[14px] font-body font-medium whitespace-nowrap transition-colors duration-150",
                 activeId === id
                   ? "text-s-ink font-semibold"
-                  : "text-s-ink/55 hover:text-s-ink"
+                  : "text-s-ink-2 hover:text-s-ink"
               )}
             >
               {label}

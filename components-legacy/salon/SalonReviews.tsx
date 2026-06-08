@@ -146,7 +146,7 @@ export default function SalonReviews({
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
       <div className="mb-4">
-        <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+        <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-star mb-2">
           {t("reviews")}
         </span>
         <h2
@@ -200,7 +200,7 @@ export default function SalonReviews({
                   className={`px-3 py-1.5 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
                     reviewSort === s
                       ? "bg-s-ink text-white"
-                      : "bg-s-bg-surface border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent"
+                      : "bg-s-bg-surface border border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent"
                   }`}
                 >
                   {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
@@ -251,7 +251,7 @@ export default function SalonReviews({
                         {needsTruncation && (
                           <button
                             onClick={() => toggleExpanded(rev.id)}
-                            className="ml-1 text-s-ink/60 font-medium hover:text-s-ink hover:underline"
+                            className="ml-1 text-s-ink-2 font-medium hover:text-s-ink hover:underline"
                           >
                             {isExpanded ? t("readLess") : t("readMore")}
                           </button>
@@ -289,7 +289,7 @@ export default function SalonReviews({
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
+                                  className="text-xs text-s-ink/40 hover:text-s-ink-2 font-heading uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
                                 >
                                   {t("flagCancel")}
                                 </button>
@@ -311,7 +311,7 @@ export default function SalonReviews({
                       ) : (
                         <button
                           onClick={() => handleFlagReview(rev.id)}
-                          className="text-xs text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150 font-heading uppercase tracking-[.08em]"
+                          className="text-xs text-s-ink/30 hover:text-s-ink-2 transition-colors duration-150 font-heading uppercase tracking-[.08em]"
                         >
                           {t("flagReview")}
                         </button>
@@ -325,7 +325,7 @@ export default function SalonReviews({
                           <button
                             key={photo.id}
                             onClick={() => onLightbox?.(photo.photo_url)}
-                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-ink/[0.06] active:scale-[0.97] transition-[transform,background-color] duration-150 shrink-0"
+                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,background-color] duration-150 shrink-0"
                             aria-label={t("enlargePhoto")}
                           >
                             <Image src={photo.photo_url} alt="" fill className="object-cover" sizes="64px" />
@@ -347,7 +347,7 @@ export default function SalonReviews({
                             <ShieldCheck className="w-3 h-3" />
                             {t("salonReplied")}
                           </p>
-                          <p className="text-xs text-s-ink/60">{reply}</p>
+                          <p className="text-xs text-s-ink-2">{reply}</p>
                         </div>
                       );
                     })()}
@@ -363,7 +363,7 @@ export default function SalonReviews({
             {reviews.length > reviewsVisible.length && (
               <button
                 onClick={() => setReviewPage((p) => p + 1)}
-                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink/60 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
+                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
               >
                 {t("showMoreReviews")}
               </button>

@@ -13,7 +13,7 @@ export default function ImportProgressBar({ current, total, label }: ImportProgr
     <div className="space-y-2">
       {label && (
         <div className="flex items-center justify-between text-sm">
-          <span className="text-s-ink/60">{label}</span>
+          <span className="text-s-ink-2">{label}</span>
           <span className="font-medium text-s-ink tabular-nums">{current}/{total}</span>
         </div>
       )}

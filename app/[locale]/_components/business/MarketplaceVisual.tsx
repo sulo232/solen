@@ -31,21 +31,21 @@ const CARDS: FauxCard[] = [
     meta: "Steinenvorstadt 12",
     city: "Basel",
     rating: "4.9",
-    tint: "bg-s-ink/[0.06]",
+    tint: "bg-s-bg-sunken",
   },
   {
     name: "Salon Maria",
     meta: "Limmatquai 88",
     city: "Zürich",
     rating: "4.8",
-    tint: "bg-s-ink/[0.04]",
+    tint: "bg-s-bg-sunken",
   },
   {
     name: "Studio Nove",
     meta: "Aarbergergasse 21",
     city: "Bern",
     rating: "4.9",
-    tint: "bg-s-ink/[0.08]",
+    tint: "bg-s-bg-sunken",
   },
 ];
 

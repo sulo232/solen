@@ -70,7 +70,7 @@ export default function BookingActionPage() {
               <AlertTriangle size={24} className="text-s-warning" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.error}</h2>
-            <p className="text-sm text-s-ink/50">{error}</p>
+            <p className="text-sm text-s-ink-2">{error}</p>
           </>
         ) : result === "confirmed" ? (
           <>
@@ -78,7 +78,7 @@ export default function BookingActionPage() {
               <Check size={24} className="text-s-accent" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.confirmed}</h2>
-            <p className="text-sm text-s-ink/50">{l.confirmedDesc}</p>
+            <p className="text-sm text-s-ink-2">{l.confirmedDesc}</p>
           </>
         ) : (
           <>
@@ -86,7 +86,7 @@ export default function BookingActionPage() {
               <X size={24} className="text-s-ink/40" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.cancelled}</h2>
-            <p className="text-sm text-s-ink/50">{l.cancelledDesc}</p>
+            <p className="text-sm text-s-ink-2">{l.cancelledDesc}</p>
           </>
         )}
       </motion.div>

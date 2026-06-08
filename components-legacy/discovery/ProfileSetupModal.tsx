@@ -110,7 +110,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   };
 
   const pillClass = (active: boolean) =>
-    `px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-ink bg-s-ink/[0.08] text-s-ink" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-ink/40"}`;
+    `px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-ink bg-s-bg-sunken text-s-ink" : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-ink/40"}`;
 
   return (
     <AnimatePresence>
@@ -143,8 +143,8 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
             <h2 className="font-heading text-lg text-s-ink">{t.title}</h2>
             <p className="text-xs font-body text-s-ink/45 mt-1">{t.subtitle}</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-[8px] hover:bg-s-ink/[0.04]" aria-label="Close">
-            <X size={16} className="text-s-ink/50" />
+          <button onClick={onClose} className="p-2 rounded-[8px] hover:bg-s-bg-sunken" aria-label="Close">
+            <X size={16} className="text-s-ink-2" />
           </button>
         </div>
 
@@ -198,7 +198,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button onClick={onClose} className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading text-s-ink/50 hover:border-s-ink/20 transition-colors">
+          <button onClick={onClose} className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading text-s-ink-2 hover:border-s-border transition-colors">
             {t.skip}
           </button>
           <button onClick={handleSave}

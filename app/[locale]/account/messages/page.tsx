@@ -77,7 +77,7 @@ export default function MessagesPage() {
         <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2 bg-s-bg-sunken">
           <MessageCircle size={28} className="text-s-ink-2" />
         </div>
-        <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50">
+        <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink-2">
           Nachrichten
         </p>
         <p className="font-heading text-lg text-s-ink">Noch keine Nachrichten</p>
@@ -96,7 +96,7 @@ export default function MessagesPage() {
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <div className="mb-6">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50 mb-1">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink-2 mb-1">
             Account
           </p>
           <h1 className="font-heading text-2xl text-s-ink">Nachrichten</h1>
@@ -167,7 +167,7 @@ export default function MessagesPage() {
                     <p className="text-sm font-heading text-s-ink">
                       {selectedConv?.other_party_name}
                     </p>
-                    <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/50">Salon</p>
+                    <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink-2">Salon</p>
                   </div>
                 </div>
                 <div className="h-[calc(100%-36px)]">

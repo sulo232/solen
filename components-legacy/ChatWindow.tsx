@@ -309,7 +309,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         <button
           onClick={() => setActiveTab("chat")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "chat" ? "text-s-accent" : "text-s-ink/50"
+            activeTab === "chat" ? "text-s-accent" : "text-s-ink-2"
           ].join(" ")}
         >
           {t("tabs.chat")}
@@ -320,7 +320,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         <button
           onClick={() => setActiveTab("photos")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "photos" ? "text-s-accent" : "text-s-ink/50"
+            activeTab === "photos" ? "text-s-accent" : "text-s-ink-2"
           ].join(" ")}
         >
           <Camera size={14} className="inline mr-1 -mt-0.5" />
@@ -442,7 +442,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
                       className={["ml-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
-                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 hover:text-s-ink/50"
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 hover:text-s-ink-2"
                       ].join(" ")}
                       title={t("translate")}
                       style={{ opacity: translating === msg.id ? 1 : undefined }}

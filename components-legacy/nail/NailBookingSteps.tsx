@@ -117,7 +117,7 @@ export default function NailBookingSteps({
 
       {/* Material selector */}
       {serviceMaterialType ? (
-        <div className="flex items-center gap-2 text-sm text-s-ink/60">
+        <div className="flex items-center gap-2 text-sm text-s-ink-2">
           <span>{t("nail_material_label")}: <strong className="text-s-ink">{serviceMaterialType}</strong></span>
         </div>
       ) : (
@@ -137,12 +137,12 @@ export default function NailBookingSteps({
         <button
           type="button"
           onClick={handleRepeatLast}
-          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 bg-[--raised] text-left hover:border-s-accent/20 transition-colors duration-150"
+          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-border bg-[--raised] text-left hover:border-s-accent/20 transition-colors duration-150"
         >
           <RefreshCw size={16} className="text-s-accent shrink-0" />
           <div>
             <p className="text-sm font-medium text-s-ink">{t("nail_repeat_last")}</p>
-            <p className="text-xs text-s-ink/50">
+            <p className="text-xs text-s-ink-2">
               {[repeatLast.style, repeatLast.shape, repeatLast.material].filter(Boolean).join(" · ")}
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function NailBookingSteps({
 
       {/* Station availability */}
       {stationInfo && stationInfo.total > 0 && (
-        <div className="flex items-center gap-2 text-xs text-s-ink/50">
+        <div className="flex items-center gap-2 text-xs text-s-ink-2">
           <Users size={12} />
           {t("nail_stations_available", { available: stationInfo.available, total: stationInfo.total })}
         </div>

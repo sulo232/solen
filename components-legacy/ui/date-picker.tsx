@@ -63,14 +63,14 @@ export default function SolenDatePicker({
               slot="previous"
               className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
             >
-              <ChevronLeft className="w-4 h-4 text-s-ink/60" />
+              <ChevronLeft className="w-4 h-4 text-s-ink-2" />
             </Button>
             <Heading className="text-sm font-heading text-s-ink" />
             <Button
               slot="next"
               className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
             >
-              <ChevronRight className="w-4 h-4 text-s-ink/60" />
+              <ChevronRight className="w-4 h-4 text-s-ink-2" />
             </Button>
           </header>
           <CalendarGrid className="w-full">
@@ -114,7 +114,7 @@ export default function SolenDatePicker({
       isDateUnavailable={isDateUnavailable}
       className={cn("flex flex-col gap-1", className)}
     >
-      <Label className="text-xs font-medium text-s-ink/60 font-body">{label}</Label>
+      <Label className="text-xs font-medium text-s-ink-2 font-body">{label}</Label>
       <Group className="flex items-center rounded-btn border border-s-border bg-white px-3 py-2 text-sm focus-within:border-s-accent focus-within:ring-2 focus-within:ring-s-accent/20 transition-[border-color,box-shadow]">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
@@ -138,14 +138,14 @@ export default function SolenDatePicker({
                 slot="previous"
                 className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-s-ink/60" />
+                <ChevronLeft className="w-4 h-4 text-s-ink-2" />
               </Button>
               <Heading className="text-sm font-heading text-s-ink" />
               <Button
                 slot="next"
                 className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-s-ink/60" />
+                <ChevronRight className="w-4 h-4 text-s-ink-2" />
               </Button>
             </header>
             <CalendarGrid className="w-full">

@@ -89,7 +89,7 @@ export default function DiscoverSection() {
               {item.title}
             </h3>
             {item.description && (
-              <p className="mt-1 font-body text-[11px] text-s-ink/55 leading-[1.4] line-clamp-2">
+              <p className="mt-1 font-body text-[11px] text-s-ink-2 leading-[1.4] line-clamp-2">
                 {item.description}
               </p>
             )}

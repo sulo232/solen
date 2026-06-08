@@ -77,10 +77,10 @@ export default function BookingDisputePanel() {
   };
 
   const statusColors: any = {
-    open: "bg-s-amber-subtle text-s-amber-text",
+    open: "bg-s-amber-subtle text-s-star-text",
     in_review: "bg-s-blue/10 text-s-blue",
     escalated: "bg-s-ink/10 text-s-accent",
-    resolved: "bg-s-bg-sunken text-s-ink/50",
+    resolved: "bg-s-bg-sunken text-s-ink-2",
   };
 
   if (loading) return <div className="py-8 text-center"><Spinner /></div>;
@@ -97,7 +97,7 @@ export default function BookingDisputePanel() {
                 <p className="font-heading text-s-ink">
                   {t("customer")}: {d.reporter?.display_name || t("unknown")} {t("vs")} {t("salon")}: {d.bookings?.salons?.name || d.reported?.display_name || t("unknown")}
                 </p>
-                <p className="text-xs text-s-ink/50 font-body mt-0.5">
+                <p className="text-xs text-s-ink-2 font-body mt-0.5">
                   {t("type")}: <span className="font-medium text-s-ink">{d.issue_type}</span> — {t("booking")}: {d.bookings?.starts_at ? new Date(d.bookings.starts_at).toLocaleDateString("de-CH") : d.booking_id.slice(0, 8)}
                 </p>
               </div>
@@ -131,7 +131,7 @@ export default function BookingDisputePanel() {
                   placeholder={t("resolutionNote")}
                   value={resolutionNote[d.id] || ""}
                   onChange={(e) => setResolutionNote((prev) => ({ ...prev, [d.id]: e.target.value }))}
-                  className="px-3 py-2 rounded-btn border border-s-ink/10 text-xs w-full mb-2"
+                  className="px-3 py-2 rounded-btn border border-s-border text-xs w-full mb-2"
                 />
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -145,14 +145,14 @@ export default function BookingDisputePanel() {
                   <button
                     onClick={() => handleAction(d.id, "warn_salon")}
                     disabled={resolving === d.id}
-                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-star-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
                   >
                     {t("warnSalon")}
                   </button>
                   <button
                     onClick={() => handleAction(d.id, "warn_customer")}
                     disabled={resolving === d.id}
-                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-star-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
                   >
                     {t("warnCustomer")}
                   </button>
@@ -173,7 +173,7 @@ export default function BookingDisputePanel() {
                       placeholder={t("refundPlaceholder")}
                       value={refundAmount[d.id] || ""}
                       onChange={(e) => setRefundAmount((prev) => ({ ...prev, [d.id]: e.target.value }))}
-                      className="w-24 px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs"
+                      className="w-24 px-2 py-1.5 rounded-btn border border-s-border text-xs"
                     />
                     <button
                       onClick={() => handleAction(d.id, "refund")}
@@ -189,7 +189,7 @@ export default function BookingDisputePanel() {
 
             {d.status === "resolved" && d.resolution && (
               <div className="mt-3 pt-3 border-t border-s-ink/5">
-                <p className="text-xs text-s-ink/50">{t("resolution")}:</p>
+                <p className="text-xs text-s-ink-2">{t("resolution")}:</p>
                 <p className="text-sm font-medium">{d.resolution}</p>
               </div>
             )}

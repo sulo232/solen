@@ -38,7 +38,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1.5">
+          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1.5">
             {subtitle}
           </p>
         )}
@@ -84,7 +84,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-ink/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-accent mt-0.5">{errors.name}</p>}
@@ -96,7 +96,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-ink/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-accent mt-0.5">{errors.email}</p>}
@@ -114,7 +114,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                   "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
-                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/50",
+                    : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent/50",
                 ].join(" ")}
               >
                 {c.label}
@@ -160,9 +160,9 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
               type="checkbox"
               checked={data.tos_accepted}
               onChange={(e) => onChange({ ...data, tos_accepted: e.target.checked })}
-              className="mt-0.5 w-4 h-4 rounded border-s-ink/20 accent-s-ink"
+              className="mt-0.5 w-4 h-4 rounded border-s-border accent-s-ink"
             />
-            <span className="text-xs text-s-ink/60 leading-relaxed">
+            <span className="text-xs text-s-ink-2 leading-relaxed">
               {t("step1.tosPrefix")}{" "}
               <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener noreferrer" className="text-s-accent hover:underline">{t("step1.tosLink")}</a>
               {" & "}
@@ -233,7 +233,7 @@ function Step3({ data, onChange, category, t }: {
             <input
               value={data.service_name}
               onChange={(e) => onChange({ ...data, service_name: e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/10 text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm"
               placeholder="z. B. Waschen, Schneiden, Föhnen"
             />
             {suggesting && (
@@ -290,7 +290,7 @@ function Step3({ data, onChange, category, t }: {
               {t("step3Quick.hint")}
             </p>
           </div>
-          <p className="text-xs font-body text-s-ink/50 leading-relaxed">
+          <p className="text-xs font-body text-s-ink-2 leading-relaxed">
             {t("step3Quick.hintDesc")}
           </p>
         </div>
@@ -315,7 +315,7 @@ function StepPhotos({
   return (
     <StepContainer title={t("stepPhotos.title")} subtitle={t("stepPhotos.subtitle")}>
       <div className="space-y-5">
-        <p className="text-sm text-s-ink/60">
+        <p className="text-sm text-s-ink-2">
           {t("stepPhotos.desc")}
         </p>
 
@@ -335,7 +335,7 @@ function StepPhotos({
               {t("stepPhotos.hint")}
             </p>
           </div>
-          <p className="text-xs font-body text-s-ink/50 leading-relaxed">
+          <p className="text-xs font-body text-s-ink-2 leading-relaxed">
             {t("stepPhotos.hintDesc")}
           </p>
         </div>
@@ -608,7 +608,7 @@ export default function SalonOnboardingPage() {
                 <p className="text-xs font-body text-s-ink/45 max-w-xs mt-2 leading-relaxed">
                   {t("done.subtitle")}
                 </p>
-                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 mt-3">
+                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 mt-3">
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
@@ -711,7 +711,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>

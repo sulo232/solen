@@ -165,7 +165,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         <p className="font-heading text-sm text-s-ink">
           {t("offPeakDiscount", { percent: slot.discount_percent })}
         </p>
-        <p className="text-xs text-s-ink/50 mt-0.5">
+        <p className="text-xs text-s-ink-2 mt-0.5">
           {t("offPeakToday", { start: slot.start_time, end: slot.end_time })}
         </p>
       </div>
@@ -200,13 +200,13 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
           {member.avatar_url ? (
             <Image src={member.avatar_url} alt={member.name} width={40} height={40} className="object-cover w-full h-full" />
           ) : (
-            <span className="text-sm font-bold text-s-ink/50">{member.name[0]}</span>
+            <span className="text-sm font-bold text-s-ink-2">{member.name[0]}</span>
           )}
         </div>
         <div className="min-w-0">
           <p className="font-heading text-sm text-s-ink truncate">{member.name}</p>
           {member.specialties?.length > 0 && (
-            <p className="text-xs text-s-ink/50 truncate">{member.specialties.join(", ")}</p>
+            <p className="text-xs text-s-ink-2 truncate">{member.specialties.join(", ")}</p>
           )}
         </div>
       </div>
@@ -344,7 +344,7 @@ export default function SalonProfilePage() {
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
         <div className="font-display text-[80px] leading-none text-s-ink/10">404</div>
         <p className="font-heading text-s-ink text-2xl">{t("notFound")}</p>
-        <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
+        <p className="font-body text-s-ink-2 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
           className="px-6 py-3 rounded-btn bg-s-ink text-white font-heading text-sm uppercase tracking-[.04em] shadow-elevation-2">
           {t("viewAllSalons")}
@@ -469,7 +469,7 @@ export default function SalonProfilePage() {
                       <span className="data-text font-semibold text-s-ink text-sm">{salon.average_rating.toFixed(1)}</span>
                       <button onClick={() => handleTabClick("bewertungen")} className="text-s-ink/40 text-xs hover:text-s-accent transition-colors duration-150">({salon.review_count})</button>
                     </div>
-                    <span className="flex items-center gap-1 text-s-ink/50 text-sm">
+                    <span className="flex items-center gap-1 text-s-ink-2 text-sm">
                       <MapPin className="w-3.5 h-3.5" />
                       <span className="capitalize">{(salon as any).quartier?.replace("_", " ")}</span>
                     </span>
@@ -478,37 +478,37 @@ export default function SalonProfilePage() {
                     {salon.address && (
                       <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                         target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <MapPin className="w-4 h-4" />{salon.address}
                       </a>
                     )}
                     {salon.phone && (
-                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <Phone className="w-4 h-4" />{salon.phone}
                       </a>
                     )}
                     {salon.instagram_url && (
                       <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <Instagram className="w-4 h-4" />Instagram
                       </a>
                     )}
                     {(salon as any).facebook_url && (
                       <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <Facebook className="w-4 h-4" />Facebook
                       </a>
                     )}
                     {(salon as any).tiktok_url && (
                       <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                         TikTok
                       </a>
                     )}
                     {(salon as any).website_url && (
                       <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken">
                         <Globe className="w-4 h-4" />Website
                       </a>
                     )}
@@ -517,7 +517,7 @@ export default function SalonProfilePage() {
                     {/* Share button */}
                     <button
                       onClick={handleShare}
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]"
+                      className="flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-bg-sunken"
                     >
                       <Share2 className="w-4 h-4" />{t("shareProfile")}
                     </button>
@@ -688,7 +688,7 @@ export default function SalonProfilePage() {
                           </div>
                           <p className="text-sm font-medium text-s-ink truncate">{m.name}</p>
                           {m.specialties?.length > 0 && (
-                            <p className="text-xs text-s-ink/50 truncate mt-0.5">{m.specialties[0]}</p>
+                            <p className="text-xs text-s-ink-2 truncate mt-0.5">{m.specialties[0]}</p>
                           )}
                         </Link>
                       ))}
@@ -771,7 +771,7 @@ export default function SalonProfilePage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
                     </a>
                     {salon.address && (
-                      <p className="text-sm text-s-ink/60 mt-2">{salon.address}</p>
+                      <p className="text-sm text-s-ink-2 mt-2">{salon.address}</p>
                     )}
                   </div>
                 )}

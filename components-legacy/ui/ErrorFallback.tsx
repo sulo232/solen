@@ -20,12 +20,12 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         className="max-w-md w-full text-center bg-white rounded-[12px] shadow-warm-md p-8"
       >
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-amber/10 flex items-center justify-center">
-          <AlertTriangle size={28} className="text-s-amber" />
+          <AlertTriangle size={28} className="text-s-star" />
         </div>
         <h2 className="font-heading text-lg text-s-ink mb-2">
           {t("title")}
         </h2>
-        <p className="text-sm text-s-ink/50 font-body mb-6">
+        <p className="text-sm text-s-ink-2 font-body mb-6">
           {error.message || t("defaultMessage")}
         </p>
         <button

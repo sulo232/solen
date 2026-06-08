@@ -136,7 +136,7 @@ export default function ServiceAutosuggest({
             size={14}
             className="animate-spin text-s-accent shrink-0"
           />
-          <span className="text-[12px] font-body text-s-ink/50">
+          <span className="text-[12px] font-body text-s-ink-2">
             {locale === "de"
               ? "Suche…"
               : locale === "fr"
@@ -150,7 +150,7 @@ export default function ServiceAutosuggest({
 
       {/* Empty state */}
       {!loading && isEmpty && (
-        <p className="text-[12px] font-body text-s-ink/50 px-3 py-4 text-center">
+        <p className="text-[12px] font-body text-s-ink-2 px-3 py-4 text-center">
           {labelNoResults}
         </p>
       )}
@@ -178,7 +178,7 @@ export default function ServiceAutosuggest({
                     name: item.name_de,
                   })
                 }
-                className="flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
+                className="flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-bg-sunken cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
               >
                 <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                   {displayName}
@@ -189,7 +189,7 @@ export default function ServiceAutosuggest({
                 {item.price != null && (() => {
                   const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
                   return (
-                    <span className="text-[11px] font-body text-s-ink/50 shrink-0 ml-1">
+                    <span className="text-[11px] font-body text-s-ink-2 shrink-0 ml-1">
                       {tCommon("fromPrice", { price: formatCurrency(item.price, currencyLocale) })}
                     </span>
                   );
@@ -214,13 +214,13 @@ export default function ServiceAutosuggest({
               onClick={() =>
                 onSelect({ type: "salon", name: item.name, slug: item.slug })
               }
-              className="group flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
+              className="group flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-bg-sunken cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
             >
               <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                 {item.name}
               </span>
               {item.average_rating != null && (
-                <span className="flex items-center gap-0.5 text-[11px] font-body text-s-ink/50 shrink-0">
+                <span className="flex items-center gap-0.5 text-[11px] font-body text-s-ink-2 shrink-0">
                   <Star size={10} className="fill-s-star text-s-star" />
                   {item.average_rating.toFixed(1)}
                 </span>

@@ -52,7 +52,7 @@ export default function ReferralPage() {
   if (!data) {
     return (
       <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
-        <p className="text-s-ink/60 text-sm">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
+        <p className="text-s-ink-2 text-sm">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
       </div>
     );
   }
@@ -63,7 +63,7 @@ export default function ReferralPage() {
       <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
         <Link href={`/${locale}/profile`} className="hover:text-s-accent transition-colors">Profil</Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink/60">Freunde einladen</span>
+        <span className="text-s-ink-2">Freunde einladen</span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-4">
@@ -73,16 +73,16 @@ export default function ReferralPage() {
             <Gift className="w-7 h-7 text-s-accent" />
           </div>
           <h1 className="font-heading text-xl text-s-ink mb-1">Freunde einladen</h1>
-          <p className="text-sm text-s-ink/60 max-w-xs mx-auto">
+          <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
             Teile deinen Code und erhalte CHF 10 Guthaben, dein Freund bekommt auch CHF 10!
           </p>
         </div>
 
         {/* Referral code card */}
         <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
-          <p className="text-xs font-medium text-s-ink/50 mb-2">Dein Empfehlungscode</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">Dein Empfehlungscode</p>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-s-bg-surface border border-s-ink/10 rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink tracking-wider text-center">
+            <div className="flex-1 bg-s-bg-surface border border-s-border rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink tracking-wider text-center">
               {data.referral_code}
             </div>
             <button
@@ -120,12 +120,12 @@ export default function ReferralPage() {
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Users className="w-5 h-5 text-s-accent mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{data.friends_invited}</p>
-              <p className="text-xs text-s-ink/50">Freunde eingeladen</p>
+              <p className="text-xs text-s-ink-2">Freunde eingeladen</p>
             </div>
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Gift className="w-5 h-5 text-s-accent mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{formatCurrency(data.total_earned, locale)}</p>
-              <p className="text-xs text-s-ink/50">Verdient</p>
+              <p className="text-xs text-s-ink-2">Verdient</p>
             </div>
           </div>
         </div>

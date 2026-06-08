@@ -51,7 +51,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
 
       {/* Checklist */}
       <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 mb-2">
+        <p className="text-xs font-medium text-s-ink-2 mb-2">
           {t("goLive.checklist")} — {completedCount}/{steps.length}
         </p>
         {steps.map((step, i) => (
@@ -109,7 +109,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             <h2 className="font-heading text-2xl text-s-ink mb-2">
               {t("goLive.live")}
             </h2>
-            <p className="text-sm text-s-ink/50">
+            <p className="text-sm text-s-ink-2">
               {t("goLive.liveSubtitle")}
             </p>
           </motion.div>

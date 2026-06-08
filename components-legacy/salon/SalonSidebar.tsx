@@ -99,8 +99,8 @@ export default function SalonSidebar({
                 </span>
               )}
               {averageRating > 0 && (
-                <span className="flex items-center gap-1 font-body text-[13px] text-s-ink/65">
-                  <Star className="w-[12px] h-[12px] fill-s-amber text-s-amber" aria-hidden />
+                <span className="flex items-center gap-1 font-body text-[13px] text-s-ink-2">
+                  <Star className="w-[12px] h-[12px] fill-s-star text-s-star" aria-hidden />
                   <span className="font-semibold tabular-nums">{averageRating.toFixed(1)}</span>
                   <span className="text-s-ink/40 tabular-nums">({reviewCount})</span>
                 </span>
@@ -144,7 +144,7 @@ export default function SalonSidebar({
 
             {/* Quick info */}
             <div className="space-y-2 pt-3 border-t border-s-border">
-              <div className="flex items-center gap-2 font-body text-[12px] text-s-ink/55">
+              <div className="flex items-center gap-2 font-body text-[12px] text-s-ink-2">
                 <Zap className="w-4 h-4" aria-hidden />
                 <span>{t("instantBooking")}</span>
               </div>

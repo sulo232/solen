@@ -81,9 +81,9 @@ export default function SalonReviewsSummary({
               : star >= 3 ? "#F3A864"
               : "#9F8A7E";
             return (
-              <div key={star} className="flex items-center gap-2 font-body text-[11px] text-s-ink/65">
+              <div key={star} className="flex items-center gap-2 font-body text-[11px] text-s-ink-2">
                 <span className="w-3 tabular-nums">{star}</span>
-                <Star size={11} className="text-s-amber fill-s-amber shrink-0" aria-hidden />
+                <Star size={11} className="text-s-star fill-s-star shrink-0" aria-hidden />
                 <div className="flex-1 h-2 rounded-full bg-s-bg-sunken overflow-hidden">
                   <div
                     className="h-full rounded-full transition-[width] duration-500"
@@ -99,7 +99,7 @@ export default function SalonReviewsSummary({
         {/* 3 latest reviews — collapsed reply chips */}
         <div className="space-y-4">
           {latestReviews.length === 0 ? (
-            <p className="font-body text-[13px] text-s-ink/55 italic">
+            <p className="font-body text-[13px] text-s-ink-2 italic">
               Noch keine Bewertungen.
             </p>
           ) : (
@@ -118,7 +118,7 @@ export default function SalonReviewsSummary({
                       className="rounded-full object-cover shrink-0"
                     />
                   ) : (
-                    <span className="w-5 h-5 rounded-full bg-s-bg-sunken flex items-center justify-center font-body text-[9px] font-bold text-s-ink/55 shrink-0">
+                    <span className="w-5 h-5 rounded-full bg-s-bg-sunken flex items-center justify-center font-body text-[9px] font-bold text-s-ink-2 shrink-0">
                       {(r.user_name ?? "A")[0].toUpperCase()}
                     </span>
                   )}
@@ -132,7 +132,7 @@ export default function SalonReviewsSummary({
                         size={10}
                         className={
                           i <= Math.round(r.rating)
-                            ? "text-s-amber fill-s-amber"
+                            ? "text-s-star fill-s-star"
                             : "text-s-ink/15"
                         }
                         aria-hidden

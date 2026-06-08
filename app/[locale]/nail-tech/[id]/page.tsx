@@ -57,7 +57,7 @@ export default function NailTechProfilePage() {
   if (!tech) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-        <p className="text-s-ink/50 mb-4">Nail Tech nicht gefunden</p>
+        <p className="text-s-ink-2 mb-4">Nail Tech nicht gefunden</p>
         <Link href={`/${locale}`} className="text-s-accent text-sm hover:underline">
           Zurück zur Startseite
         </Link>
@@ -79,7 +79,7 @@ export default function NailTechProfilePage() {
         <div className="max-w-5xl mx-auto px-4 py-6">
           <Link
             href={tech.salon_slug ? `/${locale}/salon/${tech.salon_slug}` : `/${locale}`}
-            className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-accent mb-4"
+            className="inline-flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-accent mb-4"
           >
             <ArrowLeft size={14} />
             {tech.salon_name ?? "Zurück"}
@@ -110,14 +110,14 @@ export default function NailTechProfilePage() {
                   {tech.name}
                 </h1>
                 {tech.tier_label && (
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-pill ${TIER_COLORS[tech.tier_label] ?? "bg-s-ink/5 text-s-ink/50"}`}>
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-pill ${TIER_COLORS[tech.tier_label] ?? "bg-s-ink/5 text-s-ink-2"}`}>
                     {tech.tier_label.charAt(0).toUpperCase() + tech.tier_label.slice(1)}
                   </span>
                 )}
               </div>
 
               {tech.specialties?.length > 0 && (
-                <p className="text-sm text-s-ink/50 mt-0.5">
+                <p className="text-sm text-s-ink-2 mt-0.5">
                   {tech.specialties.join(" · ")}
                 </p>
               )}
@@ -133,7 +133,7 @@ export default function NailTechProfilePage() {
                   </span>
                 )}
                 {tech.design_count != null && tech.design_count > 0 && (
-                  <span className="flex items-center gap-1 text-sm text-s-ink/50">
+                  <span className="flex items-center gap-1 text-sm text-s-ink-2">
                     <Award size={14} />
                     {tech.design_count} Designs
                   </span>

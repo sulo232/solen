@@ -171,7 +171,7 @@ export default function TreatmentResultsPage() {
                   {pageTitle || "Behandlungen"}
                 </h1>
                 {!loading && (
-                  <p className="text-sm text-s-ink/50 mt-1">
+                  <p className="text-sm text-s-ink-2 mt-1">
                     {total} {total === 1 ? "Salon" : "Salons"} gefunden
                   </p>
                 )}

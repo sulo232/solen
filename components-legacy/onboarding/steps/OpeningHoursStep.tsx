@@ -83,7 +83,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Clock size={22} className="text-s-ink/60" />
+          <Clock size={22} className="text-s-ink-2" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -104,12 +104,12 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                 onClick={() => toggle(key)}
                 className={[
                   "w-20 text-center text-xs font-medium py-2 rounded-btn transition-colors",
-                  h ? "bg-s-ink text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50",
+                  h ? "bg-s-ink text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink-2",
                 ].join(" ")}
               >
                 {DAYS_SHORT[i]}
               </button>
-              <span className="text-sm text-s-ink/60 w-24 hidden sm:block">{dayLabels[i]}</span>
+              <span className="text-sm text-s-ink-2 w-24 hidden sm:block">{dayLabels[i]}</span>
               {h ? (
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-2">

@@ -155,7 +155,7 @@ export default function SalonRegister() {
               aria-hidden
             >
               {/* Dashboard preview */}
-              <div className="absolute top-8 left-8 right-20 bottom-20 bg-white rounded-2xl border border-[#E0E5DD] shadow-[0_12px_40px_rgba(31,23,9,0.10)] overflow-hidden p-[18px] flex flex-col gap-3">
+              <div className="absolute top-8 left-8 right-20 bottom-20 bg-white rounded-2xl border border-s-border shadow-[0_12px_40px_rgba(31,23,9,0.10)] overflow-hidden p-[18px] flex flex-col gap-3">
                 {/* Toolbar */}
                 <div className="flex items-center gap-2 pb-3 border-b border-[#F0EDE8]">
                   {/* V3-D331 exempt: this is the Solen wordmark dot ("solen[•]" brand mark), NOT eyebrow decoration. Semantic role = brand identity. items-center justify-center hint added to satisfy drift A12 exemption. */}

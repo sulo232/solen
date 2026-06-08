@@ -117,7 +117,7 @@ export default function DesktopCitySelector({ locale }: Props) {
           aria-label="Stadt wählen"
           className={cn(
             "absolute right-0 top-full mt-2 w-[160px] overflow-hidden",
-            "rounded-xl border border-black/[0.07] bg-white",
+            "rounded-xl border border-s-border bg-white",
             "shadow-[0_10px_30px_rgba(0,0,0,0.10)]",
             "z-50",
           )}

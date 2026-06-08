@@ -235,7 +235,7 @@ function _DeprecatedSearchBar() {
   return (
     <div
       className="
-        flex w-full max-w-[540px] flex-col rounded-2xl border border-black/5 bg-white p-2
+        flex w-full max-w-[540px] flex-col rounded-2xl border border-s-border bg-white p-2
         shadow-[0_20px_40px_rgba(50,47,44,0.04)]
         max-md:mx-auto
         md:max-w-none md:flex-row md:items-stretch md:rounded-full md:p-[6px_6px_6px_8px]
@@ -330,13 +330,13 @@ function SearchRow({
         group flex shrink-0 cursor-pointer items-center text-left
         rounded-[10px] p-[14px_16px]
         transition-colors hover:bg-s-bg-sunken
-        ${isActive ? "bg-s-ink/[0.05]" : ""}
-        ${!isFirst ? "border-t border-black/5 max-md:border-t md:border-t-0" : ""}
+        ${isActive ? "bg-s-bg-sunken" : ""}
+        ${!isFirst ? "border-t border-s-border max-md:border-t md:border-t-0" : ""}
         md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]
       `}
     >
       {/* Icon column — right-bordered to create the vertical divider */}
-      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 border-r border-black/10">
+      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 border-r border-s-border">
         {icon}
       </span>
       {/* Value column — left-padded so text sits "a little away" from the line */}

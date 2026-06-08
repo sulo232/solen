@@ -85,7 +85,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
               <button
                 key={p.days}
                 onClick={() => applyPreset(p.days)}
-                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-ink/[0.05] text-s-ink/60 hover:bg-s-ink/10 hover:text-s-accent transition-colors"
+                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-ink/10 hover:text-s-accent transition-colors"
               >
                 {p.label}
               </button>

@@ -122,7 +122,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
             className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
               activeBoard === null
                 ? "bg-s-ink text-white border-s-accent"
-                : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
+                : "border-s-border text-s-ink-2 hover:brightness-[1.06]"
             }`}
           >
             {t("board_all")}
@@ -134,7 +134,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
                 activeBoard === b.id
                   ? "bg-s-ink text-white border-s-accent"
-                  : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
+                  : "border-s-border text-s-ink-2 hover:brightness-[1.06]"
               }`}
             >
               {b.name} ({b.image_count})
@@ -143,7 +143,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <button
             onClick={() => setShowNewForm(true)}
             aria-label={t("board_new")}
-            className="shrink-0 text-xs px-2 py-1 rounded-pill border border-dashed border-s-ink/20 text-s-ink/40 hover:border-s-accent/30"
+            className="shrink-0 text-xs px-2 py-1 rounded-pill border border-dashed border-s-border text-s-ink/40 hover:border-s-accent/30"
           >
             <Plus size={12} />
           </button>
@@ -156,7 +156,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               value={newBoardName}
               onChange={(e) => setNewBoardName(e.target.value)}
               placeholder={t("board_name_placeholder")}
-              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
+              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-border bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
             <button onClick={handleCreateBoard} className="text-[11px] font-heading uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">

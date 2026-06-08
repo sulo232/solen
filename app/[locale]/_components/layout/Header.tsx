@@ -168,8 +168,8 @@ function DropdownMenu({
         className={cn(
           "inline-flex items-center gap-1 whitespace-nowrap font-body text-[14px] font-medium text-s-ink-2",
           "rounded-full px-3 py-2 transition-colors duration-200 ease-glide",
-          "hover:bg-s-ink/[0.05] hover:text-s-ink",
-          open && "bg-s-ink/[0.05] text-s-ink",
+          "hover:bg-s-bg-sunken hover:text-s-ink",
+          open && "bg-s-bg-sunken text-s-ink",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
@@ -276,7 +276,7 @@ function MobileCityChip({ locale }: { locale: string }) {
         aria-label="Stadt wählen"
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-body text-[15px] font-semibold text-s-ink",
-          "transition-colors duration-150 ease-glide hover:bg-s-ink/[0.05]",
+          "transition-colors duration-150 ease-glide hover:bg-s-bg-sunken",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
@@ -293,7 +293,7 @@ function MobileCityChip({ locale }: { locale: string }) {
         <div
           role="listbox"
           aria-label="Stadt wählen"
-          className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-black/[0.07] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
+          className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
         >
           {CITY_SLUGS.map((slug) => (
             <button
@@ -581,7 +581,7 @@ export default function Header({ locale }: { locale: string }) {
             className={cn(
               "inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 font-body text-[14px] font-medium text-s-ink-2",
               "transition-colors duration-200 ease-glide",
-              "hover:bg-s-ink/[0.05] hover:text-s-ink",
+              "hover:bg-s-bg-sunken hover:text-s-ink",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >

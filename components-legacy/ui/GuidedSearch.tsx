@@ -363,7 +363,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => open(1)}
               aria-label={t("openWas" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-bg-sunken transition-colors min-w-0"
             >
               <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWas" as Parameters<typeof t>[0])}
@@ -380,7 +380,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => open(2)}
               aria-label={t("openWo" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-bg-sunken transition-colors min-w-0"
             >
               <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWo" as Parameters<typeof t>[0])}
@@ -397,7 +397,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => open(3)}
               aria-label={t("openWann" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-bg-sunken transition-colors min-w-0"
             >
               <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWann" as Parameters<typeof t>[0])}
@@ -468,7 +468,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                   <button
                     onClick={close}
                     aria-label={t("reset" as Parameters<typeof t>[0])}
-                    className="flex items-center justify-center rounded-full hover:bg-s-ink/[0.05] transition-colors"
+                    className="flex items-center justify-center rounded-full hover:bg-s-bg-sunken transition-colors"
                     style={{ width: 44, height: 44 }}
                   >
                     <X size={24} style={{ color: "s-ink/60" }} aria-hidden="true" />
@@ -531,7 +531,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => { setStep(1); setShowServices(false); }}
-                            className="text-[11px] font-heading text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[11px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -562,7 +562,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => setStep(2)}
-                            className="text-[11px] font-heading text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[11px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -612,7 +612,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                           navigate();
                                         }}
                                         aria-label={label}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.06] transition-colors"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-bg-sunken transition-colors"
                                         style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                       >
                                         <Clock size={11} className="text-s-ink/40 shrink-0" aria-hidden="true" />
@@ -638,7 +638,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       setQuery(term);
                                       navigate();
                                     }}
-                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.06] transition-colors whitespace-nowrap"
+                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-bg-sunken transition-colors whitespace-nowrap"
                                     style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                   >
                                     {term}
@@ -657,10 +657,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   "w-full flex items-center gap-4 py-4 text-left transition-colors",
                                   !category
                                     ? "text-s-accent"
-                                    : "text-s-ink/70 hover:bg-s-ink/[0.02]"
+                                    : "text-s-ink/70 hover:bg-s-bg-sunken"
                                 )}
                               >
-                                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-ink/[0.04] shrink-0">
+                                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-bg-sunken shrink-0">
                                   <Star size={18} aria-hidden="true" />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -703,7 +703,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       <p className="font-heading text-[15px] text-s-ink leading-tight">
                                         {tNav(cat.key as Parameters<typeof tNav>[0])}
                                       </p>
-                                      <p className="font-body text-[13px] text-s-ink/50 leading-tight mt-0.5 truncate">
+                                      <p className="font-body text-[13px] text-s-ink-2 leading-tight mt-0.5 truncate">
                                         {getCatSub(cat)}
                                       </p>
                                     </div>
@@ -766,16 +766,16 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <div className="pb-2">
                             <button
                               onClick={() => { setQuery(""); setShowServices(false); }}
-                              className="flex items-center gap-1.5 text-[12px] font-heading text-s-ink/50 hover:text-s-accent transition-colors mb-3"
+                              className="flex items-center gap-1.5 text-[12px] font-heading text-s-ink-2 hover:text-s-accent transition-colors mb-3"
                             >
                               <ChevronLeft size={14} aria-hidden="true" />
                               {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
                             </button>
                             <button
                               onClick={() => selectService(null)}
-                              className="w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left hover:bg-s-ink/[0.02] transition-colors"
+                              className="w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left hover:bg-s-bg-sunken transition-colors"
                             >
-                              <div className="flex-1 font-body text-[14px] text-s-ink/50 italic">
+                              <div className="flex-1 font-body text-[14px] text-s-ink-2 italic">
                                 {t("steps.service.skip")}
                               </div>
                               {service === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
@@ -789,8 +789,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   aria-label={label}
                                   className={`w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left transition-colors ${
                                     service === svc.key
-                                      ? "bg-s-ink/[0.04]"
-                                      : "hover:bg-s-ink/[0.02]"
+                                      ? "bg-s-bg-sunken"
+                                      : "hover:bg-s-bg-sunken"
                                   }`}
                                 >
                                   <div className="flex-1 font-body font-medium text-[14px] text-s-ink">{label}</div>
@@ -838,8 +838,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           onClick={() => selectCity(null)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-[transform,filter,border-color,background-color] duration-200 ${
                             city === null
-                              ? "border-s-accent bg-s-ink/[0.05]"
-                              : "border-s-border hover:border-s-ink/20"
+                              ? "border-s-accent bg-s-bg-sunken"
+                              : "border-s-border hover:border-s-border"
                           }`}
                         >
                           <MapPin size={20} className="text-s-ink/40" aria-hidden="true" />
@@ -861,8 +861,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               aria-label={getCityLabel(slug)}
                               className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-[transform,filter,border-color,background-color] duration-200 ${
                                 city === slug
-                                  ? "border-s-accent bg-s-ink/[0.05]"
-                                  : "border-s-border hover:border-s-ink/20"
+                                  ? "border-s-accent bg-s-bg-sunken"
+                                  : "border-s-border hover:border-s-border"
                               }`}
                               style={{ minHeight: "80px" }}
                             >
@@ -930,7 +930,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Specific date toggle */}
                         <button
                           onClick={() => setShowCalendar(!showCalendar)}
-                          className="flex items-center gap-2 text-[13px] font-heading text-s-ink/60 hover:text-s-accent transition-colors mb-3 mt-1"
+                          className="flex items-center gap-2 text-[13px] font-heading text-s-ink-2 hover:text-s-accent transition-colors mb-3 mt-1"
                         >
                           <CalendarIcon size={14} aria-hidden="true" />
                           {t("steps.wann.specificDate" as Parameters<typeof t>[0])}

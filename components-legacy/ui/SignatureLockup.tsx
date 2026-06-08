@@ -150,7 +150,7 @@ export default function SignatureLockup({
         )}
       </Heading>
       {subLine && (
-        <p className={cn("font-body text-s-ink/65 leading-[1.5]", s.subLine)}>
+        <p className={cn("font-body text-s-ink-2 leading-[1.5]", s.subLine)}>
           {subLine}
         </p>
       )}

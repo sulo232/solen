@@ -195,18 +195,18 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
           }}
           emptySlotContent={
             slotsError ? (
-              <p className="py-4 text-center text-sm text-s-ink/60">{slotsError}</p>
+              <p className="py-4 text-center text-sm text-s-ink-2">{slotsError}</p>
             ) : (
               <div>
                 <div className="py-8 text-center">
                   <Clock size={36} className="mx-auto mb-2 text-s-ink/20" />
-                  <p className="text-sm text-s-ink/60">{tTime('noSlotsAvailable')}</p>
+                  <p className="text-sm text-s-ink-2">{tTime('noSlotsAvailable')}</p>
                 </div>
                 <div className="rounded-2xl border border-s-border p-4">
                   <div className="flex items-center gap-2 font-heading text-[15px] font-bold text-s-ink">
                     {tWait('dontMissTitle')}
                   </div>
-                  <p className="mt-1.5 mb-3.5 text-[13px] leading-snug text-s-ink/60">
+                  <p className="mt-1.5 mb-3.5 text-[13px] leading-snug text-s-ink-2">
                     {tWait('triggerBody')}
                   </p>
                   <button

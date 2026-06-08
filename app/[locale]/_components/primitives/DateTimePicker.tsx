@@ -457,7 +457,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
                     // default
                     "text-s-ink",
                     // hover
-                    !isDisabled && !isUnavailable && "hover:bg-s-ink/[0.04]",
+                    !isDisabled && !isUnavailable && "hover:bg-s-bg-sunken",
                     // selected — ink (booking default) or royal-blue accent (search, per council mockup)
                     isSelected &&
                       (selectedTone === "accent"

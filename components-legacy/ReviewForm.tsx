@@ -30,7 +30,7 @@ function SubRatingRow({ label, value, onChange }: SubRatingRowProps) {
               size={20}
               strokeWidth={1.5}
               className={(hover || value) >= star
-                ? "fill-s-amber text-s-amber"
+                ? "fill-s-star text-s-star"
                 : "text-s-ink/20"}
             />
           </button>
@@ -139,7 +139,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
         <h3 className="font-heading text-xl text-s-ink mb-1">
           {t("title")}
         </h3>
-        <p className="text-sm text-s-ink/50 mb-6">
+        <p className="text-sm text-s-ink-2 mb-6">
           {t("subtitle")}
         </p>
 
@@ -167,7 +167,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                     size={36}
                     strokeWidth={1.5}
                     className={(hoverRating || rating) >= star
-                      ? "fill-s-amber text-s-amber"
+                      ? "fill-s-star text-s-star"
                       : "text-s-ink/20"}
                   />
                 </button>
@@ -180,7 +180,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
 
           {/* Sub-category ratings — optional */}
           <div className="space-y-3 pt-4 border-t border-s-border">
-            <p className="text-xs font-heading text-s-ink/60 uppercase tracking-[.15em]">
+            <p className="text-xs font-heading text-s-ink-2 uppercase tracking-[.15em]">
               {t("detail_rating")}
             </p>
             {([
@@ -221,7 +221,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             </label>
             <div className="flex gap-2 mb-2 flex-wrap">
               {photos.map((p, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-[12px] overflow-hidden border border-s-ink/10 shrink-0">
+                <div key={i} className="relative w-16 h-16 rounded-[12px] overflow-hidden border border-s-border shrink-0">
                   <img src={URL.createObjectURL(p)} alt="Preview" className="w-full h-full object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-s-ink/50 hover:bg-s-ink/70 text-white rounded-full p-0.5 transition-colors" title={t("remove_photo")}>
                     <X size={10} />
@@ -229,7 +229,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                 </div>
               ))}
               {photos.length < 3 && (
-                <label className="w-16 h-16 flex items-center justify-center shrink-0 rounded-[12px] border-2 border-dashed border-s-ink/20 text-s-ink/40 hover:bg-s-ink/5:bg-white/5 cursor-pointer transition-colors">
+                <label className="w-16 h-16 flex items-center justify-center shrink-0 rounded-[12px] border-2 border-dashed border-s-border text-s-ink/40 hover:bg-s-ink/5:bg-white/5 cursor-pointer transition-colors">
                   <span className="text-xl">+</span>
                   <input type="file" accept="image/jpeg, image/png, image/webp" multiple className="hidden" onChange={(e) => {
                     const files = Array.from(e.target.files || []);
@@ -252,7 +252,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 justify-center rounded-btn border border-s-border text-sm font-medium text-s-ink/60"
+              className="flex-1 py-3 justify-center rounded-btn border border-s-border text-sm font-medium text-s-ink-2"
             >
               {t("cancel")}
             </button>

@@ -41,7 +41,7 @@ export default function ExpandableTabs({ tabs, defaultTab, activeTab, onTabChang
               "flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap transition-[background-color,color,border-color] duration-200 border-b-2 -mb-px",
               active === tab.id
                 ? "border-s-accent text-s-accent"
-                : "border-transparent text-s-ink/50 hover:text-s-ink",
+                : "border-transparent text-s-ink-2 hover:text-s-ink",
             ].join(" ")}
           >
             {tab.icon && <span className="w-4 h-4">{tab.icon}</span>}

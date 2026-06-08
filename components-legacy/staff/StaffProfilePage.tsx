@@ -163,7 +163,7 @@ export default function StaffProfilePage({
   if (!staff) {
     return (
       <div className="grid min-h-[60vh] place-items-center bg-white px-6 text-center">
-        <p className="text-[15px] text-s-ink/60">Profil nicht gefunden.</p>
+        <p className="text-[15px] text-s-ink-2">Profil nicht gefunden.</p>
       </div>
     );
   }
@@ -204,11 +204,11 @@ export default function StaffProfilePage({
       {/* Top bar — back (left) + name on scroll */}
       <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
-          <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-ink/[0.06]">
+          <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <ArrowLeft size={20} className="text-s-ink" />
           </button>
         ) : (
-          <Link href={`/${locale}/salon/${salonSlug}`} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-ink/[0.06]">
+          <Link href={`/${locale}/salon/${salonSlug}`} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <ArrowLeft size={20} className="text-s-ink" />
           </Link>
         )}
@@ -354,7 +354,7 @@ export default function StaffProfilePage({
           Portfolio{portfolio.length > 0 && <span className="text-s-ink/45"> {portfolio.length}</span>}
         </p>
         {portfolio.length === 0 ? (
-          <p className="py-2 text-[14px] italic text-s-ink/55">Noch kein Portfolio vorhanden.</p>
+          <p className="py-2 text-[14px] italic text-s-ink-2">Noch kein Portfolio vorhanden.</p>
         ) : (
           <div className="grid grid-cols-3 gap-2">
             {portfolioShown.map((img, i) => {
@@ -393,7 +393,7 @@ export default function StaffProfilePage({
           <span className="text-[14px] text-s-accent">({staff.review_count})</span>
         </div>
         {reviews.length === 0 ? (
-          <p className="text-[14px] italic text-s-ink/55">Noch keine Bewertungen.</p>
+          <p className="text-[14px] italic text-s-ink-2">Noch keine Bewertungen.</p>
         ) : (
           <>
             <div className="space-y-7">

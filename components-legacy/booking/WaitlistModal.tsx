@@ -103,7 +103,7 @@ export default function WaitlistModal({
               <Check size={30} className="text-s-success" />
             </div>
             <h2 className="font-heading text-xl font-bold text-s-ink">{t('successTitle')}</h2>
-            <p className="mt-2 text-sm text-s-ink/60">
+            <p className="mt-2 text-sm text-s-ink-2">
               {t('successBody', { salon: salonName, date: dateLabel })}
             </p>
             <button
@@ -121,26 +121,26 @@ export default function WaitlistModal({
                 <X size={22} />
               </button>
             </div>
-            <p className="mt-1.5 mb-4 text-sm text-s-ink/60">{t('lead')}</p>
+            <p className="mt-1.5 mb-4 text-sm text-s-ink-2">{t('lead')}</p>
 
-            <div className="mb-5 rounded-2xl bg-s-ink/[0.04] px-4 py-3">
+            <div className="mb-5 rounded-2xl bg-s-bg-sunken px-4 py-3">
               <div className="flex justify-between py-0.5 text-[13px]">
-                <span className="text-s-ink/60">{t('salonLabel')}</span>
+                <span className="text-s-ink-2">{t('salonLabel')}</span>
                 <span className="font-semibold text-s-ink">{salonName}</span>
               </div>
               {serviceName && (
                 <div className="flex justify-between py-0.5 text-[13px]">
-                  <span className="text-s-ink/60">{t('serviceLabel')}</span>
+                  <span className="text-s-ink-2">{t('serviceLabel')}</span>
                   <span className="font-semibold text-s-ink">{serviceName}</span>
                 </div>
               )}
               <div className="flex justify-between py-0.5 text-[13px]">
-                <span className="text-s-ink/60">{t('dateLabel')}</span>
+                <span className="text-s-ink-2">{t('dateLabel')}</span>
                 <span className="font-semibold text-s-ink">{dateLabel}</span>
               </div>
             </div>
 
-            <p className="mb-2 font-heading text-xs font-bold uppercase tracking-[.04em] text-s-ink/60">
+            <p className="mb-2 font-heading text-xs font-bold uppercase tracking-[.04em] text-s-ink-2">
               {t('preferredTime')}
             </p>
             <div className="mb-5 flex flex-wrap gap-2">

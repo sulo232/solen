@@ -109,8 +109,8 @@ export default function BookingCard({
     completed: {
       label: t('status.completed'),
       bgColor: 'bg-s-ink/5',
-      textColor: 'text-s-ink/60',
-      borderColor: 'border-s-ink/10',
+      textColor: 'text-s-ink-2',
+      borderColor: 'border-s-border',
     },
   };
 
@@ -132,7 +132,7 @@ export default function BookingCard({
             {booking.salon?.name || '-'}
           </h3>
           {booking.salon?.average_rating && booking.salon?.review_count ? (
-            <div className="flex items-center gap-1 mt-1 text-sm text-s-ink/60">
+            <div className="flex items-center gap-1 mt-1 text-sm text-s-ink-2">
               <Star size={14} className="fill-s-star text-s-star" />
               <span>
                 {booking.salon.average_rating.toFixed(1)} ({booking.salon.review_count} {t('reviews')})
@@ -152,7 +152,7 @@ export default function BookingCard({
         <p className="font-body text-s-ink">
           {getServiceName()}
         </p>
-        <p className="text-sm text-s-ink/60 mt-1">
+        <p className="text-sm text-s-ink-2 mt-1">
           {duration} {t('minutes')}
         </p>
       </div>
@@ -160,16 +160,16 @@ export default function BookingCard({
       {/* Date, Time, Address */}
       <div className="px-4 py-3 space-y-2">
         <div className="flex items-center gap-3 text-sm text-s-ink">
-          <Calendar size={16} className="text-s-ink/60 flex-shrink-0" />
+          <Calendar size={16} className="text-s-ink-2 flex-shrink-0" />
           <span>{formattedDate}</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-s-ink">
-          <Clock size={16} className="text-s-ink/60 flex-shrink-0" />
+          <Clock size={16} className="text-s-ink-2 flex-shrink-0" />
           <span>{formattedTime}</span>
         </div>
         {booking.salon?.address && (
           <div className="flex items-start gap-3 text-sm text-s-ink">
-            <MapPin size={16} className="text-s-ink/60 flex-shrink-0 mt-0.5" />
+            <MapPin size={16} className="text-s-ink-2 flex-shrink-0 mt-0.5" />
             <span>{booking.salon.address}</span>
           </div>
         )}
@@ -178,7 +178,7 @@ export default function BookingCard({
       {/* Price */}
       <div className="px-4 py-3 border-t border-s-border">
         <div className="flex items-center justify-between">
-          <span className="text-s-ink/60 text-sm">{t('total')}</span>
+          <span className="text-s-ink-2 text-sm">{t('total')}</span>
           <span className="font-semibold text-s-ink">
             {formatCurrency(booking.price_paid)}
           </span>
@@ -197,7 +197,7 @@ export default function BookingCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-ink/[0.06] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
+            className="p-2 hover:bg-s-bg-sunken active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
             aria-label="More options"
           >
             <MoreVertical size={18} className="text-s-ink" />
@@ -212,7 +212,7 @@ export default function BookingCard({
                       onReschedule?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-ink/[0.05] font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-bg-sunken font-body"
                   >
                     {t('reschedule')}
                   </button>

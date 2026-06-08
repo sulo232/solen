@@ -237,19 +237,19 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
             <span className="font-body font-semibold text-[14px] text-s-ink tabular-nums">
               {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>
-            <span className="font-body text-[14px] text-s-ink/55 tabular-nums">
+            <span className="font-body text-[14px] text-s-ink-2 tabular-nums">
               ({salon.review_count ?? 0})
             </span>
           </div>
         )}
 
         {/* Location — Figtree 14px/400 */}
-        <p className="font-body text-[14px] truncate text-s-ink/65">
+        <p className="font-body text-[14px] truncate text-s-ink-2">
           {locationText}
         </p>
 
         {/* Q43: tabular numerics + formatPrice (CHF prefix per spec) */}
-        <p className="font-body text-[14px] text-s-ink/65 tabular-nums">
+        <p className="font-body text-[14px] text-s-ink-2 tabular-nums">
           {salon.min_price != null ? (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return tCommon("fromPrice", { price: formatPrice(salon.min_price, currencyLocale) });

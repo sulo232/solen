@@ -90,12 +90,12 @@ export default function HandChart({ customerId }: HandChartProps) {
         <h3 className="text-sm font-heading text-s-ink uppercase tracking-[.06em]">
           {t("hand_chart_title")}
         </h3>
-        <p className="text-xs text-s-ink/60 mt-1">
+        <p className="text-xs text-s-ink-2 mt-1">
           {t("hand_chart_hint")}
         </p>
       </div>
 
-      <div className="max-w-md mx-auto aspect-[16/9] relative bg-s-ink/[0.03] rounded-[24px] border border-s-accent/10 p-4 flex justify-between items-end pb-8">
+      <div className="max-w-md mx-auto aspect-[16/9] relative bg-s-bg-sunken rounded-[24px] border border-s-accent/10 p-4 flex justify-between items-end pb-8">
 
         {/* Left Hand */}
         <div className="flex gap-1.5 items-end h-[140px]">
@@ -112,7 +112,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                     ? "border-s-accent bg-s-ink shadow-elevation-2 scale-105"
                     : hasNote
                       ? "border-s-accent/40 bg-s-ink/10 hover:border-s-accent/60"
-                      : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
+                      : "border-s-border bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
                   height: i === 4 ? "80px" : i === 3 ? "110px" : i === 2 ? "130px" : i === 1 ? "120px" : "90px",
@@ -143,7 +143,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                     ? "border-s-accent bg-s-ink shadow-elevation-2 scale-105"
                     : hasNote
                       ? "border-s-accent/40 bg-s-ink/10 hover:border-s-accent/60"
-                      : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
+                      : "border-s-border bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
                   height: i === 0 ? "80px" : i === 1 ? "110px" : i === 2 ? "130px" : i === 3 ? "120px" : "90px",
@@ -166,7 +166,7 @@ export default function HandChart({ customerId }: HandChartProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-[-10px] left-0 right-0 p-4 bg-[--raised] rounded-[16px] shadow-warm-lg border border-s-ink/10"
+            className="absolute bottom-[-10px] left-0 right-0 p-4 bg-[--raised] rounded-[16px] shadow-warm-lg border border-s-border"
           >
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs font-heading text-s-ink">
@@ -182,7 +182,7 @@ export default function HandChart({ customerId }: HandChartProps) {
             </div>
             <textarea
               autoFocus
-              className="w-full text-sm rounded-input border border-s-ink/10 p-3 bg-s-bg-sunken focus:outline-none focus:border-s-accent focus:ring-1 focus:ring-s-accent resize-none"
+              className="w-full text-sm rounded-input border border-s-border p-3 bg-s-bg-sunken focus:outline-none focus:border-s-accent focus:ring-1 focus:ring-s-accent resize-none"
               rows={2}
               placeholder={t("hand_chart_placeholder")}
               value={notes[selectedFinger] || ""}

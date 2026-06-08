@@ -36,7 +36,7 @@ export default function ServiceCategoryFilter({
           className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
             activeCategory === null
               ? "bg-s-ink text-white scale-105"
-              : "bg-s-bg-raised text-s-ink/60 border border-s-border hover:border-s-ink/20:border-white/20"
+              : "bg-s-bg-raised text-s-ink-2 border border-s-border hover:border-s-border:border-white/20"
           }`}
         >
           {lang === "de" ? "Alle" : "All"}
@@ -48,7 +48,7 @@ export default function ServiceCategoryFilter({
             className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
               activeCategory === cat.key
                 ? "bg-s-ink text-white scale-105"
-                : "bg-s-bg-raised text-s-ink/60 border border-s-border hover:border-s-ink/20:border-white/20"
+                : "bg-s-bg-raised text-s-ink-2 border border-s-border hover:border-s-border:border-white/20"
             }`}
           >
             {cat.key} ({cat.count})

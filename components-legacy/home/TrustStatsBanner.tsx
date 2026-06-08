@@ -71,7 +71,7 @@ export default function TrustStatsBanner() {
               >
                 {value}
               </div>
-              <div className="mt-1 font-body text-[11px] text-s-ink/55">{label}</div>
+              <div className="mt-1 font-body text-[11px] text-s-ink-2">{label}</div>
             </div>
           ))}
         </div>

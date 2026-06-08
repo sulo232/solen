@@ -92,7 +92,7 @@ export default function SortDropdown({ locale }: SortDropdownProps) {
         onClick={() => setOpen((v) => !v)}
         aria-label={`${sortLabel}: ${getLabel(activeOption)}`}
         aria-expanded={open}
-        className="flex items-center gap-1 text-[12px] font-body font-medium text-s-ink/65 hover:text-s-ink transition-colors duration-150 whitespace-nowrap"
+        className="flex items-center gap-1 text-[12px] font-body font-medium text-s-ink-2 hover:text-s-ink transition-colors duration-150 whitespace-nowrap"
       >
         <span className="underline underline-offset-2">
           {sortLabel}: {getLabel(activeOption)}
@@ -126,7 +126,7 @@ export default function SortDropdown({ locale }: SortDropdownProps) {
                   className={cn(
                     "flex items-center gap-2.5 w-full px-4 py-2.5 text-left text-[13px] font-body font-medium transition-colors duration-100",
                     isActive ? "text-s-accent font-semibold" : "text-s-ink/70",
-                    isDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-s-ink/[0.04]"
+                    isDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-s-bg-sunken"
                   )}
                 >
                   <span className={cn("w-2 h-2 rounded-full shrink-0", isActive ? "bg-s-ink" : "bg-transparent")} />

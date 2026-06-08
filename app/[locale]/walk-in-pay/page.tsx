@@ -388,7 +388,7 @@ export default function WalkInPayPage() {
         </div>
       ) : cancelled ? (
         <motion.div {...fade} className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-5 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-s-ink/[0.06]">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-s-bg-sunken">
             <Check size={24} className="text-s-ink-2" />
           </div>
           <h2 className="font-heading text-[18px] font-semibold text-s-ink">{l.cancelled}</h2>
@@ -433,7 +433,7 @@ export default function WalkInPayPage() {
                   {/* Bezahlt — done */}
                   <span className="h-3 w-3 shrink-0 rounded-full bg-s-success" />
                   {/* segment Bezahlt → Warten: green draws over the grey track (CSS scaleX = compositor-smooth) */}
-                  <span className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-s-ink/[0.10]">
+                  <span className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
                     <span className="animate-draw-x absolute inset-0 block origin-left rounded-full bg-s-success" style={{ animationDelay: "0.4s" }} />
                   </span>
                   {/* Warten — now: a soft ping ring (Tailwind animate-ping = scale + opacity only, smooth) */}
@@ -441,9 +441,9 @@ export default function WalkInPayPage() {
                     <span className="animate-ping-slow absolute inline-flex h-3 w-3 rounded-full bg-s-success/60" />
                     <span className="relative h-3 w-3 rounded-full bg-s-success" />
                   </span>
-                  <span className="h-[3px] flex-1 rounded-full bg-s-ink/[0.10]" />
+                  <span className="h-[3px] flex-1 rounded-full bg-s-bg-sunken" />
                   <span className="h-3 w-3 shrink-0 rounded-full bg-s-ink/[0.14]" />
-                  <span className="h-[3px] flex-1 rounded-full bg-s-ink/[0.10]" />
+                  <span className="h-[3px] flex-1 rounded-full bg-s-bg-sunken" />
                   <span className="h-3 w-3 shrink-0 rounded-full bg-s-ink/[0.14]" />
                 </div>
                 <div className="mt-2 flex justify-between text-[10.5px] font-semibold text-s-ink-3">
@@ -497,7 +497,7 @@ export default function WalkInPayPage() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={booking.barber_avatar} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
                       ) : (
-                        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-ink/[0.06]"><Scissors size={16} className="text-s-ink-2" /></div>
+                        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-bg-sunken"><Scissors size={16} className="text-s-ink-2" /></div>
                       )}
                       <div className="min-w-0">
                         <p className="truncate font-heading text-[14px] font-bold leading-tight text-s-ink">{booking.barber_name}</p>
@@ -676,7 +676,7 @@ export default function WalkInPayPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={booking.salon_image} alt="" className="h-11 w-11 shrink-0 rounded-[12px] object-cover shadow-elevation-1" />
                 ) : (
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-s-ink/[0.06] font-heading text-base font-semibold text-s-ink">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-s-bg-sunken font-heading text-base font-semibold text-s-ink">
                     {booking.salon_name?.charAt(0) ?? "?"}
                   </div>
                 )}
@@ -721,7 +721,7 @@ export default function WalkInPayPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={booking.barber_avatar} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-s-ink/[0.06]" />
                   ) : (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-s-ink/[0.06] font-heading text-sm font-semibold text-s-ink-2">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-s-bg-sunken font-heading text-sm font-semibold text-s-ink-2">
                       {booking.barber_name.charAt(0)}
                     </div>
                   )}

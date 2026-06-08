@@ -70,7 +70,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
               >
                 <span className="flex items-center gap-3 min-w-0">
                   {row.icon && (
-                    <row.icon size={18} className="text-s-ink/55 shrink-0" aria-hidden />
+                    <row.icon size={18} className="text-s-ink-2 shrink-0" aria-hidden />
                   )}
                   <span className="font-body text-[14px] text-s-ink truncate">{row.label}</span>
                 </span>
@@ -84,7 +84,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
                     </span>
                   )}
                   {row.count !== undefined && (
-                    <span className="font-body text-[12px] font-semibold tabular-nums text-s-ink/55">
+                    <span className="font-body text-[12px] font-semibold tabular-nums text-s-ink-2">
                       {row.count}
                     </span>
                   )}

@@ -131,7 +131,7 @@ export default function ImageUploader({
       />
 
       {preview ? (
-        <div className="relative rounded-[12px] overflow-hidden border border-s-ink/10">
+        <div className="relative rounded-[12px] overflow-hidden border border-s-border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
@@ -141,7 +141,7 @@ export default function ImageUploader({
           <button
             type="button"
             onClick={clearImage}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink/60 hover:text-s-accent transition-colors shadow-warm-sm"
+            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink-2 hover:text-s-accent transition-colors shadow-warm-sm"
             aria-label="Bild entfernen"
           >
             <X size={14} />
@@ -174,7 +174,7 @@ export default function ImageUploader({
               <div className="w-12 h-12 rounded-full bg-s-ink/10 flex items-center justify-center">
                 <Camera size={20} className="text-s-accent" />
               </div>
-              <span className="text-sm font-medium text-s-ink/60">{label}</span>
+              <span className="text-sm font-medium text-s-ink-2">{label}</span>
               <span className="text-xs text-s-ink/30">
                 <Upload size={10} className="inline mr-1" />
                 JPEG, PNG oder WebP (max. {maxSizeMB} MB)

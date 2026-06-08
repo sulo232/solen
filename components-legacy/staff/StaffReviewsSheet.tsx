@@ -83,7 +83,7 @@ export default function StaffReviewsSheet({
     <div className="fixed inset-0 z-[75] flex flex-col bg-white">
       {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
-        <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-ink/[0.06]">
+        <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken">
           <ArrowLeft size={20} className="text-s-ink" />
         </button>
         <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>
@@ -117,7 +117,7 @@ export default function StaffReviewsSheet({
                     {on && <Check size={14} strokeWidth={3} className="text-white" />}
                   </span>
                   <span className="w-2 shrink-0 text-[14px] font-medium text-s-ink tabular-nums">{n}</span>
-                  <span className="h-1 flex-1 overflow-hidden rounded-full bg-s-ink/[0.08]">
+                  <span className="h-1 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
                     <span className="block h-full rounded-full bg-s-ink" style={{ width: `${pct}%` }} />
                   </span>
                   <span className="w-6 shrink-0 text-right text-[14px] text-s-ink-2 tabular-nums">{c}</span>
@@ -194,7 +194,7 @@ export default function StaffReviewsSheet({
               </article>
             );
           })}
-          {shown.length === 0 && <p className="text-[14px] italic text-s-ink/55">Keine Bewertungen mit dieser Bewertung.</p>}
+          {shown.length === 0 && <p className="text-[14px] italic text-s-ink-2">Keine Bewertungen mit dieser Bewertung.</p>}
         </div>
       </div>
     </div>,

@@ -79,13 +79,13 @@ export default function LoyaltyStampPage() {
             <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
               <Award size={30} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">
               Stempelkarte
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">
               Stempel hinzufügen?
             </h1>
-            <p className="text-sm font-body text-s-ink/50 mb-6 leading-relaxed">
+            <p className="text-sm font-body text-s-ink-2 mb-6 leading-relaxed">
               Tippe auf den Button, um einen Stempel zu vergeben.
             </p>
             <button
@@ -118,7 +118,7 @@ export default function LoyaltyStampPage() {
             <h1 className="font-heading text-xl text-s-ink mb-3">
               Gestempelt!
             </h1>
-            <p className="text-sm font-heading text-s-ink/60">
+            <p className="text-sm font-heading text-s-ink-2">
               {result.stamps_collected}/{result.stamps_required} Stempel
             </p>
             {result.is_complete && (
@@ -147,7 +147,7 @@ export default function LoyaltyStampPage() {
             <h1 className="font-heading text-xl text-s-ink mb-2">
               Etwas ist schiefgelaufen
             </h1>
-            <p className="text-sm font-body text-s-ink/50">
+            <p className="text-sm font-body text-s-ink-2">
               {result.error}
             </p>
           </div>

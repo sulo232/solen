@@ -117,7 +117,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                   key={c.id}
                   onClick={() => saveTo(c.id)}
                   disabled={busy}
-                  className="flex w-full items-center gap-3 rounded-xl px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-ink/[0.04] disabled:opacity-50"
+                  className="flex w-full items-center gap-3 rounded-xl px-1.5 py-2 text-left transition-colors duration-150 hover:bg-s-bg-sunken disabled:opacity-50"
                 >
                   <span className="grid h-12 w-12 shrink-0 grid-cols-2 grid-rows-2 gap-px overflow-hidden rounded-[12px] bg-s-bg-sunken">
                     {c.covers && c.covers.length > 0
@@ -130,7 +130,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                   </span>
                 </button>
               ))}
-              <button onClick={() => setCreating(true)} className="mt-1 flex w-full items-center gap-3 rounded-xl px-1.5 py-2.5 text-left transition-colors duration-150 hover:bg-s-ink/[0.04]">
+              <button onClick={() => setCreating(true)} className="mt-1 flex w-full items-center gap-3 rounded-xl px-1.5 py-2.5 text-left transition-colors duration-150 hover:bg-s-bg-sunken">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Plus size={20} /></span>
                 <span className="font-heading text-[15px] font-semibold text-s-ink">Neue Sammlung</span>
               </button>

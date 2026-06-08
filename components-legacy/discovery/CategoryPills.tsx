@@ -31,7 +31,7 @@ export default function CategoryPills({ selected, onSelect }: CategoryPillsProps
             "px-4 py-2.5 rounded-pill text-xs font-heading font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
             selected === key
               ? "bg-s-ink text-white"
-              : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]",
+              : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken",
           ].join(" ")}
         >
           {t(key)}

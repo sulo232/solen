@@ -308,7 +308,7 @@ export default async function BusinessPage() {
           V3-D208 anchor: `#pricing` is target of Header "Preise" dropdown.
           V3-D220 fixes:
             - Wrapper pb-16 md:pb-20 → py-16 md:py-20 (4-pt scale, symmetric).
-            - Card border-s-ink/10 → border-s-border (token).
+            - Card border-s-border → border-s-border (token).
             - Card rounded-2xl → rounded-card (semantic).
             - h2 text-[22px]/[26px] + tracking -0.015 → Section H2 spec
               clamp(18,2vw,23) + font-bold (700, not extrabold) + tracking -0.03em. */}

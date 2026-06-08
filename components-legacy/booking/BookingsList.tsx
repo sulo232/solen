@@ -67,7 +67,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'upcoming'
               ? 'border-s-accent text-s-accent'
-              : 'border-transparent text-s-ink/60 hover:text-s-ink'
+              : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >
           {t('upcoming')}
@@ -77,7 +77,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'past'
               ? 'border-s-accent text-s-accent'
-              : 'border-transparent text-s-ink/60 hover:text-s-ink'
+              : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >
           {t('past')}
@@ -87,7 +87,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'cancelled'
               ? 'border-s-accent text-s-accent'
-              : 'border-transparent text-s-ink/60 hover:text-s-ink'
+              : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >
           {t('cancelled')}

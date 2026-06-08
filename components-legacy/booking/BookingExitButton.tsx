@@ -40,7 +40,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
         type="button"
         onClick={handleX}
         aria-label={t('exit')}
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors hover:bg-s-ink/[0.06]"
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
       >
         <X size={20} className="text-s-ink" />
       </button>
@@ -63,7 +63,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
                 type="button"
                 onClick={() => setConfirming(false)}
                 aria-label={t('cancel')}
-                className="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-s-ink/[0.06]"
+                className="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
               >
                 <X size={22} className="text-s-ink" />
               </button>
@@ -72,7 +72,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
             <h2 className="mt-6 font-heading text-[28px] font-bold leading-tight text-s-ink">
               {t('title')}
             </h2>
-            <p className="mt-3 text-[15px] text-s-ink/60">{t('subtitle')}</p>
+            <p className="mt-3 text-[15px] text-s-ink-2">{t('subtitle')}</p>
 
             <div className="mt-auto flex gap-3">
               <button

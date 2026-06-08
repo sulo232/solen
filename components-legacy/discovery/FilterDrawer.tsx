@@ -30,7 +30,7 @@ function RadioRow({ label, selected, onClick }: { label: string; selected: boole
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className="flex w-full items-center justify-between px-1 py-3.5 text-left transition-colors duration-150 active:bg-s-ink/[0.03]"
+      className="flex w-full items-center justify-between px-1 py-3.5 text-left transition-colors duration-150 active:bg-s-bg-sunken"
     >
       <span className="font-heading text-[16px] font-semibold text-s-ink">{label}</span>
       <span className={`grid h-[22px] w-[22px] place-items-center rounded-full border-2 transition-colors duration-150 ${selected ? "border-s-ink" : "border-s-border"}`}>
@@ -102,7 +102,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[15px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-ink/[0.08]"
+                className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[15px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
               >
                 {t("reset")}
               </button>
