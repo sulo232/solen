@@ -98,8 +98,8 @@ export default function FilterBar({
                 motionClass,
                 hoverLift,
                 active
-                  ? 'bg-s-ink text-white border border-s-ink'
-                  : 'bg-white/70 border border-s-border text-s-ink-2 hover:border-s-ink/40 hover:text-s-ink',
+                  ? 'bg-white border border-s-accent text-s-accent font-semibold'
+                  : 'bg-white/70 border border-s-border text-s-ink-2 hover:bg-s-bg-sunken',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -127,7 +127,7 @@ export default function FilterBar({
               hoverLift,
               drawerOpen
                 ? 'bg-s-bg-sunken border-s-ink/30 text-s-ink'
-                : 'text-s-ink-2 hover:border-s-ink/40 hover:text-s-ink',
+                : 'text-s-ink-2 hover:bg-s-bg-sunken',
             ].join(' ')}
             aria-expanded={drawerOpen}
             aria-label={t('moreFilters', { count: overflowNonSortCount })}
