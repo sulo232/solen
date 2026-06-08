@@ -270,16 +270,19 @@
   textarea,
   select {
     min-height: 48px;
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
+    /* Depth system (2026-06-09, LOCKFILE §3.5): filled-gray inputs (Apple pattern),
+       no hairline border. This base rule is the real input primitive (it out-specifies
+       Tailwind utilities), so the depth change lives here. Focus pops back to white below. */
+    border-radius: 12px;
+    border: 1px solid transparent;
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
     /* 2026-05-31 (V3-D410): inputs use Inter (body). */
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
-    background: #ffffff;
-    transition: border-color 200ms ease, box-shadow 200ms ease;
+    background: #F5F5F4;
+    transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
   }
 
   textarea {
@@ -322,6 +325,7 @@
        value stacked a white-gap ring + a hard ink ring = the "double thick outline" the
        owner flagged (compounded by the primitive's outline, also removed). */
     border-color: #0A0A0A;
+    background: #ffffff;
     box-shadow: 0 0 0 3px rgba(10,10,10,.10);
   }
 }

@@ -248,7 +248,7 @@ export function SearchBar() {
           // single value across SearchBar + SalonCard for visual consistency.
           // `0px 6px 24px rgba(0, 0, 0, 0.06)` + no visible border. Was V2-D71's
           // slightly different `0 8px 24px 0.06` — now matches cards exactly.
-          "relative w-full max-w-[540px] overflow-hidden border border-s-border bg-white",
+          "relative w-full max-w-[540px] overflow-hidden bg-white",
           "shadow-[0_18px_44px_-12px_rgba(0,0,0,0.13),0_4px_12px_-6px_rgba(0,0,0,0.07)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
@@ -638,9 +638,10 @@ function CollapsedRow({
         // input height is 47 CSS px, not 56. My h-14 bump over-shot Fresha
         // by 9px. Reverted to h-12 (~Fresha-exact 48px). px-5 + rounded-2xl
         // stay (those measurements were correct).
-        "rounded-[13px] border border-s-border h-[46px] px-[14px]",
+        // Depth system (2026-06-09): filled-gray field (Apple pattern), no hairline border.
+        "rounded-[13px] bg-s-bg-sunken border border-transparent h-[46px] px-[14px]",
         "transition-[background,border-color] duration-150 ease-glide",
-        "hover:border-s-ink/[0.20]",
+        "hover:bg-s-bg-active",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
       )}
     >
