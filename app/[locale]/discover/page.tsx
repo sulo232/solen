@@ -23,6 +23,7 @@ import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
 import { ArrowLeft, ChevronDown, Bookmark } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 // PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
 // render in the feed — studio attribution + tap→salon + varied aspect ratios (900×650, 700×700, 640×860). Images are
@@ -91,28 +92,35 @@ function DiscoverPageContent() {
 
   // (MasonryGrid handles responsive columns internally)
 
-  // Check if profile setup needed + auth state
+  // Check if profile setup needed + auth state.
+  // Gate /api/profile behind a client-side session check: a guest (no session) has no profile, so firing the
+  // auth-only request just 401s and logs a console error on every Discover visit. getSession() reads the
+  // locally-stored session (no network, no 401); only attempt the profile load when a session exists.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
-      .then((r) => {
-        if (r.ok) {
-          if (!cancelled) setIsAuthenticated(true);
-          return r.json().then((p: any) => {
-            if (!cancelled && p?.role === "admin") setIsAdmin(true);
-            return p;
-          });
-        }
-        return null;
-      })
-      .then((p) => {
-        if (cancelled) return;
-        if (p && p.disc_profile_set === false) {
-          setShowProfileSetup(true);
-        }
-        setProfileChecked(true);
-      })
-      .catch(() => { if (!cancelled) setProfileChecked(true); });
+    createBrowserSupabaseClient().auth.getSession().then(({ data: { session } }) => {
+      if (cancelled) return;
+      if (!session) { setProfileChecked(true); return; }
+      fetch("/api/profile")
+        .then((r) => {
+          if (r.ok) {
+            if (!cancelled) setIsAuthenticated(true);
+            return r.json().then((p: any) => {
+              if (!cancelled && p?.role === "admin") setIsAdmin(true);
+              return p;
+            });
+          }
+          return null;
+        })
+        .then((p) => {
+          if (cancelled) return;
+          if (p && p.disc_profile_set === false) {
+            setShowProfileSetup(true);
+          }
+          setProfileChecked(true);
+        })
+        .catch(() => { if (!cancelled) setProfileChecked(true); });
+    });
     return () => { cancelled = true; };
   }, []);
 
