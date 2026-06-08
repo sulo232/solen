@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
-import { useToast } from "@/components-legacy/ui/Toast";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 export default function SignIn() {
   const t = useTranslations("auth") as any;
@@ -15,7 +15,6 @@ export default function SignIn() {
   const rawRedirect = searchParams.get("redirect") ?? "/";
   // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs
   const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/";
-  const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +31,7 @@ export default function SignIn() {
       provider: "google",
       options: { redirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
-    if (error) toast(error.message, "error");
+    if (error) toast.error(error.message);
     setLoading(false);
   };
 
@@ -42,7 +41,7 @@ export default function SignIn() {
       provider: "apple",
       options: { redirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
-    if (error) toast(error.message, "error");
+    if (error) toast.error(error.message);
     setLoading(false);
   };
 
@@ -56,14 +55,14 @@ export default function SignIn() {
         password,
       });
       if (error) {
-        toast(error.message || "Anmeldung fehlgeschlagen", "error");
+        toast.error(error.message || "Anmeldung fehlgeschlagen");
         setLoading(false);
       } else if (data.session) {
         // Full page navigation to ensure middleware runs and session cookies propagate
         window.location.href = redirect;
       }
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast.error("Netzwerkfehler");
       setLoading(false);
     }
   };
@@ -79,12 +78,12 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (!res.ok) {
-        toast(data.message || "Fehler beim Senden", "error");
+        toast.error(data.message || "Fehler beim Senden");
       } else {
         setResetSent(true);
       }
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast.error("Netzwerkfehler");
     }
     setLoading(false);
   };

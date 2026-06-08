@@ -10,7 +10,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import Skeleton from "@/components-legacy/ui/Skeleton";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { TypingIndicator } from "@/components-legacy/ui/TypingIndicator";
-import { useToast } from "@/components-legacy/ui/Toast";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import PriceOfferModal from "@/components-legacy/ui/PriceOfferModal";
 import QuickReplyChips from "@/components-legacy/chat/QuickReplyChips";
 import AISuggestion from "@/components-legacy/chat/AISuggestion";
@@ -46,7 +46,6 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translating, setTranslating] = useState<string | null>(null);
   const [priceOfferModal, setPriceOfferModal] = useState<{ open: boolean; photoUrl: string }>({ open: false, photoUrl: "" });
-  const toast = useToast();
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -187,7 +186,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast(t("fileTooLarge"), "error"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error(t("fileTooLarge")); return; }
 
     setUploading(true);
     try {
@@ -197,7 +196,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         method: "POST",
         body: formData,
       });
-      if (!res.ok) { const err = await res.json(); toast(err.error || t("uploadFailed"), "error"); return; }
+      if (!res.ok) { const err = await res.json(); toast.error(err.error || t("uploadFailed")); return; }
       const { url } = await res.json();
 
       const optimistic: Message = {
@@ -218,7 +217,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         body: JSON.stringify({ content: url, message_type: "image", image_url: url }),
       });
     } catch {
-      toast(t("uploadFailed"), "error");
+      toast.error(t("uploadFailed"));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -287,13 +286,13 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         }),
       });
       if (res.ok) {
-        toast(t("offerSent"), "success");
+        toast.success(t("offerSent"));
         loadMessages();
       } else {
-        toast(t("offerFailed"), "error");
+        toast.error(t("offerFailed"));
       }
     } catch {
-      toast(t("offerFailed"), "error");
+      toast.error(t("offerFailed"));
     }
   };
 

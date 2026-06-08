@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Building2, ChevronRight, Mail } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
-import { useToast } from "@/components-legacy/ui/Toast";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { slideSwitch } from "@/lib/animations";
 
 // ─────────────────────────────────────────
@@ -63,7 +63,6 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
   const [salonName, setSalonName] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
-  const toast = useToast();
 
   const calcAge = (dateStr: string) => {
     if (!dateStr) return 0;
@@ -77,7 +76,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     setSaving(true);
     
     if (!isSalon && calcAge(birthday) < 16) {
-      toast("Du musst mindestens 16 Jahre alt sein.", "error");
+      toast.error("Du musst mindestens 16 Jahre alt sein.");
       setSaving(false);
       return;
     }
@@ -95,18 +94,18 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       const data = await res.json();
 
       if (res.status === 409) {
-        toast("Du hast bereits ein Konto. Bitte logge dich ein.", "error");
+        toast.error("Du hast bereits ein Konto. Bitte logge dich ein.");
         setSaving(false);
         return;
       }
       if (!res.ok) {
-        toast(data.message || tc("errorProcessing"), "error");
+        toast.error(data.message || tc("errorProcessing"));
         setSaving(false);
         return;
       }
       setSuccess(true);
     } catch {
-      toast(tc("networkError"), "error");
+      toast.error(tc("networkError"));
     }
     setSaving(false);
   };

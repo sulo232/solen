@@ -7,14 +7,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff, Check } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
-import { useToast } from "@/components-legacy/ui/Toast";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 export default function ResetPasswordPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams() ?? new URLSearchParams();
-  const toast = useToast();
   const supabase = createBrowserSupabaseClient();
 
   const [password, setPassword] = useState("");
@@ -32,7 +31,7 @@ export default function ResetPasswordPage() {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (cancelled) return;
         if (error) {
-          toast("Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.", "error");
+          toast.error("Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.");
         } else {
           setSessionReady(true);
         }
@@ -58,7 +57,7 @@ export default function ResetPasswordPage() {
     setLoading(false);
 
     if (error) {
-      toast(error.message || tc("errorResetPassword"), "error");
+      toast.error(error.message || tc("errorResetPassword"));
     } else {
       setSuccess(true);
       setTimeout(() => router.push(`/${locale}/auth/login`), 2500);

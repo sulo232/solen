@@ -146,21 +146,6 @@ export const cardPopIn: Variants = {
   },
 };
 
-/** Toast slide in from below */
-export const toastVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.25, ease: EASE_SOLEN },
-  },
-  exit: {
-    opacity: 0,
-    y: -6,
-    transition: { duration: 0.18, ease: EASE_SOLEN },
-  },
-};
-
 /** Fade in + slide up — general purpose (object form, not Variants) */
 export const fadeInUp = {
   initial: { opacity: 0, y: 20 },

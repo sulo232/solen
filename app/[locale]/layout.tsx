@@ -3,15 +3,11 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
-import { ToastProvider } from "@/components-legacy/ui/Toast";
-// V3-D195 (2026-05-26): new primitives Toast mounted SIDE-BY-SIDE with legacy. Legacy
-// ToastProvider stays because ~50 callers (auth pages, ChatWindow, etc.) import
-// `useToast` from `components-legacy/ui/Toast` (separate React Context). Replacing
-// the provider would break them. Instead, the new `<Toaster />` portal mounts as a
-// sibling — new callers can now `import { toast } from "@/app/[locale]/_components/primitives/Toast"`
-// and call `toast.success("…")` from anywhere (module-level singleton, no provider needed).
-// Legacy callers keep using `useToast()` against the legacy provider; new callers use the
-// module API. Migration to a single provider is a follow-up sweep.
+// V3-D195 (2026-05-26): primitives Toast singleton + portal. The legacy
+// ToastProvider (components-legacy/ui/Toast) has been retired — all callers now
+// import `{ toast }` from this module and fire `toast.success("…")` / `toast.error("…")`
+// from anywhere (module-level singleton, no provider needed). The `<Toaster />`
+// portal below is the only mount required.
 import { Toaster } from "./_components/primitives/Toast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
@@ -51,8 +47,7 @@ export default async function LocaleLayout({
     <MotionProvider>
     <NextIntlClientProvider messages={messages}>
       <PostHogProvider>
-        <ToastProvider>
-          <CookieConsentProvider>
+        <CookieConsentProvider>
           {/* Skip-to-content: first focusable element for keyboard users.
               V3-D312 (W9 follow-up): retired focus:bg-s-ink → focus:bg-s-ink per LOCKFILE §0 rule 2 (primary CTA = ink). */}
           <a
@@ -126,13 +121,10 @@ export default async function LocaleLayout({
           <PWAInstallPrompt />
           <TosPrompt />
           <TOSUpdateBanner />
-          </CookieConsentProvider>
-          {/* V3-D195: new primitives Toaster portal — mounts the new toast.success()/
-              toast.error() API anywhere via module-singleton. Legacy useToast() still
-              works above through ToastProvider. Eventually migrate ~50 callers + delete
-              legacy provider. */}
-          <Toaster />
-        </ToastProvider>
+        </CookieConsentProvider>
+        {/* V3-D195: primitives Toaster portal — the single mount for the
+            toast.success()/toast.error() module-singleton API. */}
+        <Toaster />
       </PostHogProvider>
     </NextIntlClientProvider>
     </MotionProvider>
