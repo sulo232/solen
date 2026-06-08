@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock } from "lucide-react";
-import { CardName, CardMeta, RatingStars } from "../primitives";
+import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
 /**
@@ -230,7 +230,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
             )}
             {priceFromCHF != null && (
               <CardMeta as="div" className="mt-0.5 text-[12.5px] leading-[1.35]">
-                {fromLabel} {priceFromCHF} CHF
+                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
               </CardMeta>
             )}
             {nextSlot && (
@@ -299,7 +299,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
                 {priceFromCHF != null && (
                   <>
                     {metaBits ? " · " : ""}
-                    {fromLabel} <span className="font-semibold text-s-ink">{priceFromCHF}</span> CHF
+                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
                   </>
                 )}
               </CardMeta>
@@ -317,7 +317,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
                 </CardMeta>
                 {priceFromCHF != null && (
                   <CardMeta as="div" className="shrink-0 text-[13px] leading-[1.4]">
-                    {fromLabel} <span className="font-semibold text-s-ink">{priceFromCHF}</span> CHF
+                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
                   </CardMeta>
                 )}
               </div>
@@ -382,7 +382,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
             {priceFromCHF != null && (
               <CardMeta as="span" className="text-[12px] leading-[1.35]">
-                {fromLabel} {priceFromCHF} CHF
+                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
               </CardMeta>
             )}
             {nextSlot && (

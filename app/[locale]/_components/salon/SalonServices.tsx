@@ -6,6 +6,7 @@ import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { SalonServicesSheet } from "./SalonServicesSheet";
 import { TabPill } from "../primitives/TabPill";
+import { PriceFrom } from "../primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -184,7 +185,7 @@ function ServiceRow({
           {formatDurationDE(service.duration_minutes)}
         </div>
         <div className="font-body mt-3 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
-          ab {service.price} CHF
+          <PriceFrom amount={service.price} label="ab" />
         </div>
       </div>
       <Link

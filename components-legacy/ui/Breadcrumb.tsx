@@ -3,7 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { ChevronRight, ArrowLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { BackButton } from "@/app/[locale]/_components/primitives";
 
 export default function Breadcrumb() {
   const pathname = usePathname() ?? "/";
@@ -61,14 +62,13 @@ export default function Breadcrumb() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
       {/* Mobile back button — V3-D380 (2026-05-30): icon-only circle (was a "← Zurück" text link).
           Global chrome: applies to every non-excluded route's mobile back, for a consistent clean affordance. */}
-      <button
-        type="button"
+      <BackButton
+        variant="flat"
         onClick={() => router.back()}
         aria-label={t("back")}
-        className="md:hidden grid place-items-center w-9 h-9 rounded-full border border-s-border text-s-ink hover:bg-s-bg-sunken transition-colors duration-200"
-      >
-        <ArrowLeft size={18} aria-hidden />
-      </button>
+        label={t("back")}
+        className="md:hidden"
+      />
 
       {/* Desktop breadcrumb */}
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">

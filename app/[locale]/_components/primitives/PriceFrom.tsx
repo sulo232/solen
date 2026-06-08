@@ -15,14 +15,20 @@ export interface PriceFromProps {
   amount: number;
   /** Localised prefix (e.g. t("from") → "ab"). Omit for a bare price. */
   label?: string;
+  /**
+   * Bold the amount — for surfaces where the price is focal (result cards).
+   * Default false: the amount INHERITS the caller's weight, so rows that
+   * deliberately recede (service rows — LOCKFILE A13 "price recedes") stay grey-normal.
+   */
+  emphasis?: boolean;
   className?: string;
 }
 
-export function PriceFrom({ amount, label, className }: PriceFromProps) {
+export function PriceFrom({ amount, label, emphasis = false, className }: PriceFromProps) {
   return (
     <span className={cn("inline-flex items-baseline gap-1 tabular-nums", className)}>
       {label && <span className="text-s-ink-2">{label}</span>}
-      <span>{amount} CHF</span>
+      <span className={emphasis ? "font-semibold" : undefined}>{amount} CHF</span>
     </span>
   );
 }
