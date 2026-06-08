@@ -53,7 +53,7 @@ export function NotificationItem({
   return (
     <Link
       href={href}
-      className={`block p-4 border-b border-s-ink/5 last:border-0 hover:bg-s-ink/5:bg-white/5 transition-colors ${
+      className={`block p-4 border-b border-s-border last:border-0 hover:bg-s-ink/5:bg-white/5 transition-colors ${
         !notification.read ? "bg-s-ink/[0.03]" : ""
       }`}
     >

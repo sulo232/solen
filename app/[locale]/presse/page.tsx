@@ -1,0 +1,58 @@
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Presse — Solen",
+  description: "Pressekontakt und Hintergrund zu Solen, der Schweizer Beauty- & Wellness-Buchungsplattform.",
+};
+
+export default async function PressePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const p = `/${locale}`;
+
+  return (
+    <main className="min-h-screen bg-white pb-24">
+      <div className="max-w-2xl mx-auto px-4 pt-8">
+        <Link
+          href={p}
+          className="inline-flex items-center gap-1 text-s-ink-2 hover:text-s-accent text-sm font-body transition-colors mb-8"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Zurück
+        </Link>
+
+        <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-s-ink mb-2">
+          Presse
+        </h1>
+        <p className="text-sm text-s-ink-2 mb-10">Medienanfragen und Pressekontakt.</p>
+
+        <div className="space-y-8">
+          <section>
+            <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
+              Pressekontakt
+            </h2>
+            <p className="text-sm text-s-ink-2 leading-relaxed">
+              Für Medienanfragen erreichst du uns unter{" "}
+              <a href="mailto:hallo@solen.ch" className="text-s-accent hover:underline">
+                hallo@solen.ch
+              </a>
+              .
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
+              Über Solen
+            </h2>
+            <p className="text-sm text-s-ink-2 leading-relaxed">
+              Solen ist eine Schweizer Online-Plattform für Beauty- und Wellness-Buchungen.
+              Coiffeur, Barber, Nägel, Spa und Massage. Salon finden, in rund 30 Sekunden
+              buchen, ohne Anrufen, mit sofortiger Bestätigung.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}

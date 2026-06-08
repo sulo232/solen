@@ -23,7 +23,7 @@ export default function SalonPageSkeleton() {
           </div>
 
           {/* Tab nav skeleton */}
-          <div className="flex gap-4 border-b border-s-ink/[0.06] pb-0">
+          <div className="flex gap-4 border-b border-s-border pb-0">
             {[1, 2, 3, 4].map((i) => (
               <Skeleton key={i} className="h-8 w-16 rounded" />
             ))}

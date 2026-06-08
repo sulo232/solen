@@ -40,8 +40,6 @@ const categoryLabels: Record<SalonCategory, string> = {
   barbershop: "Barbershop",
   nails: "Nails",
   spa: "Spa & Massage",
-  makeup: "Makeup",
-  waxing: "Waxing",
 };
 
 interface SearchAutocompleteProps {
@@ -237,7 +235,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
 
           {salons.length > 0 && (
             <div>
-              {services.length > 0 && <div className="border-t border-s-ink/5" />}
+              {services.length > 0 && <div className="border-t border-s-border" />}
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 {t("salons")}
               </p>
@@ -276,7 +274,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {/* AI-powered smart results */}
           {smartResults.length > 0 && (
             <div>
-              {(services.length > 0 || salons.length > 0) && <div className="border-t border-s-ink/5" />}
+              {(services.length > 0 || salons.length > 0) && <div className="border-t border-s-border" />}
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1 flex items-center gap-1">
                 <Sparkles size={10} className="text-s-accent" />
                 {t("aiSuggestions")}
@@ -314,7 +312,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
 
           {/* Cross-category suggestion */}
           {suggestedCategory && suggestedCategory !== category && (
-            <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-ink/5">
+            <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-border">
               <Search size={14} className="text-s-accent shrink-0" />
               <span className="text-xs text-s-ink/60 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?

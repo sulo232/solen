@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/clients/[id]/repeat-last-cut
 // Returns the most recent barber_cut_history for this client at the owner's salon.
@@ -24,8 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const admin = createAdminSupabaseClient();
 
   // Verify requester owns the salon
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data: lastCut } = await admin

@@ -162,7 +162,7 @@ export default function ImageUploader({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           disabled={uploading}
-          className="w-full h-48 rounded-[12px] border-2 border-dashed border-s-ink/10 hover:border-s-accent transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full h-48 rounded-[12px] border-2 border-dashed border-s-border hover:border-s-accent transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {uploading ? (
             <>

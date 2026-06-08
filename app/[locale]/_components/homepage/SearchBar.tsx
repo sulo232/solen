@@ -21,6 +21,7 @@ import {
 import { type CalendarDate, getLocalTimeZone } from "@internationalized/date";
 import { DateTimePicker } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
+import { SearchOverlay } from "@/app/[locale]/_components/search/SearchOverlay";
 
 /**
  * Hero search bar — Dynamic-Island-style morphing pill.
@@ -90,7 +91,7 @@ const instantTransition: Transition = { duration: 0 };
 // symmetric with the 16px pt-4 above. Sacrifices Fresha-exact card height
 // for breathing room — visual hierarchy wins over reference-matching.
 const HEIGHT = {
-  mobile:  { collapsed: 280, expanded: 600 },
+  mobile:  { collapsed: 250, expanded: 600 },
   desktop: { collapsed: 60,  expanded: 600 },
 };
 
@@ -129,6 +130,12 @@ export function SearchBar() {
   const locale = params?.locale ?? "de";
 
   const [active, setActive] = React.useState<Segment | null>(null);
+  // V2-D51 Path C (completed): the resting hero pill now opens the full-page
+  // SearchOverlay (search is full-page everywhere, like Fresha) instead of
+  // morphing into the in-place island. The island JSX below is kept dormant
+  // (never re-triggered from the resting rows) so nothing that referenced it
+  // breaks; `overlayOpen` drives the real search surface.
+  const [overlayOpen, setOverlayOpen] = React.useState(false);
   const [service, setService] = React.useState("");
   const [stadt, setStadt] = React.useState("");
   // V2-D49: zeit splits into structured (date + period) + derived display string.
@@ -232,7 +239,7 @@ export function SearchBar() {
         initial={false}
         animate={{
           height: isExpanded ? sizes.expanded : sizes.collapsed,
-          borderRadius: !isExpanded && isDesktop ? 999 : 11,
+          borderRadius: !isExpanded && isDesktop ? 999 : 22,
         }}
         transition={transition}
         className={cn(
@@ -241,8 +248,8 @@ export function SearchBar() {
           // single value across SearchBar + SalonCard for visual consistency.
           // `0px 6px 24px rgba(0, 0, 0, 0.06)` + no visible border. Was V2-D71's
           // slightly different `0 8px 24px 0.06` — now matches cards exactly.
-          "relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.03] bg-white",
-          "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
+          "relative w-full max-w-[540px] overflow-hidden border border-s-border bg-white",
+          "shadow-[0_18px_44px_-12px_rgba(0,0,0,0.13),0_4px_12px_-6px_rgba(0,0,0,0.07)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           // V3-D228 (2026-05-27, desktop placement fix): cap collapsed-state
@@ -274,7 +281,7 @@ export function SearchBar() {
             // V3-D130 (2026-05-24): REVERTED p-3 → p-4 (12 → 16 CSS). The
             // p-3 was over-shrink; Fresha's actual internal padding is 16 CSS.
             // Inputs were too tight against card edge.
-            "absolute inset-0 flex flex-col p-4 gap-3 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
+            "absolute inset-0 flex flex-col p-4 gap-[10px] md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
             isExpanded && "pointer-events-none",
           )}
         >
@@ -284,25 +291,25 @@ export function SearchBar() {
             value={service || "Service"}
             isPlaceholder={!service}
             isFirst
-            onClick={() => setActive("service")}
+            onClick={() => setOverlayOpen(true)}
           />
           <CollapsedRow
             icon={<IconPin />}
             ariaLabel="Standort wählen"
             value={stadt || "Stadt"}
             isPlaceholder={!stadt}
-            onClick={() => setActive("stadt")}
+            onClick={() => setOverlayOpen(true)}
           />
           <CollapsedRow
             icon={<IconCalendar />}
             ariaLabel="Zeit wählen"
             value={zeit || "Zeit"}
             isPlaceholder={!zeit}
-            onClick={() => setActive("zeit")}
+            onClick={() => setOverlayOpen(true)}
           />
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={() => setOverlayOpen(true)}
             // V3-D111 (2026-05-23): swapped bg-black → bg-s-ink so the
             // hero CTA matches the top banner exactly (both #054F31 Fruitful
             // green-900). User flagged that the CTA read darker than the banner
@@ -332,7 +339,7 @@ export function SearchBar() {
             // extra mt-4 (16px) stacked on the 12px gap = 28px, so the CTA sat
             // unbalanced/low vs the even 12px input rhythm. mt-0 lets the gap-3
             // carry it = uniform 12px. Desktop unchanged (md:mt-0 already set).
-            className="font-body shrink-0 mt-0 rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
+            className="font-heading shrink-0 mt-0 rounded-[13px] md:rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white shadow-[0_10px_22px_-8px_rgba(10,10,10,0.7)] transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
           >
             {/* V3-D178 (2026-05-26, council item #5): "Solen durchsuchen" →
                 "Termine finden". Rhetorical echo with the H1 ("Termin in
@@ -405,7 +412,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-ink"
+                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-black/5 focus-visible:shadow-none"
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -423,7 +430,7 @@ export function SearchBar() {
                             "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
                             isPicked
                               ? "border-s-ink bg-s-ink text-white"
-                              : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
+                              : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
                           )}
                         >
                           <Icon
@@ -453,7 +460,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-ink"
+                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-black/5 focus-visible:shadow-none"
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the
@@ -466,7 +473,7 @@ export function SearchBar() {
                       setStadt("Aktueller Standort");
                       setActive("zeit");
                     }}
-                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-ink/15 bg-white px-4 py-3 transition-colors hover:bg-s-ink/[0.10]"
+                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-colors hover:bg-s-ink/[0.10]"
                   >
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
                       <Navigation size={16} strokeWidth={2.5} />
@@ -485,7 +492,7 @@ export function SearchBar() {
                           setStadt(c);
                           setActive("zeit");
                         }}
-                        className="rounded-full border border-s-ink/10 bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-ink hover:text-s-ink"
+                        className="rounded-full border border-s-border bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-ink hover:text-s-ink"
                       >
                         {c}
                       </button>
@@ -538,7 +545,7 @@ export function SearchBar() {
                               "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
                               isPicked
                                 ? "border-s-ink bg-s-ink text-white"
-                                : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
+                                : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
                             )}
                           >
                             <Icon
@@ -583,6 +590,17 @@ export function SearchBar() {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* V2-D51 Path C: the full-page search surface. Opened by tapping any
+          resting row / the CTA above. Seeds the current city so the sticky
+          composer continues an in-progress query. */}
+      <SearchOverlay
+        open={overlayOpen}
+        onClose={() => setOverlayOpen(false)}
+        locale={locale}
+        initialService={service}
+        initialCity={stadt}
+      />
     </>
   );
 }
@@ -620,7 +638,7 @@ function CollapsedRow({
         // input height is 47 CSS px, not 56. My h-14 bump over-shot Fresha
         // by 9px. Reverted to h-12 (~Fresha-exact 48px). px-5 + rounded-2xl
         // stay (those measurements were correct).
-        "rounded-2xl border border-[#D3D3D3] h-12 px-5",
+        "rounded-[13px] border border-s-border h-[46px] px-[14px]",
         "transition-[background,border-color] duration-150 ease-glide",
         "hover:border-s-ink/[0.20]",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
@@ -633,8 +651,8 @@ function CollapsedRow({
       </span>
       <span
         className={cn(
-          "font-body min-w-0 flex-1 truncate text-[15px] text-s-ink-2 tracking-[-0.005em] md:pl-4",
-          isPlaceholder ? "font-medium" : "font-semibold",
+          "font-body min-w-0 flex-1 truncate text-[14.5px] text-s-ink-2 tracking-[-0.005em] md:pl-4",
+          isPlaceholder ? "font-normal" : "font-semibold",
         )}
       >
         {value}

@@ -202,7 +202,7 @@ export default function StaffProfilePage({
   return (
     <div className="flex min-h-screen flex-col bg-white pb-24">
       {/* Top bar — back (left) + name on scroll */}
-      <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-ink/[0.06] bg-white px-3 py-2.5">
+      <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
           <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-ink/[0.06]">
             <ArrowLeft size={20} className="text-s-ink" />
@@ -238,7 +238,7 @@ export default function StaffProfilePage({
         <div className="mt-2 flex items-center gap-3">
           {staff.average_rating > 0 && (
             <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={`${staff.review_count} Bewertungen ansehen`}>
-              <Star size={15} fill="#FFC32B" stroke="none" />
+              <Star size={15} stroke="none" className="fill-s-star" />
               <span className="font-semibold text-s-ink tabular-nums">{staff.average_rating.toFixed(1)}</span>
               <span className="text-s-accent underline-offset-2 hover:underline">({staff.review_count})</span>
             </button>
@@ -253,7 +253,7 @@ export default function StaffProfilePage({
       </div>
 
       {/* Sticky tabs */}
-      <div className="sticky top-[53px] z-10 mt-5 border-b border-s-ink/[0.06] bg-white px-4 pb-2.5 pt-1">
+      <div className="sticky top-[53px] z-10 mt-5 border-b border-s-border bg-white px-4 pb-2.5 pt-1">
         <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => {
             const on = t === active;
@@ -264,7 +264,7 @@ export default function StaffProfilePage({
                 type="button"
                 onClick={() => goTo(t)}
                 className={`shrink-0 rounded-full px-4 py-2 font-heading text-[13px] font-semibold transition-colors ${
-                  on ? "bg-s-ink text-white" : "border border-s-ink/[0.12] text-s-ink hover:border-s-ink/25"
+                  on ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink/25"
                 }`}
               >
                 {TAB_LABEL[t]}
@@ -278,7 +278,7 @@ export default function StaffProfilePage({
       {/* About */}
       <section ref={setRef("about")} data-tab="about" className="scroll-mt-[112px] px-5 pt-6">
         {(staff.appointments_completed || staff.clients_served) ? (
-          <div className="mb-6 divide-y divide-s-ink/[0.06] rounded-input border border-s-ink/[0.08]">
+          <div className="mb-6 divide-y divide-s-ink/[0.06] rounded-input border border-s-border">
             {staff.appointments_completed ? (
               <div className="flex items-center justify-between px-4 py-3">
                 <span className="text-[14px] text-s-ink-2">Abgeschlossene Termine</span>
@@ -323,14 +323,14 @@ export default function StaffProfilePage({
           <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Leistungen</p>
           <div className="space-y-2.5">
             {visibleServices.map((s) => (
-              <div key={s.id} className="flex items-center justify-between gap-3 rounded-input border border-s-ink/[0.08] p-4">
+              <div key={s.id} className="flex items-center justify-between gap-3 rounded-input border border-s-border p-4">
                 <div className="min-w-0">
                   <div className="text-[15px] font-semibold text-s-ink">{sName(s)}</div>
                   <div className="mt-1 text-[13px] text-s-ink-2 tabular-nums">
                     {s.duration_minutes} Min · {formatCurrency(s.price, locale)}
                   </div>
                 </div>
-                <Link href={bookHref} className="shrink-0 rounded-full border border-s-ink/15 px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">
+                <Link href={bookHref} className="shrink-0 rounded-full border border-s-border px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">
                   Buchen
                 </Link>
               </div>
@@ -340,7 +340,7 @@ export default function StaffProfilePage({
             <button
               type="button"
               onClick={() => setShowAllServices((v) => !v)}
-              className="mt-3 w-full rounded-full border border-s-ink/[0.12] py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
+              className="mt-3 w-full rounded-full border border-s-border py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
             >
               {showAllServices ? "Weniger anzeigen" : `Alle ${services.length} Leistungen ansehen`}
             </button>
@@ -429,7 +429,7 @@ export default function StaffProfilePage({
               <button
                 type="button"
                 onClick={() => setShowReviews(true)}
-                className="mt-6 w-full rounded-full border border-s-ink/[0.12] py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
+                className="mt-6 w-full rounded-full border border-s-border py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
               >
                 Alle ansehen
               </button>
@@ -471,7 +471,7 @@ export default function StaffProfilePage({
       )}
 
       {/* CTA — Auswählen (selection mode) or Jetzt buchen */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-s-ink/[0.06] bg-white px-4 py-3">
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-s-border bg-white px-4 py-3">
         {onSelect ? (
           <button
             type="button"

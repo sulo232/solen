@@ -20,6 +20,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 /**
  * MobileMenu — V3-D77 (2026-05-19).
@@ -98,19 +99,26 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
 
   // V3: role-gated "Dashboard" entry — show it for salon owners / linked staff (managers) /
   // admins so they can reach the operator dashboard from the site menu (same gate the
-  // DashboardLayout itself enforces). Checked via /api/profile when the menu opens; a
-  // signed-out user gets 401 → no card.
+  // DashboardLayout itself enforces). Checked via /api/profile when the menu opens — but
+  // only when a client session exists. A signed-out user has no dashboard card anyway, and
+  // gating on getSession() (local cookie read, no network) avoids a guaranteed 401 in the
+  // browser console every time a guest opens the menu.
   const [canDash, setCanDash] = React.useState(false);
   React.useEffect(() => {
     if (!open) return;
     let cancelled = false;
-    fetch("/api/profile")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((p) => {
-        if (cancelled) return;
-        setCanDash(
-          !!p && (p.role === "admin" || p.role === "salon_owner" || !!p.salon_id || !!p.staff_salon_id),
-        );
+    createBrowserSupabaseClient()
+      .auth.getSession()
+      .then(({ data: { session } }) => {
+        if (cancelled || !session) return;
+        return fetch("/api/profile")
+          .then((r) => (r.ok ? r.json() : null))
+          .then((p) => {
+            if (cancelled) return;
+            setCanDash(
+              !!p && (p.role === "admin" || p.role === "salon_owner" || !!p.salon_id || !!p.staff_salon_id),
+            );
+          });
       })
       .catch((err) => console.error("[MobileMenu] dashboard-access check failed:", err));
     return () => { cancelled = true; };
@@ -178,7 +186,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 aria-haspopup="listbox"
                 className={cn(
                   "inline-flex items-center gap-2 rounded-full",
-                  "border border-s-ink/[0.06] bg-s-bg-surface",
+                  "border border-s-border bg-s-bg-surface",
                   "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
                   "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
                   "transition-colors duration-150 ease-glide",
@@ -197,7 +205,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 <div
                   role="listbox"
                   aria-label="Stadt wählen"
-                  className="mt-2 overflow-hidden rounded-[14px] border border-s-ink/[0.06] bg-s-bg-surface shadow-[0_4px_14px_rgba(26,18,9,0.06)]"
+                  className="mt-2 overflow-hidden rounded-[14px] border border-s-border bg-s-bg-surface shadow-[0_4px_14px_rgba(26,18,9,0.06)]"
                 >
                   {CITY_SLUGS.map((slug) => {
                     const isActive = slug === currentCity;
@@ -266,7 +274,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 onClick={onClose}
               />
               <QuickTile
-                href={`/${locale}/loyalty/stamp`}
+                href={`/${locale}/profile/stamps`}
                 label={t("loyalty")}
                 icon={<Award size={22} strokeWidth={1.8} aria-hidden />}
                 onClick={onClose}
@@ -291,7 +299,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               {/* V3-D378: Geschenkkarten demoted to a row (Profil now lives in the grid above).
                   /profile stays reachable from the menu via the grid tile. */}
               <MenuRow
-                href={`/${locale}/vouchers`}
+                href={`/${locale}/vouchers/buy`}
                 label={t("giftCards")}
                 icon={<Gift size={20} strokeWidth={1.75} aria-hidden />}
                 onClick={onClose}
@@ -338,7 +346,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   onClick={onClose}
                   className={cn(
                     "shrink-0 whitespace-nowrap rounded-full bg-s-bg-surface",
-                    "border border-s-ink/[0.06]",
+                    "border border-s-border",
                     "px-4 py-2.5 font-body text-[13px] font-semibold text-s-ink",
                     "transition-colors duration-150 ease-glide",
                     "active:bg-s-ink/[0.04]",
@@ -409,7 +417,7 @@ function MenuRow({
         // (~14px vertical), text-[16px] → text-[15px]. Matches Fresha
         // row density. Border kept for separator clarity.
         "flex w-full items-center justify-between gap-3 px-4 py-3.5",
-        !isLast && "border-b border-s-ink/[0.06]",
+        !isLast && "border-b border-s-border",
         "transition-colors duration-150 ease-glide active:bg-s-ink/[0.03]",
         "font-body text-[15px]",
         primary ? "font-bold text-s-ink" : "font-semibold text-s-ink",
@@ -448,7 +456,7 @@ function QuickTile({
       href={href}
       onClick={onClick}
       className={cn(
-        "flex flex-col gap-2.5 rounded-[16px] border border-s-ink/[0.05] bg-s-bg-surface p-3.5",
+        "flex flex-col gap-2.5 rounded-[16px] border border-s-border bg-s-bg-surface p-3.5",
         "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
         "transition-[transform,box-shadow] duration-150 ease-glide",
         "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)] active:scale-[0.98] active:duration-[80ms]",

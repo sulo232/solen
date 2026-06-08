@@ -177,7 +177,7 @@ export function SheetHeader({
     <header
       className={cn(
         "flex items-center justify-between gap-3 shrink-0",
-        "px-5 py-4 border-b border-s-ink/[0.06]",
+        "px-5 py-4 border-b border-s-border",
         className,
       )}
     >
@@ -274,7 +274,7 @@ export function SheetCTARow({
       {...props}
       className={cn(
         "flex items-center gap-3 shrink-0",
-        "border-t border-s-ink/[0.06]",
+        "border-t border-s-border",
         "px-5 pt-4",
         // safe-area-aware bottom padding for iOS home indicator
         "pb-[max(1rem,env(safe-area-inset-bottom))]",

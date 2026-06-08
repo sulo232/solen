@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalon } from "@/lib/active-salon";
 
 export async function DELETE(
   request: NextRequest,
@@ -16,11 +17,7 @@ export async function DELETE(
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Verify the closure belongs to the authenticated owner's salon
-    const { data: salon } = await supabase
-      .from("salons")
-      .select("id")
-      .eq("owner_id", user.id)
-      .single();
+    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
     if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 

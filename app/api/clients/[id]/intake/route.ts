@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, intakeFormSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/clients/[id]/intake — Get intake form responses (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: salon } = await supabase.from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data, error } = await supabase
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { template_key, responses } = validated;
 
   // Determine salon_id: salon owner submitting for client, or client self-submitting
-  const { data: salon } = await supabase.from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   const salonId = salon?.id;
 
   // If not salon owner, check if customer submitting for themselves via a booking

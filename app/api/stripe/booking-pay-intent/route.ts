@@ -91,6 +91,18 @@ export async function POST(req: NextRequest) {
   if (!salon.accepts_online_payment) {
     return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
   }
+  // Connect guard (mirrors walk-in/pay-intent): without a connected account the PI below
+  // would carry no transfer_data/application_fee, so the charge would land on the PLATFORM
+  // instead of the salon — money the salon can't see. Reject so the booking falls back to
+  // pay-in-person until the salon finishes Stripe Connect onboarding. (accepts_online_payment
+  // is normally webhook-coupled to charges_enabled, but guard explicitly — never charge for
+  // money we can't route.)
+  if (!salon.stripe_account_id) {
+    return NextResponse.json(
+      { error: "Dieser Salon hat die Online-Zahlung noch nicht abgeschlossen. Bitte vor Ort bezahlen.", code: "NOT_CONNECTED" },
+      { status: 409 },
+    );
+  }
 
   // 3. Server-trusted price — from the service row, NEVER the client.
   //    (price_paid on the booking is server-set too, but the unit contract is

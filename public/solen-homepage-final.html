@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — Homepage (council verdict, composed)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--b2:rgba(10,10,10,.10);--sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:34px 18px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 8px;max-width:720px;line-height:1.5}
+  .recipe{text-align:center;font-size:12px;color:var(--ink);max-width:720px;margin:0 auto 26px;font-weight:600}
+  .recipe b{background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px;font-weight:700}
+  .row{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;align-items:flex-start;max-width:1180px;margin:0 auto}
+  .col{display:flex;flex-direction:column;align-items:center;gap:11px}
+  .flabel{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+  .fnote{font-size:11px;color:var(--ink2);max-width:300px;text-align:center;line-height:1.4;min-height:30px}
+  svg.ic{width:18px;height:18px;stroke-width:2}
+  /* phone */
+  .ph{width:330px;min-height:660px;background:#fff;border:1px solid var(--b2);border-radius:30px;box-shadow:0 18px 44px rgba(0,0,0,.14);overflow:hidden;position:relative}
+  .nav{height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--b)}
+  .brand{font-family:'Inter Tight';font-weight:800;font-size:18px}
+  .navr{display:flex;gap:13px;align-items:center}.loc{display:flex;gap:3px;align-items:center;font-size:12px;font-weight:600}
+  .pbody{padding:20px 16px 22px}
+  .phh{font-family:'Inter Tight';font-weight:800;font-size:25px;line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
+  /* D1 collapsed pill — go-button bumped to 44px per a11y note */
+  .collapse{display:flex;align-items:center;gap:11px;border:1px solid var(--ink);border-radius:999px;padding:8px 8px 8px 17px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .collapse .txt{flex:1;min-width:0}.collapse .t1{font-size:14.5px;font-weight:600}.collapse .t2{font-size:11.5px;color:var(--ink2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sbtn{display:grid;place-items:center;background:var(--ink);border-radius:50%;width:44px;height:44px;flex-shrink:0}.sbtn svg{stroke:#fff;width:18px;height:18px}
+  /* C1 rail */
+  .rail{display:flex;gap:16px;margin-top:24px}
+  .circ{width:56px;height:56px;border-radius:50%;border:1px solid var(--b);display:grid;place-items:center;flex-shrink:0}
+  .catlabel{font-size:11.5px;font-weight:600;text-align:center;margin-top:7px}
+  /* popular peek */
+  .peek-h{font-family:'Inter Tight';font-weight:700;font-size:15px;margin:26px 0 12px;display:flex;align-items:center;justify-content:space-between}
+  .peek-h .all{font-size:12px;color:var(--ink2);font-weight:600}
+  .scard{border:1px solid var(--b);border-radius:16px;overflow:hidden}
+  .scard .img{height:104px;background:linear-gradient(135deg,#d6d3d1,#a8a29e)}
+  .scard .meta{padding:11px 12px}
+  .scard .nm{font-family:'Inter Tight';font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:5px}
+  .scard .nm .rt{margin-left:auto;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:3px}
+  .scard .nm .rt svg{width:13px;height:13px;fill:var(--star);stroke:var(--star)}
+  .scard .sl{font-size:12px;color:var(--ink2);margin-top:3px}
+  .scard .pr{font-size:12.5px;font-weight:600;margin-top:7px}
+  /* sheet (overlay) */
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.32)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px 20px;box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+  .sheet-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+  .sheet-h .ttl{font-family:'Inter Tight';font-weight:800;font-size:17px}
+  .xbtn{width:34px;height:34px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}.xbtn svg{width:16px;height:16px}
+  .field{display:flex;align-items:center;gap:11px;border:1px solid var(--b);border-radius:13px;padding:13px 14px;margin-bottom:10px}
+  .field.on{border-color:var(--ink);border-width:1.5px}
+  .field .lbl{font-size:11px;color:var(--ink2)}.field .val{font-size:14.5px;font-weight:600}
+  .field .val.ph{color:var(--ink2);font-weight:500}
+  .fld{font-family:'Inter Tight';font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);margin:6px 0 9px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{border:1px solid var(--b);border-radius:999px;padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px;min-height:40px}
+  .chip svg{width:13px;height:13px}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.chip.on svg{stroke:#fff}
+  .pickrow{display:flex;align-items:center;gap:10px;border:1px solid var(--b);border-radius:13px;padding:13px 14px;margin-bottom:12px;font-size:14px;font-weight:600}
+  .pickrow .cv{margin-left:auto;color:var(--ink2)}
+  .cal{border:1px solid var(--b);border-radius:14px;padding:13px;margin-bottom:12px}
+  .calhead{display:flex;justify-content:space-between;align-items:center;font-family:'Inter Tight';font-weight:700;font-size:13.5px;margin-bottom:9px}
+  .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+  .calgrid .wd{font-size:10px;color:var(--ink2);padding:3px 0}
+  .calgrid .d{font-size:12px;padding:8px 0;border-radius:9px;font-weight:500}
+  .calgrid .d.sel{background:var(--ink);color:#fff;font-weight:700}
+  .calgrid .d.dim{color:rgba(10,10,10,.22)}
+  .cta{background:var(--ink);color:#fff;border-radius:13px;padding:15px;text-align:center;font-family:'Inter Tight';font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta svg{stroke:#fff;width:17px;height:17px}
+</style>
+</head>
+<body>
+  <h1>Homepage — the council's verdict, composed</h1>
+  <p class="sub">One direction, three states. The premium collapsed pill (D1) is the shell; the sheet absorbs the accessibility + behavioral wins from D2 and D3.</p>
+  <p class="recipe">Recipe: <b>D1</b> collapsed search pill &nbsp;+&nbsp; <b>C1</b> circular category rail &nbsp;+&nbsp; <b>Any date</b> default (pre-fill, never forced)</p>
+
+  <div class="row">
+
+    <!-- STATE 1: resting homepage -->
+    <div class="col">
+      <span class="flabel">1 · Resting</span>
+      <div class="ph">
+        <div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+        <div class="pbody">
+          <div class="phh">Book beauty<br>in 30 seconds.</div>
+          <div class="collapse"><svg class="ic" data-l="search"></svg><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="sbtn"><svg data-l="search"></svg></span></div>
+          <div class="rail">
+            <div><div class="circ"><svg class="ic" data-l="scissors"></svg></div><div class="catlabel">Coiffeur</div></div>
+            <div><div class="circ"><svg class="ic" data-l="user-round"></svg></div><div class="catlabel">Barber</div></div>
+            <div><div class="circ"><svg class="ic" data-l="hand"></svg></div><div class="catlabel">Nails</div></div>
+            <div><div class="circ"><svg class="ic" data-l="flower-2"></svg></div><div class="catlabel">Spa</div></div>
+          </div>
+          <div class="peek-h">Popular near you<span class="all">See all</span></div>
+          <div class="scard"><div class="img"></div><div class="meta"><div class="nm">Studio Nord<span class="rt"><svg data-l="star"></svg>4.9</span></div><div class="sl">Coiffeur · Kleinbasel</div><div class="pr">from CHF 45</div></div></div>
+        </div>
+      </div>
+      <div class="fnote">Hero line + one obvious search + 4 categories that teach the offering. One peeking card hints "scroll for more."</div>
+    </div>
+
+    <!-- STATE 2: sheet open, quick chips, Any date default -->
+    <div class="col">
+      <span class="flabel">2 · Search open · chips</span>
+      <div class="ph">
+        <div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+        <div class="pbody" style="filter:blur(.6px);opacity:.5"><div class="phh">Book beauty<br>in 30 seconds.</div><div class="collapse"><svg class="ic" data-l="search"></svg><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="sbtn"><svg data-l="search"></svg></span></div></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="sheet-h"><span class="ttl">Search</span><span class="xbtn"><svg data-l="x"></svg></span></div>
+          <div class="field on"><svg class="ic" data-l="search"></svg><div><div class="lbl">Service or salon</div><div class="val ph">What are you after?</div></div></div>
+          <div class="field"><svg class="ic" data-l="map-pin"></svg><div><div class="lbl">Where</div><div class="val">Basel</div></div></div>
+          <div class="fld">When</div>
+          <div class="chips"><span class="chip on">Any date</span><span class="chip">Today</span><span class="chip">Tomorrow</span><span class="chip">This weekend</span></div>
+          <div class="pickrow"><svg class="ic" data-l="calendar"></svg>Pick exact date<svg class="cv ic" data-l="chevron-down" style="width:16px;height:16px"></svg></div>
+          <div class="cta"><svg data-l="search"></svg>Search</div>
+        </div>
+      </div>
+      <div class="fnote">Stacked fields survive German expansion. "Any date" is selected by default. Tapping a chip is one move. Tap targets ≥40px.</div>
+    </div>
+
+    <!-- STATE 3: pick exact date -> accessible calendar -->
+    <div class="col">
+      <span class="flabel">3 · Pick exact date</span>
+      <div class="ph">
+        <div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+        <div class="pbody" style="filter:blur(.6px);opacity:.5"><div class="phh">Book beauty<br>in 30 seconds.</div><div class="collapse"><svg class="ic" data-l="search"></svg><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="sbtn"><svg data-l="search"></svg></span></div></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="sheet-h"><span class="ttl">Search</span><span class="xbtn"><svg data-l="x"></svg></span></div>
+          <div class="field"><svg class="ic" data-l="search"></svg><div><div class="lbl">Service or salon</div><div class="val">Haircut</div></div></div>
+          <div class="field"><svg class="ic" data-l="map-pin"></svg><div><div class="lbl">Where</div><div class="val">Basel</div></div></div>
+          <div class="fld">When</div>
+          <div class="cal">
+            <div class="calhead"><svg data-l="chevron-left" style="width:16px;height:16px"></svg>June 2026<svg data-l="chevron-right" style="width:16px;height:16px"></svg></div>
+            <div class="calgrid"><span class="wd">M</span><span class="wd">T</span><span class="wd">W</span><span class="wd">T</span><span class="wd">F</span><span class="wd">S</span><span class="wd">S</span>
+              <span class="d dim">26</span><span class="d dim">27</span><span class="d dim">28</span><span class="d dim">29</span><span class="d dim">30</span><span class="d dim">31</span><span class="d">1</span>
+              <span class="d">2</span><span class="d">3</span><span class="d">4</span><span class="d">5</span><span class="d">6</span><span class="d">7</span><span class="d sel">8</span>
+              <span class="d">9</span><span class="d">10</span><span class="d">11</span><span class="d">12</span><span class="d">13</span><span class="d">14</span><span class="d">15</span>
+              <span class="d">16</span><span class="d">17</span><span class="d">18</span><span class="d">19</span><span class="d">20</span><span class="d">21</span><span class="d">22</span></div>
+          </div>
+          <div class="cta"><svg data-l="search"></svg>Search · Mon 8 Jun</div>
+        </div>
+      </div>
+      <div class="fnote">The escape hatch: a real-button calendar (aria-labelled, arrow-key focus in build). Chosen date pre-fills the booking step.</div>
+    </div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

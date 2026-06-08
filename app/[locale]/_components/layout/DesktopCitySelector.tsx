@@ -80,11 +80,11 @@ export default function DesktopCitySelector({ locale }: Props) {
   };
 
   return (
-    // V3-D348 (tweak #3): now RESPONSIVE (was hidden md:). This single city
-    // pill replaces the redundant CityTopBar row on mobile — the bar showed
-    // "Du siehst gerade Basel" + a duplicate Basel pill + a mystery arrow.
-    // One bordered "📍 Basel ▾" pill in the header covers both viewports.
-    <div ref={rootRef} className="relative inline-flex">
+    // V3-D348 (tweak #3): made RESPONSIVE to replace the retired CityTopBar.
+    // V3-D421g (2026-06-05): reverted to DESKTOP-ONLY (`hidden md:inline-flex`)
+    // per owner "remove the city selector in the header" (mobile). Mobile
+    // city-switching stays in the MobileMenu (hamburger); CityTopBar stays retired.
+    <div ref={rootRef} className="relative hidden md:inline-flex">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}

@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { stripe } from "@/lib/stripe";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // POST /api/stripe/connect/create-account
 // Creates a Stripe Connect Express account for the salon and returns the onboarding URL.
@@ -26,11 +27,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminSupabaseClient();
 
   // Get salon owned by this user
-  const { data: salon } = await admin
-    .from("salons")
-    .select("id, name, stripe_account_id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string; name: string; stripe_account_id: string | null }>(admin, user.id, "id, name, stripe_account_id");
 
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
 

@@ -104,9 +104,9 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       ) : (
         <>
           {services.length > 0 && (
-            <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
+            <div className="bg-white rounded-[12px] border border-s-border overflow-hidden">
               {services.map((s, i) => (
-                <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-ink/5" : ""].join(" ")}>
+                <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-border" : ""].join(" ")}>
                   <div>
                     <p className="text-sm font-medium text-s-ink">{s.name_de}</p>
                     <p className="text-xs text-s-ink/40 data-text">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
@@ -135,7 +135,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
                   placeholder={t("services.namePlaceholder")}
-                  className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                  className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -145,7 +145,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
                     onChange={(e) => setNewService({ ...newService, duration_minutes: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={0}
                     value={newService.price}
                     onChange={(e) => setNewService({ ...newService, price: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
                   />
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           ) : (
             <button
               onClick={() => setShowAdd(true)}
-              className="w-full py-3 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-accent/40 hover:text-s-accent transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-btn border-2 border-dashed border-s-border text-sm text-s-ink/40 hover:border-s-accent/40 hover:text-s-accent transition-colors flex items-center justify-center gap-2"
             >
               <Plus size={16} />
               {t("services.add")}
@@ -190,7 +190,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     <button 
                       onClick={() => addService(s)}
                       disabled={saving}
-                      className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white border border-s-ink/10 text-s-ink/80 hover:text-s-accent transition-colors disabled:opacity-50"
+                      className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white border border-s-border text-s-ink/80 hover:text-s-accent transition-colors disabled:opacity-50"
                     >
                       {t("services.addButton")}
                     </button>

@@ -41,7 +41,7 @@ CREATE POLICY "pricing_rules_insert_owner" ON pricing_rules
     EXISTS (
       SELECT 1 FROM salons
       WHERE salons.id = pricing_rules.salon_id
-      AND salons.user_id = auth.uid()
+      AND salons.owner_id = auth.uid()
     )
   );
 
@@ -51,7 +51,7 @@ CREATE POLICY "pricing_rules_update_owner" ON pricing_rules
     EXISTS (
       SELECT 1 FROM salons
       WHERE salons.id = pricing_rules.salon_id
-      AND salons.user_id = auth.uid()
+      AND salons.owner_id = auth.uid()
     )
   );
 
@@ -61,7 +61,7 @@ CREATE POLICY "pricing_rules_delete_owner" ON pricing_rules
     EXISTS (
       SELECT 1 FROM salons
       WHERE salons.id = pricing_rules.salon_id
-      AND salons.user_id = auth.uid()
+      AND salons.owner_id = auth.uid()
     )
   );
 

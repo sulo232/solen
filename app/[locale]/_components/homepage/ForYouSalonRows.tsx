@@ -26,7 +26,7 @@ function DealsRow({ locale }: { locale: string }) {
       <SectionFrame>
         <SectionTitle
           title="Deals für dich"
-          link={{ label: "Alle Angebote", href: `/${locale}/search/results` }}
+          link={{ label: "Alle Angebote", href: `/${locale}/search?deals=true` }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>
@@ -34,6 +34,7 @@ function DealsRow({ locale }: { locale: string }) {
             <SalonCard
               key={`deal-${s.slug}`}
               slug={s.slug}
+              salonId={s.id}
               name={s.name}
               rating={s.rating}
               category={s.category}
@@ -41,7 +42,7 @@ function DealsRow({ locale }: { locale: string }) {
               variant="service"
               priceFromCHF={s.priceFromCHF}
               address={s.address}
-              city="Zürich"
+              city="Basel"
               discountPercent={s.discountPercent}
             />
           ))}
@@ -81,6 +82,7 @@ function ForYouRow({
             <SalonCard
               key={s.slug}
               slug={s.slug}
+              salonId={s.id}
               name={s.name}
               rating={s.rating}
               category={s.category}
@@ -88,7 +90,7 @@ function ForYouRow({
               variant="service"
               priceFromCHF={s.priceFromCHF}
               address={s.address}
-              city="Zürich"
+              city="Basel"
               // deals interest → one card carries a discount; top_rated → lead card badged.
               discountPercent={wantsDeals && i === 1 ? 20 : null}
               curation={wantsTopRated && i === 0 ? "top-bewertet" : null}

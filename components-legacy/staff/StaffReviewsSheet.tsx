@@ -82,7 +82,7 @@ export default function StaffReviewsSheet({
   return createPortal(
     <div className="fixed inset-0 z-[75] flex flex-col bg-white">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-ink/[0.06] bg-white px-4 py-3">
+      <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
         <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-ink/[0.06]">
           <ArrowLeft size={20} className="text-s-ink" />
         </button>
@@ -134,13 +134,13 @@ export default function StaffReviewsSheet({
             <button
               type="button"
               onClick={() => setSortOpen((v) => !v)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-s-ink/[0.12] px-4 py-2 font-heading text-[14px] font-semibold text-s-ink"
+              className="inline-flex items-center gap-1.5 rounded-full border border-s-border px-4 py-2 font-heading text-[14px] font-semibold text-s-ink"
             >
               {sort === "best" ? "Bestbewertet" : "Neueste"}
               <ChevronDown size={15} className={`transition-transform ${sortOpen ? "rotate-180" : ""}`} />
             </button>
             {sortOpen && (
-              <div className="absolute right-0 z-10 mt-1.5 w-44 overflow-hidden rounded-input border border-s-ink/[0.1] bg-white shadow-[0_8px_24px_-8px_rgba(10,10,10,0.18)]">
+              <div className="absolute right-0 z-10 mt-1.5 w-44 overflow-hidden rounded-input border border-s-border bg-white shadow-[0_8px_24px_-8px_rgba(10,10,10,0.18)]">
                 {(["best", "newest"] as Sort[]).map((s) => (
                   <button
                     key={s}

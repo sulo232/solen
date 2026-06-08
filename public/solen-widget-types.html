@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Top bewertet widget TYPES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4;
+    --accent:#276EF1; --star:#FFC32B; --heart:#FF3366;
+    --disp:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1320px;margin:0 auto;padding:24px 16px 90px}
+  h1{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 24px;max-width:880px}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start}
+  .col{width:380px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);min-width:22px;height:22px;padding:0 6px;border-radius:6px;display:grid;place-items:center;font-family:var(--disp)}
+  .tag .nm{font-size:14px;font-weight:700;font-family:var(--disp)}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:32px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.13);padding:20px 0 24px}
+  .secttl{font-family:var(--disp);font-weight:600;font-size:19px;letter-spacing:-.01em;color:var(--ink);margin:0 0 10px;padding:0 16px}
+
+  .carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 16px;gap:12px;scroll-padding-left:16px}
+  .carousel::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100%;scroll-snap-align:start}
+
+  /* shared bits */
+  .heart{position:absolute;top:11px;right:11px;width:32px;height:32px;border-radius:999px;display:grid;place-items:center;z-index:2}
+  .heart.on-photo{background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25)}
+  .heart.on-light{background:#fff;color:var(--heart);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .badge{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;border-radius:10px;padding:6px 11px;font-size:11px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .star{flex:0 0 auto}
+  .eyebrow{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase}
+
+  /* Type 1 — Photo overlay */
+  .t-overlay{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:3/2;background:var(--ink)}
+  .t-overlay img{width:100%;height:100%;object-fit:cover;display:block}
+  .t-overlay .ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.55) 42%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.2) 100%)}
+  .t-overlay .ct{position:absolute;left:16px;right:16px;bottom:15px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .t-overlay .nm{font-family:var(--disp);font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.05}
+  .t-overlay .rt{display:flex;align-items:center;gap:5px;font-size:13.5px;margin-top:6px}
+  .t-overlay .sub{font-size:13px;color:rgba(255,255,255,.82);margin-top:2px}
+
+  /* Type 2 — Split dark · Type 3 — Split light */
+  .t-split{position:relative;display:flex;border-radius:22px;overflow:hidden;height:200px}
+  .t-split.dark{background:var(--ink);color:#fff}
+  .t-split.light{background:#fff;border:1px solid var(--border);color:var(--ink)}
+  .t-split .l{flex:1;min-width:0;padding:18px 14px 18px 18px;display:flex;flex-direction:column}
+  .t-split .eyebrow{color:var(--ink2)}
+  .t-split.dark .eyebrow{color:rgba(255,255,255,.55)}
+  .t-split .nm{font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:-.02em;line-height:1.04;margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .t-split .rt{display:flex;align-items:center;gap:5px;font-size:13px;margin-top:8px}
+  .t-split.dark .rt{color:rgba(255,255,255,.82)}
+  .t-split.light .rt{color:var(--ink2)}
+  .t-split .pr{font-size:13px;margin-top:3px}
+  .t-split.dark .pr{color:rgba(255,255,255,.6)} .t-split.light .pr{color:var(--ink2)}
+  .t-split .cta{margin-top:auto;align-self:flex-start;font-weight:600;font-size:13px;padding:9px 18px;border-radius:999px}
+  .t-split.dark .cta{background:#fff;color:var(--ink)} .t-split.light .cta{background:var(--ink);color:#fff}
+  .t-split .r{position:relative;flex:0 0 43%}
+  .t-split .r img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* Type 4 — Photo + dark footer · Type 5 — Photo + light footer */
+  .t-footer{border-radius:22px;overflow:hidden}
+  .t-footer.dark{background:var(--ink)} .t-footer.light{background:#fff;border:1px solid var(--border)}
+  .t-footer .ph{position:relative;aspect-ratio:16/9}
+  .t-footer .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .t-footer .ft{padding:13px 15px 15px}
+  .t-footer.dark .ft{color:#fff} .t-footer.light .ft{color:var(--ink)}
+  .t-footer .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .t-footer .nm{font-family:var(--disp);font-weight:600;font-size:18px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .t-footer .rt{display:flex;align-items:center;gap:4px;flex-shrink:0;font-size:13px}
+  .t-footer.dark .rt{color:rgba(255,255,255,.85)} .t-footer.light .rt{color:var(--ink2)}
+  .t-footer .row2{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+  .t-footer .pr{font-size:13px} .t-footer.dark .pr{color:rgba(255,255,255,.6)} .t-footer.light .pr{color:var(--ink2)}
+  .t-footer .pr b{color:inherit;font-weight:600} .t-footer.light .pr b{color:var(--ink)}
+  .t-footer .cta{font-size:12px;font-weight:500;padding:6px 14px;border-radius:999px}
+  .t-footer.dark .cta{border:1px solid rgba(255,255,255,.32);color:#fff}
+  .t-footer.light .cta{background:var(--ink);color:#fff}
+
+  .dots{display:flex;justify-content:center;margin-top:13px}
+  .dots button{background:none;border:0;display:grid;place-items:center;min-height:34px;padding:0 5px;cursor:pointer}
+  .dot{display:block;height:7px;width:7px;border-radius:999px;background:#d4d4d4;transition:all .25s}
+  .dot.on{width:22px;border-radius:4px;background:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>"Top bewertet" widget — types</h1>
+  <p class="lead">All single full-width card, no peek, swipe via the dots (per your spec) — just different <b>types</b> of the card itself. Real barbershop data + photos. Swipe each. Tell me the type number (mix-and-match is fine, e.g. "type 2 but light").</p>
+  <div class="frames" id="frames"></div>
+</div>
+
+<script>
+const SALONS = [
+  { name:"Blade & Stone",    rating:4.4, reviews:11, price:43, addr:"Feldbergstrasse 82, Basel", photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=900&q=80" },
+  { name:"The Fade Factory", rating:4.3, reviews:11, price:47, addr:"Hammerstrasse 65, Basel",   photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=900&q=80" },
+  { name:"Old Town Barbers", rating:4.3, reviews:12, price:47, addr:"Münsterplatz 11, Basel",     photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&q=80" },
+];
+const TYPES = [
+  { n:"1", nm:"Photo overlay", ds:"text over the photo (current live)", fn:"overlay" },
+  { n:"2", nm:"Split · dark",  ds:"text + button left, photo right (Zemart, black)", fn:"splitDark" },
+  { n:"3", nm:"Split · light", ds:"same split on white + ink button", fn:"splitLight" },
+  { n:"4", nm:"Photo + dark footer", ds:"photo on top, black info strip", fn:"footerDark" },
+  { n:"5", nm:"Photo + light footer", ds:"photo on top, white info strip", fn:"footerLight" },
+];
+
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function img(src,alt){const i=el("img");i.src=src;i.alt=alt||"";i.loading="lazy";return i;}
+function star(sz){const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("class","star");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width",sz);s.setAttribute("height",sz);s.setAttribute("fill","#FFC32B");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heart(cls){const h=el("div","heart "+cls);const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+function ratingEl(s,cls){const r=el("div",cls);r.appendChild(star(13));r.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")"));return r;}
+
+function overlay(s){
+  const c=el("div","t-overlay"); c.appendChild(img(s.photo,s.name)); c.appendChild(el("div","ov"));
+  c.appendChild(el("span","badge","Top bewertet")); c.appendChild(heart("on-photo"));
+  const ct=el("div","ct"); ct.appendChild(el("div","nm",s.name)); ct.appendChild(ratingEl(s,"rt"));
+  ct.appendChild(el("div","sub","ab CHF "+s.price+" · "+s.addr)); c.appendChild(ct); return c;
+}
+function split(s,light){
+  const c=el("div","t-split "+(light?"light":"dark"));
+  const l=el("div","l");
+  l.appendChild(el("div","eyebrow","Top bewertet"));
+  l.appendChild(el("div","nm",s.name));
+  l.appendChild(ratingEl(s,"rt"));
+  l.appendChild(el("div","pr","ab CHF "+s.price));
+  l.appendChild(el("div","cta","Buchen"));
+  const r=el("div","r"); r.appendChild(img(s.photo,s.name)); r.appendChild(heart("on-photo"));
+  c.appendChild(l); c.appendChild(r); return c;
+}
+function footer(s,light){
+  const c=el("div","t-footer "+(light?"light":"dark"));
+  const ph=el("div","ph"); ph.appendChild(img(s.photo,s.name)); ph.appendChild(el("span","badge","Top bewertet")); ph.appendChild(heart(light?"on-light":"on-photo")); c.appendChild(ph);
+  const ft=el("div","ft");
+  const r1=el("div","row1"); r1.appendChild(el("div","nm",s.name)); r1.appendChild(ratingEl(s,"rt")); ft.appendChild(r1);
+  const r2=el("div","row2"); const pr=el("div","pr"); pr.appendChild(document.createTextNode("ab ")); pr.appendChild(el("b",null,"CHF "+s.price)); r2.appendChild(pr); r2.appendChild(el("div","cta","Buchen")); ft.appendChild(r2);
+  c.appendChild(ft); return c;
+}
+const BUILDERS = {
+  overlay:(s)=>overlay(s),
+  splitDark:(s)=>split(s,false),
+  splitLight:(s)=>split(s,true),
+  footerDark:(s)=>footer(s,false),
+  footerLight:(s)=>footer(s,true),
+};
+
+function carousel(fn){
+  const car=el("div","carousel");
+  SALONS.forEach(s=>{ const sl=el("div","slide"); sl.appendChild(BUILDERS[fn](s)); car.appendChild(sl); });
+  const dots=el("div","dots");
+  SALONS.forEach((_,i)=>{ const b=el("button"); b.type="button"; const d=el("span","dot"+(i===0?" on":"")); b.appendChild(d); b.onclick=()=>car.children[i].scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"}); dots.appendChild(b); });
+  car.addEventListener("scroll",()=>{const max=car.scrollWidth-car.clientWidth;const idx=max>0?Math.round(car.scrollLeft/max*(SALONS.length-1)):0;[...dots.children].forEach((b,i)=>b.firstChild.classList.toggle("on",i===idx));},{passive:true});
+  const w=el("div"); w.appendChild(car); w.appendChild(dots); return w;
+}
+
+const frames=document.getElementById("frames");
+TYPES.forEach(t=>{
+  const col=el("div","col");
+  const tag=el("div","tag"); tag.appendChild(el("span","pill",t.n)); tag.appendChild(el("span","nm",t.nm)); tag.appendChild(el("span","ds",t.ds)); col.appendChild(tag);
+  const phone=el("div","phone"); phone.appendChild(el("div","secttl","Top bewertet")); phone.appendChild(carousel(t.fn)); col.appendChild(phone);
+  frames.appendChild(col);
+});
+</script>
+</body>
+</html>

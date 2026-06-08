@@ -142,7 +142,7 @@ export default function GlassModal({
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-s-ink/[0.06]">
+              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-s-border">
                 <div>
                   <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-1">{t("booking")}</p>
                   <h2 className="font-heading text-s-ink text-lg">{title}</h2>

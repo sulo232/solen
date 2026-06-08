@@ -81,7 +81,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
         </div>
       </div>
 
-      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
+      <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">
             {t("profile.name")} *
@@ -90,7 +90,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={t("profile.namePlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
           />
         </div>
 
@@ -104,7 +104,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             rows={3}
             maxLength={500}
             placeholder={t("profile.descPlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none transition-colors"
           />
           <p className="text-[10px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
@@ -125,7 +125,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                     "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                     active
                       ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
-                      : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/50",
+                      : "border-s-border text-s-ink/55 hover:border-s-accent/50",
                   ].join(" ")}
                 >
                   <span className="text-[13px] leading-none">{opt.emoji}</span>
@@ -148,7 +148,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+41 61 ..."
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
           />
         </div>
 

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTA radius — pill vs soft vs rounded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4; --accent:#276EF1; --surcharge:#EA580C; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:32px 20px 60px;display:flex;justify-content:center}
+  .wrap{width:520px}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:4px}
+  .sub{font-size:13px;color:rgba(10,10,10,.5);margin-bottom:8px;line-height:1.5}
+  .rec{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:#EAEFFE;border-radius:999px;padding:4px 10px;margin-bottom:24px}
+  .row{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px 18px 20px;margin-bottom:14px}
+  .row.pick{border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,110,241,.12)}
+  .rlabel{display:flex;align-items:baseline;gap:8px;margin-bottom:14px}
+  .rlabel .n{font-family:'Inter Tight';font-weight:600;font-size:15px}
+  .rlabel .px{font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .rlabel .tag{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink2);background:var(--sunken);border-radius:999px;padding:3px 9px}
+  .rlabel .tag.app{color:var(--accent);background:#EAEFFE}
+  .btns{display:flex;flex-direction:column;gap:10px}
+  .btn{height:50px;display:flex;align-items:center;justify-content:center;font-family:'Inter Tight';font-weight:600;font-size:15px;color:#fff;border:0}
+  .btn.blue{background:var(--accent)}
+  .btn.orange{background:var(--surcharge)}
+  .note{font-size:12px;color:var(--ink2);margin-top:12px;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CTA radius — which one?</h1>
+  <p class="sub">The mockups used 13px rounded-rect. The shipped app (LOCKFILE <code>btn</code>) uses a full 99px pill on every other CTA. Same buttons at each radius:</p>
+  <span class="rec">My pick: Rounded 14px — but see the trade-off note</span>
+
+  <div class="row">
+    <div class="rlabel"><span class="n">Pill</span><span class="px">99px</span><span class="tag app">App standard (LOCKFILE)</span></div>
+    <div class="btns">
+      <button class="btn blue" style="border-radius:99px">Anfrage senden</button>
+      <button class="btn orange" style="border-radius:99px">CHF 17.00 bezahlen</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="rlabel"><span class="n">Soft</span><span class="px">20px</span></div>
+    <div class="btns">
+      <button class="btn blue" style="border-radius:20px">Anfrage senden</button>
+      <button class="btn orange" style="border-radius:20px">CHF 17.00 bezahlen</button>
+    </div>
+  </div>
+
+  <div class="row pick">
+    <div class="rlabel"><span class="n">Rounded</span><span class="px">14px</span><span class="tag app">Mockup / modern (Stripe·Revolut·Apple)</span></div>
+    <div class="btns">
+      <button class="btn blue" style="border-radius:14px">Anfrage senden</button>
+      <button class="btn orange" style="border-radius:14px">CHF 17.00 bezahlen</button>
+    </div>
+  </div>
+
+  <p class="note"><b>The trade-off:</b> for a tall full-width primary button, rounded-rect (~14px) is the current modern standard and is what the mockups use; the 99px pill reads more "bubbly" at this width but is what every other CTA in the app uses. So it's really: keep the app's pill for <i>consistency</i>, or switch the full-width primary CTAs to 14px for a <i>more modern</i> look (which would ideally be a system-wide change, not just these screens). Pick one.</p>
+</div>
+</body>
+</html>

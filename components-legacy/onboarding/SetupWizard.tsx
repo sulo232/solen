@@ -135,7 +135,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
         </AnimatePresence>
 
         {/* Navigation buttons */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-s-ink/5">
+        <div className="flex items-center justify-between mt-8 pt-6 border-t border-s-border">
           <button
             onClick={goPrev}
             disabled={currentStep === 0}

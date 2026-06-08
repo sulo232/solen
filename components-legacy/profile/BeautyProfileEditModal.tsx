@@ -162,7 +162,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
         <div className="fixed inset-0 flex items-end sm:items-center justify-center z-modal p-4">
           <motion.div role="dialog" aria-modal="true" variants={modalVariants} initial="hidden" animate="visible" exit="exit" className="bg-[--raised] rounded-[18px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-warm-lg">
           {/* Header */}
-          <div className="sticky top-0 bg-[--raised] border-b border-s-ink/10 px-6 py-4 flex items-center justify-between rounded-t-[18px]">
+          <div className="sticky top-0 bg-[--raised] border-b border-s-border px-6 py-4 flex items-center justify-between rounded-t-[18px]">
             <h2 className="font-heading text-[18px] font-semibold text-s-ink">
               {t('sectionTitle')}
             </h2>
@@ -265,10 +265,10 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="sticky bottom-0 bg-[--raised] border-t border-s-ink/10 px-6 py-4 flex gap-3 rounded-b-[18px]">
+          <div className="sticky bottom-0 bg-[--raised] border-t border-s-border px-6 py-4 flex gap-3 rounded-b-[18px]">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 rounded-pill border border-s-ink/10 text-s-ink/60 text-[14px] font-medium hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+              className="flex-1 px-4 py-3 rounded-pill border border-s-border text-s-ink/60 text-[14px] font-medium hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               aria-label={t("cancel")}
             >
               {t("cancel")}

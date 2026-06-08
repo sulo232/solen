@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Package, Gift, Users, Tag, Clock } from "lucide-react";
+import { Package, Gift, Users, Tag, Clock, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import PromoManager from "@/components-legacy/dashboard/PromoManager";
@@ -10,6 +10,8 @@ import ReferralDashboard from "@/components-legacy/dashboard/ReferralDashboard";
 import GiftCardManager from "@/components-legacy/dashboard/GiftCardManager";
 import LastMinuteManager from "@/components-legacy/dashboard/LastMinuteManager";
 import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 
 type MarketingTab = "pakete" | "geschenkkarten" | "empfehlungen" | "aktionen" | "lastminute";
 
@@ -18,14 +20,21 @@ export default function MarketingPage() {
   const [tab, setTab] = useState<MarketingTab>("pakete");
   const [salonId, setSalonId] = useState<string | null>(null);
   const [loadingSalon, setLoadingSalon] = useState(true);
+  // H2: a failed salon-resolution gets an error state + retry instead of the misleading
+  // "loading salon…" text that never resolved.
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  const loadSalon = () => {
+    setLoadingSalon(true);
+    setError(false);
     fetch("/api/profile")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(`profile ${r.status}`); return r.json(); })
       .then((d) => setSalonId(d.salon_id ?? null))
-      .catch((err) => console.error("[DashboardMarketing] failed to fetch salon id:", err))
+      .catch((err) => { console.error("[DashboardMarketing] failed to fetch salon id:", err); setError(true); setSalonId(null); })
       .finally(() => setLoadingSalon(false));
-  }, []);
+  };
+
+  useEffect(() => { loadSalon(); }, []);
 
   const TABS: { key: MarketingTab; label: string; icon: React.ElementType }[] = [
     { key: "pakete", label: t("tab_packages"), icon: Package },
@@ -65,8 +74,10 @@ export default function MarketingPage() {
       <div className="bg-white rounded-[16px] border border-s-ink/5 shadow-warm-md p-5">
         {loadingSalon ? (
           <div className="flex justify-center py-8"><Spinner size="md" /></div>
+        ) : error && tab !== "aktionen" ? (
+          <ErrorState title={t("loadErrorTitle")} message={t("loadErrorMessage")} retryLabel={t("retry")} onRetry={loadSalon} />
         ) : !salonId && tab !== "aktionen" ? (
-          <p className="text-sm text-s-ink/30 text-center py-8">{t("loading_salon")}</p>
+          <EmptyState icon={Store} title={t("noSalonTitle")} message={t("noSalonMessage")} />
         ) : (
           <>
             {tab === "pakete" && salonId && <PackageManager salonId={salonId} />}

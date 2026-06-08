@@ -14,7 +14,7 @@ import type { Service, SalonCategory, AgeGroup, Gender } from "@/lib/types";
 
 const CATEGORY_LABELS: Record<SalonCategory, string> = {
   coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails",
-  spa: "Spa / Massage", makeup: "Make-up", waxing: "Waxing",
+  spa: "Spa / Massage",
 };
 const AGE_OPTIONS: { value: AgeGroup }[] = [
   { value: "child" }, { value: "teenager" },

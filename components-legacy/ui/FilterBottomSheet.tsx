@@ -108,7 +108,7 @@ export default function FilterBottomSheet({
                   'transition-colors duration-150',
                   active
                     ? 'bg-s-ink text-white border-s-accent'
-                    : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-accent/40',
+                    : 'bg-[--surface] text-s-ink border-s-border hover:border-s-accent/40',
                 ].join(' ')}
                 aria-pressed={active}
               >
@@ -127,7 +127,7 @@ export default function FilterBottomSheet({
             onClick={() =>
               onFilterChange(activeFilters.filter((f) => f.pillId !== pill.id))
             }
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm font-heading text-s-ink/60 hover:text-s-ink"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-sm font-heading text-s-ink/60 hover:text-s-ink"
           >
             {t('reset')}
           </button>

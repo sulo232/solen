@@ -11,7 +11,7 @@ import type { SalonCard } from "@/lib/types";
  *  2. "Sofort buchbar" — next_available_slot within 48h        → success green semantic
  *  3. "Angebot -X%"    — last_minute_discount_percent > 0      → amber accent
  *  4. "Neu"            — created_at within last 30 days        → ink (neutral)
- *  5. "Walk-in"        — walk_in_available + non-coiffeur      → ink/10 chip (subtle)
+ *  5. "Walk-in"        — walkin_enabled + non-coiffeur         → ink/10 chip (subtle)
  */
 
 interface SalonBadgeProps {
@@ -22,7 +22,7 @@ interface SalonBadgeProps {
     | "next_available_slot"
     | "last_minute_discount_percent"
     | "created_at"
-    | "walk_in_available"
+    | "walkin_enabled"
     | "categories"
     | "is_top_pick"
   >;
@@ -95,7 +95,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
 
   // 5. Walk-in — subtle ink/10 chip on white-bg cards
   const isCoiffeur = salon.categories?.includes("coiffeur");
-  if (salon.walk_in_available && !isCoiffeur) {
+  if (salon.walkin_enabled && !isCoiffeur) {
     return (
       <span
         className={`${BASE_CLASSES} text-s-ink`}

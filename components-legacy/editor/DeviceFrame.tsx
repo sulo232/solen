@@ -107,7 +107,7 @@ export default function DeviceFrame({
       <div
         className={`relative bg-white transition-[width,height] duration-300 ${
           isFramed
-            ? "rounded-[12px] shadow-warm-md border border-s-ink/5"
+            ? "rounded-[12px] shadow-warm-md border border-s-border"
             : "w-full h-full"
         }`}
         style={{

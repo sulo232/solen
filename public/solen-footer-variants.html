@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Footer (mobile)</title>
+<style>
+  :root{
+    --ink:#0a0a0a; --ink-2:#525252; --ink-3:#8a8a8a;
+    --bg:#ffffff; --sunken:#f5f5f4; --border:#e7e5e4; --accent:#276ef1;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:412px;margin:0 auto;padding:16px 11px 60px}
+  h1{font-size:17px;font-weight:800;letter-spacing:-.02em;margin:6px 2px 2px}
+  .lead{font-size:12.5px;color:var(--ink-2);margin:0 2px 18px}
+  .label{display:flex;align-items:center;gap:8px;margin:22px 2px 8px}
+  .label .tag{font-size:11px;font-weight:800;color:#fff;background:var(--ink);width:22px;height:22px;border-radius:6px;display:grid;place-items:center}
+  .label .name{font-size:13.5px;font-weight:700}
+  .label .desc{font-size:11.5px;color:var(--ink-3)}
+
+  .ft{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .pad{padding:22px 18px}
+  .wm{font-weight:900;font-size:23px;letter-spacing:-.02em}
+  .tag-l{color:var(--ink-2);font-size:12.5px;line-height:1.55;margin:8px 0 0}
+  .news{margin-top:18px}
+  .news label{font-size:12.5px;font-weight:700;display:block;margin-bottom:3px}
+  .news .hint{font-size:11.5px;color:var(--ink-3);margin-bottom:8px}
+  .field{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--sunken)}
+  .field input{flex:1;border:0;background:transparent;padding:11px 13px;font-size:14px;outline:none;font-family:var(--font);min-width:0}
+  .field button{border:0;background:var(--ink);color:#fff;padding:0 16px;font-size:18px}
+  .soc{display:flex;gap:8px;margin-top:16px}
+  .soc i{width:38px;height:38px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2);font-style:normal;font-size:12px;font-weight:600}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-top:22px}
+  .cols h4{font-size:12.5px;font-weight:700;margin:0 0 11px}
+  .cols a{display:block;color:var(--ink-2);text-decoration:none;font-size:13px;margin-bottom:10px}
+  .promise{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
+  .promise span{font-size:11.5px;color:var(--ink-2);background:var(--sunken);border-radius:999px;padding:5px 10px}
+  .legal{border-top:1px solid var(--border);padding:14px 18px;display:flex;flex-direction:column;gap:8px;font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
+  .legal .links{display:flex;gap:16px;flex-wrap:wrap}
+  .legal a{color:var(--ink-3);text-decoration:none}
+  .inline{display:flex;flex-wrap:wrap;gap:x;margin-top:16px;column-gap:18px;row-gap:11px}
+  .inline a{color:var(--ink-2);text-decoration:none;font-size:13.5px;font-weight:500}
+  .band{background:var(--sunken);padding:20px 18px;border-bottom:1px solid var(--border)}
+  .band h3{margin:0 0 2px;font-size:16px;font-weight:800;letter-spacing:-.01em}
+  .band p{margin:0 0 12px;font-size:12px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Solen footer — mobile view</h1>
+  <p class="lead">How each option looks on a phone (this is the view that matters most). Pick A / B / C.</p>
+
+  <!-- A -->
+  <div class="label"><span class="tag">A</span><span class="name">Refined current</span><span class="desc">brand + newsletter + 2 link cols + promises</span></div>
+  <div class="ft">
+    <div class="pad">
+      <div class="wm">Solen</div>
+      <p class="tag-l">Beauty &amp; wellness booking across Switzerland. Find a salon, book in seconds.</p>
+      <div class="news"><label>Newsletter</label><div class="hint">Tips and new salons, monthly.</div><div class="field"><input placeholder="you@email.ch"><button>&rsaquo;</button></div></div>
+      <div class="cols">
+        <div><h4>Solen</h4><a>About us</a><a>For salons</a><a>Careers</a><a>Press</a><a>Blog</a></div>
+        <div><h4>Help</h4><a>Customer help</a><a>Salon help</a><a>Safety</a><a>Contact</a></div>
+      </div>
+      <div class="promise"><span>✓ Book in 30s</span><span>✓ No calls</span><span>✓ Instant confirm</span><span>✓ Fair prices</span></div>
+      <div class="soc"><i>IG</i><i>FB</i><i>TT</i></div>
+    </div>
+    <div class="legal"><span>© 2026 Solen.ch · All rights reserved</span><span class="links"><a>Privacy</a><a>Terms</a><a>Imprint</a></span></div>
+  </div>
+
+  <!-- B -->
+  <div class="label"><span class="tag">B</span><span class="name">Minimal</span><span class="desc">airy, inline links, short</span></div>
+  <div class="ft">
+    <div class="pad">
+      <div class="wm">Solen</div>
+      <p class="tag-l">Beauty &amp; wellness booking across Switzerland.</p>
+      <div class="inline"><a>About</a><a>For salons</a><a>Help</a><a>Safety</a><a>Contact</a><a>Careers</a><a>Press</a><a>Blog</a></div>
+      <div class="news" style="margin-top:20px"><div class="field"><input placeholder="Newsletter · you@email.ch"><button>&rsaquo;</button></div></div>
+      <div class="soc"><i>IG</i><i>FB</i><i>TT</i></div>
+    </div>
+    <div class="legal"><span>© 2026 Solen.ch</span><span class="links"><a>Privacy</a><a>Terms</a><a>Imprint</a></span></div>
+  </div>
+
+  <!-- C -->
+  <div class="label"><span class="tag">C</span><span class="name">Structured nav-hub</span><span class="desc">newsletter band + 4 sections + langs</span></div>
+  <div class="ft">
+    <div class="band"><h3>Stay in the loop</h3><p>New salons, trends and tips, once a month.</p><div class="field"><input placeholder="you@email.ch"><button>&rsaquo;</button></div></div>
+    <div class="pad">
+      <div class="wm">Solen</div>
+      <p class="tag-l">Beauty &amp; wellness booking across Switzerland.</p>
+      <div class="cols">
+        <div><h4>Solen</h4><a>About us</a><a>Careers</a><a>Press</a><a>Blog</a></div>
+        <div><h4>For salons</h4><a>List your salon</a><a>Salon help</a><a>Pricing</a></div>
+        <div><h4>Help</h4><a>Customer help</a><a>Safety</a><a>Contact</a></div>
+        <div><h4>Legal</h4><a>Privacy</a><a>Terms</a><a>Imprint</a></div>
+      </div>
+      <div class="soc"><i>IG</i><i>FB</i><i>TT</i></div>
+    </div>
+    <div class="legal"><span>© 2026 Solen.ch · Switzerland 🇨🇭</span><span class="links"><a>DE</a><a>EN</a><a>FR</a><a>IT</a></span></div>
+  </div>
+</div>
+</body>
+</html>

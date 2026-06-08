@@ -21,6 +21,7 @@ import { useMemo } from "react";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
 import CommandPalette from "@/components-legacy/dashboard/CommandPalette";
 import NotificationCenter from "@/components-legacy/dashboard/NotificationCenter";
+import SalonSwitcher from "@/components-legacy/dashboard/SalonSwitcher";
 
 // ─────────────────────────────────────────
 // Nav config
@@ -340,12 +341,7 @@ export default function DashboardLayout({
             >
               {/* Salon header */}
               <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
-                {salonAvatar ? (
-                  <Image src={salonAvatar} alt={salonName ?? ""} width={40} height={40} className="rounded-full object-cover shrink-0" />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-s-ink text-white grid place-items-center text-[15px] font-semibold shrink-0">{((salonName ?? fetchedSalonName)?.trim()?.[0] ?? "S").toUpperCase()}</div>
-                )}
-                <span className="flex-1 min-w-0 font-heading font-semibold text-[15px] tracking-[-0.01em] text-s-ink truncate">{salonName ?? fetchedSalonName ?? "Dein Salon"}</span>
+                <SalonSwitcher variant="sidebar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
                 <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink transition-colors"><X size={20} /></button>
               </div>
 
@@ -429,10 +425,9 @@ export default function DashboardLayout({
       <div className="flex-1 md:ml-[64px] flex flex-col min-h-screen">
         {/* Desktop top bar */}
         <div className="hidden md:flex sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b border-s-border h-[56px] items-center gap-3 px-6">
-          <button className="inline-flex items-center gap-2 text-[14px] font-semibold tracking-[-0.01em] text-s-ink px-3 py-1.5 rounded-full border border-s-border hover:bg-s-bg-sunken transition-colors">
-            {salonName ?? fetchedSalonName ?? "Dein Salon"}
-            <ChevronDown size={14} className="text-s-ink-2" />
-          </button>
+          <div className="px-3 py-1.5 rounded-full border border-s-border hover:bg-s-bg-sunken transition-colors">
+            <SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
+          </div>
           <div className="flex-1" />
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
             <Search size={19} strokeWidth={1.9} />
@@ -444,7 +439,7 @@ export default function DashboardLayout({
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
-          <span className="font-heading text-base flex-1 truncate text-s-ink">{salonName ?? fetchedSalonName ?? "Dein Salon"}</span>
+          <div className="flex-1 min-w-0"><SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} /></div>
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>

@@ -61,7 +61,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
   return (
     <div className="w-full">
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-s-ink/[0.06] mb-6">
+      <div className="flex gap-2 border-b border-s-border mb-6">
         <button
           onClick={() => setTab('upcoming')}
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
@@ -103,7 +103,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
 
       {!loading && error && (
         <div className="text-center py-12">
-          <p className="text-red-600">{error}</p>
+          <p className="text-s-error">{error}</p>
         </div>
       )}
 

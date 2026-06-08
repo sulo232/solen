@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — barbershop page, C header</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;
+    --accent:#276EF1;--green:#16A34A;--orange:#EA580C;--red:#DC2626;--star:#FFC32B;--heart:#FF3366;
+    --disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#cfcecb;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .screen{max-width:402px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,.14)}
+  .pad{padding:0 16px}
+  /* ── C header ── */
+  .hdr{padding:14px 16px 0}
+  .urow{display:flex;align-items:center;gap:10px}
+  .spill{flex:1;min-width:0;display:flex;align-items:center;gap:9px;height:44px;border:1px solid var(--border);border-radius:14px;padding:0 13px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .spill .ph{flex:1;min-width:0;font-size:14.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mid{flex:1;min-width:0;display:flex;justify-content:center;align-items:center;gap:5px}
+  .mid .city{font-size:15px;font-weight:600}
+  .circle{display:grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--ink)}
+  /* rounded-square + shadow — matches the menu's inner tiles */
+  .rsq{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;border:1px solid rgba(10,10,10,.06);background:#fff;color:var(--ink);box-shadow:0 2px 7px rgba(26,18,9,.10)}
+  .spacer{flex:1}
+  .cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:13px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:15px;font-weight:500;white-space:nowrap}
+  .cat.on{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .cat .ic{font-size:17px}
+  /* ── search ── */
+  .search{display:flex;align-items:center;gap:11px;margin:14px 16px 0;border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .search .t{flex:1;line-height:1.18}
+  .search .t b{display:block;font-size:14.5px}
+  .search .t span{font-size:12.5px;color:var(--ink2)}
+  /* ── filter chips ── */
+  .chips{display:flex;align-items:center;gap:8px;margin:14px 0 0;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .fcirc{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid rgba(39,110,241,.5);background:rgba(39,110,241,.10);color:var(--accent)}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:14px;font-weight:500;white-space:nowrap}
+  .chip.on{border-color:rgba(39,110,241,.4);background:rgba(39,110,241,.08);font-weight:600}
+  .chev{opacity:.5}
+  /* ── results header ── */
+  .rh{display:flex;align-items:center;justify-content:space-between;margin:18px 16px 4px}
+  .rh .n{font-family:var(--disp);font-weight:700;font-size:16px}
+  .rh .s{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;color:var(--ink2)}
+  /* ── cards (refined: no badge, colored count top-right, bold bar) ── */
+  .cards{display:flex;flex-direction:column;gap:22px;padding:8px 16px 28px}
+  .card .ph{position:relative;width:100%;aspect-ratio:3/2;border-radius:18px;overflow:hidden;background:var(--sunken);box-shadow:0 16px 36px rgba(0,0,0,.05)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .heart{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,.05);display:grid;place-items:center;color:var(--heart);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+  .body{margin-top:11px}
+  .r1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .nm{font-family:var(--disp);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink);line-height:1.1}
+  .rt{display:flex;align-items:center;gap:3px;flex-shrink:0;font-size:13px;color:var(--ink2)}
+  .rt svg{display:block;margin-top:-1px}
+  .r2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px}
+  .meta{font-size:13px;color:var(--ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .meta b{color:var(--ink);font-weight:600}
+  .qn{flex:0 0 auto;font-size:14px;font-weight:700;color:var(--c);letter-spacing:-.01em}
+  .qbar{height:6px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:9px}
+  .qbar i{display:block;height:100%;border-radius:999px;background:var(--c)}
+</style>
+</head>
+<body>
+<div class="screen" id="screen"></div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(paths,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||20);s.setAttribute("height",o.size||20);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(paths)?paths:[paths]).forEach(d=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);s.appendChild(p);});return s;}
+function homeIcon(){return svg(["M3 10.5 12 3l9 7.5","M5 9.5V21h14V9.5"],{size:19});}
+function menuIcon(){return svg(["M3 6h18","M3 12h18","M3 18h18"],{size:21,sw:2.2});}
+function mapIcon(){return svg(["M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z","M9 4v14","M15 6v14"],{size:18});}
+function slidersIcon(){return svg(["M4 6h10","M18 6h2","M4 12h2","M10 12h10","M4 18h8","M16 18h4","M14 4v4","M6 10v4","M12 16v4"],{size:18});}
+function searchIcon(){const s=svg(["M21 21l-4.3-4.3"],{size:18});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function chev(){const s=svg(["M6 9l6 6 6-6"],{size:14});s.classList.add("chev");return s;}
+function star(){const s=document.createElementNS(NS,"svg");s.setAttribute("width",12);s.setAttribute("height",12);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","#FFC32B");const p=document.createElementNS(NS,"path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heart(){const h=el("div","heart");const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS(NS,"path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+
+const CATS=[["Barber","💈",true],["Coiffeur","✂️",false],["Nails","💅",false],["Spa","🌿",false]];
+function circle(icon,cls){const c=el("div",cls||"circle");c.appendChild(icon);return c;}
+
+const CAP=8;
+function fillPct(a){return Math.round(Math.min(Math.max(a/CAP,0.12),1)*100);}
+function tierC(a){ if(a<=2) return "var(--green)"; if(a<=5) return "var(--orange)"; return "var(--red)"; }
+const SALONS=[
+  {name:"Blade & Stone",rating:4.4,reviews:11,addr:"Feldbergstrasse 82",price:43,ahead:2,photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80"},
+  {name:"The Fade Factory",rating:4.3,reviews:11,addr:"Hammerstrasse 65",price:47,ahead:5,photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80"},
+  {name:"Old Town Barbers",rating:4.3,reviews:12,addr:"Münsterplatz 11",price:47,ahead:8,photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80"},
+];
+function card(s){
+  const c=el("div","card"); c.style.setProperty("--c",tierC(s.ahead));
+  const ph=el("div","ph"); const im=el("img"); im.src=s.photo; im.alt=s.name; ph.appendChild(im); ph.appendChild(heart()); c.appendChild(ph);
+  const body=el("div","body");
+  const r1=el("div","r1"); r1.appendChild(el("div","nm",s.name)); const rt=el("div","rt"); rt.appendChild(star()); rt.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")")); r1.appendChild(rt); body.appendChild(r1);
+  const r2=el("div","r2"); const meta=el("div","meta"); meta.appendChild(document.createTextNode(s.addr+", Basel · ab CHF ")); meta.appendChild(el("b",null,String(s.price))); r2.appendChild(meta); r2.appendChild(el("div","qn", s.ahead+" vor dir")); body.appendChild(r2);
+  const bar=el("div","qbar"); const f=el("i"); f.style.width=fillPct(s.ahead)+"%"; bar.appendChild(f); body.appendChild(bar);
+  c.appendChild(body); return c;
+}
+
+function build(){
+  const sc=document.getElementById("screen");
+  // C header
+  const hdr=el("div","hdr");
+  const urow=el("div","urow"); urow.appendChild(circle(homeIcon(),"rsq"));
+  const mid=el("div","mid"); mid.appendChild(el("span","city","Basel")); mid.appendChild(chev()); urow.appendChild(mid);
+  urow.appendChild(circle(menuIcon(),"rsq")); hdr.appendChild(urow);
+  const cats=el("div","cats"); CATS.forEach(([l,ic,on])=>{const c=el("div","cat"+(on?" on":""));c.appendChild(el("span","ic",ic));c.appendChild(el("span",null,l));cats.appendChild(c);}); hdr.appendChild(cats);
+  sc.appendChild(hdr);
+  // search (own row)
+  const se=el("div","search"); se.appendChild(searchIcon()); const t=el("div","t"); t.appendChild(el("b",null,"Suchen")); t.appendChild(el("span",null,"Schweizweit")); se.appendChild(t); se.appendChild(circle(mapIcon())); sc.appendChild(se);
+  // chips
+  const ch=el("div","chips"); ch.appendChild(circle(slidersIcon(),"fcirc"));
+  const w=el("div","chip on"); w.appendChild(svg(["M3 21h18","M5 21V7l8-4v18","M19 21V11l-6-4"],{size:15})); w.appendChild(el("span",null,"Walk-in")); ch.appendChild(w);
+  ["Jetzt geöffnet","Preis","Bewertung"].forEach((l,i)=>{const c=el("div","chip"); c.appendChild(el("span",null,l)); if(i>0)c.appendChild(chev()); ch.appendChild(c);});
+  sc.appendChild(ch);
+  // results header
+  const rh=el("div","rh"); rh.appendChild(el("div","n","3 Salons")); const sort=el("div","s"); sort.appendChild(el("span",null,"Beliebteste")); sort.appendChild(chev()); rh.appendChild(sort); sc.appendChild(rh);
+  // cards
+  const cards=el("div","cards"); SALONS.forEach(s=>cards.appendChild(card(s))); sc.appendChild(cards);
+}
+build();
+</script>
+</body>
+</html>

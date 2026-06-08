@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, updateProfileSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 const PREVIEW_COOKIE = "solen_admin_preview";
 
@@ -34,16 +35,12 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Normal flow: look up owned salon (for DashboardLayout auth guard)
+  // Normal flow: look up the active owned salon (for DashboardLayout auth guard).
+  // Follows the salon switcher (solen_active_salon cookie) via getActiveSalon.
   let salon_id: string | null = null;
   let salon_name: string | null = null;
   let salon_categories: string[] = [];
-  const { data: ownedSalon } = await supabase
-    .from("salons")
-    .select("id, name, categories")
-    .eq("owner_id", user.id)
-    .limit(1)
-    .single();
+  const ownedSalon = await getActiveSalon<{ id: string; name: string; categories: string[] | null }>(supabase, user.id, "id, name, categories");
   if (ownedSalon) {
     salon_id = ownedSalon.id;
     salon_name = ownedSalon.name;

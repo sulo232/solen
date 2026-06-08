@@ -62,7 +62,7 @@ export default function FilterDrawer({
   // Rule 31 — Zone-aware surface
   const surfaceClasses = (zone === 1 || zone === 2)
     ? 'glass-frost'
-    : 'bg-[--raised] border border-s-ink/8';
+    : 'bg-[--raised] border border-s-border';
 
   // Rule 31 — Zone-aware animation
   const animClass = (zone === 1 || zone === 2)
@@ -119,7 +119,7 @@ export default function FilterDrawer({
                     'px-3 py-1.5 rounded-pill text-xs font-body border transition-colors duration-150',
                     active
                       ? 'bg-s-ink text-white border-s-accent'
-                      : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-accent/40',
+                      : 'bg-[--surface] text-s-ink border-s-border hover:border-s-accent/40',
                   ].join(' ')}
                   aria-pressed={active}
                 >

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — search bar: the real difference</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9a9a9a;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 22px;max-width:760px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start}
+  .col{width:372px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);padding:3px 8px;border-radius:6px;font-family:var(--disp)}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:28px;border:1px solid #d9d7d4;overflow:hidden;padding:18px 16px 22px;box-shadow:0 18px 48px rgba(0,0,0,.12)}
+  .h{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:6px 2px 2px}
+  .sub{font-size:13.5px;color:var(--ink2);margin:0 2px 16px}
+  .pill-search{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:999px;padding:14px 16px}
+  .pill-search .t{flex:1;font-size:15px;font-weight:600;color:var(--ink)}
+  .pill-search .t span{color:var(--ink3);font-weight:400}
+  .form{display:flex;flex-direction:column;gap:10px}
+  .field{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:14px;padding:13px 14px}
+  .field .ph{flex:1;font-size:15px;color:var(--ink2)}
+  .cta{display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;margin-top:2px}
+  .cap{display:flex;gap:8px;margin:16px 2px 0;font-size:12.5px;color:#555;line-height:1.5}
+  .cap b{color:var(--ink)}
+  .caparrow{flex:0 0 auto;color:var(--accent);font-weight:800}
+  .filler{height:120px;border-radius:16px;background:linear-gradient(180deg,#f3f3f2,#fafafa);margin-top:18px;display:grid;place-items:center;color:#bbb;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>The actual difference , the RESTING state</h1>
+  <p class="lead">Both show the same suggestions once open. What differs is what the search looks like <b>before you tap it</b>, sitting on the homepage. That's the real choice.</p>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(p,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||18);s.setAttribute("height",o.size||18);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(p)?p:[p]).forEach(d=>{const q=document.createElementNS(NS,"path");q.setAttribute("d",d);s.appendChild(q);});return s;}
+function searchI(o){o=o||{};const s=svg(["M21 21l-4.3-4.3"],{size:o.size||18});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function pinI(){return svg(["M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z","M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"],{size:17});}
+function calI(){return svg(["M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z","M3 9h18","M8 2v4","M16 2v4"],{size:17});}
+function cap(boldText, rest){const c=el("div","cap");c.appendChild(el("span","caparrow","→"));const s=el("span");s.appendChild(el("b",null,boldText));s.appendChild(document.createTextNode(" "+rest));c.appendChild(s);return c;}
+
+const frames=document.getElementById("frames");
+
+function variantA(){
+  const box=el("div","phone");
+  box.appendChild(el("div","h","Termin in 30 Sekunden."));
+  box.appendChild(el("div","sub","Beauty & Wellness in der ganzen Schweiz."));
+  const pill=el("div","pill-search"); pill.appendChild(searchI({size:19}));
+  const t=el("div","t"); t.appendChild(document.createTextNode("Service ")); t.appendChild(el("span",null,"· Basel · Heute")); pill.appendChild(t);
+  box.appendChild(pill);
+  box.appendChild(el("div","filler","Für dich · Kategorien · …"));
+  box.appendChild(cap("One small pill.","Tap it → a focused full-screen search opens with the suggestions. Takes the least space; the search is a deliberate moment."));
+  return box;
+}
+function variantB(){
+  const box=el("div","phone");
+  box.appendChild(el("div","h","Termin in 30 Sekunden."));
+  box.appendChild(el("div","sub","Beauty & Wellness in der ganzen Schweiz."));
+  const form=el("div","form");
+  const f1=el("div","field"); f1.appendChild(searchI({size:18})); f1.appendChild(el("div","ph","Service")); form.appendChild(f1);
+  const f2=el("div","field"); f2.appendChild(pinI()); f2.appendChild(el("div","ph","Stadt")); form.appendChild(f2);
+  const f3=el("div","field"); f3.appendChild(calI()); f3.appendChild(el("div","ph","Zeit")); form.appendChild(f3);
+  const cta=el("div","cta"); cta.appendChild(el("span",null,"Termine finden")); form.appendChild(cta);
+  box.appendChild(form);
+  box.appendChild(cap("Always the full form.","All 3 fields sit on the page; tap any → suggestions drop in under it. More space used, but the search is always right there."));
+  return box;
+}
+function colize(pillTxt,nm,node){const col=el("div","col");const tag=el("div","tag");tag.appendChild(el("span","pill",pillTxt));tag.appendChild(el("span","ds",nm));col.appendChild(tag);col.appendChild(node);frames.appendChild(col);}
+colize("A","Airbnb — collapses to a pill", variantA());
+colize("B","Fresha / Treatwell — always the form", variantB());
+</script>
+</body>
+</html>

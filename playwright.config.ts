@@ -44,14 +44,14 @@ export default defineConfig({
       name: "mobile",
       use: {
         viewport: { width: 375, height: 812 },
-        deviceScaleFactor: 2,
+        deviceScaleFactor: 1, // V3-D448: 1x is enough for layout-regression + smaller baselines
       },
     },
     {
       name: "tablet",
       use: {
         viewport: { width: 768, height: 1024 },
-        deviceScaleFactor: 2,
+        deviceScaleFactor: 1, // V3-D448: 1x is enough for layout-regression + smaller baselines
       },
     },
     {

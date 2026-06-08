@@ -22,6 +22,7 @@
 8. **No `git commit` or `git push` automatically** — user controls all commits.
 9. **No `.env.local` edits** without explicit ask.
 10. **No `npm run build`** unless asked — dev runs on port 3000.
+11. **No decorative dots / pips.** (V3-D421L, owner: _"stop adding dotts everywhere"_.) No leading/trailing status dot on chips, toggles, eyebrows, list items, segmented controls, or any control. A toggle's ON state is shown by its active fill (blue tint) ALONE; a dropdown's affordance is its chevron. The ONLY exception is a universal-color status dot that IS the message and carries real live meaning — e.g. a `bg-s-success` "geöffnet" indicator or the `bg-s-accent` walk-in availability pulse ON A CARD. Decoration is never a valid reason for a dot. (Extends §2.5 eyebrow no-dot + §1 accent decorative-dot ban to ALL controls.)
 
 ---
 
@@ -35,7 +36,7 @@
 | `s-ink-2` | `#6B6B6B` | Secondary text |
 | `s-ink-3` | `#6B6B6B` | Tertiary text (collapsed onto ink-2 per V3-D138) |
 | `s-ink-disabled` | `#C5C8C4` | Disabled state |
-| `s-border` | `#E7E5E4` | Hairline borders |
+| `s-border` | `#E0DDDB` | Hairline borders (V3-D447: firmer, was #E7E5E4) |
 | `s-bg.base` | `#FFFFFF` | Page base |
 | `s-bg.surface` | `#FFFFFF` | Card surface |
 | `s-bg.raised` | `#FFFFFF` | Raised / modal surface |

@@ -81,7 +81,7 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
           <div className="font-body mt-3 space-y-1.5 text-[14px] text-s-ink-2 md:text-[15px]">
             {/* Rating */}
             <div className="flex items-center gap-1.5">
-              <Star size={15} fill="#FFC32B" stroke="none" />
+              <Star size={15} stroke="none" className="fill-s-star" />
               <strong className="font-semibold text-s-ink">
                 {salon.average_rating?.toFixed(1) ?? "—"}
               </strong>

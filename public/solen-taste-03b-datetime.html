@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Taste 3 — booking date+time (real page, A vs B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--accentbg:#EAEFFE;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#ECEBE9;font-family:'Inter',sans-serif;color:var(--ink);padding:30px 20px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:22px;text-align:center;letter-spacing:-0.02em}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:8px auto 26px;max-width:680px;line-height:1.55}
+  .sub b{color:var(--ink)}
+  .row{display:flex;flex-wrap:wrap;gap:34px;justify-content:center;align-items:flex-start}
+  .col{width:360px}
+  .label{font-family:'Inter Tight';font-weight:800;font-size:15px;margin-bottom:3px}
+  .ldesc{font-size:12px;color:var(--ink2);margin-bottom:13px;min-height:32px;line-height:1.45}
+  .ldesc b{color:var(--ink)}
+  /* phone */
+  .phone{position:relative;height:712px;border:1px solid rgba(10,10,10,.13);border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 18px 48px rgba(0,0,0,.12)}
+  .top{display:flex;align-items:center;gap:12px;padding:15px 16px 13px}
+  .top .x{width:30px;height:30px;display:grid;place-items:center}
+  .top .x svg{width:21px;height:21px;stroke:var(--ink)}
+  .top .t{font-family:'Inter Tight';font-weight:700;font-size:16px;letter-spacing:-0.01em}
+  .steps{display:flex;gap:5px;padding:0 16px 14px}
+  .steps i{height:4px;flex:1;border-radius:99px;background:var(--sunken)}
+  .steps i.on{background:var(--ink)}
+  .body{padding:2px 16px}
+  .stylist{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .spill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(10,10,10,.12);border-radius:99px;padding:5px 12px 5px 5px}
+  .spill .av{width:28px;height:28px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}
+  .spill .av svg{width:15px;height:15px;stroke:var(--ink2)}
+  .spill .nm{font-size:13.5px;font-weight:500;color:var(--ink)}
+  .spill svg.cv{width:15px;height:15px;stroke:var(--ink3)}
+  .monthbtn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);border:1px solid rgba(10,10,10,.12);border-radius:99px;padding:6px 11px}
+  .monthbtn svg{width:14px;height:14px;stroke:var(--ink)}
+  /* calendar */
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 9px}
+  .calhead .m{font-family:'Inter Tight';font-weight:700;font-size:14.5px}
+  .calhead .nav{display:flex;gap:4px}
+  .calhead .nav span{width:26px;height:26px;display:grid;place-items:center;border-radius:50%}
+  .calhead .nav svg{width:16px;height:16px;stroke:var(--ink2)}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px}
+  .dow span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink3)}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .cal b{aspect-ratio:1;display:grid;place-items:center;font-size:13px;font-weight:500;color:var(--ink);border-radius:50%;font-variant-numeric:tabular-nums}
+  .cal b.mut{color:var(--ink3)}
+  .cal b.sel{background:var(--accent);color:#fff;font-weight:600}
+  .slabel{font-family:'Inter Tight';font-weight:700;font-size:13.5px;margin:15px 0 9px}
+  /* A rows */
+  .rows{display:flex;flex-direction:column;gap:7px}
+  .rowslot{border:1px solid rgba(10,10,10,.12);border-radius:13px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+  .rowslot.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  .rowslot.off{border-color:transparent;background:rgba(10,10,10,.03);color:var(--ink3)}
+  /* B grid */
+  .tg{font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--ink3);text-transform:uppercase;margin:13px 0 7px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .chip{border:1px solid rgba(10,10,10,.12);border-radius:11px;padding:9px 0;text-align:center;font-size:13.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+  .chip.off{border-color:transparent;background:rgba(10,10,10,.03);color:var(--ink3)}
+  .chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+  /* sticky bar w/ gradient fade (round 2 decision) */
+  .fade{position:absolute;left:0;right:0;bottom:66px;height:46px;background:linear-gradient(to top,#fff 14%,rgba(255,255,255,0));pointer-events:none}
+  .bar{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:12px 16px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:var(--ink);color:#fff;border-radius:99px;padding:13px;font-size:15px;font-weight:600}
+  .btn svg{width:16px;height:16px;stroke:#fff;stroke-width:2.5}
+  .tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:middle}
+  .tag.cur{color:var(--ink2);border:1px solid var(--border)}
+  .tag.rec{color:#fff;background:var(--accent)}
+</style>
+</head>
+<body>
+  <h1>Booking, date + time — the real page</h1>
+  <p class="sub">Same screen, full chrome (header, step bar, stylist, calendar, slots, the gradient-fade bar we locked). Only the <b>time slots</b> + their <b>selected colour</b> differ. This is what it actually looks like.</p>
+
+  <div class="row">
+
+    <!-- A current -->
+    <div class="col">
+      <div class="label">A · Today<span class="tag cur">current</span></div>
+      <div class="ldesc">Full-width rows, one time per line (a long scroll). Selected slot is <b>ink</b>, but the selected date is blue, two "selected" colours.</div>
+      <div class="phone">
+        <div class="top"><span class="x"><svg data-l="x"></svg></span><span class="t">Termin bei Atelier Haarwerk</span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="body">
+          <div class="stylist">
+            <span class="spill"><span class="av"><svg data-l="users"></svg></span><span class="nm">Keine Präferenz</span><svg data-l="chevron-down" class="cv"></svg></span>
+            <span class="monthbtn"><svg data-l="calendar"></svg>Juni</span>
+          </div>
+          <div class="calhead"><span class="m">Juni 2026</span><span class="nav"><span><svg data-l="chevron-left"></svg></span><span><svg data-l="chevron-right"></svg></span></span></div>
+          <div class="dow"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+          <div class="cal">
+            <b class="mut">1</b><b class="mut">2</b><b class="mut">3</b><b class="mut">4</b><b class="mut">5</b><b class="mut">6</b><b class="mut">7</b>
+            <b class="mut">8</b><b>9</b><b>10</b><b>11</b><b class="sel">12</b><b>13</b><b>14</b>
+            <b>15</b><b>16</b><b>17</b><b>18</b><b>19</b><b>20</b><b>21</b>
+          </div>
+          <div class="slabel">Verfügbare Zeiten · 12. Juni</div>
+          <div class="rows">
+            <div class="rowslot">09:00</div>
+            <div class="rowslot">09:30</div>
+            <div class="rowslot off">10:00</div>
+            <div class="rowslot sel">14:00</div>
+            <div class="rowslot">14:30</div>
+          </div>
+        </div>
+        <div class="bar"><div class="btn">Weiter <svg data-l="chevron-right"></svg></div></div>
+      </div>
+    </div>
+
+    <!-- B proposed -->
+    <div class="col">
+      <div class="label">B · Proposed<span class="tag rec">my read</span></div>
+      <div class="ldesc">Time chips in a <b>grouped grid</b> (Vormittag / Nachmittag, the split the data already has). See the whole day at once. Selected slot is <b>blue</b>, so it finally matches the selected date.</div>
+      <div class="phone">
+        <div class="top"><span class="x"><svg data-l="x"></svg></span><span class="t">Termin bei Atelier Haarwerk</span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="body">
+          <div class="stylist">
+            <span class="spill"><span class="av"><svg data-l="users"></svg></span><span class="nm">Keine Präferenz</span><svg data-l="chevron-down" class="cv"></svg></span>
+            <span class="monthbtn"><svg data-l="calendar"></svg>Juni</span>
+          </div>
+          <div class="calhead"><span class="m">Juni 2026</span><span class="nav"><span><svg data-l="chevron-left"></svg></span><span><svg data-l="chevron-right"></svg></span></span></div>
+          <div class="dow"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+          <div class="cal">
+            <b class="mut">1</b><b class="mut">2</b><b class="mut">3</b><b class="mut">4</b><b class="mut">5</b><b class="mut">6</b><b class="mut">7</b>
+            <b class="mut">8</b><b>9</b><b>10</b><b>11</b><b class="sel">12</b><b>13</b><b>14</b>
+            <b>15</b><b>16</b><b>17</b><b>18</b><b>19</b><b>20</b><b>21</b>
+          </div>
+          <div class="slabel">Verfügbare Zeiten · 12. Juni</div>
+          <div class="tg">Vormittag</div>
+          <div class="grid">
+            <div class="chip">09:00</div><div class="chip">09:30</div><div class="chip off">10:00</div>
+            <div class="chip">10:30</div><div class="chip">11:00</div><div class="chip">11:30</div>
+          </div>
+          <div class="tg">Nachmittag</div>
+          <div class="grid">
+            <div class="chip">13:30</div><div class="chip sel">14:00</div><div class="chip">14:30</div>
+            <div class="chip">15:00</div><div class="chip">15:30</div><div class="chip">16:00</div>
+          </div>
+        </div>
+        <div class="fade"></div>
+        <div class="bar"><div class="btn">Weiter <svg data-l="chevron-right"></svg></div></div>
+      </div>
+    </div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

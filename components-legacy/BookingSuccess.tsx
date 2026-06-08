@@ -150,7 +150,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
             key={row.label}
             className={[
               "flex items-baseline justify-between gap-3 py-2",
-              i < summaryRows.length - 1 ? "border-b border-s-ink/[0.05]" : "",
+              i < summaryRows.length - 1 ? "border-b border-s-border" : "",
             ].join(" ")}
           >
             <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
@@ -160,7 +160,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
           </div>
         ))}
         {props.price > 0 && (
-          <div className="mt-2 pt-2 border-t border-s-ink/[0.05] flex items-baseline justify-between gap-3">
+          <div className="mt-2 pt-2 border-t border-s-border flex items-baseline justify-between gap-3">
             <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
               Total
             </span>
@@ -189,7 +189,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <button
           type="button"
           onClick={handleDirections}
-          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-border text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <MapPin size={16} aria-hidden />
           Wegbeschreibung
@@ -197,7 +197,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <button
           type="button"
           onClick={handleShare}
-          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-border text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <Share2 size={16} aria-hidden />
           Teilen

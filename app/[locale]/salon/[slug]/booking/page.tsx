@@ -146,7 +146,7 @@ export default async function BookingSalonPage({
     <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialStart={startParam}>
       <div className="min-h-screen bg-[--base]">
         {/* Header with salon name */}
-        <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] bg-[--raised]">
+        <header className="sticky top-0 z-40 border-b border-s-border bg-[--raised]">
           <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
             <BookingExitButton slug={slug} />
             <h1 className="min-w-0 flex-1 font-heading text-lg font-semibold tracking-[-0.01em] text-s-ink truncate">

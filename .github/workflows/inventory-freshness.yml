@@ -1,0 +1,48 @@
+name: inventory-freshness
+
+# Keeps the anti-duplicate surface map honest. A stale SURFACE.md/json (someone added a
+# route/endpoint without re-running `npm run inventory`) or an aged-out DB snapshot turns the
+# PR red, so the map can never be committed lying, the failure mode that killed the six
+# hand-written inventories this system replaced. The scanner is dependency-free (node builtins
+# only), so no `npm ci` is needed. No untrusted event inputs are used (no injection surface).
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "lib/**"
+      - "hooks/**"
+      - "components/**"
+      - "components-legacy/**"
+      - "supabase/migrations/**"
+      - "_inventory/**"
+      - "scripts/inventory.mjs"
+      - "scripts/exists.mjs"
+      - "scripts/lib/scan-surface.mjs"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "lib/**"
+      - "hooks/**"
+      - "components/**"
+      - "components-legacy/**"
+      - "supabase/migrations/**"
+      - "_inventory/**"
+      - "scripts/inventory.mjs"
+      - "scripts/exists.mjs"
+      - "scripts/lib/scan-surface.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify SURFACE map is fresh + DB snapshot not stale
+        run: node scripts/inventory.mjs --check

@@ -29,11 +29,11 @@ import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 const STYLISTS: Testimonial[] = [
   {
     name: "Elena Rossi",
-    designation: "Coiffeur · Salon Maria, Basel",
+    designation: "Coiffeur · Muse Beauty Studio, Basel",
     quote:
       "Ich liebe Schnitte, die mitwachsen — du musst nicht jede Woche wieder kommen, der Look bleibt zwei Monate frisch.",
     src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&q=80",
-    slug: "salon-maria",
+    slug: "muse-beauty-studio",
     bio: "Elena schneidet seit 12 Jahren in Basel — vier Jahre Vidal Sassoon London, dann zurück nach Hause. Sie spezialisiert sich auf wachstumsorientierte Schnitte, die mit deinem Haar mitarbeiten statt gegen es.",
     whySelected:
       "97% Wiederbuchungs-Rate im letzten Quartal. Kund:innen sagen wörtlich: \"Ich gehe seit drei Jahren nur noch zu Elena.\"",
@@ -46,11 +46,11 @@ const STYLISTS: Testimonial[] = [
   },
   {
     name: "Marcus Chen",
-    designation: "Barbershop · Studio Nord, Zürich",
+    designation: "Barbershop · Old Town Barbers, Basel",
     quote:
       "Fade, Bart-Konturen, klassische Schere — was reinkommt, kommt mit klarer Vision raus. Keine Zeit verschwendet.",
     src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&h=900&fit=crop&q=80",
-    slug: "studio-nord",
+    slug: "old-town-barbers",
     bio: "Marcus kommt aus Toronto, war drei Jahre bei einem Old-School-Barber in Brooklyn, lebt jetzt in Zürich. Schnitte in 35 Minuten, kein Smalltalk wenn du nicht willst.",
     whySelected:
       "5.0 / 5 Sterne · 247 Bewertungen. Schnitt-Konsistenz ist hier kein Glück — es ist Technik.",
@@ -63,11 +63,11 @@ const STYLISTS: Testimonial[] = [
   },
   {
     name: "Sophie Dubois",
-    designation: "Nails · Nail Lab, Bern",
+    designation: "Nails · Nail Studio Bliss, Basel",
     quote:
       "Gel-Nails sind nicht Deko — sie sind Schmuck. Ich arbeite mit dir, bis sie sich richtig anfühlen.",
     src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&h=900&fit=crop&q=80",
-    slug: "nail-lab",
+    slug: "nail-studio-bliss",
     bio: "Sophie hat in Paris und Tokyo gearbeitet bevor sie 2021 Nail Lab in Bern aufgemacht hat. Spezialisiert auf japanische Nail-Art-Techniken und langlebige Gel-Strukturen.",
     whySelected:
       "Längste Tragezeit in der Stadt — durchschnittlich 4-5 Wochen vor Refill. Bei anderen sind's 3.",
@@ -80,11 +80,11 @@ const STYLISTS: Testimonial[] = [
   },
   {
     name: "Luca Bernasco",
-    designation: "Spa & Wellness · Rhein Spa, Lugano",
+    designation: "Spa & Wellness · Smooth Skin Studio, Basel",
     quote:
       "Ein Massage-Termin ist Zeit für dich. Ich bin nur die Hände — die Pause gehört dir.",
     src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=900&h=900&fit=crop&q=80",
-    slug: "rhein-spa",
+    slug: "smooth-skin-studio",
     bio: "Luca ist Physiotherapeut UND Spa-Masseur — beste Kombi für tiefe Verspannungen ohne Schnickschnack. 8 Jahre Erfahrung mit Sport-Klientel.",
     whySelected:
       "Die einzige Adresse in Lugano, die echte myofasziale Arbeit mit klassischer Spa-Atmosphäre kombiniert. Stille auf Wunsch.",
@@ -97,11 +97,11 @@ const STYLISTS: Testimonial[] = [
   },
   {
     name: "Anna Keller",
-    designation: "Coiffeur · Atelier Coiffure, Luzern",
+    designation: "Coiffeur · Glow Lab Basel",
     quote:
       "Color isn't risky if you trust the artist. Ich zeige dir vor jedem Schritt, wie's wird — kein Surprise.",
     src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=900&h=900&fit=crop&q=80",
-    slug: "atelier-coiffure",
+    slug: "glow-lab-basel",
     bio: "Anna ist Color-Spezialistin — sechs Jahre bei Wella Master Academy. Sie arbeitet ausschließlich mit Polaroids: jede Color-Idee wird vor dem Pinsel skizziert.",
     whySelected:
       "Null Color-Reklamationen in 2 Jahren. Wer zu Anna geht, weiß VOR dem Termin wie's wird.",

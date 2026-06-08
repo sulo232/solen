@@ -94,11 +94,11 @@ export default function HeroAboveFold() {
             const trigger = document.querySelector<HTMLElement>("[data-gs-trigger]");
             trigger?.click();
           }}
-          className="w-full block rounded-[16px] border border-s-ink/10 bg-white shadow-elevation-1 hover:shadow-elevation-2 transition-shadow duration-200 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 text-left"
+          className="w-full block rounded-[16px] border border-s-border bg-white shadow-elevation-1 hover:shadow-elevation-2 transition-shadow duration-200 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 text-left"
           aria-label="Suche öffnen"
         >
           {/* Field 1: Was */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.08] min-h-[56px]">
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
             <Search size={18} className="text-s-accent shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
               <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
@@ -110,7 +110,7 @@ export default function HeroAboveFold() {
             </div>
           </div>
           {/* Field 2: Wo */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.08] min-h-[56px]">
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
             <MapPin size={18} className="text-s-accent shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
               <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
@@ -141,7 +141,7 @@ export default function HeroAboveFold() {
             <Link
               key={key}
               href={href}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-s-ink/10 bg-white hover:border-s-accent/40 hover:text-s-accent transition-colors duration-150 font-body text-[12px] font-semibold text-s-ink/70 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-s-border bg-white hover:border-s-accent/40 hover:text-s-accent transition-colors duration-150 font-body text-[12px] font-semibold text-s-ink/70 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
             >
               <Icon size={14} aria-hidden />
               {label}

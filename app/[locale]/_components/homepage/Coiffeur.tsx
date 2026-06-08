@@ -22,6 +22,8 @@ import { SalonCard } from "./SalonCard";
  */
 
 interface CoiffeurEntry {
+  /** Real salon UUID — threaded to SalonCard → HeartButton so the save persists. */
+  id: string;
   slug: string;
   name: string;
   rating: number;
@@ -54,37 +56,41 @@ const ADDRESSES = [
 // V2-D60-photos (2026-05-14): real Unsplash salon imagery added. Letter-only
 // placeholder fallbacks looked "beta" against Airbnb / Fresha-quality cards.
 // Photos use ?w=600&h=450&fit=crop&q=80 for 4:3 aspect at 2x retina.
+// 2026-06-05: slugs/names/ids point at the REAL seeded coiffeur salons (Basel)
+// so every card resolves to a live PDP instead of a 404. The curated
+// service/price/photo/freeToday styling is kept; only identity is real. There
+// are 8 seeded coiffeur salons, so a few are reused to keep the 15-card row.
 const DEMO: CoiffeurEntry[] = [
-  { slug: "salon-maria", name: "Salon Maria", rating: 4.8, service: "Damen-Schnitt", priceFromCHF: 80, freeToday: true, isSaved: true,
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, service: "Damen-Schnitt", priceFromCHF: 80, freeToday: true, isSaved: true,
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { slug: "atelier-coiffure", name: "Atelier Coiffure", rating: 4.9, service: "Balayage", priceFromCHF: 120, freeToday: true,
+  { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", rating: 4.87, service: "Balayage", priceFromCHF: 120, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  { slug: "lina-hair-studio", name: "Lina Hair Studio", rating: 4.7, service: "Föhnen & Styling", priceFromCHF: 75,
+  { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", rating: 4.85, service: "Föhnen & Styling", priceFromCHF: 75,
     photoUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" },
-  { slug: "coiffeur-bahnhof", name: "Coiffeur Bahnhof", rating: 4.6, service: "Herren-Schnitt", priceFromCHF: 65,
+  { id: "1c217cdc-f342-4790-91ec-c87709468666", slug: "velvet-face", name: "Velvet Face", rating: 4.81, service: "Herren-Schnitt", priceFromCHF: 65,
     photoUrl: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" },
-  { slug: "haar-atelier", name: "Haar Atelier", rating: 4.85, service: "Color & Cut", priceFromCHF: 145,
+  { id: "f4f9bdc6-96e9-4bbb-819d-3a2931897e57", slug: "haarsalon-margot", name: "Haarsalon Margot", rating: 4.78, service: "Color & Cut", priceFromCHF: 145,
     photoUrl: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=450&fit=crop&q=80" },
-  { slug: "studio-rheinblick", name: "Studio Rheinblick", rating: 4.7, service: "Highlights", priceFromCHF: 95,
+  { id: "9956212b-166f-4a51-a880-6e99e329267a", slug: "rouge-studio", name: "Rouge Studio", rating: 4.74, service: "Highlights", priceFromCHF: 95,
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
   // V2-D60.1: expanded 6 → 15 cards per row per LIVE_TRUTH §17.4 update.
-  { slug: "coiffure-trois-rois", name: "Coiffure Trois Rois", rating: 4.85, service: "Damen-Schnitt", priceFromCHF: 90, freeToday: true,
+  { id: "ff2abacd-661a-4e7a-9c00-2dda7ce29133", slug: "studio-schnittkunst", name: "Studio Schnittkunst", rating: 4.71, service: "Damen-Schnitt", priceFromCHF: 90, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" },
-  { slug: "salon-bellevue", name: "Salon Bellevue", rating: 4.9, service: "Pflegeschnitt", priceFromCHF: 85,
+  { id: "dd4a3e35-8b9c-4ee6-a52e-1fb71ce04f89", slug: "atelier-haarwerk", name: "Atelier Haarwerk", rating: 4.64, service: "Pflegeschnitt", priceFromCHF: 85,
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { slug: "haar-stil", name: "Haar & Stil", rating: 4.7, service: "Strähnen", priceFromCHF: 110,
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, service: "Strähnen", priceFromCHF: 110,
     photoUrl: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=450&fit=crop&q=80" },
-  { slug: "coiffeur-spalentor", name: "Coiffeur Spalentor", rating: 4.6, service: "Föhnen", priceFromCHF: 55, freeToday: true,
+  { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", rating: 4.87, service: "Föhnen", priceFromCHF: 55, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  { slug: "atelier-solene", name: "Atelier Solène", rating: 4.95, service: "Brautstyling", priceFromCHF: 180,
+  { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", rating: 4.85, service: "Brautstyling", priceFromCHF: 180,
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
-  { slug: "coiffeur-margarethen", name: "Coiffeur Margarethen", rating: 4.65, service: "Herren-Schnitt", priceFromCHF: 60,
+  { id: "1c217cdc-f342-4790-91ec-c87709468666", slug: "velvet-face", name: "Velvet Face", rating: 4.81, service: "Herren-Schnitt", priceFromCHF: 60,
     photoUrl: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" },
-  { slug: "haarwerkstatt", name: "Haarwerkstatt", rating: 4.75, service: "Color & Schnitt", priceFromCHF: 135, freeToday: true,
+  { id: "f4f9bdc6-96e9-4bbb-819d-3a2931897e57", slug: "haarsalon-margot", name: "Haarsalon Margot", rating: 4.78, service: "Color & Schnitt", priceFromCHF: 135, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" },
-  { slug: "salon-felix", name: "Salon Felix", rating: 4.8, service: "Föhnen & Styling", priceFromCHF: 70,
+  { id: "9956212b-166f-4a51-a880-6e99e329267a", slug: "rouge-studio", name: "Rouge Studio", rating: 4.74, service: "Föhnen & Styling", priceFromCHF: 70,
     photoUrl: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=450&fit=crop&q=80" },
-  { slug: "coiffeur-st-alban", name: "Coiffeur St. Alban", rating: 4.75, service: "Damen-Schnitt", priceFromCHF: 88,
+  { id: "ff2abacd-661a-4e7a-9c00-2dda7ce29133", slug: "studio-schnittkunst", name: "Studio Schnittkunst", rating: 4.71, service: "Damen-Schnitt", priceFromCHF: 88,
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
 ];
 
@@ -106,8 +112,9 @@ export default function Coiffeur() {
         <ScrollRow ref={scrollRef}>
         {entries.map((e, idx) => (
           <SalonCard
-            key={e.slug}
+            key={`${e.slug}-${idx}`}
             slug={e.slug}
+            salonId={e.id}
             name={e.name}
             rating={e.rating}
             category="coiffeur"

@@ -5,6 +5,30 @@
 **Status:** wip (visual not yet user-confirmed)
 **Added:** V3-D349 · **Rewritten:** V3-D350 · **Polished:** V3-D354 (dropped "Beliebt" badge + review-count) · **List variant:** V3-D355 (`?layout=list`), 2026-05-28
 
+## Taste decisions: elicited V3-D441 (2026-06-07), user-confirmed
+
+Captured via the taste-picking loop (`public/solen-taste-01b-search-cards.html`,
+all four "my read" picks confirmed: *"all ur count correct"*). Logged in
+`_design-system/TASTE_LOG.md`. These SUPERSEDE the older anatomy notes below
+where they conflict:
+
+1. **Elevation = soft, VISIBLE shadow** (the `elevation-2` family), not the
+   near-invisible `0_20px_40px_rgba(0,0,0,0.04)` custom value the card currently
+   ships. Gently lifted, not flat, not heavy. (Reconcile shipped shadow to
+   `shadow-elevation-2` when applying.)
+2. **Next-slot hook = green availability pill** (`text-s-success` on a green-pale
+   bg), NOT ink text. Green = available is semantic (universal-color convention),
+   the one intentional splash of colour on a calm card. APPLY (not yet in code):
+   swap the `.slot` ink span for the green pill in the grid + card variants.
+3. **Price = bold ink number, units grey.** `from <b>65</b> CHF`: the number is
+   `font-semibold text-s-ink`, `from`/`CHF` recede to `text-s-ink-2`. This
+   supersedes the older "calm, number not bold" note (shipped code already bolds
+   it; this confirms it). The orphan-accent version (only the number coloured) is
+   REJECTED: emphasis maps to a whole meaningful unit.
+4. **Extras = clean.** Name, rating (no count), one meta line (`category · city`),
+   price, the one slot hook. NO review-count, NO distance, NO "Popular" badge.
+   Re-confirms V3-D354. Anything beyond this set is clutter unless explicitly asked.
+
 ## What it is
 
 The clean **Airbnb-style card** for the category / search results **2-column grid**

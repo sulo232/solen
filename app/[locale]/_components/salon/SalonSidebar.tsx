@@ -110,7 +110,7 @@ export function SalonSidebar({
 
       {/* 2. Rating row — V3-D230: 14 → 24, "(N)" now button → reviews */}
       <div className="mt-3 flex items-center gap-2">
-        <Star size={20} fill="#FFC32B" stroke="none" />
+        <Star size={20} stroke="none" className="fill-s-star" />
         <strong className="font-body text-[20px] font-semibold leading-none text-s-ink md:text-[22px]">
           {salon.average_rating?.toFixed(1) ?? "—"}
         </strong>

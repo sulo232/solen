@@ -15,7 +15,6 @@ import type { LucideIcon } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { getNeighborhood } from "@/lib/basel-neighborhoods";
 import type { SalonCard as SalonCardType } from "@/lib/types";
-import { useCompare } from "@/components-legacy/compare/CompareContext";
 import SalonBadge from "@/components-legacy/ui/SalonBadge";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
 
@@ -32,7 +31,6 @@ interface SalonCardProps {
   salon: SalonCardType;
   variant?: "default" | "compact";
   locale?: string;
-  showCompare?: boolean;
   showAvailability?: boolean;
   showDistance?: boolean;
   isFavorited?: boolean;
@@ -57,8 +55,6 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
   nails:      { bg: "rgba(27, 77, 27,.12)",   text: "#7A2415" },
   spa:        { bg: "rgba(123,166,136,.15)", text: "#2A5438" },
-  makeup:     { bg: "rgba(201,169,110,.14)", text: "#6B4005" },
-  waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 
 const CATEGORY_FALLBACK_GRADIENTS: Record<string, [string, string]> = {
@@ -66,8 +62,6 @@ const CATEGORY_FALLBACK_GRADIENTS: Record<string, [string, string]> = {
   barbershop: ["rgba(74,30,60,0.08)",    "rgba(255,255,255,0.98)"],
   nails:      ["rgba(27, 77, 27,0.10)",   "rgba(255,255,255,0.98)"],
   spa:        ["rgba(123,166,136,0.14)", "rgba(255,255,255,0.98)"],
-  makeup:     ["rgba(201,169,110,0.12)", "rgba(255,255,255,0.98)"],
-  waxing:     ["rgba(107,163,200,0.12)", "rgba(255,255,255,0.98)"],
 };
 
 function getCategoryFallbackGradient(categories?: string[]): string {
@@ -77,7 +71,7 @@ function getCategoryFallbackGradient(categories?: string[]): string {
 }
 
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, photos }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
   const tCommon = useTranslations("common");
   const tEmpty = useTranslations("emptyStates");
@@ -85,8 +79,6 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
   const prefetched = useRef(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const href = `/${locale}/salon/${salon.slug}`;
-  const { toggleCompare, isInCompare } = useCompare();
-  const compareSelected = isInCompare(salon.id);
   const [heartBouncing, setHeartBouncing] = useState(false);
   const prevFavorited = useRef(isFavorited);
   useEffect(() => {
@@ -108,7 +100,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-border group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
       >
         {/* A3 LOCKED 2026-05-03: photos killed pre-launch — solid category color + Anton name only */}
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0">
@@ -179,26 +171,6 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
           {/* Category pills on photo — glass style kept here only if no badge? Let's just remove them as they clutter the image in Airbnb style. */}
 
-
-          {/* Compare checkbox */}
-          {showCompare && (
-            <button
-              type="button"
-              aria-label={compareSelected ? "Aus Vergleich entfernen" : "Zum Vergleich hinzufügen"}
-              aria-pressed={compareSelected}
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(salon as any); }}
-              className={[
-                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-[background-color,border-color] duration-200 z-10",
-                compareSelected
-                  ? "bg-s-ink border-s-accent text-white scale-100"
-                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-accent/50",
-              ].join(" ")}
-            >
-              {compareSelected && (
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              )}
-            </button>
-          )}
 
           {/* Favorite bookmark — Airbnb style */}
           {onFavoriteToggle && (

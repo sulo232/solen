@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Category tags</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E0DDDB; --sunken:#F5F5F4; --star:#FFC32B; }
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.45}
+  .wrap{max-width:1120px;margin:0 auto;padding:52px 24px 100px}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:38px;letter-spacing:-.02em;margin:8px 0 0}
+  .eyebrow{font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+  .lede{font-size:15px;color:var(--ink2);max-width:720px;margin:12px 0 36px}
+  .rule{height:1px;background:var(--ink)}
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:840px){.cols{grid-template-columns:1fr}}
+  .col h2{font-family:'Inter Tight';font-size:17px;margin:0 0 2px}
+  .col .desc{font-size:12.5px;color:var(--ink2);margin:0 0 16px;min-height:34px}
+  .tag-rec{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:#E8F0FE;color:#276EF1;margin-left:6px}
+  .tag-cur{background:var(--sunken);color:var(--ink2)}
+
+  .hdr{border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
+  .hdr .name{font-family:'Inter Tight';font-weight:700;font-size:16px}
+  .hdr .sub{display:flex;align-items:center;gap:8px;margin-top:7px}
+  .pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;letter-spacing:.02em;
+    padding:3px 10px;border-radius:999px;text-transform:uppercase}
+  .meta{font-size:12px;color:var(--ink2)}
+  .star{color:var(--star)}
+
+  /* A — warm per-category identity (current) */
+  .warm.coiffeur{background:rgba(151,123,89,.12);color:#5A4429}
+  .warm.barber{background:rgba(74,30,60,.12);color:#4A1E3C}
+  .warm.nails{background:rgba(27,77,27,.12);color:#7A2415}
+  .warm.spa{background:rgba(123,166,136,.15);color:#2E5E3A}
+  /* B — neutral sunken pill */
+  .neutral{background:var(--sunken);color:var(--ink2)}
+  /* C — neutral outline */
+  .outline{background:#fff;color:var(--ink);border:1px solid var(--border)}
+  .note{font-size:12px;color:var(--ink2);margin-top:22px;max-width:880px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rule"></div>
+  <div class="eyebrow" style="margin-top:14px">Solen · design system · decision</div>
+  <h1>Salon category tags: identity or neutral?</h1>
+  <p class="lede">The little category chip on the salon page (Coiffeur / Barber / Nails / Spa). Today each
+    category has its own warm colour. The B&amp;W pivot would neutralize them. Same four salons, three treatments.</p>
+
+  <div class="cols">
+    <!-- A -->
+    <div class="col">
+      <h2>A · Warm identity <span class="tag-rec tag-cur">current</span></h2>
+      <p class="desc">Each category keeps its colour. Scannable, characterful, but it's 4 extra hues outside the B&amp;W system.</p>
+      <div class="hdr"><div class="name">Atelier Haarwerk</div><div class="sub"><span class="pill warm coiffeur">Coiffeur</span><span class="meta"><span class="star">★</span> 4.9 · Basel</span></div></div>
+      <div class="hdr"><div class="name">Kaiser Barbier</div><div class="sub"><span class="pill warm barber">Barbershop</span><span class="meta"><span class="star">★</span> 4.7 · Bern</span></div></div>
+      <div class="hdr"><div class="name">Studio Mira Nails</div><div class="sub"><span class="pill warm nails">Nails</span><span class="meta"><span class="star">★</span> 5.0 · Zürich</span></div></div>
+      <div class="hdr"><div class="name">Ldomi Spa</div><div class="sub"><span class="pill warm spa">Spa</span><span class="meta"><span class="star">★</span> 4.8 · Luzern</span></div></div>
+    </div>
+    <!-- B -->
+    <div class="col">
+      <h2>B · Neutral fill <span class="tag-rec">Recommended</span></h2>
+      <p class="desc">One muted chip for every category (ink-2 on sunken). Fully on-system; category is read from the word, not the colour.</p>
+      <div class="hdr"><div class="name">Atelier Haarwerk</div><div class="sub"><span class="pill neutral">Coiffeur</span><span class="meta"><span class="star">★</span> 4.9 · Basel</span></div></div>
+      <div class="hdr"><div class="name">Kaiser Barbier</div><div class="sub"><span class="pill neutral">Barbershop</span><span class="meta"><span class="star">★</span> 4.7 · Bern</span></div></div>
+      <div class="hdr"><div class="name">Studio Mira Nails</div><div class="sub"><span class="pill neutral">Nails</span><span class="meta"><span class="star">★</span> 5.0 · Zürich</span></div></div>
+      <div class="hdr"><div class="name">Lomi Spa</div><div class="sub"><span class="pill neutral">Spa</span><span class="meta"><span class="star">★</span> 4.8 · Luzern</span></div></div>
+    </div>
+    <!-- C -->
+    <div class="col">
+      <h2>C · Neutral outline</h2>
+      <p class="desc">Even quieter: ink text, hairline outline, no fill. The most minimal / Uber-like, but a touch faint.</p>
+      <div class="hdr"><div class="name">Atelier Haarwerk</div><div class="sub"><span class="pill outline">Coiffeur</span><span class="meta"><span class="star">★</span> 4.9 · Basel</span></div></div>
+      <div class="hdr"><div class="name">Kaiser Barbier</div><div class="sub"><span class="pill outline">Barbershop</span><span class="meta"><span class="star">★</span> 4.7 · Bern</span></div></div>
+      <div class="hdr"><div class="name">Studio Mira Nails</div><div class="sub"><span class="pill outline">Nails</span><span class="meta"><span class="star">★</span> 5.0 · Zürich</span></div></div>
+      <div class="hdr"><div class="name">Lomi Spa</div><div class="sub"><span class="pill outline">Spa</span><span class="meta"><span class="star">★</span> 4.8 · Luzern</span></div></div>
+    </div>
+  </div>
+
+  <p class="note"><b>My lean: B (neutral fill).</b> The B&amp;W pivot's whole point is colour = meaning, and a
+    category label isn't a status, it's just a noun, so it shouldn't spend colour. Blue/green/yellow stay
+    reserved for accent / available / rating. <b>But A is defensible</b> if you want category to be instantly
+    scannable across a long results list. Whichever you pick is a 4-line change in <code>CAT_TAG_COLOURS</code>.</p>
+</div>
+</body>
+</html>

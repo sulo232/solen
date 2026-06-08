@@ -54,20 +54,6 @@ const CATEGORY_NAV_REGISTRY: Record<SalonCategory, CategoryNavGroup> = {
       { key: "spa-admin", href: "/dashboard/spa-admin", icon: Leaf, labelKey: "dashboard.nav.spa_admin" },
     ],
   },
-  makeup: {
-    labelKey: "dashboard.nav.makeup_tools",
-    category: "makeup",
-    items: [
-      { key: "makeup-admin", href: "/dashboard/makeup-admin", icon: Palette, labelKey: "dashboard.nav.makeup_admin" },
-    ],
-  },
-  waxing: {
-    labelKey: "dashboard.nav.waxing_tools",
-    category: "waxing",
-    items: [
-      { key: "waxing-admin", href: "/dashboard/waxing-admin", icon: Zap, labelKey: "dashboard.nav.waxing_admin" },
-    ],
-  },
 };
 
 /**

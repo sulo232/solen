@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, staffInviteSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
+import { getActiveSalon } from "@/lib/active-salon";
 import crypto from "crypto";
 
 // POST /api/staff/invite — Salon owner invites a staff member
@@ -26,12 +27,7 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
   // Verify user owns a salon
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id, name")
-    .eq("owner_id", user.id)
-    // Removed .eq("is_active", true) to allow invites during setup
-    .single();
+  const salon = await getActiveSalon<{ id: string; name: string }>(supabase, user.id, "id, name");
 
   if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });
 

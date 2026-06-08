@@ -36,8 +36,6 @@ const TILES: CategoryTile[] = [
   { key: "barber",     name: "BARBER",   countLabel: (n) => `${n} Shops`,     bg: "#4A1E3C" },
   { key: "nails",      name: "NAILS",    countLabel: (n) => `${n} Studios`,   bg: "#E8624A" },
   { key: "spa",        name: "SPA",      countLabel: (n) => `${n} Anbieter`,  bg: "#7BA688" },
-  { key: "makeup",     name: "MAKEUP",   countLabel: (n) => `${n} Studios`,   bg: "#C9A96E" },
-  { key: "waxing",     name: "WAXING",   countLabel: (n) => `${n} Salons`,    bg: "#6BA3C8" },
 ];
 
 export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridProps) {

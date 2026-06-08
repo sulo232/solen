@@ -8,9 +8,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { FileText, Check } from "lucide-react";
-
-// Update this when Terms of Service fundamentally change
-const CURRENT_TOS_VERSION = "2026-03-23";
+import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
 
 export default function TosPrompt() {
   const [show, setShow] = useState(false);
@@ -38,11 +36,11 @@ export default function TosPrompt() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("tos_version")
+        .select("tos_accepted_version")
         .eq("id", session.user.id)
         .single();
 
-      if (profile && profile.tos_version !== CURRENT_TOS_VERSION) {
+      if (profile && profile.tos_accepted_version !== CURRENT_TOS_VERSION) {
         setShow(true);
       }
       setLoading(false);
@@ -79,7 +77,7 @@ export default function TosPrompt() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="w-full max-w-md bg-[--raised] rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
       >
-        <div className="p-6 text-center border-b border-s-ink/5">
+        <div className="p-6 text-center border-b border-s-border">
           <div className="w-12 h-12 rounded-full bg-s-ink/10 mx-auto flex items-center justify-center mb-4">
             <FileText size={24} className="text-s-accent" />
           </div>
@@ -91,18 +89,18 @@ export default function TosPrompt() {
 
         <div className="p-6 bg-s-bg-sunken">
           <div className="flex flex-col gap-3">
-            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-accent transition-colors group">
+            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-border hover:border-s-accent transition-colors group">
               <span className="text-sm font-medium text-s-ink">{t("termsLink")}</span>
               <span className="text-xs text-s-accent group-hover:underline">{t("readCta")}</span>
             </Link>
-            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-accent transition-colors group">
+            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-border hover:border-s-accent transition-colors group">
               <span className="text-sm font-medium text-s-ink">{t("privacyLink")}</span>
               <span className="text-xs text-s-accent group-hover:underline">{t("readCta")}</span>
             </Link>
           </div>
         </div>
 
-        <div className="p-6 border-t border-s-ink/5 flex flex-col gap-3">
+        <div className="p-6 border-t border-s-border flex flex-col gap-3">
           <button
             onClick={handleAccept}
             disabled={saving}

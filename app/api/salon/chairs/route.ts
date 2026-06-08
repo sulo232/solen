@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberChairsSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/chairs — Get chair config for salon owner's barbershop
 export async function GET(req: NextRequest) {
@@ -23,8 +24,7 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
 
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
@@ -62,8 +62,7 @@ export async function PUT(req: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
 
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });

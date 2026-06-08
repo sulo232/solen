@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-icons="color" data-pop="semantic" data-hero="compact" data-layout="balanced">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Solen — Homepage v2 (council fixes)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/_home/base.css"/>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .hero .h1{font-size:26px}
+  /* item 3: availability promoted to a chip on the photo */
+  .card .img .slot{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.95);color:#16A34A;border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.14)}
+  /* item 1: map folded into the rail as a trailing card */
+  .mapimg{position:relative;background:
+     linear-gradient(0deg,rgba(10,10,10,.05) 1px,transparent 1px) 0 0/100% 22px,
+     linear-gradient(90deg,rgba(10,10,10,.05) 1px,transparent 1px) 0 0/22px 100%,#ECEAE7 !important}
+  .mapimg .mp{position:absolute;width:10px;height:10px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ink)}
+  .mapimg .maplabel{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#fff;border-radius:999px;padding:7px 13px;font-family:'Inter Tight';font-weight:700;font-size:12px;display:flex;align-items:center;gap:5px;box-shadow:0 4px 12px rgba(0,0,0,.16);white-space:nowrap}
+  .mapimg .maplabel .svg{width:13px;height:13px}
+  /* business teaser: a contained card, clearly separated from the stone footer */
+  .s-biz.biz{margin:36px 18px;background:#fff;border:1px solid var(--b);border-radius:18px}
+  .s-biz .in{padding:20px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="row">
+    <span class="brand"><span class="brand-text">Solen</span></span>
+    <div class="ministub js-open-search"><span>Any service · Basel</span><span class="mgo"><i data-l="search"></i></span></div>
+    <div class="r"><span class="loc"><i data-l="map-pin"></i>Basel</span><i data-l="menu"></i></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="s-hero sec hero"><div class="wrap">
+    <h1 class="h1">Book beauty in seconds.</h1>
+    <button class="pill js-open-search">
+      <span class="txt"><span class="t1">Any service</span><span class="t2">Basel · Any date</span></span>
+      <span class="go"><i data-l="search"></i></span>
+    </button>
+  </div></section>
+
+  <!-- CATEGORIES -->
+  <section class="s-cats sec"><div class="wrap cats">
+    <div class="cat-color">
+      <a class="it"><span class="ci"><img src="/icons/categories/scissors.png" alt=""></span><span class="lb">Coiffeur</span></a>
+      <a class="it"><span class="ci"><img src="/icons/categories/clippers.png" alt=""></span><span class="lb">Barber</span></a>
+      <a class="it"><span class="ci"><img src="/icons/categories/nails.png" alt=""></span><span class="lb">Nails</span></a>
+      <a class="it"><span class="ci"><img src="/icons/categories/spa.png" alt=""></span><span class="lb">Spa</span></a>
+    </div>
+  </div></section>
+
+  <!-- SALONS (one rail; map folded in as the last card; slot promoted to chip) -->
+  <section class="s-rail sec"><div class="wrap">
+    <div class="sec-h"><h2>Salons in Basel</h2><span class="more">See all</span></div>
+    <div class="rail">
+      <a class="card"><div class="img g3"><span class="slot">Today 15:30</span><span class="heart"><i data-l="heart"></i></span></div>
+        <div class="nm"><span class="t">Studio Nord</span><span class="rt"><i data-l="star"></i>4.9</span></div><div class="meta">Coiffeur · Kleinbasel</div><div class="pr">from CHF 45</div></a>
+      <a class="card"><div class="img g1"><span class="slot">Today 16:00</span><span class="heart"><i data-l="heart"></i></span></div>
+        <div class="nm"><span class="t">Herr &amp; Co.</span><span class="rt"><i data-l="star"></i>4.8</span></div><div class="meta">Barber · Gundeli</div><div class="pr">from CHF 39</div></a>
+      <a class="card"><div class="img g6"><span class="slot">Today 14:45</span><span class="heart"><i data-l="heart"></i></span></div>
+        <div class="nm"><span class="t">Lumi Nails</span><span class="rt"><i data-l="star"></i>4.9</span></div><div class="meta">Nails · Innenstadt</div><div class="pr">from CHF 55</div></a>
+      <a class="card"><div class="img g4"><span class="slot">Today 16:00</span><span class="heart"><i data-l="heart"></i></span></div>
+        <div class="nm"><span class="t">Fade Lab</span><span class="rt"><i data-l="star"></i>4.9</span></div><div class="meta">Barber · Kleinbasel</div><div class="pr">from CHF 42</div></a>
+      <a class="card"><div class="img mapimg"><span class="mp" style="left:24%;top:34%"></span><span class="mp" style="left:62%;top:26%"></span><span class="mp" style="left:46%;top:62%"></span><span class="maplabel"><i data-l="map-pin"></i>Open map</span></div>
+        <div class="nm"><span class="t">All on the map</span></div><div class="meta">14 salons in Basel</div></a>
+    </div>
+  </div></section>
+
+  <!-- STYLISTS -->
+  <section class="s-sty sec"><div class="wrap">
+    <div class="sec-h"><h2>Stylists near you</h2><span class="more">See all</span></div>
+    <div class="sty-list">
+      <a class="sty-row"><span class="av g3"></span><div class="mid"><div class="nm">Mara K.<span class="rt"><i data-l="star"></i>4.9</span></div><div class="role">Coiffeur · Studio Nord</div></div><span class="avail free">Free today</span><span class="heartmini"><i data-l="heart"></i></span></a>
+      <a class="sty-row"><span class="av g1"></span><div class="mid"><div class="nm">Luca R.<span class="rt"><i data-l="star"></i>4.8</span></div><div class="role">Barber · Fade Lab</div></div><span class="avail free">Free today</span><span class="heartmini"><i data-l="heart"></i></span></a>
+      <a class="sty-row"><span class="av g6"></span><div class="mid"><div class="nm">Sina B.<span class="rt"><i data-l="star"></i>5.0</span></div><div class="role">Nails · Lumi</div></div><span class="avail free">Free today</span><span class="heartmini"><i data-l="heart"></i></span></a>
+    </div>
+  </div></section>
+
+  <!-- DISCOVERY -->
+  <section class="s-disc sec"><div class="wrap">
+    <div class="sec-h"><h2>Get inspired</h2><span class="more">See all</span></div>
+  </div>
+  <div class="wrap"><div class="disc-rail">
+    <a class="disc g3"><span class="dheart"><i data-l="heart"></i></span><span class="tt"><i data-l="clapperboard"></i>TikTok</span><span class="author"><span class="pf"></span>@studio.nord</span><span class="t">Balayage trends 2026</span></a>
+    <a class="disc g6"><span class="dheart"><i data-l="heart"></i></span><span class="tt"><i data-l="clapperboard"></i>TikTok</span><span class="author"><span class="pf"></span>@lumi.nails</span><span class="t">Spring nail looks</span></a>
+    <a class="disc g1"><span class="dheart"><i data-l="heart"></i></span><span class="tt"><i data-l="clapperboard"></i>TikTok</span><span class="author"><span class="pf"></span>@fadelab</span><span class="t">The perfect fade</span></a>
+    <a class="disc-cta"><span class="ci"><i data-l="compass"></i></span>Discover all</a>
+  </div></div></section>
+
+  <!-- REVIEWS -->
+  <section class="s-rev sec"><div class="wrap">
+    <div class="sec-h"><h2>What people say</h2><span class="more">See all</span></div>
+  </div>
+  <div class="wrap"><div class="rev-rail">
+    <div class="revcard"><div class="top"><div class="stars"><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i></div><span class="date">2 days ago</span></div><div class="q">"Booked a last-minute cut in two taps and walked in 20 minutes later."</div><div class="by"><span class="pf"></span><div><div class="nm">Nadia S.</div><div class="sl">Studio Nord</div></div></div></div>
+    <div class="revcard"><div class="top"><div class="stars"><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i></div><span class="date">5 days ago</span></div><div class="q">"Found a top-rated barber two streets away and paid in the app."</div><div class="by"><span class="pf"></span><div><div class="nm">Jonas W.</div><div class="sl">Fade Lab</div></div></div></div>
+    <div class="revcard"><div class="top"><div class="stars"><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i><i data-l="star"></i></div><span class="date">1 week ago</span></div><div class="q">"Exactly as pictured and the booking was effortless."</div><div class="by"><span class="pf"></span><div><div class="nm">Elif K.</div><div class="sl">Maison Belle</div></div></div></div>
+  </div></div></section>
+
+  <!-- BUSINESS -->
+  <section class="s-biz biz"><div class="in">
+    <div><h3>Own a salon?</h3><p>List on Solen and fill your quiet hours.</p></div>
+    <a class="b">Learn more</a>
+  </div></section>
+
+  <!-- FOOTER -->
+  <footer class="foot"><div class="in">
+    <div class="fbrand" style="margin-bottom:24px">
+      <div class="lc" style="font-family:'Inter Tight';font-weight:800;font-size:20px">Solen</div>
+      <p style="font-size:12.5px;color:var(--ink2);margin:6px 0 14px;line-height:1.5;max-width:300px">Beauty &amp; wellness booking across Switzerland. Find salons, book instantly.</p>
+      <div class="news"><input placeholder="Tips + new salons, monthly"><button>Subscribe</button></div>
+    </div>
+    <div class="cols">
+      <div><h4>Solen</h4><a>About</a><a>Careers</a><a>Press</a><a>Blog</a></div>
+      <div><h4>Help</h4><a>Customer help</a><a>Salon help</a><a>Safety</a><a>Contact</a></div>
+      <div><h4>Promise</h4><a>Book in 30s</a><a>No phone calls</a><a>Instant confirmation</a><a>Fair prices</a></div>
+    </div>
+    <div class="legal" style="flex-direction:column;align-items:flex-start;gap:5px"><span>© 2026 Solen.ch · All rights reserved</span><span>Privacy · Terms · Imprint · Cookies</span></div>
+  </div></footer>
+
+</main>
+
+<div class="scrim"></div>
+<div class="sheet">
+  <div class="sh"><span class="ttl">Search</span><button class="x"><i data-l="x"></i></button></div>
+  <div class="field on"><i data-l="search"></i><div><div class="lb">Service or salon</div><div class="vl ph">What are you after?</div></div></div>
+  <div class="field"><i data-l="map-pin"></i><div><div class="lb">Where</div><div class="vl">Basel</div></div></div>
+  <div class="when">When</div>
+  <div class="dchips"><button class="on">Any date</button><button>Today</button><button>Tomorrow</button><button>This weekend</button></div>
+  <button class="submit"><i data-l="search"></i>Search</button>
+</div>
+
+<script>lucide.createIcons({ attrs:{ class:'svg' }, nameAttr:'data-l' });</script>
+<script src="/_home/home.js"></script>
+</body>
+</html>

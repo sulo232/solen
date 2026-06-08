@@ -148,7 +148,7 @@ export default function ServiceDetailSheet({
                     </span>
                     <span
                       className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full border-2 transition-colors ${
-                        on ? 'border-s-ink' : 'border-s-ink/25'
+                        on ? 'border-s-ink' : 'border-s-border'
                       }`}
                     >
                       {on && <span className="h-[11px] w-[11px] rounded-full bg-s-ink" />}
@@ -192,7 +192,7 @@ export default function ServiceDetailSheet({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-s-ink/[0.06] px-4 py-3.5">
+      <div className="flex items-center justify-between gap-3 border-t border-s-border px-4 py-3.5">
         <div>
           <motion.p
             key={showFrom ? 'from' : total.price}
@@ -216,7 +216,7 @@ export default function ServiceDetailSheet({
             <button
               type="button"
               onClick={() => onRemove(service.id)}
-              className="rounded-btn border border-s-ink/15 px-5 py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
+              className="rounded-btn border border-s-border px-5 py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
             >
               {t('remove')}
             </button>

@@ -8,6 +8,17 @@ import { validateBody, createSalonSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
 import { onboardingWelcome } from "@/lib/email-templates/salon-onboarding";
 import { autoTranslateDescription } from "@/lib/ai/translate";
+import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
+import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
+import { generateEmbedding } from "@/lib/search/embeddings";
+
+// Time-of-day windows (local hour ranges) for the `period` availability filter.
+const PERIOD_HOURS: Record<string, [number, number]> = {
+  morning: [9, 12],
+  noon: [12, 15],
+  afternoon: [15, 18],
+  evening: [18, 24],
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,6 +35,7 @@ export async function GET(request: NextRequest) {
     const instant_bookable = searchParams.get("instant_bookable");
     const deals = searchParams.get("deals");
     const walk_in = searchParams.get("walk_in");
+    const open_now = searchParams.get("open_now"); // currently-open (Zurich tz) via isOpenNow over opening_hours
     const gender = searchParams.get("gender"); // V3-D387: "female" | "male" → services.suitable_gender
     const date = searchParams.get("date"); // YYYY-MM-DD for availability filtering
     const lat = searchParams.get("lat");
@@ -34,6 +46,8 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit;
     const idsParam = searchParams.get("ids");
     const serviceFilter = searchParams.get("service");
+    const q = searchParams.get("q")?.trim(); // free-text — semantic rank, combined with the filters below
+    const period = searchParams.get("period"); // morning|noon|afternoon|evening — open-slot time-of-day filter
 
     // V3-D349: the category/search page (?with_slots=1) needs per-salon services
     // + next available slots for the Fresha-style booking card. Homepage feeds omit
@@ -46,6 +60,29 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createServerSupabaseClient();
 
+    // Free-text: resolve semantic rank FIRST, then AND it with the structured filters
+    // below (city / date / period / walk-in...). semanticMode skips the DB sort+range so
+    // results come back in relevance order (sorted + paginated in JS at the end).
+    let rankIndex: Map<string, number> | null = null;
+    if (q && q.length >= 2) {
+      let emb: string | null = null;
+      try {
+        emb = JSON.stringify(await generateEmbedding(q));
+      } catch (e) {
+        console.error("[api/salons GET] query embedding failed, lexical-only:", (e as Error).message);
+      }
+      const { data: ranked, error: rErr } = await supabase.rpc("search_salons_ranked", {
+        p_q: q,
+        p_limit: 60,
+        p_query_embedding: emb,
+      });
+      if (rErr) console.error("[api/salons GET] search_salons_ranked failed:", rErr.message);
+      const ids = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id as string);
+      if (ids.length === 0) return NextResponse.json({ items: [], total: 0, page, limit });
+      rankIndex = new Map(ids.map((id: string, i: number): [string, number] => [id, i]));
+    }
+    const semanticMode = rankIndex !== null;
+
     let query = supabase
       .from("salons")
       .select(`*, services(${servicesCols})`, { count: "exact" })
@@ -53,18 +90,32 @@ export async function GET(request: NextRequest) {
       .eq("listed_on_marketplace", true)
       .eq("is_test", false);
 
+    if (rankIndex) query = query.in("id", [...rankIndex.keys()]);
+
     if (category) query = query.contains("categories", [category]);
     
     if (city) {
-      const { data: cData } = await supabase.from("cities").select("id").eq("slug", city).single();
-      if (cData?.id) query = query.eq("city_id", cData.id);
+      // Resolve the city by slug OR localized name, case-insensitive — the search overlay
+      // sends the display name ("Zürich") while category pages send the slug ("zuerich").
+      // Matching both means location filtering works from either entry point. (cities is tiny.)
+      const { data: cityRows } = await supabase
+        .from("cities")
+        .select("id, slug, name_de, name_en, name_fr, name_it");
+      const cKey = city.toLowerCase().trim();
+      const cMatch = (cityRows ?? []).find((c: Record<string, unknown>) =>
+        [c.slug, c.name_de, c.name_en, c.name_fr, c.name_it].some(
+          (v) => typeof v === "string" && v.toLowerCase().trim() === cKey,
+        ),
+      );
+      const cityId = cMatch?.id as string | undefined;
+      if (cityId) query = query.eq("city_id", cityId);
 
       // Auto-hide test salons when real salons already exist for this city+category combo
-      if (category && cData?.id) {
+      if (category && cityId) {
         const { count: realCount } = await supabase
           .from("salons")
           .select("id", { count: "exact", head: true })
-          .eq("city_id", cData.id)
+          .eq("city_id", cityId)
           .contains("categories", [category])
           .eq("is_active", true)
           .eq("is_test", false);
@@ -127,9 +178,58 @@ export async function GET(request: NextRequest) {
       query = query.gt("last_minute_discount_percent", 0);
     }
 
-    // Filter to salons that accept walk-ins (column may not exist yet — skip if error)
+    // Filter to salons that accept walk-ins. walkin_enabled is the real column and the
+    // same gate /api/walkin/availability uses, so the search filter and the live wait-time
+    // numbers agree on which salons are walk-in.
     if (walk_in === "true") {
-      query = query.eq("walk_in_available", true);
+      query = query.eq("walkin_enabled", true);
+    }
+
+    // Time-of-day filter: salons with >=1 available slot whose LOCAL hour falls in the
+    // period window. If a date is set → that day's window; otherwise the next 14 days.
+    // Slots are naive-local timestamps, so the hour is read straight off the ISO string.
+    if (period && PERIOD_HOURS[period]) {
+      const [startH, endH] = PERIOD_HOURS[period];
+      const validDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date);
+      const lo = validDate ? `${date}T00:00:00` : new Date().toISOString();
+      const hi = validDate
+        ? `${date}T23:59:59`
+        : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+      // DISTINCT salon_ids resolved in SQL via RPC — the old fetch-all-slots-then-JS-filter
+      // truncated at PostgREST's row cap on the wide no-date (14-day) window, returning only
+      // a few salons. The RPC does EXTRACT(hour) + DISTINCT server-side, so no cap.
+      const { data: periodRows, error: periodErr } = await supabase.rpc("salons_with_slot_in_hours", {
+        p_start_hour: startH,
+        p_end_hour: endH,
+        p_from: lo,
+        p_to: hi,
+      });
+      if (periodErr) console.error("[api/salons GET] period RPC failed:", periodErr.message);
+      const periodIds = (periodRows ?? []).map((r: { salon_id: string }) => r.salon_id);
+      if (periodIds.length > 0) query = query.in("id", periodIds);
+      else return NextResponse.json({ items: [], total: 0, page, limit });
+    }
+
+    // Open-now filter. "Open right now" depends on Zurich-local day/time vs the free-form
+    // opening_hours jsonb (+ overnight wrap), which the shared isOpenNow helper computes in
+    // JS — it can't be a PostgREST predicate. So resolve the open salon IDs first and
+    // constrain with .in() BEFORE .range() below, exactly like instant_bookable, so count +
+    // pagination stay correct (a client-side post-filter would only ever see one page).
+    if (open_now === "true") {
+      const { data: hoursRows } = await supabase
+        .from("salons")
+        .select("id, opening_hours")
+        .eq("is_active", true)
+        .eq("listed_on_marketplace", true)
+        .eq("is_test", false);
+      const openIds = (hoursRows ?? [])
+        .filter((s: { opening_hours: unknown }) => isOpenNow(s.opening_hours as OpeningHours).isOpen)
+        .map((s: { id: string }) => s.id as string);
+      if (openIds.length > 0) {
+        query = query.in("id", openIds);
+      } else {
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
     }
 
     // V3-D387: Service type / "Für wen" — salons with >=1 active service suitable
@@ -200,27 +300,25 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    if (sort === "rating") query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
-    else if (sort === "price") query = query.order("created_at", { ascending: true }); // V1: mocked by created_at since price is in services
-    else if (sort === "last_minute") query = query.order("last_minute_discount_percent", { ascending: false }).gt("last_minute_discount_percent", 0);
-    else if (sort === "newest") query = query.order("created_at", { ascending: false });
-    else if (sort === "distance") {
-      // Distance sorting is handled post-fetch if `lat` and `lng` are provided.
-      // We still fall back to solen_score to ensure deterministic fallback if distances are equal/unavailable.
-      query = query.order("solen_score", { ascending: false });
-    }
-    else query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
+    // semanticMode: no DB sort/range — the matched set (<=60 ids) is fetched whole and
+    // ordered by relevance + paginated in JS at the end. Structured mode sorts+pages in DB.
+    if (!semanticMode) {
+      if (sort === "rating") query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
+      else if (sort === "price") query = query.order("created_at", { ascending: true }); // V1: mocked by created_at since price is in services
+      else if (sort === "last_minute") query = query.order("last_minute_discount_percent", { ascending: false }).gt("last_minute_discount_percent", 0);
+      else if (sort === "newest") query = query.order("created_at", { ascending: false });
+      else if (sort === "distance") {
+        // Distance sorting is handled post-fetch if `lat` and `lng` are provided.
+        // We still fall back to solen_score to ensure deterministic fallback if distances are equal/unavailable.
+        query = query.order("solen_score", { ascending: false });
+      }
+      else query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
 
-    query = query.range(offset, offset + limit - 1);
+      query = query.range(offset, offset + limit - 1);
+    }
 
     const { data, error, count } = await query;
     if (error) {
-      // Gracefully handle missing walk_in_available column (migration M1 pending)
-      // If the walk_in filter caused a column-not-found error, retry without it
-      if (walk_in === "true" && (error.message?.includes("walk_in_available") || error.code === "42703")) {
-        console.warn("[api/salons GET] walk_in_available column not found — ignoring walk_in filter");
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
       console.error("[api/salons GET] query error:", error.message);
       return NextResponse.json({ items: [], total: 0, page, limit });
     }
@@ -345,6 +443,17 @@ export async function GET(request: NextRequest) {
           : {}),
       };
     });
+
+    // semanticMode: order by relevance rank + paginate in JS (DB sort/range were skipped).
+    if (semanticMode && rankIndex) {
+      items.sort(
+        (a, b) =>
+          (rankIndex!.get((a as Record<string, unknown>).id as string) ?? 1e9) -
+          (rankIndex!.get((b as Record<string, unknown>).id as string) ?? 1e9),
+      );
+      const paged = items.slice(offset, offset + limit);
+      return NextResponse.json({ items: paged, total: items.length, page, limit });
+    }
 
     if (sort === "distance" && distanceMap) {
       items.sort((a, b) => (a.distance_meters ?? Infinity) - (b.distance_meters ?? Infinity));
@@ -545,7 +654,7 @@ export async function POST(request: NextRequest) {
     // Using any type to dynamically attach role if needed
     const updateData: Record<string, any> = { 
       onboarding_completed: true,
-      tos_version: "1.0",
+      tos_accepted_version: CURRENT_TOS_VERSION,
       tos_accepted_at: new Date().toISOString()
     };
     

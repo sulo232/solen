@@ -52,20 +52,6 @@ export const CATEGORY_SERVICES: Record<string, GuidedService[]> = {
     { key: "body-wrap", label_de: "Körperpackung", label_en: "Body Wrap", label_fr: "Enveloppement", label_it: "Impacco corpo" },
     { key: "sauna", label_de: "Sauna / Dampfbad", label_en: "Sauna / Steam", label_fr: "Sauna / Hammam", label_it: "Sauna / Bagno turco" },
   ],
-  makeup: [
-    { key: "bridal-makeup", label_de: "Braut-Makeup", label_en: "Bridal Makeup", label_fr: "Maquillage mariée", label_it: "Trucco sposa" },
-    { key: "evening-makeup", label_de: "Abend-Makeup", label_en: "Evening Makeup", label_fr: "Maquillage soirée", label_it: "Trucco sera" },
-    { key: "natural-look", label_de: "Natürliches Makeup", label_en: "Natural Look", label_fr: "Maquillage naturel", label_it: "Trucco naturale" },
-    { key: "lash-extensions", label_de: "Wimpernverlängerung", label_en: "Lash Extensions", label_fr: "Extensions cils", label_it: "Extension ciglia" },
-    { key: "brow-shaping", label_de: "Augenbrauen formen", label_en: "Brow Shaping", label_fr: "Mise en forme des sourcils", label_it: "Modellazione sopracciglia" },
-  ],
-  waxing: [
-    { key: "leg-waxing", label_de: "Beine", label_en: "Leg Waxing", label_fr: "Épilation jambes", label_it: "Ceretta gambe" },
-    { key: "bikini-waxing", label_de: "Bikinizone", label_en: "Bikini Waxing", label_fr: "Maillot", label_it: "Ceretta bikini" },
-    { key: "arm-waxing", label_de: "Arme", label_en: "Arm Waxing", label_fr: "Épilation bras", label_it: "Ceretta braccia" },
-    { key: "face-waxing", label_de: "Gesicht", label_en: "Face Waxing", label_fr: "Épilation visage", label_it: "Ceretta viso" },
-    { key: "full-body", label_de: "Ganzkörper", label_en: "Full Body", label_fr: "Corps entier", label_it: "Corpo intero" },
-  ],
 };
 
 /** Date quick-pick chips for Step 4 */

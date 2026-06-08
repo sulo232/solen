@@ -73,7 +73,7 @@ export default function MyGiftCardsPage() {
 
         {/* List */}
         {cards.length === 0 ? (
-          <div className="bg-white rounded-[12px] border border-s-ink/5 p-8 text-center text-s-ink/40">
+          <div className="bg-white rounded-[12px] border border-s-border p-8 text-center text-s-ink/40">
             <Gift className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm font-medium">Keine Geschenkkarten gefunden</p>
           </div>
@@ -110,7 +110,7 @@ export default function MyGiftCardsPage() {
                   <div className="mb-4">
                     <p className="text-xs text-s-ink/50 mb-1">Online Code</p>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 px-3 py-2 bg-s-bg-surface border border-s-ink/10 rounded-btn font-mono text-sm tracking-widest text-s-ink">
+                      <div className="flex-1 px-3 py-2 bg-s-bg-surface border border-s-border rounded-btn font-mono text-sm tracking-widest text-s-ink">
                         {card.code}
                       </div>
                       <button
@@ -125,7 +125,7 @@ export default function MyGiftCardsPage() {
                   </div>
 
                   {(card.expires_at || card.recipient_name) && (
-                    <div className="pt-3 border-t border-s-ink/5 space-y-1.5 pt-3 mt-auto">
+                    <div className="pt-3 border-t border-s-border space-y-1.5 pt-3 mt-auto">
                       {card.recipient_name && (
                         <p className="text-xs text-s-ink/50">
                           Für: <span className="font-medium text-s-ink">{card.recipient_name}</span>

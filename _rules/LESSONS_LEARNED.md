@@ -325,3 +325,21 @@
 - **File(s)**: `components/BookingSuccess.tsx:112`
 - **What happened**: `toLocaleDateString("de-CH")` was hardcoded regardless of the user's locale, showing German date format to English/French/Italian users.
 - **Fix**: Derive `localeCode` from `useLocale()` → `de-CH / fr-CH / it-CH / en-GB`. Apply to all date/time formatting in user-facing components.
+
+---
+
+### `opening_hours` uses SHORT day keys (`mon`/`tue`…), never `monday`
+- **Date**: 2026-06-05
+- **File(s)**: `lib/salon-hours.ts`, `components-legacy/CategoryPage.tsx`, `app/api/salons/route.ts`
+- **What happened**: The "Jetzt geöffnet" (open-now) filter silently returned an EMPTY list on every city/category page. Root cause: live `salons.opening_hours` jsonb is keyed by SHORT day names (`{ mon: {open,close}, tue: … }`, missing key = closed that day) — what the onboarding form, `_shared.ts`, and 18/18 seeded salons use — but `lib/salon-hours.ts isOpenNow()` looked up LONG names (`opening_hours["monday"]`). `undefined` every time → `isOpen:false` for every salon. `StatusPill` looked fine only because it computes open/closed via the short-key helper in `_shared.ts`, not `isOpenNow`.
+- **Why it happened**: Two same-named `OpeningHours` types (`lib/salon-hours.ts` vs `lib/types.ts`) and two day-key conventions coexisting; the long-key path was never exercised against real data, so it "compiled and shipped" broken.
+- **Fix / What to do instead**: `isOpenNow` now reads BOTH conventions (`DAY_KEYS_SHORT[d] ?? DAY_KEYS_LONG[d]`). When touching opening_hours anywhere, assume SHORT keys (`mon` `tue` `wed` `thu` `fri` `sat` `sun`), each `{ open, close }` as "HH:MM", missing key = closed. Verify any is-open helper against REAL data + the current Zurich time (`npx tsx` one-shot), never just that it type-checks.
+
+---
+
+### Compute-based filters resolve IDs BEFORE `.range()` — and must be proven to DISCRIMINATE
+- **Date**: 2026-06-05
+- **File(s)**: `app/api/salons/route.ts`, `app/[locale]/_components/search/SearchTemplate.tsx`, `components-legacy/CategoryPage.tsx`
+- **What happened**: `open_now` was a dead filter — the UI set the param + counted it as active, but nothing filtered by it. A first pass filtered client-side over one fetched page, so the count + "load more" lied (page-1 only).
+- **Why it happened**: Filters that depend on JS/compute logic (open-now via `isOpenNow` over jsonb; Zurich tz + overnight wrap) can't be a PostgREST `.eq()/.gte()` predicate, so they get deferred or faked client-side.
+- **Fix / What to do instead**: Mirror the `instant_bookable`/`gender`/`price` pattern in `/api/salons` — resolve matching `salon_id`s first (sub-query, or in-JS over a light `select("id, opening_hours")`), then `query.in("id", ids)` **before** `.range(offset, …)`, so `count`/pagination stay honest. FE forwards the param via `buildUrl`; toggle pills go through the generic `TOGGLE_PILLS` set (no per-pill hardcoding). When QAing ANY filter, prove it returns a correct SUBSET (compare against the helper applied to the full set), not just that the control renders or the route returns 200.

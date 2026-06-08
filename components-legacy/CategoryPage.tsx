@@ -23,7 +23,6 @@ import { type CitySlug, getCityName, CITY_SLUGS, CITIES } from "@/lib/cities";
 import SearchCriteriaChips from "@/components-legacy/search/SearchCriteriaChips";
 import SubCategoryChips from "@/components-legacy/ui/SubCategoryChips";
 import SortDropdown from "@/components-legacy/ui/SortDropdown";
-import { isOpenNow } from "@/lib/salon-hours";
 
 const MapView = dynamic(() => import("@/components-legacy/MapView"), { ssr: false });
 
@@ -34,8 +33,6 @@ const categoryLabels: Record<SalonCategory, string> = {
   barbershop: "Barbershop",
   nails: "Nägel",
   spa: "Spa",
-  makeup: "Makeup",
-  waxing: "Waxing",
 };
 
 
@@ -96,13 +93,13 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
         <div className="flex gap-2">
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Phone className="w-3 h-3 inline mr-1" />{t("call")}
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Globe className="w-3 h-3 inline mr-1" />{t("website")}
             </a>
           )}
@@ -248,12 +245,11 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       .then((data) => {
         if (cancelled) return;
         if (!data) { setLoading(false); return; }
-        const items = data.items ?? [];
-        const openNow = searchParams.get('open_now') === 'true';
-        const filteredItems = openNow ? items.filter((s: any) => isOpenNow((s as any).opening_hours).isOpen) : items;
-        setSalons(filteredItems);
-        // When open_now is active, use the filtered count so Load More behaves correctly
-        setTotal(openNow ? filteredItems.length : (data.total ?? 0));
+        // open_now is forwarded to /api/salons via buildUrl (it copies the whole query
+        // string); the API now filters server-side + returns the correct total, so consume
+        // items/total directly. No client-side re-filter — that only ever saw page 1.
+        setSalons(data.items ?? []);
+        setTotal(data.total ?? 0);
         setLoading(false);
       })
       .catch((err) => { console.error("[CategoryPage] failed to fetch salons:", err); if (!cancelled) { setFetchError(tc("errorLoading")); setLoading(false); } });
@@ -600,7 +596,6 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                   <SalonCard
                     salon={salon}
                     locale={locale}
-                    showCompare
                     isFavorited={favoriteIds.has(salon.id)}
                     onFavoriteToggle={handleFavoriteToggle}
                     {...(selectedDate

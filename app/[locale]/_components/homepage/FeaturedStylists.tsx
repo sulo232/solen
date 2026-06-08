@@ -37,8 +37,16 @@ import { FROST_GLASS } from "@/lib/frost-glass";
  *   - reviewCount: hardcoded ints. Real count = COUNT(*) on reviews
  *     filtered by stylist_id (denormalize into staff.review_count for perf).
  *
- * Visible cap: 4 cards (locked per mockup 2026-05-25). Tap a card → routes
- * to /stylist/[slug] (existing stylist detail page).
+ * Visible cap: 4 cards (locked per mockup 2026-05-25).
+ *
+ * ⚠️ NOT RENDERED (V3-D436, 2026-06-05): removed from the homepage
+ * (app/[locale]/page.tsx). The card Link below points at /stylist/${s.slug},
+ * a route that does NOT exist (the locale catch-all serves a soft not-found at
+ * HTTP 200). The DEMO array is standalone (no salon slug / staff id) so it
+ * can't be repointed at the real /salon/[slug]/staff/[staffId] profile route
+ * without inventing a mapping. To revive: rebuild against /api/staff/featured
+ * (returns real { id, salon_slug, … }) and link to /salon/${salon_slug}/staff/${id}.
+ * Until then the href below is intentionally dead-but-unreachable.
  *
  * Mocking trade-off: identical photo size + identical info density across
  * cards intentionally — this is a SCAN/COMPARE pattern not a discovery
@@ -252,7 +260,7 @@ export default function FeaturedStylists() {
                           carries the signal; the number competing at 500/ink was one of 4 dark
                           elements fighting the name. Uber keeps rating light grey. */}
                       <span className="inline-flex shrink-0 items-baseline gap-1 font-body text-[13px] font-normal text-s-ink-2 tabular-nums">
-                        <Star size={11} fill="#FFC32B" stroke="none" aria-hidden className="translate-y-[1.5px]" />
+                        <Star size={11} stroke="none" aria-hidden className="translate-y-[1.5px] fill-s-star" />
                         {s.rating.toFixed(1)}
                         <span className="font-normal text-[11px] text-s-ink-3">({s.reviewCount})</span>
                       </span>

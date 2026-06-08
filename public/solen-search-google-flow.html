@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — search, Google-style in-between zone (empty → typing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--b:#E7E5E4;--b2:rgba(10,10,10,.10);--sunken:#F5F5F4;--accent:#276EF1;--accentbg:#EAEFFE;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:34px 18px 80px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 30px;max-width:760px;line-height:1.55}
+  .sub b{color:var(--ink)}
+  .grid{display:flex;flex-wrap:wrap;gap:34px;justify-content:center;max-width:840px;margin:0 auto;align-items:flex-start}
+  .col{width:360px}
+  .tag{font-family:'Inter Tight';font-weight:800;font-size:14px;margin-bottom:3px}
+  .tagd{font-size:12px;color:var(--ink2);margin:0 0 14px;line-height:1.45;min-height:34px}
+  .tagd b{color:var(--ink)}
+  .arrow{font-size:30px;color:var(--ink3);align-self:center;padding-top:120px}
+  /* phone */
+  .ph{background:#fff;border:1px solid var(--b2);border-radius:26px;box-shadow:0 14px 40px rgba(0,0,0,.12);overflow:hidden}
+  .ohead{display:flex;align-items:center;gap:12px;padding:16px 16px 12px}
+  .ohead .ttl{font-family:'Inter Tight';font-weight:800;font-size:21px;flex:1}
+  .ohead .x{width:34px;height:34px;border:1px solid var(--b);border-radius:50%;display:grid;place-items:center}
+  .ohead .x svg{width:17px;height:17px}
+  .obody{padding:4px 16px 16px}
+  .field{display:flex;align-items:center;gap:12px;border:1px solid var(--b);border-radius:13px;padding:11px 14px;margin-bottom:9px}
+  .field.focus{border-color:var(--accent);border-width:1.5px}
+  .field svg{width:18px;height:18px;stroke:var(--ink2);flex-shrink:0}
+  .field .flbl{font-size:11px;color:var(--ink2)}
+  .field .fval{font-size:14.5px;font-weight:600;margin-top:1px}
+  .field .fval.ph{color:var(--ink3);font-weight:500}
+  .cursor{display:inline-block;width:2px;height:16px;background:var(--accent);vertical-align:-2px;animation:bl 1s steps(2) infinite}
+  @keyframes bl{50%{opacity:0}}
+  /* the IN-BETWEEN zone (between Search and Location) */
+  .between{border-left:2px solid var(--accent);padding:2px 0 4px 12px;margin:2px 0 11px}
+  .zlabel{font-family:'Inter Tight';font-weight:700;font-size:12px;margin:6px 0 9px;display:flex;align-items:center;gap:7px}
+  .zlabel .pz{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:var(--accentbg);border-radius:5px;padding:2px 6px}
+  /* personalized chips */
+  .qrow{display:flex;flex-wrap:wrap;gap:8px}
+  .qchip{display:flex;align-items:center;gap:6px;border:1px solid var(--b);border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:600;background:#fff}
+  .qchip svg{width:13px;height:13px;stroke:var(--ink2)}
+  .qchip.hot svg{stroke:var(--accent)}
+  /* typing results */
+  .sugg{display:flex;align-items:center;gap:11px;padding:8px 2px}
+  .sugg .ic{width:32px;height:32px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex-shrink:0}
+  .sugg .ic svg{width:15px;height:15px;stroke:var(--ink2)}
+  .sugg .thumb{width:40px;height:40px;border-radius:9px;background:var(--sunken);flex-shrink:0;overflow:hidden}
+  .sugg .thumb img{width:100%;height:100%;object-fit:cover}
+  .sugg .st{font-size:14.5px;font-weight:500}
+  .sugg .ss{font-size:11.5px;color:var(--ink2);margin-top:1px;display:flex;align-items:center;gap:4px}
+  .sugg .ss svg{width:11px;height:11px;stroke:none;fill:var(--star)}
+  .sugg .em{font-weight:700;color:var(--ink)}
+  .ghdr{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin:8px 0 2px}
+  .ofoot{border-top:1px solid var(--sunken);padding:12px 16px}
+  .cta{width:100%;background:var(--ink);color:#fff;border:none;border-radius:13px;padding:14px;font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .note{font-size:12px;color:var(--ink2);line-height:1.55;margin:26px auto 0;max-width:760px;padding:12px 14px;background:#fff;border:1px solid var(--b);border-radius:12px}
+  .note b{color:var(--ink)} .note code{font-family:ui-monospace,monospace;font-size:10.5px;background:var(--sunken);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+  <h1>Search — Google-style in-between zone</h1>
+  <p class="sub">The zone right under the Search field (between it and Location) is <b>dynamic</b>: <b>empty = personalized for-you</b>; <b>typing = live results</b>. Same spot, it just swaps content as you type — like Google's dropdown.</p>
+
+  <div class="grid">
+
+    <!-- EMPTY -->
+    <div class="col">
+      <div class="tag">1 · Just tapped (empty)</div>
+      <div class="tagd">No query yet → the in-between shows <b>personalized</b> quick-searches (your history + rec engine).</div>
+      <div class="ph">
+        <div class="ohead"><span class="ttl">Search</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field focus"><svg data-l="search"></svg><div><div class="flbl">Service or salon</div><div class="fval ph">What are you after?<span class="cursor"></span></div></div></div>
+
+          <div class="between">
+            <div class="zlabel">For you <span class="pz">personalized</span></div>
+            <div class="qrow">
+              <span class="qchip hot"><svg data-l="rotate-ccw"></svg>Men's cut · again</span>
+              <span class="qchip"><svg data-l="scissors"></svg>Beard trim</span>
+              <span class="qchip hot"><svg data-l="trending-up"></svg>Balayage</span>
+              <span class="qchip"><svg data-l="hand"></svg>Gel nails</span>
+            </div>
+          </div>
+
+          <div class="field"><svg data-l="map-pin"></svg><div><div class="flbl">Location</div><div class="fval">Basel</div></div></div>
+          <div class="field"><svg data-l="calendar"></svg><div><div class="flbl">When</div><div class="fval ph">Any date</div></div></div>
+        </div>
+        <div class="ofoot"><button class="cta">Search</button></div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- TYPING -->
+    <div class="col">
+      <div class="tag">2 · Typing "hair"</div>
+      <div class="tagd">Same zone now shows <b>live results</b> (the typeahead we already have) — services + salons, ranked. Location/When stay put below.</div>
+      <div class="ph">
+        <div class="ohead"><span class="ttl">Search</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field focus"><svg data-l="search"></svg><div><div class="flbl">Service or salon</div><div class="fval">hair<span class="cursor"></span></div></div></div>
+
+          <div class="between">
+            <div class="ghdr">Services</div>
+            <div class="sugg"><span class="ic"><svg data-l="search"></svg></span><div class="st"><span class="em">Hair</span>cut</div></div>
+            <div class="sugg"><span class="ic"><svg data-l="search"></svg></span><div class="st"><span class="em">Hair</span> color · Balayage</div></div>
+            <div class="sugg"><span class="ic"><svg data-l="search"></svg></span><div class="st">Men's <span class="em">hair</span>cut</div></div>
+            <div class="ghdr">Salons</div>
+            <div class="sugg"><span class="thumb"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=120&q=70" alt=""/></span><div><div class="st">Blade &amp; Stone</div><div class="ss"><svg data-l="star"></svg>4.4 · Barber · Basel</div></div></div>
+            <div class="sugg"><span class="thumb"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&q=70" alt=""/></span><div><div class="st"><span class="em">Hair</span> Lounge</div><div class="ss"><svg data-l="star"></svg>4.7 · Coiffeur · Basel</div></div></div>
+          </div>
+
+          <div class="field"><svg data-l="map-pin"></svg><div><div class="flbl">Location</div><div class="fval">Basel</div></div></div>
+          <div class="field"><svg data-l="calendar"></svg><div><div class="flbl">When</div><div class="fval ph">Any date</div></div></div>
+        </div>
+        <div class="ofoot"><button class="cta">Search "hair"</button></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <b>How it works:</b> one zone between Search and Location. Empty → <code>/api/recommendations</code> + <code>/api/discovery/chip-terms</code> (personalized, falls back to trending). Type ≥2 chars → the existing typeahead (<code>/api/search/suggest</code>) renders right there, grouped services + salons. Tap a result = go; tap a chip = fill/search; or keep composing City + When below and hit Search. <b>Behavior question:</b> when typing, do you want Location + When to <b>stay visible below</b> the results (shown here), or <b>collapse</b> while typing (pure Google, fields come back when you clear)?
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

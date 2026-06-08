@@ -50,7 +50,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       </div>
 
       {/* Checklist */}
-      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-3">
+      <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-3">
         <p className="text-xs font-medium text-s-ink/50 mb-2">
           {t("goLive.checklist")} — {completedCount}/{steps.length}
         </p>

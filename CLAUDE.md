@@ -4,9 +4,9 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 
 ---
 
-## 🗺️ Before you BUILD anything — check what already exists (V3-D440, 2026-06-02)
+## 🗺️ Before you BUILD, MOCK, or REDESIGN anything — check what already exists (V3-D440, 2026-06-02)
 
-**The #1 recurring failure: rebuilding something that already exists, because no file said it did.** (Almost re-mocked the walk-in join + queue screens that were already shipped; re-created the `tips` table that already existed.) Applies to **backend and frontend equally**.
+**The #1 recurring failure: rebuilding / re-mocking / re-proposing something that already exists, because no file said it did, and a context-reset wipes the memory so it recurs.** (Almost re-mocked the walk-in screens that were shipped; re-created the `tips` table; built a FAKE calendar mockup when the `DateTimePicker` primitive ALREADY did grouped-grid + blue selected.) Applies to **backend, frontend, AND design/mockups equally**: before you mock, propose, or redesign ANY UI, run `npm run exists <thing>` + read `_design-system/COMPONENT_REGISTRY.md`. NEVER assume a component or pattern doesn't exist, and never hand-fake one in a mockup when the real one exists. If you catch yourself guessing whether something exists, STOP and check.
 
 - **`npm run exists <keyword>`** — run this BEFORE creating any new page / endpoint / component / migration / lib util. It live-scans the repo and lists every existing route, endpoint (+ HTTP methods), component, lib module, and DB table that matches. **A hit → REUSE or EXTEND. Empty → safe to build new.** (e.g. `npm run exists walk-in` → all 25 existing pieces.)
 - **`_inventory/SURFACE.md`** — the full auto-generated map of what exists. Regenerate with **`npm run inventory`**. 🤖 Never hand-edit it; it's generated from the filesystem so it cannot rot like the old hand-written `UTILITIES_INDEX.md` / `KEY_FEATURES.md` did.
@@ -14,6 +14,67 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 - DB tables + columns come from a LIVE snapshot (`_inventory/_db-snapshot.json` + `_db-columns.json`), NOT migration files — migrations drift from the live DB (the schema-drift bug). `npm run exists <column>` works. Refresh both together (ask Claude to re-run `list_tables` + the `information_schema.columns` query) before trusting backend table/column existence.
 - **Coverage:** routes · API endpoints (+ HTTP methods) · components (incl. colocated under `app/`) · lib + hooks · Supabase RPCs (parsed from migrations) · DB tables + columns.
 - **Enforced, not honor-system:** a PreToolUse hook (`.claude/hooks/pre-build-exists-check.sh`) BLOCKS creating a new `page.tsx` / `route.ts` / migration until `npm run exists` has run this turn (override: `touch .claude/exists-skip.flag`, 30-min TTL). CI (`.github/workflows/inventory-freshness.yml`) reds the PR if `SURFACE.*` is stale or the DB snapshot is > 30 days old.
+
+---
+
+## 🏁 Finish the job — do NOT report-and-wait (V3-D444, 2026-06-07)
+
+Given a multi-step task or a list, **finish it.** Do not stop after each step to report and wait for "ok" — that wastes the user's turns and is a top recurring complaint. Keep going until the work is actually done, THEN report once.
+
+Pause mid-task ONLY for:
+- a genuine **decision** only the user can make (a real fork, not a default you can pick), or
+- a **design / taste choice that needs a MOCKUP** for the user to react to.
+
+Everything else (mechanical edits, sweeps, enforcement wiring, verification, applying an already-decided spec) = keep going to completion. **"ok" / "continue" / "go" means finish the list, not do one item.**
+
+---
+
+## 🎯 Taste rules: the 10 I most often get wrong (V3-D441, 2026-06-07)
+
+**Why this block exists:** SOURCE.md + LOCKFILE hold the full system, but they're 80KB+ and I don't re-read them before a small edit, so I drift. These ten are what my own correction history shows I break most. They live HERE because in-context beats buried. The machine-checkable ones (hex, retired tokens, dead clicks, arbitrary color, durations) are now **enforced** by a PreToolUse gate (`.claude/hooks/pre-edit-drift-gate.sh`) that BLOCKS the edit; the taste ones still need judgment every time.
+
+1. **No fabricated data.** Never render a number / status not wired to a live source: no "Frei in 15 Min", fake ratings, fake counts. Omit the element and flag it for wiring. A fake value is worse than a dot, it's a lie the user trusts.
+2. **No decorative artifacts.** No separator / status dots (`•`, colored pips), no redundant filler ("· Walk-in", repeating the price already shown above the CTA). Every element carries information or it gets deleted. And when two adjacent bits already differ by colour or weight (e.g. green "Geöffnet" + ink "bis 19:00"), that contrast IS the separator, do NOT add a `·` between them too.
+3. **80 / 17 / 3 color.** ~80% neutral surfaces (`white` + sunken `#F5F5F4`), ~17% ink (`#0A0A0A` + greys + hairlines + photos), ~3% accent = royal blue `s-accent` `#276EF1`, small footprint. **The one primary CTA stays ink (`bg-s-ink`), never blue.** (Supersedes the old forest-green `#16A34A` accent, dropped in the B&W pivot.) Blue is ALSO the SELECTED / ACTIVE state (calendar date, time slot, active tab, radio); ink stays only for that one commit button (V3-D442).
+4. **Semantic color is NOT the 3% accent budget.** Elements with universal meaning keep their hue: star `#FFC32B`, available / success green, error red, price / info blue, save-heart `#FF3366`. Don't monochrome them to ink to "stay on brand."
+5. **No muted focal fills + coherent emphasis.** Never use a dark `.text` token (`#906309`, `#9A3412`) as a FOCAL fill, it reads muddy. Focal = a vivid `.DEFAULT` token or surcharge orange `#EA580C` on a light tint bg. Surcharge is orange, not blue. And emphasis (weight or colour) maps to a WHOLE meaningful unit, never an orphan sub-token: bolding/colouring just the "65" but not the "from / CHF" reads as a glitch, not a decision. A card may carry two ink elements (name + price) only if the NAME is larger, so size, not colour, marks the anchor (V3-D442, amends A13).
+6. **Refined pastel, never screamy.** Layer-3 surfaces = pastel `.bg` + ink text + saturated icon (Stripe / Vercel restraint), not a saturated solid block.
+7. **Elevation is earned by the background, not the button.** One primary commit → ink fill; a control over a photo → frosted glass (`FROST_GLASS`, `lib/frost-glass.ts`); a calm control on white / stone → FLAT, no shadow. White + shadow on a calm surface is the banned grey-haze.
+8. **Fonts:** Inter Tight (display / headings) + Inter (body) + JetBrains Mono (codes). **Never Geist.**
+9. **Ground in the system; don't invent.** Pull size / affordance / selected-state from a LOCKED component (avatar size from SalonTeam, selected = ink-border). Don't eyeball or invent hex / sizes / copy. "Too heavy / too small" = refine the existing affordance, don't replace it. When a value isn't locked, ASK, don't fill from memory.
+10. **No em-dashes; emoji chat-only.** No `—` / `–` anywhere in UI copy, code, comments, or commits (use period / comma / colon / parentheses / spaced hyphen). Emoji + playful tone live in chat replies only, never in shipped code or files.
+
+Full system lives in `_design-system/SOURCE.md` (canonical) + `LOCKFILE.md` (frozen literals); on an aesthetic conflict, LOCKFILE wins. Screen-by-screen taste decisions elicited with the founder are logged in `_design-system/TASTE_LOG.md` (read it before design work on a covered surface, so a settled call is never re-litigated).
+
+---
+
+## 🔒 Design contract — LOCKED (V3-D443, council-stamped 2026-06-07)
+
+Frozen single-values. Do NOT re-open any row without the owner saying so by name. Visual rulebook: `public/solen-styleguide.html`. Full axes + sweep status: `_design-system/CONSISTENCY_AUDIT.md`.
+
+| axis | locked |
+|---|---|
+| selected / active | blue `s-accent`. date/slot = blue FILL; **filter pills/chips = blue BORDER + blue text, NO fill** (V3-D450). ink ONLY for the one commit button. |
+| link | ink + underline (NOT blue) |
+| shadow | card `shadow-elevation-2` rest / `-3` hover; over-photo = frost; calm control = flat; sticky bar = gradient fade |
+| text size | name **14** · meta **12** · section-H2 **clamp(18px,2vw,20)** · body **14** · CTA **15** (never ≤13 on a button) · eyebrow **11** |
+| hierarchy | name leads by SIZE; price bold-ink but smaller than name; rating = yellow star; filler (category·city·distance) greys out |
+| availability | **plain ink text — NO green pill** (owner call, do not re-add) |
+| radius | card/block **16** (`rounded-card`) · button/chip pill · input **16** · sheet **28** · image flush(0) |
+| spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
+| wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
+| icon-button | `h-11 w-11` |
+| hairline | `border-s-border` = **`#E0DDDB`** (firmer, V3-D447; one token, every divider) |
+| states | loading = `<Skeleton>` (shape matches the final layout, NOT a bare spinner) · empty = `<EmptyState>` · error = `<ErrorState>` (inline) / `ErrorFallback` (route). All exist + locked in COMPONENT_REGISTRY — USE them, don't hand-roll. |
+| focus | inputs: ONE ink edge — `border-s-ink` + a single soft halo `box-shadow:0 0 0 3px rgba(10,10,10,.10)`, set globally in globals.css; primitives add NO extra `outline` (V3-D449 — no double ring). buttons/links: the global 2px ink `outline`. |
+| disabled | `opacity-50 cursor-not-allowed` (e.g. the commit button before a slot is picked) |
+| touch target | interactive controls ≥ 44px (`h-11`), the a11y floor |
+| filter pill | selected = `border-s-accent` + `text-s-accent`, **NO fill**; hover (inactive) = `bg-s-bg-sunken` (sink), never `hover:border-s-ink` (V3-D450) |
+| category tag | neutral — `bg-s-bg-sunken` + `text-s-ink-2`, NO per-category colour (incl. the on-photo eyebrow → `text-white`); owner picked B, V3-D449 |
+| date / time | ONE `DateTimePicker` primitive — `dateLayout` strip (booking) \| calendar (search); booking + search share it. NO bespoke date UI (V3-D445) |
+| nav | sub-page nav is single — the global `Breadcrumb` is excluded on `/{city}/{category}` (SearchTemplate owns it). No stacked home+back (V3-D449) |
+
+**States are componentised + locked** (above) — USE them, don't hand-roll. Booking's `DateTimeStep` now renders the shared `DateTimePicker` (Skeleton loading). The rows above (incl. focus, disabled, 44px, filter-pill, category, date, nav) are all locked as of this session (V3-D445–450). Drift-checker calibration (V3-D446–450): A2 arbitrary sizes + A3 arbitrary durations = INFO; A1/A15/A17 comment-aware; token-equivalent hexes whitelisted; report respects `drift-ok`.
 
 ---
 
@@ -68,6 +129,16 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 3. Read before editing — find the exact lines, confirm match, then change.
 4. Never `npm run build` unless asked — dev runs on port 3000.
 5. `git diff` after each fix — verify only the intended thing changed.
+
+---
+
+## 🕳️ Silent no-ops — phantom columns, dead filters, convention mismatches
+
+This project's #1 silent failure mode: a control / column / filter that LOOKS wired but does nothing. PostgREST swallows a `.select()` on a non-existent column (returns null, not an error); a filter param can be set + counted in the UI yet never applied server-side; a helper can key off the wrong convention and return a constant (e.g. `isOpenNow` read long day-names while all data is short-keyed → "open now" returned empty everywhere, fixed 2026-06-05).
+
+- **Prove behavior, not existence.** A filter must DISCRIMINATE (return a correct subset), not just render or return 200. A column must appear in the LIVE snapshot (`npm run exists <column>`), not merely in a TS type.
+- **Computed filters** (open-now, distance — anything not expressible as a PostgREST predicate) resolve matching IDs first, then `.in("id", ids)` BEFORE `.range()`; never client-side over one page (breaks count/pagination). Reference: `app/api/salons/route.ts`.
+- `opening_hours` is SHORT-day-keyed (`mon`…`sun`). Full pitfalls + patterns: `_rules/LESSONS_LEARNED.md`.
 
 ---
 

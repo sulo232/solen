@@ -46,7 +46,7 @@ export default async function ProfileLooksPage({
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user) {
-    redirect(`/${locale}/auth/sign-in?redirect=/${locale}/profile/looks`);
+    redirect(`/${locale}/auth/login?redirect=/${locale}/profile/looks`);
   }
 
   // TODO (BACKEND_NEEDS_UI): query `looks` table once it exists, render LooksGrid.

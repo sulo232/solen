@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Hairline weight</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F5F5F4; --star:#FFC32B; }
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.45}
+  .wrap{max-width:1140px;margin:0 auto;padding:52px 24px 100px}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:38px;letter-spacing:-.02em;margin:8px 0 0}
+  .eyebrow{font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+  .lede{font-size:15px;color:var(--ink2);max-width:720px;margin:12px 0 36px}
+  .rule{height:1px;background:var(--ink)}
+  .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media(max-width:900px){.cols{grid-template-columns:repeat(2,1fr)}}
+  .col h2{font-family:'Inter Tight';font-size:16px;margin:0 0 2px}
+  .col .hex{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink2);margin-bottom:14px}
+  .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 7px;border-radius:999px;background:var(--sunken);color:var(--ink2);margin-left:6px}
+  .tag.cur{background:#E8F0FE;color:#276EF1}
+  .tag.fre{background:#FFF1E6;color:#9A3412}
+
+  /* a salon-ish card: photo block + title + meta + a service list with row dividers */
+  .card{border-radius:16px;background:#fff;overflow:hidden}
+  .card .photo{height:84px;background:linear-gradient(135deg,#ECEAE8,#F5F5F4)}
+  .card .body{padding:14px}
+  .card .name{font-family:'Inter Tight';font-weight:700;font-size:16px}
+  .card .meta{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .svc{margin-top:12px}
+  .svc .r{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13.5px}
+  .svc .r .p{font-weight:600}
+  .onsunken{background:var(--sunken);padding:14px;border-radius:18px;margin-top:16px}
+
+  /* the four weights apply a --hl var */
+  .w1{--hl:#E7E5E4} .w2{--hl:#E0DDDB} .w3{--hl:#D6D3D1} .w4{--hl:#D3D3D3}
+  .card{border:1px solid var(--hl)}
+  .svc .r + .r{border-top:1px solid var(--hl)}
+  .onsunken .card{border:1px solid var(--hl)}
+  .note{font-size:12px;color:var(--ink2);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rule"></div>
+  <div class="eyebrow" style="margin-top:14px">Solen · design system</div>
+  <h1>Hairline weight — pick one</h1>
+  <p class="lede">Same card + service rows + a card-on-sunken, drawn at four hairline weights. All four are
+    the <i>one</i> token; we're only choosing its value. Soft (Uber) on the left, more present (Fresha) on the right.</p>
+
+  <div class="cols">
+    <!-- W1 current -->
+    <div class="col w1">
+      <h2>Soft <span class="tag cur">current</span></h2>
+      <div class="hex">#E7E5E4 · ~91%</div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="body">
+          <div class="name">Atelier Haarwerk</div>
+          <div class="meta">Coiffeur · Basel · 1.2 km</div>
+          <div class="svc">
+            <div class="r"><span>Damen-Haarschnitt</span><span class="p">89</span></div>
+            <div class="r"><span>Herren-Haarschnitt</span><span class="p">55</span></div>
+            <div class="r"><span>Föhnen &amp; Styling</span><span class="p">39</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="onsunken"><div class="card"><div class="body"><div class="name">Salon Mira</div><div class="meta">Nails · Kleinbasel</div></div></div></div>
+    </div>
+    <!-- W2 -->
+    <div class="col w2">
+      <h2>Slightly firmer</h2>
+      <div class="hex">#E0DDDB · ~88%</div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="body">
+          <div class="name">Atelier Haarwerk</div>
+          <div class="meta">Coiffeur · Basel · 1.2 km</div>
+          <div class="svc">
+            <div class="r"><span>Damen-Haarschnitt</span><span class="p">89</span></div>
+            <div class="r"><span>Herren-Haarschnitt</span><span class="p">55</span></div>
+            <div class="r"><span>Föhnen &amp; Styling</span><span class="p">39</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="onsunken"><div class="card"><div class="body"><div class="name">Salon Mira</div><div class="meta">Nails · Kleinbasel</div></div></div></div>
+    </div>
+    <!-- W3 stone-300 -->
+    <div class="col w3">
+      <h2>Present <span class="tag">stone-300</span></h2>
+      <div class="hex">#D6D3D1 · ~84%</div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="body">
+          <div class="name">Atelier Haarwerk</div>
+          <div class="meta">Coiffeur · Basel · 1.2 km</div>
+          <div class="svc">
+            <div class="r"><span>Damen-Haarschnitt</span><span class="p">89</span></div>
+            <div class="r"><span>Herren-Haarschnitt</span><span class="p">55</span></div>
+            <div class="r"><span>Föhnen &amp; Styling</span><span class="p">39</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="onsunken"><div class="card"><div class="body"><div class="name">Salon Mira</div><div class="meta">Nails · Kleinbasel</div></div></div></div>
+    </div>
+    <!-- W4 fresha -->
+    <div class="col w4">
+      <h2>Fresha <span class="tag fre">measured</span></h2>
+      <div class="hex">#D3D3D3 · ~83%</div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="body">
+          <div class="name">Atelier Haarwerk</div>
+          <div class="meta">Coiffeur · Basel · 1.2 km</div>
+          <div class="svc">
+            <div class="r"><span>Damen-Haarschnitt</span><span class="p">89</span></div>
+            <div class="r"><span>Herren-Haarschnitt</span><span class="p">55</span></div>
+            <div class="r"><span>Föhnen &amp; Styling</span><span class="p">39</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="onsunken"><div class="card"><div class="body"><div class="name">Salon Mira</div><div class="meta">Nails · Kleinbasel</div></div></div></div>
+    </div>
+  </div>
+
+  <p class="note">Note: the warm stone family is kept on the left three (R&gt;G&gt;B, matches our surfaces);
+    Fresha's #D3D3D3 on the right is a pure neutral grey. My lean is <b>#E0DDDB</b> (firmer than today, still
+    soft + warm) or <b>#D6D3D1</b> if you want it clearly Fresha-present. Whichever you pick = one token edit.</p>
+</div>
+</body>
+</html>

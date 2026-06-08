@@ -3,10 +3,10 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
-  de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa", makeup: "Makeup", waxing: "Waxing" },
-  en: { coiffeur: "Hair Salon", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa", makeup: "Makeup", waxing: "Waxing" },
-  fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Salon d'ongles", spa: "Spa", makeup: "Maquillage", waxing: "Épilation" },
-  it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa", makeup: "Trucco", waxing: "Ceretta" },
+  de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa" },
+  en: { coiffeur: "Hair Salon", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa" },
+  fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Salon d'ongles", spa: "Spa" },
+  it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa" },
 };
 
 export async function generateMetadata({

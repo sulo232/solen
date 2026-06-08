@@ -2,20 +2,26 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalonId } from "@/lib/active-salon";
 
-// GET /api/salons/mine — returns the current user's salon
+// GET /api/salons/mine — returns the current user's ACTIVE salon (cookie-selected
+// if owned, else oldest) plus the full list of owned salons (for the switcher).
+// `salon` is kept for back-compat; `salons` is the new switcher list.
 export async function GET() {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: salon } = await supabase
+  const { data: salons } = await supabase
     .from("salons")
     .select("id, name, slug, categories")
     .eq("owner_id", user.id)
-    .single();
+    .order("created_at", { ascending: true });
 
-  return NextResponse.json({ salon: salon ?? null });
+  const activeId = await getActiveSalonId(supabase, user.id);
+  const active = (salons ?? []).find((s) => s.id === activeId) ?? (salons?.[0] ?? null);
+
+  return NextResponse.json({ salon: active, salons: salons ?? [] });
 }
 
 // Swiss UID / MWST number — loose shape check (CHE-###.###.### [MWST]).

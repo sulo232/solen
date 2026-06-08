@@ -83,7 +83,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
     <div
       ref={navRef}
       className={cn(
-        "sticky top-[72px] z-30 bg-white border-b border-s-ink/[0.08] transition-shadow duration-200",
+        "sticky top-[72px] z-30 bg-white border-b border-s-border transition-shadow duration-200",
         isSticky && "shadow-sm"
       )}
     >

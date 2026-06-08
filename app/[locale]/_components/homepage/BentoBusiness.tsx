@@ -215,7 +215,7 @@ function VisualCalendar() {
               "flex h-8 items-center justify-center rounded-md text-[8.5px] font-bold",
               slot.name
                 ? "text-s-ink"
-                : "border border-dashed border-s-ink/10",
+                : "border border-dashed border-s-border",
             )}
             style={{ background: slot.color }}
           >
@@ -381,7 +381,7 @@ function VisualAnalyticsTabbed() {
                   // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
                     ? "border-s-accent text-s-accent bg-s-accent-pale"
-                    : "border-s-ink/15 text-s-ink-3 hover:border-s-ink/30",
+                    : "border-s-border text-s-ink-3 hover:border-s-ink/30",
                   "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
                 )}
               >
@@ -497,7 +497,7 @@ export function JoinUsCard() {
             </span>
             <span aria-hidden className="inline-flex items-center gap-0.5">
               {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} size={12} fill="#FFC32B" stroke="none" aria-hidden />
+                <Star key={i} size={12} stroke="none" aria-hidden className="fill-s-star" />
               ))}
             </span>
             <span className="font-body text-[13px] font-normal text-white/70">

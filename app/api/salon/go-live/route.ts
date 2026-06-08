@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/go-live — Returns salon readiness state for the Go Live gate
 export async function GET(_req: NextRequest) {
@@ -10,11 +11,7 @@ export async function GET(_req: NextRequest) {
   const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id, is_active, stripe_account_id, cover_photo_url")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -47,11 +44,7 @@ export async function POST(_req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify ownership and requirements
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id, stripe_account_id, cover_photo_url")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
   if (!salon.stripe_account_id) {

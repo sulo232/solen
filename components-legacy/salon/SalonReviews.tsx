@@ -200,7 +200,7 @@ export default function SalonReviews({
                   className={`px-3 py-1.5 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
                     reviewSort === s
                       ? "bg-s-ink text-white"
-                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent"
+                      : "bg-s-bg-surface border border-s-border text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent"
                   }`}
                 >
                   {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
@@ -216,7 +216,7 @@ export default function SalonReviews({
                   !isExpanded && needsTruncation ? rev.comment?.slice(0, 150) + "..." : rev.comment;
 
                 return (
-                  <div key={rev.id} className="border border-s-ink/5 rounded-[16px] p-4">
+                  <div key={rev.id} className="border border-s-border rounded-[16px] p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-s-accent-pale overflow-hidden flex items-center justify-center text-xs font-semibold text-s-accent">
@@ -284,7 +284,7 @@ export default function SalonReviews({
                                 onChange={(e) => setFlagReason(e.target.value)}
                                 placeholder={t("flagReasonPlaceholder")}
                                 rows={2}
-                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-ink/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-accent/40 placeholder:text-s-ink/30 transition-colors duration-150"
+                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-border rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-accent/40 placeholder:text-s-ink/30 transition-colors duration-150"
                               />
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
@@ -363,7 +363,7 @@ export default function SalonReviews({
             {reviews.length > reviewsVisible.length && (
               <button
                 onClick={() => setReviewPage((p) => p + 1)}
-                className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-btn text-sm text-s-ink/60 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
+                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink/60 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
               >
                 {t("showMoreReviews")}
               </button>

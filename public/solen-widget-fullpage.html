@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — barbershop page, widget variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4;
+    --accent:#276EF1; --star:#FFC32B; --heart:#FF3366;
+    --disp:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1320px;margin:0 auto;padding:24px 16px 90px}
+  h1{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 24px;max-width:880px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start}
+  .col{width:392px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);min-width:22px;height:22px;padding:0 7px;border-radius:6px;display:grid;place-items:center;font-family:var(--disp)}
+  .tag .nm{font-size:14px;font-weight:700;font-family:var(--disp)}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:34px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.13)}
+  .screen{height:780px;overflow-y:auto}
+  .screen::-webkit-scrollbar{display:none}
+  .pad{padding:0 16px}
+
+  /* header */
+  .hdr{display:flex;align-items:center;gap:10px;padding:16px 16px 0}
+  .home{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--ink)}
+  .catpill{display:flex;align-items:center;gap:8px;flex:0 0 auto;border-radius:999px;padding:9px 16px;font-family:var(--disp);font-weight:600;font-size:16px;white-space:nowrap}
+  .catpill img{width:22px;height:22px;object-fit:contain}
+  .catpill.on{background:var(--sunken);color:var(--ink)}
+  .catpill.off{background:#fff;border:1px solid var(--border);color:var(--ink)}
+  .hdr .ham{margin-left:auto;flex:0 0 auto;display:grid;place-items:center;width:30px;height:30px;color:var(--ink)}
+  .catrow{display:flex;gap:10px;overflow-x:auto;flex:1;min-width:0}
+  .catrow::-webkit-scrollbar{display:none}
+
+  /* search */
+  .search{display:flex;align-items:center;gap:10px;margin:14px 16px 0;border:1px solid var(--border);background:#fff;border-radius:16px;padding:12px 14px}
+  .search .col2{flex:1;min-width:0}
+  .search .l1{font-size:15px;font-weight:600;color:var(--ink)}
+  .search .l2{font-size:12.5px;color:var(--ink2)}
+  .search .map{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid var(--border);border-radius:999px;color:var(--ink)}
+  .ico{display:inline-grid;place-items:center}
+
+  /* WIDGET — fixed frame, content swipes inside, dots INSIDE, no title */
+  .block{margin-top:18px}
+  .frame{position:relative;width:100%;border-radius:22px;overflow:hidden;background:var(--ink);box-shadow:0 20px 40px rgba(0,0,0,.06)}
+  .track{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory}
+  .track::-webkit-scrollbar{display:none}
+  .pane{position:relative;flex:0 0 100%;scroll-snap-align:start}
+  .pane>img{width:100%;height:100%;object-fit:cover;display:block}
+  .ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.5) 38%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.18) 100%)}
+  .badge{position:absolute;top:13px;left:13px;z-index:3;display:inline-flex;align-items:center;border-radius:10px;padding:6px 11px;font-size:11px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .heart{position:absolute;top:12px;right:12px;z-index:3;width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25)}
+  .cwrap{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:0 18px 14px;pointer-events:none}
+  .ct{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+  .ct .nm{font-family:var(--disp);font-weight:700;letter-spacing:-.02em;line-height:1.04}
+  .ct .rt{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:14px}
+  .ct .sub{font-size:13px;color:rgba(255,255,255,.82);margin-top:3px}
+  /* dots INSIDE the card */
+  .dots{display:flex;gap:6px;margin-top:13px}
+  .dots.center{justify-content:center}
+  .dots.right{justify-content:flex-end}
+  .dot{height:7px;width:7px;border-radius:999px;background:rgba(255,255,255,.5);transition:all .25s}
+  .dot.on{width:22px;border-radius:4px;background:#fff}
+
+  /* chips */
+  .chips{display:flex;gap:8px;overflow-x:auto;margin:18px 0 0;padding:0 16px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--ink);white-space:nowrap}
+
+  /* count + grid */
+  .countrow{display:flex;align-items:center;justify-content:space-between;margin:22px 0 14px}
+  .count{font-family:var(--disp);font-weight:700;font-size:16px}
+  .maplink{display:flex;align-items:center;gap:5px;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-size:13px}
+  .grid{display:flex;flex-direction:column;gap:22px}
+  .gphoto{position:relative;width:100%;aspect-ratio:3/2;border-radius:18px;overflow:hidden;background:var(--sunken);box-shadow:0 20px 40px rgba(0,0,0,.04)}
+  .gphoto img{width:100%;height:100%;object-fit:cover;display:block}
+  .gheart{position:absolute;top:10px;right:10px;width:33px;height:33px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--heart)}
+  .gbody{margin-top:12px;display:flex;flex-direction:column;gap:3px}
+  .grow{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .gname{font-family:var(--disp);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink)}
+  .grate{display:flex;align-items:center;gap:3px;flex-shrink:0;font-size:13px;color:var(--ink2)}
+  .gaddr{font-size:13px;color:var(--ink2)} .gprice{font-size:13px;color:var(--ink2)} .gprice b{color:var(--ink);font-weight:600}
+
+  /* fuer dich bottom */
+  .fd{margin-top:30px;padding:24px 16px 30px;border-top:1px solid var(--border)}
+  .fdrow{display:flex;gap:12px;overflow-x:auto}
+  .fdrow::-webkit-scrollbar{display:none}
+  .tile{flex:0 0 auto;width:74px;display:flex;flex-direction:column;align-items:center;gap:7px}
+  .tile span2{display:grid;place-items:center;width:58px;height:58px;border-radius:999px;background:var(--sunken)}
+  .tile img{width:30px;height:30px;object-fit:contain}
+  .tile small{font-size:11px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Barbershop page — widget variations</h1>
+  <p class="lead">Full page each, reflecting your latest changes (home-icon header, no city selector, full-size search, blue chips). The widget: <b>no "Top bewertet" title</b>, <b>bigger card</b>, <b>swipe dots INSIDE the card</b>. Three sizes to pick from. Swipe the widget on your phone.</p>
+  <div class="frames" id="frames"></div>
+</div>
+
+<script>
+const SALONS = [
+  { name:"Blade & Stone",    rating:4.4, reviews:11, price:43, addr:"Feldbergstrasse 82, Basel", photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=900&q=80" },
+  { name:"The Fade Factory", rating:4.3, reviews:11, price:47, addr:"Hammerstrasse 65, Basel",   photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=900&q=80" },
+  { name:"Old Town Barbers", rating:4.3, reviews:12, price:47, addr:"Münsterplatz 11, Basel",     photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&q=80" },
+];
+const FD = [
+  { label:"Stempel", icon:"/icons/fuer-dich/treueprogramm.png" },
+  { label:"Inspo",   icon:"/icons/fuer-dich/entdecken.png" },
+  { label:"Gruppe",  icon:"/icons/fuer-dich/gruppe.png" },
+  { label:"Walk-in", icon:"/icons/fuer-dich/walkin.png" },
+];
+const CHIPS = ["Sortieren","Jetzt geöffnet","Preis","Für wen","Bewertung","Angebote"];
+const VARIANTS = [
+  { id:"A", nm:"Big · 4:3", ds:"dots centered inside", aspect:"4/3", dots:"center", nameSize:24 },
+  { id:"B", nm:"Bigger · 5:4", ds:"taller, dots centered", aspect:"5/4", dots:"center", nameSize:26 },
+  { id:"C", nm:"Biggest · 1:1", ds:"square hero, dots bottom-right", aspect:"1/1", dots:"right", nameSize:28 },
+];
+
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svgp(d,size,sw){const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width",size);s.setAttribute("height",size);s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(d)?d:[d]).forEach(dd=>{const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d",dd);s.appendChild(p);});return s;}
+function img(src,alt){const i=el("img");i.src=src;i.alt=alt||"";i.loading="lazy";return i;}
+function star(sz){const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width",sz);s.setAttribute("height",sz);s.setAttribute("fill","#FFC32B");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heartIcon(cls,col){const h=el("div",cls);const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke",col||"currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+
+function widget(cfg){
+  const block=el("div","block pad");
+  const frame=el("div","frame"); frame.style.aspectRatio=cfg.aspect;
+  const track=el("div","track");
+  SALONS.forEach(s=>{
+    const pane=el("div","pane");
+    pane.appendChild(img(s.photo,s.name));
+    pane.appendChild(el("div","ov"));
+    pane.appendChild(heartIcon("heart","#fff"));
+    const cw=el("div","cwrap");
+    const ct=el("div","ct");
+    const nm=el("div","nm",s.name); nm.style.fontSize=cfg.nameSize+"px"; ct.appendChild(nm);
+    const rt=el("div","rt"); rt.appendChild(star(14)); rt.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")")); ct.appendChild(rt);
+    ct.appendChild(el("div","sub","ab CHF "+s.price+" · "+s.addr));
+    cw.appendChild(ct);
+    // dots INSIDE
+    const dots=el("div","dots "+cfg.dots);
+    SALONS.forEach((_,i)=> dots.appendChild(el("div","dot"+(i===0?" on":""))));
+    cw.appendChild(dots);
+    pane.appendChild(cw);
+    track.appendChild(pane);
+  });
+  frame.appendChild(track);
+  block.appendChild(frame);
+  // sync the active dot of the CURRENTLY centered pane (each pane has its own dots row)
+  track.addEventListener("scroll",()=>{
+    const max=track.scrollWidth-track.clientWidth;
+    const idx=max>0?Math.round(track.scrollLeft/max*(SALONS.length-1)):0;
+    [...track.children].forEach((pane)=>{ const ds=pane.querySelector(".dots"); if(ds)[...ds.children].forEach((d,i)=>d.classList.toggle("on",i===idx)); });
+  },{passive:true});
+  return block;
+}
+
+function buildPage(mount, cfg){
+  const root=document.getElementById(mount);
+
+  // header
+  const hdr=el("div","hdr");
+  const home=el("div","home"); home.appendChild(svgp(["m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z","M9 22V12h6v10"],19,2)); hdr.appendChild(home);
+  const catrow=el("div","catrow");
+  const c1=el("div","catpill on"); const i1=el("img"); i1.src="/icons/categories/clippers.png"; c1.appendChild(i1); c1.appendChild(el("span",null,"Barber")); catrow.appendChild(c1);
+  const c2=el("div","catpill off"); const i2=el("img"); i2.src="/icons/categories/scissors.png"; c2.appendChild(i2); c2.appendChild(el("span",null,"Coiffeur")); catrow.appendChild(c2);
+  hdr.appendChild(catrow);
+  const ham=el("div","ham"); ham.appendChild(svgp(["M4 6h16","M4 12h16","M4 18h16"],22,2)); hdr.appendChild(ham);
+  root.appendChild(hdr);
+
+  // search
+  const sb=el("div","search");
+  const si=el("span","ico"); si.style.color="var(--ink2)"; si.appendChild(svgp("M21 21l-4.3-4.3",18)); const sc=document.createElementNS("http://www.w3.org/2000/svg","circle"); sc.setAttribute("cx","11");sc.setAttribute("cy","11");sc.setAttribute("r","7");sc.setAttribute("fill","none");sc.setAttribute("stroke","currentColor");sc.setAttribute("stroke-width","2"); si.firstChild.insertBefore(sc,si.firstChild.firstChild); sb.appendChild(si);
+  const col2=el("div","col2"); col2.appendChild(el("div","l1","Suchen")); col2.appendChild(el("div","l2","Schweizweit")); sb.appendChild(col2);
+  const mp=el("div","map"); mp.appendChild(svgp(["M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z","M9 7v13","M15 4v13"],17,2)); sb.appendChild(mp);
+  root.appendChild(sb);
+
+  // widget (no title)
+  root.appendChild(widget(cfg));
+
+  // chips
+  const chips=el("div","chips");
+  CHIPS.forEach((label,i)=>{ const ch=el("div","chip"); if(i===0){const g=el("span","ico");g.appendChild(svgp(["M4 6h16","M7 12h10","M10 18h4"],15,2));ch.appendChild(g);} ch.appendChild(el("span",null,label)); chips.appendChild(ch); });
+  root.appendChild(chips);
+
+  // count + grid
+  const wrap=el("div","pad");
+  const cr=el("div","countrow"); cr.appendChild(el("div","count","Alle Barbershops · 3"));
+  const ml=el("div","maplink"); ml.appendChild(el("span",null,"Karte")); cr.appendChild(ml); wrap.appendChild(cr);
+  const grid=el("div","grid");
+  SALONS.forEach(s=>{
+    const g=el("div");
+    const ph=el("div","gphoto"); ph.appendChild(img(s.photo,s.name)); ph.appendChild(heartIcon("gheart","currentColor")); g.appendChild(ph);
+    const gb=el("div","gbody");
+    const r1=el("div","grow"); r1.appendChild(el("div","gname",s.name)); const gr=el("div","grate"); gr.appendChild(star(12)); gr.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")")); r1.appendChild(gr); gb.appendChild(r1);
+    const r2=el("div","grow"); r2.appendChild(el("div","gaddr",s.addr)); const pr=el("div","gprice"); pr.appendChild(document.createTextNode("ab ")); pr.appendChild(el("b",null,s.price)); pr.appendChild(document.createTextNode(" CHF")); r2.appendChild(pr); gb.appendChild(r2);
+    g.appendChild(gb); grid.appendChild(g);
+  });
+  wrap.appendChild(grid);
+  root.appendChild(wrap);
+
+  // fuer dich bottom
+  const fd=el("div","fd"); const fdrow=el("div","fdrow");
+  FD.forEach(t=>{ const tl=el("div","tile"); const sp=el("div","span2"); const im=el("img"); im.src=t.icon; sp.appendChild(im); tl.appendChild(sp); tl.appendChild(el("small",null,t.label)); fdrow.appendChild(tl); });
+  fd.appendChild(fdrow); root.appendChild(fd);
+}
+
+const frames=document.getElementById("frames");
+VARIANTS.forEach((v,k)=>{
+  const col=el("div","col");
+  const tag=el("div","tag"); tag.appendChild(el("span","pill",v.id)); tag.appendChild(el("span","nm",v.nm)); tag.appendChild(el("span","ds",v.ds)); col.appendChild(tag);
+  const phone=el("div","phone"); const screen=el("div","screen"); screen.id="scr"+k; phone.appendChild(screen); col.appendChild(phone);
+  frames.appendChild(col);
+  buildPage("scr"+k, v);
+});
+</script>
+</body>
+</html>

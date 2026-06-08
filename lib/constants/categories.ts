@@ -11,6 +11,4 @@ export const CATEGORY_OPTIONS: CategoryOption[] = [
   { value: "barbershop", label: "Barbershop",        emoji: "🪒" },
   { value: "nails",      label: "Nails",             emoji: "💅" },
   { value: "spa",        label: "Spa / Massage",     emoji: "🧖" },
-  { value: "makeup",     label: "Make-up / Kosmetik",emoji: "💄" },
-  { value: "waxing",     label: "Waxing / Sugaring", emoji: "🌿" },
 ];

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/setup-progress — Returns onboarding completion status
 export async function GET(req: NextRequest) {
@@ -11,11 +12,16 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Get salon for this owner
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{
+    id: string;
+    name: string | null;
+    description_de: string | null;
+    phone: string | null;
+    cover_photo_url: string | null;
+    opening_hours: Record<string, unknown> | null;
+    stripe_account_id: string | null;
+    cancellation_fee_type: string | null;
+  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 

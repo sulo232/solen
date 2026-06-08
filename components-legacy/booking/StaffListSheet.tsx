@@ -47,7 +47,7 @@ export default function StaffListSheet({
       animate={{ y: 0 }}
       transition={{ type: "spring", damping: 34, stiffness: 320 }}
     >
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-s-ink/[0.06] bg-white px-4 py-3">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-s-border bg-white px-4 py-3">
         <span className="font-heading text-[16px] font-bold text-s-ink">Stylist:in wählen</span>
         <button type="button" onClick={onClose} aria-label="Schließen" className="grid h-9 w-9 place-items-center rounded-full bg-s-bg-sunken hover:bg-s-ink/[0.08]">
           <X size={20} className="text-s-ink" />
@@ -59,7 +59,7 @@ export default function StaffListSheet({
         <button
           type="button"
           onClick={() => pick("any")}
-          className="mb-3 flex w-full items-center gap-3.5 rounded-2xl border border-s-ink/[0.08] p-3 text-left transition-colors"
+          className="mb-3 flex w-full items-center gap-3.5 rounded-2xl border border-s-border p-3 text-left transition-colors"
         >
           <span className="relative shrink-0">
             <span className="grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken">
@@ -83,7 +83,7 @@ export default function StaffListSheet({
             return (
               <div
                 key={s.id}
-                className="flex items-center gap-3.5 rounded-2xl border border-s-ink/[0.08] p-3"
+                className="flex items-center gap-3.5 rounded-2xl border border-s-border p-3"
               >
                 <div className="relative shrink-0">
                   <div className="grid h-[60px] w-[60px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
@@ -95,7 +95,7 @@ export default function StaffListSheet({
                   </div>
                   {rating != null && (
                     <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-1.5 py-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-                      <Star size={10} fill="#FFC32B" stroke="none" />
+                      <Star size={10} stroke="none" className="fill-s-star" />
                       <span className="text-[11px] font-semibold leading-none tabular-nums text-s-ink">{rating.toFixed(1)}</span>
                     </span>
                   )}
@@ -115,7 +115,7 @@ export default function StaffListSheet({
                 <button
                   type="button"
                   onClick={() => pick(s.id)}
-                  className="shrink-0 rounded-full border border-s-ink/15 px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
+                  className="shrink-0 rounded-full border border-s-border px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
                 >
                   Auswählen
                 </button>

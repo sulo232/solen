@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Taste round 1b — one variable per row</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;
+    --sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B;--green:#16A34A;
+    --greenbg:#E7F6EC;--heart:#FF3366;
+    /* real tailwind.config shadow tokens */
+    --elev2:0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04);
+    --elev3:0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#ECEBE9;font-family:'Inter',sans-serif;color:var(--ink);padding:30px 20px 90px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center;letter-spacing:-0.02em}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:8px auto 4px;max-width:720px;line-height:1.6}
+  .sub b{color:var(--ink)}
+  .how{text-align:center;color:var(--ink3);font-size:12px;margin:0 auto 34px;max-width:640px;line-height:1.55}
+  .how b{color:var(--ink2)}
+  .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  .dim{background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px 24px}
+  .dlabel{font-family:'Inter Tight';font-weight:800;font-size:16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:9px}
+  .dn{font-size:10px;font-weight:700;color:#fff;background:var(--ink);border-radius:50%;width:20px;height:20px;display:grid;place-items:center;flex-shrink:0}
+  .dsub{font-size:12.5px;color:var(--ink2);margin:4px 0 18px;line-height:1.5}
+  .dsub b{color:var(--ink)}
+  .opts{display:flex;flex-wrap:wrap;gap:18px}
+  .opt{width:188px}
+  .cap{margin-top:11px;font-size:11.5px;line-height:1.4}
+  .cap .nm{font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .cap .rec{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:4px;padding:1px 5px}
+  .cap .d{color:var(--ink2);display:block;margin-top:2px}
+
+  /* card baseline (held constant except the tested dim) */
+  .card{position:relative}
+  .ph{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--sunken);border-radius:20px}
+  .ph img{width:100%;height:100%;object-fit:cover}
+  .name{font-family:'Inter Tight';font-weight:600;font-size:15px;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:9px}
+  .rate{display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2);flex-shrink:0;font-variant-numeric:tabular-nums}
+  .rate svg{width:12px;height:12px;fill:var(--star);stroke:none}
+  .meta{font-size:12.5px;color:var(--ink2);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+  .price{font-size:12.5px;color:var(--ink2);line-height:1.35;margin-top:3px}
+  .price b{font-weight:600;color:var(--ink)}
+  .slot{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;color:var(--ink);margin-top:6px}
+  .slot svg{width:12px;height:12px;stroke:var(--ink2)}
+
+  /* elevation treatments */
+  .e-flat .ph{box-shadow:none}
+  .e-soft .ph{box-shadow:var(--elev2)}
+  .e-lift .ph{box-shadow:var(--elev3)}
+  .e-hair{border:1px solid var(--border);border-radius:18px;padding:9px}
+  .e-hair .ph{box-shadow:none;border-radius:12px}
+
+  /* hook treatments */
+  .h-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink);border:1px solid var(--border);border-radius:8px;padding:4px 9px;margin-top:7px}
+  .h-chip svg{width:12px;height:12px;stroke:var(--ink2)}
+  .h-green{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--green);background:var(--greenbg);border-radius:8px;padding:4px 9px;margin-top:7px}
+  .h-green svg{width:12px;height:12px;stroke:var(--green)}
+
+  /* extras */
+  .badge{position:absolute;left:9px;top:9px;z-index:5;font-size:10px;font-weight:700;background:#fff;color:var(--ink);border-radius:7px;padding:3px 8px;box-shadow:var(--elev2)}
+  .heart{position:absolute;right:8px;top:8px;z-index:5;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);backdrop-filter:blur(6px)}
+  .heart svg{width:16px;height:16px;stroke:#fff;fill:rgba(10,10,10,.3)}
+  .footer{font-size:12px;color:var(--ink2);line-height:1.6;margin:34px auto 0;max-width:760px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:13px;text-align:center}
+  .footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Taste round 1b — one thing changes per row</h1>
+  <p class="sub">You were right: the last one changed too much at once + the shadows were invisible. Now <b>each row isolates a single variable</b>, big enough to see, every option coherent (no orphan blue number).</p>
+  <p class="how">Reply like: <b>elevation = soft, hook = green pill, price = bold number, extras = clean</b>. Each answer becomes a locked rule. Green tag = my read of your taste.</p>
+
+  <div class="wrap">
+
+    <!-- DIM 1 — ELEVATION -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">1</span> Elevation — how the card sits on the page</div>
+      <div class="dsub">The thing you couldn't see last time. These use the <b>real</b> shadow tokens (elevation-2 / 3), on the grey page so they actually read.</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="card e-flat"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div><div class="price">from <b>65</b> CHF</div></div>
+          <div class="cap"><span class="nm">Flat</span><span class="d">No shadow. Photo flush on the page. Calmest, but can read flat/cheap.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div><div class="price">from <b>65</b> CHF</div></div>
+          <div class="cap"><span class="nm">Soft shadow <span class="rec">my read</span></span><span class="d">elevation-2. Gentle lift. Matches the homepage card family.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-lift"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div><div class="price">from <b>65</b> CHF</div></div>
+          <div class="cap"><span class="nm">Lifted</span><span class="d">elevation-3. Stronger float. More "app", less editorial.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-hair"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div><div class="price">from <b>65</b> CHF</div></div>
+          <div class="cap"><span class="nm">Hairline box</span><span class="d">No shadow, 1px border around the whole card. Structured, "Swiss".</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIM 2 — BOOKING HOOK -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">2</span> The booking hook — the "available" signal + its colour</div>
+      <div class="dsub">Same next-slot info ("today 16:00"), four ways to show it. This is where <b>semantic colour</b> (green = available) earns its place — or doesn't.</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div></div>
+          <div class="cap"><span class="nm">None</span><span class="d">Just price. No urgency, reads like a directory.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div>
+            <div class="slot"><svg data-l="clock"></svg>today 16:00</div></div>
+          <div class="cap"><span class="nm">Ink text</span><span class="d">Current. Quiet clock + time, no colour. Restrained.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div>
+            <span class="h-chip"><svg data-l="clock"></svg>today 16:00</span></div>
+          <div class="cap"><span class="nm">Ink chip</span><span class="d">Bordered pill, no colour. More "tappable", still neutral.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div>
+            <span class="h-green"><svg data-l="clock"></svg>today 16:00</span></div>
+          <div class="cap"><span class="nm">Green pill <span class="rec">my read</span></span><span class="d">Green = available (semantic, not decoration). The one splash of life.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIM 3 — PRICE -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">3</span> Price emphasis — coherent, not the orphan blue you flagged</div>
+      <div class="dsub">"from 65 CHF" three coherent ways. The weird version (only the "65" bold + blue) is <b>gone</b> — emphasis has to mean something across the whole token, not one orphan word.</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price" style="color:var(--ink2)">from 65 CHF</div></div>
+          <div class="cap"><span class="nm">All grey</span><span class="d">Price recedes fully. Most minimal, least scannable.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price">from <b>65</b> CHF</div></div>
+          <div class="cap"><span class="nm">Bold ink number <span class="rec">my read</span></span><span class="d">Current. The number is the info, so it goes ink + semibold; "from/CHF" stay grey. Coherent.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price" style="color:var(--ink);font-weight:500">from 65 CHF</div></div>
+          <div class="cap"><span class="nm">All ink</span><span class="d">Whole price in ink, medium weight. Bolder presence, less hierarchy.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIM 4 — EXTRAS -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">4</span> Extras — how much goes on the card</div>
+      <div class="dsub">Your "no unnecessary stuff" line, drawn here. Each extra has to earn its place or it's clutter.</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div></div>
+          <div class="cap"><span class="nm">Clean <span class="rec">my read</span></span><span class="d">Name · rating · category·city · price. Nothing else.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8 (94)</span></div>
+            <div class="meta">Barber · Zürich · 0.8 km</div><div class="price">from <b>45</b> CHF</div></div>
+          <div class="cap"><span class="nm">+ review count + distance</span><span class="d">"(94)" by the rating, "· 0.8 km" in meta. More proof, denser.</span></div>
+        </div>
+        <div class="opt">
+          <div class="card e-soft"><div class="badge">Popular</div><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=380&q=72"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div><div class="price">from <b>45</b> CHF</div></div>
+          <div class="cap"><span class="nm">+ Popular badge</span><span class="d">Photo badge. Marketing-y, the most "added stuff".</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">Reply with one word per row (e.g. <b>"soft, green pill, bold number, clean"</b>) and a quick why if you want. I lock each into CLAUDE.md. <b>No fabricated data</b> — every field shown is a real wired one.</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

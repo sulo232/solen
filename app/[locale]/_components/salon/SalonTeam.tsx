@@ -121,7 +121,7 @@ function TeamMember({
         </div>
         {showRating && (
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-            <Star size={11} fill="#FFC32B" stroke="none" />
+            <Star size={11} stroke="none" className="fill-s-star" />
             <span className={cn("text-[12px] font-semibold leading-none tabular-nums text-s-ink", !hasRating && "opacity-70")}>
               {displayRating?.toFixed(1)}
             </span>

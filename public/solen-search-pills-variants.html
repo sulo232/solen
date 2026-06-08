@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — search overlay · personalized pills (3 ways)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--b:#E7E5E4;--b2:rgba(10,10,10,.10);--sunken:#F5F5F4;--accent:#276EF1;--accentbg:#EAEFFE;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:34px 18px 80px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 30px;max-width:760px;line-height:1.55}
+  .sub b{color:var(--ink)}
+  .grid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;max-width:1240px;margin:0 auto;align-items:flex-start}
+  .col{width:360px}
+  .tag{font-family:'Inter Tight';font-weight:800;font-size:14px;letter-spacing:.02em;margin-bottom:3px}
+  .rec{display:inline-block;font-size:10px;font-weight:700;background:var(--accent);color:#fff;border-radius:5px;padding:2px 7px;margin-left:7px;vertical-align:middle;letter-spacing:.04em;text-transform:uppercase}
+  .tagd{font-size:12px;color:var(--ink2);margin:0 0 14px;line-height:1.45;min-height:48px}
+  .tagd b{color:var(--ink)}
+  /* phone */
+  .ph{background:#fff;border:1px solid var(--b2);border-radius:26px;box-shadow:0 14px 40px rgba(0,0,0,.12);overflow:hidden}
+  .ohead{display:flex;align-items:center;gap:12px;padding:16px 16px 12px}
+  .ohead .ttl{font-family:'Inter Tight';font-weight:800;font-size:21px;flex:1}
+  .ohead .x{width:34px;height:34px;border:1px solid var(--b);border-radius:50%;display:grid;place-items:center}
+  .ohead .x svg{width:17px;height:17px}
+  .obody{padding:4px 16px 16px}
+  /* compose fields */
+  .field{display:flex;align-items:center;gap:12px;border:1px solid var(--b);border-radius:13px;padding:11px 14px;margin-bottom:9px}
+  .field svg{width:18px;height:18px;stroke:var(--ink2);flex-shrink:0}
+  .field .flbl{font-size:11px;color:var(--ink2)}
+  .field .fval{font-size:14.5px;font-weight:600;margin-top:1px}
+  .field .fval.ph{color:var(--ink3);font-weight:500}
+  /* section label */
+  .sec{font-family:'Inter Tight';font-weight:700;font-size:13px;margin:17px 2px 9px;display:flex;align-items:center;gap:7px}
+  .sec .pz{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:var(--accentbg);border-radius:5px;padding:2px 6px}
+  /* category chips (icon + label) */
+  .chiprow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px}
+  .chiprow::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid var(--b);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:600;white-space:nowrap;background:#fff}
+  .chip svg{width:15px;height:15px;stroke:var(--ink)}
+  /* quick-search chips (text only, personalized) */
+  .qrow{display:flex;flex-wrap:wrap;gap:8px}
+  .qchip{display:flex;align-items:center;gap:6px;border:1px solid var(--b);border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:600;background:#fff}
+  .qchip svg{width:13px;height:13px;stroke:var(--ink2)}
+  .qchip.hot svg{stroke:var(--accent)}
+  /* category grid tiles (variant C) */
+  .ctiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .ctile{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--b);border-radius:13px;padding:12px 4px}
+  .ctile svg{width:20px;height:20px;stroke:var(--ink)}
+  .ctile span{font-size:11px;font-weight:600}
+  /* recents */
+  .rrow{display:flex;align-items:center;gap:11px;padding:9px 2px}
+  .rrow .ic{width:34px;height:34px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex-shrink:0}
+  .rrow .ic svg{width:16px;height:16px;stroke:var(--ink2)}
+  .rrow .rt{font-size:14.5px;font-weight:500}
+  .rrow .thumb{width:46px;height:46px;border-radius:11px;background:var(--sunken);flex-shrink:0;overflow:hidden}
+  .rrow .thumb img{width:100%;height:100%;object-fit:cover}
+  .rrow .rs{font-size:12px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:4px}
+  .rrow .rs svg{width:12px;height:12px;stroke:none;fill:var(--star)}
+  /* footer */
+  .ofoot{border-top:1px solid var(--sunken);padding:12px 16px}
+  .cta{width:100%;background:var(--ink);color:#fff;border:none;border-radius:13px;padding:14px;font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .note{font-size:11.5px;color:var(--ink2);line-height:1.5;margin-top:12px;padding:11px 13px;background:#fff;border:1px solid var(--b);border-radius:12px}
+  .note b{color:var(--ink)}
+  .note code{font-family:ui-monospace,monospace;font-size:10.5px;background:var(--sunken);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+  <h1>Search overlay — personalized pills</h1>
+  <p class="sub">Quick-launch pills sit <b>in between the Search field and Location</b>, powered by what we already have: <b>category taxonomy</b> + the <b>recommendation/algorithm APIs</b> (<code>/api/discovery/chip-terms</code>, <code>/api/recommendations</code>, <code>/api/discovery/trending</code>). Pick a treatment — I'll wire it.</p>
+
+  <div class="grid">
+
+    <!-- VARIANT A -->
+    <div class="col">
+      <div class="tag">A · Category pills</div>
+      <div class="tagd">Static taxonomy: Haircut / Barber / Nails / Spa / Massage. Tap = fills the <b>Service</b> field (you keep composing city + date). Same for everyone — no personalization.</div>
+      <div class="ph">
+        <div class="ohead"><span class="ttl">Search</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field"><svg data-l="search"></svg><div><div class="flbl">Service or salon</div><div class="fval ph">What are you after?</div></div></div>
+
+          <div class="sec">Browse</div>
+          <div class="chiprow">
+            <span class="chip"><svg data-l="scissors"></svg>Haircut</span>
+            <span class="chip"><svg data-l="user-round"></svg>Barber</span>
+            <span class="chip"><svg data-l="hand"></svg>Nails</span>
+            <span class="chip"><svg data-l="flower-2"></svg>Spa</span>
+            <span class="chip"><svg data-l="sparkles"></svg>Massage</span>
+          </div>
+
+          <div class="field" style="margin-top:9px"><svg data-l="map-pin"></svg><div><div class="flbl">Location</div><div class="fval">Basel</div></div></div>
+          <div class="field"><svg data-l="calendar"></svg><div><div class="flbl">When</div><div class="fval ph">Any date</div></div></div>
+
+          <div class="sec">Recent</div>
+          <div class="rrow"><span class="ic"><svg data-l="search"></svg></span><span class="rt">men's haircut basel</span></div>
+          <div class="rrow"><span class="ic"><svg data-l="search"></svg></span><span class="rt">balayage</span></div>
+        </div>
+        <div class="ofoot"><button class="cta">Search</button></div>
+      </div>
+    </div>
+
+    <!-- VARIANT B -->
+    <div class="col">
+      <div class="tag">B · For-you quick searches<span class="rec">pick</span></div>
+      <div class="tagd">Personalized chips from <b>your history + the recommendation engine</b> (past bookings, viewed salons, popular near you). Tap = runs that search now. The "smart" option.</div>
+      <div class="ph">
+        <div class="ohead"><span class="ttl">Search</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field"><svg data-l="search"></svg><div><div class="flbl">Service or salon</div><div class="fval ph">What are you after?</div></div></div>
+
+          <div class="sec">For you <span class="pz">personalized</span></div>
+          <div class="qrow">
+            <span class="qchip hot"><svg data-l="rotate-ccw"></svg>Men's cut · again</span>
+            <span class="qchip"><svg data-l="scissors"></svg>Beard trim</span>
+            <span class="qchip hot"><svg data-l="trending-up"></svg>Balayage</span>
+            <span class="qchip"><svg data-l="hand"></svg>Gel nails</span>
+            <span class="qchip"><svg data-l="flower-2"></svg>Hot stone massage</span>
+          </div>
+
+          <div class="field" style="margin-top:9px"><svg data-l="map-pin"></svg><div><div class="flbl">Location</div><div class="fval">Basel</div></div></div>
+          <div class="field"><svg data-l="calendar"></svg><div><div class="flbl">When</div><div class="fval ph">Any date</div></div></div>
+
+          <div class="sec">Recent</div>
+          <div class="rrow"><span class="ic"><svg data-l="search"></svg></span><span class="rt">men's haircut basel</span></div>
+          <div class="rrow"><span class="thumb"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=120&q=70" alt=""/></span><div><div class="rt">The Fade Factory</div><div class="rs"><svg data-l="star"></svg>4.8 · Barber</div></div></div>
+        </div>
+        <div class="ofoot"><button class="cta">Search</button></div>
+      </div>
+    </div>
+
+    <!-- VARIANT C -->
+    <div class="col">
+      <div class="tag">C · Both — categories + for-you</div>
+      <div class="tagd">Category tiles to browse, then a personalized "Popular with you" row. Most complete, but tallest — pushes recents down. Good if discovery matters more than speed.</div>
+      <div class="ph">
+        <div class="ohead"><span class="ttl">Search</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field"><svg data-l="search"></svg><div><div class="flbl">Service or salon</div><div class="fval ph">What are you after?</div></div></div>
+
+          <div class="sec">Browse</div>
+          <div class="ctiles">
+            <div class="ctile"><svg data-l="scissors"></svg><span>Haircut</span></div>
+            <div class="ctile"><svg data-l="user-round"></svg><span>Barber</span></div>
+            <div class="ctile"><svg data-l="hand"></svg><span>Nails</span></div>
+            <div class="ctile"><svg data-l="flower-2"></svg><span>Spa</span></div>
+          </div>
+
+          <div class="sec">Popular with you <span class="pz">personalized</span></div>
+          <div class="qrow">
+            <span class="qchip hot"><svg data-l="rotate-ccw"></svg>Men's cut · again</span>
+            <span class="qchip hot"><svg data-l="trending-up"></svg>Balayage</span>
+            <span class="qchip"><svg data-l="hand"></svg>Gel nails</span>
+          </div>
+
+          <div class="field" style="margin-top:11px"><svg data-l="map-pin"></svg><div><div class="flbl">Location</div><div class="fval">Basel</div></div></div>
+          <div class="field"><svg data-l="calendar"></svg><div><div class="flbl">When</div><div class="fval ph">Any date</div></div></div>
+        </div>
+        <div class="ofoot"><button class="cta">Search</button></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:760px;margin:26px auto 0">
+    <div class="note">
+      <b>What powers the pills (already built):</b><br>
+      • <b>Categories</b> — fixed taxonomy (Coiffeur / Barber / Nails / Spa / Massage), same as the homepage rail.<br>
+      • <b>For-you / quick searches</b> — <code>/api/recommendations</code> + <code>/api/discovery/chip-terms</code> + your recent searches &amp; viewed salons. Falls back to <code>/api/discovery/trending</code> ("Trending in Basel") for logged-out / new users so the row is never empty.<br>
+      • <b>Behavior</b> — category pill <b>fills the Service field</b> (keep composing); for-you chip <b>runs the search</b> (it's a full intent). My pick: <b>B</b> — least clutter, most useful, and it's the one that actually uses the algorithm you're asking about.
+    </div>
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

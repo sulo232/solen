@@ -52,7 +52,7 @@ export default function MyPackagesPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="grid gap-4 w-full max-w-3xl px-4">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-5 bg-white animate-pulse">
+            <div key={i} className="rounded-[12px] border border-s-border p-5 bg-white animate-pulse">
               <div className="h-4 w-40 bg-s-bg-sunken rounded mb-3" />
               <div className="h-2 w-full bg-s-bg-sunken rounded" />
             </div>
@@ -78,7 +78,7 @@ export default function MyPackagesPage() {
 
         {/* List */}
         {purchases.length === 0 ? (
-          <div className="rounded-[12px] border border-s-ink/[0.06] p-8 text-center bg-white">
+          <div className="rounded-[12px] border border-s-border p-8 text-center bg-white">
             <Package className="w-10 h-10 mx-auto mb-3 text-s-ink/15" />
             <p className="text-xs font-heading uppercase tracking-[.10em] text-s-ink/30">Keine Pakete gefunden</p>
           </div>
@@ -137,7 +137,7 @@ export default function MyPackagesPage() {
                   </div>
 
                   {expireDate && !isUsedUp && (
-                    <div className="mt-4 pt-3 border-t border-s-ink/5 flex flex-wrap gap-4 text-xs">
+                    <div className="mt-4 pt-3 border-t border-s-border flex flex-wrap gap-4 text-xs">
                       <span className="flex items-center gap-1 text-s-ink/50">
                         <Clock size={12} />
                         Gültig bis {expireDate.toLocaleDateString(localeFmt)}

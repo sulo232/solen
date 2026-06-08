@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Nachzahlung: Bezahl-Flow (N3 / 3-D Secure states)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink40:rgba(10,10,10,.4); --ink50:rgba(10,10,10,.5);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1;
+    --orange:#EA580C; --orange-bg:#FFEDD5;
+    --success:#16A34A; --success-bg:#E8F5E9; --error:#DC2626; --error-bg:#FEE2E2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:32px 28px 56px}
+  h1{font-family:'Inter Tight';font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .lede{font-size:13.5px;color:var(--ink50);margin:6px 0 26px;max-width:760px;line-height:1.5}
+  .lede b{color:var(--ink)}
+  .rail{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:330px}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink);margin:0 0 3px;display:flex;align-items:center;gap:7px}
+  .cap .n{width:19px;height:19px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;flex-shrink:0}
+  .cap .new{background:var(--orange)}
+  .csub{font-size:11.5px;color:var(--ink40);margin:0 0 10px 26px}
+
+  /* phone frame (scaled from the 390px master) */
+  .phone{width:330px;background:var(--white);height:660px;border-radius:26px;overflow:hidden;box-shadow:0 16px 44px rgba(0,0,0,.16);position:relative}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .nav{height:48px;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid var(--border)}
+  .nav .back{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink)}
+  .nav .back svg{width:16px;height:16px}
+  .nav .t{font-family:'Inter Tight';font-weight:600;font-size:15px;letter-spacing:-.01em}
+  .body{padding:18px 15px 120px}
+
+  .hero{display:flex;gap:11px;align-items:center;margin-bottom:16px}
+  .hero .ava{width:40px;height:40px;border-radius:11px;background:var(--sunken);color:var(--ink);display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:14px;flex-shrink:0}
+  .hero .hn{font-family:'Inter Tight';font-weight:600;font-size:14px;letter-spacing:-.01em}
+  .hero .hs{font-size:11.5px;color:var(--ink2);margin-top:2px}
+
+  .diff{background:var(--orange-bg);border-radius:15px;padding:16px;text-align:center;margin-bottom:13px}
+  .diff .dk{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);font-weight:600}
+  .diff .dv{font-family:'Inter Tight';font-weight:700;font-size:34px;color:var(--orange);letter-spacing:-.02em;margin-top:3px;line-height:1}
+
+  .breakdown{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;font-size:13px}
+  .row+.row{border-top:1px solid var(--border)}
+  .row .rl{color:var(--ink2)} .row .rv{font-family:'Inter Tight';font-weight:600;font-variant-numeric:tabular-nums}
+  .row.total{background:var(--sunken)} .row.total .rl{color:var(--ink);font-weight:600;font-family:'Inter Tight'}
+
+  .block{border:1px solid var(--border);border-radius:12px;padding:12px 13px}
+  .block .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink40);font-weight:600;margin-bottom:4px}
+  .block .v{font-size:12.5px;color:rgba(10,10,10,.72);line-height:1.45}
+
+  /* status hero (processing / 3ds / success / fail) */
+  .shero{text-align:center;padding:30px 6px 10px}
+  .shero .ic{width:62px;height:62px;border-radius:999px;display:grid;place-items:center;margin:0 auto 16px}
+  .shero h2{font-family:'Inter Tight';font-weight:600;font-size:19px;letter-spacing:-.02em}
+  .shero p{font-size:12.5px;color:var(--ink50);margin-top:7px;line-height:1.5;padding:0 6px}
+  .ic.proc{background:var(--orange-bg)}
+  .ic.tds{background:#EAEFFE}
+  .ic.ok{background:var(--success-bg)} .ic.ok svg{width:32px;height:32px;color:var(--success)}
+  .ic.err{background:var(--error-bg)} .ic.err svg{width:30px;height:30px;color:var(--error)}
+  .spin{width:30px;height:30px;border-radius:999px;border:3px solid rgba(234,88,12,.25);border-top-color:var(--orange);animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .tds .lock{width:30px;height:30px;color:var(--accent)}
+
+  /* faux bank 3DS challenge card */
+  .bank{margin:18px 13px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .bank .bh{display:flex;align-items:center;gap:8px;padding:11px 13px;background:var(--sunken);border-bottom:1px solid var(--border);font-size:12px;font-weight:600;font-family:'Inter Tight'}
+  .bank .bh .dot{width:8px;height:8px;border-radius:999px;background:var(--success)}
+  .bank .bb{padding:14px 13px;font-size:12px;color:var(--ink2);line-height:1.5}
+  .bank .otp{display:flex;gap:7px;margin-top:12px;justify-content:center}
+  .bank .otp span{width:34px;height:42px;border:1px solid var(--border);border-radius:9px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:18px}
+  .bank .otp span.f{border-color:var(--accent);box-shadow:0 0 0 2px rgba(39,110,241,.12)}
+
+  .paidmeta{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--ink2);margin-top:14px}
+  .paidmeta b{color:var(--ink);font-family:'Inter Tight'}
+
+  .cta-bar{position:absolute;left:0;right:0;bottom:0;padding:13px 15px 17px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0));border-top:1px solid var(--border)}
+  .note{display:flex;gap:7px;align-items:center;font-size:11px;color:var(--ink50);margin-bottom:11px}
+  .note svg{width:15px;height:15px;flex-shrink:0;color:var(--ink40)}
+  .btn-primary{width:100%;height:48px;border-radius:999px;background:var(--orange);color:#fff;font-family:'Inter Tight';font-weight:600;font-size:14.5px;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+  .btn-primary.disabled{opacity:.55}
+  .btn-primary.ink{background:var(--ink)}
+  /* Outcome-colored CTA: the primary action takes the screen's semantic state colour
+     (verify/info → blue, success → green, error → red; surcharge pay stays orange). */
+  .btn-primary.blue{background:var(--accent)}
+  .btn-primary.green{background:var(--success)}
+  .btn-primary.red{background:var(--error)}
+  .btn-secondary{width:100%;height:44px;border-radius:999px;background:transparent;color:var(--ink2);font-family:'Inter Tight';font-weight:600;font-size:13.5px;border:1px solid var(--border);cursor:pointer}
+  .btn-spin{width:17px;height:17px;border-radius:999px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;animation:spin .8s linear infinite}
+
+  /* state 3 — detailed, production-grade 3-D Secure verification */
+  .cardrow{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin:2px 0 9px}
+  .brandchip{width:40px;height:26px;border-radius:5px;background:#1A1F71;color:#fff;font-family:'Inter Tight';font-weight:700;font-size:10px;letter-spacing:.06em;display:grid;place-items:center;flex-shrink:0}
+  .cardrow .cn{font-family:'Inter Tight';font-weight:600;font-size:13px;letter-spacing:.02em}
+  .cardrow .cm{font-size:10.5px;color:var(--ink40);margin-top:1px}
+  .cardrow .camt{margin-left:auto;font-family:'Inter Tight';font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+  .scheme{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink2);margin:0 0 13px}
+  .scheme b{color:#1A1F71;font-family:'Inter Tight';font-weight:700}
+  .bankcard{border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(10,10,10,.06)}
+  .bch{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff,#fafafa)}
+  .banklogo{width:30px;height:30px;border-radius:8px;background:#16284D;color:#fff;font-family:'Inter Tight';font-weight:700;font-size:14px;display:grid;place-items:center;flex-shrink:0}
+  .bch .bn{font-family:'Inter Tight';font-weight:600;font-size:13px;letter-spacing:-.01em}
+  .bch .bsub{font-size:10px;color:var(--ink40);margin-top:1px}
+  .bch .bdot{width:8px;height:8px;border-radius:999px;background:var(--success);box-shadow:0 0 0 3px rgba(22,163,74,.14);flex-shrink:0}
+  .bcb{padding:13px 13px 14px}
+  .bcb-l{font-size:11.5px;color:var(--ink2);text-align:center}
+  .bcb-l b{color:var(--ink);font-family:'Inter Tight'}
+  .otp2{display:flex;gap:8px;justify-content:center;margin:12px 0 10px}
+  .otp2 span{width:38px;height:46px;border:1.5px solid var(--border);border-radius:11px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:700;font-size:20px;color:var(--ink)}
+  .otp2 span.f{border-color:var(--ink)}
+  .otp2 span.cur{border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,110,241,.12);color:var(--accent);font-weight:400;animation:blink 1.1s step-end infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .resend{text-align:center;font-size:10.5px;color:var(--ink40)}
+  .resend b{color:var(--ink2)}
+  .secfoot{display:flex;align-items:center;gap:6px;justify-content:center;font-size:10.5px;color:var(--ink40);margin-top:13px;padding:0 6px;text-align:center;line-height:1.4}
+  .secfoot svg{flex-shrink:0}
+</style>
+</head>
+<body>
+  <h1>Nachzahlung — Bezahl-Flow</h1>
+  <p class="lede">Was <b>nach</b> dem Tippen auf „bezahlen" passiert. Heute zeigt der Screen sofort „bestätigt", obwohl bei vielen CH/EU-Karten die Bank noch <b>3-D Secure</b> verlangt — d.&nbsp;h. es wird „genehmigt" angezeigt, <b>ohne dass Geld fliesst</b> (das ist N3). Dieser Flow schliesst die Lücke: bezahlen → bestätigen → Bankprüfung → Ergebnis.</p>
+
+  <div class="rail">
+
+    <!-- 1 — APPROVE (entry, existing) -->
+    <div class="col">
+      <p class="cap"><span class="n">1</span> Bestätigen</p>
+      <p class="csub">Der bestehende Screen (Ausgangspunkt)</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Nachzahlung bestätigen</div></div>
+        <div class="body">
+          <div class="hero"><div class="ava">AC</div><div><div class="hn">Atelier Coiffure Zürich</div><div class="hs">bittet um eine Nachzahlung · SOL-7K2QX</div></div></div>
+          <div class="diff"><div class="dk">Nachzahlung</div><div class="dv num">+ CHF 17.00</div></div>
+          <div class="breakdown">
+            <div class="row"><span class="rl">Bereits bezahlt</span><span class="rv num">CHF 45.00</span></div>
+            <div class="row"><span class="rl">Nachzahlung</span><span class="rv num">+ CHF 17.00</span></div>
+            <div class="row total"><span class="rl">Neuer Gesamtbetrag</span><span class="rv num">CHF 62.00</span></div>
+          </div>
+          <div class="block"><div class="k">Begründung des Salons</div><div class="v">"Zusätzliche Tiefenpflege-Behandlung auf Wunsch hinzugefügt."</div></div>
+        </div>
+        <div class="cta-bar">
+          <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Karte <b>•••• 4242</b> wird mit CHF 17.00 belastet.</span></div>
+          <button class="btn-primary">CHF 17.00 bezahlen</button>
+          <button class="btn-secondary">Ablehnen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 — PROCESSING -->
+    <div class="col">
+      <p class="cap"><span class="n new">2</span> Wird belastet</p>
+      <p class="csub">NEU · direkt nach „bezahlen"</p>
+      <div class="phone">
+        <div class="nav"><div class="back" style="opacity:.4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Nachzahlung bestätigen</div></div>
+        <div class="body">
+          <div class="shero" style="padding-top:80px">
+            <div class="ic proc"><div class="spin"></div></div>
+            <h2>Zahlung wird bestätigt…</h2>
+            <p>Einen Moment — deine Karte wird sicher belastet. Schliesse die App nicht.</p>
+          </div>
+        </div>
+        <div class="cta-bar">
+          <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Verschlüsselt über Stripe.</span></div>
+          <button class="btn-primary disabled"><span class="btn-spin"></span> Wird verarbeitet…</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 — 3-D SECURE (the fix) -->
+    <div class="col">
+      <p class="cap"><span class="n new">3</span> Bankbestätigung (3-D Secure)</p>
+      <p class="csub">NEU · die fehlende Lücke (N3)</p>
+      <div class="phone">
+        <div class="nav"><div class="back" style="opacity:.4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Sichere Zahlung</div></div>
+        <div class="body">
+          <div class="shero" style="padding-top:14px">
+            <div class="ic tds"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+            <h2>Bestätige deine Zahlung</h2>
+            <p>Deine Bank verifiziert die Nachzahlung von <b style="color:var(--ink)">CHF&nbsp;17.00</b>.</p>
+          </div>
+          <div class="cardrow">
+            <span class="brandchip">VISA</span>
+            <div><div class="cn">Visa ···· 4242</div><div class="cm">Debitkarte</div></div>
+            <span class="camt num">CHF 17.00</span>
+          </div>
+          <div class="scheme"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A1F71" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Verifiziert durch <b>Visa&nbsp;Secure</b></div>
+          <div class="bankcard">
+            <div class="bch">
+              <span class="banklogo">U</span>
+              <div style="flex:1"><div class="bn">UBS Switzerland</div><div class="bsub">Mobile Banking · Sichere Prüfung</div></div>
+              <span class="bdot"></span>
+            </div>
+            <div class="bcb">
+              <div class="bcb-l">Code an <b>+41 ·· ··· ·· 89</b> gesendet</div>
+              <div class="otp2"><span class="f">4</span><span class="f">1</span><span class="cur">|</span><span></span><span></span><span></span></div>
+              <div class="resend">Code erneut senden in <b>0:42</b></div>
+            </div>
+          </div>
+          <div class="secfoot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Geschützt durch 3-D Secure · Solen sieht deine Kartendaten nie</div>
+        </div>
+        <div class="cta-bar">
+          <button class="btn-primary blue">Zahlung bestätigen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 — SUCCESS -->
+    <div class="col">
+      <p class="cap"><span class="n new">4</span> Bezahlt</p>
+      <p class="csub">NEU · Geld ist wirklich geflossen</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Nachzahlung</div></div>
+        <div class="body">
+          <div class="shero">
+            <div class="ic ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h2>Bezahlt</h2>
+            <p><b style="color:var(--ink)">CHF 17.00</b> wurde deiner Karte •••• 4242 belastet.</p>
+          </div>
+          <div class="breakdown" style="margin-top:8px">
+            <div class="row"><span class="rl">Bereits bezahlt</span><span class="rv num">CHF 45.00</span></div>
+            <div class="row"><span class="rl">Nachzahlung</span><span class="rv num">+ CHF 17.00</span></div>
+            <div class="row total"><span class="rl">Neuer Gesamtbetrag</span><span class="rv num">CHF 62.00</span></div>
+          </div>
+          <div class="paidmeta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink40)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Beleg an deine E-Mail gesendet</div>
+        </div>
+        <div class="cta-bar"><button class="btn-primary green">Fertig</button></div>
+      </div>
+    </div>
+
+    <!-- 5 — DECLINED -->
+    <div class="col">
+      <p class="cap"><span class="n new">5</span> Fehlgeschlagen</p>
+      <p class="csub">NEU · Karte abgelehnt / 3-D Secure abgebrochen</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Nachzahlung bestätigen</div></div>
+        <div class="body">
+          <div class="shero">
+            <div class="ic err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+            <h2>Zahlung fehlgeschlagen</h2>
+            <p>Deine Karte wurde abgelehnt. Es wurde <b style="color:var(--ink)">nichts belastet</b>. Versuche es erneut oder nutze eine andere Karte.</p>
+          </div>
+          <div class="block" style="margin-top:6px"><div class="k">Offen</div><div class="v">Nachzahlung von CHF 17.00 noch nicht bezahlt.</div></div>
+        </div>
+        <div class="cta-bar">
+          <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Der Termin bleibt unverändert.</span></div>
+          <button class="btn-primary red">Erneut versuchen</button>
+          <button class="btn-secondary">Andere Karte verwenden</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -62,7 +62,7 @@ export default function TrustStatsBanner() {
           {tiles.map(({ key, label, value, icon: Icon }) => (
             <div
               key={key}
-              className="flex flex-col items-center text-center px-2 py-3 rounded-[10px] bg-white border border-s-ink/[0.04]"
+              className="flex flex-col items-center text-center px-2 py-3 rounded-[10px] bg-white border border-s-border"
             >
               <Icon size={16} className="text-s-accent mb-1.5" aria-hidden />
               <div

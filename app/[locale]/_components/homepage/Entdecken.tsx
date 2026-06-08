@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Clapperboard } from "lucide-react";
+import { ArrowRight, Clapperboard, Play } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { HeartButton } from "./HeartButton";
 import { cn } from "@/lib/utils";
@@ -86,6 +86,16 @@ export default function Entdecken() {
   // TikTok. If the fetch fails or the response is empty, DEMO stays.
   const [looks, setLooks] = React.useState<Look[]>(DEMO);
 
+  // M5 (2026-06-05): per-card thumbnail-error tracking. A CSS `background:
+  // url()` has no load/error event, so a failed (expired) TikTok thumb used
+  // to silently fall through to the bare gradient layered under it — which
+  // read as "broken". We now probe each card's bgImage with a hidden <img>
+  // (see the JSX) and, on its onError, flag the slug here. A flagged card
+  // renders the branded dark fallback (Solen mark + play glyph + caption)
+  // instead of the empty gradient. Keyed by slug; only image-backed cards
+  // are ever probed/flagged.
+  const [failedThumbs, setFailedThumbs] = React.useState<Record<string, boolean>>({});
+
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -163,6 +173,12 @@ export default function Entdecken() {
           )}
         >
           {looks.map((look) => {
+            // M5 (2026-06-05): a card is in the branded-fallback state when it
+            // has a real thumbnail URL that failed to load (expired TikTok
+            // CDN signature, proxy 502, etc.). DEMO cards (no bgImage) never
+            // enter this state — their gradient IS the intended look.
+            const showImage = Boolean(look.bgImage) && !failedThumbs[look.slug];
+            const showFallback = Boolean(look.bgImage) && failedThumbs[look.slug];
             return (
               <Link
                 key={look.slug}
@@ -180,16 +196,70 @@ export default function Entdecken() {
                     "md:group-hover:scale-[1.03] md:group-hover:z-10",
                   )}
                   style={{
-                    // V3-D160: layered backgrounds — image on top, gradient
-                    // under. If the proxy URL 502s (TikTok oEmbed down,
-                    // item not found, etc.) the gradient stays visible as
-                    // a fallback. Without the layer, a failed image leaves
-                    // a transparent card.
-                    background: look.bgImage
+                    // V3-D160 + M5 (2026-06-05): three background states.
+                    //   1. showImage  → real thumb on top, brand gradient
+                    //      under (covers the brief load gap).
+                    //   2. showFallback → the dark Solen brand gradient
+                    //      (matches the approved mockup, NOT the colorful
+                    //      DEMO gradient) — the branded-fallback surface.
+                    //   3. DEMO (no bgImage) → its own colorful gradient.
+                    background: showImage
                       ? `url("${look.bgImage}") center/cover no-repeat, ${look.bgGradient}`
-                      : look.bgGradient,
+                      : showFallback
+                        ? "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)"
+                        : look.bgGradient,
                   }}
                 >
+                  {/* M5 (2026-06-05): hidden probe — the ONLY reliable way to
+                      detect a CSS-background image failure. Renders only while
+                      a real thumb is expected and hasn't already failed. On
+                      error we flag the slug → card flips to the branded
+                      fallback above. aria-hidden + display:none so it adds no
+                      layout, no a11y noise, no second visible image. */}
+                  {showImage && (
+                    <img
+                      src={look.bgImage}
+                      alt=""
+                      aria-hidden
+                      className="hidden"
+                      onError={() =>
+                        setFailedThumbs((prev) =>
+                          prev[look.slug] ? prev : { ...prev, [look.slug]: true },
+                        )
+                      }
+                    />
+                  )}
+
+                  {/* M5 (2026-06-05): branded fallback chrome — only when a
+                      real thumb failed. Dark gradient (above) + Solen mark
+                      top-left (accent dot + wordmark) + centered translucent
+                      play glyph. Matches public/solen-qa-fixes.html §4. The
+                      existing @author / style-name pill + bottom gradient
+                      below still render, so the caption is preserved. */}
+                  {showFallback && (
+                    <>
+                      <div
+                        aria-hidden
+                        className="absolute top-2 left-2 z-10 flex items-center gap-1"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-s-accent" />
+                        <span className="font-display text-[11px] font-extrabold leading-none text-white/90">
+                          Solen
+                        </span>
+                      </div>
+                      <div
+                        aria-hidden
+                        className="absolute left-1/2 top-1/2 grid h-[34px] w-[34px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
+                        style={{
+                          background: "rgba(255, 255, 255, 0.22)",
+                          backdropFilter: "blur(4px)",
+                          WebkitBackdropFilter: "blur(4px)",
+                        }}
+                      >
+                        <Play size={15} className="text-white" fill="currentColor" />
+                      </div>
+                    </>
+                  )}
                   {/* Bottom gradient for legibility under the style-name pill */}
                   <div
                     aria-hidden
@@ -225,7 +295,7 @@ export default function Entdecken() {
                       style={solidLabelStyle}
                     >
                       <p className="truncate font-body text-[11px] font-medium text-s-ink">
-                        {look.authorName ? `@${look.authorName}` : look.styleName}
+                        {look.styleName}
                       </p>
                     </div>
                   </div>
@@ -241,7 +311,12 @@ export default function Entdecken() {
                       gradient overlay (the bottom gradient at h-1/2
                       only darkens the lower half), so white text in
                       the top corner needs its own legibility crutch
-                      against potentially-bright photo content. */}
+                      against potentially-bright photo content.
+                      M5 (2026-06-05): hidden on the branded-fallback state —
+                      the Solen mark takes the top-left slot there and the
+                      centered play glyph already signals video, so the
+                      marquee would both collide and double up. */}
+                  {!showFallback && (
                   <div
                     // V3-D179 (2026-05-26): top-2 → top-4 so the marquee
                     // text baseline aligns with the heart icon's visual
@@ -267,6 +342,7 @@ export default function Entdecken() {
                       </span>
                     </div>
                   </div>
+                  )}
 
                   {/* V3-D165: Clapperboard at bottom-right = static
                       video signal where the marquee used to live.
@@ -281,13 +357,19 @@ export default function Entdecken() {
                       bottom-2 put clap 6px below pill text center
                       (pill's py-1 + smaller text-y-offset). bottom-[13px]
                       lifts it 5px so both center on the same baseline. */}
-                  <Clapperboard
-                    size={18}
-                    strokeWidth={2}
-                    aria-hidden
-                    className="absolute bottom-[13px] right-2 text-white"
-                    style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }}
-                  />
+                  {/* M5 (2026-06-05): hidden on the branded-fallback state —
+                      the centered play glyph is the single video signal there
+                      (matches the approved mockup), so the clapperboard would
+                      double up. */}
+                  {!showFallback && (
+                    <Clapperboard
+                      size={18}
+                      strokeWidth={2}
+                      aria-hidden
+                      className="absolute bottom-[13px] right-2 text-white"
+                      style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }}
+                    />
+                  )}
                 </div>
               </Link>
             );

@@ -18,7 +18,7 @@ CREATE POLICY "Users can read their salon last-minute settings"
   ON public.salon_last_minute_settings FOR SELECT
   USING (
     salon_id IN (
-      SELECT id FROM salons WHERE user_id = auth.uid()
+      SELECT id FROM salons WHERE owner_id = auth.uid()
     )
   );
 
@@ -26,7 +26,7 @@ CREATE POLICY "Users can update their salon last-minute settings"
   ON public.salon_last_minute_settings FOR UPDATE
   USING (
     salon_id IN (
-      SELECT id FROM salons WHERE user_id = auth.uid()
+      SELECT id FROM salons WHERE owner_id = auth.uid()
     )
   );
 
@@ -34,7 +34,7 @@ CREATE POLICY "Users can insert their salon last-minute settings"
   ON public.salon_last_minute_settings FOR INSERT
   WITH CHECK (
     salon_id IN (
-      SELECT id FROM salons WHERE user_id = auth.uid()
+      SELECT id FROM salons WHERE owner_id = auth.uid()
     )
   );
 

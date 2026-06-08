@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — walk-in card, council + Gemini fixes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;
+    --blue:#276EF1;--green:#16A34A;--orange:#EA580C;--red:#DC2626;--star:#FFC32B;--heart:#FF3366;
+    --disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 22px;max-width:780px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;align-items:flex-start}
+  .col{width:348px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px;min-height:40px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);padding:3px 8px;border-radius:6px;font-family:var(--disp);white-space:nowrap}
+  .tag .pill.rec{background:var(--green)}
+  .tag .nm{font-size:13px;font-weight:700;font-family:var(--disp)}
+  .tag .ds{font-size:11px;color:#777;line-height:1.3}
+  .phone{background:#fff;border-radius:30px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.12);padding:18px 14px 22px;display:flex;flex-direction:column;gap:16px}
+  .card .ph{position:relative;width:100%;aspect-ratio:3/2;border-radius:18px;overflow:hidden;background:var(--sunken);box-shadow:0 16px 36px rgba(0,0,0,.05)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .heart{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--heart);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+  /* wait pill — current = heavy 600 no ring; refined = 500 + ring + white/95 */
+  .freepill{position:absolute;left:10px;top:10px;border-radius:999px;padding:6px 12px;font-size:12.5px;backdrop-filter:blur(6px)}
+  .freepill.cur{background:rgba(255,255,255,.90);font-weight:600;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+  .freepill.ref{background:rgba(255,255,255,.95);font-weight:500;color:var(--ink);box-shadow:0 2px 5px rgba(0,0,0,.10);border:1px solid rgba(0,0,0,.06)}
+  .body{margin-top:11px}
+  .r1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .nm{font-family:var(--disp);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink);line-height:1.1}
+  .rt{display:flex;align-items:center;gap:3px;flex-shrink:0;font-size:13px;color:var(--ink2)}
+  .rt svg{display:block;margin-top:-1px}
+  .meta{font-size:13px;color:var(--ink2);margin-top:3px}
+  /* ---- CURRENT footer: colored count + bar w/ track, ~33px btn ---- */
+  .wf{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .ql{min-width:0;flex:1}
+  .qbar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:7px}
+  .qbar i{display:block;height:100%;border-radius:3px;background:var(--c)}
+  .qn-cur{font-size:13.5px;font-weight:600;color:var(--c)}            /* colored count (the flaw) */
+  .join-cur{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;white-space:nowrap}
+  /* ---- REFINED footer: full-bleed tracked bar = the divider, INK count, 44px btn ---- */
+  .wf2{margin-top:13px}
+  .qbar2{height:4px;border-radius:999px;background:var(--border);overflow:hidden;margin-bottom:10px}
+  .qbar2 i{display:block;height:100%;border-radius:999px;background:var(--c)}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .qn-ref{font-size:13.5px;font-weight:600;color:var(--ink)}          /* INK count */
+  .join-ref{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;background:var(--ink);color:#fff;border-radius:999px;padding:0 18px;font-size:13.5px;font-weight:600;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Walk-in card — council + Gemini fixes applied</h1>
+  <p class="lead">Same 3 shops (2 / 5 / 8 ahead). <b>Left = current (live).</b> <b>Middle = refined, green chill (recommended).</b> <b>Right = refined, blue chill (kept).</b> Refined applies the consensus: color lives on the <b>bar only</b> (count goes ink), vivid tokens kept (bar is graphical so it passes contrast), lighter wait pill with a ring, 44px button, tracked bar acts as the divider. Wait <b>range</b> + <b>Anstehen</b> kept as you locked them.</p>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(paths,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||15);s.setAttribute("height",o.size||15);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(paths)?paths:[paths]).forEach(d=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);s.appendChild(p);});return s;}
+function star(){const s=document.createElementNS(NS,"svg");s.setAttribute("width",12);s.setAttribute("height",12);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","#FFC32B");const p=document.createElementNS(NS,"path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heart(){const h=el("div","heart");const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS(NS,"path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+
+const CAP=8;
+function fillPct(a){return Math.round(Math.min(Math.max(a/CAP,0.12),1)*100);}
+// color ramp: current keeps blue chill; refined-green uses green; refined-blue keeps blue
+function colCur(a){ if(a<=2) return "var(--blue)"; if(a<=5) return "var(--orange)"; return "var(--red)"; }
+function colGreen(a){ if(a<=2) return "var(--green)"; if(a<=5) return "var(--orange)"; return "var(--red)"; }
+function colBlue(a){ if(a<=2) return "var(--blue)"; if(a<=5) return "var(--orange)"; return "var(--red)"; }
+
+const SALONS=[
+  {name:"Blade & Stone",rating:4.4,reviews:11,addr:"Feldbergstrasse 82",price:43,free:"Frei in 5-8 Min",ahead:2,photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80"},
+  {name:"The Fade Factory",rating:4.3,reviews:11,addr:"Hammerstrasse 65",price:47,free:"Frei in 20-25 Min",ahead:5,photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80"},
+  {name:"Old Town Barbers",rating:4.3,reviews:12,addr:"Münsterplatz 11",price:47,free:"Frei in 40-50 Min",ahead:8,photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80"},
+];
+
+function baseTop(s, mode, colFn){
+  const c=el("div","card"); c.style.setProperty("--c", colFn(s.ahead));
+  const ph=el("div","ph"); const im=el("img"); im.src=s.photo; im.alt=s.name; ph.appendChild(im);
+  ph.appendChild(el("div","freepill "+(mode==="cur"?"cur":"ref"), s.free));
+  ph.appendChild(heart()); c.appendChild(ph);
+  const body=el("div","body");
+  const r1=el("div","r1"); r1.appendChild(el("div","nm",s.name));
+  const rt=el("div","rt"); rt.appendChild(star()); rt.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")")); r1.appendChild(rt); body.appendChild(r1);
+  body.appendChild(el("div","meta",s.addr+", Basel · ab CHF "+s.price));
+  return {c, body};
+}
+function joinBtn(refined){ const a=el("div",refined?"join-ref":"join-cur"); a.appendChild(el("span",null,"Anstehen")); a.appendChild(svg(["M5 12h14","M12 5l7 7-7 7"],{size:15})); return a; }
+
+// CURRENT: colored count + bar(track) + small btn, 2-line left stack
+function cardCurrent(s){
+  const {c,body}=baseTop(s,"cur",colCur);
+  const wf=el("div","wf"); const ql=el("div","ql");
+  const bar=el("div","qbar"); const f=el("i"); f.style.width=fillPct(s.ahead)+"%"; bar.appendChild(f); ql.appendChild(bar);
+  ql.appendChild(el("div","qn-cur", s.ahead+" vor dir")); wf.appendChild(ql); wf.appendChild(joinBtn(false));
+  body.appendChild(wf); c.appendChild(body); return c;
+}
+// REFINED: full-bleed tracked bar = divider, INK count, 44px btn, one centered row
+function cardRefined(s, colFn){
+  const {c,body}=baseTop(s,"ref",colFn);
+  const wf=el("div","wf2");
+  const bar=el("div","qbar2"); const f=el("i"); f.style.width=fillPct(s.ahead)+"%"; bar.appendChild(f); wf.appendChild(bar);
+  const row=el("div","row2"); row.appendChild(el("div","qn-ref", s.ahead+" vor dir")); row.appendChild(joinBtn(true)); wf.appendChild(row);
+  body.appendChild(wf); c.appendChild(body); return c;
+}
+
+function colize(pillTxt,rec,nm,ds,fn){
+  const col=el("div","col"); const tag=el("div","tag"); const p=el("span","pill"+(rec?" rec":""),pillTxt); tag.appendChild(p);
+  const wrap=el("div"); wrap.appendChild(el("div","nm",nm)); wrap.style.display="flex"; wrap.style.flexDirection="column"; const nmEl=el("div","ds",ds); tag.appendChild(nmEl);
+  col.appendChild(tag);
+  const ph=el("div","phone"); SALONS.forEach(s=>ph.appendChild(fn(s))); col.appendChild(ph);
+  document.getElementById("frames").appendChild(col);
+}
+colize("NOW","",  "Current (live)", "colored count + bar, ~33px button", cardCurrent);
+colize("A ✓","rec","Refined · green chill", "ink count · bar-only color · 44px · green→orange→red", (s)=>cardRefined(s,colGreen));
+colize("B","",    "Refined · blue chill", "same fixes, chill stays blue", (s)=>cardRefined(s,colBlue));
+</script>
+</body>
+</html>

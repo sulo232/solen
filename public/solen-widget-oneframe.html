@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — one fixed card, content swipes inside</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4;
+    --accent:#276EF1; --star:#FFC32B; --heart:#FF3366;
+    --disp:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 90px}
+  h1{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 24px;max-width:760px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;align-items:flex-start}
+  .col{width:392px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);min-width:22px;height:22px;padding:0 7px;border-radius:6px;display:grid;place-items:center;font-family:var(--disp)}
+  .tag .nm{font-size:14px;font-weight:700;font-family:var(--disp)}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:32px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.13);padding:20px 16px 24px}
+  .secttl{font-family:var(--disp);font-weight:600;font-size:19px;letter-spacing:-.01em;color:var(--ink);margin:0 0 11px}
+
+  /* ── THE FIXED CARD FRAME (does not move) ── */
+  .frame{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.06);background:var(--ink)}
+  .frame.overlay{aspect-ratio:3/2}
+  .frame.split{height:200px}
+  /* the inner swipe track — lives INSIDE the frame, clipped by it */
+  .track{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .track::-webkit-scrollbar{display:none}
+  .pane{position:relative;flex:0 0 100%;scroll-snap-align:start}
+
+  /* badge is FIXED on the frame (labels the whole widget); heart is per-pane (per salon) */
+  .badge{position:absolute;top:12px;left:12px;z-index:3;display:inline-flex;align-items:center;border-radius:10px;padding:6px 11px;font-size:11px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .heart{position:absolute;top:11px;right:11px;z-index:3;width:32px;height:32px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25)}
+
+  /* overlay pane content */
+  .pane img{width:100%;height:100%;object-fit:cover;display:block}
+  .pane .ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.55) 42%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.2) 100%)}
+  .pane .ct{position:absolute;left:16px;right:16px;bottom:15px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .pane .nm{font-family:var(--disp);font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.05}
+  .pane .rt{display:flex;align-items:center;gap:5px;font-size:13.5px;margin-top:6px}
+  .pane .sub{font-size:13px;color:rgba(255,255,255,.82);margin-top:2px}
+
+  /* split pane content */
+  .pane.sp{display:flex;color:#fff}
+  .pane.sp .l{flex:1;min-width:0;padding:18px 14px 18px 18px;display:flex;flex-direction:column}
+  .pane.sp .eyebrow{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+  .pane.sp .nm{font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:-.02em;line-height:1.04;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pane.sp .rt{margin-top:8px;color:rgba(255,255,255,.82)}
+  .pane.sp .pr{font-size:13px;margin-top:3px;color:rgba(255,255,255,.6)}
+  .pane.sp .cta{margin-top:auto;align-self:flex-start;background:#fff;color:var(--ink);font-weight:600;font-size:13px;padding:9px 18px;border-radius:999px}
+  .pane.sp .r{position:relative;flex:0 0 43%}
+
+  .dots{display:flex;justify-content:center;margin-top:13px}
+  .dots button{background:none;border:0;display:grid;place-items:center;min-height:34px;padding:0 5px;cursor:pointer}
+  .dot{display:block;height:7px;width:7px;border-radius:999px;background:#d4d4d4;transition:all .25s}
+  .dot.on{width:22px;border-radius:4px;background:var(--ink)}
+  .note{font-size:11.5px;color:#888;margin:8px 2px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>One fixed card — content swipes <em>inside</em> it</h1>
+  <p class="lead">The card frame (border, shadow, corners) <b>stays put</b>. Swipe and only the inner content changes — photo, name, rating slide <b>within</b> the fixed frame, dots track it. That's the Zemart behavior. Swipe each on your phone to feel it. Two styles to pick from.</p>
+  <div class="frames" id="frames"></div>
+</div>
+
+<script>
+const SALONS = [
+  { name:"Blade & Stone",    rating:4.4, reviews:11, price:43, addr:"Feldbergstrasse 82, Basel", photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=900&q=80" },
+  { name:"The Fade Factory", rating:4.3, reviews:11, price:47, addr:"Hammerstrasse 65, Basel",   photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=900&q=80" },
+  { name:"Old Town Barbers", rating:4.3, reviews:12, price:47, addr:"Münsterplatz 11, Basel",     photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&q=80" },
+];
+
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function img(src,alt){const i=el("img");i.src=src;i.alt=alt||"";i.loading="lazy";return i;}
+function star(sz){const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width",sz);s.setAttribute("height",sz);s.setAttribute("fill","#FFC32B");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heart(){const h=el("div","heart");const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+function rating(s){const r=el("div","rt");r.appendChild(star(14));r.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")"));return r;}
+
+function paneOverlay(s){
+  const p=el("div","pane");
+  p.appendChild(img(s.photo,s.name));
+  p.appendChild(el("div","ov"));
+  p.appendChild(heart());
+  const ct=el("div","ct");
+  ct.appendChild(el("div","nm",s.name));
+  ct.appendChild(rating(s));
+  ct.appendChild(el("div","sub","ab CHF "+s.price+" · "+s.addr));
+  p.appendChild(ct); return p;
+}
+function paneSplit(s){
+  const p=el("div","pane sp");
+  const l=el("div","l");
+  l.appendChild(el("div","eyebrow","Top bewertet"));
+  l.appendChild(el("div","nm",s.name));
+  l.appendChild(rating(s));
+  l.appendChild(el("div","pr","ab CHF "+s.price));
+  l.appendChild(el("div","cta","Buchen"));
+  const r=el("div","r"); r.appendChild(img(s.photo,s.name)); r.appendChild(heart());
+  p.appendChild(l); p.appendChild(r); return p;
+}
+
+function build(mountId, style){
+  const root=document.getElementById(mountId);
+  const frame=el("div","frame "+style);
+  if(style==="overlay") frame.appendChild(el("span","badge","Top bewertet")); // FIXED on the frame
+  const track=el("div","track");
+  SALONS.forEach(s=> track.appendChild(style==="overlay"? paneOverlay(s): paneSplit(s)));
+  frame.appendChild(track);
+  root.appendChild(frame);
+  const dots=el("div","dots");
+  SALONS.forEach((_,i)=>{ const b=el("button"); b.type="button"; const d=el("span","dot"+(i===0?" on":"")); b.appendChild(d); b.onclick=()=>track.children[i].scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"}); dots.appendChild(b); });
+  root.appendChild(dots);
+  track.addEventListener("scroll",()=>{const max=track.scrollWidth-track.clientWidth;const idx=max>0?Math.round(track.scrollLeft/max*(SALONS.length-1)):0;[...dots.children].forEach((b,i)=>b.firstChild.classList.toggle("on",i===idx));},{passive:true});
+}
+
+const STYLES=[
+  {id:"A", nm:"Overlay", ds:"photo fills the fixed card, text on it", style:"overlay"},
+  {id:"B", nm:"Split", ds:"text + Buchen left, photo right (Zemart)", style:"split"},
+];
+const frames=document.getElementById("frames");
+STYLES.forEach((st,k)=>{
+  const col=el("div","col");
+  const tag=el("div","tag"); tag.appendChild(el("span","pill",st.id)); tag.appendChild(el("span","nm",st.nm)); tag.appendChild(el("span","ds",st.ds)); col.appendChild(tag);
+  const phone=el("div","phone"); phone.appendChild(el("div","secttl","Top bewertet"));
+  const mount=el("div"); mount.id="m"+k; phone.appendChild(mount);
+  col.appendChild(phone);
+  const note=el("div","note"); note.textContent="↔ swipe inside the card — the frame stays put"; col.appendChild(note);
+  frames.appendChild(col);
+  build("m"+k, st.style);
+});
+</script>
+</body>
+</html>

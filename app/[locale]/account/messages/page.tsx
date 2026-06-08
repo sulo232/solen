@@ -53,7 +53,7 @@ export default function MessagesPage() {
             {/* Conversation list skeleton */}
             <div className="w-72 shrink-0 flex flex-col gap-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex gap-3 p-3 rounded-[12px] bg-white border border-s-ink/[0.06]">
+                <div key={i} className="flex gap-3 p-3 rounded-[12px] bg-white border border-s-border">
                   <div className="w-10 h-10 rounded-full bg-s-bg-sunken shrink-0" />
                   <div className="flex-1 space-y-1.5 pt-1">
                     <div className="h-2.5 w-3/4 bg-s-bg-sunken rounded" />
@@ -63,7 +63,7 @@ export default function MessagesPage() {
               ))}
             </div>
             {/* Chat pane skeleton */}
-            <div className="flex-1 rounded-[14px] bg-white border border-s-ink/[0.06]" />
+            <div className="flex-1 rounded-[14px] bg-white border border-s-border" />
           </div>
         </div>
       </div>
@@ -116,7 +116,7 @@ export default function MessagesPage() {
                     "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-[transform,filter] duration-150",
                     selected === conv.id
                       ? "border border-s-border bg-s-bg-sunken"
-                      : "bg-white border border-s-ink/[0.07] hover:border-s-border",
+                      : "bg-white border border-s-border hover:border-s-border",
                   ].join(" ")}
                 >
                   {/* Avatar — V3-D281: was rgba(27,77,27,.15) green wash → sunken neutral */}
@@ -158,7 +158,7 @@ export default function MessagesPage() {
           <div className="flex-1 min-w-0">
             {selected && currentUserId ? (
               <div className="h-full">
-                <div className="mb-3 pb-3 border-b border-s-ink/[0.06] flex items-center gap-2">
+                <div className="mb-3 pb-3 border-b border-s-border flex items-center gap-2">
                   {/* V3-D281: header avatar — was rgba(27,77,27,.12) green wash + s-coral text → sunken neutral */}
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-ink text-[10px] font-heading shrink-0 bg-s-bg-sunken">
                     {selectedConv?.other_party_name?.[0] ?? "?"}

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   let ownerSalonId: string | null = null;
   if (profile?.role === "salon_owner") {
     const { data: salon } = await supabase
-      .from("salons").select("id").eq("owner_id", user.id).eq("is_active", true).single();
+      .from("salons").select("id").eq("owner_id", user.id).eq("is_active", true).order("created_at", { ascending: true }).limit(1).maybeSingle();
     ownerSalonId = salon?.id ?? null;
   }
 

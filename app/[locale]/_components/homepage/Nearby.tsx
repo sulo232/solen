@@ -24,6 +24,8 @@ import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./use
  */
 
 interface NearbyEntry {
+  /** Real salon UUID — threaded to SalonCard → HeartButton so the save persists. */
+  id: string;
   slug: string;
   name: string;
   rating: number;
@@ -39,40 +41,44 @@ interface NearbyEntry {
 }
 
 // V2-D60-photos: Unsplash imagery — same slug reuses same photo across sections.
+// 2026-06-05: slugs/names/ids point at the REAL seeded salons (Basel) so every
+// card resolves to a live PDP instead of a 404. The curated distance/next-slot/
+// photo styling is kept; only identity (id+slug+name) is real. Each entry maps
+// to a real salon of its OWN category so the colorway/labels stay correct.
 const DEMO: NearbyEntry[] = [
   // V3-D128 (2026-05-24): "15 Min" → "Heute 15:30" per user "we book by
   // TIME not by Min". Solen's data model is TIME-slot based, not duration.
-  { slug: "salon-maria", name: "Salon Maria", rating: 4.8, category: "coiffeur", distance: "200 m", nextSlot: { prefix: "Heute ", bold: "15:30" }, freeToday: true, isSaved: true,
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, category: "coiffeur", distance: "200 m", nextSlot: { prefix: "Heute ", bold: "15:30" }, freeToday: true, isSaved: true,
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { slug: "atelier-coiffure", name: "Atelier Coiffure", rating: 4.9, category: "coiffeur", distance: "450 m", nextSlot: { bold: "14:30, 16:00" }, freeToday: true,
+  { id: "e34402f4-2986-4f63-8487-b09645395c65", slug: "glow-lab-basel", name: "Glow Lab Basel", rating: 4.87, category: "coiffeur", distance: "450 m", nextSlot: { bold: "14:30, 16:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  { slug: "nails-und-co", name: "Nails & Co.", rating: 4.7, category: "nails", distance: "800 m", nextSlot: { prefix: "Nächster ", bold: "Mo. 09:00" },
+  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", rating: 4.95, category: "nails", distance: "800 m", nextSlot: { prefix: "Nächster ", bold: "Mo. 09:00" },
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { slug: "spa-rheinufer", name: "Spa Rheinufer", rating: 4.8, category: "spa", distance: "1.2 km", nextSlot: { prefix: "Nächster ", bold: "Do. 11:00" },
+  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", rating: 4.90, category: "spa", distance: "1.2 km", nextSlot: { prefix: "Nächster ", bold: "Do. 11:00" },
     photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
   // V3-D128 (2026-05-24): "30 Min" → "Heute 17:15" — same fix as above.
-  { slug: "boheme", name: "Bohème", rating: 4.9, category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "Heute ", bold: "17:15" }, freeToday: true,
+  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", rating: 4.91, category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "Heute ", bold: "17:15" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" },
-  { slug: "studio-nord", name: "Studio Nord", rating: 4.7, category: "barbershop", distance: "1.8 km", nextSlot: { prefix: "Heute ", bold: "18:00" }, freeToday: true,
+  { id: "9f078a3f-071d-4797-a0cf-e5ab6f3c1d2f", slug: "the-fade-factory", name: "The Fade Factory", rating: 4.86, category: "barbershop", distance: "1.8 km", nextSlot: { prefix: "Heute ", bold: "18:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
   // V2-D60.1: expanded 6 → 15 cards per LIVE_TRUTH §17.4 update.
-  { slug: "haar-atelier", name: "Haar Atelier", rating: 4.6, category: "coiffeur", distance: "2.0 km", nextSlot: { prefix: "Heute ", bold: "16:30" }, freeToday: true,
+  { id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477", slug: "salon-lumiere", name: "Salon Lumière", rating: 4.85, category: "coiffeur", distance: "2.0 km", nextSlot: { prefix: "Heute ", bold: "16:30" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=450&fit=crop&q=80" },
-  { slug: "nail-loft", name: "Nail Loft", rating: 4.8, category: "nails", distance: "2.2 km", nextSlot: { prefix: "Heute ", bold: "17:30" }, freeToday: true,
+  { id: "08760993-cdfd-4cc7-ac69-6a2bf8aed383", slug: "pink-petal-nails", name: "Pink Petal Nails", rating: 4.88, category: "nails", distance: "2.2 km", nextSlot: { prefix: "Heute ", bold: "17:30" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { slug: "salon-bellevue", name: "Salon Bellevue", rating: 4.9, category: "coiffeur", distance: "2.4 km", nextSlot: { bold: "Morgen 09:00" },
+  { id: "1c217cdc-f342-4790-91ec-c87709468666", slug: "velvet-face", name: "Velvet Face", rating: 4.81, category: "coiffeur", distance: "2.4 km", nextSlot: { bold: "Morgen 09:00" },
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
-  { slug: "studio-rheinblick", name: "Studio Rheinblick", rating: 4.7, category: "coiffeur", distance: "2.6 km", nextSlot: { prefix: "Nächster ", bold: "Mi. 14:00" },
+  { id: "f4f9bdc6-96e9-4bbb-819d-3a2931897e57", slug: "haarsalon-margot", name: "Haarsalon Margot", rating: 4.78, category: "coiffeur", distance: "2.6 km", nextSlot: { prefix: "Nächster ", bold: "Mi. 14:00" },
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
-  { slug: "spa-margarethen", name: "Spa Margarethen", rating: 4.7, category: "spa", distance: "3.0 km", nextSlot: { prefix: "Nächster ", bold: "Fr. 10:00" },
+  { id: "6aedd8a4-30fd-4390-949c-4d1fa06e1ff1", slug: "wax-and-glow-basel", name: "Wax & Glow Basel", rating: 4.83, category: "spa", distance: "3.0 km", nextSlot: { prefix: "Nächster ", bold: "Fr. 10:00" },
     photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
-  { slug: "coiffure-trois-rois", name: "Coiffure Trois Rois", rating: 4.85, category: "coiffeur", distance: "3.2 km", nextSlot: { bold: "Heute 17:00" }, freeToday: true,
+  { id: "9956212b-166f-4a51-a880-6e99e329267a", slug: "rouge-studio", name: "Rouge Studio", rating: 4.74, category: "coiffeur", distance: "3.2 km", nextSlot: { bold: "Heute 17:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" },
-  { slug: "atelier-solene", name: "Atelier Solène", rating: 4.95, category: "coiffeur", distance: "3.5 km", nextSlot: { prefix: "Nächster ", bold: "Sa. 11:30" },
+  { id: "ff2abacd-661a-4e7a-9c00-2dda7ce29133", slug: "studio-schnittkunst", name: "Studio Schnittkunst", rating: 4.71, category: "coiffeur", distance: "3.5 km", nextSlot: { prefix: "Nächster ", bold: "Sa. 11:30" },
     photoUrl: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=450&fit=crop&q=80" },
-  { slug: "barber-kleinbasel", name: "Barber Kleinbasel", rating: 4.75, category: "barbershop", distance: "3.8 km", nextSlot: { prefix: "Heute ", bold: "19:00" }, freeToday: true,
+  { id: "63e581dd-2b0e-4910-b4a5-543bc1e157f6", slug: "blade-and-stone", name: "Blade & Stone", rating: 4.79, category: "barbershop", distance: "3.8 km", nextSlot: { prefix: "Heute ", bold: "19:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" },
-  { slug: "salon-felix", name: "Salon Felix", rating: 4.8, category: "coiffeur", distance: "4.1 km", nextSlot: { prefix: "Nächster ", bold: "Di. 13:00" },
+  { id: "dd4a3e35-8b9c-4ee6-a52e-1fb71ce04f89", slug: "atelier-haarwerk", name: "Atelier Haarwerk", rating: 4.64, category: "coiffeur", distance: "4.1 km", nextSlot: { prefix: "Nächster ", bold: "Di. 13:00" },
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
 ];
 
@@ -148,7 +154,7 @@ export default function Nearby({
       <SectionFrame>
         <SectionTitle
           title="In der Nähe"
-          link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
+          link={{ label: "Alle in deiner Nähe →", href: "/de/search?nearby=true" }}
           scrollRef={scrollRef}
         />
         {/* V3-D348 (tweak #2): map teaser — gives "In der Nähe" a location-led
@@ -156,7 +162,7 @@ export default function Nearby({
             The salon cards below are UNCHANGED (name+star / street / time·price).
             Tap → nearby results. */}
         <a
-          href="/search/results?nearby=true"
+          href="/de/search?view=map"
           aria-label="Salons in der Nähe auf der Karte ansehen"
           className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.99]"
         >
@@ -179,8 +185,9 @@ export default function Nearby({
         <ScrollRow ref={scrollRef}>
         {entries.map((e, idx) => (
           <SalonCard
-            key={e.slug}
+            key={`${e.slug}-${idx}`}
             slug={e.slug}
+            salonId={e.id}
             name={e.name}
             rating={e.rating}
             category={e.category}

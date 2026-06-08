@@ -124,8 +124,8 @@ const availVariants = cva(
         // also carries bg-s-success-bg now (bg moved off the inline tealStyle).
         now:     "text-s-success",
         week:    "text-s-success bg-s-success-bg",
-        urgent:  "text-[#C2410C]",    // V3-D173: warm-amber burnt-sienna on cream
-        limited: "text-[#C2410C]",
+        urgent:  "text-s-urgency",    // V3-D173: warm-amber burnt-sienna on cream (s-urgency = #C2410C)
+        limited: "text-s-urgency",
         angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
@@ -344,6 +344,8 @@ function AvailabilityPill({ state, label }: AvailabilityProps) {
 export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   /** Slug for routing → `/salon/[slug]`. */
   slug: string;
+  /** Salon UUID — threaded to HeartButton so the save persists. Omit only for demo cards with no DB row. */
+  salonId?: string;
   /** Display name. */
   name: string;
   /** 0-5 rating (1 decimal display). `null` shows em-dash. */
@@ -389,6 +391,7 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
 
 export function SalonCard({
   slug,
+  salonId,
   name,
   rating,
   photoUrl,
@@ -459,17 +462,10 @@ export function SalonCard({
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
           "relative aspect-square w-full overflow-hidden rounded-[22px]",
-          // V3-D72 (2026-05-18) — refined Aurex floating shadow per user spec
-          // `0px 6px 24px rgba(0, 0, 0, 0.06)` + `border: none`. Tighter Y
-          // offset (10 → 6) keeps shadow closer to card (less "hovering on a
-          // stick"), slightly more alpha (0.05 → 0.06) for crisper edge against
-          // the new cooler grey substrate #F4F4F6. Pairs with the substrate
-          // shift — cooler grey + slightly-stronger shadow = pure-white cards
-          // pop more decisively.
-          "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
+          "shadow-elevation-2",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)]",
+          "group-hover:shadow-elevation-3",
         )}
         style={{ backgroundColor: cat.bg }}
       >
@@ -514,6 +510,7 @@ export function SalonCard({
         {/* Top-right floating heart — color overridden in dark-photo variant */}
         <HeartButton
           isSaved={isSaved}
+          salonId={salonId}
           salonName={name}
           className={isDarkPhoto ? "text-white/85" : undefined}
         />
@@ -540,7 +537,7 @@ export function SalonCard({
               the signal; was 500/ink competing with the name. Matches the FeaturedStylists calm-down. */}
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
           <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-            <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
+            <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
             {rating != null ? rating.toFixed(1) : "—"}
           </CardMeta>
         </div>

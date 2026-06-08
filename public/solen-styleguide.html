@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — design direction (when to use what)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;--sunken:#F5F5F4;
+    --accent:#276EF1;--accentpale:#EAEFFE;--star:#FFC32B;--green:#16A34A;--greenbg:#E8F5E9;
+    --red:#DC2626;--heart:#FF3366;
+    --e1:0 1px 3px rgba(50,47,44,.04),0 1px 2px rgba(50,47,44,.03);
+    --e2:0 4px 12px rgba(50,47,44,.08),0 2px 4px rgba(50,47,44,.04);
+    --e3:0 8px 28px rgba(50,47,44,.12),0 4px 10px rgba(50,47,44,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 20px 80px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:26px;letter-spacing:-0.02em}
+  .lede{color:var(--ink2);font-size:13.5px;margin:6px 0 28px;line-height:1.55;max-width:620px}
+  section{border-top:1px solid var(--border);padding:24px 0}
+  .stitle{font-family:'Inter Tight';font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px}
+  .row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+  .item{display:flex;flex-direction:column;gap:7px}
+  /* colour */
+  .sw{width:120px}
+  .chip{height:46px;border-radius:10px;border:1px solid var(--border)}
+  .lab{font-size:12px;font-weight:600;color:var(--ink)}
+  .use{font-size:11.5px;color:var(--ink2);line-height:1.35}
+  .use b{color:var(--ink)}
+  /* type */
+  .tspec{color:var(--ink3);font-size:11px;font-weight:600;font-family:'Inter';margin-left:10px;letter-spacing:0}
+  .trow{display:flex;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--border)}
+  .trow:last-child{border-bottom:none}
+  /* button */
+  .btn-ink{background:var(--ink);color:#fff;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+  .btn-ink svg{width:15px;height:15px;stroke:#fff;stroke-width:2.5}
+  .btn-ghost{background:var(--sunken);color:var(--ink);border-radius:999px;padding:12px 22px;font-size:15px;font-weight:600}
+  .btn-bad{background:var(--accent);color:#fff;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:600;position:relative;opacity:.55}
+  .x{position:absolute;inset:0;display:grid;place-items:center;font-size:26px;color:var(--red);font-weight:800}
+  /* card hierarchy demo */
+  .card{width:230px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .card .ph{height:130px;background:linear-gradient(135deg,#cdbfae,#a8917a)}
+  .card .bd{padding:13px 14px 15px}
+  .nm{font-family:'Inter Tight';font-weight:600;font-size:15px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rate{display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2)}
+  .rate svg{width:12px;height:12px;fill:var(--star);stroke:none}
+  .meta{font-size:12px;color:var(--ink2);margin-top:3px}
+  .price{font-size:12.5px;color:var(--ink2);margin-top:4px}
+  .price b{font-weight:600;color:var(--ink)}
+  .gpill{display:inline-flex;align-items:center;gap:4px;background:var(--greenbg);color:var(--green);font-size:11.5px;font-weight:600;border-radius:8px;padding:3px 8px;margin-top:7px}
+  .gpill svg{width:11px;height:11px;stroke:var(--green)}
+  .tag{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:2px 6px}
+  .tag.ok{color:var(--green);border:1px solid var(--green)}
+  .tag.no{color:var(--red);border:1px solid var(--red)}
+  /* shadow + radius boxes */
+  .box{width:130px;height:78px;background:#fff;border-radius:16px;display:grid;place-items:center;font-size:11.5px;color:var(--ink2);font-weight:600}
+  .b1{box-shadow:var(--e1)} .b2{box-shadow:var(--e2)} .b3{box-shadow:var(--e3)}
+  .bflat{border:1px solid var(--border)}
+  .rbox{width:96px;height:70px;background:var(--sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:11px;color:var(--ink2);font-weight:600}
+  .note{font-size:12px;color:var(--ink2);background:var(--sunken);border-radius:10px;padding:11px 13px;line-height:1.5;margin-top:14px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Solen — design direction</h1>
+  <p class="lede">The "when do we use what" rulebook, rendered. Every value here is the real token. This is the contract the whole app + the drift-gate now hold to.</p>
+
+  <!-- COLOUR -->
+  <section>
+    <div class="stitle">Colour — when each one</div>
+    <div class="row">
+      <div class="item sw"><div class="chip" style="background:var(--ink)"></div><span class="lab">Ink #0A0A0A</span><span class="use">All text, chrome, the <b>one</b> primary button.</span></div>
+      <div class="item sw"><div class="chip" style="background:var(--accent)"></div><span class="lab">Blue #276EF1</span><span class="use"><b>Selected / active only</b> (date, time, tab). Small accent. <b>Never</b> a button fill.</span></div>
+      <div class="item sw"><div class="chip" style="background:var(--green)"></div><span class="lab">Green #16A34A</span><span class="use">Available / open / success.</span></div>
+      <div class="item sw"><div class="chip" style="background:var(--red)"></div><span class="lab">Red #DC2626</span><span class="use">Errors, closed.</span></div>
+      <div class="item sw"><div class="chip" style="background:var(--star)"></div><span class="lab">Star #FFC32B</span><span class="use">Ratings.</span></div>
+      <div class="item sw"><div class="chip" style="background:var(--heart)"></div><span class="lab">Heart #FF3366</span><span class="use">Saved.</span></div>
+    </div>
+    <div class="row" style="margin-top:18px;align-items:center;gap:18px">
+      <div class="item"><span class="btn-ink">Termin buchen <svg data-l="chevron-right"></svg></span><span class="use"><span class="tag ok">do</span> primary = ink</span></div>
+      <div class="item"><span class="btn-ghost">Sekundär</span><span class="use"><span class="tag ok">do</span> secondary = flat grey</span></div>
+      <div class="item"><span class="btn-bad">Termin buchen<span class="x">✕</span></span><span class="use"><span class="tag no">no</span> blue is not a button</span></div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section>
+    <div class="stitle">Text size — one size per role</div>
+    <div class="trow"><span style="font-family:'Inter Tight';font-weight:800;font-size:30px;letter-spacing:-.02em">Hero headline</span><span class="tspec">clamp(28–40)px · Inter Tight 800</span></div>
+    <div class="trow"><span style="font-family:'Inter Tight';font-weight:800;font-size:20px;letter-spacing:-.01em">Section title</span><span class="tspec">clamp(18,2vw,20)px · 800</span></div>
+    <div class="trow"><span style="font-family:'Inter Tight';font-weight:600;font-size:15px">Salon name (card anchor)</span><span class="tspec">14–15px · 600</span></div>
+    <div class="trow"><span style="font-size:15px;font-weight:600">Button label</span><span class="tspec">15px · 600 (never ≤13 on a button)</span></div>
+    <div class="trow"><span style="font-size:14px">Body text</span><span class="tspec">14px · 400</span></div>
+    <div class="trow"><span style="font-size:12px;color:var(--ink2)">Meta · rating · address</span><span class="tspec">12px · grey</span></div>
+    <div class="trow"><span style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)">Eyebrow / tag</span><span class="tspec">11px · uppercase</span></div>
+  </section>
+
+  <!-- HIERARCHY -->
+  <section>
+    <div class="stitle">Hierarchy — name leads by size</div>
+    <div class="row" style="gap:24px;align-items:flex-start">
+      <div class="item">
+        <div class="card">
+          <div class="ph"></div>
+          <div class="bd">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="nm">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price">ab <b>65</b> CHF</div>
+            <div class="meta" style="display:flex;align-items:center;gap:5px;margin-top:7px"><svg data-l="clock" style="width:12px;height:12px;stroke:var(--ink2)"></svg>heute 16:00</div>
+          </div>
+        </div>
+        <span class="use"><span class="tag ok">do</span> name leads by SIZE (biggest). Decision info keeps its own pop: rating = yellow star, price = bold. Only filler (category · city) goes quiet grey. No green pill.</span>
+      </div>
+      <div class="item">
+        <div class="card">
+          <div class="ph"></div>
+          <div class="bd">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="nm" style="font-weight:700">Maison Lée</span><span class="rate" style="color:var(--ink);font-weight:700">★ 4.9 (128)</span></div>
+            <div class="meta" style="color:var(--ink);font-weight:700">Coiffeur · Zürich · 1.2 km</div>
+            <div class="price" style="color:var(--ink);font-weight:700;font-size:14px">ab 65 CHF</div>
+          </div>
+        </div>
+        <span class="use"><span class="tag no">no</span> everything bold = nothing leads. The eye has no anchor.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHADOW -->
+  <section>
+    <div class="stitle">Shadow — earned by the background</div>
+    <div class="row" style="gap:18px;align-items:flex-start;background:var(--sunken);padding:20px;border-radius:14px">
+      <div class="item"><div class="box bflat">flat</div><span class="use">Calm control on white</span></div>
+      <div class="item"><div class="box b2">elevation-2</div><span class="use"><b>Card</b> (resting)</span></div>
+      <div class="item"><div class="box b3">elevation-3</div><span class="use">Card hover / lifted</span></div>
+    </div>
+    <div class="note"><b>Sticky bottom bar</b> = no shadow, no border, a gradient fade. <b>Control over a photo</b> = frosted glass. White + shadow on a calm surface = banned (grey haze).</div>
+  </section>
+
+  <!-- RADIUS -->
+  <section>
+    <div class="stitle">Corner radius — per element</div>
+    <div class="row" style="gap:14px;align-items:flex-start">
+      <div class="item"><div class="rbox" style="border-radius:16px">16</div><span class="use">Card / block</span></div>
+      <div class="item"><div class="rbox" style="border-radius:999px">pill</div><span class="use">Button / chip</span></div>
+      <div class="item"><div class="rbox" style="border-radius:16px">16</div><span class="use">Input</span></div>
+      <div class="item"><div class="rbox" style="border-radius:28px 28px 0 0">28</div><span class="use">Sheet (top)</span></div>
+      <div class="item"><div class="rbox" style="border-radius:0">0</div><span class="use">Photo (flush)</span></div>
+    </div>
+    <div class="note">Kill the random ones (`[13px]`, `[12px]`, 18, 22). One radius per element type.</div>
+  </section>
+
+  <!-- WRAP -->
+  <section>
+    <div class="stitle">Wrap vs cut-off</div>
+    <div class="row" style="gap:28px">
+      <div class="item" style="width:200px"><div class="nm">Ein sehr langer Salonname der …</div><span class="use">Name → <b>cut off</b> (1 line)</span></div>
+      <div class="item" style="width:200px"><div style="font-size:14px;line-height:1.5">A description can wrap onto two or three lines and that is fine.</div><span class="use">Body → <b>wrap</b></span></div>
+      <div class="item" style="width:120px"><div class="price">ab <b>65</b> CHF</div><span class="use">Price / rating → <b>never wrap</b></span></div>
+    </div>
+  </section>
+</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

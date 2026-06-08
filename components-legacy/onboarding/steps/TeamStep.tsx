@@ -58,7 +58,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
+      <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">
@@ -70,7 +70,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="mitarbeiter@email.ch"
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("team.firstName")}
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
             />
           </div>
         </div>
@@ -100,9 +100,9 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
       </div>
 
       {invites.length > 0 && (
-        <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
+        <div className="bg-white rounded-[12px] border border-s-border overflow-hidden">
           {invites.map((inv, i) => (
-            <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-ink/5" : ""].join(" ")}>
+            <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-border" : ""].join(" ")}>
               <div className="w-8 h-8 rounded-full bg-s-ink/10 flex items-center justify-center">
                 <UserPlus size={14} className="text-s-accent" />
               </div>

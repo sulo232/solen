@@ -26,12 +26,10 @@
  *   - sort                → supported (rating/price/newest/distance)
  *   - instant_bookable    → supported (48h availability join)
  *   - deals               → supported (last_minute_discount_percent > 0)
- *   - walk_in             → supported (walk_in_available column, graceful fallback)
+ *   - walk_in             → supported (walkin_enabled column)
  *   - min_rating          → supported (gte average_rating)
- *   - open_now            → NOT filtered server-side yet (shown for parity with
- *                           the chip row; same param, single source of truth -
- *                           API ignores it and returns the full set until the
- *                           hours-aware filter lands). See report.
+ *   - open_now            → supported (isOpenNow over opening_hours; open salon IDs
+ *                           resolved server-side before pagination, route.ts ~L138).
  * OMITTED (no API support): Preis (min_price/max_price read but not applied,
  *   route.ts L133-134) and "In deiner Naehe" (needs lat/lng geolocation capture,
  *   no `distance` param + no geo-prompt UI in scope). Haartyp / Ausstattung
@@ -233,7 +231,9 @@ function SheetChip({
         "active:scale-[0.97] active:duration-[80ms]",
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         active
-          ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
+          // V3-D421k (owner): selections INSIDE the sheet mark BLUE (tint), matching the
+          // active chips in the row — soft blue wash + blue hairline + ink text.
+          ? "border border-s-accent/40 bg-s-accent/[0.08] text-s-ink font-semibold"
           : "border border-s-border bg-white text-s-ink hover:border-s-ink",
       )}
     >
@@ -302,7 +302,8 @@ function FilterSheetContent({
                     "transition-[background-color,color,box-shadow] duration-150 ease-glide",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                     isActive
-                      ? "bg-white font-semibold text-s-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                      // V3-D421k (owner): selected sort segment marks blue too.
+                      ? "bg-s-accent/[0.12] font-semibold text-s-accent"
                       : "font-medium text-s-ink-2 hover:text-s-ink",
                   )}
                 >
@@ -346,19 +347,19 @@ function FilterSheetContent({
         <FilterGroup heading={section ? "" : labels.ratingHeading}>
           <div className="flex flex-wrap gap-2">
             <SheetChip active={minRating === 4.5} onClick={() => onMinRatingChange(minRating === 4.5 ? null : "4.5")}>
-              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
               4.5
             </SheetChip>
             <SheetChip active={minRating === 4.0} onClick={() => onMinRatingChange(minRating === 4.0 ? null : "4.0")}>
-              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
               4.0
             </SheetChip>
             <SheetChip active={minRating === 3.5} onClick={() => onMinRatingChange(minRating === 3.5 ? null : "3.5")}>
-              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
               3.5
             </SheetChip>
             <SheetChip active={minRating === 3.0} onClick={() => onMinRatingChange(minRating === 3.0 ? null : "3.0")}>
-              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
               3.0
             </SheetChip>
             <SheetChip active={minRating === null} onClick={() => onMinRatingChange(null)}>

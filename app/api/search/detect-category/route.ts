@@ -6,7 +6,6 @@ const CATEGORY_KEYWORDS = {
   nails: ['nail', 'manicure', 'pedicure', 'nägel', 'gel', 'acrylic'],
   spa: ['spa', 'facial', 'skin', 'gesicht', 'treatment', 'relax'],
   massage: ['massage', 'rub', 'therapy', 'therapie', 'back'],
-  makeup: ['makeup', 'make-up', 'visage', 'kosmetik'],
   brows: ['brow', 'lash', 'augenbrauen', 'wimpern', 'tint'],
 };
 

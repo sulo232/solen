@@ -62,8 +62,8 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
     <GlassModal open={open} title={t("deleteAccount")} onClose={handleClose} maxWidth="max-w-md">
       <div className="space-y-4">
         {/* Warning */}
-        <div className="flex gap-3 p-3 rounded-input bg-red-50 border border-red-200">
-          <AlertCircle size={20} className="text-red-600 shrink-0 mt-0.5" />
+        <div className="flex gap-3 p-3 rounded-input bg-s-error-bg border border-s-error/20">
+          <AlertCircle size={20} className="text-s-error shrink-0 mt-0.5" />
           <div className="text-sm text-red-800">
             <p className="font-medium">{t("deleteAccountWarning")}</p>
             <p className="text-xs mt-1">{t("deleteAccountWarningDesc")}</p>
@@ -85,7 +85,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder={t("deleteAccountConfirmPlaceholder")}
-            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
+            className="w-full px-3 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
           />
           <p className="text-xs text-s-ink/40 mt-1">
             {t("deleteAccountHint")}
@@ -94,13 +94,13 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
 
         {/* Error message */}
         {error && (
-          <div className="p-3 rounded-input bg-red-50 border border-red-200">
-            <p className="text-xs text-red-700">{error}</p>
+          <div className="p-3 rounded-input bg-s-error-bg border border-s-error/20">
+            <p className="text-xs text-s-error">{error}</p>
           </div>
         )}
 
         {/* 30-day grace period info */}
-        <div className="p-3 rounded-input bg-s-ink/5 border border-s-ink/10">
+        <div className="p-3 rounded-input bg-s-ink/5 border border-s-border">
           <p className="text-xs text-s-ink/60">
             {t("deleteAccount30Days")}
           </p>
@@ -111,7 +111,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
           <button
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("cancel")}
           </button>

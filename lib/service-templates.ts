@@ -49,26 +49,6 @@ export const serviceTemplates: Record<string, ServiceTemplate[]> = {
     { name_de: "Anti-Aging Behandlung", name_en: "Anti-Aging Treatment", name_fr: "Traitement anti-âge", name_it: "Trattamento anti-età", duration: 75, price: 140, category: "spa" },
     { name_de: "Lymphdrainage", name_en: "Lymphatic Drainage", name_fr: "Drainage lymphatique", name_it: "Drenaggio linfatico", duration: 60, price: 95, category: "spa" },
   ],
-  makeup: [
-    { name_de: "Tages-Makeup", name_en: "Day Makeup", name_fr: "Maquillage jour", name_it: "Trucco giorno", duration: 30, price: 50, category: "makeup" },
-    { name_de: "Abend-Makeup", name_en: "Evening Makeup", name_fr: "Maquillage soirée", name_it: "Trucco sera", duration: 45, price: 70, category: "makeup" },
-    { name_de: "Braut-Makeup", name_en: "Bridal Makeup", name_fr: "Maquillage mariée", name_it: "Trucco sposa", duration: 90, price: 180, category: "makeup" },
-    { name_de: "Wimpernverlängerung", name_en: "Lash Extensions", name_fr: "Extensions cils", name_it: "Estensioni ciglia", duration: 90, price: 150, category: "makeup" },
-    { name_de: "Wimpern Lifting", name_en: "Lash Lift", name_fr: "Rehaussement cils", name_it: "Laminazione ciglia", duration: 45, price: 65, category: "makeup" },
-    { name_de: "Augenbrauen Microblading", name_en: "Eyebrow Microblading", name_fr: "Microblading sourcils", name_it: "Microblading sopracciglia", duration: 120, price: 350, category: "makeup" },
-    { name_de: "Makeup Beratung", name_en: "Makeup Consultation", name_fr: "Consultation maquillage", name_it: "Consulenza trucco", duration: 30, price: 40, category: "makeup" },
-    { name_de: "Wimpern Auffüllung", name_en: "Lash Refill", name_fr: "Remplissage cils", name_it: "Ricostruzione ciglia", duration: 60, price: 80, category: "makeup" },
-  ],
-  waxing: [
-    { name_de: "Beine komplett", name_en: "Full Legs", name_fr: "Jambes complètes", name_it: "Gambe intere", duration: 30, price: 50, category: "waxing" },
-    { name_de: "Bikinizone", name_en: "Bikini Line", name_fr: "Maillot classique", name_it: "Inguine classico", duration: 15, price: 25, category: "waxing" },
-    { name_de: "Brazilian Waxing", name_en: "Brazilian Wax", name_fr: "Épilation brésilienne", name_it: "Ceretta brasiliana", duration: 30, price: 45, category: "waxing" },
-    { name_de: "Achseln", name_en: "Underarms", name_fr: "Aisselles", name_it: "Ascelle", duration: 10, price: 15, category: "waxing" },
-    { name_de: "Oberlippe", name_en: "Upper Lip", name_fr: "Lèvre supérieure", name_it: "Labbro superiore", duration: 10, price: 12, category: "waxing" },
-    { name_de: "Rücken (Herren)", name_en: "Back (Men)", name_fr: "Dos (hommes)", name_it: "Schiena (uomini)", duration: 30, price: 45, category: "waxing" },
-    { name_de: "Ganzkörper Paket", name_en: "Full Body Package", name_fr: "Forfait corps entier", name_it: "Pacchetto corpo intero", duration: 90, price: 140, category: "waxing" },
-    { name_de: "Augenbrauen Waxing", name_en: "Eyebrow Wax", name_fr: "Épilation sourcils", name_it: "Ceretta sopracciglia", duration: 10, price: 15, category: "waxing" },
-  ],
 };
 
 /** Duration options for the dropdown in minutes */

@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus, CalendarX } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
@@ -374,6 +375,13 @@ export default function CalendarPage() {
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [loading, setLoading] = useState(true);
+  // H2: a slot-fetch failure (vs. genuinely-empty) so we can render an error state w/ retry
+  // instead of an indefinite spinner. null = no error.
+  const [error, setError] = useState(false);
+  // Tracks whether the /api/profile salon-resolution has SETTLED (success OR failure).
+  // Until it has, we keep showing the spinner; once settled with no salonId, the views
+  // render an error state (couldn't resolve this salon) rather than spinning forever.
+  const [salonReady, setSalonReady] = useState(false);
   const [salonId, setSalonId] = useState<string | null>(null);
   const [services, setServices] = useState<{ id: string; name: string; category?: string }[]>([]);
   const [staff, setStaff] = useState<{ id: string; name: string }[]>([]);
@@ -391,28 +399,44 @@ export default function CalendarPage() {
   services.forEach((s) => { if (s.category) serviceCategoryMap.set(s.id, s.category); });
 
   const loadSlots = useCallback(async () => {
-    if (!salonId) return;
+    // H2 fix: when there is no salon to load, STOP loading (don't early-return while
+    // loading stays true, which was the day/week/month "spins forever" hang). The view
+    // then renders an error state via the `salonReady && !salonId` branch.
+    if (!salonId) { setLoading(false); return; }
     setLoading(true);
+    setError(false);
     try {
-      const data = await fetch(`/api/slots?salon_id=${salonId}&week=${weekStr}`).then((r) => r.json());
+      const res = await fetch(`/api/slots?salon_id=${salonId}&week=${weekStr}`);
+      if (!res.ok) throw new Error(`slots ${res.status}`);
+      const data = await res.json();
       setSlots(data.slots ?? []);
       // V3-D334 (overnight T2): error handling per CLAUDE.md.
-    } catch (err) { console.error("[Calendar] loadSlots fetch failed:", err); } finally {
+    } catch (err) {
+      console.error("[Calendar] loadSlots fetch failed:", err);
+      setError(true);
+      setSlots([]);
+    } finally {
       setLoading(false);
     }
   }, [salonId, weekStr]);
 
   useEffect(() => {
-    fetch("/api/profile").then((r) => r.json()).then((p) => {
-      setSalonId(p?.salon_id ?? null);
-      return Promise.all([
-        fetch(`/api/services?salon_id=${p?.salon_id}`).then((r) => r.json()),
-        fetch(`/api/staff?salon_id=${p?.salon_id}`).then((r) => r.json()),
-      ]);
-    }).then(([svcData, staffData]) => {
-      setServices(svcData?.services ?? []);
-      setStaff(staffData?.staff ?? []);
-    }).catch((err) => console.error("[DashboardCalendar] failed to fetch services or staff:", err));
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((p) => {
+        setSalonId(p?.salon_id ?? null);
+        return Promise.all([
+          fetch(`/api/services?salon_id=${p?.salon_id}`).then((r) => r.json()),
+          fetch(`/api/staff?salon_id=${p?.salon_id}`).then((r) => r.json()),
+        ]);
+      })
+      .then(([svcData, staffData]) => {
+        setServices(svcData?.services ?? []);
+        setStaff(staffData?.staff ?? []);
+      })
+      .catch((err) => console.error("[DashboardCalendar] failed to fetch profile/services/staff:", err))
+      // Mark resolution settled either way so the views can leave the spinner state.
+      .finally(() => setSalonReady(true));
   }, []);
 
   useEffect(() => { loadSlots(); }, [loadSlots]);
@@ -564,6 +588,38 @@ export default function CalendarPage() {
     coiffeur: "bg-[#EAEFFE]", barbershop: "bg-[#FFEDD5]", nails: "bg-[#F3E8FF]", spa: "bg-[#E8F5E9]", makeup: "bg-[#FCE7F3]", waxing: "bg-[#FEF3E2]",
   };
 
+  // H2 render decision (shared by mobile + every desktop view):
+  //   1. show the spinner only while salon resolution is pending OR a slot fetch is in
+  //      flight (both are bounded now: loadSlots always clears loading).
+  //   2. show an error state with Retry when the slot fetch failed OR the salon couldn't
+  //      be resolved (settled with no salonId). Never an indefinite spinner.
+  // When there's simply no data, the grid itself is the empty affordance (clickable
+  // cells), so no full-screen empty state replaces it.
+  const showSpinner = !salonReady || loading;
+  const showError = salonReady && (error || !salonId);
+  // Retry covers both failure modes: if the salon is already resolved (slot fetch failed),
+  // loadSlots() refetches directly; we also re-resolve the profile in case salonId was null,
+  // which re-fires the loadSlots effect when the id changes.
+  const retryCalendar = () => {
+    setError(false);
+    if (salonId) loadSlots();
+    setSalonReady(false);
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((p) => setSalonId(p?.salon_id ?? null))
+      .catch((e) => console.error("[Calendar] retry profile failed:", e))
+      .finally(() => setSalonReady(true));
+  };
+  const errorState = (
+    <ErrorState
+      icon={CalendarX}
+      title={t("loadErrorTitle")}
+      message={t("loadErrorMessage")}
+      retryLabel={t("retry")}
+      onRetry={retryCalendar}
+    />
+  );
+
   return (
     <DashboardLayout>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -696,8 +752,10 @@ export default function CalendarPage() {
               )}
 
               {/* Body by view */}
-              {loading ? (
+              {showSpinner ? (
                 <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+              ) : showError ? (
+                errorState
               ) : mobileView === "monat" ? (
                 <div className="rounded-[16px] border border-s-border bg-white p-3.5">
                   <div className="grid grid-cols-7 gap-1">
@@ -798,8 +856,12 @@ export default function CalendarPage() {
         </div>
       </div>
 
+      {/* H2: couldn't resolve the salon or the slot fetch failed → one error state for the
+          whole desktop view area (instead of an indefinite spinner inside each view). */}
+      {showError && errorState}
+
       {/* ═══ WEEK VIEW ═══ */}
-      {viewMode === "week" && (
+      {!showError && viewMode === "week" && (
         <div className="overflow-x-auto rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
           <div className="min-w-[600px]">
             <div className="grid grid-cols-8 border-b border-s-ink/5">
@@ -822,7 +884,7 @@ export default function CalendarPage() {
                 );
               })}
             </div>
-            {loading ? (
+            {showSpinner ? (
               <div className="flex justify-center py-10"><Spinner size="sm" /></div>
             ) : (
               Array.from({ length: 13 }, (_, rowIdx) => {
@@ -883,7 +945,7 @@ export default function CalendarPage() {
       )}
 
       {/* ═══ DAY VIEW ═══ */}
-      {viewMode === "day" && (
+      {!showError && viewMode === "day" && (
         <div className="rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
           {/* Staff column headers */}
           <div className="grid border-b border-s-ink/5" style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
@@ -898,7 +960,7 @@ export default function CalendarPage() {
               </div>
             )}
           </div>
-          {loading ? (
+          {showSpinner ? (
             <div className="flex justify-center py-10"><Spinner size="sm" /></div>
           ) : (
             Array.from({ length: 13 }, (_, rowIdx) => {
@@ -989,7 +1051,7 @@ export default function CalendarPage() {
       )}
 
       {/* ═══ MONTH VIEW ═══ */}
-      {viewMode === "month" && (() => {
+      {!showError && viewMode === "month" && (() => {
         const monthDays = getMonthCalendarDays(currentDate);
         const thisMonth = currentDate.getMonth();
         return (

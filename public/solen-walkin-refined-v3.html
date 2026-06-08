@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — walk-in v3 (no button, count above bar)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;
+    --green:#16A34A;--orange:#EA580C;--red:#DC2626;--star:#FFC32B;--heart:#FF3366;
+    --disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 18px;max-width:520px}
+  .lead b{color:var(--ink)}
+  .phone{width:392px;max-width:100%;margin:0 auto;background:#fff;border-radius:30px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.12);padding:20px 16px 24px;display:flex;flex-direction:column;gap:20px}
+  .card .ph{position:relative;width:100%;aspect-ratio:3/2;border-radius:18px;overflow:hidden;background:var(--sunken);box-shadow:0 16px 36px rgba(0,0,0,.05)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .heart{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--heart);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+  /* colored badge — pastel tint + ink time + saturated clock */
+  .freepill{position:absolute;left:10px;top:10px;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 11px 6px 9px;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--cp);box-shadow:0 1px 4px rgba(0,0,0,.13);border:1px solid var(--cring);backdrop-filter:blur(4px)}
+  .freepill svg{color:var(--c);display:block}
+  .body{margin-top:11px}
+  .r1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .nm{font-family:var(--disp);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink);line-height:1.1}
+  .rt{display:flex;align-items:center;gap:3px;flex-shrink:0;font-size:13px;color:var(--ink2)}
+  .rt svg{display:block;margin-top:-1px}
+  /* meta row: address+price LEFT, small colored count RIGHT (under the rating, on top of the bar) */
+  .r2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px}
+  .meta{font-size:13px;color:var(--ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .qn{flex:0 0 auto;font-size:14px;font-weight:700;color:var(--c);letter-spacing:-.01em}
+  /* bold tier bar — the card's bottom edge */
+  .qbar{height:6px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:9px}
+  .qbar i{display:block;height:100%;border-radius:999px;background:var(--c)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Walk-in v3 — no button, count above the bar</h1>
+  <p class="lead">Button removed. "N vor dir" is <b>bigger + bolder + the bar's color</b> (changes with busyness), parked top-right under the rating, directly above the bold bar, so it clearly stands apart from the grey address. The whole card is the tap target. Badge kept colored.</p>
+  <div class="phone" id="ph"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function clock(){const s=document.createElementNS(NS,"svg");s.setAttribute("width",13);s.setAttribute("height",13);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",2.2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");const c=document.createElementNS(NS,"circle");c.setAttribute("cx","12");c.setAttribute("cy","12");c.setAttribute("r","9");s.appendChild(c);const pl=document.createElementNS(NS,"path");pl.setAttribute("d","M12 7.5v4.8l3 1.8");s.appendChild(pl);return s;}
+function star(){const s=document.createElementNS(NS,"svg");s.setAttribute("width",12);s.setAttribute("height",12);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","#FFC32B");const p=document.createElementNS(NS,"path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+function heart(){const h=el("div","heart");const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("width","16");s.setAttribute("height","16");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width","2");const p=document.createElementNS(NS,"path");p.setAttribute("d","M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z");s.appendChild(p);h.appendChild(s);return h;}
+
+const CAP=8;
+function fillPct(a){return Math.round(Math.min(Math.max(a/CAP,0.12),1)*100);}
+function tier(a){
+  if(a<=2) return {c:"#16A34A",cp:"rgba(220,252,231,.93)",cring:"rgba(22,163,74,.30)"};
+  if(a<=5) return {c:"#EA580C",cp:"rgba(255,237,213,.93)",cring:"rgba(234,88,12,.30)"};
+  return {c:"#DC2626",cp:"rgba(254,226,226,.93)",cring:"rgba(220,38,38,.30)"};
+}
+const SALONS=[
+  {name:"Blade & Stone",rating:4.4,reviews:11,addr:"Feldbergstrasse 82",price:43,free:"Frei in 5-8 Min",ahead:2,photo:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80"},
+  {name:"The Fade Factory",rating:4.3,reviews:11,addr:"Hammerstrasse 65",price:47,free:"Frei in 20-25 Min",ahead:5,photo:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80"},
+  {name:"Old Town Barbers",rating:4.3,reviews:12,addr:"Münsterplatz 11",price:47,free:"Frei in 40-50 Min",ahead:8,photo:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80"},
+];
+
+function card(s){
+  const t=tier(s.ahead); const c=el("div","card");
+  c.style.setProperty("--c",t.c); c.style.setProperty("--cp",t.cp); c.style.setProperty("--cring",t.cring);
+  const ph=el("div","ph"); const im=el("img"); im.src=s.photo; im.alt=s.name; ph.appendChild(im);
+  const bp=el("div","freepill"); bp.appendChild(clock()); bp.appendChild(el("span",null,s.free)); ph.appendChild(bp);
+  ph.appendChild(heart()); c.appendChild(ph);
+  const body=el("div","body");
+  const r1=el("div","r1"); r1.appendChild(el("div","nm",s.name));
+  const rt=el("div","rt"); rt.appendChild(star()); rt.appendChild(el("span",null,s.rating.toFixed(1)+" ("+s.reviews+")")); r1.appendChild(rt); body.appendChild(r1);
+  const r2=el("div","r2");
+  r2.appendChild(el("div","meta", s.addr+", Basel · ab CHF "+s.price));
+  r2.appendChild(el("div","qn", s.ahead+" vor dir")); body.appendChild(r2);
+  const bar=el("div","qbar"); const f=el("i"); f.style.width=fillPct(s.ahead)+"%"; bar.appendChild(f); body.appendChild(bar);
+  c.appendChild(body); return c;
+}
+const ph=document.getElementById("ph"); SALONS.forEach(s=>ph.appendChild(card(s)));
+</script>
+</body>
+</html>

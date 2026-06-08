@@ -51,7 +51,7 @@ export function SidebarBody({ children, className }: SidebarBodyProps) {
   return (
     <motion.aside
       className={cn(
-        "hidden md:flex flex-col fixed left-0 top-0 h-full w-[240px] bg-s-bg-raised border-r border-s-ink/[0.06] z-30 overflow-hidden",
+        "hidden md:flex flex-col fixed left-0 top-0 h-full w-[240px] bg-s-bg-raised border-r border-s-border z-30 overflow-hidden",
         className
       )}
     >

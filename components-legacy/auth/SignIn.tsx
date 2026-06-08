@@ -134,7 +134,7 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-border bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
           />
           <button
             type="submit"

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — Category icon coherence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--sunken:#F5F5F4;--clay:#E0A878;--clay-bg:#F7ECE0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:32px 16px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:22px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 26px;max-width:680px;line-height:1.5}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;max-width:1180px;margin:0 auto}
+  .col{width:360px}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .rec{font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px;letter-spacing:.04em}
+  .no{font-size:10px;font-weight:700;background:#FEE2E2;color:#DC2626;border-radius:5px;padding:2px 7px}
+  .tagd{font-size:11.5px;color:var(--ink2);margin-bottom:12px;line-height:1.4;min-height:44px}
+  .stage{background:#fff;border:1px solid rgba(10,10,10,.07);border-radius:18px;padding:18px 16px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+  .rail{display:flex;gap:16px;justify-content:space-between}
+  .it{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .l{font-size:11.5px;font-weight:600}
+  .ci{width:64px;height:64px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;overflow:hidden}
+  .ci img{width:62%;height:62%;object-fit:contain}
+  .ci svg{width:30px;height:30px}
+  .mono svg{stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+  <h1>Category icons — coherence</h1>
+  <p class="sub">The current set is 4 separate AI generations = 4 palettes, 4 styles. Coherence comes from a shared <b>recipe</b>, not a shared vibe. Two recipe options below.</p>
+  <div class="grid">
+
+    <!-- Current -->
+    <div class="col"><div class="tag">Current <span class="no">NO COHERENCE</span></div><div class="tagd">Orange scissors, black/purple clippers, coral/pink polish, charcoal/green spa. No shared color or light. Reads unfinished.</div>
+      <div class="stage"><div class="rail">
+        <div class="it"><span class="ci"><img src="/icons/categories/scissors.png"></span><span class="l">Coiffeur</span></div>
+        <div class="it"><span class="ci"><img src="/icons/categories/clippers.png"></span><span class="l">Barber</span></div>
+        <div class="it"><span class="ci"><img src="/icons/categories/nails.png"></span><span class="l">Nails</span></div>
+        <div class="it"><span class="ci"><img src="/icons/categories/spa.png"></span><span class="l">Spa</span></div>
+      </div></div></div>
+
+    <!-- Mono line -->
+    <div class="col"><div class="tag">Recipe A · Mono line</div><div class="tagd">One ink stroke weight = automatic coherence. Most premium + on-system B&W. Loses the warmth you liked.</div>
+      <div class="stage"><div class="rail mono">
+        <div class="it"><span class="ci"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span><span class="l">Coiffeur</span></div>
+        <div class="it"><span class="ci"><svg viewBox="0 0 24 24"><path d="M10 2v2M12 2v2M14 2v2"/><path d="M8.5 4h7l.5 3h-8z"/><rect x="9" y="7" width="6" height="14" rx="2.5"/></svg></span><span class="l">Barber</span></div>
+        <div class="it"><span class="ci"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="6" height="12" rx="2.5"/><rect x="10" y="3" width="4" height="6" rx="1"/></svg></span><span class="l">Nails</span></div>
+        <div class="it"><span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M12 9.5c0-3 1-5 0-7-1 2 0 4 0 7M14.5 12c3 0 5 1 7 0-2-1-4 0-7 0M12 14.5c0 3-1 5 0 7 1-2 0-4 0-7M9.5 12c-3 0-5-1-7 0 2 1 4 0 7 0"/></svg></span><span class="l">Spa</span></div>
+      </div></div></div>
+
+    <!-- Duotone -->
+    <div class="col"><div class="tag">Recipe B · Duotone <span class="rec">MY PICK</span></div><div class="tagd">Ink linework + ONE warm fill across all four. The recipe enforces unity. Keeps warmth, kills the rainbow.</div>
+      <div class="stage"><div class="rail">
+        <div class="it"><span class="ci" style="background:var(--clay-bg)"><svg viewBox="0 0 48 48" fill="none"><circle cx="14" cy="33" r="6" fill="var(--clay)" stroke="#0A0A0A" stroke-width="2.5"/><circle cx="27" cy="33" r="6" fill="var(--clay)" stroke="#0A0A0A" stroke-width="2.5"/><path d="M18 29 L40 11" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round"/><path d="M23 29 L9 13" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round"/></svg></span><span class="l">Coiffeur</span></div>
+        <div class="it"><span class="ci" style="background:var(--clay-bg)"><svg viewBox="0 0 48 48" fill="none"><rect x="17" y="15" width="14" height="25" rx="6" fill="var(--clay)" stroke="#0A0A0A" stroke-width="2.5"/><rect x="18" y="8" width="12" height="8" rx="2" fill="#fff" stroke="#0A0A0A" stroke-width="2.5"/><path d="M21 8v-2M24 8v-2M27 8v-2" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round"/></svg></span><span class="l">Barber</span></div>
+        <div class="it"><span class="ci" style="background:var(--clay-bg)"><svg viewBox="0 0 48 48" fill="none"><rect x="17" y="19" width="14" height="21" rx="6" fill="var(--clay)" stroke="#0A0A0A" stroke-width="2.5"/><rect x="20" y="8" width="8" height="11" rx="2" fill="#0A0A0A"/></svg></span><span class="l">Nails</span></div>
+        <div class="it"><span class="ci" style="background:var(--clay-bg)"><svg viewBox="0 0 48 48" fill="none"><g fill="var(--clay)" stroke="#0A0A0A" stroke-width="2"><ellipse cx="24" cy="13" rx="5" ry="8.5"/><ellipse cx="24" cy="13" rx="5" ry="8.5" transform="rotate(72 24 24)"/><ellipse cx="24" cy="13" rx="5" ry="8.5" transform="rotate(144 24 24)"/><ellipse cx="24" cy="13" rx="5" ry="8.5" transform="rotate(216 24 24)"/><ellipse cx="24" cy="13" rx="5" ry="8.5" transform="rotate(288 24 24)"/></g><circle cx="24" cy="24" r="4.5" fill="#0A0A0A"/></svg></span><span class="l">Spa</span></div>
+      </div></div>
+      <div style="font-size:11px;color:var(--ink2);margin-top:9px;text-align:center">These are rough drawn placeholders. Final = one commissioned set, this recipe.</div></div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'svg' }, nameAttr:'data-l' });</script>
+</body>
+</html>

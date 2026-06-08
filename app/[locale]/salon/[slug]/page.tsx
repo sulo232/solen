@@ -80,17 +80,11 @@ const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 const CATEGORY_ICONS: Record<SalonCategory, React.FC<{ className?: string }>> = {
   coiffeur: Scissors, barbershop: User, nails: Sparkles,
-  spa: Waves, makeup: Palette, waxing: Zap,
+  spa: Waves,
 };
 
-const CAT_TAG_COLOURS: Record<string, { bg: string; text: string }> = {
-  coiffeur:   { bg: "rgba(151,123,89,.12)",  text: "#5A4429" },
-  barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
-  nails:      { bg: "rgba(27, 77, 27,.12)",   text: "#7A2415" },
-  spa:        { bg: "rgba(123,166,136,.15)", text: "#2E5E3A" },
-  makeup:     { bg: "rgba(243,168,100,.10)",  text: "#6B4005" },
-  waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
-};
+// V3-D449: category-tag colours removed — tags now use the neutral token (bg-s-bg-sunken +
+// text-s-ink-2). Category is read from the word, not a colour (B&W system; owner picked B).
 
 /** Star rating */
 function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) {
@@ -228,7 +222,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       <div className="flex gap-2">
         <Link
           href={`/${locale}/nail-tech/${member.id}`}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-border text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
         >
           {t("viewAllDesigns")}
         </Link>
@@ -281,7 +275,9 @@ export default function SalonProfilePage() {
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<string | undefined>();
   // Barbershop Book/Walk-in mode switch (walk-in = pay-gated queue join).
-  const [walkinMode, setWalkinMode] = useState(false);
+  // V3-D421k: ?walkin=1 (set by the walk-in result cards) opens the PDP straight in
+  // walk-in mode instead of book mode.
+  const [walkinMode, setWalkinMode] = useState(searchParams.get("walkin") === "1");
   const [selectedStaff, setSelectedStaff] = useState<string | undefined>();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
@@ -432,7 +428,7 @@ export default function SalonProfilePage() {
               onShare={handleShare}
               overlayContent={
                 <div>
-                  <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]" style={{ color: "#F3A864" }}>
+                  <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em] text-white">
                     {salon.categories[0] ?? "SALON"}{(salon as any).quartier ? ` · ${String((salon as any).quartier).replace("_", " ")}` : ""}
                   </p>
                   <p className="mt-1.5 font-heading text-[24px] sm:text-[32px] md:text-[40px] uppercase leading-[0.95]" style={{ letterSpacing: "0.01em" }}>
@@ -460,10 +456,8 @@ export default function SalonProfilePage() {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {salon.categories.map((cat) => {
                       const Icon = CATEGORY_ICONS[cat];
-                      const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(27, 77, 27,.12)", text: "#7A2415" };
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading uppercase tracking-[.06em]"
-                          style={{ background: colours.bg, color: colours.text }}>
+                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading uppercase tracking-[.06em] bg-s-bg-sunken text-s-ink-2">
                           <Icon className="w-3 h-3" />{cat}
                         </span>
                       );
@@ -531,10 +525,10 @@ export default function SalonProfilePage() {
                   </div>
                 </div>
 
-                {/* Book / Walk-in toggle — barbershops that accept online payment only.
+                {/* Book / Walk-in toggle — walk-in-enabled barbershops only.
                     Walk-in mode replaces the bookable-service browsing with the pay-gated
                     queue join (supersedes the old free RemoteQueueJoin section below). */}
-                {salon.categories?.includes("barbershop") && (salon as any).accepts_online_payment && (
+                {salon.categories?.includes("barbershop") && (salon as any).walkin_enabled && (
                   <div className="flex flex-col gap-5">
                     <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
                     {walkinMode && (
@@ -554,7 +548,7 @@ export default function SalonProfilePage() {
                 {/* About section */}
                 <div id="section-info" className="scroll-mt-[80px]">
                   {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
-                    <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-ink/5 shadow-elevation-1">
+                    <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-border shadow-elevation-1">
                       <h2 className="font-heading text-base text-s-ink mb-3">{t("aboutUs")}</h2>
                       <p className="text-sm text-s-ink/70 leading-relaxed whitespace-pre-wrap">
                         {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
@@ -726,7 +720,7 @@ export default function SalonProfilePage() {
                     </div>
                   </Link>
                   <Link href={`/${locale}/salon/${slug}/packages`}
-                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-ink/5 bg-white hover:bg-s-bg-surface transition-colors duration-150">
+                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-border bg-white hover:bg-s-bg-surface transition-colors duration-150">
                     <Package size={18} className="text-s-blue shrink-0" />
                     <div>
                       <p className="text-sm font-medium text-s-ink">{t("packages")}</p>
@@ -766,7 +760,7 @@ export default function SalonProfilePage() {
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-accent/30 transition-colors duration-150 relative group"
+                      className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-border hover:border-s-accent/30 transition-colors duration-150 relative group"
                     >
                       <img
                         src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${getPublicEnv().NEXT_PUBLIC_MAPBOX_TOKEN ?? ''}`}
@@ -782,8 +776,8 @@ export default function SalonProfilePage() {
                   </div>
                 )}
 
-                {/* Portfolio placeholder for nail/makeup salons */}
-                {(salon.categories?.includes("nails") || salon.categories?.includes("makeup")) && (
+                {/* Portfolio placeholder for nail salons */}
+                {salon.categories?.includes("nails") && (
                   <div id="section-portfolio" className="scroll-mt-[80px]">
                     {/* Portfolio content is handled by the nail-artists section above */}
                   </div>

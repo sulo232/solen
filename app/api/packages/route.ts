@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, packageSchema } from "@/lib/validations";
 import { getClientIp } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/packages — List active packages (public for a salon)
 export async function GET(req: NextRequest) {
@@ -48,11 +49,7 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(packageSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 

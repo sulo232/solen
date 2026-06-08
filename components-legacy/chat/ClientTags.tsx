@@ -133,7 +133,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
       {/* Add tag form */}
       {showAdd && (
-        <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2">
+        <div className="border border-s-border rounded-[12px] p-3 space-y-2">
           {/* Allergy presets */}
           <div className="flex flex-wrap gap-1">
             {allergyPresets.map((preset) => (
@@ -155,12 +155,12 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder={t("customPlaceholder")}
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
+              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
             />
             <select
               value={newColor}
               onChange={(e) => setNewColor(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs bg-white"
+              className="px-2 py-1.5 rounded-btn border border-s-border text-xs bg-white"
             >
               <option value="gray">{t("colors.gray")}</option>
               <option value="red">{t("colors.red")}</option>

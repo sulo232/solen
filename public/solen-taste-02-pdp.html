@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Taste round 2 — salon page (Book CTA + title)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;
+    --sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B;--green:#16A34A;
+    --greenbg:#E7F6EC;--heart:#FF3366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#ECEBE9;font-family:'Inter',sans-serif;color:var(--ink);padding:30px 20px 90px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center;letter-spacing:-0.02em}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:8px auto 4px;max-width:740px;line-height:1.6}
+  .sub b{color:var(--ink)}
+  .how{text-align:center;color:var(--ink3);font-size:12px;margin:0 auto 34px;max-width:640px;line-height:1.55}
+  .how b{color:var(--ink2)}
+  .wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  .dim{background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px 24px}
+  .dlabel{font-family:'Inter Tight';font-weight:800;font-size:16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:9px}
+  .dn{font-size:10px;font-weight:700;color:#fff;background:var(--ink);border-radius:50%;width:20px;height:20px;display:grid;place-items:center;flex-shrink:0}
+  .dsub{font-size:12.5px;color:var(--ink2);margin:4px 0 18px;line-height:1.5}
+  .dsub b{color:var(--ink)}
+  .opts{display:flex;flex-wrap:wrap;gap:20px}
+  .opt{width:280px}
+  .cap{margin-top:11px;font-size:11.5px;line-height:1.45}
+  .cap .nm{font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .cap .rec{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:4px;padding:1px 5px}
+  .cap .d{color:var(--ink2);display:block;margin-top:2px}
+
+  /* phone-bottom slice (for CTA rows) */
+  .pbottom{position:relative;height:188px;border:1px solid var(--border);border-radius:18px 18px 16px 16px;overflow:hidden;background:#fff}
+  .fakebody{padding:16px 16px 0}
+  .fl{height:11px;border-radius:4px;background:var(--sunken);margin-bottom:9px}
+  .fl.t{height:15px;width:62%;background:#ECEBE9}
+  .bar{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:13px 16px}
+  .bar.border{border-top:1px solid var(--border)}
+  .bar.shadow{box-shadow:0 -8px 24px rgba(0,0,0,.09)}
+  .bar.frost{background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.5)}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:var(--ink);color:#fff;border-radius:999px;padding:13px;font-size:15px;font-weight:600;font-family:'Inter'}
+  .btn svg{width:16px;height:16px;stroke:#fff;stroke-width:2.5}
+  .btn.split{justify-content:space-between;padding-left:20px;padding-right:18px}
+  .btn .price{font-weight:600;color:rgba(255,255,255,.85)}
+  .reassure{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:8px}
+
+  /* title block slice */
+  .titleslice{border:1px solid var(--border);border-radius:18px;overflow:hidden;background:#fff}
+  .tphoto{height:96px;background:linear-gradient(135deg,#cdbfae,#a8917a)}
+  .tbody{padding:15px 16px 18px}
+  .tname{font-family:'Inter Tight';font-weight:600;font-size:22px;letter-spacing:-0.02em;color:var(--ink);line-height:1.05}
+  .stack{margin-top:12px;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--ink2)}
+  .stack .r{display:flex;align-items:center;gap:6px}
+  .stack .r svg{width:14px;height:14px}
+  .star{fill:var(--star);stroke:none}
+  .rv{color:var(--accent);font-weight:500}
+  .open{color:var(--green);font-weight:600}
+  .pin{color:var(--ink3)}
+  .inline1{margin-top:11px;font-size:13.5px;color:var(--ink2);display:flex;align-items:center;gap:7px;flex-wrap:wrap;line-height:1.5}
+  .inline1 .dot{color:var(--ink3)}
+  .gpill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--green);background:var(--greenbg);border-radius:8px;padding:3px 9px}
+  .gpill svg{width:11px;height:11px;stroke:var(--green)}
+  .footer{font-size:12px;color:var(--ink2);line-height:1.6;margin:34px auto 0;max-width:760px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:13px;text-align:center}
+  .footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Taste round 2 — the salon page: Book button + title</h1>
+  <p class="sub">The PDP hero is already tuned (austere, no dots), so this is mostly <b>confirm + settle the few open calls</b>: does the Book button carry a price, how the bar separates from content, and whether "open" gets the green pill from round 1.</p>
+  <p class="how">Same as before: reply per row (e.g. <b>"clean, border, stacked"</b>) + a quick why. Green tag = my read.</p>
+
+  <div class="wrap">
+
+    <!-- DIM 1 — Book CTA content -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">1</span> The Book button — what it says</div>
+      <div class="dsub">The most important button on the site. It takes you to service+time selection. Question: keep it pure action, or load it with price / reassurance?</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:88%"></div><div class="fl" style="width:70%"></div></div>
+            <div class="bar border"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div></div>
+          <div class="cap"><span class="nm">Clean <span class="rec">my read</span></span><span class="d">Current. Just the action. You book a time, the price depends on the service you pick next, so a price here can mislead.</span></div>
+        </div>
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:88%"></div><div class="fl" style="width:70%"></div></div>
+            <div class="bar border"><div class="btn split"><span>Termin buchen</span><span class="price">ab 45 CHF</span></div></div></div>
+          <div class="cap"><span class="nm">+ from-price</span><span class="d">Shows the starting price on the bar. Commit context, but it's a "from" price for a time-booking.</span></div>
+        </div>
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:88%"></div></div>
+            <div class="bar border"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div><div class="reassure">Kostenlose Stornierung bis 24 Std.</div></div></div>
+          <div class="cap"><span class="nm">+ reassurance</span><span class="d">A trust line under the button. Helpful, but more text + a taller bar.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIM 2 — bar container / elevation -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">2</span> How the bar separates from the page</div>
+      <div class="dsub">The sticky bar floats at the bottom while content scrolls under it. This is a direct <b>CONTROL_ELEVATION</b> test: a control over white content should stay flat, frost is for over-photo.</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:82%"></div><div class="fl" style="width:88%"></div><div class="fl" style="width:74%"></div></div>
+            <div class="bar border"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div></div>
+          <div class="cap"><span class="nm">Hairline border <span class="rec">my read</span></span><span class="d">Current. 1px top line. Flat + structured. The elevation-rule answer for a control on white.</span></div>
+        </div>
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:82%"></div><div class="fl" style="width:88%"></div><div class="fl" style="width:74%"></div></div>
+            <div class="bar shadow"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div></div>
+          <div class="cap"><span class="nm">Soft top shadow</span><span class="d">Floats above content. Per CONTROL_ELEVATION this is the "grey-haze" risk on a calm surface.</span></div>
+        </div>
+        <div class="opt">
+          <div class="pbottom"><div class="fakebody"><div class="fl t"></div><div class="fl" style="width:90%"></div><div class="fl" style="width:82%"></div><div class="fl" style="width:88%"></div><div class="fl" style="width:74%"></div></div>
+            <div class="bar frost"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div></div>
+          <div class="cap"><span class="nm">Frosted glass</span><span class="d">Translucent, content blurs under. Premium, but frost is meant for over-photo, not over white text.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIM 3 — title meta -->
+    <div class="dim">
+      <div class="dlabel"><span class="dn">3</span> The title meta — rating, open-status, address</div>
+      <div class="dsub">Same info, three ways. Open question: does "open" earn the <b>green pill</b> from round 1, or stay inline?</div>
+      <div class="opts">
+        <div class="opt">
+          <div class="titleslice"><div class="tphoto"></div><div class="tbody">
+            <div class="tname">Maison Lée</div>
+            <div class="stack">
+              <div class="r"><svg data-l="star" class="star"></svg><strong style="color:var(--ink);font-weight:600">4.8</strong> <span class="rv">(124)</span></div>
+              <div class="r"><span class="open">Geöffnet</span><span>· bis 19:00</span></div>
+              <div class="r"><svg data-l="map-pin" class="pin"></svg>Spalenvorstadt 22, Basel</div>
+            </div></div></div>
+          <div class="cap"><span class="nm">Stacked, no dots <span class="rec">my read</span></span><span class="d">Current. Clear order, each on its own line. Status = split green word + ink time.</span></div>
+        </div>
+        <div class="opt">
+          <div class="titleslice"><div class="tphoto"></div><div class="tbody">
+            <div class="tname">Maison Lée</div>
+            <div class="inline1"><span><svg data-l="star" class="star" style="width:13px;height:13px;vertical-align:-1px"></svg> <strong style="color:var(--ink);font-weight:600">4.8</strong> <span class="rv">(124)</span></span><span class="dot">·</span><span class="open">Geöffnet</span><span class="dot">·</span><span>Spalenvorstadt 22</span></div>
+            </div></div>
+          <div class="cap"><span class="nm">Inline with dots</span><span class="d">Compact, one line. But the · dots are exactly the decoration you keep cutting.</span></div>
+        </div>
+        <div class="opt">
+          <div class="titleslice"><div class="tphoto"></div><div class="tbody">
+            <div class="tname">Maison Lée</div>
+            <div class="stack">
+              <div class="r"><svg data-l="star" class="star"></svg><strong style="color:var(--ink);font-weight:600">4.8</strong> <span class="rv">(124)</span></div>
+              <div class="r"><span class="gpill"><svg data-l="clock"></svg>Geöffnet bis 19:00</span></div>
+              <div class="r"><svg data-l="map-pin" class="pin"></svg>Spalenvorstadt 22, Basel</div>
+            </div></div></div>
+          <div class="cap"><span class="nm">Status as green pill</span><span class="d">Echoes round 1's availability pill, consistent semantic green. One extra splash of colour.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">Reply per row (e.g. <b>"clean, border, stacked"</b>). Heads up: most of my reads = keep current, because the PDP hero was already tuned. The real open call is <b>row 1</b> (price on the button?) + <b>row 3</b> (green pill for "open"?). <b>No fabricated data</b> — rating, review count, open-status, address are all real fields.</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { ChevronRight, Star, Store } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { cn } from "@/lib/utils";
@@ -36,51 +37,55 @@ interface Review {
   salonSlug: string;
 }
 
+// 2026-06-05: salonSlug/salonName point at REAL seeded salons (Basel) so the
+// salon-link + the card-body "open review" target both resolve to a live PDP
+// instead of a 404. Inline salon-name mentions in the quote text were updated
+// to match. The reviewer/quote content is otherwise unchanged demo copy.
 const REVIEWS: Review[] = [
   {
     stars: 5,
-    text: "Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser.",
+    text: "Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Muse Beauty Studio war wie immer top, aber die Buchung über Solen war diesmal einfach besser.",
     initials: "LK",
     name: "Lara K.",
     meta: "Basel · vor 2 Wochen",
-    salonName: "Salon Maria",
-    salonSlug: "salon-maria",
+    salonName: "Muse Beauty Studio",
+    salonSlug: "muse-beauty-studio",
   },
   {
     stars: 5,
-    text: "Last-Minute heute Abend zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist.",
+    text: "Last-Minute heute Abend zu Old Town Barbers: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist.",
     initials: "MH",
     name: "Marc H.",
     meta: "Basel · vor 5 Tagen",
-    salonName: "Bohème",
-    salonSlug: "boheme",
+    salonName: "Old Town Barbers",
+    salonSlug: "old-town-barbers",
   },
   {
     stars: 5,
     text: "Habe einen Look auf Entdecken gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.",
     initials: "SR",
     name: "Sara R.",
-    meta: "Zürich · vor 1 Woche",
-    salonName: "Nail Lab",
-    salonSlug: "nail-lab",
+    meta: "Basel · vor 1 Woche",
+    salonName: "Nail Studio Bliss",
+    salonSlug: "nail-studio-bliss",
   },
   {
     stars: 5,
     text: "Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in unter zwei Minuten. So sollte das überall funktionieren.",
     initials: "AM",
     name: "Anna M.",
-    meta: "Bern · vor 3 Tagen",
-    salonName: "Rhein Spa",
-    salonSlug: "rhein-spa",
+    meta: "Basel · vor 3 Tagen",
+    salonName: "Smooth Skin Studio",
+    salonSlug: "smooth-skin-studio",
   },
   {
     stars: 4,
     text: "Buchung war easy, Salon top. Einziger Kritikpunkt: Wegbeschreibung zeigt nicht alle Eingänge. Aber das ist Detail. Komme wieder.",
     initials: "TW",
     name: "Tobias W.",
-    meta: "Zürich · vor 1 Woche",
-    salonName: "Atelier Coiffure",
-    salonSlug: "atelier-coiffure",
+    meta: "Basel · vor 1 Woche",
+    salonName: "Glow Lab Basel",
+    salonSlug: "glow-lab-basel",
   },
   {
     stars: 5,
@@ -88,32 +93,33 @@ const REVIEWS: Review[] = [
     initials: "ES",
     name: "Eva S.",
     meta: "Basel · vor 4 Tagen",
-    salonName: "Nail Lab",
-    salonSlug: "nail-lab",
+    salonName: "Nail Studio Bliss",
+    salonSlug: "nail-studio-bliss",
   },
   {
     stars: 5,
     text: "Habe den Salon zufällig über die Karte gefunden, 200 m von zu Hause. Wie konnte ich den nicht kennen? Bewertungen waren spot-on.",
     initials: "NB",
     name: "Niklas B.",
-    meta: "Luzern · vor 6 Tagen",
-    salonName: "Studio Nord",
-    salonSlug: "studio-nord",
+    meta: "Basel · vor 6 Tagen",
+    salonName: "The Fade Factory",
+    salonSlug: "the-fade-factory",
   },
   {
     stars: 5,
     text: "Premium ohne Premium-Preise. Spa-Atmosphäre wie in einem 5-Sterne-Hotel, aber ich habe normal mit Solen gebucht: gleicher Preis, sofortige Bestätigung.",
     initials: "SL",
     name: "Sophie L.",
-    meta: "Lausanne · vor 10 Tagen",
-    salonName: "Rhein Spa",
-    salonSlug: "rhein-spa",
+    meta: "Basel · vor 10 Tagen",
+    salonName: "Smooth Skin Studio",
+    salonSlug: "smooth-skin-studio",
   },
 ];
 
 export default function Reviews() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const locale = useLocale();
 
   const openReview = (slug: string) => {
     router.push(`/salon/${slug}/reviews`);
@@ -124,7 +130,7 @@ export default function Reviews() {
       <SectionFrame>
         <SectionTitle
           title="Bewertungen"
-          link={{ label: "Alle Bewertungen →", href: "/reviews" }}
+          link={{ label: "Alle Bewertungen →", href: `/${locale}/reviews` }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>
@@ -194,9 +200,9 @@ function ReviewCard({
             <Star
               key={i}
               size={12}
-              fill="#FFC32B"
               stroke="none"
               aria-hidden
+              className="fill-s-star"
             />
           ))}
         </div>

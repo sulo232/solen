@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Dashboard mobile (neu)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --ink40:rgba(10,10,10,.4);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --accent-bg:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9; --error:#DC2626; --star:#FFC32B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:30px 24px 56px}
+  h1.t{font-family:'Inter Tight';font-weight:700;font-size:21px;letter-spacing:-.02em;margin-bottom:4px}
+  .lede{font-size:13px;color:rgba(10,10,10,.5);margin-bottom:22px;max-width:780px;line-height:1.5}
+  .rail{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:12.5px;color:var(--ink2);margin:0 0 9px 2px}
+
+  .phone{width:390px;background:var(--white);border-radius:30px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.17);position:relative}
+  .num{font-variant-numeric:tabular-nums;font-family:'Inter Tight'}
+
+  /* shared avatar — circle, used in Heute rows AND team rows */
+  .av{border-radius:999px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;color:#fff;flex-shrink:0}
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .topbar .ic{width:21px;height:21px;color:var(--ink)}
+  .topbar .ic.muted{color:var(--ink40);width:18px;height:18px}
+  .brand{font-family:'Inter Tight';font-weight:700;font-size:17px;flex:1}
+  .brand .dot{display:inline-block;width:5px;height:5px;border-radius:9px;background:var(--ink);margin-left:2px;vertical-align:middle}
+  .bell{position:relative}
+  .bell .pip{position:absolute;top:-1px;right:-1px;width:7px;height:7px;border-radius:9px;background:var(--error);border:1.5px solid #fff}
+
+  .body{padding:18px 16px 24px}
+
+  /* header */
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .head h2{font-family:'Inter Tight';font-weight:700;font-size:27px;letter-spacing:-.02em;line-height:1}
+  .addbtn{display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:#fff;font-family:'Inter Tight';font-weight:600;font-size:13px;border-radius:999px;padding:9px 14px;white-space:nowrap;flex-shrink:0}
+  .addbtn svg{width:15px;height:15px}
+
+  /* stat tiles 2x2 — text-only labels, no decorative icons */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+  .stat{border:1px solid var(--border);border-radius:16px;padding:13px 14px;background:var(--white)}
+  .stat .l{font-size:11.5px;font-weight:600;color:var(--ink2);margin-bottom:8px}
+  .stat .v{font-family:'Inter Tight';font-weight:700;font-size:23px;letter-spacing:-.02em;line-height:1;display:flex;align-items:baseline;gap:5px}
+  .stat .v .cur{font-size:13px;font-weight:600;color:var(--ink2)}
+  .stat .v .star{color:var(--star);font-size:17px;margin-left:1px}
+  .delta{font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:1px;margin-top:7px}
+  .delta.up{color:var(--success)} .delta.dn{color:var(--error)}
+  .delta svg{width:11px;height:11px}
+  .stat .sub{font-size:11.5px;color:var(--ink2);margin-top:7px}
+
+  /* section */
+  .sec{margin-bottom:20px}
+  .sechead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+  .sechead h3{font-family:'Inter Tight';font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .sechead a{font-size:12.5px;font-weight:600;color:var(--accent)}
+  .card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white)}
+
+  .trow{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .trow:last-child{border-bottom:0}
+  .trow .time{font-family:'Inter Tight';font-weight:700;font-size:13.5px;width:44px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .trow .mid{flex:1;min-width:0}
+  .trow .nm{font-family:'Inter Tight';font-weight:600;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trow .sv{font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .pill{font-size:11px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap;flex-shrink:0}
+  .pill.ok{background:var(--success-bg);color:var(--success)}
+  .pill.wait{background:#FEF3E2;color:#9A6500}
+
+  .lrow{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--border)}
+  .lrow:last-child{border-bottom:0}
+  .lrow .rk{font-family:'Inter Tight';font-weight:700;font-size:13px;color:var(--ink3);width:16px;flex-shrink:0}
+  .lrow .nm{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrow .meta{font-size:12.5px;color:var(--ink2);flex-shrink:0}
+  .lrow .meta.strong{font-family:'Inter Tight';font-weight:600;color:var(--ink)}
+
+  /* ── sidebar (slide-out) ── */
+  .sbwrap{display:flex;height:760px}
+  .sb{width:300px;background:#fff;height:100%;display:flex;flex-direction:column;flex-shrink:0}
+  .sbdim{flex:1;background:rgba(10,10,10,.4)}
+  .sbhead{display:flex;align-items:center;gap:11px;padding:16px 16px 14px;border-bottom:1px solid var(--border)}
+  .sbhead .sa{width:40px;height:40px;border-radius:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB);display:grid;place-items:center;color:#fff;font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .sbhead .sn{font-family:'Inter Tight';font-weight:700;font-size:15px;line-height:1.1}
+  .sbhead .ss{font-size:11.5px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:3px}
+  .sbnav{flex:1;overflow-y:auto;padding:10px 10px 4px}
+  .grp{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:12px 10px 6px}
+  .nav{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:11px;font-family:'Inter Tight';font-weight:600;font-size:14.5px;color:var(--ink2)}
+  .nav svg{width:19px;height:19px;flex-shrink:0}
+  .nav.on{background:var(--accent-bg);color:var(--accent)}
+  .nav .badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:999px;padding:1px 6px}
+  .sbfoot{border-top:1px solid var(--border);padding:10px}
+  .sbfoot .nav{color:var(--ink2)}
+
+  .note{font-size:11px;color:var(--ink40);margin-top:12px;line-height:1.5;max-width:360px}
+</style>
+</head>
+<body>
+  <h1 class="t">Dashboard mobile — Übersicht + Menü (alle Bereiche)</h1>
+  <p class="lede">Keine Bottom-Nav: alles steckt im ☰-Menü (rechts), mobil skaliert mit grossen Tap-Zielen. Übersicht (links): runde Avatare, „Alle ansehen" auf jeder Liste, unnötiger Text raus (kein „· Woche", kein „gebucht", keine Deko-Icons). Mockup zur Freigabe.</p>
+
+  <div class="rail">
+
+    <!-- ── PHONE 1: OVERVIEW ── -->
+    <div>
+      <p class="cap">Übersicht · 390px</p>
+      <div class="phone">
+        <div class="topbar">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="brand">Solen<span class="dot"></span></span>
+          <svg class="ic muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="bell"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="pip"></span></span>
+        </div>
+        <div class="body">
+          <div class="eyebrow">Dienstag, 3. Juni</div>
+          <div class="head">
+            <h2>Übersicht</h2>
+            <span class="addbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Termin</span>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="l">Umsatz</div><div class="v"><span class="cur">CHF</span><span class="num">2'340</span></div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>12%</div></div>
+            <div class="stat"><div class="l">Termine</div><div class="v"><span class="num">28</span></div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>5%</div></div>
+            <div class="stat"><div class="l">Neue Kund:innen</div><div class="v"><span class="num">6</span></div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>20%</div></div>
+            <div class="stat"><div class="l">Bewertung</div><div class="v"><span class="num">4.9</span><span class="star">★</span></div><div class="sub">128 Bewertungen</div></div>
+          </div>
+
+          <div class="sec">
+            <div class="sechead"><h3>Heute</h3><a href="#">Alle ansehen</a></div>
+            <div class="card">
+              <div class="trow"><span class="time">09:30</span><span class="av" style="width:32px;height:32px;font-size:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="mid"><div class="nm">Lena Meier</div><div class="sv">Damenschnitt &amp; Föhnen</div></span><span class="pill ok">Bestätigt</span></div>
+              <div class="trow"><span class="time">10:15</span><span class="av" style="width:32px;height:32px;font-size:12px;background:linear-gradient(140deg,#F0A868,#C0524A)">TB</span><span class="mid"><div class="nm">Tom Brunner</div><div class="sv">Herrenschnitt</div></span><span class="pill ok">Bestätigt</span></div>
+              <div class="trow"><span class="time">11:00</span><span class="av" style="width:32px;height:32px;font-size:12px;background:linear-gradient(140deg,#16A34A,#0E7A37)">SK</span><span class="mid"><div class="nm">Sara Keller</div><div class="sv">Coloration &amp; Schnitt</div></span><span class="pill wait">Ausstehend</span></div>
+              <div class="trow"><span class="time">14:30</span><span class="av" style="width:32px;height:32px;font-size:12px;background:linear-gradient(140deg,#8B5CF6,#6D28D9)">MR</span><span class="mid"><div class="nm">Marco Rossi</div><div class="sv">Bart trimmen</div></span><span class="pill ok">Bestätigt</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sechead"><h3>Top Services</h3><a href="#">Alle ansehen</a></div>
+            <div class="card">
+              <div class="lrow"><span class="rk">1</span><span class="nm">Herrenschnitt</span><span class="meta">42×</span></div>
+              <div class="lrow"><span class="rk">2</span><span class="nm">Damenschnitt &amp; Föhnen</span><span class="meta">31×</span></div>
+              <div class="lrow"><span class="rk">3</span><span class="nm">Coloration</span><span class="meta">18×</span></div>
+            </div>
+          </div>
+
+          <div class="sec" style="margin-bottom:4px">
+            <div class="sechead"><h3>Top Mitarbeiter</h3><a href="#">Alle ansehen</a></div>
+            <div class="card">
+              <div class="lrow"><span class="av" style="width:30px;height:30px;font-size:11px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">MB</span><span class="nm">Marco Bianchi</span><span class="meta strong">CHF 1'240</span></div>
+              <div class="lrow"><span class="av" style="width:30px;height:30px;font-size:11px;background:linear-gradient(140deg,#F0A868,#C0524A)">LF</span><span class="nm">Lea Furrer</span><span class="meta strong">CHF 980</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PHONE 2: SIDEBAR (all sections) ── -->
+    <div>
+      <p class="cap">☰ Menü · alle Bereiche</p>
+      <div class="phone">
+        <div class="sbwrap">
+          <div class="sb">
+            <div class="sbhead">
+              <div class="sa">BB</div>
+              <div style="min-width:0">
+                <div class="sn">Barber Brothers</div>
+                <div class="ss">Salon wechseln <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+              </div>
+            </div>
+            <div class="sbnav">
+              <div class="grp">Betrieb</div>
+              <div class="nav on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Übersicht</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>Termine</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Kalender</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-11.8 7L3 21l2.5-6.2A8 8 0 1 1 21 11.5z"/></svg>Nachrichten<span class="badge">3</span></div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5.5a3.2 3.2 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/></svg>Warteschlange</div>
+
+              <div class="grp">Team &amp; Kunden</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="m16 11 2 2 4-4"/></svg>Team</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>Kund:innen</div>
+
+              <div class="grp">Business</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>Katalog</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M10 6l9-3v18l-9-3"/></svg>Marketing</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>Berichte</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/></svg>Bewertungen</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5L5 20"/></svg>Galerie</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.2"/></svg>Beiträge</div>
+
+              <div class="grp">Mehr</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M9 13.5 8 21l4-2 4 2-1-7.5"/></svg>Treueprogramm</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.8 2.8 1.6 1.6 0 0 0-2.7 1.1 2 2 0 1 1-4 0 1.6 1.6 0 0 0-2.7-1.1 2 2 0 1 1-2.8-2.8A1.6 1.6 0 0 0 4.6 13a2 2 0 1 1 0-4 1.6 1.6 0 0 0 1.1-2.7 2 2 0 1 1 2.8-2.8A1.6 1.6 0 0 0 11 4.6V4.5a2 2 0 1 1 4 0 1.6 1.6 0 0 0 2.7 1.1 2 2 0 1 1 2.8 2.8A1.6 1.6 0 0 0 19.4 11z"/></svg>Einstellungen</div>
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/></svg>Verifizierung</div>
+            </div>
+            <div class="sbfoot">
+              <div class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Zur Website</div>
+            </div>
+          </div>
+          <div class="sbdim"></div>
+        </div>
+      </div>
+      <p class="note">Alles im Menü erreichbar, in Gruppen (Betrieb / Team &amp; Kunden / Business / Mehr), 44px Tap-Zeile, aktiver Punkt in Blau. „Warteschlange" nur für Barbershops. Öffnet über ☰ oben links.</p>
+    </div>
+
+  </div>
+</body>
+</html>

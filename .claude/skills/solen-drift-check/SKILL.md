@@ -1,14 +1,16 @@
 ---
 name: solen-drift-check
-description: Audits Solen frontend code for drift from the locked design system. Catches hardcoded hex colors, arbitrary Tailwind values, non-canonical durations/easings, retired-but-defined token usage, and dead-click contract violations (onClick={() => {}}, href="#", buttons without handlers). Logs everything to a structured markdown report — NEVER halts execution. Respects `_design-system/_rebuilt_routes.json` so legacy un-rebuilt routes don't drown signal.
+description: Audits Solen frontend code for drift from the locked design system. Catches hardcoded hex colors, arbitrary Tailwind values, non-canonical durations/easings, retired-but-defined token usage, and dead-click contract violations (onClick={() => {}}, href="#", buttons without handlers). Logs everything to a structured markdown report and never halts in report mode; the `--gate-stdin` gate mode (V3-D441) blocks net-new drift in a PreToolUse hook. Respects `_design-system/_rebuilt_routes.json` so legacy un-rebuilt routes don't drown signal.
 ---
 
 # Solen Drift Check
 
 This skill audits the codebase against the canonical design system in
-[`_design-system/SOURCE.md`](../../../_design-system/SOURCE.md). It is a **logger, not a gate** — it
-produces a structured report and exits 0 even when drift is found. The human
-reviewer decides what to act on.
+[`_design-system/SOURCE.md`](../../../_design-system/SOURCE.md). The default report mode is a
+**logger, not a gate**: it produces a structured report and exits 0 even when drift is found, and
+the human reviewer decides what to act on. The ONE exception is `--gate-stdin` mode (V3-D441), the
+PreToolUse drift gate (`.claude/hooks/pre-edit-drift-gate.sh`), which reads an incoming Edit/Write
+diff and exits 2 to BLOCK net-new hard drift before it lands. See "Gate mode" below.
 
 ## When to invoke
 
@@ -65,15 +67,34 @@ The checker respects `_design-system/_rebuilt_routes.json` (allowlist of file gl
 
 ## Invocation
 
+### Report mode (default, logger)
+
 ```bash
 python3 .claude/skills/solen-drift-check/scripts/check.py [--strict-only] [--out REPORT.md]
 ```
 
-- `--strict-only` — only scan files in `_design-system/_rebuilt_routes.json`. Skip legacy.
-- `--out REPORT.md` — write report to specified path. Defaults to `_design-system/_drift-report.md`.
+- `--strict-only` only scans files in `_design-system/_rebuilt_routes.json`. Skip legacy.
+- `--out REPORT.md` writes the report to the given path. Defaults to `_design-system/_drift-report.md`.
 
-Exit code is **always 0**, even with findings. The presence of `findings_count > 0` in the
-report is the signal to act, not the exit code.
+Report-mode exit code is **always 0**, even with findings. The presence of `findings_count > 0`
+in the report is the signal to act, not the exit code.
+
+### Gate mode (`--gate-stdin`, blocking, V3-D441)
+
+```bash
+echo '{"file_path":"app/x.tsx","new":"<incoming content>","old":"<prior content>"}' \
+  | python3 .claude/skills/solen-drift-check/scripts/check.py --gate-stdin
+```
+
+Reads JSON `{file_path, new, old?}` from stdin and exits **2** when `new` introduces a NET-NEW hard
+finding (A1-A6 / B1-B5) versus `old`, else **0**. Net-new is per-rule by count, so editing around
+pre-existing drift never trips it (strict scope already carries ~1k legacy findings). INFO rules
+(A7-A14) never gate. Lines containing `drift-ok` are skipped (per-line escape hatch).
+
+This mode powers the PreToolUse hook `.claude/hooks/pre-edit-drift-gate.sh`, which runs the gate on
+every Edit/Write to a design-surface file (`app|components|components-legacy` `*.tsx`/`*.css`) and
+blocks the tool when it would add drift. Bypass: a `drift-ok:` line comment, `touch
+.claude/drift-gate-skip.flag` (30-min TTL), or `export SOLEN_DRIFT_GATE=0`. Fail-open on any error.
 
 ## Output structure
 

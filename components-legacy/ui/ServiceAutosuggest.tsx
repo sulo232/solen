@@ -202,7 +202,7 @@ export default function ServiceAutosuggest({
 
       {/* Salons section */}
       {!loading && hasSalons && (
-        <div className={hasServices ? "border-t border-s-ink/[0.06] mt-1 pt-1" : ""}>
+        <div className={hasServices ? "border-t border-s-border mt-1 pt-1" : ""}>
           <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 px-3 py-2">
             {labelSalons}
           </p>

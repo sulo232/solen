@@ -67,7 +67,7 @@ function FauxSalonCard({ card, className }: { card: FauxCard; className?: string
           {card.name}
         </p>
         <span className="inline-flex shrink-0 items-center gap-0.5 font-body text-[12px] font-semibold text-s-ink">
-          <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
+          <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
           {card.rating}
         </span>
       </div>

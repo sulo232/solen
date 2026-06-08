@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 import { z } from "zod";
 
 const DEFAULT_TEMPLATES = [
@@ -36,11 +37,7 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Find the salon this user owns
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) {
     return NextResponse.json({ templates: DEFAULT_TEMPLATES.map((text, i) => ({ id: `default-${i}`, text, is_default: true })) });
@@ -78,11 +75,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = validateBody(createTemplateSchema, body);
   if (error) return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 404 });
 
@@ -127,11 +120,7 @@ export async function DELETE(req: NextRequest) {
   if (error) return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   // Verify ownership via salon
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 404 });
 

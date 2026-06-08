@@ -124,9 +124,9 @@ export default function BookingCard({
   };
 
   return (
-    <div className="bg-[--raised] rounded-card border border-s-ink/[0.06] overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
+    <div className="bg-[--raised] rounded-card border border-s-border overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
       {/* Header */}
-      <div className="p-4 border-b border-s-ink/[0.06] flex items-start justify-between">
+      <div className="p-4 border-b border-s-border flex items-start justify-between">
         <div className="flex-1">
           <h3 className="font-heading text-lg font-semibold text-s-ink">
             {booking.salon?.name || '-'}
@@ -148,7 +148,7 @@ export default function BookingCard({
       </div>
 
       {/* Service & Duration */}
-      <div className="px-4 py-3 border-b border-s-ink/[0.06]">
+      <div className="px-4 py-3 border-b border-s-border">
         <p className="font-body text-s-ink">
           {getServiceName()}
         </p>
@@ -176,7 +176,7 @@ export default function BookingCard({
       </div>
 
       {/* Price */}
-      <div className="px-4 py-3 border-t border-s-ink/[0.06]">
+      <div className="px-4 py-3 border-t border-s-border">
         <div className="flex items-center justify-between">
           <span className="text-s-ink/60 text-sm">{t('total')}</span>
           <span className="font-semibold text-s-ink">
@@ -186,7 +186,7 @@ export default function BookingCard({
       </div>
 
       {/* Actions */}
-      <div className="px-4 py-3 border-t border-s-ink/[0.06] flex items-center justify-between">
+      <div className="px-4 py-3 border-t border-s-border flex items-center justify-between">
         <button
           onClick={() => onRebook?.(booking)}
           className="px-4 py-2 rounded-pill bg-s-ink text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
@@ -204,7 +204,7 @@ export default function BookingCard({
           </button>
 
           {showMenu && (
-            <div className="absolute right-0 top-full mt-2 bg-[--raised] border border-s-ink/[0.06] rounded-card shadow-elevation-3 z-50 min-w-[160px]">
+            <div className="absolute right-0 top-full mt-2 bg-[--raised] border border-s-border rounded-card shadow-elevation-3 z-50 min-w-[160px]">
               {booking.status === 'confirmed' && (
                 <>
                   <button

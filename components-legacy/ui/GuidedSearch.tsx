@@ -22,8 +22,6 @@ import { CoiffeurIcon } from "@/components-legacy/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components-legacy/icons/category/BarberIcon";
 import { NailsIcon } from "@/components-legacy/icons/category/NailsIcon";
 import { SpaIcon } from "@/components-legacy/icons/category/SpaIcon";
-import { MakeupIcon } from "@/components-legacy/icons/category/MakeupIcon";
-import { WaxingIcon } from "@/components-legacy/icons/category/WaxingIcon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & static data
@@ -46,8 +44,6 @@ const CATEGORY_LIST: CategoryItem[] = [
   { key: "barbershop", Icon: BarberIcon,   subDe: "Haarschnitt, Bart, Rasur",      subEn: "Haircut, Beard, Shave",     subFr: "Coupe, Barbe, Rasage",       subIt: "Taglio, Barba, Rasatura" },
   { key: "nails",      Icon: NailsIcon,    subDe: "Maniküre, Gel, Acryl",          subEn: "Manicure, Gel, Acrylic",    subFr: "Manucure, Gel, Acrylique",   subIt: "Manicure, Gel, Acrilico" },
   { key: "spa",        Icon: SpaIcon,      subDe: "Massage, Gesichtsbehandlung",   subEn: "Massage, Facial",           subFr: "Massage, Soin du visage",    subIt: "Massaggio, Trattamento viso" },
-  { key: "makeup",     Icon: MakeupIcon,   subDe: "Make-up, Schminken",            subEn: "Makeup, Beauty",            subFr: "Maquillage, Beauté",         subIt: "Trucco, Bellezza" },
-  { key: "waxing",     Icon: WaxingIcon,   subDe: "Haarentfernung",                subEn: "Hair Removal",              subFr: "Épilation",                  subIt: "Epilazione" },
 ];
 
 const TIME_KEYS: TimeKey[] = ["any", "morning", "afternoon", "evening"];
@@ -523,7 +519,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-border">
                           <div>
                             <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
@@ -555,7 +551,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-border">
                           <div>
                             <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
@@ -631,7 +627,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {/* Trending searches */}
                             <div className={recents.length > 0 ? "pb-2" : "pt-4 pb-2"}>
                               <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-2">
-                                {locale === "de" ? "Beliebt in Basel 🔥" : locale === "fr" ? "Populaire à Bâle 🔥" : locale === "it" ? "Popolare a Basilea 🔥" : "Popular in Basel 🔥"}
+                                {locale === "de" ? "Beliebt in Basel" : locale === "fr" ? "Populaire à Bâle" : locale === "it" ? "Popolare a Basilea" : "Popular in Basel"}
                               </p>
                               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                                 {TRENDING_SEARCHES.map((term) => (
@@ -843,7 +839,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-[transform,filter,border-color,background-color] duration-200 ${
                             city === null
                               ? "border-s-accent bg-s-ink/[0.05]"
-                              : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
+                              : "border-s-border hover:border-s-ink/20:border-white/20"
                           }`}
                         >
                           <MapPin size={20} className="text-s-ink/40" aria-hidden="true" />
@@ -866,7 +862,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-[transform,filter,border-color,background-color] duration-200 ${
                                 city === slug
                                   ? "border-s-accent bg-s-ink/[0.05]"
-                                  : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
+                                  : "border-s-border hover:border-s-ink/20:border-white/20"
                               }`}
                               style={{ minHeight: "80px" }}
                             >
@@ -942,7 +938,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         </button>
 
                         {showCalendar && (
-                          <div className="mb-4 rounded-card border border-s-ink/[0.08] bg-white overflow-hidden">
+                          <div className="mb-4 rounded-card border border-s-border bg-white overflow-hidden">
                             <SolenDatePicker
                               inline
                               value={specificDate}
@@ -990,7 +986,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
               {/* ── Footer CTA ── */}
               <div
-                className="shrink-0 flex items-center gap-3 px-6 pt-3 pb-6 border-t border-s-ink/[0.06]"
+                className="shrink-0 flex items-center gap-3 px-6 pt-3 pb-6 border-t border-s-border"
                 style={{ paddingBottom: "max(24px, env(safe-area-inset-bottom))" }}
               >
                 <button

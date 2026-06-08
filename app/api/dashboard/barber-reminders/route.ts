@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/dashboard/barber-reminders?salon_id=... — Get clients due for reminders
 export async function GET(req: NextRequest) {
@@ -22,8 +23,7 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   // Get system notes with reminder info (created by the smart-reminders cron)

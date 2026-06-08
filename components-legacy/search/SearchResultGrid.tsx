@@ -23,7 +23,7 @@ interface SearchResultGridProps {
   onSelect?: (id: string) => void;
 }
 
-const CATEGORY_PILLS = ["coiffeur", "nails", "barbershop", "spa", "makeup", "waxing"] as const;
+const CATEGORY_PILLS = ["coiffeur", "nails", "barbershop", "spa"] as const;
 
 export default function SearchResultGrid({
   salons,

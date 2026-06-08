@@ -179,7 +179,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink text-center hover:border-s-accent/50 transition-colors"
+          className="flex-1 py-3 rounded-pill border border-s-border text-sm font-medium text-s-ink text-center hover:border-s-accent/50 transition-colors"
         >
           {t("showMore")}
         </Link>

@@ -56,14 +56,14 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
           <h3 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-2 px-1">
             {group.eyebrow}
           </h3>
-          <div className="rounded-[14px] bg-white border border-s-ink/[0.06] overflow-hidden">
+          <div className="rounded-[14px] bg-white border border-s-border overflow-hidden">
             {group.rows.map((row, ri) => (
               <Link
                 key={row.key}
                 href={row.href.startsWith("/") ? `/${locale}${row.href}` : row.href}
                 className={[
                   "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[48px]",
-                  ri < group.rows.length - 1 ? "border-b border-s-ink/[0.06]" : "",
+                  ri < group.rows.length - 1 ? "border-b border-s-border" : "",
                   "transition-colors duration-150 hover:bg-s-bg-sunken/60",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 focus-visible:rounded-[8px]",
                 ].join(" ")}

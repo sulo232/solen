@@ -39,7 +39,7 @@ export default function SimilarSalons({ currentSalonId, category, locale }: Simi
 
   if (loading) {
     return (
-      <section className="py-12 border-t border-s-ink/5">
+      <section className="py-12 border-t border-s-border">
         <h2 className="text-2xl font-heading text-s-ink mb-6">
           {t("similarSalons")}
         </h2>
@@ -57,7 +57,7 @@ export default function SimilarSalons({ currentSalonId, category, locale }: Simi
   }
 
   return (
-    <section className="py-12 border-t border-s-ink/5">
+    <section className="py-12 border-t border-s-border">
       <h2 className="text-2xl font-heading text-s-ink mb-6">
         {t("similarSalons")}
       </h2>

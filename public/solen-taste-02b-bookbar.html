@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Taste round 2b — the sticky Book bar (better examples)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;
+    --sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B;--green:#16A34A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#ECEBE9;font-family:'Inter',sans-serif;color:var(--ink);padding:30px 20px 80px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center;letter-spacing:-0.02em}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:8px auto 4px;max-width:760px;line-height:1.6}
+  .sub b{color:var(--ink)}
+  .how{text-align:center;color:var(--ink3);font-size:12px;margin:0 auto 32px;max-width:660px;line-height:1.55}
+  .how b{color:var(--ink2)}
+  .grid{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:flex-start;max-width:1120px;margin:0 auto}
+  .opt{width:252px}
+  /* phone slice */
+  .phone{position:relative;height:392px;border:1px solid rgba(10,10,10,.12);border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 14px 36px rgba(0,0,0,.10)}
+  .stitle{font-family:'Inter Tight';font-weight:800;font-size:16px;letter-spacing:-0.01em;padding:18px 16px 6px}
+  .srow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border-top:1px solid var(--border)}
+  .srow:first-of-type{border-top:none}
+  .sname{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.2}
+  .sdur{font-size:12.5px;color:var(--ink2);margin-top:3px}
+  .sprice{font-size:14.5px;color:var(--ink2);white-space:nowrap}
+  .sprice b{font-weight:600;color:var(--ink)}
+  /* sticky bar */
+  .bar{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:13px 16px;z-index:3}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:var(--ink);color:#fff;border-radius:999px;padding:13px;font-size:15px;font-weight:600}
+  .btn svg{width:16px;height:16px;stroke:#fff;stroke-width:2.5}
+  .cap{margin-top:11px;font-size:11.5px;line-height:1.45}
+  .cap .nm{font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .cap .rec{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:4px;padding:1px 5px}
+  .cap .d{color:var(--ink2);display:block;margin-top:2px}
+
+  /* ── treatments ── */
+  .border .bar{border-top:1px solid var(--border)}
+  .fade .bar{border-top:none}
+  .fade .fademask{position:absolute;left:0;right:0;bottom:62px;height:56px;z-index:2;pointer-events:none;background:linear-gradient(to top,#fff 12%,rgba(255,255,255,0))}
+  .shadow .bar{box-shadow:0 -10px 26px rgba(0,0,0,.10)}
+  .frost .bar{background:rgba(255,255,255,.70);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);border-top:1px solid rgba(255,255,255,.55)}
+  .footer{font-size:12px;color:var(--ink2);line-height:1.6;margin:32px auto 0;max-width:760px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:13px;text-align:center}
+  .footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Round 2b — the sticky Book bar, for real</h1>
+  <p class="sub">Real service list scrolling <b>under</b> the bar (that's the actual scenario the separation has to handle). Same ink button on each, only how the bar meets the content changes. The 4th service row is half-tucked under the bar on purpose.</p>
+  <p class="how">Reply with one: <b>border / fade / shadow / frost</b> + why. Green tag = my read.</p>
+
+  <div class="grid">
+
+    <!-- A border -->
+    <div class="opt">
+      <div class="phone border">
+        <div class="stitle">Beliebte Services</div>
+        <div class="srow"><div><div class="sname">Herrenschnitt</div><div class="sdur">45 Min</div></div><div class="sprice"><b>45</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Waschen &amp; Föhnen</div><div class="sdur">30 Min</div></div><div class="sprice"><b>35</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Bart trimmen</div><div class="sdur">20 Min</div></div><div class="sprice"><b>25</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Coloration Ansatz</div><div class="sdur">60 Min</div></div><div class="sprice"><b>75</b> CHF</div></div>
+        <div class="bar"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div>
+      </div>
+      <div class="cap"><span class="nm">Border</span><span class="d">Current. 1px line. The content row gets a hard cut at the line. Clear, a touch abrupt.</span></div>
+    </div>
+
+    <!-- B fade -->
+    <div class="opt">
+      <div class="phone fade">
+        <div class="stitle">Beliebte Services</div>
+        <div class="srow"><div><div class="sname">Herrenschnitt</div><div class="sdur">45 Min</div></div><div class="sprice"><b>45</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Waschen &amp; Föhnen</div><div class="sdur">30 Min</div></div><div class="sprice"><b>35</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Bart trimmen</div><div class="sdur">20 Min</div></div><div class="sprice"><b>25</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Coloration Ansatz</div><div class="sdur">60 Min</div></div><div class="sprice"><b>75</b> CHF</div></div>
+        <div class="fademask"></div>
+        <div class="bar"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div>
+      </div>
+      <div class="cap"><span class="nm">Gradient fade <span class="rec">my read</span></span><span class="d">Content dissolves to white above the bar, no hard line, no shadow. Modern (Uber/Stripe/Apple). Flat, so it respects the elevation rule.</span></div>
+    </div>
+
+    <!-- C shadow -->
+    <div class="opt">
+      <div class="phone shadow">
+        <div class="stitle">Beliebte Services</div>
+        <div class="srow"><div><div class="sname">Herrenschnitt</div><div class="sdur">45 Min</div></div><div class="sprice"><b>45</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Waschen &amp; Föhnen</div><div class="sdur">30 Min</div></div><div class="sprice"><b>35</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Bart trimmen</div><div class="sdur">20 Min</div></div><div class="sprice"><b>25</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Coloration Ansatz</div><div class="sdur">60 Min</div></div><div class="sprice"><b>75</b> CHF</div></div>
+        <div class="bar"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div>
+      </div>
+      <div class="cap"><span class="nm">Soft shadow</span><span class="d">Bar floats above content. Reads "app". On a white (non-photo) surface this is the grey-haze the elevation rule warns against.</span></div>
+    </div>
+
+    <!-- D frost -->
+    <div class="opt">
+      <div class="phone frost">
+        <div class="stitle">Beliebte Services</div>
+        <div class="srow"><div><div class="sname">Herrenschnitt</div><div class="sdur">45 Min</div></div><div class="sprice"><b>45</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Waschen &amp; Föhnen</div><div class="sdur">30 Min</div></div><div class="sprice"><b>35</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Bart trimmen</div><div class="sdur">20 Min</div></div><div class="sprice"><b>25</b> CHF</div></div>
+        <div class="srow"><div><div class="sname">Coloration Ansatz</div><div class="sdur">60 Min</div></div><div class="sprice"><b>75</b> CHF</div></div>
+        <div class="bar"><div class="btn">Termin buchen <svg data-l="chevron-right"></svg></div></div>
+      </div>
+      <div class="cap"><span class="nm">Frosted glass</span><span class="d">Translucent, the tucked row blurs through. Looks premium, but frost is meant for bars over a PHOTO, not over white text (it muddies the row).</span></div>
+    </div>
+
+  </div>
+
+  <div class="footer">My read: <b>gradient fade</b> beats the current border, it removes the hard cut without adding a shadow, so it stays flat (rule-correct) and reads more premium. <b>border</b> is the safe second. Shadow + frost both break the on-white elevation rule. <b>No fabricated data</b> — service names/durations/prices are illustrative of the real service-list shape.</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

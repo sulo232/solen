@@ -302,10 +302,10 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="flex flex-col h-full min-h-[400px] bg-white rounded-[12px] border border-s-ink/5"
+      className="flex flex-col h-full min-h-[400px] bg-white rounded-[12px] border border-s-border"
     >
       {/* Tab header */}
-      <div className="flex border-b border-s-ink/10">
+      <div className="flex border-b border-s-border">
         <button
           onClick={() => setActiveTab("chat")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
@@ -475,12 +475,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder={t("imageUrlPlaceholder")}
-              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
+              className="flex-1 px-3 py-2 text-sm border border-s-border rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-btn border border-s-ink/10 text-s-ink/40 hover:text-s-ink">
+              className="px-2 py-2 rounded-btn border border-s-border text-s-ink/40 hover:text-s-ink">
               <X size={14} />
             </button>
           </div>
@@ -532,7 +532,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder={t("messagePlaceholder")} rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 max-h-32 overflow-y-auto bg-white min-h-[38px]" />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-border rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 max-h-32 overflow-y-auto bg-white min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-ink text-white disabled:opacity-40 hover:brightness-[1.06] transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}

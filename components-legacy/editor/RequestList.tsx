@@ -124,7 +124,7 @@ export default function RequestList({
 
       {/* Copy for Claude section */}
       {requests.length > 0 && (
-        <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
+        <div className="border border-s-border rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
           <div className="flex items-center gap-1.5">
             <ClipboardList size={14} className="text-s-accent" />
             <p className="text-xs font-medium text-s-ink">
@@ -175,7 +175,7 @@ export default function RequestList({
           {filtered.map((r) => (
             <div
               key={r.id}
-              className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden"
+              className="bg-white rounded-[12px] border border-s-border shadow-warm-md overflow-hidden"
             >
               <div className="p-3 space-y-2">
                 <div className="flex items-start gap-2">
@@ -286,7 +286,7 @@ export default function RequestList({
 
                 {/* Expanded details - shows selector, element info, and Claude prompt preview */}
                 {expandedId === r.id && (
-                  <div className="space-y-2 pl-5.5 pt-1 border-t border-s-ink/5 mt-1">
+                  <div className="space-y-2 pl-5.5 pt-1 border-t border-s-border mt-1">
                     {r.element_selector && (
                       <div>
                         <p className="text-[10px] font-medium text-s-ink/50">Selector</p>

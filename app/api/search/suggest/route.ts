@@ -16,69 +16,33 @@ export async function GET(req: NextRequest) {
 
   // Cap query length to prevent abuse
   const query = q.slice(0, 100);
-  const pattern = `%${query}%`;
   const category = req.nextUrl.searchParams.get("category");
   const citySlug = req.nextUrl.searchParams.get("city");
 
   const supabase = await createServerSupabaseClient();
 
-  let cityId: string | undefined;
+  let cityId: string | null = null;
   if (citySlug) {
     const { data: cityRecord } = await supabase
       .from("cities")
       .select("id")
       .eq("slug", citySlug)
       .single();
-    if (cityRecord) {
-      cityId = cityRecord.id;
-    }
+    if (cityRecord) cityId = cityRecord.id;
   }
 
-  // Fetch matching services (limit 5), optionally scoped by category
-  let servicesQuery = supabase
-    .from("services")
-    .select("id, name_de, name_en, category, price, salons!inner(city_id)")
-    .or(`name_de.ilike.${pattern},name_en.ilike.${pattern}`)
-    .eq("is_active", true);
-
-  if (category) {
-    servicesQuery = servicesQuery.eq("category", category);
-  }
-  if (cityId) {
-    servicesQuery = servicesQuery.eq("salons.city_id", cityId);
-  }
-
-  const { data: rawServices } = await servicesQuery.limit(5);
-
-  // Map out the nested salons relation if it exists
-  const services = rawServices?.map((s) => {
-    const { salons, ...rest } = s as any;
-    return rest;
-  }) ?? [];
-
-  // Fetch matching salons (limit 3), optionally scoped by category
-  let salonsQuery = supabase
-    .from("salons")
-    // V3-D413: column is cover_photo_url (cover_image never existed → this query silently errored and returned
-    // zero salons). Fixed + aliased back to cover_image below so any existing consumer of this shape is unaffected.
-    .select("id, name, slug, average_rating, cover_photo_url")
-    .ilike("name", pattern)
-    .eq("is_active", true)
-    .eq("listed_on_marketplace", true);
-
-  if (category) {
-    salonsQuery = salonsQuery.contains("categories", [category]);
-  }
-  if (cityId) {
-    salonsQuery = salonsQuery.eq("city_id", cityId);
-  }
-
-  const { data: salons, error: salonsErr } = await salonsQuery.limit(3);
-  if (salonsErr) console.error("[search/suggest] salons query failed:", salonsErr);
-
-  return NextResponse.json({
-    services: services ?? [],
-    // Alias cover_photo_url → cover_image to preserve this route's documented response shape.
-    salons: (salons ?? []).map((s: Record<string, any>) => ({ ...s, cover_image: s.cover_photo_url ?? null })),
+  // Smart Search suggest (Phase 1): FTS + trigram (typo + as-you-type prefix) +
+  // one-way synonyms (incl. fr/it), city/category scoped, gated, ranked. Returns
+  // the same { services[≤5], salons[≤3] } shape (cover_image alias preserved).
+  const { data, error } = await supabase.rpc("search_suggest", {
+    p_q: query,
+    p_city_id: cityId,
+    p_category: category,
   });
+  if (error) {
+    console.error("[search/suggest] search_suggest failed:", error.message);
+    return NextResponse.json({ services: [], salons: [] });
+  }
+
+  return NextResponse.json(data ?? { services: [], salons: [] });
 }

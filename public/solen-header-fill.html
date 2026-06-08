@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — fill the C top row</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 22px;max-width:760px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;align-items:flex-start}
+  .col{width:360px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);padding:3px 8px;border-radius:6px;font-family:var(--disp)}
+  .tag .pill.rec{background:#16A34A}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:26px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.12);padding:15px 14px 18px}
+  .urow{display:flex;align-items:center;gap:10px}
+  .rsq{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:13px;border:1px solid rgba(10,10,10,.06);background:#fff;color:var(--ink);box-shadow:0 2px 7px rgba(26,18,9,.10)}
+  .spacer{flex:1}
+  /* compact search pill (opt 1) */
+  .spill{flex:1;display:flex;align-items:center;gap:9px;height:44px;border:1px solid var(--border);border-radius:14px;padding:0 13px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .spill .ph{flex:1;font-size:14.5px;color:var(--ink2)}
+  /* centered fills (opt 2/3) */
+  .mid{flex:1;display:flex;justify-content:center;align-items:center;gap:5px}
+  .mid .city{font-size:15px;font-weight:600}
+  .mid .title{font-family:var(--disp);font-size:18px;font-weight:700;letter-spacing:-.01em}
+  .chev{opacity:.5}
+  .cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:13px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:15px;font-weight:500;white-space:nowrap}
+  .cat.on{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .cat .ic{font-size:17px}
+  .search{display:flex;align-items:center;gap:11px;margin-top:13px;border:1px solid var(--border);border-radius:16px;padding:12px 14px}
+  .search .t{flex:1;line-height:1.18}
+  .search .t b{display:block;font-size:14.5px}
+  .search .t span{font-size:12.5px;color:var(--ink2)}
+  .circle{flex:0 0 auto;display:grid;place-items:center;width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--ink)}
+  .chips{display:flex;align-items:center;gap:8px;margin-top:13px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+  .fcirc{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid rgba(39,110,241,.5);background:rgba(39,110,241,.10);color:var(--accent)}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:14px;font-weight:500;white-space:nowrap}
+  .chip.on{border-color:rgba(39,110,241,.4);background:rgba(39,110,241,.08);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fill the empty top row</h1>
+  <p class="lead">The C top row (home + gap + menu) reads sparse. <b>1 = search moves up into it</b> (home + search + menu) — fills the gap AND removes the separate search row, so it's the most compact. <b>2 = city selector</b> in the middle. <b>3 = page title</b> in the middle (these two keep the full search bar as its own row).</p>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(paths,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||20);s.setAttribute("height",o.size||20);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(paths)?paths:[paths]).forEach(d=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);s.appendChild(p);});return s;}
+function homeIcon(){return svg(["M3 10.5 12 3l9 7.5","M5 9.5V21h14V9.5"],{size:19});}
+function menuIcon(){return svg(["M3 6h18","M3 12h18","M3 18h18"],{size:21,sw:2.2});}
+function mapIcon(){return svg(["M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z","M9 4v14","M15 6v14"],{size:18});}
+function slidersIcon(){return svg(["M4 6h10","M18 6h2","M4 12h2","M10 12h10","M4 18h8","M16 18h4","M14 4v4","M6 10v4","M12 16v4"],{size:18});}
+function searchIcon(o){const s=svg(["M21 21l-4.3-4.3"],{size:(o&&o.size)||18});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function chev(){const s=svg(["M6 9l6 6 6-6"],{size:14});s.classList.add("chev");return s;}
+function rsq(icon){const c=el("div","rsq");c.appendChild(icon);return c;}
+function circle(icon){const c=el("div","circle");c.appendChild(icon);return c;}
+
+const CATS=[["Barber","💈",true],["Coiffeur","✂️",false],["Nails","💅",false],["Spa","🌿",false]];
+function catsEl(){const w=el("div","cats");CATS.forEach(([l,ic,on])=>{const c=el("div","cat"+(on?" on":""));c.appendChild(el("span","ic",ic));c.appendChild(el("span",null,l));w.appendChild(c);});return w;}
+function fullSearch(){const se=el("div","search");se.appendChild(searchIcon());const t=el("div","t");t.appendChild(el("b",null,"Suchen"));t.appendChild(el("span",null,"Schweizweit"));se.appendChild(t);se.appendChild(circle(mapIcon()));return se;}
+function chipsEl(){const ch=el("div","chips");const f=el("div","fcirc");f.appendChild(slidersIcon());ch.appendChild(f);const w=el("div","chip on");w.appendChild(svg(["M3 21h18","M5 21V7l8-4v18","M19 21V11l-6-4"],{size:15}));w.appendChild(el("span",null,"Walk-in"));ch.appendChild(w);["Jetzt geöffnet","Preis"].forEach(l=>{const c=el("div","chip");c.appendChild(el("span",null,l));ch.appendChild(c);});return ch;}
+
+function variant(mode){
+  const ph=el("div","phone");
+  const urow=el("div","urow"); urow.appendChild(rsq(homeIcon()));
+  if(mode===1){ const sp=el("div","spill"); sp.appendChild(searchIcon({size:18})); sp.appendChild(el("span","ph","Barbershop suchen")); sp.appendChild(mapIcon()); urow.appendChild(sp); }
+  else if(mode===2){ const m=el("div","mid"); m.appendChild(el("span","city","Basel")); m.appendChild(chev()); urow.appendChild(m); }
+  else { const m=el("div","mid"); m.appendChild(el("span","title","Barbershops")); urow.appendChild(m); }
+  urow.appendChild(rsq(menuIcon())); ph.appendChild(urow);
+  ph.appendChild(catsEl());
+  if(mode!==1) ph.appendChild(fullSearch());
+  ph.appendChild(chipsEl());
+  return ph;
+}
+function colize(id,rec,nm,ds,mode){
+  const col=el("div","col"); const tag=el("div","tag"); tag.appendChild(el("span","pill"+(rec?" rec":""),id)); tag.appendChild(el("span","ds",ds)); col.appendChild(tag);
+  col.appendChild(variant(mode)); document.getElementById("frames").appendChild(col);
+}
+colize("1 ✓","rec","Search in the row","fills gap + 1 row shorter",1);
+colize("2","","City selector","home · Basel ▾ · menu",2);
+colize("3","","Page title","home · Barbershops · menu",3);
+</script>
+</body>
+</html>

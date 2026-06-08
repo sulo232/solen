@@ -9,8 +9,6 @@ const SUBCATEGORY_DATA: Record<SalonCategory, string[]> = {
   nails:      ["Gel Nägel", "Maniküre", "Pediküre", "Nail Art", "Acryl"],
   barbershop: ["Herrenschnitt", "Bartpflege", "Rasur", "Fade"],
   spa:        ["Massage", "Gesichtsbehandlung", "Hot Stone", "Sauna"],
-  makeup:     ["Braut-Makeup", "Abend-Makeup", "Permanent Makeup"],
-  waxing:     ["Ganzkörper", "Beine", "Bikini", "Gesicht", "Achseln"],
 };
 
 interface SubCategoryChipsProps {
@@ -50,7 +48,7 @@ export default function SubCategoryChips({ category }: SubCategoryChipsProps) {
               "shrink-0 px-4 py-1.5 rounded-pill text-[12px] font-heading transition-[background-color,color,border-color] duration-150 whitespace-nowrap",
               isActive
                 ? "bg-s-ink text-white border-transparent"
-                : "bg-[--raised] text-s-ink/65 border border-s-ink/[0.08] hover:border-s-ink/20 hover:text-s-ink/80"
+                : "bg-[--raised] text-s-ink/65 border border-s-border hover:border-s-ink/20 hover:text-s-ink/80"
             )}
           >
             {chip}

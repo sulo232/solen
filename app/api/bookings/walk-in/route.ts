@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, walkInSchema } from "@/lib/validations";
 import { createCashWalkinTicket } from "@/lib/barber/walkin-ticket";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // POST /api/bookings/walk-in — staff drop a CASH / in-person walk-in straight into the live
 // queue (barber_walkin_queue). No online payment, no SMS: cash walk-ins pay at the counter.
@@ -27,11 +28,7 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
   // Salon-ownership check: the staff/owner adding must own the salon.
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
   // Service must belong to this salon.

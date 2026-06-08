@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Solen — Walk-in hub (what the tile opens)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#A3A3A3;--b:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--accent-pale:#EAEFFE;--success:#16A34A;--success-bg:#E8F5E9;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:#E6E6E6;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+  .bar{position:sticky;top:0;z-index:50;background:#17130F;color:#fff;padding:9px 12px;display:flex;gap:7px;justify-content:center;font-size:12px}
+  .bar b{font-family:'Inter Tight';font-weight:700;opacity:.7;align-self:center;margin-right:4px}
+  .bar button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-weight:600;cursor:pointer}
+  .bar button.on{background:#fff;color:#17130F;border-color:#fff}
+
+  .screen{max-width:402px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:36px}
+  .top{display:flex;align-items:center;gap:12px;padding:14px 16px 6px}
+  .top .bk{width:34px;height:34px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}
+  .top .bk svg{width:18px;height:18px}
+  .top h1{font-family:'Inter Tight';font-weight:800;font-size:22px;letter-spacing:-.01em;flex:1}
+  .top .map{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--ink);border:1px solid var(--b);border-radius:999px;padding:6px 11px}
+  .top .map svg{width:14px;height:14px}
+  .pad{padding:0 16px}
+  .lead{font-size:13.5px;color:var(--ink2);margin:2px 0 12px}
+
+  /* active ticket banner (only when in a queue) */
+  .active{margin:4px 16px 16px;border-radius:16px;padding:15px;background:linear-gradient(135deg,#E9F6EF,#F4F3F1);border:1px solid rgba(22,163,74,.18);position:relative}
+  .active .ey{font-family:'Inter Tight';font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--success);display:flex;align-items:center;gap:6px}
+  .active .h{font-family:'Inter Tight';font-weight:800;font-size:19px;margin-top:7px;letter-spacing:-.01em}
+  .active .s{font-size:12.5px;color:var(--ink2);margin-top:3px}
+  .active .cta{margin-top:12px;display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border-radius:10px;padding:9px 15px;font-family:'Inter Tight';font-weight:700;font-size:12.5px}
+  .active .cta svg{stroke:#fff;width:14px;height:14px}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 0 0 rgba(22,163,74,.5);animation:pl 1.7s infinite;display:inline-block}
+  @keyframes pl{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}70%{box-shadow:0 0 0 8px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+
+  /* filters */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;font-size:13px;font-weight:600;border:1px solid var(--b);border-radius:999px;padding:7px 14px;color:var(--ink2);background:#fff}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  /* shop list */
+  .list{display:flex;flex-direction:column;gap:10px;padding:0 16px}
+  .shop{display:flex;gap:12px;align-items:center;border:1px solid var(--b);border-radius:16px;padding:11px;background:#fff}
+  .shop .ph{width:64px;height:64px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#EAEAEA,#D6D6D6)}
+  .shop .mid{flex:1;min-width:0}
+  .shop .nm{display:flex;align-items:center;gap:6px;font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .shop .nm .rt{margin-left:auto;display:flex;align-items:center;gap:3px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+  .shop .nm .rt svg{width:12px;height:12px;color:var(--star);fill:var(--star)}
+  .shop .meta{font-size:12px;color:var(--ink2);margin-top:2px}
+  .shop .live{display:inline-flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;font-weight:700;color:var(--accent)}
+  .shop .live .d{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .shop .live .q{color:var(--ink3);font-weight:500}
+  .shop .go{width:30px;height:30px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex-shrink:0}
+  .shop .go svg{width:15px;height:15px;color:var(--ink)}
+  .shop.full .live{color:var(--ink3)} .shop.full .live .d{background:var(--ink3)}
+
+  .note{font-size:11px;color:var(--ink3);text-align:center;padding:20px 24px 0;line-height:1.5}
+</style>
+</head>
+<body>
+  <div class="bar"><b>State</b>
+    <button data-s="browse" class="on">Browsing</button>
+    <button data-s="active">In a queue</button>
+  </div>
+
+  <div class="screen" data-state="browse" id="screen">
+    <div class="top">
+      <span class="bk"><i data-l="arrow-left"></i></span>
+      <h1>Walk-in</h1>
+      <span class="map"><i data-l="map"></i>Map</span>
+    </div>
+
+    <!-- active ticket: only shows when you're in a queue -->
+    <div class="active" id="active">
+      <div class="ey"><span class="pulse"></span>Your walk-in · live</div>
+      <div class="h">You're 3rd in line at Fade Lab</div>
+      <div class="s">About 12 min left · ticket A-12 · pay-ahead done</div>
+      <a class="cta">Track your spot<i data-l="arrow-right"></i></a>
+    </div>
+
+    <div class="pad"><div class="lead">Shops with walk-in open right now near you.</div></div>
+    <div class="chips">
+      <span class="chip on">Soonest</span><span class="chip">Nearest</span>
+      <span class="chip">Barber</span><span class="chip">Coiffeur</span><span class="chip">Nails</span>
+    </div>
+
+    <div class="list">
+      <a class="shop">
+        <span class="ph"></span>
+        <div class="mid">
+          <div class="nm">Fade Lab<span class="rt"><i data-l="star"></i>4.9</span></div>
+          <div class="meta">Barber · 800 m · Kleinbasel</div>
+          <div class="live"><span class="d"></span>Free in 10–14 min<span class="q"> · 3 in line</span></div>
+        </div>
+        <span class="go"><i data-l="arrow-right"></i></span>
+      </a>
+      <a class="shop">
+        <span class="ph" style="background:linear-gradient(135deg,#E4E4E6,#CFCFD2)"></span>
+        <div class="mid">
+          <div class="nm">Herr &amp; Co.<span class="rt"><i data-l="star"></i>4.8</span></div>
+          <div class="meta">Barber · 1.1 km · Gundeli</div>
+          <div class="live"><span class="d"></span>Free in 15–20 min<span class="q"> · 4 in line</span></div>
+        </div>
+        <span class="go"><i data-l="arrow-right"></i></span>
+      </a>
+      <a class="shop">
+        <span class="ph" style="background:linear-gradient(135deg,#E7E7E5,#D2D2CF)"></span>
+        <div class="mid">
+          <div class="nm">Sharp Studio<span class="rt"><i data-l="star"></i>4.7</span></div>
+          <div class="meta">Barber · 1.4 km · Innenstadt</div>
+          <div class="live"><span class="d"></span>Free in 8–11 min<span class="q"> · 2 in line</span></div>
+        </div>
+        <span class="go"><i data-l="arrow-right"></i></span>
+      </a>
+      <a class="shop full">
+        <span class="ph" style="background:linear-gradient(135deg,#E9D9C8,#D8C3AE)"></span>
+        <div class="mid">
+          <div class="nm">Studio Nord<span class="rt"><i data-l="star"></i>4.9</span></div>
+          <div class="meta">Coiffeur · 1.6 km · Kleinbasel</div>
+          <div class="live"><span class="d"></span>Full · ~35 min<span class="q"> · 7 in line</span></div>
+        </div>
+        <span class="go"><i data-l="arrow-right"></i></span>
+      </a>
+    </div>
+
+    <div class="note">Tap a shop → its page shows the live queue + "Join the line" (join is shop-specific). Your active ticket pins to the top here + on the home widget.</div>
+  </div>
+
+<script>
+  lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });
+  const scr=document.getElementById('screen'), active=document.getElementById('active');
+  function apply(){ active.style.display = scr.dataset.state==='active' ? 'block':'none'; }
+  document.querySelectorAll('.bar button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.bar button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); scr.dataset.state=b.dataset.s; apply();
+  }));
+  apply();
+</script>
+</body>
+</html>

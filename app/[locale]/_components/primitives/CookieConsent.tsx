@@ -252,7 +252,7 @@ function CookieBanner() {
             aria-label="Cookie-Einstellungen anpassen"
             className={cn(
               "shrink-0 grid h-9 w-9 place-items-center rounded-full",
-              "bg-white border border-s-ink/10 text-s-ink-2 cursor-pointer",
+              "bg-white border border-s-border text-s-ink-2 cursor-pointer",
               "hover:bg-s-bg-sunken hover:text-s-ink transition-colors duration-150 ease-snap",
               "active:scale-95 active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
@@ -285,7 +285,7 @@ function CookieBanner() {
             onClick={acceptNecessary}
             className={cn(
               "flex-1 md:flex-none font-body font-semibold text-[14px] text-s-ink",
-              "bg-white border border-s-ink/10 cursor-pointer",
+              "bg-white border border-s-border cursor-pointer",
               "px-4 py-2.5 md:px-5 md:py-3 rounded-full",
               "hover:bg-s-bg-sunken transition-colors duration-150 ease-snap",
               "active:scale-[0.97] active:duration-[80ms]",
@@ -351,8 +351,8 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           setzen dürfen.
         </p>
 
-        <div className="bg-s-bg-base border border-s-ink/[0.06] rounded-[12px] px-4">
-          <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-ink/[0.05]">
+        <div className="bg-s-bg-base border border-s-border rounded-[12px] px-4">
+          <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Notwendig</span>
               <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
@@ -363,7 +363,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             <Switch checked disabled aria-label="Notwendige Cookies (immer aktiv)" />
           </div>
 
-          <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-ink/[0.05]">
+          <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Analyse</span>
               <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
@@ -401,7 +401,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
           onClick={() => onOpenChange(false)}
           className={cn(
             "font-body font-semibold text-[14px] text-s-ink",
-            "bg-s-bg-base border border-s-ink/10 cursor-pointer",
+            "bg-s-bg-base border border-s-border cursor-pointer",
             "px-5 py-3 rounded-full",
             "hover:bg-s-bg-sunken transition-colors",
           )}

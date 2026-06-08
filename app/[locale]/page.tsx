@@ -25,7 +25,6 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // V3-D348: client-side curation — "Weil du X magst" salon rows for the
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
-import ForYouGreeting from "./_components/homepage/ForYouGreeting";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -51,7 +50,22 @@ import WalkInBand from "./_components/homepage/WalkInBand";
 // dropdown. Component file kept on disk for revert.
 // import CategoryPromos from "./_components/homepage/CategoryPromos";
 import Entdecken from "./_components/homepage/Entdecken";
-import FeaturedStylists from "./_components/homepage/FeaturedStylists";
+// FeaturedStylists REMOVED from homepage (V3-D436, 2026-06-05). Every card
+// linked to /stylist/[slug] — a route that does NOT exist (locale catch-all
+// serves a soft not-found at HTTP 200). The section's DEMO array is standalone
+// (invented people: elena-rossi / marcus-chen / …) with NO salon slug + NO
+// staff id, so the links can't be repointed to the real per-salon profile
+// route (/salon/[slug]/staff/[staffId]) without inventing a stylist→salon
+// mapping. Rather than ship dead links, the section is pulled.
+//   FUTURE wire-up (the section CAN come back, real data already exists):
+//   /api/staff/featured already returns live rows carrying { id, salon_slug,
+//   salon_name, salon_rating, specialties }. Rebuild FeaturedStylists to fetch
+//   that endpoint and link each card to /salon/${salon_slug}/staff/${id}
+//   (a route that DOES resolve), then re-add the import + <FeaturedStylists/>
+//   below. A standalone /stylist/[slug] route is the alternative, only if
+//   stylists ever become salon-independent entities.
+// Component file kept on disk for that revival.
+// import FeaturedStylists from "./_components/homepage/FeaturedStylists";
 // V3-D75-bento (2026-05-18): SalonRegister (WhySolen.tsx) retired in favor of
 // BentoBusiness — Apple-style interactive 4-card bento grid (3D tilt, animated
 // internal visuals, scroll-triggered fade-up). WhySolen.tsx preserved on disk
@@ -146,13 +160,19 @@ export default async function Page() {
           above RecentlyViewed and the rising-panel-over-Hero intent is
           preserved. Semantically also better — Für dich IS feed content. */}
       <FeedZone>
-        <ForYouGreeting />
+        {/* ForYouGreeting ("Willkommen zurück, {name}") removed 2026-06-04:
+            redundant with the hero's "Hallo, {name}" — two name-greetings on
+            one page. Hero greeting is the single greeting now. */}
         <MobileCategoriesRow />
         <ForYouSalonRows />
         <RecentlyViewed />
         <Nearby />
         <WalkInBand />
-        <FeaturedStylists />
+        {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
+            non-existent /stylist/[slug] route and its demo data has no salon
+            context to repoint at the real /salon/[slug]/staff/[staffId] page.
+            See the import-site comment for the /api/staff/featured wire-up path
+            to bring it back. */}
         <Entdecken />
         <Reviews />
         <BusinessTeaser />

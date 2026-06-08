@@ -17,13 +17,14 @@ const inputVariants = cva(
   cn(
     // base
     "block w-full font-body font-normal text-s-ink",
-    "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
+    "bg-s-bg-base border border-s-border rounded-[12px]",
     "placeholder:text-s-ink-3",
     "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
-    // focus-visible (kbd-only) — 2px brand outline + 2px offset per §1
-    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+    // focus-visible — ONE ring only. globals.css `input:focus-visible` already paints the
+    // ring (box-shadow) + ink border; a second `outline` here was the double-outline the
+    // owner flagged (V3-D449). Border tint kept; the single ring comes from globals.
     "focus-visible:border-s-ink",
     // disabled — opacity .5, sunken bg, ink-3 text, not-allowed
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",

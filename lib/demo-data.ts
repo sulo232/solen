@@ -44,7 +44,7 @@ export const DEMO_SALONS: SalonCard[] = [
     quartier: "Bachletten", city_name: "Basel",
     cover_photo_url: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=480&q=80",
     average_rating: 4.6, review_count: 33, min_price: 55,
-    categories: ["makeup"], gallery_urls: [], last_minute_discount_percent: 0,
+    categories: ["coiffeur"], gallery_urls: [], last_minute_discount_percent: 0,
   } as unknown as SalonCard,
 ];
 

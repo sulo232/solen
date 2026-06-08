@@ -112,7 +112,7 @@ export default function SortDropdown({ locale }: SortDropdownProps) {
             exit={{ opacity: 0, scale: 0.96, y: 6 }}
             transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
             style={{ transformOrigin: "top right" }}
-            className="absolute right-0 top-[calc(100%+6px)] z-50 bg-[--raised] rounded-input border border-s-ink/[0.08] shadow-v5-float overflow-hidden min-w-[160px]"
+            className="absolute right-0 top-[calc(100%+6px)] z-50 bg-[--raised] rounded-input border border-s-border shadow-v5-float overflow-hidden min-w-[160px]"
           >
             {SORT_OPTIONS.map((opt) => {
               const isActive = opt.key === currentSort;

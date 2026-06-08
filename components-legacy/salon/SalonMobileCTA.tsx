@@ -59,7 +59,7 @@ export default function SalonMobileCTA({
     <>
       {/* Mobile sticky booking bar — Q53 navigates, no bottom-sheet trigger */}
       <div
-        className="fixed bottom-0 left-0 right-0 lg:hidden z-40 bg-white border-t border-s-ink/[0.08]"
+        className="fixed bottom-0 left-0 right-0 lg:hidden z-40 bg-white border-t border-s-border"
         style={{
           boxShadow: "0 -4px 20px rgba(26,18,9,0.06)",
           paddingBottom: "max(16px, env(safe-area-inset-bottom))",

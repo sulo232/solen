@@ -108,7 +108,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         htmlFor={id}
         className={cn(
           "flex items-center justify-between gap-4",
-          "py-[14px] border-b border-s-ink/[0.05] last:border-b-0",
+          "py-[14px] border-b border-s-border last:border-b-0",
           "cursor-pointer select-none",
           disabled && "cursor-not-allowed",
         )}

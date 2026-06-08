@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, staffTimeOffSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/staff/time-off — Get time-off entries
 export async function GET(req: NextRequest) {
@@ -13,8 +14,7 @@ export async function GET(req: NextRequest) {
 
   const staffMemberId = new URL(req.url).searchParams.get("staff_member_id");
 
-  const { data: salon } = await supabase
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   const { data: selfStaff } = !salon
     ? await supabase.from("staff_members").select("id, salon_id").eq("user_id", user.id).single()
@@ -87,8 +87,7 @@ export async function DELETE(req: NextRequest) {
   const timeOffId = new URL(req.url).searchParams.get("id");
   if (!timeOffId) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

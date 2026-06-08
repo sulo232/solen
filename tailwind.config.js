@@ -127,11 +127,11 @@ module.exports = {
         // skill, 2026-05-20).
         // V3-D138 (2026-05-25): ink neutralized to pure greyscale per Spotify
         // palette. DEFAULT #0A0A0A (near-black, not pure #000), secondary +
-        // tertiary collapse to #6B6B6B (single neutral grey-2). Border = #E7E5E4.
+        // tertiary collapse to #6B6B6B (single neutral grey-2). Border = #E0DDDB (V3-D447).
         "s-ink": { DEFAULT: "#0A0A0A", secondary: "#6B6B6B", tertiary: "#6B6B6B", disabled: "#C5C8C4" },
         "s-ink-2": "#6B6B6B",  // V3-D138: pure neutral grey (was warm #6B7068)
         "s-ink-3": "#6B6B6B",  // V3-D138: collapsed onto ink-2 (was #5F635D)
-        "s-border": "#E7E5E4",  // V3-D138: neutral hairline (was warm #E8E6E0)
+        "s-border": "#E0DDDB",  // V3-D447: firmer hairline #E7E5E4 -> #E0DDDB (Fresha-leaning, warm stone; user-picked)
         // V3-D315 (W9 follow-up, 2026-05-27): chart-grey 3-tier scale for data-vis
         // (competitor bars, hierarchy charts). Replaces opacity-modifier-on-ink-2
         // pattern (`bg-s-ink-2/40` / `bg-s-ink-2/30`) which surfaced as a recipe-smell

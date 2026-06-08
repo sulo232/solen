@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — How it works variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--sunken:#F5F5F4;--success:#16A34A;--success-bg:#E8F5E9;--accent:#276EF1;--forest:#0E3B2E;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:32px 16px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:22px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 26px;max-width:640px;line-height:1.5}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;max-width:840px;margin:0 auto}
+  .col{width:380px}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .rec{font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px;letter-spacing:.04em}
+  .tagd{font-size:11.5px;color:var(--ink2);margin-bottom:12px;line-height:1.4;min-height:32px}
+  .stage{background:#fff;border:1px solid rgba(10,10,10,.07);border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+  .h{font-family:'Inter Tight';font-weight:800;font-size:18px;margin-bottom:14px}
+  svg.ic{width:18px;height:18px;stroke-width:2}
+
+  /* HW1 — numbered cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .c1{background:var(--sunken);border-radius:14px;padding:14px 11px;text-align:center}
+  .c1 .n{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-family:'Inter Tight';font-weight:700;font-size:13px;display:grid;place-items:center;margin:0 auto 8px}
+  .c1 .t{font-family:'Inter Tight';font-weight:700;font-size:13px}
+  .c1 .d{font-size:11px;color:var(--ink2);margin-top:3px;line-height:1.35}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+  .bdg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border:1px solid var(--b);border-radius:999px;padding:7px 12px}
+  .bdg .ic{width:14px;height:14px}.bdg.ok .ic{stroke:var(--success)}
+
+  /* HW2 — connected timeline */
+  .tl{position:relative;display:flex;justify-content:space-between;padding:0 8px}
+  .tl::before{content:"";position:absolute;top:21px;left:34px;right:34px;height:2px;background:var(--b)}
+  .tl .node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:31%}
+  .tl .ci{width:44px;height:44px;border-radius:50%;background:#fff;border:2px solid var(--ink);display:grid;place-items:center}
+  .tl .ci .ic{width:19px;height:19px;stroke:var(--ink)}
+  .tl .t{font-family:'Inter Tight';font-weight:700;font-size:13px;margin-top:9px}
+  .tl .d{font-size:11px;color:var(--ink2);text-align:center;margin-top:3px;line-height:1.3}
+
+  /* HW3 — icon-led, color accents */
+  .iconrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .ir{text-align:center}
+  .ir .ci{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin:0 auto 9px}
+  .ir .ci .ic{width:22px;height:22px}
+  .ir:nth-child(1) .ci{background:var(--success-bg)} .ir:nth-child(1) .ci .ic{stroke:var(--success)}
+  .ir:nth-child(2) .ci{background:#EAEFFE} .ir:nth-child(2) .ci .ic{stroke:var(--accent)}
+  .ir:nth-child(3) .ci{background:#FFF4D6} .ir:nth-child(3) .ci .ic{stroke:#B7860B}
+  .ir .t{font-family:'Inter Tight';font-weight:700;font-size:13.5px}
+  .ir .d{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.35}
+
+  /* HW4 — dark trust band */
+  .band{background:var(--forest);color:#fff;border-radius:16px;padding:18px}
+  .band .h{color:#fff}
+  .band .steps{display:flex;gap:10px}
+  .band .s{flex:1;text-align:center}
+  .band .s .n{font-family:'Inter Tight';font-weight:800;font-size:15px;color:#7CF0AE}
+  .band .s .t{font-family:'Inter Tight';font-weight:700;font-size:12.5px;margin-top:4px}
+  .band .s .d{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px;line-height:1.3}
+  .band .tr{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;border-top:1px solid rgba(255,255,255,.14);padding-top:13px}
+  .band .tb{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:rgba(255,255,255,.85)}
+  .band .tb .ic{width:13px;height:13px;stroke:#7CF0AE}
+</style>
+</head>
+<body>
+  <h1>How Solen Works — 4 variations</h1>
+  <p class="sub">A new section (trust for an unknown brand). Three steps + the reassurances that make a stranger book: instant confirmation, free cancellation, verified salons.</p>
+  <div class="grid">
+
+    <div class="col"><div class="tag">HW1 · Numbered cards</div><div class="tagd">The version in the homepage now. Clear, neutral, three stone cards + a trust-badge row.</div>
+      <div class="stage"><div class="h">How Solen works</div>
+        <div class="cards">
+          <div class="c1"><div class="n">1</div><div class="t">Search</div><div class="d">By service, area or date</div></div>
+          <div class="c1"><div class="n">2</div><div class="t">Book</div><div class="d">Confirmed instantly</div></div>
+          <div class="c1"><div class="n">3</div><div class="t">Enjoy</div><div class="d">Pay in app or on site</div></div>
+        </div>
+        <div class="badges"><span class="bdg ok"><i data-l="check"></i>Instant confirmation</span><span class="bdg"><i data-l="calendar"></i>Free cancellation</span><span class="bdg ok"><i data-l="shield-check"></i>Verified</span></div>
+      </div></div>
+
+    <div class="col"><div class="tag">HW2 · Connected timeline</div><div class="tagd">Steps joined by a line so the flow reads as a journey. Icons instead of numbers.</div>
+      <div class="stage"><div class="h">How Solen works</div>
+        <div class="tl">
+          <div class="node"><span class="ci"><i data-l="search"></i></span><span class="t">Search</span><span class="d">Service, area or date</span></div>
+          <div class="node"><span class="ci"><i data-l="calendar-check"></i></span><span class="t">Book</span><span class="d">Confirmed instantly</span></div>
+          <div class="node"><span class="ci"><i data-l="sparkles"></i></span><span class="t">Enjoy</span><span class="d">Pay in app or on site</span></div>
+        </div>
+      </div></div>
+
+    <div class="col"><div class="tag">HW3 · Icon-led, color <span class="rec">MY PICK</span></div><div class="tagd">Lightest + warmest. Each step gets one semantic color tile. No numbers, no card chrome.</div>
+      <div class="stage"><div class="h">How Solen works</div>
+        <div class="iconrow">
+          <div class="ir"><span class="ci"><i data-l="search"></i></span><div class="t">Search</div><div class="d">Service, area or date</div></div>
+          <div class="ir"><span class="ci"><i data-l="calendar-check"></i></span><div class="t">Book</div><div class="d">Confirmed instantly</div></div>
+          <div class="ir"><span class="ci"><i data-l="sparkles"></i></span><div class="t">Enjoy</div><div class="d">Pay in app or on site</div></div>
+        </div>
+        <div class="badges"><span class="bdg ok"><i data-l="check"></i>Instant confirmation</span><span class="bdg"><i data-l="calendar"></i>Free cancellation</span></div>
+      </div></div>
+
+    <div class="col"><div class="tag">HW4 · Trust band</div><div class="tagd">A compact colored band that pairs the steps with the reassurances in one strip. Doubles as a tonal break.</div>
+      <div class="stage"><div class="band">
+        <div class="h">How Solen works</div>
+        <div class="steps">
+          <div class="s"><div class="n">1</div><div class="t">Search</div><div class="d">Service · area · date</div></div>
+          <div class="s"><div class="n">2</div><div class="t">Book</div><div class="d">Confirmed instantly</div></div>
+          <div class="s"><div class="n">3</div><div class="t">Enjoy</div><div class="d">Pay in app / on site</div></div>
+        </div>
+        <div class="tr"><span class="tb"><i data-l="check"></i>Instant confirmation</span><span class="tb"><i data-l="calendar"></i>Free cancellation</span><span class="tb"><i data-l="shield-check"></i>Verified salons</span></div>
+      </div></div></div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

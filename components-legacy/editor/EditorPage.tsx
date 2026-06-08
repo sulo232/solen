@@ -163,7 +163,7 @@ export default function EditorPage() {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Toolbar */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-s-ink/5 bg-white flex-shrink-0">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-s-border bg-white flex-shrink-0">
         {/* Back */}
         <button
           onClick={() => router.push(`/${locale}/dashboard`)}
@@ -181,7 +181,7 @@ export default function EditorPage() {
             value={urlPath}
             onChange={(e) => setUrlPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleNavigate()}
-            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-ink/10 px-3 py-1.5 text-xs font-mono text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-border px-3 py-1.5 text-xs font-mono text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30"
             placeholder="/de/..."
           />
         </div>
@@ -308,7 +308,7 @@ export default function EditorPage() {
       </div>
 
       {/* Status bar */}
-      <div className="px-3 py-1.5 border-t border-s-ink/5 bg-white flex items-center gap-3 text-[10px] text-s-ink/40 flex-shrink-0">
+      <div className="px-3 py-1.5 border-t border-s-border bg-white flex items-center gap-3 text-[10px] text-s-ink/40 flex-shrink-0">
         <span>{bridgeReady ? "Bridge connected" : "Waiting for bridge…"}</span>
         <span>•</span>
         <span>{editMode ? "Edit mode ON" : "Edit mode OFF"}</span>

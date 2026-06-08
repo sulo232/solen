@@ -68,7 +68,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
+      <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
         <p className="text-sm text-s-ink/60">
           {t("schedule.description")}
         </p>

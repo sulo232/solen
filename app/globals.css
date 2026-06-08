@@ -54,11 +54,11 @@
 
     /* ── Text color tokens (Q23 + Q45 — locked 2026-05-02) ──── */
     /* V3-D138 (2026-05-25): neutralized to Spotify-style palette per user.
-       Ink #0A0A0A · Ink-2 #6B6B6B · Border #E7E5E4 · Hover-bg #F5F5F4. */
+       Ink #0A0A0A · Ink-2 #6B6B6B · Border #E0DDDB · Hover-bg #F5F5F4. */
     --color-heading: #0A0A0A;     /* s-ink */
     --color-body: #0A0A0A;        /* s-ink (primary text) */
     --color-muted: #6B6B6B;       /* s-ink-2 (secondary text) — WCAG AA on white */
-    --color-border: #E7E5E4;      /* s-border */
+    --color-border: #E0DDDB;      /* s-border (V3-D447: #E7E5E4 -> #E0DDDB, firmer hairline) */
     --color-hover-bg: #F5F5F4;    /* s-bg-sunken */
     --color-error: #DC2626;
     --color-success: #16A34A;
@@ -103,7 +103,7 @@
 
   /* Tailwind v3 preflight defaults `border-color` to gray-200 (#e5e7eb — cool grey).
      Override globally so any `.border` without an explicit color uses our warm
-     `--color-border` (#E7E5E4). Eliminates rgb(229,231,235) drift from computed styles. */
+     `--color-border` (#E0DDDB). Eliminates rgb(229,231,235) drift from computed styles. */
   *, ::before, ::after {
     border-color: var(--color-border);
   }
@@ -318,8 +318,11 @@
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
+    /* V3-D449: ONE crisp edge. Border darkens to ink + a single soft ink halo. The old
+       value stacked a white-gap ring + a hard ink ring = the "double thick outline" the
+       owner flagged (compounded by the primitive's outline, also removed). */
     border-color: #0A0A0A;
-    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 2px #ffffff, 0 0 0 4px #0A0A0A;
+    box-shadow: 0 0 0 3px rgba(10,10,10,.10);
   }
 }
 

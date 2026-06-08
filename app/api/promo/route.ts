@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, createPromoSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET: List promo codes for the current user's salon or admin
 export async function GET(req: NextRequest) {
@@ -38,11 +39,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Salon owner sees their salon's codes
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) {
     return NextResponse.json({ error: "Kein Salon gefunden" }, { status: 403 });
@@ -85,11 +82,7 @@ export async function POST(req: NextRequest) {
 
   // Salon owners must attach their salon_id
   if (profile?.role !== "admin") {
-    const { data: salon } = await supabase
-      .from("salons")
-      .select("id")
-      .eq("owner_id", user.id)
-      .single();
+    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
     if (!salon) {
       return NextResponse.json({ error: "Kein Salon gefunden" }, { status: 403 });

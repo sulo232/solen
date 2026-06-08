@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Home, Menu, MapPin, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,8 @@ import type { Session } from "@supabase/supabase-js";
 import MobileMenu from "./MobileMenu";
 import DesktopCitySelector from "./DesktopCitySelector";
 import { BellIcon } from "./BellIcon";
+import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
+import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 
 /**
  * V3 Header — V2-D46 (2026-05-09).
@@ -84,8 +86,6 @@ const CATEGORY_SEARCH_SEGMENTS = [
   "barbershop",
   "nails",
   "spa",
-  "makeup",
-  "waxing",
   "search",
 ] as const;
 type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
@@ -218,6 +218,100 @@ function DropdownMenu({
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * MobileCityChip — V3-D421k (2026-06-06, owner "i want city option"): the mobile
+ * header's middle slot on the HOMEPAGE shows the current city as a "{City} ▾" chip
+ * (re-introducing a mobile city control after V3-D421g removed the old one — now it
+ * has a proper home in the C-header middle). Cookie-persisted + reload, mirroring
+ * DesktopCitySelector. Local to Header (not a shared component → no registry entry).
+ */
+function MobileCityChip({ locale }: { locale: string }) {
+  const [mounted, setMounted] = React.useState(false);
+  const [city, setCity] = React.useState<CitySlug>("basel");
+  const [open, setOpen] = React.useState(false);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setMounted(true);
+    const persisted = getPersistedCity();
+    if (persisted) setCity(persisted);
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  if (!mounted) return null;
+
+  const pick = (slug: CitySlug) => {
+    setOpen(false);
+    if (slug === city) return;
+    setPersistedCity(slug);
+    window.location.reload();
+  };
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Stadt wählen"
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-body text-[15px] font-semibold text-s-ink",
+          "transition-colors duration-150 ease-glide hover:bg-s-ink/[0.05]",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+        )}
+      >
+        <MapPin size={15} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+        <span>{getCityName(city, locale)}</span>
+        <ChevronDown
+          size={14}
+          strokeWidth={2.5}
+          aria-hidden
+          className={cn("text-s-ink-2 transition-transform duration-150 ease-glide", open && "rotate-180")}
+        />
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          aria-label="Stadt wählen"
+          className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-black/[0.07] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
+        >
+          {CITY_SLUGS.map((slug) => (
+            <button
+              key={slug}
+              type="button"
+              role="option"
+              aria-selected={slug === city}
+              onClick={() => pick(slug)}
+              className={cn(
+                "block w-full px-3.5 py-2.5 text-left font-body text-[14px] transition-colors hover:bg-s-bg-sunken",
+                slug === city ? "font-bold text-s-ink" : "font-medium text-s-ink",
+              )}
+            >
+              {getCityName(slug, locale)}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -377,7 +471,12 @@ export default function Header({ locale }: { locale: string }) {
         // would let the larger win (the header would go invisible but keep its height).
         categorySegment &&
           (categoryCollapsed && !menuOpen
-            ? "max-md:overflow-hidden max-md:max-h-0 max-md:opacity-0 max-md:pointer-events-none"
+            // V3-D421j (owner): also zero the vertical padding (the `py-3` scrolled state
+            // left a ~24px residual band above the search bar). `!py-0` beats `py-3`
+            // regardless of source order, so the header fully collapses to nothing on
+            // scroll and ONLY the sticky search band remains. transition-all (on the
+            // header) animates max-h + padding + opacity together = the smooth fold.
+            ? "max-md:overflow-hidden max-md:max-h-0 max-md:!py-0 max-md:opacity-0 max-md:pointer-events-none"
             : "max-md:overflow-hidden max-md:max-h-[140px]"),
       )}
       style={{
@@ -409,23 +508,23 @@ export default function Header({ locale }: { locale: string }) {
         ) : (
           <Link
             href={`/${locale}`}
-            aria-label="Solen zur Startseite"
+            aria-label="Zur Startseite"
             className={cn(
-              // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
-              "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
-              "transition-opacity duration-200 ease-glide",
+              // V3-D421h (2026-06-05): home-icon button in the far-left slot. V3-D421k:
+              // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT — no shadow
+              // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
+              // lifts on scroll, not the buttons).
+              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.95]",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
-              // V3-D101: invert logo color when header is over a dark section
-              isDark ? "text-white" : "text-s-ink",
-              // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
-              // folds away WITH the whole header (see the header max-h collapse above).
+              // V3-D101: invert over dark sections.
+              isDark
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
-            Solen
-            {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
-                "drop the dot entirely — just 'Solen'". Wordmark is now pure
-                typographic. Restore by un-commenting the <span> below + the
-                bg-s-ink class. */}
+            <Home size={19} strokeWidth={2} aria-hidden />
           </Link>
         )}
 
@@ -439,57 +538,20 @@ export default function Header({ locale }: { locale: string }) {
             SearchTemplate takes the top. ONE element shrinks, not two that swap
             (the V3-D375 "flip" the user rejected). When `categorySegment` is null
             this is the same empty spacer as the homepage + every other route. */}
+        {/* Mobile middle slot. V3-D421k (2026-06-06, owner "city option in category
+            pages, centered"): on a category/search route this is the CITY chip,
+            centered between the home + menu tiles. The category PILLS moved to their
+            own full-width row below this container (see the category-tab row). Non-
+            category routes (homepage etc.) keep the empty spacer (NO city — owner
+            "not in homepage"). */}
         {categorySegment ? (
           <div
-            role="tablist"
-            aria-label="Kategorien"
             className={cn(
-              // md:hidden — desktop uses the dropdown <nav> below instead.
-              // mr-3 = clear gap from the hamburger. Right fade mask signals
-              // "more categories scroll" + stops the last pill jamming the menu.
-              "md:hidden flex min-w-0 flex-1 items-center gap-2 overflow-x-auto scrollbar-none mr-3",
+              "flex min-w-0 flex-1 justify-center md:hidden",
               menuOpen && "pointer-events-none",
             )}
-            style={{
-              scrollbarWidth: "none",
-              WebkitMaskImage: "linear-gradient(90deg, #000 86%, transparent)",
-              maskImage: "linear-gradient(90deg, #000 86%, transparent)",
-            }}
           >
-            {[...HEADER_CATEGORIES]
-              .sort(
-                (a, b) =>
-                  (a.slug === categorySegment ? 0 : 1) -
-                  (b.slug === categorySegment ? 0 : 1),
-              )
-              .map((c) => {
-                const isActive = c.slug === categorySegment;
-                return (
-                  <Link
-                    key={c.slug}
-                    href={`/${locale}/${c.route}`}
-                    role="tab"
-                    aria-selected={isActive}
-                    className={cn(
-                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
-                      "font-body text-[15px] leading-none transition-colors duration-150 ease-glide",
-                      "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                      isActive
-                        ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
-                        : "border-s-border bg-white font-medium text-s-ink",
-                    )}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.iconSrc}
-                      alt=""
-                      className="h-[22px] w-[22px] shrink-0 object-contain"
-                      aria-hidden
-                    />
-                    {c.label}
-                  </Link>
-                );
-              })}
+            <MobileCityChip locale={locale} />
           </div>
         ) : (
           <div className="flex-1 md:hidden" />
@@ -619,11 +681,11 @@ export default function Header({ locale }: { locale: string }) {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "md:hidden relative -m-2 grid place-items-center rounded-xl p-2 text-s-ink transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              // V3-D376 (2026-05-29): hamburger no longer self-hides on scroll - it
-              // folds away WITH the whole header (max-h collapse on <header>) so the
-              // sticky search band takes the top. Tap target stays 44px (h-10 w-10).
-              "h-10 w-10",
+              // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
+              // V3-D421L (council 3/3): FLAT — no shadow (CONTROL_ELEVATION rule 3). Tap
+              // target 40px; folds with the header on category-route scroll.
+              "md:hidden relative grid h-10 w-10 place-items-center rounded-[13px] border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >
             <span
@@ -647,6 +709,64 @@ export default function Header({ locale }: { locale: string }) {
           </button>
         </div>
       </div>
+      {/* V3-D421k: category-tab row — full-width scrollable pills on their OWN row
+          below the utility row (home · city · menu). Mobile only (desktop uses the
+          dropdown nav). Right-edge fade signals "more categories scroll". Folds away
+          with the whole header on scroll (the header's max-h collapse). */}
+      {categorySegment && (
+        <div
+          className={cn(
+            "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
+            menuOpen && "pointer-events-none opacity-0",
+          )}
+        >
+          <div
+            role="tablist"
+            aria-label="Kategorien"
+            className="flex items-center gap-2 overflow-x-auto scrollbar-none"
+            style={{
+              scrollbarWidth: "none",
+              WebkitMaskImage: "linear-gradient(90deg, #000 90%, transparent)",
+              maskImage: "linear-gradient(90deg, #000 90%, transparent)",
+            }}
+          >
+            {[...HEADER_CATEGORIES]
+              .sort(
+                (a, b) =>
+                  (a.slug === categorySegment ? 0 : 1) -
+                  (b.slug === categorySegment ? 0 : 1),
+              )
+              .map((c) => {
+                const isActive = c.slug === categorySegment;
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/${locale}/${c.route}`}
+                    role="tab"
+                    aria-selected={isActive}
+                    className={cn(
+                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
+                      "font-body text-[15px] leading-none transition-colors duration-150 ease-glide",
+                      "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                      isActive
+                        ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
+                        : "border-s-border bg-white font-medium text-s-ink",
+                    )}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.iconSrc}
+                      alt=""
+                      className="h-[22px] w-[22px] shrink-0 object-contain"
+                      aria-hidden
+                    />
+                    {c.label}
+                  </Link>
+                );
+              })}
+          </div>
+        </div>
+      )}
     </header>
     <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} loggedIn={loggedIn} />
     </>

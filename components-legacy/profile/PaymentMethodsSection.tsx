@@ -124,7 +124,7 @@ export function PaymentMethodsSection() {
   ];
 
   return (
-    <div className="pt-4 border-t border-s-ink/5 space-y-4">
+    <div className="pt-4 border-t border-s-border space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30">
           {t("title")}
@@ -147,7 +147,7 @@ export function PaymentMethodsSection() {
           methods.map((m) => (
             <div
               key={m.id}
-              className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised]"
+              className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-border bg-[--raised]"
             >
               <CreditCard size={20} className="text-s-ink/30 flex-shrink-0" />
               <div className="flex-1 min-w-0">
@@ -161,7 +161,7 @@ export function PaymentMethodsSection() {
             </div>
           ))
         ) : (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised]">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-border bg-[--raised]">
             <CreditCard size={20} className="text-s-ink/30 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-heading text-s-ink">{t("creditCard")}</p>
@@ -173,7 +173,7 @@ export function PaymentMethodsSection() {
         {disabledOptions.map(({ label, sub, icon }) => (
           <div
             key={label}
-            className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] opacity-60 grayscale"
+            className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-border bg-[--raised] opacity-60 grayscale"
           >
             <span className="text-lg">{icon}</span>
             <div className="flex-1 min-w-0">

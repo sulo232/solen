@@ -43,7 +43,7 @@ export default async function ProfileFavoritesPage({
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user) {
-    redirect(`/${locale}/auth/sign-in?redirect=/${locale}/profile/favorites`);
+    redirect(`/${locale}/auth/login?redirect=/${locale}/profile/favorites`);
   }
 
   // Step 1 — list of favorited salon ids

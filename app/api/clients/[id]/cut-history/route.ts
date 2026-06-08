@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, cutHistorySchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/clients/[id]/cut-history — Salon owner: paginated cut history
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -22,8 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id: customerId } = await params;
   const admin = createAdminSupabaseClient();
 
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const page = parseInt(req.nextUrl.searchParams.get("page") ?? "1");
@@ -65,8 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id: customerId } = await params;
   const admin = createAdminSupabaseClient();
 
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
   }

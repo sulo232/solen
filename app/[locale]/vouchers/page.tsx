@@ -246,7 +246,7 @@ export default function VouchersPage() {
                     setStep("configure");
                   }}
                   whileHover={{ y: -2 }}
-                  className="p-4 rounded-[12px] border border-s-ink/[0.06] bg-white hover:shadow-elevation-2 transition-[background-color] duration-150 text-left"
+                  className="p-4 rounded-[12px] border border-s-border bg-white hover:shadow-elevation-2 transition-[background-color] duration-150 text-left"
                 >
                   <div className="flex items-center justify-between">
                     <div>

@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/retail?salon_id=xxx — Public: list active retail products
 export async function GET(req: NextRequest) {
@@ -47,8 +48,7 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data: product, error } = await admin
@@ -79,8 +79,7 @@ export async function PUT(req: NextRequest) {
   if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const updateData: Record<string, unknown> = {};
@@ -116,8 +115,7 @@ export async function DELETE(req: NextRequest) {
   if (!productId) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { error } = await admin

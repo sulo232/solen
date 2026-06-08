@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — MWST auf Beleg (VAT receipt variants)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink40:rgba(10,10,10,.4); --ink50:rgba(10,10,10,.5);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --success:#16A34A; --success-bg:#E8F5E9; --error:#DC2626; --error-bg:#FEE2E2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:32px 28px 56px}
+  h1{font-family:'Inter Tight';font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .lede{font-size:13.5px;color:var(--ink50);margin:6px 0 26px;max-width:760px;line-height:1.5}
+  .lede b{color:var(--ink)}
+  .rail{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:340px}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink);margin:0 0 3px;display:flex;align-items:center;gap:7px}
+  .cap .n{width:19px;height:19px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;flex-shrink:0}
+  .csub{font-size:11.5px;color:var(--ink40);margin:0 0 10px 26px}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  .phone{width:340px;background:var(--white);border-radius:26px;overflow:hidden;box-shadow:0 16px 44px rgba(0,0,0,.16)}
+  .nav{height:48px;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid var(--border)}
+  .nav .back{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink)}
+  .nav .back svg{width:16px;height:16px}
+  .nav .t{font-family:'Inter Tight';font-weight:600;font-size:15px;letter-spacing:-.01em}
+  .body{padding:18px 16px 22px}
+
+  .shero{text-align:center;padding:6px 0 18px}
+  .shero .ic{width:56px;height:56px;border-radius:999px;display:grid;place-items:center;margin:0 auto 12px}
+  .ic.ok{background:var(--success-bg)} .ic.ok svg{width:30px;height:30px;color:var(--success)}
+  /* Refund is a COMPLETED-SUCCESS state too — same green language as "Bezahlt",
+     distinguished by glyph SHAPE not a new colour (V3-D426 / success=green). */
+  .ic.cred{background:var(--success-bg)} .ic.cred svg{width:30px;height:30px;color:var(--success);transform:translateX(1px)}
+  .shero h2{font-family:'Inter Tight';font-weight:600;font-size:19px;letter-spacing:-.02em}
+  .shero p{font-size:12.5px;color:var(--ink50);margin-top:6px}
+
+  .lines{border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:12px}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;font-size:13.5px}
+  .row+.row{border-top:1px solid var(--border)}
+  .row .rl{color:var(--ink2)} .row .rv{font-family:'Inter Tight';font-weight:600;font-variant-numeric:tabular-nums}
+  .row.sub{padding:9px 14px;font-size:12.5px;background:#fcfcfc}
+  .row.sub .rl{color:var(--ink40)} .row.sub .rv{font-weight:500;color:var(--ink2)}
+  .row.total{background:var(--sunken)} .row.total .rl{color:var(--ink);font-weight:700;font-family:'Inter Tight';font-size:14px} .row.total .rv{font-size:16px;font-weight:700}
+  .row.total.cred .rv{color:var(--success)}
+
+  /* align icon to the FIRST line's cap-height (flex-start + nudge), not centred across 2 wrapped lines */
+  .vatnr{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--ink2);padding:2px 2px 0;line-height:1.45}
+  .vatnr svg{width:13px;height:13px;flex-shrink:0;margin-top:1.5px}
+  .small{font-size:11px;color:var(--ink2);text-align:center;margin-top:8px;line-height:1.4}
+  .salon{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+  .salon .ava{width:38px;height:38px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:13px;flex-shrink:0;border:1px solid var(--border)}
+  .salon .sn{font-family:'Inter Tight';font-weight:600;font-size:13.5px}
+  .salon .sm{font-size:11.5px;color:var(--ink2);margin-top:1px}
+
+  /* refund-glyph picker — pick the exact mark for variant 3 */
+  .gpick{margin-top:14px;display:flex;align-items:center;gap:10px}
+  .gpick .lbl{font-size:11px;color:var(--ink40);margin-right:1px}
+  .gpick .opt{width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:var(--success-bg);position:relative}
+  .gpick .opt svg{width:22px;height:22px;color:var(--success)}
+  .gpick .opt.sel{outline:2px solid var(--success);outline-offset:2px}
+  .gpick .opt .tag{position:absolute;top:-7px;right:-7px;font-size:8.5px;line-height:1;background:var(--ink);color:#fff;border-radius:999px;padding:2px 5px;font-family:'Inter Tight';font-weight:600}
+</style>
+</head>
+<body>
+  <h1>MWST auf dem Beleg: Varianten</h1>
+  <p class="lede">Schweizer Norm: Preise sind <b>inkl. MWST</b>. Der Beleg bricht <b>Netto + 8.1% MWST</b> aus. <b>Per-Salon</b>: ein MWST-registrierter Salon zeigt die MWST-Zeile + seine MWST-Nr.; ein nicht-registrierter (Kleinunternehmen unter CHF 100k) zeigt <b>keine</b> MWST-Zeile. Bei Erstattung wird die MWST anteilig gutgeschrieben (Gutschrift).</p>
+
+  <div class="rail">
+
+    <!-- 1 — REGISTERED -->
+    <div class="col">
+      <p class="cap"><span class="n">1</span> MWST-registrierter Salon</p>
+      <p class="csub">Netto + 8.1% MWST + MWST-Nr.</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Beleg</div></div>
+        <div class="body">
+          <div class="shero">
+            <div class="ic ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h2>Bezahlt</h2>
+            <p>Damen-Haarschnitt · SOL-7K2QX</p>
+          </div>
+          <div class="salon"><div class="ava">AC</div><div><div class="sn">Atelier Coiffure Zürich</div><div class="sm">Sa 7. Juni, 14:30</div></div></div>
+          <div class="lines">
+            <div class="row sub"><span class="rl">Netto</span><span class="rv num">CHF 41.63</span></div>
+            <div class="row sub"><span class="rl">MWST 8.1%</span><span class="rv num">CHF 3.37</span></div>
+            <div class="row total"><span class="rl">Gesamt (inkl. MWST)</span><span class="rv num">CHF 45.00</span></div>
+          </div>
+          <div class="vatnr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> MWST-Nr. CHE-123.456.789 MWST · bezahlt mit Karte ···· 4242</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 — NOT REGISTERED -->
+    <div class="col">
+      <p class="cap"><span class="n">2</span> Nicht MWST-pflichtig</p>
+      <p class="csub">Kleinunternehmen · keine MWST-Zeile</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Beleg</div></div>
+        <div class="body">
+          <div class="shero">
+            <div class="ic ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h2>Bezahlt</h2>
+            <p>Herrenschnitt · SOL-9B4MX</p>
+          </div>
+          <div class="salon"><div class="ava">BB</div><div><div class="sn">Barber Brothers</div><div class="sm">Fr 6. Juni, 11:00</div></div></div>
+          <div class="lines">
+            <div class="row total"><span class="rl">Gesamt</span><span class="rv num">CHF 38.00</span></div>
+          </div>
+          <p class="small">Bezahlt mit Karte ···· 4242 · Keine MWST (Kleinunternehmen).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 — REFUND CREDIT NOTE -->
+    <div class="col">
+      <p class="cap"><span class="n">3</span> Erstattung (Gutschrift)</p>
+      <p class="csub">MWST anteilig gutgeschrieben</p>
+      <div class="phone">
+        <div class="nav"><div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="t">Gutschrift</div></div>
+        <div class="body">
+          <div class="shero">
+            <div class="ic cred"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5 5.5 5.5 0 0 1-5.5 5.5H11"/></svg></div>
+            <h2>Erstattung verarbeitet</h2>
+            <p>Atelier Coiffure Zürich · SOL-7K2QX</p>
+          </div>
+          <div class="lines">
+            <div class="row sub"><span class="rl">Erstattet (netto)</span><span class="rv num">CHF 41.63</span></div>
+            <div class="row sub"><span class="rl">davon MWST 8.1%</span><span class="rv num">CHF 3.37</span></div>
+            <div class="row total cred"><span class="rl">Gutschrift gesamt</span><span class="rv num">CHF 45.00</span></div>
+          </div>
+          <div class="vatnr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Gutschrift zu MWST-Nr. CHE-123.456.789 · auf Karte ···· 4242</div>
+        </div>
+      </div>
+      <!-- pick the exact refund glyph (all green = success language) -->
+      <div class="gpick">
+        <span class="lbl">Icon:</span>
+        <span class="opt sel"><span class="tag">A</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5 5.5 5.5 0 0 1-5.5 5.5H11"/></svg></span>
+        <span class="opt"><span class="tag">B</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span class="opt"><span class="tag">C</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

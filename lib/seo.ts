@@ -74,20 +74,6 @@ export const CATEGORY_FAQS: Record<string, FaqItem[]> = {
     { question: "Was ist eine Gesichtsbehandlung und was kostet sie?", answer: "Eine Gesichtsbehandlung reinigt und pflegt die Haut intensiv. In Basel kostet eine Facial-Behandlung ca. CHF 90–160. Auf Solen findest du Studios mit ★ Bewertungen und Preisen." },
     { question: "Kann ich einen Spa-Gutschein in Basel kaufen?", answer: "Viele Spas auf Solen bieten digitale Geschenkkarten an, die du direkt auf der Plattform kaufen kannst. Das perfekte Geschenk für Wellness-Liebhaber in Basel." },
   ],
-  makeup: [
-    { question: "Was kostet ein professionelles Make-up in Basel?", answer: "Professionelles Make-up in Basel kostet ca. CHF 80–150. Für Braut-Makeup können die Preise höher sein. Auf Solen vergleichst du Make-up Artists mit Preisen und Bewertungen." },
-    { question: "Wie finde ich einen guten Make-up Artist in Basel?", answer: "Auf Solen findest du Make-up Artists in Basel mit Portfolio, Bewertungen und Preisen. Vergleiche Stile — von natürlich bis editorial — und buche deinen Termin online." },
-    { question: "Was kostet Braut-Makeup in Basel?", answer: "Braut-Makeup in Basel kostet durchschnittlich CHF 150–300, oft inklusive Probe-Make-up. Auf Solen findest du auf Hochzeits-Make-up spezialisierte Artists in Basel." },
-    { question: "Kann ich Make-up online buchen?", answer: "Ja! Auf Solen buchst du Make-up Artists in Basel online — für Hochzeiten, Events, Fotoshoots oder den Alltag. Sofort bestätigt, kostenlose Stornierung bis 24h vorher." },
-    { question: "Wie lange dauert ein Make-up Termin?", answer: "Ein professionelles Make-up dauert ca. 45–90 Minuten, Braut-Make-up bis zu 2 Stunden. Auf Solen siehst du die genaue Termindauer direkt bei der Buchung." },
-  ],
-  waxing: [
-    { question: "Was kostet Brazilian Waxing in Basel?", answer: "Brazilian Waxing in Basel kostet ca. CHF 50–80. Auf Solen findest du Waxing-Studios ab CHF 40 — vergleiche Preise, lies Bewertungen und buche online." },
-    { question: "Wie lange hält Waxing?", answer: "Waxing hält in der Regel 3–6 Wochen, da die Haare an der Wurzel entfernt werden. Auf Solen kannst du deinen nächsten Waxing-Termin in Basel bequem vorbuchen." },
-    { question: "Was ist der Unterschied zwischen Waxing und Sugaring?", answer: "Beim Waxing wird heisses oder warmes Wachs verwendet. Sugaring nutzt eine natürliche Zuckerpaste. Beide Methoden sind effektiv — Sugaring gilt als sanfter für empfindliche Haut." },
-    { question: "Wie bereite ich mich auf einen Waxing-Termin vor?", answer: "Die Haare sollten mindestens 3–5mm lang sein. Vermeide Cremes und Öle vor dem Termin. Auf Solen siehst du Studio-spezifische Hinweise direkt auf der Buchungsseite." },
-    { question: "Kann ich Waxing in Basel online buchen?", answer: "Ja! Auf Solen buchst du Waxing-Termine in Basel rund um die Uhr online — kein Anruf, sofort bestätigt. Wähle deinen Wunschtermin und buche in wenigen Klicks." },
-  ],
 };
 
 /* ─── Canonical URL + hreflang alternates helper ─── */
@@ -157,8 +143,6 @@ const categoryToSchemaType: Record<SalonCategory, string> = {
   barbershop: "HairSalon",
   nails: "NailSalon",
   spa: "DaySpa",
-  makeup: "BeautySalon",
-  waxing: "BeautySalon",
 };
 
 function getSchemaType(categories: SalonCategory[]): string {

@@ -182,7 +182,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                     className={`px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${
                       selected === opt.value
                         ? "bg-s-ink text-white border-s-accent shadow-warm-sm"
-                        : "bg-s-bg-surface text-s-ink/70 border-s-ink/10 hover:border-s-accent"
+                        : "bg-s-bg-surface text-s-ink/70 border-s-border hover:border-s-accent"
                     }`}
                   >
                     {opt.value}

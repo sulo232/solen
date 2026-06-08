@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/clients/[id]/repeat-last — Most recent nail design for "Repeat last" button
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -25,8 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const isSelf = user.id === customerId;
   let salonId: string | null = null;
   if (!isSelf) {
-    const { data: salon } = await admin
-      .from("salons").select("id").eq("owner_id", user.id).single();
+    const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
     if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     salonId = salon.id;
   }

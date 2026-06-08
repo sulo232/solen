@@ -162,7 +162,7 @@ export default function NewPrimitivesDemo() {
           >
             <button
               type="button"
-              className="rounded-full border border-s-ink/30 bg-white px-5 py-2.5 font-body text-[14px] font-semibold text-s-ink"
+              className="rounded-full border border-s-border bg-white px-5 py-2.5 font-body text-[14px] font-semibold text-s-ink"
             >
               Live-Chat starten
             </button>

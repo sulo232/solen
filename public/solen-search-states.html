@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — search data states</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9a9a9a;--border:#E7E5E4;--sunken:#F5F5F4;
+    --accent:#276EF1;--accent-ink:#185CE0;--star:#FFC32B;--green-ink:#166534;--green-bg:#E7F6EC;
+    --disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:26px 18px 90px}
+  h1{font-family:var(--disp);font-size:23px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 22px;max-width:900px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+  .unit{width:300px}
+  .cap{margin:0 2px 9px}
+  .cap .n{font-family:var(--disp);font-size:13.5px;font-weight:800}
+  .cap .d{font-size:12px;color:#666;line-height:1.45;margin-top:2px}
+  .phone{position:relative;background:#fff;border-radius:26px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.1);height:660px;display:flex;flex-direction:column}
+  .body{flex:1;overflow:hidden;padding:0 15px}
+  /* results header (loading/empty/error share) */
+  .rhead{padding:15px 15px 0;display:flex;flex-direction:column;gap:11px}
+  .rtop{display:flex;align-items:center;gap:10px}
+  .rback{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto}
+  .qpill{flex:1;height:44px;border:1px solid var(--border);border-radius:999px;display:flex;align-items:center;gap:9px;padding:0 14px;min-width:0}
+  .qpill .qt{font-size:14.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qpill .qc{font-size:13px;color:var(--ink2);flex:0 0 auto}
+  .rfilters{display:flex;gap:7px;overflow:hidden;padding-bottom:13px;border-bottom:1px solid var(--sunken)}
+  .fchip{flex:0 0 auto;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--ink2);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+  .fchip.on{background:var(--sunken);color:var(--ink);border-color:var(--border)}
+  /* overlay header (no-match) */
+  .ohead{padding:16px 15px 0;display:flex;align-items:center;gap:12px}
+  .ohead .back{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto}
+  .ohead .ttl{font-family:var(--disp);font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .ofield{display:flex;align-items:center;gap:10px;border:2px solid var(--accent);border-radius:13px;padding:0 13px;height:48px;margin:13px 15px 0;font-size:14.5px}
+  .ofield .fi{color:var(--ink3);display:flex}
+  .ofield .typed{color:var(--ink)}
+  .ofield .cur{width:1.5px;height:18px;background:var(--ink);margin-left:-2px;animation:bl 1s steps(2) infinite}
+  @keyframes bl{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .oscope{display:flex;gap:7px;overflow:hidden;padding:13px 15px 0}
+  .stab{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--ink2);display:inline-flex;align-items:center}
+  .stab.on{background:var(--sunken);color:var(--ink)}
+  /* skeleton */
+  .sklist{padding:14px 0 0;display:flex;flex-direction:column;gap:20px}
+  .sk{background:linear-gradient(90deg,#F5F5F4 25%,#E9E7E4 50%,#F5F5F4 75%);background-size:200% 100%;animation:sh 1.35s ease-in-out infinite;border-radius:8px}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .skphoto{width:100%;aspect-ratio:16/10;border-radius:16px}
+  .skline{height:14px;margin-top:11px}
+  .skline.s1{width:62%;height:16px}
+  .skline.s2{width:40%;height:12px;margin-top:9px}
+  /* empty / error / no-match block */
+  .estate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:46px 24px 0}
+  .estate.tight{padding-top:30px}
+  .eicon{width:60px;height:60px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;color:var(--ink2);margin-bottom:16px}
+  .etitle{font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+  .esub{font-size:13.5px;color:var(--ink2);line-height:1.5;margin-top:7px;max-width:250px}
+  .esub b{color:var(--ink);font-weight:600}
+  .eact{margin-top:20px;width:100%;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .ebtn{height:48px;border-radius:13px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;width:100%}
+  .elinks{display:flex;gap:18px;justify-content:center;margin-top:2px}
+  .elink{font-size:13.5px;font-weight:600;color:var(--accent)}
+  /* fallback (popular) under no-match */
+  .rech{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 4px}
+  .rech .t{font-family:var(--disp);font-size:14.5px;font-weight:700}
+  .sug{display:flex;align-items:center;gap:11px;padding:9px 2px}
+  .sug .si{width:34px;height:34px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto;color:var(--ink2)}
+  .sug .st{font-size:14.5px;font-weight:500;color:var(--ink)}
+  /* trotzdem-suchen row */
+  .anyway{display:flex;align-items:center;gap:11px;padding:13px 14px;border:1px solid var(--border);border-radius:13px;margin:18px 0 0}
+  .anyway .si{width:34px;height:34px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto;color:var(--ink)}
+  .anyway .at{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .anyway .as{font-size:12px;color:var(--ink2);margin-top:1px}
+  .anyway .go{margin-left:auto;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Search , the data states</h1>
+  <p class="lead">The non-happy-path screens, in the locked grammar (sink chips, ink primary, blue links, <b>#F5F5F4</b> skeletons). Loading + Empty + Error live on the results page; No-match lives inside the search overlay while you type.</p>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(p,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||18);s.setAttribute("height",o.size||18);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(p)?p:[p]).forEach(d=>{const q=document.createElementNS(NS,"path");q.setAttribute("d",d);s.appendChild(q);});return s;}
+// real lucide geometry
+function mkSvg(size,sw){const s=document.createElementNS(NS,"svg");s.setAttribute("width",size||18);s.setAttribute("height",size||18);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");return s;}
+function P(s,d){const p=document.createElementNS(NS,"path");p.setAttribute("d",d);s.appendChild(p);return s;}
+function Ci(s,cx,cy,r){const c=document.createElementNS(NS,"circle");c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r",r);s.appendChild(c);return s;}
+function searchI(o){o=o||{};const s=mkSvg(o.size||18);Ci(s,11,11,8);P(s,"m21 21-4.3-4.3");return s;}        // lucide search
+function searchXI(o){o=o||{};const s=mkSvg(o.size||18);P(s,"m13.5 8.5-5 5");P(s,"m8.5 8.5 5 5");Ci(s,11,11,8);P(s,"m21 21-4.3-4.3");return s;} // lucide search-x
+function scissorsI(o){o=o||{};const s=mkSvg(o.size||15);Ci(s,6,6,3);P(s,"M8.12 8.12 12 12");P(s,"M20 4 8.12 15.88");Ci(s,6,18,3);P(s,"M14.8 14.8 20 20");return s;} // lucide scissors
+function triangleAlertI(o){o=o||{};const s=mkSvg(o.size||26);P(s,"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z");P(s,"M12 9v4");P(s,"M12 17h.01");return s;} // lucide triangle-alert
+function mapPinI(o){o=o||{};const s=mkSvg(o.size||26);P(s,"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0");Ci(s,12,10,3);return s;} // lucide map-pin
+function backI(){const s=mkSvg(18);P(s,"m15 18-6-6 6-6");return s;}      // lucide chevron-left
+function chevR(){const s=mkSvg(15);P(s,"m9 18 6-6-6-6");return s;}       // lucide chevron-right
+
+function phone(children){const p=el("div","phone");children.forEach(c=>c&&p.appendChild(c));return p;}
+function unit(n,d,phoneEl){const u=el("div","unit");const cap=el("div","cap");cap.appendChild(el("div","n",n));cap.appendChild(el("div","d",d));u.appendChild(cap);u.appendChild(phoneEl);document.getElementById("frames").appendChild(u);}
+
+// shared results header
+function rhead(query){
+  const h=el("div","rhead");
+  const top=el("div","rtop");const bk=el("div","rback");bk.appendChild(backI());top.appendChild(bk);
+  const qp=el("div","qpill");qp.appendChild(searchI({size:17}));qp.appendChild(el("span","qt",query));const qc=el("span","qc");qc.appendChild(document.createTextNode("· Basel"));qp.appendChild(qc);top.appendChild(qp);
+  h.appendChild(top);
+  const fr=el("div","rfilters");
+  [["Datum · Heute",true],["Zeit",false],["Sortieren",false]].forEach(([l,on])=>{const c=el("div","fchip"+(on?" on":""));c.appendChild(el("span",null,l));fr.appendChild(c);});
+  h.appendChild(fr);
+  return h;
+}
+function estate(icon,title,subNodes,actions,tight){
+  const e=el("div","estate"+(tight?" tight":""));
+  const ic=el("div","eicon");ic.appendChild(icon);e.appendChild(ic);
+  e.appendChild(el("div","etitle",title));
+  const sub=el("div","esub");subNodes.forEach(n=>sub.appendChild(n));e.appendChild(sub);
+  if(actions)e.appendChild(actions);
+  return e;
+}
+
+/* 1 — LOADING (results) */
+function loading(){
+  const body=el("div","body");
+  const list=el("div","sklist");
+  for(let i=0;i<3;i++){const c=el("div");c.appendChild(el("div","sk skphoto"));c.appendChild(el("div","sk skline s1"));c.appendChild(el("div","sk skline s2"));list.appendChild(c);}
+  body.appendChild(list);
+  const ph=el("div","phone");ph.appendChild(rhead("Herrenschnitt"));ph.appendChild(body);return ph;
+}
+
+/* 2 — NO MATCH (overlay) */
+function nomatch(){
+  const ph=el("div","phone");
+  const oh=el("div","ohead");const bk=el("div","back");bk.appendChild(backI());oh.appendChild(bk);oh.appendChild(el("div","ttl","Suchen"));ph.appendChild(oh);
+  const f=el("div","ofield");const fi=el("div","fi");fi.appendChild(searchI({size:17}));f.appendChild(fi);f.appendChild(el("span","typed","hrenschnt"));f.appendChild(el("span","cur"));ph.appendChild(f);
+  const sc=el("div","oscope");["Alle","Services","Salons","Stylis"].forEach((t,i)=>sc.appendChild(el("div","stab"+(i===0?" on":""),t)));ph.appendChild(sc);
+  const body=el("div","body");
+  const lq="„", rq="“";
+  const t=document.createTextNode("Wir konnten nichts zu "+lq);const b=el("b",null,"hrenschnt");const t2=document.createTextNode(rq+" finden.");
+  body.appendChild(estate(searchXI({size:26}),"Keine Treffer",[t,b,t2],null,true));
+  // trotzdem suchen
+  const any=el("div","anyway");const si=el("div","si");si.appendChild(searchI({size:17}));any.appendChild(si);const at=el("div");at.appendChild(el("div","at","Trotzdem suchen"));at.appendChild(el("div","as","Alle Salons zu "+lq+"hrenschnt"+rq+" durchsuchen"));any.appendChild(at);const go=el("div","go");go.appendChild(chevR());any.appendChild(go);body.appendChild(any);
+  // popular fallback
+  const h=el("div","rech");h.appendChild(el("div","t","Beliebt"));body.appendChild(h);
+  ["Herrenschnitt","Bart trimmen","Haare & Bart"].forEach(n=>{const r=el("div","sug");const s=el("div","si");s.appendChild(scissorsI());r.appendChild(s);r.appendChild(el("div","st",n));body.appendChild(r);});
+  ph.appendChild(body);return ph;
+}
+
+/* 3 — EMPTY (results) */
+function empty(){
+  const body=el("div","body");
+  const t=document.createTextNode("Für ");const b=el("b",null,"Herrenschnitt");const t2=document.createTextNode(" in Basel gibt es gerade keine offenen Salons.");
+  const act=el("div","eact");
+  act.appendChild(el("div","ebtn","Filter zurücksetzen"));
+  const links=el("div","elinks");links.appendChild(el("div","elink","Umkreis erweitern"));links.appendChild(el("div","elink","Stadt ändern"));act.appendChild(links);
+  body.appendChild(estate(mapPinI({size:26}),"Keine Salons gefunden",[t,b,t2],act));
+  const ph=el("div","phone");ph.appendChild(rhead("Herrenschnitt"));ph.appendChild(body);return ph;
+}
+
+/* 4 — ERROR (results) */
+function errorState(){
+  const body=el("div","body");
+  const t=document.createTextNode("Wir konnten die Suche nicht laden. Prüf deine Verbindung und versuch es nochmal.");
+  const act=el("div","eact");act.appendChild(el("div","ebtn","Erneut versuchen"));
+  body.appendChild(estate(triangleAlertI({size:26}),"Etwas ist schiefgelaufen",[t],act));
+  const ph=el("div","phone");ph.appendChild(rhead("Herrenschnitt"));ph.appendChild(body);return ph;
+}
+
+unit("1 · Loading","Results page fetching , #F5F5F4 shimmer cards (matches the existing skeleton-shimmer).",loading());
+unit("2 · No match","Inside the overlay while typing. Offer 'Trotzdem suchen' + popular fallback , never a dead end.",nomatch());
+unit("3 · Empty results","Nothing found. Ink primary = the most likely fix (reset filters); blue links = the rest.",empty());
+unit("4 · Error","Fetch failed. Ink 'Erneut versuchen'. Same block pattern as Empty.",errorState());
+</script>
+</body>
+</html>

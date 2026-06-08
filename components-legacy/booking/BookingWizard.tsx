@@ -131,7 +131,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
       case 'services-staff':
         return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
       case 'datetime':
-        return <DateTimeStep salonId={salon.id} staffList={staffList} />;
+        return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} />;
       case 'pay-confirm':
         return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} />;
       default:

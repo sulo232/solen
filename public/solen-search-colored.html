@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — search screen, de-monochromed (2 levels)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--b:#E7E5E4;--b2:rgba(10,10,10,.10);--sunken:#F5F5F4;--accent:#276EF1;--accentbg:#EAEFFE;--star:#FFC32B;--green:#16A34A;--greenbg:#E7F6EC}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:34px 18px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 28px;max-width:740px;line-height:1.55}
+  .sub b{color:var(--ink)}
+  .grid{display:flex;flex-wrap:wrap;gap:30px;justify-content:center;max-width:840px;margin:0 auto;align-items:flex-start}
+  .col{width:360px}
+  .tag{font-family:'Inter Tight';font-weight:800;font-size:14px;margin-bottom:3px}
+  .rec{display:inline-block;font-size:10px;font-weight:700;background:var(--accent);color:#fff;border-radius:5px;padding:2px 7px;margin-left:7px;vertical-align:middle;letter-spacing:.04em;text-transform:uppercase}
+  .tagd{font-size:12px;color:var(--ink2);margin:0 0 14px;line-height:1.45;min-height:48px}
+  .tagd b{color:var(--ink)}
+  .ph{background:#fff;border:1px solid var(--b2);border-radius:26px;box-shadow:0 14px 40px rgba(0,0,0,.12);overflow:hidden}
+  .ohead{display:flex;align-items:center;gap:12px;padding:16px 16px 12px}
+  .ohead .bk{width:34px;height:34px;border:1px solid var(--b);border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+  .ohead .bk svg{width:17px;height:17px}
+  .ohead .ttl{font-family:'Inter Tight';font-weight:800;font-size:20px;flex:1}
+  .ohead .x{width:34px;height:34px;border:1px solid var(--b);border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+  .ohead .x svg{width:17px;height:17px}
+  .obody{padding:4px 16px 16px}
+  .field{display:flex;align-items:center;gap:12px;border:1px solid var(--accent);border-width:1.5px;border-radius:13px;padding:12px 13px;margin-bottom:4px}
+  .field svg{width:18px;height:18px;stroke:var(--ink2);flex-shrink:0}
+  .field .fval.ph{color:var(--ink3);font-weight:500;font-size:14.5px}
+  .sec{font-family:'Inter Tight';font-weight:700;font-size:13px;margin:16px 2px 9px;display:flex;align-items:center;gap:7px}
+  .sec .b{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:var(--accentbg);border-radius:5px;padding:2px 6px}
+  .qrow{display:flex;flex-wrap:wrap;gap:8px}
+  .qchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--b);border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:600}
+  .qchip svg{width:13px;height:13px}
+  /* store row */
+  .store{display:flex;align-items:center;gap:11px;padding:8px 2px}
+  .store .th{width:44px;height:44px;border-radius:10px;background:var(--sunken);overflow:hidden;flex-shrink:0}
+  .store .th img{width:100%;height:100%;object-fit:cover}
+  .store .sn{font-size:14.5px;font-weight:600}
+  .store .sm{font-size:11.5px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .store .sm .stars{display:inline-flex;align-items:center;gap:3px;color:var(--ink)}
+  .store .sm .stars svg{width:11px;height:11px;stroke:none;fill:var(--star)}
+  .open{display:inline-flex;align-items:center;gap:3px;color:var(--green);background:var(--greenbg);border-radius:5px;padding:1px 6px;font-weight:600;font-size:10.5px}
+  .open .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+  /* trend row */
+  .trend{display:flex;align-items:center;gap:12px;padding:8px 2px}
+  .trend .rk{font-family:'Inter Tight';font-weight:800;font-size:14px;width:16px;text-align:center}
+  .trend .tl{font-size:14.5px;font-weight:500}
+  /* icon circle for chips/rows */
+  .ic{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+  .ic svg{width:15px;height:15px}
+  .note{font-size:12px;color:var(--ink2);line-height:1.55;margin:24px auto 0;max-width:740px;padding:12px 14px;background:#fff;border:1px solid var(--b);border-radius:12px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Search screen — adding color (on-system)</h1>
+  <p class="sub">No new hues invented. Just the system's own colors used where they mean something: <b>royal-blue accent</b> on icons + trending ranks, <b>green "open/free"</b> (the same token the salon cards use), yellow stars, photos.</p>
+
+  <div class="grid">
+
+    <!-- A: subtle -->
+    <div class="col">
+      <div class="tag">A · Accent pops</div>
+      <div class="tagd">Blue accent on the chip + section icons and the trending ranks. One brand color, calm. Stores keep stars + photos.</div>
+      <div class="ph">
+        <div class="ohead"><span class="bk"><svg data-l="chevron-left"></svg></span><span class="ttl">Suche</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field"><svg data-l="search" style="stroke:var(--accent)"></svg><span class="fval ph">Service, Salon oder Stylist:in</span></div>
+          <div class="sec">Für dich <span class="b">personalized</span></div>
+          <div class="qrow">
+            <span class="qchip"><svg data-l="rotate-ccw" style="stroke:var(--accent)"></svg>Men's cut</span>
+            <span class="qchip"><svg data-l="scissors" style="stroke:var(--accent)"></svg>Balayage</span>
+            <span class="qchip"><svg data-l="hand" style="stroke:var(--accent)"></svg>Gel nails</span>
+          </div>
+          <div class="sec">Schon besucht</div>
+          <div class="store"><span class="th"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=120&q=70"/></span><div><div class="sn">The Fade Factory</div><div class="sm"><span class="stars"><svg data-l="star"></svg>4.8</span><span style="color:var(--ink3)">Barber</span></div></div></div>
+          <div class="sec">Im Trend</div>
+          <div class="trend"><span class="rk" style="color:var(--accent)">1</span><span class="tl">Balayage</span></div>
+          <div class="trend"><span class="rk" style="color:var(--accent)">2</span><span class="tl">Buzz Cut</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: bolder -->
+    <div class="col">
+      <div class="tag">B · Accent + availability<span class="rec">pick</span></div>
+      <div class="tagd">A, plus icon circles get a soft accent tint and stores show the <b>green "Jetzt offen"</b> pill (live availability). The most color, but every bit means something.</div>
+      <div class="ph">
+        <div class="ohead"><span class="bk"><svg data-l="chevron-left"></svg></span><span class="ttl">Suche</span><span class="x"><svg data-l="x"></svg></span></div>
+        <div class="obody">
+          <div class="field"><svg data-l="search" style="stroke:var(--accent)"></svg><span class="fval ph">Service, Salon oder Stylist:in</span></div>
+          <div class="sec">Für dich <span class="b">personalized</span></div>
+          <div class="qrow">
+            <span class="qchip" style="border-color:var(--accentbg);background:#F7F9FF"><svg data-l="rotate-ccw" style="stroke:var(--accent)"></svg>Men's cut</span>
+            <span class="qchip" style="border-color:var(--accentbg);background:#F7F9FF"><svg data-l="scissors" style="stroke:var(--accent)"></svg>Balayage</span>
+            <span class="qchip" style="border-color:var(--accentbg);background:#F7F9FF"><svg data-l="hand" style="stroke:var(--accent)"></svg>Gel nails</span>
+          </div>
+          <div class="sec">Schon besucht</div>
+          <div class="store"><span class="th"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=120&q=70"/></span><div><div class="sn">The Fade Factory</div><div class="sm"><span class="stars"><svg data-l="star"></svg>4.8</span><span class="open"><span class="dot"></span>Jetzt offen</span></div></div></div>
+          <div class="store"><span class="th"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&q=70"/></span><div><div class="sn">Muse Beauty Studio</div><div class="sm"><span class="stars"><svg data-l="star"></svg>4.9</span><span class="open"><span class="dot"></span>Frei in 15 Min</span></div></div></div>
+          <div class="sec">Im Trend</div>
+          <div class="trend"><span class="rk" style="color:var(--accent)">1</span><span class="tl">Balayage</span></div>
+          <div class="trend"><span class="rk" style="color:var(--accent)">2</span><span class="tl">Buzz Cut</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note"><b>Both stay inside the design system</b> (80% neutral / 17% ink / 3% accent + semantic). Nothing screamy, no random category rainbow. <b>My pick: B</b> — the green "open / free in X" is real info AND the biggest splash of life, and it matches the salon cards + the walk-in vision.</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

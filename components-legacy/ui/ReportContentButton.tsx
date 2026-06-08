@@ -83,7 +83,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <label className="block text-xs font-medium text-s-ink/60 mb-1">Grund</label>
                   <select 
                     value={reason} onChange={e => setReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
+                    className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
                   >
                     <option value="inappropriate">Unangemessener Inhalt</option>
                     <option value="spam">Spam oder Werbung</option>
@@ -98,7 +98,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <textarea 
                     value={details} onChange={e => setDetails(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
+                    className="w-full px-3 py-2 rounded-input border border-s-border text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
                     placeholder="Bitte beschreiben Sie das Problem genauer..."
                   />
                 </div>

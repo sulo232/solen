@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { generateEmbedding } from "@/lib/search/embeddings";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
@@ -17,55 +18,61 @@ export async function GET(request: NextRequest) {
 
   const supabase = await createServerSupabaseClient();
 
-  // Full-text search across salon name + description
-  const { data: salonResults, error } = await supabase
-    .from("salons")
-    .select("*, services(price)")
-    .eq("is_active", true)
-    .eq("listed_on_marketplace", true)
-    .or(`name.ilike.%${q}%,description_de.ilike.%${q}%,description_en.ilike.%${q}%`)
-    .limit(20);
-
-  if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
-
-  // Also search services and staff specialties — get matching salon IDs
-  const [serviceRes, staffRes] = await Promise.all([
-    supabase
-      .from("services")
-      .select("salon_id")
-      .eq("is_active", true)
-      .or(`name_de.ilike.%${q}%,name_en.ilike.%${q}%`),
-    supabase
-      .from("staff_members")
-      .select("salon_id")
-      .eq("is_active", true)
-      .ilike("name", `%${q}%`),
-  ]);
-
-  const extraSalonIds = [
-    ...(serviceRes.data ?? []).map((r) => r.salon_id),
-    ...(staffRes.data ?? []).map((r) => r.salon_id),
-  ].filter((id) => !salonResults?.find((s) => s.id === id));
-
-  let extraSalons: typeof salonResults = [];
-  if (extraSalonIds.length > 0) {
-    const { data } = await supabase
-      .from("salons")
-      .select("*, services(price)")
-      .eq("is_active", true)
-      .eq("listed_on_marketplace", true)
-      .in("id", [...new Set(extraSalonIds)]);
-    extraSalons = data ?? [];
+  // Hybrid query embedding (Phase 5): generate once per full search (results path
+  // only, never per-keystroke suggest) and let the RPC fuse semantic recall with
+  // lexical matching. Fail-open: if Gemini errors, pass null and the RPC runs
+  // lexical-only (no crash). Future optimization: cache query -> embedding.
+  let pQueryEmbedding: string | null = null;
+  try {
+    pQueryEmbedding = JSON.stringify(await generateEmbedding(q));
+  } catch (err) {
+    console.error("[salons/search] query embedding failed, falling back to lexical-only:", (err as Error).message);
   }
 
-  // Add min_price (cheapest service) for "ab X CHF" map pills; strip the joined services.
-  const results = [...(salonResults ?? []), ...extraSalons].map((salon) => {
-    const prices = ((salon as { services?: { price: number }[] }).services ?? [])
-      .map((s) => s.price)
-      .filter((p) => typeof p === "number" && p > 0);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { services: _services, ...rest } = salon as Record<string, unknown>;
-    return { ...rest, min_price: prices.length > 0 ? Math.min(...prices) : null };
+  // Smart Search engine: FTS + trigram (typos + prefix) + one-way synonyms
+  // (incl. fr/it bridge) + semantic vector fusion + Bayesian rating, with the
+  // three visibility gates (is_active ∧ listed_on_marketplace ∧ NOT is_test)
+  // baked into the RPC so they can never be dropped.
+  const { data: ranked, error } = await supabase.rpc("search_salons_ranked", {
+    p_q: q,
+    p_limit: 30,
+    p_query_embedding: pQueryEmbedding,
   });
+  if (error) {
+    console.error("[salons/search] search_salons_ranked failed:", error.message);
+    return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+  }
+
+  const orderedIds: string[] = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id);
+  if (orderedIds.length === 0) {
+    return NextResponse.json({ items: [], total: 0, page: 1, limit: 20 });
+  }
+
+  // Hydrate full salon rows for the ranked ids (already gated by the RPC).
+  const { data: rows, error: hydErr } = await supabase
+    .from("salons")
+    .select("*, services(price)")
+    .in("id", orderedIds);
+  if (hydErr) {
+    console.error("[salons/search] hydrate failed:", hydErr.message);
+    return NextResponse.json({ message: hydErr.message, code: "DB_ERROR" }, { status: 500 });
+  }
+
+  // Preserve the engine's rank order + attach min_price ("ab X CHF"); strip the joined services.
+  const rank = new Map(orderedIds.map((id, i) => [id, i]));
+  const results = (rows ?? [])
+    .sort(
+      (a, b) =>
+        (rank.get((a as { id: string }).id) ?? 0) - (rank.get((b as { id: string }).id) ?? 0),
+    )
+    .map((salon) => {
+      const prices = ((salon as { services?: { price: number }[] }).services ?? [])
+        .map((s) => s.price)
+        .filter((p) => typeof p === "number" && p > 0);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { services: _services, ...rest } = salon as Record<string, unknown>;
+      return { ...rest, min_price: prices.length > 0 ? Math.min(...prices) : null };
+    });
+
   return NextResponse.json({ items: results, total: results.length, page: 1, limit: 20 });
 }

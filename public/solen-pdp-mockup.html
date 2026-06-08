@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4;
+    --accent:#185CE0; --star:#FFC32B; --red:#DC2626; --green:#16A34A; --heart:#FF3366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#fff;color:var(--ink);width:390px;margin:0 auto;padding-bottom:84px}
+  h1,h2,h3{font-family:'Inter Tight';letter-spacing:-.02em}
+  .disp{font-family:'Inter Tight'}
+  a{color:var(--accent);text-decoration:none;font-weight:600}
+  section{padding:22px 18px;border-top:8px solid var(--sunken)}
+  .sec-h{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+  .sec-h a{font-size:13px}
+  svg{display:block}
+
+  /* HERO */
+  .hero{position:relative;height:300px;background:linear-gradient(180deg,#2a2622,#141210);overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover}
+  .hero .topbar{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center}
+  .hero .right{display:flex;gap:9px}
+  .ctrl{width:36px;height:36px;border-radius:99px;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .ctrl svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:2}
+  .ctrl.heart svg{stroke:var(--heart)}
+  .counter{position:absolute;right:14px;bottom:14px;background:rgba(10,10,10,.62);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px)}
+
+  /* IDENTITY */
+  .id{padding:18px 18px 20px}
+  .cat{font-size:13px;color:var(--ink2);font-weight:500;margin-bottom:4px}
+  .id h1{font-size:25px;font-weight:800;line-height:1.1}
+  .meta{display:flex;align-items:center;gap:6px;font-size:14px;margin-top:9px}
+  .meta .star{color:var(--star)}
+  .meta b{font-weight:700}
+  .meta a{font-weight:600}
+  .status{display:flex;align-items:center;gap:7px;font-size:14px;margin-top:8px}
+  .dot{width:8px;height:8px;border-radius:99px}
+  .status .closed{color:var(--red);font-weight:600}
+  .status .sub{color:var(--ink2)}
+  .addr{display:flex;align-items:center;gap:8px;margin-top:13px;background:var(--sunken);border-radius:12px;padding:11px 13px;font-size:13.5px}
+  .addr svg{width:16px;height:16px;stroke:var(--ink2);fill:none;stroke-width:2;flex:none}
+  .addr .txt{color:var(--ink);flex:1}
+  .addr a{font-size:13px}
+
+  /* ABOUT */
+  .about p{font-size:14px;line-height:1.6;color:var(--ink2)}
+  .about a{display:inline}
+
+  /* SERVICE TABS — selected = soft gray fill (locked rule) */
+  .tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px}
+  .tab{flex:none;height:36px;padding:0 15px;border-radius:99px;border:1px solid var(--border);background:#fff;color:var(--ink);font-size:13.5px;font-weight:500;display:inline-flex;align-items:center}
+  .tab.sel{background:var(--sunken);font-weight:600}
+  .srow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+  .srow:last-child{border-bottom:0}
+  .srow .info{flex:1}
+  .srow .nm{font-size:15px;font-weight:600}
+  .srow .du{font-size:13px;color:var(--ink2);margin-top:3px}
+  .srow .pr{font-size:15px;font-weight:700;white-space:nowrap}
+  .add{width:34px;height:34px;border-radius:99px;border:1px solid var(--border);display:grid;place-items:center;flex:none}
+  .add svg{width:18px;height:18px;stroke:var(--ink);stroke-width:2.2}
+
+  /* TEAM */
+  .team{display:flex;gap:16px;overflow-x:auto}
+  .mem{flex:none;width:74px;text-align:center}
+  .av{width:64px;height:64px;border-radius:99px;margin:0 auto 8px;position:relative;background:var(--sunken) center/cover}
+  .av .rp{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;display:flex;gap:2px;align-items:center;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+  .av .rp .star{color:var(--star);font-size:9px}
+  .mem .nm{font-size:12.5px;font-weight:600;margin-top:5px}
+  .mem .ro{font-size:11px;color:var(--ink2)}
+
+  /* REVIEWS */
+  .rsum{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+  .rsum .big{font-family:'Inter Tight';font-size:34px;font-weight:800}
+  .rsum .of{color:var(--ink2);font-size:14px}
+  .rsum .ct{color:var(--accent);font-size:13px;font-weight:600;margin-left:auto}
+  .rev{padding:14px 0;border-top:1px solid var(--border)}
+  .rev .rh{display:flex;align-items:center;gap:10px}
+  .rev .ra{width:36px;height:36px;border-radius:99px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+  .rev .rn{font-size:14px;font-weight:600}
+  .rev .rd{font-size:12px;color:var(--ink2)}
+  .rev .stars{color:var(--star);font-size:12px;margin-left:auto}
+  .rev p{font-size:13.5px;line-height:1.55;color:var(--ink2);margin-top:9px}
+
+  /* OPENING */
+  .day{display:flex;justify-content:space-between;font-size:14px;padding:7px 0}
+  .day.today{font-weight:700}
+  .day .h{color:var(--ink2)}
+  .day.today .h{color:var(--ink)}
+  .day .cl{color:var(--red)}
+
+  /* AMENITIES */
+  .am{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .amx{display:flex;align-items:center;gap:10px;font-size:14px}
+  .amx svg{width:19px;height:19px;stroke:var(--ink);fill:none;stroke-width:1.8;flex:none}
+
+  /* MAP */
+  .map{height:150px;border-radius:14px;border:1px solid var(--border);background:linear-gradient(135deg,#eef0ef,#e3e6e4);position:relative;overflow:hidden}
+  .map .pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);width:30px;height:30px;border-radius:99px 99px 99px 2px;background:var(--ink);rotate:45deg;display:grid;place-items:center}
+  .map .pin::after{content:"";width:9px;height:9px;border-radius:99px;background:#fff}
+
+  /* STICKY BOOK BAR */
+  .book{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:#fff;border-top:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+  .book .pf{flex:1}
+  .book .pf .f{font-size:12px;color:var(--ink2)}
+  .book .pf .v{font-size:17px;font-weight:800;font-family:'Inter Tight'}
+  .book .cta{background:var(--ink);color:#fff;font-weight:700;font-size:15px;padding:13px 26px;border-radius:99px}
+</style>
+</head>
+<body>
+
+  <!-- HERO: single swipeable photo + overlays + counter (Fresha mobile) -->
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&q=80" alt="" onerror="this.style.display='none'">
+    <div class="topbar">
+      <div class="ctrl"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="right">
+        <div class="ctrl"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/></svg></div>
+        <div class="ctrl heart"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 10-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/></svg></div>
+      </div>
+    </div>
+    <div class="counter">1 / 11</div>
+  </div>
+
+  <!-- IDENTITY -->
+  <div class="id">
+    <div class="cat">Coiffeur · Damen &amp; Herren</div>
+    <h1>Atelier Haarwerk</h1>
+    <div class="meta"><span class="star">★</span><b>4.6</b><a>(14&nbsp;Bewertungen)</a></div>
+    <div class="status"><span class="dot" style="background:var(--red)"></span><span class="closed">Geschlossen</span><span class="sub">· öffnet Mo um 09:00</span></div>
+    <div class="addr">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="txt">Freie Strasse 12, 4001 Basel</span>
+      <a>Wegbeschreibung</a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" style="border-top:0;padding-top:0">
+    <h2 class="sec-h">Über uns</h2>
+    <p>Modernes Coiffeur-Atelier im Herzen von Basel — spezialisiert auf Schnitt, Farbe und Pflege mit Fokus auf Beratung und Qualität. <a>Mehr lesen</a></p>
+  </section>
+
+  <!-- SERVICES -->
+  <section>
+    <h2 class="sec-h">Services</h2>
+    <div class="tabs">
+      <span class="tab sel">Alle</span>
+      <span class="tab">Schnitt</span>
+      <span class="tab">Farbe</span>
+      <span class="tab">Styling</span>
+      <span class="tab">Pflege</span>
+    </div>
+    <div class="srow"><div class="info"><div class="nm">Damenschnitt &amp; Föhnen</div><div class="du">45 Min · mit Stylist</div></div><div class="pr">CHF 75</div><div class="add"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0A0A0A"/></svg></div></div>
+    <div class="srow"><div class="info"><div class="nm">Herrenschnitt</div><div class="du">30 Min</div></div><div class="pr">CHF 45</div><div class="add"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0A0A0A"/></svg></div></div>
+    <div class="srow"><div class="info"><div class="nm">Farbe &amp; Strähnen</div><div class="du">ab 90 Min</div></div><div class="pr">ab CHF 140</div><div class="add"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0A0A0A"/></svg></div></div>
+  </section>
+
+  <!-- TEAM -->
+  <section>
+    <h2 class="sec-h">Team <a>Alle ansehen</a></h2>
+    <div class="team">
+      <div class="mem"><div class="av" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&q=80')"><span class="rp"><span class="star">★</span>4.9</span></div><div class="nm">Lena</div><div class="ro">Senior</div></div>
+      <div class="mem"><div class="av" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&q=80')"><span class="rp"><span class="star">★</span>4.8</span></div><div class="nm">Marco</div><div class="ro">Barber</div></div>
+      <div class="mem"><div class="av" style="background-image:url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&q=80')"><span class="rp"><span class="star">★</span>5.0</span></div><div class="nm">Sara</div><div class="ro">Color</div></div>
+      <div class="mem"><div class="av" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&q=80')"><span class="rp"><span class="star">★</span>4.7</span></div><div class="nm">Jonas</div><div class="ro">Stylist</div></div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section>
+    <h2 class="sec-h">Bewertungen</h2>
+    <div class="rsum"><span class="big">4.6</span><span class="of">/ 5</span><span class="ct">Alle 14 ansehen</span></div>
+    <div class="rev"><div class="rh"><div class="ra">AK</div><div><div class="rn">Anna K.</div><div class="rd">vor 2 Wochen</div></div><div class="stars">★★★★★</div></div><p>Super freundliches Team, toller Schnitt. Komme definitiv wieder!</p></div>
+    <div class="rev"><div class="rh"><div class="ra">MB</div><div><div class="rn">Marco B.</div><div class="rd">vor 1 Monat</div></div><div class="stars">★★★★★</div></div><p>Beste Adresse in Basel für Farbe. Sehr kompetente Beratung.</p></div>
+  </section>
+
+  <!-- OPENING -->
+  <section>
+    <h2 class="sec-h">Öffnungszeiten</h2>
+    <div class="day"><span>Montag</span><span class="h cl">Geschlossen</span></div>
+    <div class="day today"><span>Dienstag</span><span class="h">09:00 – 18:00</span></div>
+    <div class="day"><span>Mittwoch</span><span class="h">09:00 – 18:00</span></div>
+    <div class="day"><span>Donnerstag</span><span class="h">09:00 – 20:00</span></div>
+    <div class="day"><span>Freitag</span><span class="h">09:00 – 18:00</span></div>
+    <div class="day"><span>Samstag</span><span class="h">08:00 – 16:00</span></div>
+  </section>
+
+  <!-- AMENITIES -->
+  <section>
+    <h2 class="sec-h">Ausstattung</h2>
+    <div class="am">
+      <div class="amx"><svg viewBox="0 0 24 24"><path d="M5 13a10 10 0 0114 0"/><path d="M8.5 16.5a5 5 0 017 0"/><circle cx="12" cy="20" r="1"/></svg>Kostenloses WLAN</div>
+      <div class="amx"><svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M19 13v-2a7 7 0 00-7-7 7 7 0 00-7 7v2"/><path d="M5 22l3-7h8l3 7"/></svg>Barrierefrei</div>
+      <div class="amx"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Parkplatz</div>
+      <div class="amx"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Kartenzahlung</div>
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section>
+    <h2 class="sec-h">Standort</h2>
+    <div class="map"><div class="pin"></div></div>
+    <div class="addr" style="margin-top:13px"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="txt">Freie Strasse 12, 4001 Basel</span><a>Route</a></div>
+  </section>
+
+  <!-- STICKY BOOK BAR -->
+  <div class="book">
+    <div class="pf"><div class="f">ab</div><div class="v">CHF 45</div></div>
+    <div class="cta">Termin buchen</div>
+  </div>
+
+</body>
+</html>

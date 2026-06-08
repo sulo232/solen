@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — Walk-in A2 detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--sunken:#F5F5F4;--success:#16A34A;--success-bg:#E8F5E9;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:32px 16px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:22px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 26px;max-width:640px;line-height:1.5}
+  .grid{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:820px;margin:0 auto}
+  .col{width:372px}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .rec{font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px;letter-spacing:.04em}
+  .tagd{font-size:11.5px;color:var(--ink2);margin-bottom:12px;line-height:1.4;min-height:30px}
+  .page{background:#fff;border:1px solid rgba(10,10,10,.08);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+  .above,.below{padding:13px 18px;color:var(--ink2);font-size:12px}
+  .band{background:var(--sunken);padding:22px 16px}
+  .head{display:flex;align-items:center;gap:11px}
+  .head .ic{width:46px;height:46px;border-radius:14px;background:#fff;display:grid;place-items:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+  .head .ic img{width:64%;height:64%;object-fit:contain}
+  .head .ey{font-family:'Inter Tight';font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+  .head .h2{font-family:'Inter Tight';font-weight:800;font-size:20px;line-height:1.05}
+  .rows{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+  .row{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--b);border-radius:14px;padding:10px}
+  .av{width:46px;height:46px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#cdc4bb,#8d8478)}
+  .mid{flex:1;min-width:0}
+  .nm{font-family:'Inter Tight';font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+  .nm .st{font-size:11.5px;color:var(--ink2);font-weight:600;display:inline-flex;align-items:center;gap:2px}
+  .nm .st .ic{width:11px;height:11px;fill:var(--star);stroke:var(--star)}
+  .meta{font-size:11.5px;color:var(--ink2);margin-top:2px}
+  .meta .free{color:var(--success);font-weight:700}
+  .wbtn{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:#fff;border-radius:10px;padding:9px 13px;font-family:'Inter Tight';font-weight:700;font-size:12.5px}
+  .wbtn img{width:15px;height:15px;object-fit:contain}
+  .seelink{display:inline-flex;align-items:center;gap:5px;margin-top:13px;font-family:'Inter Tight';font-weight:700;font-size:13px;color:var(--ink)}
+  .seelink .ic{width:15px;height:15px}
+  /* V2 featured */
+  .feat{margin-top:14px;background:#fff;border:1px solid var(--b);border-radius:16px;overflow:hidden}
+  .feat .img{height:118px;background:linear-gradient(135deg,#cdc4bb,#8d8478)}
+  .feat .bd{padding:13px}
+  .feat .nm{font-size:16px}
+  .feat .r{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
+  .feat .big{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border-radius:11px;padding:11px 16px;font-family:'Inter Tight';font-weight:700;font-size:13.5px}
+  .feat .big img{width:16px;height:16px;object-fit:contain}
+  .mini{display:flex;flex-direction:column;gap:8px;margin-top:9px}
+  .minirow{display:flex;align-items:center;gap:10px;padding:2px}
+  .minirow .av{width:36px;height:36px}
+  .minirow .nm{font-size:13px}
+  .minirow .free{margin-left:auto;font-size:12px;font-weight:700;color:var(--success)}
+</style>
+</head>
+<body>
+  <h1>Walk-in A2 — more detail, small buttons, category icon</h1>
+  <p class="sub">Using the colorful category <code>walkin.png</code> as the section mark. Each shop now has rating, area, distance, the green wait, and a small "Walk in" button. No queue dots.</p>
+  <div class="grid">
+
+    <div class="col"><div class="tag">V1 · Detailed rows + buttons <span class="rec">START HERE?</span></div><div class="tagd">Every shop is a small card: thumbnail, name·rating, area·distance·wait, and a small Walk-in button.</div>
+      <div class="page">
+        <div class="above">… Popular this week ↑</div>
+        <div class="band">
+          <div class="head"><span class="ic"><img src="/icons/categories/walkin.png"></span><div><div class="ey">Walk-in</div><div class="h2">Skip the wait.</div></div></div>
+          <div class="rows">
+            <div class="row"><span class="av"></span><div class="mid"><div class="nm">Fade Lab<span class="st"><i data-l="star"></i>4.9</span></div><div class="meta">Barber · 800 m · <span class="free">free in ~10 min</span></div></div><span class="wbtn"><img src="/icons/categories/walkin.png">Walk in</span></div>
+            <div class="row"><span class="av" style="background:linear-gradient(135deg,#c9b9b0,#7d7068)"></span><div class="mid"><div class="nm">Herr &amp; Co.<span class="st"><i data-l="star"></i>4.8</span></div><div class="meta">Barber · 1.1 km · <span class="free">free in ~15 min</span></div></div><span class="wbtn"><img src="/icons/categories/walkin.png">Walk in</span></div>
+            <div class="row"><span class="av" style="background:linear-gradient(135deg,#cabfc7,#8a7d88)"></span><div class="mid"><div class="nm">Sharp Studio<span class="st"><i data-l="star"></i>4.7</span></div><div class="meta">Barber · 1.4 km · <span class="free">free in ~8 min</span></div></div><span class="wbtn"><img src="/icons/categories/walkin.png">Walk in</span></div>
+          </div>
+          <a class="seelink">See all walk-in spots <i data-l="arrow-right"></i></a>
+        </div>
+        <div class="below">↓ Top stylists …</div>
+      </div></div>
+
+    <div class="col"><div class="tag">V2 · Featured + mini rows</div><div class="tagd">One big shop with photo + a prominent Walk-in button, then 2 compact rows under it. More hierarchy.</div>
+      <div class="page">
+        <div class="above">… Popular this week ↑</div>
+        <div class="band">
+          <div class="head"><span class="ic"><img src="/icons/categories/walkin.png"></span><div><div class="ey">Walk-in</div><div class="h2">Skip the wait.</div></div></div>
+          <div class="feat"><div class="img"></div><div class="bd">
+            <div class="nm">Fade Lab<span class="st"><i data-l="star"></i>4.9</span></div>
+            <div class="meta">Barber · 800 m · <span class="free">free in ~10 min</span></div>
+            <div class="r"><span style="font-size:12px;color:var(--ink2)">3 people ahead</span><span class="big"><img src="/icons/categories/walkin.png">Walk in</span></div>
+          </div></div>
+          <div class="mini">
+            <div class="minirow"><span class="av"></span><div class="nm">Herr &amp; Co. <span class="st"><i data-l="star"></i>4.8</span></div><span class="free">~15 min</span></div>
+            <div class="minirow"><span class="av" style="background:linear-gradient(135deg,#cabfc7,#8a7d88)"></span><div class="nm">Sharp Studio <span class="st"><i data-l="star"></i>4.7</span></div><span class="free">~8 min</span></div>
+          </div>
+          <a class="seelink">See all walk-in spots <i data-l="arrow-right"></i></a>
+        </div>
+        <div class="below">↓ Top stylists …</div>
+      </div></div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

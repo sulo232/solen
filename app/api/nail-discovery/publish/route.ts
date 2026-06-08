@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, nailDiscoveryPublishSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // POST /api/nail-discovery/publish — Publish nail design to discovery feed
 export async function POST(req: NextRequest) {
@@ -30,8 +31,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminSupabaseClient();
 
   // Verify salon ownership
-  const { data: salon } = await admin
-    .from("salons").select("id, name, slug").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; name: string; slug: string }>(admin, user.id, "id, name, slug");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // Get design history record

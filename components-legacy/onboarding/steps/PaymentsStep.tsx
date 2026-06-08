@@ -77,7 +77,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       </div>
 
       {/* Payment mode selection */}
-      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-3">
+      <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-3">
         <p className="text-xs font-medium text-s-ink/50 mb-2">
           {t("payments.mode")}
         </p>
@@ -89,7 +89,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               "w-full rounded-[12px] border p-4 text-left transition-[background-color,border-color,box-shadow] flex items-center gap-3",
               paymentMode === opt.id
                 ? "border-s-accent bg-s-ink/5 shadow-warm-sm"
-                : "border-s-ink/10 hover:border-s-ink/20:border-white/20",
+                : "border-s-border hover:border-s-ink/20:border-white/20",
             ].join(" ")}
           >
             <div className={[
@@ -109,7 +109,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       </div>
 
       {/* Stripe Connect */}
-        <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
+        <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CreditCard size={16} className="text-s-ink/40" />
@@ -131,7 +131,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               <button
                 onClick={handleConnect}
                 disabled={connectLoading || connectStatus === "loading"}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink hover:border-s-accent hover:text-s-accent transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-border text-sm font-medium text-s-ink hover:border-s-accent hover:text-s-accent transition-colors disabled:opacity-50"
               >
                 {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
                 {t("payments.connectBank")}

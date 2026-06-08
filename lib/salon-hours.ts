@@ -1,12 +1,9 @@
-export type OpeningHours = {
-  monday?:    { open: string; close: string } | null;
-  tuesday?:   { open: string; close: string } | null;
-  wednesday?: { open: string; close: string } | null;
-  thursday?:  { open: string; close: string } | null;
-  friday?:    { open: string; close: string } | null;
-  saturday?:  { open: string; close: string } | null;
-  sunday?:    { open: string; close: string } | null;
-};
+// Day-keyed opening hours. The live data + the onboarding form use SHORT keys
+// (mon/tue/.../sun); a few older paths used long names (monday/...). This type +
+// isOpenNow accept BOTH conventions so the open-now check can't silently break on
+// a key mismatch — the bug that previously made isOpenNow return false for every
+// salon (it only looked up long names while all real data is short-keyed).
+export type OpeningHours = Record<string, { open: string; close: string } | null | undefined>;
 
 export type OpenNowResult = {
   isOpen: boolean;
@@ -15,7 +12,10 @@ export type OpenNowResult = {
   todayHours: { open: string; close: string } | null;
 };
 
-const DAY_KEYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
+// Indexed by JS getDay() (0=Sun). Both conventions are checked at lookup time so
+// short-keyed (live) and long-keyed (legacy) opening_hours both resolve correctly.
+const DAY_KEYS_SHORT = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+const DAY_KEYS_LONG = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
 
 function toMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
@@ -53,8 +53,8 @@ export function isOpenNow(opening_hours: OpeningHours | null | undefined): OpenN
   }
 
   const { dayOfWeek, currentMinutes } = getZurichNow();
-  const dayKey = DAY_KEYS[dayOfWeek];
-  const todayEntry = opening_hours[dayKey] ?? null;
+  const todayEntry =
+    opening_hours[DAY_KEYS_SHORT[dayOfWeek]] ?? opening_hours[DAY_KEYS_LONG[dayOfWeek]] ?? null;
 
   if (!todayEntry) {
     return { isOpen: false, closesAt: null, opensAt: null, todayHours: null };

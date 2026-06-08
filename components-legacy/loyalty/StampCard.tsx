@@ -40,7 +40,7 @@ export default function StampCard({
   const isComplete = stampsCollected >= stampsTotal;
 
   return (
-    <div className="relative rounded-[12px] border border-s-ink/[0.06] bg-white overflow-hidden"
+    <div className="relative rounded-[12px] border border-s-border bg-white overflow-hidden"
       style={{ boxShadow: "none" }}>
       {/* Q36 celebration on reward unlock — replaces retired confetti animation */}
       <CelebrationRing kind="loyalty" active={celebrate && isComplete} maxRadius={120} />

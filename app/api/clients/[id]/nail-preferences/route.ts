@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, nailPreferencesSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/clients/[id]/nail-preferences — Fetch preferences for client at salon
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -19,8 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { data: salon } = await supabase
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id: customerId } = await params;
@@ -54,8 +54,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { data: validated, error: valError } = validateBody(nailPreferencesSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id: customerId } = await params;

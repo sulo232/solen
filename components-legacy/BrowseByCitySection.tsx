@@ -24,7 +24,7 @@ const CITIES = [
 ] as const;
 
 const CATEGORY_KEYS = [
-  "coiffeur", "nails", "barbershop", "spa", "makeup", "waxing",
+  "coiffeur", "nails", "barbershop", "spa",
 ] as const;
 
 export default function BrowseByCitySection() {

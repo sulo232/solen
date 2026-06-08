@@ -58,7 +58,7 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
         "rounded-card px-4 py-3.5",
         item.type === "error" && "border-s-accent/25",
         item.type === "success" && "border-s-success/25",
-        item.type === "info" && "border-s-ink/[0.08]"
+        item.type === "info" && "border-s-border"
       )}
       style={{ boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 28px rgba(26,18,9,.08)" }}
     >

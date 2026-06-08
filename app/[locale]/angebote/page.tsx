@@ -41,8 +41,6 @@ export default function LastMinutePage() {
     { key: "coiffeur", label: "Coiffeur", Icon: Scissors },
     { key: "nails", label: "Nails", Icon: Sparkles },
     { key: "spa", label: "Spa", Icon: Droplets },
-    { key: "makeup", label: "Makeup", Icon: Palette },
-    { key: "waxing", label: "Waxing", Icon: Zap },
   ];
 
   const toggleCategory = (cat: string) => {
@@ -203,7 +201,7 @@ export default function LastMinutePage() {
 
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-border">
           <div className="mb-3">
             <SearchAutocomplete />
           </div>

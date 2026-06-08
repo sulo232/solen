@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Fresha-style search (full page + half sheet)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9a9a9a;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--green:#16A34A;--disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 22px;max-width:760px}
+  .lead b{color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start}
+  .col{width:372px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:var(--ink);padding:3px 8px;border-radius:6px;font-family:var(--disp)}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{position:relative;background:#fff;border-radius:30px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.12);height:740px}
+  /* shared search input */
+  .field{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:14px;padding:0 13px;height:50px;background:#fff}
+  .field.focus{border-color:var(--ink)}
+  .field input{flex:1;border:none;outline:none;font-family:var(--body);font-size:15px;color:var(--ink);background:transparent;min-width:0}
+  .field input::placeholder{color:var(--ink2)}
+  .scope{display:flex;gap:8px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+  .scope::-webkit-scrollbar{display:none}
+  .stab{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13.5px;font-weight:500;display:inline-flex;align-items:center}
+  .stab.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+  .rech{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 4px}
+  .rech .t{font-family:var(--disp);font-size:16px;font-weight:700}
+  .rech .clr{font-size:13.5px;font-weight:600;color:var(--accent)}
+  .sug{display:flex;align-items:center;gap:12px;padding:11px 2px;cursor:pointer}
+  .sug .si{width:36px;height:36px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto;color:var(--ink)}
+  .sug .si.sq{border-radius:10px;overflow:hidden;background:var(--border)}
+  .sug .si.sq img{width:100%;height:100%;object-fit:cover}
+  .sug .st{font-size:15px;font-weight:500;color:var(--ink)}
+  .sug .ss{font-size:12.5px;color:var(--ink2);margin-top:1px}
+  .sug mark{background:transparent;color:var(--ink);font-weight:700}
+
+  /* A — FULL PAGE */
+  .full{display:flex;flex-direction:column;height:100%}
+  .fhead{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 12px}
+  .fhead .t{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em}
+  .fhead .x{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border)}
+  .fbody{flex:1;overflow-y:auto;padding:0 16px}
+  .fstack{display:flex;flex-direction:column;gap:10px}
+  .ffield{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:14px;padding:0 14px;height:52px;font-size:15px;color:var(--ink2)}
+  .ffield.first{border-color:var(--ink);color:var(--ink)}
+  .fcta{padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--sunken)}
+  .fcta .b{display:flex;align-items:center;justify-content:center;height:52px;border-radius:14px;background:var(--ink);color:#fff;font-size:15.5px;font-weight:600}
+
+  /* B — HALF SHEET over dimmed category */
+  .dim{position:absolute;inset:0;background:#fff}
+  .dim .dh{display:flex;align-items:center;gap:10px;padding:16px 14px 0}
+  .dim .ic{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);display:grid;place-items:center}
+  .dim .city{flex:1;text-align:center;font-size:14.5px;font-weight:600}
+  .dim .pillrow{display:flex;gap:8px;padding:12px 14px}
+  .dim .cpill{height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--border);display:inline-flex;align-items:center;font-size:14px;font-weight:500}
+  .dim .ph{height:150px;margin:6px 14px 0;border-radius:16px;background:linear-gradient(180deg,#eee,#f7f7f7)}
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.38)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;height:62%;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.18);display:flex;flex-direction:column;padding:8px 16px 0}
+  .grab{width:38px;height:4px;border-radius:999px;background:var(--border);margin:4px auto 12px}
+  .shead{display:flex;align-items:center;gap:12px}
+  .shead .cancel{flex:0 0 auto;font-size:15px;font-weight:600;color:var(--ink)}
+  .sbody{flex:1;overflow-y:auto;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Search , Fresha structure</h1>
+  <p class="lead">Studied from your Fresha shots. <b>Homepage = full page</b> ("Suchen" + X, the 3 fields, recents, bottom Suchen button). <b>Category = half sheet</b> that slides up over the page, with a <b>Cancel</b>. Both share the scope tabs (Alle / Services / Salons / Stylist:innen) + live suggestions. Tap a field and type.</p>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(p,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||18);s.setAttribute("height",o.size||18);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(p)?p:[p]).forEach(d=>{const q=document.createElementNS(NS,"path");q.setAttribute("d",d);s.appendChild(q);});return s;}
+function searchI(o){o=o||{};const s=svg(["M21 21l-4.3-4.3"],{size:o.size||18});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function pinI(){return svg(["M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z","M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"],{size:17});}
+function calI(){return svg(["M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z","M3 9h18","M8 2v4","M16 2v4"],{size:17});}
+function homeI(){return svg(["M3 10.5 12 3l9 7.5","M5 9.5V21h14V9.5"],{size:18});}
+function menuI(){return svg(["M3 6h18","M3 12h18","M3 18h18"],{size:19,sw:2.2});}
+function xI(){return svg(["M18 6 6 18","M6 6l12 12"],{size:18});}
+function scI(){return svg(["M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z","M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z","M20 4 8.5 15.5","M14.5 14.5 20 20","M8.5 8.5 12 12"],{size:16});}
+
+const SERVICES=[{n:"Herrenschnitt",p:45},{n:"Bart trimmen",p:28},{n:"Haare & Bart",p:60},{n:"Damenschnitt",p:65},{n:"Färben",p:90},{n:"Maniküre",p:55}];
+const CATS=["Coiffeur","Barber","Nails","Spa"];
+const VENUES=[["Haaratelier Samira","Coiffeur · Luttingerstrasse 54","https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&q=70"],["The Fade Factory","Barber · Hammerstrasse 65","https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=70"]];
+
+function scopeTabs(){const w=el("div","scope");["Alle","Services","Salons","Stylist:innen"].forEach((t,i)=>{const b=el("div","stab"+(i===0?" on":""),t);b.onclick=()=>{w.querySelectorAll('.stab').forEach(x=>x.classList.remove('on'));b.classList.add('on');};w.appendChild(b);});return w;}
+
+function sugTerm(label,icon,onbg,q){
+  const r=el("div","sug"); const si=el("div","si"+(onbg?" sq":"")); if(onbg){const im=document.createElement("img");im.src=onbg;si.appendChild(im);} else si.appendChild(icon||searchI({size:17})); r.appendChild(si);
+  const tx=el("div"); const tt=el("div","st");
+  if(q){const i=label.toLowerCase().indexOf(q.toLowerCase());if(i>=0){tt.appendChild(document.createTextNode(label.slice(0,i)));tt.appendChild(el("mark",null,label.slice(i,i+q.length)));tt.appendChild(document.createTextNode(label.slice(i+q.length)));}else tt.textContent=label;}else tt.textContent=label;
+  tx.appendChild(tt); r.appendChild(tx); return r;
+}
+function sugVenue(name,sub,img,q){const r=el("div","sug");const si=el("div","si sq");const im=document.createElement("img");im.src=img;si.appendChild(im);r.appendChild(si);const tx=el("div");tx.appendChild(el("div","st",name));tx.appendChild(el("div","ss",sub));r.appendChild(tx);return r;}
+
+// interactive results region: re-renders on input
+function makeResults(getQ){
+  const region=el("div");
+  function render(){
+    region.textContent="";
+    const q=(getQ()||"").trim();
+    if(!q){
+      const h=el("div","rech"); h.appendChild(el("div","t","Zuletzt")); h.appendChild(el("div","clr","Löschen")); region.appendChild(h);
+      region.appendChild(sugTerm("herren"));
+      region.appendChild(sugTerm("Alle Services"));
+      VENUES.forEach(v=>region.appendChild(sugVenue(v[0],v[1],v[2])));
+      region.appendChild(sugTerm("Haare & Bart"));
+      return;
+    }
+    const svc=SERVICES.filter(s=>s.n.toLowerCase().includes(q.toLowerCase()));
+    const cat=CATS.filter(c=>c.toLowerCase().includes(q.toLowerCase()));
+    const ven=VENUES.filter(v=>v[0].toLowerCase().includes(q.toLowerCase()));
+    if(!svc.length&&!cat.length&&!ven.length){const e=el("div","sug");e.appendChild(el("div","st","Keine Treffer , trotzdem suchen nach „"+q+"“"));region.appendChild(e);return;}
+    if(svc.length){const h=el("div","rech");h.appendChild(el("div","t","Services"));region.appendChild(h);svc.forEach(s=>region.appendChild(sugTerm(s.n,scI(),null,q)));}
+    if(cat.length){const h=el("div","rech");h.appendChild(el("div","t","Kategorien"));region.appendChild(h);cat.forEach(c=>region.appendChild(sugTerm(c,null,null,q)));}
+    if(ven.length){const h=el("div","rech");h.appendChild(el("div","t","Salons"));region.appendChild(h);ven.forEach(v=>region.appendChild(sugVenue(v[0],v[1],v[2],q)));}
+  }
+  render(); return {region,render};
+}
+
+/* A — full page (homepage) */
+function fullPage(){
+  const box=el("div","phone"); const w=el("div","full");
+  const hd=el("div","fhead"); hd.appendChild(el("div","t","Suchen")); const x=el("div","x"); x.appendChild(xI()); hd.appendChild(x); w.appendChild(hd);
+  const body=el("div","fbody");
+  const stack=el("div","fstack");
+  // interactive top field
+  const f=el("div","field focus"); f.appendChild(searchI({size:18})); const inp=document.createElement("input"); inp.placeholder="Service, Salon oder Stylist:in"; f.appendChild(inp); stack.appendChild(f);
+  const f2=el("div","ffield"); f2.appendChild(pinI()); f2.appendChild(el("span",null,"Stadt , Basel")); stack.appendChild(f2);
+  const f3=el("div","ffield"); f3.appendChild(calI()); f3.appendChild(el("span",null,"Jederzeit")); stack.appendChild(f3);
+  body.appendChild(stack);
+  const res=makeResults(()=>inp.value); body.appendChild(res.region);
+  inp.addEventListener("input",res.render); inp.addEventListener("focus",()=>f.classList.add("focus"));
+  w.appendChild(body);
+  const cta=el("div","fcta"); const bt=el("div","b","Suchen"); cta.appendChild(bt); w.appendChild(cta);
+  box.appendChild(w); return box;
+}
+
+/* B — half sheet (category) */
+function halfSheet(){
+  const box=el("div","phone");
+  // dimmed category behind
+  const dim=el("div","dim");
+  const dh=el("div","dh"); const h=el("div","ic"); h.appendChild(homeI()); dh.appendChild(h); dh.appendChild(el("div","city","Basel")); const m=el("div","ic"); m.appendChild(menuI()); dh.appendChild(m); dim.appendChild(dh);
+  const pr=el("div","pillrow"); ["Barber","Coiffeur","Nails"].forEach(l=>{const c=el("div","cpill",l);pr.appendChild(c);}); dim.appendChild(pr);
+  dim.appendChild(el("div","ph")); box.appendChild(dim);
+  box.appendChild(el("div","scrim"));
+  // sheet
+  const sheet=el("div","sheet"); sheet.appendChild(el("div","grab"));
+  const sh=el("div","shead"); const f=el("div","field focus"); f.style.flex="1"; f.appendChild(searchI({size:18})); const inp=document.createElement("input"); inp.placeholder="Service oder Salon"; f.appendChild(inp); sh.appendChild(f); sh.appendChild(el("div","cancel","Abbrechen")); sheet.appendChild(sh);
+  sheet.appendChild(scopeTabs());
+  const sb=el("div","sbody"); const res=makeResults(()=>inp.value); sb.appendChild(res.region); inp.addEventListener("input",res.render); sheet.appendChild(sb);
+  box.appendChild(sheet);
+  return box;
+}
+
+function colize(pillTxt,nm,node){const col=el("div","col");const tag=el("div","tag");tag.appendChild(el("span","pill",pillTxt));tag.appendChild(el("span","ds",nm));col.appendChild(tag);col.appendChild(node);document.getElementById("frames").appendChild(col);}
+colize("HOMEPAGE","full page (X to close, bottom Suchen)", fullPage());
+colize("CATEGORY","half sheet (slides over the page, Abbrechen)", halfSheet());
+</script>
+</body>
+</html>

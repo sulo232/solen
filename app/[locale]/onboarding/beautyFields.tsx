@@ -41,8 +41,6 @@ export const CATEGORY_OPTS: Choice[] = [
   { value: "barbershop", label: "Barbershop" },
   { value: "nails", label: "Nails" },
   { value: "spa", label: "Spa & Wellness" },
-  { value: "makeup", label: "Makeup" },
-  { value: "waxing", label: "Waxing" },
 ];
 
 export const INTEREST_OPTS: InterestChoice[] = [

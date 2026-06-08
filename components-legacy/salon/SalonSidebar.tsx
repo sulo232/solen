@@ -87,7 +87,7 @@ export default function SalonSidebar({
     <div className="hidden lg:block lg:col-span-1">
       <div className="sticky top-[100px]">
         <div
-          className="rounded-[16px] overflow-hidden p-6 bg-white border border-s-ink/[0.08]"
+          className="rounded-[16px] overflow-hidden p-6 bg-white border border-s-border"
           style={{ boxShadow: "0 6px 16px rgba(26,18,9,0.10)" }}
         >
           <div className="flex flex-col gap-4">
@@ -135,7 +135,7 @@ export default function SalonSidebar({
               <button
                 type="button"
                 onClick={() => onQuickBook?.(nextSlot)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 font-body text-[13px] text-s-ink hover:border-s-accent/40 hover:text-s-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-border font-body text-[13px] text-s-ink hover:border-s-accent/40 hover:text-s-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               >
                 <Zap size={14} className="text-s-accent" aria-hidden />
                 {t("nextAvailable")}: {formatDate(nextSlot.starts_at)}
@@ -143,7 +143,7 @@ export default function SalonSidebar({
             )}
 
             {/* Quick info */}
-            <div className="space-y-2 pt-3 border-t border-s-ink/[0.08]">
+            <div className="space-y-2 pt-3 border-t border-s-border">
               <div className="flex items-center gap-2 font-body text-[12px] text-s-ink/55">
                 <Zap className="w-4 h-4" aria-hidden />
                 <span>{t("instantBooking")}</span>

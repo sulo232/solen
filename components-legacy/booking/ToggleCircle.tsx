@@ -3,7 +3,7 @@
 import { Plus, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Smoothly cross-fades + ↔ ✓ instead of an instant icon swap.
+// Smoothly cross-fades the plus into the check instead of an instant icon swap.
 export default function ToggleCircle({
   selected,
   size = 'lg',
@@ -13,12 +13,12 @@ export default function ToggleCircle({
 }) {
   const box = size === 'lg' ? 'w-9 h-9' : 'w-7 h-7';
   const icon = size === 'lg' ? 17 : 14;
-  // Softer spring + quarter-turn so the + spins smoothly into the ✓.
+  // Softer spring + quarter-turn so the plus spins smoothly into the check.
   const spring = { type: 'spring' as const, stiffness: 360, damping: 24, mass: 0.9 };
   return (
     <span
       className={`relative shrink-0 ${box} rounded-full grid place-items-center transition-colors duration-300 ${
-        selected ? 'bg-s-ink text-white' : 'border border-s-ink/15 text-s-ink/50'
+        selected ? 'bg-s-ink text-white' : 'border border-s-border text-s-ink/50'
       }`}
       aria-hidden
     >

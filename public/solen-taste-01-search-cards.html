@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Taste round 1 — search result card (3 positions)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9A9A9A;--border:#E7E5E4;
+    --sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B;--green:#16A34A;
+    --greenbg:#E7F6EC;--heart:#FF3366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#ECEBE9;font-family:'Inter',sans-serif;color:var(--ink);padding:30px 16px 80px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center;letter-spacing:-0.02em}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:8px auto 6px;max-width:760px;line-height:1.6}
+  .sub b{color:var(--ink)}
+  .how{text-align:center;color:var(--ink3);font-size:11.5px;margin:0 auto 30px;max-width:680px;line-height:1.5}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;align-items:flex-start;max-width:1280px;margin:0 auto}
+  .col{width:392px;max-width:100%}
+  .tag{font-family:'Inter Tight';font-weight:800;font-size:15px;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+  .pos{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);border:1px solid var(--border);border-radius:5px;padding:2px 7px}
+  .tagd{font-size:12px;color:var(--ink2);margin:0 0 14px;line-height:1.5;min-height:54px}
+  .tagd b{color:var(--ink)}
+  /* phone frame */
+  .phone{background:#fff;border:1px solid rgba(10,10,10,.10);border-radius:30px;box-shadow:0 18px 50px rgba(0,0,0,.13);padding:16px 14px 22px;overflow:hidden}
+  .ph-head{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 14px}
+  .ph-head .t{font-family:'Inter Tight';font-weight:800;font-size:17px;letter-spacing:-0.01em}
+  .ph-head .c{font-size:11.5px;color:var(--ink2)}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  /* card base */
+  .card{position:relative}
+  .ph{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--sunken)}
+  .ph img{width:100%;height:100%;object-fit:cover}
+  .name{font-family:'Inter Tight';font-weight:600;font-size:14px;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:8px}
+  .rate{display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2);flex-shrink:0;font-variant-numeric:tabular-nums}
+  .rate svg{width:11px;height:11px;fill:var(--star);stroke:none}
+  .meta{font-size:12px;color:var(--ink2);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .price{font-size:12px;color:var(--ink2);line-height:1.35}
+  .heart{position:absolute;right:7px;top:7px;z-index:5;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.82);backdrop-filter:blur(6px)}
+  .heart svg{width:16px;height:16px;stroke:#fff;fill:rgba(10,10,10,.32)}
+  .heart.on svg{fill:var(--heart);stroke:var(--heart)}
+  .slot{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--ink)}
+  .slot svg{width:12px;height:12px;stroke:var(--ink2)}
+  .note{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-top:14px;padding:11px 13px;background:#fff;border:1px solid var(--border);border-radius:11px}
+  .note b{color:var(--ink)}
+  .footer{font-size:12px;color:var(--ink2);line-height:1.6;margin:34px auto 0;max-width:760px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:13px}
+  .footer b{color:var(--ink)}
+
+  /* ── A: restrained ── */
+  .A .ph{border-radius:14px}
+  .A .price b{font-weight:600;color:var(--ink)}
+  .A .heart{background:none;backdrop-filter:none}
+  .A .heart svg{fill:none;stroke:#fff;stroke-width:2.2}
+  /* ── B: current (shipped) ── */
+  .B .ph{border-radius:22px;box-shadow:0 18px 38px rgba(0,0,0,.05)}
+  .B .price b{font-weight:600;color:var(--ink)}
+  /* ── C: signal-rich ── */
+  .C .ph{border-radius:22px;box-shadow:0 18px 38px rgba(0,0,0,.05)}
+  .C .price b{font-weight:700;color:var(--accent)}
+  .C .badge{position:absolute;left:8px;top:8px;z-index:5;font-size:10px;font-weight:700;letter-spacing:.02em;background:#fff;color:var(--ink);border-radius:7px;padding:3px 8px;box-shadow:0 4px 12px rgba(0,0,0,.10)}
+  .C .slotpill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--green);background:var(--greenbg);border-radius:7px;padding:3px 8px;margin-top:6px}
+  .C .slotpill svg{width:11px;height:11px;stroke:var(--green)}
+</style>
+</head>
+<body>
+  <h1>Taste round 1 — the search result card</h1>
+  <p class="sub">Same two salons, three coherent <b>taste positions</b>. The card is already tuned, so this isn't "which is least broken" — it's <b>where do you draw the line</b> on the three things I keep re-guessing: <b>decoration/economy</b>, <b>semantic colour</b>, and <b>elevation</b>.</p>
+  <p class="how">Pick the one that feels most "Solen" (or say "B's economy + C's colour" — mixing is the useful answer). Tell me <b>why</b> in a few words. I turn each answer into a permanent rule in CLAUDE.md so I stop guessing it. ~5-7 short rounds across the booking path total.</p>
+
+  <div class="grid">
+
+    <!-- A -->
+    <div class="col A">
+      <div class="tag">A · Restrained <span class="pos">max economy</span></div>
+      <div class="tagd"><b>Uber/Stripe restraint.</b> Flush 14px photo, <b>no shadow</b> (flat on white), name is the only ink, one meta line, "from 65" in ink. No pills, no badges, no colour except the star. Whitespace carries it.</div>
+      <div class="phone">
+        <div class="ph-head"><span class="t">Coiffeur Zürich</span><span class="c">42 salons</span></div>
+        <div class="cards">
+          <div class="card">
+            <div class="heart"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price">from <b>65</b> CHF</div>
+          </div>
+          <div class="card">
+            <div class="heart"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8</span></div>
+            <div class="meta">Barber · Zürich</div>
+            <div class="price">from <b>45</b> CHF</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Reads:</b> calm, premium, gallery-like. <b>Risk:</b> can feel like a directory, no "book today" hook, the funnel-top loses urgency.</div>
+    </div>
+
+    <!-- B -->
+    <div class="col B">
+      <div class="tag">B · Current <span class="pos">shipped today</span></div>
+      <div class="tagd"><b>Warm + one booking hook.</b> Rounded 22px photo, soft floating shadow + hover lift, name anchor, grey meta, "from <b>65</b>" (bold number), and a single <b>next-slot</b> line (real, wired). Star yellow, heart pink. One signal, no decoration.</div>
+      <div class="phone">
+        <div class="ph-head"><span class="t">Coiffeur Zürich</span><span class="c">42 salons</span></div>
+        <div class="cards">
+          <div class="card">
+            <div class="heart on"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9 (128)</span></div>
+            <div class="meta">Coiffeur · Zürich</div>
+            <div class="price">from <b>65</b> CHF</div>
+            <div class="slot" style="margin-top:5px"><svg data-l="clock"></svg>today 16:00</div>
+          </div>
+          <div class="card">
+            <div class="heart"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8 (94)</span></div>
+            <div class="meta">Barber · Zürich</div>
+            <div class="price">from <b>45</b> CHF</div>
+            <div class="slot" style="margin-top:5px"><svg data-l="clock"></svg>tomorrow 09:30</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Reads:</b> bookable, friendly, still restrained. The shadow + lift = the "card family" with the homepage. One hook (next slot), no clutter.</div>
+    </div>
+
+    <!-- C -->
+    <div class="col C">
+      <div class="tag">C · Signal-rich <span class="pos">more colour</span></div>
+      <div class="tagd"><b>Guide the eye with semantic colour.</b> Adds a "Popular" badge, the price number in <b>accent blue</b>, and the next-slot as a <b>green pill</b>. More information density + colour doing wayfinding. The most alive, the most to mistrust as clutter.</div>
+      <div class="phone">
+        <div class="ph-head"><span class="t">Coiffeur Zürich</span><span class="c">42 salons</span></div>
+        <div class="cards">
+          <div class="card">
+            <div class="badge">Popular</div>
+            <div class="heart on"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Maison Lée</span><span class="rate"><svg data-l="star"></svg>4.9 (128)</span></div>
+            <div class="meta">Coiffeur · Zürich · 1.2 km</div>
+            <div class="price">from <b>65</b> CHF</div>
+            <div class="slotpill"><svg data-l="clock"></svg>today 16:00</div>
+          </div>
+          <div class="card">
+            <div class="heart"><svg data-l="heart"></svg></div>
+            <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=360&q=70"/></div>
+            <div class="row1"><span class="name">Atelier Nord</span><span class="rate"><svg data-l="star"></svg>4.8 (94)</span></div>
+            <div class="meta">Barber · Zürich · 0.8 km</div>
+            <div class="price">from <b>45</b> CHF</div>
+            <div class="slotpill"><svg data-l="clock"></svg>tomorrow 09:30</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Reads:</b> energetic, scannable, marketplace-y. <b>Risk:</b> badge + blue + green pill is exactly the "added unnecessary stuff" you flagged. Colour count goes up.</div>
+    </div>
+
+  </div>
+
+  <div class="footer"><b>What I'm trying to learn from your pick:</b> (1) <b>economy</b> — strip to A, one-hook B, or multi-signal C? (2) <b>colour</b> — star only / + green availability / + blue price? (3) <b>elevation</b> — flat A or soft-shadow B/C? Your answer + a one-line "why" becomes a locked rule. No fabricated data here: rating, review count, price, next-slot are all real wired fields; I left live walk-in availability out on purpose (the thing you flagged).</div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

@@ -59,6 +59,18 @@ ALLOWED_HEX = {
     "#E9DFC8", "#142F4A",
     "#E58840",
     "#F0C25A",
+    # V3-D446: token-EQUIVALENT values. These ARE the design tokens; they legitimately
+    # appear inline in SVG fills (fill="#FFC32B"), inline style={{}} objects, and colour-data
+    # structures where a Tailwind class can't reach. A2 (now INFO) still nudges the class-context
+    # form (bg-[#0A0A0A]) toward the token. Non-token hex stays HARD.
+    "#6B6B6B",  # s-ink-2 / s-ink-3
+    "#E7E5E4",  # empty-star fill + avatar palette step (was s-border before V3-D447)
+    "#F5F5F4",  # s-bg-sunken / s-bg-active
+    "#276EF1",  # s-accent (royal blue)
+    "#D6D3D1",  # stone-300 (avatar initial palette step)
+    "#A8A29E",  # stone-400 (avatar initial palette step)
+    # V3-D450: BentoBusiness BAR_GRADIENT — provisional brand-blue gradient, exact colour TBD (V3-D219).
+    "#1638C4", "#B8C4F0",
 }
 
 # A4: Canonical easings — names allowed in Tailwind classes (`ease-{name}`).
@@ -88,7 +100,7 @@ RETIRED_EASINGS = {
 
 # A3: Canonical durations — Tailwind classes (`duration-{n}`) or arbitrary
 # values (`duration-[Nms]`). Anything else is drift.
-CANONICAL_DURATIONS_MS = {80, 150, 200, 250, 300, 500}
+CANONICAL_DURATIONS_MS = {80, 100, 150, 200, 250, 300, 500}  # V3-D450: +100 (standard short transition)
 
 # A5: Retired-but-defined color tokens — defined in tailwind.config.js
 # for back-compat with un-rebuilt routes, but new code using them = drift.
@@ -182,6 +194,38 @@ EASING_TW_RE = re.compile(r"\bease-([a-z][\w-]*)\b")
 def retired_token_re(tok: str) -> re.Pattern:
     # Token can appear as `bg-<token>`, `text-<token>`, `border-<token>`, `from-<token>`, etc.
     return re.compile(rf"\b(?:bg|text|border|fill|stroke|from|to|via|ring|outline)-{re.escape(tok)}\b")
+
+# A15 — raw Tailwind palette colour (V3-D442, CONSISTENCY_AUDIT). In a fully
+# tokenised app a raw palette class (bg-red-500, text-green-700, border-gray-200,
+# ...) is drift: use a semantic token (s-error / s-success / s-warning / s-accent
+# / s-ink / s-bg-*). The audit found 50+ raw `red-*` parallel to ~180 `s-error`.
+RAW_PALETTE_RE = re.compile(
+    r"\b(?:bg|text|border|ring|fill|stroke|from|to|via|outline|decoration|divide|placeholder|caret)-"
+    r"(?:red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|"
+    r"slate|gray|grey|zinc|neutral|stone)-(?:50|100|200|300|400|500|600|700|800|900|950)\b"
+)
+
+# A16 — decorative accent dot (V3-D442). A tiny `rounded-full bg-s-accent` span is a
+# banned decorative dot (taste rule #2 / LOCKFILE §11). Green `bg-s-success` status
+# dots ARE allowed (they carry meaning), so this matches `bg-s-accent` + a tiny size
+# specifically. Checked via three substrings on the line (class order varies).
+A16_DOT_SIZE_RE = re.compile(r"\b[hw]-(?:1|1\.5|2)\b|\b[hw]-\[[2-8]px\]")
+
+# A17 — opacity hairline (V3-D443, CONSISTENCY_AUDIT). The opacity-modulated ink
+# border (`border-s-ink/10`, `border-s-ink/[0.06]`, ...) is the single most-
+# duplicated drift (~480 sites) and A2 misses it (the bracket sits after `/`, not
+# `-`). Canonical chrome hairline = `border-s-border`. The lookbehind skips
+# variant-prefixed forms (`hover:`/`focus:`/`md:` border-s-ink, intentional);
+# the on-photo / over-ink exemption is applied in scan_text.
+HAIRLINE_OPACITY_RE = re.compile(r"(?<!:)\bborder-s-ink/(?:[0-9.]+|\[[0-9.]+\])")
+
+# A18 — flip-flop guard (V3-D443). The green availability PILL was removed by the
+# owner; card availability = plain ink text. Catch its re-introduction: a
+# green-pill bg co-occurring with an availability / time signal (Clock, HH:MM,
+# heute/morgen/Frei, nextSlot). A plain green success icon/banner (no time signal)
+# is unaffected. This is the one "don't re-open a locked decision" guard wired as
+# a gate rule instead of a doc.
+A18_AVAIL_SIGNAL_RE = re.compile(r"<Clock|\b\d{1,2}:\d{2}\b|heute|morgen|Frei in|nextSlot", re.IGNORECASE)
 
 # A7-A11 — Type Role Registry + Imagery Pattern Registry (V3-D330, INFORMATIONAL)
 # These are NEW rules added 2026-05-28 per LOCKFILE §1.5 / §2.5 / §11.
@@ -349,11 +393,10 @@ def list_files(root: Path) -> list[Path]:
 
 
 def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
-    findings: list[Finding] = []
     try:
         text = path.read_text(encoding="utf-8")
     except (UnicodeDecodeError, FileNotFoundError):
-        return findings
+        return []
 
     if root is not None:
         try:
@@ -363,9 +406,66 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
     else:
         rel = str(path)
 
+    return scan_text(text, rel, respect_inline_skip=True)  # V3-D450: report respects drift-ok (acknowledged exceptions drop from hard)
+
+
+def _code_only(line: str, in_block: bool) -> tuple[str, bool]:
+    """Return (line with // and /* */ comments blanked, still-in-block-comment).
+
+    Used ONLY to suppress A1 hex-in-comment false positives (V3-D446): a hex inside a
+    code comment is documentation, not drift. JSX `{/* ... */}` is covered because it
+    contains the `/* ... */` markers. Conservative: does not parse string literals, so a
+    `//` inside a string truncates the rest of that line for hex purposes — acceptable,
+    since a string-embedded hex placed after a `//` is vanishingly rare.
+    """
+    out: list[str] = []
+    i, n = 0, len(line)
+    while i < n:
+        if in_block:
+            end = line.find("*/", i)
+            if end == -1:
+                i = n
+            else:
+                in_block = False
+                i = end + 2
+        else:
+            slash = line.find("//", i)
+            block = line.find("/*", i)
+            if slash != -1 and (block == -1 or slash < block):
+                out.append(line[i:slash])
+                i = n
+            elif block != -1:
+                out.append(line[i:block])
+                in_block = True
+                i = block + 2
+            else:
+                out.append(line[i:])
+                i = n
+    return "".join(out), in_block
+
+
+def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Finding]:
+    """Scan raw text as one virtual file `rel`.
+
+    Used by scan_file (a path on disk) AND by the PreToolUse drift gate, which
+    scans the *incoming* Edit/Write content (a string, not yet on disk) so it
+    can block net-new drift before it lands.
+
+    respect_inline_skip: when True, any line containing `drift-ok` is skipped,
+    the gate's per-line escape hatch for intentional, justified exceptions. The
+    full-report path leaves this False so the report still surfaces everything.
+    """
+    findings: list[Finding] = []
+    in_block_comment = False
     for ln_no, line in enumerate(text.splitlines(), start=1):
-        # A1 — hardcoded hex
-        for m in HEX_RE.finditer(line):
+        # Comment-strip for A1 hex detection only (V3-D446): a hex inside a // or /* */
+        # (incl. JSX {/* */}) comment is documentation, not drift. Every other rule keeps
+        # the raw line — the no-emoji-in-comments rule (A6) is deliberate.
+        code_line, in_block_comment = _code_only(line, in_block_comment)
+        if respect_inline_skip and "drift-ok" in line:
+            continue
+        # A1 — hardcoded hex (comment-stripped: only real, non-comment hex is drift)
+        for m in HEX_RE.finditer(code_line):
             hex_val = m.group(0).upper()
             # Normalize 3-digit shorthand to 6 for compare? Keep both forms in allowlist.
             if hex_val.upper() not in {h.upper() for h in ALLOWED_HEX}:
@@ -375,7 +475,11 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
                     recommendation=f"Use a Tailwind token for `{hex_val}` if one exists; add to ALLOWED_HEX in check.py if intentionally inline.",
                 ))
 
-        # A2 — arbitrary Tailwind values
+        # A2 — arbitrary Tailwind values. INFORMATIONAL (V3-D446): arbitrary SIZES / radii
+        # (text-[15px], rounded-[12px], w-[320px]) are LOCKFILE-sanctioned, so flagging them
+        # HARD contradicted our own contract (983 of 1084 "strict hard" findings were this one
+        # rule). Arbitrary COLORS (bg-[#hex]) stay HARD via A1 (hardcoded hex) + A15, so there
+        # is no real-drift gap. Kept as INFO so it still nudges toward tokens in pending-migration.
         for m in ARBITRARY_TW_RE.finditer(line):
             cls = m.group(0)
             # Heuristic: filter known-deliberate arbitrary values that have a SOURCE.md
@@ -383,7 +487,7 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
             if cls.startswith("duration-["):
                 continue  # handled by A3 specifically
             findings.append(Finding(
-                file=rel, line=ln_no, rule="A2: arbitrary Tailwind value",
+                file=rel, line=ln_no, rule="INFO A2: arbitrary Tailwind value",
                 snippet=line,
                 recommendation=f"`{cls}` — prefer a tokenized class. If intentional, add a V3-D{{n}} comment explaining why.",
             ))
@@ -397,11 +501,14 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
                     snippet=line,
                     recommendation=f"`duration-{n}` not in canon {sorted(CANONICAL_DURATIONS_MS)}. Use nearest canonical or document.",
                 ))
+        # INFORMATIONAL (V3-D450): arbitrary durations (duration-[Xms]) are hand-tuned motion
+        # (usually paired with a custom cubic-bezier), not drift — same reasoning as A2 sizes.
+        # The nudge toward canonical stays as INFO. Non-arbitrary duration-N (above) stays HARD.
         for m in DURATION_TW_ARB_RE.finditer(line):
             n = int(m.group(1))
             if n not in CANONICAL_DURATIONS_MS:
                 findings.append(Finding(
-                    file=rel, line=ln_no, rule="A3: non-canonical duration (arbitrary)",
+                    file=rel, line=ln_no, rule="INFO A3: non-canonical duration (arbitrary)",
                     snippet=line,
                     recommendation=f"`duration-[{n}ms]` not in canon {sorted(CANONICAL_DURATIONS_MS)}. 80ms is allowed for active-press; everything else needs justification.",
                 ))
@@ -430,6 +537,44 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
                     snippet=line,
                     recommendation=f"`{tok}` is retired-but-defined (back-compat only). See SOURCE.md §2.2 + QUESTIONS.md#q3.",
                 ))
+
+        # A15 — raw Tailwind palette colour (HARD; gate blocks net-new). V3-D442.
+        # comment-stripped (V3-D446): a palette class named in a comment is documentation.
+        for m in RAW_PALETTE_RE.finditer(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A15: raw Tailwind palette colour",
+                snippet=line,
+                recommendation=f"`{m.group(0)}` is a raw Tailwind palette colour. Use a semantic token: s-error / s-success / s-warning / s-accent / s-ink / s-bg-* (CONSISTENCY_AUDIT V3-D442).",
+            ))
+
+        # A16 — decorative accent dot (HARD; gate blocks net-new). V3-D442.
+        if "rounded-full" in line and "bg-s-accent" in line and A16_DOT_SIZE_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A16: decorative accent dot",
+                snippet=line,
+                recommendation="A tiny `rounded-full bg-s-accent` span is a banned decorative dot (taste rule #2). Delete it. If it carries live status, a green `bg-s-success` dot is the allowed pattern.",
+            ))
+
+        # A17 — opacity hairline -> border-s-border (HARD; gate blocks net-new). V3-D443.
+        # Skip on-photo / over-ink borders (a darker border is legitimate there).
+        if (HAIRLINE_OPACITY_RE.search(code_line)  # comment-stripped (V3-D446)
+                and not A14_OVER_IMAGE_RE.search(line)
+                and "text-white" not in line
+                and "bg-s-ink" not in line
+                and "bg-black" not in line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A17: opacity hairline (use border-s-border)",
+                snippet=line,
+                recommendation="Chrome hairlines use `border-s-border` (#E7E5E4). `border-s-ink/{op}` is the most-duplicated drift; reserve it ONLY for a border over a photo / ink surface (CONSISTENCY_AUDIT V3-D443). If this IS over a photo, add `drift-ok`.",
+            ))
+
+        # A18 — flip-flop guard: re-added green availability pill (HARD; net-new). V3-D443.
+        if "bg-s-success-bg" in line and A18_AVAIL_SIGNAL_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A18: green availability pill (removed, do not re-add)",
+                snippet=line,
+                recommendation="The green availability pill was REMOVED by the owner (V3-D443). Card availability = plain ink text (Clock + time in text-s-ink). Do not re-add a green pill.",
+            ))
 
         # B1 — dead onClick
         if EMPTY_ONCLICK_RE.search(line):
@@ -723,11 +868,96 @@ def render_pending(info_files: list[Path], info_findings: list[Finding]) -> str:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# PreToolUse drift gate (V3-D441, 2026-06-07)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def run_gate_stdin() -> int:
+    """Read `{file_path, new, old?}` JSON from stdin; gate on NET-NEW drift.
+
+    Blocks (exit 2) only when the incoming `new` content introduces a HARD
+    finding (A1-A6 / B1-B5) that was NOT already present in `old`. This is
+    deliberate: strict scope already carries ~1k legacy hard findings, so a
+    whole-file gate would block every edit. Net-new means "you only get stopped
+    for drift you are adding right now" — the part that is actually fixable in
+    the moment, and the part the agent keeps re-introducing.
+
+    INFO rules (A7-A14 — typographic / elevation nuance still mid-sweep) NEVER
+    gate; they stay in the logged report. Fail-OPEN on any error: a gate crash
+    must never brick editing.
+    """
+    try:
+        payload = json.loads(sys.stdin.read() or "{}")
+    except Exception as e:  # fail-open on any malformed input
+        print(f"drift-gate: unreadable stdin ({e}); allowing.", file=sys.stderr)
+        return 0
+    if not isinstance(payload, dict):  # `null` / list / scalar → fail-open
+        return 0
+    rel = payload.get("file_path") or "<stdin>"
+    new = payload.get("new") or ""
+    old = payload.get("old") or ""
+    if not new.strip():
+        return 0
+
+    new_hard = [f for f in scan_text(new, rel, respect_inline_skip=True) if not _is_info_rule(f)]
+    if not new_hard:
+        return 0
+    old_hard = (
+        [f for f in scan_text(old, rel, respect_inline_skip=True) if not _is_info_rule(f)]
+        if old else []
+    )
+    # Net-new is computed per RULE by count, not by exact line text: editing the
+    # text around a pre-existing violation must NOT re-trigger the gate (the line
+    # snippet changes even though the drift is unchanged). Block only when `new`
+    # carries MORE instances of a rule than `old` did.
+    def _counts(items: list[Finding]) -> dict[str, int]:
+        c: dict[str, int] = {}
+        for f in items:
+            c[f.rule] = c.get(f.rule, 0) + 1
+        return c
+
+    new_counts = _counts(new_hard)
+    old_counts = _counts(old_hard)
+    over_rules = {r for r, n in new_counts.items() if n > old_counts.get(r, 0)}
+    if not over_rules:
+        return 0
+    delta = sum(new_counts[r] - old_counts.get(r, 0) for r in over_rules)
+
+    # Dedup display by (rule, snippet) so the same offending line isn't repeated.
+    seen: set[tuple[str, str]] = set()
+    examples: list[Finding] = []
+    for f in new_hard:
+        if f.rule not in over_rules:
+            continue
+        key = (f.rule, f.snippet.strip())
+        if key in seen:
+            continue
+        seen.add(key)
+        examples.append(f)
+
+    print("", file=sys.stderr)
+    print(f"DRIFT GATE: blocked {delta} new design-system violation(s) in {rel}:", file=sys.stderr)
+    for f in examples[:12]:
+        print(f"  - {f.rule}", file=sys.stderr)
+        print(f"      {f.snippet.strip()[:160]}", file=sys.stderr)
+        print(f"      fix: {f.recommendation}", file=sys.stderr)
+    if len(examples) > 12:
+        print(f"  ...and {len(examples) - 12} more.", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("Resolve by using the canonical token. If the value is genuinely intentional,", file=sys.stderr)
+    print("add `drift-ok: <reason>` on the same line. To bypass for this turn:", file=sys.stderr)
+    print("  touch .claude/drift-gate-skip.flag   (30-min TTL)", file=sys.stderr)
+    return 2
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Entry point
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Solen drift-check")
+    parser.add_argument("--gate-stdin", action="store_true",
+                        help="Read {file_path,new,old} JSON from stdin; exit 2 on NET-NEW hard drift "
+                             "(PreToolUse gate). The default report flow is unchanged and still exits 0.")
     parser.add_argument("--strict-only", action="store_true",
                         help="Only scan files in _rebuilt_routes.json. Skip legacy informational pass.")
     parser.add_argument("--out", default="_design-system/_drift-report.md",
@@ -736,6 +966,11 @@ def main() -> int:
                         help="Output path for informational pending-migration report")
     parser.add_argument("--root", default=".", help="Project root (default: cwd)")
     args = parser.parse_args()
+
+    # Gate mode short-circuits the report flow entirely (reads stdin, exits 2 on
+    # net-new hard drift). Everything below is the unchanged logger path.
+    if args.gate_stdin:
+        return run_gate_stdin()
 
     root = Path(args.root).resolve()
     strict_globs = load_strict_globs(root)

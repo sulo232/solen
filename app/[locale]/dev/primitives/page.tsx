@@ -1159,6 +1159,24 @@ function DateTimePickerDemo() {
           minDate={today(getLocalTimeZone())}
         />
       </Card>
+
+      <Card tag="date-and-time · STRIP layout (booking)">
+        <p className="font-body text-[14px] text-s-ink-2 mb-4">
+          Booking&apos;s fast near-term layout — a 14-day strip + a &quot;more dates&quot; sheet,
+          blue selection. Same primitive, <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[12px]">dateLayout=strip</code>.
+        </p>
+        <DateTimePicker
+          value={pickerValue}
+          onChange={setPickerValue}
+          slots={slots}
+          isDateDisabled={isDateDisabled}
+          minDate={today(getLocalTimeZone())}
+          dateLayout="strip"
+          selectedTone="accent"
+          dateLabel="Datum wählen"
+          timeLabel="Zeit wählen"
+        />
+      </Card>
     </Grid>
   );
 }

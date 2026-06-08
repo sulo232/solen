@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, closureSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/closures — Get closures for the salon owner's salon
 export async function GET(req: NextRequest) {
@@ -11,11 +12,7 @@ export async function GET(req: NextRequest) {
   const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -40,11 +37,7 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(closureSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
@@ -73,11 +66,7 @@ export async function DELETE(req: NextRequest) {
   const closureId = new URL(req.url).searchParams.get("id");
   if (!closureId) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 

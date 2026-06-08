@@ -106,7 +106,7 @@ export default function SalonReviewsSummary({
             latestReviews.slice(0, 3).map((r) => (
               <article
                 key={r.id}
-                className="border-l-2 border-s-ink/[0.06] pl-3"
+                className="border-l-2 border-s-border pl-3"
               >
                 <div className="flex items-center gap-2 mb-1">
                   {r.user_avatar ? (
@@ -166,7 +166,7 @@ export default function SalonReviewsSummary({
         <div className="mt-6 text-center">
           <Link
             href={`/${locale}/salon/${salonSlug}/reviews`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-s-ink/15 hover:border-s-accent/40 transition-colors duration-150 font-body text-[13px] font-semibold text-s-ink min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-s-border hover:border-s-accent/40 transition-colors duration-150 font-body text-[13px] font-semibold text-s-ink min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             Alle {reviewCount.toLocaleString("de-CH")} Bewertungen
             <ArrowRight size={14} aria-hidden />

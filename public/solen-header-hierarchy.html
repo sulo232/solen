@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — header elevation hierarchy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:24px 16px 80px}
+  h1{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 18px;max-width:720px}
+  .lead b{color:var(--ink)}
+  /* tier legend */
+  .tiers{display:flex;flex-wrap:wrap;gap:10px;margin:0 2px 22px}
+  .tier{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:12px;color:#444;max-width:280px}
+  .tier b{color:var(--ink)}
+  .sw{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center}
+  .sw.ink{background:var(--ink);color:#fff}
+  .sw.frost{background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.16);color:var(--ink)}
+  .sw.flat{background:#fff;border:1px solid var(--border);color:var(--ink)}
+  .frames{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start}
+  .col{width:380px;max-width:100%}
+  .tag{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .tag .pill{font-size:11px;font-weight:800;color:#fff;background:#b00;padding:3px 8px;border-radius:6px;font-family:var(--disp)}
+  .tag .pill.ok{background:#16A34A}
+  .tag .ds{font-size:11.5px;color:#777}
+  .phone{background:#fff;border-radius:26px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.12);padding:16px 14px 18px}
+  .urow{display:flex;align-items:center;gap:10px}
+  .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;color:var(--ink)}
+  /* the inconsistency (NOW) */
+  .ic.sh{border:1px solid var(--border);background:#fff;box-shadow:0 2px 7px rgba(26,18,9,.10)} /* border + shadow */
+  .ic.bare{}                                                                                    /* nothing */
+  .circ{border-radius:999px}
+  .ic.line{border:1px solid var(--border);background:#fff}                                      /* line only */
+  .ic.lineblue{border:1px solid rgba(39,110,241,.5);background:rgba(39,110,241,.10);color:var(--accent)}
+  /* the clean tier-3 (FLAT) */
+  .ic.flat{border:1px solid var(--border);background:#fff}
+  .spacer{flex:1}
+  .mid{flex:1;display:flex;justify-content:center;align-items:center;gap:5px;font-size:15px;font-weight:600}
+  .chev{opacity:.5}
+  .cats{display:flex;gap:8px;overflow:hidden;margin-top:12px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  .cat{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:14px;font-weight:500;white-space:nowrap}
+  .cat.on{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .search{display:flex;align-items:center;gap:10px;margin-top:12px;border:1px solid var(--border);border-radius:14px;padding:11px 13px}
+  .search.sh{box-shadow:0 2px 7px rgba(26,18,9,.08)}
+  .search .t{flex:1;font-size:14px;color:var(--ink2)}
+  .frow{display:flex;align-items:center;gap:8px;margin-top:12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13.5px;font-weight:500;white-space:nowrap}
+  .chip.on{border-color:rgba(39,110,241,.4);background:rgba(39,110,241,.08);font-weight:600;color:var(--ink)}
+  .cta{margin-top:14px;display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;box-shadow:0 6px 16px rgba(4,51,56,.18)}
+  .note{font-size:11.5px;color:#777;margin:9px 4px 0;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Header elevation hierarchy</h1>
+  <p class="lead">Per <b>CONTROL_ELEVATION</b>: elevation is earned by the background, not the button. Three tiers, nothing else. The "unstable" feeling = shadow on flat-white buttons (banned by rule 3) + a random mix of border / shadow / nothing.</p>
+  <div class="tiers" id="tiers"></div>
+  <div class="frames" id="frames"></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(p,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||20);s.setAttribute("height",o.size||20);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(p)?p:[p]).forEach(d=>{const q=document.createElementNS(NS,"path");q.setAttribute("d",d);s.appendChild(q);});return s;}
+function homeI(){return svg(["M3 10.5 12 3l9 7.5","M5 9.5V21h14V9.5"],{size:19});}
+function menuI(){return svg(["M3 6h18","M3 12h18","M3 18h18"],{size:21,sw:2.2});}
+function mapI(){return svg(["M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z","M9 4v14","M15 6v14"],{size:18});}
+function sliI(){return svg(["M4 6h10","M18 6h2","M4 12h2","M10 12h10","M4 18h8","M16 18h4","M14 4v4","M6 10v4","M12 16v4"],{size:18});}
+function searchI(){const s=svg(["M21 21l-4.3-4.3"],{size:17});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function bellI(){return svg(["M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9","M10.3 21a1.94 1.94 0 0 0 3.4 0"],{size:20});}
+function chevI(){const s=svg(["M6 9l6 6 6-6"],{size:13});s.classList.add("chev");return s;}
+function icon(name){return ({home:homeI,menu:menuI,map:mapI,sli:sliI,bell:bellI})[name]();}
+
+// tier legend
+function legend(){
+  const T=[["ink","Tier 1 · Primary","ink fill — the ONE commit action (pay/book). Carries the one allowed shadow."],
+           ["frost","Tier 2 · Over photo","frosted white glass — only when floating on an image (card heart, hero)."],
+           ["flat","Tier 3 · On white","everything else — bordered-white, FLAT, no shadow. Emphasis via fill, not lift."]];
+  const w=document.getElementById("tiers");
+  T.forEach(([sw,t,d])=>{const x=el("div","tier");const s=el("div","sw "+sw);s.appendChild(sw==="ink"?menuI():sw==="frost"?homeI():mapI());const c=el("div");c.appendChild(el("b",null,t));c.appendChild(document.createTextNode(" "+d));x.appendChild(s);x.appendChild(c);w.appendChild(x);});
+}
+
+function ic(name,cls,circ){const d=el("div","ic "+cls+(circ?" circ":""));d.appendChild(icon(name));return d;}
+
+function header(mode){ // mode: 'now' | 'clean'
+  const ph=el("div","phone");
+  const urow=el("div","urow");
+  if(mode==="now"){
+    urow.appendChild(ic("home","sh"));            // border + shadow
+    const m=el("div","mid");m.appendChild(el("span",null,"Basel"));m.appendChild(chevI());urow.appendChild(m); // bare text
+    urow.appendChild(ic("menu","sh"));            // border + shadow
+  } else {
+    urow.appendChild(ic("home","flat"));          // flat bordered
+    const m=el("div","mid");m.appendChild(el("span",null,"Basel"));m.appendChild(chevI());urow.appendChild(m);
+    urow.appendChild(ic("menu","flat"));          // flat bordered
+  }
+  ph.appendChild(urow);
+  const cats=el("div","cats");[["Barber",1],["Coiffeur",0],["Nails",0]].forEach(([l,on])=>{const c=el("div","cat"+(on?" on":""));c.appendChild(el("span",null,l));cats.appendChild(c);});ph.appendChild(cats);
+  const se=el("div","search"+(mode==="now"?" sh":""));se.appendChild(searchI());se.appendChild(el("div","t","Suchen"));se.appendChild(ic("map",mode==="now"?"line":"flat"));ph.appendChild(se);
+  const fr=el("div","frow");
+  fr.appendChild(ic("sli",mode==="now"?"lineblue":"flat",false));
+  const w=el("div","chip on");w.appendChild(el("span",null,"Walk-in"));fr.appendChild(w);
+  ["Jetzt geöffnet","Preis"].forEach(l=>{const c=el("div","chip");c.appendChild(el("span",null,l));fr.appendChild(c);});
+  ph.appendChild(fr);
+  const cta=el("div","cta");cta.appendChild(el("span",null,"Jetzt zahlen, Platz sichern"));ph.appendChild(cta);
+  return ph;
+}
+function colize(pillTxt,ok,nm,ds,mode){const col=el("div","col");const tag=el("div","tag");tag.appendChild(el("span","pill"+(ok?" ok":""),pillTxt));tag.appendChild(el("span","ds",ds));col.appendChild(tag);col.appendChild(header(mode));document.getElementById("frames").appendChild(col);}
+legend();
+colize("NOW","","Inconsistent","home/menu shadow · map line · filter blue · city bare · search shadow","now");
+colize("HIERARCHY ✓","ok","Tier 3 = flat","every white-chrome control: bordered, flat, no shadow. CTA = ink.","clean");
+</script>
+</body>
+</html>

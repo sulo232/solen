@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — every search screen (Fresha flow)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9a9a9a;--border:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--green:#16A34A;--star:#FFC32B;--disp:'Inter Tight',sans-serif;--body:'Inter',sans-serif;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e6;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:26px 18px 90px}
+  h1{font-family:var(--disp);font-size:23px;font-weight:800;letter-spacing:-.02em;margin:0 2px 4px}
+  .lead{font-size:13.5px;color:#444;line-height:1.55;margin:0 2px 8px;max-width:880px}
+  .lead b{color:var(--ink)}
+  .sec{font-family:var(--disp);font-size:16px;font-weight:800;letter-spacing:-.01em;margin:30px 2px 4px;display:flex;align-items:center;gap:9px}
+  .sec .b{font-size:10.5px;font-weight:800;color:#fff;background:var(--ink);padding:3px 8px;border-radius:6px}
+  .secsub{font-size:12.5px;color:#666;margin:0 2px 16px;max-width:880px}
+  .frames{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start}
+  .unit{width:300px}
+  .cap{margin:0 2px 9px}
+  .cap .n{font-family:var(--disp);font-size:13px;font-weight:700;color:var(--ink)}
+  .cap .d{font-size:12px;color:#666;line-height:1.45;margin-top:1px}
+  .cap .d .k{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:600}
+  .phone{position:relative;background:#fff;border-radius:26px;border:1px solid #d9d7d4;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.1);height:678px;display:flex;flex-direction:column}
+  /* generic header */
+  .hd{display:flex;align-items:center;gap:12px;padding:16px 15px 12px}
+  .hd .back{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border);flex:0 0 auto}
+  .hd .ttl{font-family:var(--disp);font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .hd .x{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border);margin-left:auto}
+  .body{flex:1;overflow:hidden;padding:0 15px}
+  /* fields */
+  .field{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:13px;padding:0 13px;height:48px;font-size:14.5px;color:var(--ink2)}
+  .field.ink{border-color:var(--ink);color:var(--ink)}
+  .field .cur{width:1.5px;height:18px;background:var(--ink);margin-left:-2px;animation:bl 1s steps(2) infinite}
+  @keyframes bl{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .stack{display:flex;flex-direction:column;gap:9px}
+  .scope{display:flex;gap:7px;margin-top:13px;overflow:hidden}
+  .stab{flex:0 0 auto;height:32px;padding:0 13px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:500;display:inline-flex;align-items:center}
+  .stab.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+  .rech{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 2px}
+  .rech .t{font-family:var(--disp);font-size:14.5px;font-weight:700}
+  .rech .clr{font-size:13px;font-weight:600;color:var(--accent)}
+  .sug{display:flex;align-items:center;gap:11px;padding:9px 2px}
+  .sug .si{width:34px;height:34px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto;color:var(--ink)}
+  .sug .si.sq{border-radius:9px;overflow:hidden;background:var(--border)}
+  .sug .si.sq img{width:100%;height:100%;object-fit:cover}
+  .sug .st{font-size:14.5px;font-weight:500;color:var(--ink)}
+  .sug .ss{font-size:12px;color:var(--ink2);margin-top:1px}
+  .sug mark{background:transparent;color:var(--ink);font-weight:700}
+  /* bottom cta */
+  .foot{padding:11px 15px calc(11px + env(safe-area-inset-bottom));border-top:1px solid var(--sunken);display:flex;gap:10px}
+  .btn{flex:1;display:flex;align-items:center;justify-content:center;height:48px;border-radius:13px;font-size:15px;font-weight:600}
+  .btn.ink{background:var(--ink);color:#fff}
+  .btn.out{border:1px solid var(--border);color:var(--ink);background:#fff}
+  /* keyboard */
+  .kb{margin-top:auto;background:#d3d6db;padding:7px 4px 10px;display:flex;flex-direction:column;gap:7px}
+  .krow{display:flex;justify-content:center;gap:5px}
+  .key{min-width:24px;height:34px;flex:1;max-width:30px;background:#fff;border-radius:5px;display:grid;place-items:center;font-size:13px;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+  .key.w{flex:1.6;max-width:none}
+  .key.dark{background:#abb0ba}
+  /* location */
+  .lrow{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--sunken)}
+  .lrow .li{width:36px;height:36px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto}
+  .lrow .li.acc{background:rgba(39,110,241,.1);color:var(--accent)}
+  .lrow .lt{font-size:14.5px;font-weight:500}
+  .lrow .lt.acc{color:var(--accent);font-weight:600}
+  .lrow .ls{font-size:12px;color:var(--ink2);margin-top:1px}
+  .lrow .chev{margin-left:auto;color:var(--ink3)}
+  .lhdr{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 2px}
+  .lhdr .t{font-family:var(--disp);font-size:14px;font-weight:700}
+  .lhdr .m{font-size:12.5px;font-weight:600;color:var(--accent)}
+  /* date */
+  .lab{font-family:var(--disp);font-size:13.5px;font-weight:700;margin:15px 2px 9px}
+  .daycards{display:flex;gap:9px}
+  .dcard{flex:1;border:1px solid var(--border);border-radius:13px;padding:11px 12px;text-align:left}
+  .dcard.on{border-color:var(--ink);background:var(--ink);color:#fff}
+  .dcard .dl{font-size:13px;font-weight:600}
+  .dcard .ds{font-size:11.5px;opacity:.7;margin-top:2px}
+  .cal{margin-top:4px}
+  .calhd{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 8px}
+  .calhd .mo{font-family:var(--disp);font-size:14px;font-weight:700}
+  .calhd .nav{display:flex;gap:4px}
+  .calhd .nav div{width:28px;height:28px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+  .dow span{text-align:center;font-size:11px;color:var(--ink3);font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .day{aspect-ratio:1;display:grid;place-items:center;font-size:13px;border-radius:999px;color:var(--ink)}
+  .day.mut{color:#cfcfcf}
+  .day.today{box-shadow:inset 0 0 0 1.5px var(--ink)}
+  .day.sel{background:var(--ink);color:#fff;font-weight:600}
+  .timechips{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+  .tchip{border:1px solid var(--border);border-radius:12px;padding:9px 13px;text-align:left}
+  .tchip.on{border-color:var(--ink);background:var(--ink);color:#fff}
+  .tchip .tl{font-size:13px;font-weight:600}
+  .tchip .tr{font-size:11px;opacity:.65;margin-top:1px}
+  /* category page */
+  .catbar{display:flex;align-items:center;gap:10px;padding:15px 14px 0}
+  .catbar .ic{width:36px;height:36px;border-radius:11px;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto}
+  .catbar .city{flex:1;text-align:center;font-size:14px;font-weight:600}
+  .catpills{display:flex;gap:7px;padding:11px 14px 0;overflow:hidden}
+  .cpill{height:33px;padding:0 13px;border-radius:999px;border:1px solid var(--border);display:inline-flex;align-items:center;font-size:13.5px;font-weight:500;flex:0 0 auto}
+  .cpill.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+  .searchpill{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:999px;padding:0 15px;height:46px;margin:12px 14px 0;color:var(--ink2);font-size:14.5px}
+  .filterchips{display:flex;gap:8px;padding:11px 14px;overflow:hidden}
+  .fchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--border);font-size:13px;font-weight:500;flex:0 0 auto}
+  .fchip b{font-weight:700;color:var(--ink)}
+  .fchip.act{border-color:var(--ink)}
+  .rescard{margin:2px 14px 0}
+  .rescard .ph{width:100%;aspect-ratio:3/2;border-radius:15px;overflow:hidden;background:var(--sunken)}
+  .rescard .ph img{width:100%;height:100%;object-fit:cover}
+  .rescard .rb{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
+  .rescard .rn{font-family:var(--disp);font-size:16px;font-weight:500}
+  .rescard .rr{display:flex;align-items:center;gap:3px;font-size:12.5px;color:var(--ink2)}
+  .rescard .rm{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  /* sheet over dim */
+  .dim{position:absolute;inset:0;background:#fff;filter:saturate(.96)}
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.4)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -10px 36px rgba(0,0,0,.16);display:flex;flex-direction:column;padding:8px 15px 0}
+  .grab{width:36px;height:4px;border-radius:999px;background:var(--border);margin:3px auto 11px;flex:0 0 auto}
+  .shead{display:flex;align-items:center;gap:11px}
+  .shead .cancel{flex:0 0 auto;font-size:14.5px;font-weight:600;color:var(--ink)}
+  .shead .stt{font-family:var(--disp);font-size:16px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Every search screen</h1>
+  <p class="lead">The full Fresha flow, Solen-skinned. <b>Homepage</b> opens a full page; tapping each field drills into its own picker (search / location / date). <b>Category</b> keeps date + time as chips on the results page (so the search sheet stays half), and the chip opens a date sheet. Static screens, so you can see every tap-state at once.</p>
+
+  <div class="sec"><span class="b">A</span> Homepage , full-page flow</div>
+  <p class="secsub">Tap search on the homepage → full page opens. Each of the 3 fields drills into a focused picker, then back.</p>
+  <div class="frames" id="flowA"></div>
+
+  <div class="sec"><span class="b">B</span> Category , half-sheet flow</div>
+  <p class="secsub">You're already in a category + city. Date/time/sort are chips on the page; the search sheet is text-only; the date chip opens a date sheet.</p>
+  <div class="frames" id="flowB"></div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+function svg(p,o){o=o||{};const s=document.createElementNS(NS,"svg");s.setAttribute("width",o.size||18);s.setAttribute("height",o.size||18);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",o.sw||2);s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");(Array.isArray(p)?p:[p]).forEach(d=>{const q=document.createElementNS(NS,"path");q.setAttribute("d",d);s.appendChild(q);});return s;}
+function searchI(o){o=o||{};const s=svg(["M21 21l-4.3-4.3"],{size:o.size||18});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","11");c.setAttribute("cy","11");c.setAttribute("r","7");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function pinI(o){o=o||{};return svg(["M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z","M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"],{size:o.size||17});}
+function calI(o){o=o||{};return svg(["M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z","M3 9h18","M8 2v4","M16 2v4"],{size:o.size||17});}
+function clockI(o){o=o||{};const s=svg(["M12 7v5l3 2"],{size:o.size||16});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","12");c.setAttribute("cy","12");c.setAttribute("r","9");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.insertBefore(c,s.firstChild);return s;}
+function xI(){return svg(["M18 6 6 18","M6 6l12 12"],{size:17});}
+function backI(){return svg(["M15 18l-6-6 6-6"],{size:18});}
+function chevR(){return svg(["M9 6l6 6-6 6"],{size:16});}
+function crossI(){const s=svg(["M12 2v3","M12 19v3","M2 12h3","M19 12h3"],{size:17});const c=document.createElementNS(NS,"circle");c.setAttribute("cx","12");c.setAttribute("cy","12");c.setAttribute("r","4");c.setAttribute("fill","none");c.setAttribute("stroke","currentColor");c.setAttribute("stroke-width","2");s.appendChild(c);return s;}
+function plusI(){return svg(["M12 5v14","M5 12h14"],{size:16});}
+function homeI(){return svg(["M3 10.5 12 3l9 7.5","M5 9.5V21h14V9.5"],{size:18});}
+function menuI(){return svg(["M3 6h18","M3 12h18","M3 18h18"],{size:18,sw:2.2});}
+function sliderI(){return svg(["M4 6h16","M4 12h16","M4 18h16","M9 4v4","M15 10v4","M7 16v4"],{size:15});}
+function scI(){return svg(["M20 4 8.5 15.5","M14.5 14.5 20 20","M8.5 8.5 12 12","M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z","M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"],{size:15});}
+function star(){const s=document.createElementNS(NS,"svg");s.setAttribute("width",12);s.setAttribute("height",12);s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","#FFC32B");const p=document.createElementNS(NS,"path");p.setAttribute("d","M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");s.appendChild(p);return s;}
+
+const VENUES=[["Haaratelier Samira","Coiffeur · Luttingerstr. 54","https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&q=70"],["The Fade Factory","Barber · Hammerstr. 65","https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=70"]];
+
+function sugTerm(label,icon){const r=el("div","sug");const si=el("div","si");si.appendChild(icon||searchI({size:16}));r.appendChild(si);const tx=el("div");tx.appendChild(el("div","st",label));r.appendChild(tx);return r;}
+function sugHL(label,q,icon){const r=el("div","sug");const si=el("div","si");si.appendChild(icon||scI());r.appendChild(si);const tx=el("div");const st=el("div","st");const i=label.toLowerCase().indexOf(q.toLowerCase());if(i>=0){st.appendChild(document.createTextNode(label.slice(0,i)));st.appendChild(el("mark",null,label.slice(i,i+q.length)));st.appendChild(document.createTextNode(label.slice(i+q.length)));}else st.textContent=label;tx.appendChild(st);r.appendChild(tx);return r;}
+function sugVenue(v){const r=el("div","sug");const si=el("div","si sq");const im=el("img");im.src=v[2];si.appendChild(im);r.appendChild(si);const tx=el("div");tx.appendChild(el("div","st",v[0]));tx.appendChild(el("div","ss",v[1]));r.appendChild(tx);return r;}
+function recents(){const f=document.createDocumentFragment();const h=el("div","rech");h.appendChild(el("div","t","Zuletzt"));h.appendChild(el("div","clr","Löschen"));f.appendChild(h);f.appendChild(sugTerm("herren"));f.appendChild(sugTerm("Alle Services"));VENUES.forEach(v=>f.appendChild(sugVenue(v)));return f;}
+
+function phone(children){const p=el("div","phone");children.forEach(c=>c&&p.appendChild(c));return p;}
+function unit(target,n,d,kicker,phoneEl){const u=el("div","unit");const cap=el("div","cap");cap.appendChild(el("div","n",n));const dd=el("div","d");if(kicker){const k=el("span","k");k.appendChild(document.createTextNode("⤷ "));k.appendChild(document.createTextNode(kicker));dd.appendChild(k);dd.appendChild(document.createTextNode("  "+d));}else dd.textContent=d;cap.appendChild(dd);u.appendChild(cap);u.appendChild(phoneEl);document.getElementById(target).appendChild(u);}
+
+/* ---------- A1 full-page resting ---------- */
+function A1(){
+  const hd=el("div","hd");hd.appendChild(el("div","ttl","Suchen"));const x=el("div","x");x.appendChild(xI());hd.appendChild(x);
+  const body=el("div","body");
+  const stack=el("div","stack");
+  const f1=el("div","field ink");f1.appendChild(searchI({size:17}));f1.appendChild(el("span",null,"Service, Salon oder Stylist:in"));stack.appendChild(f1);
+  const f2=el("div","field");f2.appendChild(pinI());f2.appendChild(el("span",null,"Stadt · Basel"));stack.appendChild(f2);
+  const f3=el("div","field");f3.appendChild(calI());f3.appendChild(el("span",null,"Jederzeit"));stack.appendChild(f3);
+  body.appendChild(stack);body.appendChild(recents());
+  const foot=el("div","foot");const b=el("div","btn ink","Suchen");foot.appendChild(b);
+  return phone([hd,body,foot]);
+}
+/* ---------- A2 focused / typing ---------- */
+function A2(){
+  const hd=el("div","hd");const bk=el("div","back");bk.appendChild(backI());hd.appendChild(bk);hd.appendChild(el("div","ttl","Suchen"));
+  const body=el("div","body");
+  const f=el("div","field ink");f.appendChild(searchI({size:17}));f.appendChild(el("span",null,"herr"));f.appendChild(el("span","cur"));body.appendChild(f);
+  const sc=el("div","scope");["Alle","Services","Salons","Stylist:innen"].forEach((t,i)=>{sc.appendChild(el("div","stab"+(i===0?" on":""),t));});body.appendChild(sc);
+  const h=el("div","rech");h.appendChild(el("div","t","Services"));body.appendChild(h);
+  body.appendChild(sugHL("Herrenschnitt","herr"));
+  body.appendChild(sugHL("Herren Färben","herr"));
+  body.appendChild(sugHL("Herren Waschen & Schnitt","herr"));
+  const h2=el("div","rech");h2.appendChild(el("div","t","Salons"));body.appendChild(h2);
+  body.appendChild(sugVenue(VENUES[1]));
+  // keyboard
+  const kb=el("div","kb");
+  [["Q","W","E","R","T","Z","U","I","O","P","Ü"],["A","S","D","F","G","H","J","K","L","Ö","Ä"]].forEach(row=>{const r=el("div","krow");row.forEach(k=>r.appendChild(el("div","key",k)));kb.appendChild(r);});
+  const r3=el("div","krow");const sh=el("div","key w dark");sh.appendChild(svg(["M12 4l7 8h-4v8h-6v-8H5z"],{size:14}));r3.appendChild(sh);["Y","X","C","V","B","N","M"].forEach(k=>r3.appendChild(el("div","key",k)));const del=el("div","key w dark");del.appendChild(svg(["M20 6H9l-5 6 5 6h11a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z","M15 9l-4 6","M11 9l4 6"],{size:14}));r3.appendChild(del);kb.appendChild(r3);
+  const r4=el("div","krow");r4.appendChild(el("div","key w dark","123"));const sp=el("div","key","");sp.style.flex="4";sp.style.maxWidth="none";r4.appendChild(sp);const ret=el("div","key w dark","↵");r4.appendChild(ret);kb.appendChild(r4);
+  return phone([hd,body,kb]);
+}
+/* ---------- A3 location ---------- */
+function A3(){
+  const hd=el("div","hd");const bk=el("div","back");bk.appendChild(backI());hd.appendChild(bk);hd.appendChild(el("div","ttl","Standort"));
+  const body=el("div","body");
+  const f=el("div","field");f.appendChild(searchI({size:17}));f.appendChild(el("span",null,"Stadt oder PLZ"));body.appendChild(f);
+  // use current
+  const cur=el("div","lrow");const ci=el("div","li acc");ci.appendChild(crossI());cur.appendChild(ci);const ct=el("div");ct.appendChild(el("div","lt acc","Aktuellen Standort verwenden"));cur.appendChild(ct);body.appendChild(cur);
+  // my addresses
+  const lh=el("div","lhdr");lh.appendChild(el("div","t","Meine Adressen"));lh.appendChild(el("div","m","Verwalten"));body.appendChild(lh);
+  [["Zuhause hinzufügen"],["Arbeit hinzufügen"]].forEach(a=>{const r=el("div","lrow");const i=el("div","li");i.appendChild(plusI());r.appendChild(i);const t=el("div");t.appendChild(el("div","lt",a[0]));r.appendChild(t);body.appendChild(r);});
+  // popular cities
+  const lh2=el("div","lhdr");lh2.appendChild(el("div","t","Beliebte Städte"));body.appendChild(lh2);
+  ["Basel","Zürich","Bern","Genf","Lausanne"].forEach(c=>{const r=el("div","lrow");const i=el("div","li");i.appendChild(pinI({size:16}));r.appendChild(i);const t=el("div");t.appendChild(el("div","lt",c));r.appendChild(t);const ch=el("div","chev");ch.appendChild(chevR());r.appendChild(ch);body.appendChild(r);});
+  return phone([hd,body]);
+}
+/* ---------- A4 date & time ---------- */
+function calGrid(){
+  const cal=el("div","cal");
+  const ch=el("div","calhd");ch.appendChild(el("div","mo","Juni 2026"));const nav=el("div","nav");const a=el("div");a.appendChild(svg(["M15 18l-6-6 6-6"],{size:15}));const b=el("div");b.appendChild(svg(["M9 6l6 6-6 6"],{size:15}));nav.appendChild(a);nav.appendChild(b);ch.appendChild(nav);cal.appendChild(ch);
+  const dow=el("div","dow");["Mo","Di","Mi","Do","Fr","Sa","So"].forEach(d=>dow.appendChild(el("span",null,d)));cal.appendChild(dow);
+  const g=el("div","grid");
+  for(let d=1;d<=30;d++){const cell=el("div","day"+(d===6?" today sel":""),String(d));g.appendChild(cell);}
+  cal.appendChild(g);return cal;
+}
+function A4(){
+  const hd=el("div","hd");const bk=el("div","back");bk.appendChild(backI());hd.appendChild(bk);hd.appendChild(el("div","ttl","Datum & Uhrzeit"));
+  const body=el("div","body");body.style.overflowY="auto";
+  body.appendChild(el("div","lab","Tag wählen"));
+  const dc=el("div","daycards");
+  const d1=el("div","dcard on");d1.appendChild(el("div","dl","Heute"));d1.appendChild(el("div","ds","Sa, 6. Juni"));dc.appendChild(d1);
+  const d2=el("div","dcard");d2.appendChild(el("div","dl","Morgen"));d2.appendChild(el("div","ds","So, 7. Juni"));dc.appendChild(d2);
+  body.appendChild(dc);
+  body.appendChild(calGrid());
+  body.appendChild(el("div","lab","Uhrzeit wählen"));
+  const tc=el("div","timechips");
+  [["Jederzeit",""],["Morgens","9–12"],["Mittags","12–15"],["Nachmittags","15–18"],["Abends","ab 18"]].forEach((t,i)=>{const c=el("div","tchip"+(i===0?" on":""));c.appendChild(el("div","tl",t[0]));if(t[1])c.appendChild(el("div","tr",t[1]+" Uhr"));tc.appendChild(c);});
+  body.appendChild(tc);body.appendChild(el("div",null," "));
+  const foot=el("div","foot");foot.appendChild(el("div","btn out","Abbrechen"));foot.appendChild(el("div","btn ink","Bestätigen"));
+  return phone([hd,body,foot]);
+}
+
+/* ---------- B5 category page ---------- */
+function catBehind(){
+  const f=document.createDocumentFragment();
+  const cb=el("div","catbar");const h=el("div","ic");h.appendChild(homeI());cb.appendChild(h);cb.appendChild(el("div","city","Basel"));const m=el("div","ic");m.appendChild(menuI());cb.appendChild(m);f.appendChild(cb);
+  const cp=el("div","catpills");["Barber","Coiffeur","Nails","Spa"].forEach((l,i)=>cp.appendChild(el("div","cpill"+(i===0?" on":""),l)));f.appendChild(cp);
+  const sp=el("div","searchpill");sp.appendChild(searchI({size:18}));sp.appendChild(el("span",null,"Service suchen"));f.appendChild(sp);
+  const fc=el("div","filterchips");
+  const c1=el("div","fchip act");c1.appendChild(calI({size:14}));const s1=el("span");s1.appendChild(document.createTextNode("Datum · "));s1.appendChild(el("b",null,"Heute"));c1.appendChild(s1);fc.appendChild(c1);
+  const c2=el("div","fchip");c2.appendChild(clockI({size:14}));const s2=el("span");s2.appendChild(document.createTextNode("Zeit · "));s2.appendChild(el("b",null,"Jederzeit"));c2.appendChild(s2);fc.appendChild(c2);
+  const c3=el("div","fchip");c3.appendChild(sliderI());c3.appendChild(el("span",null,"Sortieren"));fc.appendChild(c3);
+  f.appendChild(fc);
+  const rc=el("div","rescard");const ph=el("div","ph");const im=el("img");im.src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=70";ph.appendChild(im);rc.appendChild(ph);const rb=el("div","rb");rb.appendChild(el("div","rn","The Fade Factory"));const rr=el("div","rr");rr.appendChild(star());rr.appendChild(el("span",null,"4.8"));rb.appendChild(rr);rc.appendChild(rb);rc.appendChild(el("div","rm","Barber · Hammerstr. 65 · ab CHF 30"));f.appendChild(rc);
+  return f;
+}
+function B5(){const p=el("div","phone");p.appendChild(catBehind());return p;}
+
+/* ---------- B6 category search sheet ---------- */
+function B6(){
+  const p=el("div","phone");const dim=el("div","dim");dim.appendChild(catBehind());p.appendChild(dim);p.appendChild(el("div","scrim"));
+  const sheet=el("div","sheet");sheet.style.height="62%";sheet.appendChild(el("div","grab"));
+  const sh=el("div","shead");const f=el("div","field ink");f.style.flex="1";f.appendChild(searchI({size:17}));f.appendChild(el("span",null,"Service oder Salon"));f.appendChild(el("span","cur"));sh.appendChild(f);sh.appendChild(el("div","cancel","Abbrechen"));sheet.appendChild(sh);
+  const sc=el("div","scope");["Alle","Services","Salons","Stylist:innen"].forEach((t,i)=>sc.appendChild(el("div","stab"+(i===0?" on":""),t)));sheet.appendChild(sc);
+  const body=el("div");body.style.overflow="hidden";body.style.marginTop="2px";body.appendChild(recents());sheet.appendChild(body);
+  p.appendChild(sheet);return p;
+}
+/* ---------- B7 category date sheet ---------- */
+function B7(){
+  const p=el("div","phone");const dim=el("div","dim");dim.appendChild(catBehind());p.appendChild(dim);p.appendChild(el("div","scrim"));
+  const sheet=el("div","sheet");sheet.style.height="80%";sheet.appendChild(el("div","grab"));
+  const sh=el("div","shead");sh.appendChild(el("div","stt","Datum & Uhrzeit"));const x=el("div","x");x.style.marginLeft="auto";x.appendChild(xI());sh.appendChild(x);sheet.appendChild(sh);
+  const body=el("div");body.style.flex="1";body.style.overflowY="auto";body.style.paddingTop="4px";
+  const dc=el("div","daycards");const d1=el("div","dcard on");d1.appendChild(el("div","dl","Heute"));d1.appendChild(el("div","ds","Sa, 6. Juni"));dc.appendChild(d1);const d2=el("div","dcard");d2.appendChild(el("div","dl","Morgen"));d2.appendChild(el("div","ds","So, 7. Juni"));dc.appendChild(d2);body.appendChild(dc);
+  body.appendChild(calGrid());
+  body.appendChild(el("div","lab","Uhrzeit wählen"));
+  const tc=el("div","timechips");[["Jederzeit",""],["Morgens","9–12"],["Nachmittags","15–18"]].forEach((t,i)=>{const c=el("div","tchip"+(i===0?" on":""));c.appendChild(el("div","tl",t[0]));if(t[1])c.appendChild(el("div","tr",t[1]+" Uhr"));tc.appendChild(c);});body.appendChild(tc);
+  sheet.appendChild(body);
+  const foot=el("div","foot");foot.style.borderTop="none";foot.appendChild(el("div","btn out","Abbrechen"));foot.appendChild(el("div","btn ink","Bestätigen"));sheet.appendChild(foot);
+  p.appendChild(sheet);return p;
+}
+
+unit("flowA","1 · Full page (resting)","The entry. 3 fields + recents + Suchen.","tap search on homepage",A1());
+unit("flowA","2 · Search focused","Scope tabs + live suggestions + keyboard.","tap the Service field",A2());
+unit("flowA","3 · Location picker","Current location, saved addresses, cities.","tap 📍 Stadt",A3());
+unit("flowA","4 · Date & time","Day cards + calendar + time bands.","tap 📅 Jederzeit",A4());
+
+unit("flowB","5 · Category page","Search pill + Datum / Zeit / Sortieren chips.","you're browsing Barber · Basel",B5());
+unit("flowB","6 · Search sheet","Half sheet, text only + Abbrechen.","tap the search pill",B6());
+unit("flowB","7 · Date sheet","Same date picker, as a sheet over the page.","tap the Datum chip",B7());
+</script>
+</body>
+</html>

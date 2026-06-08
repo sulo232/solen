@@ -179,7 +179,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           </div>
 
           {/* Sub-category ratings — optional */}
-          <div className="space-y-3 pt-4 border-t border-s-ink/5">
+          <div className="space-y-3 pt-4 border-t border-s-border">
             <p className="text-xs font-heading text-s-ink/60 uppercase tracking-[.15em]">
               {t("detail_rating")}
             </p>
@@ -203,7 +203,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
               placeholder={t("comment_placeholder")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full px-4 py-3 rounded-[12px] border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
+              className="w-full px-4 py-3 rounded-[12px] border border-s-border bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
               rows={4}
               maxLength={500}
             />
@@ -242,7 +242,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           </div>
 
           {error && (
-            <div id="review-error" role="alert" className="p-3 bg-red-50 text-red-600 text-xs rounded-btn">
+            <div id="review-error" role="alert" className="p-3 bg-s-error-bg text-s-error text-xs rounded-btn">
               {error}
             </div>
           )}
@@ -252,7 +252,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 justify-center rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink/60"
+              className="flex-1 py-3 justify-center rounded-btn border border-s-border text-sm font-medium text-s-ink/60"
             >
               {t("cancel")}
             </button>

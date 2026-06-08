@@ -66,7 +66,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-accent/40 transition-colors duration-150"
+        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-border bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-accent/40 transition-colors duration-150"
         aria-label={displayLabel}
       >
         <Calendar size={12} className="text-s-ink/40" />
@@ -75,7 +75,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1 right-0 z-50 bg-white rounded-[12px] border border-s-ink/[0.08] shadow-warm-md p-4 min-w-[240px]">
+        <div className="absolute top-full mt-1 right-0 z-50 bg-white rounded-[12px] border border-s-border shadow-warm-md p-4 min-w-[240px]">
           {/* Presets */}
           <p className="text-[8px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
             {t("quickRange")}
@@ -104,7 +104,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={from}
                 max={to}
                 onChange={(e) => setFrom(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
             <div>
@@ -114,7 +114,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={to}
                 min={from}
                 onChange={(e) => setTo(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
           </div>

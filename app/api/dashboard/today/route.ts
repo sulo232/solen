@@ -14,6 +14,7 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(_request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -49,11 +50,7 @@ export async function GET(_request: NextRequest) {
     });
   }
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id, average_rating")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string; average_rating: number | null }>(supabase, user.id, "id, average_rating");
 
   if (!salon) {
     return NextResponse.json({

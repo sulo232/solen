@@ -61,7 +61,7 @@ export default function BodyDiagram({
 
   if (!svgSource) {
     return (
-      <div className="rounded-[12px] border border-dashed border-s-ink/[0.06] p-6 text-center">
+      <div className="rounded-[12px] border border-dashed border-s-border p-6 text-center">
         <p className="text-xs text-s-ink/30">{t("coming_soon")}</p>
       </div>
     );

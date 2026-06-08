@@ -92,7 +92,7 @@ export default function CardFilterRow({
           "active:scale-[0.97]",
           isActive
             ? "text-white hover:brightness-[1.06]"
-            : "bg-white text-s-ink-2 border border-s-ink/[0.08] hover:bg-s-bg-sunken",
+            : "bg-white text-s-ink-2 border border-s-border hover:bg-s-bg-sunken",
         ].join(" ")}
         style={{
           padding: "8px 16px",

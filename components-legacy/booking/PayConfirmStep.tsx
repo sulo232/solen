@@ -234,7 +234,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* (b) Summary card */}
       <div className="rounded-[12px] p-4 bg-s-bg-sunken">
-        <div className="flex items-start gap-3 mb-3 pb-3 border-b border-s-ink/[0.05]">
+        <div className="flex items-start gap-3 mb-3 pb-3 border-b border-s-border">
           {salon.cover_photo_url && (
             <Image
               src={salon.cover_photo_url}
@@ -271,7 +271,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               {dateLabel} · {timeLabel}
             </span>
           </div>
-          <div className="flex items-baseline justify-between gap-2 pt-2 mt-2 border-t border-s-ink/[0.05]">
+          <div className="flex items-baseline justify-between gap-2 pt-2 mt-2 border-t border-s-border">
             <span className="font-body font-bold text-[10px] uppercase tracking-[.18em] text-s-ink/45">Total</span>
             <span className="font-heading text-[20px] text-s-ink tabular-nums" style={{ letterSpacing: '0.01em' }}>
               {formatPrice(totalPrice, localeCode)}
@@ -369,13 +369,13 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* (e) Sticky bottom CTA. Online → "Weiter zur Zahlung" (next is the card form);
           in-person → "Buchen" (commits immediately). */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-white p-4 z-20">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white p-4 z-20">
         <div className="max-w-2xl mx-auto px-4">
           <button
             type="button"
             onClick={handleConfirm}
             disabled={isSubmitting}
-            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-accent-bright text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[15px] font-semibold transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
             {paymentMode === 'at_salon'

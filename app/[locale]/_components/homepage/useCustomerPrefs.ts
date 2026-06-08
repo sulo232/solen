@@ -12,6 +12,7 @@
 // as "render the default, unpersonalized view".
 
 import * as React from "react";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 export interface CustomerPrefs {
   categories: string[];
@@ -27,8 +28,19 @@ const asStrArr = (v: unknown): string[] =>
 
 function loadPrefs(): Promise<CustomerPrefs | null> {
   if (cached) return cached;
-  cached = fetch("/api/profile", { credentials: "include" })
-    .then((r) => (r.ok ? r.json() : null))
+  // Gate the /api/profile fetch on a known client session. The homepage renders
+  // for every logged-out visitor; firing /api/profile while signed out produced a
+  // guaranteed 401 in the browser network console. getSession() reads the local
+  // auth cookie only (no network round-trip), so guests short-circuit to the
+  // default unpersonalized view without ever hitting the 401 endpoint.
+  cached = createBrowserSupabaseClient()
+    .auth.getSession()
+    .then(({ data: { session } }) => {
+      if (!session) return null;
+      return fetch("/api/profile", { credentials: "include" }).then((r) =>
+        r.ok ? r.json() : null,
+      );
+    })
     .then((data) => {
       if (!data || typeof data !== "object") return null;
       const obj = data as Record<string, unknown>;

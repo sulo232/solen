@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Admin commission editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink40:rgba(10,10,10,.4); --ink50:rgba(10,10,10,.5);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --accent-bg:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9; --error:#DC2626; --error-bg:#FEE2E2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:32px 28px 56px}
+  h1{font-family:'Inter Tight';font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .lede{font-size:13.5px;color:var(--ink50);margin:6px 0 26px;max-width:760px;line-height:1.5}
+  .lede b{color:var(--ink)}
+  .rail{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:380px}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink);margin:0 0 3px;display:flex;align-items:center;gap:7px}
+  .cap .n{width:19px;height:19px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;flex-shrink:0}
+  .csub{font-size:11.5px;color:var(--ink40);margin:0 0 10px 26px}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  .card{width:380px;background:var(--white);border-radius:18px;border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.07);padding:22px 20px 20px}
+  .eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink40)}
+  .ctitle{font-family:'Inter Tight';font-weight:600;font-size:19px;letter-spacing:-.02em;margin-top:5px}
+  .cdesc{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-top:5px}
+
+  .banner{display:flex;align-items:center;gap:9px;background:var(--success-bg);border-radius:11px;padding:11px 13px;margin-top:16px}
+  .banner svg{width:18px;height:18px;color:var(--success);flex-shrink:0}
+  .banner .bt{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--success)}
+  .banner .bs{font-size:11.5px;color:var(--ink2);margin-top:1px}
+
+  .field{margin-top:18px}
+  .flabel{font-size:11.5px;font-weight:600;color:var(--ink2);margin-bottom:7px}
+  .inputwrap{display:flex;align-items:center;border:1.5px solid var(--ink);border-radius:13px;padding:0 16px;height:62px;background:var(--white)}
+  .inputwrap.calm{border-color:var(--border)}
+  .inputwrap .val{font-family:'Inter Tight';font-weight:700;font-size:30px;letter-spacing:-.02em;flex:1}
+  .inputwrap .pct{font-family:'Inter Tight';font-weight:600;font-size:20px;color:var(--ink2)}
+  .inputwrap .caret{width:2px;height:30px;background:var(--accent);margin-left:1px;border-radius:2px}
+
+  .impact{margin-top:16px;border:1px solid var(--border);border-radius:13px;overflow:hidden}
+  .impact .ih{font-size:11px;color:var(--ink40);padding:10px 14px 8px;background:#fcfcfc}
+  .irow{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;font-size:13.5px;border-top:1px solid var(--border)}
+  .irow .rl{color:var(--ink)} .irow .rv{font-family:'Inter Tight';font-weight:700;font-variant-numeric:tabular-nums}
+  /* read-only rate display for the saved state — no dead form box */
+  .rovalue{display:flex;align-items:baseline;gap:5px;padding:5px 2px 3px}
+  .rovalue .val{font-family:'Inter Tight';font-weight:700;font-size:30px;letter-spacing:-.02em}
+  .rovalue .pct{font-family:'Inter Tight';font-weight:600;font-size:18px;color:var(--ink2)}
+  .rovalue .editlink{margin-left:auto;align-self:center;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none}
+  .irow.fee .rv{color:var(--ink)} .irow.net .rv{color:var(--ink)}
+  .ifoot{font-size:10.5px;color:var(--ink40);padding:0 14px 10px;line-height:1.4}
+
+  .btns{margin-top:24px;display:flex;flex-direction:column;gap:9px}
+  .btn{height:50px;border-radius:999px;border:none;font-family:'Inter';font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;width:100%}
+  .btn svg{width:17px;height:17px}
+  .btn.ink{background:var(--ink);color:#fff}
+  .btn.green{background:var(--success);color:#fff}
+  .btn.blue{background:var(--accent);color:#fff}
+  .btn.red{background:var(--error);color:#fff}
+  .btn.ghost{height:44px;background:transparent;color:var(--ink2);border:1px solid var(--border)}
+  .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:999px;display:inline-block}
+
+  /* outcome-colour legend (V3-D426) */
+  .legend{width:380px}
+  .legend .lt{font-family:'Inter Tight';font-weight:600;font-size:13px;margin-bottom:3px}
+  .legend .ls{font-size:11.5px;color:var(--ink2);line-height:1.5;margin-bottom:14px}
+  .legend .row{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .legend .pill{height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Inter';font-weight:600;font-size:12.5px;color:#fff;padding:0 16px;flex-shrink:0;min-width:138px}
+  .legend .pill svg{width:14px;height:14px}
+  .legend .ex{font-size:11.5px;color:var(--ink2)}
+  .legend .ex b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+  <h1>Admin: Platform commission editor</h1>
+  <p class="lede">The single rate <b>Solen keeps</b> on every booking (Stripe Connect application fee). Lives in the <b>admin dashboard</b>, writes to <b>platform_settings.commission.rate_percent</b>. Applies to <b>new</b> bookings only. Save button follows the outcome-colour rule (V3-D426): <b>ink</b> to commit, <b>blue</b> while saving, <b>green</b> on success, <b>red</b> on failure.</p>
+
+  <div class="rail">
+
+    <!-- 1 — EDITING -->
+    <div class="col">
+      <p class="cap"><span class="n">1</span> Editing</p>
+      <p class="csub">Live impact preview updates with the rate</p>
+      <div class="card">
+        <div class="eyebrow">Platform fee</div>
+        <div class="ctitle">Commission rate</div>
+        <div class="cdesc">What Solen keeps on every booking. Applies to new bookings only.</div>
+
+        <div class="field">
+          <div class="flabel">Rate</div>
+          <div class="inputwrap"><span class="val num">15.0</span><span class="caret"></span><span class="pct">%</span></div>
+        </div>
+
+        <div class="impact">
+          <div class="ih">On a CHF 45.00 booking</div>
+          <div class="irow fee"><span class="rl">Solen commission</span><span class="rv num">CHF 6.75</span></div>
+          <div class="irow net"><span class="rl">Salon receives</span><span class="rv num">CHF 38.25</span></div>
+          <div class="ifoot">Before Stripe processing fees. MWST on commission handled on Solen's own books.</div>
+        </div>
+
+        <div class="btns">
+          <button class="btn ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Save changes</button>
+          <button class="btn ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 — SAVED -->
+    <div class="col">
+      <p class="cap"><span class="n">2</span> Saved</p>
+      <p class="csub">Green confirms the new rate is live</p>
+      <div class="card">
+        <div class="eyebrow">Platform fee</div>
+        <div class="ctitle">Commission rate</div>
+        <div class="cdesc">What Solen keeps on every booking. Applies to new bookings only.</div>
+
+        <div class="banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><div class="bt">Commission updated</div><div class="bs">New bookings now use 15.0%.</div></div>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Rate</div>
+          <div class="rovalue"><span class="val num">15.0</span><span class="pct">%</span><a class="editlink" href="#">Edit</a></div>
+        </div>
+
+        <div class="impact">
+          <div class="ih">On a CHF 45.00 booking</div>
+          <div class="irow fee"><span class="rl">Solen commission</span><span class="rv num">CHF 6.75</span></div>
+          <div class="irow net"><span class="rl">Salon receives</span><span class="rv num">CHF 38.25</span></div>
+          <div class="ifoot">Before Stripe processing fees. MWST on commission handled on Solen's own books.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 — OUTCOME-COLOUR LEGEND -->
+    <div class="col">
+      <p class="cap"><span class="n">3</span> Button states</p>
+      <p class="csub">Same save button, four outcomes</p>
+      <div class="legend">
+        <div class="lt">Outcome colour (V3-D426)</div>
+        <div class="ls">The save control changes colour to match what just happened. This is the convention going into the design system for every commit action.</div>
+
+        <div class="row"><span class="pill" style="background:var(--ink)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Save changes</span><span class="ex"><b>Ink</b> — ready to commit</span></div>
+
+        <div class="row"><span class="pill" style="background:var(--accent)"><span class="spin"></span>Saving…</span><span class="ex"><b>Blue</b> — in progress</span></div>
+
+        <div class="row"><span class="pill" style="background:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Saved</span><span class="ex"><b>Green</b> — success</span></div>
+
+        <div class="row"><span class="pill" style="background:var(--error)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>Couldn't save</span><span class="ex"><b>Red</b> — failed, retry</span></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

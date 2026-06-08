@@ -44,6 +44,15 @@ export default function Breadcrumb() {
   if (normalizedPath === `/${locale}/discover`) return null;
   if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
 
+  // V3-D449: /{city}/{category} pages (e.g. /basel/coiffeur) render SearchTemplate, which
+  // already provides its own breadcrumb + back affordance. The startsWith EXCLUDED list above
+  // only catches the bare /{category} routes, NOT /{city}/{category} — so this global bar was
+  // stacking a SECOND, redundant back button right under the header home (owner-flagged).
+  // Exclude any path whose last segment is a category slug.
+  const CATEGORY_SLUGS = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"];
+  const lastSeg = withoutLocale.split("/").filter(Boolean).pop();
+  if (lastSeg && CATEGORY_SLUGS.includes(lastSeg)) return null;
+
   const segments = withoutLocale.split("/").filter(Boolean);
 
   // Mobile: simple back button

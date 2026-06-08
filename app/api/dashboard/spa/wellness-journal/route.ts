@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { z } from "zod";
+import { getActiveSalon } from "@/lib/active-salon";
 
 const journalSchema = z.object({
   client_id: z.string().uuid(),
@@ -32,7 +33,7 @@ async function authenticate() {
   if (rateLimited) return { error: rateLimited };
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("id").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return { error: NextResponse.json({ error: "No salon" }, { status: 404 }) };
 
   return { user, salon, admin };

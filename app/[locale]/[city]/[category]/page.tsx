@@ -14,7 +14,7 @@ type Params = {
 };
 
 const CITIES = ["basel", "zuerich", "bern"] as const;
-const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa", "makeup", "waxing"] as const;
+const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa"] as const;
 
 const CITY_NAMES: Record<string, Record<string, string>> = {
   basel: { de: "Basel", en: "Basel", fr: "Bâle", it: "Basilea" },
@@ -27,8 +27,6 @@ const CATEGORY_NAMES: Record<string, Record<string, string>> = {
   nails: { de: "Nagelstudio", en: "Nails", fr: "Ongles", it: "Unghie" },
   barbershop: { de: "Barbershop", en: "Barbershop", fr: "Barbershop", it: "Barbershop" },
   spa: { de: "Spa", en: "Spa", fr: "Spa", it: "Spa" },
-  makeup: { de: "Makeup", en: "Makeup", fr: "Maquillage", it: "Trucco" },
-  waxing: { de: "Waxing", en: "Waxing", fr: "Épilation", it: "Ceretta" },
 };
 
 export async function generateStaticParams(): Promise<Params[]> {

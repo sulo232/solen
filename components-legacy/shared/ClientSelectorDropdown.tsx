@@ -62,7 +62,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white transition-[border-color,box-shadow] ${isOpen ? 'border-s-accent ring-2 ring-s-accent/10' : 'border-s-ink/[0.10]'}`}
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white transition-[border-color,box-shadow] ${isOpen ? 'border-s-accent ring-2 ring-s-accent/10' : 'border-s-border'}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           <User size={14} className="text-s-ink/40 shrink-0" />
@@ -74,9 +74,9 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 w-full mt-1 bg-white border border-s-ink/10 rounded-[12px] z-50 overflow-hidden" 
+        <div className="absolute top-full left-0 w-full mt-1 bg-white border border-s-border rounded-[12px] z-50 overflow-hidden"
              style={{ boxShadow: "0 4px 20px rgba(26,18,9,.08)" }}>
-          <div className="p-2 border-b border-s-ink/5 flex items-center gap-2">
+          <div className="p-2 border-b border-s-border flex items-center gap-2">
             <Search size={12} className="text-s-ink/40" />
             <input 
               autoFocus

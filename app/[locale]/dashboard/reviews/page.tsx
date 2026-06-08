@@ -7,6 +7,7 @@ import { Star, MessageCircle, Flag } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface Review {
@@ -32,6 +33,10 @@ export default function SalonReviewsPage() {
   const t = useTranslations("dashboard.reviewsPage") as any;
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  // H2: distinguish a failed fetch (error state + retry) from genuinely-empty (empty state),
+  // and never spin forever when the salon can't be resolved.
+  const [error, setError] = useState(false);
+  const [salonReady, setSalonReady] = useState(false);
   const [salonId, setSalonId] = useState<string | null>(null);
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const [responseText, setResponseText] = useState("");
@@ -46,20 +51,34 @@ export default function SalonReviewsPage() {
       .then((d) => {
         if (d.salon?.id) setSalonId(d.salon.id);
       })
-      .catch((err) => console.error("[DashboardReviews] Failed to fetch salon ID:", err));
+      .catch((err) => console.error("[DashboardReviews] Failed to fetch salon ID:", err))
+      // Mark settled either way so a null salon resolves to an error state, not a spinner.
+      .finally(() => setSalonReady(true));
   }, []);
 
   const fetchReviews = useCallback(() => {
-    if (!salonId) return;
+    // H2 fix: clear loading when there's no salon (was `if (!salonId) return;` BEFORE
+    // setLoading(false), which left the spinner running forever).
+    if (!salonId) { setLoading(false); return; }
     setLoading(true);
+    setError(false);
     fetch(`/api/reviews/salon/${salonId}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(`reviews ${r.status}`); return r.json(); })
       .then((d) => setReviews(d.items ?? []))
-      .catch((err) => { console.error("[DashboardReviews] Failed to fetch reviews:", err); setReviews([]); })
+      .catch((err) => { console.error("[DashboardReviews] Failed to fetch reviews:", err); setError(true); setReviews([]); })
       .finally(() => setLoading(false));
   }, [salonId]);
 
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
+
+  const retry = () => {
+    setSalonReady(false);
+    fetch("/api/salons/mine")
+      .then((r) => r.json())
+      .then((d) => setSalonId(d.salon?.id ?? null))
+      .catch((err) => console.error("[DashboardReviews] retry salon fetch failed:", err))
+      .finally(() => { setSalonReady(true); fetchReviews(); });
+  };
 
   const handleRespond = async (reviewId: string) => {
     if (!responseText.trim()) return;
@@ -96,8 +115,10 @@ export default function SalonReviewsPage() {
         <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
-      {loading ? (
+      {(!salonReady || loading) ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+      ) : (error || !salonId) ? (
+        <ErrorState title={t("loadErrorTitle")} message={t("loadErrorMessage")} retryLabel={t("retry")} onRetry={retry} />
       ) : reviews.length === 0 ? (
         <EmptyState icon={Star} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (

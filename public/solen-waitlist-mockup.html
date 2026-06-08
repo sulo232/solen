@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Waitlist flow mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink60:rgba(10,10,10,.6); --ink40:rgba(10,10,10,.4); --ink30:rgba(10,10,10,.3);
+    --b08:rgba(10,10,10,.08); --b12:rgba(10,10,10,.12); --sunken:#F5F5F4; --accent:#185CE0; --accent-bright:#276EF1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E9E9E7;font-family:'Inter',sans-serif;color:var(--ink);padding:40px 20px;-webkit-font-smoothing:antialiased}
+  h1.page{font-family:'Inter Tight';font-weight:800;font-size:24px;text-align:center;margin-bottom:6px}
+  p.sub{text-align:center;color:var(--ink60);font-size:14px;margin-bottom:32px}
+  .row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+  .col{width:340px}
+  .label{font-family:'Inter Tight';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink60);text-align:center;margin-bottom:10px}
+  .phone{width:340px;height:620px;background:#fff;border-radius:34px;border:1px solid var(--b12);box-shadow:0 18px 50px rgba(0,0,0,.14);overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .nav{height:52px;border-bottom:1px solid var(--b08);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+  .nav .x{font-size:20px;color:var(--ink60)}
+  .nav .t{font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .body{flex:1;overflow:hidden;padding:18px 16px;position:relative}
+  h3{font-family:'Inter Tight';font-weight:700;font-size:18px;margin:0 0 12px}
+  h3.mt{margin-top:24px}
+  .dates{display:flex;gap:10px;overflow:hidden}
+  .dcard{width:64px;flex-shrink:0;border:1px solid var(--b12);border-radius:16px;padding:11px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .dcard.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  .dcard .wd{font-size:11px;font-weight:500}
+  .dcard .dd{font-size:21px;font-weight:800;font-family:'Inter Tight';line-height:1}
+  .dcard .mo{font-size:11px}
+  /* no-slots empty state + trigger */
+  .empty{text-align:center;padding:26px 8px 8px}
+  .empty .clk{font-size:34px;color:var(--ink30)}
+  .empty p{font-size:14px;color:var(--ink60);margin-top:8px}
+  .wl-card{margin-top:18px;border:1px solid var(--b12);border-radius:18px;padding:18px;text-align:left;background:linear-gradient(180deg,#fff, #FAFAFA)}
+  .wl-card .h{font-family:'Inter Tight';font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+  .wl-card .h .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .wl-card .d{font-size:13px;color:var(--ink60);margin:6px 0 14px;line-height:1.45}
+  .btn-ink{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--ink);color:#fff;border:none;border-radius:12px;padding:13px;font-family:'Inter Tight';font-weight:600;font-size:14px;cursor:pointer}
+  .btn-out{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#fff;color:var(--ink);border:1px solid var(--b12);border-radius:12px;padding:13px;font-family:'Inter Tight';font-weight:600;font-size:14px;cursor:pointer}
+  /* bottom sheet modal */
+  .scrim{position:absolute;inset:0;background:rgba(0,0,0,.40)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;padding:8px 18px 22px}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--b12);margin:6px auto 14px}
+  .sheet h2{font-family:'Inter Tight';font-weight:800;font-size:21px;line-height:1.15}
+  .sheet .lead{font-size:13.5px;color:var(--ink60);margin:6px 0 16px;line-height:1.45}
+  .ctx{background:var(--sunken);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+  .ctx .r{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+  .ctx .r .k{color:var(--ink60)}
+  .ctx .r .v{font-weight:600}
+  .fld{font-family:'Inter Tight';font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink60);margin-bottom:8px}
+  .pills{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .pill{border:1px solid var(--b12);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer}
+  .pill.on{background:rgba(24,92,224,.10);border-color:var(--accent-bright);color:var(--accent)}
+  /* success */
+  .succ{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:0 26px}
+  .succ .ring{width:66px;height:66px;border-radius:50%;background:rgba(22,163,74,.12);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:18px}
+  .succ h2{font-family:'Inter Tight';font-weight:800;font-size:22px;margin-bottom:8px}
+  .succ p{font-size:14px;color:var(--ink60);line-height:1.5;margin-bottom:22px}
+  .tag{font-size:11px;color:var(--ink40);margin-top:12px}
+</style>
+</head>
+<body>
+  <h1 class="page">Waitlist — booking flow</h1>
+  <p class="sub">Trigger lives in the date/time step's "no slots" state · modal matches the existing bottom-sheet pattern · posts to the live <code>/api/waitlist</code></p>
+
+  <div class="row">
+
+    <!-- 1. TRIGGER in the no-slots state -->
+    <div class="col">
+      <div class="label">1 · Pick a full date → trigger appears</div>
+      <div class="phone">
+        <div class="nav"><span class="x">&larr;</span><span class="t">Choose a time</span></div>
+        <div class="body">
+          <h3>Pick a date</h3>
+          <div class="dates">
+            <div class="dcard"><span class="wd">Mon</span><span class="dd">9</span><span class="mo">Jun</span></div>
+            <div class="dcard sel"><span class="wd">Tue</span><span class="dd">10</span><span class="mo">Jun</span></div>
+            <div class="dcard"><span class="wd">Wed</span><span class="dd">11</span><span class="mo">Jun</span></div>
+            <div class="dcard"><span class="wd">Thu</span><span class="dd">12</span><span class="mo">Jun</span></div>
+          </div>
+          <h3 class="mt">Choose a time</h3>
+          <div class="empty">
+            <div class="clk">&#128339;</div>
+            <p>No slots available on this day</p>
+          </div>
+          <div class="wl-card">
+            <div class="h"><span class="dot"></span>Don't miss out</div>
+            <div class="d">Join the waitlist and we'll notify you the moment a spot opens up on Tue, 10 Jun.</div>
+            <button class="btn-ink">Join the waitlist</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MODAL bottom sheet -->
+    <div class="col">
+      <div class="label">2 · Tap → waitlist sheet</div>
+      <div class="phone">
+        <div class="nav"><span class="x">&larr;</span><span class="t">Choose a time</span></div>
+        <div class="body" style="filter:saturate(.9)">
+          <h3>Pick a date</h3>
+          <div class="dates">
+            <div class="dcard"><span class="wd">Mon</span><span class="dd">9</span><span class="mo">Jun</span></div>
+            <div class="dcard sel"><span class="wd">Tue</span><span class="dd">10</span><span class="mo">Jun</span></div>
+            <div class="dcard"><span class="wd">Wed</span><span class="dd">11</span><span class="mo">Jun</span></div>
+          </div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <h2>Join the waitlist</h2>
+          <div class="lead">Fully booked on your date? We'll email you the moment a spot frees up.</div>
+          <div class="ctx">
+            <div class="r"><span class="k">Salon</span><span class="v">Studio Lumière</span></div>
+            <div class="r"><span class="k">Service</span><span class="v">Cut &amp; style</span></div>
+            <div class="r"><span class="k">Date</span><span class="v">Tue, 10 Jun</span></div>
+          </div>
+          <div class="fld">Preferred time</div>
+          <div class="pills">
+            <span class="pill on">Any time</span>
+            <span class="pill">Morning</span>
+            <span class="pill">Afternoon</span>
+            <span class="pill">Evening</span>
+          </div>
+          <button class="btn-ink">Notify me when a spot opens</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SUCCESS -->
+    <div class="col">
+      <div class="label">3 · Confirmed</div>
+      <div class="phone">
+        <div class="nav"><span class="x">&larr;</span><span class="t">Choose a time</span></div>
+        <div class="succ">
+          <div class="ring">&#10003;</div>
+          <h2>You're on the list</h2>
+          <p>We'll email you as soon as a spot opens up at Studio Lumière on Tue, 10 Jun. You can leave the waitlist any time from your bookings.</p>
+          <button class="btn-out">Browse other dates</button>
+          <div class="tag">Saved to your account · one tap to leave</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -65,6 +65,13 @@ export interface SalonResultCardProps {
    *  TOP, text below) - Fresha's real mobile-search shape, photo-led, for map-CLOSED
    *  browse. Same card family - only the shape changes (doctrine V3-D355/D356). */
   variant?: "grid" | "list" | "card";
+  /** Walk-in live status (variant A) — shown only when the walk_in filter is active.
+   *  Raw minutes from /api/walkin/availability (the card owns the copy + i18n):
+   *  `walkInWaitMin`/`walkInWaitMax` = wait range; 0 → "Jetzt frei". `walkInQueue` = N waiting.
+   *  Pass `walkInWaitMin` even when 0 — null means "no walk-in data", 0 means "free now". */
+  walkInWaitMin?: number | null;
+  walkInWaitMax?: number | null;
+  walkInQueue?: number | null;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -72,14 +79,24 @@ const CATEGORY_LABEL: Record<string, string> = {
   barbershop: "Barber",
   nails: "Nails",
   spa: "Spa",
-  makeup: "Makeup",
-  waxing: "Waxing",
 };
 
 // Locale-derived labels (all 4 locales present — no single-language hardcode).
 // Mirrored in messages/{de,en,fr,it}.json under ui.searchChrome; kept inline to
 // match the established inline-record pattern in SearchTemplate (MAP_FAB_LABEL).
 const FROM_LABEL: Record<string, string> = { de: "ab", en: "from", fr: "des", it: "da" };
+
+// Walk-in live status copy. Locale-correct. `ahead(n)` = N people in front of you
+// (the colored queue count); `join` = the queue CTA; `none` = nobody waiting.
+const WALKIN_LABEL: Record<
+  string,
+  { now: string; free: string; unit: string; ahead: (n: number) => string; join: string; none: string }
+> = {
+  de: { now: "Jetzt frei", free: "Frei in", unit: "Min", ahead: (n) => `${n} vor dir`, join: "Anstehen", none: "Niemand wartet" },
+  en: { now: "Free now", free: "Free in", unit: "min", ahead: (n) => `${n} ahead`, join: "Join", none: "No one waiting" },
+  fr: { now: "Libre maintenant", free: "Libre dans", unit: "min", ahead: (n) => `${n} devant`, join: "Rejoindre", none: "Personne en attente" },
+  it: { now: "Libero ora", free: "Libero tra", unit: "min", ahead: (n) => `${n} prima`, join: "In fila", none: "Nessuno in attesa" },
+};
 
 function formatDistance(m?: number | null): string | null {
   if (m == null) return null;
@@ -120,10 +137,12 @@ export function SalonResultCard(props: SalonResultCardProps) {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, distanceMeters, priceFromCHF, isSaved, salonId,
     nextSlot, services, variant = "grid",
+    walkInWaitMin, walkInQueue,
   } = props;
 
   const href = `/${locale}/salon/${slug}`;
   const fromLabel = FROM_LABEL[locale] ?? "ab";
+  const wl = WALKIN_LABEL[locale] ?? WALKIN_LABEL.de;
   const catLabel = category ? CATEGORY_LABEL[category] ?? category : null;
   // V3-D374 (user: "just put in address", "too many lines"): location line = the
   // street ADDRESS (e.g. "Spalenvorstadt 22, Basel"), built in SearchTemplate.
@@ -191,7 +210,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
         <Link href={href} className="group flex items-center gap-3.5 pr-10">
-          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[16px] bg-s-bg-sunken shadow-[0_8px_20px_rgba(0,0,0,0.05)] transition-[box-shadow] duration-200 ease-glide group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.08)]">
+          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[16px] bg-s-bg-sunken shadow-elevation-2 transition-[box-shadow] duration-200 ease-glide group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           <div className="flex min-w-0 flex-1 flex-col justify-center">
@@ -201,7 +220,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
               </CardName>
               {rating != null && (
                 <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-                  <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
+                  <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
                   {ratingText}
                 </CardMeta>
               )}
@@ -217,6 +236,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
               </CardMeta>
             )}
             {nextSlot && (
+              // V3-D443: green availability pill REMOVED per owner ("don't like the green pill"). Plain ink text.
               <div className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-medium text-s-ink">
                 <Clock size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
                 <span>{nextSlot}</span>
@@ -235,13 +255,28 @@ export function SalonResultCard(props: SalonResultCardProps) {
   // SalonCard (photo-top, name + rating, meta, price) - just full-width + landscape.
   // 1-col on mobile; SearchTemplate puts it in a 2-3 col grid on desktop.
   if (variant === "card") {
+    // Walk-in busyness tier — color follows the CROWD size (queue length): ≤2 quiet
+    // (green), 3-5 busy (orange), 6+ full (red). Both the bold count + the bar take
+    // this hue. Static class strings so Tailwind keeps the utilities at build time.
+    const wq = walkInQueue ?? 0;
+    const wTier =
+      wq <= 2
+        ? { text: "text-s-success", bar: "bg-s-success" }
+        : wq <= 5
+          ? { text: "text-s-surcharge", bar: "bg-s-surcharge" }
+          : { text: "text-s-error", bar: "bg-s-error" };
+    const wFill = Math.min(Math.max(wq / 8, 0.12), 1); // floor avoids a broken-empty sliver
+    // In walk-in mode the WHOLE card taps into the salon PROFILE opened in walk-in mode
+    // (?walkin=1 → the PDP's Book/Walk-in toggle starts on Walk-in), NOT the bare
+    // /walk-in-join screen. The profile is the richer, already-built walk-in surface.
+    const cardHref = walkInWaitMin != null ? `${href}?walkin=1` : href;
     return (
       <article className="relative">
         <div className="absolute right-2.5 top-2.5 z-10">
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
-        <Link href={href} className="group block">
-          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[18px] bg-s-bg-sunken shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)]">
+        <Link href={cardHref} className="group block">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[18px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger
@@ -252,18 +287,55 @@ export function SalonResultCard(props: SalonResultCardProps) {
             </CardName>
             {rating != null && (
               <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-                <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
+                <Star size={12} stroke="none" aria-hidden className="fill-s-star" />
                 {ratingText}
               </CardMeta>
             )}
           </div>
-          {metaBits && (
-            <CardMeta as="div" className="mt-1.5 truncate text-[13px] leading-[1.4]">
-              {metaBits}
-            </CardMeta>
+          {/* Row 2 — WALK-IN mode: address+price LEFT, the bold tier-colored count
+              RIGHT (under the rating, on top of the bar). NORMAL mode is unchanged:
+              address left, price right. */}
+          {walkInWaitMin != null ? (
+            <div className="mt-1.5 flex items-baseline justify-between gap-2">
+              <CardMeta as="div" className="min-w-0 truncate text-[13px] leading-[1.4]">
+                {metaBits}
+                {priceFromCHF != null && (
+                  <>
+                    {metaBits ? " · " : ""}
+                    {fromLabel} <span className="font-semibold text-s-ink">{priceFromCHF}</span> CHF
+                  </>
+                )}
+              </CardMeta>
+              {wq > 0 && (
+                <div className={`shrink-0 text-[14px] font-bold leading-none tabular-nums ${wTier.text}`}>
+                  {wl.ahead(wq)}
+                </div>
+              )}
+            </div>
+          ) : (
+            (metaBits || priceFromCHF != null) && (
+              <div className="mt-1.5 flex items-baseline justify-between gap-2">
+                <CardMeta as="div" className="min-w-0 truncate text-[13px] leading-[1.4]">
+                  {metaBits}
+                </CardMeta>
+                {priceFromCHF != null && (
+                  <CardMeta as="div" className="shrink-0 text-[13px] leading-[1.4]">
+                    {fromLabel} <span className="font-semibold text-s-ink">{priceFromCHF}</span> CHF
+                  </CardMeta>
+                )}
+              </div>
+            )
+          )}
+
+          {/* Walk-in busyness bar — bold (6px), full-width, the tier hue, the card's
+              bottom edge. Display-only, so it lives inside the Link (whole card taps
+              through to the join flow). */}
+          {walkInWaitMin != null && (
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-s-border">
+              <div className={`h-full rounded-full ${wTier.bar}`} style={{ width: `${Math.round(wFill * 100)}%` }} />
+            </div>
           )}
         </Link>
-
       </article>
     );
   }
@@ -282,7 +354,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
             the rounded-[10px] badge geometry. The 2-col grid + search-only data
             (distance, popularity heuristic) stay. Supersedes the V3-D350 flat
             rounded-card look per user "keep it consistent with the locked homepage". */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)]">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.015] group-hover:shadow-elevation-3">
           {photoInner}
         </div>
 
@@ -293,7 +365,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           </CardName>
           {rating != null && (
             <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-              <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
+              <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
               {ratingText}
             </CardMeta>
           )}
@@ -301,7 +373,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
 
         {/* Row 2 — grey meta line: category · city · distance.
             NOTE (V3-D352): the homepage Row 2 uses s-ink-3, but in this B&W config
-            s-ink-2 === s-ink-3 (both #6B6B6B), so CardMeta's baked s-ink-2 already
+            s-ink-2 === s-ink-3 (both the same grey), so CardMeta's baked s-ink-2 already
             matches the homepage exactly - no override / raw div needed. */}
         {metaBits && (
           <CardMeta as="div" className="mt-0.5 truncate text-[12px] leading-[1.35]">
@@ -318,6 +390,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
               </CardMeta>
             )}
             {nextSlot && (
+              // V3-D443: green availability pill REMOVED per owner. Plain ink text.
               <span className="inline-flex items-center gap-1 font-body text-[12px] font-medium text-s-ink">
                 <Clock size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
                 {nextSlot}

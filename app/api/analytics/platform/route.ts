@@ -9,13 +9,11 @@ export async function GET() {
     
     // We fetch category counts using basic pattern
     // If table structure differs, this acts as a safe fallback that won't break the UI
-    const [c1, c2, c3, c4, c5, c6] = await Promise.all([
+    const [c1, c2, c3, c4] = await Promise.all([
       supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["coiffeur"]),
       supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["barbershop"]),
       supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["nails"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["spa"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["makeup"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["waxing"])
+      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["spa"])
     ]);
     
     return NextResponse.json({ 
@@ -23,9 +21,7 @@ export async function GET() {
         coiffeur: c1.count || 42,
         barbershop: c2.count || 18,
         nails: c3.count || 24,
-        spa: c4.count || 11,
-        makeup: c5.count || 8,
-        waxing: c6.count || 15
+        spa: c4.count || 11
       }
     }, { status: 200 });
   } catch (err) {

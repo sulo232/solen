@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/dashboard/clients?category=barbershop — Get clients for salon owner
 export async function GET(req: NextRequest) {
@@ -19,8 +20,7 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   const category = req.nextUrl.searchParams.get("category");

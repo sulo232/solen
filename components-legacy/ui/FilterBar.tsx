@@ -99,7 +99,7 @@ export default function FilterBar({
                 hoverLift,
                 active
                   ? 'bg-s-ink text-white border border-s-ink'
-                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
+                  : 'bg-white/70 border border-s-border text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -122,7 +122,7 @@ export default function FilterBar({
             onClick={() => setDrawerOpen(true)}
             className={[
               'hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0',
-              'border border-s-ink/[0.08] bg-white/70',
+              'border border-s-border bg-white/70',
               motionClass,
               hoverLift,
               drawerOpen
@@ -144,7 +144,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-ink/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-border rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (

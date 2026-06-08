@@ -25,30 +25,32 @@ export type FeaturedSalon = {
   badge?: "Neu" | "Top 10" | null;
 };
 
+// 2026-06-05: ids/slugs/names point at REAL seeded salons (Basel) so each
+// featured card resolves to a live PDP instead of a 404. Top-3 by rating.
 export const FEATURED_SALONS: FeaturedSalon[] = [
   {
-    id: "demo-1",
-    name: "Coiffure Yvette",
-    slug: "coiffure-yvette",
-    average_rating: 4.9,
+    id: "0ed041f9-149b-4241-a09e-d41351be7097",
+    name: "Muse Beauty Studio",
+    slug: "muse-beauty-studio",
+    average_rating: 4.93,
     cover_photo_url: null,
     address: "Spalenberg 12, Basel",
     badge: "Neu",
   },
   {
-    id: "demo-2",
-    name: "Atelier Coiffure",
-    slug: "atelier-coiffure",
-    average_rating: 4.7,
+    id: "e34402f4-2986-4f63-8487-b09645395c65",
+    name: "Glow Lab Basel",
+    slug: "glow-lab-basel",
+    average_rating: 4.87,
     cover_photo_url: null,
     address: "Aeschenvorstadt 36, Basel",
     badge: "Top 10",
   },
   {
-    id: "demo-3",
-    name: "Studio Bel",
-    slug: "studio-bel",
-    average_rating: 4.8,
+    id: "d46e4ae5-8410-4fc9-a2da-43c978bc9477",
+    name: "Salon Lumière",
+    slug: "salon-lumiere",
+    average_rating: 4.85,
     cover_photo_url: null,
     address: "Steinenvorstadt 67, Basel",
     badge: null,

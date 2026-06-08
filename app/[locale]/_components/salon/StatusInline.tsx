@@ -32,10 +32,12 @@ export function StatusInline({
   size?: "sm" | "md" | "lg";
 }) {
   const [head, ...rest] = label.split(" · ");
-  const tail = rest.length > 0 ? " · " + rest.join(" · ") : "";
+  // V3-D442: no separator dot. The green/red head vs grey tail colour IS the
+  // separator (taste rule #2: contrast separates, don't add a dot too).
+  const tail = rest.length > 0 ? rest.join(" ") : "";
   const sizeCls = size === "sm" ? "text-[13px]" : size === "lg" ? "text-[16px]" : "text-[15px]";
   return (
-    <span className={cn("font-body inline-flex items-baseline gap-1", sizeCls)}>
+    <span className={cn("font-body inline-flex items-baseline gap-1.5", sizeCls)}>
       <span className={cn("font-semibold", isOpen ? "text-s-success" : "text-s-closed")}>
         {head}
       </span>

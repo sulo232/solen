@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -11,11 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Find user's salon
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("owner_id", session.user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(supabase, session.user.id, "id");
 
   if (!salon) {
     return NextResponse.json({ error: "Salon not found" }, { status: 404 });

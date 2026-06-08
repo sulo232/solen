@@ -312,7 +312,7 @@ export default function ServicesStaffStep({
       {categories.length > 1 && (
         <div
           ref={tabsRef}
-          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-[--base] border-b border-s-ink/[0.06]"
+          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-[--base] border-b border-s-border"
         >
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => {
@@ -338,7 +338,7 @@ export default function ServicesStaffStep({
               type="button"
               onClick={() => setShowCatSheet(true)}
               aria-label={t('categories')}
-              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-ink/[0.12] text-s-ink transition-colors hover:border-s-ink/25"
+              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
             >
               <List size={17} strokeWidth={2} />
             </button>
@@ -367,7 +367,7 @@ export default function ServicesStaffStep({
       )}
 
       {/* Services grouped by category */}
-      <div className={`space-y-7 pt-5 ${!singleStaff ? 'border-t border-s-ink/[0.06] mt-5' : ''}`}>
+      <div className={`space-y-7 pt-5 ${!singleStaff ? 'border-t border-s-border mt-5' : ''}`}>
         {categories.map((category) => {
           const categoryServices = visibleServices.filter(
             (s) => groupKey(s) === category
@@ -407,7 +407,7 @@ export default function ServicesStaffStep({
                       className={`w-full text-left rounded-input border-2 bg-[--raised] p-4 transition-[border-color] duration-200 ${
                         inCart
                           ? 'border-s-ink'
-                          : 'border-s-ink/[0.08] hover:border-s-ink/30'
+                          : 'border-s-border hover:border-s-ink/30'
                       }`}
                     >
                       <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
@@ -464,7 +464,7 @@ export default function ServicesStaffStep({
       )}
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] z-40">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-[--raised] z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
           <div>
             <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none">

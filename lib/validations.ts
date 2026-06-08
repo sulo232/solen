@@ -178,7 +178,7 @@ export const discoveryCommentSchema = z.object({
 
 // ─── Salon Registration ─────────────────────────────────────────────────────
 
-const salonCategory = z.enum(["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"]);
+const salonCategory = z.enum(["coiffeur", "barbershop", "nails", "spa"]);
 
 export const createSalonSchema = z.object({
   name: z.string().min(2).max(100),
@@ -1024,7 +1024,9 @@ export const translateSchema = z.object({
 });
 
 export const waitlistSchema = z.object({
-  email: z.string().email(),
+  // Optional: the waitlist API keys off the authenticated session user_id, not this email.
+  // The logged-in join modal (booking flow) sends no email; the legacy "notify me" call still may.
+  email: z.string().email().optional(),
   salon_id: z.string().uuid().optional(),
   service_id: z.string().uuid().optional(),
   preferred_date: z.string().max(20).optional(),

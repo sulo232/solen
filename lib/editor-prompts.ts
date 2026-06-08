@@ -9,8 +9,6 @@ components/BookingSuccess.tsx
 components/CategoryHero.tsx
 components/CategoryPage.tsx
 components/ChatWindow.tsx
-components/CompareBar.tsx
-components/CompareDrawer.tsx
 components/FilterBar.tsx
 components/HomePage.tsx
 components/LastMinuteCard.tsx

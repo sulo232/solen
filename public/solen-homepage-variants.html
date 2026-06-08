@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — Homepage variety board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--b2:rgba(10,10,10,.10);--sunken:#F5F5F4;--accent:#276EF1;--star:#FFC32B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:34px 18px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:23px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 26px;max-width:680px;line-height:1.5}
+  h2.sec{font-family:'Inter Tight';font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);max-width:1180px;margin:34px auto 4px;border-top:2px solid var(--ink);padding-top:10px}
+  .secd{max-width:1180px;margin:0 auto 16px;font-size:12.5px;color:var(--ink2)}
+  .grid{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;max-width:1180px;margin:0 auto}
+  .card{width:360px;background:#fff;border:1px solid var(--b2);border-radius:20px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+  .tagd{font-size:11.5px;color:var(--ink2);margin:2px 0 13px;line-height:1.4;min-height:30px}
+  svg.ic{width:18px;height:18px;stroke-width:2}
+  .hint{font-family:'Inter Tight';font-weight:800;font-size:19px;letter-spacing:-.02em;margin-bottom:12px;line-height:1.1}
+  .catlabel{font-size:11.5px;font-weight:600;text-align:center;margin-top:6px}
+  /* search components */
+  .s-pill{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);border-radius:999px;padding:6px 6px 6px 15px}
+  .s-pill .q{flex:1;font-size:13.5px;color:var(--ink2)}
+  .s-pill .dv{width:1px;height:20px;background:var(--b)}
+  .s-pill .pl{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:3px}
+  .arrow{display:grid;place-items:center;background:var(--ink);border-radius:50%;width:34px;height:34px;flex-shrink:0}
+  .arrow svg{stroke:#fff;width:16px;height:16px}
+  .s-split{display:flex;align-items:center;border:1px solid var(--b);border-radius:14px;overflow:hidden}
+  .s-split .f{flex:1;display:flex;align-items:center;gap:8px;padding:13px 14px;font-size:13.5px;color:var(--ink2)}
+  .s-split .f+.f{border-left:1px solid var(--b)}
+  .s-field{display:flex;align-items:center;gap:10px;border:1.5px solid var(--ink);border-radius:14px;padding:14px 15px}
+  .s-field .q{flex:1;font-size:14.5px;color:var(--ink2);font-weight:500}
+  .s-flat{display:flex;align-items:center;gap:10px;background:var(--sunken);border-radius:13px;padding:13px 15px}
+  .s-flat .q{flex:1;font-size:14px;color:var(--ink2)}
+  .s-flat .pin{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;border-left:1px solid var(--b);padding-left:9px}
+  .s-big{border:1.5px solid var(--ink);border-radius:18px;padding:18px 18px}
+  .s-big .q{font-size:18px;color:var(--ink2);font-weight:500;display:flex;align-items:center;gap:10px}
+  .s-big .q svg{width:20px;height:20px}
+  .s-big .go{margin-top:13px;background:var(--ink);color:#fff;border-radius:11px;padding:12px;text-align:center;font-family:'Inter Tight';font-weight:600;font-size:14px}
+  .chips{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+  .chip{border:1px solid var(--b);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px}
+  .chip svg{width:13px;height:13px}
+  .locrow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);margin-top:9px}
+  .locrow b{color:var(--ink)}
+  .locrow .chg{margin-left:auto;color:var(--accent);font-weight:600}
+  /* category components */
+  .c-rail{display:flex;gap:14px;overflow:hidden}
+  .circ{width:54px;height:54px;border-radius:50%;border:1px solid var(--b);display:grid;place-items:center;flex-shrink:0}
+  .c-cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .ccard{position:relative;height:92px;border-radius:14px;overflow:hidden;display:flex;align-items:flex-end;padding:10px}
+  .ccard .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.04),rgba(10,10,10,.6))}
+  .ccard .cl{position:relative;color:#fff;font-family:'Inter Tight';font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+  .ccard .cl svg{width:15px;height:15px;stroke:#fff}
+  .c-tabs{display:flex;gap:7px;overflow:hidden}
+  .tab{display:flex;align-items:center;gap:6px;border:1px solid var(--b);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600;color:var(--ink2);flex-shrink:0}
+  .tab svg{width:14px;height:14px}.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}.tab.on svg{stroke:#fff}
+  .c-textpills{display:flex;gap:8px;flex-wrap:wrap}
+  .tp{border:1px solid var(--b);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600}
+  .tp.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .c-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .tile{border:1px solid var(--b);border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:7px}
+  .tile svg{width:20px;height:20px}
+  .tile .l{font-size:11px;font-weight:600}
+  .c-list{display:flex;flex-direction:column;gap:1px}
+  .lrow{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--b)}
+  .lrow .ci{width:36px;height:36px;border-radius:10px;background:var(--sunken);display:grid;place-items:center}
+  .lrow .ci svg{width:18px;height:18px}
+  .lrow .ln{font-family:'Inter Tight';font-weight:700;font-size:14px}
+  .lrow .lc{font-size:12px;color:var(--ink2);margin-left:auto}
+  .lrow .cv{color:var(--ink2)}
+  .c-compact{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .kcard{border:1px solid var(--b);border-radius:13px;padding:13px;display:flex;align-items:center;gap:11px}
+  .kcard .ci{width:34px;height:34px;border-radius:9px;background:var(--sunken);display:grid;place-items:center}
+  .kcard .ci svg{width:17px;height:17px}
+  .kcard .kn{font-family:'Inter Tight';font-weight:700;font-size:13.5px}
+  .kcard .kc{font-size:11px;color:var(--ink2)}
+  .c-bento{display:grid;grid-template-columns:1.3fr 1fr;gap:9px}
+  .bento-big{grid-row:span 2;border:1px solid var(--b);border-radius:16px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
+  .bento-big svg{width:24px;height:24px}.bento-big .bl{font-family:'Inter Tight';font-weight:700;font-size:16px}
+  .bento-sm{border:1px solid var(--b);border-radius:14px;padding:11px;display:flex;align-items:center;gap:9px}
+  .bento-sm svg{width:17px;height:17px}.bento-sm .bl{font-family:'Inter Tight';font-weight:600;font-size:13px}
+  /* full phone */
+  .ph{width:340px;background:#fff;border:1px solid var(--b2);border-radius:28px;box-shadow:0 16px 40px rgba(0,0,0,.13);overflow:hidden}
+  .nav{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:1px solid var(--b)}
+  .brand{font-family:'Inter Tight';font-weight:800;font-size:17px}
+  .navr{display:flex;gap:12px;align-items:center}.navr .loc{display:flex;gap:3px;align-items:center;font-size:12px;font-weight:600}
+  .pbody{padding:18px 15px 20px}
+  .phh{font-family:'Inter Tight';font-weight:800;font-size:23px;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+</style>
+</head>
+<body>
+  <h1>Homepage — variety board</h1>
+  <p class="sub">Lots of options. All B&amp;W (ink + white + #F5F5F4), monochrome line icons, 4 categories (Coiffeur · Barber · Nails · Spa). Pick a <b>search style</b> + a <b>category style</b> and I'll compose + build it. (Barber icon = placeholder; lucide has no razor.)</p>
+
+  <h2 class="sec">Search bars — 6 ways</h2>
+  <div class="secd">Each replaces the current chunky 3-field grey box with one affordance.</div>
+  <div class="grid">
+    <div class="card"><div class="tag">S1 · Unified pill</div><div class="tagd">What + where in one pill, ink go-button. Familiar.</div>
+      <div class="s-pill"><svg class="ic" data-l="search"></svg><span class="q">Service or salon</span><span class="dv"></span><span class="pl"><svg data-l="map-pin" style="width:14px;height:14px"></svg>Basel</span><span class="arrow"><svg data-l="arrow-right"></svg></span></div></div>
+    <div class="card"><div class="tag">S2 · Split two-field</div><div class="tagd">Distinct "what" and "where" cells. Clear intent.</div>
+      <div class="s-split"><span class="f"><svg class="ic" data-l="search"></svg>Service</span><span class="f"><svg class="ic" data-l="map-pin"></svg>Basel</span></div></div>
+    <div class="card"><div class="tag">S3 · Bordered field</div><div class="tagd">One strong bordered field + a quiet location line.</div>
+      <div class="s-field"><svg class="ic" data-l="search"></svg><span class="q">Search salons or treatments</span></div>
+      <div class="locrow"><svg data-l="map-pin" style="width:14px;height:14px"></svg>in <b>Basel</b><span class="chg">Change</span></div></div>
+    <div class="card"><div class="tag">S4 · Flat / quiet</div><div class="tagd">Soft grey, no border. Calmest, least chrome.</div>
+      <div class="s-flat"><svg class="ic" data-l="search"></svg><span class="q">Search</span><span class="pin"><svg data-l="map-pin" style="width:13px;height:13px"></svg>Basel</span></div></div>
+    <div class="card"><div class="tag">S5 · Big hero search</div><div class="tagd">Oversized, confident. The search IS the hero.</div>
+      <div class="s-big"><span class="q"><svg data-l="search"></svg>What are you looking for?</span><div class="go">Search in Basel</div></div></div>
+    <div class="card"><div class="tag">S6 · Search + quick chips</div><div class="tagd">Field + one-tap intents under it.</div>
+      <div class="s-field"><svg class="ic" data-l="search"></svg><span class="q">Search salons or treatments</span></div>
+      <div class="chips"><span class="chip"><svg data-l="clock"></svg>Open now</span><span class="chip"><svg data-l="star"></svg>Top rated</span><span class="chip"><svg data-l="tag"></svg>Deals</span></div></div>
+  </div>
+
+  <h2 class="sec">Category rows — 8 ways</h2>
+  <div class="secd">Monochrome icons, 4 real categories. Replaces the colorful-blob bento.</div>
+  <div class="grid">
+    <div class="card"><div class="tag">C1 · Circular icon rail</div><div class="tagd">Lightest. Icon in a circle + label, scrolls.</div>
+      <div class="c-rail"><div><div class="circ"><svg class="ic" data-l="scissors"></svg></div><div class="catlabel">Coiffeur</div></div><div><div class="circ"><svg class="ic" data-l="user-round"></svg></div><div class="catlabel">Barber</div></div><div><div class="circ"><svg class="ic" data-l="hand"></svg></div><div class="catlabel">Nails</div></div><div><div class="circ"><svg class="ic" data-l="flower-2"></svg></div><div class="catlabel">Spa</div></div></div></div>
+    <div class="card"><div class="tag">C2 · Photo cards 2×2</div><div class="tagd">Richest / editorial. Needs real photos.</div>
+      <div class="c-cards"><div class="ccard" style="background:linear-gradient(135deg,#8a7a66,#5c5042)"><div class="ov"></div><div class="cl"><svg data-l="scissors"></svg>Coiffeur</div></div><div class="ccard" style="background:linear-gradient(135deg,#4a4a52,#2b2b30)"><div class="ov"></div><div class="cl"><svg data-l="user-round"></svg>Barber</div></div><div class="ccard" style="background:linear-gradient(135deg,#b08a8a,#7a5c5c)"><div class="ov"></div><div class="cl"><svg data-l="hand"></svg>Nails</div></div><div class="ccard" style="background:linear-gradient(135deg,#7d9488,#566b5f)"><div class="ov"></div><div class="cl"><svg data-l="flower-2"></svg>Spa</div></div></div></div>
+    <div class="card"><div class="tag">C3 · Segmented tabs</div><div class="tagd">Filter-style; one active (ink).</div>
+      <div class="c-tabs"><span class="tab on"><svg data-l="scissors"></svg>Coiffeur</span><span class="tab"><svg data-l="user-round"></svg>Barber</span><span class="tab"><svg data-l="hand"></svg>Nails</span><span class="tab"><svg data-l="flower-2"></svg>Spa</span></div></div>
+    <div class="card"><div class="tag">C4 · Text-only pills</div><div class="tagd">No icons. Typographic, minimal.</div>
+      <div class="c-textpills"><span class="tp on">Coiffeur</span><span class="tp">Barber</span><span class="tp">Nails</span><span class="tp">Spa</span></div></div>
+    <div class="card"><div class="tag">C5 · Square icon tiles</div><div class="tagd">4 across, rounded squares. Structured.</div>
+      <div class="c-tiles"><div class="tile"><svg data-l="scissors"></svg><span class="l">Coiffeur</span></div><div class="tile"><svg data-l="user-round"></svg><span class="l">Barber</span></div><div class="tile"><svg data-l="hand"></svg><span class="l">Nails</span></div><div class="tile"><svg data-l="flower-2"></svg><span class="l">Spa</span></div></div></div>
+    <div class="card"><div class="tag">C6 · List rows + counts</div><div class="tagd">Vertical, with salon counts + chevron. Browse-y.</div>
+      <div class="c-list"><div class="lrow"><span class="ci"><svg data-l="scissors"></svg></span><span class="ln">Coiffeur</span><span class="lc">42 salons</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div><div class="lrow"><span class="ci"><svg data-l="user-round"></svg></span><span class="ln">Barber</span><span class="lc">18 shops</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div><div class="lrow"><span class="ci"><svg data-l="hand"></svg></span><span class="ln">Nails</span><span class="lc">24 studios</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div></div></div>
+    <div class="card"><div class="tag">C7 · 2-col compact cards</div><div class="tagd">Icon + label + count, hairline. No photo.</div>
+      <div class="c-compact"><div class="kcard"><span class="ci"><svg data-l="scissors"></svg></span><div><div class="kn">Coiffeur</div><div class="kc">42 salons</div></div></div><div class="kcard"><span class="ci"><svg data-l="user-round"></svg></span><div><div class="kn">Barber</div><div class="kc">18 shops</div></div></div><div class="kcard"><span class="ci"><svg data-l="hand"></svg></span><div><div class="kn">Nails</div><div class="kc">24 studios</div></div></div><div class="kcard"><span class="ci"><svg data-l="flower-2"></svg></span><div><div class="kn">Spa</div><div class="kc">11 spots</div></div></div></div></div>
+    <div class="card"><div class="tag">C8 · Asymmetric bento</div><div class="tagd">1 featured + 3 small. Editorial hierarchy.</div>
+      <div class="c-bento"><div class="bento-big"><svg data-l="scissors"></svg><span class="bl">Coiffeur</span></div><div class="bento-sm"><svg data-l="user-round"></svg><span class="bl">Barber</span></div><div class="bento-sm"><svg data-l="hand"></svg><span class="bl">Nails</span></div><div class="bento-sm" style="grid-column:1/3"><svg data-l="flower-2"></svg><span class="bl">Spa</span></div></div></div>
+  </div>
+
+  <h2 class="sec">Full compositions — 3 examples</h2>
+  <div class="secd">A few search + category combos shown in context. Any search pairs with any category row.</div>
+  <div class="grid">
+    <div class="ph"><div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+      <div class="pbody"><div class="phh">Book beauty in<br>30 seconds.</div>
+        <div class="s-pill"><svg class="ic" data-l="search"></svg><span class="q">Service or salon</span><span class="dv"></span><span class="pl"><svg data-l="map-pin" style="width:14px;height:14px"></svg>Basel</span><span class="arrow"><svg data-l="arrow-right"></svg></span></div>
+        <div style="margin-top:20px"></div>
+        <div class="c-rail"><div><div class="circ"><svg class="ic" data-l="scissors"></svg></div><div class="catlabel">Coiffeur</div></div><div><div class="circ"><svg class="ic" data-l="user-round"></svg></div><div class="catlabel">Barber</div></div><div><div class="circ"><svg class="ic" data-l="hand"></svg></div><div class="catlabel">Nails</div></div><div><div class="circ"><svg class="ic" data-l="flower-2"></svg></div><div class="catlabel">Spa</div></div></div>
+      </div></div>
+    <div class="ph"><div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+      <div class="pbody"><div class="phh">Find your next<br>appointment.</div>
+        <div class="s-field"><svg class="ic" data-l="search"></svg><span class="q">Search salons or treatments</span></div>
+        <div style="margin-top:16px"></div>
+        <div class="c-tiles"><div class="tile"><svg data-l="scissors"></svg><span class="l">Coiffeur</span></div><div class="tile"><svg data-l="user-round"></svg><span class="l">Barber</span></div><div class="tile"><svg data-l="hand"></svg><span class="l">Nails</span></div><div class="tile"><svg data-l="flower-2"></svg><span class="l">Spa</span></div></div>
+      </div></div>
+    <div class="ph"><div class="nav"><span class="brand">Solen</span><span class="navr"><span class="loc"><svg class="ic" data-l="map-pin"></svg>Basel</span><svg class="ic" data-l="menu"></svg></span></div>
+      <div class="pbody"><div class="phh">Beauty &amp; wellness<br>near you.</div>
+        <div class="s-flat"><svg class="ic" data-l="search"></svg><span class="q">Search</span><span class="pin"><svg data-l="map-pin" style="width:13px;height:13px"></svg>Basel</span></div>
+        <div style="margin-top:16px"></div>
+        <div class="c-list"><div class="lrow"><span class="ci"><svg data-l="scissors"></svg></span><span class="ln">Coiffeur</span><span class="lc">42 salons</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div><div class="lrow"><span class="ci"><svg data-l="user-round"></svg></span><span class="ln">Barber</span><span class="lc">18 shops</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div><div class="lrow"><span class="ci"><svg data-l="hand"></svg></span><span class="ln">Nails</span><span class="lc">24 studios</span><svg class="cv" data-l="chevron-right" style="width:16px;height:16px"></svg></div></div>
+      </div></div>
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

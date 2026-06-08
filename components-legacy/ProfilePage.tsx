@@ -106,14 +106,14 @@ const CancelModal = memo(function CancelModal({
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-border bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors resize-none"
           />
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
@@ -172,10 +172,10 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
     window.open(`sms:?body=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-5"><Spinner size="sm" /></div>;
+  if (loading) return <div className="rounded-[12px] border border-s-border bg-white p-5"><Spinner size="sm" /></div>;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-5 space-y-4">
+    <div className="rounded-[12px] border border-s-border bg-white p-5 space-y-4">
       {/* Eyebrow header */}
       <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35">
         Freunde einladen
@@ -194,7 +194,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       {/* Code display */}
       {code && (
         <div className="flex items-center gap-2">
-          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white"
+          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-border bg-white"
             style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", letterSpacing: ".12em", color: "var(--s-ink)" }}>
             {code}
           </div>
@@ -204,7 +204,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
             className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-[border-color,background-color] duration-150 ${
               copied
                 ? "border-[#16A34A] bg-[#16A34A]/10"
-                : "border-s-ink/[0.08] hover:border-s-accent/40"
+                : "border-s-border hover:border-s-accent/40"
             }`}
           >
             {copied
@@ -232,14 +232,14 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
       </div>
 
       {/* Reward tracking */}
-      <div className="flex items-center justify-between pt-3 border-t border-s-ink/[0.05]">
+      <div className="flex items-center justify-between pt-3 border-t border-s-border">
         <div className="flex items-center gap-2">
           <Trophy size={13} className="text-s-amber" />
           <div>
@@ -301,7 +301,7 @@ const BookingCard = memo(function BookingCard({
   const localeFmt = locale === "de" ? "de-CH" : locale;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
+    <div className="rounded-[12px] border border-s-border p-4 bg-white">
       <div className="flex justify-between items-start gap-4">
         <div>
           <p className="font-heading text-sm text-s-ink">{b.salon_name}</p>
@@ -325,11 +325,11 @@ const BookingCard = memo(function BookingCard({
       </div>
 
       {(b.status === "confirmed" || b.salon_slug) && (
-        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-s-ink/[0.05]">
+        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-s-border">
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:text-s-accent hover:border-s-accent/40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:text-s-accent hover:border-s-accent/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -360,7 +360,7 @@ const BookingCard = memo(function BookingCard({
             <div className="relative group inline-block">
               <button
                 disabled
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/20 cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/20 cursor-not-allowed"
               >
                 <X size={12} />
                 {t("cancelAction")}
@@ -381,7 +381,7 @@ const BookingCard = memo(function BookingCard({
 // Settings section
 // ─────────────────────────────────────────
 
-const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20";
+const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20";
 
 const SettingsSection = memo(function SettingsSection({
   profile,
@@ -459,7 +459,7 @@ const SettingsSection = memo(function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t("avatarUrl")}
-          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20`}
+          className={`flex-1 px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20`}
         />
       </div>
 
@@ -480,7 +480,7 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       {/* Notifications */}
-      <div className="pt-2 border-t border-s-ink/5 space-y-3">
+      <div className="pt-2 border-t border-s-border space-y-3">
         <p className="text-xs font-medium text-s-ink/50">{t("emailNotifications")}</p>
         <div className="flex items-center justify-between">
           <div>
@@ -536,7 +536,7 @@ const SettingsSection = memo(function SettingsSection({
                 "px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
                   ? "bg-s-ink text-white border-s-accent"
-                  : "border-s-ink/10 text-s-ink/60 hover:border-s-accent hover:text-s-accent",
+                  : "border-s-border text-s-ink/60 hover:border-s-accent hover:text-s-accent",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -546,7 +546,7 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       {/* Customer Preferences */}
-      <div className="pt-4 border-t border-s-ink/5 space-y-4">
+      <div className="pt-4 border-t border-s-border space-y-4">
         <div>
           <p className="text-sm font-medium text-s-ink mb-1">{tPrefs("title")}</p>
           <p className="text-xs text-s-ink/40 mb-3">{tPrefs("subtitle")}</p>
@@ -588,7 +588,7 @@ const SettingsSection = memo(function SettingsSection({
                 className={`flex-1 px-4 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
                   stylistGender === option
                     ? "border-s-accent bg-s-ink text-white"
-                    : "border-s-ink/10 text-s-ink/60 hover:border-s-accent hover:text-s-accent"
+                    : "border-s-border text-s-ink/60 hover:border-s-accent hover:text-s-accent"
                 }`}
               >
                 {tPrefs(`stylist_gender_${option}`)}
@@ -647,14 +647,14 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       {/* Danger zone: Delete account */}
-      <div className="pt-6 border-t border-red-200">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-red-600 mb-3">
+      <div className="pt-6 border-t border-s-error/20">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-error mb-3">
           {t("dangerZone")}
         </p>
         <button
           type="button"
           onClick={onDeleteClick}
-          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-red-50 border border-red-200 text-red-600 text-[11px] font-heading uppercase tracking-[.06em] hover:bg-red-100:bg-red-950/40 transition-[background-color,transform] duration-150"
+          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-error-bg border border-s-error/20 text-s-error text-[11px] font-heading uppercase tracking-[.06em] hover:bg-red-100:bg-red-950/40 transition-[background-color,transform] duration-150"
         >
           {t("deleteAccount")}
         </button>
@@ -872,7 +872,7 @@ export default function ProfilePage() {
           <div className="bg-[--raised] rounded-[18px] p-4 animate-pulse">
             <div className="h-4 w-28 bg-s-ink/10 rounded mb-3" />
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="py-3 border-b border-s-ink/[0.06] last:border-0">
+              <div key={i} className="py-3 border-b border-s-border last:border-0">
                 <div className="h-2 w-12 bg-s-ink/10 rounded mb-2" />
                 <div className="flex gap-2">
                   <div className="h-6 w-20 bg-s-ink/10 rounded-pill" />
@@ -883,7 +883,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Tab bar skeleton */}
-          <div className="flex border-b border-s-ink/10 pt-2 animate-pulse">
+          <div className="flex border-b border-s-border pt-2 animate-pulse">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="flex-1 h-10 flex items-center justify-center">
                 <div className="h-3 w-12 bg-s-ink/10 rounded" />
@@ -1014,7 +1014,7 @@ export default function ProfilePage() {
           <PaymentMethodsSection />
 
           {/* Email & Password + Logout */}
-          <div className="pt-4 border-t border-s-ink/5 space-y-3">
+          <div className="pt-4 border-t border-s-border space-y-3">
             <p className="text-[9px] font-body font-bold uppercase tracking-[.18em] text-s-ink/40">Sicherheit</p>
 
             <button
@@ -1029,7 +1029,7 @@ export default function ProfilePage() {
                   else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
                 }
               }}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-border bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
             >
               <span className="text-sm font-body font-medium text-s-ink">E-Mail ändern</span>
               <ChevronRight size={16} className="text-s-ink/35" />
@@ -1049,7 +1049,7 @@ export default function ProfilePage() {
                   alert("Passwort muss mindestens 8 Zeichen lang sein.");
                 }
               }}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-border bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
             >
               <span className="text-sm font-body font-medium text-s-ink">Passwort ändern</span>
               <ChevronRight size={16} className="text-s-ink/35" />

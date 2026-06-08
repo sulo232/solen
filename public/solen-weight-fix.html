@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+body{background:#f0efed;padding:20px 14px 40px;font-family:'Hanken Grotesk',sans-serif;color:var(--ink)}
+.lede{font-family:'Inter Tight';max-width:440px;margin:0 auto 16px}.lede h1{font-size:19px;font-weight:800;letter-spacing:-.02em}.lede p{font-size:13px;color:var(--ink2);margin-top:3px}
+.card{max-width:440px;margin:0 auto 16px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}
+.card.rec{border:1.5px solid var(--ink)}
+.badge{display:flex;align-items:center;gap:8px;margin-bottom:15px}.badge .n{font-family:'Inter Tight';font-size:14px;font-weight:700}.badge .d{font-size:12px;color:var(--ink2)}.badge .tag{font-size:9.5px;font-weight:700;letter-spacing:.05em;background:var(--ink);color:#fff;border-radius:5px;padding:2px 6px;margin-left:auto}
+.ttl{font-family:'Inter Tight';font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:13px}
+.pills{display:flex;gap:8px;margin-bottom:14px}.pill{height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--border);font-size:13px;display:inline-flex;align-items:center}.pill.sel{background:var(--sunken)}
+.row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:10px}
+.row .nm{font-size:15px;color:var(--ink)}.row .du{font-size:13px;color:var(--ink2);margin-top:4px}.row .pr{font-size:14px;margin-top:11px}.bk{flex:none;border:1px solid var(--ink);border-radius:99px;padding:8px 20px;font-size:13px}
+/* NOW: thin, mixed */
+.now .nm{font-weight:500}.now .du{font-weight:400}.now .pr{font-weight:400;color:var(--ink2)}.now .pill.sel{font-weight:400}.now .pill{font-weight:500}.now .bk{font-weight:600}
+/* FIXED: consistent, min 500 */
+.fix .nm{font-weight:600}.fix .du{font-weight:500}.fix .pr{font-weight:600;color:var(--ink)}.fix .pill.sel{font-weight:600}.fix .pill{font-weight:500}.fix .bk{font-weight:600}
+</style></head><body>
+<div class="lede"><h1>Weight: now vs consistent scale</h1><p>Same font (Hanken). Only the weights change — kill 400, floor everything at 500.</p></div>
+<div class="card"><div class="badge"><span class="n">Now</span><span class="d">name 500 · meta/price 400 · gray</span></div>
+<div class="now"><div class="ttl">Services</div><div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span></div>
+<div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+<div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div></div></div>
+<div class="card rec"><div class="badge"><span class="n">Proposed</span><span class="d">name 600 · meta 500 · price 600 ink</span><span class="tag">FIX</span></div>
+<div class="fix"><div class="ttl">Services</div><div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span></div>
+<div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+<div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div></div></div>
+</body></html>

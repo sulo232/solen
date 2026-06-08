@@ -98,7 +98,7 @@ export default function ReviewBreakdown({
 
       {/* Sub-category averages */}
       {subCategories.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-s-ink/5 space-y-2">
+        <div className="mt-4 pt-4 border-t border-s-border space-y-2">
           {subCategories.map(({ label, avg }, index) => (
             <div key={label} className="flex items-center gap-3 text-xs">
               <span className="text-s-ink/50 w-24 shrink-0">{label}</span>

@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Report a problem / Request a refund — entry + form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============ Solen tokens (CANON.md, resolved 2026-06-01) ============ */
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#6B6B6B; --ink-disabled:#C5C8C4;
+    --border:#E7E5E4; --line:rgba(10,10,10,.08); --line-soft:rgba(10,10,10,.06);
+    --bg-base:#FFFFFF; --bg-sunken:#F5F5F4;
+    --accent:#276EF1; --accent-pale:#EAEFFE;
+    --success:#16A34A; --success-bg:#E8F5E9;
+    --warning:#F1AE27; --warning-bg:#FDF6E7; --warning-text:#906309;
+    --error:#D32F2F; --error-bg:#FFEBEE;
+    --star:#FFC32B;
+    /* warm-tinted shadows kept per CANON §7 */
+    --el1:0 1px 3px rgba(50,47,44,.04), 0 1px 2px rgba(50,47,44,.03);
+    --el2:0 4px 12px rgba(50,47,44,.08), 0 2px 4px rgba(50,47,44,.04);
+    --el-phone:0 30px 80px rgba(30,28,26,.20), 0 8px 24px rgba(30,28,26,.10);
+    --head:'Inter Tight',system-ui,-apple-system,sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{background:#E9E9E7;font-family:var(--body);color:var(--ink);line-height:1.5;padding:44px 20px 80px}
+
+  a{color:inherit;text-decoration:none}
+
+  /* ---- page intro ---- */
+  .intro{max-width:880px;margin:0 auto 12px;text-align:center}
+  .intro .eyebrow{font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .intro h1{font-family:var(--head);font-weight:700;font-size:27px;letter-spacing:-.02em;margin-top:8px}
+  .intro p{color:var(--ink-2);font-size:13.5px;margin-top:9px;line-height:1.55}
+  .intro .note{display:inline-block;margin-top:13px;font-size:12px;color:var(--ink-2);background:#fff;border:1px solid var(--border);border-radius:99px;padding:6px 14px}
+
+  /* ---- section label between flows ---- */
+  .flow-label{max-width:1320px;margin:46px auto 18px;display:flex;align-items:center;gap:12px}
+  .flow-label .n{flex-shrink:0;width:26px;height:26px;border-radius:99px;background:var(--ink);color:#fff;font-family:var(--head);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .flow-label h2{font-family:var(--head);font-weight:600;font-size:17px;letter-spacing:-.01em}
+  .flow-label .sub{font-size:12.5px;color:var(--ink-2)}
+  .flow-label .hr{flex:1;height:1px;background:var(--border)}
+
+  /* ---- phone strip ---- */
+  .strip{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;align-items:flex-start;max-width:1320px;margin:0 auto}
+  .device{display:flex;flex-direction:column;align-items:center;gap:13px}
+  .caption{max-width:300px;text-align:center}
+  .caption .t{font-family:var(--head);font-weight:600;font-size:13.5px;letter-spacing:-.01em}
+  .caption .d{font-size:11.5px;color:var(--ink-2);margin-top:3px;line-height:1.5}
+
+  .phone{width:300px;height:638px;background:#fff;border-radius:42px;box-shadow:var(--el-phone);padding:9px;position:relative}
+  .screen{position:absolute;inset:9px;border-radius:33px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:86px;height:22px;background:#0A0A0A;border-radius:99px;z-index:6}
+  .sb{display:flex;justify-content:space-between;align-items:center;padding:13px 24px 3px;font-family:var(--head);font-weight:600;font-size:12.5px;flex-shrink:0}
+
+  /* app header */
+  .appbar{display:flex;align-items:center;gap:10px;padding:6px 14px 8px;flex-shrink:0}
+  .iconbtn{width:34px;height:34px;border-radius:99px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+  .appbar .h2{font-family:var(--head);font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .appbar .spacer{flex:1}
+
+  /* scroll body */
+  .body{flex:1;overflow-y:auto;padding:4px 16px 16px}
+  .body::-webkit-scrollbar{width:0}
+
+  /* ============ A1: booking detail with the ONE entry point ============ */
+  .order-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.02em;color:var(--ink-2);background:var(--bg-sunken);border-radius:8px;padding:5px 9px}
+  .order-pill svg{opacity:.6}
+
+  .bk-hero{margin-top:12px;display:flex;gap:12px;align-items:center}
+  .bk-hero img{width:54px;height:54px;border-radius:11px;object-fit:cover;flex-shrink:0;box-shadow:var(--el1)}
+  .bk-hero .nm{font-family:var(--head);font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1.2}
+  .bk-hero .meta{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:12px;color:var(--ink-2)}
+  .bk-hero .meta svg{transform:translateY(.5px)}
+  .bk-hero .meta b{font-family:var(--head);font-weight:600;color:var(--ink)}
+  .bk-hero .meta .sep{color:var(--border)}
+
+  .badge-done{display:inline-flex;align-items:center;gap:5px;margin-top:11px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--success);background:var(--success-bg);border-radius:99px;padding:4px 9px}
+  .badge-done .dot{width:6px;height:6px;border-radius:99px;background:var(--success)}
+
+  .div{height:1px;background:var(--line);margin:15px 0}
+
+  .det-row{display:flex;align-items:center;gap:12px;padding:6px 0}
+  .det-row .ic{width:38px;height:38px;border-radius:10px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .det-row .l{font-family:var(--head);font-weight:600;font-size:14px;letter-spacing:-.005em}
+  .det-row .s{font-size:12px;color:var(--ink-2);margin-top:1px}
+  .det-row .amt{margin-left:auto;font-family:var(--head);font-weight:600;font-size:14px}
+
+  /* the ONE help entry button */
+  .help-card{margin-top:18px;border:1px solid var(--border);border-radius:16px;padding:4px}
+  .help-btn{display:flex;align-items:center;gap:13px;width:100%;background:none;border:0;text-align:left;padding:13px 12px;border-radius:13px;cursor:pointer;font-family:inherit}
+  .help-btn:hover{background:var(--bg-sunken)}
+  .help-btn .ic{width:40px;height:40px;border-radius:11px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .help-btn .tt{font-family:var(--head);font-weight:600;font-size:14.5px;letter-spacing:-.005em}
+  .help-btn .dd{font-size:12px;color:var(--ink-2);margin-top:2px;line-height:1.4}
+  .help-btn .chev{margin-left:auto;color:var(--ink-2);flex-shrink:0}
+  .help-foot{display:flex;align-items:center;gap:7px;padding:9px 14px 8px;font-size:11.5px;color:var(--ink-2)}
+  .help-foot svg{flex-shrink:0;opacity:.65}
+
+  .sub-link{display:block;margin-top:14px;text-align:center;font-size:12.5px;color:var(--ink-2);font-weight:500}
+
+  /* ============ sheet shell (forms presented as a bottom sheet) ============ */
+  .sheet-top{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;flex-shrink:0;border-bottom:1px solid var(--line)}
+  .sheet-top .grab{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:99px;background:var(--border)}
+  .sheet-top .ttl{font-family:var(--head);font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .sheet-top .x{margin-left:auto;width:30px;height:30px;border-radius:99px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+
+  .step-hint{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:4px 0 9px}
+  .q{font-family:var(--head);font-weight:600;font-size:17px;letter-spacing:-.015em;line-height:1.25;margin-bottom:3px}
+  .q-sub{font-size:12.5px;color:var(--ink-2);margin-bottom:15px;line-height:1.5}
+
+  /* reason picker rows */
+  .reasons{display:flex;flex-direction:column;gap:8px}
+  .reason{display:flex;align-items:center;gap:12px;padding:13px 13px;border:1px solid var(--border);border-radius:13px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+  .reason:hover{background:var(--bg-sunken)}
+  .reason.sel{border-color:var(--ink);border-width:1.5px;padding:12.5px 12.5px}
+  .reason .ic{width:38px;height:38px;border-radius:10px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .reason.sel .ic{background:var(--ink)}
+  .reason.sel .ic svg{stroke:#fff}
+  .reason .tx .t{font-family:var(--head);font-weight:600;font-size:14px;letter-spacing:-.005em}
+  .reason .tx .d{font-size:11.5px;color:var(--ink-2);margin-top:1px;line-height:1.35}
+  .reason .radio{margin-left:auto;width:20px;height:20px;border-radius:99px;border:1.5px solid var(--border);flex-shrink:0;position:relative}
+  .reason.sel .radio{border-color:var(--ink);background:var(--ink)}
+  .reason.sel .radio:after{content:"";position:absolute;inset:0;margin:auto;width:8px;height:8px;border-radius:99px;background:#fff}
+
+  /* eligibility hint (refund likelihood) */
+  .elig{display:flex;gap:9px;align-items:flex-start;margin-top:13px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.45}
+  .elig svg{flex-shrink:0;margin-top:1px}
+  .elig.good{background:var(--success-bg);color:#0f7a37}
+  .elig.good svg{stroke:var(--success)}
+  .elig.review{background:var(--warning-bg);color:var(--warning-text)}
+  .elig.review svg{stroke:var(--warning)}
+  .elig b{font-weight:600}
+
+  /* textarea */
+  .field-label{font-family:var(--head);font-weight:600;font-size:13px;letter-spacing:-.005em;margin:18px 0 7px}
+  .field-label .opt{font-family:var(--body);font-weight:400;color:var(--ink-2);font-size:12px}
+  textarea,input.txt{width:100%;font-family:var(--body);font-size:13.5px;color:var(--ink);background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:12px 13px;resize:none;line-height:1.5}
+  textarea::placeholder,input.txt::placeholder{color:var(--ink-disabled)}
+  textarea:focus,input.txt:focus,.amt-input:focus-within{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-pale)}
+  .char{text-align:right;font-size:10.5px;color:var(--ink-2);margin-top:5px}
+
+  /* photo add */
+  .photos{display:flex;gap:9px;margin-top:9px}
+  .photo-add{width:62px;height:62px;border-radius:12px;border:1.5px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-2);font-size:9.5px;cursor:pointer;background:var(--bg-sunken)}
+  .photo-thumb{width:62px;height:62px;border-radius:12px;object-fit:cover;position:relative;box-shadow:var(--el1)}
+  .photo-wrap{position:relative}
+  .photo-wrap .rm{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:99px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+
+  /* ---- the money-back toggle block ---- */
+  .money{margin-top:20px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .money-head{display:flex;align-items:center;gap:12px;padding:14px 14px}
+  .money-head .ic{width:40px;height:40px;border-radius:11px;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .money-head .tt{font-family:var(--head);font-weight:600;font-size:14.5px;letter-spacing:-.005em}
+  .money-head .dd{font-size:11.5px;color:var(--ink-2);margin-top:2px;line-height:1.4}
+  /* switch */
+  .switch{margin-left:auto;width:46px;height:27px;border-radius:99px;background:var(--border);position:relative;flex-shrink:0;cursor:pointer;transition:background .2s}
+  .switch .knob{position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:99px;background:#fff;box-shadow:var(--el1);transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+  .switch.on{background:var(--ink)}
+  .switch.on .knob{transform:translateX(19px)}
+
+  .money-body{border-top:1px solid var(--line);padding:14px 14px 16px;background:var(--bg-sunken)}
+  .money-body.hidden{display:none}
+  .seg{display:flex;gap:7px;margin-bottom:13px}
+  .seg .opt{flex:1;text-align:center;padding:9px 6px;border-radius:11px;border:1.5px solid var(--border);background:#fff;font-family:var(--head);font-weight:600;font-size:12.5px;cursor:pointer;letter-spacing:-.005em}
+  .seg .opt.on{border-color:var(--ink);background:var(--ink);color:#fff}
+  .amt-row{display:flex;align-items:center;gap:10px}
+  .amt-input{display:flex;align-items:center;background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:0 14px;height:50px;flex:1}
+  .amt-input .cur{font-family:var(--head);font-weight:600;font-size:14px;color:var(--ink-2);margin-right:7px}
+  .amt-input input{border:0;outline:none;font-family:var(--head);font-weight:700;font-size:22px;letter-spacing:-.02em;color:var(--ink);width:100%;background:none}
+  .amt-cap{font-size:11px;color:var(--ink-2);margin-top:8px}
+  .amt-cap b{color:var(--ink);font-weight:600}
+
+  /* review summary rows */
+  .rev-card{border:1px solid var(--border);border-radius:14px;padding:4px 14px;margin-top:4px}
+  .rev-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .rev-row:last-child{border-bottom:0}
+  .rev-row .k{font-size:12px;color:var(--ink-2);width:88px;flex-shrink:0;padding-top:1px}
+  .rev-row .v{font-size:13px;color:var(--ink);font-weight:500;line-height:1.45}
+  .rev-row .v .big{font-family:var(--head);font-weight:700;font-size:18px;letter-spacing:-.01em}
+  .rev-row .v .muted{color:var(--ink-2);font-weight:400}
+  .timeline-note{display:flex;gap:9px;align-items:flex-start;margin-top:14px;font-size:12px;color:var(--ink-2);line-height:1.5}
+  .timeline-note svg{flex-shrink:0;margin-top:1px;opacity:.7}
+
+  /* sticky footer CTA */
+  .foot{flex-shrink:0;border-top:1px solid var(--line);padding:12px 16px 15px;background:#fff}
+  .cta{height:50px;border-radius:99px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--head);font-weight:600;font-size:14.5px;letter-spacing:-.005em;cursor:pointer;border:0;width:100%;box-shadow:var(--el2)}
+  .cta.disabled{background:var(--bg-sunken);color:var(--ink-disabled);box-shadow:none;cursor:not-allowed}
+  .cta-ghost{height:46px;margin-top:9px;border-radius:99px;background:#fff;border:1.5px solid var(--border);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:600;font-size:13.5px;cursor:pointer;width:100%}
+  .foot .fine{text-align:center;font-size:11px;color:var(--ink-2);margin-top:10px;line-height:1.45}
+
+  /* ============ success state ============ */
+  .ok-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 22px;text-align:center}
+  .ok-badge{width:74px;height:74px;border-radius:99px;background:var(--success-bg);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .ok-wrap h3{font-family:var(--head);font-weight:700;font-size:21px;letter-spacing:-.02em}
+  .ok-wrap p{font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.55;max-width:250px}
+  .ok-ref{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink);background:var(--bg-sunken);border-radius:10px;padding:9px 14px;margin-top:18px;letter-spacing:.02em}
+  .ok-track{margin-top:22px;width:100%;border:1px solid var(--border);border-radius:14px;padding:14px;text-align:left}
+  .ok-track .row{display:flex;gap:11px;align-items:flex-start;padding:7px 0}
+  .ok-track .dot{width:18px;height:18px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .ok-track .dot.done{background:var(--success)}
+  .ok-track .dot.now{background:var(--ink)}
+  .ok-track .dot.next{background:#fff;border:1.5px solid var(--border)}
+  .ok-track .ln .s{font-family:var(--head);font-weight:600;font-size:12.5px;letter-spacing:-.005em}
+  .ok-track .ln .m{font-size:11px;color:var(--ink-2);margin-top:1px}
+
+  /* ============ desktop view ============ */
+  .desktop-label{max-width:1100px;margin:64px auto 18px;display:flex;align-items:center;gap:12px}
+  .desktop-label .n{flex-shrink:0;width:26px;height:26px;border-radius:99px;background:var(--ink);color:#fff;font-family:var(--head);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .desktop-label h2{font-family:var(--head);font-weight:600;font-size:17px;letter-spacing:-.01em}
+  .desktop-label .sub{font-size:12.5px;color:var(--ink-2)}
+  .desktop-label .hr{flex:1;height:1px;background:var(--border)}
+
+  .browser{max-width:1100px;margin:0 auto;background:#fff;border-radius:18px;box-shadow:var(--el-phone);overflow:hidden}
+  .bv-bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--bg-sunken)}
+  .bv-bar .d{width:11px;height:11px;border-radius:99px;background:#D6D4D1}
+  .bv-bar .url{margin-left:14px;flex:1;max-width:520px;background:#fff;border:1px solid var(--border);border-radius:99px;padding:6px 14px;font-size:12px;color:var(--ink-2);font-family:var(--mono)}
+  .dk{display:grid;grid-template-columns:1.15fr 1fr;gap:0}
+  .dk-left{padding:34px 34px 38px;border-right:1px solid var(--line)}
+  .dk-right{padding:34px 34px 38px;background:var(--bg-sunken)}
+  .dk-eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .dk h2.t{font-family:var(--head);font-weight:600;font-size:24px;letter-spacing:-.02em;margin-top:9px}
+  .dk .lead{font-size:13.5px;color:var(--ink-2);margin-top:9px;line-height:1.55}
+
+  /* desktop reasons reuse most styles but wider */
+  .dk .reasons{margin-top:22px}
+  .dk .reason .d{display:block}
+
+  .dk-right h3.t{font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:-.01em;margin-bottom:4px}
+  .dk-right .h3sub{font-size:12px;color:var(--ink-2);margin-bottom:14px}
+  .dk .cta{max-width:none}
+  .dk-summary{border:1px solid var(--border);background:#fff;border-radius:14px;padding:4px 16px;margin-top:6px}
+
+  @media(max-width:980px){ .dk{grid-template-columns:1fr} .dk-left{border-right:0;border-bottom:1px solid var(--line)} }
+
+  .footer-tag{max-width:880px;margin:60px auto 0;text-align:center;font-size:11.5px;color:#8a8782;line-height:1.6}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <div class="eyebrow">Solen · Mockup</div>
+    <h1>Report a problem · Request a refund</h1>
+    <p>One entry point on a finished booking. One form: pick what went wrong, optionally toggle "I want money back" and set an amount.
+    Structure follows Fresha / Treatwell support flows; the look follows the Solen B&amp;W system. English internal mockup, sample Swiss-salon data.</p>
+    <span class="note">Same record whether or not money is requested · 14-day reporting window · every refund is human-reviewed</span>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- FLOW 1 — the entry point on a booking -->
+  <!-- ============================================================= -->
+  <div class="flow-label">
+    <span class="n">1</span>
+    <div>
+      <h2>The single entry point</h2>
+      <div class="sub">On the past booking — no separate "report" vs "refund" buttons.</div>
+    </div>
+    <span class="hr"></span>
+  </div>
+
+  <div class="strip">
+
+    <!-- A1: booking detail with help entry -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="appbar">
+            <div class="iconbtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+            <span class="h2">Booking</span>
+            <span class="spacer"></span>
+            <div class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></div>
+          </div>
+
+          <div class="body">
+            <span class="order-pill">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+              SOL-7K2QX
+            </span>
+
+            <div class="bk-hero">
+              <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=240&q=80" alt="">
+              <div>
+                <div class="nm">Coiffure Lumière</div>
+                <div class="meta">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.3 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6z"/></svg>
+                  <b>4.8</b><span>(214)</span><span class="sep">·</span><span>Basel</span>
+                </div>
+              </div>
+            </div>
+
+            <span class="badge-done"><span class="dot"></span>Completed · 14 May</span>
+
+            <div class="div"></div>
+
+            <div class="det-row">
+              <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></div>
+              <div><div class="l">Wed 14 May, 10:30</div><div class="s">with Nadia R.</div></div>
+            </div>
+            <div class="det-row">
+              <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.8 15.2M14.5 14.2L20 20"/></svg></div>
+              <div><div class="l">Cut, colour &amp; blow-dry</div><div class="s">approx. 1 hr 30 min</div></div>
+              <span class="amt">CHF 165.00</span>
+            </div>
+
+            <div class="div"></div>
+
+            <!-- THE ONE ENTRY POINT -->
+            <div class="help-card">
+              <button class="help-btn">
+                <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                <span>
+                  <span class="tt">Something wrong with this booking?</span>
+                  <span class="dd">Report a problem or ask for money back</span>
+                </span>
+                <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+              <div class="help-foot">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                You can report up to 14 days after your appointment
+              </div>
+            </div>
+
+            <a class="sub-link" href="#">Booking confirmation &amp; receipt</a>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">1 · Past booking → one button</div>
+        <div class="d">"Something wrong?" is the only support affordance. It carries both report and refund — no fork. Order code SOL-7K2QX shown for lookup.</div>
+      </div>
+    </div>
+
+    <!-- A2: reason picker (step 1 of the form) -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <!-- sheet presentation -->
+          <div class="sheet-top">
+            <span class="grab"></span>
+            <span class="ttl">Report a problem</span>
+            <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          </div>
+          <div class="body">
+            <div class="step-hint">Step 1 of 3 · Coiffure Lumière</div>
+            <div class="q">What went wrong?</div>
+            <div class="q-sub">Pick the closest reason. This routes your case to the right place.</div>
+
+            <div class="reasons">
+              <label class="reason">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6 1.8 18a1.5 1.5 0 0 0 1.3 2.3h17.8a1.5 1.5 0 0 0 1.3-2.3L13.7 3.6a1.5 1.5 0 0 0-2.6 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+                <span class="tx"><span class="t">Salon cancelled or no-showed</span><span class="d">They cancelled, closed, or no-one was there</span></span>
+                <span class="radio"></span>
+              </label>
+
+              <label class="reason">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12a9 9 0 1 1-5.3-8.2"/></svg></span>
+                <span class="tx"><span class="t">Service not delivered as booked</span><span class="d">Missing, incomplete, or materially different</span></span>
+                <span class="radio"></span>
+              </label>
+
+              <label class="reason sel">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5M8.5 14.5 12 12"/><path d="M15 9.5 12 12"/></svg></span>
+                <span class="tx"><span class="t">Wrong amount charged</span><span class="d">Overcharged vs the price you booked</span></span>
+                <span class="radio"></span>
+              </label>
+
+              <label class="reason">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+                <span class="tx"><span class="t">Charged twice</span><span class="d">Same booking billed more than once</span></span>
+                <span class="radio"></span>
+              </label>
+
+              <label class="reason">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><path d="M5 9h14l1 11H4z"/></svg></span>
+                <span class="tx"><span class="t">Quality complaint</span><span class="d">Unhappy with the result or experience</span></span>
+                <span class="radio"></span>
+              </label>
+
+              <label class="reason">
+                <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                <span class="tx"><span class="t">Something else</span><span class="d">Describe it in your own words</span></span>
+                <span class="radio"></span>
+              </label>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="cta">Continue<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">2 · Reason picker</div>
+        <div class="d">Single-select rows (Fresha/Treatwell pattern). Selected = ink border + ink icon tile + filled radio. Taxonomy maps to the booking_disputes reason codes.</div>
+      </div>
+    </div>
+
+    <!-- A3: details + the money-back toggle (collapsed) -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="sheet-top">
+            <span class="grab"></span>
+            <span class="x" style="margin-left:0;margin-right:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+            <span class="ttl">Add details</span>
+            <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          </div>
+          <div class="body">
+            <div class="step-hint">Step 2 of 3</div>
+            <div class="q">Tell us what happened</div>
+            <div class="q-sub">Reason: <b style="color:var(--ink);font-weight:600">Wrong amount charged</b></div>
+
+            <div class="elig review">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+              <span><b>The salon reviews this first.</b> Overcharge claims are usually fast-tracked once they confirm the amount.</span>
+            </div>
+
+            <div class="field-label">Description <span class="opt">· required</span></div>
+            <textarea rows="3" placeholder="e.g. I booked cut + colour at CHF 165 but was charged CHF 195.">I booked cut &amp; colour for CHF 165 but my card was charged CHF 195. The extra CHF 30 wasn't agreed.</textarea>
+            <div class="char">128 / 600</div>
+
+            <div class="field-label">Add photos <span class="opt">· optional</span></div>
+            <div class="photos">
+              <div class="photo-wrap">
+                <img class="photo-thumb" src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=160&q=80" alt="">
+                <span class="rm"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+              </div>
+              <div class="photo-add">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add
+              </div>
+            </div>
+
+            <!-- THE MONEY-BACK TOGGLE (off) -->
+            <div class="money">
+              <div class="money-head">
+                <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13a4 4 0 0 1 0 8H8l3 3M11 4 8 7"/></svg></span>
+                <span>
+                  <span class="tt">I want money back</span>
+                  <span class="dd">Turn on to request a refund with this report</span>
+                </span>
+                <span class="switch"><span class="knob"></span></span>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="cta">Continue<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            <div class="fine">A report without a refund still reaches the salon and Solen.</div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">3 · Details + money-back toggle</div>
+        <div class="d">Description, optional photos, and the optional "I want money back" switch (off here). Eligibility hint sets expectations before submit.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- FLOW 2 — money requested -->
+  <!-- ============================================================= -->
+  <div class="flow-label">
+    <span class="n">2</span>
+    <div>
+      <h2>When "I want money back" is on</h2>
+      <div class="sub">The same record gains an amount. Partial or full, capped at what was paid.</div>
+    </div>
+    <span class="hr"></span>
+  </div>
+
+  <div class="strip">
+
+    <!-- B1: money toggle ON, amount expanded -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="sheet-top">
+            <span class="grab"></span>
+            <span class="x" style="margin-left:0;margin-right:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+            <span class="ttl">Add details</span>
+            <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          </div>
+          <div class="body">
+            <div class="field-label" style="margin-top:4px">Description <span class="opt">· required</span></div>
+            <textarea rows="2">I booked cut &amp; colour for CHF 165 but my card was charged CHF 195.</textarea>
+
+            <!-- money block ON -->
+            <div class="money">
+              <div class="money-head">
+                <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13a4 4 0 0 1 0 8H8l3 3M11 4 8 7"/></svg></span>
+                <span>
+                  <span class="tt">I want money back</span>
+                  <span class="dd">Refund requested with this report</span>
+                </span>
+                <span class="switch on"><span class="knob"></span></span>
+              </div>
+              <div class="money-body">
+                <div class="seg">
+                  <div class="opt">Full refund</div>
+                  <div class="opt on">Partial</div>
+                </div>
+                <div class="amt-row">
+                  <div class="amt-input">
+                    <span class="cur">CHF</span>
+                    <input value="30.00" inputmode="decimal" />
+                  </div>
+                </div>
+                <div class="amt-cap">You paid <b>CHF 165.00</b>. Request up to that amount.</div>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="cta">Review request<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">4 · Amount appears</div>
+        <div class="d">Switch on reveals Full / Partial + a CHF amount, capped at the paid total. Focus state uses the only functional blue (input ring). Partial CHF 30 = just the overcharge.</div>
+      </div>
+    </div>
+
+    <!-- B2: review & submit -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="sheet-top">
+            <span class="grab"></span>
+            <span class="x" style="margin-left:0;margin-right:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+            <span class="ttl">Review &amp; send</span>
+            <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          </div>
+          <div class="body">
+            <div class="step-hint">Step 3 of 3</div>
+            <div class="q">Check before sending</div>
+            <div class="q-sub" style="margin-bottom:13px">Booking SOL-7K2QX · Coiffure Lumière</div>
+
+            <div class="rev-card">
+              <div class="rev-row"><span class="k">Problem</span><span class="v">Wrong amount charged</span></div>
+              <div class="rev-row"><span class="k">Details</span><span class="v"><span class="muted">"I booked cut &amp; colour for CHF 165 but my card was charged CHF 195."</span></span></div>
+              <div class="rev-row"><span class="k">Photos</span><span class="v">1 attached</span></div>
+              <div class="rev-row"><span class="k">Refund</span><span class="v"><span class="big">CHF 30.00</span> &nbsp;<span class="muted">partial · of CHF 165.00</span></span></div>
+            </div>
+
+            <div class="timeline-note">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span>The salon reviews first. If they decline, you can escalate to Solen for a final decision. You'll see every update on the booking.</span>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="cta">Send request</button>
+            <div class="fine">By sending, you confirm the details are accurate.</div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">5 · Review &amp; send</div>
+        <div class="d">Plain summary of the one record: problem + details + photos + refund amount. Sets the review-first / escalation expectation up front.</div>
+      </div>
+    </div>
+
+    <!-- B3: success + status timeline -->
+    <div class="device">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="sb">
+            <span>9:41</span>
+            <span style="display:flex;gap:6px;align-items:center">
+              <svg width="16" height="11" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+              <svg width="22" height="11" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="appbar">
+            <span class="spacer"></span>
+            <div class="iconbtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+          </div>
+          <div class="ok-wrap">
+            <div class="ok-badge">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <h3>Request sent</h3>
+            <p>Coiffure Lumière has 48 hours to respond. We'll keep you posted on the booking.</p>
+            <div class="ok-ref">Case CR-3F8A1 · SOL-7K2QX</div>
+
+            <div class="ok-track">
+              <div class="row">
+                <span class="dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="ln"><span class="s">Submitted</span><span class="m">Just now · CHF 30.00 requested</span></span>
+              </div>
+              <div class="row">
+                <span class="dot now"></span>
+                <span class="ln"><span class="s">Salon reviewing</span><span class="m">Responds within 48 hours</span></span>
+              </div>
+              <div class="row">
+                <span class="dot next"></span>
+                <span class="ln"><span class="s">Decision</span><span class="m">Approve · partial · or you escalate to Solen</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="cta-ghost" style="margin-top:0">View on my booking</button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="t">6 · Sent + live status</div>
+        <div class="d">Case number for tracking. The 3-step timeline (submitted → salon reviewing → decision) maps the review-first workflow; escalate-to-Solen is the named next step.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- DESKTOP -->
+  <!-- ============================================================= -->
+  <div class="desktop-label">
+    <span class="n">3</span>
+    <div>
+      <h2>Desktop · one form, two columns</h2>
+      <div class="sub">Reason picker left, live request summary right. Same single record.</div>
+    </div>
+    <span class="hr"></span>
+  </div>
+
+  <div class="browser">
+    <div class="bv-bar">
+      <span class="d"></span><span class="d"></span><span class="d"></span>
+      <span class="url">solen.ch/booking/SOL-7K2QX/report</span>
+    </div>
+    <div class="dk">
+      <!-- left: the form -->
+      <div class="dk-left">
+        <div class="dk-eyebrow">Booking SOL-7K2QX · Coiffure Lumière · Basel</div>
+        <h2 class="t">Report a problem or request a refund</h2>
+        <p class="lead">Tell us what went wrong. If you'd like money back, turn it on below and set an amount. One form, one case.</p>
+
+        <div class="reasons">
+          <label class="reason">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6 1.8 18a1.5 1.5 0 0 0 1.3 2.3h17.8a1.5 1.5 0 0 0 1.3-2.3L13.7 3.6a1.5 1.5 0 0 0-2.6 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            <span class="tx"><span class="t">Salon cancelled or no-showed</span><span class="d">They cancelled, closed, or no-one was there</span></span>
+            <span class="radio"></span>
+          </label>
+          <label class="reason sel">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5M8.5 14.5 12 12"/><path d="M15 9.5 12 12"/></svg></span>
+            <span class="tx"><span class="t">Wrong amount charged</span><span class="d">Overcharged vs the price you booked</span></span>
+            <span class="radio"></span>
+          </label>
+          <label class="reason">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+            <span class="tx"><span class="t">Charged twice</span><span class="d">Same booking billed more than once</span></span>
+            <span class="radio"></span>
+          </label>
+          <label class="reason">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12a9 9 0 1 1-5.3-8.2"/></svg></span>
+            <span class="tx"><span class="t">Service not delivered as booked</span><span class="d">Missing, incomplete, or materially different</span></span>
+            <span class="radio"></span>
+          </label>
+          <label class="reason">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><path d="M5 9h14l1 11H4z"/></svg></span>
+            <span class="tx"><span class="t">Quality complaint</span><span class="d">Unhappy with the result or experience</span></span>
+            <span class="radio"></span>
+          </label>
+        </div>
+
+        <div class="field-label">Description <span class="opt">· required</span></div>
+        <textarea rows="3">I booked cut &amp; colour for CHF 165 but my card was charged CHF 195. The extra CHF 30 wasn't agreed.</textarea>
+        <div class="char">128 / 600</div>
+
+        <!-- money block ON -->
+        <div class="money">
+          <div class="money-head">
+            <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13a4 4 0 0 1 0 8H8l3 3M11 4 8 7"/></svg></span>
+            <span>
+              <span class="tt">I want money back</span>
+              <span class="dd">Request a refund with this report</span>
+            </span>
+            <span class="switch on"><span class="knob"></span></span>
+          </div>
+          <div class="money-body">
+            <div class="seg">
+              <div class="opt">Full refund</div>
+              <div class="opt on">Partial</div>
+            </div>
+            <div class="amt-row">
+              <div class="amt-input">
+                <span class="cur">CHF</span>
+                <input value="30.00" inputmode="decimal" />
+              </div>
+            </div>
+            <div class="amt-cap">You paid <b>CHF 165.00</b>. Request up to that amount.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: summary + submit -->
+      <div class="dk-right">
+        <h3 class="t">Your request</h3>
+        <div class="h3sub">This is what the salon will see.</div>
+
+        <div class="dk-summary">
+          <div class="rev-row"><span class="k">Problem</span><span class="v">Wrong amount charged</span></div>
+          <div class="rev-row"><span class="k">Booking</span><span class="v">Cut, colour &amp; blow-dry<br><span class="muted">14 May · Nadia R.</span></span></div>
+          <div class="rev-row"><span class="k">Paid</span><span class="v">CHF 165.00</span></div>
+          <div class="rev-row"><span class="k">Refund</span><span class="v"><span class="big">CHF 30.00</span> &nbsp;<span class="muted">partial</span></span></div>
+        </div>
+
+        <div class="elig review" style="margin-top:18px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span><b>Reviewed by the salon first.</b> Overcharge claims are usually fast-tracked. If declined, you can escalate to Solen.</span>
+        </div>
+
+        <div style="margin-top:20px">
+          <button class="cta">Send request</button>
+          <button class="cta-ghost">Save as draft</button>
+        </div>
+        <p class="fine" style="text-align:center;font-size:11px;color:var(--ink-2);margin-top:12px;line-height:1.5">A report without a refund still reaches the salon and Solen. Every refund is reviewed by a person before money moves.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-tag">
+    Solen design system · CANON.md 2026-06-01 · Inter Tight + Inter + JetBrains Mono · ink #0A0A0A · functional accent #276EF1 (focus/input only)<br>
+    Structure: Fresha / Treatwell support flow · Mockup only, no backend. Flow per REFUND_APPEAL_PLAN §11–12.
+  </div>
+
+</body>
+</html>

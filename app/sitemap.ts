@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const APP_URL = "https://solen.ch";
 const LOCALES  = ["de", "en", "fr", "it"] as const;
 const CITIES = ["basel", "zurich", "bern", "luzern", "winterthur", "st-gallen"];
-const CATEGORIES = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"];
+const CATEGORIES = ["coiffeur", "barbershop", "nails", "spa"];
 
 const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priority: number }[] = [
   { path: "",             freq: "daily",   priority: 1.0 },

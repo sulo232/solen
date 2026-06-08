@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Solen — Search pill variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--b:#E7E5E4;--sunken:#F5F5F4}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEB;font-family:'Inter',sans-serif;color:var(--ink);padding:32px 16px 70px;-webkit-font-smoothing:antialiased}
+  h1{font-family:'Inter Tight';font-weight:800;font-size:22px;text-align:center}
+  .sub{text-align:center;color:var(--ink2);font-size:13px;margin:6px auto 26px;max-width:660px;line-height:1.5}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;max-width:840px;margin:0 auto}
+  .col{width:380px}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .rec{font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px;letter-spacing:.04em}
+  .tagd{font-size:11.5px;color:var(--ink2);margin-bottom:12px;line-height:1.4;min-height:44px}
+  .stage{background:#fff;border:1px solid rgba(10,10,10,.07);border-radius:18px;padding:22px 18px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+  svg.ic{width:18px;height:18px;stroke-width:2}
+  /* base pill */
+  .pill{display:flex;align-items:center;gap:11px;border-radius:999px;padding:8px 8px 8px 16px;background:#fff}
+  .pill .txt{flex:1;min-width:0}
+  .pill .t1{font-size:14.5px;font-weight:600}
+  .pill .t2{font-size:11.5px;color:var(--ink2);margin-top:1px}
+  .glass{stroke:var(--ink2);width:19px;height:19px;flex-shrink:0}
+  .btn{width:44px;height:44px;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex-shrink:0}
+  .btn .ic{stroke:#fff;width:18px;height:18px}
+  /* variants */
+  .v1{border:1px solid var(--ink)}
+  .v2{border:1px solid var(--b);box-shadow:0 6px 18px rgba(0,0,0,.07)}
+  .v3{border:1px solid var(--b);box-shadow:0 6px 20px rgba(0,0,0,.08);padding-right:18px}
+  .v4{border:1px solid var(--b);box-shadow:0 6px 18px rgba(0,0,0,.06);padding-left:18px}
+  .v5{background:var(--sunken);padding:13px 16px}
+  .v5 .t2{color:var(--ink2)}
+</style>
+</head>
+<body>
+  <h1>Search pill — outline + icon options</h1>
+  <p class="sub">Two things to fix: the heavy black outline, and having two search-ish icons (magnifier + arrow). The pill just opens the search sheet, so it really needs one icon, not a submit button.</p>
+  <div class="grid">
+
+    <div class="col"><div class="tag">SP1 · Current</div><div class="tagd">Ink outline + magnifier (left) + arrow circle (right). Two icons, heavy frame. What you flagged.</div>
+      <div class="stage"><div class="pill v1"><i data-l="search" class="ic glass"></i><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="btn"><i data-l="arrow-right"></i></span></div></div></div>
+
+    <div class="col"><div class="tag">SP2 · Soft outline</div><div class="tagd">Same layout, but hairline border + soft shadow instead of the black line. Lighter, still two icons.</div>
+      <div class="stage"><div class="pill v2"><i data-l="search" class="ic glass"></i><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="btn"><i data-l="arrow-right"></i></span></div></div></div>
+
+    <div class="col"><div class="tag">SP3 · One icon, no button</div><div class="tagd">Magnifier only, no arrow. No outline, just a shadow. The whole pill taps to open. Cleanest, quietest.</div>
+      <div class="stage"><div class="pill v3"><i data-l="search" class="ic glass"></i><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div></div></div></div>
+
+    <div class="col"><div class="tag">SP4 · Icon in the button <span class="rec">MY PICK</span></div><div class="tagd">One icon, and it's the search glass inside the action button. No left magnifier, soft frame. Keeps a strong tap target, kills the redundancy.</div>
+      <div class="stage"><div class="pill v4"><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div><span class="btn"><i data-l="search"></i></span></div></div></div>
+
+    <div class="col"><div class="tag">SP5 · Flat sunken</div><div class="tagd">Grey fill, no border at all, magnifier only. The calmest possible. Risk: can read as not-tappable.</div>
+      <div class="stage"><div class="pill v5"><i data-l="search" class="ic glass"></i><div class="txt"><div class="t1">Any service</div><div class="t2">Basel · Any date</div></div></div></div></div>
+
+  </div>
+<script>lucide.createIcons({ attrs:{ class:'ic' }, nameAttr:'data-l' });</script>
+</body>
+</html>

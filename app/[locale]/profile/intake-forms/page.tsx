@@ -82,7 +82,7 @@ export default function MyIntakeFormsPage() {
 
         {/* List */}
         {forms.length === 0 ? (
-          <div className="bg-white rounded-[12px] border border-s-ink/5 p-8 text-center text-s-ink/40">
+          <div className="bg-white rounded-[12px] border border-s-border p-8 text-center text-s-ink/40">
             <ClipboardList className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm font-medium">Bisher keine Formulare ausgefüllt</p>
           </div>
@@ -100,7 +100,7 @@ export default function MyIntakeFormsPage() {
                     const responses = form.responses as Record<string, string>;
 
                     return (
-                      <div key={form.id} className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
+                      <div key={form.id} className="bg-white rounded-[12px] border border-s-border overflow-hidden">
                         <button
                           onClick={() => setExpanded(isExpanded ? null : form.id)}
                           // V3-D286: fix corrupted dark-mode concatenated hover (was `hover:bg-s-bg-surface:bg-white/5`)
@@ -121,7 +121,7 @@ export default function MyIntakeFormsPage() {
                         </button>
                         
                         {isExpanded && (
-                          <div className="p-4 pt-0 border-t border-s-ink/5">
+                          <div className="p-4 pt-0 border-t border-s-border">
                             {form.ai_recommendation && (
                               // V3-D286: AI recommendation block — undefined s-amber → s-accent pale (Layer 2 info wash, refined pastel pattern per CLAUDE.md V3-D199)
                               <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-accent-pale border border-s-accent/20">

@@ -91,7 +91,20 @@
     "components-legacy/ui/Breadcrumb.tsx",
     "components-legacy/ui/GuidedSearch.tsx",
     "components-legacy/ui/SolenExclusiveBadge.tsx",
-    "components-legacy/ui/interactive-hover-button.tsx"
+    "components-legacy/ui/interactive-hover-button.tsx",
+    "app/[locale]/_components/search/SalonResultCard.tsx",
+    "app/[locale]/_components/primitives/DateTimePicker.tsx",
+    "app/[locale]/salon/[slug]/booking/page.tsx",
+    "components-legacy/booking/BookingWizard.tsx",
+    "components-legacy/booking/ServicesStaffStep.tsx",
+    "components-legacy/booking/ServiceDetailSheet.tsx",
+    "components-legacy/booking/StaffPicker.tsx",
+    "components-legacy/booking/StaffListSheet.tsx",
+    "components-legacy/booking/ToggleCircle.tsx",
+    "components-legacy/booking/DateTimeStep.tsx",
+    "components-legacy/booking/PayConfirmStep.tsx",
+    "components-legacy/booking/GuestBookingForm.tsx",
+    "components-legacy/booking/WaitlistModal.tsx"
   ],
   "_examples": [
     "app/[locale]/_components/homepage/HeartButton.tsx",

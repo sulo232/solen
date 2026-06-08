@@ -185,7 +185,7 @@ export function ModalHeader({
     <header
       className={cn(
         "flex items-center justify-between gap-3 shrink-0",
-        "border-b border-s-ink/[0.06]",
+        "border-b border-s-border",
         padding,
         className,
       )}
@@ -286,7 +286,7 @@ export function ModalFooter({
       {...props}
       className={cn(
         "flex items-center gap-3 shrink-0",
-        "border-t border-s-ink/[0.06]",
+        "border-t border-s-border",
         justify,
         padding,
         className,

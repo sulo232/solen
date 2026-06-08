@@ -12,9 +12,7 @@ export type SalonCategory =
   | "coiffeur"
   | "barbershop"
   | "nails"
-  | "spa"
-  | "makeup"
-  | "waxing";
+  | "spa";
 
 export type CitySlug = "basel" | "zuerich" | "bern";
 
@@ -143,7 +141,7 @@ export interface Salon {
   auto_complete_enabled?: boolean;
   booking_confirmation_mode?: "instant" | "manual_approval";
   is_top_pick?: boolean;
-  walk_in_available?: boolean;
+  walkin_enabled?: boolean;
   booking_count_week?: number | null;
 }
 

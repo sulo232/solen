@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Solen — QA fix mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#A3A3A3;--b:#E7E5E4;--sunken:#F5F5F4;--accent:#276EF1;--accent-bg:#EAF1FE;--star:#FFC32B;--amber:#9A3412;--red:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:#E6E6E6;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;padding:24px 0 60px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 16px}
+  h1.title{font-family:'Inter Tight';font-weight:800;font-size:22px;margin-bottom:4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:28px}
+  .sec{margin:34px 0 14px}
+  .sec .n{font-family:'Inter Tight';font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sec .n .tag{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--ink);border-radius:5px;padding:2px 7px}
+  .sec .n .rec{background:var(--accent)}
+  .sec .d{color:var(--ink2);font-size:12.5px;margin-top:5px;line-height:1.5;max-width:680px}
+  .row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;margin-top:14px}
+  .phone{width:300px;background:#fff;border-radius:26px;border:1px solid var(--b);box-shadow:0 8px 30px rgba(0,0,0,.10);overflow:hidden}
+  .cap{font-size:11px;color:var(--ink3);text-align:center;margin-top:7px;font-weight:600;letter-spacing:.02em}
+  .col{display:flex;flex-direction:column;align-items:center}
+  /* generic chrome */
+  .bar{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--b)}
+  .bar .mi{width:20px;height:2px;background:var(--ink);border-radius:2px;position:relative}
+  .bar .mi::before,.bar .mi::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--ink);border-radius:2px}
+  .bar .mi::before{top:-6px}.bar .mi::after{top:6px}
+  .bar .ic{margin-left:auto;width:18px;height:18px;color:var(--ink2)}
+  .body{padding:16px 15px}
+  .muted{color:var(--ink2)} .small{font-size:12px}
+  .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+  .btn-ink{background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;font-family:'Inter Tight';font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:7px;border:none}
+  .btn-flat{background:var(--sunken);color:var(--ink);border-radius:12px;padding:11px 16px;font-weight:600;font-size:13px;border:none}
+  svg.l{width:18px;height:18px}
+  /* salon switcher */
+  .sw-trigger{display:flex;align-items:center;gap:9px}
+  .sw-trigger .av{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Inter Tight';font-weight:800;font-size:13px}
+  .sw-trigger .nm{font-family:'Inter Tight';font-weight:700;font-size:16px;display:flex;align-items:center;gap:5px}
+  .sw-trigger .nm svg{width:15px;height:15px;color:var(--ink3)}
+  .sheet{margin:0 10px;border:1px solid var(--b);border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.12);overflow:hidden}
+  .sheet .sh{padding:13px 16px 9px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+  .srow{display:flex;align-items:center;gap:11px;padding:11px 16px;border-top:1px solid var(--b)}
+  .srow .av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+  .srow .t{flex:1;min-width:0}
+  .srow .t .a{font-family:'Inter Tight';font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow .t .b{font-size:11.5px;color:var(--ink3)}
+  .srow .chk{width:20px;height:20px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+  .srow .chk svg{width:12px;height:12px;color:#fff}
+  .srow.active{background:var(--accent-bg)}
+  .sheet .add{padding:12px 16px;border-top:1px solid var(--b);display:flex;align-items:center;gap:9px;color:var(--accent);font-weight:600;font-size:13.5px}
+  /* states */
+  .state{padding:30px 18px;text-align:center}
+  .state .ig{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin:0 auto 12px}
+  .state .ig.empty{background:var(--sunken);color:var(--ink3)}
+  .state .ig.err{background:#FEECEC;color:var(--red)}
+  .state h4{font-family:'Inter Tight';font-weight:700;font-size:15px;margin-bottom:5px}
+  .state p{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:14px;max-width:230px;margin-left:auto;margin-right:auto}
+  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--b);border-top-color:var(--ink3);margin:46px auto;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .xbad{font-size:11px;color:var(--red);font-weight:600;text-align:center;padding-bottom:14px}
+  /* nav */
+  .nav{padding:6px 0}
+  .nav .grp{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);padding:14px 18px 7px}
+  .nav .it{display:flex;align-items:center;gap:14px;padding:11px 18px;font-family:'Inter Tight';font-weight:600;font-size:15px}
+  .nav .it svg{width:20px;height:20px;color:var(--ink2)}
+  .nav .it.active{background:var(--accent-bg);color:var(--accent);border-radius:12px;margin:0 8px;padding:11px 10px}
+  .nav .it.active svg{color:var(--accent)}
+  .nav .it.new{position:relative}
+  .nav .it.new .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:2px 6px}
+  /* discovery */
+  .disc{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:14px 15px}
+  .dcard{aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative}
+  .dcard.bad{background:linear-gradient(135deg,#cfd3da,#aeb4bf)}
+  .dcard.good{background:linear-gradient(150deg,#1a1f2b,#2b3445)}
+  .dcard.good .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);display:grid;place-items:center}
+  .dcard.good .play svg{width:15px;height:15px;color:#fff;fill:#fff}
+  .dcard.good .mk{position:absolute;top:8px;left:8px;font-family:'Inter Tight';font-weight:800;font-size:11px;color:#fff;opacity:.9;display:flex;align-items:center;gap:4px}
+  .dcard.good .mk .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .dcard .cap2{position:absolute;left:8px;right:8px;bottom:8px;color:#fff;font-size:11px;font-weight:600;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+  .dcard.bad .brk{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.7)}
+  .note{font-size:11.5px;color:var(--ink2);background:#fff;border:1px solid var(--b);border-radius:12px;padding:10px 13px;margin-top:10px;max-width:620px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="title">Solen — QA fix mockups</h1>
+  <div class="sub">Four frontend proposals from the mobile QA pass. Review → I implement the approved ones. (English per working-language convention; real tokens + Inter Tight/Inter.)</div>
+
+  <!-- 1. SALON SWITCHER -->
+  <div class="sec">
+    <div class="n"><span class="tag rec">Recommended</span> 1 · Salon switcher (H1)</div>
+    <div class="d">Today the dashboard locks to the owner's <b>oldest</b> salon ("test") with no way to change it — a multi-salon owner can't reach their other 20 salons. Make the salon name in the top bar a tap target → a sheet listing all salons with the active one checked. (Variant B puts it in the nav drawer header instead.)</div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="phone">
+        <div class="bar"><span class="mi"></span>
+          <div class="sw-trigger"><span class="av">O</span><span class="nm">Old Town Barbers <svg data-l="chevron-down"></svg></span></div>
+          <svg class="ic" data-l="bell"></svg>
+        </div>
+        <div class="body" style="background:var(--sunken);padding-top:14px">
+          <div class="sheet" style="background:#fff">
+            <div class="sh">Your salons · 21</div>
+            <div class="srow active"><span class="av" style="background:var(--ink)">O</span><div class="t"><div class="a">Old Town Barbers</div><div class="b">Barbershop · Basel</div></div><span class="chk"><svg data-l="check"></svg></span></div>
+            <div class="srow"><span class="av" style="background:#7C3AED">B</span><div class="t"><div class="a">Blade &amp; Stone</div><div class="b">Barbershop · Basel</div></div></div>
+            <div class="srow"><span class="av" style="background:#DB2777">F</span><div class="t"><div class="a">The Fade Factory</div><div class="b">Barbershop · Basel</div></div></div>
+            <div class="srow"><span class="av" style="background:#0891B2">N</span><div class="t"><div class="a">Nail Lounge Basel</div><div class="b">Nails · Basel</div></div></div>
+            <div class="add"><svg data-l="search" style="width:16px;height:16px"></svg> Search 21 salons…</div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">Variant A — top-bar tap → sheet (recommended)</div>
+    </div>
+    <div class="col">
+      <div class="phone">
+        <div class="sheet" style="margin:0;border:none;border-radius:0;box-shadow:none">
+          <div class="srow" style="border-top:none;padding:16px"><span class="av" style="background:var(--ink);width:40px;height:40px;border-radius:50%">O</span><div class="t"><div class="a" style="font-size:16px">Old Town Barbers</div><div class="b">Tap to switch salon</div></div><svg data-l="chevrons-up-down" style="width:18px;height:18px;color:var(--ink3)"></svg></div>
+        </div>
+        <div class="nav" style="border-top:1px solid var(--b)">
+          <div class="grp">Operations</div>
+          <div class="it active"><svg data-l="layout-grid"></svg> Overview</div>
+          <div class="it"><svg data-l="calendar"></svg> Calendar</div>
+          <div class="it"><svg data-l="message-circle"></svg> Messages</div>
+        </div>
+      </div>
+      <div class="cap">Variant B — switcher in nav drawer header</div>
+    </div>
+  </div>
+
+  <!-- 2. LOADING / ERROR STATES -->
+  <div class="sec">
+    <div class="n"><span class="tag">Pattern</span> 2 · Graceful empty + error states (H2)</div>
+    <div class="d">Calendar, Reviews and Marketing currently spin/skeleton <b>forever</b> when a salon fetch returns nothing or fails. Replace the infinite loader with: (a) an <b>empty state</b> when there's genuinely no data, and (b) an <b>error state with Retry</b> when a fetch fails. Never an endless spinner.</div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="phone"><div class="bar"><span class="mi"></span><span style="font-family:'Inter Tight';font-weight:700">Reviews</span><svg class="ic" data-l="bell"></svg></div>
+        <div class="spinner"></div><div class="xbad">✗ Today: spins forever, no resolution</div>
+      </div><div class="cap">Before</div>
+    </div>
+    <div class="col">
+      <div class="phone"><div class="bar"><span class="mi"></span><span style="font-family:'Inter Tight';font-weight:700">Reviews</span><svg class="ic" data-l="bell"></svg></div>
+        <div class="state"><div class="ig empty"><svg data-l="star"></svg></div><h4>No reviews yet</h4><p>Reviews from your customers will show up here after their first completed booking.</p><button class="btn-flat">Learn how reviews work</button></div>
+      </div><div class="cap">After — empty state</div>
+    </div>
+    <div class="col">
+      <div class="phone"><div class="bar"><span class="mi"></span><span style="font-family:'Inter Tight';font-weight:700">Calendar</span><svg class="ic" data-l="bell"></svg></div>
+        <div class="state"><div class="ig err"><svg data-l="wifi-off"></svg></div><h4>Couldn't load the calendar</h4><p>Something went wrong fetching this salon's schedule.</p><button class="btn-ink"><svg class="l" data-l="rotate-cw"></svg> Try again</button></div>
+      </div><div class="cap">After — error state + retry</div>
+    </div>
+  </div>
+
+  <!-- 3. BARBER-OPS IN NAV -->
+  <div class="sec">
+    <div class="n"><span class="tag rec">Recommended</span> 3 · Walk-in / Queue in the nav (M4)</div>
+    <div class="d">The barber-ops live queue + walk-in management exist (<code>/dashboard/barber-ops</code>, <code>/queue-display</code>) but aren't linked anywhere — reachable by URL only. Add a "Walk-in" entry under Operations, shown <b>only for salons with walk-in enabled</b> (so a nails salon never sees it).</div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="phone">
+        <div class="nav">
+          <div class="grp">Operations</div>
+          <div class="it active"><svg data-l="layout-grid"></svg> Overview</div>
+          <div class="it"><svg data-l="calendar"></svg> Calendar</div>
+          <div class="it new"><svg data-l="users-round"></svg> Walk-in queue <span class="badge">Live · 3</span></div>
+          <div class="it"><svg data-l="message-circle"></svg> Messages</div>
+          <div class="grp">Sales &amp; customers</div>
+          <div class="it"><svg data-l="scissors"></svg> Catalog</div>
+          <div class="it"><svg data-l="users"></svg> Customers</div>
+        </div>
+      </div>
+      <div class="cap">"Walk-in queue" added (with live count); only on walk-in salons</div>
+    </div>
+    <div class="note">The live count badge reuses the same <code>/api/walkin/availability</code> data already powering the search card. Hidden entirely when <code>walkin_enabled = false</code>, so it stays category-correct.</div>
+  </div>
+
+  <!-- 4. DISCOVERY FALLBACK -->
+  <div class="sec">
+    <div class="n"><span class="tag rec">Recommended</span> 4 · Discovery thumbnail fallback (M5)</div>
+    <div class="d">On the home "Get inspired" row, expired TikTok thumbnails render as bare grey gradients (broken). When a thumb fails to load, swap to a branded fallback — dark brand gradient + play glyph + the caption — so the row still reads as real content instead of looking broken.</div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="phone"><div class="body"><div style="font-family:'Inter Tight';font-weight:700;font-size:15px;margin:2px 2px 0">Get inspired</div></div>
+        <div class="disc" style="padding-top:0">
+          <div class="dcard bad"><span class="brk"><svg data-l="image-off"></svg></span></div>
+          <div class="dcard bad"><span class="brk"><svg data-l="image-off"></svg></span></div>
+        </div>
+      </div><div class="cap">Before — bare gradients</div>
+    </div>
+    <div class="col">
+      <div class="phone"><div class="body"><div style="font-family:'Inter Tight';font-weight:700;font-size:15px;margin:2px 2px 0">Get inspired</div></div>
+        <div class="disc" style="padding-top:0">
+          <div class="dcard good"><span class="mk"><span class="dot"></span>Solen</span><span class="play"><svg data-l="play"></svg></span><span class="cap2">Skin fade walk-through · Old Town Barbers</span></div>
+          <div class="dcard good"><span class="mk"><span class="dot"></span>Solen</span><span class="play"><svg data-l="play"></svg></span><span class="cap2">Balayage transformation · Salon Lumière</span></div>
+        </div>
+      </div><div class="cap">After — branded fallback (keeps the caption)</div>
+    </div>
+    <div class="note">Alternative if you'd rather not show fallbacks: hide any card whose thumb fails and collapse the row if all fail. I recommend the fallback — it keeps the section alive and on-brand. Real fix for the root cause (thumb expiry) is the existing <code>/api/discovery/thumb</code> proxy; this is the visual safety net.</div>
+  </div>
+
+</div>
+<script>lucide.createIcons({attrs:{class:'l'},nameAttr:'data-l'});</script>
+</body>
+</html>

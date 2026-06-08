@@ -42,19 +42,27 @@ const STORAGE_KEY = "solen.recently-viewed";
 // Inline type so demo entries match RecentEntry exactly (string availabilityRow,
 // the only kind that round-trips through localStorage).
 // V2-D60-photos: Unsplash imagery; same slug reuses same photo URL across sections.
+// 2026-06-05: the "Top auf Solen" fallback now points at REAL seeded salons
+// (Basel) so every card resolves to a live PDP instead of a 404. Curated
+// availability/photo styling kept; identity (id+slug+name) is real. The real
+// localStorage "recently viewed" path may omit `id` (older writes) — those
+// cards just keep a local-only heart, which is fine.
 const DEMO_SALONS: RecentEntry[] = [
-  { slug: "atelier-coiffure", name: "Atelier Coiffure", rating: 4.9, category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
+  { id: "0ed041f9-149b-4241-a09e-d41351be7097", slug: "muse-beauty-studio", name: "Muse Beauty Studio", rating: 4.93, category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
   // V3-D128 (2026-05-24): "In 25 Min frei" → "Heute 16:00" per user — Solen books by TIME.
-  { slug: "studio-nord", name: "Studio Nord", rating: 4.7, category: "barbershop", availabilityRow: "Heute 16:00",
+  { id: "599bb853-c713-4dae-a3c4-96c6216139c4", slug: "old-town-barbers", name: "Old Town Barbers", rating: 4.91, category: "barbershop", availabilityRow: "Heute 16:00",
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
-  { slug: "nail-loft", name: "Nail Loft", rating: 4.8, category: "nails", availabilityRow: "Heute 17:00, 18:30",
+  { id: "ca037638-362a-491b-ada2-238e20d9d4a9", slug: "nail-studio-bliss", name: "Nail Studio Bliss", rating: 4.95, category: "nails", availabilityRow: "Heute 17:00, 18:30",
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
-  { slug: "rheinspa", name: "Rhein Spa", rating: 4.95, category: "spa", availabilityRow: "Nächster Termin Mo. 09:00",
-    photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
+  { id: "40c96be2-198c-471e-82d8-3ada6f7de0de", slug: "smooth-skin-studio", name: "Smooth Skin Studio", rating: 4.90, category: "spa", availabilityRow: "Nächster Termin Mo. 09:00",
+    photoUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=450&fit=crop&q=80" },
 ];
 
 interface RecentEntry {
+  /** Real salon UUID — threaded to SalonCard → HeartButton so the save persists.
+   *  Optional: older localStorage entries predate this field (heart stays local). */
+  id?: string;
   slug: string;
   name: string;
   rating: number | null;
@@ -171,6 +179,7 @@ export default function RecentlyViewed({
             <SalonCard
               key={s.slug}
               slug={s.slug}
+              salonId={s.id}
               name={s.name}
               rating={s.rating}
               category={s.category}

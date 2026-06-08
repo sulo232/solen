@@ -16,7 +16,7 @@ const selectVariants = cva(
   cn(
     // base — strip browser-default chevron, mirror TextInput
     "block w-full appearance-none font-body font-normal text-s-ink",
-    "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
+    "bg-s-bg-base border border-s-border rounded-[12px]",
     "cursor-pointer",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     // padding-right 40px to leave room for the custom chevron

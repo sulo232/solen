@@ -38,7 +38,7 @@ export default async function BookingsPage({
   return (
     <div className="min-h-screen bg-[--base]">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-[--raised] border-b border-s-ink/[0.06]">
+      <div className="sticky top-0 z-40 bg-[--raised] border-b border-s-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link

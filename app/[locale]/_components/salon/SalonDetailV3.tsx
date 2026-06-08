@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { SalonBreadcrumb } from "./SalonBreadcrumb";
@@ -62,9 +62,15 @@ export function SalonDetailV3() {
   const params = useParams<{ locale: string; slug: string }>()!;
   const slug = params?.slug ?? "";
   const locale = params?.locale ?? "de";
+  const searchParams = useSearchParams();
 
   const [salon, setSalon] = React.useState<SalonDetail | null>(null);
   const [walkinMode, setWalkinMode] = React.useState(false); // barbershop Book/Walk-in switch
+  // V3-D421k: walk-in result cards deep-link with ?walkin=1 → open the profile straight
+  // in walk-in mode (the toggle still lets the user flip back to Book).
+  React.useEffect(() => {
+    if (searchParams?.get("walkin") === "1") setWalkinMode(true);
+  }, [searchParams]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [lightboxOpen, setLightboxOpen] = React.useState(false);
@@ -245,9 +251,9 @@ export function SalonDetailV3() {
           <div className="min-w-0">
             <SalonHeader salon={salon} />
 
-            {/* Book / Walk-in toggle — barbershops with online payment. Walk-in mode shows the
+            {/* Book / Walk-in toggle — walk-in-enabled barbershops. Walk-in mode shows the
                 pay-gated queue join + hides bookable-service browsing (services + team). */}
-            {salon.categories?.includes("barbershop") && (salon as any).accepts_online_payment && (
+            {salon.categories?.includes("barbershop") && (salon as any).walkin_enabled && (
               <div className="mt-6 flex flex-col gap-5">
                 <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
                 {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}

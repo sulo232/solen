@@ -247,7 +247,7 @@ function ScrollCircleButton({
       aria-label={direction === "left" ? "Zurückscrollen" : "Weiterscrollen"}
       className={cn(
         "grid h-9 w-9 place-items-center rounded-full",
-        "border border-s-ink/10 bg-white text-s-ink",
+        "border border-s-border bg-white text-s-ink",
         "transition-[colors,transform,opacity] duration-200 ease-glide",
         "hover:bg-white hover:border-s-ink/30 hover:text-s-ink",
         "active:scale-[0.94] active:duration-[80ms]",

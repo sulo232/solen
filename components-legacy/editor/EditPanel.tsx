@@ -215,7 +215,7 @@ export default function EditPanel({
       animate={{ x: 0 }}
       exit={{ x: 360 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="w-[360px] flex-shrink-0 border-l border-s-ink/5 bg-white overflow-y-auto h-full"
+      className="w-[360px] flex-shrink-0 border-l border-s-border bg-white overflow-y-auto h-full"
     >
       <div className="p-4 space-y-4">
         {/* Header */}
@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none"
+            className="w-full bg-s-bg-sunken rounded-btn border border-s-border p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none"
           />
         </div>
 
@@ -339,7 +339,7 @@ export default function EditPanel({
 
         {/* Copy Actions for Claude */}
         {requests.length > 0 && (
-          <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
+          <div className="border border-s-border rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
             <div className="flex items-center gap-1.5">
               <ClipboardList size={14} className="text-s-accent" />
               <p className="text-xs font-medium text-s-ink">

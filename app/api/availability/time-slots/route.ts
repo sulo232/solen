@@ -78,7 +78,10 @@ export async function GET(req: NextRequest) {
       )
     ).sort();
 
-    return NextResponse.json({ slots: times.map((time) => ({ time })) });
+    // Every returned slot is already filtered to status='available' above, so it IS bookable.
+    // DateTimeStep gates each slot on `slot.isAvailable`; emit it explicitly so the field the
+    // UI reads is never undefined (undefined → every slot rendered disabled → booking dead).
+    return NextResponse.json({ slots: times.map((time) => ({ time, isAvailable: true })) });
   } catch (error) {
     console.error('[/api/availability/time-slots]', error);
     return NextResponse.json(

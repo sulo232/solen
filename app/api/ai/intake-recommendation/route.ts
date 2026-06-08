@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, intakeRecommendationSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // POST /api/ai/intake-recommendation — Generate AI recommendation from intake responses
 export async function POST(req: NextRequest) {
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
   if (!intake) return NextResponse.json({ error: "Intake not found" }, { status: 404 });
 
   // Verify salon ownership
-  const { data: salon } = await supabase.from("salons").select("id, name").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; name: string }>(supabase, user.id, "id, name");
   if (!salon || salon.id !== intake.salon_id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }

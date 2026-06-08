@@ -427,7 +427,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
               )}
 
               <Link
-                href={testimonial.slug ? `/salon/${testimonial.slug}/book` : "#"}
+                href={testimonial.slug ? `/salon/${testimonial.slug}/booking` : "#"}
                 className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-s-ink px-6 py-4 font-body text-[15px] font-bold text-white transition-all duration-200 ease-out hover:-translate-y-[1px] hover:bg-black active:scale-[0.97]"
                 style={{ boxShadow: "0 4px 14px rgba(31,92,66,0.25)" }}
               >

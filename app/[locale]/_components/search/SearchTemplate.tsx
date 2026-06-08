@@ -43,6 +43,7 @@ import Image from "next/image";
 import {
   ChevronDown,
   ChevronLeft,
+  X,
   Map as MapIcon,
   List as ListIcon,
   Search,
@@ -76,7 +77,9 @@ import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
+import { CategoryHeroCarousel } from "./CategoryHeroCarousel";
 import { FilterSheet } from "./FilterSheet";
+import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, isValidCitySlug, type CitySlug } from "@/lib/cities";
 
@@ -260,6 +263,11 @@ function SalonCardSkeleton() {
 // seed script kept dormant for a later re-enable. Flip back to true to restore.
 const BROWSE_RAILS = false;
 
+// Filter pills that toggle a boolean param inline (no dropdown sheet). Every other
+// pill opens a FilterSheet section. open_now joins deals here now that /api/salons
+// filters it server-side.
+const TOGGLE_PILLS = new Set(["deals", "open_now", "walk_in"]);
+
 const CATEGORY_PILLS: {
   slug: SalonCategory;
   route: string;
@@ -426,7 +434,12 @@ export default function SearchTemplate({
   const sortLbl = SORT_OPTIONS.find((o) => o.value === sort)?.label ?? SORT_OPTIONS[0].label;
   const pricePillLabel = maxPrice != null ? `Bis CHF ${maxPrice}` : "Preis";
   const filterPills = [
+    // Walk-in MODE entry (barbershop only — matches the für-dich walk-in tile's
+    // category gate). A toggle (TOGGLE_PILLS): flips ?walk_in=true, which turns the
+    // result cards into their live-queue form. First in the row so it reads as a mode.
+    ...(activeCategory === "barbershop" ? [{ key: "walk_in", label: "Walk-in", active: walkIn }] : []), // drift-ok: walk-in is genuinely barbershop-only (queue feature), not a styling branch
     { key: "sort", label: sort && sort !== "rating" ? sortLbl : "Sortieren", active: !!sort && sort !== "rating" },
+    { key: "open_now", label: "Jetzt geöffnet", active: openNow },
     { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
     { key: "gender", label: gender === "female" ? "Damen" : gender === "male" ? "Herren" : gender === "non_binary" ? "Divers" : "Für wen", active: !!gender },
     { key: "rating", label: minRating ? `${minRating}` : "Bewertung", active: minRating != null },
@@ -437,7 +450,10 @@ export default function SearchTemplate({
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
   // in a shareable/loggable page URL; it's injected into the API fetch only.
   const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
-  const mapOpen = searchParams.get("map") === "1";
+  // `?map=1` is the canonical desktop split-panel param. `?view=map` is an alias
+  // the homepage "Karte" tile uses to deep-link straight into the map (2026-06-05)
+  // — accept both so the tile opens the desktop map split too.
+  const mapOpen = searchParams.get("map") === "1" || searchParams.get("view") === "map";
   // V3-D372 (2026-05-29): the full-width 1-col CARD list ("C") is now the DEFAULT
   // category/search layout - the results-page shape (photo-top, name + ★ + meta +
   // price + next-slot pill). Per user: the 2-col square grid read too "browsey" for
@@ -454,6 +470,8 @@ export default function SearchTemplate({
   const [loadingMore, setLoadingMore] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [favoriteIds, setFavoriteIds] = React.useState<Set<string>>(new Set());
+  // Walk-in live availability per salon — only fetched when the walk_in filter is on.
+  const [walkinAvail, setWalkinAvail] = React.useState<Record<string, { waitMinutes: number; waitMinutesMax: number; queueLength: number }>>({});
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
   // V3-D380: mobile map sheet — DRAG the handle to resize (snaps to peek/expanded
   // on release); a plain tap toggles. sheetTopPx = the sheet's viewport top in px
@@ -518,7 +536,25 @@ export default function SearchTemplate({
   // pill's real height (no magic-number scroll listener). Page scrolls on
   // `window` (not a nested container) — same scroll axis the Header watches.
   const [mapFabVisible, setMapFabVisible] = React.useState(false);
-  const bigSearchRef = React.useRef<HTMLAnchorElement | null>(null);
+  const bigSearchRef = React.useRef<HTMLDivElement | null>(null);
+  // V2-D51 Path C: the sticky search bar opens the full-page SearchOverlay
+  // (search is full-page everywhere, like Fresha) instead of routing to the
+  // homepage. Seeds the active city so the composer continues the context.
+  const [searchOverlayOpen, setSearchOverlayOpen] = React.useState(false);
+
+  // 2026-06-05: the homepage "Karte" tile deep-links here with `?view=map`. On
+  // mobile that means "open the full-screen map view" (mobileView state); on
+  // desktop the `mapOpen` derivation above already opens the split panel from the
+  // same param. Fire once on mount so a later filter change can't re-trigger it.
+  const viewMapApplied = React.useRef(false);
+  React.useEffect(() => {
+    if (viewMapApplied.current) return;
+    if (searchParams.get("view") !== "map") return;
+    viewMapApplied.current = true;
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setMobileView("map");
+    }
+  }, [searchParams]);
 
   // V3-D378 (2026-05-30): lock body scroll while the mobile full-screen map is
   // open, so the page (footer etc.) can't scroll behind the fixed map overlay.
@@ -561,6 +597,19 @@ export default function SearchTemplate({
       // but never added here, so the filter silently no-op'd from the UI).
       if (minPrice != null) sp.set("min_price", String(minPrice));
       if (maxPrice != null) sp.set("max_price", String(maxPrice));
+      // Walk-in: /api/salons filters by salons.walkin_enabled. Was read + counted
+      // as an active filter but never forwarded here — same no-op class as the price
+      // bug fixed above.
+      if (walkIn) sp.set("walk_in", "true");
+      // deals → last_minute_discount_percent > 0; instant_bookable → 48h availability
+      // join. Both are supported server-side (app/api/salons/route.ts) but were read +
+      // counted as active filters without being forwarded — same silent no-op class.
+      if (deals) sp.set("deals", "true");
+      if (instantBookable) sp.set("instant_bookable", "true");
+      // open_now → /api/salons now resolves currently-open salons server-side (Zurich-tz
+      // isOpenNow over opening_hours, IDs constrained before pagination), so forward it
+      // like the other booleans.
+      if (openNow) sp.set("open_now", "true");
       // V3-D385: distance sort needs the user's coords — injected from state (never
       // the page URL). The API maps lat/lng → nearby RPC + true distance ordering.
       if (sort === "distance" && coords) {
@@ -574,17 +623,18 @@ export default function SearchTemplate({
       // pivot the cards read EMPTY (just name/rating/category/price). Services +
       // next-available slots fill them back to a Fresha-grade density (user: "those
       // look so empty"). The API extension was kept dormant exactly for this.
+      if (period) sp.set("period", period); // V3: time-of-day open-slot filter (now wired to /api/salons)
       sp.set("with_slots", "1");
       sp.set("limit", String(PAGE_SIZE));
       sp.set("page", String(pageNum));
       const queryString = qOverride ?? q;
-      // /api/salons/search uses ?q=, /api/salons uses params above.
-      if (queryString && queryString.length >= 2) {
-        return `/api/salons/search?q=${encodeURIComponent(queryString)}`;
-      }
+      // Single endpoint: /api/salons now combines free-text (q → semantic rank) WITH the
+      // structured filters (city / date / period / walk-in). The old q-only
+      // /api/salons/search ignored every filter, so typed-query + city + date never combined.
+      if (queryString && queryString.length >= 2) sp.set("q", queryString);
       return `/api/salons?${sp.toString()}`;
     },
-    [activeCategory, activeCity, date, sort, minRating, minPrice, maxPrice, gender, amenityKey, coords, q],
+    [activeCategory, activeCity, date, period, sort, minRating, minPrice, maxPrice, walkIn, deals, instantBookable, openNow, gender, amenityKey, coords, q],
   );
 
   // ── Initial fetch + refetch on params change ──────────────────────────────
@@ -617,6 +667,25 @@ export default function SearchTemplate({
 
     return () => ac.abort();
   }, [buildUrl]);
+
+  // ── Walk-in live availability — only when the walk_in filter is on. One batched
+  //    /api/walkin/availability call for the loaded salons; feeds the "Frei in
+  //    X–Y Min · N in der Schlange" line on each result card (variant A). ────────
+  React.useEffect(() => {
+    if (!walkIn || salons.length === 0) {
+      setWalkinAvail({});
+      return;
+    }
+    const ac = new AbortController();
+    const ids = salons.map((s) => s.id).join(",");
+    fetch(`/api/walkin/availability?salon_ids=${encodeURIComponent(ids)}`, { signal: ac.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setWalkinAvail(data?.availability ?? {}))
+      .catch((err) => {
+        if (err?.name !== "AbortError") console.error("[SearchTemplate] walk-in availability fetch failed:", err);
+      });
+    return () => ac.abort();
+  }, [walkIn, salons]);
 
   // ── Favorites prefetch ────────────────────────────────────────────────────
   React.useEffect(() => {
@@ -720,7 +789,13 @@ export default function SearchTemplate({
     (deals ? 1 : 0) +
     (walkIn ? 1 : 0) +
     (minRating ? 1 : 0) +
-    (date ? 1 : 0);
+    (date ? 1 : 0) +
+    // V3-D421k (owner + council bug): price / gender / amenities were missing, so the
+    // count undercounted (and the left filter/X circle wouldn't flip to X for a sheet-set
+    // price or "Für wen"). Count what the chips + sheet actually expose.
+    (minPrice != null || maxPrice != null ? 1 : 0) +
+    (gender ? 1 : 0) +
+    (activeAmenities.length > 0 ? 1 : 0);
 
   // ── Map toggle — shared by the big-search map icon + the floating Karte FAB.
   // Desktop = open/close the split panel via the `map` URL param. Mobile =
@@ -823,32 +898,47 @@ export default function SearchTemplate({
         className={cn(
           "max-md:sticky max-md:top-0 max-md:z-[55] transition-all duration-300 ease-glide",
           scrolled
-            ? "pt-2 pb-2 max-md:bg-s-bg-base/95 max-md:shadow-[0_1px_14px_rgba(0,0,0,0.05)] max-md:backdrop-blur-md"
+            // V3-D421L (owner): FLOATING search — no frosted full-width band / backdrop-blur.
+            // The band stays transparent; only the white pill floats over the content (its
+            // own stronger shadow does the lifting). pt-3 gives a small float gap at the top.
+            ? "pt-3 pb-2"
             : "bg-transparent pt-1 pb-0",
         )}
       >
         <div className="mx-auto w-full max-w-[680px] px-4">
-          <Link
+          <div
             ref={bigSearchRef}
-            href={`/${locale}`}
+            role="button"
+            tabIndex={0}
+            onClick={() => setSearchOverlayOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSearchOverlayOpen(true);
+              }
+            }}
             aria-label={tChrome("editSearch")}
+            aria-haspopup="dialog"
             className={cn(
-              "flex items-center gap-3 rounded-pill border border-s-border bg-white px-3.5",
-              "shadow-[0_1px_3px_rgba(50,47,44,0.06),0_1px_2px_rgba(50,47,44,0.04)]",
-              "transition-all duration-300 ease-glide hover:shadow-[0_6px_18px_rgba(0,0,0,0.05)]",
+              "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
+              // V3-D421L (council 3/3): FLAT at rest — no resting/hover shadow on white
+              // chrome (CONTROL_ELEVATION rule 3). The pill lifts ONLY when pinned, i.e.
+              // floating over scrolled content (the one earned shadow).
+              "transition-all duration-300 ease-glide",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              scrolled ? "py-1.5" : "py-2.5",
+              "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
+              scrolled && "max-md:!shadow-[0_10px_30px_rgba(0,0,0,0.13)]",
             )}
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
               <span className="block truncate font-body text-[14px] font-medium text-s-ink">
-                {q ? `„${q}"` : tChrome("searchPlaceholder")}
+                {q || tChrome("searchPlaceholder")}
                 {/* city slides INLINE when collapsed so the info isn't lost */}
                 <span
                   className={cn(
                     "font-normal text-s-ink-2 transition-all duration-300 ease-glide",
-                    scrolled ? "ml-1.5 opacity-100" : "inline-block w-0 overflow-hidden opacity-0",
+                    "inline-block w-0 overflow-hidden opacity-0", // V3-D421d: city stays on line 2 (no inline collapse)
                   )}
                 >
                   · {cityName}
@@ -858,7 +948,7 @@ export default function SearchTemplate({
               <span
                 className={cn(
                   "block truncate font-body text-[12.5px] text-s-ink-2 overflow-hidden transition-all duration-300 ease-glide",
-                  scrolled ? "max-h-0 opacity-0" : "max-h-5 opacity-100",
+                  "max-h-5 opacity-100", // V3-D421d: keep line 2 (city/date) visible when pinned
                 )}
               >
                 {date ? formatDateLabel(date) : null}
@@ -892,14 +982,24 @@ export default function SearchTemplate({
                 "grid shrink-0 place-items-center rounded-full border border-s-border",
                 "text-s-ink transition-all duration-300 ease-glide hover:border-s-ink",
                 "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                scrolled ? "h-8 w-8" : "h-9 w-9",
+                "h-9 w-9", // V3-D421d: map icon stays full size when pinned
               )}
             >
               <MapIcon size={16} strokeWidth={2} aria-hidden />
             </span>
-          </Link>
+          </div>
         </div>
       </div>
+
+      {/* V3-D421 (2026-06-05): Top bewertet hero carousel. Black, photo-led FEATURED
+          carousel, ONLY on a category route in browse mode (no query + no active filter).
+          Owner placement (2026-06-05): directly under the sticky search band and ABOVE the
+          filter chips + fuer-dich icons (widget first, icons + filter beneath it). Top-
+          rated slice of the already-fetched salons (no extra fetch). Design "B".
+          Universal across categories. */}
+      {activeCategory && activeFilterCount === 0 && q.length === 0 && (
+        <CategoryHeroCarousel salons={salons} locale={locale} favoriteIds={favoriteIds} />
+      )}
 
       {/* CHROME row: filter chips + Fuer-dich. The search band moved OUT (above) so it
           can stay pinned over the full results list; this container holds the rest of
@@ -910,6 +1010,50 @@ export default function SearchTemplate({
             then inactive). The round SlidersHorizontal button is pinned right,
             OUTSIDE the scrolling chips, and opens the FilterSheet. */}
         <div className="mt-4 flex items-center gap-2">
+          {/* V3-D421k (owner): ONE circle on the FAR LEFT replaces the right-side Filter
+              button (ditched). No filter active → SlidersHorizontal, tap opens the FilterSheet.
+              Any filter active → X, tap CLEARS ALL filters (push to the bare pathname). The
+              X-state goes blue-tint to match the active chips. */}
+          <button
+            type="button"
+            onClick={() => (activeFilterCount > 0 ? router.push(pathname) : openSection(null))}
+            aria-haspopup={activeFilterCount > 0 ? undefined : "dialog"}
+            aria-label={activeFilterCount > 0 ? "Alle Filter zurücksetzen" : tFilter("open")}
+            className={cn(
+              "grid h-9 w-9 shrink-0 place-items-center rounded-full border",
+              "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
+              "active:scale-[0.95] active:duration-[80ms]",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              activeFilterCount > 0
+                ? "border-s-accent bg-white text-s-accent"
+                : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
+            )}
+          >
+            {/* V3-D421L (owner): animate the switch — both icons are stacked and
+                cross-fade + rotate/scale when activeFilterCount crosses 0. */}
+            <span className="relative grid h-4 w-4 place-items-center" aria-hidden>
+              <SlidersHorizontal
+                size={16}
+                strokeWidth={2}
+                className={cn(
+                  "absolute transition-all duration-300 ease-glide",
+                  activeFilterCount > 0
+                    ? "scale-50 rotate-90 opacity-0"
+                    : "scale-100 rotate-0 opacity-100",
+                )}
+              />
+              <X
+                size={16}
+                strokeWidth={2.5}
+                className={cn(
+                  "absolute transition-all duration-300 ease-glide",
+                  activeFilterCount > 0
+                    ? "scale-100 rotate-0 opacity-100"
+                    : "scale-50 -rotate-90 opacity-0",
+                )}
+              />
+            </span>
+          </button>
           <div
             className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
             style={{ scrollbarWidth: "none" }}
@@ -918,130 +1062,43 @@ export default function SearchTemplate({
                 the dedicated sort dropdown below, so the row shows Preis + Bewertung. */}
             {filterPills
               .filter((p) => p.key !== "sort")
+              // V3-D421f (owner): selected chips sort ALL the way left (stable sort keeps
+              // each group's relative order). Number(active) desc → active first.
+              .sort((a, b) => Number(b.active) - Number(a.active))
               .map((p) => (
                 <button
                   key={p.key}
                   type="button"
-                  onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
-                  aria-haspopup={p.key === "deals" ? undefined : "dialog"}
-                  aria-pressed={p.key === "deals" ? p.active : undefined}
+                  onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
+                  aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
+                  aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
                   className={cn(
                     "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                     "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
                     "active:scale-[0.97] active:duration-[80ms]",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                     p.active
-                      ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
-                      : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                      // V3-D450 (owner): selected = blue hairline + blue text, NO fill (was a soft
+                      // blue wash). The wrapping + text carry the state; chevron stays blue.
+                      ? "border border-s-accent bg-white text-s-accent font-semibold"
+                      : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                   )}
                 >
+                  {/* V3-D421L (owner: "stop adding dotts everywhere"): no leading dot.
+                      Active state is the blue tint alone; the chevron (dropdowns only) is the
+                      one affordance marker. No decorative pips — see LOCKFILE no-dots rule. */}
                   {p.label}
-                  {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
+                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-accent" : "opacity-50"} aria-hidden />}
                 </button>
               ))}
-            {/* V3-D352 (2026-05-28): filter button is the LAST item INSIDE the
-                scroll, so it sits at the very end of the chip row (reached by
-                scrolling to the end) rather than pinned to the right edge. */}
-            <button
-              type="button"
-              onClick={() => openSection(null)}
-              aria-haspopup="dialog"
-              aria-label={
-                activeFilterCount > 0
-                  ? tFilter("openWithCount", { count: activeFilterCount })
-                  : tFilter("open")
-              }
-              className={cn(
-                "relative grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border bg-white",
-                "text-s-ink transition-[border-color,transform] duration-150 ease-glide",
-                "active:scale-[0.95] active:duration-[80ms] hover:border-s-ink",
-                "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              )}
-            >
-              <SlidersHorizontal size={16} strokeWidth={2} aria-hidden />
-              {activeFilterCount > 0 && (
-                <span
-                  className={cn(
-                    "absolute -right-1 -top-1 grid h-[17px] min-w-[17px] place-items-center rounded-full px-1",
-                    "bg-s-ink font-body text-[10px] font-semibold leading-none text-white",
-                    "ring-2 ring-white",
-                  )}
-                  aria-hidden
-                >
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
+            {/* (Old right-side Filter button removed — V3-D421k: it's now the far-left
+                circle that flips to an X / clear-all when any filter is active.) */}
           </div>
         </div>
 
-        {/* E. "Fuer dich" - shortcuts to OTHER surfaces (gift cards / discover /
-            loyalty), NOT a re-run of the filter chips. Round tiles link out; lucide
-            placeholder icons until the user's custom icons land. No heading arrow. */}
-        <div className="mt-3">
-          {/* V3-D362: "Fuer dich" heading removed per user - the icon row stands alone
-              (each tile's label carries the meaning). Left-aligned (V3-D361): first tile
-              on the x=16 grid line, flush with the filters + results + cards. overflow-x-auto
-              = scroll safety on <360px (at 375+ the 3-4 tiles fit with no scroll). */}
-          <div
-            className="scrollbar-none -mx-4 flex gap-3.5 overflow-x-auto px-4"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {[
-              ...FUER_DICH_UNIVERSAL,
-              ...(activeCategory ? FUER_DICH_BY_CATEGORY[activeCategory] ?? [] : []),
-            ].map((f) => {
-              const Icon = f.icon;
-              const label = tChrome(f.labelKey);
-              // V3-D358: prefer the custom 3D PNG (iconSrc); lucide is the fallback.
-              const glyph = f.iconSrc ? (
-                <Image
-                  src={f.iconSrc}
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 object-contain"
-                  aria-hidden
-                />
-              ) : Icon ? (
-                <Icon size={24} strokeWidth={1.8} aria-hidden />
-              ) : null;
-              // V3-D359: every tile renders full-color + available (no "Bald"
-              // dimming / badge). Tiles with a route are tappable Links; routeless
-              // tiles (destinations not wired yet) are plain divs with identical
-              // styling so the row reads as one consistent, available set.
-              const inner = (
-                <>
-                  <span className="grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-glide group-hover:bg-s-border">
-                    {glyph}
-                  </span>
-                  <span className="text-center font-body text-[12px] leading-tight text-s-ink-2">
-                    {label}
-                  </span>
-                </>
-              );
-              if (!f.route) {
-                return (
-                  <div
-                    key={f.key}
-                    className="flex w-16 shrink-0 flex-col items-center gap-1.5"
-                  >
-                    {inner}
-                  </div>
-                );
-              }
-              return (
-                <Link
-                  key={f.key}
-                  href={`/${locale}/${f.route}`}
-                  className="group flex w-16 shrink-0 flex-col items-center gap-1.5 focus-visible:rounded-card focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
-                >
-                  {inner}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+        {/* E. "Fuer dich" row MOVED to the page bottom (V3-D421b, 2026-06-05, council 4/4:
+            cross-surface off-ramps belong AFTER the results, not mid-scan between the hero
+            and the grid). Rendered below the results flex container further down. */}
       </div>
 
       {/* Optional aboveSlot (e.g. CoiffeurAboveGrid) — collapsed details */}
@@ -1094,7 +1151,7 @@ export default function SearchTemplate({
                 "min-h-[36px]",
                 sort !== "rating"
                   ? "border-s-border bg-s-bg-sunken text-s-ink font-semibold hover:bg-s-border"
-                  : "border-s-border bg-white text-s-ink hover:border-s-ink",
+                  : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
               )}
             >
               <span>{sortLabel}</span>
@@ -1233,6 +1290,9 @@ export default function SearchTemplate({
                     services={s.services}
                     isSaved={favoriteIds.has(s.id)}
                     salonId={s.id}
+                    walkInWaitMin={walkinAvail[s.id]?.waitMinutes ?? null}
+                    walkInWaitMax={walkinAvail[s.id]?.waitMinutesMax ?? null}
+                    walkInQueue={walkinAvail[s.id]?.queueLength ?? null}
                   />
                 ))}
               </div>
@@ -1293,6 +1353,11 @@ export default function SearchTemplate({
         )}
       </div>
 
+      {/* "Für dich" shortcut row REMOVED from the category page (V3-D421L, 2026-06-06,
+          owner "ditch the icons at the bottom"). The off-ramps live on the homepage /
+          the hamburger menu; they read as clutter tacked onto the end of a results page.
+          (FUER_DICH_* consts kept above in case the row returns elsewhere.) */}
+
       {/* Mobile full-viewport map mode — pannable map + a bottom sheet holding the
           result cards (V3-D378). Replaces the old bare full-screen swap: the map
           fills below the header, the sheet overlays the lower ~half with the count
@@ -1321,6 +1386,9 @@ export default function SearchTemplate({
           services: s.services,
           isSaved: favoriteIds.has(s.id),
           salonId: s.id,
+          walkInWaitMin: walkinAvail[s.id]?.waitMinutes ?? null,
+          walkInWaitMax: walkinAvail[s.id]?.waitMinutesMax ?? null,
+          walkInQueue: walkinAvail[s.id]?.queueLength ?? null,
         });
         const mapOverlay = (
           <div className="fixed inset-0 z-[60] bg-s-bg-base md:hidden">
@@ -1353,7 +1421,7 @@ export default function SearchTemplate({
               >
                 <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                 <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
-                  {q ? `„${q}"` : tChrome("searchPlaceholder")}
+                  {q || tChrome("searchPlaceholder")}
                   <span className="ml-1.5 font-normal text-s-ink-2">· {cityName}</span>
                 </span>
               </Link>
@@ -1389,19 +1457,19 @@ export default function SearchTemplate({
                   <button
                     key={p.key}
                     type="button"
-                    onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
-                    aria-haspopup={p.key === "deals" ? undefined : "dialog"}
-                    aria-pressed={p.key === "deals" ? p.active : undefined}
+                    onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
+                    aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
+                    aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
                     className={cn(
                       "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                       "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
                       p.active
-                        ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
-                        : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                        ? "border border-s-accent bg-white text-s-accent font-semibold"
+                        : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                     )}
                   >
                     {p.label}
-                    {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
+                    {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-accent" : "opacity-50"} aria-hidden />}
                   </button>
                 ))}
               </div>
@@ -1536,6 +1604,17 @@ export default function SearchTemplate({
           amenitiesHeading: "Ausstattung",
           apply: (count: number) => tFilter("apply", { count }),
         }}
+      />
+
+      {/* V2-D51 Path C: the full-page search surface, opened by the sticky search
+          bar above. Seeds the active service + city so the composer continues the
+          current results context. */}
+      <SearchOverlay
+        open={searchOverlayOpen}
+        onClose={() => setSearchOverlayOpen(false)}
+        locale={locale}
+        initialService={activeCategory ?? ""}
+        initialCity={activeCity ? cityName : ""}
       />
     </div>
   );

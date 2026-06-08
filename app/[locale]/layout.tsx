@@ -5,7 +5,7 @@ import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 import { ToastProvider } from "@/components-legacy/ui/Toast";
 // V3-D195 (2026-05-26): new primitives Toast mounted SIDE-BY-SIDE with legacy. Legacy
-// ToastProvider stays because ~50 callers (CompareDrawer, auth pages, etc.) import
+// ToastProvider stays because ~50 callers (auth pages, ChatWindow, etc.) import
 // `useToast` from `components-legacy/ui/Toast` (separate React Context). Replacing
 // the provider would break them. Instead, the new `<Toaster />` portal mounts as a
 // sibling — new callers can now `import { toast } from "@/app/[locale]/_components/primitives/Toast"`
@@ -17,7 +17,7 @@ import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
 import HideInBooking from "./_components/layout/HideInBooking";
 // V3-D348 (tweak #3): CityTopBar retired — city control moved into the Header
-// as a single responsive "📍 Basel ▾" pill (DesktopCitySelector). File kept on
+// as a single responsive "Basel" location pill (DesktopCitySelector). File kept on
 // disk for revert.
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
@@ -29,7 +29,6 @@ import { CookieConsentProvider } from "./_components/primitives/CookieConsent";
 import PWAInstallPrompt from "@/components-legacy/ui/PWAInstallPrompt";
 import TosPrompt from "@/components-legacy/auth/TosPrompt";
 import TOSUpdateBanner from "@/components-legacy/global/TOSUpdateBanner";
-import { CompareProvider } from "@/components-legacy/compare/CompareContext";
 import Breadcrumb from "@/components-legacy/ui/Breadcrumb";
 import PageTransitionWrapper from "@/components-legacy/layout/PageTransitionWrapper";
 import MotionProvider from "@/components-legacy/layout/MotionProvider";
@@ -92,7 +91,7 @@ export default async function LocaleLayout({
               To revive: pull the deleted block from git history (last seen
               in layout.tsx at HEAD~1, lines 85-109). */}
           {/* V3-D348 (tweak #3): the redundant CityTopBar row is retired —
-              the city control is now a single "📍 Basel ▾" pill inside the
+              the city control is now a single "Basel" location pill inside the
               Header (DesktopCitySelector, made responsive). Reclaims the top
               strip and removes the duplicate-Basel + mystery-arrow clutter.
               Header carries showOnAuth so login + register keep the global
@@ -101,14 +100,12 @@ export default async function LocaleLayout({
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>
-            <CompareProvider>
-              <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
-                <HideInBooking coverSalonDetail>
-                  <Breadcrumb />
-                </HideInBooking>
-                {children}
-              </main>
-            </CompareProvider>
+            <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
+              <HideInBooking coverSalonDetail>
+                <Breadcrumb />
+              </HideInBooking>
+              {children}
+            </main>
           </PageTransitionWrapper>
           {/* V2-D46 (2026-05-09): V3 Footer mounted at locale-layout level
               so it renders site-wide (not just homepage). Replaces the

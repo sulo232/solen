@@ -7,7 +7,7 @@ import { PersonSimpleWalk } from "@phosphor-icons/react";
 type Mode = "book" | "walkin";
 
 // Book / Walk-in mode switch on the barbershop page (Uber Delivery/Pickup pattern).
-// Only rendered for barbershops that accept online payment.
+// Only rendered for walk-in-enabled barbershops.
 const COPY: Record<string, { book: string; walkin: string }> = {
   de: { book: "Termin", walkin: "Walk-in" },
   en: { book: "Book", walkin: "Walk-in" },

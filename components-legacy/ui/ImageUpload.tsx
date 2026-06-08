@@ -257,7 +257,7 @@ export default function ImageUpload({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-red-50">
+                <div className="w-full h-full flex items-center justify-center bg-s-error-bg">
                   <AlertCircle size={16} className="text-red-400" />
                 </div>
               )}
@@ -330,7 +330,7 @@ export default function ImageUpload({
             "w-full h-36 rounded-[16px] border-2 border-dashed flex flex-col items-center justify-center gap-2.5 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
             isDragOver
               ? "border-s-accent bg-s-ink/5"
-              : "border-s-ink/10 hover:border-s-accent/40 hover:bg-s-ink/[0.02]",
+              : "border-s-border hover:border-s-accent/40 hover:bg-s-ink/[0.02]",
           ].join(" ")}
         >
           <div
@@ -368,7 +368,7 @@ export default function ImageUpload({
             .map((p) => (
               <li
                 key={p.id}
-                className="text-xs text-red-500 flex items-center gap-1.5"
+                className="text-xs text-s-error flex items-center gap-1.5"
               >
                 <AlertCircle size={11} className="shrink-0" />
                 <span className="truncate max-w-[180px] font-medium">

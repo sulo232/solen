@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // POST /api/dashboard/coiffeur/formula-photo
 // FormData fields: file (File), formula_id (string), type ("before"|"after"), client_id? (string)
@@ -22,11 +23,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminSupabaseClient();
 
   // Resolve salon ownership
-  const { data: salon } = await admin
-    .from("salons")
-    .select("id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // Parse multipart FormData

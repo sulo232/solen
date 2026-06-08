@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# pre-build-exists-check.sh — Solen "check what exists before building new" guard
+# ============================================================================
+#
+# Purpose: blocks creation of a NEW route / API endpoint / migration until
+# `npm run exists` has been run in the current turn.
+#
+# Why this exists: the #1 recurring failure in this repo is rebuilding something
+# that ALREADY EXISTS — agents re-mocked already-shipped walk-in screens and
+# re-created the existing `tips` table, because no source-of-truth was consulted.
+# The project had SIX hand-written "read before building" docs and they were all
+# ignored (honor-system instructions lose to task focus). This moves the gate to
+# runtime, where the Write literally cannot proceed without the check — the same
+# pattern that took the page-loop from ~10% compliance to enforced.
+#
+# Fires BLOCK (exit 2) when ALL hold for the current Write:
+#   1. The target is a NEW (not-yet-on-disk) file on a duplicate-prone surface:
+#        app/**/page.tsx | app/**/route.ts | supabase/migrations/*.sql
+#   2. `npm run exists` / scripts/exists.mjs did NOT run in this turn's transcript
+#   3. No fresh override flag
+#
+# Editing an EXISTING file never fires (the on-disk check) — only brand-new
+# surfaces, which is exactly where the rebuild risk lives.
+#
+# Override (you've already confirmed it's genuinely new):
+#   touch .claude/exists-skip.flag        # 30-minute TTL
+#
+# Registered via .claude/settings.json under hooks.PreToolUse "Write" matcher.
+
+set -uo pipefail
+
+INPUT=$(cat)
+TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
+FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+TRANSCRIPT=$(echo "$INPUT" | jq -r '.transcript_path // empty')
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+
+# Guard Write only.
+[[ "$TOOL" == "Write" ]] || exit 0
+[[ -n "$FILE" ]] || exit 0
+
+# 1. Editing an existing file is not a rebuild risk → never gate.
+[[ -e "$FILE" ]] && exit 0
+
+# Is the NEW file a duplicate-prone surface?
+case "$FILE" in
+  */app/*/page.tsx|*/app/*/page.jsx) SURFACE="route (page)";;
+  */app/*/route.ts|*/app/*/route.js) SURFACE="API endpoint";;
+  */supabase/migrations/*.sql)       SURFACE="DB migration";;
+  */public/solen-*.html)             SURFACE="design mockup";;
+  *) exit 0;;
+esac
+
+# 2. Override flag (30-min TTL), parity with the other hooks.
+FLAG="$PROJECT_DIR/.claude/exists-skip.flag"
+if [[ -f "$FLAG" ]]; then
+  AGE=$(( $(date +%s) - $(stat -f %m "$FLAG" 2>/dev/null || stat -c %Y "$FLAG" 2>/dev/null || echo 0) ))
+  [[ $AGE -le 1800 ]] && exit 0
+fi
+
+# 3. Did `npm run exists` run in this turn? (scan recent transcript Bash commands)
+if [[ -n "$TRANSCRIPT" && -f "$TRANSCRIPT" ]]; then
+  RAN=$(tail -n 150 "$TRANSCRIPT" \
+    | jq -rc 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use" and .name=="Bash") | .input.command // empty' 2>/dev/null \
+    | grep -cE 'run exists|exists\.mjs' || true)
+  [[ "${RAN:-0}" -gt 0 ]] && exit 0
+fi
+
+# ── BLOCK ──
+KW=$(basename "$(dirname "$FILE")")
+[[ "$KW" == "migrations" ]] && KW="<feature>"
+[[ "$SURFACE" == "design mockup" ]] && KW="<the-component-youre-mocking>"
+cat <<EOF >&2
+[pre-build-exists-check] You're about to CREATE a new $SURFACE:
+  $FILE
+
+The #1 recurring failure in this repo is rebuilding something that ALREADY EXISTS
+(re-mocked shipped walk-in screens; re-created the existing \`tips\` table). Check first.
+
+Run this (read-only, ~5s) before creating it:
+  npm run exists $KW
+
+  • A hit → REUSE or EXTEND what's there instead of creating this file.
+  • Empty → it's genuinely new; re-run this Write and it will pass.
+  • DESIGN / mockups: also read _design-system/COMPONENT_REGISTRY.md — never hand-fake a
+    component that already exists (the fake-calendar miss: DateTimePicker already did grid + blue).
+
+Override (only if you've ALREADY confirmed it's new): touch .claude/exists-skip.flag
+EOF
+exit 2

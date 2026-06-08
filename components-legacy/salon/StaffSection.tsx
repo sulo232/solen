@@ -31,7 +31,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           <Link
             key={m.id}
             href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
-            className="shrink-0 w-[160px] sm:w-[200px] flex flex-col rounded-[16px] border border-s-ink/[0.08] bg-white p-4 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="shrink-0 w-[160px] sm:w-[200px] flex flex-col rounded-[16px] border border-s-border bg-white p-4 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             {/* Avatar */}
             <div className="block">
@@ -88,7 +88,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             </div>
 
             {/* Rating */}
-            <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-ink/[0.08]">
+            <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-border">
               {m.average_rating != null && m.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
                   <Star size={12} className="fill-s-amber text-s-amber-text" />

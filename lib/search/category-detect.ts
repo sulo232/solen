@@ -3,7 +3,7 @@ import type { SalonCategory } from "@/lib/types";
 import { getServerEnv } from "@/lib/env";
 
 const VALID_CATEGORIES: SalonCategory[] = [
-  "coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"
+  "coiffeur", "barbershop", "nails", "spa"
 ];
 
 /**
@@ -21,7 +21,7 @@ export async function detectCategory(
 
   const prompt = `You are a beauty/wellness category classifier for a Swiss booking platform.
 Given a user search query, return ONLY the single most likely category from this list:
-coiffeur, barbershop, nails, spa, makeup, waxing
+coiffeur, barbershop, nails, spa
 
 If the query is ambiguous or not related to beauty, return "unknown".
 

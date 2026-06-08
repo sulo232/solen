@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { stripe } from "@/lib/stripe";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/stripe/connect/status
 // Returns the Stripe Connect onboarding status for the current salon owner.
@@ -13,11 +14,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ status: "not_connected" });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons")
-    .select("stripe_account_id")
-    .eq("owner_id", user.id)
-    .single();
+  const salon = await getActiveSalon<{ stripe_account_id: string | null }>(admin, user.id, "stripe_account_id");
 
   if (!salon?.stripe_account_id) {
     return NextResponse.json({ status: "not_connected" });

@@ -154,7 +154,7 @@ export function SalonVenuesNearby({
                 {s.name}
               </div>
               <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
-                <Star size={11} fill="#FFC32B" stroke="none" />
+                <Star size={11} stroke="none" className="fill-s-star" />
                 <span>{s.average_rating?.toFixed(1) ?? "—"}</span>
                 {s.review_count !== undefined && <span>({s.review_count})</span>}
               </div>

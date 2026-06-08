@@ -14,7 +14,7 @@ const textareaVariants = cva(
   cn(
     // base
     "block w-full font-body font-normal text-s-ink leading-[1.5]",
-    "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
+    "bg-s-bg-base border border-s-border rounded-[12px]",
     "px-4 py-3 text-[16px]",
     "placeholder:text-s-ink-3",
     "selection:bg-s-ink/20",

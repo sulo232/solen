@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase
       .from("profiles")
       .update({
-        tos_version,
+        tos_accepted_version: tos_version,
         tos_accepted_at: new Date().toISOString(),
       })
       .eq("id", user.id);

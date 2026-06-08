@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Gift, ChevronRight, AlertCircle, CheckCircle, Clock, X } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -30,25 +31,51 @@ interface VouchersData {
 
 export default function VouchersPage() {
   const locale = useLocale();
+  const router = useRouter();
   const [data, setData] = useState<VouchersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // V3 guest-auth fix (2026-06-05): true while the client redirect to login is in
+  // flight — keeps the spinner up so the empty state never flashes for a guest.
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/profile/vouchers")
       .then((r) => {
+        // V3 guest-auth fix (2026-06-05): /api/profile/vouchers 401s for guests.
+        // Send them to login (same /auth/login?redirect= convention SignIn reads)
+        // instead of rendering the generic red "FEHLER" state. Keep the spinner
+        // up while the redirect happens (return null below skips setData/error).
+        if (r.status === 401) {
+          if (!cancelled) {
+            setRedirecting(true);
+            const dest = `/${locale}/profile/vouchers`;
+            router.replace(`/${locale}/auth/login?redirect=${encodeURIComponent(dest)}`);
+          }
+          return null;
+        }
         if (!r.ok) throw new Error("Failed to fetch vouchers");
         return r.json();
       })
-      .then(setData)
+      .then((d) => {
+        if (!cancelled && d) setData(d);
+      })
       .catch((err) => {
+        if (cancelled) return;
         console.error("[VouchersPage] failed to load vouchers:", err);
         setError("Fehler beim Laden der Gutscheine");
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => {
+        // On a 401 we keep the spinner (don't drop into the empty state mid-redirect).
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale, router]);
 
-  if (loading) {
+  if (loading || redirecting) {
     return (
       <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
         <Spinner size="lg" />
@@ -155,7 +182,7 @@ export default function VouchersPage() {
 
         {/* Action section — V3-D290: secondary CTA — retired s-coral + corrupted dark-mode hover → s-ink outline */}
         {(data?.active || data?.used || data?.expired) && (
-          <div className="mt-8 pt-6 border-t border-s-ink/5">
+          <div className="mt-8 pt-6 border-t border-s-border">
             <Link
               href={`/${locale}/vouchers`}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-border bg-white text-[11px] font-heading uppercase tracking-[.06em] text-s-ink hover:bg-s-bg-sunken transition-[transform,filter] duration-150"

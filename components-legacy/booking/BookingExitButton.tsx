@@ -78,7 +78,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                className="flex-1 rounded-btn border border-s-ink/15 bg-white py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
+                className="flex-1 rounded-btn border border-s-border bg-white py-3.5 font-heading text-[15px] font-semibold text-s-ink transition-colors hover:border-s-ink/30"
               >
                 {t('cancel')}
               </button>

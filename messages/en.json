@@ -405,7 +405,6 @@
     "savedLabel": "Saved",
     "comingSoon": "Coming soon",
     "comingSoonMessage": "We're working on making this category available for you.",
-    "compare": "Compare",
     "loadMore": "Load more",
     "showAll": "Show all",
     "today": "Today",
@@ -702,7 +701,6 @@
     "agb": "Terms",
     "privacy": "Privacy",
     "help": "Help",
-    "compareSalons": "Compare salons",
     "salon_pitch": "Own a salon? Bring your business to Solen.",
     "salonPitch": "Own a salon? Bring your business to Solen.",
     "forSalons": "For Salons",
@@ -1042,6 +1040,28 @@
       "subtitle": "Your progress so far will be lost.",
       "cancel": "Cancel",
       "exit": "Leave"
+    },
+    "waitlist": {
+      "dontMissTitle": "Don't miss out",
+      "triggerBody": "Join the waitlist and we'll notify you the moment a spot opens up.",
+      "joinButton": "Join the waitlist",
+      "title": "Join the waitlist",
+      "lead": "Fully booked on your date? We'll email you the moment a spot frees up.",
+      "salonLabel": "Salon",
+      "serviceLabel": "Service",
+      "dateLabel": "Date",
+      "preferredTime": "Preferred time",
+      "time_any": "Any time",
+      "time_morning": "Morning",
+      "time_afternoon": "Afternoon",
+      "time_evening": "Evening",
+      "submit": "Notify me when a spot opens",
+      "submitting": "Joining...",
+      "successTitle": "You're on the list",
+      "successBody": "We'll email you as soon as a spot opens up at {salon} on {date}.",
+      "browseOther": "Browse other dates",
+      "close": "Close",
+      "error": "Couldn't join the waitlist. Please try again."
     }
   },
   "chat": {
@@ -1931,7 +1951,10 @@
       "lastMinute": "Last-minute",
       "categoryHair": "Hair",
       "categoryNails": "Nails",
-      "categorySpa": "Spa"
+      "categorySpa": "Spa",
+      "loadErrorTitle": "Couldn't load the calendar",
+      "loadErrorMessage": "Something went wrong fetching this salon's schedule.",
+      "retry": "Try again"
     },
     "clientsPage": {
       "title": "Clients",
@@ -2017,7 +2040,10 @@
       "writeReply": "Write a reply",
       "flagQuestion": "Why are you reporting this review?",
       "flagPlaceholder": "Reason (e.g. fake review, abuse)...",
-      "flagSubmit": "Report"
+      "flagSubmit": "Report",
+      "loadErrorTitle": "Couldn't load reviews",
+      "loadErrorMessage": "Something went wrong fetching your reviews.",
+      "retry": "Try again"
     },
     "messagesPage": {
       "title": "Messages",
@@ -4351,6 +4377,55 @@
       "fuerDich_nailDesigns": "Your designs",
       "fuerDich_soon": "Soon"
     },
+    "searchOverlay": {
+      "title": "Search",
+      "searchTitle": "Search",
+      "visitedLabel": "Stores you've visited",
+      "close": "Close",
+      "back": "Back",
+      "queryPlaceholder": "Service, salon or stylist",
+      "cityField": "City",
+      "dateField": "Date & time",
+      "anytime": "Anytime",
+      "submit": "Search",
+      "scopeLabel": "Filter results by type",
+      "scopeAll": "All",
+      "scopeServices": "Services",
+      "scopeSalons": "Salons",
+      "scopeStylists": "Stylists",
+      "groupServices": "Services",
+      "groupSalons": "Salons",
+      "groupStylists": "Stylists",
+      "servicesLabel": "Services",
+      "recentLabel": "Recent",
+      "allServices": "All services",
+      "clear": "Clear",
+      "trendingLabel": "Trending",
+      "forYou": "For you",
+      "featuredLabel": "Featured salons",
+      "categoriesLabel": "Categories",
+      "popularLabel": "Popular",
+      "locationTitle": "Location",
+      "cityPlaceholder": "City or postcode",
+      "useCurrentLocation": "Use current location",
+      "currentLocation": "Current location",
+      "popularCities": "Popular cities",
+      "dateTitle": "Date & time",
+      "pickDay": "Choose day",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "pickTime": "Choose time",
+      "periodMorning": "Morning",
+      "periodNoon": "Midday",
+      "periodAfternoon": "Afternoon",
+      "periodEvening": "Evening",
+      "noMatchTitle": "No results",
+      "noMatchBody": "We couldn't find anything for \"{query}\".",
+      "searchAnyway": "Search anyway",
+      "searchAnywaySub": "Search all salons for \"{query}\"",
+      "errorTitle": "Something went wrong",
+      "errorBody": "We couldn't load the search. Check your connection and try again."
+    },
     "mobileMenu": {
       "quickAccess": "Quick access",
       "giftCards": "Gift cards",
@@ -4612,6 +4687,17 @@
     "testimonial8": "Even found last-minute deals with discounts. Amazing!",
     "whatUsersSay": "What our users say"
   },
+  "reviewsPage": {
+    "metaTitle": "Reviews · Solen",
+    "metaDescription": "Read the latest customer reviews of salons on Solen.",
+    "eyebrow": "Reviews",
+    "heading": "What our customers say",
+    "subtitle": "The latest reviews from across all salons on Solen.",
+    "emptyTitle": "No reviews yet",
+    "emptyMessage": "As soon as the first reviews come in, they'll show up here.",
+    "readMore": "Read more",
+    "readLess": "Read less"
+  },
   "cityPage": {
     "title": "Salons in {cityName}",
     "subtitle": "Find and book the best salons near you.",
@@ -4846,7 +4932,10 @@
     "emailError": "Invalid email",
     "disclaimer": "* Displayed availability may not be real-time. The salon will confirm your appointment request.",
     "submit": "Continue to payment →",
-    "fillRequired": "Please enter your contact details first."
+    "fillRequired": "Please enter your contact details first.",
+    "phoneHint": "For appointment reminders by SMS",
+    "optional": "optional",
+    "emailHint": "For your booking confirmation"
   },
   "staffPicker": {
     "title": "Choose staff member",
@@ -5002,7 +5091,12 @@
     "tab_referrals": "Referrals",
     "tab_promos": "Promotions",
     "tab_last_minute": "Offers",
-    "loading_salon": "Loading salon..."
+    "loading_salon": "Loading salon...",
+    "loadErrorTitle": "Couldn't load marketing",
+    "loadErrorMessage": "Something went wrong fetching your salon.",
+    "retry": "Try again",
+    "noSalonTitle": "No salon yet",
+    "noSalonMessage": "Set up your salon to start running packages, gift cards and promotions."
   },
   "paymentMethods": {
     "title": "Payment methods",
@@ -5153,29 +5247,6 @@
     "backToList": "Back to list",
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites"
-  },
-  "compare": {
-    "back": "Back",
-    "title": "Compare Salons",
-    "salonCount": "{count} salons",
-    "loading": "Loading salons…",
-    "errorTitle": "Error loading",
-    "errorMessage": "The salon details could not be loaded. Please try again.",
-    "noSelectionTitle": "No salons selected",
-    "noSelectionMessage": "Select up to 4 salons on the Discover page to compare them here.",
-    "notFoundTitle": "Salons not found",
-    "notFoundMessage": "The linked salons could not be found. They may no longer be active.",
-    "discover": "Discover salons",
-    "recommendation": "Recommendation",
-    "bookNow": "Book now",
-    "bookLabel": "Book",
-    "hint": "The recommendation is based on ratings, number of reviews and prices.",
-    "rating": "Rating",
-    "reviewCount": "Number of reviews",
-    "cheapestService": "Cheapest service",
-    "todayHours": "Today's hours",
-    "distance": "Distance",
-    "closed": "Closed"
   },
   "comingSoon": {
     "title": "Coming Soon",

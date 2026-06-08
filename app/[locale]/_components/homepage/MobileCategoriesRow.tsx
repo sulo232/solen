@@ -32,6 +32,9 @@ interface Category {
   icon: string;
   /** Optional override when the source PNG has extra transparent padding. */
   iconClass?: string;
+  /** Optional destination override. Defaults to /de/{slug}. Walk-in points at the
+   *  existing barbershop search with the walk_in filter pre-applied (no bespoke route). */
+  href?: string;
 }
 
 // V3-D152/153/154: Walk-in + Karte + Spa tiles → 3×2 grid, all six on first paint.
@@ -39,8 +42,8 @@ const CATEGORIES: Category[] = [
   { slug: "coiffeur",   label: "Coiffeur", icon: "/icons/categories/scissors.png" },
   { slug: "barbershop", label: "Barber",   icon: "/icons/categories/clippers.png" },
   { slug: "nails",      label: "Nails",    icon: "/icons/categories/nails.png" },
-  { slug: "map",        label: "Karte",    icon: "/icons/categories/map.png" },
-  { slug: "walk-in",    label: "Walk-in",  icon: "/icons/categories/walkin.png" },
+  { slug: "map",        label: "Karte",    icon: "/icons/categories/map.png", href: "/de/search?view=map" },
+  { slug: "walk-in",    label: "Walk-in",  icon: "/icons/categories/walkin.png", href: "/de/barbershop?walk_in=true" },
   { slug: "spa",        label: "Spa",      icon: "/icons/categories/spa.png" },
 ];
 
@@ -70,12 +73,12 @@ export default function MobileCategoriesRow({
         </h2>
 
         <div className="grid grid-cols-3 gap-x-3 gap-y-4">
-          {tiles.map(({ slug, label, icon, iconClass }) => {
+          {tiles.map(({ slug, label, icon, iconClass, href: hrefOverride }) => {
             const isPick = picked.includes(slug);
             return (
               <Link
                 key={slug}
-                href={`/de/${slug}`}
+                href={hrefOverride ?? `/de/${slug}`}
                 aria-label={label}
                 className="group focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-3xl"
               >

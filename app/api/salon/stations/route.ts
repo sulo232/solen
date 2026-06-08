@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, nailStationSchema } from "@/lib/validations";
+import { getActiveSalon } from "@/lib/active-salon";
 
 // GET /api/salon/stations — Get station config
 export async function GET(req: NextRequest) {
@@ -17,8 +18,7 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (!salon.categories?.includes("nails")) {
     return NextResponse.json({ error: "Not a nail salon" }, { status: 403 });
@@ -58,8 +58,7 @@ export async function PUT(req: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("owner_id", user.id).single();
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
   if (!salon || !salon.categories?.includes("nails")) {
     return NextResponse.json({ error: "Not a nail salon" }, { status: 403 });
   }
