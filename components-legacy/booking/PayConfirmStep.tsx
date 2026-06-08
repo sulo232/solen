@@ -8,7 +8,6 @@ import { Wallet, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
-import SignatureLockup from '@/components-legacy/ui/SignatureLockup';
 import GuestBookingForm, {
   type GuestInfo,
   type GuestBookingFormHandle,
@@ -225,13 +224,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
   return (
     <div className="space-y-5 pb-28">
-      {/* (a) Q48 signature lockup */}
-      <SignatureLockup
-        eyebrow={`Schritt 3 / 3`}
-        headline="Bestätigen & Zahlen"
-        size="md"
-      />
-
+      {/* Step title comes from the wizard header (matches the services + date steps) — no duplicate lockup / green eyebrow here. */}
       {/* (b) Summary card */}
       <div className="rounded-[12px] p-4 bg-s-bg-sunken">
         <div className="flex items-start gap-3 mb-3 pb-3 border-b border-s-border">

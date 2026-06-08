@@ -173,6 +173,7 @@ export function DateTimePicker({
       onChange={(time) => onChange({ ...value, time })}
       isLoading={isLoadingSlots}
       isDateSelected={value.date !== null}
+      selectedTone={selectedTone}
       labels={L}
       emptySlotContent={emptySlotContent}
     />
@@ -497,9 +498,11 @@ interface TimeSlotListProps {
   isDateSelected: boolean;
   labels: DateTimeLabels;
   emptySlotContent?: React.ReactNode;
+  /** Selected-slot fill: `ink` (default) or `accent` (blue) — match the day-strip tone. */
+  selectedTone?: "ink" | "accent";
 }
 
-function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, labels, emptySlotContent }: TimeSlotListProps) {
+function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, labels, emptySlotContent, selectedTone = "ink" }: TimeSlotListProps) {
   // Group slots by period
   const groups = React.useMemo(() => groupByPeriod(slots ?? [], labels), [slots, labels]);
 
@@ -573,7 +576,9 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
                   "tabular-nums cursor-pointer",
                   "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                   value === slot.time
-                    ? "bg-s-ink text-white border-s-ink hover:bg-s-ink"
+                    ? (selectedTone === "accent"
+                        ? "bg-s-accent text-white border-s-accent hover:bg-s-accent"
+                        : "bg-s-ink text-white border-s-ink hover:bg-s-ink")
                     : slot.available
                       ? "bg-s-bg-base text-s-ink border-s-border hover:bg-s-bg-active hover:border-s-ink/25"
                       : "opacity-40 cursor-not-allowed bg-s-bg-base text-s-ink border-s-border",
