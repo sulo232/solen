@@ -133,7 +133,7 @@ export default function BookingCard({
           </h3>
           {booking.salon?.average_rating && booking.salon?.review_count ? (
             <div className="flex items-center gap-1 mt-1 text-sm text-s-ink/60">
-              <Star size={14} className="fill-s-amber text-s-amber" />
+              <Star size={14} className="fill-s-star text-s-star" />
               <span>
                 {booking.salon.average_rating.toFixed(1)} ({booking.salon.review_count} {t('reviews')})
               </span>
@@ -197,7 +197,7 @@ export default function BookingCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-ink/[0.06]:bg-white/[0.08] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
+            className="p-2 hover:bg-s-ink/[0.06] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
             aria-label="More options"
           >
             <MoreVertical size={18} className="text-s-ink" />
@@ -212,7 +212,7 @@ export default function BookingCard({
                       onReschedule?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-ink/[0.05]:bg-white/[0.08] font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-ink/[0.05] font-body"
                   >
                     {t('reschedule')}
                   </button>
@@ -221,7 +221,7 @@ export default function BookingCard({
                       onCancel?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-error hover:bg-s-error/10:bg-s-error/10 font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-error hover:bg-s-error/10 font-body"
                   >
                     {t('cancel')}
                   </button>

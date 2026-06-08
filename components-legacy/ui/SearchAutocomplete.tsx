@@ -259,7 +259,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
                         {salon.average_rating > 0 && (
                           <>
-                            <Star size={10} className="fill-s-amber text-s-amber" />
+                            <Star size={10} className="fill-s-star text-s-star" />
                             <span>{salon.average_rating.toFixed(1)}</span>
                           </>
                         )}

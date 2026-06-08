@@ -221,7 +221,7 @@ export default function ServiceAutosuggest({
               </span>
               {item.average_rating != null && (
                 <span className="flex items-center gap-0.5 text-[11px] font-body text-s-ink/50 shrink-0">
-                  <Star size={10} className="fill-s-amber text-s-amber" />
+                  <Star size={10} className="fill-s-star text-s-star" />
                   {item.average_rating.toFixed(1)}
                 </span>
               )}

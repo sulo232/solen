@@ -58,7 +58,7 @@ function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) 
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={[sz, i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"].join(" ")}
+          className={[sz, i <= rounded ? "fill-s-star text-s-star" : "text-s-ink/20"].join(" ")}
         />
       ))}
     </span>
