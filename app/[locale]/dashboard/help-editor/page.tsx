@@ -133,7 +133,7 @@ export default function HelpEditorPage() {
 
         {/* Form modal */}
         {showForm && (
-          <div className="bg-white border border-s-ink/10 rounded-[12px] p-5 space-y-4 shadow-warm-md">
+          <div className="bg-white border border-s-border rounded-[12px] p-5 space-y-4 shadow-warm-md">
             <h2 className="font-heading text-base text-s-ink">
               {editing ? t("editArticle") : t("newArticle")}
             </h2>
@@ -142,12 +142,12 @@ export default function HelpEditorPage() {
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                 placeholder={t("slugPlaceholder")}
-                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               >
                 <option value="customers">{t("categoryCustomers")}</option>
                 <option value="salons">{t("categorySalons")}</option>
@@ -158,22 +158,22 @@ export default function HelpEditorPage() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder={t("titlePlaceholder")}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
             <textarea
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               placeholder={t("contentPlaceholder")}
               rows={10}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
+              className="w-full px-3 py-2 rounded-btn border border-s-border text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
             />
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm font-body text-s-ink/60">
+              <label className="flex items-center gap-2 text-sm font-body text-s-ink-2">
                 <input
                   type="checkbox"
                   checked={form.published}
                   onChange={(e) => setForm({ ...form, published: e.target.checked })}
-                  className="rounded border-s-ink/20 text-s-coral focus:ring-s-coral"
+                  className="rounded border-s-border text-s-coral focus:ring-s-coral"
                 />
                 {t("published")}
               </label>
@@ -181,7 +181,7 @@ export default function HelpEditorPage() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
-                className="w-20 px-2 py-1 rounded-btn border border-s-ink/10 text-sm font-body"
+                className="w-20 px-2 py-1 rounded-btn border border-s-border text-sm font-body"
                 placeholder={t("sortOrderPlaceholder")}
               />
             </div>
@@ -195,7 +195,7 @@ export default function HelpEditorPage() {
               </button>
               <button
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-btn text-sm font-body text-s-ink/50 hover:text-s-ink/70"
+                className="px-4 py-2 rounded-btn text-sm font-body text-s-ink-2 hover:text-s-ink/70"
               >
                 {t("cancel")}
               </button>
@@ -220,7 +220,7 @@ export default function HelpEditorPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-body text-sm font-medium text-s-ink truncate">{article.title}</span>
-                    <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-sand text-s-ink/50">
+                    <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-sand text-s-ink-2">
                       {categoryLabel(article.category)}
                     </span>
                     {!article.published && (
@@ -234,7 +234,7 @@ export default function HelpEditorPage() {
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   <button
                     onClick={() => togglePublish(article)}
-                    className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-ink/60 transition-colors"
+                    className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-ink-2 transition-colors"
                     title={article.published ? t("hide") : t("publish")}
                   >
                     {article.published ? <Eye size={14} /> : <EyeOff size={14} />}

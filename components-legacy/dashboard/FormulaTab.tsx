@@ -87,40 +87,40 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">{t("brand")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("brand")}</label>
               <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={t("brandPlaceholder")}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">{t("productLine")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("productLine")}</label>
               <input value={productLine} onChange={(e) => setProductLine(e.target.value)} placeholder={t("productLinePlaceholder")}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
           </div>
           <div>
-            <label className="text-xs text-s-ink/50 mb-1 block">{t("mixFormula")} *</label>
+            <label className="text-xs text-s-ink-2 mb-1 block">{t("mixFormula")} *</label>
             <input value={mixFormula} onChange={(e) => setMixFormula(e.target.value)} placeholder={t("mixFormulaPlaceholder")}
-              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+              className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">{t("developer")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("developer")}</label>
               <input value={developerVolume} onChange={(e) => setDeveloperVolume(e.target.value)} placeholder={t("developerPlaceholder")}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">{t("processingTime")}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{t("processingTime")}</label>
               <input type="number" value={processingMinutes} onChange={(e) => setProcessingMinutes(e.target.value)} placeholder="35"
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
           </div>
           <div>
-            <label className="text-xs text-s-ink/50 mb-1 block">{t("notes")}</label>
+            <label className="text-xs text-s-ink-2 mb-1 block">{t("notes")}</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder={t("notesPlaceholder")}
-              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none" />
+              className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none" />
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">{t("cancel")}</button>
+            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2">{t("cancel")}</button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
               className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} {t("save")}

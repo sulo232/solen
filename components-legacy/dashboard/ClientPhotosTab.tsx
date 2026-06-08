@@ -85,7 +85,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
         </h3>
         <div className="flex items-center gap-2">
           <select value={photoType} onChange={(e) => setPhotoType(e.target.value as "before" | "after" | "progress")}
-            className="px-2 py-1 rounded-input border border-s-ink/10 bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+            className="px-2 py-1 rounded-input border border-s-border bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
             <option value="before">{t("before")}</option>
             <option value="after">{t("after")}</option>
             <option value="progress">{t("progress")}</option>
@@ -102,7 +102,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Before/After pairs */}
       {(beforePhotos.length > 0 || afterPhotos.length > 0) && (
         <div className="mb-4">
-          <p className="text-xs font-medium text-s-ink/50 mb-2">{t("beforeAfter")}</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">{t("beforeAfter")}</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">{t("before")}</p>
@@ -133,7 +133,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Progress photos */}
       {progressPhotos.length > 0 && (
         <div>
-          <p className="text-xs font-medium text-s-ink/50 mb-2">{t("progress")}</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">{t("progress")}</p>
           <div className="grid grid-cols-3 gap-2">
             {progressPhotos.map((p) => (
               <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5">

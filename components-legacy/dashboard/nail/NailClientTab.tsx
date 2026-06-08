@@ -59,7 +59,7 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
               className={`relative flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 min-h-12 ${
                 activeTab === key
                   ? "text-s-coral font-medium"
-                  : "text-s-ink/50 hover:text-s-ink"
+                  : "text-s-ink-2 hover:text-s-ink"
               }`}
             >
               <Icon size={14} />
@@ -151,7 +151,7 @@ function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: st
           value={newNote} 
           onChange={(e) => setNewNote(e.target.value)} 
           placeholder={t("new_note_placeholder")}
-          className="flex-1 bg-s-bg-sunken px-3 py-2 border border-s-ink/10 rounded-btn text-sm text-s-ink"
+          className="flex-1 bg-s-bg-sunken px-3 py-2 border border-s-border rounded-btn text-sm text-s-ink"
           onKeyDown={(e) => { if (e.key === "Enter") addNote(); }}
         />
         <button onClick={addNote} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">
@@ -243,7 +243,7 @@ function ClientTags({ customerId, salonId }: { customerId: string; salonId?: str
             value={newTag} 
             onChange={(e) => setNewTag(e.target.value)} 
             placeholder={t("new_tag_placeholder")}
-            className="flex-1 bg-white px-3 py-2 border border-s-ink/10 rounded-btn text-sm text-s-ink"
+            className="flex-1 bg-white px-3 py-2 border border-s-border rounded-btn text-sm text-s-ink"
             onKeyDown={(e) => { if (e.key === "Enter") addTag(); }}
           />
           <button onClick={addTag} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 text-sm">

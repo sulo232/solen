@@ -69,7 +69,7 @@ export default function AiArtGenerator() {
       {/* Budget tracker */}
       {budget && (
         <div className="p-3 rounded-[16px] bg-s-bg-surface">
-          <div className="flex items-center justify-between text-xs text-s-ink/60 mb-1">
+          <div className="flex items-center justify-between text-xs text-s-ink-2 mb-1">
             <span>{t("this_month")}</span>
             <span className="data-text">{budget.spent.toFixed(2)} / {budget.budget.toFixed(2)} CHF</span>
           </div>
@@ -85,33 +85,33 @@ export default function AiArtGenerator() {
       {/* Selectors */}
       <div className="grid grid-cols-2 gap-3">
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("shape")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("shape")}</span>
           <select value={shape} onChange={(e) => setShape(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
             {SHAPE_OPTIONS.map((s) => <option key={s.value} value={s.value}>{t(`shapes.${s.value}` as any)}</option>)}
           </select>
         </label>
 
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("style")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("style")}</span>
           <select value={style} onChange={(e) => setStyle(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
             {STYLE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
 
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("color")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("color")}</span>
           <select value={colors} onChange={(e) => setColors(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
             {COLOR_PRESETS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </label>
 
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("skin_tone")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("skin_tone")}</span>
           <select value={skinTone} onChange={(e) => setSkinTone(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
             {SKIN_TONE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -119,12 +119,12 @@ export default function AiArtGenerator() {
 
       {/* Shot type pills */}
       <div>
-        <span className="text-xs font-medium text-s-ink/60 mb-1.5 block">{t("shot_type")}</span>
+        <span className="text-xs font-medium text-s-ink-2 mb-1.5 block">{t("shot_type")}</span>
         <div className="flex gap-2">
           {(["hero", "detail", "lifestyle"] as const).map((tType) => (
             <button key={tType} aria-pressed={shotType === tType} onClick={() => setShotType(tType)}
               className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors duration-150 ${
-                shotType === tType ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"
+                shotType === tType ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"
               }`}>
               {tType === "hero" ? t("shot_hero") : tType === "detail" ? t("shot_macro") : t("shot_lifestyle")}
             </button>
@@ -143,10 +143,10 @@ export default function AiArtGenerator() {
 
       {/* Result preview */}
       {result && (
-        <div className="rounded-[16px] border border-s-ink/10 overflow-hidden bg-white">
+        <div className="rounded-[16px] border border-s-border overflow-hidden bg-white">
           <Image src={result.image_url} alt="AI generated nail art" width={600} height={600} unoptimized className="w-full aspect-square object-cover" />
           <div className="p-3 space-y-2">
-            <p className="text-xs text-s-ink/50 line-clamp-2">{result.prompt}</p>
+            <p className="text-xs text-s-ink-2 line-clamp-2">{result.prompt}</p>
             {result.staging_id && (
               <p className="text-xs text-s-sage">{t("staging_message")}</p>
             )}

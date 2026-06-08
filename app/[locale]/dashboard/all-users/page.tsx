@@ -57,7 +57,7 @@ function ConfirmModal({
           <h3 className="font-heading text-base text-s-ink">{title}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-s-ink/50 mb-5">{message}</p>
+        <p className="text-sm text-s-ink-2 mb-5">{message}</p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">
             {t("cancel")}

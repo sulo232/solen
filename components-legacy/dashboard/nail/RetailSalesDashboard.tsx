@@ -59,7 +59,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { label: t("retail_total_revenue"), value: kpis ? fmt(kpis.total_revenue) : "–", color: "text-s-coral" },
-          { label: t("retail_units_sold"), value: kpis ? `${kpis.total_units}` : "–", color: "text-s-amber" },
+          { label: t("retail_units_sold"), value: kpis ? `${kpis.total_units}` : "–", color: "text-s-star" },
           { label: t("retail_avg_sale"), value: kpis ? fmt(kpis.avg_sale) : "–", color: "text-s-blue" },
           { label: t("retail_top_product"), value: kpis?.top_product ?? "–", color: "text-s-sage" },
         ].map(({ label, value, color }) => (
@@ -68,7 +68,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
               {label}
             </p>
             <p className={`text-lg font-heading data-text truncate ${color}`}>
-              {loading ? <span className="inline-block w-16 h-4 bg-s-ink/[0.06] rounded animate-pulse" /> : value}
+              {loading ? <span className="inline-block w-16 h-4 bg-s-bg-sunken rounded animate-pulse" /> : value}
             </p>
           </div>
         ))}
@@ -83,7 +83,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           </p>
         </div>
         {loading ? (
-          <div className="h-[140px] animate-pulse bg-s-ink/[0.04] rounded-[8px]" />
+          <div className="h-[140px] animate-pulse bg-s-bg-sunken rounded-[8px]" />
         ) : (
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={weekly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -104,7 +104,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
       {topProducts.length > 0 && (
         <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
           <div className="flex items-center gap-2 mb-3">
-            <ShoppingBag size={13} className="text-s-amber" />
+            <ShoppingBag size={13} className="text-s-star" />
             <p className="text-sm font-heading text-s-ink">
               {t("retail_top_products")}
             </p>

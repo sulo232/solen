@@ -54,7 +54,7 @@ function DeleteModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-v5-float w-full max-w-sm p-6">
         <h3 className="font-heading text-base text-s-ink mb-2">{t("deleteTitle")}</h3>
-        <p className="text-sm text-s-ink/50 mb-5">{t("deleteConfirm")}</p>
+        <p className="text-sm text-s-ink-2 mb-5">{t("deleteConfirm")}</p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button
@@ -180,11 +180,11 @@ export default function ReviewModerationPage() {
               {/* Header */}
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <Stars rating={r.rating} />
-                <span className="text-xs text-s-ink/50">
+                <span className="text-xs text-s-ink-2">
                   {t("customerLabel")} <strong className="text-s-ink/70">{r.profiles?.display_name ?? t("anonymous")}</strong>
                 </span>
                 <span className="text-xs text-s-ink/30">·</span>
-                <span className="text-xs text-s-ink/50">
+                <span className="text-xs text-s-ink-2">
                   {t("salonLabel")} <strong className="text-s-ink/70">{r.salons?.name ?? "—"}</strong>
                 </span>
                 <span className="text-xs text-s-ink/30">·</span>

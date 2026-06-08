@@ -102,27 +102,27 @@ function BadgeModal({
         <div className="space-y-4">
           {/* Name DE */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("nameDeLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("nameDeLabel")}</label>
             <input
               value={nameDe}
               onChange={(e) => setNameDe(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
               placeholder={t("nameDePlaceholder")}
             />
           </div>
           {/* Name EN */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("nameEnLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("nameEnLabel")}</label>
             <input
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
               placeholder={t("nameEnPlaceholder")}
             />
           </div>
           {/* Icon picker */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("iconLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("iconLabel")}</label>
             <div className="grid grid-cols-5 gap-1.5">
               {ICON_OPTIONS.map((name) => {
                 const Ic = ICON_MAP[name];
@@ -143,7 +143,7 @@ function BadgeModal({
           </div>
           {/* Color picker */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("colorLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("colorLabel")}</label>
             <div className="flex gap-2">
               {COLOR_PRESETS.map((c) => (
                 <button
@@ -160,7 +160,7 @@ function BadgeModal({
           </div>
           {/* Preview */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("previewLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("previewLabel")}</label>
             <span
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-bold"
               style={{ backgroundColor: hexToBgColor(color), color }}
@@ -172,7 +172,7 @@ function BadgeModal({
         </div>
 
         <div className="flex gap-2 mt-6">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">
             {t("cancel")}
           </button>
           <button
@@ -211,11 +211,11 @@ function DeleteModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
         <h3 className="font-heading text-base text-s-ink mb-2">{t("deleteTitle")}</h3>
-        <p className="text-sm text-s-ink/50 mb-5">
+        <p className="text-sm text-s-ink-2 mb-5">
           {t("deleteConfirmBody", { name })}
         </p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">
             {t("cancel")}
           </button>
           <button
@@ -418,7 +418,7 @@ export default function BadgeManagerPage() {
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-s-ink/5">
                         <button
                           onClick={() => setModalBadge(b)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-xs text-s-ink-2 hover:border-s-coral transition-colors"
                         >
                           <Edit2 size={11} />
                           {t("edit")}
@@ -452,7 +452,7 @@ export default function BadgeManagerPage() {
                   placeholder={t("salonSearchPlaceholder")}
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
                 />
                 {salonResults.length > 0 && !selectedSalon && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md z-10 overflow-hidden">
@@ -473,7 +473,7 @@ export default function BadgeManagerPage() {
                 <>
                   {/* Current badges */}
                   <div>
-                    <p className="text-xs text-s-ink/50 mb-2">{t.rich("currentBadgesFor", { name: selectedSalon.name, b: (chunks) => <strong>{chunks}</strong> })}</p>
+                    <p className="text-xs text-s-ink-2 mb-2">{t.rich("currentBadgesFor", { name: selectedSalon.name, b: (chunks) => <strong>{chunks}</strong> })}</p>
                     {salonBadges.length === 0 ? (
                       <p className="text-xs text-s-ink/30">{t("noBadgesAssigned")}</p>
                     ) : (
@@ -506,7 +506,7 @@ export default function BadgeManagerPage() {
                     <select
                       value={assignBadgeId}
                       onChange={(e) => setAssignBadgeId(e.target.value)}
-                      className="flex-1 max-w-xs px-3 py-2 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral"
+                      className="flex-1 max-w-xs px-3 py-2 rounded-btn border border-s-border text-xs text-s-ink-2 bg-white focus:outline-none focus:border-s-coral"
                     >
                       <option value="">{t("selectBadgePlaceholder")}</option>
                       {badges
@@ -525,12 +525,12 @@ export default function BadgeManagerPage() {
                   </div>
 
                   {/* Override removal checkbox */}
-                  <label className="flex items-center gap-2 text-xs text-s-ink/50">
+                  <label className="flex items-center gap-2 text-xs text-s-ink-2">
                     <input
                       type="checkbox"
                       checked={overrideRemoval}
                       onChange={(e) => setOverrideRemoval(e.target.checked)}
-                      className="rounded border-s-ink/20"
+                      className="rounded border-s-border"
                     />
                     {t("blockAutoBadge")}
                   </label>

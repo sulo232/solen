@@ -41,7 +41,7 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
           </div>
         )}
         {patchOverdue && (
-          <p className="text-[10px] text-s-amber mt-1">
+          <p className="text-[10px] text-s-star mt-1">
             ⚠ {t("patchTestOverdue")}
           </p>
         )}

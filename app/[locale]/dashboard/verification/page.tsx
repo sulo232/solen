@@ -78,7 +78,7 @@ export default function VerificationPage() {
             <ShieldCheck size={28} className="text-s-coral" />
             <h1 className="font-heading text-2xl">{t('title')}</h1>
           </div>
-          <p className="text-sm text-s-ink/60">
+          <p className="text-sm text-s-ink-2">
             {t('intro')}
           </p>
         </div>
@@ -90,19 +90,19 @@ export default function VerificationPage() {
               {error && <p className="text-xs text-s-error bg-s-error-bg p-2 rounded-btn">{error}</p>}
               
               <div>
-                <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('documentTypeLabel')}</label>
+                <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('documentTypeLabel')}</label>
                 <select
                   value={docType}
                   onChange={(e) => setDocType(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+                  className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral"
                 >
                   {docTypes.map(dt => <option key={dt.value} value={dt.value}>{t(dt.labelKey)}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('fileLabel')}</label>
-                <div className="border-2 border-dashed border-s-ink/10 rounded-btn p-4 text-center hover:bg-s-bg-surface transition-colors relative cursor-pointer">
+                <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('fileLabel')}</label>
+                <div className="border-2 border-dashed border-s-border rounded-btn p-4 text-center hover:bg-s-bg-surface transition-colors relative cursor-pointer">
                   <input 
                     type="file" 
                     accept="application/pdf,image/jpeg,image/png"
@@ -114,7 +114,7 @@ export default function VerificationPage() {
                     {file ? (
                       <span className="text-sm text-s-ink font-medium">{file.name}</span>
                     ) : (
-                      <span className="text-sm text-s-ink/50">{t('fileDropHint')}</span>
+                      <span className="text-sm text-s-ink-2">{t('fileDropHint')}</span>
                     )}
                   </div>
                 </div>
@@ -136,7 +136,7 @@ export default function VerificationPage() {
             {loading ? (
               <div className="flex justify-center p-8"><Spinner size="md" /></div>
             ) : documents.length === 0 ? (
-              <div className="bg-white border-dashed border-2 border-s-ink/10 rounded-[12px] p-8 text-center text-s-ink/40 text-sm">
+              <div className="bg-white border-dashed border-2 border-s-border rounded-[12px] p-8 text-center text-s-ink/40 text-sm">
                 {t('emptyState')}
               </div>
             ) : (
@@ -148,7 +148,7 @@ export default function VerificationPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-s-ink truncate">{doc.file_name}</p>
-                      <p className="text-xs text-s-ink/50 mt-0.5">
+                      <p className="text-xs text-s-ink-2 mt-0.5">
                         {(() => {
                           const dt = docTypes.find(d => d.value === doc.document_type);
                           return dt ? t(dt.labelKey) : doc.document_type;
@@ -159,7 +159,7 @@ export default function VerificationPage() {
                       
                       <div className="mt-2 flex items-center gap-1.5">
                         {doc.status === 'approved' && <><CheckCircle2 size={14} className="text-s-sage" /><span className="text-xs font-medium text-s-sage">{t('statusApproved')}</span></>}
-                        {doc.status === 'pending' && <><Clock size={14} className="text-s-ink/40" /><span className="text-xs font-medium text-s-ink/60">{t('statusPending')}</span></>}
+                        {doc.status === 'pending' && <><Clock size={14} className="text-s-ink/40" /><span className="text-xs font-medium text-s-ink-2">{t('statusPending')}</span></>}
                         {doc.status === 'rejected' && <><AlertCircle size={14} className="text-s-error" /><span className="text-xs font-medium text-s-error">{t('statusRejected')}</span></>}
                         
                         {doc.admin_note && <span className="text-xs text-s-error ml-2 italic truncate">"{doc.admin_note}"</span>}

@@ -81,13 +81,13 @@ export default function ApprovalsPage() {
                   <h2 className="font-heading text-lg text-s-ink">{salon.name}</h2>
 
                   {salon.owner_email && (
-                    <div className="flex items-center gap-1.5 text-sm text-s-ink/50">
+                    <div className="flex items-center gap-1.5 text-sm text-s-ink-2">
                       <Mail size={13} />
                       <span>{salon.owner_email}</span>
                     </div>
                   )}
                   {salon.address && (
-                    <div className="flex items-center gap-1.5 text-sm text-s-ink/50">
+                    <div className="flex items-center gap-1.5 text-sm text-s-ink-2">
                       <MapPin size={13} />
                       <span>{salon.address}</span>
                     </div>
@@ -137,7 +137,7 @@ export default function ApprovalsPage() {
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-input shadow-v5-float w-full max-w-md p-6">
             <h3 className="font-heading text-lg text-s-ink mb-1">{t("modalTitle")}</h3>
-            <p className="text-sm text-s-ink/50 mb-4">
+            <p className="text-sm text-s-ink-2 mb-4">
               {t.rich("modalBody", {
                 name: rejectModal.name,
                 strong: (chunks) => <strong>{chunks}</strong>,

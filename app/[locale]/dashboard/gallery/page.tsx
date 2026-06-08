@@ -58,7 +58,7 @@ export default function GalleryPage() {
         <h1 className="font-heading text-[28px] text-s-ink tracking-[0.01em]">
           {t("title")}
         </h1>
-        <p className="text-s-ink/60 mt-1">
+        <p className="text-s-ink-2 mt-1">
           {t("description")}
         </p>
       </div>

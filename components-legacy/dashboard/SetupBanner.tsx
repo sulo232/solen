@@ -43,12 +43,12 @@ export default function SetupBanner() {
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-1">{t("eyebrow")}</p>
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
         {t("salonSetup")} — {data.completed}/{data.total} {t("done")}
       </p>
       {/* Progress bar */}
-      <div className="h-1.5 rounded-full bg-s-ink/[0.06] mb-4 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-s-bg-sunken mb-4 overflow-hidden">
         <div className="h-full bg-s-coral rounded-full transition-[width] duration-200"
           style={{ width: `${data.percentage}%` }} />
       </div>

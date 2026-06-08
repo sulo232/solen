@@ -23,8 +23,8 @@ interface NotificationCenterProps {
 }
 
 const TYPE_CONFIG: Record<string, { Icon: React.ElementType; iconBg: string; iconColor: string }> = {
-  cancellation: { Icon: X, iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
-  low_slots: { Icon: AlertTriangle, iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
+  cancellation: { Icon: X, iconBg: "bg-s-amber/10", iconColor: "text-s-star" },
+  low_slots: { Icon: AlertTriangle, iconBg: "bg-s-amber/10", iconColor: "text-s-star" },
   review: { Icon: Star, iconBg: "bg-s-blue/10", iconColor: "text-s-blue" },
   booking: { Icon: Calendar, iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
   walkin: { Icon: Calendar, iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
@@ -92,9 +92,9 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
       <button
         onClick={() => { setOpen((o) => !o); if (!open) fetchNotifications(); }}
         aria-label={t("notifications")}
-        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-ink/[0.05]:bg-white/[0.06] transition-colors"
+        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-bg-sunken:bg-white/[0.06] transition-colors"
       >
-        <Bell size={16} className="text-s-ink/50" />
+        <Bell size={16} className="text-s-ink-2" />
         {unread > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-pill bg-s-coral text-white text-[8px] font-bold flex items-center justify-center px-0.5 leading-none">
             {unread > 9 ? "9+" : unread}
@@ -128,7 +128,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                     {t("markAllRead")}
                   </button>
                 )}
-                <button onClick={() => setOpen(false)} aria-label={t("close")} className="p-1 rounded-pill hover:bg-s-ink/[0.05] transition-colors">
+                <button onClick={() => setOpen(false)} aria-label={t("close")} className="p-1 rounded-pill hover:bg-s-bg-sunken transition-colors">
                   <X size={12} className="text-s-ink/40" />
                 </button>
               </div>
@@ -140,10 +140,10 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                 <div className="space-y-2 p-3 animate-pulse">
                   {[...Array(3)].map((_, i) => (
                     <div key={i} className="flex gap-3 py-2">
-                      <div className="w-7 h-7 rounded-[8px] bg-s-ink/[0.05] shrink-0" />
+                      <div className="w-7 h-7 rounded-[8px] bg-s-bg-sunken shrink-0" />
                       <div className="flex-1 space-y-1.5">
-                        <div className="h-3 w-40 bg-s-ink/[0.05] rounded" />
-                        <div className="h-2.5 w-24 bg-s-ink/[0.04] rounded" />
+                        <div className="h-3 w-40 bg-s-bg-sunken rounded" />
+                        <div className="h-2.5 w-24 bg-s-bg-sunken rounded" />
                       </div>
                     </div>
                   ))}
@@ -169,7 +169,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                           <Icon size={13} className={cfg.iconColor} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-heading leading-snug ${!n.read ? "text-s-ink" : "text-s-ink/60"}`}>
+                          <p className={`text-xs font-heading leading-snug ${!n.read ? "text-s-ink" : "text-s-ink-2"}`}>
                             {n.title}
                           </p>
                           {n.body && (

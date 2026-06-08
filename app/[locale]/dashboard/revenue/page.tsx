@@ -61,14 +61,14 @@ export default function RevenuePage() {
           <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
         </div>
         {/* Period picker */}
-        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 bg-white shadow-warm-md shrink-0">
+        <div className="flex rounded-btn overflow-hidden border border-s-border bg-white shadow-warm-md shrink-0">
           {(["week", "month", "year"] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={[
                 "px-3 py-1.5 text-xs font-medium transition-colors",
-                period === p ? "bg-s-coral text-white" : "text-s-ink/50 hover:text-s-ink",
+                period === p ? "bg-s-coral text-white" : "text-s-ink-2 hover:text-s-ink",
               ].join(" ")}
             >
               {p === "week" ? t("periodWeek") : p === "month" ? t("periodMonth") : t("periodYear")}
@@ -220,7 +220,7 @@ export default function RevenuePage() {
                         </span>
                         <span className="font-medium text-s-ink">{salon.name}</span>
                       </td>
-                      <td className="px-5 py-3 text-right data-text text-s-ink/60">{salon.bookings}</td>
+                      <td className="px-5 py-3 text-right data-text text-s-ink-2">{salon.bookings}</td>
                       <td className="px-5 py-3 text-right data-text font-semibold text-s-ink">{formatCurrency(salon.revenue, locale)}</td>
                     </tr>
                   ))}
@@ -251,7 +251,7 @@ export default function RevenuePage() {
                     {data.staff_commissions.map((s) => (
                       <tr key={s.name} className="border-t border-s-ink/5">
                         <td className="px-5 py-3 font-medium text-s-ink">{s.name}</td>
-                        <td className="px-3 py-3 text-right data-text text-s-ink/60">{s.bookings}</td>
+                        <td className="px-3 py-3 text-right data-text text-s-ink-2">{s.bookings}</td>
                         <td className="px-3 py-3 text-right data-text text-s-ink">{formatCurrency(s.revenue, locale)}</td>
                         <td className="px-3 py-3 text-right data-text text-s-ink/40">{s.commission_pct}%</td>
                         <td className="px-3 py-3 text-right data-text font-semibold text-s-coral">{formatCurrency(s.commission_amount, locale)}</td>

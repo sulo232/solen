@@ -177,9 +177,9 @@ export default function TodayLiveCard() {
           <div className="space-y-1">
             {state.up_next.slice(0, 3).map((row, i) => (
               <div key={i} className="flex items-center gap-2 font-body text-[11px] text-s-ink">
-                <span className="font-mono tabular-nums text-s-ink/55 w-10 shrink-0">{row.time}</span>
+                <span className="font-mono tabular-nums text-s-ink-2 w-10 shrink-0">{row.time}</span>
                 <span className="font-semibold truncate flex-1">{row.client}</span>
-                <span className="text-s-ink/55 truncate hidden sm:inline">{row.service}</span>
+                <span className="text-s-ink-2 truncate hidden sm:inline">{row.service}</span>
                 <span className="text-s-ink/40 text-[10px] tabular-nums shrink-0">{row.offset_label}</span>
               </div>
             ))}

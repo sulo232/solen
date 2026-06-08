@@ -80,7 +80,7 @@ export default function HomepageAdminPage() {
         <h1 className="font-heading text-2xl text-s-ink">
           {t("title")}
         </h1>
-        <p className="text-sm text-s-ink/50 font-body mt-1">
+        <p className="text-sm text-s-ink-2 font-body mt-1">
           {t("subtitle")}
         </p>
       </div>

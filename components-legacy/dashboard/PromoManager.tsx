@@ -129,29 +129,29 @@ export default function PromoManager() {
         <form onSubmit={handleCreate} className="bg-white rounded-[16px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("code")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("code")}</label>
               <input
                 type="text"
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/20 outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/20 outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("discountType")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("discountType")}</label>
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               >
                 <option value="percent">{t("percent")}</option>
                 <option value="fixed">{t("fixed")}</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">
                 {t("discountValue")} {form.discount_type === "percent" ? "(%)" : "(CHF)"}
               </label>
               <input
@@ -161,37 +161,37 @@ export default function PromoManager() {
                 min={1}
                 max={form.discount_type === "percent" ? 100 : 999}
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("maxUses")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("maxUses")}</label>
               <input
                 type="number"
                 value={form.max_uses}
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder={t("unlimited")}
                 min={1}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("minAmount")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("minAmount")}</label>
               <input
                 type="number"
                 value={form.min_booking_amount}
                 onChange={(e) => setForm({ ...form, min_booking_amount: parseFloat(e.target.value) || 0 })}
                 min={0}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("validUntil")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1 block">{t("validUntil")}</label>
               <input
                 type="date"
                 value={form.valid_until}
                 onChange={(e) => setForm({ ...form, valid_until: e.target.value })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink outline-none"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function PromoManager() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-btn bg-s-bg-sunken text-s-ink/60 text-sm hover:bg-s-sand:bg-white/15 transition-colors"
+              className="px-4 py-2 rounded-btn bg-s-bg-sunken text-s-ink-2 text-sm hover:bg-s-sand:bg-white/15 transition-colors"
             >
               {t("cancel")}
             </button>
@@ -243,7 +243,7 @@ export default function PromoManager() {
                       {copiedId === promo.id ? <Check className="w-3 h-3 text-s-success" /> : <Copy className="w-3 h-3 text-s-ink/30" />}
                     </button>
                   </div>
-                  <p className="text-xs text-s-ink/50">
+                  <p className="text-xs text-s-ink-2">
                     {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} {t("discount")}
                     {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} ${t("used")}` : ` · ${promo.current_uses}x ${t("used")}`}
                     {promo.valid_until && ` · ${t("until")} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}

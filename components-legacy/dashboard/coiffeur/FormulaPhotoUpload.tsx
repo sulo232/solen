@@ -74,7 +74,7 @@ export default function FormulaPhotoUpload({
             </button>
           </>
         ) : uploading === type ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-s-ink/[0.04]">
+          <div className="absolute inset-0 flex items-center justify-center bg-s-bg-sunken">
             <Upload size={16} className="text-s-ink/30 animate-bounce" />
           </div>
         ) : (

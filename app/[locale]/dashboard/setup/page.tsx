@@ -66,7 +66,7 @@ export default function SetupPage() {
           <h1 className="font-heading text-xl text-s-ink mb-2">
             {t("noSalonTitle")}
           </h1>
-          <p className="text-sm text-s-ink/50 mb-6">
+          <p className="text-sm text-s-ink-2 mb-6">
             {t("noSalonBody")}
           </p>
           <button

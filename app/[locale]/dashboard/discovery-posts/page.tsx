@@ -145,39 +145,39 @@ export default function DiscoveryPostsPage() {
 
             {/* Mode toggle */}
             <div className="flex gap-2">
-              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                 <Upload size={14} /> {t("modePhoto")}
               </button>
-              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
                 <LinkIcon size={14} /> TikTok
               </button>
             </div>
 
             {mode === "tiktok" && (
-              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
+              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
             )}
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">{t("labelCategory")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1.5 block">{t("labelCategory")}</label>
               <div className="flex flex-wrap gap-1.5">
                 {CATEGORY_KEYS.map((key) => (
-                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{categoryLabels[key]}</button>
+                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{categoryLabels[key]}</button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">{t("labelGender")}</label>
+              <label className="text-xs font-medium text-s-ink-2 mb-1.5 block">{t("labelGender")}</label>
               <div className="flex gap-1.5">
                 {GENDER_KEYS.map((key) => (
-                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{genderLabels[key]}</button>
+                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink-2"}`}>{genderLabels[key]}</button>
                 ))}
               </div>
             </div>
 
-            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder={t("placeholderStyleName")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("placeholderDescription")} rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
-            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("placeholderTags")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
+            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder={t("placeholderStyleName")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("placeholderDescription")} rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
+            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("placeholderTags")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30" />
 
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}

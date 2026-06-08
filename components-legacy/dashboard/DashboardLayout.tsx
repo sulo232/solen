@@ -436,7 +436,7 @@ export default function DashboardLayout({
         </div>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink-2" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
           <div className="flex-1 min-w-0"><SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} /></div>

@@ -84,14 +84,14 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
         <button key={star} onClick={() => onChange(star)} aria-label={`${star} star`}
-          className={`transition-colors ${star <= value ? "text-s-amber" : "text-s-ink/20"}`}>
+          className={`transition-colors ${star <= value ? "text-s-star" : "text-s-ink/20"}`}>
           <Star size={18} fill={star <= value ? "currentColor" : "none"} />
         </button>
       ))}
     </div>
   );
 
-  const inputCls = "w-full px-3 py-2 rounded-[8px] border border-s-ink/10 bg-transparent text-xs text-s-ink focus:outline-none focus:border-s-coral";
+  const inputCls = "w-full px-3 py-2 rounded-[8px] border border-s-border bg-transparent text-xs text-s-ink focus:outline-none focus:border-s-coral";
 
   return (
     <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
@@ -158,14 +158,14 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
               <div className="flex items-center justify-between mb-1">
                 <div className="flex gap-0.5">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} size={11} className={s <= o.satisfaction_rating ? "text-s-amber" : "text-s-ink/15"} fill={s <= o.satisfaction_rating ? "currentColor" : "none"} />
+                    <Star key={s} size={11} className={s <= o.satisfaction_rating ? "text-s-star" : "text-s-ink/15"} fill={s <= o.satisfaction_rating ? "currentColor" : "none"} />
                   ))}
                 </div>
                 <span className="text-[10px] text-s-ink/35 data-text">
                   {new Date(o.created_at).toLocaleDateString("de-CH")}
                 </span>
               </div>
-              {o.follow_up_notes && <p className="text-[11px] text-s-ink/55 line-clamp-2">{o.follow_up_notes}</p>}
+              {o.follow_up_notes && <p className="text-[11px] text-s-ink-2 line-clamp-2">{o.follow_up_notes}</p>}
               {o.next_visit_date && (
                 <p className="text-[10px] text-s-blue mt-0.5">{t("outcomeNextVisit")}: {o.next_visit_date}</p>
               )}

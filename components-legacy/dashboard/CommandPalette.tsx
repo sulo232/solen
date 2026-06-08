@@ -106,7 +106,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
       <div className="w-full max-w-[560px] bg-[--raised] rounded-card border border-s-ink/[0.08] shadow-v5-float overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06]">
-          <Search size={15} className="text-s-ink/50 shrink-0" />
+          <Search size={15} className="text-s-ink-2 shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -123,7 +123,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         {/* Results */}
         <div ref={listRef} className="max-h-[400px] overflow-y-auto py-2">
           {filtered.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[11px] font-heading text-s-ink/50 uppercase tracking-[.10em]">
+            <p className="px-4 py-8 text-center text-[11px] font-heading text-s-ink-2 uppercase tracking-[.10em]">
               {t("noResults")}
             </p>
           ) : (
@@ -152,15 +152,15 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150 ${
                           active
                             ? "bg-s-coral/[0.06] text-s-coral"
-                            : "hover:bg-s-ink/[0.03] text-s-ink"
+                            : "hover:bg-s-bg-sunken text-s-ink"
                         }`}
                       >
-                        <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${active ? "bg-s-coral/15" : "bg-s-ink/[0.05]"}`}>
+                        <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${active ? "bg-s-coral/15" : "bg-s-bg-sunken"}`}>
                           <Icon size={13} className={active ? "text-s-coral" : "text-s-ink/45"} />
                         </div>
                         <span className="flex-1 text-sm font-heading">{cmd.label}</span>
                         {cmd.shortcut && (
-                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] text-s-ink/45 font-mono">
+                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink/45 font-mono">
                             {cmd.shortcut}
                           </kbd>
                         )}
@@ -174,7 +174,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         </div>
 
         {/* Footer hint */}
-        <div className="px-4 py-2.5 border-t border-s-ink/[0.05] flex items-center gap-3 bg-s-ink/[0.02]">
+        <div className="px-4 py-2.5 border-t border-s-ink/[0.05] flex items-center gap-3 bg-s-bg-sunken">
           <span className="text-[9px] text-s-ink/25">
             ↑↓ {t("navigate")} · Enter {t("select")} · Esc {t("close")}
           </span>

@@ -140,7 +140,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
                 const bg = maxMod > 1.3 ? "bg-s-coral-subtle" : maxMod > 1.1 ? "bg-s-coral-subtle/50" : maxMod < 0.9 ? "bg-s-sage-subtle" : "bg-white";
                 return (
                   <div key={h} className={`h-5 rounded-sm ${bg} flex items-center justify-center border border-s-ink/5`}>
-                    {maxMod !== 1 && <span className="text-[7px] text-s-ink/60 data-text">{maxMod.toFixed(1)}x</span>}
+                    {maxMod !== 1 && <span className="text-[7px] text-s-ink-2 data-text">{maxMod.toFixed(1)}x</span>}
                   </div>
                 );
               })}
@@ -161,26 +161,26 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           <div className="grid grid-cols-2 gap-2">
             <select value={newRule.rule_type || "peak_hour"}
               onChange={(e) => setNewRule({ ...newRule, rule_type: e.target.value as DynamicPricingRuleType })}
-              className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
               {ruleTypeOptions.map((rt) => <option key={rt.value} value={rt.value}>{rt.label}</option>)}
             </select>
             <select value={newRule.day_of_week ?? 6}
               onChange={(e) => setNewRule({ ...newRule, day_of_week: parseInt(e.target.value) })}
-              className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink">
+              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink">
               {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
             </select>
           </div>
           <div className="flex gap-2 items-center">
             <input type="time" value={newRule.start_time || "10:00"}
               onChange={(e) => setNewRule({ ...newRule, start_time: e.target.value })}
-              className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm" />
+              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm" />
             <span className="text-xs text-s-ink/40">{t("pricing_to")}</span>
             <input type="time" value={newRule.end_time || "14:00"}
               onChange={(e) => setNewRule({ ...newRule, end_time: e.target.value })}
-              className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm" />
+              className="px-3 py-2 rounded-input border border-s-border bg-white text-sm" />
           </div>
           <div>
-            <label className="text-xs text-s-ink/60 mb-1 block">
+            <label className="text-xs text-s-ink-2 mb-1 block">
               {t("pricing_factor")}: {(newRule.modifier ?? 1.2).toFixed(1)}x
               {(newRule.modifier ?? 1.2) > 1 ? ` (+${Math.round(((newRule.modifier ?? 1.2) - 1) * 100)}%)` : ` (${Math.round(((newRule.modifier ?? 1.2) - 1) * 100)}%)`}
             </label>
@@ -191,7 +191,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
               <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
             </div>
           </div>
-          <p className="text-xs text-s-ink/50">
+          <p className="text-xs text-s-ink-2">
             {t("pricing_preview")}: {DAYS[newRule.day_of_week ?? 6]} {newRule.start_time || "10:00"}–{newRule.end_time || "14:00"} → {(newRule.modifier ?? 1.2) > 1 ? "+" : ""}{Math.round(((newRule.modifier ?? 1.2) - 1) * 100)}%
           </p>
           <div className="flex gap-2">
@@ -200,7 +200,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
               <Save size={12} />
               {saving ? t("saving") : t("save")}
             </button>
-            <button onClick={() => setNewRule(null)} className="px-4 py-2 rounded-pill border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150">
+            <button onClick={() => setNewRule(null)} className="px-4 py-2 rounded-pill border border-s-border text-xs text-s-ink-2 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150">
               {t("cancel")}
             </button>
           </div>

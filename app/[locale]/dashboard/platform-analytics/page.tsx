@@ -68,7 +68,7 @@ function StatCard({
         <Icon size={20} className={color} />
       </div>
       <div>
-        <p className="text-xs text-s-ink/50 font-body mb-1">{label}</p>
+        <p className="text-xs text-s-ink-2 font-body mb-1">{label}</p>
         <p className="text-2xl font-data font-bold text-s-ink">
           {formatValue
             ? formatValue(animated)
@@ -113,7 +113,7 @@ export default function PlatformAnalyticsPage() {
             <StatCard label={t("users")} value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-s-ink/5" color="text-s-ink" />
             <StatCard label={t("bookings30d")} value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label={t("revenue30d")} value={stats?.total_revenue_30d ?? 0} formatValue={(v) => formatCurrency(Math.round(v), locale)} icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label={t("avgRating")} value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-s-amber-subtle" color="text-s-amber" decimals={1} />
+            <StatCard label={t("avgRating")} value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-s-amber-subtle" color="text-s-star" decimals={1} />
           </div>
 
           {/* Charts placeholder */}

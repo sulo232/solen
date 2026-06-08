@@ -77,7 +77,7 @@ export default function CommissionAdminPage() {
     <DashboardLayout>
       <div className="mb-6">
         <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
-        <p className="mt-1 font-body text-sm text-s-ink/50">
+        <p className="mt-1 font-body text-sm text-s-ink-2">
           {t("subtitle")}
         </p>
       </div>

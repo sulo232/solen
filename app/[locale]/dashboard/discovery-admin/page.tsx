@@ -39,7 +39,7 @@ export default function DiscoveryAdminPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-heading text-s-ink">{t("title")}</h1>
-          <p className="text-sm text-s-ink/50 mt-1">{t("subtitle")}</p>
+          <p className="text-sm text-s-ink-2 mt-1">{t("subtitle")}</p>
         </div>
 
         {/* Tab bar */}
@@ -52,7 +52,7 @@ export default function DiscoveryAdminPage() {
                 "px-4 py-2 rounded-btn text-sm font-medium whitespace-nowrap transition-colors",
                 activeTab === tab
                   ? "bg-s-coral text-white"
-                  : "bg-s-ink/5 text-s-ink/60 hover:bg-s-ink/10:bg-white/10",
+                  : "bg-s-ink/5 text-s-ink-2 hover:bg-s-ink/10:bg-white/10",
               ].join(" ")}
             >
               {t(TAB_LABEL_KEYS[tab])}
@@ -165,13 +165,13 @@ function StockImportTab() {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder={t("searchPhotosPlaceholder")}
           aria-label={t("searchStockAria")}
-          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
+          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
           aria-label={t("categoryFilterAria")}
-          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
+          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -188,7 +188,7 @@ function StockImportTab() {
         <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
           <CheckCircle size={16} className="text-s-success" />
           <span className="text-sm text-s-success">{bulkResult}</span>
-          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60" aria-label={t("dismiss")}>
+          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink-2" aria-label={t("dismiss")}>
             <XCircle size={14} />
           </button>
         </div>
@@ -263,12 +263,12 @@ function TikTokImportTab() {
 
   return (
     <div className="space-y-4 max-w-2xl">
-      <p className="text-sm text-s-ink/60">{t("tiktokIntro")}</p>
+      <p className="text-sm text-s-ink-2">{t("tiktokIntro")}</p>
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label={t("tiktokCategoryAria")}
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -278,7 +278,7 @@ function TikTokImportTab() {
         rows={8}
         aria-label={t("tiktokUrlsAria")}
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
-        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
+        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
       />
       {loading && <AIProcessingIndicator text={t("tiktokProcessing")} />}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -287,8 +287,8 @@ function TikTokImportTab() {
       {result && (
         <div className="flex flex-wrap gap-4 text-sm">
           {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} /> {t("resultPublished", { n: result.published })}</span>}
-          {result.rejected > 0 && <span className="text-s-amber flex items-center gap-1"><AlertTriangle size={14} /> {t("resultAutoRejected", { n: result.rejected })}</span>}
-          {result.pending > 0 && <span className="text-s-ink/50 flex items-center gap-1"><Eye size={14} /> {t("resultSentToStaging", { n: result.pending })}</span>}
+          {result.rejected > 0 && <span className="text-s-star flex items-center gap-1"><AlertTriangle size={14} /> {t("resultAutoRejected", { n: result.rejected })}</span>}
+          {result.pending > 0 && <span className="text-s-ink-2 flex items-center gap-1"><Eye size={14} /> {t("resultSentToStaging", { n: result.pending })}</span>}
           {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} /> {t("resultFailed", { n: result.failed })}</span>}
         </div>
       )}
@@ -337,14 +337,14 @@ function ManualUploadTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label={t("uploadCategoryAria")}
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
 
       <div
         onClick={() => fileRef.current?.click()}
-        className="border-2 border-dashed border-s-ink/10 rounded-[12px] p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
+        className="border-2 border-dashed border-s-border rounded-[12px] p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
       >
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
         {uploading ? (
@@ -426,7 +426,7 @@ function StagingTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t("stagingCategoryAria")}
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
         >
           <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -485,9 +485,9 @@ function StagingTab() {
             <div className="p-2 space-y-1">
               <div className="flex items-center gap-1">
                 <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category ?? item.auto_category ?? "?"}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/50">{item.source}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.source}</span>
               </div>
-              {item.auto_style && <p className="text-xs text-s-ink/60 truncate">{item.auto_style}</p>}
+              {item.auto_style && <p className="text-xs text-s-ink-2 truncate">{item.auto_style}</p>}
               {item.auto_gender && <p className="text-[10px] text-s-ink/40">{item.auto_gender}</p>}
             </div>
           </div>
@@ -536,9 +536,9 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
       <div className="p-2 space-y-1">
         <div className="flex items-center gap-1">
           <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/50">{item.media_type}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.media_type}</span>
         </div>
-        {item.style_name && <p className="text-xs text-s-ink/60 truncate">{item.style_name}</p>}
+        {item.style_name && <p className="text-xs text-s-ink-2 truncate">{item.style_name}</p>}
         <div className="flex items-center gap-2 text-[10px] text-s-ink/30">
           <span>{t("likesN", { n: item.like_count })}</span>
           <span>{t("viewsN", { n: item.view_count })}</span>
@@ -604,7 +604,7 @@ function PublishedTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t("publishedCategoryAria")}
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-border text-sm"
         >
           <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}

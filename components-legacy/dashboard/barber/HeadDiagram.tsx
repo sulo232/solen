@@ -81,7 +81,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
   if (!svgSource) {
     return (
       <div className="rounded-input border border-dashed border-s-ink/[0.06] p-6 text-center">
-        <p className="text-xs text-s-ink/50">{t("diagrams_coming_soon")}</p>
+        <p className="text-xs text-s-ink-2">{t("diagrams_coming_soon")}</p>
       </div>
     );
   }
@@ -118,7 +118,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
                 className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   zoneGuards[activeZone] === opt.value
                     ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                    : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
                 aria-label={opt.label}
               >

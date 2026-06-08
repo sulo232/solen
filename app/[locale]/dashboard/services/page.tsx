@@ -91,69 +91,69 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
         <div className="space-y-3 mb-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('nameDeLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameDeLabel')}</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('nameEnLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('nameEnLabel')}</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('categoryLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('categoryLabel')}</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent-bright">
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm bg-white focus:outline-none focus:border-s-accent-bright">
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('durationLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('durationLabel')}</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('priceLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('priceLabel')}</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('descriptionLabel')}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('descriptionLabel')}</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
           </div>
           {/* Time breakdown fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('bufferLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('bufferLabel')}</label>
               <input type="number" min={0} step={5} value={form.buffer_minutes}
                 onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('processingLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('processingLabel')}</label>
               <input type="number" min={0} step={5} value={form.processing_minutes}
                 onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('finishingLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('finishingLabel')}</label>
               <input type="number" min={0} step={5} value={form.finishing_minutes}
                 onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+                className="w-full px-2 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
           {/* Service photos */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('photosLabel')}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('photosLabel')}</label>
             <div className="flex gap-2">
               {photos.map((url, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-ink/10">
+                <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-border">
                   <Image src={url} alt="" fill className="object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
                     className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
@@ -162,7 +162,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
                 </div>
               ))}
               {photos.length < 3 && (
-                <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-accent-bright/40 transition-colors">
+                <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-border flex items-center justify-center cursor-pointer hover:border-s-accent-bright/40 transition-colors">
                   {uploading ? <Spinner size="sm" /> : <Camera size={16} className="text-s-ink/30" />}
                   <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                     const file = e.target.files?.[0];
@@ -185,7 +185,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('suitableForLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('suitableForLabel')}</label>
               <div className="flex flex-wrap gap-1">
                 {AGE_OPTIONS.map((a) => (
                   <button key={a.value} type="button" onClick={() => toggle("suitable_for", a.value)}
@@ -198,7 +198,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('genderLabel')}</label>
+              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t('genderLabel')}</label>
               <div className="flex flex-wrap gap-1">
                 {GENDER_OPTIONS.map((g) => (
                   <button key={g.value} type="button" onClick={() => toggle("suitable_gender", g.value)}
@@ -215,7 +215,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
             <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-s-accent-bright" : "text-s-ink/30"}>
               {form.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-s-ink/60">{t('active')}</span>
+            <span className="text-sm text-s-ink-2">{t('active')}</span>
           </label>
         </div>
         <div className="flex gap-2 items-center">
@@ -225,7 +225,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               <Trash2 size={18} />
             </button>
           )}
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t('cancel')}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t('cancel')}</button>
           <button onClick={handleSave} disabled={!form.name_de || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t('save')}
@@ -302,7 +302,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                   "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-[background-color,border-color]",
                   added
                     ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                    : "border-s-ink/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                    : "border-s-border hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
                 ].join(" ")}
               >
                 <div className="min-w-0 flex-1">
@@ -311,7 +311,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                     <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
                       <Clock size={10} /> {tmpl.duration} min
                     </span>
-                    <span className="text-xs data-text font-semibold text-s-ink/60">{formatCurrency(tmpl.price, locale)}</span>
+                    <span className="text-xs data-text font-semibold text-s-ink-2">{formatCurrency(tmpl.price, locale)}</span>
                   </div>
                 </div>
                 {adding === tmpl.name_de ? (
@@ -427,9 +427,9 @@ export default function ServicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
             <h3 className="font-heading text-base mb-3">{t('deleteService')}</h3>
-            <p className="text-sm text-s-ink/60 mb-4">{t.rich('deleteConfirm', { name: deleteTarget.name_de, b: (chunks) => <strong>{chunks}</strong> })}</p>
+            <p className="text-sm text-s-ink-2 mb-4">{t.rich('deleteConfirm', { name: deleteTarget.name_de, b: (chunks) => <strong>{chunks}</strong> })}</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t('cancel')}</button>
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t('cancel')}</button>
               <button onClick={handleDelete} disabled={deleteLoading}
                 className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {deleteLoading && <Spinner size="sm" invert />}{t('delete')}
@@ -563,7 +563,7 @@ export default function ServicesPage() {
               <h3 className="font-heading text-base">{t('csvImport')}</h3>
               <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
             </div>
-            <p className="text-sm text-s-ink/60 mb-4">
+            <p className="text-sm text-s-ink-2 mb-4">
               {t('csvImportHelp')}
             </p>
             <form onSubmit={async (e) => {
@@ -585,7 +585,7 @@ export default function ServicesPage() {
               }
             }}>
               <input type="file" accept=".csv,.txt" required
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-coral/10 file:text-s-coral file:font-medium file:text-xs file:cursor-pointer" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-coral/10 file:text-s-coral file:font-medium file:text-xs file:cursor-pointer" />
               <button type="submit"
                 className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center justify-center gap-2">
                 <Upload size={14} /> {t('importButton')}

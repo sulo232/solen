@@ -46,7 +46,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
           const dayData = data[String(dayNum)] ?? {};
           return (
             <div key={dayNum} className="flex-1 flex flex-col gap-0.5">
-              <div className="h-5 text-center text-[9px] font-medium text-s-ink/50">{DAYS[dayIdx]}</div>
+              <div className="h-5 text-center text-[9px] font-medium text-s-ink-2">{DAYS[dayIdx]}</div>
               {HOURS.map((h) => {
                 const count = dayData[String(h)] ?? 0;
                 const intensity = maxVal > 0 ? count / maxVal : 0;

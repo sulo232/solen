@@ -94,7 +94,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
     <div className="rounded-card bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
-        <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
+        <div className="flex rounded-btn border border-s-border overflow-hidden">
           {(["week", "month"] as const).map((p) => (
             <button
               key={p}
@@ -103,7 +103,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
               className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                 period === p
                   ? "bg-s-ink text-white"
-                  : "text-s-ink/50 hover:bg-s-bg-surface"
+                  : "text-s-ink-2 hover:bg-s-bg-surface"
               }`}
             >
               {p === "week" ? t("week") : t("month")}

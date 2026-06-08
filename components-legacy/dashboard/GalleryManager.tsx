@@ -153,7 +153,7 @@ export default function GalleryManager({
         <h2 className="font-heading text-lg text-s-ink">
           {t("gallery_title")}
         </h2>
-        <p className="text-sm text-s-ink/50">
+        <p className="text-sm text-s-ink-2">
           {t("gallery_subtitle", { count: urls.length, max: maxPhotos })}
         </p>
       </div>
@@ -178,7 +178,7 @@ export default function GalleryManager({
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`group relative aspect-square rounded-[12px] overflow-hidden border border-s-ink/10 bg-s-bg-sunken cursor-grab active:cursor-grabbing ${
+              className={`group relative aspect-square rounded-[12px] overflow-hidden border border-s-border bg-s-bg-sunken cursor-grab active:cursor-grabbing ${
                 draggedIndex === index
                   ? "opacity-50 scale-95"
                   : "opacity-100 transition-[opacity,transform] duration-150"

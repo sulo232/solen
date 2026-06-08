@@ -20,8 +20,8 @@ const EVENT_ICON_MAP: Record<string, {
   iconColor: string;
 }> = {
   booking_new:       { Icon: Calendar,      iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
-  booking_cancelled: { Icon: X,             iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
-  review_new:        { Icon: Star,          iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
+  booking_cancelled: { Icon: X,             iconBg: "bg-s-amber/10", iconColor: "text-s-star" },
+  review_new:        { Icon: Star,          iconBg: "bg-s-amber/10", iconColor: "text-s-star" },
   message_new:       { Icon: MessageCircle, iconBg: "bg-s-blue/10",  iconColor: "text-s-blue" },
   walkin_new:        { Icon: Users,         iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
 };
@@ -82,10 +82,10 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
       <div className="space-y-2 animate-pulse">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex gap-3 py-2.5 border-b border-s-ink/[0.04]">
-            <div className="w-7 h-7 rounded-[8px] bg-s-ink/[0.05] shrink-0" />
+            <div className="w-7 h-7 rounded-[8px] bg-s-bg-sunken shrink-0" />
             <div className="flex-1 space-y-1.5">
-              <div className="h-3 w-36 bg-s-ink/[0.05] rounded" />
-              <div className="h-2.5 w-20 bg-s-ink/[0.04] rounded" />
+              <div className="h-3 w-36 bg-s-bg-sunken rounded" />
+              <div className="h-2.5 w-20 bg-s-bg-sunken rounded" />
             </div>
           </div>
         ))}
@@ -122,7 +122,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
                 <p className="text-xs font-heading text-s-ink leading-snug">
                   {t(labelKey)}
                   {event.type === "review_new" && !!event.meta?.rating && (
-                    <span className="ml-1 text-s-amber">{"★".repeat(Number(event.meta.rating))}</span>
+                    <span className="ml-1 text-s-star">{"★".repeat(Number(event.meta.rating))}</span>
                   )}
                 </p>
                 <p className="text-[10px] text-s-ink/35 mt-0.5">

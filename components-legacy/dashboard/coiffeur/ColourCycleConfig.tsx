@@ -57,7 +57,7 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white w-full max-w-lg">
       <div className="flex items-center gap-2 mb-3">
         <Bell size={16} className="text-s-coral" />
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star">
           {t("colour_cycle_title")}
         </p>
       </div>
@@ -87,7 +87,7 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
                     className={`rounded-[12px] border px-3 py-1.5 text-xs font-heading transition-colors duration-150 ${
                       svc.reminder_cycle_days === opt.value
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                        : "border-s-ink/[0.06] text-s-ink/50 hover:border-s-coral/40 hover:text-s-coral"
+                        : "border-s-ink/[0.06] text-s-ink-2 hover:border-s-coral/40 hover:text-s-coral"
                     }`}
                   >
                     {t(opt.labelKey)}

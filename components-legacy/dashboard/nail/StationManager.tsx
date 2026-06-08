@@ -54,45 +54,45 @@ export default function StationManager({ salonId }: { salonId: string }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("stations_count")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("stations_count")}</span>
           <input
             type="number"
             min={1}
             max={20}
             value={config.total_stations}
             onChange={(e) => setConfig({ ...config, total_stations: parseInt(e.target.value) || 1 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
           />
         </label>
 
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("stations_uv_lamps")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("stations_uv_lamps")}</span>
           <input
             type="number"
             min={0}
             max={20}
             value={config.uv_lamp_count}
             onChange={(e) => setConfig({ ...config, uv_lamp_count: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
           />
         </label>
 
         <label className="block">
-          <span className="text-xs font-medium text-s-ink/60">{t("stations_buffer")}</span>
+          <span className="text-xs font-medium text-s-ink-2">{t("stations_buffer")}</span>
           <input
             type="number"
             min={0}
             max={60}
             value={config.sterilization_buffer_minutes}
             onChange={(e) => setConfig({ ...config, sterilization_buffer_minutes: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
           />
         </label>
       </div>
 
       {/* Per-station utilization bars */}
       <div className="p-3 rounded-[16px] bg-s-bg-surface space-y-2">
-        <div className="flex items-center justify-between text-xs text-s-ink/60">
+        <div className="flex items-center justify-between text-xs text-s-ink-2">
           <span>{t("stations_utilization")}</span>
           <span>{t("stations_used_of", { used: activeBookings, total: config.total_stations })}</span>
         </div>

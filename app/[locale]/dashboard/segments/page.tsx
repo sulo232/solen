@@ -119,12 +119,12 @@ export default function SegmentsPage() {
                 <div className="border-t border-s-ink/5 px-4 py-2.5 flex items-center gap-2">
                   <button
                     onClick={() => toggleExpand(seg.id)}
-                    className="inline-flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-coral transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-s-ink-2 hover:text-s-coral transition-colors"
                   >
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? t("hide") : t("members")}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
+                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-btn border border-s-border text-xs text-s-ink-2 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
                     {t("sendEmail")}
                   </button>

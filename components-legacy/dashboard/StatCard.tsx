@@ -67,7 +67,7 @@ export function StatCard({
   const deltaColors: Record<string, string> = {
     up: "text-[#15803D] bg-[#16A34A]/10",
     down: "text-s-coral bg-s-coral/10",
-    flat: "text-s-ink/40 bg-s-ink/[0.05]",
+    flat: "text-s-ink/40 bg-s-bg-sunken",
   };
 
   return (

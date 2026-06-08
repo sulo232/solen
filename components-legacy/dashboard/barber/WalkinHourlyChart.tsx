@@ -77,7 +77,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
       </div>
 
       {loading ? (
-        <div className="h-[160px] animate-pulse bg-s-ink/[0.04] rounded-[8px]" />
+        <div className="h-[160px] animate-pulse bg-s-bg-sunken rounded-[8px]" />
       ) : (
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>

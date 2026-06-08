@@ -67,12 +67,12 @@ function ContentField({
         <div>
           <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-wide">{row.key}</p>
           {row.is_auto && (
-            <span className="inline-block px-1.5 py-0.5 rounded-pill bg-s-amber-subtle text-s-amber-text text-[10px] font-bold mt-0.5">
+            <span className="inline-block px-1.5 py-0.5 rounded-pill bg-s-amber-subtle text-s-star-text text-[10px] font-bold mt-0.5">
               Auto
             </span>
           )}
         </div>
-        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 shrink-0">
+        <div className="flex rounded-btn overflow-hidden border border-s-border shrink-0">
           {(["de", "en"] as const).map((l) => (
             <button
               key={l}
@@ -92,14 +92,14 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
         />
       ) : (
         <input
           type={row.content_type === "number" ? "number" : "text"}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
         />
       )}
 
@@ -169,7 +169,7 @@ export default function ContentEditorPage() {
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "bg-s-coral text-white"
-                : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral"
+                : "bg-white border border-s-border text-s-ink-2 hover:border-s-coral"
             }`}
           >
             {tabLabels[tab.id]}

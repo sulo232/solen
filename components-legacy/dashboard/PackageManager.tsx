@@ -141,12 +141,12 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             value={form.name}
             onChange={(e) => { setForm({ ...form, name: e.target.value }); setFormError(null); }}
             placeholder={t("namePlaceholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+            className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
           />
           <select
             value={form.service_id}
             onChange={(e) => setForm({ ...form, service_id: e.target.value })}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+            className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
           >
             <option value="">{t("selectService")}</option>
             {services.map((s) => (
@@ -161,7 +161,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 min={1}
                 value={form.sessions}
                 onChange={(e) => setForm({ ...form, sessions: Math.max(1, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
               />
             </div>
             <div>
@@ -171,7 +171,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 min={0}
                 value={form.bonus_sessions}
                 onChange={(e) => setForm({ ...form, bonus_sessions: Math.max(0, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
               />
             </div>
             <div>
@@ -182,7 +182,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 step={5}
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: Math.max(0, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
+                className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink"
               />
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => { setShowForm(false); setFormError(null); }}
-              className="px-3 py-1.5 text-xs text-s-ink/50"
+              className="px-3 py-1.5 text-xs text-s-ink-2"
             >
               {t("cancel")}
             </button>

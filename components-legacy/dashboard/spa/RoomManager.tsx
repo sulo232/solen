@@ -123,7 +123,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <DoorOpen size={16} className="text-s-coral" />
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star">
             {t("treatment_rooms")}
           </p>
         </div>
@@ -152,7 +152,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
           {/* Name */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("room_name")}
             </label>
             <input
@@ -166,7 +166,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
           {/* Type + Capacity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
                 {t("room_type_label")}
               </label>
               <select
@@ -181,7 +181,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
                 {t("capacity")}
               </label>
               <input
@@ -199,7 +199,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
           {/* Buffers */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
                 {t("prep_buffer")}
               </label>
               <input
@@ -213,7 +213,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               />
             </div>
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
                 {t("cooldown_buffer")}
               </label>
               <input
@@ -230,7 +230,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
           {/* Equipment */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-2">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-2">
               {t("equipment")}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -243,7 +243,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.equipment.includes(eq)
                       ? "bg-s-coral text-white"
-                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                      : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                   }`}
                 >
                   {t(`equipment_item.${eq}` as any)}
@@ -257,7 +257,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
             <button
               onClick={resetForm}
               aria-label={t("cancel")}
-              className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 text-xs text-s-ink/60 transition-colors duration-150"
+              className="px-3 py-1.5 rounded-[8px] border border-s-border text-xs text-s-ink-2 transition-colors duration-150"
             >
               {t("cancel")}
             </button>
@@ -302,7 +302,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
                 {/* Utilization bar */}
                 <div className="w-24 shrink-0">
-                  <div className="h-2 rounded-full bg-s-ink/[0.06] overflow-hidden">
+                  <div className="h-2 rounded-full bg-s-bg-sunken overflow-hidden">
                     <div className="h-full bg-s-coral rounded-full" style={{ width: `${utilization}%` }} />
                   </div>
                 </div>

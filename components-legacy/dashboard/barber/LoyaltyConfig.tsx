@@ -88,7 +88,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
             value={program.name}
             onChange={(e) => setProgram({ ...program, name: e.target.value })}
             maxLength={100}
-            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
 
@@ -102,7 +102,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
             onChange={(e) => setProgram({ ...program, stamps_required: Math.max(3, Math.min(20, parseInt(e.target.value) || 10)) })}
             min={3}
             max={20}
-            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
 
@@ -111,7 +111,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
           <select
             value={program.reward_type}
             onChange={(e) => setProgram({ ...program, reward_type: e.target.value as LoyaltyProgram["reward_type"] })}
-            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           >
             <option value="free_service">{t("reward_free_service")}</option>
             <option value="chf_discount">{t("reward_chf_discount")}</option>
@@ -129,7 +129,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
               value={program.reward_value}
               onChange={(e) => setProgram({ ...program, reward_value: parseInt(e.target.value) || 0 })}
               min={0}
-              className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-input border border-s-border bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
           </div>
         )}
@@ -152,7 +152,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
 
       {/* Preview */}
       <div className="mt-4 p-3 rounded-btn bg-s-bg-surface border border-s-ink/5">
-        <p className="text-xs font-medium text-s-ink/50 mb-2">{t("preview")}</p>
+        <p className="text-xs font-medium text-s-ink-2 mb-2">{t("preview")}</p>
         <p className="text-sm font-medium text-s-ink mb-2">{program.name}</p>
         <div className="flex flex-wrap gap-1.5">
           {previewStamps.map((i) => (
@@ -163,7 +163,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
             )
           ))}
         </div>
-        <p className="text-xs text-s-ink/50 mt-2">
+        <p className="text-xs text-s-ink-2 mt-2">
           {t("stamps_count", { filled: previewFilled, total: program.stamps_required })}
         </p>
       </div>

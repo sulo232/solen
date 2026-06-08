@@ -46,7 +46,7 @@ export default function BarberOpsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">
           Barber
         </p>
         <h1 className="font-heading text-[28px] text-s-ink leading-none">

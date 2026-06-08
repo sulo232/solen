@@ -45,7 +45,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     return (
       <div className="columns-2 md:columns-3 gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="mb-3 rounded-[12px] bg-s-ink/[0.04] animate-pulse"
+          <div key={i} className="mb-3 rounded-[12px] bg-s-bg-sunken animate-pulse"
             style={{ height: `${140 + (i % 3) * 40}px` }} />
         ))}
       </div>
@@ -55,7 +55,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
   if (entries.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-12 text-center">
-        <div className="w-12 h-12 rounded-full bg-s-ink/[0.05] flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center">
           <ImageOff size={20} className="text-s-ink/30" />
         </div>
         <p className="text-sm text-s-ink/40">{t("gallery_empty")}</p>

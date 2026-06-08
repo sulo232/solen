@@ -55,10 +55,10 @@ function HoursEditor({ hours, onChange }: {
             {h ? (
               <>
                 <input type="time" value={h.open} onChange={(e) => update(key, "open", e.target.value)}
-                  className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-coral" />
                 <span className="text-xs text-s-ink/30">–</span>
                 <input type="time" value={h.close} onChange={(e) => update(key, "close", e.target.value)}
-                  className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-btn border border-s-border text-xs focus:outline-none focus:border-s-coral" />
               </>
             ) : <span className="text-xs text-s-ink/30">{t("closed")}</span>}
           </div>
@@ -112,14 +112,14 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
   return (
     <div className="py-4 space-y-4 max-w-xl">
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("salonNameLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("salonNameLabel")}</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
 
       {/* ── Category selector ── */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">
           {t("categoriesLabel")}
           <span className="ml-1 text-s-ink/30 font-normal">{t("categoriesHint")}</span>
         </label>
@@ -135,7 +135,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                   "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
                     ? "bg-s-accent-bright text-white border-s-accent-bright"
-                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent-bright/50",
+                    : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent-bright/50",
                 ].join(" ")}
               >
                 <span className="text-[13px] leading-none">{opt.emoji}</span>
@@ -151,70 +151,70 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("coverPhotoLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("coverPhotoLabel")}</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("descriptionDeLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("descriptionEnLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("phoneLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("phoneLabel")}</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("instagramLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("instagramLabel")}</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("facebookLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("facebookLabel")}</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("tiktokLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("tiktokLabel")}</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+            className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("websiteLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("websiteLabel")}</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
+          className="w-full px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("openingHoursLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("openingHoursLabel")}</label>
         <HoursEditor hours={form.opening_hours} onChange={(h) => setForm({ ...form, opening_hours: h })} />
       </div>
       {/* Top Pick Toggle */}
       <div className="border-t border-s-ink/5 pt-4 mt-4">
         <label className="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" checked={form.is_top_pick} onChange={(e) => setForm({ ...form, is_top_pick: e.target.checked })}
-            className="w-5 h-5 rounded border-s-ink/20 accent-s-ink focus:ring-offset-0" />
+            className="w-5 h-5 rounded border-s-border accent-s-ink focus:ring-offset-0" />
           <div>
             <span className="block text-sm font-medium text-s-ink">{t("topPickTitle")}</span>
-            <span className="block text-xs text-s-ink/50">{t("topPickDesc")}</span>
+            <span className="block text-xs text-s-ink-2">{t("topPickDesc")}</span>
           </div>
         </label>
       </div>
       <div>
-        <p className="text-xs font-medium text-s-ink/50 mb-2">{t("customerPreviewLabel")}</p>
+        <p className="text-xs font-medium text-s-ink-2 mb-2">{t("customerPreviewLabel")}</p>
         <SalonCard salon={{ ...salon, ...form } as Salon} variant="compact" />
       </div>
       <div className="space-y-2">
@@ -262,7 +262,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
         <>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-xs font-medium text-s-ink/50">{t("discountLabel")}</label>
+              <label className="text-xs font-medium text-s-ink-2">{t("discountLabel")}</label>
               <span className="text-sm font-bold text-s-coral data-text">{discount}%</span>
             </div>
             <input type="range" min={5} max={50} step={5} value={discount}
@@ -270,7 +270,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-xs font-medium text-s-ink/50">{t("timeWindowLabel")}</label>
+              <label className="text-xs font-medium text-s-ink-2">{t("timeWindowLabel")}</label>
               <span className="text-sm font-bold text-s-coral data-text">{windowH}h</span>
             </div>
             <input type="range" min={2} max={24} step={1} value={windowH}
@@ -312,7 +312,7 @@ function QuickRepliesTab() {
   return (
     <div className="py-4 max-w-md space-y-2">
       {replies.map((r, i) => (
-        <div key={i} className="flex items-center gap-2 bg-white border border-s-ink/10 rounded-[12px] px-3 py-2.5">
+        <div key={i} className="flex items-center gap-2 bg-white border border-s-border rounded-[12px] px-3 py-2.5">
           {editing === i ? (
             <>
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
@@ -331,7 +331,7 @@ function QuickRepliesTab() {
       ))}
       <div className="flex gap-2">
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={t("newTemplatePlaceholder")}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
           className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm"><Plus size={14} /></button>
       </div>
@@ -361,13 +361,13 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
   return (
     <div className="p-5 space-y-5">
-      <p className="text-xs text-s-ink/50">
+      <p className="text-xs text-s-ink-2">
         {t("smsIntro")}
       </p>
 
       <label className="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
-          className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
+          className="w-4 h-4 rounded border-s-border text-s-coral focus:ring-s-coral" />
         <div>
           <span className="text-sm font-medium text-s-ink">{t("sms24hTitle")}</span>
           <p className="text-xs text-s-ink/40">{t("sms24hDesc")}</p>
@@ -376,7 +376,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <label className="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
-          className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
+          className="w-4 h-4 rounded border-s-border text-s-coral focus:ring-s-coral" />
         <div>
           <span className="text-sm font-medium text-s-ink">{t("sms1hTitle")}</span>
           <p className="text-xs text-s-ink/40">{t("sms1hDesc")}</p>
@@ -438,7 +438,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
     <div className="py-4 max-w-md space-y-6">
       {/* Fee type option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("cancelFeeTypeLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("cancelFeeTypeLabel")}</label>
         <div className="space-y-2">
           {feeOptions.map((opt) => (
             <button
@@ -449,7 +449,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
                 "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
                 feeType === opt.id
                   ? "border-s-accent-bright bg-s-accent-bright/10"
-                  : "border-s-border hover:border-s-ink/20",
+                  : "border-s-border hover:border-s-border",
               ].join(" ")}
             >
               <div className={[
@@ -472,7 +472,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
       {/* Fee value input */}
       {feeType !== "free" && (
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">
             {feeType === "flat" ? t("amountChfLabel") : t("percentInputLabel")}
           </label>
           <input
@@ -482,18 +482,18 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-accent-bright"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus:border-s-accent-bright"
           />
         </div>
       )}
 
       {/* Free cancel window — hairline value-row */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("freeCancelUntilLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("freeCancelUntilLabel")}</label>
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-accent-bright"
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
             <option key={h} value={h}>{t("hoursBeforeAppointment", { hours: h })}</option>
@@ -559,7 +559,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
     <div className="py-4 max-w-md space-y-6">
       {/* Registration status cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("vatStatusLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("vatStatusLabel")}</label>
         <div className="grid grid-cols-2 gap-2">
           {options.map((opt) => (
             <button
@@ -570,7 +570,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
                 "rounded-[12px] border p-3 text-left transition-colors",
                 registered === opt.id
                   ? "border-s-coral bg-s-coral/5"
-                  : "border-s-ink/10 hover:border-s-ink/20",
+                  : "border-s-border hover:border-s-border",
               ].join(" ")}
             >
               <p className={["text-sm font-medium", registered === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
@@ -585,13 +585,13 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
       {/* VAT number input (only when registered) */}
       {registered && (
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("vatNumberLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("vatNumberLabel")}</label>
           <input
             type="text"
             value={vatNumber}
             onChange={(e) => setVatNumber(e.target.value)}
             placeholder="CHE-123.456.789 MWST"
-            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus:border-s-coral"
           />
           <p className="text-[10px] text-s-ink/40 mt-1">{t("vatNumberHint")}</p>
         </div>
@@ -652,7 +652,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
           <p className="text-xs text-s-error/70 mt-1">{t("contactSupport")}</p>
         </div>
       )}
-      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink/60 space-y-1">
+      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink-2 space-y-1">
         <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
         <p><span className="font-medium">{t("cancellationPolicyLabel")}</span> {t("cancellationPolicyValue")}</p>
       </div>
@@ -707,8 +707,8 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       {isActive && (
         <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
-          <Palmtree size={16} className="text-s-amber shrink-0" />
-          <p className="text-sm text-s-amber-text">
+          <Palmtree size={16} className="text-s-star shrink-0" />
+          <p className="text-sm text-s-star-text">
             {t("vacationActive", { start: new Date(start).toLocaleDateString("de-CH"), end: new Date(end).toLocaleDateString("de-CH") })}
           </p>
         </div>
@@ -716,16 +716,16 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("fromLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("fromLabel")}</label>
           <input type="date" value={start} min={todayStr}
             onChange={(e) => setStart(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("toLabel")}</label>
+          <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("toLabel")}</label>
           <input type="date" value={end} min={start || todayStr}
             onChange={(e) => setEnd(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         </div>
       </div>
 
@@ -736,7 +736,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         </button>
         {(start || end) && (
           <button onClick={handleClear} disabled={saving}
-            className="px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="px-4 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-coral hover:text-s-coral transition-colors">
             {t("deactivate")}
           </button>
         )}
@@ -806,8 +806,8 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
   const statusPill = {
     loading: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/40">{t("statusLoading")}</span>,
-    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/50">{t("statusNotConnected")}</span>,
-    pending: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-amber-subtle text-s-amber-text">{t("statusPending")}</span>,
+    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink-2">{t("statusNotConnected")}</span>,
+    pending: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-amber-subtle text-s-star-text">{t("statusPending")}</span>,
     connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-success/10 text-s-success font-medium">{t("statusConnected")}</span>,
   }[connectStatus];
 
@@ -820,7 +820,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   return (
     <div className="py-4 max-w-md space-y-6">
       {/* Stripe Connect — always visible */}
-      <div className="border border-s-ink/10 rounded-[12px] p-4 space-y-3">
+      <div className="border border-s-border rounded-[12px] p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-s-ink/40" />
@@ -828,7 +828,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           </div>
           {statusPill}
         </div>
-        <p className="text-xs text-s-ink/50">
+        <p className="text-xs text-s-ink-2">
           {t("stripeConnectDesc")}
         </p>
         {connectStatus !== "connected" && (
@@ -851,14 +851,14 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       {/* Marketing card */}
       <div className="rounded-[12px] bg-s-accent-bright/[0.06] border border-s-accent-bright/20 p-4">
         <p className="text-sm font-semibold text-s-accent-bright mb-1">{t("choosePaymentModeTitle")}</p>
-        <p className="text-xs text-s-ink/60 leading-relaxed">
+        <p className="text-xs text-s-ink-2 leading-relaxed">
           {t("choosePaymentModeDesc")}
         </p>
       </div>
 
       {/* Payment mode radio cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("paymentModeLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("paymentModeLabel")}</label>
         <div className="space-y-2">
           {modeOptions.map((opt) => (
             <button
@@ -867,7 +867,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               onClick={() => setPaymentMode(opt.id)}
               className={[
                 "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
-                paymentMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/[0.06]" : "border-s-border hover:border-s-ink/20",
+                paymentMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/[0.06]" : "border-s-border hover:border-s-border",
               ].join(" ")}
             >
               <div className={[
@@ -891,7 +891,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       {paymentMode === "deposit" && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-medium text-s-ink/50">{t("depositLabel")}</label>
+            <label className="text-xs font-medium text-s-ink-2">{t("depositLabel")}</label>
             <span className="text-sm font-semibold text-s-ink data-text bg-s-bg-sunken rounded-full px-2.5 py-0.5">{depositPercent}%</span>
           </div>
           <input
@@ -912,7 +912,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           orange (surcharge = money-out); "Keine" stays calm green. Writes no_show_fee_type/value. */}
       {paymentMode !== "at_salon" && (
         <div className="border-t border-s-ink/5 pt-4 space-y-2">
-          <p className="text-xs font-medium text-s-ink/50 mb-1">{t("noShowFeeLabel")}</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-1">{t("noShowFeeLabel")}</p>
 
           {([
             { id: "free", label: t("noShowFreeLabel"), desc: t("noShowFreeDesc") },
@@ -930,7 +930,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
                   "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
                   charging ? "border-s-surcharge bg-s-surcharge-bg"
                     : selected ? "border-s-accent-bright bg-s-accent-bright/10"
-                    : "border-s-border hover:border-s-ink/20",
+                    : "border-s-border hover:border-s-border",
                 ].join(" ")}
               >
                 <div className={[
@@ -1045,12 +1045,12 @@ function ClosuresTab({ salon }: { salon: Salon }) {
 
   return (
     <div className="py-4 max-w-md space-y-4">
-      <p className="text-xs text-s-ink/50">{t("closuresIntro")}</p>
+      <p className="text-xs text-s-ink-2">{t("closuresIntro")}</p>
       <div className="flex gap-2">
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t("reasonPlaceholder")}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-border text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={addClosure} disabled={!date}
           className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm disabled:opacity-50">
           <Plus size={14} />
@@ -1113,13 +1113,13 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
     <div className="py-4 max-w-md space-y-6">
       {/* Buchungsbestätigung — option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("bookingConfirmationLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("bookingConfirmationLabel")}</label>
         <div className="space-y-2">
           {confirmOptions.map((opt) => (
             <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id)}
               className={[
                 "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
-                confirmMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-ink/20",
+                confirmMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-border",
               ].join(" ")}>
               <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", confirmMode === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
                 {confirmMode === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
@@ -1135,13 +1135,13 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
 
       {/* Termin-Zuweisung — option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("appointmentAssignmentLabel")}</label>
+        <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("appointmentAssignmentLabel")}</label>
         <div className="space-y-2">
           {methodOptions.map((opt) => (
             <button key={opt.id} type="button" onClick={() => setMethod(opt.id)}
               className={[
                 "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
-                method === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-ink/20",
+                method === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-border",
               ].join(" ")}>
               <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", method === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
                 {method === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
@@ -1163,7 +1163,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
             {limitEnabled && (
               <input type="number" min={1} max={50} value={limit}
                 onChange={(e) => setLimit(+e.target.value)}
-                className="w-14 px-2 py-1 rounded-btn border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-accent-bright" />
+                className="w-14 px-2 py-1 rounded-btn border border-s-border text-sm data-text text-right focus:outline-none focus:border-s-accent-bright" />
             )}
             <button type="button" role="switch" aria-checked={limitEnabled} aria-label={t("dailyLimitToggleAria")}
               onClick={() => setLimitEnabled(!limitEnabled)}
@@ -1223,7 +1223,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
 
   return (
     <div className="py-4 max-w-md space-y-3">
-      <p className="text-xs text-s-ink/50">{t("commissionIntro")}</p>
+      <p className="text-xs text-s-ink-2">{t("commissionIntro")}</p>
       {staff.map((s) => (
         <div key={s.id} className="flex items-center gap-3 py-2 border-b border-s-ink/5 last:border-0">
           <span className="text-sm font-medium text-s-ink flex-1">{s.name}</span>
@@ -1238,7 +1238,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
                 const v = Math.min(100, Math.max(0, +e.target.value));
                 setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_pct: v } : st)));
               }}
-              className="w-16 px-2 py-1.5 rounded-btn border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-coral"
+              className="w-16 px-2 py-1.5 rounded-btn border border-s-border text-sm data-text text-right focus:outline-none focus:border-s-coral"
             />
             <span className="text-xs text-s-ink/40">%</span>
             <button
@@ -1442,7 +1442,7 @@ export default function SettingsPage() {
             {(salon as any).warning_count > 0 && (
               <p className="text-xs text-s-error/70 mb-2">{t("warningsReceived", { count: (salon as any).warning_count })}</p>
             )}
-            <p className="text-sm text-s-ink/60">{t("contactSupportInfo")}</p>
+            <p className="text-sm text-s-ink-2">{t("contactSupportInfo")}</p>
           </div>
         </div>
       )}

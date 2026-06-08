@@ -73,7 +73,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
             <div className="w-12 h-12 rounded-full bg-s-success-bg flex items-center justify-center mb-3">
               <Check size={24} className="text-s-success" />
             </div>
-            <p className="text-sm text-s-ink/60 mb-1">{t("added")}</p>
+            <p className="text-sm text-s-ink-2 mb-1">{t("added")}</p>
             <p className="font-heading text-3xl text-s-ink tracking-tight mb-5">{ticketNumber}</p>
             <button onClick={onClose}
               className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
@@ -84,31 +84,31 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
           <>
             <div className="space-y-3 mb-5">
               <div>
-                <label htmlFor="walkin-name" className="flex items-center gap-1.5 text-xs font-medium text-s-ink/50 mb-1">
+                <label htmlFor="walkin-name" className="flex items-center gap-1.5 text-xs font-medium text-s-ink-2 mb-1">
                   <User size={12} /> {t("name")}
                 </label>
                 <input id="walkin-name" value={customerName} onChange={e => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15" />
+                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15" />
               </div>
               <div>
-                <label htmlFor="walkin-phone" className="flex items-center gap-1.5 text-xs font-medium text-s-ink/50 mb-1">
+                <label htmlFor="walkin-phone" className="flex items-center gap-1.5 text-xs font-medium text-s-ink-2 mb-1">
                   <Phone size={12} /> {t("phone")}
                 </label>
                 <input id="walkin-phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)}
                   placeholder="+41791234567"
-                  className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15" />
+                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15" />
               </div>
               <div>
-                <label htmlFor="walkin-service" className="block text-xs font-medium text-s-ink/50 mb-1">{t("service")} *</label>
+                <label htmlFor="walkin-service" className="block text-xs font-medium text-s-ink-2 mb-1">{t("service")} *</label>
                 <select id="walkin-service" value={serviceId} onChange={e => setServiceId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15">
+                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15">
                   {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
               <div>
-                <label htmlFor="walkin-staff" className="block text-xs font-medium text-s-ink/50 mb-1">{t("stylist")}</label>
+                <label htmlFor="walkin-staff" className="block text-xs font-medium text-s-ink-2 mb-1">{t("stylist")}</label>
                 <select id="walkin-staff" value={staffId} onChange={e => setStaffId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15">
+                  className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15">
                   {staff.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
@@ -117,7 +117,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
             {error && <p className="text-xs text-s-error mb-3">{error}</p>}
 
             <div className="flex gap-2">
-              <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink active:scale-[0.97] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
+              <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-border text-sm text-s-ink-2 hover:border-s-ink/30 hover:text-s-ink active:scale-[0.97] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
               <button onClick={handleCreate} disabled={!serviceId || loading}
                 className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-elevation-2">
                 {loading && <Spinner size="sm" invert />}<Send size={14} /> {t("create")}

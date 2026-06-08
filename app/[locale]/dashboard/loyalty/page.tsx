@@ -98,7 +98,7 @@ export default function LoyaltyDashboardPage() {
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-s-ink/50">
+              <p className="text-xs text-s-ink-2">
                 {t("scanInstruction")}
               </p>
               <input
@@ -106,7 +106,7 @@ export default function LoyaltyDashboardPage() {
                 value={scanToken}
                 onChange={(e) => setScanToken(e.target.value)}
                 placeholder={t("tokenPlaceholder")}
-                className="w-full rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full rounded-btn border border-s-border bg-white px-3 py-2 text-sm text-s-ink font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <button
                 onClick={handleScanSubmit}

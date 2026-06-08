@@ -108,7 +108,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookHeart size={16} className="text-s-coral" />
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star">
             {t("wellness_journal")}
           </p>
         </div>
@@ -135,7 +135,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Pain Level */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("pain")} ({form.pain_level}/10)
             </label>
             <input
@@ -152,7 +152,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
           {/* Tension Areas */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block">
                 {t("tension_areas")}
               </label>
               <button
@@ -196,7 +196,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.tension_areas.includes(area)
                       ? "bg-s-coral text-white"
-                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                      : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                   }`}
                 >
                   {t(`tension_area.${area}` as any)}
@@ -207,7 +207,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Pressure Preference */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("pressure_preference")}
             </label>
             <select
@@ -224,7 +224,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Skin Condition */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("skin_condition")}
             </label>
             <input
@@ -237,7 +237,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Products Used */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("products_used")}
             </label>
             <div className="flex gap-2">
@@ -252,7 +252,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               <button
                 onClick={addProduct}
                 aria-label={t("add_product")}
-                className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09] transition-colors duration-150"
+                className="px-2 py-1 rounded-[8px] bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken transition-colors duration-150"
               >
                 <Plus size={14} />
               </button>
@@ -273,7 +273,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Aftercare Notes */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("aftercare_notes")}
             </label>
             <textarea
@@ -287,7 +287,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 block mb-1">
               {t("notes")}
             </label>
             <textarea
@@ -304,7 +304,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
             <button
               onClick={resetForm}
               aria-label={t("cancel")}
-              className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 text-xs text-s-ink/60 transition-colors duration-150"
+              className="px-3 py-1.5 rounded-[8px] border border-s-border text-xs text-s-ink-2 transition-colors duration-150"
             >
               {t("cancel")}
             </button>
@@ -350,20 +350,20 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 w-16 shrink-0">
                   {t("pain")}
                 </span>
-                <div className="flex-1 h-2 rounded-full bg-s-ink/[0.06] overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-s-bg-sunken overflow-hidden">
                   <div
                     className="h-full bg-s-coral rounded-full"
                     style={{ width: `${((e.pain_level ?? 0) / 10) * 100}%` }}
                   />
                 </div>
-                <span className="text-[10px] data-text font-bold text-s-ink/50 w-6 text-right">
+                <span className="text-[10px] data-text font-bold text-s-ink-2 w-6 text-right">
                   {e.pain_level ?? 0}
                 </span>
               </div>
 
               {/* Tension areas */}
               {e.tension_areas?.length > 0 && (
-                <p className="text-[10px] text-s-ink/50 mt-1">
+                <p className="text-[10px] text-s-ink-2 mt-1">
                   {t("tension")}: {e.tension_areas.map((a) => t(`tension_area.${a}`)).join(", ")}
                 </p>
               )}

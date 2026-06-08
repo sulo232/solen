@@ -129,7 +129,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
 
   if (!settings) {
     return (
-      <p className="text-sm text-s-ink/50 text-center py-8">
+      <p className="text-sm text-s-ink-2 text-center py-8">
         {t("loadError")}
       </p>
     );
@@ -163,13 +163,13 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               onChange={(e) =>
                 setSettings({ ...settings, enabled: e.target.checked })
               }
-              className="w-5 h-5 rounded border-s-ink/20 cursor-pointer"
+              className="w-5 h-5 rounded border-s-border cursor-pointer"
             />
             <span className="font-heading text-s-ink">
               {t("enableLabel")}
             </span>
           </label>
-          <p className="text-xs text-s-ink/50 mt-1 ml-8">
+          <p className="text-xs text-s-ink-2 mt-1 ml-8">
             {t("enableHelp")}
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                 }
                 className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
               />
-              <span className="text-sm text-s-ink/60">
+              <span className="text-sm text-s-ink-2">
                 {t("appliedToAll")}
               </span>
             </div>
@@ -207,7 +207,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
           <h3 className="font-heading text-base text-s-ink mb-4">
             {t("serviceSpecific")}
           </h3>
-          <p className="text-xs text-s-ink/50 mb-4">
+          <p className="text-xs text-s-ink-2 mb-4">
             {t("serviceSpecificHelp")}
           </p>
 
@@ -227,7 +227,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                       <p className="font-heading text-sm text-s-ink">
                         {service.name_de}
                       </p>
-                      <p className="text-xs text-s-ink/50">
+                      <p className="text-xs text-s-ink-2">
                         {service.duration_minutes} min · CHF {service.base_price.toFixed(2)}
                       </p>
                     </div>
@@ -251,7 +251,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                           }}
                           className="w-16 px-2 py-1.5 rounded-[6px] border border-s-ink/[0.08] bg-white text-s-ink text-sm text-center focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
                         />
-                        <span className="ml-1 text-sm text-s-ink/60">
+                        <span className="ml-1 text-sm text-s-ink-2">
                           %
                         </span>
                       </div>
@@ -295,7 +295,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
           )}
 
           {availableServices.length === 0 && Object.keys(settings.service_overrides).length > 0 && (
-            <p className="text-xs text-s-ink/50">
+            <p className="text-xs text-s-ink-2">
               {t("allOverridden")}
             </p>
           )}
@@ -327,7 +327,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                       -{discountPercent}%
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-s-ink/60">
+                  <div className="flex items-center justify-between text-xs text-s-ink-2">
                     <span>
                       CHF {service.base_price.toFixed(2)} → CHF {finalPrice.toFixed(2)}
                     </span>
@@ -339,7 +339,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               );
             })}
             {services.length > 3 && (
-              <p className="text-xs text-s-ink/50 text-center py-2">
+              <p className="text-xs text-s-ink-2 text-center py-2">
                 {t("moreServices", { count: services.length - 3 })}
               </p>
             )}

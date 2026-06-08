@@ -99,7 +99,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
                   value={svc.reminder_cycle_days ?? ""}
                   onChange={(e) => updateCycle(svc.id, e.target.value ? parseInt(e.target.value) : null)}
                   placeholder="—"
-                  className="w-16 px-2 py-1 text-sm text-center rounded-input border border-s-ink/10 bg-transparent text-s-ink"
+                  className="w-16 px-2 py-1 text-sm text-center rounded-input border border-s-border bg-transparent text-s-ink"
                 />
                 <span className="text-xs text-s-ink/40">{t("infill_days")}</span>
               </div>
@@ -111,7 +111,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       {/* Due clients summary */}
       {dueClients.length > 0 && (
         <div className="mt-4 p-3 rounded-[16px] bg-s-amber-subtle border border-s-amber/20">
-          <p className="text-sm font-medium text-s-amber-text flex items-center gap-1.5">
+          <p className="text-sm font-medium text-s-star-text flex items-center gap-1.5">
             <Users size={14} />
             {t("infill_due_clients", { count: dueClients.length })}
           </p>
@@ -125,17 +125,17 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
             {t("infill_metrics_title")}
           </p>
           <div className="grid grid-cols-3 gap-2">
-            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <Send size={12} className="text-s-blue" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.sent}</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_sent")}</p>
             </div>
-            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <CalendarCheck size={12} className="text-s-sage" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.booked}</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_booked")}</p>
             </div>
-            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <Percent size={12} className="text-s-coral" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.conversion_rate}%</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_conversion")}</p>

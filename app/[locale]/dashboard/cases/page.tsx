@@ -218,7 +218,7 @@ export default function AdminCasesPage() {
           <Scale className="w-6 h-6 text-s-ink" />
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
         </div>
-        <p className="text-[13px] text-s-ink/50 mb-4 ml-9">{t("subtitle")}</p>
+        <p className="text-[13px] text-s-ink-2 mb-4 ml-9">{t("subtitle")}</p>
 
         {role && role !== "admin" ? (
           <div className="rounded-2xl border border-s-border bg-white p-6 text-[14px] text-s-ink-2">{t("adminOnly")}</div>
@@ -330,7 +330,7 @@ export default function AdminCasesPage() {
                                       <span className={"absolute inset-0 rounded-full border-2 " + (pulse ? "bg-s-accent border-s-accent" : "bg-white border-[#BBB8B5]")} />
                                     </span>
                                     <p className="text-[13px] font-medium text-s-ink">{ev.to_status ? t(`status.${ev.to_status}`) : ev.action}</p>
-                                    <p className="text-[11px] text-s-ink/50 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" · ")}</p>
+                                    <p className="text-[11px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" · ")}</p>
                                   </div>
                                 );
                               })}

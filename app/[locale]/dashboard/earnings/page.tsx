@@ -49,7 +49,7 @@ const itemVariants = {
 function getStatusBadge(status: string, t: (key: "statusPaid" | "statusPending" | "statusRecorded") => string) {
   switch (status) {
     case "paid": return <span className="px-2 py-1 rounded-pill bg-s-success-bg text-s-success text-xs font-medium">{t("statusPaid")}</span>;
-    case "pending": return <span className="px-2 py-1 rounded-pill bg-s-amber-subtle text-s-amber-text text-xs font-medium">{t("statusPending")}</span>;
+    case "pending": return <span className="px-2 py-1 rounded-pill bg-s-amber-subtle text-s-star-text text-xs font-medium">{t("statusPending")}</span>;
     case "recorded": return <span className="px-2 py-1 rounded-pill bg-s-blue-subtle text-s-blue-text text-xs font-medium">{t("statusRecorded")}</span>;
     default: return <span className="px-2 py-1 rounded-pill bg-s-ink/10 text-s-ink/70 text-xs font-medium">{status}</span>;
   }
@@ -109,7 +109,7 @@ export default function SalonEarningsPage() {
                 <Wallet size={24} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">{t("availableBalance")}</p>
+                <p className="text-xs font-medium text-s-ink-2 uppercase tracking-widest mb-1">{t("availableBalance")}</p>
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.pending_balance, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">{t("availableBalanceHint")}</p>
               </div>
@@ -120,7 +120,7 @@ export default function SalonEarningsPage() {
                 <DollarSign size={24} className="text-green-600" />
               </div>
               <div>
-                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">{t("totalPaidOut")}</p>
+                <p className="text-xs font-medium text-s-ink-2 uppercase tracking-widest mb-1">{t("totalPaidOut")}</p>
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.total_earnings, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">{t("totalPaidOutHint")}</p>
               </div>
@@ -155,7 +155,7 @@ export default function SalonEarningsPage() {
                         <td className="px-5 py-4">
                           {getStatusBadge(p.status, t)}
                         </td>
-                        <td className="px-5 py-4 text-right text-s-ink/60">
+                        <td className="px-5 py-4 text-right text-s-ink-2">
                           {formatCurrency(p.gross_amount, locale)}
                         </td>
                         <td className="px-5 py-4 text-right text-s-coral/80">
@@ -223,7 +223,7 @@ export default function SalonEarningsPage() {
                             <span className="font-medium">{s.name}</span>
                           </div>
                         </td>
-                        <td className="px-5 py-4 text-right data-text text-s-ink/60">{s.commission_rate}%</td>
+                        <td className="px-5 py-4 text-right data-text text-s-ink-2">{s.commission_rate}%</td>
                         <td className="px-5 py-4 text-right data-text text-s-ink">{formatCurrency(s.gross, locale)}</td>
                         <td className="px-5 py-4 text-right data-text font-medium text-s-coral">{formatCurrency(s.staff_share, locale)}</td>
                         <td className="px-5 py-4 text-right data-text font-semibold text-s-ink">{formatCurrency(s.house_share, locale)}</td>

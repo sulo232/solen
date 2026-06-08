@@ -180,7 +180,7 @@ export default function SalonUpchargePage() {
           <TrendingUp className="w-6 h-6 text-s-ink" />
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
         </div>
-        <p className="text-[13px] text-s-ink/50 mb-5 ml-9">{t("subtitle")}</p>
+        <p className="text-[13px] text-s-ink-2 mb-5 ml-9">{t("subtitle")}</p>
 
         {loading ? (
           <div className="flex justify-center py-16">

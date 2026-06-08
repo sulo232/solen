@@ -256,7 +256,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
       <div className="mt-4 space-y-3">
         {/* Neckline Style */}
         <div>
-          <p className="text-[10px] font-heading text-s-ink/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
             {t("neckline")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -281,7 +281,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
         {/* Fade Type */}
         <div>
-          <p className="text-[10px] font-heading text-s-ink/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
             {t("fade_type")}
           </p>
           <div className="flex flex-wrap gap-1">

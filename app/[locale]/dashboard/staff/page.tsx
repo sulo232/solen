@@ -155,17 +155,17 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         </div>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("nameLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("photoUrlLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("photoUrlLabel")}</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("specialtiesLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("specialtiesLabel")}</label>
             <div className="flex gap-2 mb-2">
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
@@ -185,7 +185,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Service assignment */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("assignServices")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("assignServices")}</label>
             {loadingServices ? (
               <Spinner size="sm" />
             ) : services.length === 0 ? (
@@ -209,7 +209,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Permissions */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("permissions")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("permissions")}</label>
             <div className="space-y-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
@@ -228,7 +228,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("commissionLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("commissionLabel")}</label>
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
@@ -239,7 +239,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-ink" : "text-s-ink/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-s-ink/60">{t("active")}</span>
+            <span className="text-sm text-s-ink-2">{t("active")}</span>
           </label>
         </div>
         <div className="flex gap-2">
@@ -300,12 +300,12 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
         </div>
         <div className="space-y-3 mb-4">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("nameLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={e => setName(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("emailLabel")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("emailLabel")}</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
@@ -351,7 +351,7 @@ function DeleteModal({ member, onClose, onDeleted }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-sm p-6">
         <h3 className="font-heading text-base text-s-ink mb-3">{t("deleteTitle")}</h3>
-        <p className="text-sm text-s-ink/60 mb-2">{t.rich("deleteConfirm", { name: member.name, strong: (chunks) => <strong>{chunks}</strong> })}</p>
+        <p className="text-sm text-s-ink-2 mb-2">{t.rich("deleteConfirm", { name: member.name, strong: (chunks) => <strong>{chunks}</strong> })}</p>
         {member.future_bookings && member.future_bookings > 0 ? (
           <p className="text-sm text-s-warning font-medium mb-4">
             {t("deleteBookingsWarning", { count: member.future_bookings })}
@@ -399,7 +399,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
 
   return (
     <div className="mb-6">
-      <h2 className="text-sm font-medium text-s-ink/50 mb-2 flex items-center gap-1.5">
+      <h2 className="text-sm font-medium text-s-ink-2 mb-2 flex items-center gap-1.5">
         <ClockIcon size={14} /> {t("pendingInvites")}
       </h2>
       <div className="space-y-2">
@@ -547,7 +547,7 @@ export default function StaffPage() {
                 {s.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.specialties.slice(0, 3).map((sp, i) => (
-                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink/50 rounded-pill">{sp}</span>
+                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink-2 rounded-pill">{sp}</span>
                     ))}
                   </div>
                 )}

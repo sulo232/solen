@@ -96,12 +96,12 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
     );
   }
 
-  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star">
           {t("consultation_history")}
         </p>
         <button
@@ -146,7 +146,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
             <p className="text-[11px] text-s-error" role="alert">{t("save_error")}</p>
           )}
           <div className="flex gap-2">
-            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
+            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={saving}
@@ -206,7 +206,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
                 {n.notes && (
                   <div className="col-span-2">
                     <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
-                    <p className="text-xs text-s-ink/50 mt-0.5">{n.notes}</p>
+                    <p className="text-xs text-s-ink-2 mt-0.5">{n.notes}</p>
                   </div>
                 )}
               </div>

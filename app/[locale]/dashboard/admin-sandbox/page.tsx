@@ -21,7 +21,7 @@ interface TestSalon {
 }
 
 const SEED_FEATURES = [
-  { key: "walkin_queue", labelKey: "seedWalkin", icon: Users, color: "text-s-amber bg-s-amber/10" },
+  { key: "walkin_queue", labelKey: "seedWalkin", icon: Users, color: "text-s-star bg-s-amber/10" },
   { key: "bookings",     labelKey: "seedBookings", icon: Calendar, color: "text-s-blue bg-s-blue/10" },
   { key: "reviews",      labelKey: "seedReviews", icon: Star, color: "text-s-sage bg-s-sage/10" },
   { key: "last_minute",  labelKey: "seedLastMinute", icon: Clock, color: "text-s-coral bg-s-coral/10" },
@@ -192,12 +192,12 @@ export default function AdminSandboxPage() {
       {/* ── Platform Test-Salon Seeder ────────────────────────────── */}
       <div className="mb-6 rounded-[14px] border border-s-amber/30 bg-s-amber/[0.05] p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <FlaskConical size={14} className="text-s-amber" />
-          <p className="text-[10px] font-heading uppercase tracking-[.18em] text-s-amber">
+          <FlaskConical size={14} className="text-s-star" />
+          <p className="text-[10px] font-heading uppercase tracking-[.18em] text-s-star">
             Platform Test-Salons
           </p>
         </div>
-        <p className="text-[11px] text-s-ink/50">
+        <p className="text-[11px] text-s-ink-2">
           Seeded salons appear on the public site only when no real salons exist for that city+category.
           They include services &amp; availability and are fully editable.
         </p>
@@ -213,7 +213,7 @@ export default function AdminSandboxPage() {
               className={`px-3 py-1.5 rounded-pill text-xs font-heading transition-[transform,filter,border-color,background-color] duration-150 ${
                 seedCities.includes(citySlug)
                   ? "bg-s-amber text-white shadow-elevation-2"
-                  : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                  : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
               }`}
             >
               {citySlug === "zuerich" ? "Zürich" : citySlug.charAt(0).toUpperCase() + citySlug.slice(1)}
@@ -259,7 +259,7 @@ export default function AdminSandboxPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Admin</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Admin</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FlaskConical size={20} className="text-s-coral" />
@@ -295,7 +295,7 @@ export default function AdminSandboxPage() {
                 className={`px-3 py-1.5 rounded-pill text-xs font-heading transition-[transform,filter,border-color,background-color] duration-150 ${
                   newCategory === cat
                     ? "bg-s-coral text-white shadow-elevation-2"
-                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                    : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
                 aria-label={cat}
               >
@@ -315,7 +315,7 @@ export default function AdminSandboxPage() {
             </button>
             <button
               onClick={() => setShowCreateForm(false)}
-              className="px-3 py-2 text-xs text-s-ink/50"
+              className="px-3 py-2 text-xs text-s-ink-2"
               aria-label={t("cancel")}
             >
               {t("cancel")}
@@ -328,13 +328,13 @@ export default function AdminSandboxPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 rounded-[12px] bg-s-ink/[0.04] animate-pulse" />
+            <div key={i} className="h-24 rounded-[12px] bg-s-bg-sunken animate-pulse" />
           ))}
         </div>
       ) : salons.length === 0 ? (
         <div className="rounded-[12px] border border-dashed border-s-ink/[0.08] p-12 text-center">
           <FlaskConical size={24} className="mx-auto mb-3 text-s-ink/20" />
-          <p className="text-xs font-heading text-s-ink/50 uppercase tracking-[.10em]">
+          <p className="text-xs font-heading text-s-ink-2 uppercase tracking-[.10em]">
             {t("noSalons")}
           </p>
           <p className="text-[11px] text-s-ink/25 mt-1">{t("noSalonsHint")}</p>
@@ -360,7 +360,7 @@ export default function AdminSandboxPage() {
                     </p>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       {salon.categories.map((cat) => (
-                        <span key={cat} className="text-[9px] font-heading uppercase tracking-[.10em] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.05] text-s-ink/50">
+                        <span key={cat} className="text-[9px] font-heading uppercase tracking-[.10em] px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink-2">
                           {cat}
                         </span>
                       ))}
@@ -374,7 +374,7 @@ export default function AdminSandboxPage() {
                   <button
                     onClick={() => resetSalon(salon.id)}
                     disabled={resettingId === salon.id}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-amber/10 hover:text-s-amber transition-colors duration-150"
+                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-amber/10 hover:text-s-star transition-colors duration-150"
                     aria-label={t("reset")}
                     title={t("reset")}
                   >
@@ -387,7 +387,7 @@ export default function AdminSandboxPage() {
                   <button
                     onClick={() => deleteSalon(salon.id)}
                     disabled={deletingId === salon.id}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-red-50 hover:text-red-500 transition-colors duration-150"
+                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-red-50 hover:text-red-500 transition-colors duration-150"
                     aria-label={t("delete")}
                     title={t("delete")}
                   >
@@ -399,7 +399,7 @@ export default function AdminSandboxPage() {
                   {/* Expand toggle */}
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : salon.id)}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08] transition-colors duration-150"
+                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-bg-sunken text-s-ink/40 hover:bg-s-bg-sunken transition-colors duration-150"
                     aria-label={isExpanded ? t("collapse") : t("expand")}
                   >
                     {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
@@ -411,7 +411,7 @@ export default function AdminSandboxPage() {
                   <div className="border-t border-s-ink/[0.04] p-4 space-y-4">
                     {/* Seed data section */}
                     <div>
-                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/50 mb-2">
+                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
                         {t("seedTitle")}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -444,7 +444,7 @@ export default function AdminSandboxPage() {
 
                     {/* Feature links section */}
                     <div>
-                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/50 mb-2">
+                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
                         {t("linksTitle")}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
@@ -458,7 +458,7 @@ export default function AdminSandboxPage() {
                               href={resolvedHref}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-[11px] font-heading bg-s-ink/[0.04] text-s-ink/60 hover:bg-s-ink/[0.08] hover:text-s-coral:text-s-coral transition-colors duration-150"
+                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-[11px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-coral:text-s-coral transition-colors duration-150"
                             >
                               <ExternalLink size={10} />
                               {t(labelKey)}
@@ -489,8 +489,8 @@ export default function AdminSandboxPage() {
 
       {/* Warning banner */}
       <div className="mt-6 flex items-start gap-2 p-3 rounded-[10px] bg-s-amber/[0.08] border border-s-amber/20">
-        <FlaskConical size={13} className="text-s-amber shrink-0 mt-0.5" />
-        <p className="text-[11px] text-s-amber/80 leading-relaxed">
+        <FlaskConical size={13} className="text-s-star shrink-0 mt-0.5" />
+        <p className="text-[11px] text-s-star/80 leading-relaxed">
           {t("warning")}
         </p>
       </div>

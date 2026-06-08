@@ -127,9 +127,9 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-4">
           {/* Template selector */}
           <div>
-            <label className="text-xs text-s-ink/50 mb-1 block">{t("template")}</label>
+            <label className="text-xs text-s-ink-2 mb-1 block">{t("template")}</label>
             <select value={templateKey} onChange={(e) => setTemplateKey(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+              className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
               {TEMPLATE_KEYS.map((key) => (
                 <option key={key} value={key}>{TEMPLATE_LABELS[key]}</option>
               ))}
@@ -139,13 +139,13 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
           {/* Dynamic questions */}
           {questions.map((q) => (
             <div key={q.question_key}>
-              <label className="text-xs text-s-ink/50 mb-1 block">{q.question_de}</label>
+              <label className="text-xs text-s-ink-2 mb-1 block">{q.question_de}</label>
               {q.type === "boolean" ? (
                 <div className="flex gap-3">
                   {[{ val: true, label: t("yes") }, { val: false, label: t("no") }].map(({ val, label }) => {
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink/60"}`}>
+                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-border text-s-ink-2"}`}>
                         {label}
                       </button>
                     );
@@ -154,14 +154,14 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
               ) : q.type === "select" ? (
                 <select value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+                  className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
                   <option value="">{t("selectPlaceholder")}</option>
                   {q.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               ) : (
                 <input value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                  className="w-full px-2 py-1.5 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
               )}
             </div>
           ))}
@@ -179,7 +179,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
 
           <div className="flex gap-2">
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
-              className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">{t("cancel")}</button>
+              className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2">{t("cancel")}</button>
             <button onClick={handleSave} disabled={saving}
               className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} {t("save")}

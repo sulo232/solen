@@ -80,10 +80,10 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
     <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell size={18} className="text-s-amber" />
+          <Bell size={18} className="text-s-star" />
           <h3 className="font-heading text-sm font-semibold text-s-ink">{t("smartReminders")}</h3>
         </div>
-        <span className="flex items-center gap-1 text-xs text-s-ink/50">
+        <span className="flex items-center gap-1 text-xs text-s-ink-2">
           <Users size={14} />
           {dueClients.length} {t("dueThisWeek")}
         </span>
@@ -99,7 +99,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
         <div className="space-y-4">
           {Object.entries(byBarber).map(([barber, clients]) => (
             <div key={barber}>
-              <p className="text-xs font-medium text-s-ink/50 mb-2">{barber}</p>
+              <p className="text-xs font-medium text-s-ink-2 mb-2">{barber}</p>
               <div className="space-y-2">
                 {clients.map((client) => {
                   const cooldown = client.cooldown || false;
@@ -114,7 +114,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                         <p className="text-sm text-s-ink font-medium">
                           {client.display_name}
                         </p>
-                        <p className="text-xs text-s-ink/50">
+                        <p className="text-xs text-s-ink-2">
                           {client.days_overdue > 0
                             ? t("daysOverdue", { days: client.days_overdue })
                             : t("dueToday")}
@@ -174,7 +174,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmClient(null)}
-                className="flex-1 py-2 rounded-pill border border-s-ink/10 text-sm text-s-ink/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+                className="flex-1 py-2 rounded-pill border border-s-border text-sm text-s-ink/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               >
                 {t("cancel")}
               </button>

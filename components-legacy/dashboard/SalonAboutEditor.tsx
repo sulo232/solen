@@ -68,7 +68,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="font-heading text-lg text-s-ink">{t("title")}</h2>
-          <p className="text-sm text-s-ink/50">
+          <p className="text-sm text-s-ink-2">
             {t("description")}
           </p>
         </div>
@@ -123,7 +123,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder={t("placeholder")}
-          className="w-full h-32 p-4 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30"
+          className="w-full h-32 p-4 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30"
         />
         <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30">
           {texts[activeLang]?.length || 0} / {maxLength}
