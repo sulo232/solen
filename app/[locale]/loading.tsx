@@ -1,20 +1,20 @@
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton, SkeletonCard } from "@/app/[locale]/_components/primitives";
 
 export default function Loading() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero section */}
-      <Skeleton className="w-full h-[400px] rounded-[12px] mb-8" />
+      <Skeleton className="w-full h-[400px] mb-8" rounded={12} />
       {/* Category tiles */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-32 rounded-[12px]" />
+          <Skeleton key={i} className="h-32" rounded={12} />
         ))}
       </div>
       {/* Salon card grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} variant="card" />
+          <SkeletonCard key={i} />
         ))}
       </div>
     </div>

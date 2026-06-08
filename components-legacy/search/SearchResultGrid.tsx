@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
 import SalonCard from "@/components-legacy/SalonCard";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { SkeletonCard } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -43,7 +43,7 @@ export default function SearchResultGrid({
     return (
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} variant="card" />
+          <SkeletonCard key={i} />
         ))}
       </div>
     );

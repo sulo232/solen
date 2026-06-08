@@ -10,7 +10,7 @@ import QuickPreviewSheet from "@/components-legacy/ui/QuickPreviewSheet";
 import FilterBar from "@/components-legacy/ui/FilterBar";
 import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
 import { getSearchFilterPills } from "@/lib/search-filter-pills";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { SkeletonCard } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { Search } from "lucide-react";
 import type { ActiveFilter } from "@/lib/types";
@@ -184,7 +184,7 @@ export default function TreatmentResultsPage() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Skeleton key={i} variant="card" />
+                  <SkeletonCard key={i} />
                 ))}
               </div>
             ) : salons.length === 0 ? (

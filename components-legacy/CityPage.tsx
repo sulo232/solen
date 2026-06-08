@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import SalonCard from "@/components-legacy/SalonCard";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { SkeletonCard } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { MapPin, Scissors } from "lucide-react";
 import { getCityName, type CitySlug } from "@/lib/cities";
@@ -130,7 +130,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
       <section className="max-w-5xl mx-auto px-4 pb-16">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
+            {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : salons.length === 0 ? (
           <EmptyState

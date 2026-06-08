@@ -98,6 +98,8 @@ export {
 
 export { Skeleton, type SkeletonProps } from "./Skeleton";
 
+export { SkeletonCard, type SkeletonCardProps } from "./SkeletonCard";
+
 export { ComingSoon, type ComingSoonProps } from "./ComingSoon";
 
 export {

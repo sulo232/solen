@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Bookmark, AlertCircle } from "lucide-react";
 import SalonCard from "@/components-legacy/SalonCard";
 import EmptyState from "@/components-legacy/ui/EmptyState";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { SkeletonCard } from "@/app/[locale]/_components/primitives";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 export default function SavedPage() {
@@ -78,7 +78,7 @@ export default function SavedPage() {
         ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} variant="card" />
+              <SkeletonCard key={i} />
             ))}
           </div>
         ) : items.length === 0 ? (

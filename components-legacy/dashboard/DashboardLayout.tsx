@@ -15,7 +15,7 @@ import {
   Scale, RotateCcw, TrendingUp, Percent, ArrowLeft,
 } from "lucide-react";
 
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import type { Profile, UserRole } from "@/lib/types";
 import { useMemo } from "react";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
@@ -249,20 +249,20 @@ export default function DashboardLayout({
       <div className="min-h-screen bg-s-bg-sunken flex">
         {/* Sidebar skeleton */}
         <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4">
-          <Skeleton className="h-8 w-8 rounded-input" />
+          <Skeleton className="h-8 w-8" rounded={16} />
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-8 rounded-input" />
+            <Skeleton key={i} className="h-8 w-8" rounded={16} />
           ))}
         </div>
         {/* Content skeleton */}
         <div className="flex-1 p-6 space-y-6">
-          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-8 w-48" rounded={8} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-[12px]" />
+              <Skeleton key={i} className="h-24" rounded={12} />
             ))}
           </div>
-          <Skeleton className="h-64 rounded-[12px]" />
+          <Skeleton className="h-64" rounded={12} />
         </div>
       </div>
     );

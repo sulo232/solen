@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
-import Skeleton from "@/components-legacy/ui/Skeleton";
 import GlassModal from "@/components-legacy/ui/GlassModal";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import RecentlyViewed from "@/components-legacy/RecentlyViewed";

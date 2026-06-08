@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import GalleryManager from "@/components-legacy/dashboard/GalleryManager";
 import SalonAboutEditor from "@/components-legacy/dashboard/SalonAboutEditor";
 
@@ -42,10 +42,10 @@ export default function GalleryPage() {
     return (
       <div className="space-y-6">
         <div>
-          <Skeleton className="h-8 w-48 mb-2" />
-          <Skeleton className="h-4 w-96" />
+          <Skeleton className="h-8 w-48 mb-2" rounded={8} />
+          <Skeleton className="h-4 w-96" rounded={8} />
         </div>
-        <Skeleton className="h-[400px] w-full rounded-[24px]" />
+        <Skeleton className="h-[400px] w-full" rounded={24} />
       </div>
     );
   }

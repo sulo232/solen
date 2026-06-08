@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages, MessageCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { TypingIndicator } from "@/components-legacy/ui/TypingIndicator";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
@@ -364,7 +364,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               <div className="space-y-3 py-4">
                 {["w-3/4", "w-5/12", "w-3/5"].map((w, i) => (
                   <div key={i} className={i % 2 ? "flex justify-end" : "flex"}>
-                    <Skeleton className={`h-10 ${w} rounded-[12px]`} />
+                    <Skeleton className={`h-10 ${w}`} rounded={12} />
                   </div>
                 ))}
               </div>

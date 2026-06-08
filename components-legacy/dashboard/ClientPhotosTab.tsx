@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Camera, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Spinner from "@/components-legacy/ui/Spinner";
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 
 interface ClientPhoto {
@@ -66,12 +66,12 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
   if (loading) return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-6 w-24 rounded-input" />
+        <Skeleton className="h-4 w-20" rounded={8} />
+        <Skeleton className="h-6 w-24" rounded={16} />
       </div>
       <div className="grid grid-cols-3 gap-2">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="aspect-square rounded-[16px]" />
+          <Skeleton key={i} aspect="square" rounded={16} />
         ))}
       </div>
     </div>

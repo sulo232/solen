@@ -1,4 +1,4 @@
-import Skeleton from "@/components-legacy/ui/Skeleton";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 
 export default function Loading() {
   return (
@@ -6,19 +6,19 @@ export default function Loading() {
       {/* Category tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
         {Array.from({ length: 7 }).map((_, i) => (
-          <Skeleton key={i} className="h-10 w-24 rounded-pill flex-shrink-0" />
+          <Skeleton key={i} className="h-10 w-24 flex-shrink-0" rounded="full" />
         ))}
       </div>
       {/* Filter bar */}
       <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-9 w-20 rounded-pill flex-shrink-0" />
+          <Skeleton key={i} className="h-9 w-20 flex-shrink-0" rounded="full" />
         ))}
       </div>
       {/* Masonry grid skeleton */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 12 }).map((_, i) => (
-          <Skeleton key={i} className={`rounded-[20px] ${i % 3 === 0 ? "h-64" : i % 3 === 1 ? "h-80" : "h-72"}`} />
+          <Skeleton key={i} className={i % 3 === 0 ? "h-64" : i % 3 === 1 ? "h-80" : "h-72"} rounded={20} />
         ))}
       </div>
     </div>
