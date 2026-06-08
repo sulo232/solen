@@ -405,13 +405,14 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
-                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
+                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-card shadow-elevation-1"
                     aria-label={label}
                   >
                     <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                    {/* normal: light top-to-bottom gradient. selected: a clearly heavier uniform dim (option E) so it
-                        reads as the active chip, not just a slightly darker one. */}
-                    <span className={`absolute inset-0 transition-colors duration-150 ${sel ? "bg-s-ink/70" : "bg-gradient-to-b from-s-ink/10 to-s-ink/55"}`} />
+                    {/* normal: "vibrant" treatment (user pick) — photo stays clear down to ~40%, then a scrim fades in
+                        behind the label only, so the image reads instead of a flat dark block. The tile carries an
+                        elevation-1 shadow (on the button) so it lifts off the page. selected: heavier uniform dim (option E). */}
+                    <span className={`absolute inset-0 transition-colors duration-150 ${sel ? "bg-s-ink/70" : "bg-gradient-to-b from-transparent from-[40%] to-s-ink/65"}`} />
                     <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
                   </button>
                 );
