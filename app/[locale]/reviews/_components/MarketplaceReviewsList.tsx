@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Star, Store, ChevronRight } from "lucide-react";
+import { Store, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
+import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 
 /**
  * MarketplaceReviewsList — cross-salon aggregate review list for /reviews.
@@ -32,24 +31,6 @@ export interface MarketplaceReview {
   salon_name: string;
 }
 
-// Stars — copied 1:1 from the /salon/[slug]/reviews card (fill-s-star, 0.5 gap).
-function Stars({ rating }: { rating: number }) {
-  const rounded = Math.round(rating);
-  return (
-    <span className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          className={cn(
-            "w-3 h-3",
-            i <= rounded ? "fill-s-star text-s-star" : "text-s-ink/20"
-          )}
-        />
-      ))}
-    </span>
-  );
-}
-
 function ReviewCard({
   review,
   locale,
@@ -65,30 +46,16 @@ function ReviewCard({
       ? review.comment.slice(0, 150) + "…"
       : review.comment;
 
-  const initial = review.reviewer_name?.[0]?.toUpperCase() ?? "?";
-
   return (
     <article className="border border-s-ink/5 rounded-[16px] p-4">
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 shrink-0 rounded-full bg-s-accent-pale overflow-hidden flex items-center justify-center text-xs font-semibold text-s-accent">
-            {review.reviewer_avatar ? (
-              <Image
-                src={review.reviewer_avatar}
-                alt=""
-                width={28}
-                height={28}
-                className="object-cover"
-              />
-            ) : (
-              initial
-            )}
-          </div>
+          <Avatar src={review.reviewer_avatar} name={review.reviewer_name} size="xs" />
           <span className="text-sm font-medium text-s-ink truncate">
             {review.reviewer_name}
           </span>
         </div>
-        <Stars rating={review.rating} />
+        <RatingStars value={review.rating} mode="five" size="sm" />
       </div>
 
       <p className="text-sm text-s-ink/70 leading-relaxed">

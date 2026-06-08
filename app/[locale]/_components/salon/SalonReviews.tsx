@@ -3,7 +3,8 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 import type { Review } from "./_shared";
-import { avatarColor, formatReviewDate } from "./_shared";
+import { formatReviewDate } from "./_shared";
+import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -110,30 +111,11 @@ function ReviewCard({ review }: { review: Review }) {
   const isLong = text.length > 200;
 
   const displayName = review.profiles?.display_name ?? "Solen-Kund:in";
-  const initial = displayName.charAt(0).toUpperCase();
-  const colors = avatarColor(displayName);
 
   return (
     <article>
       <div className="flex items-center gap-2.5">
-        <div
-          className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full"
-          style={{ backgroundColor: colors.bg }}
-        >
-          {review.profiles?.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={review.profiles.avatar_url}
-              alt=""
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <span className="font-display text-[14px] font-black" style={{ color: colors.fg }}>
-              {initial}
-            </span>
-          )}
-        </div>
+        <Avatar src={review.profiles?.avatar_url} name={displayName} size={40} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
             {displayName}
@@ -145,16 +127,7 @@ function ReviewCard({ review }: { review: Review }) {
       </div>
 
       {/* Stars */}
-      <div className="mt-2.5 flex items-center gap-0.5">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Star
-            key={i}
-            size={13}
-            fill={i < Math.floor(review.rating) ? "#FFC32B" : "#E7E5E4"}
-            stroke="none"
-          />
-        ))}
-      </div>
+      <RatingStars value={review.rating} mode="five" size="md" className="mt-2.5" />
 
       {text && (
         <>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ChevronDown, Star, Check } from "lucide-react";
+import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 
 export interface SheetReview {
   id: string;
@@ -164,24 +165,13 @@ export default function StaffReviewsSheet({
             return (
               <article key={r.id}>
                 <div className="flex items-center gap-2.5">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
-                    {r.profiles?.avatar_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="font-display text-[15px] font-semibold text-s-ink-2">{who.charAt(0).toUpperCase()}</span>
-                    )}
-                  </div>
+                  <Avatar src={r.profiles?.avatar_url} name={who} size="md" />
                   <div className="min-w-0">
                     <div className="truncate text-[15px] font-semibold text-s-ink">{who}</div>
                     <div className="text-[12px] text-s-ink-3">{fmtDate(r.created_at)}</div>
                   </div>
                 </div>
-                <div className="mt-2.5 flex items-center gap-0.5">
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <Star key={i} size={14} fill={i < Math.round(r.rating) ? "#FFC32B" : "#E7E5E4"} stroke="none" />
-                  ))}
-                </div>
+                <RatingStars value={r.rating} mode="five" size="md" className="mt-2.5" />
                 {r.comment && <p className="mt-2.5 text-[14px] leading-relaxed text-s-ink-2">{r.comment}</p>}
                 {r.review_photos?.length > 0 && (
                   <div className="mt-2.5 flex gap-2">
