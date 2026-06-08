@@ -1,0 +1,108 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,system-ui,sans-serif;background:#fff;color:#0A0A0A;width:440px;padding:22px}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.sub{font-size:12.5px;color:#6B6B6B;margin:7px 0 18px;line-height:1.5}
+/* legend */
+.legend{border:1px solid #E0DDDB;border-radius:14px;padding:14px 15px;margin-bottom:22px}
+.leg{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.45;margin-bottom:8px}
+.sw{width:18px;height:18px;border-radius:6px;flex:0 0 auto;margin-top:1px}
+.sw.gray{background:#F5F5F4;border:1px solid #E0DDDB}
+.sw.white{background:#fff;border:1px solid #E0DDDB}
+.leg b{font-weight:700}
+.leg-note{font-size:12px;color:#9A3412;background:#FFF7ED;border-radius:8px;padding:7px 10px;margin-top:4px;line-height:1.4}
+/* pattern scaffold */
+.pat{margin-bottom:20px}
+.cap{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.bgtag{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+.bgtag.white{background:#F5F5F4;color:#6B6B6B}
+.bgtag.gray{background:#0A0A0A;color:#fff}
+.surf{border-radius:16px;padding:18px}
+.surf.white{background:#fff;border:1px dashed #E0DDDB}
+.surf.gray{background:#F5F5F4}
+/* shared depth */
+.shadow-card{box-shadow:0 1px 3px rgba(50,47,44,.06),0 8px 24px rgba(50,47,44,.07)}
+/* salon card */
+.dcard{background:#fff;border-radius:20px;overflow:hidden}
+.dcard img{width:100%;height:130px;object-fit:cover;display:block}
+.dcard .cb{padding:14px 15px 16px}
+.dcard .t{font-size:15px;font-weight:700}.dcard .m{font-size:12px;color:#6B6B6B;margin-top:2px}
+.dcard .r{display:flex;justify-content:space-between;margin-top:10px;align-items:center}
+.dcard .r .st{font-size:12.5px;font-weight:600}.dcard .r .st b{color:#FFC32B}
+.dcard .r .pr{font-size:13px;font-weight:700}
+.mini{display:flex;gap:12px}
+.mini .dcard{flex:1}.mini .dcard img{height:84px}.mini .dcard .cb{padding:10px 11px 12px}.mini .dcard .t{font-size:13px}
+/* grouped list */
+.glist{background:#fff;border-radius:18px;overflow:hidden}
+.glrow{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;padding:14px 16px;border-bottom:1px solid #F2F0EE}
+.glrow:last-child{border-bottom:none}.glrow .cv{color:#C2BEBB}
+/* form fields */
+.fcard{background:#fff;border-radius:18px;padding:16px}
+.flabel{font-size:11.5px;font-weight:600;color:#6B6B6B;margin:0 0 6px}
+.field{background:#F4F3F1;border-radius:12px;padding:12px 14px;font-size:14px;color:#0A0A0A;margin-bottom:13px}
+.field.ph{color:#A8A4A1}
+/* buttons */
+.btns{display:flex;gap:10px}
+.bink{flex:1;text-align:center;background:#0A0A0A;color:#fff;font-size:14px;font-weight:600;padding:14px;border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.18),0 6px 16px rgba(10,10,10,.20),inset 0 1px 0 rgba(255,255,255,.14)}
+.bsec{flex:1;text-align:center;background:#F0EFED;color:#0A0A0A;font-size:14px;font-weight:600;padding:14px;border-radius:14px}
+/* chips */
+.chips{display:flex;gap:8px}
+.pchip{position:relative;width:96px;height:42px;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(50,47,44,.06)}
+.pchip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pchip .ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,0) 40%,rgba(10,10,10,.62))}
+.pchip .l{position:absolute;bottom:6px;left:10px;color:#fff;font-size:12px;font-weight:600;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.tpill{display:flex;align-items:center;padding:0 14px;height:42px;border-radius:999px;background:#F0EFED;font-size:13px;font-weight:600}
+/* sheet */
+.scrim{background:#0A0A0A;border-radius:16px;padding:34px 14px 0;position:relative}
+.sheet{background:#fff;border-radius:24px 24px 8px 8px;padding:16px;box-shadow:0 -10px 40px rgba(0,0,0,.22)}
+.grab{width:36px;height:5px;border-radius:999px;background:#E0DDDB;margin:0 auto 14px}
+.sheet h3{font-size:16px;font-weight:700;margin-bottom:4px}.sheet p{font-size:12.5px;color:#6B6B6B;line-height:1.45;margin-bottom:14px}
+/* frosted header */
+.fh-wrap{position:relative;border-radius:16px;overflow:hidden;height:120px}
+.fh-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fhdr{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.fhdr .ft{font-size:15px;font-weight:700}.fhdr .fi{width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:14px}
+/* tiles */
+.tiles{display:flex;gap:12px}
+.tile{flex:1;background:#fff;border-radius:18px;padding:15px}
+.tile .tn{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.tile .tl{font-size:11.5px;color:#6B6B6B;margin-top:3px}
+.tile .tn.acc{color:#276EF1}
+</style></head><body>
+<h1>Depth system , full coverage</h1>
+<div class="sub">The Apple-style recipe applied across every major pattern, medium depth, with gray used as a grouping tray (not a global wash). Each block is shown on its real background.</div>
+
+<div class="legend">
+  <div class="leg"><span class="sw gray"></span><div><b>Gray surface (stone)</b> , groups of cards, settings, forms, dashboard panels. A tray that holds white cards so they lift.</div></div>
+  <div class="leg"><span class="sw white"></span><div><b>White surface</b> , the feed, content pages, heroes, modals &amp; sheets. The default.</div></div>
+  <div class="leg-note">Gray appears in stretches to group related things, alternating with white for rhythm. Never the whole app gray, never the whole app white.</div>
+</div>
+
+<div class="pat"><div class="cap">1 &middot; Salon / listing card <span class="bgtag white">white feed</span></div>
+<div class="surf white"><div class="dcard shadow-card"><img src="/api/discovery/thumb/ba53349f-f19b-46af-97d6-d2c2e0a4392c"/><div class="cb"><div class="t">Haarsalon Margot</div><div class="m">Coiffeur &middot; Z&uuml;rich</div><div class="r"><span class="st"><b>&#9733;</b> 4.9 (128)</span><span class="pr">ab 45 CHF</span></div></div></div></div></div>
+
+<div class="pat"><div class="cap">2 &middot; A group of cards <span class="bgtag gray">gray groups them</span></div>
+<div class="surf gray"><div class="mini"><div class="dcard shadow-card"><img src="/api/discovery/thumb/65afc1af-59d7-40fb-85a3-86220d616d6e"/><div class="cb"><div class="t">Salon A</div></div></div><div class="dcard shadow-card"><img src="/api/discovery/thumb/d4778f74-e56c-44a9-91d6-97a2fbf007de"/><div class="cb"><div class="t">Salon B</div></div></div></div></div></div>
+
+<div class="pat"><div class="cap">3 &middot; Settings / grouped list <span class="bgtag gray">gray</span></div>
+<div class="surf gray"><div class="glist shadow-card"><div class="glrow">Profil<span class="cv">&rsaquo;</span></div><div class="glrow">Benachrichtigungen<span class="cv">&rsaquo;</span></div><div class="glrow">Zahlung<span class="cv">&rsaquo;</span></div></div></div></div>
+
+<div class="pat"><div class="cap">4 &middot; Form fields <span class="bgtag gray">gray</span></div>
+<div class="surf gray"><div class="fcard shadow-card"><div class="flabel">Name</div><div class="field">Maria Keller</div><div class="flabel">E-Mail</div><div class="field ph">name@beispiel.ch</div></div></div></div>
+
+<div class="pat"><div class="cap">5 &middot; Buttons</div>
+<div class="surf white"><div class="btns"><span class="bink">Termin buchen</span><span class="bsec">Abbrechen</span></div></div></div>
+
+<div class="pat"><div class="cap">6 &middot; Filter chips <span class="bgtag white">shipped</span></div>
+<div class="surf white"><div class="chips"><span class="tpill">Textur &#8964;</span><span class="pchip"><img src="/api/discovery/thumb/ba53349f-f19b-46af-97d6-d2c2e0a4392c"/><span class="ov"></span><span class="l">Shag</span></span><span class="pchip"><img src="/api/discovery/thumb/65afc1af-59d7-40fb-85a3-86220d616d6e"/><span class="ov"></span><span class="l">Textured</span></span></div></div></div>
+
+<div class="pat"><div class="cap">7 &middot; Bottom sheet / modal <span class="bgtag white">white, over a dim</span></div>
+<div class="scrim"><div class="sheet"><div class="grab"></div><h3>Buchung best&auml;tigen</h3><p>Damenschnitt bei Maria, morgen 14:30.</p><div class="btns"><span class="bink">Bezahlen</span></div></div></div></div>
+
+<div class="pat"><div class="cap">8 &middot; Sticky header <span class="bgtag white">frosted glass over content</span></div>
+<div class="surf white"><div class="fh-wrap"><img src="/api/discovery/thumb/d4778f74-e56c-44a9-91d6-97a2fbf007de"/><div class="fhdr"><span class="ft">Haarsalon Margot</span><span class="fi">&hearts;</span></div></div></div></div>
+
+<div class="pat"><div class="cap">9 &middot; Dashboard stat tiles <span class="bgtag gray">gray</span></div>
+<div class="surf gray"><div class="tiles"><div class="tile shadow-card"><div class="tn">CHF 1.240</div><div class="tl">Heute</div></div><div class="tile shadow-card"><div class="tn acc">18</div><div class="tl">Termine</div></div></div></div></div>
+
+</body></html>

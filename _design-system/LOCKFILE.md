@@ -359,6 +359,53 @@ header / tab-nav: z-50 / sticky-rail: z-30
 
 ---
 
+## §3.5 — Depth System (surfaces + state matrix) — 2026-06-09
+
+The app read "flat / 2018" because surface depth was suppressed (§3 "use shadow sparingly, many cards flat"). This section flips the default to **consistent soft depth on surfaces** (Apple-style), composing the EXISTING §3 shadow tokens + §4 easings — no new tokens. It does NOT change CONTROL_ELEVATION: controls stay calm; depth is for SURFACES. Visual spec (mockups): `public/solen-depth-system.html` + `public/solen-states-motion.html`.
+
+### Surface rule — gray tray vs white (the "where" of depth)
+
+`s-bg-sunken` (#F5F5F4) is a **grouping tray, not a global wash.** Put gray UNDER: grouped lists / settings / forms, dashboard panels, and any section that clusters a group of cards. The gray tray is what "earns" the white card's lift (consistent with "elevation earned by the background").
+
+Keep **white** for: the feed (Discover), content + profile pages, heroes, and modals / sheets.
+
+Alternate gray ↔ white down a page for rhythm. **Never** the whole app gray; never the whole app pure-white-on-white-with-borders (that is the flat tell).
+
+### Default surface depth (shifts §3 "use sparingly")
+
+- Product cards / surfaces: **`elevation-1` at rest** by default (was "sparingly"). Radius `card` (16px), `card-lg` (20px) for hero/feature.
+- Separate with **shadow + gray tray, NOT hairline borders.** Drop `border-s-border` on any card that now carries elevation (1px-border + flat = the dated tell). Hairlines stay only as dividers INSIDE a grouped list.
+- Controls unchanged: calm/flat per CONTROL_ELEVATION. Depth is for surfaces, not "shadows on everything."
+
+### State matrix (ENFORCED — every interactive primitive)
+
+| Element | rest | hover | pressed | selected | focus | disabled |
+|---|---|---|---|---|---|---|
+| **Card** | white + `elevation-1` | `translateY(-2px)` + `elevation-2` | `scale(.985)` + `elevation-1` | `ring-2` s-ink + `elevation-2` | `ring-2` s-accent, offset-2 | `opacity .45`, no shadow |
+| **Primary button** | `bg-s-ink` + `elevation-2` + inset top-highlight | `elevation-3` + `translateY(-1px)` | `scale(.97)` + `pressed` shadow | n/a | `ring-2` s-accent, offset-2 | muted-grey fill, no shadow |
+| **Photo chip** | vibrant + `elevation-1` | `elevation-2` | `scale(.96)` | scrim `bg-s-ink/70` (option E) | `ring-2` s-accent | `opacity .45` |
+| **List row** | transparent | `bg-s-bg-sunken` | `bg-s-bg-sunken` | `bg-s-accent-bg` + accent text + check | inset ring | `opacity .5` |
+| **Input** | filled `bg-s-bg-sunken`, radius `input` (12px) | same | n/a | n/a | white bg + `ring-2` s-accent | `opacity .5` |
+
+### Motion per transition (uses §4 tokens — no new values)
+
+| Transition | duration | easing |
+|---|---|---|
+| Hover lift (cards) | 200ms | `glide` |
+| Press (button / chip / card) | 150ms | `thud` |
+| Sheet / modal open | 300ms | `glide` |
+| Select toggle / scrim swap | 200ms | `snap` |
+| Color / focus ring | 150ms | `snap` |
+
+Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-patterns (no will-change at rest; gate backdrop-blur on scroll containers).
+
+### Enforcement (how this survives — anti-drift)
+
+- The matrix + surface rule live INSIDE 6 primitives (`Surface`, `Card`, `Sheet`, `ListGroup`, `Button`, chip). Components consume them; never re-derive shadow / state / transition inline.
+- Drift-checker rules to add: flag raw `box-shadow`, hand-coded `transition`, off-token radius, `border-s-border` on an elevated card, white-card-on-white-without-a-tray.
+
+---
+
 ## §4 — Motion (timing + easing)
 
 ### Durations (only these — non-canonical = drift)

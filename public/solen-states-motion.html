@@ -1,0 +1,120 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+:root{
+  --e1:0 1px 3px rgba(50,47,44,.04),0 1px 2px rgba(50,47,44,.03);
+  --e2:0 4px 12px rgba(50,47,44,.08),0 2px 4px rgba(50,47,44,.04);
+  --e3:0 8px 28px rgba(50,47,44,.12),0 4px 10px rgba(50,47,44,.06);
+  --pressed:0 1px 1px rgba(50,47,44,.12),inset 0 1px 2px rgba(50,47,44,.06);
+  --snap:cubic-bezier(0.4,0,0.2,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+  --glide:cubic-bezier(0.16,1,0.3,1);--thud:cubic-bezier(0.7,0,0.84,0);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,system-ui,sans-serif;background:#fff;color:#0A0A0A;width:430px;padding:22px}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.sub{font-size:12.5px;color:#6B6B6B;margin:7px 0 20px;line-height:1.5}
+h2{font-size:15px;font-weight:700;margin:24px 0 4px}
+.h2note{font-size:12px;color:#6B6B6B;margin-bottom:14px;line-height:1.45}
+.tip{font-size:11.5px;color:#276EF1;background:#F4F8FF;border-radius:8px;padding:7px 10px;margin-bottom:16px}
+/* state row scaffold */
+.row{background:#F5F5F4;border-radius:16px;padding:16px 14px;margin-bottom:12px}
+.rt{font-size:12.5px;font-weight:700;margin-bottom:13px}
+.states{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.st{display:flex;flex-direction:column;align-items:center;gap:7px}
+.sl{font-size:10px;font-weight:600;color:#6B6B6B;letter-spacing:.02em}
+/* button */
+.btn{background:#0A0A0A;color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:99px;box-shadow:var(--e2),inset 0 1px 0 rgba(255,255,255,.14)}
+.btn.hov{box-shadow:var(--e3),inset 0 1px 0 rgba(255,255,255,.14);transform:translateY(-1px)}
+.btn.prs{transform:scale(.97);box-shadow:var(--pressed)}
+.btn.foc{outline:2px solid #276EF1;outline-offset:2px}
+.btn.dis{background:#C9C6C3;box-shadow:none;color:#fff}
+/* card */
+.card{width:96px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--e1)}
+.card .ci{height:46px;background:linear-gradient(135deg,#d9d2cc,#b9b0a8)}
+.card .cc{padding:8px 9px;font-size:11px;font-weight:700}
+.card.hov{box-shadow:var(--e2);transform:translateY(-2px)}
+.card.prs{box-shadow:var(--e1);transform:scale(.985)}
+.card.sel{box-shadow:0 0 0 2px #0A0A0A,var(--e2)}
+.card.dis{opacity:.45}
+/* chip */
+.chip{position:relative;width:84px;height:38px;border-radius:16px;overflow:hidden;box-shadow:var(--e1);background:linear-gradient(135deg,#cdbfb4,#8a7b6e)}
+.chip .ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,0) 40%,rgba(10,10,10,.6))}
+.chip.sel .ov{background:rgba(10,10,10,.7)}
+.chip .l{position:absolute;bottom:5px;left:8px;color:#fff;font-size:11px;font-weight:600;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.chip.dis{opacity:.45}
+/* list row */
+.lr{width:150px;background:#fff;border-radius:12px;padding:11px 13px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.lr.hov{background:#EFEEEC}
+.lr.sel{background:#F0F5FF;color:#1A4FB0;font-weight:600}
+.lr .ck{color:#276EF1;font-weight:700}
+/* input */
+.inp{width:150px;background:#F4F3F1;border-radius:12px;padding:11px 13px;font-size:13px;color:#A8A4A1}
+.inp.foc{background:#fff;outline:2px solid #276EF1;outline-offset:0;color:#0A0A0A}
+.inp.dis{opacity:.5}
+/* MOTION demos (auto-loop) */
+.mwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mdemo{background:#F5F5F4;border-radius:16px;padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:128px;justify-content:center;overflow:hidden}
+.ml{font-size:10.5px;color:#6B6B6B;text-align:center;line-height:1.35}
+.ml b{color:#0A0A0A;font-weight:700}
+.demo-card{width:100px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--e1);animation:lift 2.4s var(--glide) infinite}
+.demo-card .ci{height:42px;background:linear-gradient(135deg,#d9d2cc,#b9b0a8)}.demo-card .cc{padding:7px 8px;font-size:10px;font-weight:700}
+@keyframes lift{0%,40%,100%{transform:none;box-shadow:var(--e1)}65%,85%{transform:translateY(-4px);box-shadow:var(--e2)}}
+.demo-btn{background:#0A0A0A;color:#fff;font-size:12px;font-weight:600;padding:11px 20px;border-radius:99px;box-shadow:var(--e2);animation:press 2s var(--thud) infinite}
+@keyframes press{0%,55%,100%{transform:scale(1);box-shadow:var(--e2)}70%{transform:scale(.93);box-shadow:var(--pressed)}}
+.sheetbox{width:120px;height:74px;background:#0A0A0A;border-radius:12px;position:relative;overflow:hidden}
+.demo-sheet{position:absolute;left:8px;right:8px;bottom:0;background:#fff;border-radius:14px 14px 0 0;padding:10px;animation:slide 2.8s var(--glide) infinite}
+.demo-sheet .g{width:26px;height:4px;border-radius:9px;background:#E0DDDB;margin:0 auto 6px}.demo-sheet .st2{font-size:9px;font-weight:700;text-align:center}
+@keyframes slide{0%,15%{transform:translateY(100%)}40%,75%{transform:translateY(0)}100%{transform:translateY(100%)}}
+.demo-chip{position:relative;width:90px;height:40px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#cdbfb4,#8a7b6e);box-shadow:var(--e1)}
+.demo-chip .ov{position:absolute;inset:0;animation:seltog 2.6s var(--snap) infinite}
+@keyframes seltog{0%,40%,100%{background:linear-gradient(to bottom,rgba(10,10,10,0) 40%,rgba(10,10,10,.6))}55%,85%{background:rgba(10,10,10,.7)}}
+.demo-chip .l{position:absolute;bottom:5px;left:9px;color:#fff;font-size:11px;font-weight:600;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+</style></head><body>
+<h1>States + motion</h1>
+<div class="sub">Every interactive thing gets the same 6-state behaviour and the same motion, defined once. Built with your real tokens (elevation-1/2/3, easings snap/glide/thud/spring). Open this on your phone and tap things, press states are live.</div>
+
+<h2>1 &middot; State matrix</h2>
+<div class="h2note">Rest, selected and disabled shown directly. Hover + press are live (tap on phone, hover on desktop).</div>
+<div class="tip">Tip: tap and hold any button or card below to feel the press.</div>
+
+<div class="row"><div class="rt">Primary button</div><div class="states">
+  <div class="st"><span class="btn">Buchen</span><span class="sl">REST</span></div>
+  <div class="st"><span class="btn hov">Buchen</span><span class="sl">HOVER</span></div>
+  <div class="st"><span class="btn prs">Buchen</span><span class="sl">PRESSED</span></div>
+  <div class="st"><span class="btn foc">Buchen</span><span class="sl">FOCUS</span></div>
+  <div class="st"><span class="btn dis">Buchen</span><span class="sl">DISABLED</span></div>
+</div></div>
+
+<div class="row"><div class="rt">Card</div><div class="states">
+  <div class="st"><div class="card"><div class="ci"></div><div class="cc">Salon</div></div><span class="sl">REST</span></div>
+  <div class="st"><div class="card hov"><div class="ci"></div><div class="cc">Salon</div></div><span class="sl">HOVER</span></div>
+  <div class="st"><div class="card prs"><div class="ci"></div><div class="cc">Salon</div></div><span class="sl">PRESSED</span></div>
+  <div class="st"><div class="card sel"><div class="ci"></div><div class="cc">Salon</div></div><span class="sl">SELECTED</span></div>
+  <div class="st"><div class="card dis"><div class="ci"></div><div class="cc">Salon</div></div><span class="sl">DISABLED</span></div>
+</div></div>
+
+<div class="row"><div class="rt">Photo chip</div><div class="states">
+  <div class="st"><div class="chip"><div class="ov"></div><div class="l">Shag</div></div><span class="sl">REST</span></div>
+  <div class="st"><div class="chip sel"><div class="ov"></div><div class="l">Shag</div></div><span class="sl">SELECTED</span></div>
+  <div class="st"><div class="chip dis"><div class="ov"></div><div class="l">Shag</div></div><span class="sl">DISABLED</span></div>
+</div></div>
+
+<div class="row"><div class="rt">List row</div><div class="states">
+  <div class="st"><div class="lr">Profil <span style="color:#C2BEBB">&rsaquo;</span></div><span class="sl">REST</span></div>
+  <div class="st"><div class="lr hov">Profil <span style="color:#C2BEBB">&rsaquo;</span></div><span class="sl">HOVER</span></div>
+  <div class="st"><div class="lr sel">Profil <span class="ck">&check;</span></div><span class="sl">SELECTED</span></div>
+</div></div>
+
+<div class="row"><div class="rt">Input</div><div class="states">
+  <div class="st"><div class="inp">name@beispiel.ch</div><span class="sl">REST</span></div>
+  <div class="st"><div class="inp foc">Maria</div><span class="sl">FOCUS</span></div>
+  <div class="st"><div class="inp dis">name@beispiel.ch</div><span class="sl">DISABLED</span></div>
+</div></div>
+
+<h2>2 &middot; Motion (looping so you can see it)</h2>
+<div class="h2note">The 4 core motions. Each loops here; in the app they fire on the matching interaction.</div>
+<div class="mwrap">
+  <div class="mdemo"><div class="demo-card"><div class="ci"></div><div class="cc">Salon</div></div><div class="ml"><b>Hover lift</b><br>translateY(-4px) + e2<br>200ms &middot; glide</div></div>
+  <div class="mdemo"><span class="demo-btn">Buchen</span><div class="ml"><b>Press</b><br>scale .93 + inset<br>150ms &middot; thud</div></div>
+  <div class="mdemo"><div class="sheetbox"><div class="demo-sheet"><div class="g"></div><div class="st2">Best&auml;tigen</div></div></div><div class="ml"><b>Sheet open</b><br>slide up<br>300ms &middot; glide</div></div>
+  <div class="mdemo"><div class="demo-chip"><div class="ov"></div><div class="l">Shag</div></div><div class="ml"><b>Select toggle</b><br>scrim swap<br>200ms &middot; snap</div></div>
+</div>
+</body></html>
