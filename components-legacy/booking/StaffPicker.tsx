@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Users, Star } from "lucide-react";
+import { Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 interface StaffPickerProps {
   staffList: StaffMember[];
@@ -28,12 +29,11 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
     "h-[88px] w-[88px] rounded-full grid place-items-center overflow-hidden bg-s-bg-sunken";
 
   const Pill = ({ rating }: { rating: number }) => (
-    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-      <Star size={11} stroke="none" className="fill-s-star" />
-      <span className="text-[12px] font-semibold leading-none tabular-nums text-s-ink">
-        {rating.toFixed(1)}
-      </span>
-    </span>
+    <RatingStars
+      value={rating}
+      size="sm"
+      className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white px-2 py-[3px] text-[12px] font-semibold leading-none text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]"
+    />
   );
 
   return (

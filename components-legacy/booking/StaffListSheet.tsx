@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { X, Star, Users } from "lucide-react";
+import { X, Users } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { motion } from "framer-motion";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 import type { StaffMember } from "@/lib/types";
 
@@ -94,10 +95,11 @@ export default function StaffListSheet({
                     )}
                   </div>
                   {rating != null && (
-                    <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-1.5 py-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-                      <Star size={10} stroke="none" className="fill-s-star" />
-                      <span className="text-[11px] font-semibold leading-none tabular-nums text-s-ink">{rating.toFixed(1)}</span>
-                    </span>
+                    <RatingStars
+                      value={rating}
+                      size="sm"
+                      className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 rounded-full bg-white px-1.5 py-[2px] text-[11px] font-semibold leading-none text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]"
+                    />
                   )}
                   <SelectedCheckBadge selected={selectedStaff === s.id} size={20} />
                 </div>

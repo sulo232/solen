@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Clock, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 interface RecentSalon {
   id: string;
@@ -109,9 +109,7 @@ export default function RecentlyViewed() {
                 {salon.name}
               </p>
               {salon.average_rating > 0 && (
-                <p className="text-xs text-s-ink/40 data-text flex items-center gap-0.5">
-                  <Star size={10} className="fill-s-star text-s-star" /> {salon.average_rating.toFixed(1)}
-                </p>
+                <RatingStars value={salon.average_rating} size="sm" className="text-xs text-s-ink/40" />
               )}
             </Link>
           </motion.div>

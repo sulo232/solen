@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Search, ChevronRight, Star } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 /**
  * SearchAutocomplete — connected typed-query dropdown (V3-D413). Replaces the old static POOL. Typing fetches:
@@ -97,9 +98,11 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{s.name}</span>
                 {s.average_rating != null && (
-                  <span className="flex items-center gap-1 font-body text-[12.5px] text-s-ink-2">
-                    <Star size={12} fill="#FFC32B" className="text-[#FFC32B]" aria-hidden />{Number(s.average_rating).toFixed(1)}
-                  </span>
+                  <RatingStars
+                    value={Number(s.average_rating)}
+                    size="sm"
+                    className="font-body text-[12.5px] text-s-ink-2"
+                  />
                 )}
               </span>
               <ChevronRight size={18} className="shrink-0 text-s-ink-3" aria-hidden />

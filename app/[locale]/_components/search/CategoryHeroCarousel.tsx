@@ -3,8 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 /**
  * CategoryHeroCarousel — V3-D421 (2026-06-05, owner-approved design "B").
@@ -146,9 +146,8 @@ export function CategoryHeroCarousel({
                     </h3>
                     {s.average_rating != null && (
                       <div className="mt-1.5 flex items-center gap-1.5 font-body text-[13.5px] tabular-nums">
-                        <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
-                        {s.average_rating.toFixed(1)}
-                        {s.review_count ? ` (${s.review_count})` : ""}
+                        <RatingStars value={s.average_rating} size="md" />
+                        {s.review_count ? `(${s.review_count})` : ""}
                       </div>
                     )}
                     {(price != null || addr) && (

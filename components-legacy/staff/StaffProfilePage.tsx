@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
@@ -238,8 +239,7 @@ export default function StaffProfilePage({
         <div className="mt-2 flex items-center gap-3">
           {staff.average_rating > 0 && (
             <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={`${staff.review_count} Bewertungen ansehen`}>
-              <Star size={15} stroke="none" className="fill-s-star" />
-              <span className="font-semibold text-s-ink tabular-nums">{staff.average_rating.toFixed(1)}</span>
+              <RatingStars value={staff.average_rating} size="lg" className="font-semibold text-s-ink" />
               <span className="text-s-accent underline-offset-2 hover:underline">({staff.review_count})</span>
             </button>
           )}

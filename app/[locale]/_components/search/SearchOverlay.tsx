@@ -16,7 +16,6 @@ import {
   Navigation,
   Calendar as CalendarIcon,
   Clock,
-  Star,
   SearchX,
   TriangleAlert,
   Sunrise,
@@ -26,7 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
-import { DateTimePicker } from "@/app/[locale]/_components/primitives";
+import { DateTimePicker, RatingStars } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import {
@@ -1200,10 +1199,7 @@ function VenueRow({
         {(rating != null || meta) && (
           <span className="mt-0.5 flex items-center gap-2.5 font-body text-[12.5px] text-s-ink-2">
             {rating != null && (
-              <span className="inline-flex items-center gap-1 font-semibold text-s-ink">
-                <Star size={12} className="fill-s-star text-s-star" aria-hidden />
-                {rating.toFixed(1)}
-              </span>
+              <RatingStars value={rating} size="sm" className="font-semibold text-s-ink" />
             )}
             {meta && <span className="truncate">{meta}</span>}
           </span>

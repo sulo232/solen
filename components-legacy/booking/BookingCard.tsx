@@ -8,9 +8,9 @@ import {
   Clock,
   MapPin,
   MoreVertical,
-  Star,
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/format-currency';
+import { RatingStars } from '@/app/[locale]/_components/primitives';
 
 export interface Booking {
   id: string;
@@ -133,9 +133,9 @@ export default function BookingCard({
           </h3>
           {booking.salon?.average_rating && booking.salon?.review_count ? (
             <div className="flex items-center gap-1 mt-1 text-sm text-s-ink-2">
-              <Star size={14} className="fill-s-star text-s-star" />
+              <RatingStars value={booking.salon.average_rating} size="md" />
               <span>
-                {booking.salon.average_rating.toFixed(1)} ({booking.salon.review_count} {t('reviews')})
+                ({booking.salon.review_count} {t('reviews')})
               </span>
             </div>
           ) : null}

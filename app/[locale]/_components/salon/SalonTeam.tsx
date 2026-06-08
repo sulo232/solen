@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Star } from "lucide-react";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 /**
  * SalonTeam — V3-D234 (2026-05-27, austerity rebuild per real Fresha capture).
@@ -120,12 +120,14 @@ function TeamMember({
           )}
         </div>
         {showRating && (
-          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-            <Star size={11} stroke="none" className="fill-s-star" />
-            <span className={cn("text-[12px] font-semibold leading-none tabular-nums text-s-ink", !hasRating && "opacity-70")}>
-              {displayRating?.toFixed(1)}
-            </span>
-          </span>
+          <RatingStars
+            value={displayRating as number}
+            size="sm"
+            className={cn(
+              "absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white px-2 py-[3px] text-[12px] font-semibold leading-none text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]",
+              !hasRating && "opacity-70",
+            )}
+          />
         )}
       </div>
 

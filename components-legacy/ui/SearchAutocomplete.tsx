@@ -6,9 +6,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, X, Star, Sparkles } from "lucide-react";
+import { Search, X, Sparkles } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCategory } from "@/lib/types";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 interface SuggestService {
   id: string;
@@ -256,12 +257,9 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     </div>
                     <div className="min-w-0">
                       <p className="font-medium truncate">{salon.name}</p>
-                      <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
+                      <div className="text-xs text-s-ink/40">
                         {salon.average_rating > 0 && (
-                          <>
-                            <Star size={10} className="fill-s-star text-s-star" />
-                            <span>{salon.average_rating.toFixed(1)}</span>
-                          </>
+                          <RatingStars value={salon.average_rating} size="sm" />
                         )}
                       </div>
                     </div>

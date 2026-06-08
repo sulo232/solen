@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Star } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
+import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 interface ServiceSuggestion {
   id: string;
@@ -220,10 +221,11 @@ export default function ServiceAutosuggest({
                 {item.name}
               </span>
               {item.average_rating != null && (
-                <span className="flex items-center gap-0.5 text-[11px] font-body text-s-ink-2 shrink-0">
-                  <Star size={10} className="fill-s-star text-s-star" />
-                  {item.average_rating.toFixed(1)}
-                </span>
+                <RatingStars
+                  value={item.average_rating}
+                  size="sm"
+                  className="shrink-0 text-[11px] font-body text-s-ink-2"
+                />
               )}
               <span className="text-[13px] text-s-ink/30 group-hover:text-s-accent transition-colors duration-100 shrink-0">
                 →
