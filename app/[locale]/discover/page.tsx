@@ -21,7 +21,7 @@ import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import { ArrowLeft, ChevronDown, Bookmark } from "lucide-react";
+import { ArrowLeft, ChevronDown, Bookmark, Check } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -405,15 +405,21 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
-                    className={`relative h-10 w-[94px] shrink-0 overflow-hidden rounded-card transition-shadow duration-150 ${sel ? "shadow-elevation-2 ring-2 ring-s-accent" : "shadow-elevation-1"}`}
+                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-card shadow-elevation-1"
                     aria-label={label}
                   >
                     <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
                     {/* vibrant treatment: photo stays clear down to ~40%, scrim fades in behind the label only.
-                        selected (2026-06-09): photo stays BRIGHT; an accent ring + elevation-2 lift marks it (replaces
-                        the old dark-scrim "option E", which buried the photo — user rejected it). */}
+                        selected (2026-06-09): photo stays BRIGHT; a small accent check badge (top-right, INSIDE the chip
+                        so nothing clips in the scroll row) marks it. Replaces the dark-scrim "option E" + an outset
+                        accent ring, both rejected (the ring also clipped against overflow-x-auto). */}
                     <span className="absolute inset-0 bg-gradient-to-b from-transparent from-[40%] to-s-ink/65" />
                     <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
+                    {sel && (
+                      <span className="absolute right-1 top-1 z-20 flex h-[15px] w-[15px] items-center justify-center rounded-full bg-s-accent text-white shadow-sm ring-1 ring-white/60">
+                        <Check size={9} strokeWidth={3.5} />
+                      </span>
+                    )}
                   </button>
                 );
               })}
