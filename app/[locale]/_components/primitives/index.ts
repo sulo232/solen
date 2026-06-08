@@ -123,3 +123,9 @@ export {
   type CookieConsentState,
   type CookieConsentContextValue,
 } from "./CookieConsent";
+
+// Consolidation primitives (CONTRADICTIONS.md §4) — collapse hand-rolled duplicates.
+export { RatingStars, type RatingStarsProps, type RatingStarsSize } from "./RatingStars";
+export { Avatar, avatarColor, type AvatarProps, type AvatarSize } from "./Avatar";
+export { PriceFrom, type PriceFromProps } from "./PriceFrom";
+export { BackButton, type BackButtonProps, type BackButtonVariant } from "./BackButton";

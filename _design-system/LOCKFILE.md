@@ -331,7 +331,7 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `search` | 99px | Search bar outer container (fully rounded) |
 | `pill` | 9999px | Availability pills, tags |
 | `btn` | 99px | CTA buttons, action buttons |
-| `input` | 16px | Form inputs (stable, NOT pill) |
+| `input` | 12px | Form inputs (stable, NOT pill). Owner kept shipped 12 over 16, 2026-06-08 — LOCKFILE had drifted ahead of code. |
 | `sheet` | 28px | Bottom sheets |
 | `rounded-full` | 9999px | Avatars, icon buttons |
 | `rounded-2xl` | 16px | Sidebar card, info cards |
