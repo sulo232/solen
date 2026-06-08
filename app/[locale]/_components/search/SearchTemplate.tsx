@@ -1430,7 +1430,7 @@ export default function SearchTemplate({
                 `fixed` so the px drag-top works; z-[31] keeps it above the map. */}
             <div
               className={cn(
-                "fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[20px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]",
+                "fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[28px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]",
                 !sheetDragging && "transition-[top] duration-300 ease-glide",
               )}
               style={{ top: `${curTop}px` }}

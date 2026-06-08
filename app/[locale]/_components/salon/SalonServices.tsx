@@ -200,7 +200,7 @@ function ServiceRow({
   // Per-variant only changes padding density (mobile slightly tighter).
   return (
     <li className={cn(
-      "rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]",
+      "rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-elevation-2",
       variant === "mobile" ? "p-5" : "p-6 md:p-7",
     )}>
       {inner}

@@ -63,7 +63,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-elevation-3 max-h-[80vh] overflow-y-auto"
+              className="absolute bottom-0 inset-x-0 bg-white rounded-t-[28px] shadow-elevation-3 max-h-[80vh] overflow-y-auto"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}

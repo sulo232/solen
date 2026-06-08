@@ -500,7 +500,7 @@ export default function ServicesStaffStep({
               onClick={() => setShowCatSheet(false)}
             />
             <motion.div
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-white px-5 pt-3 pb-8"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-5 pt-3 pb-8"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}

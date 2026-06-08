@@ -73,7 +73,7 @@ export default function FilterBottomSheet({
       {/* Sheet — z-modal (60) */}
       <div
         className={[
-          'relative w-full max-h-[80vh] overflow-y-auto rounded-t-[20px] shadow-warm-lg p-6',
+          'relative w-full max-h-[80vh] overflow-y-auto rounded-t-[28px] shadow-warm-lg p-6',
           surfaceClasses,
           animClass,
         ].join(' ')}

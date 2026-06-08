@@ -210,7 +210,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           {/* ── left column ── */}
           <div>
             {/* order-number hero */}
-            <section className="mt-6 overflow-hidden rounded-card-lg border border-s-border bg-s-bg-surface shadow-card">
+            <section className="mt-6 overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-elevation-1">
               <p className="px-4 pt-[18px] text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
                 {t("orderNumber")}
               </p>
@@ -295,7 +295,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           {/* ── right column ── */}
           <div>
             {/* booking summary */}
-            <section className="mt-[14px] overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-card md:mt-6">
+            <section className="mt-[14px] overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-elevation-1 md:mt-6">
               <div className="flex items-center gap-3 p-4">
                 {props.salonCoverUrl ? (
                   <Image
@@ -389,7 +389,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
 
             {/* save-access-link (guest) OR saved-to-account (logged-in) */}
             {props.isGuest ? (
-              <section className="mt-[14px] rounded-card border border-s-border bg-s-bg-surface p-4 shadow-card">
+              <section className="mt-[14px] rounded-card border border-s-border bg-s-bg-surface p-4 shadow-elevation-1">
                 <div className="flex items-start gap-3">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px] bg-s-bg-sunken">
                     <KeyRound size={18} className="text-s-ink" aria-hidden />
@@ -429,7 +429,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 </p>
               </section>
             ) : (
-              <section className="mt-[14px] rounded-card border border-s-border bg-s-bg-surface p-4 shadow-card">
+              <section className="mt-[14px] rounded-card border border-s-border bg-s-bg-surface p-4 shadow-elevation-1">
                 <div className="flex items-start gap-3">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px] bg-s-bg-sunken">
                     <Check size={18} className="text-s-ink" aria-hidden />

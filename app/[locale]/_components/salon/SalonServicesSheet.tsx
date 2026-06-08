@@ -381,7 +381,7 @@ function CartCard({
 }) {
   return (
     // V3-D202 (A21): cart card shadow → shadow-elevation-3.
-    <div className="flex min-h-[calc(100vh-180px)] flex-col rounded-2xl border border-s-border bg-white p-6 shadow-elevation-3 md:p-7">
+    <div className="flex min-h-[calc(100vh-180px)] flex-col rounded-2xl border border-s-border bg-white p-5 shadow-elevation-3 md:p-6">
       {/* Salon header — vertical stack, larger image, full 5-star row */}
       <div className="flex items-start gap-4">
         <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-s-bg-sunken">

@@ -210,7 +210,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
         <Link href={href} className="group flex items-center gap-3.5 pr-10">
-          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[16px] bg-s-bg-sunken shadow-elevation-2 transition-[box-shadow] duration-200 ease-glide group-hover:shadow-elevation-3">
+          <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[box-shadow] duration-200 ease-glide group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           <div className="flex min-w-0 flex-1 flex-col justify-center">
@@ -276,7 +276,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} />
         </div>
         <Link href={cardHref} className="group block">
-          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[18px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[22px] bg-s-bg-sunken shadow-elevation-2 transition-[transform,box-shadow] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:shadow-elevation-3">
             {photoInner}
           </div>
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger

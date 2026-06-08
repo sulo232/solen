@@ -64,7 +64,7 @@ function SiblingCard({
   return (
     <Link
       href={`/${locale}/salon/${sibling.slug}`}
-      className="font-body group block overflow-hidden rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+      className="font-body group block overflow-hidden rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-elevation-2"
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-s-bg-sunken">
         {sibling.cover_photo_url ? (
