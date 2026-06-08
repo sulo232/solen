@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { RatingStars } from "../primitives";
 import { capitalize } from "./_shared";
 
 interface NearbyVenue {
@@ -153,10 +154,12 @@ export function SalonVenuesNearby({
               <div className="truncate text-[14px] font-medium text-s-ink md:text-[15px]">
                 {s.name}
               </div>
-              <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
-                <Star size={11} stroke="none" className="fill-s-star" />
-                <span>{s.average_rating?.toFixed(1) ?? "—"}</span>
-                {s.review_count !== undefined && <span>({s.review_count})</span>}
+              <div className="mt-1 text-[12px] text-s-ink-3">
+                {s.average_rating != null ? (
+                  <RatingStars value={s.average_rating} count={s.review_count} size="sm" />
+                ) : (
+                  "—"
+                )}
               </div>
               {s.categories?.[0] && (
                 /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */

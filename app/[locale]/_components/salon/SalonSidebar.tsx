@@ -5,11 +5,11 @@ import Link from "next/link";
 import {
   ChevronDown,
   MapPin,
-  Star,
 } from "lucide-react";
 import type { SalonDetail } from "./_shared";
 import { DAY_KEYS, DAY_LABEL, type DayKey, computeOpenStatus } from "./_shared";
 import { StatusInline } from "./StatusInline";
+import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -108,11 +108,16 @@ export function SalonSidebar({
         {salon.name}
       </h2>
 
-      {/* 2. Rating row — V3-D230: 14 → 24, "(N)" now button → reviews */}
+      {/* 2. Rating row — V3-D230: 14 → 24, "(N)" now button → reviews.
+             Star + value via <RatingStars> (compact, no count: the count stays a
+             separate clickable accent button → #section-reviews). */}
       <div className="mt-3 flex items-center gap-2">
-        <Star size={20} stroke="none" className="fill-s-star" />
         <strong className="font-body text-[20px] font-semibold leading-none text-s-ink md:text-[22px]">
-          {salon.average_rating?.toFixed(1) ?? "—"}
+          {salon.average_rating != null ? (
+            <RatingStars value={salon.average_rating} size="lg" />
+          ) : (
+            "—"
+          )}
         </strong>
         <button
           type="button"

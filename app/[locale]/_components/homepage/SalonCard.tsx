@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, Star } from "lucide-react";
+import { Flame } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HeartButton } from "./HeartButton";
-import { CardName, CardMeta } from "../primitives";
+import { CardName, CardMeta, RatingStars } from "../primitives";
 
 /**
  * SalonCard — V3 (LIVE_TRUTH §16, V2-D34 lock).
@@ -536,9 +536,8 @@ export function SalonCard({
           {/* V3-D346 (2026-05-28): rating recedes to grey-regular — gold star carries
               the signal; was 500/ink competing with the name. Matches the FeaturedStylists calm-down. */}
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
-          <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-            <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
-            {rating != null ? rating.toFixed(1) : "—"}
+          <CardMeta className="shrink-0 text-[13px] tabular-nums">
+            {rating != null ? <RatingStars value={rating} size="sm" /> : "—"}
           </CardMeta>
         </div>
 

@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Star } from "lucide-react";
 import type { SiblingSalon } from "./_shared";
 import { capitalize } from "./_shared";
+import { RatingStars } from "../primitives";
 
 /**
  * SalonOtherLocations — V2-D53.3 (2026-05-11).
@@ -79,12 +79,12 @@ function SiblingCard({
       </div>
       <div className="p-4">
         <div className="text-[14px] font-medium text-s-ink md:text-[15px]">{sibling.name}</div>
-        <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
-          <Star size={11} stroke="none" className="fill-s-star" />
-          <span>
-            {sibling.average_rating?.toFixed(1) ?? "—"}
-          </span>
-          <span>({sibling.review_count})</span>
+        <div className="mt-1 text-[12px] text-s-ink-3">
+          {sibling.average_rating != null ? (
+            <RatingStars value={sibling.average_rating} count={sibling.review_count} size="sm" />
+          ) : (
+            "—"
+          )}
         </div>
         <div className="mt-1.5 text-[12px] text-s-ink-3">{sibling.address}</div>
         {category && (

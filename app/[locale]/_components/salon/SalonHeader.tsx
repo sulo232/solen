@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { MapPin, Share, Star } from "lucide-react";
+import { MapPin, Share } from "lucide-react";
+import { RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 import { StatusInline } from "./StatusInline";
 import type { SalonDetail } from "./_shared";
@@ -79,12 +80,16 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
               (1) rating  (2) open status → taps to opening hours  (3) address
               as the link itself (blue) → directions. */}
           <div className="font-body mt-3 space-y-1.5 text-[14px] text-s-ink-2 md:text-[15px]">
-            {/* Rating */}
+            {/* Rating — star + value via <RatingStars> (compact, no count: the
+                count stays a separate clickable accent button → #section-reviews). */}
             <div className="flex items-center gap-1.5">
-              <Star size={15} stroke="none" className="fill-s-star" />
-              <strong className="font-semibold text-s-ink">
-                {salon.average_rating?.toFixed(1) ?? "—"}
-              </strong>
+              {salon.average_rating != null ? (
+                <strong className="font-semibold text-s-ink">
+                  <RatingStars value={salon.average_rating} size="md" />
+                </strong>
+              ) : (
+                <strong className="font-semibold text-s-ink">—</strong>
+              )}
               <button
                 type="button"
                 onClick={scrollToReviews}

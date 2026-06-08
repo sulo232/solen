@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Clock } from "lucide-react";
-import { CardName, CardMeta } from "../primitives";
+import { Clock } from "lucide-react";
+import { CardName, CardMeta, RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
 /**
@@ -152,8 +152,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
     .join(" · ");
   // V3-D374: review count INLINE with the rating ("4.8 (98)") — keeps the social
   // proof but drops the separate reviews line (the card had 5 rows; now 3).
-  const ratingText =
-    rating != null ? rating.toFixed(1) + (reviewCount && reviewCount > 0 ? ` (${reviewCount})` : "") : null;
+  // Rendered via the <RatingStars> primitive at each site below.
   // V3-D353: monogram fallback initial (matches the homepage SalonCard when no photo).
   const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
 
@@ -219,9 +218,8 @@ export function SalonResultCard(props: SalonResultCardProps) {
                 {name}
               </CardName>
               {rating != null && (
-                <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-                  <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
-                  {ratingText}
+                <CardMeta className="shrink-0 text-[13px] tabular-nums">
+                  <RatingStars value={rating} count={reviewCount ?? undefined} size="sm" />
                 </CardMeta>
               )}
             </div>
@@ -286,9 +284,8 @@ export function SalonResultCard(props: SalonResultCardProps) {
               {name}
             </CardName>
             {rating != null && (
-              <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-                <Star size={12} stroke="none" aria-hidden className="fill-s-star" />
-                {ratingText}
+              <CardMeta className="shrink-0 text-[13px] tabular-nums">
+                <RatingStars value={rating} count={reviewCount ?? undefined} size="sm" />
               </CardMeta>
             )}
           </div>
@@ -364,9 +361,8 @@ export function SalonResultCard(props: SalonResultCardProps) {
             {name}
           </CardName>
           {rating != null && (
-            <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
-              <Star size={11} stroke="none" aria-hidden className="fill-s-star" />
-              {ratingText}
+            <CardMeta className="shrink-0 text-[13px] tabular-nums">
+              <RatingStars value={rating} count={reviewCount ?? undefined} size="sm" />
             </CardMeta>
           )}
         </div>
