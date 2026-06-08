@@ -156,8 +156,9 @@ When the user says "I pasted in the screenshot folder", "see the screenshot fold
 
 ## ⚡ Terminal autonomy
 
-- ✅ npm/npx, git (status/add/commit/push/diff/log), tsc checks, file ops
-- ❌ Ask before: `git push --force`, `reset --hard`, DB data deletion, `.env.local` edits
+- ✅ npm/npx, git status/add/commit/diff/log, tsc checks, file ops — **commit OFTEN + autonomously, don't ask** (each verified chunk = its own commit)
+- ✅ Verify owner/auth-gated surfaces yourself — `GET /api/dev/login?to=<path>` (dev-only) mints a seed test-owner session; never hand-wave "auth-gated, can't check"
+- ❌ `git push` — NEVER auto-push, and don't even mention pushing (the owner pushes manually). Also ask first: `git push --force`, `reset --hard`, DB data deletion, `.env.local` edits
 
 ---
 
