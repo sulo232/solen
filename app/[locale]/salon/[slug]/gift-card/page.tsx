@@ -1,13 +1,61 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useParams } from "next/navigation";
-import { Gift, Send } from "lucide-react";
+import { Gift, Send, AlertCircle } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { formatCurrency } from "@/lib/format-currency";
+import { getPublicEnv } from "@/lib/env";
 
 const AMOUNT_PRESETS = [2500, 5000, 10000, 20000]; // in cents
+const STRIPE_KEY = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
+
+// Stripe payment form — mirrors PackagePaymentForm in the packages page.
+// V3-D (2026-06-09): gift-card purchase previously showed success + code WITHOUT
+// charging (free gift cards). Now the purchase API returns a clientSecret and we
+// confirm payment here; success (SuccessMark) only renders AFTER the charge.
+function GiftCardPaymentForm({ onSuccess, onError }: { onSuccess: () => void; onError: (msg: string) => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+    setSubmitting(true);
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: window.location.href },
+      redirect: "if_required",
+    });
+    if (error) {
+      console.error("[GiftCard] payment confirm failed:", error);
+      onError(error.message ?? "Zahlung fehlgeschlagen");
+      setSubmitting(false);
+    } else {
+      onSuccess();
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <PaymentElement />
+      {/* Primary CTA stays bg-s-ink per LOCKFILE §0 rule 2 */}
+      <button
+        type="submit"
+        disabled={submitting || !stripe}
+        className="w-full py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+      >
+        {submitting && <Spinner size="sm" invert />}
+        Jetzt bezahlen
+      </button>
+    </form>
+  );
+}
 
 export default function GiftCardPage() {
   const params = useParams()!;
@@ -21,6 +69,7 @@ export default function GiftCardPage() {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [message, setMessage] = useState("");
   const [paying, setPaying] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [giftCode, setGiftCode] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +84,7 @@ export default function GiftCardPage() {
 
   const amount = useCustom ? Math.round(Number(customAmount) * 100) : selectedAmount;
 
+  // Step 1 — create the gift card (inactive) + a PaymentIntent. Does NOT mark success.
   const handlePurchase = async () => {
     if (amount < 500 || !recipientName.trim() || !recipientEmail.trim()) return;
     setPaying(true);
@@ -51,14 +101,13 @@ export default function GiftCardPage() {
           message: message.trim() || null,
         }),
       });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? "Fehler");
-      }
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Fehler");
+      if (!data.clientSecret) throw new Error(data.error ?? "Zahlung konnte nicht gestartet werden");
       setGiftCode(data.code);
-      setDone(true);
+      setClientSecret(data.clientSecret); // → render the payment step (no success yet)
     } catch (e) {
+      console.error("[GiftCard] purchase failed:", e);
       setError(e instanceof Error ? e.message : "Fehler");
     } finally {
       setPaying(false);
@@ -68,6 +117,7 @@ export default function GiftCardPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-white"><Spinner size="md" /></div>;
   if (!salon) return <div className="min-h-screen flex items-center justify-center bg-white"><p className="text-s-ink/30">Salon nicht gefunden</p></div>;
 
+  // Step 3 — success (only after the charge confirms). Keeps the SuccessMark celebration.
   if (done) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-s-bg-surface px-4">
@@ -91,6 +141,35 @@ export default function GiftCardPage() {
           >
             <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 mb-1">Code</p>
             <p className="font-mono-code text-[20px] font-bold text-s-ink">{giftCode}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 2 — payment. Real Stripe Elements; success is gated on the charge.
+  if (clientSecret) {
+    return (
+      <div className="min-h-screen bg-white py-8 px-4">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-6">
+            <Gift size={32} className="text-s-ink-3 mx-auto mb-2" />
+            <h1 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">Bezahlung</h1>
+            <p className="text-sm text-s-ink-2">{formatCurrency(amount / 100)} für {recipientName}</p>
+          </div>
+          <div className="bg-white rounded-[16px] shadow-warm-md p-5">
+            {error && (
+              <p className="text-xs text-s-error mb-3 flex items-center gap-1">
+                <AlertCircle size={13} /> {error}
+              </p>
+            )}
+            {stripePromise ? (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <GiftCardPaymentForm onSuccess={() => setDone(true)} onError={setError} />
+              </Elements>
+            ) : (
+              <p className="text-xs text-s-error">Zahlung ist momentan nicht verfügbar.</p>
+            )}
           </div>
         </div>
       </div>
@@ -166,7 +245,7 @@ export default function GiftCardPage() {
           <button onClick={handlePurchase} disabled={paying || amount < 500 || !recipientName.trim() || !recipientEmail.trim()}
             className="w-full py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Send size={14} />}
-            Geschenkkarte kaufen {formatCurrency(amount / 100)}
+            Weiter zur Zahlung {formatCurrency(amount / 100)}
           </button>
         </div>
       </div>
