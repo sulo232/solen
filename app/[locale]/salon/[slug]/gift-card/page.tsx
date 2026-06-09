@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Gift, Send, Check } from "lucide-react";
+import { Gift, Send } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { formatCurrency } from "@/lib/format-currency";
 
 const AMOUNT_PRESETS = [2500, 5000, 10000, 20000]; // in cents
@@ -69,18 +70,27 @@ export default function GiftCardPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-surface px-4">
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-s-success-bg flex items-center justify-center mx-auto mb-4 animate-bounce">
-            <Check size={32} className="text-s-success" />
-          </div>
-          <h1 className="font-heading text-xl text-s-ink mb-2">Geschenkkarte gesendet!</h1>
-          <p className="text-sm text-s-ink-2 mb-4">
+          <SuccessMark size={58} className="mx-auto mb-4" />
+          <h1
+            className="celebrate-rise font-display text-[24px] font-semibold tracking-[-0.02em] text-s-ink mb-2"
+            style={{ animationDelay: "0.46s" }}
+          >
+            Geschenkkarte gesendet!
+          </h1>
+          <p
+            className="celebrate-rise text-[14px] text-s-ink-2 mb-4"
+            style={{ animationDelay: "0.56s" }}
+          >
             {formatCurrency(amount / 100)} für {recipientName}
           </p>
-          <div className="bg-white rounded-[16px] p-4 border border-s-border">
-            <p className="text-xs text-s-ink-2 mb-1">Code</p>
-            <p className="font-mono text-lg font-bold text-s-ink">{giftCode}</p>
+          <div
+            className="celebrate-rise rounded-card p-4 border border-s-border bg-s-bg-surface shadow-float"
+            style={{ animationDelay: "0.68s" }}
+          >
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 mb-1">Code</p>
+            <p className="font-mono-code text-[20px] font-bold text-s-ink">{giftCode}</p>
           </div>
         </div>
       </div>

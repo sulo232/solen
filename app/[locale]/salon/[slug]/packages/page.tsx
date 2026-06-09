@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Package, Gift, ArrowLeft, X, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -142,15 +143,19 @@ function PurchaseModal({
         </div>
 
         {success ? (
-          <div className="text-center py-4 space-y-2">
-            {/* V3-D253 (W3): raw green-50/500 → s-success tokens (LOCKFILE §1 universal-color) */}
-            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center bg-s-success-bg">
-              <Package size={22} className="text-s-success" />
-            </div>
-            <p className="font-heading text-s-ink">
+          <div className="text-center py-4">
+            {/* V3-D464: celebration peak → SuccessMark (consistent with booking / walk-in / gift-card). */}
+            <SuccessMark size={48} className="mx-auto mb-3" />
+            <p
+              className="celebrate-rise font-display text-[18px] font-semibold text-s-ink"
+              style={{ animationDelay: "0.42s" }}
+            >
               {locale === "en" ? "Purchase successful!" : "Kauf erfolgreich!"}
             </p>
-            <p className="text-xs text-s-ink-2">
+            <p
+              className="celebrate-rise mt-1 text-[13px] text-s-ink-2"
+              style={{ animationDelay: "0.52s" }}
+            >
               {locale === "en"
                 ? "Your package is now available in your profile."
                 : "Dein Paket ist jetzt in deinem Profil verfügbar."}
