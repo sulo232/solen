@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function BookingActionPage() {
   const searchParams = useSearchParams() ?? new URLSearchParams();
-  const locale = useLocale();
+  const t = useTranslations("bookingAction");
   const bookingId = searchParams.get("id");
   const token = searchParams.get("token");
 
@@ -19,7 +19,7 @@ export default function BookingActionPage() {
 
   useEffect(() => {
     if (!bookingId || !token) {
-      setError("Missing parameters");
+      setError(t("errMissingParams"));
       setLoading(false);
       return;
     }
@@ -28,32 +28,14 @@ export default function BookingActionPage() {
       .then(async (r) => {
         const data = await r.json();
         if (!r.ok) {
-          setError(data.error ?? "Action failed");
+          setError(data.error ?? t("errActionFailed"));
           return;
         }
         setResult(data.result as "confirmed" | "cancelled");
       })
-      .catch(() => setError("Request failed"))
+      .catch(() => setError(t("errRequestFailed")))
       .finally(() => setLoading(false));
-  }, [bookingId, token]);
-
-  const labels = {
-    de: {
-      confirmed: "Termin bestätigt",
-      confirmedDesc: "Dein Termin wurde erfolgreich bestätigt.",
-      cancelled: "Termin abgesagt",
-      cancelledDesc: "Dein Termin wurde abgesagt.",
-      error: "Aktion fehlgeschlagen",
-    },
-    en: {
-      confirmed: "Booking Confirmed",
-      confirmedDesc: "Your booking has been confirmed successfully.",
-      cancelled: "Booking Cancelled",
-      cancelledDesc: "Your booking has been cancelled.",
-      error: "Action Failed",
-    },
-  };
-  const l = labels[locale as "de" | "en"] ?? labels.de;
+  }, [bookingId, token, t]);
 
   return (
     <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
@@ -69,7 +51,7 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-warning-bg">
               <AlertTriangle size={24} className="text-s-warning" />
             </div>
-            <h2 className="font-heading text-lg text-s-ink mb-2">{l.error}</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{t("error")}</h2>
             <p className="text-sm text-s-ink-2">{error}</p>
           </>
         ) : result === "confirmed" ? (
@@ -77,16 +59,16 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
               <Check size={24} className="text-s-accent" />
             </div>
-            <h2 className="font-heading text-lg text-s-ink mb-2">{l.confirmed}</h2>
-            <p className="text-sm text-s-ink-2">{l.confirmedDesc}</p>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{t("confirmed")}</h2>
+            <p className="text-sm text-s-ink-2">{t("confirmedDesc")}</p>
           </>
         ) : (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/5">
               <X size={24} className="text-s-ink/40" />
             </div>
-            <h2 className="font-heading text-lg text-s-ink mb-2">{l.cancelled}</h2>
-            <p className="text-sm text-s-ink-2">{l.cancelledDesc}</p>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{t("cancelled")}</h2>
+            <p className="text-sm text-s-ink-2">{t("cancelledDesc")}</p>
           </>
         )}
       </motion.div>

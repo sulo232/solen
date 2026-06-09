@@ -14,13 +14,14 @@ import { slideSwitch } from "@/lib/animations";
 // Step 0 — Customer vs Salon choice (NEW)
 // ─────────────────────────────────────────
 function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () => void }) {
+  const t = useTranslations("authRegister");
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-1">
         <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-s-ink">
-          Wie möchtest du starten?
+          {t("roleHeading")}
         </h2>
-        <p className="text-[14px] text-s-ink-2 mt-1">Wähle, wie du Solen nutzt.</p>
+        <p className="text-[14px] text-s-ink-2 mt-1">{t("roleSubtitle")}</p>
       </div>
 
       {/* Customer choice */}
@@ -30,8 +31,8 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
           <User size={20} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-medium text-s-ink">Ich bin ein Kunde</p>
-          <p className="text-[12px] text-s-ink-2 mt-0.5">Salons entdecken und Termine buchen</p>
+          <p className="text-[15px] font-medium text-s-ink">{t("roleCustomerTitle")}</p>
+          <p className="text-[12px] text-s-ink-2 mt-0.5">{t("roleCustomerDesc")}</p>
         </div>
         <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
@@ -43,8 +44,8 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
           <Building2 size={20} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-medium text-s-ink">Ich bin Salon-Inhaber</p>
-          <p className="text-[12px] text-s-ink-2 mt-0.5">Meinen Salon registrieren und verwalten</p>
+          <p className="text-[15px] font-medium text-s-ink">{t("roleSalonTitle")}</p>
+          <p className="text-[12px] text-s-ink-2 mt-0.5">{t("roleSalonDesc")}</p>
         </div>
         <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
@@ -57,6 +58,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 // ─────────────────────────────────────────
 function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boolean }) {
   const tc = useTranslations("common");
+  const t = useTranslations("authRegister");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -76,7 +78,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     setSaving(true);
     
     if (!isSalon && calcAge(birthday) < 16) {
-      toast.error("Du musst mindestens 16 Jahre alt sein.");
+      toast.error(t("errorMinAge"));
       setSaving(false);
       return;
     }
@@ -94,7 +96,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       const data = await res.json();
 
       if (res.status === 409) {
-        toast.error("Du hast bereits ein Konto. Bitte logge dich ein.");
+        toast.error(t("errorAccountExists"));
         setSaving(false);
         return;
       }
@@ -117,14 +119,14 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           <Mail size={24} className="text-s-ink" />
         </div>
         <div>
-          <p className="text-[18px] font-semibold text-s-ink">Fast fertig!</p>
+          <p className="text-[18px] font-semibold text-s-ink">{t("successTitle")}</p>
           <p className="text-[13px] text-s-ink-2 mt-1.5 leading-relaxed">
-            Überprüfe deine E-Mails und klicke auf den Bestätigungslink.
+            {t("successBody")}
           </p>
         </div>
         <button onClick={onNext}
           className="text-[13px] text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors mt-2">
-          Weiter
+          {t("continue")}
         </button>
       </div>
     );
@@ -132,11 +134,11 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-s-ink">Konto erstellen</h2>
+      <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-s-ink">{t("createAccount")}</h2>
 
       <input
         type="email"
-        placeholder="E-Mail"
+        placeholder={t("emailPlaceholder")}
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -144,7 +146,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       />
       <input
         type="password"
-        placeholder="Passwort (min. 8 Zeichen, 1 Zahl, 1 Grossbuchstabe)"
+        placeholder={t("passwordPlaceholder")}
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -154,12 +156,12 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       {isSalon ? (
         <div>
           <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
-            Name des Salons
+            {t("salonNameLabel")}
           </label>
           <input
             type="text"
             required
-            placeholder="z.B. Studio 54"
+            placeholder={t("salonNamePlaceholder")}
             value={salonName}
             onChange={(e) => setSalonName(e.target.value)}
             className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
@@ -168,7 +170,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       ) : (
         <div>
           <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
-            Geburtsdatum <span className="text-s-ink/25">(mind. 16 Jahre)</span>
+            {t("birthdayLabel")} <span className="text-s-ink/25">{t("birthdayHint")}</span>
           </label>
           <input
             type="date"
@@ -185,13 +187,13 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
         className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium active:scale-[0.97] transition-transform duration-150 disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
         {saving && <Spinner size="sm" invert />}
-        Registrieren
+        {t("submit")}
       </button>
 
       <p className="text-center text-[13px] text-s-ink-2 mt-2">
-        Du hast bereits ein Konto?{" "}
+        {t("haveAccount")}{" "}
         <a href="/auth/login" className="text-s-ink font-medium underline underline-offset-2">
-          Anmelden
+          {t("signIn")}
         </a>
       </p>
     </form>
@@ -207,6 +209,7 @@ type WizardStep = -1 | 0;
 export default function RegisterPage() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("authRegister");
   const [step, setStep] = useState<WizardStep>(-1);
   const [prevStep, setPrevStep] = useState<WizardStep>(-1);
   const [salonIntent, setSalonIntent] = useState(false);
@@ -266,10 +269,10 @@ export default function RegisterPage() {
 
         {step === -1 && (
           <p className="text-center mt-8 text-[13px] text-s-ink-2">
-            Bereits registriert?{" "}
+            {t("alreadyRegistered")}{" "}
             <Link href={`/${locale}/auth/login`}
               className="text-s-ink font-medium underline underline-offset-2">
-              Anmelden
+              {t("signIn")}
             </Link>
           </p>
         )}

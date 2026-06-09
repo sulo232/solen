@@ -43,6 +43,8 @@ interface PayConfirmStepProps {
 
 export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmStepProps) {
   const t = useTranslations('booking') as any;
+  // P1: NEW pay/confirm copy lives in its own `payConfirm` namespace (existing booking.* keys untouched).
+  const tp = useTranslations('payConfirm') as any;
   // SP-1: the guest-form copy lives in the top-level `guestBookingForm` namespace (shared with
   // GuestBookingForm.tsx); read it directly rather than via a cross-namespace path.
   const tg = useTranslations('guestBookingForm') as any;
@@ -124,7 +126,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       return;
     }
     if (!formData.selectedDate || !formData.selectedTime || formData.services.length === 0) {
-      setError('Bitte fülle alle erforderlichen Felder aus');
+      setError(tp('fillRequiredFields'));
       return;
     }
     // SP-1: a logged-out guest must supply contact info before booking. Force-validate the form on
@@ -255,18 +257,18 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           ))}
           {staff && (
             <div className="flex items-baseline justify-between gap-2">
-              <span className="font-body text-s-ink-2">Mit</span>
+              <span className="font-body text-s-ink-2">{tp('withLabel')}</span>
               <span className="font-body font-semibold text-s-ink">{staff.name}</span>
             </div>
           )}
           <div className="flex items-baseline justify-between gap-2">
-            <span className="font-body text-s-ink-2">Wann</span>
+            <span className="font-body text-s-ink-2">{tp('whenLabel')}</span>
             <span className="font-body font-semibold text-s-ink tabular-nums">
               {dateLabel} {timeLabel}
             </span>
           </div>
           <div className="flex items-baseline justify-between gap-2 pt-2 mt-2 border-t border-s-border">
-            <span className="font-body font-bold text-[12px] uppercase tracking-[.18em] text-s-ink/45">Total</span>
+            <span className="font-body font-bold text-[12px] uppercase tracking-[.18em] text-s-ink/45">{tp('totalLabel')}</span>
             <span className="font-heading text-[20px] text-s-ink tabular-nums" style={{ letterSpacing: '0.01em' }}>
               {formatPrice(totalPrice, localeCode)}
             </span>
@@ -278,7 +280,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       <div className="flex items-start gap-2 rounded-[10px] px-3 py-2.5 bg-s-warning-bg">
         <ShieldCheck size={14} className="text-s-star shrink-0 mt-[1px]" aria-hidden />
         <p className="font-body text-[12px] text-s-ink-2 leading-[1.5]">
-          Kostenlos bis {cancellationHours}h vorher stornieren.
+          {tp('cancellationPolicy', { hours: cancellationHours })}
         </p>
       </div>
 
@@ -309,15 +311,15 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       {/* (d) Payment — driven by the salon's payment_mode (Phase D), not a free customer choice */}
       <div>
         <p className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-accent mb-2">
-          Zahlung
+          {tp('paymentEyebrow')}
         </p>
         {paymentMode === 'at_salon' ? (
           <div className="flex items-start gap-3 px-4 py-3.5 rounded-[12px] border border-s-border">
             <Wallet size={20} className="text-s-ink shrink-0 mt-0.5" aria-hidden />
             <div>
-              <p className="font-body text-[14px] font-semibold text-s-ink">Zahlung im Salon</p>
+              <p className="font-body text-[14px] font-semibold text-s-ink">{tp('payAtSalonTitle')}</p>
               <p className="font-body text-[12px] text-s-ink-2 mt-0.5">
-                Du bezahlst {formatPrice(totalPrice, localeCode)} direkt vor Ort. Keine Online-Zahlung nötig.
+                {tp('payAtSalonDesc', { amount: formatPrice(totalPrice, localeCode) })}
               </p>
             </div>
           </div>
@@ -326,29 +328,29 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             <div className="rounded-[12px] border border-s-border overflow-hidden">
               <div className="flex items-center justify-between bg-s-accent-bright/10 px-4 py-3.5">
                 <span className="font-heading font-semibold text-[13.5px] text-s-accent-bright leading-tight">
-                  Anzahlung jetzt
-                  <span className="block font-body font-medium text-[12px] text-s-accent-bright/70 mt-0.5">{depositPct}% online</span>
+                  {tp('depositNow')}
+                  <span className="block font-body font-medium text-[12px] text-s-accent-bright/70 mt-0.5">{tp('percentOnline', { percent: depositPct })}</span>
                 </span>
                 <span className="font-heading font-bold text-[22px] text-s-accent-bright tabular-nums">{formatPrice(depositAmount, localeCode)}</span>
               </div>
               <div className="flex items-center justify-between px-4 py-3 text-[13px] border-t border-s-border">
-                <span className="text-s-ink-2">Rest im Salon</span>
+                <span className="text-s-ink-2">{tp('restAtSalon')}</span>
                 <span className="font-heading font-semibold tabular-nums">{formatPrice(remainingAtSalon, localeCode)}</span>
               </div>
               <div className="flex items-center justify-between px-4 py-3 text-[13px] border-t border-s-border">
-                <span className="text-s-ink font-medium">Gesamt</span>
+                <span className="text-s-ink font-medium">{tp('grandTotal')}</span>
                 <span className="font-heading font-semibold tabular-nums">{formatPrice(totalPrice, localeCode)}</span>
               </div>
             </div>
             <p className="flex items-center gap-1.5 text-[12px] text-s-success mt-2">
-              <ShieldCheck size={14} aria-hidden /> Sichere deinen Termin mit {depositPct}% Anzahlung.
+              <ShieldCheck size={14} aria-hidden /> {tp('secureWithDeposit', { percent: depositPct })}
             </p>
           </>
         ) : (
           <div className="rounded-[12px] border border-s-border px-4 py-4 text-center">
-            <p className="font-body text-[12px] text-s-ink-2">Jetzt online bezahlen</p>
+            <p className="font-body text-[12px] text-s-ink-2">{tp('payOnlineNow')}</p>
             <p className="font-heading font-bold text-[28px] text-s-accent-bright tabular-nums mt-1">{formatPrice(totalPrice, localeCode)}</p>
-            <p className="font-body text-[12px] text-s-ink/40 mt-0.5">Vollständige Vorauszahlung</p>
+            <p className="font-body text-[12px] text-s-ink/40 mt-0.5">{tp('fullPrepayment')}</p>
           </div>
         )}
       </div>
@@ -373,9 +375,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           >
             {isSubmitting && <Spinner size="sm" invert />}
             {paymentMode === 'at_salon'
-              ? `Buchung bestätigen`
+              ? tp('confirmBooking')
               : paymentMode === 'deposit'
-                ? `Anzahlung bezahlen ${formatPrice(depositAmount, localeCode)}`
+                ? `${tp('payDeposit')} ${formatPrice(depositAmount, localeCode)}`
                 : `${t('payment.continueToPayment')} ${formatPrice(totalPrice, localeCode)}`}
           </button>
         </div>

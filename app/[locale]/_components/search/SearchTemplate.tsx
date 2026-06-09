@@ -183,40 +183,25 @@ function nextSlotLabel(services: Salon["services"], locale: string): string | nu
   return `${SLOT_WEEKDAYS[earliest.getDay()]}. ${hhmm}`;
 }
 
-const SORT_OPTIONS = [
-  { value: "rating", label: "Beliebteste" },
-  { value: "price", label: "Preis (tief)" },
-  { value: "newest", label: "Neueste" },
-  { value: "distance", label: "Entfernung" },
-] as const;
-type SortValue = (typeof SORT_OPTIONS)[number]["value"];
-
-// V3-D384: price-group heading, locale-mapped so no new i18n key is needed.
-const PRICE_HEADING: Record<string, string> = { de: "Preis", en: "Price", fr: "Prix", it: "Prezzo" };
+// V3-D451: sort option VALUES (stable URL params). Labels are resolved per-locale
+// inside the component via the `searchUi` namespace (sortRating / sortPrice / …).
+const SORT_VALUES = ["rating", "price", "newest", "distance"] as const;
+type SortValue = (typeof SORT_VALUES)[number];
 
 // V3-D387: amenity facets (Fresha "Ausstattung") — each maps to a salons boolean
-// column. German labels for now (de-primary); i18n keys are a follow-up.
-const AMENITY_OPTIONS: { col: string; label: string; icon: LucideIcon }[] = [
-  { col: "wheelchair_accessible", label: "Rollstuhlgerecht", icon: Accessibility },
-  { col: "near_public_transport", label: "ÖV in der Nähe", icon: Bus },
-  { col: "kid_friendly", label: "Kinderfreundlich", icon: Baby },
-  { col: "pet_friendly", label: "Haustiere willkommen", icon: Dog },
-  { col: "wifi_friendly", label: "WLAN", icon: Wifi },
-  { col: "lgbtq_friendly", label: "LGBTQ+ freundlich", icon: Heart },
-  { col: "woman_owned", label: "Von Frau geführt", icon: Star },
-  { col: "family_owned", label: "Familienbetrieb", icon: Home },
-  { col: "student_discount", label: "Studentenrabatt", icon: GraduationCap },
+// column. Labels resolved per-locale via the `searchUi` namespace (keyed by `col`).
+const AMENITY_OPTIONS: { col: string; icon: LucideIcon }[] = [
+  { col: "wheelchair_accessible", icon: Accessibility },
+  { col: "near_public_transport", icon: Bus },
+  { col: "kid_friendly", icon: Baby },
+  { col: "pet_friendly", icon: Dog },
+  { col: "wifi_friendly", icon: Wifi },
+  { col: "lgbtq_friendly", icon: Heart },
+  { col: "woman_owned", icon: Star },
+  { col: "family_owned", icon: Home },
+  { col: "student_discount", icon: GraduationCap },
 ];
 const AMENITY_COLS = AMENITY_OPTIONS.map((a) => a.col);
-// V3-D390: title of the FOCUSED filter sheet (the category whose pill opened it).
-const SECTION_TITLE: Record<string, string> = {
-  sort: "Sortieren",
-  price: "Preis",
-  gender: "Für wen",
-  rating: "Bewertung",
-  amenities: "Ausstattung",
-  deals: "Angebote",
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SalonCardSkeleton — matches V3 SalonCard footprint per LoadingStates.md
@@ -349,14 +334,21 @@ const LIST_FAB_LABEL: Record<string, string> = {
   it: "Elenco",
 };
 
-function periodLabel(p: string): string {
-  const map: Record<string, string> = {
-    morning: "Morgens",
-    noon: "Mittags",
-    afternoon: "Nachmittags",
-    evening: "Abends",
+// V3-D451: a minimal translator shape so these module-level helpers can take the
+// next-intl `t` from the `searchUi` namespace without depending on its generated key union.
+type Translator = (key: string, values?: Record<string, string | number>) => string;
+
+// V3-D451: period-of-day label resolved via the passed-in `searchUi` translator.
+// Keys: periodMorning / periodNoon / periodAfternoon / periodEvening.
+function periodLabel(p: string, t: Translator): string {
+  const keyByPeriod: Record<string, string> = {
+    morning: "periodMorning",
+    noon: "periodNoon",
+    afternoon: "periodAfternoon",
+    evening: "periodEvening",
   };
-  return map[p] ?? p;
+  const key = keyByPeriod[p];
+  return key ? t(key) : p;
 }
 
 function formatDateLabel(iso: string): string {
@@ -371,8 +363,9 @@ function formatDateLabel(iso: string): string {
   }
 }
 
-function pluralSalons(n: number): string {
-  return n === 1 ? "Salon" : "Salons";
+// V3-D451: singular/plural "Salon(s)" via the passed-in `searchUi` translator.
+function pluralSalons(n: number, t: Translator): string {
+  return n === 1 ? t("salonOne") : t("salonOther");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -395,6 +388,13 @@ export default function SearchTemplate({
   // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
   const tChrome = useTranslations("ui.searchChrome");
   const tFilter = useTranslations("ui.filterSheet");
+  // V3-D451: previously-hardcoded German chrome strings (sort labels, filter pills,
+  // amenity facets, section titles, counts, empty/error states, map-sheet copy) now
+  // resolve via next-intl. Keys live under the `searchUi` namespace.
+  const t = useTranslations("searchUi");
+  // V3-D451: loosely-typed view of the same translator, for the module-level helpers
+  // (periodLabel / pluralSalons) whose param can't depend on the generated key union.
+  const tx = t as unknown as Translator;
 
   // ── Read URL params (V3 SearchBar + legacy compat) ──────────────────────
   const q = (searchParams.get("q") ?? "").trim();
@@ -412,7 +412,7 @@ export default function SearchTemplate({
   const date = searchParams.get("date");
   const period = searchParams.get("period");
   const sortParam = searchParams.get("sort") ?? "rating";
-  const sort: SortValue = (SORT_OPTIONS.some((s) => s.value === sortParam)
+  const sort: SortValue = ((SORT_VALUES as readonly string[]).includes(sortParam)
     ? sortParam
     : "rating") as SortValue;
   const openNow = searchParams.get("open_now") === "true";
@@ -431,20 +431,27 @@ export default function SearchTemplate({
   // V3-D390: per-category filter pills — each opens a FOCUSED sheet for just that
   // one filter (Fresha model: Amenities / Service type / Price each = own sheet).
   // The label reflects the current selection when that filter is set.
+  // V3-D451: sort options with per-locale labels (searchUi namespace). `value` stays
+  // the stable URL param; only the label localizes. Drives the FilterSheet, the sort
+  // dropdown, and the sort pill/button labels below.
+  const SORT_OPTIONS = SORT_VALUES.map((value) => ({ value, label: t(`sort_${value}`) }));
+  // V3-D451: amenity facets with per-locale labels (keyed by `col`). `col` is a plain
+  // string, so the dynamic key goes through the loosely-typed translator (`tx`).
+  const amenityOptions = AMENITY_OPTIONS.map((a) => ({ ...a, label: tx(`amenity_${a.col}`) }));
   const sortLbl = SORT_OPTIONS.find((o) => o.value === sort)?.label ?? SORT_OPTIONS[0].label;
-  const pricePillLabel = maxPrice != null ? `Bis CHF ${maxPrice}` : "Preis";
+  const pricePillLabel = maxPrice != null ? t("priceUpTo", { amount: maxPrice }) : t("sectionPrice");
   const filterPills = [
     // Walk-in MODE entry (barbershop only — matches the für-dich walk-in tile's
     // category gate). A toggle (TOGGLE_PILLS): flips ?walk_in=true, which turns the
     // result cards into their live-queue form. First in the row so it reads as a mode.
-    ...(activeCategory === "barbershop" ? [{ key: "walk_in", label: "Walk-in", active: walkIn }] : []), // drift-ok: walk-in is genuinely barbershop-only (queue feature), not a styling branch
-    { key: "sort", label: sort && sort !== "rating" ? sortLbl : "Sortieren", active: !!sort && sort !== "rating" },
-    { key: "open_now", label: "Jetzt geöffnet", active: openNow },
+    ...(activeCategory === "barbershop" ? [{ key: "walk_in", label: t("pillWalkIn"), active: walkIn }] : []), // drift-ok: walk-in is genuinely barbershop-only (queue feature), not a styling branch
+    { key: "sort", label: sort && sort !== "rating" ? sortLbl : t("sectionSort"), active: !!sort && sort !== "rating" },
+    { key: "open_now", label: t("pillOpenNow"), active: openNow },
     { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
-    { key: "gender", label: gender === "female" ? "Damen" : gender === "male" ? "Herren" : gender === "non_binary" ? "Divers" : "Für wen", active: !!gender },
-    { key: "rating", label: minRating ? `${minRating}` : "Bewertung", active: minRating != null },
-    { key: "amenities", label: activeAmenities.length ? `Ausstattung ${activeAmenities.length}` : "Ausstattung", active: activeAmenities.length > 0 },
-    { key: "deals", label: "Angebote", active: deals },
+    { key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender },
+    { key: "rating", label: minRating ? `${minRating}` : t("sectionRating"), active: minRating != null },
+    { key: "amenities", label: activeAmenities.length ? t("pillAmenitiesCount", { count: activeAmenities.length }) : t("sectionAmenities"), active: activeAmenities.length > 0 },
+    { key: "deals", label: t("sectionDeals"), active: deals },
   ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
@@ -660,7 +667,7 @@ export default function SearchTemplate({
       .catch((err) => {
         if (err?.name !== "AbortError") {
           console.error("[SearchTemplate] fetch failed:", err);
-          setError("Salons konnten nicht geladen werden.");
+          setError(t("loadError"));
           setLoading(false);
         }
       });
@@ -770,17 +777,21 @@ export default function SearchTemplate({
 
   // ── Computed ──────────────────────────────────────────────────────────────
   const hasMore = salons.length < total;
-  const cityName = activeCity
-    ? getCityName(activeCity, locale)
-    : locale === "de"
-      ? "Schweizweit"
-      : locale === "fr"
-        ? "Suisse"
-        : locale === "it"
-          ? "Svizzera"
-          : "Switzerland";
+  const cityName = activeCity ? getCityName(activeCity, locale) : t("countrywide");
   const sortLabel =
-    SORT_OPTIONS.find((s) => s.value === sort)?.label ?? "Beliebteste";
+    SORT_OPTIONS.find((s) => s.value === sort)?.label ?? t("sort_rating");
+  // V3-D451: title of the FOCUSED filter sheet (the category whose pill opened it).
+  // Maps a section key (sort/price/gender/rating/amenities/deals) to its searchUi label.
+  const SECTION_TITLE_KEY: Record<string, string> = {
+    sort: "sectionSort",
+    price: "sectionPrice",
+    gender: "sectionGender",
+    rating: "sectionRating",
+    amenities: "sectionAmenities",
+    deals: "sectionDeals",
+  };
+  const sectionTitle = (key: string) =>
+    SECTION_TITLE_KEY[key] ? tx(SECTION_TITLE_KEY[key]) : tFilter("title");
 
   // Active-filter count (drives the EmptyState "clear filters" affordance).
   const activeFilterCount =
@@ -957,7 +968,7 @@ export default function SearchTemplate({
                 {period && (
                   <>
                     <span className="text-s-ink-3"> </span>
-                    {periodLabel(period)}
+                    {periodLabel(period, tx)}
                   </>
                 )}
               </span>
@@ -1018,7 +1029,7 @@ export default function SearchTemplate({
             type="button"
             onClick={() => (activeFilterCount > 0 ? router.push(pathname) : openSection(null))}
             aria-haspopup={activeFilterCount > 0 ? undefined : "dialog"}
-            aria-label={activeFilterCount > 0 ? "Alle Filter zurücksetzen" : tFilter("open")}
+            aria-label={activeFilterCount > 0 ? t("clearAll") : tFilter("open")}
             className={cn(
               "grid h-9 w-9 shrink-0 place-items-center rounded-full border",
               "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
@@ -1128,8 +1139,8 @@ export default function SearchTemplate({
           <span />
         ) : total > 0 ? (
           <p className="font-display text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
-            {total} {pluralSalons(total)}
-            {activeCity ? <> in {cityName}</> : null}
+            {total} {pluralSalons(total, tx)}
+            {activeCity ? <>{t("inCity", { city: cityName })}</> : null}
           </p>
         ) : (
           <span />
@@ -1141,7 +1152,7 @@ export default function SearchTemplate({
               onClick={() => setSortOpen((v) => !v)}
               aria-haspopup="menu"
               aria-expanded={sortOpen}
-              aria-label={`Sortierung: ${sortLabel}`}
+              aria-label={t("sortAria", { label: sortLabel })}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-pill border px-3 py-1.5",
                 "font-body text-[13px] font-medium leading-none",
@@ -1320,10 +1331,11 @@ export default function SearchTemplate({
                       />
                     ) : null}
                     {loadingMore
-                      ? "Lade…"
-                      : `${Math.max(0, total - salons.length)} weitere ${pluralSalons(
-                          Math.max(0, total - salons.length),
-                        )}`}
+                      ? t("loading")
+                      : t("loadMore", {
+                          count: Math.max(0, total - salons.length),
+                          salons: pluralSalons(Math.max(0, total - salons.length), tx),
+                        })}
                   </button>
                 </div>
               )}
@@ -1409,7 +1421,7 @@ export default function SearchTemplate({
               <button
                 type="button"
                 onClick={() => setMobileView("list")}
-                aria-label="Zurück zur Liste"
+                aria-label={t("backToList")}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-s-border bg-white text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)] transition-transform active:scale-95"
               >
                 <ChevronLeft size={20} strokeWidth={2} aria-hidden />
@@ -1442,7 +1454,7 @@ export default function SearchTemplate({
                 onPointerUp={onSheetPointerUp}
                 className="flex shrink-0 cursor-grab touch-none items-center justify-center pb-2 pt-5 active:cursor-grabbing"
                 role="button"
-                aria-label="Liste ziehen"
+                aria-label={t("dragList")}
               >
                 <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
               </div>
@@ -1474,7 +1486,10 @@ export default function SearchTemplate({
                 ))}
               </div>
               <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
-                <span className="font-semibold text-s-ink">{salons.length}</span> Salons in diesem Bereich
+                {t.rich("salonsInArea", {
+                  count: salons.length,
+                  b: (chunks) => <span className="font-semibold text-s-ink">{chunks}</span>,
+                })}
               </div>
               <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
                 {salons.map((s) => (
@@ -1559,7 +1574,7 @@ export default function SearchTemplate({
         onMinRatingChange={(value) => updateParam("min_rating", value)}
         gender={gender}
         onGenderChange={(value) => updateParam("gender", value)}
-        amenityOptions={AMENITY_OPTIONS}
+        amenityOptions={amenityOptions}
         amenities={activeAmenities}
         onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
         deals={deals}
@@ -1588,20 +1603,27 @@ export default function SearchTemplate({
           });
         }}
         labels={{
-          title: filterSection ? (SECTION_TITLE[filterSection] ?? tFilter("title")) : tFilter("title"),
+          // V3-D451: focused-sheet title resolves to the matching searchUi section
+          // label; the full "all filters" sheet keeps the existing ui.filterSheet title.
+          title: filterSection ? sectionTitle(filterSection) : tFilter("title"),
           reset: tFilter("reset"),
           close: tFilter("close"),
           sortHeading: tFilter("sortHeading"),
-          priceHeading: PRICE_HEADING[locale] ?? PRICE_HEADING.de,
+          priceHeading: t("sectionPrice"),
           ratingHeading: tFilter("ratingHeading"),
           rating45: tFilter("rating45"),
           rating40: tFilter("rating40"),
           ratingAny: tFilter("ratingAny"),
-          forWhoHeading: "Für wen",
-          genderAny: "Alle",
-          genderFemale: "Damen",
-          genderMale: "Herren",
-          amenitiesHeading: "Ausstattung",
+          forWhoHeading: t("sectionGender"),
+          genderAny: t("genderAny"),
+          genderFemale: t("genderFemale"),
+          genderMale: t("genderMale"),
+          genderNonBinary: t("genderNonBinary"),
+          dealsHeading: t("sectionDeals"),
+          priceAny: t("priceAny"),
+          priceUpTo: (amount: number) => t("priceUpTo", { amount }),
+          maxPriceAria: t("maxPriceAria"),
+          amenitiesHeading: t("sectionAmenities"),
           apply: (count: number) => tFilter("apply", { count }),
         }}
       />
@@ -1633,6 +1655,7 @@ function EmptyState({
   hasFilters: boolean;
   onClearFilters: () => void;
 }) {
+  const t = useTranslations("searchUi");
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center px-6 py-16 text-center">
       <div className="grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken">
@@ -1641,11 +1664,10 @@ function EmptyState({
       {/* V3-D240 (W2): match LOCKFILE Section H2 — 20/24 semibold. Empty-state
           heading is mid-page emphasis, not page-level. */}
       <h2 className="font-display mt-5 text-[clamp(18px,2vw,20px)] font-semibold leading-tight tracking-[-0.02em] text-s-ink">
-        Keine Salons gefunden.
+        {t("emptyTitle")}
       </h2>
       <p className="font-body mt-2 max-w-md text-[14px] leading-relaxed text-s-ink-2">
-        Versuche eine andere Stadt, einen anderen Service oder lass die Filter
-        weg.
+        {t("emptyBody")}
       </p>
       <div className="mt-5 flex flex-col items-center gap-2 sm:flex-row">
         {hasFilters && (
@@ -1659,7 +1681,7 @@ function EmptyState({
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
-            Filter zurücksetzen
+            {t("clearFilters")}
           </button>
         )}
         <Link
@@ -1671,7 +1693,7 @@ function EmptyState({
             "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           )}
         >
-          Zur Startseite
+          {t("toHome")}
         </Link>
       </div>
     </div>
@@ -1689,6 +1711,7 @@ function ErrorState({
   message: string;
   onRetry: () => void;
 }) {
+  const t = useTranslations("searchUi");
   return (
     <div className="flex min-h-[300px] flex-col items-center justify-center px-6 py-16 text-center">
       <div className="grid h-16 w-16 place-items-center rounded-full bg-s-error/10">
@@ -1696,7 +1719,7 @@ function ErrorState({
       </div>
       {/* V3-D240 (W2): match LOCKFILE Section H2 — 20px semibold. */}
       <h2 className="font-display mt-5 text-[20px] font-semibold leading-tight tracking-[-0.02em] text-s-ink">
-        Etwas ist schiefgelaufen.
+        {t("errorTitle")}
       </h2>
       <p className="font-body mt-2 max-w-md text-[14px] leading-relaxed text-s-ink-2">
         {message}
@@ -1711,7 +1734,7 @@ function ErrorState({
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
-        Nochmal versuchen
+        {t("retry")}
       </button>
     </div>
   );

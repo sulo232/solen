@@ -16,6 +16,7 @@ interface BookingsListProps {
 
 export default function BookingsList({ userId }: BookingsListProps) {
   const t = useTranslations('bookingsList');
+  const tUi = useTranslations('bookingsListUi');
   const [tab, setTab] = useState<BookingTab>('upcoming');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,10 +172,10 @@ export default function BookingsList({ userId }: BookingsListProps) {
           title={t('noBookings')}
           message={
             tab === 'upcoming'
-              ? 'Buche jetzt deine nächste Behandlung'
+              ? tUi('emptyUpcoming')
               : tab === 'past'
-                ? 'Du hast noch keine abgeschlossenen Buchungen'
-                : 'Du hast noch keine stornierten Buchungen'
+                ? tUi('emptyPast')
+                : tUi('emptyCancelled')
           }
         />
       )}

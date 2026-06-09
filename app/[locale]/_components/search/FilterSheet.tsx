@@ -57,9 +57,16 @@ import {
 function PriceSlider({
   maxPrice,
   onChange,
+  anyLabel,
+  upToLabel,
+  ariaLabel,
 }: {
   maxPrice: number | null;
   onChange: (min: number | null, max: number | null) => void;
+  // V3-D451: copy passed in (resolved per-locale by the parent's searchUi namespace).
+  anyLabel: string;
+  upToLabel: (amount: number) => string;
+  ariaLabel: string;
 }) {
   const MIN = 20;
   const MAX = 300;
@@ -93,7 +100,7 @@ function PriceSlider({
   return (
     <div className="pt-1">
       <div className="mb-4 font-body text-[15px] font-semibold text-s-ink">
-        {val >= MAX ? "Beliebiger Preis" : `Bis CHF ${val}`}
+        {val >= MAX ? anyLabel : upToLabel(val)}
       </div>
       {/* V3-D392: custom track so the FILL (left → thumb) shows colour (accent blue),
           not a flat grey bar. Drag the whole track; commits on release. */}
@@ -104,7 +111,7 @@ function PriceSlider({
         onPointerUp={up}
         className="relative flex h-6 cursor-pointer touch-none select-none items-center"
         role="slider"
-        aria-label="Maximalpreis"
+        aria-label={ariaLabel}
         aria-valuemin={MIN}
         aria-valuemax={MAX}
         aria-valuenow={val}
@@ -156,8 +163,15 @@ export interface FilterSheetLabels {
   genderAny: string;
   genderFemale: string;
   genderMale: string;
+  genderNonBinary: string;
   /** Ausstattung / Amenities heading. */
   amenitiesHeading: string;
+  /** Angebote / deals group heading. */
+  dealsHeading: string;
+  /** Price slider — "any price" + "up to CHF {amount}" + slider aria-label. */
+  priceAny: string;
+  priceUpTo: (amount: number) => string;
+  maxPriceAria: string;
   /** Footer apply button - receives the live count. */
   apply: (count: number) => string;
 }
@@ -318,7 +332,13 @@ function FilterSheetContent({
       {/* Preis — buckets writing min_price / max_price. Tapping the active one clears. */}
       {(!section || section === "price") && (
         <FilterGroup heading={section ? "" : labels.priceHeading}>
-          <PriceSlider maxPrice={maxPrice} onChange={onPriceChange} />
+          <PriceSlider
+            maxPrice={maxPrice}
+            onChange={onPriceChange}
+            anyLabel={labels.priceAny}
+            upToLabel={labels.priceUpTo}
+            ariaLabel={labels.maxPriceAria}
+          />
         </FilterGroup>
       )}
 
@@ -336,7 +356,7 @@ function FilterSheetContent({
               {labels.genderMale}
             </SheetChip>
             <SheetChip active={gender === "non_binary"} onClick={() => onGenderChange(gender === "non_binary" ? null : "non_binary")}>
-              Divers
+              {labels.genderNonBinary}
             </SheetChip>
           </div>
         </FilterGroup>
@@ -388,10 +408,10 @@ function FilterSheetContent({
 
       {/* V3-D391: Angebote / Last-Minute deals — the "more filters" the user asked for. */}
       {(!section || section === "deals") && (
-        <FilterGroup heading={section ? "" : "Angebote"}>
+        <FilterGroup heading={section ? "" : labels.dealsHeading}>
           <div className="flex flex-wrap gap-2">
             <SheetChip active={deals} onClick={onDealsToggle}>
-              Angebote
+              {labels.dealsHeading}
             </SheetChip>
           </div>
         </FilterGroup>
