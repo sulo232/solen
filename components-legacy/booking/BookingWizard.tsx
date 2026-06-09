@@ -90,10 +90,12 @@ interface BookingWizardProps {
 // ancestor becomes the containing block for `position: fixed`, which traps each
 // step's fixed action bar + floating pill inside the wizard (they scroll away at
 // the footer instead of staying pinned). Fading keeps the bars viewport-fixed.
+// V3-D464 (2026-06-09 motion sweep): step change is a slide+fade ("treat UI like a movie"), not a
+// bare opacity fade — a subtle 16px x-shift on the §4 `glide` curve so the booking flow moves like a film.
 const slideVariants = {
-  enter: { opacity: 0 },
-  center: { opacity: 1 },
-  exit: { opacity: 0 },
+  enter: { opacity: 0, x: 16 },
+  center: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -16 },
 };
 
 export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
@@ -193,7 +195,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.2, ease: [0.2, 0.8, 0.4, 1] }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
           {renderStep()}
         </motion.div>
