@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 // V3-D195 (2026-05-26): primitives Toast singleton + portal. The legacy
@@ -41,6 +41,10 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  // next-intl v3: establish the request locale so getMessages() + the client provider
+  // resolve the URL locale for client components (without this, requestLocale falls back
+  // to the de default and every en/fr/it client component renders German).
+  unstable_setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
