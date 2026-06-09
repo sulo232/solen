@@ -122,6 +122,16 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 
 ---
 
+## 🖼️ Mockup FIRST (visual changes) — ALWAYS
+
+Before applying, building, or committing ANY visual / design change: **show the user a mockup/preview FIRST, get approval, THEN touch real code.** Never apply-then-show. (User rule, 2026-06-09, after a long run of rejected attempts.)
+
+1. The mockup MUST be a **copy of the REAL page/component** with ONLY the proposed change applied — capture the real route (Playwright), modify the real DOM/component uncommitted, show before/after. NEVER a from-scratch HTML redraw (they diverge → "this doesn't look like the homepage").
+2. **Treatment-only:** change ONLY the proposed thing (shadow / bg / radius / spacing). Never touch structure, layout, copy, icons, or content in a design mockup. Structure stays; only the treatment changes.
+3. Approve → THEN edit the real component + commit. Memory: `feedback_mockup_first_always`.
+
+---
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the reported bug.
