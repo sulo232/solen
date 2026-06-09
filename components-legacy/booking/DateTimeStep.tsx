@@ -179,7 +179,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
           }}
           onChange={handlePickerChange}
           dateLayout="strip"
-          selectedTone="accent"
+          selectedTone="ink"
           slots={slots}
           isLoadingSlots={isLoadingSlots}
           minDate={today(getLocalTimeZone())}

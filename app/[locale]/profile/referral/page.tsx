@@ -79,7 +79,7 @@ export default function ReferralPage() {
         </div>
 
         {/* Referral code card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
+        <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
           <p className="text-xs font-medium text-s-ink-2 mb-2">Dein Empfehlungscode</p>
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-s-bg-surface border border-s-border rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink tracking-wider text-center">
@@ -114,7 +114,7 @@ export default function ReferralPage() {
         </div>
 
         {/* Stats */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
+        <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
           <h2 className="font-heading text-base text-s-ink mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
@@ -131,7 +131,7 @@ export default function ReferralPage() {
         </div>
 
         {/* How it works */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
+        <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
           <h2 className="font-heading text-base text-s-ink mb-3">So funktioniert&apos;s</h2>
           <div className="space-y-3">
             {[

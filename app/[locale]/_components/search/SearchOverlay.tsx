@@ -1006,7 +1006,7 @@ function TimePicker({
               className={cn(
                 "flex-1 rounded-[13px] border px-3.5 py-3 text-left transition-colors",
                 "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
-                picked ? "border-s-accent bg-s-accent text-white" : "border-s-border bg-white text-s-ink hover:border-s-ink",
+                picked ? "border-s-ink bg-s-ink text-white" : "border-s-border bg-white text-s-ink hover:border-s-ink",
               )}
             >
               <span className="block font-body text-[14px] font-semibold">{label}</span>

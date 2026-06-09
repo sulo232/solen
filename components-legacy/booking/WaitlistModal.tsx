@@ -151,7 +151,7 @@ export default function WaitlistModal({
                   onClick={() => setTimeRange(tr)}
                   className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                     timeRange === tr
-                      ? 'border-s-accent-bright bg-s-accent-bright/10 text-s-accent'
+                      ? 'border-s-ink bg-s-bg-sunken text-s-ink'
                       : 'border-s-border text-s-ink hover:border-s-ink/30'
                   }`}
                 >

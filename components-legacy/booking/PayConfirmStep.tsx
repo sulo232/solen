@@ -326,12 +326,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         ) : paymentMode === 'deposit' ? (
           <>
             <div className="rounded-[12px] border border-s-border overflow-hidden">
-              <div className="flex items-center justify-between bg-s-accent-bright/10 px-4 py-3.5">
-                <span className="font-heading font-semibold text-[13.5px] text-s-accent-bright leading-tight">
+              <div className="flex items-center justify-between bg-s-bg-sunken px-4 py-3.5">
+                <span className="font-heading font-semibold text-[13.5px] text-s-ink leading-tight">
                   {tp('depositNow')}
-                  <span className="block font-body font-medium text-[12px] text-s-accent-bright/70 mt-0.5">{tp('percentOnline', { percent: depositPct })}</span>
+                  <span className="block font-body font-medium text-[12px] text-s-ink/70 mt-0.5">{tp('percentOnline', { percent: depositPct })}</span>
                 </span>
-                <span className="font-heading font-bold text-[22px] text-s-accent-bright tabular-nums">{formatPrice(depositAmount, localeCode)}</span>
+                <span className="font-heading font-bold text-[22px] text-s-ink tabular-nums">{formatPrice(depositAmount, localeCode)}</span>
               </div>
               <div className="flex items-center justify-between px-4 py-3 text-[13px] border-t border-s-border">
                 <span className="text-s-ink-2">{tp('restAtSalon')}</span>
@@ -349,7 +349,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         ) : (
           <div className="rounded-[12px] border border-s-border px-4 py-4 text-center">
             <p className="font-body text-[12px] text-s-ink-2">{tp('payOnlineNow')}</p>
-            <p className="font-heading font-bold text-[28px] text-s-accent-bright tabular-nums mt-1">{formatPrice(totalPrice, localeCode)}</p>
+            <p className="font-heading font-bold text-[28px] text-s-ink tabular-nums mt-1">{formatPrice(totalPrice, localeCode)}</p>
             <p className="font-body text-[12px] text-s-ink/40 mt-0.5">{tp('fullPrepayment')}</p>
           </div>
         )}

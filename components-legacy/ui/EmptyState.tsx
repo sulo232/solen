@@ -69,9 +69,9 @@ export default function EmptyState({
       )}
       <div className="relative mb-5 flex items-center justify-center w-16 h-16">
         {/* Soft halo — NO scale, explicit negative inset */}
-        <div className="absolute -inset-5 rounded-full blur-xl" style={{ background: "rgba(27, 77, 27,.15)" }} />
-        <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px]" style={{ background: "rgba(27, 77, 27,.15)" }}>
-          <Icon size={32} className="text-s-accent" strokeWidth={1.5} />
+        <div className="absolute -inset-5 rounded-full blur-xl bg-s-bg-sunken" />
+        <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px] bg-s-bg-sunken">
+          <Icon size={32} className="text-s-ink-2" strokeWidth={1.5} />
         </div>
       </div>
       {eyebrow && (
@@ -79,7 +79,7 @@ export default function EmptyState({
           {eyebrow}
         </p>
       )}
-      <h3 className="font-heading text-s-ink text-lg mb-1.5 uppercase">{title}</h3>
+      <h3 className="font-heading text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (
         <p className="font-body text-s-ink-2 text-sm max-w-xs leading-relaxed">{message}</p>
       )}

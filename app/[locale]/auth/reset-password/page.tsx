@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(27, 77, 27,.08)", filter: "blur(120px)" }} />
+          style={{ background: "rgba(50,47,44,.04)", filter: "blur(120px)" }} />
       </div>
 
       <div className="w-full max-w-sm">
@@ -100,19 +100,15 @@ export default function ResetPasswordPage() {
           </p>
           <Link href={`/${locale}`}
             className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
-            solen<span className="text-s-accent">.</span>ch
+            solen<span className="text-s-ink">.</span>ch
           </Link>
         </div>
 
-        {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-white/70 p-8"
-          style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
-                   WebkitBackdropFilter: "blur(20px) saturate(1.2)",
-                   boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
+        {/* Auth card */}
+        <div className="rounded-card border border-s-border bg-white p-8 shadow-elevation-1">
           <div className="text-center mb-6">
-            <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3"
-              style={{ background: "rgba(27, 77, 27,.10)" }}>
-              <Lock size={24} className="text-s-accent" />
+            <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3 bg-s-bg-sunken">
+              <Lock size={24} className="text-s-ink" />
             </div>
             <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
@@ -168,9 +164,8 @@ export default function ResetPasswordPage() {
               />
 
               {confirm.length > 0 && !passwordsMatch && (
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-accent/20"
-                  style={{ background: "rgba(27, 77, 27,.06)" }}>
-                  <p className="text-xs font-body text-s-accent">Passwörter stimmen nicht überein</p>
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-error/20 bg-s-error-bg">
+                  <p className="text-xs font-body text-s-error">Passwörter stimmen nicht überein</p>
                 </div>
               )}
 

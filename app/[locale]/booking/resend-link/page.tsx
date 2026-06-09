@@ -566,7 +566,6 @@ function LimitedView(props: {
         <ul className="flex flex-col gap-2.5">
           {[t("hurryGotLink"), t("hurryReply")].map((line, i) => (
             <li key={i} className="flex gap-2.5 text-[12px] leading-[1.45] text-s-ink-2">
-              <span className="mt-[6px] h-[5px] w-[5px] flex-shrink-0 rounded-full bg-s-ink-2" />
               {line}
             </li>
           ))}

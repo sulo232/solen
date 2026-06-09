@@ -52,13 +52,13 @@ interface Look {
 // Each gradient blends two stops from the palette {cream, orange, yellow, navy}
 // — paired-color identity. No more cool-hue ladder.
 const DEMO: Look[] = [
-  { slug: "voluminous-layers", styleName: "Voluminous Layers",  bgGradient: "linear-gradient(135deg, #E9DFC8 0%, #E58840 100%)" }, // cream → orange
-  { slug: "cool-hair-life",    styleName: "Cool Hair for Life", bgGradient: "linear-gradient(160deg, #F0C25A 0%, #142F4A 100%)" }, // yellow → navy
-  { slug: "textured-shag",     styleName: "Textured Shag",      bgGradient: "linear-gradient(135deg, #E58840 0%, #BC6F34 100%)" }, // orange → orange-mid
-  { slug: "layered-butterfly", styleName: "Layered Butterfly",  bgGradient: "linear-gradient(150deg, #E9DFC8 0%, #142F4A 100%)" }, // cream → navy
-  { slug: "curtain-bangs",     styleName: "Curtain Bangs",      bgGradient: "linear-gradient(160deg, #F0C25A 0%, #E58840 100%)" }, // yellow → orange
-  { slug: "wolf-cut",          styleName: "Wolf Cut",           bgGradient: "linear-gradient(135deg, #142F4A 0%, #E58840 100%)" }, // navy → orange
-  { slug: "soft-balayage",     styleName: "Soft Balayage",      bgGradient: "linear-gradient(140deg, #E58840 0%, #F7DBC6 100%)" }, // orange → brand-pale
+  { slug: "voluminous-layers", styleName: "Voluminous Layers",  bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "cool-hair-life",    styleName: "Cool Hair for Life", bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "textured-shag",     styleName: "Textured Shag",      bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "layered-butterfly", styleName: "Layered Butterfly",  bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "curtain-bangs",     styleName: "Curtain Bangs",      bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "wolf-cut",          styleName: "Wolf Cut",           bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
+  { slug: "soft-balayage",     styleName: "Soft Balayage",      bgGradient: "linear-gradient(150deg, #1a1f2b 0%, #2b3445 100%)" },
 ];
 
 /** V3-D141 (2026-05-25): SOLID white pill for the bottom-left author/style

@@ -157,7 +157,7 @@ export default function GiftCardPage() {
             <h1 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">Bezahlung</h1>
             <p className="text-sm text-s-ink-2">{formatCurrency(amount / 100)} für {recipientName}</p>
           </div>
-          <div className="bg-white rounded-[16px] shadow-warm-md p-5">
+          <div className="bg-white rounded-[16px] shadow-elevation-1 p-5">
             {error && (
               <p className="text-xs text-s-error mb-3 flex items-center gap-1">
                 <AlertCircle size={13} /> {error}
@@ -186,7 +186,7 @@ export default function GiftCardPage() {
           <p className="text-sm text-s-ink-2">{salon.name}</p>
         </div>
 
-        <div className="bg-white rounded-[16px] shadow-warm-md p-5 space-y-4">
+        <div className="bg-white rounded-[16px] shadow-elevation-1 p-5 space-y-4">
           {/* Amount */}
           <div>
             <label className="text-xs font-medium text-s-ink-2 mb-2 block">Betrag</label>
