@@ -125,7 +125,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           onClick={() => setTab('upcoming')}
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'upcoming'
-              ? 'border-s-accent text-s-accent'
+              ? 'border-s-ink text-s-ink'
               : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >
@@ -135,7 +135,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           onClick={() => setTab('past')}
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'past'
-              ? 'border-s-accent text-s-accent'
+              ? 'border-s-ink text-s-ink'
               : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >
@@ -145,7 +145,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           onClick={() => setTab('cancelled')}
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'cancelled'
-              ? 'border-s-accent text-s-accent'
+              ? 'border-s-ink text-s-ink'
               : 'border-transparent text-s-ink-2 hover:text-s-ink'
           }`}
         >

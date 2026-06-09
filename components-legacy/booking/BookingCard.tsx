@@ -1,16 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
-import { useLocale } from 'next-intl';
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  MoreVertical,
-} from 'lucide-react';
+import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
+import { Clock, MapPin, MoreVertical } from 'lucide-react';
 import { formatCurrency } from '@/lib/format-currency';
-import { RatingStars } from '@/app/[locale]/_components/primitives';
 
 export interface Booking {
   id: string;
@@ -30,6 +24,7 @@ export interface Booking {
   // Joined fields
   salon?: {
     id: string;
+    slug?: string;
     name: string;
     address: string;
     average_rating: number;
@@ -58,6 +53,14 @@ interface BookingCardProps {
   onRebook?: (booking: Booking) => void;
 }
 
+/**
+ * BookingCard — redesign 2026-06-09 (owner-approved mockup solen-bookings-mockup.html).
+ * Was a 5-section, 4-hairline "form" card that read dated vs the app's mobile cards.
+ * Now: one calm card with a focal date block (mirrors the confirmation screen), grouped
+ * service/place/time, a single semantic status pill, one hairline, ink "Book again" + an
+ * overflow for reschedule/cancel. The WHOLE card taps into the salon PDP (the action
+ * buttons stop propagation so they don't trigger navigation). Real booking data only.
+ */
 export default function BookingCard({
   booking,
   onReschedule,
@@ -68,164 +71,106 @@ export default function BookingCard({
   const locale = useLocale();
   const [showMenu, setShowMenu] = React.useState(false);
 
-  // Format date and time
   const startDate = new Date(booking.starts_at);
   const endDate = new Date(booking.ends_at);
-  const duration = Math.round(
-    (endDate.getTime() - startDate.getTime()) / (1000 * 60)
-  );
+  const duration = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60));
+  const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH';
+  const dow = startDate.toLocaleDateString(localeCode, { weekday: 'short' });
+  const day = startDate.toLocaleDateString(localeCode, { day: '2-digit' });
+  const mon = startDate.toLocaleDateString(localeCode, { month: 'short' });
+  const time = startDate.toLocaleTimeString(localeCode, { hour: '2-digit', minute: '2-digit' });
 
-  const formattedDate = startDate.toLocaleDateString(locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  });
-
-  const formattedTime = startDate.toLocaleTimeString(locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-  // Status color and label
   const statusConfig = {
-    confirmed: {
-      label: t('status.confirmed'),
-      bgColor: 'bg-s-success/10',
-      textColor: 'text-s-success',
-      borderColor: 'border-s-success/30',
-    },
-    pending: {
-      label: t('status.pending'),
-      bgColor: 'bg-s-warning/10',
-      textColor: 'text-s-warning',
-      borderColor: 'border-s-warning/30',
-    },
-    cancelled: {
-      label: t('status.cancelled'),
-      bgColor: 'bg-s-error/10',
-      textColor: 'text-s-error',
-      borderColor: 'border-s-error/30',
-    },
-    completed: {
-      label: t('status.completed'),
-      bgColor: 'bg-s-ink/5',
-      textColor: 'text-s-ink-2',
-      borderColor: 'border-s-border',
-    },
+    confirmed: { label: t('status.confirmed'), bg: 'bg-s-success/10', fg: 'text-s-success' },
+    pending: { label: t('status.pending'), bg: 'bg-s-warning/10', fg: 'text-s-warning' },
+    cancelled: { label: t('status.cancelled'), bg: 'bg-s-error/10', fg: 'text-s-error' },
+    completed: { label: t('status.completed'), bg: 'bg-s-ink/5', fg: 'text-s-ink-2' },
   };
-
   const status = statusConfig[booking.status];
 
-  // Service name based on locale
   const getServiceName = () => {
     if (!booking.service) return '-';
     const langKey = `name_${locale}` as keyof typeof booking.service;
-    return booking.service[langKey] || booking.service.name_de || booking.service.name_en || '-';
+    return (booking.service[langKey] as string) || booking.service.name_de || booking.service.name_en || '-';
   };
 
-  return (
-    <div className="bg-[--raised] rounded-card border border-s-border overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
-      {/* Header */}
-      <div className="p-4 border-b border-s-border flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="font-heading text-lg font-semibold text-s-ink">
-            {booking.salon?.name || '-'}
-          </h3>
-          {booking.salon?.average_rating && booking.salon?.review_count ? (
-            <div className="flex items-center gap-1 mt-1 text-sm text-s-ink-2">
-              <RatingStars value={booking.salon.average_rating} size="md" />
-              <span>
-                ({booking.salon.review_count} {t('reviews')})
-              </span>
-            </div>
-          ) : null}
+  const href = booking.salon?.slug ? `/${locale}/salon/${booking.salon.slug}` : null;
+  // Stop the inner action controls from triggering the card's salon-PDP navigation.
+  const stop = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); };
+
+  const inner = (
+    <div className="bg-[--raised] rounded-card border border-s-border p-4 shadow-elevation-1 transition-[transform,box-shadow] duration-200 ease-glide hover:-translate-y-[2px] hover:shadow-elevation-2 active:scale-[0.98]">
+      <div className="flex items-start gap-3">
+        {/* Focal date block */}
+        <div className="flex-none w-[52px] rounded-[12px] bg-s-bg-sunken py-2 text-center">
+          <div className="text-[12px] font-bold uppercase tracking-[0.06em] text-s-ink-2">{dow}</div>
+          <div className="font-heading text-[22px] font-bold leading-[1.05] text-s-ink">{day}</div>
+          <div className="text-[12px] text-s-ink-2">{mon}</div>
         </div>
 
-        {/* Status Badge */}
-        <div className={`px-3 py-1 rounded-pill text-xs font-semibold ${status.bgColor} ${status.textColor} border ${status.borderColor}`}>
+        {/* Salon + service + place + time */}
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
+            {booking.salon?.name || '-'}
+          </h3>
+          <p className="mt-0.5 truncate text-[14px] text-s-ink">
+            {getServiceName()}{duration ? ` · ${duration} ${t('minutes')}` : ''}
+          </p>
+          {booking.salon?.address && (
+            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
+              <MapPin size={13} className="flex-none text-s-ink-3" />
+              <span className="truncate">{booking.salon.address}</span>
+            </p>
+          )}
+          <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
+            <Clock size={13} className="flex-none text-s-ink-3" />
+            {time}
+          </p>
+        </div>
+
+        {/* Status */}
+        <div className={`flex-none rounded-pill px-2.5 py-1 text-[12px] font-semibold ${status.bg} ${status.fg}`}>
           {status.label}
         </div>
       </div>
 
-      {/* Service & Duration */}
-      <div className="px-4 py-3 border-b border-s-border">
-        <p className="font-body text-s-ink">
-          {getServiceName()}
-        </p>
-        <p className="text-sm text-s-ink-2 mt-1">
-          {duration} {t('minutes')}
-        </p>
-      </div>
-
-      {/* Date, Time, Address */}
-      <div className="px-4 py-3 space-y-2">
-        <div className="flex items-center gap-3 text-sm text-s-ink">
-          <Calendar size={16} className="text-s-ink-2 flex-shrink-0" />
-          <span>{formattedDate}</span>
+      {/* Footer: price + actions */}
+      <div className="mt-3 flex items-center justify-between border-t border-s-border pt-3">
+        <div className="text-[15px] font-semibold text-s-ink">
+          <span className="mr-1.5 text-[12px] font-normal text-s-ink-2">{t('total')}</span>
+          {formatCurrency(booking.price_paid)}
         </div>
-        <div className="flex items-center gap-3 text-sm text-s-ink">
-          <Clock size={16} className="text-s-ink-2 flex-shrink-0" />
-          <span>{formattedTime}</span>
-        </div>
-        {booking.salon?.address && (
-          <div className="flex items-start gap-3 text-sm text-s-ink">
-            <MapPin size={16} className="text-s-ink-2 flex-shrink-0 mt-0.5" />
-            <span>{booking.salon.address}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Price */}
-      <div className="px-4 py-3 border-t border-s-border">
-        <div className="flex items-center justify-between">
-          <span className="text-s-ink-2 text-sm">{t('total')}</span>
-          <span className="font-semibold text-s-ink">
-            {formatCurrency(booking.price_paid)}
-          </span>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="px-4 py-3 border-t border-s-border flex items-center justify-between">
-        <button
-          onClick={() => onRebook?.(booking)}
-          className="px-4 py-2 rounded-pill bg-s-ink text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
-        >
-          {t('rebook')}
-        </button>
-
-        <div className="relative">
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-bg-sunken active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
-            aria-label="More options"
+            onClick={(e) => { stop(e); onRebook?.(booking); }}
+            className="rounded-pill bg-s-ink px-4 py-2 text-[13px] font-semibold text-white transition-transform duration-150 hover:brightness-[1.08] active:scale-[0.97]"
           >
-            <MoreVertical size={18} className="text-s-ink" />
+            {t('rebook')}
           </button>
-
-          {showMenu && (
-            <div className="absolute right-0 top-full mt-2 bg-[--raised] border border-s-border rounded-card shadow-elevation-3 z-50 min-w-[160px]">
-              {booking.status === 'confirmed' && (
-                <>
+          {booking.status === 'confirmed' && (
+            <div className="relative">
+              <button
+                onClick={(e) => { stop(e); setShowMenu((v) => !v); }}
+                className="grid h-[38px] w-[38px] place-items-center rounded-pill border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.97]"
+                aria-label={t('reschedule') + ' / ' + t('cancel')}
+              >
+                <MoreVertical size={18} />
+              </button>
+              {showMenu && (
+                <div className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-card border border-s-border bg-[--raised] shadow-elevation-3" onClick={stop}>
                   <button
-                    onClick={() => {
-                      onReschedule?.(booking);
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-bg-sunken font-body"
+                    onClick={(e) => { stop(e); onReschedule?.(booking); setShowMenu(false); }}
+                    className="block w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
                   >
                     {t('reschedule')}
                   </button>
                   <button
-                    onClick={() => {
-                      onCancel?.(booking);
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-error hover:bg-s-error/10 font-body"
+                    onClick={(e) => { stop(e); onCancel?.(booking); setShowMenu(false); }}
+                    className="block w-full px-4 py-2.5 text-left text-[14px] text-s-error hover:bg-s-error/10"
                   >
                     {t('cancel')}
                   </button>
-                </>
+                </div>
               )}
             </div>
           )}
@@ -233,4 +178,6 @@ export default function BookingCard({
       </div>
     </div>
   );
+
+  return href ? <Link href={href} className="block">{inner}</Link> : inner;
 }
