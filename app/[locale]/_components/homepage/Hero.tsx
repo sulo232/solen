@@ -151,7 +151,7 @@ export default async function Hero() {
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
             // but now in Plus Jakarta Sans (single-family typography lock).
-            <p className="mb-3 font-body text-[15px] md:text-[17px] font-medium text-s-ink-2 tracking-[-0.005em]">
+            <p className="mb-3 font-body text-[14px] md:text-[16px] font-medium text-s-ink-2 tracking-[-0.005em]">
               Hallo, {displayName}
             </p>
           )}

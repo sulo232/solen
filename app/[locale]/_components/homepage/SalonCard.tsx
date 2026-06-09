@@ -76,7 +76,7 @@ const badgeGeometry = cn(
   // like u did on heute frei". Labels render in sentence case as defined by
   // the data (Heute frei, Schnell weg, In 15 Min, etc.). Size bumped 10 → 11px
   // to compensate for lowercase having lower visual weight than uppercase.
-  "px-3 py-1.5 font-body text-[11px] font-semibold",
+  "px-3 py-1.5 font-body text-[12px] font-semibold",
   "leading-[1.2] tracking-[0.01em]",
   // V2-D67-fu12 (2026-05-16) — mobile perf: kill backdrop-filter on phones via
   // arbitrary `!` Tailwind override (inline style on the chip sets it; this

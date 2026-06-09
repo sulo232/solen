@@ -412,7 +412,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
+                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -460,7 +460,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
+                    className="w-full border-b border-s-border bg-transparent pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none"
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the
@@ -509,7 +509,7 @@ export function SearchBar() {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="font-display text-[24px] font-bold text-s-ink mb-5">
+                  <div className="font-display text-[22px] font-bold text-s-ink mb-5">
                     Wann?
                   </div>
 
@@ -652,7 +652,7 @@ function CollapsedRow({
       </span>
       <span
         className={cn(
-          "font-body min-w-0 flex-1 truncate text-[14.5px] text-s-ink-2 tracking-[-0.005em] md:pl-4",
+          "font-body min-w-0 flex-1 truncate text-[14px] text-s-ink-2 tracking-[-0.005em] md:pl-4",
           isPlaceholder ? "font-normal" : "font-semibold",
         )}
       >

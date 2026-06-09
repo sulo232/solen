@@ -206,7 +206,7 @@ function ReviewCard({
             />
           ))}
         </div>
-        <span className="shrink-0 font-body text-[11px] font-normal text-s-ink-3 tabular-nums">
+        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-3 tabular-nums">
           {dateText}
         </span>
       </div>
@@ -223,7 +223,7 @@ function ReviewCard({
           Avatar + name stacked with salon link. */}
       <div className="relative mt-auto flex items-center gap-2.5">
         <div
-          className="pointer-events-none font-display grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-black text-s-ink-2 bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-black text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}
@@ -239,7 +239,7 @@ function ReviewCard({
             aria-label={`Salon ${review.salonName} ansehen`}
             className={cn(
               "relative z-10 mt-0.5 inline-flex items-center gap-1",
-              "font-body text-[11px] font-normal text-s-ink-2",
+              "font-body text-[12px] font-normal text-s-ink-2",
               "transition-colors duration-150 ease-glide hover:text-s-ink",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}

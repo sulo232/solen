@@ -243,7 +243,7 @@ export default function Entdecken() {
                         className="absolute top-2 left-2 z-10 flex items-center gap-1"
                       >
                         <span className="h-1.5 w-1.5 rounded-full bg-s-accent" />
-                        <span className="font-display text-[11px] font-extrabold leading-none text-white/90">
+                        <span className="font-display text-[12px] font-extrabold leading-none text-white/90">
                           Solen
                         </span>
                       </div>
@@ -294,7 +294,7 @@ export default function Entdecken() {
                       className="inline-block max-w-[80%] rounded-full px-2.5 py-1"
                       style={solidLabelStyle}
                     >
-                      <p className="truncate font-body text-[11px] font-medium text-s-ink">
+                      <p className="truncate font-body text-[12px] font-medium text-s-ink">
                         {look.styleName}
                       </p>
                     </div>
@@ -329,13 +329,13 @@ export default function Entdecken() {
                   >
                     <div className="flex animate-marquee">
                       <span
-                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[11px] font-normal text-white"
+                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
                         style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
                       >
                         TikTok · TikTok · TikTok · TikTok ·
                       </span>
                       <span
-                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[11px] font-normal text-white"
+                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
                         style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
                       >
                         TikTok · TikTok · TikTok · TikTok ·
@@ -401,10 +401,10 @@ export default function Entdecken() {
               >
                 <ArrowRight size={20} strokeWidth={2.5} aria-hidden />
               </div>
-              <h3 className="font-body text-[15px] font-semibold leading-tight text-s-ink">
+              <h3 className="font-body text-[16px] font-semibold leading-tight text-s-ink">
                 Alle entdecken
               </h3>
-              <p className="mt-2 font-body text-[11px] text-s-ink-3">
+              <p className="mt-2 font-body text-[12px] text-s-ink-3">
                 Lass dich von tausenden Looks inspirieren
               </p>
             </div>

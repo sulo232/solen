@@ -50,10 +50,10 @@ export default function WalkInBand() {
               />
             </span>
             <div>
-              <p className="font-heading text-[10.5px] font-bold uppercase tracking-[0.12em] text-s-accent">
+              <p className="font-heading text-[12px] font-bold uppercase tracking-[0.12em] text-s-accent">
                 Barbershop
               </p>
-              <h2 className="mt-0.5 font-display text-[21px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
+              <h2 className="mt-0.5 font-display text-[18px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
                 Walk-in
               </h2>
             </div>
@@ -69,17 +69,17 @@ export default function WalkInBand() {
               >
                 <div className="flex items-center gap-1.5">
                   <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
-                  <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[11.5px] font-semibold text-s-ink-2">
+                  <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-s-ink-2">
                     <Star size={11} className="fill-[#FFC32B] text-[#FFC32B]" />
                     {s.rating}
                   </span>
                 </div>
-                <div className="mt-[3px] truncate text-[11.5px] text-s-ink-2">{s.meta}</div>
-                <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[11.5px] font-bold text-s-accent">
+                <div className="mt-[3px] truncate text-[12px] text-s-ink-2">{s.meta}</div>
+                <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-accent">
                   <span className="h-[7px] w-[7px] rounded-full bg-s-accent" />
                   Frei in {s.wait} Min
                 </div>
-                <div className="mt-2.5 flex items-center gap-[7px] text-[11px] text-s-ink-2">
+                <div className="mt-2.5 flex items-center gap-[7px] text-[12px] text-s-ink-2">
                   <span className="flex gap-[3px]">
                     {Array.from({ length: s.queue }).map((_, i) => (
                       <span
