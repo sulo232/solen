@@ -363,6 +363,23 @@
   animation: heart-pop 350ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
+/* ── Success celebration (SuccessMark primitive + .celebrate-rise) ── motion pass 2026-06-09.
+   Solid green disc springs in + ring pulse + white check draws; following content rises, staggered.
+   See _design-system/MOTION.md. prefers-reduced-motion: base state IS the final/visible state. */
+@keyframes confirm-ring { from { transform: scale(0.55); opacity: 0.32; } to { transform: scale(2); opacity: 0; } }
+@keyframes confirm-pop  { from { transform: scale(0); } 60% { transform: scale(1.12); } to { transform: scale(1); } }
+@keyframes confirm-draw { from { stroke-dashoffset: 32; } to { stroke-dashoffset: 0; } }
+@keyframes confirm-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.success-ring { opacity: 0; animation: confirm-ring 0.75s ease-out forwards; }
+.success-disc { animation: confirm-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.07s both; }
+.success-check path { stroke: #fff; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 32; animation: confirm-draw 0.4s ease-out 0.36s both; }
+.celebrate-rise { animation: confirm-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .success-ring { display: none; }
+  .success-disc, .success-check path, .celebrate-rise { animation: none; }
+  .success-check path { stroke-dashoffset: 0; }
+}
+
 /* ── V3-D164 (2026-05-26): right-to-left text marquee ──────────────────
    Used by the small "TikTok" attribution strip on Entdecken cards
    (signals "this is a TikTok video" after the centered play orb was

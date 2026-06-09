@@ -17,6 +17,7 @@ import {
   Sparkles,
   FileText,
 } from "lucide-react";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
 /**
  * BookingConfirmation: the screen a customer lands on right after paying
@@ -192,15 +193,19 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   return (
     <div className="min-h-[100dvh] bg-s-bg-surface text-s-ink">
       <main className="mx-auto w-full max-w-[460px] px-5 pb-14 pt-8 md:max-w-[920px]">
-        {/* ── success mark ── */}
+        {/* ── success mark , celebratory (motion pass: SuccessMark + staggered .celebrate-rise) ── */}
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 flex h-[58px] w-[58px] items-center justify-center rounded-pill bg-s-success-bg">
-            <Check size={30} strokeWidth={2.4} className="text-s-success" aria-hidden />
-          </div>
-          <h1 className="font-display text-[24px] font-semibold leading-[1.2] tracking-[-0.02em] md:text-[28px]">
+          <SuccessMark size={58} className="mb-4" />
+          <h1
+            className="celebrate-rise font-display text-[24px] font-semibold leading-[1.2] tracking-[-0.02em] md:text-[28px]"
+            style={{ animationDelay: "0.46s" }}
+          >
             {t("title")}
           </h1>
-          <p className="mt-2 max-w-[330px] text-[14px] leading-[1.5] text-s-ink-2 md:max-w-[420px] md:text-[15px]">
+          <p
+            className="celebrate-rise mt-2 max-w-[330px] text-[14px] leading-[1.5] text-s-ink-2 md:max-w-[420px] md:text-[15px]"
+            style={{ animationDelay: "0.56s" }}
+          >
             {t("subtitleAt", { salon: props.salonName })}
           </p>
         </div>
@@ -210,8 +215,11 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           {/* ── left column ── */}
           <div>
             {/* order-number hero */}
-            <section className="mt-6 overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-elevation-1">
-              <p className="px-4 pt-[18px] text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
+            <section
+              className="celebrate-rise mt-6 overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-elevation-1"
+              style={{ animationDelay: "0.68s" }}
+            >
+              <p className="px-4 pt-[18px] text-center text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
                 {t("orderNumber")}
               </p>
               <p className="px-3 pb-[2px] pt-[5px] text-center font-mono-code text-[34px] font-bold leading-[1.1] tracking-[0.04em] text-s-ink md:text-[40px]">
