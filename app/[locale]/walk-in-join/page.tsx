@@ -157,7 +157,7 @@ export default function WalkInJoinPage() {
         {queueStats && (
           <div className="mb-6 rounded-xl bg-s-ink-1 p-4">
             <div className="flex items-center gap-2 text-[14px] font-medium text-s-ink">
-              <Clock size={16} className="text-s-accent" />
+              <Clock size={16} className="text-s-ink-3" />
               <span>
                 {queueStats.ahead} ahead • {queueStats.wait_minutes} min wait
               </span>
@@ -188,7 +188,7 @@ export default function WalkInJoinPage() {
                       {svc.duration_minutes} min
                     </p>
                   </div>
-                  <p className="font-heading text-[15px] font-semibold text-s-accent">
+                  <p className="font-heading text-[15px] font-semibold text-s-ink">
                     CHF {svc.price.toFixed(2)}
                   </p>
                 </div>

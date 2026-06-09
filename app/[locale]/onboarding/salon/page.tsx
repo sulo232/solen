@@ -282,8 +282,7 @@ function Step3({ data, onChange, category, t }: {
           </div>
         </div>
 
-        <div className="rounded-[12px] border border-s-accent/[0.12] p-4"
-          style={{ background: "rgba(27, 77, 27,.04)" }}>
+        <div className="rounded-[12px] border border-s-accent/[0.12] p-4 bg-s-bg-sunken">
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-accent shrink-0" />
             <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
@@ -327,8 +326,7 @@ function StepPhotos({
           pathPrefix="onboarding"
         />
 
-        <div className="rounded-[12px] border border-s-accent/[0.12] p-4"
-          style={{ background: "rgba(27, 77, 27,.04)" }}>
+        <div className="rounded-[12px] border border-s-accent/[0.12] p-4 bg-s-bg-sunken">
           <div className="flex items-center gap-1.5 mb-1.5">
             <Camera size={12} className="text-s-accent shrink-0" />
             <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
@@ -574,7 +572,7 @@ export default function SalonOnboardingPage() {
       {/* Subtle warm linear gradient for depth — Zone 3 compliant */}
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
         <div className="absolute top-0 left-0 right-0 h-[300px]"
-          style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.03) 0%, transparent 100%)" }} />
+          style={{ background: "linear-gradient(180deg, var(--color-hover-bg) 0%, transparent 100%)" }} />
       </div>
 
       {/* Celebration overlay */}
@@ -593,8 +591,7 @@ export default function SalonOnboardingPage() {
               className="flex flex-col items-center gap-5 text-center px-6"
             >
               {/* Icon box — NO scale animation */}
-              <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
-                style={{ background: "rgba(27, 77, 27,.10)" }}>
+              <div className="w-20 h-20 rounded-[22px] flex items-center justify-center bg-s-success-bg">
                 <PartyPopper size={34} className="text-s-accent" />
               </div>
 
@@ -696,10 +693,9 @@ export default function SalonOnboardingPage() {
       {/* Submit error banner */}
       {submitError && step >= TOTAL_STEPS - 1 && (
         <div className="max-w-xl mx-auto px-4 mb-4">
-          <div className="flex items-start gap-3 rounded-[12px] border border-s-accent/20 p-4"
-            style={{ background: "rgba(27, 77, 27,.05)" }}>
-            <AlertCircle size={15} className="text-s-accent shrink-0 mt-0.5" />
-            <p className="text-xs font-body text-s-accent">{submitError}</p>
+          <div className="flex items-start gap-3 rounded-[12px] border border-s-error/20 p-4 bg-s-error-bg">
+            <AlertCircle size={15} className="text-s-error shrink-0 mt-0.5" />
+            <p className="text-xs font-body text-s-error">{submitError}</p>
           </div>
         </div>
       )}

@@ -211,11 +211,11 @@ export default function QueueTrackingPage() {
                 <h2 className="mt-3 font-heading text-[20px] font-bold text-s-ink">{l.done}</h2>
                 <p className="mt-1 text-[14px] text-s-ink-2">{l.doneSub}</p>
               </div>
-              {/* Tip entry — appears AFTER the cut. Blue tip action (matches the shared TipFlow). */}
+              {/* Tip entry — appears AFTER the cut. Ink primary action (matches the shared TipFlow). */}
               <button
                 type="button"
                 onClick={() => setTipOpen(true)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
               >
                 {l.tip}
               </button>

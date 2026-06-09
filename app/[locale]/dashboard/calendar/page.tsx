@@ -129,7 +129,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -248,7 +248,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -316,7 +316,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
               <button onClick={() => setRescheduleMode(false)}
                 className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("back")}</button>
               <button onClick={handleReschedule} disabled={loading}
-                className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
+                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
                 <ArrowRight size={14} /> {t("reschedule")}
               </button>
@@ -575,7 +575,7 @@ export default function CalendarPage() {
 
     if (s.status === "blocked") return `bg-s-bg-sunken border border-dashed border-s-border ${catBorder}`;
     if (s.status === "booked") return `bg-s-ink text-white ${catBorder}`;
-    if (s.price_override !== null) return `bg-s-coral border-2 border-s-accent-bright ${catBorder}`; // last-minute
+    if (s.price_override !== null) return `bg-s-urgency-bg text-s-urgency border-2 border-s-urgency ${catBorder}`; // last-minute
     // Color by staff member
     if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
       return staffColorMap.get(s.staff_member_id)! + ` border ${catBorder}`;
@@ -850,7 +850,7 @@ export default function CalendarPage() {
             {t("weekSchedule")}
           </button>
           <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-accent-bright text-white text-sm font-medium">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium">
             <Plus size={14} /> {t("slot")}
           </button>
         </div>
@@ -1098,7 +1098,7 @@ export default function CalendarPage() {
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-accent-bright/30" />{t("statusFree")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />{t("statusBooked")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-border" />{t("statusBlocked")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-accent-bright" />{t("lastMinute")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-urgency-bg border-2 border-s-urgency" />{t("lastMinute")}</span>
         {/* Service category colors */}
         <span className="w-px h-4 bg-s-sand" />
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-coral bg-s-coral/10" />{t("categoryHair")}</span>

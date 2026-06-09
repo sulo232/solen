@@ -68,9 +68,9 @@ export default function ReferralPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Hero card */}
-        <div className="bg-gradient-to-br from-s-ink/10 to-s-ink/5 rounded-[12px] border border-s-accent/20 p-6 text-center">
+        <div className="bg-gradient-to-br from-s-ink/10 to-s-ink/5 rounded-[12px] border border-s-border p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-s-ink/15 flex items-center justify-center mx-auto mb-3">
-            <Gift className="w-7 h-7 text-s-accent" />
+            <Gift className="w-7 h-7 text-s-ink-3" />
           </div>
           <h1 className="font-heading text-xl text-s-ink mb-1">Freunde einladen</h1>
           <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
@@ -118,12 +118,12 @@ export default function ReferralPage() {
           <h2 className="font-heading text-base text-s-ink mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
-              <Users className="w-5 h-5 text-s-accent mx-auto mb-1" />
+              <Users className="w-5 h-5 text-s-ink-3 mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{data.friends_invited}</p>
               <p className="text-xs text-s-ink-2">Freunde eingeladen</p>
             </div>
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
-              <Gift className="w-5 h-5 text-s-accent mx-auto mb-1" />
+              <Gift className="w-5 h-5 text-s-ink-3 mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{formatCurrency(data.total_earned, locale)}</p>
               <p className="text-xs text-s-ink-2">Verdient</p>
             </div>
@@ -140,7 +140,7 @@ export default function ReferralPage() {
               { step: "3", text: "Ihr beide erhaltet CHF 10 Guthaben!" },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-s-ink/10 text-s-accent text-xs font-bold flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-s-ink/10 text-s-ink text-xs font-bold flex items-center justify-center shrink-0">
                   {item.step}
                 </span>
                 <p className="text-sm text-s-ink/70">{item.text}</p>

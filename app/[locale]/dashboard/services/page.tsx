@@ -307,8 +307,8 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 className={[
                   "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-[background-color,border-color]",
                   added
-                    ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                    : "border-s-border hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                    ? "bg-s-accent-bright/5 border-s-accent-bright/20 opacity-60 cursor-default"
+                    : "border-s-border hover:border-s-accent-bright hover:bg-s-accent-bright/5 cursor-pointer",
                 ].join(" ")}
               >
                 <div className="min-w-0 flex-1">
@@ -323,9 +323,9 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 {adding === tmpl.name_de ? (
                   <Spinner size="sm" />
                 ) : added ? (
-                  <Check size={14} className="text-s-coral shrink-0 ml-2" />
+                  <Check size={14} className="text-s-accent-bright shrink-0 ml-2" />
                 ) : (
-                  <Plus size={14} className="text-s-coral shrink-0 ml-2" />
+                  <Plus size={14} className="text-s-accent-bright shrink-0 ml-2" />
                 )}
               </button>
             );
@@ -437,7 +437,7 @@ export default function ServicesPage() {
             <div className="flex gap-2">
               <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t('cancel')}</button>
               <button onClick={handleDelete} disabled={deleteLoading}
-                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-2.5 rounded-btn bg-s-error text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {deleteLoading && <Spinner size="sm" invert />}{t('delete')}
               </button>
             </div>
@@ -591,9 +591,9 @@ export default function ServicesPage() {
               }
             }}>
               <input type="file" accept=".csv,.txt" required
-                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-coral/10 file:text-s-coral file:font-medium file:text-xs file:cursor-pointer" />
+                className="w-full px-3 py-2 rounded-btn border border-s-border text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-accent-bright/10 file:text-s-accent-bright file:font-medium file:text-xs file:cursor-pointer" />
               <button type="submit"
-                className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center justify-center gap-2">
+                className="w-full py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium flex items-center justify-center gap-2">
                 <Upload size={14} /> {t('importButton')}
               </button>
             </form>

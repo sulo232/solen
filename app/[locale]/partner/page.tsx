@@ -44,12 +44,12 @@ export default function PartnerPage() {
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-accent mb-3">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-3 mb-3">
               {t("for_owners")}
             </p>
             <h1 className="font-heading text-[clamp(26px,7vw,30px)] md:text-[46px] font-semibold text-s-ink mb-4 leading-[1.0] tracking-[-0.03em]">
               {t("hero_title_1")}{" "}
-              <span className="text-s-accent">{t("hero_title_accent")}</span>
+              <span className="text-s-ink">{t("hero_title_accent")}</span>
               <br />{t("hero_title_2")}
             </h1>
             <p className="text-lg font-body font-normal text-s-ink-2 max-w-lg mb-8">
@@ -111,8 +111,8 @@ export default function PartnerPage() {
                   {t("coming_soon")}
                 </span>
               )}
-              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3 bg-s-accent-pale">
-                <f.icon className="w-5 h-5 text-s-accent" />
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3 bg-s-bg-sunken">
+                <f.icon className="w-5 h-5 text-s-ink" />
               </div>
               <h3 className="font-heading text-sm text-s-ink mb-1">{t(f.title as any)}</h3>
               <p className="text-xs font-body font-normal text-s-ink-2 leading-relaxed">{t(f.desc as any)}</p>
@@ -145,7 +145,7 @@ export default function PartnerPage() {
               { icon: Zap, key: "cat_waxing" },
             ].map((cat) => (
               <div key={cat.key} className="p-5 rounded-[14px] bg-white border border-s-border hover:border-s-ink hover:shadow-elevation-1 transition-[border-color,box-shadow] duration-200">
-                <cat.icon className="w-6 h-6 text-s-accent mb-3" />
+                <cat.icon className="w-6 h-6 text-s-ink mb-3" />
                 <h3 className="font-heading text-sm text-s-ink mb-1">{t(`${cat.key}_title` as any)}</h3>
                 <p className="text-xs font-body font-normal text-s-ink-2 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
               </div>
@@ -181,19 +181,19 @@ export default function PartnerPage() {
 
             {/* Step 1 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              {/* V3-D319 (Q-W5-B answer = B): step circles ink → accent-pale per user pick. */}
-              <div className="w-12 h-12 rounded-pill bg-s-accent-pale text-s-accent font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              {/* V3-D330 / LOCKFILE §1.5: step circles ink (accent forbidden on step circles, supersedes V3-D319). */}
+              <div className="w-12 h-12 rounded-pill bg-s-ink text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 1
               </div>
               <div className="mt-2 md:mt-4">
-                <UserPlus className="w-6 h-6 text-s-accent mx-auto mb-2 hidden md:block" />
+                <UserPlus className="w-6 h-6 text-s-ink mx-auto mb-2 hidden md:block" />
                 <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step1_title")}
                 </h3>
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -201,19 +201,19 @@ export default function PartnerPage() {
 
             {/* Step 2 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              {/* V3-D319 (Q-W5-B answer = B): step circles ink → accent-pale per user pick. */}
-              <div className="w-12 h-12 rounded-pill bg-s-accent-pale text-s-accent font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              {/* V3-D330 / LOCKFILE §1.5: step circles ink (accent forbidden on step circles, supersedes V3-D319). */}
+              <div className="w-12 h-12 rounded-pill bg-s-ink text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 2
               </div>
               <div className="mt-2 md:mt-4">
-                <Settings className="w-6 h-6 text-s-accent mx-auto mb-2 hidden md:block" />
+                <Settings className="w-6 h-6 text-s-ink mx-auto mb-2 hidden md:block" />
                 <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step2_title")}
                 </h3>
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -221,12 +221,12 @@ export default function PartnerPage() {
 
             {/* Step 3 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              {/* V3-D319 (Q-W5-B answer = B): step circles ink → accent-pale per user pick. */}
-              <div className="w-12 h-12 rounded-pill bg-s-accent-pale text-s-accent font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              {/* V3-D330 / LOCKFILE §1.5: step circles ink (accent forbidden on step circles, supersedes V3-D319). */}
+              <div className="w-12 h-12 rounded-pill bg-s-ink text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 3
               </div>
               <div className="mt-2 md:mt-4">
-                <Zap className="w-6 h-6 text-s-accent mx-auto mb-2 hidden md:block" />
+                <Zap className="w-6 h-6 text-s-ink mx-auto mb-2 hidden md:block" />
                 <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step3_title")}
                 </h3>
@@ -266,7 +266,7 @@ export default function PartnerPage() {
               { icon: Check, key: "trust_no_contract" },
             ].map((badge) => (
               <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-sunken rounded-[14px] border border-s-border">
-                <badge.icon className="w-6 h-6 text-s-accent mb-2" />
+                <badge.icon className="w-6 h-6 text-s-ink mb-2" />
                 <span className="text-xs font-heading text-s-ink">{t(badge.key as any)}</span>
               </div>
             ))}
@@ -498,7 +498,7 @@ export default function PartnerPage() {
             </Link>
             <a
               href={`mailto:info@solen.ch?subject=${encodeURIComponent(t("cta_consult_subject"))}`}
-              className="text-xs font-heading text-s-accent hover:text-s-accent-deep transition-colors underline underline-offset-4"
+              className="text-xs font-heading text-s-ink hover:text-s-ink-2 transition-colors underline underline-offset-4"
             >
               {t("cta_consult")}
             </a>
