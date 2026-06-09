@@ -4491,6 +4491,9 @@
       "bookedVia": "Booked via solen.ch"
     },
     "successPage": {
+      "withStylist": "with {name}",
+      "paidShort": "Paid",
+      "saveLinkShort": "Your access link. As a guest, it's your only way back.",
       "title": "Booking confirmed!",
       "subtitle": "Your booking is confirmed. You'll receive a confirmation email.",
       "salon": "Salon",

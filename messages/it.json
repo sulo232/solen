@@ -4455,6 +4455,9 @@
       "bookedVia": "Prenotato tramite solen.ch"
     },
     "successPage": {
+      "withStylist": "con {name}",
+      "paidShort": "Pagato",
+      "saveLinkShort": "Il tuo link d'accesso. Da ospite, è l'unico modo per tornare.",
       "title": "Prenotazione confermata!",
       "subtitle": "La tua prenotazione è confermata. Riceverai un'email di conferma.",
       "salon": "Salone",
