@@ -59,7 +59,7 @@ export function SalonLightbox({
       role="dialog"
       aria-modal="true"
       aria-label={`Foto-Galerie, Bild ${idx + 1} von ${photos.length}`}
-      className="fixed inset-0 z-50 grid place-items-center bg-black/95 p-4"
+      className="fixed inset-0 z-[80] grid place-items-center bg-black/95 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

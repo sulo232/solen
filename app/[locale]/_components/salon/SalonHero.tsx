@@ -31,9 +31,11 @@ import { FROST_GLASS } from "@/lib/frost-glass";
 export function SalonHero({
   salon,
   onOpenLightbox,
+  onOpenGallery,
 }: {
   salon: SalonDetail;
   onOpenLightbox: (startIndex: number) => void;
+  onOpenGallery: () => void;
 }) {
   const router = useRouter();
   const photos = salon.gallery_urls?.length
@@ -122,7 +124,7 @@ export function SalonHero({
         {photos.length > 1 && (
           <button
             type="button"
-            onClick={() => onOpenLightbox(activeIndex)}
+            onClick={onOpenGallery}
             aria-label="Alle Fotos ansehen"
             // Minimal photo counter (Fresha pattern). Live index tracks the swipe; tap opens the
             // lightbox at the current photo. bottom-7 (not -4): the content card pulls up -mt-5

@@ -26,6 +26,7 @@ import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { SalonLightbox } from "./SalonLightbox";
+import { SalonImageGallery } from "./SalonImageGallery";
 import type { SalonDetail, TabKey } from "./_shared";
 import { postalToCity, computeOpenStatus } from "./_shared";
 import { usePostHog } from "posthog-js/react";
@@ -75,6 +76,7 @@ export function SalonDetailV3() {
   const [error, setError] = React.useState(false);
   const [lightboxOpen, setLightboxOpen] = React.useState(false);
   const [lightboxIndex, setLightboxIndex] = React.useState(0);
+  const [galleryOpen, setGalleryOpen] = React.useState(false);
 
   const heroRef = React.useRef<HTMLElement>(null);
 
@@ -166,6 +168,9 @@ export function SalonDetailV3() {
     setLightboxOpen(true);
   };
 
+  // Full-screen Fresha-style image gallery (Salon photos + per-stylist Team portfolios).
+  const openGallery = () => setGalleryOpen(true);
+
   const primaryCategory = (salon.categories[0] ?? "coiffeur").toLowerCase();
   // Walk-in status must follow real opening hours — same source as the header's
   // "Geschlossen · Öffnet …" so the panel can't say "open" while the salon is closed.
@@ -232,7 +237,7 @@ export function SalonDetailV3() {
           where the sidebar's natural document position has scrolled into
           sticky-pinned state. */}
       <section ref={heroRef} className="mx-auto mt-3 w-full max-w-[1180px] md:px-6">
-        <SalonHero salon={salon} onOpenLightbox={openLightbox} />
+        <SalonHero salon={salon} onOpenLightbox={openLightbox} onOpenGallery={openGallery} />
       </section>
 
       {/* V2-D53.3 polish: title block moved INTO the body grid's left column
@@ -273,7 +278,7 @@ export function SalonDetailV3() {
               reviews={salon.reviews}
             />
 
-            <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={openLightbox} />
+            <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={() => openGallery()} />
 
             {/* Mobile + tablet Buy card — sidebar (which has the same row)
                 only renders at lg breakpoint, so show this here below it. */}
@@ -345,6 +350,15 @@ export function SalonDetailV3() {
         open={lightboxOpen}
         startIndex={lightboxIndex}
         onClose={() => setLightboxOpen(false)}
+      />
+
+      {/* Full-screen image gallery (Salon + per-stylist Team portfolios) */}
+      <SalonImageGallery
+        open={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        salonName={salon.name}
+        venuePhotos={photos}
+        staff={salon.staff}
       />
     </main>
   );
