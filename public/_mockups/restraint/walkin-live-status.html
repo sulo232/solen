@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walk-in · Live Warteschlange</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
+    --radius-card:16px; --radius-pill:999px;
+    --shadow-rest:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#E9E9EC;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px 0;
+  }
+  .frame{
+    width:390px; min-height:844px; background:var(--bg);
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+
+  /* ---------- status bar ---------- */
+  .statusbar{
+    height:54px; display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 24px 6px; font-size:15px; font-weight:600; letter-spacing:-.01em;
+  }
+  .statusbar .icons{display:flex;gap:6px;align-items:center}
+  .statusbar svg{display:block}
+
+  /* ---------- top app row ---------- */
+  .approw{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 20px 0;
+  }
+  .iconbtn{
+    width:38px;height:38px;border-radius:var(--radius-pill);
+    background:var(--bg);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);transition:transform .12s ease;cursor:pointer;
+  }
+  .iconbtn:active{transform:scale(.97)}
+  .approw .eyebrow{
+    font-family:'Inter',sans-serif;font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+  }
+
+  /* ---------- content ---------- */
+  .content{padding:0 24px;display:flex;flex-direction:column;flex:1}
+
+  .live-anim{opacity:0;transform:translateY(8px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .d1{animation-delay:.04s}.d2{animation-delay:.10s}.d3{animation-delay:.16s}
+  .d4{animation-delay:.22s}.d5{animation-delay:.28s}.d6{animation-delay:.34s}
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+
+  /* salon header */
+  .salon-head{margin-top:30px;display:flex;align-items:center;gap:13px}
+  .salon-thumb{
+    width:46px;height:46px;border-radius:13px;object-fit:cover;flex:none;
+    border:1px solid var(--border);
+  }
+  .salon-head .name{
+    font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;
+    letter-spacing:-.01em;line-height:1.15;
+  }
+  .salon-head .sub{
+    margin-top:2px;font-size:13px;color:var(--ink-2);font-weight:500;
+    display:flex;align-items:center;gap:5px;
+  }
+  .salon-head .sub svg{color:var(--ink-3)}
+
+  /* live caption pill */
+  .livecap{
+    margin-top:26px;align-self:flex-start;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 13px 7px 11px;border-radius:var(--radius-pill);
+    background:var(--sunken);
+    font-size:12.5px;font-weight:600;letter-spacing:-.005em;color:var(--ink-2);
+  }
+  .dot{
+    width:9px;height:9px;border-radius:50%;background:var(--green);flex:none;position:relative;
+  }
+  .dot::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:var(--green);animation:pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{transform:scale(1);opacity:.55}
+    70%{transform:scale(2.8);opacity:0}
+    100%{transform:scale(2.8);opacity:0}
+  }
+  .livecap .strong{color:var(--ink)}
+
+  /* the big number block */
+  .position-block{
+    margin-top:14px;text-align:left;
+  }
+  .position-block .label-top{
+    font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:-.01em;
+  }
+  .bignum{
+    font-family:'JetBrains Mono',monospace;font-weight:600;
+    font-size:148px;line-height:.92;letter-spacing:-.04em;color:var(--ink);
+    margin-top:2px;
+    font-feature-settings:"tnum" 1;
+  }
+  .bignum-row{display:flex;align-items:flex-end;gap:14px}
+  .vor-dir{
+    font-family:'Inter Tight',sans-serif;font-weight:600;font-size:19px;
+    color:var(--ink);letter-spacing:-.01em;line-height:1.15;
+    padding-bottom:22px;
+  }
+  .vor-dir span{display:block;font-size:13px;font-weight:500;color:var(--ink-2);margin-top:3px}
+
+  /* eta line */
+  .eta{
+    margin-top:6px;display:flex;align-items:center;gap:9px;
+    font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--ink);
+  }
+  .eta .green-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--green);position:relative;flex:none;
+  }
+  .eta .green-dot::after{
+    content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);
+    animation:pulse 1.8s ease-out infinite;
+  }
+  .eta .muted{color:var(--ink-2);font-weight:500}
+
+  /* queue visualization */
+  .queue-viz{
+    margin-top:30px;
+  }
+  .queue-viz .viz-label{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:12px;font-weight:600;color:var(--ink-3);
+    letter-spacing:.04em;text-transform:uppercase;margin-bottom:14px;
+  }
+  .dots-row{
+    display:flex;align-items:center;gap:0;
+  }
+  .qdot{
+    flex:1;height:6px;border-radius:var(--radius-pill);background:var(--ink);
+    margin-right:6px;
+  }
+  .qdot:last-child{margin-right:0}
+  .qdot.ahead{background:var(--ink)}
+  .qdot.you{
+    height:6px;background:var(--green);position:relative;
+    box-shadow:0 0 0 4px rgba(22,163,74,.13);
+  }
+  .qdot.behind{background:transparent;border:1px solid var(--border);height:6px}
+  .dots-legend{
+    margin-top:12px;display:flex;align-items:center;gap:16px;
+    font-size:11.5px;font-weight:500;color:var(--ink-2);
+  }
+  .dots-legend .lg{display:flex;align-items:center;gap:6px}
+  .lg .swatch{width:14px;height:6px;border-radius:var(--radius-pill)}
+  .lg .swatch.ink{background:var(--ink)}
+  .lg .swatch.you{background:var(--green)}
+  .lg .swatch.behind{background:transparent;border:1px solid var(--border)}
+
+  /* ticket card */
+  .ticket{
+    margin-top:30px;
+    border:1px solid var(--border);border-radius:var(--radius-card);
+    box-shadow:var(--shadow-rest);
+    padding:18px 18px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg);
+  }
+  .ticket .t-left .t-k{
+    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .ticket .t-left .t-v{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:22px;
+    letter-spacing:.01em;color:var(--ink);margin-top:5px;
+  }
+  .ticket .t-right{text-align:right}
+  .ticket .t-right .t-k{
+    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .ticket .t-right .t-v{
+    font-size:14px;font-weight:600;color:var(--ink);margin-top:6px;letter-spacing:-.01em;
+  }
+  .ticket .t-right .paid{
+    display:inline-flex;align-items:center;gap:5px;margin-top:6px;
+    font-size:13px;font-weight:600;color:var(--green);letter-spacing:-.01em;
+  }
+  .ticket .t-right .paid svg{display:block}
+
+  /* footer area */
+  .foot{
+    margin-top:auto;padding:24px 0 30px;
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+  }
+  .updated{
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:500;color:var(--ink-2);letter-spacing:-.005em;
+  }
+  .updated .green-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--green);position:relative;flex:none;
+  }
+  .updated .green-dot::after{
+    content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);
+    animation:pulse 1.8s ease-out infinite;
+  }
+  .updated .live{color:var(--ink);font-weight:600}
+  .share{
+    font-size:14px;font-weight:600;color:var(--blue);letter-spacing:-.01em;
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .share:hover{text-decoration:underline}
+  .share:active{transform:scale(.97)}
+  .share svg{display:block}
+
+  @media (prefers-reduced-motion: reduce){
+    .live-anim{animation:none;opacity:1;transform:none}
+    .dot::after,.eta .green-dot::after,.updated .green-dot::after{animation:none;opacity:0}
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+
+    <!-- status bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0A0A0A"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1" fill="#0A0A0A"/><rect x="9" y="2" width="3" height="10" rx="1" fill="#0A0A0A"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#0A0A0A"/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2.5c2.3 0 4.4.9 6 2.4l1.2-1.3A11 11 0 0 0 8.5.6 11 11 0 0 0 1.3 3.6l1.2 1.3A8.4 8.4 0 0 1 8.5 2.5Z" fill="#0A0A0A"/><path d="M8.5 6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6.6 6.6 0 0 0 8.5 4 6.6 6.6 0 0 0 4.2 6l1.2 1.3A4.4 4.4 0 0 1 8.5 6Z" fill="#0A0A0A"/><circle cx="8.5" cy="10" r="1.6" fill="#0A0A0A"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+      </span>
+    </div>
+
+    <!-- app row -->
+    <div class="approw">
+      <div class="iconbtn live-anim d1" aria-label="Zurück">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="eyebrow live-anim d1">Walk-in</div>
+      <div class="iconbtn live-anim d1" aria-label="Mehr">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- salon header -->
+      <div class="salon-head live-anim d2">
+        <img class="salon-thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=140&h=140&fit=crop&q=80" alt="Salon">
+        <div>
+          <div class="name">Bürkli Barbershop</div>
+          <div class="sub">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Bürkliplatz 6 · Zürich
+          </div>
+        </div>
+      </div>
+
+      <!-- live caption -->
+      <div class="livecap live-anim d3">
+        <span class="dot"></span>
+        <span><span class="strong">In der Warteschlange</span> · bezahlt</span>
+      </div>
+
+      <!-- the big number -->
+      <div class="position-block live-anim d3">
+        <div class="bignum-row">
+          <div class="bignum">3</div>
+          <div class="vor-dir">
+            vor dir
+            <span>warten noch dran</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- eta -->
+      <div class="eta live-anim d4">
+        <span class="green-dot"></span>
+        <span>Noch ca. <strong>12 Min</strong></span>
+        <span class="muted">· dann bist du dran</span>
+      </div>
+
+      <!-- queue visualization -->
+      <div class="queue-viz live-anim d5">
+        <div class="viz-label">
+          <span>Warteschlange</span>
+          <span>8 in der Schlange</span>
+        </div>
+        <div class="dots-row">
+          <div class="qdot ahead"></div>
+          <div class="qdot ahead"></div>
+          <div class="qdot ahead"></div>
+          <div class="qdot you"></div>
+          <div class="qdot behind"></div>
+          <div class="qdot behind"></div>
+          <div class="qdot behind"></div>
+          <div class="qdot behind"></div>
+        </div>
+        <div class="dots-legend">
+          <span class="lg"><span class="swatch ink"></span>Vor dir</span>
+          <span class="lg"><span class="swatch you"></span>Du</span>
+          <span class="lg"><span class="swatch behind"></span>Nach dir</span>
+        </div>
+      </div>
+
+      <!-- ticket card -->
+      <div class="ticket live-anim d6">
+        <div class="t-left">
+          <div class="t-k">Deine Nummer</div>
+          <div class="t-v">W‑047</div>
+        </div>
+        <div class="t-right">
+          <div class="t-k">Herrenschnitt</div>
+          <div class="paid">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            CHF 45 bezahlt
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div class="foot live-anim d6">
+        <div class="updated">
+          <span class="green-dot"></span>
+          Aktualisiert gerade eben · <span class="live">live</span>
+        </div>
+        <a class="share">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
+          Status teilen
+        </a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

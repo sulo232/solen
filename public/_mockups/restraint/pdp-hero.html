@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — Salon PDP Hero (Restraint)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
+    --r-card:16px; --r-pill:999px;
+    --shadow:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:#E9E9EC;
+    color:var(--ink);
+    display:flex;justify-content:center;
+    min-height:100vh;padding:24px 0;
+  }
+
+  /* ---- 390px frame ---- */
+  .frame{
+    width:390px;min-height:844px;background:var(--bg);
+    position:relative;overflow:hidden;
+    border-radius:0;
+  }
+
+  /* ---- HERO photo (full bleed, ~62% of frame) ---- */
+  .hero{
+    position:relative;width:100%;height:524px;
+    overflow:hidden;background:var(--sunken);
+  }
+  .hero img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    animation:heroIn .9s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes heroIn{
+    from{opacity:0;transform:scale(1.04);}
+    to{opacity:1;transform:scale(1);}
+  }
+
+  /* frosted chrome over photo */
+  .frost{
+    position:absolute;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.82);
+    -webkit-backdrop-filter:blur(14px) saturate(1.2);
+    backdrop-filter:blur(14px) saturate(1.2);
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:0 2px 10px -4px rgba(10,10,10,.25);
+    transition:transform .14s cubic-bezier(.16,1,.3,1), background .14s ease;
+    cursor:pointer;
+  }
+  .frost:active{transform:scale(.94);}
+  .frost.circle{width:38px;height:38px;border-radius:var(--r-pill);}
+  .hero-back{top:16px;left:16px;}
+  .hero-heart{top:16px;right:16px;}
+  .hero-heart svg{transition:transform .18s cubic-bezier(.34,1.56,.64,1);}
+  .hero-heart:active svg{transform:scale(1.18);}
+
+  /* photo counter chip */
+  .counter{
+    position:absolute;bottom:16px;right:16px;
+    height:30px;padding:0 12px;border-radius:var(--r-pill);
+    font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12.5px;
+    letter-spacing:.01em;color:var(--ink);
+    gap:6px;
+  }
+  .counter svg{opacity:.75;}
+
+  /* ---- body content ---- */
+  .body{padding:0 20px;}
+
+  .head{
+    padding-top:22px;
+    animation:rise .6s cubic-bezier(.16,1,.3,1) both .08s;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .salon-name{
+    font-family:'Inter Tight',sans-serif;font-weight:700;
+    font-size:29px;line-height:1.08;letter-spacing:-0.015em;
+    color:var(--ink);
+  }
+
+  /* rating + meta row */
+  .meta{
+    display:flex;align-items:center;flex-wrap:wrap;
+    margin-top:11px;gap:7px;
+    font-size:14px;color:var(--ink-2);line-height:1;
+  }
+  .rating{display:inline-flex;align-items:center;gap:5px;color:var(--ink);font-weight:600;}
+  .rating svg{margin-top:-1px;}
+  .rev-link{color:var(--blue);font-weight:500;text-decoration:none;}
+  .rev-link:hover{text-decoration:underline;}
+  .meta .sep{
+    display:inline-block;width:1px;height:13px;background:var(--border);
+    margin:0 1px;
+  }
+  .meta .pin{display:inline-flex;align-items:center;gap:4px;color:var(--ink-2);}
+  .meta .pin svg{color:var(--ink-3);}
+
+  /* open status */
+  .status{
+    display:inline-flex;align-items:center;gap:7px;
+    margin-top:14px;font-size:13.5px;font-weight:600;color:var(--green);
+  }
+  .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 0 rgba(22,163,74,.4);
+    animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(22,163,74,.38);}
+    70%{box-shadow:0 0 0 6px rgba(22,163,74,0);}
+    100%{box-shadow:0 0 0 0 rgba(22,163,74,0);}
+  }
+  .status .til{color:var(--ink-2);font-weight:500;}
+
+  /* primary CTA */
+  .cta{
+    display:flex;align-items:center;justify-content:center;
+    width:100%;height:54px;margin-top:20px;
+    background:var(--ink);color:#fff;border:none;border-radius:14px;
+    font-family:'Inter Tight',sans-serif;font-weight:600;font-size:16px;
+    letter-spacing:-0.005em;cursor:pointer;
+    transition:transform .12s cubic-bezier(.16,1,.3,1), opacity .12s ease;
+  }
+  .cta:active{transform:scale(.97);opacity:.92;}
+
+  /* divider */
+  .rule{height:1px;background:var(--border);margin:28px 0 0;}
+
+  /* Behandlungen section */
+  .section{padding-top:26px;padding-bottom:40px;}
+  .sec-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+  }
+  .sec-title{
+    font-family:'Inter Tight',sans-serif;font-weight:700;
+    font-size:20px;letter-spacing:-0.01em;color:var(--ink);
+  }
+  .see-all{
+    display:inline-flex;align-items:center;gap:4px;
+    font-size:13.5px;font-weight:600;color:var(--ink);
+    text-decoration:none;cursor:pointer;
+  }
+  .see-all svg{transition:transform .16s ease;}
+  .see-all:hover svg{transform:translateX(2px);}
+
+  /* group eyebrow */
+  .eyebrow{
+    font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--ink-3);margin:22px 0 12px;
+  }
+
+  /* service row */
+  .svc{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:15px 0;border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+  .svc:last-child{border-bottom:none;}
+  .svc-main{flex:1;min-width:0;}
+  .svc-name{
+    font-size:15px;font-weight:600;color:var(--ink);line-height:1.3;
+    display:flex;align-items:center;gap:8px;
+  }
+  .most-booked{
+    font-style:italic;font-weight:500;font-size:12px;color:var(--ink-2);
+    letter-spacing:0;
+  }
+  .svc-meta{
+    margin-top:4px;font-size:13px;color:var(--ink-3);
+    display:flex;align-items:center;gap:6px;
+  }
+  .svc-meta .d{display:inline-block;width:2.5px;height:2.5px;border-radius:50%;background:var(--ink-3);opacity:.6;}
+  .svc-right{display:flex;align-items:center;gap:12px;flex-shrink:0;padding-top:1px;}
+  .price{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14.5px;
+    color:var(--ink);white-space:nowrap;letter-spacing:-0.01em;
+  }
+  .add{
+    width:32px;height:32px;border-radius:var(--r-pill);
+    background:var(--bg);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);cursor:pointer;flex-shrink:0;
+    transition:transform .12s cubic-bezier(.16,1,.3,1), background .12s ease;
+  }
+  .add:active{transform:scale(.9);background:var(--sunken);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+    .dot{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+
+    <!-- HERO -->
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=82" alt="Salon-Innenraum" referrerpolicy="no-referrer">
+
+      <!-- back -->
+      <button class="frost circle hero-back" aria-label="Zurück">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      <!-- heart -->
+      <button class="frost circle hero-heart" aria-label="Merken">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+
+      <!-- photo counter -->
+      <div class="frost counter">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>1&#8202;/&#8202;8</span>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <div class="head">
+        <h1 class="salon-name">Maison Lumière</h1>
+
+        <div class="meta">
+          <span class="rating">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+            4.9
+          </span>
+          <a href="#" class="rev-link">(127)</a>
+          <span class="sep"></span>
+          <span>Coiffeur</span>
+          <span class="sep"></span>
+          <span class="pin">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            Basel, Kreis 4
+          </span>
+        </div>
+
+        <div class="status">
+          <span class="dot"></span>
+          Geöffnet
+          <span class="til">· bis 19:00</span>
+        </div>
+
+        <button class="cta">Termin buchen</button>
+      </div>
+
+      <div class="rule"></div>
+
+      <!-- BEHANDLUNGEN -->
+      <div class="section">
+        <div class="sec-head">
+          <h2 class="sec-title">Behandlungen</h2>
+          <a class="see-all">Alle ansehen
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div class="eyebrow">Klassisch · 45–60 Min</div>
+
+        <div class="svc">
+          <div class="svc-main">
+            <div class="svc-name">Damenschnitt &amp; Föhnen <span class="most-booked">Am häufigsten gebucht</span></div>
+            <div class="svc-meta">50 Min<span class="d"></span>mit Waschen &amp; Beratung</div>
+          </div>
+          <div class="svc-right">
+            <span class="price">CHF 85</span>
+            <button class="add" aria-label="Hinzufügen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="svc">
+          <div class="svc-main">
+            <div class="svc-name">Herrenschnitt</div>
+            <div class="svc-meta">45 Min<span class="d"></span>Schnitt &amp; Styling</div>
+          </div>
+          <div class="svc-right">
+            <span class="price">CHF 65</span>
+            <button class="add" aria-label="Hinzufügen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="eyebrow">Signature · ab 90 Min</div>
+
+        <div class="svc">
+          <div class="svc-main">
+            <div class="svc-name">Balayage &amp; Pflege</div>
+            <div class="svc-meta">120 Min<span class="d"></span>Strähnen, Toner &amp; Kur</div>
+          </div>
+          <div class="svc-right">
+            <span class="price">CHF 220</span>
+            <button class="add" aria-label="Hinzufügen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

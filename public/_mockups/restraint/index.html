@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Restraint mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9B9B9B;--bd:#E4E4E7;--sunken:#F4F4F5;--blue:#276EF1;--green:#16A34A}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:Inter,system-ui,sans-serif;background:#FAFAFA;color:var(--ink);padding:30px 16px 70px;max-width:680px;margin:0 auto}
+  h1{font-family:"Inter Tight";font-size:24px;font-weight:800;letter-spacing:-.02em}
+  .sub{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:8px 0 8px}
+  .rule{font-size:12.5px;color:var(--ink2);background:#fff;border:1px solid var(--bd);border-radius:14px;padding:13px 15px;line-height:1.6;margin-bottom:24px}
+  .rule b{color:var(--ink)}
+  .grp{font-family:"Inter Tight";font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3);margin:24px 0 10px}
+  a.card{display:flex;gap:13px;align-items:flex-start;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:15px 16px;margin-bottom:11px;box-shadow:0 1px 3px rgba(10,10,10,.04),0 4px 12px -6px rgba(10,10,10,.07);transition:transform .15s,box-shadow .15s}
+  a.card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(10,10,10,.13)}
+  a.card:active{transform:scale(.99)}
+  .num{font-family:"Inter Tight";font-weight:700;font-size:13px;color:var(--ink3);min-width:20px;padding-top:1px}
+  .body{flex:1;min-width:0}
+  .t{font-family:"Inter Tight";font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .d{font-size:13px;color:var(--ink2);line-height:1.5;margin-top:3px}
+  .go{color:var(--blue);font-size:18px;align-self:center}
+  .note{font-size:12px;color:var(--ink3);margin-top:22px;line-height:1.6;border-top:1px solid var(--bd);padding-top:16px}
+</style>
+</head>
+<body>
+  <h1>Restraint mockups</h1>
+  <p class="sub">The locked look applied to the gaps + the council redesigns. Proposals to review , not built yet.</p>
+  <div class="rule"><b>Locked rule:</b> clickability = affordance (chevron / underline / weight), not colour. Blue only on small clickable bits (links, small buttons, review counts). Ink for big CTAs + arrows + secondary. White + cool grey surfaces. Green = availability + success. Photos carry the warmth.</div>
+
+  <div class="grp">Empty places + missing screens (the gaps)</div>
+  <a class="card" href="account-hub.html"><span class="num">1</span><span class="body"><div class="t">Account hub</div><div class="d">Exposes the 5 orphaned account pages (vouchers, packages, messages, saved, intake) , no nav entry today.</div></span><span class="go">›</span></a>
+  <a class="card" href="voucher-success.html"><span class="num">2</span><span class="body"><div class="t">Voucher success screen</div><div class="d">Every paid voucher currently dead-ends on a 404. SuccessMark + code + add-to-wallet.</div></span><span class="go">›</span></a>
+  <a class="card" href="walkin-live-status.html"><span class="num">3</span><span class="body"><div class="t">Walk-in live status</div><div class="d">The paid queue pill is frozen today , a live, self-updating position + ETA.</div></span><span class="go">›</span></a>
+  <a class="card" href="notifications-panel.html"><span class="num">4</span><span class="body"><div class="t">Notifications panel</div><div class="d">The site-wide Bell is a dead button , a real panel + empty state.</div></span><span class="go">›</span></a>
+  <a class="card" href="language-picker.html"><span class="num">5</span><span class="body"><div class="t">Language picker</div><div class="d">The "Sprache" row is fake (links to its own homepage) , a real DE/EN/FR/IT sheet.</div></span><span class="go">›</span></a>
+  <a class="card" href="walkin-error-states.html"><span class="num">6</span><span class="body"><div class="t">Walk-in error states</div><div class="d">Ticket-not-found + the non-destructive "pay at counter" 409 (keeps the summary).</div></span><span class="go">›</span></a>
+  <a class="card" href="cancel-confirm-sheet.html"><span class="num">7</span><span class="body"><div class="t">Self-cancel confirm sheet</div><div class="d">A money-moving cancel is gated only by a native confirm today , a proper refund-terms sheet.</div></span><span class="go">›</span></a>
+  <a class="card" href="booking-empty-services.html"><span class="num">8</span><span class="body"><div class="t">Booking empty-services state</div><div class="d">A salon with no services shows a blank body + disabled CTA today , a real empty state.</div></span><span class="go">›</span></a>
+  <a class="card" href="recently-viewed-page.html"><span class="num">9</span><span class="body"><div class="t">Recently-viewed page</div><div class="d">The header link 404s today , the list page + its empty state.</div></span><span class="go">›</span></a>
+
+  <div class="grp">Redesigns (council , how the look should level up)</div>
+  <a class="card" href="pdp-hero.html"><span class="num">10</span><span class="body"><div class="t">PDP full-bleed hero</div><div class="d">Photo as the page top (Airbnb-style), not a thumbnail widget. The salon name is the type focal.</div></span><span class="go">›</span></a>
+  <a class="card" href="booking-date-density.html"><span class="num">11</span><span class="body"><div class="t">Booking date density</div><div class="d">A per-day busy-ness bar (all ink, no colour) , "this salon is busy Saturdays" with zero copy.</div></span><span class="go">›</span></a>
+  <a class="card" href="confirmation-moment.html"><span class="num">12</span><span class="body"><div class="t">Confirmation as a moment</div><div class="d">Big animated SuccessMark + when/where/who/what in 4 lines, not a receipt.</div></span><span class="go">›</span></a>
+  <a class="card" href="reviews-distribution.html"><span class="num">13</span><span class="body"><div class="t">Reviews distribution</div><div class="d">Star histogram + most-mentioned phrases + recent review , not a score + 3 quotes.</div></span><span class="go">›</span></a>
+  <a class="card" href="service-grouping.html"><span class="num">14</span><span class="body"><div class="t">Service grouping</div><div class="d">Grouped Express / Klassisch / Signature + a weight-emphasised "Beliebt", not a wall.</div></span><span class="go">›</span></a>
+  <a class="card" href="stylist-cards.html"><span class="num">15</span><span class="body"><div class="t">Stylist cards on the PDP</div><div class="d">Surface the team (face + speciality + bookings) , stylist choice is a trust decision.</div></span><span class="go">›</span></a>
+
+  <p class="note">All on the same locked restraint system. Built by parallel subagents, reviewed for cohesion. The bugs (incl. the P0 booking-timezone + the paid-flow 404s + fabricated data) are in <b>_tasks/CUSTOMER_FACING_AUDIT_2026-06-10.md</b>, reported not fixed (your call). Throwaway previews , deleted once the real builds land.</p>
+</body>
+</html>
