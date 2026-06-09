@@ -371,9 +371,9 @@
 @keyframes confirm-draw { from { stroke-dashoffset: 32; } to { stroke-dashoffset: 0; } }
 @keyframes confirm-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .success-ring { opacity: 0; animation: confirm-ring 0.75s ease-out forwards; }
-.success-disc { animation: confirm-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.07s both; }
+.success-disc { animation: confirm-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.07s both; } /* = §4 `spring` (bouncy reveal) */
 .success-check path { stroke: #fff; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 32; animation: confirm-draw 0.4s ease-out 0.36s both; }
-.celebrate-rise { animation: confirm-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.celebrate-rise { animation: confirm-rise 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; } /* = §4 `glide` (smooth reveal, no overshoot, correct for text) */
 @media (prefers-reduced-motion: reduce) {
   .success-ring { display: none; }
   .success-disc, .success-check path, .celebrate-rise { animation: none; }

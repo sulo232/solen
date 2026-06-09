@@ -24,6 +24,7 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 
 - `app/[locale]/_components/primitives/SuccessMark.tsx` , solid green disc (`s-success` #16A34A) + white check, springs in (spring overshoot) with a ring pulse. Owner-approved look (dark-green fill + white check).
 - Pair with the `.celebrate-rise` utility on the content that follows (staggered delays) for the full beat.
+- Easings map to the §4 core tokens (NOT ad-hoc): disc pop = `spring` `cubic-bezier(0.34,1.56,0.64,1)` (bouncy reveal); text rise = `glide` `cubic-bezier(0.16,1,0.3,1)` (smooth, no overshoot , text must not bounce). Choreography: ring 0s → disc pop 0.07s → check draw 0.36s → title 0.46s → subtitle 0.56s → order hero 0.68s.
 - `prefers-reduced-motion` safe (base state = final/visible; animations only add the entrance).
 - Reuse on every success peak , do not re-build the animation per surface.
 
