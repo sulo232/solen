@@ -276,6 +276,7 @@ Every wave / route sweep / component sweep / ground-up rebuild must pass BOTH ax
 
 | Gate | Threshold | Tool |
 |---|---|---|
+| **Senior Scorecard** (customer-facing screens) | **5/5 Pass** on Copy / Emphasis / Color / Type / Structure | `_design-system/SENIOR_SCORECARD.md` — drift for the countable dims + a verifier-agent pass (with screenshot) for the judgment dims |
 | **Drift A1-A12** | 0 hard breakages on touched files (A4 retired easings, A5 retired tokens, A6 emoji, A7 uppercase outside role, A8 non-canonical tracking, A9 accent outside allowed, A10 rounded image, A11 non-canonical aspect, A12 eyebrow dot, B1-B5) | `python3 .claude/skills/solen-drift-check/scripts/check.py` |
 | **Lighthouse accessibility** | ≥95 | Lighthouse CLI or Chrome DevTools |
 | **LCP (Largest Contentful Paint)** | ≤2.5s on mobile | Lighthouse / Web Vitals |
