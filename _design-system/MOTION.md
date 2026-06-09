@@ -28,15 +28,23 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 - `prefers-reduced-motion` safe (base state = final/visible; animations only add the entrance).
 - Reuse on every success peak , do not re-build the animation per surface.
 
+## DONE since (2026-06-09, the council + rollout run)
+
+- **Council COLOR MODEL** codified (LOCKFILE §1.5.0): warmth + photography first, semantic for meaning, blue system-only + the one bare-manage-link carve-out. Resolves the "dead-grey ↔ too-much-blue" oscillation. Warm neutral tokens shipped app-wide (`s-bg.sunken` #F5F5F4→#F8F5F2, `s-border` #E0DDDB→#E8E4DF).
+- **SENIOR_SCORECARD.md** ship-gate (5 dims) + drift rule **A19** (sub-12px, INFO until swept). Scorecard Color dim rewritten to fail BOTH dead-grey AND decorative-blue.
+- **Confirmation** rebuilt to 5/5 (date is focal, code → footer, ink actions + the one blue manage-link, icon-only copy, "Kalender hinzufügen").
+- **Back/Home nav**: one up-affordance (Back on deep pages, Home on top-level; Breadcrumb mobile-back removed). Header icons balanced to 22px.
+- **Salon PDP** links inked (council model). **Homepage** type swept (sub-12px floored, 10→7 sizes).
+- **SuccessMark** on the walk-in "joined the queue" peak (c9e405378).
+
 ## REMAINING WORK (the to-do , this is what must survive compaction)
 
-- [ ] **SuccessMark on the other success peaks**: walk-in joined (queue), review posted, package/gift-card bought, payment settled. (Booking-confirmed is done.)
+- [ ] **SuccessMark on the rest of the peaks**: package/gift-card bought, payment settled. (Booking-confirmed + walk-in-joined DONE. Review form has no inline success state , it toasts/closes; revisit if a success screen is added.)
 - [ ] **Motion sweep**: purposeful transitions + press feedback across the key flows (booking steps, search, salon PDP) using the §4 easings consistently.
 - [ ] **Haptics**: wire `navigator.vibrate` on key mobile taps (Buchen, confirm) where supported.
-- [ ] **Type-ramp rollout**: apply the §2 core ramp beyond the salon page (homepage, search, dashboard, booking) , kill remaining off-ramp sizes, then flip the drift-checker to enforce.
-- [ ] **Color + spacing "when to use"** decision-lines codified into the LOCKFILE (when accent, when a hairline vs a lift, when motion).
+- [ ] **App-wide sub-12px sweep**: A19 flags ~840 instances beyond the homepage; floor them all, then flip A19 from INFO to a HARD drift gate.
 - [ ] **Copy pass**: clarity + concision on the key customer surfaces (the video's "messaging" level , the one axis not yet audited).
-- [ ] **Cleanup**: remove the throwaway `public/solen-*.html` + `public/_*.png` mockup artifacts from the depth/type/motion sessions.
+- [ ] **Cleanup**: remove the throwaway `public/solen-*.html` + `public/_*.png` mockup artifacts. CAUTION: `solen-confirm-senior.html` + `solen-color-model.html` + `solen-nav-backhome.html` + `solen-home-type.html` are referenced by committed docs/commits as approved specs , re-point or note before deleting.
 
 ## Session mockups (reference, then delete)
 
