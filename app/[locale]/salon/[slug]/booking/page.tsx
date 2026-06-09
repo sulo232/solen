@@ -9,7 +9,7 @@ import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ staff?: string; service?: string; start?: string }>;
+  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string }>;
 }
 
 export async function generateMetadata({
@@ -28,7 +28,7 @@ export default async function BookingSalonPage({
   searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
-  const { staff: staffParam, service: serviceParam, start: startParam } = await searchParams;
+  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -111,6 +111,28 @@ export default async function BookingSalonPage({
       }
     : undefined;
 
+  // Multi-select handoff from the PDP "Alle ansehen" sheet (?services=<csv>): seed the cart with
+  // every chosen service (validated against the real list). Falls back to the single ?service= above.
+  const svcList = services as {
+    id: string; name_de?: string | null; name_en?: string | null;
+    price?: number | null; duration_minutes?: number | null;
+  }[];
+  const initialServices = servicesParam
+    ? servicesParam
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean)
+        .map((id) => svcList.find((s) => s.id === id))
+        .filter((s): s is NonNullable<typeof s> => Boolean(s))
+        .map((s) => ({
+          id: s.id,
+          name_de: s.name_de ?? "",
+          name_en: s.name_en ?? s.name_de ?? "",
+          price: s.price ?? 0,
+          duration_minutes: s.duration_minutes ?? 0,
+        }))
+    : undefined;
+
   // Phase 3 data: stylist↔service map (#6 filter) + service add-ons (#7 expand).
   // Enhancement data — degrade gracefully, never block booking if absent.
   const staffIds = staff.map((s) => s.id);
@@ -143,7 +165,7 @@ export default async function BookingSalonPage({
     : [];
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialStart={startParam}>
+    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
       <div className="min-h-screen bg-[--base]">
         {/* Header with salon name */}
         <header className="sticky top-0 z-40 border-b border-s-border bg-[--raised]">

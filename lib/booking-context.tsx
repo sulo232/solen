@@ -57,12 +57,14 @@ export function BookingProvider({
   salonId,
   initialStaffId,
   initialService,
+  initialServices,
   initialStart,
 }: {
   children: ReactNode;
   salonId: string;
   initialStaffId?: string;
   initialService?: SelectedService;
+  initialServices?: SelectedService[];
   initialStart?: string;
 }) {
   const [state, dispatch] = useReducer(bookingReducer, initialState, (base) => {
@@ -70,12 +72,20 @@ export function BookingProvider({
     if (initialStaffId) fd = { ...fd, selectedStaffId: initialStaffId };
     // V3-D379: arriving from a card slot pill (?service=<id>) seeds the cart with
     // that service + its totals, so the user lands mid-flow, not on an empty step.
-    if (initialService) {
+    // V3-D (2026-06-09): ?services=<csv> (multi-select from the PDP "Alle ansehen" sheet)
+    // seeds the cart with ALL chosen services; ?service=<id> (single) is the fallback.
+    const seedServices =
+      initialServices && initialServices.length
+        ? initialServices
+        : initialService
+          ? [initialService]
+          : null;
+    if (seedServices) {
       fd = {
         ...fd,
-        services: [initialService],
-        totalPrice: initialService.price,
-        totalDuration: initialService.duration_minutes,
+        services: seedServices,
+        totalPrice: seedServices.reduce((sum, s) => sum + (s.price || 0), 0),
+        totalDuration: seedServices.reduce((sum, s) => sum + (s.duration_minutes || 0), 0),
       };
     }
     // V3-D380: ?start=<ISO> (the tapped slot's time) seeds the date + time so the
