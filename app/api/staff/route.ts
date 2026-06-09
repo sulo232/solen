@@ -12,13 +12,35 @@ export async function GET(request: Request) {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("staff_members")
-      .select("id, name, avatar_url, specialties, is_active, commission_rate")
+      .select("id, name, avatar_url, specialties, is_active, commission_rate, permissions")
       .eq("salon_id", salonId)
-      .eq("is_active", true)
       .order("name");
 
     if (error) throw error;
-    return NextResponse.json({ staff: data ?? [] });
+
+    // Count each staff member's upcoming (non-cancelled) bookings so the
+    // dashboard can warn before deleting someone with future appointments.
+    const staffMembers = data ?? [];
+    let futureCounts: Record<string, number> = {};
+    if (staffMembers.length > 0) {
+      const { data: upcoming, error: bookingsError } = await supabase
+        .from("bookings")
+        .select("staff_member_id")
+        .eq("salon_id", salonId)
+        .gt("starts_at", new Date().toISOString())
+        .not("status", "in", "(cancelled,no_show)");
+      if (bookingsError) {
+        console.error("[GET /api/staff] failed to count future bookings:", bookingsError);
+      } else {
+        futureCounts = (upcoming ?? []).reduce<Record<string, number>>((acc, b) => {
+          if (b.staff_member_id) acc[b.staff_member_id] = (acc[b.staff_member_id] ?? 0) + 1;
+          return acc;
+        }, {});
+      }
+    }
+
+    const staff = staffMembers.map((s) => ({ ...s, future_bookings: futureCounts[s.id] ?? 0 }));
+    return NextResponse.json({ staff });
   } catch (err) {
     console.error("GET /api/staff error:", err);
     return NextResponse.json({ error: "Internal Server Error", staff: [] }, { status: 500 });

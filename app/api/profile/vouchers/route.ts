@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
         message,
         recipient_email,
         recipient_name,
-        salons (id, name_de, name_en)
+        salons (id, name)
         `
       )
       .eq("buyer_id", session.user.id)

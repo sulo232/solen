@@ -49,23 +49,13 @@ export default async function SalonReviewsPage({
   const { locale, slug } = await params;
   const supabase = await createServerSupabaseClient();
 
-  // Fetch salon + reviews in parallel
-  const [salonRes, reviewsRes] = await Promise.all([
-    supabase
-      .from("salons")
-      .select("id, slug, name, average_rating, review_count")
-      .eq("slug", slug)
-      .single(),
-    supabase
-      .from("reviews")
-      .select(`
-        id, rating, comment, created_at, photos, user_id,
-        profiles(display_name, avatar_url),
-        review_replies(reply_text, reply_at)
-      `)
-      .eq("salon_slug", slug)
-      .order("created_at", { ascending: false }),
-  ]);
+  // Resolve the salon first — reviews are keyed by salon_id, not slug, so we
+  // need the id before we can fetch the review rows.
+  const salonRes = await supabase
+    .from("salons")
+    .select("id, slug, name, average_rating, review_count")
+    .eq("slug", slug)
+    .single();
 
   if (!salonRes.data) {
     notFound();
@@ -73,21 +63,60 @@ export default async function SalonReviewsPage({
 
   // Hint TS that salon is non-null after the notFound() throw above
   const salon = salonRes.data!;
+
+  // Fetch reviews + the viewer's completed bookings in parallel.
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const userId = session?.user?.id ?? null;
+
+  const [reviewsRes, completedRes] = await Promise.all([
+    supabase
+      .from("reviews")
+      .select(`
+        id, rating, comment, created_at, user_id, booking_id,
+        profiles(display_name, avatar_url),
+        review_photos(id, photo_url),
+        review_replies(id, reply_text, is_public)
+      `)
+      .eq("salon_id", salon.id)
+      .order("created_at", { ascending: false }),
+    userId
+      ? supabase
+          .from("bookings")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("salon_id", salon.id)
+          .eq("status", "completed")
+          .order("starts_at", { ascending: false })
+      : Promise.resolve({ data: [] as { id: string }[] }),
+  ]);
+
+  // Mirror GET /api/reviews/my-booking: of this user's completed bookings at this
+  // salon, find the first with no review yet → SalonReviews renders the
+  // "Write review" button. (Two-step exclusion, not a PostgREST subquery filter.)
+  let unreviewedBookingId: string | null = null;
+  const completedBookings = (completedRes.data ?? []) as { id: string }[];
+  if (completedBookings.length > 0) {
+    const { data: reviewedRows } = await supabase
+      .from("reviews")
+      .select("booking_id")
+      .in("booking_id", completedBookings.map((b) => b.id));
+    const reviewedIds = new Set((reviewedRows ?? []).map((r) => r.booking_id));
+    unreviewedBookingId = completedBookings.find((b) => !reviewedIds.has(b.id))?.id ?? null;
+  }
+  // Pass rows through in the shape SalonReviews reads (profiles / review_photos /
+  // review_replies / booking_id stay as embedded objects).
   const enrichedReviews = (reviewsRes.data ?? []).map((r: any) => ({
     id: r.id,
     rating: r.rating,
     comment: r.comment,
     created_at: r.created_at,
-    photos: r.photos ?? [],
     user_id: r.user_id,
-    user_name: r.profiles?.display_name ?? "Anonym",
-    user_avatar: r.profiles?.avatar_url ?? null,
-    reply: r.review_replies?.[0]
-      ? {
-          reply_text: r.review_replies[0].reply_text,
-          reply_at: r.review_replies[0].reply_at,
-        }
-      : null,
+    booking_id: r.booking_id,
+    profiles: r.profiles ?? null,
+    review_photos: r.review_photos ?? [],
+    review_replies: r.review_replies ?? [],
   }));
 
   return (
@@ -114,7 +143,7 @@ export default async function SalonReviewsPage({
           reviewCount={salon.review_count ?? 0}
           salonId={salon.id}
           salonSlug={slug}
-          unreviewedBookingId={null}
+          unreviewedBookingId={unreviewedBookingId}
           locale={locale}
         />
       </div>

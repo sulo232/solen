@@ -5294,7 +5294,14 @@
     "past": "Passato",
     "cancelled": "Annullato",
     "noBookings": "Nessuna prenotazione ancora",
-    "myBookings": "Le mie prenotazioni"
+    "myBookings": "Le mie prenotazioni",
+    "confirmCancel": "Vuoi davvero annullare questa prenotazione?",
+    "cancelledToast": "Prenotazione annullata",
+    "cancelError": "Impossibile annullare la prenotazione. Riprova.",
+    "rescheduleHint": "Per riprogrammare, apri la pagina del salone e scegli un nuovo orario.",
+    "rebookNoSlot": "Nessun orario disponibile per riprenotare.",
+    "rebookedToast": "Riprenotato. Controlla le tue prossime prenotazioni.",
+    "rebookError": "Impossibile riprenotare. Riprova."
   },
   "reviewPrompt": {
     "title": "Come ti è piaciuta la tua visita?",

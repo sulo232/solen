@@ -1192,30 +1192,44 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
 
 function CommissionTab({ salon }: { salon: Salon }) {
   const t = useTranslations("dashboard.settings");
-  const [staff, setStaff] = useState<{ id: string; name: string; commission_pct: number }[]>([]);
+  const [staff, setStaff] = useState<{ id: string; name: string; commission_rate: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     fetch(`/api/staff?salon_id=${salon.id}`)
       .then((r) => r.json())
       .then((d) => {
         const members = d.staff ?? d.items ?? [];
-        setStaff(members.map((s: any) => ({ id: s.id, name: s.name, commission_pct: s.commission_pct ?? 0 })));
+        setStaff(members.map((s: any) => ({ id: s.id, name: s.name, commission_rate: s.commission_rate ?? 0 })));
       })
       .catch((err) => console.error("[DashboardSettings] failed to fetch staff for commission:", err))
       .finally(() => setLoading(false));
   }, [salon.id]);
 
-  const updateCommission = async (id: string, pct: number) => {
+  const updateCommission = async (id: string, rate: number) => {
     setSaving(id);
-    await fetch(`/api/staff/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ commission_pct: pct }),
-    });
-    setStaff((prev) => prev.map((s) => (s.id === id ? { ...s, commission_pct: pct } : s)));
-    setSaving(null);
+    setSaveError("");
+    try {
+      const res = await fetch(`/api/staff/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commission_rate: rate }),
+      });
+      if (!res.ok) {
+        const detail = await res.json().catch(() => ({}));
+        console.error("[DashboardSettings] commission save failed:", res.status, detail);
+        setSaveError(t("saveFailed"));
+        return;
+      }
+      setStaff((prev) => prev.map((s) => (s.id === id ? { ...s, commission_rate: rate } : s)));
+    } catch (err) {
+      console.error("[DashboardSettings] commission save error:", err);
+      setSaveError(t("saveFailed"));
+    } finally {
+      setSaving(null);
+    }
   };
 
   if (loading) return <div className="py-6 flex justify-center"><Spinner size="md" /></div>;
@@ -1224,6 +1238,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
   return (
     <div className="py-4 max-w-md space-y-3">
       <p className="text-xs text-s-ink-2">{t("commissionIntro")}</p>
+      {saveError && <p className="text-xs text-s-error">{saveError}</p>}
       {staff.map((s) => (
         <div key={s.id} className="flex items-center gap-3 py-2 border-b border-s-ink/5 last:border-0">
           <span className="text-sm font-medium text-s-ink flex-1">{s.name}</span>
@@ -1233,16 +1248,16 @@ function CommissionTab({ salon }: { salon: Salon }) {
               min={0}
               max={100}
               step={5}
-              value={s.commission_pct}
+              value={s.commission_rate}
               onChange={(e) => {
                 const v = Math.min(100, Math.max(0, +e.target.value));
-                setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_pct: v } : st)));
+                setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_rate: v } : st)));
               }}
               className="w-16 px-2 py-1.5 rounded-btn border border-s-border text-sm data-text text-right focus:outline-none focus:border-s-coral"
             />
             <span className="text-xs text-s-ink/40">%</span>
             <button
-              onClick={() => updateCommission(s.id, s.commission_pct)}
+              onClick={() => updateCommission(s.id, s.commission_rate)}
               disabled={saving === s.id}
               className="px-2 py-1 rounded-btn bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
             >

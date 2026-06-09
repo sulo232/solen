@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
 import Spinner from '@/components-legacy/ui/Spinner';
 import EmptyState from '@/components-legacy/ui/EmptyState';
+import { toast } from '@/app/[locale]/_components/primitives/Toast';
 
 type BookingTab = 'upcoming' | 'past' | 'cancelled';
 
@@ -20,42 +21,99 @@ export default function BookingsList({ userId }: BookingsListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch bookings when tab changes
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `/api/bookings/user?tab=${tab}`
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch bookings: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setBookings(data.bookings || []);
-      } catch (err) {
-        console.error('[BookingsList] Failed to load bookings:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load bookings');
-      } finally {
-        setLoading(false);
+  const fetchBookings = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/bookings/user?tab=${tab}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch bookings: ${response.statusText}`);
       }
-    };
-
-    fetchBookings();
+      const data = await response.json();
+      setBookings(data.bookings || []);
+    } catch (err) {
+      console.error('[BookingsList] Failed to load bookings:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load bookings');
+    } finally {
+      setLoading(false);
+    }
   }, [tab]);
 
-  // Tab handlers
+  // Fetch bookings when tab changes
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  // Cancel: confirm, POST the existing cancel route, then refetch the list.
+  const handleCancel = async (booking: Booking) => {
+    if (!window.confirm(t('confirmCancel'))) return;
+    try {
+      const response = await fetch(`/api/bookings/${booking.id}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || data.error || `Cancel failed: ${response.statusText}`);
+      }
+      toast.success(t('cancelledToast'));
+      await fetchBookings();
+    } catch (err) {
+      console.error('[BookingsList] Failed to cancel booking:', err);
+      toast.error(err instanceof Error ? err.message : t('cancelError'));
+    }
+  };
+
+  // Reschedule needs a new slot picked on the salon calendar; this list view has no
+  // picker and the booking payload carries no salon slug to route there. The reschedule
+  // API (POST /api/bookings/<id>/reschedule) requires concrete new_starts_at/new_ends_at.
+  // Surface the next step instead of silently no-op'ing.
   const handleReschedule = (booking: Booking) => {
-    // TODO: Implement reschedule logic
+    toast.info(t('rescheduleHint'));
   };
 
-  const handleCancel = (booking: Booking) => {
-    // TODO: Implement cancel logic
-  };
-
-  const handleRebook = (booking: Booking) => {
-    // TODO: Implement rebook logic
+  // Rebook: reuse the express-rebook API (works from the booking id) to find the next
+  // available slot, then confirm it via express-rebook/confirm, then refetch.
+  const handleRebook = async (booking: Booking) => {
+    try {
+      const response = await fetch('/api/bookings/express-rebook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          salon_id: booking.salon_id,
+          service_id: booking.service_id,
+          rebook_from_booking_id: booking.id,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || `Rebook failed: ${response.statusText}`);
+      }
+      const slot = data.suggestedSlot;
+      if (!slot?.slotId) {
+        throw new Error(data.error || t('rebookNoSlot'));
+      }
+      const confirmRes = await fetch('/api/bookings/express-rebook/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slot_id: slot.slotId,
+          service_id: data.serviceId,
+          staff_id: data.staffId,
+          source_booking_id: data.sourceBookingId,
+        }),
+      });
+      if (!confirmRes.ok) {
+        const cd = await confirmRes.json().catch(() => ({}));
+        throw new Error(cd.error || `Rebook failed: ${confirmRes.statusText}`);
+      }
+      toast.success(t('rebookedToast'));
+      await fetchBookings();
+    } catch (err) {
+      console.error('[BookingsList] Failed to rebook booking:', err);
+      toast.error(err instanceof Error ? err.message : t('rebookError'));
+    }
   };
 
   return (

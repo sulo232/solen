@@ -5322,7 +5322,14 @@
     "past": "Past",
     "cancelled": "Cancelled",
     "noBookings": "No bookings yet",
-    "myBookings": "My bookings"
+    "myBookings": "My bookings",
+    "confirmCancel": "Are you sure you want to cancel this booking?",
+    "cancelledToast": "Booking cancelled",
+    "cancelError": "Could not cancel the booking. Please try again.",
+    "rescheduleHint": "To reschedule, open the salon page and pick a new time.",
+    "rebookNoSlot": "No available slot found to rebook.",
+    "rebookedToast": "Rebooked. Check your upcoming bookings.",
+    "rebookError": "Could not rebook. Please try again."
   },
   "reviewPrompt": {
     "title": "How was your visit?",

@@ -392,7 +392,7 @@ export default function CalendarPage() {
   const contextTarget = useRef<string | null>(null);
 
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const weekStr = weekStart.toISOString().split("T")[0];
+  const weekStr = ymdLocal(weekStart);
 
   // Build service category map for color-coded borders
   const serviceCategoryMap = new Map<string, string>();
@@ -463,7 +463,7 @@ export default function CalendarPage() {
     if (mobileView !== "monat" || !salonId) return;
     let cancelled = false;
     const gridDays = getMonthCalendarDays(currentDate); // 42 days (6 weeks)
-    const mondays = Array.from(new Set(gridDays.map((d) => startOfWeek(d).toISOString().split("T")[0])));
+    const mondays = Array.from(new Set(gridDays.map((d) => ymdLocal(startOfWeek(d)))));
     Promise.all(
       mondays.map((m) =>
         fetch(`/api/slots?salon_id=${salonId}&week=${m}`)
@@ -668,7 +668,7 @@ export default function CalendarPage() {
         {(() => {
           // ── Agenda render (reused by Tag + Woche-selected-day). ──
           const renderAgenda = (forDate: Date) => {
-            const dayIso = forDate.toISOString().split("T")[0];
+            const dayIso = ymdLocal(forDate);
             const daySlots = slots.filter((s) => s.starts_at.startsWith(dayIso)).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
             if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-3 text-sm">{t("noSlotsThisDay")}</div>;
             return (
@@ -733,7 +733,7 @@ export default function CalendarPage() {
               {mobileView !== "monat" && (
                 <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-3.5">
                   {stripDays.map((d, i) => {
-                    const dIso = d.toISOString().split("T")[0];
+                    const dIso = ymdLocal(d);
                     const on = d.toDateString() === currentDate.toDateString();
                     const has = slots.some((s) => s.starts_at.startsWith(dIso));
                     return (
@@ -763,7 +763,7 @@ export default function CalendarPage() {
                       <div key={i} className="text-[12px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
                     ))}
                     {getMonthCalendarDays(currentDate).map((d, i) => {
-                      const dIso = d.toISOString().split("T")[0];
+                      const dIso = ymdLocal(d);
                       const out = d.getMonth() !== currentDate.getMonth();
                       const today = isTodayDate(d);
                       const count = monthCounts[dIso] ?? 0;
@@ -868,7 +868,7 @@ export default function CalendarPage() {
               <div className="py-3 px-2 text-xs text-s-ink/30" />
               {weekDays.map((d, i) => {
                 const isToday = d.toDateString() === new Date().toDateString();
-                const dateStr = d.toISOString().split("T")[0];
+                const dateStr = ymdLocal(d);
                 return (
                   <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
                     <p className={`text-xs font-medium ${isToday ? "text-s-coral" : "text-s-ink-2"}`}>{DAYS_LABEL[i]}</p>
@@ -895,7 +895,7 @@ export default function CalendarPage() {
                       {`${String(hour).padStart(2, "0")}:00`}
                     </div>
                     {weekDays.map((d, dayIdx) => {
-                      const dateStr = d.toISOString().split("T")[0];
+                      const dateStr = ymdLocal(d);
                       const dropId = `${dateStr}:${String(hour).padStart(2, "0")}:unassigned`;
                       const cellSlots = slotForCell(dateStr, hour);
                       return (
@@ -965,7 +965,7 @@ export default function CalendarPage() {
           ) : (
             Array.from({ length: 13 }, (_, rowIdx) => {
               const hour = rowIdx + 8;
-              const dateStr = currentDate.toISOString().split("T")[0];
+              const dateStr = ymdLocal(currentDate);
               return (
                 <div key={hour} className="grid border-b border-s-ink/5 min-h-[48px]"
                   style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
@@ -1063,7 +1063,7 @@ export default function CalendarPage() {
             </div>
             <div className="grid grid-cols-7">
               {monthDays.map((d, i) => {
-                const dateStr = d.toISOString().split("T")[0];
+                const dateStr = ymdLocal(d);
                 const isToday = d.toDateString() === new Date().toDateString();
                 const isCurrentMonth = d.getMonth() === thisMonth;
                 const daySlots = slots.filter((s) => s.starts_at.startsWith(dateStr));

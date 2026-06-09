@@ -33,7 +33,7 @@ export default function MyGiftCardsPage() {
         const { data } = await supabase
           .from("gift_cards")
           .select("*")
-          .or(`purchaser_id.eq.${session.user.id},recipient_email.eq.${session.user.email}`)
+          .or(`purchaser_user_id.eq.${session.user.id},recipient_email.eq.${session.user.email}`)
           .order("created_at", { ascending: false });
 
         if (!cancelled && data) setCards(data as any);

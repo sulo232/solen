@@ -9,6 +9,31 @@ import { sendEmail } from "@/lib/email";
 import { getActiveSalon } from "@/lib/active-salon";
 import crypto from "crypto";
 
+// GET /api/staff/invite — List pending invites for the owner's active salon
+export async function GET() {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });
+
+  const { data, error } = await supabase
+    .from("staff_invites")
+    .select("id, email, name:staff_name, status, created_at")
+    .eq("salon_id", salon.id)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[StaffInvite] Failed to list pending invites:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ invites: data ?? [] });
+}
+
 // POST /api/staff/invite — Salon owner invites a staff member
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();

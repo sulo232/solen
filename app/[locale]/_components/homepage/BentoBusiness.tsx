@@ -450,6 +450,34 @@ export function JoinUsCard() {
   // mid-animation. Morphing-dialog uses `layoutId` shared between trigger
   // (in normal flow) and content (in a portal), so motion morphs a single
   // conceptual element across the layout boundary smoothly.
+  const [status, setStatus] = React.useState<"idle" | "submitting" | "success">("idle");
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (status === "submitting") return;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setStatus("submitting");
+    setErrorMsg(null);
+    try {
+      const res = await fetch("/api/partner/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: String(data.get("email") ?? ""),
+          salon_name: String(data.get("salon") ?? ""),
+        }),
+      });
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      setStatus("success");
+    } catch (err) {
+      console.error("[JoinUsCard] partner lead submit failed:", err);
+      setStatus("idle");
+      setErrorMsg("Etwas ist schiefgelaufen. Bitte versuch es erneut.");
+    }
+  }
+
   return (
     <MorphingDialog
       transition={{ type: "spring", bounce: 0.05, duration: 0.4 }}
@@ -542,59 +570,76 @@ export function JoinUsCard() {
                 exit: { opacity: 0, y: 8 },
               }}
             >
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  alert(
-                    "Anmeldung erfasst (Mockup). Backend wiring deferred — wir melden uns sobald die API live ist.",
-                  );
-                }}
-                className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
-              >
-                {/* V3-D219: input radius 12px literal → rounded-input (16px) token. Added h-11 (44px touch target — was missing). */}
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Dein Name"
-                  required
-                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="E-Mail"
-                  required
-                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
-                />
-                <input
-                  type="text"
-                  name="salon"
-                  placeholder="Salon-Name"
-                  required
-                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
-                />
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="Stadt"
-                  required
-                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
-                />
-                <div className="mt-2 flex flex-col gap-4 md:col-span-2 md:flex-row md:items-center md:justify-between">
-                  <p className="max-w-[320px] font-body text-[12px] font-normal leading-[1.4] text-white/70">
-                    Mit Anmeldung akzeptierst du unsere AGB. Keine versteckten
-                    Gebühren — Bezahlung erst ab erstem Termin.
-                  </p>
-                  {/* V3-D219: shadow → shadow-elevation-2; duration-200 ease-glide per §6.4. */}
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-bold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] md:self-auto"
-                  >
-                    Jetzt anmelden
-                    <ArrowRight size={16} aria-hidden />
-                  </button>
+              {status === "success" ? (
+                <div className="mt-8 flex items-start gap-4 rounded-input bg-white/10 p-6">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-s-ink">
+                    <Check size={18} strokeWidth={2.5} aria-hidden />
+                  </div>
+                  <div>
+                    <p className="font-display text-[17px] font-semibold tracking-[-0.02em] text-white">
+                      Anmeldung erhalten.
+                    </p>
+                    <p className="mt-1 font-body text-[14px] font-normal leading-[1.5] text-white/80">
+                      Danke! Wir melden uns innerhalb von 24 Stunden bei dir.
+                    </p>
+                  </div>
                 </div>
-              </form>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
+                >
+                  {/* V3-D219: input radius 12px literal → rounded-input (16px) token. Added h-11 (44px touch target — was missing). */}
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Dein Name"
+                    required
+                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="E-Mail"
+                    required
+                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  />
+                  <input
+                    type="text"
+                    name="salon"
+                    placeholder="Salon-Name"
+                    required
+                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  />
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="Stadt"
+                    required
+                    className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  />
+                  {errorMsg ? (
+                    <p role="alert" className="font-body text-[13px] font-normal text-white md:col-span-2">
+                      {errorMsg}
+                    </p>
+                  ) : null}
+                  <div className="mt-2 flex flex-col gap-4 md:col-span-2 md:flex-row md:items-center md:justify-between">
+                    <p className="max-w-[320px] font-body text-[12px] font-normal leading-[1.4] text-white/70">
+                      Mit Anmeldung akzeptierst du unsere AGB. Keine versteckten
+                      Gebühren — Bezahlung erst ab erstem Termin.
+                    </p>
+                    {/* V3-D219: shadow → shadow-elevation-2; duration-200 ease-glide per §6.4. */}
+                    <button
+                      type="submit"
+                      disabled={status === "submitting"}
+                      className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-bold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] disabled:opacity-60 disabled:hover:scale-100 md:self-auto"
+                    >
+                      {status === "submitting" ? "Wird gesendet..." : "Jetzt anmelden"}
+                      <ArrowRight size={16} aria-hidden />
+                    </button>
+                  </div>
+                </form>
+              )}
             </MorphingDialogDescription>
           </div>
 

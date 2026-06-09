@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { Instagram, Facebook, ChevronRight } from "lucide-react";
+import { Instagram, Facebook, ChevronRight, Check } from "lucide-react";
+import { useState } from "react";
 
 /**
  * V3 Footer — variant C "nav hub" (2026-06-05, owner pick).
@@ -9,8 +12,9 @@ import { Instagram, Facebook, ChevronRight } from "lucide-react";
  * a language row. Replaces the prior 2-column + Versprechen + SolenStamp
  * layout now that the company pages exist and the footer is a real nav hub.
  *
- * Swiss flag is an inline SVG (no emoji, per house rule). Server component;
- * newsletter is a plain form POST to /api/newsletter/subscribe (no JS needed).
+ * Swiss flag is an inline SVG (no emoji, per house rule). Client component;
+ * the newsletter form submits JSON { email } to POST /api/newsletter via
+ * fetch and shows an inline success state on 2xx.
  *
  * Every href below points to a route that exists (verified 2026-06-05):
  *   /ueber-uns /karriere /presse /blog · /fuer-salons /business /partner ·
@@ -87,29 +91,7 @@ export default function Footer({ locale }: { locale: string }) {
               Neue Salons, Trends und Tipps. Einmal im Monat.
             </p>
           </div>
-          <form
-            method="post"
-            action="/api/newsletter/subscribe"
-            className="relative w-full max-w-[360px]"
-            aria-label="Newsletter abonnieren"
-          >
-            <label htmlFor="footer-newsletter-email" className="sr-only">E-Mail-Adresse</label>
-            <input
-              id="footer-newsletter-email"
-              type="email"
-              name="email"
-              required
-              placeholder="deine@email.ch"
-              className="w-full rounded-[12px] border border-s-border bg-white py-[12px] pl-[14px] pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3 focus:border-s-ink"
-            />
-            <button
-              type="submit"
-              aria-label="Abonnieren"
-              className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95"
-            >
-              <ChevronRight size={18} aria-hidden />
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </div>
 
@@ -187,5 +169,77 @@ export default function Footer({ locale }: { locale: string }) {
         </div>
       </div>
     </footer>
+  );
+}
+
+/** Newsletter subscribe form. Submits JSON { email } to POST /api/newsletter
+ *  (the real route; the schema is `z.object({ email })`). Shows an inline
+ *  success state on 2xx and an inline error message otherwise. */
+function NewsletterForm() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (status === "loading") return;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("done");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      console.error("[Footer] Newsletter subscribe error:", err);
+      setStatus("error");
+    }
+  }
+
+  if (status === "done") {
+    return (
+      <p className="flex w-full max-w-[360px] items-center gap-2 font-body text-[14px] text-s-ink" role="status">
+        <Check size={18} className="text-s-success" aria-hidden />
+        Danke! Du bist eingetragen.
+      </p>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="relative w-full max-w-[360px]"
+      aria-label="Newsletter abonnieren"
+    >
+      <label htmlFor="footer-newsletter-email" className="sr-only">E-Mail-Adresse</label>
+      <input
+        id="footer-newsletter-email"
+        type="email"
+        name="email"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="deine@email.ch"
+        className="w-full rounded-[12px] border border-s-border bg-white py-[12px] pl-[14px] pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3 focus:border-s-ink"
+      />
+      <button
+        type="submit"
+        aria-label="Abonnieren"
+        disabled={status === "loading"}
+        className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 disabled:opacity-60"
+      >
+        <ChevronRight size={18} aria-hidden />
+      </button>
+      {status === "error" && (
+        <p className="mt-1.5 font-body text-[12px] text-s-error" role="alert">
+          Eintragen fehlgeschlagen. Bitte versuch es erneut.
+        </p>
+      )}
+    </form>
   );
 }

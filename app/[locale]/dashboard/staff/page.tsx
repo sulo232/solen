@@ -273,7 +273,7 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
       const res = await fetch("/api/staff/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ salon_id: salonId, email, name: name.trim() }),
+        body: JSON.stringify({ salon_id: salonId, email, staff_name: name.trim() }),
       });
       if (!res.ok) {
         const data = await res.json();

@@ -36,18 +36,20 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch(`/api/salons/${salonSlug}/staff`);
+        const res = await fetch(`/api/staff?salon_id=${salonId}`);
         if (res.ok && !cancelled) {
           const data = await res.json();
           if (!cancelled) setStaff(data.staff ?? data.data ?? []);
         }
+      } catch (err) {
+        console.error("[PickStylistFlow] failed to load staff:", err);
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
     load();
     return () => { cancelled = true; };
-  }, [salonSlug]);
+  }, [salonId]);
 
   if (loading) {
     return (

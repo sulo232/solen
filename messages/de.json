@@ -5332,7 +5332,14 @@
     "past": "Vergangen",
     "cancelled": "Storniert",
     "noBookings": "Noch keine Buchungen",
-    "myBookings": "Meine Buchungen"
+    "myBookings": "Meine Buchungen",
+    "confirmCancel": "Möchtest du diese Buchung wirklich stornieren?",
+    "cancelledToast": "Buchung storniert",
+    "cancelError": "Buchung konnte nicht storniert werden. Bitte versuche es erneut.",
+    "rescheduleHint": "Zum Verschieben öffne die Salon-Seite und wähle eine neue Zeit.",
+    "rebookNoSlot": "Kein freier Termin zum erneuten Buchen gefunden.",
+    "rebookedToast": "Erneut gebucht. Schau bei deinen anstehenden Buchungen.",
+    "rebookError": "Erneutes Buchen fehlgeschlagen. Bitte versuche es erneut."
   },
   "reviewPrompt": {
     "title": "Wie war dein Besuch?",

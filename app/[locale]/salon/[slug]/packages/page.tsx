@@ -213,11 +213,10 @@ export default function SalonPackagesPage() {
   const [purchasing, setPurchasing] = useState<PackageData | null>(null);
 
   useEffect(() => {
-    fetch(`/api/salons?slug=${slug}`)
+    fetch(`/api/salons/by-slug/${slug}`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
-        if (!d) return null;
-        const salon = d.data ?? d;
+        const salon = d?.salon ?? d;
         if (salon?.id) {
           setSalonName(salon.name ?? "");
           return fetch(`/api/packages?salon_id=${salon.id}`);

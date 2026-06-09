@@ -171,13 +171,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
                     try {
                       const fd = new FormData();
                       fd.append("file", file);
-                      fd.append("service_id", initial.id);
-                      const res = await fetch("/api/services/photos", { method: "POST", body: fd });
+                      const res = await fetch(`/api/services/${initial.id}/photos`, { method: "POST", body: fd });
                       if (res.ok) {
-                        const { url } = await res.json();
-                        setPhotos((prev) => [...prev, url]);
+                        const data = (await res.json()).data;
+                        setPhotos((prev) => [...prev, data.url]);
+                      } else {
+                        const err = await res.json().catch(() => ({}));
+                        console.error("[ServiceForm] photo upload failed:", res.status, err);
+                        alert(err.error || t('importFailed'));
                       }
-                    } catch {} finally { setUploading(false); }
+                    } catch (err) {
+                      console.error("[ServiceForm] photo upload failed:", err);
+                      alert(t('importFailed'));
+                    } finally { setUploading(false); }
                   }} />
                 </label>
               )}

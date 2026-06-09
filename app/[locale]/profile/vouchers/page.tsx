@@ -19,7 +19,7 @@ interface Voucher {
   message?: string;
   recipient_email: string;
   recipient_name: string;
-  salons: { id: string; name_de: string; name_en: string } | null;
+  salons: { id: string; name: string } | null;
 }
 
 interface VouchersData {
@@ -205,7 +205,7 @@ function VoucherCard({
   locale: string;
   status: "active" | "used" | "expired";
 }) {
-  const salonName = locale === "de" ? voucher.salons?.name_de : voucher.salons?.name_en;
+  const salonName = voucher.salons?.name;
   const expiresAt = voucher.expires_at ? new Date(voucher.expires_at) : null;
   const daysUntilExpiry = expiresAt
     ? Math.ceil((expiresAt.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
