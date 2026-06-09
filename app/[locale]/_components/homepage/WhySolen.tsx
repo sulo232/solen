@@ -116,7 +116,7 @@ export default function SalonRegister() {
             {/* V3-D330: font-black 900 → font-bold 700 per §2 Geist weight scale ("NEVER 800/900 — Geist 800 is heavy + clumsy"). Stars orange #F3A864 → s-star #FFC32B yellow per universal-color rule (rating = yellow). */}
             <h2 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.0] tracking-normal text-s-ink">
               Solen für<br />
-              <span className="text-s-accent">dein Geschäft.</span>
+              <span className="text-s-ink">dein Geschäft.</span>
             </h2>
             <p className="mt-5 font-body text-[15px] md:text-[17px] leading-[1.55] text-s-ink-2 max-w-[480px]">
               Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen
