@@ -1,5 +1,28 @@
 # Database Schema Drift Audit — 2026-05-29
 
+> ## ⚠️ STALE — 2026-06-09 UPDATE (read this first)
+>
+> The body below is **11 days out of date**. A large reapply wave landed on **2026-06-05**
+> (`m071_megabuild`, `m072_nail`, `m084_voucher_system`, `m039_loyalty`, `m035_favorites`,
+> `m20260401_gift_vouchers`, staff scheduling, walk-in, tips, VAT, refund, RLS groups, …).
+> Verified live on 2026-06-09: the DB now has **132 public tables** and **141 applied migrations**.
+> Every table the body lists as "missing" (vouchers, gift_cards, loyalty_*, favorites,
+> staff_schedules, barber_walkin_queue, salon_payouts, etc.) **now EXISTS**.
+>
+> **The only genuine remaining gap found was `profiles.customer_preferences`** (repo migration
+> `015` was never applied) — **APPLIED 2026-06-09** as `add_customer_preferences_to_profiles`
+> (additive, idempotent). Settings + Beauty-Profile load/save now work with no code change.
+>
+> **`services.name_fr/name_it` and `salons.name_de/name_en` are NOT drift** — those columns were
+> never intended (services use `name_de/name_en`; salons use a single `name`).
+> Code that selects them is a plain bug, fixed in code, not via migration.
+>
+> **DO NOT `supabase db push`.** The repo carries the same migrations under two naming schemes
+> (numeric `013_drop_legacy_schema` + timestamp `drop_legacy_schema`), so a push would treat `013`
+> as unapplied and **re-run its `DROP TABLE ... CASCADE` on services/bookings/reviews** → data loss.
+> Reconcile any future gap **surgically**: introspect the live schema, then apply only the genuinely-
+> missing piece as an idempotent additive migration (`apply_migration`, `IF NOT EXISTS`, no drops).
+
 ## TL;DR
 The live Supabase DB (`solen`, project `tocfnsmxmdxkrcmjzzdw`) is **missing roughly half
 the schema** the repo's migrations define: **~78 tables and ~98 columns are absent**.

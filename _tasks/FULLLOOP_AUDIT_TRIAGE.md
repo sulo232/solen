@@ -1,0 +1,283 @@
+# Full-loop audit triage (2026-06-09)
+
+Source: 13-agent read-only audit. 86 raw findings -> 86 after dedupe.
+Categories: CODE=safe autonomous fix · DB=needs migration/schema call · PRODUCT=feature decision · I18N=localization batch · DESIGN=mockup-first · DECISION=ask user/council.
+
+Broken loops (do not close): profile-core/settings, profile-extras, commerce, salon services/staff, salon settings, salon ops, global chrome.
+
+
+## CODE (24)
+
+- **[P0] dead-button** `components-legacy/booking/BookingsList.tsx:49` (/profile/bookings)
+  - Rebook / Reschedule / Cancel booking buttons are no-ops (empty TODO handlers)
+  - fix: Wire handleCancel to POST /api/bookings/[id]/cancel (with confirm + refetch), handleReschedule to navigate to the reschedule flow or call /api/bookings/[id]/reschedule, and handleRebook to /api/bookin
+- **[P0] bug** `app/api/profile/vouchers/route.ts:33` (/profile/vouchers)
+  - Vouchers API 500s for every user — selects salons.name_de/name_en that don't exist
+  - fix: Change the select to `salons (id, name)` and map salonName from voucher.salons?.name in VoucherCard (page.tsx line 208), dropping the locale name_de/name_en branch. Confirm against the salons schema (
+- **[P0] bug** `app/[locale]/salon/[slug]/packages/page.tsx:216` (/salon/[slug]/packages)
+  - Packages never load — salon lookup hits a non-filtering list endpoint and reads .id off the wrong shape
+  - fix: Use the slug-resolving endpoint the gift-card page uses: `fetch(`/api/salons/by-slug/${slug}`)` (curl-verified 200, returns {salon:{id,name,...}}). Then read d.salon.id / d.salon.name and chain `/api/
+- **[P0] dead-button** `app/[locale]/_components/homepage/BentoBusiness.tsx:546` (/business, /fuer-salons (V1 default, no ?v=2))
+  - JoinUsCard partner-signup form only alert()s — never reaches any backend
+  - fix: Wire JoinUsCard's form to POST /api/partner/leads (it already accepts {email, salon_name}; map the salon field to salon_name, drop or store name/city), then show the success state instead of alert(). 
+- **[P0] bug** `app/api/staff/route.ts:17` (/dashboard/staff)
+  - Staff GET hard-filters is_active=true — deactivating a staff member makes them vanish forever, no way to reactivate
+  - fix: Remove `.eq("is_active", true)` from the staff GET (or make it conditional on a query param). The page already does client-side active/inactive filtering at staff/page.tsx:533, so it expects to receiv
+- **[P0] dead-button** `app/[locale]/dashboard/services/page.tsx:175` (/dashboard/services)
+  - Service photo uploader POSTs to a non-existent route (/api/services/photos -> 405) and parses the wrong response shape; failure is swallowed
+  - fix: Change line 175 to `fetch(`/api/services/${initial.id}/photos`, { method: "POST", body: fd })` (drop the now-unused service_id form field), and read the URL as `const { data } = await res.json(); setP
+- **[P0] bug** `app/[locale]/dashboard/settings/page.tsx:1204` (/dashboard/settings (Provisionen / Commission tab))
+  - Commission tab read/write uses commission_pct but API field is commission_rate — values always load 0, save silently 400s
+  - fix: Rename to commission_rate throughout CommissionTab: read `commission_rate: s.commission_rate ?? 0`, store/render that key, and send `{ commission_rate: pct }` in the PATCH body. Also surface a visible
+- **[P0] bug** `app/[locale]/dashboard/calendar/page.tsx:671` (/dashboard/calendar)
+  - Calendar buckets slots into the wrong day (UTC off-by-one) for Swiss users
+  - fix: Replace every `X.toISOString().split('T')[0]` used for day-bucketing/agenda/strip/month with the existing ymdLocal(X) helper so the local calendar date is used consistently (the same fix already appli
+- **[P1] dead-button** `app/[locale]/walk-in-pay/page.tsx:374` (/walk-in-pay)
+  - Top-right Menu (hamburger) button has no onClick / no handler — dead control on every walk-in pay screen
+  - fix: Either remove the Menu button entirely (the pay flow is a self-contained focused flow with no menu to open — HideInBooking already strips the global header here, so there's intentionally no nav), or w
+- **[P1] bug** `app/[locale]/profile/gift-cards/page.tsx:36` (/profile/gift-cards)
+  - Buyer's purchased gift cards never load — query references a non-existent column
+  - fix: Change `purchaser_id.eq.` to `purchaser_user_id.eq.` in the .or() filter on line 36.
+- **[P1] bug** `components-legacy/discovery/PickStylistFlow.tsx:39` (/discover/[id] (DetailPage → PickStylistFlow))
+  - Pick-a-stylist fetches a 404 staff endpoint; staff list never loads
+  - fix: Create app/api/salons/[slug]/staff/route.ts (or repoint the fetch at the existing /api/staff?salon=... endpoint), and fix DetailPage to pass the real slug for salonSlug instead of owner_salon_id. Veri
+- **[P1] bug** `app/[locale]/dashboard/staff/page.tsx:390` (/dashboard/staff)
+  - Pending-invites list fetches GET /api/staff/invite which has no GET handler (405) — sent invites are never displayed
+  - fix: Add a GET handler to app/api/staff/invite/route.ts that returns pending staff_invites for the owner's salon as `{ invites: [...] }`, scoped to the salon_id query param and ownership-checked.
+- **[P1] bug** `app/[locale]/dashboard/staff/page.tsx:276` (/dashboard/staff)
+  - Invite modal sends `name`, but the invite schema only accepts `staff_name` — the typed name is silently dropped
+  - fix: Either rename the modal payload key from `name` to `staff_name` (staff/page.tsx:276), or accept both in staffInviteSchema. Keep the two field names consistent end to end.
+- **[P1] bug** `app/api/staff/route.ts:15` (/dashboard/staff)
+  - Staff GET omits `permissions` and `future_bookings` — edit always resets permissions, delete never warns about upcoming bookings
+  - fix: Include `permissions` in the staff GET select, and compute/return a future_bookings count (or fetch it in the delete-confirm flow). The frontend already consumes both.
+- **[P1] bug** `app/[locale]/_components/layout/Footer.tsx:92` ((all pages with footer))
+  - Footer newsletter form posts to a non-existent route AND uses a content-type the real route can't parse
+  - fix: Point the form at /api/newsletter and either (1) make the route accept x-www-form-urlencoded (read req.formData() when content-type isn't JSON) and redirect back with a success flag, or (2) convert th
+- **[P2] bug** `components-legacy/booking/DateTimeStep.tsx:123` (/salon/[slug]/booking)
+  - DateTimeStep advances via the legacy step key 'confirm' — works only because the wizard re-maps it
+  - fix: Change DateTimeStep line 123 to goToStep('pay-confirm') so the step transition references the live enum directly and no longer depends on the legacy-compat shim.
+- **[P2] bug** `app/[locale]/_components/primitives/CookieConsent.tsx:188` (/walk-in-join)
+  - Cookie banner can cover the sticky 'Proceed to Payment' CTA on /walk-in-join (the same bug that was explicitly fixed for /walk-in-pay)
+  - fix: If /walk-in-join is kept, add it to both the CookieConsent suppression regex (line 188) and HideInBooking (line 54), matching walk-in-pay. If deleted, no action.
+- **[P2] bug** `app/[locale]/_components/search/SearchTemplate.tsx:1516` (/coiffeur /search etc. (mobile, scrolled))
+  - Floating 'Karte' FAB may overlap the Load-more button / last card row on mobile
+  - fix: Add bottom padding (e.g. pb-24) to the results container when the FAB can show, or nudge the FAB up / hide it near the list end, so it never sits on top of the Load-more button or last row at 375px.
+- **[P2] bug** `app/[locale]/discover/loading.tsx:7` (/discover (loading.tsx))
+  - Route loading skeleton shows category tabs the live page removed
+  - fix: Update loading.tsx to mirror the current header: search bar + tune/saved icons + the texture/quick-chip row, and use a column-based masonry skeleton (reuse DiscoveryGridSkeleton, which the page itself
+- **[P2] bug** `app/api/salons/route.ts:534` (/onboarding/salon (submit))
+  - Salon-create silently drops email / google_place_id / cancellation_policy / phone_verified due to schema drift
+  - fix: Apply the missing salons columns via migration (email, google_place_id, cancellation_policy, phone_verified, tiktok_url) and a real quartier value, then un-comment the insert fields. Backend/migration
+- **[P2] bug** `app/[locale]/dashboard/services/page.tsx:584` (/dashboard/services)
+  - CSV import error uses native alert() and the photo-upload catch is empty — violates the project error-handling contract and gives a jarring UX
+  - fix: Replace the alert with an inline error state inside the import modal (mirror InviteModal's `error` state pattern at staff/page.tsx:266/313), and replace the empty photo-upload catch with `console.erro
+- **[P2] bug** `app/[locale]/dashboard/settings/page.tsx:711` (/dashboard/settings (Vacation tab + Payments/MobileIndex status pill))
+  - text-s-star-text references a non-existent token — text renders unstyled
+  - fix: Swap to a real token: use `text-s-warning-text` (the defined deep-amber #B45309, V3-D421 'amber twin' of the accent) for amber-on-pale text, or define a `text` key on s-star if a star-specific text co
+- **[P2] missing-button** `app/[locale]/dashboard/settings/page.tsx:1039` (/dashboard/settings (Closures tab))
+  - Closure delete has no confirm step and removeClosure ignores API failures (optimistic remove can desync)
+  - fix: Mirror OffPeakManager: keep a `previous` snapshot, only commit the optimistic removal, and on `!res.ok` restore it + show an error. Optionally add a confirm for destructive delete to match the off-pea
+- **[P2] bug** `app/[locale]/dashboard/calendar/page.tsx:286` (/dashboard/calendar)
+  - Reschedule modal does not surface API failures (silent fail)
+  - fix: Make rescheduleSlot return/throw on failure, await it in handleReschedule, and show an error toast (or keep the modal open) on a non-ok response, matching the error-handling rigor of loadSlots.
+
+## DB (3)
+
+- **[P0] bug** `app/api/bookings/user/route.ts:31` (/profile/bookings)
+  - Bookings list 500s for every user — query selects services.name_fr / name_it which don't exist in DB (schema drift)
+  - fix: Drop name_fr, name_it from the select in app/api/bookings/user/route.ts (fall back to name_de/name_en, which BookingCard.getServiceName already does), OR apply the missing migration that adds services
+- **[P0] bug** `app/[locale]/profile/settings/page.tsx:36` (/profile/settings)
+  - Settings page shows ALL fields blank on load — SELECT names customer_preferences, a column missing from DB, failing the entire query
+  - fix: Either remove customer_preferences from the SELECT (and stop passing it to BeautyProfileForm) until the column exists, or apply the migration adding profiles.customer_preferences JSONB. Until then the
+- **[P0] bug** `app/[locale]/profile/settings/BeautyProfileForm.tsx:58` (/profile/settings)
+  - Beauty Profile 'Speichern' always errors — PATCH writes customer_preferences, a column missing from DB
+  - fix: Add the profiles.customer_preferences JSONB column via migration (the gender + hair_type columns already exist and do persist). Confirm updateProfileSchema (validations.ts:90 customer_preferences: z.a
+
+## PRODUCT (2)
+
+- **[P0] bug** `components-legacy/booking/PayConfirmStep.tsx:159` (/salon/[slug]/booking)
+  - Multi-service cart books only the FIRST service but charges the full multi-service total
+  - fix: Either (a) gate the UI to single-service-per-booking (disable adding a 2nd primary service, keep only add-ons that the slot/price model supports), or (b) extend the booking model + /api/bookings to ac
+- **[P1] bug** `app/[locale]/_components/salon/SalonServicesSheet.tsx:166` (/salon/[slug] (services sheet) → /salon/[slug]/booking)
+  - Services-sheet "Weiter" CTA uses ?services= (plural) but booking page only reads ?service= (singular) — all multi-select picks are dropped on handoff
+  - fix: Either (a) change the sheet href to emit a param the booking page reads, or (b) make the booking page + BookingProvider parse `?services=` (comma-split → preselect multiple) the same way it handles si
+
+## I18N (23)
+
+- **[P0] bug** `app/[locale]/salon/[slug]/gift-card/page.tsx:58` (/salon/[slug]/gift-card)
+  - Gift-card purchase skips payment entirely — shows success + code without ever charging
+  - fix: Mount Stripe Elements exactly like the packages page (PurchaseModal in app/[locale]/salon/[slug]/packages/page.tsx): take the returned clientSecret, render <Elements><PaymentElement/></Elements>, call
+- **[P0] missing-feature** `app/[locale]/salon/[slug]/reviews/page.tsx:117` (/salon/[slug]/reviews)
+  - No UI anywhere to leave a review — the only Write-Review button never renders
+  - fix: Wire a real unreviewed-booking lookup (the orphaned GET /api/reviews/eligibility or /my-booking already exists for this) and pass the resulting bookingId into SalonReviews so the Write-Review button r
+- **[P0] dead-button** `app/[locale]/auth/register/page.tsx:20` (/auth/register?intent=salon and full /en /fr /it register)
+  - Registration page is hardcoded German — broken for en/fr/it salon owners
+  - fix: Extract all StepRole/StepRegister copy into an i18n namespace (e.g. authRegister) for de/en/fr/it and replace the literals with t() calls, matching how the rest of the app localizes.
+- **[P1] bug** `components-legacy/booking/PayConfirmStep.tsx:257` (/salon/[slug]/booking)
+  - Pay/confirm step is hardcoded German — en/fr/it customers see German at the money step
+  - fix: Move every literal string above into the booking namespace (de/en/fr/it) and read via useTranslations; lift STEP_LABELS + 'Alle ansehen' into messages too. This is the customer-flow slice of the proje
+- **[P1] dead-button** `app/[locale]/checkout/page.tsx:72` (/checkout)
+  - /checkout Stripe success return_url points to /checkout/success which does not exist (404)
+  - fix: Either build app/[locale]/checkout/success/page.tsx (finalize + show confirmation) or, if /checkout is retired per the finding above, this becomes moot. Do not ship a pay flow whose success URL 404s.
+- **[P1] bug** `app/[locale]/salon/[slug]/reviews/page.tsx:66` (/salon/[slug]/reviews)
+  - /reviews server query keys on reviews.salon_slug while reviews are keyed by salon_id → page shows "Noch keine Bewertungen" under a "Bewertungen 15" header
+  - fix: Query reviews by salon_id (`.eq("salon_id", salon.id)`) like the PDP component and the /api/reviews/salon route do, instead of salon_slug. (Backfilling reviews.salon_slug is the alternative but salon_
+- **[P1] dead-button** `app/[locale]/salon/[slug]/barber/[barberSlug]/page.tsx:182` (/salon/[slug]/barber/[barberSlug])
+  - Barber profile primary CTA deep-links to PDP with ?staff=<id>, but the PDP ignores ?staff — user lands on the salon page with nothing preselected
+  - fix: Point the barber CTA at the booking flow with the staff preselected — `/${locale}/salon/${salonSlug}/booking?staff=${barber.id}` (matching StaffProfilePage's bookHref) — instead of back to the PDP. Th
+- **[P1] bug** `app/[locale]/_components/search/SearchTemplate.tsx:441` (/en/coiffeur, /fr/search, /it/* (all non-de locales across the cluster))
+  - Filter pills, sort labels + count render in German on en/fr/it locales
+  - fix: Replace the hardcoded German literals in SORT_OPTIONS, filterPills, pricePillLabel and pluralSalons with tChrome()/tFilter() lookups (the en/fr/it keys already exist under ui.searchChrome / ui.filterS
+- **[P1] bug** `app/[locale]/_components/search/SearchTemplate.tsx:1644` (/en/* /fr/* /it/* (EmptyState + LoadMore))
+  - Empty state, load-more + map-sheet copy hardcoded German on non-de locales
+  - fix: Route every one of these user-visible strings through next-intl (add keys under ui.searchChrome / a new ui.searchStates namespace for de/en/fr/it). Same root cause as the pills finding; fix together.
+- **[P1] bug** `app/[locale]/_components/search/SearchTemplate.tsx:1600` (/en/* /fr/* /it/* (FilterSheet))
+  - FilterSheet 'Für wen' / gender / amenities labels passed as literal German
+  - fix: Add forWho/gender/amenities keys to ui.filterSheet in all four locale files and pass tFilter() values instead of the German literals; localise AMENITY_OPTIONS labels too (the code comment at L198 alre
+- **[P1] missing-feature** `app/[locale]/account/saved/page.tsx:37` (/account/saved)
+  - /account/saved duplicates /profile/favorites with no entry point — two pages, one data source
+  - fix: Pick one canonical favorites/saved route, redirect the other to it (like app/[locale]/account/page.tsx already redirects to /profile), and standardize on one discover route slug (/entdecken vs /discov
+- **[P1] dead-button** `components-legacy/discovery/BookCTA.tsx:13` (/discover/[id] (BookCTA))
+  - Book-now CTA targets non-existent /makeup and /waxing routes
+  - fix: Point makeup/waxing at an existing destination (e.g. /search?category=makeup or the nearest live category page), or build the /makeup and /waxing category routes. At minimum align CATEGORY_ROUTES with
+- **[P1] missing-button** `app/[locale]/dashboard/bookings/page.tsx:285` (/dashboard/bookings)
+  - No way to confirm/approve a pending booking — owner is stuck
+  - fix: Add 'pending'/'pending_approval' to the filter row, and make pending rows tappable into an action sheet with a primary Confirm button (bg-s-ink) that POSTs /api/bookings/{id}/confirm, plus a Decline (
+- **[P1] dead-button** `app/[locale]/_components/layout/Header.tsx:634` ((all pages, desktop md+ header))
+  - Desktop header "Über uns" link points to /about, which 404s
+  - fix: Change Header.tsx:634 href from `/${locale}/about` to `/${locale}/ueber-uns` to match the footer and the real page.
+- **[P2] dead-button** `app/[locale]/booking/lookup/page.tsx:633` (/booking/lookup)
+  - 'View receipt' (and logged-in 'manage') link to /bookings/[id] which has no page (404)
+  - fix: Build app/[locale]/bookings/[id]/page.tsx (a guest/owner-readable receipt detail) or remove the 'View receipt' button until it exists.
+- **[P2] bug** `app/[locale]/booking-action/page.tsx:56` (/booking-action)
+  - booking-action confirm/cancel screen only localizes de + en; fr/it silently fall back to German
+  - fix: Move these strings into messages (de/en/fr/it) under a bookingAction namespace and read via getTranslations/useTranslations instead of the inline 2-locale map.
+- **[P2] dead-button** `components-legacy/barber/RemoteQueueJoin.tsx:22` ((walk-in queue))
+  - RemoteQueueJoin is a fully-built customer queue-join form that is rendered nowhere — dead component
+  - fix: Confirm whether free (no-pay) remote queue-join is still a product path. If yes, mount RemoteQueueJoin somewhere reachable (e.g. a salon walk-in tab). If no, delete the component (and consider whether
+- **[P2] missing-button** `app/[locale]/_components/salon/SalonReviews.tsx:143` (/salon/[slug] (reviews section))
+  - PDP reviews section has no link to the dedicated /reviews sub-page — the route is orphaned
+  - fix: Either wire the reviews-section "Alle ansehen" (or a separate "Alle Bewertungen anzeigen" link) to `/${locale}/salon/${slug}/reviews`, or, if inline-expand is the intended final UX, delete the orphane
+- **[P2] bug** `components-legacy/booking/BookingsList.tsx:116` (/profile/bookings)
+  - Empty-state messages hardcoded in German — fr/en/it users see German text
+  - fix: Move the three empty-state messages into the bookingsList namespace (e.g. emptyUpcoming / emptyPast / emptyCancelled) in messages/{de,en,fr,it}.json and replace the literals with t(...).
+- **[P2] missing-button** `app/[locale]/salon/[slug]/gift-card/page.tsx:71` (/salon/[slug]/gift-card)
+  - Gift-card success screen has no Back / Done / 'view my gift cards' action
+  - fix: Add a primary 'Fertig'/Done or 'Zu meinen Geschenkkarten' link (to /[locale]/profile/gift-cards) and/or a 'Zurück zum Salon' link on the success screen, matching the package modal's Close button patte
+- **[P2] bug** `app/[locale]/fuer-salons/page.tsx:306` (/business, /fuer-salons)
+  - Marketplace pitch link drops the locale (href="/" not /{locale})
+  - fix: Make it locale-aware: href={`/${locale}`} (these are server components; pass locale from params, or use a Link that prepends the active locale like the other links do).
+- **[P2] bug** `app/[locale]/_components/layout/MobileMenu.tsx:322` ((all pages, mobile menu))
+  - MobileMenu "language" row looks like a locale switcher but only links to the current-locale homepage
+  - fix: Replace the dead row with a real language picker (expand-on-tap list of DE/EN/FR/IT that swaps the locale segment of the current path), or remove the row. As-is it mislabels a home link as a language 
+- **[P2] bug** `app/[locale]/_components/layout/Footer.tsx:179` ((all pages, footer locale row))
+  - Footer locale links discard the current path (always jump to the locale homepage)
+  - fix: Build the target href by swapping only the leading locale segment of the current pathname (usePathname → replace /^/[a-z]{2}/ with /${l.code}), so the user stays on the same page in the new language. 
+
+## DESIGN (22)
+
+- **[P1] design-drift** `app/[locale]/checkout/page.tsx:113` (/checkout)
+  - /checkout is an orphaned, off-brand legacy payment flow nothing in the booking loop links to
+  - fix: Decide: delete /checkout if the PayConfirmStep flow fully supersedes it, OR if it's still reachable, retoken it (ink primary, Inter, success-green→s-success only, errors→s-error) and i18n it. First co
+- **[P1] bug** `app/[locale]/account/messages/page.tsx:105` (/account/messages)
+  - Two-pane messages layout has no responsive breakpoint — breaks at 375px
+  - fix: Add a mobile single-pane pattern: show the conversation list full-width on mobile, push the selected ChatWindow to a full-screen view (e.g. hidden md:flex on the desktop two-pane, separate stacked lay
+- **[P1] missing-button** `app/[locale]/discover/saved/page.tsx:45` (/discover/saved)
+  - Saved empty-state tells users to tap a bookmark that doesn't exist on cards
+  - fix: Either add a real save-to-collection (bookmark) control on cards/detail that feeds /api/discovery/collections, or rewrite the empty-state copy to match the actual heart-based save model and confirm li
+- **[P1] design-drift** `app/[locale]/fuer-salons/page.tsx:51` (/business, /fuer-salons, /partner (IA-level))
+  - Three divergent live B2B landing pages with three different signup mechanisms
+  - fix: Decide the canonical B2B page (the code intends /fuer-salons) and 301/308-redirect /business + /partner to it via next.config redirects or middleware; standardize on the working PartnerSignupForm ever
+- **[P2] design-drift** `app/[locale]/walk-in-join/page.tsx:191` (/walk-in-join)
+  - walk-in-join leans on s-accent for non-system elements (price, Clock icon, Back link, spinner) — violates locked 'accent is system/small-footprint only'
+  - fix: If the route is kept: move price + section copy to text-s-ink, drop the s-accent Clock tint, and make the Back affordance match walk-in-pay's frosted icon-button pattern. If deleted, no action needed.
+- **[P2] design-drift** `app/[locale]/queue/[token]/page.tsx:218` (/queue/[token])
+  - Primary 'Leave a tip' CTA uses bg-s-accent (blue fill) instead of the locked bg-s-ink primary-CTA token — repeats across the tip flow
+  - fix: Change the tip primary CTAs (queue/[token]:218, TipFlow.tsx:82 and :250) from bg-s-accent to bg-s-ink to match the locked primary-CTA rule and the rest of the walk-in flow. Keep the s-accent preset-se
+- **[P2] design-drift** `app/[locale]/_components/salon/SalonHero.tsx:225` (/salon/[slug] (desktop hero))
+  - Desktop "Alle Fotos ansehen" is a non-interactive <span> inside the 3rd photo button; it opens the lightbox at photo 3, not the full gallery, and only appears at >3 photos
+  - fix: Make the desktop "Alle Fotos ansehen" its own button calling onOpenGallery (the full-screen SalonImageGallery already used on mobile), and show it whenever photos.length > 1, matching the mobile count
+- **[P2] design-drift** `app/[locale]/[city]/page.tsx:16` (/[city] e.g. /de/basel)
+  - Bare city landing uses old CityPage, inconsistent with the rest of the cluster
+  - fix: Re-point /[city]/page.tsx to SearchTemplate with cityFilter set and no serviceFilter (same pattern the /[city]/[category] page already uses) so the city landing matches the unified search chrome; reti
+- **[P2] design-drift** `app/[locale]/profile/bookings/page.tsx:39` (/profile/bookings)
+  - Bookings page is a legacy desktop-grid layout, jarringly inconsistent with the mobile-first /profile hub it links from
+  - fix: Rebuild /profile/bookings to the same max-w-md mobile shell + shadow-card BookingCard treatment as the profile hub, on locked B&W tokens (drop --base/--raised CSS vars). This is the W-class route rebu
+- **[P2] design-drift** `components-legacy/booking/BookingsList.tsx:69` (/profile/bookings)
+  - Active booking tab uses s-accent for both text and underline — accent-on-text is reserved by the LOCKFILE
+  - fix: Use ink for the active tab label + an ink (or accent-only-as-underline) indicator: `text-s-ink border-s-ink` active vs `text-s-ink-2 border-transparent` inactive, matching the app's other ink-anchored
+- **[P2] design-drift** `app/[locale]/profile/referral/page.tsx:72` (/profile/referral)
+  - s-accent used as decorative icon/number tint across the referral page (LOCKFILE: accent is system-only, small footprint)
+  - fix: Retint the decorative icons/numbers to s-ink/s-ink-2, drop s-accent from the breadcrumb hover, and flatten the glass/gradient cards to flat white + s-border per CONTROL_ELEVATION pattern B. Mock up be
+- **[P2] design-drift** `app/[locale]/profile/favorites/page.tsx:82` (/profile/favorites)
+  - Inconsistent back affordance + composed-string eyebrow across the server-component profile pages
+  - fix: Standardize one header pattern across all profile sub-pages (either all SignatureLockup or all with a back chevron) and route the eyebrow/labels through next-intl. Low priority; not blocking since the
+- **[P2] design-drift** `app/[locale]/auth/reset-password/page.tsx:88` (/auth/reset-password)
+  - Reset-password still on retired warm-glass chrome vs clean B&W login/register
+  - fix: Reskin reset-password to match login/register: drop the ambient glow + warm glass + warm shadows, use bg-white + border-s-border card, remove the s-warning 'solen.ch' eyebrow, and make the Lock icon n
+- **[P2] design-drift** `app/[locale]/auth/register/page.tsx:193` (/auth/register)
+  - Register 'Anmelden' link is a raw locale-less anchor, inconsistent with the locale-aware Link used elsewhere
+  - fix: Replace the raw `<a href="/auth/login">` with `<Link href={`/${locale}/auth/login`}>` to match the rest of the auth flow and preserve locale.
+- **[P2] design-drift** `app/[locale]/partner/page.tsx:47` (/partner)
+  - Decorative accent-blue eyebrows + icon tints on /partner violate the locked accent policy
+  - fix: Sweep /partner accent-as-decoration to ink/grey to match the canonical /fuer-salons treatment (eyebrows -> s-ink-3, icon tints -> s-ink/s-ink-2), keeping accent only for genuine system affordances. Ef
+- **[P2] design-drift** `app/[locale]/onboarding/salon/page.tsx:286` (/onboarding/salon)
+  - Onboarding wizard uses retired green-tint surfaces + raw rgba green, off the current B&W/ink + blue-accent system
+  - fix: Replace the rgba(27,77,27,*) green tints with the current semantic surface tokens (s-bg-sunken / s-accent-pale for the blue accent, or s-success-bg if the intent is positive-confirmation), so the hint
+- **[P2] design-drift** `app/[locale]/dashboard/services/page.tsx:434` (/dashboard/services)
+  - Services page uses the LOCKFILE-retired `s-coral` token in 7 places (renders black via alias, not the intended accent)
+  - fix: Replace the 7 `s-coral` references: CTAs -> `bg-s-ink`, accent icons/tints on the template cards -> `s-accent-bright` (dashboard files are A9-exempt per LOCKFILE:1055), to match the rest of the dashbo
+- **[P2] design-drift** `app/[locale]/dashboard/settings/page.tsx:256` (/dashboard/settings (Last-Minute / SMS / Vacation / VAT / Quick-Replies / Closures / Commission tabs + HoursEditor))
+  - Cross-tab inconsistency: half the tabs style toggles/active-states with s-coral (now aliased to black), the other half use accent-blue
+  - fix: Normalize the legacy tabs to the rebuilt-tab convention: active/selected states + toggles -> s-accent-bright (blue); the single Save per tab -> bg-s-ink; remove the leftover s-coral references (they n
+- **[P2] design-drift** `app/[locale]/dashboard/calendar/page.tsx:340` (/dashboard/calendar)
+  - SlotDetailModal: Reschedule and Delete render identically (blue border + black text), no destructive treatment
+  - fix: Give Delete a destructive treatment (border-s-error/30 text-s-error) and make Reschedule a flat/neutral secondary, so the two actions have clear hierarchy. Drop the dead s-coral reference.
+- **[P2] design-drift** `app/[locale]/dashboard/calendar/page.tsx:852` (/dashboard/calendar)
+  - Desktop primary CTAs use blue fill (s-accent-bright) — violates locked CTA rule and contradicts the mobile variant
+  - fix: Switch the primary create/submit CTAs to bg-s-ink text-white to match the mobile variant and the locked CTA rule; reserve blue for selected/active chrome only.
+- **[P2] bug** `app/[locale]/dashboard/calendar/page.tsx:578` (/dashboard/calendar)
+  - 'Last-minute' slot fill + legend swatch render as solid black due to dead s-coral alias
+  - fix: Replace the s-coral last-minute/free-slot styling with an intentional token (e.g. an amber/urgency tint for last-minute, a neutral tint for free) so the calendar legend states are visually distinct ag
+- **[P2] missing-feature** `app/[locale]/dashboard/queue-display/page.tsx:28` (/dashboard/queue-display)
+  - Queue-display lacks an empty-queue affordance (only loading / no-salon / panel)
+  - fix: Either pass a display-mode variant to LiveQueuePanel for the dark wall, or render a large centered 'Keine Wartenden' message consistent with the 56px hero typography on the queue-display page itself.
+
+## DECISION (12)
+
+- **[P0] bug** `components-legacy/discovery/PostFromDiscover.tsx:226` (/discover (PostFromDiscover modal))
+  - Photo-post flow never sends the image — publishes a blank card
+  - fix: Either (a) wire the file through an upload endpoint (Supabase Storage) and pass the resulting public URL as image_url in the POST body, and add image_url handling + validation to /api/discovery/post; 
+- **[P1] missing-feature** `app/[locale]/walk-in-join/page.tsx:27` (/walk-in-join)
+  - /walk-in-join is an orphaned route — nothing in the app links to it; the real walk-in entry bypasses it
+  - fix: Decide: delete /walk-in-join/page.tsx (it is superseded by SalonWalkInPanel per the SalonResultCard comment) OR, if it is meant to be a standalone/QR landing, wire a real entry point to it. As-is it i
+- **[P1] missing-button** `app/[locale]/profile/page.tsx:118` (/profile/vouchers)
+  - No navigation entry point to /profile/vouchers anywhere in the app
+  - fix: Either make the Wallet tile route to a combined wallet page listing gift-cards + vouchers, or add a vouchers Row to the 'Mehr' section of the profile hub (page.tsx around lines 123-128).
+- **[P1] missing-button** `app/[locale]/profile/page.tsx:123` (/profile/packages)
+  - No navigation entry point to /profile/packages anywhere
+  - fix: Add a Row for packages (e.g. icon Package, label 'Abo-Pakete') to the profile hub 'Mehr' section, or surface it under the Wallet tile.
+- **[P1] missing-button** `app/[locale]/profile/page.tsx:123` (/profile/intake-forms)
+  - No navigation entry point to /profile/intake-forms anywhere
+  - fix: Add a Row for consultation forms (icon ClipboardList, label 'Konsultationsformulare') to the profile hub 'Mehr' section.
+- **[P1] missing-button** `app/[locale]/profile/page.tsx:123` (/account/messages)
+  - No navigation entry point to /account/messages (customer messaging) anywhere
+  - fix: Add a Messages row/tile to the profile hub (icon MessageCircle, label 'Nachrichten') and/or a header inbox icon. Decide canonical location (account vs profile namespace is itself split).
+- **[P1] unpressable** `components-legacy/refund/RefundCaseView.tsx:938` (/bookings/[id]/refund)
+  - admin_rejected 'Contact support' button is permanently disabled with no path to enabled
+  - fix: Either make it a real mailto:/support link (or open a support route), or replace it with static support contact text. Don't render a permanently-dead disabled button as the sole action on a terminal s
+- **[P1] dead-button** `app/[locale]/partner/page.tsx:453` (/partner)
+  - Sticky bottom CTA links to #contact anchor that does not exist
+  - fix: Add id="contact" to the hero signup section (around line 45) or to the bottom CTA section (line 481), OR change href to scroll to the existing PartnerSignupForm. Pick the section the sticky CTA should
+- **[P2] missing-feature** `app/[locale]/profile/looks/page.tsx:52` (/profile/looks)
+  - /profile/looks is a permanent empty stub — no backend, referenced component absent
+  - fix: Either hide the Looks row from the profile hub until the looks table + ingestion exists, or label it 'coming soon'. Track in _tasks/INCOMPLETE_FEATURES.md. Don't ship a hub link to a permanently empty
+- **[P2] dead-button** `components-legacy/refund/RefundCaseView.tsx:766` (/bookings/[id]/refund)
+  - Escalate-reason selector collects state that is never sent to the API
+  - fix: Either include `reason_code: escReason` in the escalate POST body (and add it to customerEscalateSchema + persist it on the case) so the selection is meaningful, or remove the reason selector if reaso
+- **[P2] dead-button** `app/[locale]/_components/layout/Header.tsx:694` ((homepage + non-category mobile routes, header))
+  - Mobile notification Bell is a no-op button
+  - fix: Either wire it to a notifications panel/route, or remove the Bell from the header until that surface ships (a visible control that does nothing erodes trust). If kept as a placeholder, at minimum it s
+- **[P2] bug** `app/[locale]/_components/salon/SalonMobileBookBar.tsx:31` (/[locale]/salon/[slug] (mobile))
+  - Owner-flagged "footer overlapping": fixed book-bar (z-30) sits over the global footer (z-1) on the salon PDP
+  - fix: Add a salon-detail-mobile footer gate (e.g. extend HideInBooking coverSalonDetail to also wrap the Footer, or hide SalonMobileBookBar via an IntersectionObserver when the footer enters the viewport) s
