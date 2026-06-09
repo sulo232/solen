@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   //    service, slot, time, staff, and — for guests — guest_email/name.
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name")
+    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons")
     .eq("id", booking_id)
     .single();
   if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -115,7 +115,18 @@ export async function POST(req: NextRequest) {
   if (!service || service.salon_id !== booking.salon_id || service.is_active === false) {
     return NextResponse.json({ error: "Service not found for this salon" }, { status: 404 });
   }
-  const priceChf = Number(service.price);
+  // Multi-service: add the booking's server-set extras_addons (resolved at booking time from the
+  // services table — never the client) to the primary service price, so the charge = the full total.
+  let extrasChf = 0;
+  try {
+    const ex = (booking as { extras_addons?: string | null }).extras_addons
+      ? JSON.parse((booking as { extras_addons?: string }).extras_addons as string)
+      : [];
+    if (Array.isArray(ex)) extrasChf = ex.reduce((s: number, a: { price?: number }) => s + (Number(a?.price) || 0), 0);
+  } catch (e) {
+    console.error("[booking-pay-intent] failed to parse extras_addons:", e);
+  }
+  const priceChf = Number(service.price) + extrasChf;
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
     return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
   }

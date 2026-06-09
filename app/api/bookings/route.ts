@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const { slot_id, salon_id, service_id, staff_member_id, starts_at, is_first_visit,
-          referral_code, payment_method, guest_name, guest_phone, guest_email } = validated;
+          referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids } = validated;
   const isOnlinePay = payment_method === "online";
 
   // Zod cannot see the session, so it keeps guest fields optional. The route enforces them:
@@ -236,7 +236,26 @@ export async function POST(request: NextRequest) {
   }
 
   // SP-1 / §10b.5: write price exactly as G1 does (no Rappen/CHF conversion here — out of scope).
-  const price = slot.price_override ?? slot.services?.price ?? 0;
+  const primaryPrice = slot.price_override ?? slot.services?.price ?? 0;
+  // Multi-service: resolve the extra services' REAL prices server-side (never the client's),
+  // store them as extras_addons, and fold their sum into price_paid (which drives the charge).
+  const extrasAddons: { id: string; name: string; price: number }[] = [];
+  if (extra_service_ids?.length) {
+    const uniqueExtras = [...new Set(extra_service_ids)].filter((id) => id !== service_id);
+    if (uniqueExtras.length) {
+      const { data: extraSvcs } = await db
+        .from("services")
+        .select("id, name_de, name_en, price, salon_id, is_active")
+        .in("id", uniqueExtras)
+        .eq("salon_id", slot.salon_id);
+      for (const sv of extraSvcs ?? []) {
+        if (sv.is_active === false) continue;
+        extrasAddons.push({ id: sv.id, name: sv.name_de ?? sv.name_en ?? "Service", price: Number(sv.price) || 0 });
+      }
+    }
+  }
+  const extrasTotal = extrasAddons.reduce((s, a) => s + a.price, 0);
+  const price = Math.round((Number(primaryPrice) + extrasTotal) * 100) / 100;
   const firstVisit = is_first_visit ?? profile?.is_first_visit_default ?? true;
 
   // T&S §3.1: check booking confirmation mode (instant vs manual_approval)
@@ -290,6 +309,7 @@ export async function POST(request: NextRequest) {
       starts_at: slot.starts_at,
       ends_at: slot.ends_at,
       price_paid: price,
+      extras_addons: extrasAddons.length ? JSON.stringify(extrasAddons) : null,
       status: bookingStatus,
       payment_status: isOnlinePay ? "none" : undefined,
       is_first_visit: firstVisit,

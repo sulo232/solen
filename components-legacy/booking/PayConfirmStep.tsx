@@ -157,6 +157,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         body: JSON.stringify({
           salon_id: salon.id,
           service_id: formData.services[0].id,
+          extra_service_ids: formData.services.slice(1).map((s) => s.id),
           staff_member_id: formData.selectedStaffId === 'any' ? null : formData.selectedStaffId,
           starts_at: startsAt,
           payment_method: paymentMethod,

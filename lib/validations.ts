@@ -36,6 +36,9 @@ export const createBookingSchema = z
     slot_id: uuid.optional(),
     salon_id: uuid.optional(),
     service_id: uuid,
+    // Multi-service: additional services booked with the primary; stored on the booking as
+    // extras_addons. The route resolves their REAL prices server-side (never trusts the client).
+    extra_service_ids: z.array(uuid).max(10).optional(),
     staff_member_id: uuid.nullable().optional(),
     starts_at: z.string().datetime().optional(),
     is_first_visit: z.boolean().optional(),
