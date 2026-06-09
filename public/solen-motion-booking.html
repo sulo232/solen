@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Confirmation , motion in context</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:#fafafa;color:#0A0A0A;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px 14px 40px}
+.hint{font-size:12px;color:#9A8C7E;margin-bottom:14px}
+.page{width:100%;max-width:420px;background:#fff;border-radius:18px;padding:32px 20px 26px;cursor:pointer;box-shadow:0 1px 2px rgba(50,47,44,.05),0 4px 12px -6px rgba(50,47,44,.10)}
+/* success mark (real: 58px rounded-pill bg-s-success-bg + green Check) */
+.mark{position:relative;width:58px;height:58px;margin:0 auto 16px}
+.ring{position:absolute;inset:0;border-radius:999px;background:#16A34A;opacity:0}
+.disc{position:relative;width:58px;height:58px;border-radius:999px;background:#16A34A;display:grid;place-items:center;transform:scale(0)}
+.disc svg{width:30px;height:30px}
+.disc path{stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:32}
+.center{text-align:center}
+h1{font-family:'Inter Tight';font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.2;opacity:0;transform:translateY(10px)}
+.sub{font-size:14px;line-height:1.5;color:#6B6B6B;margin:8px auto 0;max-width:330px;opacity:0;transform:translateY(10px)}
+/* order-number hero (real: rounded-card border bg shadow-elevation-1) */
+.hero{margin-top:24px;border:1px solid #E0DDDB;border-radius:16px;box-shadow:0 1px 3px rgba(50,47,44,.04),0 1px 2px rgba(50,47,44,.03);overflow:hidden;opacity:0;transform:translateY(10px)}
+.lbl{padding:18px 16px 0;text-align:center;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6B6B}
+.code{padding:5px 12px 2px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;letter-spacing:.04em;line-height:1.1;color:#0A0A0A}
+.chint{padding:0 22px 14px;text-align:center;font-size:12.5px;line-height:1.45;color:#6B6B6B}
+.btns{display:flex;gap:8px;padding:0 16px 16px}
+.btn{flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;background:#F5F5F4;font-size:14px;font-weight:500;color:#0A0A0A}
+.btn svg{width:16px;height:16px;stroke:#0A0A0A;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.replay{margin-top:18px;font-size:12px;color:#185CE0;font-weight:600}
+
+.play .ring{animation:ring .75s ease-out forwards}
+.play .disc{animation:disc .55s cubic-bezier(.34,1.56,.64,1) .07s forwards}
+.play .disc path{animation:draw .4s ease-out .36s forwards}
+.play h1{animation:rise .42s cubic-bezier(.22,1,.36,1) .46s forwards}
+.play .sub{animation:rise .42s cubic-bezier(.22,1,.36,1) .56s forwards}
+.play .hero{animation:rise .45s cubic-bezier(.22,1,.36,1) .68s forwards}
+@keyframes ring{0%{transform:scale(.55);opacity:.32}100%{transform:scale(2);opacity:0}}
+@keyframes disc{0%{transform:scale(0)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+</style></head><body>
+<div class="hint">The real confirmation layout , the celebration rides the success mark. Tap to replay.</div>
+<div class="page" id="page">
+  <div class="center">
+    <div class="mark"><span class="ring"></span><span class="disc"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span></div>
+    <h1>Buchung bestätigt</h1>
+    <p class="sub">Dein Termin bei <b>Nail Studio Bliss</b> ist gesichert.</p>
+  </div>
+  <div class="hero">
+    <div class="lbl">Bestellnummer</div>
+    <div class="code">SOL-7F3K2</div>
+    <div class="chint">Zeig diese Nummer bei deinem Termin oder verwalte die Buchung jederzeit.</div>
+    <div class="btns">
+      <div class="btn"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Nummer kopieren</div>
+      <div class="btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Teilen</div>
+    </div>
+  </div>
+  <div class="replay" style="text-align:center">↺ tap to replay</div>
+</div>
+<script>
+const pg=document.getElementById('page');
+function play(){ pg.classList.remove('play'); void pg.offsetWidth; pg.classList.add('play'); }
+pg.addEventListener('click',play); play(); setInterval(play,3600);
+</script>
+</body></html>

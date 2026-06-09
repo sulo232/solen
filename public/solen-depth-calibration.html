@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Depth calibration</title><style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,-apple-system,system-ui,sans-serif;color:#0A0A0A;background:#fafafa;padding:18px 14px 48px}
+.wrap{max-width:430px;margin:0 auto}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+p.sub{font-size:13.5px;color:#555;margin:9px 0 22px;line-height:1.55}
+.lvl{margin-bottom:30px}
+.tag{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px;margin-bottom:9px}
+.tag.now{color:#9A3412}.tag.sub{color:#15803D}.tag.flat{color:#6B6B6B}
+.tag .pick{background:#15803D;color:#fff;border-radius:999px;padding:1px 8px;font-size:9px;letter-spacing:.02em}
+.cap{font-size:12px;color:#777;margin:0 0 10px;line-height:1.5}
+.shot{display:block;width:100%;border-radius:14px;border:1px solid #ECEAE6}
+.note{font-size:12px;color:#777;margin-top:6px;line-height:1.6;border-top:1px solid #eaeaea;padding-top:16px}
+</style></head><body><div class="wrap">
+<h1>Depth calibration &mdash; how far to pull back</h1>
+<p class="sub">Same salon cards, three depth levels. The video's core point that hits us: <b>"visual overworking"</b> (over-decorating) is the mid-level mistake; senior work is <b>restraint</b>. The heavy float I shipped is exactly that over-decoration. Pick the level and I roll it through the design system (one token cascades everywhere).</p>
+
+<div class="lvl">
+  <div class="tag now">Now &middot; heavy float (overworked)</div>
+  <div class="cap">What I shipped: a wide, spread shadow. Reads as &ldquo;effect&rdquo; rather than quiet lift &mdash; this is the over-engineering you flagged.</div>
+  <img class="shot" src="/_d-now.png">
+</div>
+
+<div class="lvl">
+  <div class="tag sub">Subtle &middot; restrained lift <span class="pick">my pick</span></div>
+  <div class="cap">A light, tight shadow. The card still lifts so it&rsquo;s not the &ldquo;2018 flat&rdquo; you disliked before, but the effect is quiet. This is the senior-restraint middle.</div>
+  <img class="shot" src="/_d-subtle.png">
+</div>
+
+<div class="lvl">
+  <div class="tag flat">Hairline &middot; flat (most minimal)</div>
+  <div class="cap">No shadow, a 1px outline. Cleanest and closest to how Fresha/Uber actually separate cards (hairlines + whitespace). Risk: can edge back toward &ldquo;flat&rdquo;.</div>
+  <img class="shot" src="/_d-hairline.png">
+</div>
+
+<div class="note">If you pick <b>Subtle</b> or <b>Hairline</b>, the fix is one token change that cascades to every card I floated (homepage tiles, salon section cards, service rows). The rule I&rsquo;d write into the system: <b>depth is subtle + earned</b> &mdash; resting cards get a quiet lift (or a hairline); only true overlays (the gallery, lightbox, sheets, dropdowns) keep a stronger shadow, because they sit on top of everything. No wide floats on resting content.</div>
+</div></body></html>
