@@ -4,19 +4,22 @@
 
 ---
 
-## 0. Design Language v2 (owner-approved 2026-06-09) — READ FIRST
+## 0. Design Language — LOCKED 2026-06-10 (RESTRAINT) — READ FIRST
 
-The current design language. **Supersedes the prior "functional-only blue-ban" everywhere it conflicts.** Source: approved mockup `public/_mockups/design-language-v2.html` + owner verbatim criticism. Full audit trail: `V2_RECONCILIATION.md`.
+The current, owner-locked design language. **Supersedes the v2 "blue = interactivity, generous" reconciliation** — the owner saw generous blue live and rejected it ("too much blue"); the locked references are **Apple / Airbnb / Fresha** restraint. History trail: `V2_RECONCILIATION.md`. THIS section is current truth.
 
-1. **BLUE = INTERACTIVITY.** `s-accent #276EF1` is used GENEROUSLY on anything tappable: text links, see-all / view-all links, active tab / segmented states, secondary & ghost buttons, tappable row affordances, inline action labels (Buchen / Wegbeschreibung / Verwalten / Manage), interactive icon tints (where the icon IS the tap target), plus the system states it always had (focus-visible rings, Spinner arc, form-input focus). There is **NO pixel budget** on interactive blue.
-2. **BLUE STAYS OFF NON-INTERACTIVE TEXT** (the guardrail against "vibrating blue text"). Body copy, labels, prices, headings, eyebrows, and decorative elements stay ink / grey. Blue marks INTERACTION, never EMPHASIS — if it is not tappable, it is not blue. Eyebrows remain `text-s-ink-3`, no leading dot. A blue word must be a real link; use bold weight or ink contrast for emphasis.
-3. **ONE INK COMMIT BUTTON PER SCREEN** (unchanged, V3-D192-fix). The single primary commit CTA stays `s-ink #0A0A0A` fill / white text — the one strong anchor. Never two ink primaries; never a blue-FILLED primary. Every other action leans blue: the blue-ghost recipe (`bg-white border-s-accent text-s-accent`) OR a plain blue link. (Scoped exception, V3-D426: on outcome / result / status screens the primary CTA inherits the screen's semantic state colour.)
-4. **WHITE-FIRST SURFACES; WARM CREAM DROPPED.** Default surface = white `#FFFFFF`. Where a subtle fill is needed use a COOL light grey `#F4F4F5` (`s-bg-sunken`), NOT warm cream / peach / stone. Reverses the V3-D460 warming of `s-bg-sunken` (#F8F5F2) and `s-border` (#E8E4DF) toward cool neutral (`s-border #E4E4E7`). *(Live Tailwind token sync is step 1 of v2 implementation.)*
-5. **NO DARK SURFACES ANYWHERE.** The dark walk-in / queue panel and any dark surface are dropped. Every customer surface is light. (Sole survivor: the queue-display kiosk / TV page, a deliberate full-screen kiosk pattern.)
-6. **SUCCESS = DEEP SOLID GREEN + WHITE ICON.** The success / confirmation FOCAL moment (booking confirmed, payment succeeded) is a deep solid green `s-success.deep #15803D` disc / fill with a WHITE checkmark — confident, not a pale-green tint. Overrides the refined-pastel treatment FOR THE FOCAL MOMENT ONLY. Inline status chips / badges (open/closed pills, availability pills, low-emphasis toasts) MAY still use the pastel pattern — that is the explicit boundary. Other semantic colours UNCHANGED: star yellow `#FFC32B`, error red `#D32F2F` (`s-error`; closed-status red is `#DC2626` / `s-closed`), warning amber `#F1AE27`, save-heart pink `#FF3366`.
-7. **MOTION EVERYWHERE.** More animation is explicitly wanted: staggered rise-in on load (opacity 0→1 + ~10px rise, ~0.55s, staggered delays), success ring-pulse + disc spring-pop + check stroke-draw (SuccessMark), card hover-lift, blue-link hover-underline, button press-scale(.97). Prior "motion restraint / motion-is-DONE" guidance is loosened toward richer tasteful motion. Restraint now applies to STATIC depth (shadow weight) only. Always respect `prefers-reduced-motion`.
+**One-line model: clickability is signalled by AFFORDANCE (chevron, underline, weight, icon), NOT by colour. Colour is rare and earns its place.**
 
-> **Icon-tint boundary (drift A9).** An icon is blue ONLY when the icon itself is the tap target (icon-only button / standalone tappable glyph). A decorative icon inside a tappable row/card stays ink — the ROW is the tap target. Drift A9 is re-scoped to flag blue only on non-interactive text + blue-filled primary; A14 allows the blue-ghost recipe.
+1. **SURFACES = white-first + COOL grey.** Default white `#FFFFFF`; subtle fill = cool grey `s-bg-sunken #F4F4F5`; hairline cool `s-border #E4E4E7`. NO cream / warm / peach / stone. Photography carries the warmth. No dark surfaces (except the queue-display kiosk page).
+2. **BLUE = small clickable accents ONLY (`s-accent #276EF1`), SPARSE.** Allowed on: text links ("Buchung verwalten", "Mehr lesen"), small buttons / chips, small tappable secondary metadata (review counts like "(54)"), + the system states (focus-visible ring, Spinner, input focus). NEVER generous, never a wall of blue.
+3. **INK / BLACK = structure.** See-all arrows (→), the primary + any big CTA (ink fill `bg-s-ink`), secondary actions (neutral outlined pill `bg-white border-s-border text-s-ink`, NOT blue), body, headings, eyebrows. They read tappable via AFFORDANCE (chevron / underline-on-hover / weight / icon), not colour. **NEVER a blue-filled button; NEVER a blue button.**
+4. **GREEN = semantic, normal `s-success #16A34A`.** Availability ("Sofort frei") + success (booking confirmed / paid) + the "Bezahlt" chip + white check. **NOT deep `#15803D`** — the dark-green disc was rejected 2026-06-10; the success disc is normal `#16A34A`.
+5. **Other semantic colours UNCHANGED:** star yellow `#FFC32B`, error red `#D32F2F` (closed-status `#DC2626`), warning amber `#F1AE27`, save-heart pink `#FF3366`.
+6. **MOTION = tasteful** (press-scale .97, hover-lift, success mark, staggered entrance). Respect `prefers-reduced-motion`.
+
+> **Where the v2 / "generous blue" content elsewhere in this doc or in LOCKFILE / SOURCE / memory says "blue generous / blue on everything tappable / blue-ghost secondary buttons / deep-green success #15803D" — it is SUPERSEDED by this section.** Blue is sparse (small clickable bits only); buttons are ink or neutral-outline; success is normal green.
+
+> **Drift A9 (restraint):** flag blue on anything that is NOT a small clickable bit — a blue-FILLED button, a big blue CTA, a blue arrow, blue body/headings/eyebrows. ALLOW blue on text links / small chips / review counts + system focus.
 
 ---
 

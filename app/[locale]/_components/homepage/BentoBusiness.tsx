@@ -380,7 +380,7 @@ function VisualAnalyticsTabbed() {
                   // V3-D219 (2026-05-26): active tab swapped to s-accent (royal blue) —
                   // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
-                    ? "border-s-accent text-s-accent bg-s-accent-pale"
+                    ? "border-s-ink bg-s-ink text-white"
                     : "border-s-border text-s-ink-3 hover:border-s-ink/30",
                   "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
                 )}

@@ -69,7 +69,7 @@ export function RatingStars({
     >
       <Star size={px} stroke="none" aria-hidden className="fill-s-star" />
       <span>{value.toFixed(1)}</span>
-      {count != null && <span className="text-s-ink-2">({count})</span>}
+      {count != null && <span className="text-s-accent">({count})</span>}
     </span>
   );
 }

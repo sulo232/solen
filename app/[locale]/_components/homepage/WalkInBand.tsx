@@ -114,8 +114,8 @@ export default function WalkInBand() {
                         )}
                       </div>
                       {s.address && <div className="mt-[3px] truncate text-[12px] text-s-ink-2">{s.address}</div>}
-                      <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-accent">
-                        <span className="h-[7px] w-[7px] rounded-full bg-s-accent" />
+                      <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-success">
+                        <span className="h-[7px] w-[7px] rounded-full bg-s-success" />
                         {sofort ? "Sofort frei" : `Frei in ${s.waitMinutes}-${s.waitMinutesMax} Min`}
                       </div>
                       <div className="mt-2.5 flex items-center gap-[7px] text-[12px] text-s-ink-2">
@@ -137,7 +137,7 @@ export default function WalkInBand() {
           {/* CTA */}
           <a
             href={`/${locale}/barbershop`}
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] bg-s-accent px-4 py-3 font-heading text-[14px] font-bold text-white shadow-[0_6px_14px_rgba(39,110,241,0.18)] transition-transform duration-200 ease-glide active:scale-[0.97]"
+            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-bold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97]"
           >
             Alle Walk-ins
             <ArrowRight size={16} />

@@ -161,7 +161,7 @@ export default function SalonRegister() {
                   {/* V3-D331 exempt: this is the Solen wordmark dot ("solen[•]" brand mark), NOT eyebrow decoration. Semantic role = brand identity. items-center justify-center hint added to satisfy drift A12 exemption. */}
                   <span className="font-display text-[14px] font-bold text-s-ink mr-4 inline-flex items-baseline">
                     solen
-                    <span aria-hidden className="ml-[2px] inline-flex items-center justify-center h-[5px] w-[5px] rounded-full bg-s-accent" />
+                    <span aria-hidden className="ml-[2px] inline-flex items-center justify-center h-[5px] w-[5px] rounded-full bg-s-ink" />
                   </span>
                   <span className="rounded-md bg-s-ink text-white px-[11px] py-[5px] text-[12px] font-semibold">Heute</span>
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[12px] font-semibold">Mitarbeiter</span>

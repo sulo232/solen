@@ -94,7 +94,7 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
                 type="button"
                 onClick={scrollToReviews}
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
-                className="font-medium text-s-ink transition-opacity hover:opacity-80"
+                className="font-medium text-s-accent transition-opacity hover:opacity-80"
               >
                 ({salon.review_count.toLocaleString("de-CH")})
               </button>

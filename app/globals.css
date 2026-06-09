@@ -58,8 +58,8 @@
     --color-heading: #0A0A0A;     /* s-ink */
     --color-body: #0A0A0A;        /* s-ink (primary text) */
     --color-muted: #6B6B6B;       /* s-ink-2 (secondary text) — WCAG AA on white */
-    --color-border: #E0DDDB;      /* s-border (V3-D447: #E7E5E4 -> #E0DDDB, firmer hairline) */
-    --color-hover-bg: #F5F5F4;    /* s-bg-sunken */
+    --color-border: #E4E4E7;      /* s-border (cool neutral, white-first, no cream) */
+    --color-hover-bg: #F4F4F5;    /* s-bg-sunken (cool light grey) */
     --color-error: #DC2626;
     --color-success: #16A34A;
     --color-warning: #F1AE27;     /* s-warning, the amber twin (V3-D421) */
@@ -281,7 +281,7 @@
     /* 2026-05-31 (V3-D410): inputs use Inter (body). */
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
-    background: #F5F5F4;
+    background: #F4F4F5;
     transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
   }
 

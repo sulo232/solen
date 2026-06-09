@@ -242,7 +242,7 @@ export default function Entdecken() {
                         aria-hidden
                         className="absolute top-2 left-2 z-10 flex items-center gap-1"
                       >
-                        <span className="h-1.5 w-1.5 rounded-full bg-s-accent" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-white" />
                         <span className="font-display text-[12px] font-extrabold leading-none text-white/90">
                           Solen
                         </span>
