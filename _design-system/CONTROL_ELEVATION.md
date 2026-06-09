@@ -29,8 +29,8 @@ contrast, not the shadow, so keep A unmistakably the over-photo treatment, and l
 → **(C) INK-FILLED** `bg-s-ink text-white`, `rounded-btn`/pill. Max ONE per region (CTA lock). Fill, not
   elevation, encodes "the destination." Ink CTAs MAY carry `shadow-elevation-2` (the one deliberate lift).
 
-**Q1.5: Is it a secondary ACTION (a real tappable action that is NOT the one primary commit — Wegbeschreibung, Kalender hinzufügen, Teilen, Verwalten, a see-all/view-all, a tappable inline label)?**
-→ **(E) BLUE-GHOST** `bg-white border border-s-accent text-s-accent`, press-scale(.97). v2 rule 1: secondary actions are blue, not flat-grey. A plain text link uses `text-s-accent` directly (hover-underline). (B flat-grey below is for genuinely quiet/decorative controls — filters, the `(i)`, steppers — NOT a labeled secondary action.) Never a blue-FILLED button (that reads as a 2nd primary).
+**Q1.5: Is it a secondary ACTION on a FLAT white / `s-bg-sunken` surface** (NOT over a photo — that's Q2 → A frosted glass; and NOT the one primary commit) — Wegbeschreibung, Kalender hinzufügen, Teilen, Verwalten, a see-all/view-all, a tappable inline label?
+→ **(E) BLUE-GHOST** `bg-white border border-s-accent text-s-accent`, press-scale(.97). v2 rule 1: secondary actions are blue, not flat-grey. A plain text link uses `text-s-accent` directly (hover-underline). (B flat-grey below is for genuinely quiet/decorative controls — filters, the `(i)`, steppers — NOT a labeled secondary action.) Never a blue-FILLED button (that reads as a 2nd primary). **Over-photo controls fall through to Q2 (A frosted glass) — first-match-wins, so a Share/back/heart button on a hero photo is A, NOT blue-ghost (CANON §5).**
 
 **Q2: Does the control sit OVER a photo / image / non-flat surface?** (hero, gallery, Entdecken thumb, lightbox)
 → **(A) ELEVATED WHITE GLASS.** Use the canonical `FROST_GLASS` recipe (frosted white `rgba(255,255,255,.80)`
@@ -55,7 +55,7 @@ job. The only legit "hybrid moment" is a **pressed state**: an elevated control 
 
 ## HARD RULES (a11y + tokens)
 
-1. **Contrast trap, the big one.** `s-bg-sunken #F5F5F4` on white `#FFFFFF` is **~1.03:1**, an invisible edge,
+1. **Contrast trap, the big one.** `s-bg-sunken #F4F4F5` on white `#FFFFFF` is **~1.03:1**, an invisible edge,
    AND it's already the codebase's "inert/placeholder" signal (avatars, disabled). So a borderless grey *icon/shape*
    control on white reads as dead. Any control whose boundary is the affordance must clear **≥3:1** (WCAG 1.4.11)
    → border it (`border-s-border`) or shell it. Text controls are exempt (text carries it).

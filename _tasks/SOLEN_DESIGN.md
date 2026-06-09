@@ -10,7 +10,7 @@
 
 Every screen should resolve to roughly:
 
-- **80% neutral** — pure white `#FFFFFF` + off-white `#F5F5F4` surface variation. Page bg, card bg, modal bg, empty space.
+- **80% neutral** — pure white `#FFFFFF` + cool grey `#F4F4F5` surface variation (v2 rule 4; was warm). Page bg, card bg, modal bg, empty space.
 - **17% ink** — black `#0A0A0A` text, grey `#6B6B6B` secondary text, hairlines `#E7E5E4`, icons, photos. Type is its own band — it carries visual weight, it is not "neutral."
 - **accent = blue `s-accent` #276EF1** — NOT pixel-budgeted; it marks INTERACTION (links, active/selected states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints). It does NOT land on non-interactive text (body, labels, prices, headings, eyebrows). The ONE primary commit CTA stays ink `#0A0A0A`, never the accent. (Forest emerald #16A34A retired as the accent in the B&W pivot; #16A34A survives only as the success status hue.)
 
@@ -53,7 +53,7 @@ Pinterest, Airbnb, Stripe all look "premium" because they **earn** attention by 
 | `s-love` | `#CC4A60` | heart-saved fill, sale chips |
 | `s-success` (status / inline chips) | `#16A34A` | available / open status; inline success chips keep pale-green `.bg` |
 | `s-success.deep` (FOCAL) | `#15803D` | booking-confirmed / payment-succeeded FOCAL moment — solid deep-green disc + WHITE check, never a pale tint (v2 rule 6). Value already in code as `s-brand.mid`. |
-| `s-warning` | `#F59E0B` | warnings |
+| `s-warning` | `#F1AE27` | warnings (accent's amber twin, CANON §1) |
 | `s-error` | `#D32F2F` | errors |
 | `s-star` | `#FFC32B` | rating stars (yellow — universal meaning, V3-D421; supersedes the ink V3-D95 entry) |
 

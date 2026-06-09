@@ -694,7 +694,9 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 ))
 
         # A9 — text-s-accent / bg-s-accent outside allowed contexts.
-        # Allowed contexts (per §1.5): focus-visible ring, Spinner arc, form-input focus border.
+        # Allowed (v2 rule 1): any interactivity marker in ACCENT_ALLOWED_HINTS (links / see-all / active tabs /
+        # ghost buttons / tappable rows / inline action labels / icon-tap-targets) + focus ring / Spinner / input-focus.
+        # Flag only blue on non-interactive text + a blue-filled primary.
         # Heuristic: line contains text-s-accent OR bg-s-accent-pale,
         # but does NOT contain any ACCENT_ALLOWED_HINTS substring.
         if ACCENT_TEXT_RE.search(line) or ACCENT_BG_RE.search(line):

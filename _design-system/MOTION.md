@@ -22,7 +22,7 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 
 ## SuccessMark , the celebration component
 
-- `app/[locale]/_components/primitives/SuccessMark.tsx` , solid green disc (`s-success` #16A34A) + white check, springs in (spring overshoot) with a ring pulse. Owner-approved look (dark-green fill + white check).
+- `app/[locale]/_components/primitives/SuccessMark.tsx` , solid green disc + white check, springs in (spring overshoot) with a ring pulse. **v2 rule 6 FOCAL target = DEEP green `s-success.deep #15803D`** (CANON §0.6); code currently fills `s-success #16A34A` — token swap to #15803D pending (see V2_RECONCILIATION).
 - Pair with the `.celebrate-rise` utility on the content that follows (staggered delays) for the full beat.
 - Easings map to the §4 core tokens (NOT ad-hoc): disc pop = `spring` `cubic-bezier(0.34,1.56,0.64,1)` (bouncy reveal); text rise = `glide` `cubic-bezier(0.16,1,0.3,1)` (smooth, no overshoot , text must not bounce). Choreography: ring 0s → disc pop 0.07s → check draw 0.36s → title 0.46s → subtitle 0.56s → order hero 0.68s.
 - `prefers-reduced-motion` safe (base state = final/visible; animations only add the entrance).
@@ -34,7 +34,7 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 - **SENIOR_SCORECARD.md** ship-gate (5 dims) + drift rule **A19** (sub-12px, INFO until swept). Scorecard Color dim rewritten to fail BOTH dead-grey AND vibrating-blue (blue on NON-interactive text). **v2 update (2026-06-09): blue ON interactive affordances — links/tabs/ghost buttons — is REQUIRED, not a fail.**
 - **Confirmation** rebuilt to 5/5 (date is focal, code → footer, ink actions + the one blue manage-link, icon-only copy, "Kalender hinzufügen").
 - **Back/Home nav**: one up-affordance (Back on deep pages, Home on top-level; Breadcrumb mobile-back removed). Header icons balanced to 22px.
-- **Salon PDP** links inked (council model). **Homepage** type swept (sub-12px floored, 10→7 sizes).
+- **Salon PDP** links inked (council model — REVERSED by v2: PDP links are now blue `s-accent #276EF1`). **Homepage** type swept (sub-12px floored, 10→7 sizes).
 - **SuccessMark** on the walk-in "joined the queue" peak (c9e405378).
 
 ## REMAINING WORK (the to-do , this is what must survive compaction)

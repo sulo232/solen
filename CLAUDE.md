@@ -64,7 +64,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
 | wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
 | icon-button | `h-11 w-11` |
-| hairline | `border-s-border` = **`#E0DDDB`** (firmer, V3-D447; one token, every divider) |
+| hairline | `border-s-border` = **`#E4E4E7`** (cool neutral, v2 rule 4; reverses warm V3-D447 #E0DDDB; one token, every divider) |
 | states | loading = `<Skeleton>` (shape matches the final layout, NOT a bare spinner) · empty = `<EmptyState>` · error = `<ErrorState>` (inline) / `ErrorFallback` (route). All exist + locked in COMPONENT_REGISTRY — USE them, don't hand-roll. |
 | focus | inputs: ONE ink edge — `border-s-ink` + a single soft halo `box-shadow:0 0 0 3px rgba(10,10,10,.10)`, set globally in globals.css; primitives add NO extra `outline` (V3-D449 — no double ring). buttons/links: the global 2px ink `outline`. |
 | disabled | `opacity-50 cursor-not-allowed` (e.g. the commit button before a slot is picked) |

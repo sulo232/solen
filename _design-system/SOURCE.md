@@ -135,7 +135,7 @@ When adding a new color token to `tailwind.config.js`, both forms MUST be define
 **Already-in-system examples** (use as reference when adding new tokens):
 - `s-success.DEFAULT #16A34A` (HSL 142, 76%, 36%) + `.bg #E8F5E9` (HSL 122, 28%, 93%)
 - `s-error.DEFAULT #D32F2F` (HSL 0, 65%, 51%) + `.bg #FFEBEE` (HSL 354, 100%, 96%)
-- `s-warning.DEFAULT #F59E0B` (HSL 38, 92%, 50%) + `.bg #FFF3E0` (HSL 36, 100%, 94%)
+- `s-warning.DEFAULT #F1AE27` (HSL 40, 88%, 55%) + `.bg #FDF6E7` (HSL 41, 80%, 95%) — the accent's amber twin (CANON §1)
 - `s-accent.DEFAULT #276EF1` (HSL 215, 88%, 55%) + `.pale #EAEFFE` (HSL 226, 92%, 96%) — V3-D204
 
 **What WE DON'T do:**
@@ -164,9 +164,9 @@ The interactivity signal. Used GENEROUSLY on anything tappable — links, see-al
 |---|---|---|---|
 | `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text links, see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), "NEW" pill bg, interactive icon tints. NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
 | `s-accent.deep` | `#0F2A99` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` |
-| `s-accent.pale` | `#EBEFFA` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
+| `s-accent.pale` | `#EAEFFE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
-**Contrast vs white** (`text-s-accent #1638C4` on white) ≈ **9.6 : 1 → AAA**. Safe at any text size including 11px metadata.
+**Contrast vs white** (`text-s-accent #276EF1` on white) ≈ **3.7 : 1** — passes WCAG AA for LARGE text (≥18px / ≥14px bold) and UI components, but **FAILS AA for normal-size body**. So blue links/labels must be ≥18px or bold, or lean on the link's icon/position affordance; do NOT use #276EF1 for 11px metadata text. (The old #1638C4 was ~9.6:1 / AAA; v2's brighter #276EF1 trades contrast for vibrancy.)
 
 **Where to use:** text links (Mehr lesen →), see-all/view-all, active tab/segment state, ghost & secondary buttons, tappable row affordances, inline action labels, the chevron→arrow next to section titles. NOT eyebrows or decorative bullets — those stay text-s-ink-3 with no leading dot (v2 rule 2).
 
@@ -219,8 +219,8 @@ The interactivity signal. Used GENEROUSLY on anything tappable — links, see-al
 | `s-love.deep` | `#A23548` | Dark warm-red text on `.soft` bg |
 | `s-success` DEFAULT | `#16A34A` | Success state (same hue as brand — distinguish by context) |
 | `s-success.bg` | `#E8F5E9` | Success surface tint |
-| `s-warning` DEFAULT | `#F59E0B` | Warnings |
-| `s-warning.bg` | `#FFF3E0` | Warning surface tint |
+| `s-warning` DEFAULT | `#F1AE27` | Warnings (the accent's amber twin, CANON §1) |
+| `s-warning.bg` | `#FDF6E7` | Warning surface tint |
 | `s-error` DEFAULT | `#D32F2F` | Errors |
 | `s-error.bg` | `#FFEBEE` | Error surface tint |
 | `s-closed` | `#DC2626` | "Geschlossen" / closure states — distinct from error |
@@ -262,7 +262,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 - ❌ Using `s-brand` ANYWHERE in new code (V3-D189 — still retired). Token kept for back-compat only.
 - ❌ Using `s-accent` (royal blue) on primary CTAs — accent ≠ primary action surface (V3-D192-fix). Primary CTAs stay `bg-s-ink`.
 - ❌ Defaulting to chrome ink for a component whose color carries semantic meaning (V3-D197). If success/error/warning/info/open/closed/active is being communicated, the surface belongs to Layer 3 semantic UI — use the universal-color token. The recurring Agent-D-style mistake.
-- ❌ Inventing custom semantic hues. There's only ONE green for success (`s-success #16A34A`), ONE red for error (`s-error #D32F2F`), ONE amber for warning (`s-warning #F59E0B`). Don't shift them ±10° for "brand feel" — the universal hue IS the brand feel.
+- ❌ Inventing custom semantic hues. There's only ONE green for success (`s-success #16A34A`), ONE red for error (`s-error #D32F2F`), ONE amber for warning (`s-warning #F1AE27`). Don't shift them ±10° for "brand feel" — the universal hue IS the brand feel.
 - ❌ Stacking semantics: do not use the brand-accent royal blue to mean "info" in one place and "selected tab" in another in the same module. Pick one role per surface.
 - ❌ Tinted shadows (`rgba(R, G, B, ...)` where RGB matches a retired brand color). Shadows are warm-ink only.
 
@@ -685,7 +685,7 @@ For ALL UI affordances (buttons, controls, labels), use lucide. No mixing.
 
 ### §10.1 · Loading state
 
-Skeletons mirror the eventual layout. Use `bg-s-bg-sunken` (#F5F5F4) with `animate-shimmer` for a subtle background-position loop.
+Skeletons mirror the eventual layout. Use `bg-s-bg-sunken` (#F4F4F5) with `animate-shimmer` for a subtle background-position loop.
 
 **Patterns:**
 
@@ -1206,7 +1206,7 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 |---|---|---|
 | B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
 | Accent = blue `s-accent` #276EF1, NOT pixel-budgeted (v2 2026-06-09; forest emerald #16A34A retired as accent, survives as success-status hue) | v2 | CANON.md §0 |
-| Bricolage Grotesque + Hanken Grotesk fonts | V3-D75 | This doc §3 |
+| Inter Tight (display) + Inter (body) + JetBrains Mono (codes) — Bricolage + Hanken retired | CANON §3 / V3-D410 | This doc §3 |
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
 | Blue `s-accent` #276EF1 = the interactivity accent — used generously on all tappable affordances (v2, 2026-06-09) | v2 | CANON.md §0 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |

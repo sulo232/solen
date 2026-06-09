@@ -48,7 +48,7 @@ standalone tappable glyph). A decorative icon inside a tappable row/card stays i
 | 3 | Cool border value | **#E4E4E7** | Pairs with cool #F4F4F5; reverses warm #E8E4DF. |
 | 4 | Warm shadow tint | **KEEP** (untouched) | CANON §7 explicit owner decision; sub-perceptual at 0.03–0.12 alpha; out of v2 scope. |
 | 5 | CLAUDE.md link-lock ("link = ink") | **Flipped to blue** | Owner's verbatim "use blue a lot for links/clickable stuff" IS the by-name unlock the LOCKED table requires. |
-| 6 | Drift-checker A9/A14 re-scope | **In scope** (the rule's enforcement arm) | Leaving it floods false-positives that re-train the ban. See "Deferred / build-phase" for status. |
+| 6 | Drift-checker A9/A14 re-scope | **DONE this pass** | A9 whitelist + guidance rescoped to v2 (blue on interactive whitelisted; flags blue-on-non-interactive-text only). A14 needs NO change , the blue-ghost recipe has no shadow, so it never triggers A14's white+shadow condition. |
 | 7 | Icon-tint boundary | **Tap-target test** | Deterministic; matches the mockup; checkable by A9. |
 | 8 | SuccessMark doc | **Authored** `components/SuccessMark.md` + registry updated | Required by the "new component → doc + registry" rule; the clean home for the chip-vs-focal + motion spec. |
 
@@ -95,10 +95,10 @@ These are CODE changes; the docs above state them as the target and acknowledge 
 1. **Token value sync (step 1 of build).** `tailwind.config.js` + `app/globals.css`: `s-bg.sunken` #F8F5F2 → **#F4F4F5**,
    `s-border` #E8E4DF → **#E4E4E7** (+ the `--color-border` CSS var #E0DDDB), and **ADD `s-success.deep #15803D`**
    (value already exists in code as `s-brand.mid`). Then point `SuccessMark` disc at `bg-s-success-deep`.
-2. **Drift-checker A9/A14 re-scope** (`check.py`): A9 should flag blue ONLY on non-interactive text (eyebrows/body/prices/
-   headings) + a blue-FILLED primary; WHITELIST blue on links / see-all / active tabs / ghost buttons / selected rows /
-   interactive icon tints. A14 should allow the blue-ghost recipe (`bg-white border-s-accent text-s-accent`). Until done,
-   the drift report will flag v2-correct blue as false-positives — do NOT act on those.
+2. ~~Drift-checker A9/A14 re-scope~~ **DONE this pass** (not deferred): A9's `ACCENT_ALLOWED_HINTS` now whitelists
+   interactivity markers (href / <a / <Link / onClick / role="tab / aria-selected / cursor-pointer / hover:underline /
+   active: / Buchen/Wegbeschreibung/Verwalten) and its guidance flags blue on non-interactive text + a blue-filled primary
+   only. A14 needed NO change , the blue-ghost recipe has no shadow, so it never trips A14's white+shadow rule.
 3. **Build the v2 surfaces** — the 4 approved redesigns (reset-password, account-messages, city-landing, empty-states) +
    roll v2 across the app (blue on interactive affordances, white-first, deep success, motion).
 4. **Delete `public/_mockups/`** once the real builds land.

@@ -36,12 +36,12 @@
 | `s-ink-2` | `#6B6B6B` | Secondary text |
 | `s-ink-3` | `#6B6B6B` | Tertiary text (collapsed onto ink-2 per V3-D138) |
 | `s-ink-disabled` | `#C5C8C4` | Disabled state |
-| `s-border` | `#E0DDDB` | Hairline borders (V3-D447: firmer, was #E7E5E4) |
+| `s-border` | `#E4E4E7` | Hairline borders — COOL neutral (v2 rule 4; reverses warm V3-D447 #E0DDDB / V3-D460 #E8E4DF) |
 | `s-bg.base` | `#FFFFFF` | Page base |
 | `s-bg.surface` | `#FFFFFF` | Card surface |
 | `s-bg.raised` | `#FFFFFF` | Raised / modal surface |
-| `s-bg.sunken` | `#F5F5F4` | Hover bg, input active, inert surface |
-| `s-bg.active` | `#F5F5F4` | Input typing active state |
+| `s-bg.sunken` | `#F4F4F5` | Hover bg, input active, inert surface — COOL light grey (v2 rule 4; reverses warm #F8F5F2) |
+| `s-bg.active` | `#F4F4F5` | Input typing active state |
 | `white` | `#FFFFFF` | Pure white (text on dark) |
 | `black` | `#000000` | NEVER use (eye strain). Use `s-ink` instead. |
 
@@ -91,7 +91,7 @@
 
 - `s-coral`, `s-cream`, `s-butter`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool`
 - ~~`s-pop`~~ — **UN-RETIRED V3-D424 (2026-06-02):** it's a vivid vermilion `#C03001`, actively used as the escalated/urgency badge dot+text (dashboard `DashStatusPill` `urgent` tone). Distinct from `s-surcharge` orange + `s-error` red. Tailwind keeps it ("urgency badges only") — this reconciles the doc with reality.
-- `s-amber` — **PERMANENTLY KILLED V3-D320 (2026-05-27)** per user pick on Q-W7-A. Was an orphan reference rendering invisible. All callsites swept: star/rating context → `s-star` (#FFC32B yellow), warning/alert context → `s-warning` (#F59E0B amber per LOCKFILE universal-color §3). NO alias added — drift-checker will reject any new `s-amber` usage. If you need amber for warnings use `s-warning`; if for rating-yellow use `s-star`.
+- `s-amber` — **PERMANENTLY KILLED V3-D320 (2026-05-27)** per user pick on Q-W7-A. Was an orphan reference rendering invisible. All callsites swept: star/rating context → `s-star` (#FFC32B yellow), warning/alert context → `s-warning` (#F1AE27 amber per LOCKFILE §1 universal-color table). NO alias added — drift-checker will reject any new `s-amber` usage. If you need amber for warnings use `s-warning`; if for rating-yellow use `s-star`.
 - `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
 - `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
 - `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
@@ -109,10 +109,10 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 ### §1.5.0 — THE COLOR MODEL (V3-D460, 2026-06-09, council + owner-approved) — read first
 
-**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a screen reads *dead* because the NEUTRALS are cool/clinical, NOT because it lacks an accent. **SUPERSEDED IN PART BY v2 (2026-06-09, later same-day owner approval):** blue is now the INTERACTIVITY colour, used generously on tappable affordances (links / tabs / secondary & ghost buttons / action labels / tappable rows). The principle below holds for NON-interactive surfaces ONLY: do not paint blue on a dead, non-tappable area to fake life — there, life comes from warmth + imagery + motion. Blue earns its place by marking interaction, not by decorating. Adding blue to NON-interactive decoration to compensate for missing life remains the #1 colour mistake.
+**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a non-interactive area reads *dead* when it has no imagery, motion, or semantic colour — NOT because it lacks blue. **v2 (2026-06-09) reverses two things from the earlier V3-D460 model:** (a) blue is now the INTERACTIVITY colour, used generously on tappable affordances (links / tabs / secondary & ghost buttons / action labels / tappable rows); and (b) surfaces are WHITE-FIRST + COOL (white #FFFFFF, cool sunken #F4F4F5, cool hairline #E4E4E7) — the warm-cream "stone" foundation is DROPPED (rule 4). So life on a non-interactive area comes from imagery + motion + semantic colour on a clean cool surface, never from warm cream and never from painting blue on a non-tappable thing. Blue earns its place by marking interaction; adding blue to NON-interactive decoration to fake life remains the #1 colour mistake.
 
 **Where "life"/colour comes from, in priority order:**
-1. **Warm neutrals** — the surface itself (stone `#F8F5F2`, hairline `#E8E4DF`, V3-D460). Foundational; carries warmth on *every* screen with zero accent.
+1. **Cool neutrals + whitespace** — the surface itself (white #FFFFFF default, cool sunken `#F4F4F5`, cool hairline `#E4E4E7`; v2 rule 4 reverses the V3-D460 warm #F8F5F2/#E8E4DF). The clean B&W base; whitespace + restraint carry *every* screen with zero accent.
 2. **Real photography** — salon photos. On any screen with a photo, the photo IS the colour. Keep adjacent UI neutral and let the image lead.
 3. **Semantic colour (Layer 3)** — green=paid/confirmed/open, yellow=rating, pink=saved, red=error, amber=warning. Colour ONLY where it carries meaning/state.
 4. **Motion** — the dynamic delight layer (SuccessMark, press feedback). Premium feel without a single hue.
@@ -1054,7 +1054,7 @@ Dashboard IA mirrors Fresha for Business (verified via Mobbin web screens, 2026-
 ### §12.2 — Vibrant palette (full saturation, consistent with accent blue)
 | Role | Token | Notes |
 |---|---|---|
-| Primary CTA + active nav | `s-accent.bright` `#276EF1` | The vibrant blue. Hover → `s-accent` `#185CE0`. (Dashboard ONLY — customer site keeps ink CTAs per §0.2.) |
+| Primary CTA + active nav | `s-accent` `#276EF1` | The vibrant blue. Hover → darken via opacity/lightness (the old #185CE0 hover hex is folded into #276EF1 per CANON §1). (Dashboard ONLY — customer site keeps ink CTAs per §0.2.) |
 | Status pill text | **saturated semantic** (`text-s-success`/`s-error`/`s-warning.text`/`s-ink-2`) | NEVER ink/black text on a colored pill. Resolves the §1 "pastel+ink" vs §2.5 "semantic text" conflict in favor of **§2.5 semantic text** for dashboard. |
 | `s-warning.text` | `#B45309` | Readable darker amber for warning text on `s-warning.bg` (amber DEFAULT fails contrast as text). |
 | Charts (data-vis) | accent-blue + universal semantics | Line/bar charts use `#276EF1` / `#16A34A` / `#D32F2F` — NOT chart-grey. (Chart-grey §1 Layer-4 is for the *customer* competitor-chart only.) |
