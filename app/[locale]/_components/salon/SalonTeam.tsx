@@ -58,7 +58,7 @@ export function SalonTeam({
         </h2>
         <Link
           href={`/${locale}/salon/${slug}/booking`}
-          className="font-body text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80 md:text-[15px]"
+          className="font-body text-[14px] font-medium text-s-ink transition-opacity hover:opacity-80 md:text-[15px]"
         >
           Alle ansehen
         </Link>

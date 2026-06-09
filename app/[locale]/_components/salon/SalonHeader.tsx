@@ -28,7 +28,7 @@ import { computeOpenStatus } from "./_shared";
  *     - Meta row now ALL inline (rating + (N) + status + address + directions),
  *       separated by `•` bullets. Was 3 stacked rows + 1 pill row = 4 levels;
  *       now ONE wrap-row.
- *     - "(N)" reviews count is now a `<button>` in `text-s-accent`,
+ *     - "(N)" reviews count is now a `<button>` in `text-s-ink`,
  *       clicks scroll to `#section-reviews` (matches Fresha purple-clickable)
  *     - Address is now a `<button>` (clickable, scrolls to map / about)
  *     - StatusPill replaced with `StatusInline` (split-color word + time)
@@ -94,7 +94,7 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
                 type="button"
                 onClick={scrollToReviews}
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
-                className="font-medium text-s-accent transition-opacity hover:opacity-80"
+                className="font-medium text-s-ink transition-opacity hover:opacity-80"
               >
                 ({salon.review_count.toLocaleString("de-CH")})
               </button>

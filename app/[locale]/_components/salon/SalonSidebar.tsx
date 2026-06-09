@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
  *   - Salon name 22 → clamp(32,3vw,40)
  *   - Rating row now 24px (was 14)
  *   - "(N)" reviews count is now a button → scrolls to #section-reviews,
- *     rendered in `text-s-accent` (royal blue per our lock)
+ *     rendered in `text-s-ink` (royal blue per our lock)
  *   - Status uses NEW StatusInline component (split-color word + time)
  *     instead of StatusPill
  *   - Mitgliedschaft only renders if salon.has_packages
@@ -123,7 +123,7 @@ export function SalonSidebar({
           type="button"
           onClick={scrollToReviews}
           // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
-          className="font-body text-[18px] font-medium leading-none text-s-accent transition-opacity hover:opacity-80 md:text-[20px]"
+          className="font-body text-[18px] font-medium leading-none text-s-ink transition-opacity hover:opacity-80 md:text-[20px]"
         >
           ({salon.review_count.toLocaleString("de-CH")})
         </button>
@@ -194,7 +194,7 @@ export function SalonSidebar({
             target="_blank"
             rel="noreferrer noopener"
             // 2026-05-30: links → saturated blue (s-accent), no underline.
-            className="font-medium text-s-accent transition-opacity hover:opacity-80"
+            className="font-medium text-s-ink transition-opacity hover:opacity-80"
           >
             Route
           </a>

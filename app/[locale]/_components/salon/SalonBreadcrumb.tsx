@@ -64,7 +64,7 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
         <React.Fragment key={seg.href}>
           <Link
             href={seg.href}
-            className="transition-colors hover:text-s-accent"
+            className="transition-colors hover:text-s-ink"
           >
             {seg.label}
           </Link>
