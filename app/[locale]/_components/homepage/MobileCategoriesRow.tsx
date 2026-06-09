@@ -82,17 +82,21 @@ export default function MobileCategoriesRow({
                 aria-label={label}
                 className="group focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-3xl"
               >
+                {/* Depth fix (2026-06-09, owner-approved): unselected tiles FLOAT = white + a soft, wide
+                    shadow, not the old sinking gray (#F3F3F3). The card must be LIGHTER than the page with a
+                    soft-wide (not tight) shadow — the council's core fix for "flat". */}
                 <div
                   className={`
                     relative flex aspect-[1.15/1] flex-col items-center justify-between
                     rounded-3xl p-3
-                    transition-transform duration-200 ease-glide
+                    transition-[transform,box-shadow] duration-200 ease-glide
                     group-hover:-translate-y-[2px]
                     group-active:scale-[0.97] group-active:duration-[80ms]
                     ${isPick
                       ? "bg-white border-[1.5px] border-s-ink"
-                      : "bg-s-bg-sunken group-hover:bg-s-border"}
+                      : "bg-white"}
                   `}
+                  style={!isPick ? { boxShadow: "0 2px 8px rgba(50,47,44,0.08), 0 14px 30px -10px rgba(50,47,44,0.14)" } : undefined}
                 >
                   {isPick && (
                     <span className="absolute right-2 top-2 grid h-[18px] w-[18px] place-items-center rounded-full bg-s-ink">
