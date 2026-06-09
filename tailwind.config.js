@@ -82,7 +82,7 @@ module.exports = {
         "s-amber":        "#F1AE27",  // was warnings → alias to s-warning DEFAULT
         "s-blue":         "#276EF1",  // was info chips / category-color → alias to s-accent DEFAULT
         "s-plum":         "#6B6B6B",  // was secondary highlight → alias to s-ink-2
-        "s-sand":         "#F5F5F4",  // was muted bg surface → alias to s-bg.sunken
+        "s-sand":         "#F8F5F2",  // warm stone (V3-D460) → alias to s-bg.sunken
         "s-amber-subtle": "#FDF6E7",  // was warning pastel bg → alias to s-warning.bg
         "s-amber-text":   "#906309",  // was warning text → alias to s-warning DEFAULT
         // Section tints — values updated to fit Little Amps cream/dusty-blue palette
@@ -131,7 +131,7 @@ module.exports = {
         "s-ink": { DEFAULT: "#0A0A0A", secondary: "#6B6B6B", tertiary: "#6B6B6B", disabled: "#C5C8C4" },
         "s-ink-2": "#6B6B6B",  // V3-D138: pure neutral grey (was warm #6B7068)
         "s-ink-3": "#6B6B6B",  // V3-D138: collapsed onto ink-2 (was #5F635D)
-        "s-border": "#E0DDDB",  // V3-D447: firmer hairline #E7E5E4 -> #E0DDDB (Fresha-leaning, warm stone; user-picked)
+        "s-border": "#E8E4DF",  // V3-D460 (council 2026-06-09, owner-approved): warmer hairline #E0DDDB -> #E8E4DF (warmth from the neutrals, not accent — the "dead-grey" fix)
         // V3-D315 (W9 follow-up, 2026-05-27): chart-grey 3-tier scale for data-vis
         // (competitor bars, hierarchy charts). Replaces opacity-modifier-on-ink-2
         // pattern (`bg-s-ink-2/40` / `bg-s-ink-2/30`) which surfaced as a recipe-smell
@@ -149,10 +149,10 @@ module.exports = {
         // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
         // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
         // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
-        // V3-D138 (2026-05-25): sunken aligned to user spec #F5F5F4 (cool stone
-        // grey). active + peach also neutralized — apricot peach (#FFE8D8) is
-        // dead. Use sunken for hover-bg / input-active / inert surfaces.
-        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F5F5F4", active: "#F5F5F4", peach: "#F5F5F4" },
+        // V3-D138 (2026-05-25): sunken stone surface. V3-D460 (council 2026-06-09, owner-approved):
+        // WARMED #F5F5F4 (cool) -> #F8F5F2 (warm) — the "dead-grey" fix. Warmth lives in the surface
+        // itself, not in accent colour; this cascades to every hover-bg / input-active / inert surface.
+        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F8F5F2", active: "#F8F5F2", peach: "#F8F5F2" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.

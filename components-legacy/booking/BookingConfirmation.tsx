@@ -195,7 +195,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
               </div>
               {props.salonAddress && (
                 <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-s-ink-2">
-                  <MapPin size={13} className="shrink-0 text-s-accent" aria-hidden />
+                  <MapPin size={13} className="shrink-0 text-s-ink-2" aria-hidden />
                   <span className="truncate">{props.salonAddress}</span>
                 </div>
               )}
@@ -256,7 +256,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           href={directionsHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-accent transition-[background-color] duration-150 hover:bg-s-accent-pale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink transition-[background-color] duration-150 hover:bg-s-bg-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <MapPin size={17} aria-hidden />
           {t("directions")}
@@ -277,14 +277,14 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 type="button"
                 onClick={() => copyText(props.accessLink as string, setCopiedLink)}
                 aria-label={copiedLink ? t("copied") : t("copyLink")}
+                title={copiedLink ? t("copied") : t("copyLink")}
                 className={[
-                  "flex h-[34px] shrink-0 items-center gap-1.5 rounded-[9px] border border-s-border bg-s-bg-surface px-3 text-[13px] font-semibold transition-colors duration-150",
+                  "grid h-[36px] w-[36px] shrink-0 place-items-center rounded-[9px] border border-s-border bg-s-bg-surface transition-colors duration-150",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1",
                   copiedLink ? "text-s-success" : "text-s-ink",
                 ].join(" ")}
               >
-                {copiedLink ? <Check size={14} aria-hidden /> : <Copy size={14} aria-hidden />}
-                {copiedLink ? t("copied") : t("copyLink")}
+                {copiedLink ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
               </button>
             </div>
           </div>

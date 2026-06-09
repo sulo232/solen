@@ -106,6 +106,26 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 **Rationale:** Measured Uber inventory + feedback-blue research (`public/_pixel-refs/uber/feedback-blue/UBER-FEEDBACK-BLUE.md` + `UBER-BLUE-INVENTORY.md`) confirms Uber gates blue exclusively on `:focus-visible` rings and `<Spinner>` arc — zero decorative usages across 8 web surfaces + 26 iOS screens. Solen previously painted accent on ~8-12% of pixels via eyebrows, link text, step circles, hero spans, decorative dots. The user-reported "vibrating blue text" / "blue pill black text contrast" complaints all trace to this overuse.
 
+### §1.5.0 — THE COLOR MODEL (V3-D460, 2026-06-09, council + owner-approved) — read first
+
+**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a screen reads *dead* because the NEUTRALS are cool/clinical, NOT because it lacks an accent. The fix for deadness is **warmth + imagery**, never more blue. Adding blue to compensate for missing life is the #1 colour mistake.
+
+**Where "life"/colour comes from, in priority order:**
+1. **Warm neutrals** — the surface itself (stone `#F8F5F2`, hairline `#E8E4DF`, V3-D460). Foundational; carries warmth on *every* screen with zero accent.
+2. **Real photography** — salon photos. On any screen with a photo, the photo IS the colour. Keep adjacent UI neutral and let the image lead.
+3. **Semantic colour (Layer 3)** — green=paid/confirmed/open, yellow=rating, pink=saved, red=error, amber=warning. Colour ONLY where it carries meaning/state.
+4. **Motion** — the dynamic delight layer (SuccessMark, press feedback). Premium feel without a single hue.
+5. **Accent blue** — LAST resort, system-only (see ALLOWED). Almost never.
+
+**Per-element decision rule** (ask in order, stop at first yes):
+1. Carries state/meaning? → semantic colour.
+2. Strong photo adjacent? → keep neutral, let the photo carry it.
+3. The one primary commit action? → ink fill (`bg-s-ink`).
+4. A system focus/loading state? → blue (ring / spinner / input focus).
+5. Everything else (incl. secondary action BUTTONS — Directions, Add-to-calendar, steppers) → **ink + icon** at 500-600 weight. NEVER blue.
+
+**The one carve-out (owner V3-D460):** a single **bare TEXT navigation link** per screen — the "manage your booking / account" escape hatch that has NO button chrome — MAY be `text-s-accent` so it's recognizable as tappable (a bare ink link is invisible). Buttons (chrome/border/icon) stay ink. This is the ONLY sanctioned blue-on-text; do not generalize it to other links.
+
 ### ✓ ALLOWED accent applications
 
 | Surface | Recipe | Notes |
@@ -114,6 +134,7 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 | Text link focus-visible | `outline: 3px solid var(--s-accent); outline-offset: 1px` | Per Base Web link-focus pattern |
 | `<Spinner>` arc (loading) | Track grey, arc `var(--s-accent)` | Matches Base Web `<Spinner kind="primary">` |
 | Form input focus border | `border-color: var(--s-accent); box-shadow: 0 0 0 2px var(--s-accent-pale)` | Inline + textarea + select |
+| The ONE "manage booking / account" bare text-link per screen (NO button chrome) | `text-s-accent` + optional chevron | V3-D460 owner carve-out — the single navigational escape hatch needs to read as tappable (a bare ink link is invisible). NOT for general links, body, buttons, or a 2nd link on the same screen. |
 
 ### ✗ FORBIDDEN — sweep to ink/semantic instead
 
@@ -618,6 +639,15 @@ Subagents may NOT paraphrase. If a captured Fresha spec needs a phrase variation
 - Get directions: `"Wegbeschreibung"` (preferred) — `"Route"` (compact in sidebar)
 - Read more (long text): `"Mehr lesen"`
 - Back: `"Zurück"`
+
+### Copy economy (V3-D460, 2026-06-09, council + owner) — SENIOR_SCORECARD dim 1
+
+- **Button labels: shortest grammatical form.** Drop articles, prepositions, infinitive scaffolding. ≤3 words.
+  - `"Zum Kalender hinzufügen"` → **`"Kalender hinzufügen"`**. `"Termin teilen"` → `"Teilen"` when context is clear.
+- **Icon-only** when the icon is universal AND the action repeats or space is tight: copy, share, calendar, map-pin, heart/save, edit, trash, close, back. (Keep an `aria-label` + `title` for a11y.) Example: the "Kopieren" button beside an access link → copy icon only.
+- **Icon + label** only when the icon is non-obvious or the label adds unique meaning (≤3 words).
+- **Label-only** when the action is unique on the screen and clarity matters more than space.
+- **Never repeat a word already in an adjacent heading/label** (SOLEN_UI §2a). If the card says "Gesamt (inkl. MWST)", the pill says `"Bezahlt"`, not `"Bezahlt inkl. MWST"`.
 
 ### Service-row format (V3-D227 lock)
 

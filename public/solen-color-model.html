@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen color model — council resolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --grey:#6B6B6B; --accent:#276EF1; --success:#16A34A; --success-bg:#E8F5E9;
+    --display:'Inter Tight',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+    /* current (cool) */ --cool-stone:#F5F5F4; --cool-line:#E0DDDB;
+    /* council (warm) */ --warm-stone:#F8F5F2; --warm-line:#E8E4DF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E9E7E4;font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;padding:26px 16px 60px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1.page{font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-0.02em;text-align:center;margin-bottom:5px}
+  p.sub{text-align:center;color:var(--grey);font-size:13px;margin-bottom:22px}
+  .swatches{display:flex;gap:10px;justify-content:center;margin-bottom:26px;flex-wrap:wrap}
+  .sw{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--grey)}
+  .chip{width:34px;height:34px;border-radius:9px;border:1px solid rgba(0,0,0,.08)}
+  .cols{display:grid;grid-template-columns:1fr;gap:24px}
+  @media(min-width:760px){.cols{grid-template-columns:1fr 1fr;gap:28px}}
+  .tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.03em}
+  .tag.bad{background:#FCE9E6;color:#B42318}
+  .tag.good{background:var(--success-bg);color:#0F7A37}
+  .col-head{text-align:center;margin-bottom:11px}
+  .phone{width:330px;margin:0 auto;border-radius:36px;background:#000;padding:9px;box-shadow:0 20px 46px -20px rgba(0,0,0,.45)}
+  .screen{border-radius:28px;overflow:hidden;padding:22px 18px 24px}
+  .check{width:54px;height:54px;border-radius:50%;background:var(--success);display:grid;place-items:center;margin:6px auto 12px}
+  .title{font-family:var(--display);font-weight:600;font-size:23px;letter-spacing:-0.02em;text-align:center;margin-bottom:20px}
+  .card{border-radius:18px;overflow:hidden}
+  .salon{display:flex;gap:11px;align-items:center;padding:13px 14px}
+  .thumb{width:46px;height:46px;border-radius:11px;flex:0 0 auto;background-size:cover;background-position:center}
+  .sname{font-size:15px;font-weight:600;letter-spacing:-.01em}
+  .saddr{font-size:13px;color:var(--grey);margin-top:1px;display:flex;align-items:center;gap:5px}
+  .hr{height:1px}
+  .when{padding:14px 14px 3px}
+  .date{font-family:var(--display);font-size:18px;font-weight:600;letter-spacing:-.01em}
+  .time{font-size:13px;color:var(--grey);margin-top:2px}
+  .svc{padding:11px 14px 14px;font-size:15px;font-weight:600}
+  .svc .w{font-size:13px;color:var(--grey);font-weight:400;margin-top:2px}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:12px 14px}
+  .flabel{font-size:13px;color:var(--grey)}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:var(--success-bg);color:#0F7A37;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;margin-top:3px}
+  .price{font-family:var(--display);font-size:18px;font-weight:600}
+  .cta{height:50px;border-radius:13px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;margin-top:14px}
+  .cta2{height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;margin-top:9px}
+  .accesslink{margin-top:14px;border-radius:14px;padding:12px}
+  .al-row{display:flex;align-items:center;gap:8px;margin-top:9px;border-radius:11px;padding:7px 8px 7px 11px}
+  .al-url{flex:1;font-family:var(--mono);font-size:12px;color:var(--grey);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .al-copy{flex:0 0 auto;width:36px;height:32px;border-radius:9px;display:grid;place-items:center}
+  .tinyfoot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:13px;font-size:13px;color:var(--grey)}
+  .code{font-family:var(--mono)}
+  svg{display:block}
+  .legend{margin-top:28px;background:#fff;border:1px solid var(--warm-line);border-radius:14px;padding:16px 18px;font-size:13px;line-height:1.6}
+  .legend b{font-family:var(--display)}
+  .legend ul{margin:6px 0 0;padding-left:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page">Color model — "life from warmth, not blue"</h1>
+  <p class="sub">Council resolution. The deadness was cool/clinical neutrals, not a missing accent. (English mockup.)</p>
+
+  <div class="swatches">
+    <div class="sw"><span class="chip" style="background:#F5F5F4"></span> cool stone #F5F5F4 <span style="color:#B42318">(now)</span></div>
+    <div class="sw"><span class="chip" style="background:#F8F5F2"></span> warm stone #F8F5F2 <span style="color:#0F7A37">(council)</span></div>
+    <div class="sw"><span class="chip" style="background:#E0DDDB"></span> → <span class="chip" style="background:#E8E4DF"></span> hairline</div>
+  </div>
+
+  <div class="cols">
+    <!-- BEFORE -->
+    <div>
+      <div class="col-head"><span class="tag bad">NOW · cool grey + blue links</span></div>
+      <div class="phone"><div class="screen" style="background:#fff">
+        <div class="check"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="title">Termin bestätigt!</div>
+        <div class="card" style="border:1px solid var(--cool-line)">
+          <div class="salon">
+            <div class="thumb" style="background:var(--cool-stone)"></div>
+            <div style="flex:1"><div class="sname">Maison Lumière</div><div class="saddr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#276EF1" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Bahnhofstrasse 21</div></div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="hr" style="background:var(--cool-line)"></div>
+          <div class="when"><div class="date">Sonntag, 14. Juni</div><div class="time">15:30 – 16:30 | 60 min</div></div>
+          <div class="svc">Damenhaarschnitt & Föhnen<div class="w">mit Lena Brunner</div></div>
+          <div class="foot" style="background:var(--cool-stone)">
+            <div><div class="flabel">Gesamt (inkl. MWST)</div><div class="pill">✓ Bezahlt</div></div>
+            <div class="price">CHF 85.00</div>
+          </div>
+        </div>
+        <div class="cta"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Zum Kalender hinzufügen</div>
+        <div class="cta2" style="background:#fff;border:1px solid var(--cool-line);color:#276EF1"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#276EF1" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Wegbeschreibung</div>
+        <div class="accesslink" style="border:1px solid var(--cool-line)">
+          <div class="saddr" style="color:#6B6B6B"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4M18 5l2 2M15 8l2 2"/></svg> Dein Zugangslink. Als Gast kommst du nur darüber zurück.</div>
+          <div class="al-row" style="background:var(--cool-stone);border:1px solid var(--cool-line)"><span class="al-url">https://www.solen.ch/…</span><span class="al-copy" style="background:#fff;border:1px solid var(--cool-line)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span><span style="font-size:13px;font-weight:600;color:#0A0A0A;padding-right:6px">Kopieren</span></div>
+        </div>
+        <div class="tinyfoot" style="border-top:1px solid var(--cool-line)"><span class="code">SOL-7K2QX9</span><span style="color:#276EF1;font-weight:600">Buchung verwalten ›</span></div>
+      </div></div>
+    </div>
+
+    <!-- AFTER -->
+    <div>
+      <div class="col-head"><span class="tag good">COUNCIL · warm neutrals + ink actions</span></div>
+      <div class="phone"><div class="screen" style="background:#fff">
+        <div class="check"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="title">Termin bestätigt!</div>
+        <div class="card" style="border:1px solid var(--warm-line)">
+          <div class="salon">
+            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&q=80')"></div>
+            <div style="flex:1"><div class="sname">Maison Lumière</div><div class="saddr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Bahnhofstrasse 21</div></div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="hr" style="background:var(--warm-line)"></div>
+          <div class="when"><div class="date">Sonntag, 14. Juni</div><div class="time">15:30 – 16:30 | 60 min</div></div>
+          <div class="svc">Damenhaarschnitt & Föhnen<div class="w">mit Lena Brunner</div></div>
+          <div class="foot" style="background:var(--warm-stone)">
+            <div><div class="flabel">Gesamt (inkl. MWST)</div><div class="pill">✓ Bezahlt</div></div>
+            <div class="price">CHF 85.00</div>
+          </div>
+        </div>
+        <div class="cta"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Kalender hinzufügen</div>
+        <div class="cta2" style="background:#fff;border:1px solid var(--warm-line);color:#0A0A0A"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Wegbeschreibung</div>
+        <div class="accesslink" style="border:1px solid var(--warm-line);background:#fff">
+          <div class="saddr" style="color:#6B6B6B"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4M18 5l2 2M15 8l2 2"/></svg> Dein Zugangslink. Als Gast kommst du nur darüber zurück.</div>
+          <div class="al-row" style="background:var(--warm-stone);border:1px solid var(--warm-line)"><span class="al-url">https://www.solen.ch/…</span><span class="al-copy" style="background:#fff;border:1px solid var(--warm-line)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span></div>
+        </div>
+        <div class="tinyfoot" style="border-top:1px solid var(--warm-line)"><span class="code">SOL-7K2QX9</span><span style="color:#0A0A0A;font-weight:600;display:inline-flex;align-items:center;gap:2px">Buchung verwalten <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <b>What the council changed (left → right)</b>
+    <ul>
+      <li><b>Warmth from the surface</b> — stone #F5F5F4 → #F8F5F2, hairline #E0DDDB → #E8E4DF. The page reads alive without a single accent. (Global token change → every screen warms.)</li>
+      <li><b>Photo carries warmth</b> — the salon thumbnail (real photo) is the colour on a low-photo screen, not a blue link.</li>
+      <li><b>Actions back to ink</b> — Directions, Manage, address pin → ink + icon. Blue is system-only (focus / spinner / input). My blue was the wrong lever.</li>
+      <li><b>Copy</b> — "Zum Kalender hinzufügen" → "Kalender hinzufügen"; the "Kopieren" label drops to icon-only.</li>
+      <li><b>Semantic stays</b> — green ✓ Bezahlt + the check are the one meaningful colour. That's correct and stays.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
