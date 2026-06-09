@@ -276,6 +276,7 @@ export function SalonDetailV3() {
               average={salon.average_rating}
               count={salon.review_count}
               reviews={salon.reviews}
+              salonId={salon.id}
             />
 
             <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={() => openGallery()} />

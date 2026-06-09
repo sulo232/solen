@@ -6,6 +6,7 @@ import type { Review } from "./_shared";
 import { formatReviewDate } from "./_shared";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 /**
  * SalonReviews — V2-D53.3 (2026-05-11).
@@ -30,13 +31,47 @@ export function SalonReviews({
   average,
   count,
   reviews,
+  salonId,
 }: {
   average: number | null;
   count: number;
   reviews: Review[];
+  /** When the parent passes no review bodies (the salon fetch returns only the
+   *  aggregate count), the card self-fetches them client-side. reviews are public-read. */
+  salonId?: string;
 }) {
   const [expanded, setExpanded] = React.useState(false);
-  const visible = expanded ? reviews : reviews.slice(0, 6);
+  const [fetched, setFetched] = React.useState<Review[] | null>(null);
+
+  React.useEffect(() => {
+    if (reviews.length > 0 || !salonId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const supabase = createBrowserSupabaseClient();
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("id, rating, comment, created_at")
+          .eq("salon_id", salonId)
+          .eq("is_hidden", false)
+          .order("created_at", { ascending: false })
+          .limit(50);
+        if (error) throw error;
+        if (!cancelled) setFetched((data ?? []) as Review[]);
+      } catch (err) {
+        console.error("[SalonReviews] review fetch failed:", err);
+        if (!cancelled) setFetched([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [reviews.length, salonId]);
+
+  const all = reviews.length > 0 ? reviews : fetched ?? [];
+  const visible = expanded ? all : all.slice(0, 6);
+  const dist = [5, 4, 3, 2, 1].map((s) => all.filter((r) => r.rating === s).length);
+  const distMax = all.length || 1;
 
   return (
     <section id="section-reviews" className="rounded-2xl bg-white shadow-float p-5 md:p-7">
@@ -65,13 +100,30 @@ export function SalonReviews({
         </span>
       </div>
 
-      {reviews.length === 0 ? (
-        // V3-D214 (verifier #7): contradiction guard. Don't say "Noch keine
-        // Bewertungen" when aggregate `count > 0` — that combo is incoherent
-        // ("4.8 from 4 reviews · no reviews"). When the seed/server returns an
-        // aggregate without review bodies, soften copy to "Bewertungstexte
-        // folgen." (rare data-only case). Empty-empty (count = 0) keeps the
-        // original copy.
+      {/* Rating distribution bars (per IMG_5392 ref) — computed from the real ratings. */}
+      {all.length > 0 && (
+        <div className="mt-5 space-y-1.5">
+          {[5, 4, 3, 2, 1].map((star, i) => {
+            const pct = (dist[i] / distMax) * 100;
+            return (
+              <div key={star} className="flex items-center gap-2.5">
+                <span className="w-3 text-right font-body text-[12px] tabular-nums text-s-ink-3">
+                  {star}
+                </span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
+                  <div className="h-full rounded-full bg-s-ink" style={{ width: `${pct}%` }} />
+                </div>
+                <span className="w-7 text-right font-body text-[12px] tabular-nums text-s-ink-3">
+                  {dist[i]}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {all.length === 0 ? (
+        // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
         count > 0 ? (
           <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
             Bewertungstexte folgen.
@@ -88,7 +140,7 @@ export function SalonReviews({
               <ReviewCard key={r.id} review={r} />
             ))}
           </div>
-          {reviews.length > 6 && !expanded && (
+          {all.length > 6 && !expanded && (
             <div className="mt-6 flex justify-center">
               <button
                 type="button"
@@ -110,21 +162,29 @@ function ReviewCard({ review }: { review: Review }) {
   const [showFull, setShowFull] = React.useState(false);
   const isLong = text.length > 200;
 
-  const displayName = review.profiles?.display_name ?? "Solen-Kund:in";
+  // Reviewer name only when a public profile exists. Anonymous/seed reviews show a
+  // "Verifizierte Buchung · date" line instead of a repeated placeholder name.
+  const displayName = review.profiles?.display_name ?? null;
 
   return (
     <article>
-      <div className="flex items-center gap-2.5">
-        <Avatar src={review.profiles?.avatar_url} name={displayName} size={40} />
-        <div className="min-w-0 flex-1">
-          <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
-            {displayName}
-          </div>
-          <div className="font-body text-[11px] text-s-ink-3 md:text-[12px]">
-            {formatReviewDate(review.created_at)}
+      {displayName ? (
+        <div className="flex items-center gap-2.5">
+          <Avatar src={review.profiles?.avatar_url} name={displayName} size={40} />
+          <div className="min-w-0 flex-1">
+            <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
+              {displayName}
+            </div>
+            <div className="font-body text-[11px] text-s-ink-3 md:text-[12px]">
+              {formatReviewDate(review.created_at)}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="font-body text-[12px] font-medium text-s-ink-3">
+          Verifizierte Buchung · {formatReviewDate(review.created_at)}
+        </div>
+      )}
 
       {/* Stars */}
       <RatingStars value={review.rating} mode="five" size="md" className="mt-2.5" />
