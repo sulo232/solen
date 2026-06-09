@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { Check, Copy, Calendar, MapPin, KeyRound } from "lucide-react";
+import { Check, Copy, Calendar, MapPin, KeyRound, ChevronRight } from "lucide-react";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
 /**
@@ -94,8 +94,9 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
         minute: "2-digit",
       })
     : null;
+  // Separator is a thin vertical line, not a middle-dot (owner 2026-06-09: "stop using dots, use a line").
   const timeline = `${timeStr}${displayEnd ? ` – ${displayEnd}` : ""}${
-    props.durationMinutes ? ` · ${props.durationMinutes} min` : ""
+    props.durationMinutes ? `  |  ${props.durationMinutes} min` : ""
   }`;
   const code = props.referenceCode ?? "";
 
@@ -171,7 +172,11 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           className="celebrate-rise mt-7 overflow-hidden rounded-card border border-s-border bg-s-bg-surface shadow-float"
           style={{ animationDelay: "0.58s" }}
         >
-          <div className="flex items-center gap-3 p-4">
+          {/* the whole store identity row is tappable → the salon page (owner 2026-06-09) */}
+          <Link
+            href={`/${locale}/salon/${props.salonSlug}`}
+            className="flex items-center gap-3 p-4 transition-colors duration-150 hover:bg-s-bg-sunken focus-visible:bg-s-bg-sunken focus-visible:outline-none"
+          >
             {props.salonCoverUrl ? (
               <Image
                 src={props.salonCoverUrl}
@@ -184,18 +189,19 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             ) : (
               <div className="h-[44px] w-[44px] shrink-0 rounded-[11px] bg-s-bg-sunken" aria-hidden />
             )}
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
                 {props.salonName}
               </div>
               {props.salonAddress && (
                 <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-s-ink-2">
-                  <MapPin size={13} className="shrink-0" aria-hidden />
+                  <MapPin size={13} className="shrink-0 text-s-accent" aria-hidden />
                   <span className="truncate">{props.salonAddress}</span>
                 </div>
               )}
             </div>
-          </div>
+            <ChevronRight size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+          </Link>
           <hr className="border-s-border" />
           {/* date = the focal */}
           <div className="px-4 pb-1 pt-4">
@@ -250,7 +256,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           href={directionsHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink transition-[background-color] duration-150 hover:bg-s-bg-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+          className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-accent transition-[background-color] duration-150 hover:bg-s-accent-pale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <MapPin size={17} aria-hidden />
           {t("directions")}
@@ -289,9 +295,10 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           <span className="font-mono-code text-s-ink-2">{code || "SOL-•••••"}</span>
           <Link
             href={manageHref}
-            className="font-semibold text-s-ink transition-colors duration-150 hover:text-s-ink-2"
+            className="inline-flex items-center gap-0.5 font-semibold text-s-accent transition-opacity duration-150 hover:opacity-80"
           >
             {t("manageBooking")}
+            <ChevronRight size={15} aria-hidden />
           </Link>
         </div>
         {showVat && props.salonVatNumber && (
