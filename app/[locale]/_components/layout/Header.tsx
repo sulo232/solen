@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronDown, Home, Menu, MapPin, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { ChevronDown, Home, Menu, MapPin, X, ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -349,6 +349,21 @@ export default function Header({ locale }: { locale: string }) {
     return !!m;
   }, [pathname]);
 
+  // V3-D461 (2026-06-09, council nav): the far-left slot is HOME on top-level destinations and
+  // BACK on deep pages — one up-affordance, never both (owner-flagged Home+Back+breadcrumb stack).
+  // Top-level = homepage / the category browse routes / search / discover / city-category browse.
+  const router = useRouter();
+  const isTopLevel = React.useMemo(() => {
+    if (!pathname) return true;
+    const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "");
+    if (seg === "") return true; // homepage
+    const TOP = ["/coiffeur", "/barbershop", "/nails", "/spa", "/search", "/entdecken", "/discover"];
+    if (TOP.includes(seg)) return true;
+    const parts = seg.split("/").filter(Boolean); // city-category browse, e.g. /basel/coiffeur
+    if (parts.length === 2 && ["coiffeur", "barbershop", "nails", "spa"].includes(parts[1])) return true;
+    return false;
+  }, [pathname]);
+
   // V3-D349 (2026-05-28): detect a category/search route so the fused compact
   // search pill only ever appears there. Matches /{locale}/{segment} exactly
   // (trailing slash tolerated); query string is irrelevant to pathname.
@@ -505,7 +520,7 @@ export default function Header({ locale }: { locale: string }) {
           >
             {tDiscover("title")}
           </Link>
-        ) : (
+        ) : isTopLevel ? (
           <Link
             href={`/${locale}`}
             aria-label="Zur Startseite"
@@ -526,6 +541,27 @@ export default function Header({ locale }: { locale: string }) {
           >
             <Home size={19} strokeWidth={2} aria-hidden />
           </Link>
+        ) : (
+          // V3-D461: deep page → BACK (router.back with a home fallback for direct loads). Same tile.
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) router.back();
+              else router.push(`/${locale}`);
+            }}
+            aria-label="Zurück"
+            className={cn(
+              "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.95]",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+              isDark
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                : "border-s-border bg-white text-s-ink hover:border-s-ink",
+            )}
+          >
+            <ArrowLeft size={19} strokeWidth={2} aria-hidden />
+          </button>
         )}
 
         {/* Mobile: middle area. Empty by default (flex spacer pushes the

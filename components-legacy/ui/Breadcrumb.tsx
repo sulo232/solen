@@ -1,15 +1,13 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { BackButton } from "@/app/[locale]/_components/primitives";
 
 export default function Breadcrumb() {
   const pathname = usePathname() ?? "/";
   const locale = useLocale();
-  const router = useRouter();
   const t = useTranslations("breadcrumb");
 
   // Strip locale prefix to get meaningful segments
@@ -59,17 +57,9 @@ export default function Breadcrumb() {
   // Mobile: simple back button
   // Desktop: breadcrumb path
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
-      {/* Mobile back button — V3-D380 (2026-05-30): icon-only circle (was a "← Zurück" text link).
-          Global chrome: applies to every non-excluded route's mobile back, for a consistent clean affordance. */}
-      <BackButton
-        variant="flat"
-        onClick={() => router.back()}
-        aria-label={t("back")}
-        label={t("back")}
-        className="md:hidden"
-      />
-
+    // V3-D461 (2026-06-09): desktop-only. Mobile up-navigation is now the Header's left slot (Back on
+    // deep pages) — the old mobile back button here was the redundant second affordance the owner flagged.
+    <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 py-2">
       {/* Desktop breadcrumb */}
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <Link
