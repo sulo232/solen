@@ -310,7 +310,7 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 | `before:rounded-full before:bg-s-*` (pseudo-element dot) on eyebrow span | Drop the `before:*` classes |
 | `<Icon /> Eyebrow text` (leading lucide icon as decoration) | Drop the icon; if it has semantic role, justify with V3-D{n} comment |
 | Eyebrow + H2 stack on a section that has no section-identity content above | Drop the eyebrow entirely |
-| **Middle-dot `·` separator** between meta values (`1200+ · Basel · 4.9★`) — V3-D462 (2026-06-09): the owner has rejected separator dots MANY times ("stop using dots, use a line"). The old "KEEP separator dots" entry here was the literal root cause — it kept telling every session that dots were correct. | Use `<MetaDot />` (now renders a thin ` \| ` line, single source) between elements, or ` \| ` inside a string. NEVER a middle-dot `·`. Drift rule **A20** flags any literal `·` in JSX. |
+| **ANY separator glyph between meta values** — a middle-dot `·` (`Basel · 4.9★`) OR a pipe `\|` (`Basel \| 4.9★`). V3-D462→V3-D463 (2026-06-09): owner rejected dots many times, then the pipe ("how does Apple do it" — Apple uses *space + hierarchy*, no glyph; the pipe reads as a Material/web form-field). The old "KEEP separator dots" entry here was the root cause. | **No glyph.** Use `<MetaDot />` (renders a ~14px GAP, single source) between elements, or an **em-space `U+2003`** inside a string. Apple-style: space + lighter-grey secondary value, fewer values. NEVER a `·` or a `\|`. Drift rule **A20** flags literal `·`. |
 
 **KEEP (semantic, not decoration):**
 - Status indicator dots: `<StatusPill open=true>` (semantic = open/closed signal)

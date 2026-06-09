@@ -522,7 +522,7 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
             findings.append(Finding(
                 file=rel, line=ln_no, rule="INFO A20: middle-dot separator",
                 snippet=line,
-                recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D462). Use <MetaDot /> (renders a thin `|` line) or a literal `|`.",
+                recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D463). NO separator glyph — use <MetaDot /> (a no-glyph gap) or an em-space (U+2003). Not a `·`, not a `|`.",
             ))
 
         # A3 — non-canonical durations
