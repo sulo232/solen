@@ -539,7 +539,7 @@ export default function Header({ locale }: { locale: string }) {
                 : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
-            <Home size={19} strokeWidth={2} aria-hidden />
+            <Home size={22} strokeWidth={2.2} aria-hidden />
           </Link>
         ) : (
           // V3-D461: deep page → BACK (router.back with a home fallback for direct loads). Same tile.
@@ -560,7 +560,7 @@ export default function Header({ locale }: { locale: string }) {
                 : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
-            <ArrowLeft size={19} strokeWidth={2} aria-hidden />
+            <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
           </button>
         )}
 
