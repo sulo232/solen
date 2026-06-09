@@ -102,7 +102,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
                 className={`w-full text-left px-3 py-2 rounded-[8px] text-xs transition-colors flex justify-between items-center ${value === c.user_id ? 'bg-s-ink/10 text-s-accent font-bold' : 'hover:bg-s-ink/5:bg-white/5 text-s-ink'}`}
               >
                 <span className="truncate pr-2">{c.display_name}</span>
-                <span className="text-[10px] text-s-ink/30 font-mono shrink-0">
+                <span className="text-[12px] text-s-ink/30 font-mono shrink-0">
                   {c.user_id.split('-').slice(0, 2).join('-')}
                 </span>
               </button>

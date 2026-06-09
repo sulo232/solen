@@ -29,7 +29,7 @@ interface EnrichedBooking extends Booking { customer_name: string; service_name:
 interface StaffStat { id: string; name: string; revenue?: number; bookings?: number }
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-3">{children}</p>
+  <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-3">{children}</p>
 );
 
 function Delta({ v }: { v?: number }) {
@@ -50,7 +50,7 @@ function StatTile({ label, children, delta }: { label: string; children: React.R
   const up = (delta ?? 0) > 0, flat = delta === 0;
   return (
     <div className="rounded-card-lg border border-s-border bg-white p-3.5">
-      <p className="text-[11.5px] font-semibold text-s-ink-2 mb-2">{label}</p>
+      <p className="text-[12px] font-semibold text-s-ink-2 mb-2">{label}</p>
       <div className="text-[22px] font-semibold tracking-[-0.02em] leading-none text-s-ink flex items-baseline">{children}</div>
       {delta !== undefined && (
         <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold mt-2", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error")}>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
 
       <div className="flex items-end justify-between gap-4 mb-6">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">{t("title")}</h1>
         </div>
         <Link
@@ -191,7 +191,7 @@ export default function DashboardPage() {
             <div className="flex items-end justify-between mb-3">
               <div>
                 <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</p>
-                <p className="text-[11px] text-s-ink-3 mt-0.5">{t("last7Days")}</p>
+                <p className="text-[12px] text-s-ink-3 mt-0.5">{t("last7Days")}</p>
               </div>
               <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em] leading-none text-s-ink">
                 <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
@@ -199,8 +199,8 @@ export default function DashboardPage() {
             </div>
             <DashBarChart height={90} data={daily.map((d) => ({ primary: d.revenue }))} primaryClassName="fill-s-accent-bright" />
             <div className="flex gap-3.5 mt-3">
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-bright" />{t("revenue")}</span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-pale" />{t("priorWeek")}</span>
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-bright" />{t("revenue")}</span>
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-pale" />{t("priorWeek")}</span>
             </div>
           </div>
 
@@ -221,7 +221,7 @@ export default function DashboardPage() {
                   { values: daily.map((d) => d.bookings), className: "stroke-s-success" },
                 ]} />
               </div>
-              <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
+              <div className="flex gap-4 mt-2 text-[12px] text-s-ink-2">
                 <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-accent-bright" />{t("revenue")}</span>
                 <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-success" />{t("bookings")}</span>
               </div>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
               <div className="mt-4">
                 <DashBarChart data={daily.map((d) => ({ primary: d.confirmed, secondary: d.cancelled }))} />
               </div>
-              <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
+              <div className="flex gap-4 mt-2 text-[12px] text-s-ink-2">
                 <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-accent-bright" />{t("statusConfirmed")}</span>
                 <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-error" />{t("statusCancelled")}</span>
               </div>

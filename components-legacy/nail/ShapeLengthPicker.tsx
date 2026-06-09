@@ -56,7 +56,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-accent/20 stroke-s-accent" : "fill-s-ink/5 stroke-s-ink/30"}`} strokeWidth="1">
                 <path d={svg} />
               </svg>
-              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-accent font-medium" : "text-s-ink-2"}`}>
+              <span className={`text-[12px] leading-tight ${shape === v ? "text-s-accent font-medium" : "text-s-ink-2"}`}>
                 {t(key)}
               </span>
             </button>
@@ -83,7 +83,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
                     : "bg-s-ink/10 hover:bg-s-ink/20"
                 }`}
               />
-              <span className={`text-[9px] ${length === v ? "text-s-accent font-medium" : "text-s-ink/40"}`}>
+              <span className={`text-[12px] ${length === v ? "text-s-accent font-medium" : "text-s-ink/40"}`}>
                 {t(key)}
               </span>
             </button>

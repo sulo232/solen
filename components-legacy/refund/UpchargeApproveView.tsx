@@ -509,7 +509,7 @@ export default function UpchargeApproveView({
 
             {/* "Outstanding" block — the extra is still unpaid (mockup .block) */}
             <div className="mt-5 rounded-card border border-s-border px-3.5 py-[13px]">
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink/40">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40">
                 {t("upFailedOpenLabel")}
               </div>
               <p className="text-[13px] leading-[1.45] text-s-ink/[0.72]">
@@ -570,7 +570,7 @@ export default function UpchargeApproveView({
 
           {/* FOCAL surcharge band — light orange card, vivid-orange label + big number */}
           <div className="mt-5 rounded-card bg-s-surcharge-bg p-[18px] text-center">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-s-surcharge">
+            <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-surcharge">
               {t("upCalcExtra")}
             </div>
             <div className="mt-1 font-display text-[38px] font-bold leading-none tracking-[-0.02em] text-s-surcharge [font-variant-numeric:tabular-nums]">
@@ -603,7 +603,7 @@ export default function UpchargeApproveView({
           {/* the salon's reason */}
           {dispute?.salon_reason && (
             <div className="mt-[18px] rounded-card border border-s-border px-3.5 py-[13px]">
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink/40">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40">
                 {t("upWhy")}
               </div>
               <p className="text-[13.5px] leading-[1.45] text-s-ink/[0.72]">“{dispute.salon_reason}”</p>
@@ -701,7 +701,7 @@ function Frame({
             {title}
           </div>
           {subtitle && (
-            <div className="mt-[1px] truncate font-body text-[11.5px] font-normal text-s-ink-2">
+            <div className="mt-[1px] truncate font-body text-[12px] font-normal text-s-ink-2">
               {subtitle}
             </div>
           )}
@@ -711,7 +711,7 @@ function Frame({
       {isGuest && (
         <div className="flex items-center gap-2 border-b border-s-border bg-s-accent-pale px-4 py-[9px] md:px-8">
           <Lock size={15} className="flex-shrink-0 text-s-accent" aria-hidden />
-          <span className="text-[11.5px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
+          <span className="text-[12px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
         </div>
       )}
 

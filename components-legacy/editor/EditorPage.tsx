@@ -308,7 +308,7 @@ export default function EditorPage() {
       </div>
 
       {/* Status bar */}
-      <div className="px-3 py-1.5 border-t border-s-border bg-white flex items-center gap-3 text-[10px] text-s-ink/40 flex-shrink-0">
+      <div className="px-3 py-1.5 border-t border-s-border bg-white flex items-center gap-3 text-[12px] text-s-ink/40 flex-shrink-0">
         <span>{bridgeReady ? "Bridge connected" : "Waiting for bridge…"}</span>
         <span>•</span>
         <span>{editMode ? "Edit mode ON" : "Edit mode OFF"}</span>

@@ -94,7 +94,7 @@ export default function SalonSwitcher({
           <span className="block font-heading font-semibold text-[15px] tracking-[-0.01em] text-s-ink truncate">
             {activeName}
           </span>
-          {multi && <span className="block text-[11.5px] text-s-ink-3">Salon wechseln</span>}
+          {multi && <span className="block text-[12px] text-s-ink-3">Salon wechseln</span>}
         </span>
         {multi && <ChevronsUpDown size={16} className="text-s-ink-3 shrink-0" />}
       </button>
@@ -130,7 +130,7 @@ export default function SalonSwitcher({
               className="w-full sm:max-w-sm bg-white rounded-t-2xl sm:rounded-2xl max-h-[75vh] flex flex-col shadow-[0_-8px_30px_rgba(10,10,10,0.12)]"
             >
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+                <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
                   Deine Salons {salons.length}
                 </span>
                 <button
@@ -177,7 +177,7 @@ export default function SalonSwitcher({
                         <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">
                           {s.name}
                         </span>
-                        <span className="block text-[11.5px] text-s-ink-3 truncate">
+                        <span className="block text-[12px] text-s-ink-3 truncate">
                           {catLabel(s.categories)}
                         </span>
                       </span>

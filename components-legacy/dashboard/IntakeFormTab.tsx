@@ -145,7 +145,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
                   {[{ val: true, label: t("yes") }, { val: false, label: t("no") }].map(({ val, label }) => {
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-border text-s-ink-2"}`}>
+                        className={`px-3 py-1.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-border text-s-ink-2"}`}>
                         {label}
                       </button>
                     );
@@ -181,7 +181,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
               className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2">{t("cancel")}</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>
           </div>
@@ -199,7 +199,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
               <div key={h.id} className="bg-white rounded-[16px] border border-s-ink/5 p-3">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-s-ink">{label ?? h.template_key}</p>
-                  <span className="text-[10px] text-s-ink/30">{new Date(h.filled_at).toLocaleDateString("de-CH")}</span>
+                  <span className="text-[12px] text-s-ink/30">{new Date(h.filled_at).toLocaleDateString("de-CH")}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-1 text-xs text-s-ink/40">
                   {Object.entries(h.responses).slice(0, 4).map(([k, v]) => (

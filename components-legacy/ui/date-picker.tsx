@@ -76,7 +76,7 @@ export default function SolenDatePicker({
           <CalendarGrid className="w-full">
             <CalendarGridHeader>
               {(day) => (
-                <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-11 text-center">
+                <CalendarHeaderCell className="text-[12px] font-medium text-s-ink/40 pb-2 w-11 text-center">
                   {day}
                 </CalendarHeaderCell>
               )}
@@ -151,7 +151,7 @@ export default function SolenDatePicker({
             <CalendarGrid className="w-full">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-11 text-center">
+                  <CalendarHeaderCell className="text-[12px] font-medium text-s-ink/40 pb-2 w-11 text-center">
                     {day}
                   </CalendarHeaderCell>
                 )}

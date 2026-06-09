@@ -77,7 +77,7 @@ export default function MessagesPage() {
         <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2 bg-s-bg-sunken">
           <MessageCircle size={28} className="text-s-ink-2" />
         </div>
-        <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink-2">
+        <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-ink-2">
           Nachrichten
         </p>
         <p className="font-heading text-lg text-s-ink">Noch keine Nachrichten</p>
@@ -96,7 +96,7 @@ export default function MessagesPage() {
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <div className="mb-6">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink-2 mb-1">
+          <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-ink-2 mb-1">
             Account
           </p>
           <h1 className="font-heading text-2xl text-s-ink">Nachrichten</h1>
@@ -130,7 +130,7 @@ export default function MessagesPage() {
                       </p>
                       {unread > 0 && (
                         // V3-D281: unread badge — s-coral → s-accent (info signal, small footprint OK per LOCKFILE §1 Layer 2)
-                        <span className="w-5 h-5 rounded-full bg-s-accent text-white text-[10px] flex items-center justify-center font-heading shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-s-accent text-white text-[12px] flex items-center justify-center font-heading shrink-0">
                           {unread}
                         </span>
                       )}
@@ -141,7 +141,7 @@ export default function MessagesPage() {
                       </p>
                     )}
                     {conv.last_message_at && (
-                      <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/25 mt-0.5">
+                      <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/25 mt-0.5">
                         {new Date(conv.last_message_at).toLocaleDateString("de-CH", {
                           day: "numeric",
                           month: "short",
@@ -160,14 +160,14 @@ export default function MessagesPage() {
               <div className="h-full">
                 <div className="mb-3 pb-3 border-b border-s-border flex items-center gap-2">
                   {/* V3-D281: header avatar — was rgba(27,77,27,.12) green wash + s-coral text → sunken neutral */}
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-ink text-[10px] font-heading shrink-0 bg-s-bg-sunken">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-ink text-[12px] font-heading shrink-0 bg-s-bg-sunken">
                     {selectedConv?.other_party_name?.[0] ?? "?"}
                   </div>
                   <div>
                     <p className="text-sm font-heading text-s-ink">
                       {selectedConv?.other_party_name}
                     </p>
-                    <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink-2">Salon</p>
+                    <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2">Salon</p>
                   </div>
                 </div>
                 <div className="h-[calc(100%-36px)]">
@@ -180,7 +180,7 @@ export default function MessagesPage() {
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-center">
-                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/25">
+                <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/25">
                   Unterhaltung auswählen
                 </p>
                 <p className="text-xs font-body text-s-ink/25">Wähle links eine Unterhaltung</p>

@@ -36,7 +36,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
           {t("retry")}
         </button>
         {error.digest && (
-          <p className="mt-4 text-[10px] text-s-ink/20 font-mono">
+          <p className="mt-4 text-[12px] text-s-ink/20 font-mono">
             {t("errorId")}: {error.digest}
           </p>
         )}

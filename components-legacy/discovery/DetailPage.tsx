@@ -154,7 +154,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           <div className="flex flex-wrap gap-1.5 mt-2">
             {/* V3-D390: cap to 6 — the raw 14-tag cloud read cluttered. */}
             {item.tags.slice(0, 6).map((tag) => (
-              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
+              <span key={tag} className="text-[12px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
                 #{tag}
               </span>
             ))}

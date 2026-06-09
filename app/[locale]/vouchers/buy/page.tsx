@@ -184,7 +184,7 @@ export default function VoucherBuyPage() {
                   <div className="font-heading text-xs uppercase tracking-[.04em] text-s-ink">
                     Fester Betrag
                   </div>
-                  <div className="text-[10px] text-s-ink-2 mt-1">
+                  <div className="text-[12px] text-s-ink-2 mt-1">
                     z.B. CHF 50
                   </div>
                 </button>
@@ -202,7 +202,7 @@ export default function VoucherBuyPage() {
                   <div className="font-heading text-xs uppercase tracking-[.04em] text-s-ink">
                     Prozent
                   </div>
-                  <div className="text-[10px] text-s-ink-2 mt-1">
+                  <div className="text-[12px] text-s-ink-2 mt-1">
                     z.B. 20%
                   </div>
                 </button>
@@ -247,7 +247,7 @@ export default function VoucherBuyPage() {
                   onChange={(e) => setIsGift(e.target.checked)}
                   className="w-5 h-5 rounded border-s-border text-s-accent focus:ring-s-accent/15"
                 />
-                <span className="font-heading uppercase text-[10px] tracking-[.06em] text-s-ink">
+                <span className="font-heading uppercase text-[12px] tracking-[.06em] text-s-ink">
                   Als Geschenk versenden
                 </span>
               </label>

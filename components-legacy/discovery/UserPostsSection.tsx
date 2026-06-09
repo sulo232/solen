@@ -45,7 +45,7 @@ export default function UserPostsSection({ userId }: UserPostsSectionProps) {
           {post.image_url ? (
             <Image src={post.image_url} alt={post.style_name ?? ""} fill className="object-cover" sizes="33vw" />
           ) : (
-            <div className="flex items-center justify-center h-full text-[10px] text-s-ink/20">
+            <div className="flex items-center justify-center h-full text-[12px] text-s-ink/20">
               {post.media_type === "video" ? "Video" : "No image"}
             </div>
           )}
@@ -59,7 +59,7 @@ export default function UserPostsSection({ userId }: UserPostsSectionProps) {
           </div>
           {/* Status badge */}
           {post.status === "flagged" && (
-            <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded-pill bg-s-error/80 text-white text-[9px]">
+            <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded-pill bg-s-error/80 text-white text-[12px]">
               Flagged
             </div>
           )}

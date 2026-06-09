@@ -241,7 +241,7 @@ export default function BarberProfilePage() {
                 </div>
                 {img.is_before_after && (
                   // V3-D255 (W3): badge coral → ink per LOCKFILE (chip pattern, not info-color, picture annotation)
-                  <span className="absolute top-2 right-2 text-[10px] bg-s-ink text-white rounded-pill px-2 py-0.5">
+                  <span className="absolute top-2 right-2 text-[12px] bg-s-ink text-white rounded-pill px-2 py-0.5">
                     Vorher/Nachher
                   </span>
                 )}

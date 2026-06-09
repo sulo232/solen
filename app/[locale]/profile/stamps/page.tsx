@@ -156,7 +156,7 @@ export default async function ProfileStampsPage({
 
       {otherActive.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
+          <h2 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
             Aktiv
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -179,7 +179,7 @@ export default async function ProfileStampsPage({
 
       {redeemed.length > 0 && (
         <section className="mt-8 opacity-70">
-          <h2 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
+          <h2 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
             Eingelöst {redeemed.length}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -197,7 +197,7 @@ export default async function ProfileStampsPage({
                   <span
                     // V3-D289: was hardcoded rgba(22,163,74,0.10) + #16A34A → s-success token (matches the literal hex but via LOCKFILE §1 token)
                     // V3-D330 (Section E lock): retired check-mark (U+2713) emoji per V3-D203 → lucide Check icon
-                    className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[9px] font-body font-bold tabular-nums uppercase tracking-[.08em] bg-s-success/10 text-s-success"
+                    className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[12px] font-body font-bold tabular-nums uppercase tracking-[.08em] bg-s-success/10 text-s-success"
                   >
                     <Check size={9} strokeWidth={2.5} aria-hidden /> Belohnung verfügbar
                   </span>

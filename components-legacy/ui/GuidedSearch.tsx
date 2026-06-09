@@ -365,7 +365,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWas" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-bg-sunken transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[12px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWas" as Parameters<typeof t>[0])}
               </span>
               <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
@@ -382,7 +382,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWo" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-bg-sunken transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[12px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWo" as Parameters<typeof t>[0])}
               </span>
               <span className="text-[12px] font-body font-semibold text-s-ink truncate">
@@ -399,7 +399,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWann" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-bg-sunken transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[12px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWann" as Parameters<typeof t>[0])}
               </span>
               <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
@@ -521,7 +521,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                       >
                         <div className="flex items-center justify-between py-3 border-b border-s-border">
                           <div>
-                            <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
+                            <div className="text-[12px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading text-[13px] text-s-ink">
@@ -531,7 +531,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => { setStep(1); setShowServices(false); }}
-                            className="text-[11px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[12px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -553,7 +553,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                       >
                         <div className="flex items-center justify-between py-3 border-b border-s-border">
                           <div>
-                            <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
+                            <div className="text-[12px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading text-[13px] text-s-ink">
@@ -562,7 +562,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => setStep(2)}
-                            className="text-[11px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[12px] font-heading text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -588,12 +588,12 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {recents.length > 0 && (
                               <div className="pt-4 pb-2">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40">
+                                  <span className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40">
                                     {locale === "de" ? "Zuletzt gesucht" : locale === "fr" ? "Recherches récentes" : locale === "it" ? "Ricerche recenti" : "Recent searches"}
                                   </span>
                                   <button
                                     onClick={clearRecents}
-                                    className="text-[11px] font-body text-s-ink/40 hover:text-s-ink transition-colors"
+                                    className="text-[12px] font-body text-s-ink/40 hover:text-s-ink transition-colors"
                                   >
                                     {locale === "de" ? "Alle löschen" : locale === "fr" ? "Tout effacer" : locale === "it" ? "Cancella tutto" : "Clear all"}
                                   </button>
@@ -626,7 +626,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
                             {/* Trending searches */}
                             <div className={recents.length > 0 ? "pb-2" : "pt-4 pb-2"}>
-                              <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-2">
+                              <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-2">
                                 {locale === "de" ? "Beliebt in Basel" : locale === "fr" ? "Populaire à Bâle" : locale === "it" ? "Popolare a Basilea" : "Popular in Basel"}
                               </p>
                               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -723,7 +723,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {/* Divider */}
                             <div className="flex items-center gap-3 mb-3">
                               <div className="flex-1 h-px bg-s-ink/8" />
-                              <span className="text-[10px] text-s-ink/35 font-body uppercase tracking-wider whitespace-nowrap">
+                              <span className="text-[12px] text-s-ink/35 font-body uppercase tracking-wider whitespace-nowrap">
                                 {t("orSearch" as Parameters<typeof t>[0])}
                               </span>
                               <div className="flex-1 h-px bg-s-ink/8" />
@@ -826,7 +826,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
+                        <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.where.title")}
                         </p>
                         <p className="font-heading text-[18px] text-s-ink mb-4">
@@ -846,7 +846,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <span className="flex-1 text-left text-[14px] font-body font-medium text-s-ink">
                             {t("steps.where.allSwitzerland")}
                           </span>
-                          <span className="text-[11px] font-body text-s-ink/40">
+                          <span className="text-[12px] font-body text-s-ink/40">
                             {t("steps.where.allSub" as Parameters<typeof t>[0])}
                           </span>
                           {city === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
@@ -892,7 +892,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
+                        <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.wann.title" as Parameters<typeof t>[0])}
                         </p>
                         <p className="font-heading text-[18px] text-s-ink mb-4">
@@ -954,7 +954,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         )}
 
                         {/* Time of day */}
-                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-3">
+                        <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-3">
                           {t("steps.wann.timeLabel" as Parameters<typeof t>[0])}
                         </p>
                         <div className="flex flex-wrap gap-2 pb-6">

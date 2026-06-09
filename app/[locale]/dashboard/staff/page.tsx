@@ -232,7 +232,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
-            <p className="text-[10px] text-s-ink/30 mt-1">{t("commissionHint")}</p>
+            <p className="text-[12px] text-s-ink/30 mt-1">{t("commissionHint")}</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">
@@ -547,12 +547,12 @@ export default function StaffPage() {
                 {s.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.specialties.slice(0, 3).map((sp, i) => (
-                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink-2 rounded-pill">{sp}</span>
+                      <span key={i} className="text-[12px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink-2 rounded-pill">{sp}</span>
                     ))}
                   </div>
                 )}
                 {typeof s.commission_rate === "number" && s.commission_rate > 0 && (
-                  <p className="text-[11.5px] text-s-ink-2 mt-1.5">
+                  <p className="text-[12px] text-s-ink-2 mt-1.5">
                     {t.rich("commissionCard", { rate: s.commission_rate, b: (chunks) => <b className="font-heading text-s-ink">{chunks}</b> })}
                   </p>
                 )}

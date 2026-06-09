@@ -352,7 +352,7 @@ export default function ImageUpload({
       )}
 
       {maxFiles > 1 && (
-        <p className="text-[10px] text-s-ink/35 text-right">
+        <p className="text-[12px] text-s-ink/35 text-right">
           {t("countHint", {
             count: totalCount,
             max: maxFiles,

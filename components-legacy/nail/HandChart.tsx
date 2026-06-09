@@ -190,7 +190,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               aria-label={t("hand_chart_note_label")}
             />
             <div className="flex justify-between items-center mt-2">
-              <span className="text-[10px] text-s-ink/40">
+              <span className="text-[12px] text-s-ink/40">
                 {t("hand_chart_autosave")}
               </span>
               {saving && <Loader2 size={12} className="animate-spin text-s-accent" />}

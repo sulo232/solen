@@ -54,7 +54,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
     <div className="flex flex-col">
       {styles.length > 0 && (
         <>
-          <span className="px-1.5 pb-1 pt-0.5 text-[11px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Styles</span>
+          <span className="px-1.5 pb-1 pt-0.5 text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Styles</span>
           {styles.map(({ term, thumb }) => (
             <button
               key={term}
@@ -71,7 +71,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3"><Search size={16} aria-hidden /></span>
               )}
               <span className="min-w-0 flex-1 truncate font-heading text-[15px] font-semibold text-s-ink">{term}</span>
-              <span className="shrink-0 rounded-pill border border-s-border bg-s-bg-sunken px-2 py-0.5 text-[11px] font-heading font-medium text-s-ink-2">Look</span>
+              <span className="shrink-0 rounded-pill border border-s-border bg-s-bg-sunken px-2 py-0.5 text-[12px] font-heading font-medium text-s-ink-2">Look</span>
             </button>
           ))}
         </>
@@ -79,7 +79,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
 
       {salons.length > 0 && (
         <>
-          <span className="px-1.5 pb-1 pt-2 text-[11px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Salons</span>
+          <span className="px-1.5 pb-1 pt-2 text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Salons</span>
           {salons.map((s) => (
             <button
               key={s.id}

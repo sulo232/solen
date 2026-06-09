@@ -80,7 +80,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
               <p className="text-xs text-s-accent font-medium">
                 {t("schedule.autoConfigured")}
               </p>
-              <p className="text-[10px] text-s-ink/40 mt-0.5">
+              <p className="text-[12px] text-s-ink/40 mt-0.5">
                 {t("schedule.autoConfiguredDesc")}
               </p>
             </div>
@@ -89,7 +89,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           <button
             onClick={handleApply}
             disabled={applying}
-            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {applying && <Loader2 size={14} className="animate-spin" />}
             {t("schedule.applyHours")}
@@ -99,7 +99,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         {applied && (
           <button
             onClick={() => onSaved()}
-            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {t("setup.saveAndContinue")}
           </button>

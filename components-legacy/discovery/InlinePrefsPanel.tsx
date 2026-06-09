@@ -63,7 +63,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   const [saved, setSaved] = useState(false);
 
   const pillClass = (active: boolean) =>
-    `px-3.5 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
+    `px-3.5 py-2 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
       active
         ? "border-s-ink bg-s-bg-sunken text-s-ink"
         : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-ink/40"
@@ -110,11 +110,11 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-heading text-s-ink">{t.banner}</p>
-          <p className="text-[10px] font-body text-s-ink/45 mt-0.5">{t.bannerSub}</p>
+          <p className="text-[12px] font-body text-s-ink/45 mt-0.5">{t.bannerSub}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!expanded && (
-            <span className="text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-3">
+            <span className="text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-3">
               {t.expand}
             </span>
           )}
@@ -138,7 +138,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
             <div className="px-4 pb-4 space-y-4 border-t border-s-ink/[0.05] pt-3">
               {/* Gender */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.genderLabel}</p>
+                <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.genderLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "female", l: t.female },
@@ -154,7 +154,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Texture */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.textureLabel}</p>
+                <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.textureLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "straight", l: t.straight },
@@ -171,7 +171,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Length */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.lengthLabel}</p>
+                <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">{t.lengthLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "short", l: t.short },
@@ -189,13 +189,13 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={onDismiss}
-                  className="px-4 py-2.5 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/40 hover:border-s-border transition-colors"
+                  className="px-4 py-2.5 rounded-pill border border-s-ink/[0.08] text-[12px] font-heading uppercase tracking-[.06em] text-s-ink/40 hover:border-s-border transition-colors"
                 >
                   {t.dismiss}
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
+                  className="flex-1 py-2.5 rounded-pill text-white text-[12px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
                 >
                   {t.save}
                 </button>

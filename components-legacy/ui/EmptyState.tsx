@@ -75,7 +75,7 @@ export default function EmptyState({
         </div>
       </div>
       {eyebrow && (
-        <p className="text-[9px] font-body font-bold uppercase tracking-[.22em] text-s-ink/30 mb-2">
+        <p className="text-[12px] font-body font-bold uppercase tracking-[.22em] text-s-ink/30 mb-2">
           {eyebrow}
         </p>
       )}

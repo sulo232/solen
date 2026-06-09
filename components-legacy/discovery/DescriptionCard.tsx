@@ -37,7 +37,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* AI-generated tag */}
         <div className="flex items-center gap-1.5 mb-3">
           <Sparkles size={12} className="text-violet-400" />
-          <span className="text-[10px] text-s-ink/30 font-medium">AI-generated</span>
+          <span className="text-[12px] text-s-ink/30 font-medium">AI-generated</span>
         </div>
 
         {/* Description */}
@@ -51,7 +51,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
             <p className="text-sm text-s-ink/70 leading-relaxed">
               {item.alt_text}
             </p>
-            <p className="text-[10px] text-s-ink/25 mt-2 italic">
+            <p className="text-[12px] text-s-ink/25 mt-2 italic">
               {locale === "de" ? "Originalbeschreibung — KI-Analyse folgt" : "Original caption — AI analysis coming soon"}
             </p>
           </div>
@@ -62,7 +62,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* Maintenance level */}
         {maintenanceConfig && (
           <div className="mt-3">
-            <span className={`text-[10px] px-2 py-0.5 rounded-pill border font-medium ${maintenanceConfig.color}`}>
+            <span className={`text-[12px] px-2 py-0.5 rounded-pill border font-medium ${maintenanceConfig.color}`}>
               {maintenanceConfig.label}
             </span>
           </div>
@@ -71,10 +71,10 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* Face shapes */}
         {item.face_shapes?.length > 0 && (
           <div className="mt-3">
-            <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Works for face shapes</p>
+            <p className="text-[12px] text-s-ink/40 font-medium mb-1.5">Works for face shapes</p>
             <div className="flex flex-wrap gap-1">
               {item.face_shapes.map((shape) => (
-                <span key={shape} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">
+                <span key={shape} className="text-[12px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2 capitalize">
                   {shape}
                 </span>
               ))}
@@ -85,10 +85,10 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* Hair type match */}
         {item.hair_type_match?.length > 0 && (
           <div className="mt-3">
-            <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Best for hair types</p>
+            <p className="text-[12px] text-s-ink/40 font-medium mb-1.5">Best for hair types</p>
             <div className="flex flex-wrap gap-1">
               {item.hair_type_match.map((type) => (
-                <span key={type} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-3 capitalize">
+                <span key={type} className="text-[12px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-3 capitalize">
                   {type}
                 </span>
               ))}

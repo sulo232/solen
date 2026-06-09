@@ -198,14 +198,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   <button
                     aria-pressed={mode === "photo"}
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>

@@ -104,7 +104,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
       <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-s-success-bg px-4 py-3">
         <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-s-success" aria-hidden />
         <div className="min-w-0">
-          <div className="font-body text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
+          <div className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
             {t("Nächster Termin", "Next opening")}
           </div>
           <div className="font-display text-[15px] font-semibold capitalize leading-tight text-s-ink">
@@ -126,16 +126,16 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
                 isToday ? "ring-2 ring-s-ink" : ""
               }`}
             >
-              <span className={`font-body text-[11px] font-semibold capitalize ${s ? "text-s-ink-2" : "text-s-ink-3"}`}>
+              <span className={`font-body text-[12px] font-semibold capitalize ${s ? "text-s-ink-2" : "text-s-ink-3"}`}>
                 {format(date, "EEEEEE", { locale: dateLocale })}
               </span>
               <span className={`font-display text-[18px] font-semibold leading-none mt-1 ${s ? "text-s-ink" : "text-s-ink-3"}`}>
                 {format(date, "d")}
               </span>
               {hours ? (
-                <span className="mt-2 font-body text-[10.5px] font-semibold tabular-nums text-s-success">{hours}</span>
+                <span className="mt-2 font-body text-[12px] font-semibold tabular-nums text-s-success">{hours}</span>
               ) : (
-                <span className="mt-2 font-body text-[10.5px] text-s-ink-3">{t("zu", "closed")}</span>
+                <span className="mt-2 font-body text-[12px] text-s-ink-3">{t("zu", "closed")}</span>
               )}
             </div>
           );

@@ -43,7 +43,7 @@ export default function BrowseByCitySection() {
         {/* Q48 eyebrow — Figtree 700 tracked .22em uppercase coral */}
         <span
           id="city-section-heading"
-          className="block font-body text-[11px] font-bold uppercase tracking-[.22em] mb-8 md:mb-12 text-white/70"
+          className="block font-body text-[12px] font-bold uppercase tracking-[.22em] mb-8 md:mb-12 text-white/70"
         >
           {t("cities.title") || "Salons in deiner Nähe"}
         </span>
@@ -103,7 +103,7 @@ export default function BrowseByCitySection() {
                 </span>
                 {/* Q48 eyebrow — Figtree 700 tracked uppercase, hover-revealed for non-active */}
                 <span
-                  className={`font-body text-[11px] font-bold uppercase tracking-[.22em] ${
+                  className={`font-body text-[12px] font-bold uppercase tracking-[.22em] ${
                     city.active
                       ? "opacity-100"
                       : "opacity-0 group-hover:opacity-100"

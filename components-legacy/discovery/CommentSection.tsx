@@ -121,7 +121,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {comments.map((c) => (
               <div key={c.id} className="flex gap-2 text-xs">
-                <div className="w-6 h-6 rounded-full bg-s-ink/10 flex items-center justify-center text-[10px] font-medium text-s-ink-2 shrink-0">
+                <div className="w-6 h-6 rounded-full bg-s-ink/10 flex items-center justify-center text-[12px] font-medium text-s-ink-2 shrink-0">
                   {c.user.avatar_url ? (
                     <Image src={c.user.avatar_url} alt={c.user.display_name} width={24} height={24} className="rounded-full object-cover" />
                   ) : (

@@ -193,11 +193,11 @@ export default function AdminSandboxPage() {
       <div className="mb-6 rounded-[14px] border border-s-amber/30 bg-s-amber/[0.05] p-4 space-y-3">
         <div className="flex items-center gap-2">
           <FlaskConical size={14} className="text-s-star" />
-          <p className="text-[10px] font-heading uppercase tracking-[.18em] text-s-star">
+          <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
             Platform Test-Salons
           </p>
         </div>
-        <p className="text-[11px] text-s-ink-2">
+        <p className="text-[12px] text-s-ink-2">
           Seeded salons appear on the public site only when no real salons exist for that city+category.
           They include services &amp; availability and are fully editable.
         </p>
@@ -226,7 +226,7 @@ export default function AdminSandboxPage() {
           <button
             onClick={platformSeed}
             disabled={platformSeeding === "seeding" || seedCities.length === 0}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-s-amber text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-s-amber text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
           >
             {platformSeeding === "seeding" ? <Loader2 size={11} className="animate-spin" /> : <Plus size={11} />}
             Seed Test-Salons
@@ -234,7 +234,7 @@ export default function AdminSandboxPage() {
           <button
             onClick={platformDelete}
             disabled={platformSeeding === "deleting"}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[11px] font-heading uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[12px] font-heading uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
           >
             {platformSeeding === "deleting" ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
             {t("deleteAll")}
@@ -243,7 +243,7 @@ export default function AdminSandboxPage() {
 
         {/* Result */}
         {platformSeedResult && (
-          <div className="text-[11px] space-y-1">
+          <div className="text-[12px] space-y-1">
             {(platformSeedResult.seeded?.length ?? 0) > 0 && (
               <p className="text-s-sage font-medium">✓ {platformSeedResult.seeded?.length} Salons geseedet</p>
             )}
@@ -253,13 +253,13 @@ export default function AdminSandboxPage() {
           </div>
         )}
         {platformSeeding === "error" && (
-          <p className="text-[11px] text-red-500">Fehler beim Seeden — Console prüfen</p>
+          <p className="text-[12px] text-red-500">Fehler beim Seeden — Console prüfen</p>
         )}
       </div>
 
       {/* Header */}
       <div className="mb-6">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Admin</p>
+        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Admin</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FlaskConical size={20} className="text-s-coral" />
@@ -284,7 +284,7 @@ export default function AdminSandboxPage() {
       {/* Create form */}
       {showCreateForm && (
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-5 bg-white space-y-3">
-          <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45">
+          <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/45">
             {t("categoryLabel")}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -337,7 +337,7 @@ export default function AdminSandboxPage() {
           <p className="text-xs font-heading text-s-ink-2 uppercase tracking-[.10em]">
             {t("noSalons")}
           </p>
-          <p className="text-[11px] text-s-ink/25 mt-1">{t("noSalonsHint")}</p>
+          <p className="text-[12px] text-s-ink/25 mt-1">{t("noSalonsHint")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -360,11 +360,11 @@ export default function AdminSandboxPage() {
                     </p>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       {salon.categories.map((cat) => (
-                        <span key={cat} className="text-[9px] font-heading uppercase tracking-[.10em] px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink-2">
+                        <span key={cat} className="text-[12px] font-heading uppercase tracking-[.10em] px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink-2">
                           {cat}
                         </span>
                       ))}
-                      <span className="text-[10px] text-s-ink/25 tabular-nums">
+                      <span className="text-[12px] text-s-ink/25 tabular-nums">
                         {salon.id.slice(0, 8)}…
                       </span>
                     </div>
@@ -411,7 +411,7 @@ export default function AdminSandboxPage() {
                   <div className="border-t border-s-ink/[0.04] p-4 space-y-4">
                     {/* Seed data section */}
                     <div>
-                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
+                      <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
                         {t("seedTitle")}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -423,7 +423,7 @@ export default function AdminSandboxPage() {
                               key={key}
                               onClick={() => seedFeature(salon.id, key)}
                               disabled={state === "loading"}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[11px] font-heading transition-[transform,filter,border-color,background-color] duration-150 ${
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[12px] font-heading transition-[transform,filter,border-color,background-color] duration-150 ${
                                 state === "done" ? "bg-s-sage/10 text-s-sage" :
                                 state === "error" ? "bg-red-50 text-red-500" :
                                 `${color} hover:brightness-[0.94]`
@@ -444,7 +444,7 @@ export default function AdminSandboxPage() {
 
                     {/* Feature links section */}
                     <div>
-                      <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
+                      <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
                         {t("linksTitle")}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
@@ -458,7 +458,7 @@ export default function AdminSandboxPage() {
                               href={resolvedHref}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-[11px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-coral:text-s-coral transition-colors duration-150"
+                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-[12px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-coral:text-s-coral transition-colors duration-150"
                             >
                               <ExternalLink size={10} />
                               {t(labelKey)}
@@ -469,7 +469,7 @@ export default function AdminSandboxPage() {
                     </div>
 
                     {/* Salon metadata */}
-                    <div className="flex flex-wrap gap-3 text-[10px] text-s-ink/45">
+                    <div className="flex flex-wrap gap-3 text-[12px] text-s-ink/45">
                       <span className="flex items-center gap-1">
                         <Tag size={10} />
                         {salon.id}
@@ -490,7 +490,7 @@ export default function AdminSandboxPage() {
       {/* Warning banner */}
       <div className="mt-6 flex items-start gap-2 p-3 rounded-[10px] bg-s-amber/[0.08] border border-s-amber/20">
         <FlaskConical size={13} className="text-s-star shrink-0 mt-0.5" />
-        <p className="text-[11px] text-s-star/80 leading-relaxed">
+        <p className="text-[12px] text-s-star/80 leading-relaxed">
           {t("warning")}
         </p>
       </div>

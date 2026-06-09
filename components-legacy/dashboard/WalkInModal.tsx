@@ -76,7 +76,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
             <p className="text-sm text-s-ink-2 mb-1">{t("added")}</p>
             <p className="font-heading text-3xl text-s-ink tracking-tight mb-5">{ticketNumber}</p>
             <button onClick={onClose}
-              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
               {t("done")}
             </button>
           </div>
@@ -119,7 +119,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
             <div className="flex gap-2">
               <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-border text-sm text-s-ink-2 hover:border-s-ink/30 hover:text-s-ink active:scale-[0.97] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
               <button onClick={handleCreate} disabled={!serviceId || loading}
-                className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-elevation-2">
+                className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-elevation-2">
                 {loading && <Spinner size="sm" invert />}<Send size={14} /> {t("create")}
               </button>
             </div>

@@ -235,7 +235,7 @@ const inputBase =
   "w-full h-[52px] rounded-input border border-s-border bg-white px-[15px] font-body text-[15px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent-pale";
 const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
 const labelCls = "block text-[12px] font-medium text-s-ink-2 mb-[7px]";
-const hintCls = "mt-2 text-[11.5px] leading-[1.5] text-s-ink-2";
+const hintCls = "mt-2 text-[12px] leading-[1.5] text-s-ink-2";
 const ctaInk =
   "flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-medium tracking-[-0.005em] text-white transition-transform duration-100 ease-snap active:scale-[0.985] disabled:cursor-not-allowed disabled:bg-s-ink-disabled disabled:active:scale-100";
 const ghostBtn =
@@ -316,7 +316,7 @@ function FormView(props: {
       noValidate
       className="flex flex-1 flex-col"
     >
-      <div className="hidden md:mb-3.5 md:block md:text-[11px] md:font-semibold md:uppercase md:tracking-[0.08em] md:text-s-ink-2">
+      <div className="hidden md:mb-3.5 md:block md:text-[12px] md:font-semibold md:uppercase md:tracking-[0.08em] md:text-s-ink-2">
         {t("eyebrow")}
       </div>
       <h1 className="font-display text-[21px] font-semibold leading-[1.2] tracking-[-0.018em] md:text-[38px] md:font-bold md:leading-[1.1] md:tracking-[-0.02em]">
@@ -365,7 +365,7 @@ function FormView(props: {
           <p
             id="lookup-code-error"
             role="alert"
-            className="mt-2 flex items-center gap-1.5 text-[11.5px] font-medium text-s-closed"
+            className="mt-2 flex items-center gap-1.5 text-[12px] font-medium text-s-closed"
           >
             <CircleAlert size={13} aria-hidden />
             {errors.code}
@@ -399,7 +399,7 @@ function FormView(props: {
           <p
             id="lookup-email-error"
             role="alert"
-            className="mt-2 flex items-center gap-1.5 text-[11.5px] font-medium text-s-closed"
+            className="mt-2 flex items-center gap-1.5 text-[12px] font-medium text-s-closed"
           >
             <CircleAlert size={13} aria-hidden />
             {errors.email}
@@ -578,7 +578,7 @@ function OpenedView({
         <h1 className="font-display text-[21px] font-semibold tracking-[-0.018em]">
           {t("yourBooking")}
         </h1>
-        <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[5px] text-[11px] font-semibold uppercase tracking-[0.04em] text-s-success">
+        <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[5px] text-[12px] font-semibold uppercase tracking-[0.04em] text-s-success">
           <span className="h-1.5 w-1.5 rounded-pill bg-s-success" aria-hidden />
           {t("statusCompleted")}
         </span>
@@ -587,7 +587,7 @@ function OpenedView({
       {/* order-number strip with copy */}
       <div className="mt-3.5 flex items-center justify-between gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-[11px]">
         <div>
-          <div className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-s-ink-2">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.07em] text-s-ink-2">
             {t("orderNumber")}
           </div>
           <div className="mt-[2px] font-mono-code text-[16px] font-semibold tracking-[0.04em] text-s-ink">

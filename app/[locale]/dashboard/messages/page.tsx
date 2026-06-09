@@ -106,7 +106,7 @@ export default function MessagesPage() {
                         {c.customer_name}
                       </span>
                       {c.is_first_visit && (
-                        <span className="text-[10px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright shrink-0">
+                        <span className="text-[12px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright shrink-0">
                           {t("newBadge")}
                         </span>
                       )}
@@ -124,12 +124,12 @@ export default function MessagesPage() {
                   </span>
                   <span className="flex flex-col items-end gap-1.5 shrink-0">
                     {c.last_message_at && (
-                      <span className="text-[11px] text-s-ink-3 tabular-nums">
+                      <span className="text-[12px] text-s-ink-3 tabular-nums">
                         {new Date(c.last_message_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     )}
                     {isUnread && (
-                      <span className="min-w-[18px] h-[18px] rounded-full bg-s-ink text-white text-[10.5px] font-bold grid place-items-center px-[5px]">
+                      <span className="min-w-[18px] h-[18px] rounded-full bg-s-ink text-white text-[12px] font-bold grid place-items-center px-[5px]">
                         {c.unread_count_salon}
                       </span>
                     )}

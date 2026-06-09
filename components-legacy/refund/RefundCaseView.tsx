@@ -284,7 +284,7 @@ function Frame({
       {isGuest && (
         <div className="flex items-center gap-2 border-b border-s-border bg-s-accent-pale px-4 py-[9px]">
           <ShieldCheck size={15} className="flex-shrink-0 text-s-accent" aria-hidden />
-          <span className="text-[11.5px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
+          <span className="text-[12px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
         </div>
       )}
 
@@ -424,7 +424,7 @@ function SalonAvatar({ name, photo }: { name: string; photo: string | null }) {
     );
   }
   return (
-    <span className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken font-heading text-[11px] font-semibold text-s-ink-2">
+    <span className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken font-heading text-[12px] font-semibold text-s-ink-2">
       {salonInitials(name)}
     </span>
   );
@@ -448,7 +448,7 @@ function AmountChips({
   return (
     <div className="mt-[18px] grid grid-cols-2 gap-3">
       <div className="rounded-[12px] border border-s-border bg-white px-3.5 py-3">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
           {t("rowPaid")}
         </div>
         <div className="mt-[3px] font-heading text-[17px] font-semibold tabular-nums tracking-[-0.01em] text-s-ink">
@@ -456,7 +456,7 @@ function AmountChips({
         </div>
       </div>
       <div className="rounded-[12px] border border-s-border bg-white px-3.5 py-3">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
           {t("rowRequested")}
         </div>
         <div className={`mt-[3px] font-heading text-[17px] font-semibold tabular-nums tracking-[-0.01em] ${caseAmountColor(c.status)}`}>
@@ -472,7 +472,7 @@ function AmountChips({
 function ResponseBlock({ label, body }: { label: string; body: string }) {
   return (
     <div className="mt-[18px] rounded-[12px] border border-s-border bg-white px-3.5 py-3.5">
-      <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+      <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
         {label}
       </div>
       <div className="text-[13.5px] leading-[1.45] text-s-ink/80">{body}</div>
@@ -553,7 +553,7 @@ function Timeline({
                 {n.title}
               </div>
             </div>
-            {n.time && <div className="mt-[2px] text-[11.5px] text-s-ink-2">{n.time}</div>}
+            {n.time && <div className="mt-[2px] text-[12px] text-s-ink-2">{n.time}</div>}
             {n.meta && <div className="mt-[2px] text-[12px] leading-[1.4] text-s-ink-2">{n.meta}</div>}
             {n.note && (
               <div
@@ -568,7 +568,7 @@ function Timeline({
               >
                 <span
                   className={cn(
-                    "mb-[3px] block text-[10.5px] font-semibold uppercase tracking-[0.05em]",
+                    "mb-[3px] block text-[12px] font-semibold uppercase tracking-[0.05em]",
                     n.note.tone === "reject"
                       ? "text-s-error"
                       : n.note.tone === "good"
@@ -791,7 +791,7 @@ function ActionZone({
           placeholder={t("escFormNotePlaceholder")}
           className="mt-2 w-full resize-none rounded-[14px] border border-s-border bg-white p-3 font-body text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:border-s-accent focus:outline-none focus:ring-2 focus:ring-s-accent-pale"
         />
-        <div className="mt-[-2px] text-right text-[11px] text-s-ink-3">
+        <div className="mt-[-2px] text-right text-[12px] text-s-ink-3">
           {t("charCount", { count: escNote.length, max: ESC_NOTE_MAX })}
         </div>
 
@@ -875,7 +875,7 @@ function ActionInner({
         <button type="button" onClick={() => setEscalating(true)} className={ctaAccent}>
           {t("escalateToSolen")}
         </button>
-        <p className="mt-2 text-center text-[11.5px] leading-[1.5] text-s-ink-2">
+        <p className="mt-2 text-center text-[12px] leading-[1.5] text-s-ink-2">
           {daysLeft > 0 ? t("escWindowOpen", { days: daysLeft }) : t("escWindowToday")} {t("escFree")}
         </p>
       </>
@@ -925,7 +925,7 @@ function ActionInner({
           <Receipt size={16} aria-hidden />
           {t("viewBookingReceipt")}
         </Link>
-        <p className="mt-1 text-center text-[11.5px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
+        <p className="mt-1 text-center text-[12px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
       </>
     );
   }
@@ -938,7 +938,7 @@ function ActionInner({
         <button type="button" disabled className={cn(secondaryBtn, "opacity-60")}>
           {t("contactSupport")}
         </button>
-        <p className="mt-2 text-center text-[11.5px] text-s-ink-2">{t("footClosedNoAction")}</p>
+        <p className="mt-2 text-center text-[12px] text-s-ink-2">{t("footClosedNoAction")}</p>
       </>
     );
   }
@@ -950,7 +950,7 @@ function ActionInner({
         <Receipt size={16} aria-hidden />
         {t("viewBookingReceipt")}
       </Link>
-      <p className="mt-2 text-center text-[11.5px] text-s-ink-2">{t("footClosedNoAction")}</p>
+      <p className="mt-2 text-center text-[12px] text-s-ink-2">{t("footClosedNoAction")}</p>
     </>
   );
 }
@@ -958,7 +958,7 @@ function ActionInner({
 /** Shield info note above the sticky CTA (mockup .note). */
 function ShieldNote({ text }: { text: string }) {
   return (
-    <div className="mb-3 flex gap-2 text-[11.5px] leading-[1.4] text-s-ink-2">
+    <div className="mb-3 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
       <ShieldCheck size={15} className="mt-[1px] flex-shrink-0 text-s-ink-3" aria-hidden />
       <span>{text}</span>
     </div>

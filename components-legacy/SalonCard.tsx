@@ -143,7 +143,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
       )}
       {availability?.status === "available" && (
-        <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-pill bg-s-success/90 text-white text-[10px] font-medium font-body">
+        <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-pill bg-s-success/90 text-white text-[12px] font-medium font-body">
           {t("availableToday")}
         </span>
       )}
@@ -206,7 +206,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {/* Availability badge */}
           {showAvailability && salon.next_available_slot && (
             <div className="absolute right-2" style={{ top: onFavoriteToggle ? (salon.last_minute_discount_percent > 0 ? "5rem" : "3rem") : (salon.last_minute_discount_percent > 0 ? "2rem" : "0.5rem") }}>
-              <span className="px-2 py-0.5 rounded-pill bg-s-success text-white text-[10px] font-body font-medium">
+              <span className="px-2 py-0.5 rounded-pill bg-s-success text-white text-[12px] font-body font-medium">
                 {t("availableToday")}
               </span>
             </div>

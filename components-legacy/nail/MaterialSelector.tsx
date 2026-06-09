@@ -45,7 +45,7 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
               <span className={`text-sm font-medium block ${value === v ? "text-s-accent" : "text-s-ink"}`}>
                 {t(labelKey)}
               </span>
-              <span className="text-[11px] text-s-ink/40">{t(descKey)}</span>
+              <span className="text-[12px] text-s-ink/40">{t(descKey)}</span>
             </div>
           </button>
         ))}

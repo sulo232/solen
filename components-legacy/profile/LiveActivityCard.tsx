@@ -148,7 +148,7 @@ function StandardContent({
     <div className="flex items-start justify-between gap-3">
       <div className="flex-1 min-w-0">
         <p
-          className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]"
+          className="font-body text-[12px] sm:text-[12px] font-bold uppercase tracking-[.20em]"
           style={{ color: eyebrowColor }}
         >
           {state.eyebrow}
@@ -175,7 +175,7 @@ function LoyaltyContent({
     <div className="flex items-start justify-between gap-3">
       <div className="flex-1 min-w-0">
         <p
-          className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]"
+          className="font-body text-[12px] sm:text-[12px] font-bold uppercase tracking-[.20em]"
           style={{ color: "rgba(255,255,255,.85)" }}
         >
           {state.eyebrow}
@@ -199,7 +199,7 @@ function LoyaltyContent({
               aria-hidden
             />
           ))}
-          <span className="ml-1 font-body text-[10px] tabular-nums opacity-90">
+          <span className="ml-1 font-body text-[12px] tabular-nums opacity-90">
             {state.filled}/{state.total}
           </span>
         </div>

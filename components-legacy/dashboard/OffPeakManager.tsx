@@ -131,7 +131,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                       type="button"
                       onClick={() => handleDelete(r.id)}
                       title={t("confirmDelete")}
-                      className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold bg-s-accent-bright/10 text-s-accent-bright tabular-nums transition-colors hover:bg-s-accent-bright/[0.18]"
+                      className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[12px] font-semibold bg-s-accent-bright/10 text-s-accent-bright tabular-nums transition-colors hover:bg-s-accent-bright/[0.18]"
                     >
                       {fmtTime(r.start_time)}–{fmtTime(r.end_time)} −{r.discount_percent}%
                     </button>
@@ -175,7 +175,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
           <div className="grid grid-cols-2 gap-2.5 mb-3.5">
             <div>
-              <label className="block text-[10px] text-s-ink-3 mb-1">{t("from")}</label>
+              <label className="block text-[12px] text-s-ink-3 mb-1">{t("from")}</label>
               <input
                 type="time"
                 value={addStart}
@@ -184,7 +184,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
               />
             </div>
             <div>
-              <label className="block text-[10px] text-s-ink-3 mb-1">{t("to")}</label>
+              <label className="block text-[12px] text-s-ink-3 mb-1">{t("to")}</label>
               <input
                 type="time"
                 value={addEnd}
@@ -195,7 +195,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           </div>
 
           <div className="mb-3.5">
-            <label className="block text-[10px] text-s-ink-3 mb-1">{t("discount")}</label>
+            <label className="block text-[12px] text-s-ink-3 mb-1">{t("discount")}</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"

@@ -70,7 +70,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
         <p className="text-sm font-heading text-s-ink">
           {t("gallery_title")}
         </p>
-        <span className="text-[10px] text-s-ink/35 ml-1">
+        <span className="text-[12px] text-s-ink/35 ml-1">
           {entries.length} {t("gallery_items")}
         </span>
       </div>
@@ -93,13 +93,13 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
 
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-s-ink/0 group-hover:bg-s-ink/40 transition-opacity duration-150 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100">
-              <p className="text-[9px] text-white leading-snug line-clamp-2 mb-1.5">
+              <p className="text-[12px] text-white leading-snug line-clamp-2 mb-1.5">
                 {entry.prompt_summary}
               </p>
               <div className="flex gap-1">
                 <button
                   onClick={() => toggleSave(entry.id, entry.is_saved)}
-                  className={`flex-1 py-1 rounded-[6px] text-[9px] font-heading transition-colors duration-150 ${
+                  className={`flex-1 py-1 rounded-[6px] text-[12px] font-heading transition-colors duration-150 ${
                     entry.is_saved
                       ? "bg-s-coral text-white"
                       : "bg-white/20 text-white hover:bg-white/30"

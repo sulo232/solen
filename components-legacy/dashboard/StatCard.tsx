@@ -87,18 +87,18 @@ export function StatCard({
       <p className="font-heading text-[28px] text-s-ink leading-none">
         {display}
       </p>
-      <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/35 mt-2">
+      <p className="text-[12px] font-heading uppercase tracking-[.16em] text-s-ink/35 mt-2">
         {label}
       </p>
 
       {delta && (
         <div className="mt-2.5 flex items-center gap-1">
-          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-pill text-[9px] font-bold ${deltaColors[delta.direction]}`}>
+          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-pill text-[12px] font-bold ${deltaColors[delta.direction]}`}>
             <DeltaIcon size={9} />
             {delta.direction !== "flat" && `${delta.direction === "up" ? "+" : ""}${delta.value}%`}
             {delta.direction === "flat" && "—"}
           </span>
-          <span className="text-[9px] text-s-ink/30">
+          <span className="text-[12px] text-s-ink/30">
             {delta.label ?? t('vsPrevWeek')}
           </span>
         </div>

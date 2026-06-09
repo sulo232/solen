@@ -38,7 +38,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1.5">
+          <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1.5">
             {subtitle}
           </p>
         )}
@@ -80,7 +80,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
     <StepContainer title={t("step1.title")} subtitle={t("step1.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
@@ -91,7 +91,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
           <input
             type="email"
             value={data.email}
@@ -103,7 +103,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_OPTIONS.map((c) => (
               <button
@@ -111,7 +111,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent/50",
@@ -126,7 +126,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
             <select
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
@@ -142,7 +142,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
           <AddressAutocomplete
             value={data.address}
             onChange={(val) => onChange({ ...data, address: val })}
@@ -226,7 +226,7 @@ function Step3({ data, onChange, category, t }: {
     <StepContainer title={t("step3Quick.title")} subtitle={t("step3Quick.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
@@ -245,7 +245,7 @@ function Step3({ data, onChange, category, t }: {
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-accent" />
-              <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/45">
+              <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/45">
                 KI-Vorschlag anpassbar
               </p>
             </div>
@@ -254,7 +254,7 @@ function Step3({ data, onChange, category, t }: {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
             <select
@@ -268,7 +268,7 @@ function Step3({ data, onChange, category, t }: {
             </select>
           </div>
           <div>
-            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
             <input
@@ -286,7 +286,7 @@ function Step3({ data, onChange, category, t }: {
           style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-accent shrink-0" />
-            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-accent">
+            <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
               {t("step3Quick.hint")}
             </p>
           </div>
@@ -331,7 +331,7 @@ function StepPhotos({
           style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Camera size={12} className="text-s-accent shrink-0" />
-            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-accent">
+            <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
               {t("stepPhotos.hint")}
             </p>
           </div>
@@ -599,7 +599,7 @@ export default function SalonOnboardingPage() {
               </div>
 
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
+                <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
                   Willkommen
                 </p>
                 <h2 className="font-heading text-2xl text-s-ink">
@@ -608,7 +608,7 @@ export default function SalonOnboardingPage() {
                 <p className="text-xs font-body text-s-ink/45 max-w-xs mt-2 leading-relaxed">
                   {t("done.subtitle")}
                 </p>
-                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 mt-3">
+                <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2 mt-3">
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
@@ -640,7 +640,7 @@ export default function SalonOnboardingPage() {
             <span className="font-heading text-base text-s-ink">
               solen<span className="text-s-accent">.</span>ch
             </span>
-            <span className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/45">
+            <span className="text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/45">
               {t("header.stepOf", { step, total: TOTAL_STEPS })}
             </span>
           </div>
@@ -656,7 +656,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
+          <p className="text-[12px] font-heading uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>

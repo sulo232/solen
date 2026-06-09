@@ -37,7 +37,7 @@ export default function ReportButton({ type, targetId }: ReportButtonProps) {
   };
 
   if (reported) {
-    return <span className="text-[10px] text-s-ink/30">{t("reported")}</span>;
+    return <span className="text-[12px] text-s-ink/30">{t("reported")}</span>;
   }
 
   return (

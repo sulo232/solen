@@ -217,7 +217,7 @@ export default function SalonEarningsPage() {
                       <tr key={s.id} className="border-t border-s-ink/5 hover:bg-s-bg-surface/60 transition-colors">
                         <td className="px-5 py-4 text-s-ink">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-s-coral/10 flex items-center justify-center text-[10px] font-bold text-s-coral shrink-0 overflow-hidden relative">
+                            <div className="w-6 h-6 rounded-full bg-s-coral/10 flex items-center justify-center text-[12px] font-bold text-s-coral shrink-0 overflow-hidden relative">
                               {s.avatar_url ? <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized /> : s.name[0]}
                             </div>
                             <span className="font-medium">{s.name}</span>

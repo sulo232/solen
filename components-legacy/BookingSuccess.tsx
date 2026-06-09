@@ -153,7 +153,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
               i < summaryRows.length - 1 ? "border-b border-s-border" : "",
             ].join(" ")}
           >
-            <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
+            <span className="font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
               {row.label}
             </span>
             <span className="font-body text-[14px] text-s-ink text-right">{row.value}</span>
@@ -161,7 +161,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         ))}
         {props.price > 0 && (
           <div className="mt-2 pt-2 border-t border-s-border flex items-baseline justify-between gap-3">
-            <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
+            <span className="font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
               Total
             </span>
             <span className="font-heading text-[18px] text-s-ink tabular-nums">
@@ -172,7 +172,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       </div>
 
       {/* Cancellation policy mini-banner */}
-      <p className="mt-3 font-body text-[11px] text-s-ink-2 text-center">
+      <p className="mt-3 font-body text-[12px] text-s-ink-2 text-center">
         Kostenlos bis {props.cancellationHours ?? 24}h vorher stornieren.
       </p>
 

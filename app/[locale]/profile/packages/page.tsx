@@ -110,12 +110,12 @@ export default function MyPackagesPage() {
                     </div>
                     {(isUsedUp || isExpired) ? (
                       // V3-D288: was hardcoded rgba(26,18,9,.06)/(.35) → sunken bg + ink-2 text
-                      <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] bg-s-bg-sunken text-s-ink-2">
+                      <span className="text-[12px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] bg-s-bg-sunken text-s-ink-2">
                         {isExpired ? "Abgelaufen" : "Aufgebraucht"}
                       </span>
                     ) : (
                       // V3-D288: was hardcoded green rgba/#15803D → s-success token (LOCKFILE §1 universal-color active=green)
-                      <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] bg-s-success/10 text-s-success">
+                      <span className="text-[12px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] bg-s-success/10 text-s-success">
                         Aktiv
                       </span>
                     )}
@@ -123,10 +123,10 @@ export default function MyPackagesPage() {
 
                   <div>
                     <div className="flex justify-between mb-2">
-                      <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">
+                      <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/35">
                         {remaining} von {total} übrig
                       </p>
-                      <p className="text-[9px] font-heading text-s-ink/25">{used} genutzt</p>
+                      <p className="text-[12px] font-heading text-s-ink/25">{used} genutzt</p>
                     </div>
                     {/* V3-D288: progress bar — was hardcoded rgba(26,18,9,.06) track + #C05038 (legacy coral) fill → sunken + ink */}
                     <div className="h-2 w-full rounded-full overflow-hidden bg-s-bg-sunken">

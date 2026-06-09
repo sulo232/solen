@@ -28,7 +28,7 @@ export default function DiscoveryAdmin() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
+        className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
       >
         <Download size={16} />
         {t("importButton")}
@@ -186,7 +186,7 @@ function SmartSearchTab() {
         <button
           onClick={handleSearch}
           disabled={searching || !description.trim()}
-          className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {searching ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
           {searching ? t("searchingGemini") : t("smartSearchButton")}
@@ -196,9 +196,9 @@ function SmartSearchTab() {
       {/* Generated queries */}
       {queries.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="text-[10px] text-s-ink/40 mr-1">{t("queries")}</span>
+          <span className="text-[12px] text-s-ink/40 mr-1">{t("queries")}</span>
           {queries.map((q, i) => (
-            <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
+            <span key={i} className="text-[12px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
               {q}
             </span>
           ))}
@@ -213,7 +213,7 @@ function SmartSearchTab() {
               {t("resultsSelected", { count: results.length, selected: selected.size })}
             </span>
             <div className="flex items-center gap-2">
-              <button onClick={selectAll} className="text-[10px] text-s-accent hover:underline">
+              <button onClick={selectAll} className="text-[12px] text-s-accent hover:underline">
                 {selected.size === results.length ? t("deselectAll") : t("selectAll")}
               </button>
               {selected.size > 0 && (
@@ -252,7 +252,7 @@ function SmartSearchTab() {
                   </div>
                 )}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-1.5">
-                  <p className="text-[9px] text-white/80 truncate">{photo.source} {photo.author}</p>
+                  <p className="text-[12px] text-white/80 truncate">{photo.source} {photo.author}</p>
                 </div>
               </button>
             ))}
@@ -320,7 +320,7 @@ function TikTokImportTab() {
       <button
         onClick={handleImport}
         disabled={importing || !urls.trim()}
-        className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {importing ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
         {importing ? t("importing") : t("importTiktoks")}
@@ -343,7 +343,7 @@ function TikTokImportTab() {
               {r.status === "imported" ? <Check size={14} className="shrink-0 mt-0.5" /> : <X size={14} className="shrink-0 mt-0.5" />}
               <div className="min-w-0">
                 <p className="truncate font-mono">{r.url}</p>
-                <p className="text-[10px] opacity-70">
+                <p className="text-[12px] opacity-70">
                   {r.status === "imported" && r.style_name ? `✓ ${r.style_name}` : r.status === "imported" ? t("imported") : r.status === "already_exists" ? t("alreadyExists") : r.status}
                 </p>
               </div>

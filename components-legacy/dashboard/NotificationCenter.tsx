@@ -96,7 +96,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
       >
         <Bell size={16} className="text-s-ink-2" />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-pill bg-s-coral text-white text-[8px] font-bold flex items-center justify-center px-0.5 leading-none">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-pill bg-s-coral text-white text-[12px] font-bold flex items-center justify-center px-0.5 leading-none">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -117,14 +117,14 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
               <div className="flex items-center gap-2">
                 <p className="text-sm font-heading text-s-ink">{t("notifications")}</p>
                 {unread > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-pill text-[9px] font-bold bg-s-coral/10 text-s-coral">
+                  <span className="px-1.5 py-0.5 rounded-pill text-[12px] font-bold bg-s-coral/10 text-s-coral">
                     {unread}
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 {unread > 0 && (
-                  <button onClick={markAllRead} className="text-[9px] font-heading uppercase tracking-[.06em] text-s-ink/35 hover:text-s-coral transition-colors">
+                  <button onClick={markAllRead} className="text-[12px] font-heading uppercase tracking-[.06em] text-s-ink/35 hover:text-s-coral transition-colors">
                     {t("markAllRead")}
                   </button>
                 )}
@@ -151,7 +151,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
               ) : notifications.length === 0 ? (
                 <div className="py-10 text-center">
                   <Bell size={20} className="mx-auto mb-2 text-s-ink/15" />
-                  <p className="text-[11px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
+                  <p className="text-[12px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
                     {t("noNotifications")}
                   </p>
                 </div>
@@ -173,11 +173,11 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                             {n.title}
                           </p>
                           {n.body && (
-                            <p className="text-[10px] text-s-ink/35 mt-0.5 truncate">
+                            <p className="text-[12px] text-s-ink/35 mt-0.5 truncate">
                               {n.body}
                             </p>
                           )}
-                          <p className="text-[9px] text-s-ink/25 mt-1">
+                          <p className="text-[12px] text-s-ink/25 mt-1">
                             {relativeTime(n.created_at)}
                           </p>
                         </div>

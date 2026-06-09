@@ -103,7 +103,7 @@ export default function CategoryPromos() {
                 >
                   {c.headline}
                 </h3>
-                <span className="inline-flex w-fit items-center rounded-full bg-white px-3 py-1.5 font-body text-[11px] font-bold text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-glide group-hover:translate-x-1">
+                <span className="inline-flex w-fit items-center rounded-full bg-white px-3 py-1.5 font-body text-[12px] font-bold text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-glide group-hover:translate-x-1">
                   {c.cta}
                 </span>
               </div>

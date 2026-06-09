@@ -403,7 +403,7 @@ export default function WalkInPayPage() {
           <div className="flex flex-1 flex-col justify-center">
             {/* Hero */}
             <div className="animate-enter-up text-center" style={{ animationDelay: "0.05s" }}>
-              <p className="text-[11.5px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.yourNumber}</p>
+              <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.yourNumber}</p>
               {booking?.ticket_number && (
                 <div className="mt-1 font-heading text-[60px] font-extrabold leading-[0.9] tracking-[-.035em] text-s-ink">{booking.ticket_number}</div>
               )}
@@ -446,7 +446,7 @@ export default function WalkInPayPage() {
                   <span className="h-[3px] flex-1 rounded-full bg-s-bg-sunken" />
                   <span className="h-3 w-3 shrink-0 rounded-full bg-s-ink/[0.14]" />
                 </div>
-                <div className="mt-2 flex justify-between text-[10.5px] font-semibold text-s-ink-3">
+                <div className="mt-2 flex justify-between text-[12px] font-semibold text-s-ink-3">
                   <span>{l.stepPaid}</span>
                   <span className="text-s-ink">{l.stepNow}</span>
                   <span>{l.stepNext}</span>
@@ -480,9 +480,9 @@ export default function WalkInPayPage() {
                   onClick={() => setReceiptOpen(true)}
                   className="flex flex-1 flex-col justify-center rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.99]"
                 >
-                  <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{paidLabel}</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{paidLabel}</p>
                   <p className="mt-1 font-heading text-[20px] font-extrabold tracking-[-.02em] text-s-ink">{amountStr}</p>
-                  <p className="mt-0.5 text-[11px] text-s-ink-3">{l.vat}</p>
+                  <p className="mt-0.5 text-[12px] text-s-ink-3">{l.vat}</p>
                 </button>
                 {booking?.barber_name && (
                   <button
@@ -491,7 +491,7 @@ export default function WalkInPayPage() {
                     disabled={!canOpenBarber}
                     className="flex flex-1 flex-col rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.99] disabled:active:scale-100"
                   >
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.barberEyebrow}</p>
+                    <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.barberEyebrow}</p>
                     <div className="mt-2 flex items-center gap-2.5">
                       {booking.barber_avatar ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -501,7 +501,7 @@ export default function WalkInPayPage() {
                       )}
                       <div className="min-w-0">
                         <p className="truncate font-heading text-[14px] font-bold leading-tight text-s-ink">{booking.barber_name}</p>
-                        <p className="truncate text-[11.5px] text-s-ink-2">{booking.service_name}</p>
+                        <p className="truncate text-[12px] text-s-ink-2">{booking.service_name}</p>
                       </div>
                     </div>
                   </button>
@@ -571,7 +571,7 @@ export default function WalkInPayPage() {
                 onClick={(e) => e.stopPropagation()}
                 className="flex w-full max-w-[330px] flex-col items-center rounded-[28px] bg-white px-7 py-8"
               >
-                <p className="text-[11.5px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.yourNumber}</p>
+                <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.yourNumber}</p>
                 {booking?.ticket_number && (
                   <p className="font-heading text-[34px] font-extrabold leading-none tracking-[-.03em] text-s-ink">{booking.ticket_number}</p>
                 )}
@@ -620,7 +620,7 @@ export default function WalkInPayPage() {
                 >
                   <X size={18} />
                 </button>
-                <p className="text-center text-[11.5px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.receiptTitle}</p>
+                <p className="text-center text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.receiptTitle}</p>
                 <div className="mt-5 flex flex-col gap-3.5">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="shrink-0 text-[13px] text-s-ink-3">{l.serviceEyebrow}</span>
@@ -645,7 +645,7 @@ export default function WalkInPayPage() {
                   <span className="font-heading text-[15px] font-bold text-s-ink">{l.total}</span>
                   <div className="text-right">
                     <div className="font-heading text-[20px] font-extrabold tracking-[-.02em] text-s-ink">{amountStr}</div>
-                    <div className="text-[11px] text-s-ink-3">{l.vat} {vatStr}</div>
+                    <div className="text-[12px] text-s-ink-3">{l.vat} {vatStr}</div>
                   </div>
                 </div>
               </motion.div>
@@ -658,7 +658,7 @@ export default function WalkInPayPage() {
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[18px] bg-s-warning/10">
             <AlertTriangle size={26} className="text-s-warning" />
           </div>
-          <p className="mb-2 font-heading text-[10px] uppercase tracking-[.20em] text-s-ink-3">{l.errorEyebrow}</p>
+          <p className="mb-2 font-heading text-[12px] uppercase tracking-[.20em] text-s-ink-3">{l.errorEyebrow}</p>
           <p className="font-body text-sm text-s-ink-2">{error ?? l.invalid}</p>
         </motion.div>
       ) : booking ? (

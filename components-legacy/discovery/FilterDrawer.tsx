@@ -63,7 +63,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       >
         <SlidersHorizontal size={18} />
         {activeCount > 0 && (
-          <span className="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-s-ink px-1 text-[10px] font-heading font-bold leading-none text-white ring-2 ring-white animate-in zoom-in duration-200">
+          <span className="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-s-ink px-1 text-[12px] font-heading font-bold leading-none text-white ring-2 ring-white animate-in zoom-in duration-200">
             {activeCount}
           </span>
         )}
@@ -83,11 +83,11 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 pb-4">
-              <p className="pb-1 pt-3 text-[11px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("category")}</p>
+              <p className="pb-1 pt-3 text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("category")}</p>
               {CATEGORY_KEYS.map((key) => (
                 <RadioRow key={key} label={tt(key)} selected={props.category === key} onClick={() => props.onCategoryChange(key)} />
               ))}
-              <p className="pb-1 pt-4 text-[11px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("gender")}</p>
+              <p className="pb-1 pt-4 text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("gender")}</p>
               {GENDER_KEYS.map((key) => (
                 <RadioRow
                   key={key}

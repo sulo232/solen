@@ -47,7 +47,7 @@ export default function StampCard({
 
       {/* Top: salon info */}
       <div className="p-4 pb-3">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-2">
+        <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-2">
           Treuekarte
         </p>
         <Link
@@ -109,7 +109,7 @@ export default function StampCard({
         <p className="text-xs font-heading text-s-warning">
           {rewardText}
         </p>
-        <span className="text-[10px] font-heading text-s-ink-2 whitespace-nowrap uppercase tracking-[.08em]">
+        <span className="text-[12px] font-heading text-s-ink-2 whitespace-nowrap uppercase tracking-[.08em]">
           {stampsCollected}/{stampsTotal}
         </span>
       </div>
@@ -117,7 +117,7 @@ export default function StampCard({
       {/* Complete overlay — V3-D328: retired s-coral border + green rgba bg + s-coral text → s-success tokens */}
       {isComplete && (
         <div className="absolute bottom-0 left-0 right-0 border-t border-s-success/20 bg-s-success-bg px-4 py-2.5 text-center">
-          <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-success">
+          <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-success">
             Belohnung freigeschaltet.
           </p>
         </div>

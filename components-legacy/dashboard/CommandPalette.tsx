@@ -123,7 +123,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         {/* Results */}
         <div ref={listRef} className="max-h-[400px] overflow-y-auto py-2">
           {filtered.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[11px] font-heading text-s-ink-2 uppercase tracking-[.10em]">
+            <p className="px-4 py-8 text-center text-[12px] font-heading text-s-ink-2 uppercase tracking-[.10em]">
               {t("noResults")}
             </p>
           ) : (
@@ -135,7 +135,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
               });
               return Object.entries(groups).map(([category, cmds]) => (
                 <div key={category}>
-                  <p className="px-4 py-1 text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25">
+                  <p className="px-4 py-1 text-[12px] font-heading uppercase tracking-[.20em] text-s-ink/25">
                     {category}
                   </p>
                   {cmds.map((cmd, globalIdx) => {
@@ -160,7 +160,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         </div>
                         <span className="flex-1 text-sm font-heading">{cmd.label}</span>
                         {cmd.shortcut && (
-                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink/45 font-mono">
+                          <kbd className="shrink-0 text-[12px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-bg-sunken text-s-ink/45 font-mono">
                             {cmd.shortcut}
                           </kbd>
                         )}
@@ -175,7 +175,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
         {/* Footer hint */}
         <div className="px-4 py-2.5 border-t border-s-ink/[0.05] flex items-center gap-3 bg-s-bg-sunken">
-          <span className="text-[9px] text-s-ink/25">
+          <span className="text-[12px] text-s-ink/25">
             ↑↓ {t("navigate")} Enter {t("select")} Esc {t("close")}
           </span>
         </div>

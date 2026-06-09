@@ -71,7 +71,7 @@ function MockChat() {
         <div className="w-8 h-8 rounded-full bg-s-bg-sunken flex items-center justify-center text-s-ink text-xs font-heading">S</div>
         <div>
           <p className="text-sm font-heading text-s-ink">Studio Bella</p>
-          <p className="text-[11px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-success">Online</p>
+          <p className="text-[12px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-success">Online</p>
         </div>
       </div>
       {/* Messages */}
@@ -122,7 +122,7 @@ function MockCompare() {
             className={`p-3 ${s.highlight ? "bg-s-bg-sunken border-t-2 border-s-ink" : "bg-white"} relative`}
           >
             {s.highlight && (
-              <span className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-s-ink text-white text-[8px] px-2 py-0.5 rounded-t-[6px] font-heading uppercase tracking-[.08em]">
+              <span className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-s-ink text-white text-[12px] px-2 py-0.5 rounded-t-[6px] font-heading uppercase tracking-[.08em]">
                 {t("compareRecommendation")}
               </span>
             )}
@@ -132,7 +132,7 @@ function MockCompare() {
               <span className="text-xs data-text text-s-ink">{s.rating}</span>
             </div>
             <p className="text-sm data-text font-semibold text-s-ink mt-1">{formatCurrency(s.price)}</p>
-            <p className="text-[10px] text-s-ink-2">Balayage</p>
+            <p className="text-[12px] text-s-ink-2">Balayage</p>
           </div>
         ))}
       </div>
@@ -168,7 +168,7 @@ function MockMap() {
       {/* Pins — all ink, no decorative accent (§1.5) */}
       {pins.map((pin, i) => (
         <div key={i} className="absolute flex flex-col items-center" style={{ left: pin.left, top: pin.top }}>
-          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white whitespace-nowrap mb-1 bg-s-ink">
+          <span className="px-2 py-0.5 rounded-full text-[12px] data-text font-semibold text-white whitespace-nowrap mb-1 bg-s-ink">
             {pin.price}
           </span>
           <MapPin className="w-4 h-4 text-s-ink" />
@@ -267,7 +267,7 @@ export default function WarumSolenPage() {
                 {/* Price offer card */}
                 <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white rounded-[12px] border border-s-border px-4 py-3 w-44 shadow-elevation-2">
                   {/* V3-D330: "Preisangebot" stays as Tag/Status role (semantic "this is a quote"). Tracking 0.16 → 0.08 canonical. "Balayage + Pflege" text-s-accent → text-s-ink-3 per §1.5 forbidden. */}
-                  <p className="text-[11px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-ink-3">Preisangebot</p>
+                  <p className="text-[12px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-ink-3">Preisangebot</p>
                   <p className="data-text font-bold text-xl text-s-ink">CHF 120</p>
                   <p className="text-xs font-heading text-s-ink-3">Balayage + Pflege</p>
                 </div>

@@ -69,7 +69,7 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
                   />
                 </div>
                 {item.style_name && (
-                  <p className="p-2 text-[11px] font-medium text-s-ink truncate">{item.style_name}</p>
+                  <p className="p-2 text-[12px] font-medium text-s-ink truncate">{item.style_name}</p>
                 )}
               </div>
             );

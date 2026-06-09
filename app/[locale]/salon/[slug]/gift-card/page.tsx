@@ -114,13 +114,13 @@ export default function GiftCardPage() {
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink"}`}>
+                  className={`py-2.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-accent-pale text-s-accent border border-s-accent/20" : "border border-s-border text-s-ink-2"}`}>
+              className={`w-full py-2 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-accent-pale text-s-accent border border-s-accent/20" : "border border-s-border text-s-ink-2"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
@@ -152,7 +152,7 @@ export default function GiftCardPage() {
           {/* Preview — V3-D252 (W3): accent moment for the gift card preview, LOCKFILE §1 */}
           {/* V3-D337 (T5): bg-s-accent-pale + text-s-accent is FORBIDDEN pairing per §1.5. Sweep to bg-s-bg-sunken + ink (pale-bg + ink text, Uber pattern). Icon → ink-3. */}
           <div className="rounded-[16px] border border-s-border bg-s-bg-sunken p-4 text-center">
-            <p className="text-[10px] text-s-ink-2 uppercase tracking-[0.08em] mb-2">Vorschau</p>
+            <p className="text-[12px] text-s-ink-2 uppercase tracking-[0.08em] mb-2">Vorschau</p>
             <Gift size={20} className="text-s-ink-3 mx-auto mb-1" />
             <p className="font-heading text-lg text-s-ink data-text">{formatCurrency(amount / 100)}</p>
             <p className="text-xs text-s-ink-2">{salon.name}</p>

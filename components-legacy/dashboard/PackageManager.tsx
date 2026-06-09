@@ -128,7 +128,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
         </h3>
         <button
           onClick={() => { setShowForm(!showForm); setFormError(null); }}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Plus size={12} /> {t("newPkg")}
         </button>
@@ -155,7 +155,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
           </select>
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-[10px] text-s-ink/40">{t("sessions")}</label>
+              <label className="text-[12px] text-s-ink/40">{t("sessions")}</label>
               <input
                 type="number"
                 min={1}
@@ -165,7 +165,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
               />
             </div>
             <div>
-              <label className="text-[10px] text-s-ink/40">{t("bonus")}</label>
+              <label className="text-[12px] text-s-ink/40">{t("bonus")}</label>
               <input
                 type="number"
                 min={0}
@@ -175,7 +175,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
               />
             </div>
             <div>
-              <label className="text-[10px] text-s-ink/40">{t("price")}</label>
+              <label className="text-[12px] text-s-ink/40">{t("price")}</label>
               <input
                 type="number"
                 min={0}
@@ -197,7 +197,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name.trim() || !form.service_id}
-              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving ? t("saving") : t("create")}
             </button>

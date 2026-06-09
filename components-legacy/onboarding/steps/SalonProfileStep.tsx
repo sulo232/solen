@@ -106,7 +106,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             placeholder={t("profile.descPlaceholder")}
             className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none transition-colors"
           />
-          <p className="text-[10px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
+          <p className="text-[12px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink-2 mb-2">
@@ -122,7 +122,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   type="button"
                   onClick={() => toggleCat(opt.value)}
                   className={[
-                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                     active
                       ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
                       : "border-s-border text-s-ink-2 hover:border-s-accent/50",
@@ -168,7 +168,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

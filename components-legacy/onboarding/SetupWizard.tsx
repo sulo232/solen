@@ -96,7 +96,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                   </div>
                   <span
                     className={[
-                      "text-[10px] mt-1 whitespace-nowrap hidden sm:block transition-colors",
+                      "text-[12px] mt-1 whitespace-nowrap hidden sm:block transition-colors",
                       i === currentStep ? "text-s-accent font-medium" : "text-s-ink/30",
                     ].join(" ")}
                   >

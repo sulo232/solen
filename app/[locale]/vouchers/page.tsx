@@ -79,7 +79,7 @@ function VoucherPaymentForm({
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : t("payNow")}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
     </form>
   );
@@ -276,7 +276,7 @@ export default function VouchersPage() {
           {/* V3-D276 (W6): retired-token configure form sweep */}
           <button
             onClick={() => setStep("browse")}
-            className="mb-6 text-[10px] font-heading uppercase tracking-[.10em] text-s-ink-2 hover:text-s-accent transition-colors flex items-center gap-1.5"
+            className="mb-6 text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2 hover:text-s-accent transition-colors flex items-center gap-1.5"
           >
             <ChevronRight size={12} className="rotate-180" />
             {t("backToSalons")}
@@ -365,7 +365,7 @@ export default function VouchersPage() {
                 placeholder={t("configure.messagePlaceholder")}
                 className="w-full px-4 py-3 rounded-input border border-s-border bg-white text-sm text-s-ink placeholder:text-s-ink-2 focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 outline-none resize-none h-20"
               />
-              <p className="text-[9px] text-s-ink-2 mt-1">
+              <p className="text-[12px] text-s-ink-2 mt-1">
                 {message.length}/200
               </p>
             </div>
@@ -390,7 +390,7 @@ export default function VouchersPage() {
                 type="submit"
                 disabled={creating || !recipientName || !recipientEmail}
                 text={creating ? "Lädt..." : t("configure.continue")}
-                className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+                className="w-full py-3.5 rounded-btn text-[12px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
               />
             </div>
           </motion.form>

@@ -198,7 +198,7 @@ function FilterRow<T extends string>({
 }) {
   return (
     <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-      <span className="text-[10px] uppercase tracking-wider text-s-ink/40 shrink-0">
+      <span className="text-[12px] uppercase tracking-wider text-s-ink/40 shrink-0">
         {label}
       </span>
       {options.map((opt) => (

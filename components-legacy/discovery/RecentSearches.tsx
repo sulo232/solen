@@ -64,7 +64,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between px-1.5 pb-1">
-        <span className="text-[11px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Zuletzt gesucht</span>
+        <span className="text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Zuletzt gesucht</span>
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}

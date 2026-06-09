@@ -177,7 +177,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {badge && (
           <div className="absolute top-3 left-3 z-[2]">
             <span
-              className="font-body font-semibold text-[11px] uppercase tracking-[0.5px] px-3 py-1 rounded-pill"
+              className="font-body font-semibold text-[12px] uppercase tracking-[0.5px] px-3 py-1 rounded-pill"
               style={{
                 background: "rgba(255,255,255,0.9)",
                 backdropFilter: "blur(6px)",

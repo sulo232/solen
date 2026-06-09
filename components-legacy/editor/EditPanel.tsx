@@ -231,24 +231,24 @@ export default function EditPanel({
         {/* Selected Elements with area info */}
         {selectedElements.length > 0 ? (
           <div className="space-y-1.5">
-            <p className="text-[10px] text-s-ink-2">
+            <p className="text-[12px] text-s-ink-2">
               {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""} selected — click more in preview to add
             </p>
             {selectedElements.map((el) => (
               <div key={el.selector} className="bg-s-bg-sunken rounded-[12px] p-2 flex items-start gap-2">
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent font-medium">
+                    <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent font-medium">
                       {guessPageArea(el)}
                     </span>
-                    <span className="text-[10px] text-s-ink/40 font-mono">
+                    <span className="text-[12px] text-s-ink/40 font-mono">
                       &lt;{el.tag}&gt;
                     </span>
                   </div>
-                  <p className="text-[10px] text-s-ink/70 truncate">
+                  <p className="text-[12px] text-s-ink/70 truncate">
                     {el.text || "(no visible text)"}
                   </p>
-                  <p className="text-[9px] text-s-ink/30 font-mono truncate">
+                  <p className="text-[12px] text-s-ink/30 font-mono truncate">
                     {el.selector.length > 60 ? "..." + el.selector.slice(-57) : el.selector}
                   </p>
                 </div>
@@ -262,7 +262,7 @@ export default function EditPanel({
               </div>
             ))}
             {/* Page context */}
-            <p className="text-[10px] text-s-ink/40 font-mono">
+            <p className="text-[12px] text-s-ink/40 font-mono">
               Page: {pageUrl}
             </p>
           </div>
@@ -274,7 +274,7 @@ export default function EditPanel({
             <p className="text-xs text-s-ink-2">
               Page: <span className="font-mono">{pageUrl}</span>
             </p>
-            <p className="text-[10px] text-s-ink/40">
+            <p className="text-[12px] text-s-ink/40">
               No element selected — describe the change for this page below.
             </p>
           </div>
@@ -346,7 +346,7 @@ export default function EditPanel({
                 Copy for Claude Code
               </p>
             </div>
-            <p className="text-[10px] text-s-ink-2">
+            <p className="text-[12px] text-s-ink-2">
               Copy requests and paste into Claude Code to generate a roadmap.
             </p>
 
@@ -402,7 +402,7 @@ export default function EditPanel({
                       onChange={() => toggleRequestSelection(r.id)}
                       className="rounded border-s-border text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5"
                     />
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
                       r.status === "roadmap_generated" ? "bg-s-blue/10 text-s-blue" :
                       r.status === "in_progress" ? "bg-s-amber-subtle text-s-star-text" :
@@ -410,14 +410,14 @@ export default function EditPanel({
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
                       r.priority === "medium" ? "bg-s-amber-subtle text-s-star-text" :
                       "bg-s-ink/5 text-s-ink/40"
                     }`}>
                       {r.priority}
                     </span>
-                    <span className="text-[10px] text-s-ink/30 ml-auto">
+                    <span className="text-[12px] text-s-ink/30 ml-auto">
                       {new Date(r.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -427,7 +427,7 @@ export default function EditPanel({
 
                   {/* Element info */}
                   {r.element_tag && (
-                    <p className="text-[9px] text-s-ink/40 font-mono pl-5.5 truncate">
+                    <p className="text-[12px] text-s-ink/40 font-mono pl-5.5 truncate">
                       &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 40)}"` : ""}
                     </p>
                   )}
@@ -437,7 +437,7 @@ export default function EditPanel({
                     {/* Copy for Claude */}
                     <button
                       onClick={() => handleCopySingle(r)}
-                      className={`flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn transition-colors ${
+                      className={`flex items-center gap-1 px-2 py-1 text-[12px] font-medium rounded-btn transition-colors ${
                         copiedId === r.id
                           ? "bg-s-success-bg text-s-success"
                           : "bg-s-ink/10 text-s-accent hover:bg-s-ink/20"
@@ -452,7 +452,7 @@ export default function EditPanel({
                     <button
                       onClick={() => handleDeleteRequest(r.id)}
                       disabled={deletingId === r.id}
-                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
+                      className="flex items-center gap-1 px-2 py-1 text-[12px] font-medium rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
                       title="Delete request"
                     >
                       {deletingId === r.id ? (
@@ -467,7 +467,7 @@ export default function EditPanel({
             </div>
           )}
           {showHistory && pageRequests.length === 0 && (
-            <p className="mt-2 text-[10px] text-s-ink/30 italic">
+            <p className="mt-2 text-[12px] text-s-ink/30 italic">
               No requests for this page yet.
             </p>
           )}

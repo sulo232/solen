@@ -110,7 +110,7 @@ export default function NailTechProfilePage() {
                   {tech.name}
                 </h1>
                 {tech.tier_label && (
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-pill ${TIER_COLORS[tech.tier_label] ?? "bg-s-ink/5 text-s-ink-2"}`}>
+                  <span className={`text-[12px] font-medium px-2 py-0.5 rounded-pill ${TIER_COLORS[tech.tier_label] ?? "bg-s-ink/5 text-s-ink-2"}`}>
                     {tech.tier_label.charAt(0).toUpperCase() + tech.tier_label.slice(1)}
                   </span>
                 )}

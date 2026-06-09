@@ -361,7 +361,7 @@ export default function ReportRefundEntry({
             )}
           </div>
           <div className="flex-shrink-0 text-right">
-            <div className="text-[9.5px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
+            <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
               {t("reviewPaid")}
             </div>
             <div className="mt-[1px] font-heading text-[14px] font-semibold tabular-nums tracking-[-0.01em] text-s-ink">
@@ -429,14 +429,14 @@ export default function ReportRefundEntry({
         />
         <div className="mb-6 mt-[5px] flex items-center justify-between">
           {touchedDesc && descTooShort ? (
-            <span className="flex items-center gap-1 text-[11px] font-medium text-s-closed">
+            <span className="flex items-center gap-1 text-[12px] font-medium text-s-closed">
               <CircleAlert size={12} aria-hidden />
               {t("descriptionMin")}
             </span>
           ) : (
             <span />
           )}
-          <span className="text-[10.5px] text-s-ink-2">
+          <span className="text-[12px] text-s-ink-2">
             {t("charCount", { count: description.length, max: DESC_MAX })}
           </span>
         </div>
@@ -502,12 +502,12 @@ export default function ReportRefundEntry({
                 </div>
               </div>
               {partialInvalid ? (
-                <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-s-closed">
+                <p className="mt-2 flex items-center gap-1 text-[12px] font-medium text-s-closed">
                   <CircleAlert size={12} aria-hidden />
                   {t("moneyAmountError", { amount: fmtMoney(remaining, locale) })}
                 </p>
               ) : (
-                <p className="mt-[10px] text-[11.5px] leading-[1.4] text-s-ink-2">
+                <p className="mt-[10px] text-[12px] leading-[1.4] text-s-ink-2">
                   {t.rich("moneyPaidCap", {
                     amount: fmtMoney(booking?.paid_amount ?? 0, locale),
                     b: (chunks: React.ReactNode) => (
@@ -533,7 +533,7 @@ export default function ReportRefundEntry({
 
       {/* sticky CTA bar */}
       <div className="flex-shrink-0 border-t border-s-border bg-white px-1 pb-1 pt-3">
-        <div className="mb-3 flex gap-2 text-[11.5px] leading-[1.4] text-s-ink-2">
+        <div className="mb-3 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
           <Info size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2 opacity-70" aria-hidden />
           <span>{t("reviewTimelineNote")}</span>
         </div>
@@ -630,7 +630,7 @@ function SuccessStep({
         <span className="block font-display text-[12.5px] font-semibold tracking-[-0.005em]">
           {title}
         </span>
-        <span className="mt-[1px] block text-[11px] text-s-ink-2">{meta}</span>
+        <span className="mt-[1px] block text-[12px] text-s-ink-2">{meta}</span>
       </span>
     </div>
   );

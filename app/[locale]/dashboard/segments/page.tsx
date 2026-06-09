@@ -141,7 +141,7 @@ export default function SegmentsPage() {
                       <div className="space-y-1.5">
                         {(members[seg.id] ?? []).map((m) => (
                           <div key={m.user_id} className="flex items-center gap-2 text-xs">
-                            <div className="w-6 h-6 rounded-full bg-s-bg-sunken flex items-center justify-center text-[10px] font-bold text-s-ink/40">
+                            <div className="w-6 h-6 rounded-full bg-s-bg-sunken flex items-center justify-center text-[12px] font-bold text-s-ink/40">
                               {(m.display_name ?? "?")[0]}
                             </div>
                             <span className="text-s-ink/70">{m.display_name ?? "Anonym"}</span>

@@ -61,7 +61,7 @@ export default function HeroStampCard({
               className="rounded-full object-cover shrink-0"
             />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0 font-heading text-[11px] uppercase">
+            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0 font-heading text-[12px] uppercase">
               {salonName[0]}
             </div>
           )}

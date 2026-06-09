@@ -94,7 +94,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
         <div className="flex-1 overflow-y-auto px-4 pb-6">
           {creating ? (
             <div className="px-1.5 py-1">
-              <label className="text-[11px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">Name</label>
+              <label className="text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">Name</label>
               <input
                 autoFocus
                 value={newName}

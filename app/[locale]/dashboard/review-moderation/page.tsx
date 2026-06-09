@@ -211,7 +211,7 @@ export default function ReviewModerationPage() {
               {/* Existing admin response */}
               {r.admin_response && (
                 <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
-                  <p className="text-[10px] font-bold text-s-ink mb-1">{t("adminResponse")}</p>
+                  <p className="text-[12px] font-bold text-s-ink mb-1">{t("adminResponse")}</p>
                   <p className="text-xs text-s-ink/70">{r.admin_response}</p>
                 </div>
               )}

@@ -167,7 +167,7 @@ export default function TipFlow({
         <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-s-success-bg">
           <Check size={30} className="text-s-success" />
         </div>
-        <p className="mb-1.5 font-heading text-[10px] font-semibold uppercase tracking-[.2em] text-s-success">
+        <p className="mb-1.5 font-heading text-[12px] font-semibold uppercase tracking-[.2em] text-s-success">
           {chf(amount)} {l.sent}
         </p>
         <h1 className="font-heading text-[20px] font-semibold text-s-ink">{l.thanks}</h1>
@@ -197,7 +197,7 @@ export default function TipFlow({
         </div>
 
         {/* Amount */}
-        <p className="mb-3 font-heading text-[10px] font-semibold uppercase tracking-[.14em] text-s-accent">{l.choose}</p>
+        <p className="mb-3 font-heading text-[12px] font-semibold uppercase tracking-[.14em] text-s-accent">{l.choose}</p>
         <div className="grid grid-cols-2 gap-2.5">
           {presets.map((p) => {
             const sel = !useCustom && selected === p;

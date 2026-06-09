@@ -92,12 +92,12 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   {/* Badges */}
                   <div className="flex flex-wrap gap-1 mb-2">
                     {[d.style_category, d.shape, d.material].filter(Boolean).map((b) => (
-                      <span key={b} className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent">
+                      <span key={b} className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent">
                         {BADGE_LABELS[b as string] || b}
                       </span>
                     ))}
                     {d.length && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-blue/10 text-s-blue">
+                      <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-blue/10 text-s-blue">
                         {d.length}
                       </span>
                     )}

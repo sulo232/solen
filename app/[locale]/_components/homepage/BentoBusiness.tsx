@@ -83,12 +83,12 @@ function VisualBooking() {
             <div className="text-[12px] font-bold leading-tight text-s-ink">
               Lara K.
             </div>
-            <div className="text-[10px] text-s-ink-3">
+            <div className="text-[12px] text-s-ink-3">
               Schnitt + Föhn 14:00
             </div>
           </div>
         </div>
-        <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[11px] font-bold text-white">
+        <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[12px] font-bold text-white">
           Bestätigt 23 Sek.
         </div>
         {/* Animated ping dot */}
@@ -212,7 +212,7 @@ function VisualCalendar() {
               ease: [0.22, 1, 0.36, 1],
             }}
             className={cn(
-              "flex h-8 items-center justify-center rounded-md text-[8.5px] font-bold",
+              "flex h-8 items-center justify-center rounded-md text-[12px] font-bold",
               slot.name
                 ? "text-s-ink"
                 : "border border-dashed border-s-border",
@@ -347,7 +347,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-s-ink md:text-[28px]">
             {active.count}
           </div>
-          <div className="mt-1 font-body text-[9.5px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
+          <div className="mt-1 font-body text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
             {active.countLabel}
           </div>
         </div>
@@ -355,7 +355,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[18px] font-semibold leading-none tracking-[-0.01em] text-s-ink md:text-[19px]">
             {active.revenue}
           </div>
-          <div className="mt-1.5 flex items-center gap-1 font-body text-[9.5px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
+          <div className="mt-1.5 flex items-center gap-1 font-body text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
             <span className="inline-flex items-center gap-0.5 text-s-ink">
               <ArrowRight size={10} className="rotate-[-45deg]" aria-hidden />
               {active.trend}
@@ -376,7 +376,7 @@ function VisualAnalyticsTabbed() {
                 }}
                 aria-pressed={isActive}
                 className={cn(
-                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[10px] font-bold uppercase tracking-wider transition-colors duration-200 ease-glide",
+                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[12px] font-bold uppercase tracking-wider transition-colors duration-200 ease-glide",
                   // V3-D219 (2026-05-26): active tab swapped to s-accent (royal blue) —
                   // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
@@ -432,7 +432,7 @@ function VisualAnalyticsTabbed() {
       </div>
 
       {/* ── X-axis labels ── */}
-      <div className="mt-1.5 flex justify-between font-body text-[9px] font-bold uppercase tracking-[0.1em] text-s-ink-3">
+      <div className="mt-1.5 flex justify-between font-body text-[12px] font-bold uppercase tracking-[0.1em] text-s-ink-3">
         {active.labels.map((l) => (
           <span key={l}>{l}</span>
         ))}

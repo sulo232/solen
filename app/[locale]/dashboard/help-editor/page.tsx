@@ -220,11 +220,11 @@ export default function HelpEditorPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-body text-sm font-medium text-s-ink truncate">{article.title}</span>
-                    <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-sand text-s-ink-2">
+                    <span className="px-2 py-0.5 rounded-pill text-[12px] font-medium bg-s-sand text-s-ink-2">
                       {categoryLabel(article.category)}
                     </span>
                     {!article.published && (
-                      <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-coral/10 text-s-coral">
+                      <span className="px-2 py-0.5 rounded-pill text-[12px] font-medium bg-s-coral/10 text-s-coral">
                         {t("draft")}
                       </span>
                     )}

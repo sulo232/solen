@@ -65,9 +65,9 @@ function ContentField({
     <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
         <div>
-          <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-wide">{row.key}</p>
+          <p className="text-[12px] font-bold text-s-ink/30 uppercase tracking-wide">{row.key}</p>
           {row.is_auto && (
-            <span className="inline-block px-1.5 py-0.5 rounded-pill bg-s-amber-subtle text-s-star-text text-[10px] font-bold mt-0.5">
+            <span className="inline-block px-1.5 py-0.5 rounded-pill bg-s-amber-subtle text-s-star-text text-[12px] font-bold mt-0.5">
               Auto
             </span>
           )}
@@ -77,7 +77,7 @@ function ContentField({
             <button
               key={l}
               onClick={() => setLocale(l)}
-              className={`px-2.5 py-1 text-[10px] font-medium transition-colors ${
+              className={`px-2.5 py-1 text-[12px] font-medium transition-colors ${
                 locale === l ? "bg-s-coral text-white" : "text-s-ink/40"
               }`}
             >
@@ -104,7 +104,7 @@ function ContentField({
       )}
 
       <div className="flex items-center justify-between mt-2">
-        <p className="text-[10px] text-s-ink/25">
+        <p className="text-[12px] text-s-ink/25">
           {t("lastChanged", {
             date: new Date(row.updated_at).toLocaleDateString("de-CH", {
               day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",

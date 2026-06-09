@@ -228,7 +228,7 @@ const inputBase =
   "w-full h-[50px] rounded-input border border-s-border bg-white px-[15px] font-body text-[14px] text-s-ink placeholder:text-s-ink-disabled transition-[border-color,box-shadow] duration-150 ease-snap appearance-none focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent-pale";
 const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
 const labelCls = "block text-[12.5px] font-medium text-s-ink mb-[7px]";
-const hintCls = "mt-1.5 text-[11.5px] leading-[1.4] text-s-ink-2";
+const hintCls = "mt-1.5 text-[12px] leading-[1.4] text-s-ink-2";
 const ctaInk =
   "flex h-[52px] w-full items-center justify-center gap-2.5 rounded-btn bg-s-ink font-body text-[15px] font-medium tracking-[-0.005em] text-white transition-transform duration-100 ease-snap active:scale-[0.985] disabled:cursor-not-allowed disabled:bg-s-ink-disabled disabled:active:scale-100";
 
@@ -334,7 +334,7 @@ function FormView(props: {
           <p
             id="resend-code-error"
             role="alert"
-            className="mt-1.5 flex items-center gap-1.5 text-[11.5px] font-medium text-s-closed"
+            className="mt-1.5 flex items-center gap-1.5 text-[12px] font-medium text-s-closed"
           >
             <CircleAlert size={13} aria-hidden />
             {errors.code}
@@ -406,7 +406,7 @@ function FormView(props: {
           <p
             id="resend-contact-error"
             role="alert"
-            className="mt-1.5 flex items-center gap-1.5 text-[11.5px] font-medium text-s-closed"
+            className="mt-1.5 flex items-center gap-1.5 text-[12px] font-medium text-s-closed"
           >
             <CircleAlert size={13} aria-hidden />
             {errors.contact}
@@ -427,7 +427,7 @@ function FormView(props: {
         {t("submit")}
       </button>
 
-      <p className="mt-auto pt-[22px] text-center text-[11.5px] leading-[1.5] text-s-ink-2">
+      <p className="mt-auto pt-[22px] text-center text-[12px] leading-[1.5] text-s-ink-2">
         {t("findInstead")}{" "}
         <Link href={`/${locale}/booking/lookup`} className="font-semibold text-s-ink">
           {t("findInsteadLink")}
@@ -470,7 +470,7 @@ function SentView(props: {
           <Mail size={19} aria-hidden />
         </span>
         <div>
-          <div className="text-[11px] text-s-ink-2">{t("sentToLabel")}</div>
+          <div className="text-[12px] text-s-ink-2">{t("sentToLabel")}</div>
           <div className="mt-[1px] text-[14px] font-medium text-s-ink">{maskedDest}</div>
         </div>
       </div>
@@ -478,10 +478,10 @@ function SentView(props: {
       {/* privacy / anti-enumeration note */}
       <div className="mt-4 flex items-start gap-2.5 rounded-[12px] bg-s-bg-sunken px-3.5 py-3">
         <Lock size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
-        <p className="text-[11.5px] leading-[1.5] text-s-ink-2">{t("privacyNote")}</p>
+        <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("privacyNote")}</p>
       </div>
 
-      <p className="mt-[18px] text-center text-[11.5px] leading-[1.5] text-s-ink-2">
+      <p className="mt-[18px] text-center text-[12px] leading-[1.5] text-s-ink-2">
         {t("resendMeta", { time: fmtClock(resendLeft) })}
       </p>
 
@@ -535,7 +535,7 @@ function LimitedView(props: {
 
       {/* countdown */}
       <div className="mt-5 rounded-card-lg border border-s-border bg-white p-5 text-center">
-        <div className="text-[11.5px] font-medium uppercase tracking-[0.06em] text-s-ink-2">
+        <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-s-ink-2">
           {t("tryAgainIn")}
         </div>
         <div className="mt-[9px] font-mono-code text-[40px] font-semibold leading-none tracking-[-0.02em] text-s-ink">
@@ -606,7 +606,7 @@ function HowItWorksRail({ t }: { t: ReturnType<typeof useTranslations> }) {
       </div>
       <div className="mt-[22px] flex items-start gap-2.5 border-t border-s-border pt-[18px]">
         <Lock size={16} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
-        <p className="text-[11.5px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
+        <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
       </div>
     </div>
   );
@@ -637,7 +637,7 @@ function HurryRail({ t }: { t: ReturnType<typeof useTranslations> }) {
       </div>
       <div className="mt-[22px] flex items-start gap-2.5 border-t border-s-border pt-[18px]">
         <Lock size={16} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
-        <p className="text-[11.5px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
+        <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
       </div>
     </div>
   );

@@ -129,7 +129,7 @@ export default function BottomTabBar() {
 
                 {/* Label */}
                 <span className={cn(
-                  "text-[10px] font-heading tracking-[.03em] leading-none transition-colors duration-150",
+                  "text-[12px] font-heading tracking-[.03em] leading-none transition-colors duration-150",
                   isActive ? "text-s-accent" : "text-s-ink/40"
                 )}>
                   {t(key as any)}

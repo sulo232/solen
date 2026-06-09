@@ -64,13 +64,13 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
             <p className="text-sm font-heading text-s-ink">
               {t("hourlyTitle")}
             </p>
-            <p className="text-[10px] text-s-ink/35">
+            <p className="text-[12px] text-s-ink/35">
               {t("hourlySubtitle")}
             </p>
           </div>
         </div>
         {peakHour !== null && (
-          <span className="text-[10px] font-heading text-s-accent bg-s-accent/[0.08] px-2 py-1 rounded-pill">
+          <span className="text-[12px] font-heading text-s-accent bg-s-accent/[0.08] px-2 py-1 rounded-pill">
             {t("peakHour", { hour: peakHour })}
           </span>
         )}

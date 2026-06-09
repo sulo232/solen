@@ -53,7 +53,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
     <div className={["flex flex-col gap-5", className ?? ""].join(" ")}>
       {groups.map((group, gi) => (
         <section key={gi}>
-          <h3 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-2 px-1">
+          <h3 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-2 px-1">
             {group.eyebrow}
           </h3>
           <div className="rounded-[14px] bg-white border border-s-border overflow-hidden">
@@ -77,7 +77,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
                 <span className="flex items-center gap-2 shrink-0">
                   {row.rewardChip && (
                     <span
-                      className="font-body text-[10px] font-bold tabular-nums px-2 py-[2px] rounded-full"
+                      className="font-body text-[12px] font-bold tabular-nums px-2 py-[2px] rounded-full"
                       style={{ background: "rgba(27, 77, 27,0.10)", color: "#0F3010" }}
                     >
                       {row.rewardChip}

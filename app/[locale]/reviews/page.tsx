@@ -81,7 +81,7 @@ export default async function ReviewsPage({
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
       <header>
-        <span className="block font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-s-accent">
+        <span className="block font-display text-[12px] font-semibold uppercase tracking-[0.18em] text-s-accent">
           {t("eyebrow")}
         </span>
         <h1 className="mt-2 font-display text-[clamp(26px,4vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink">

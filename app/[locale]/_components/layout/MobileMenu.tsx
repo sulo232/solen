@@ -262,7 +262,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               </Link>
             )}
 
-            <p className="mb-2 ml-1 font-body text-[11px] font-semibold uppercase tracking-[0.05em] text-s-ink-3">
+            <p className="mb-2 ml-1 font-body text-[12px] font-semibold uppercase tracking-[0.05em] text-s-ink-3">
               {t("quickAccess")}
             </p>
             <div className="grid grid-cols-2 gap-2.5">

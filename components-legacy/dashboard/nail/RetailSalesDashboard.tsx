@@ -64,7 +64,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           { label: t("retail_top_product"), value: kpis?.top_product ?? "–", color: "text-s-sage" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3">
-            <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/35 mb-1">
+            <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/35 mb-1">
               {label}
             </p>
             <p className={`text-lg font-heading data-text truncate ${color}`}>
@@ -112,14 +112,14 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           <div className="space-y-2">
             {topProducts.map((p, i) => (
               <div key={p.name} className="flex items-center gap-3">
-                <span className="text-[10px] font-heading text-s-ink/30 w-4">
+                <span className="text-[12px] font-heading text-s-ink/30 w-4">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-heading text-s-ink truncate">
                     {p.name}
                   </p>
-                  <p className="text-[10px] text-s-ink/40">
+                  <p className="text-[12px] text-s-ink/40">
                     {p.units} {t("units")} {fmt(p.revenue)}
                   </p>
                 </div>

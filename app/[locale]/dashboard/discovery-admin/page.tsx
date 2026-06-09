@@ -221,7 +221,7 @@ function StockImportTab() {
               </div>
             )}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-              <p className="text-[10px] text-white/80 truncate">{photo.author} {photo.source}</p>
+              <p className="text-[12px] text-white/80 truncate">{photo.author} {photo.source}</p>
             </div>
           </div>
         ))}
@@ -473,7 +473,7 @@ function StagingTab() {
               )}
               {item.media_type === "tiktok" && (
                 <div className="absolute top-2 left-2">
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-pill bg-s-ink/60 text-white/90 backdrop-blur-sm font-medium">TikTok</span>
+                  <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/60 text-white/90 backdrop-blur-sm font-medium">TikTok</span>
                 </div>
               )}
               {selected.has(item.id) && (
@@ -484,11 +484,11 @@ function StagingTab() {
             </div>
             <div className="p-2 space-y-1">
               <div className="flex items-center gap-1">
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category ?? item.auto_category ?? "?"}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.source}</span>
+                <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category ?? item.auto_category ?? "?"}</span>
+                <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.source}</span>
               </div>
               {item.auto_style && <p className="text-xs text-s-ink-2 truncate">{item.auto_style}</p>}
-              {item.auto_gender && <p className="text-[10px] text-s-ink/40">{item.auto_gender}</p>}
+              {item.auto_gender && <p className="text-[12px] text-s-ink/40">{item.auto_gender}</p>}
             </div>
           </div>
         ))}
@@ -535,11 +535,11 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
       </div>
       <div className="p-2 space-y-1">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.media_type}</span>
+          <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
+          <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">{item.media_type}</span>
         </div>
         {item.style_name && <p className="text-xs text-s-ink-2 truncate">{item.style_name}</p>}
-        <div className="flex items-center gap-2 text-[10px] text-s-ink/30">
+        <div className="flex items-center gap-2 text-[12px] text-s-ink/30">
           <span>{t("likesN", { n: item.like_count })}</span>
           <span>{t("viewsN", { n: item.view_count })}</span>
         </div>
@@ -684,8 +684,8 @@ function FlaggedTab() {
             </div>
             <div className="p-3 space-y-2">
               <div className="flex items-center gap-1">
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-error-bg text-s-error font-medium">{item.content_type}</span>
+                <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
+                <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-error-bg text-s-error font-medium">{item.content_type}</span>
               </div>
               {item.flag_reason && (
                 <p className="text-xs text-s-error flex items-center gap-1"><AlertTriangle size={12} /> {item.flag_reason}</p>

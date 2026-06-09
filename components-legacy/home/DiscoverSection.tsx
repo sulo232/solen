@@ -80,7 +80,7 @@ export default function DiscoverSection() {
                 </div>
               )}
               {item.category && (
-                <span className="absolute top-2 left-2 inline-flex items-center px-2 py-[3px] rounded-full bg-white/90 backdrop-blur-sm font-body text-[9px] font-bold uppercase tracking-[.14em] text-s-accent">
+                <span className="absolute top-2 left-2 inline-flex items-center px-2 py-[3px] rounded-full bg-white/90 backdrop-blur-sm font-body text-[12px] font-bold uppercase tracking-[.14em] text-s-accent">
                   {item.category}
                 </span>
               )}
@@ -89,7 +89,7 @@ export default function DiscoverSection() {
               {item.title}
             </h3>
             {item.description && (
-              <p className="mt-1 font-body text-[11px] text-s-ink-2 leading-[1.4] line-clamp-2">
+              <p className="mt-1 font-body text-[12px] text-s-ink-2 leading-[1.4] line-clamp-2">
                 {item.description}
               </p>
             )}

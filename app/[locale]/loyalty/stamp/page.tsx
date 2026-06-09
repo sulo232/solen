@@ -79,7 +79,7 @@ export default function LoyaltyStampPage() {
             <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
               <Award size={30} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">
               Stempelkarte
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">
@@ -112,7 +112,7 @@ export default function LoyaltyStampPage() {
             >
               <Check size={28} className="text-s-success" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-success mb-2">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-success mb-2">
               Gestempelt
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-3">
@@ -141,7 +141,7 @@ export default function LoyaltyStampPage() {
             <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
               <AlertCircle size={28} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-accent mb-2">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-accent mb-2">
               Fehler
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">

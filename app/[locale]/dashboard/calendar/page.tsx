@@ -740,7 +740,7 @@ export default function CalendarPage() {
                       <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
                         className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
                           on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
-                        <div className={`text-[10px] font-semibold ${on ? "text-white/60" : "text-s-ink-3"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
+                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-3"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
                         <div className={`font-heading font-bold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
                         {has
                           ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
@@ -760,7 +760,7 @@ export default function CalendarPage() {
                 <div className="rounded-[16px] border border-s-border bg-white p-3.5">
                   <div className="grid grid-cols-7 gap-1">
                     {["M", "D", "M", "D", "F", "S", "S"].map((h, i) => (
-                      <div key={i} className="text-[10px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
+                      <div key={i} className="text-[12px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
                     ))}
                     {getMonthCalendarDays(currentDate).map((d, i) => {
                       const dIso = d.toISOString().split("T")[0];
@@ -891,7 +891,7 @@ export default function CalendarPage() {
                 const hour = rowIdx + 8;
                 return (
                   <div key={hour} className="grid grid-cols-8 border-b border-s-ink/5 min-h-[40px]">
-                    <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
+                    <div className="py-1 px-2 text-[12px] text-s-ink/30 text-right pr-3 pt-2">
                       {`${String(hour).padStart(2, "0")}:00`}
                     </div>
                     {weekDays.map((d, dayIdx) => {
@@ -916,7 +916,7 @@ export default function CalendarPage() {
                                         {...dragProvided.draggableProps}
                                         {...dragProvided.dragHandleProps}
                                         onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                        className={`relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                        className={`relative rounded text-[12px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                         style={{ ...dragProvided.draggableProps.style }}
                                         title={staffMember ? staffMember.name : undefined}>
                                         {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
@@ -929,7 +929,7 @@ export default function CalendarPage() {
                               })}
                               {provided.placeholder}
                               {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                                <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                               )}
                             </div>
                           )}
@@ -969,7 +969,7 @@ export default function CalendarPage() {
               return (
                 <div key={hour} className="grid border-b border-s-ink/5 min-h-[48px]"
                   style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
-                  <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
+                  <div className="py-1 px-2 text-[12px] text-s-ink/30 text-right pr-3 pt-2">
                     {`${String(hour).padStart(2, "0")}:00`}
                   </div>
                   {staff.length > 0 ? staff.map((staffMember) => {
@@ -995,7 +995,7 @@ export default function CalendarPage() {
                                     {...dragProvided.draggableProps}
                                     {...dragProvided.dragHandleProps}
                                     onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                    className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                    className={`relative rounded text-[12px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                     style={{ ...dragProvided.draggableProps.style }}>
                                     {s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                     <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
@@ -1006,7 +1006,7 @@ export default function CalendarPage() {
                             ))}
                             {provided.placeholder}
                             {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                              <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                              <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                             )}
                           </div>
                         )}
@@ -1030,7 +1030,7 @@ export default function CalendarPage() {
                                     {...dragProvided.draggableProps}
                                     {...dragProvided.dragHandleProps}
                                     onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                    className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                    className={`relative rounded text-[12px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                     style={{ ...dragProvided.draggableProps.style }}>
                                     {sm ? sm.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : t("statusFree")}
                                   </div>
@@ -1082,7 +1082,7 @@ export default function CalendarPage() {
                         {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: bookedCount })} />}
                         {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-coral/40" title={t("availableCount", { count: availableCount })} />}
                         {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: blockedCount })} />}
-                        {daySlots.length > 3 && <span className="text-[8px] text-s-ink/40">{daySlots.length}</span>}
+                        {daySlots.length > 3 && <span className="text-[12px] text-s-ink/40">{daySlots.length}</span>}
                       </div>
                     )}
                   </div>

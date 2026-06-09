@@ -179,7 +179,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
           <div className="px-6 py-4 space-y-6">
             {/* HAAR */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
+              <h3 className="text-[12px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('hair')}
               </h3>
               <div className="space-y-2">
@@ -205,7 +205,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* NÄGEL */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
+              <h3 className="text-[12px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('nails')}
               </h3>
               <div className="space-y-2">
@@ -226,7 +226,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* HAUT */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
+              <h3 className="text-[12px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('skin')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* STYLIST */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
+              <h3 className="text-[12px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('stylist')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -252,7 +252,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
             {/* STYLE */}
             <div>
-              <h3 className="text-[10px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
+              <h3 className="text-[12px] font-body font-semibold tracking-[.1em] text-s-ink-2 mb-2">
                 {t('style')}
               </h3>
               <div className="flex flex-wrap gap-2">

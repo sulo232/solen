@@ -79,7 +79,7 @@ export default memo(function ItemCard({
 
         {/* Haircut-type chip — bottom-left on the photo */}
         {styleTag && (
-          <span className="absolute bottom-1.5 left-1.5 max-w-[80%] truncate rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-s-ink shadow-elevation-1 backdrop-blur-[2px]">
+          <span className="absolute bottom-1.5 left-1.5 max-w-[80%] truncate rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-medium text-s-ink shadow-elevation-1 backdrop-blur-[2px]">
             {styleTag}
           </span>
         )}

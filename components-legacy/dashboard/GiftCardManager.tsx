@@ -68,7 +68,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-[16px] border border-s-ink/5 p-3 text-center">
             <p className="data-text font-bold text-lg text-s-ink">{s.value}</p>
-            <p className="text-[10px] text-s-ink/40">{s.label}</p>
+            <p className="text-[12px] text-s-ink/40">{s.label}</p>
           </div>
         ))}
       </div>
@@ -91,7 +91,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
                   {formatCurrency(c.remaining_amount / 100, locale)}
                   <span className="text-s-ink/30 font-normal"> / {(c.original_amount / 100).toFixed(0)}</span>
                 </p>
-                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${c.is_active ? (c.remaining_amount > 0 ? "bg-s-sage/10 text-s-sage" : "bg-s-ink/5 text-s-ink/40") : "bg-s-ink/5 text-s-ink/30"}`}>
+                <span className={`text-[12px] font-medium px-1.5 py-0.5 rounded ${c.is_active ? (c.remaining_amount > 0 ? "bg-s-sage/10 text-s-sage" : "bg-s-ink/5 text-s-ink/40") : "bg-s-ink/5 text-s-ink/30"}`}>
                   {c.is_active ? (c.remaining_amount > 0 ? t("activeStatus") : t("redeemed")) : t("pending")}
                 </span>
               </div>

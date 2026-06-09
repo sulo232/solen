@@ -72,19 +72,19 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
             <p className="text-sm font-semibold text-s-ink">
               {formatCurrency(priceMin, locale)}–{formatCurrency(priceMax, locale)}
             </p>
-            <p className="text-[10px] text-s-ink/40 mt-0.5">
+            <p className="text-[12px] text-s-ink/40 mt-0.5">
               {locale === "de" ? "Geschätzte Preisspanne" : "Estimated price range"}
             </p>
             {estimatedTime && (
               <div className="flex items-center gap-1 mt-1">
                 <Clock size={10} className="text-s-ink/30" />
-                <p className="text-[10px] text-s-ink/30">~{estimatedTime} min</p>
+                <p className="text-[12px] text-s-ink/30">~{estimatedTime} min</p>
               </div>
             )}
           </div>
           <Link
             href={href}
-            className="flex items-center gap-2 px-5 py-3 rounded-pill bg-s-ink hover:brightness-[1.06] text-white text-[11px] font-heading uppercase tracking-[.06em] transition-colors shrink-0 shadow-warm-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-pill bg-s-ink hover:brightness-[1.06] text-white text-[12px] font-heading uppercase tracking-[.06em] transition-colors shrink-0 shadow-warm-sm"
           >
             <Calendar size={14} />
             {CTA_LABELS[locale] ?? CTA_LABELS.de}

@@ -181,7 +181,7 @@ export default function LastMinutePage() {
       {/* Hero — dropped green linear-gradient; eyebrow → LOCKFILE Eyebrow spec; live dot → s-urgency (the dot signals real-time activity per universal-color: urgency = burnt amber) */}
       <div className="pt-8 pb-6 bg-s-bg-sunken">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="font-body text-[11px] md:text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+          <p className="font-body text-[12px] md:text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
             letzte freie Termine
           </p>
           <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ export default function LastMinutePage() {
             <span className="w-2.5 h-2.5 rounded-full bg-s-urgency animate-pulse shrink-0" aria-label="Live" />
           </div>
           {total > 0 && (
-            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink-2 mt-2">
+            <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 mt-2">
               {total} verfügbare Termine heute
             </p>
           )}
@@ -218,7 +218,7 @@ export default function LastMinutePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
         {/* Sorting toggle */}
         <div className="mb-4 flex items-center gap-2 flex-wrap">
-          <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/40">
+          <span className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/40">
             Sortieren nach:
           </span>
           {/* V3-D313: chips → TabPill pattern (ink active / white+hairline inactive); fix corrupted dark-mode hovers + retired green shadows */}
@@ -231,7 +231,7 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => setSortBy(key as "discount" | "price" | "time")}
               className={[
-                "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
+                "px-3.5 py-2 rounded-pill text-[12px] font-heading transition-colors duration-150",
                 sortBy === key
                   ? "bg-s-ink text-white"
                   : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
@@ -249,7 +249,7 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => toggleCategory(key)}
               className={[
-                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150",
                 selectedCategories.includes(key)
                   ? "bg-s-ink text-white"
                   : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
@@ -265,7 +265,7 @@ export default function LastMinutePage() {
               key={price}
               onClick={() => setMaxPrice(maxPrice === price ? null : price)}
               className={[
-                "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
+                "px-3.5 py-2 rounded-pill text-[12px] font-heading transition-colors duration-150",
                 maxPrice === price
                   ? "bg-s-ink text-white"
                   : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
@@ -277,7 +277,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-border text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150"
             >
               <X size={11} />
               Zurücksetzen

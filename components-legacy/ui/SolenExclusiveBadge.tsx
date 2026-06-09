@@ -39,7 +39,7 @@ export default function SolenExclusiveBadge({
       onMouseLeave={() => setShowTooltip(false)}
       onClick={() => setShowTooltip((v) => !v)}
     >
-      <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 cursor-help whitespace-nowrap">
+      <span className="inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 cursor-help whitespace-nowrap">
         <Sparkles size={10} aria-hidden />
         Nur bei Solen
       </span>

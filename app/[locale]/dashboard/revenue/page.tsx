@@ -215,7 +215,7 @@ export default function RevenuePage() {
                       className="border-t border-s-ink/5 hover:bg-s-bg-surface/60 transition-colors"
                     >
                       <td className="px-5 py-3 flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[12px] font-bold flex items-center justify-center shrink-0">
                           {i + 1}
                         </span>
                         <span className="font-medium text-s-ink">{salon.name}</span>

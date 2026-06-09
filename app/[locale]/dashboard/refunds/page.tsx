@@ -205,18 +205,18 @@ export default function SalonRefundsPage() {
 
                   <div className="grid grid-cols-2 gap-4 mb-3.5">
                     <div className="rounded-xl bg-s-bg-sunken px-3.5 py-2.5">
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("paid")}</p>
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("paid")}</p>
                       <p className="font-heading text-[14px] font-medium text-s-ink-2 mt-0.5 tabular-nums">{chf(c.amount_paid)}</p>
                     </div>
                     <div className={`rounded-xl border px-3.5 py-2.5 ${caseChipClasses(c.status).wrap}`}>
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("refundRequested")}</p>
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("refundRequested")}</p>
                       <p className={`font-heading text-[20px] font-semibold mt-0.5 tabular-nums tracking-[-0.015em] ${caseChipClasses(c.status).amount}`}>{c.requested_amount != null ? chf(c.requested_amount) : t("fullAmount")}</p>
                     </div>
                   </div>
 
                   {c.description && (
                     <div className="mb-3">
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1">{t("customerStatement")}</p>
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1">{t("customerStatement")}</p>
                       <p className="text-[14px] text-s-ink/70 leading-snug">&ldquo;{c.description}&rdquo;</p>
                     </div>
                   )}
@@ -226,7 +226,7 @@ export default function SalonRefundsPage() {
                   ) : isOpen ? (
                     <div className="mt-4 pt-3 border-t border-s-border">
                       <textarea value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("notePlaceholder")} rows={2} className="w-full px-3 py-2 mb-1 rounded-[10px] border border-s-border text-[12.5px] resize-none focus:outline-none focus:border-s-accent" />
-                      <p className="text-[11px] text-s-ink/40 mb-2.5">{noteOk ? " " : t("noteRequired")}</p>
+                      <p className="text-[12px] text-s-ink/40 mb-2.5">{noteOk ? " " : t("noteRequired")}</p>
                       <div className="flex flex-col gap-2">
                         <button
                           onClick={() => armOrRun(`${c.id}:approve`, () => review(c, "approve", false))}

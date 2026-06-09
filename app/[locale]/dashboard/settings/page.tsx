@@ -132,7 +132,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                 type="button"
                 onClick={() => toggleCategory(opt.value)}
                 className={[
-                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
                     ? "bg-s-accent-bright text-white border-s-accent-bright"
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent-bright/50",
@@ -462,7 +462,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
                 <p className={["text-sm font-medium", feeType === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>
                   {opt.label}
                 </p>
-                <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
+                <p className="text-[12px] text-s-ink-2 mt-0.5">{opt.desc}</p>
               </div>
             </button>
           ))}
@@ -576,7 +576,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
               <p className={["text-sm font-medium", registered === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
                 {opt.label}
               </p>
-              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+              <p className="text-[12px] text-s-ink/40 mt-0.5">{opt.desc}</p>
             </button>
           ))}
         </div>
@@ -593,13 +593,13 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
             placeholder="CHE-123.456.789 MWST"
             className="w-full px-3 py-2.5 rounded-btn border border-s-border text-sm data-text focus:outline-none focus:border-s-coral"
           />
-          <p className="text-[10px] text-s-ink/40 mt-1">{t("vatNumberHint")}</p>
+          <p className="text-[12px] text-s-ink/40 mt-1">{t("vatNumberHint")}</p>
         </div>
       )}
 
       {/* Preview */}
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3">
-        <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">{t("customerPreviewHeader")}</p>
+        <p className="text-[12px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">{t("customerPreviewHeader")}</p>
         <p className="text-sm text-s-ink/70">{previewText}</p>
       </div>
 
@@ -880,7 +880,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
                 <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>
                   {opt.label}
                 </p>
-                <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
+                <p className="text-[12px] text-s-ink-2 mt-0.5">{opt.desc}</p>
               </div>
             </button>
           ))}
@@ -941,7 +941,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={["text-sm font-medium", charging ? "text-s-surcharge" : selected ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
-                  <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
+                  <p className="text-[12px] text-s-ink-2 mt-0.5">{opt.desc}</p>
                 </div>
                 {charging && (
                   <span className="text-sm font-bold text-s-surcharge data-text shrink-0">
@@ -1126,7 +1126,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
               </div>
               <div>
                 <p className={["text-sm font-medium", confirmMode === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
-                {opt.desc && <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
+                {opt.desc && <p className="text-[12px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
               </div>
             </button>
           ))}
@@ -1148,7 +1148,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
               </div>
               <div>
                 <p className={["text-sm font-medium", method === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
-                {opt.desc && <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
+                {opt.desc && <p className="text-[12px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
               </div>
             </button>
           ))}
@@ -1351,7 +1351,7 @@ function MobileSettingsIndex({
     <div>
       {groups.map((group) => (
         <div key={group.label}>
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-s-ink-3 mt-4 mb-2 first:mt-0">
+          <p className="text-[12px] font-bold uppercase tracking-[0.09em] text-s-ink-3 mt-4 mb-2 first:mt-0">
             {group.label}
           </p>
           <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">

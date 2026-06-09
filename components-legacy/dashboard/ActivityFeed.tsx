@@ -96,7 +96,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
   if (!events.length) {
     return (
       <div className="py-8 text-center">
-        <p className="text-[11px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
+        <p className="text-[12px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
           {t("noRecentActivity")}
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
                     <span className="ml-1 text-s-star">{"★".repeat(Number(event.meta.rating))}</span>
                   )}
                 </p>
-                <p className="text-[10px] text-s-ink/35 mt-0.5">
+                <p className="text-[12px] text-s-ink/35 mt-0.5">
                   {relativeTime(event.created_at)}
                 </p>
               </div>
@@ -138,7 +138,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
       {events.length > MOBILE_PREVIEW && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="mt-2 w-full flex items-center justify-center gap-1 text-[10px] font-heading text-s-ink/35 hover:text-s-coral transition-colors py-1.5 md:hidden"
+          className="mt-2 w-full flex items-center justify-center gap-1 text-[12px] font-heading text-s-ink/35 hover:text-s-coral transition-colors py-1.5 md:hidden"
           aria-label={expanded ? t("showLess") : t("showMore")}
         >
           <ChevronDown size={11} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />

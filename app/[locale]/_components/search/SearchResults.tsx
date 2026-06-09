@@ -204,7 +204,7 @@ export function SearchResults({ locale }: { locale: string }) {
       <div className="mx-auto w-full max-w-[1280px] px-3 md:px-6">
         {/* Header — page title in Peace Sans, V3 brand */}
         <div className="mb-6 md:mb-8">
-          <div className="font-body mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
+          <div className="font-body mb-2 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
             <span className="block h-1.5 w-1.5 rounded-full bg-s-accent" />
             Suchergebnisse
           </div>

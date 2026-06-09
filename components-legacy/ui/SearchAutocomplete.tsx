@@ -214,7 +214,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float overflow-hidden z-50">
           {services.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
+              <p className="text-[12px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 {t("treatments")}
               </p>
               {services.map((service, i) => (
@@ -237,7 +237,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {salons.length > 0 && (
             <div>
               {services.length > 0 && <div className="border-t border-s-border" />}
-              <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
+              <p className="text-[12px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 {t("salons")}
               </p>
               {salons.map((salon, i) => {
@@ -273,7 +273,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {smartResults.length > 0 && (
             <div>
               {(services.length > 0 || salons.length > 0) && <div className="border-t border-s-border" />}
-              <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1 flex items-center gap-1">
+              <p className="text-[12px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1 flex items-center gap-1">
                 <Sparkles size={10} className="text-s-accent" />
                 {t("aiSuggestions")}
               </p>
@@ -299,7 +299,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     }`}
                   >
                     <span className="font-medium truncate">{result.name}</span>
-                    <span className="text-[10px] text-s-ink/30 shrink-0 ml-2 uppercase tracking-[.08em]">
+                    <span className="text-[12px] text-s-ink/30 shrink-0 ml-2 uppercase tracking-[.08em]">
                       {result.category}
                     </span>
                   </button>

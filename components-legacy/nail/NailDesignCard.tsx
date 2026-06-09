@@ -68,7 +68,7 @@ export default function NailDesignCard({
 
       {/* ── Top-left: Category badge ── */}
       <div className="absolute top-2 left-2 z-10">
-        <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white bg-s-plum/70">
+        <span className="inline-flex items-center gap-1 text-[12px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white bg-s-plum/70">
           <span>{t("category")}</span>
           {primaryBadge && (
             <>
@@ -105,7 +105,7 @@ export default function NailDesignCard({
       {(staffName || salonName) && (
         <div className="absolute bottom-2 left-2 right-2 z-10">
           <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
-            <p className="text-[11px] font-medium text-white truncate">
+            <p className="text-[12px] font-medium text-white truncate">
               {staffName}{staffName && salonName ? " " : ""}{salonName}
             </p>
           </div>

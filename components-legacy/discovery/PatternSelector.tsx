@@ -66,7 +66,7 @@ export default function PatternSelector({ category, selected, onSelect, heading 
       {heading === "" ? null : heading ? (
         <p className="mb-2.5 font-heading text-[13px] font-semibold tracking-[-0.01em] text-s-ink">{heading}</p>
       ) : (
-        <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/30 mb-2">
+        <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/30 mb-2">
           {t("texture")}
         </p>
       )}
@@ -86,7 +86,7 @@ export default function PatternSelector({ category, selected, onSelect, heading 
               /* V3-D398 (council): "colours, not a pale shape" → selected = SOLID accent + white icon (was pale tint,
                  which read as disabled). Unselected = grey tile + full-ink icon (was greyed /55). */
               className={cn(
-                "flex min-h-[60px] min-w-[64px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-transparent px-3 py-2.5 text-[11px] font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",
+                "flex min-h-[60px] min-w-[64px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-transparent px-3 py-2.5 text-[12px] font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",
                 active
                   ? "bg-s-ink text-white"
                   : "bg-s-bg-sunken text-s-ink hover:bg-s-bg-sunken"

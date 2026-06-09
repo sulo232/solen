@@ -173,7 +173,7 @@ export default function VouchersPage() {
             <Link
               href={`/${locale}/vouchers`}
               // V3-D290: empty-state CTA — s-coral → s-ink primary (LOCKFILE §0 rule 2)
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             >
               Gutschein kaufen
             </Link>
@@ -185,7 +185,7 @@ export default function VouchersPage() {
           <div className="mt-8 pt-6 border-t border-s-border">
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-border bg-white text-[11px] font-heading uppercase tracking-[.06em] text-s-ink hover:bg-s-bg-sunken transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-border bg-white text-[12px] font-heading uppercase tracking-[.06em] text-s-ink hover:bg-s-bg-sunken transition-[transform,filter] duration-150"
             >
               Neuen Gutschein schenken
             </Link>
@@ -270,7 +270,7 @@ function VoucherCard({
               </>
             )}
             <span
-              className={`text-[9px] font-heading uppercase tracking-[.08em] ${
+              className={`text-[12px] font-heading uppercase tracking-[.08em] ${
                 status === "active" ? "text-s-warning" : status === "used" ? "text-s-success" : "text-s-ink-2"
               }`}
             >
@@ -289,7 +289,7 @@ function VoucherCard({
         {/* Remaining amount indicator */}
         {status === "used" && voucher.remaining_amount > 0 && (
           <div className="text-right shrink-0">
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-1">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-1">
               Verbleibend
             </p>
             <p className="text-sm font-heading text-s-ink">

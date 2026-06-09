@@ -203,7 +203,7 @@ export default function ClientsPage() {
                 {c.tags?.length > 0 && (
                   <div className="flex gap-1.5 flex-wrap">
                     {c.tags.slice(0, 3).map((t) => (
-                      <span key={t.tag} className="text-[10.5px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">
+                      <span key={t.tag} className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">
                         {t.tag}
                       </span>
                     ))}
@@ -342,7 +342,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tags.map((t) => (
-            <span key={t.tag} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${tagColor(t.color)}`}>
+            <span key={t.tag} className={`px-2 py-0.5 rounded-full text-[12px] font-medium ${tagColor(t.color)}`}>
               {t.tag}
             </span>
           ))}
@@ -410,7 +410,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                 {notes.map((n) => (
                   <div key={n.id} className="bg-white rounded-2xl border border-s-border p-3">
                     <p className="text-sm text-s-ink">{n.note}</p>
-                    <p className="text-[10px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
+                    <p className="text-[12px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
                   </div>
                 ))}
               </div>

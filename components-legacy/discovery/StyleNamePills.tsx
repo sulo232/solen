@@ -26,7 +26,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
   return (
     <div>
       {/* V3-D346 (2026-05-29): filter-pill selected-state swept s-amber→ink (A9-equivalent); eyebrow .18em→.08em (A8). */}
-      <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/30 mb-2">
+      <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/30 mb-2">
         Style
       </p>
       <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
@@ -34,7 +34,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
           onClick={() => onSelect(null)}
           aria-pressed={!selected}
           className={cn(
-            "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
+            "px-3.5 py-2 rounded-pill text-[12px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
             !selected
               ? "border-s-ink bg-s-ink text-white"
               : "border-s-ink/[0.07] text-s-ink-2 hover:border-s-ink/40"
@@ -48,7 +48,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
             onClick={() => onSelect(s.name)}
             aria-pressed={selected === s.name}
             className={cn(
-              "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
+              "px-3.5 py-2 rounded-pill text-[12px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
               selected === s.name
                 ? "border-s-ink bg-s-ink text-white"
                 : "border-s-ink/[0.07] text-s-ink-2 hover:border-s-ink/40"

@@ -115,7 +115,7 @@ export default function TodayLiveCard() {
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <p className="font-body text-[10px] font-bold uppercase tracking-[.20em] opacity-90">
+              <p className="font-body text-[12px] font-bold uppercase tracking-[.20em] opacity-90">
                 {t('nowAt', { time: state.now.time })}
               </p>
               <h3 className="mt-1 font-heading text-[20px] uppercase leading-[0.98]" style={{ letterSpacing: "0.01em" }}>
@@ -124,12 +124,12 @@ export default function TodayLiveCard() {
               <p className="mt-1.5 font-body text-[12px] opacity-85">{state.now.service}</p>
               <div className="mt-2 flex items-center gap-1.5">
                 {state.now.staff_name && (
-                  <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-white/20 font-body text-[10px] font-semibold">
+                  <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-white/20 font-body text-[12px] font-semibold">
                     {state.now.staff_name}
                   </span>
                 )}
                 {state.now.price != null && (
-                  <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-white/20 font-body text-[10px] font-semibold tabular-nums">
+                  <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-white/20 font-body text-[12px] font-semibold tabular-nums">
                     CHF {state.now.price}
                   </span>
                 )}
@@ -143,7 +143,7 @@ export default function TodayLiveCard() {
           className="rounded-[16px] p-4"
           style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)", color: "#fff" }}
         >
-          <p className="font-body text-[10px] font-bold uppercase tracking-[.20em] opacity-90">
+          <p className="font-body text-[12px] font-bold uppercase tracking-[.20em] opacity-90">
             {t('readyForToday')}
           </p>
           <h3 className="mt-1 font-heading text-[20px] uppercase leading-[0.98]" style={{ letterSpacing: "0.01em" }}>
@@ -158,7 +158,7 @@ export default function TodayLiveCard() {
       <div className="mt-2 grid grid-cols-4 gap-1.5">
         {stats.map((s) => (
           <div key={s.key} className="rounded-[8px] px-2 py-2.5" style={{ background: "#FFF4E8" }}>
-            <p className="font-body text-[8px] font-bold uppercase tracking-[.14em] text-s-coral-text">
+            <p className="font-body text-[12px] font-bold uppercase tracking-[.14em] text-s-coral-text">
               {s.label}
             </p>
             <p className="mt-1 font-heading text-[16px] uppercase text-s-ink leading-[0.95] tabular-nums" style={{ letterSpacing: "0.01em" }}>
@@ -171,16 +171,16 @@ export default function TodayLiveCard() {
       {/* Up-next strip */}
       {state.up_next.length > 0 && (
         <div className="mt-2 rounded-[10px] px-3 py-2.5" style={{ background: "#FAF7F3" }}>
-          <p className="font-body text-[8px] font-bold uppercase tracking-[.18em] text-s-ink/40 mb-1.5">
+          <p className="font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-ink/40 mb-1.5">
             {t('upNext')}
           </p>
           <div className="space-y-1">
             {state.up_next.slice(0, 3).map((row, i) => (
-              <div key={i} className="flex items-center gap-2 font-body text-[11px] text-s-ink">
+              <div key={i} className="flex items-center gap-2 font-body text-[12px] text-s-ink">
                 <span className="font-mono tabular-nums text-s-ink-2 w-10 shrink-0">{row.time}</span>
                 <span className="font-semibold truncate flex-1">{row.client}</span>
                 <span className="text-s-ink-2 truncate hidden sm:inline">{row.service}</span>
-                <span className="text-s-ink/40 text-[10px] tabular-nums shrink-0">{row.offset_label}</span>
+                <span className="text-s-ink/40 text-[12px] tabular-nums shrink-0">{row.offset_label}</span>
               </div>
             ))}
           </div>

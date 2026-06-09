@@ -134,7 +134,7 @@ export function DashStatCard({
 }) {
   return (
     <div className="rounded-card-lg border border-s-border bg-white px-[18px] py-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-s-ink-3 mb-2.5">{label}</p>
+      <p className="text-[12px] font-semibold uppercase tracking-[0.07em] text-s-ink-3 mb-2.5">{label}</p>
       <p className="text-[28px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
         {prefix && <span className="text-[15px] font-semibold text-s-ink-2 align-middle mr-1">{prefix}</span>}
         {value}

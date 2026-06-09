@@ -103,7 +103,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
             <p className="font-heading font-semibold text-[13.5px] text-s-ink truncate">
               {svc.name}
             </p>
-            <p className="text-[11.5px] text-s-ink-2 mt-[3px] flex items-center gap-1">
+            <p className="text-[12px] text-s-ink-2 mt-[3px] flex items-center gap-1">
               <Clock size={11} className="shrink-0" />
               {svc.duration_minutes} min CHF {svc.price}
             </p>

@@ -304,7 +304,7 @@ export default function SalonPackagesPage() {
                   {/* Primary CTA — V3-D253: coral → ink per LOCKFILE §0 rule 2 */}
                   <button
                     onClick={() => setPurchasing(pkg)}
-                    className="w-full py-2.5 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
+                    className="w-full py-2.5 rounded-btn bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
                   >
                     {l.buy}
                   </button>

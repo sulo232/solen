@@ -32,21 +32,21 @@ const SIZE_CLASSES: Record<
   { eyebrow: string; headline: string; subLine: string; gap: string; lineHeight: string }
 > = {
   sm: {
-    eyebrow: "text-[9px] tracking-[.18em]",
+    eyebrow: "text-[12px] tracking-[.18em]",
     headline: "text-[18px] sm:text-[22px]",
     subLine: "text-[12px] mt-1",
     gap: "mt-1",
     lineHeight: "leading-[0.95]",
   },
   md: {
-    eyebrow: "text-[10px] sm:text-[11px] tracking-[.20em]",
+    eyebrow: "text-[12px] sm:text-[12px] tracking-[.20em]",
     headline: "text-[22px] sm:text-[28px] md:text-[32px]",
     subLine: "text-[13px] sm:text-[14px] mt-1.5",
     gap: "mt-1.5",
     lineHeight: "leading-[0.95]",
   },
   lg: {
-    eyebrow: "text-[11px] sm:text-[12px] tracking-[.22em]",
+    eyebrow: "text-[12px] sm:text-[12px] tracking-[.22em]",
     headline: "text-[32px] sm:text-[40px] md:text-[48px]",
     subLine: "text-[14px] sm:text-[15px] mt-2",
     gap: "mt-2",
@@ -62,7 +62,7 @@ const SIZE_CLASSES: Record<
   // xxl — homepage above-fold brand fingerprint. Matches reference .hero-h1
   // (public/solen-coral.html:115): clamp(64px, 9vw, 130px) line-height 0.87
   xxl: {
-    eyebrow: "text-[11px] tracking-[.22em]",
+    eyebrow: "text-[12px] tracking-[.22em]",
     headline: "text-[64px] sm:text-[88px] md:text-[110px] lg:text-[130px]",
     subLine: "text-[15px] sm:text-[17px] mt-3 italic",
     gap: "mt-3.5",

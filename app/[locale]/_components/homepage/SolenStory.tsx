@@ -48,7 +48,7 @@ export default function SolenStory() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 md:items-center">
           {/* ─── LEFT: text block ─── */}
           <div className="order-2 md:order-1">
-            <p className="mb-4 font-body text-[11px] font-bold uppercase tracking-[0.16em] text-s-ink-3">
+            <p className="mb-4 font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-3">
               Die Solen-App
             </p>
             <h2 className="mb-5 font-display text-[clamp(26px,7vw,30px)] font-semibold leading-[1.04] tracking-[-0.025em] text-s-ink">

@@ -84,7 +84,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
     return (
       <div className="flex flex-wrap gap-1">
         {tags.map((t) => (
-          <span key={t.id} className={["px-1.5 py-0.5 rounded-pill text-[10px] font-medium", COLOR_MAP[t.color] ?? COLOR_MAP.gray].join(" ")}>
+          <span key={t.id} className={["px-1.5 py-0.5 rounded-pill text-[12px] font-medium", COLOR_MAP[t.color] ?? COLOR_MAP.gray].join(" ")}>
             {t.color === "red" && <AlertTriangle size={9} className="inline mr-0.5 -mt-px" />}
             {t.tag}
           </span>
@@ -141,7 +141,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
                 key={preset}
                 onClick={() => handleAdd(preset)}
                 disabled={tags.some((tag) => tag.tag === preset)}
-                className="px-2 py-1 rounded-pill text-[10px] font-medium bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-30"
+                className="px-2 py-1 rounded-pill text-[12px] font-medium bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-30"
               >
                 {preset}
               </button>
@@ -180,7 +180,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
           <button
             onClick={() => setShowAdd(false)}
-            className="text-[10px] text-s-ink/40 hover:text-s-ink"
+            className="text-[12px] text-s-ink/40 hover:text-s-ink"
           >
             {t("cancel")}
           </button>

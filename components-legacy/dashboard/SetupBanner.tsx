@@ -43,7 +43,7 @@ export default function SetupBanner() {
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star mb-1">{t("eyebrow")}</p>
+      <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
         {t("salonSetup")} — {data.completed}/{data.total} {t("done")}
       </p>
@@ -61,13 +61,13 @@ export default function SetupBanner() {
             {isDE ? step.label : step.label_en}
           </p>
           <Link href={`/${locale}/dashboard/setup`}
-            className="text-[10px] font-heading uppercase tracking-[.06em] text-s-coral">
+            className="text-[12px] font-heading uppercase tracking-[.06em] text-s-coral">
             {t("setUp")} →
           </Link>
         </div>
       ))}
       {incompleteSteps.length > 3 && (
-        <p className="text-[10px] text-s-ink/30 mt-2">{t("more", { n: incompleteSteps.length - 3 })}</p>
+        <p className="text-[12px] text-s-ink/30 mt-2">{t("more", { n: incompleteSteps.length - 3 })}</p>
       )}
     </div>
   );

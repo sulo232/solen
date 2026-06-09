@@ -91,7 +91,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
           aria-label={t("retail_new")}
         >
           <Plus size={12} />
@@ -139,7 +139,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}
@@ -179,10 +179,10 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-s-ink truncate">{product.name}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
+                  <span className="text-[12px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
                     {product.category}
                   </span>
-                  <span className={`text-[10px] data-text ${isLowStock ? "text-s-warning font-medium" : "text-s-ink/40"}`}>
+                  <span className={`text-[12px] data-text ${isLowStock ? "text-s-warning font-medium" : "text-s-ink/40"}`}>
                     {t("retail_stock", { count: product.stock_count })}
                   </span>
                 </div>

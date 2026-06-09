@@ -55,7 +55,7 @@ export default function TrustStatsBanner() {
   return (
     <section className="px-5 md:px-10 lg:px-20" aria-label="Plattform Statistik">
       <div className="rounded-[16px] px-4 py-5 sm:px-6 sm:py-6" style={{ background: "#FAF7F3" }}>
-        <p className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-accent mb-3 text-center">
+        <p className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-accent mb-3 text-center">
           Vertrauen in Zahlen
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -71,7 +71,7 @@ export default function TrustStatsBanner() {
               >
                 {value}
               </div>
-              <div className="mt-1 font-body text-[11px] text-s-ink-2">{label}</div>
+              <div className="mt-1 font-body text-[12px] text-s-ink-2">{label}</div>
             </div>
           ))}
         </div>

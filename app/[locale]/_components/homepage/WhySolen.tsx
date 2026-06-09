@@ -105,7 +105,7 @@ export default function SalonRegister() {
           {/* LEFT — Copy + CTA + trust */}
           <div className="flex flex-col justify-center text-s-ink">
             {/* V2-D66 (2026-05-16, Hayden move #7): dropped uppercase + heavy
-                tracking on the eyebrow. Was `text-[11px] font-bold uppercase
+                tracking on the eyebrow. Was `text-[12px] font-bold uppercase
                 tracking-[0.18em]` — read as "loud category label" competing
                 with the giant h2 below. Sentence-case medium at slightly larger
                 size keeps the leading-dot motif but reads as soft caption. */}
@@ -163,32 +163,32 @@ export default function SalonRegister() {
                     solen
                     <span aria-hidden className="ml-[2px] inline-flex items-center justify-center h-[5px] w-[5px] rounded-full bg-s-accent" />
                   </span>
-                  <span className="rounded-md bg-s-ink text-white px-[11px] py-[5px] text-[11px] font-semibold">Heute</span>
-                  <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Mitarbeiter</span>
-                  <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Woche</span>
+                  <span className="rounded-md bg-s-ink text-white px-[11px] py-[5px] text-[12px] font-semibold">Heute</span>
+                  <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[12px] font-semibold">Mitarbeiter</span>
+                  <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[12px] font-semibold">Woche</span>
                   <span className="flex-1" />
-                  <span className="text-[11px] text-s-ink-3 font-semibold">Di 14. Mai 2026</span>
+                  <span className="text-[12px] text-s-ink-3 font-semibold">Di 14. Mai 2026</span>
                 </div>
                 {/* Calendar grid */}
                 <div className="grid gap-1 flex-1" style={{ gridTemplateColumns: "50px repeat(5, 1fr)" }}>
                   {/* Time column */}
                   <div className="flex flex-col gap-1 pt-3">
                     {["9:00", "10:00", "11:00", "12:00", "13:00", "14:00"].map((t) => (
-                      <div key={t} className="text-[9px] text-s-ink-3 h-7 flex items-start">{t}</div>
+                      <div key={t} className="text-[12px] text-s-ink-3 h-7 flex items-start">{t}</div>
                     ))}
                   </div>
                   {/* Day columns */}
                   {CALENDAR.map((col) => (
                     <div key={col.day} className="bg-[#FAFAF8] rounded-md p-2 flex flex-col gap-1">
-                      <div className="text-[9px] font-bold text-s-ink-2 text-center mb-1">{col.day}</div>
+                      <div className="text-[12px] font-bold text-s-ink-2 text-center mb-1">{col.day}</div>
                       {col.bookings.map((b, i) => (
                         <div
                           key={i}
-                          className="rounded px-1.5 py-1 text-[8.5px] leading-tight"
+                          className="rounded px-1.5 py-1 text-[12px] leading-tight"
                           style={{ background: TINT_BG[b.tint] }}
                         >
                           <span className="block font-bold text-s-ink">{b.name}</span>
-                          <span className="text-s-ink-2 text-[8px]">{b.service}</span>
+                          <span className="text-s-ink-2 text-[12px]">{b.service}</span>
                         </div>
                       ))}
                     </div>
@@ -206,12 +206,12 @@ export default function SalonRegister() {
                 </div>
                 <div className="p-3">
                   <div className="font-display text-[13px] font-bold text-s-ink mb-1">Salon Maria</div>
-                  <div className="flex items-center gap-1 text-[10px] text-s-ink-2">
-                    <span style={{ color: "#F3A864" }} className="text-[9px] tracking-[0.06em]">★★★★★</span>
+                  <div className="flex items-center gap-1 text-[12px] text-s-ink-2">
+                    <span style={{ color: "#F3A864" }} className="text-[12px] tracking-[0.06em]">★★★★★</span>
                     <span>5.0 247 Bewertungen</span>
                   </div>
-                  <div className="text-[9px] text-s-ink-3 mt-[2px]">2.0 km Kleinbasel</div>
-                  <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-ink text-white text-[9px] font-bold">
+                  <div className="text-[12px] text-s-ink-3 mt-[2px]">2.0 km Kleinbasel</div>
+                  <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-ink text-white text-[12px] font-bold">
                     <Store size={9} aria-hidden />
                     Sofort buchbar
                   </span>

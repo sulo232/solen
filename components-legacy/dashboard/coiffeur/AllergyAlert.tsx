@@ -29,19 +29,19 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
           {t("allergyAlertTitle")}
         </p>
         {allergies && (
-          <p className="text-[11px] text-s-error/70">{allergies}</p>
+          <p className="text-[12px] text-s-error/70">{allergies}</p>
         )}
         {chemicalSensitivities && chemicalSensitivities.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {chemicalSensitivities.map((s) => (
-              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-s-error/12 text-[9px] font-heading text-s-error">
+              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-s-error/12 text-[12px] font-heading text-s-error">
                 {s}
               </span>
             ))}
           </div>
         )}
         {patchOverdue && (
-          <p className="text-[10px] text-s-star mt-1">
+          <p className="text-[12px] text-s-star mt-1">
             ⚠ {t("patchTestOverdue")}
           </p>
         )}

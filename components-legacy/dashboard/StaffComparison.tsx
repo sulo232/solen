@@ -63,19 +63,19 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
                 <p className="text-sm font-medium text-s-ink mb-2">{s.name}</p>
                 <div className="grid grid-cols-4 gap-2">
                   <div>
-                    <p className="text-[10px] text-s-ink-2">{t("bookings")}</p>
+                    <p className="text-[12px] text-s-ink-2">{t("bookings")}</p>
                     <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.bookings}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-s-ink-2">{t("revenue")}</p>
+                    <p className="text-[12px] text-s-ink-2">{t("revenue")}</p>
                     <p className="data-text text-sm font-bold text-s-ink tabular-nums">CHF {(s.revenue / 100).toFixed(0)}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-s-ink-2">{t("rating")}</p>
+                    <p className="text-[12px] text-s-ink-2">{t("rating")}</p>
                     <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.avg_rating?.toFixed(1) ?? "—"}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-s-ink-2">{t("retention")}</p>
+                    <p className="text-[12px] text-s-ink-2">{t("retention")}</p>
                     <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.retention_rate != null ? `${s.retention_rate.toFixed(0)}%` : "—"}</p>
                   </div>
                 </div>

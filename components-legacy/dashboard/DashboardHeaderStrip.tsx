@@ -85,7 +85,7 @@ export default function DashboardHeaderStrip() {
         className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-white shrink-0"
         style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)" }}
       >
-        <span className="font-body text-[8px] font-bold uppercase tracking-[.18em] opacity-95">
+        <span className="font-body text-[12px] font-bold uppercase tracking-[.18em] opacity-95">
           {t("now")}
         </span>
         {state.now ? (
@@ -93,10 +93,10 @@ export default function DashboardHeaderStrip() {
             <span className="font-heading text-[12px] uppercase leading-none" style={{ letterSpacing: "0.01em" }}>
               {state.now.client}
             </span>
-            <span className="font-body text-[10px] opacity-90 tabular-nums">|  {state.now.time}</span>
+            <span className="font-body text-[12px] opacity-90 tabular-nums">|  {state.now.time}</span>
           </>
         ) : (
-          <span className="font-heading text-[11px] uppercase opacity-90">{t("free")}</span>
+          <span className="font-heading text-[12px] uppercase opacity-90">{t("free")}</span>
         )}
       </div>
 
@@ -114,7 +114,7 @@ export default function DashboardHeaderStrip() {
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline gap-1.5 px-2.5 py-1.5 rounded-[6px] bg-white">
-      <span className="font-body text-[8px] font-bold uppercase tracking-[.14em] text-s-coral-text">{label}</span>
+      <span className="font-body text-[12px] font-bold uppercase tracking-[.14em] text-s-coral-text">{label}</span>
       <span className="font-heading text-[13px] uppercase text-s-ink leading-none tabular-nums" style={{ letterSpacing: "0.01em" }}>
         {value}
       </span>

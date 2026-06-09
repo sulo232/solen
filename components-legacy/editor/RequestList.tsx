@@ -131,7 +131,7 @@ export default function RequestList({
               Copy for Claude Code
             </p>
           </div>
-          <p className="text-[10px] text-s-ink-2">
+          <p className="text-[12px] text-s-ink-2">
             Select requests with checkboxes, then copy and paste into Claude Code.
           </p>
           <div className="flex gap-1.5 flex-wrap">
@@ -194,20 +194,20 @@ export default function RequestList({
                       {r.description}
                     </p>
                     {r.element_tag && (
-                      <p className="text-[10px] text-s-ink/40 font-mono mt-0.5 truncate">
+                      <p className="text-[12px] text-s-ink/40 font-mono mt-0.5 truncate">
                         &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 50)}"` : ""}
                       </p>
                     )}
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
                       r.status === "in_progress" ? "bg-s-amber-subtle text-s-star-text" :
                       "bg-s-bg-sunken text-s-ink-2"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
                       r.priority === "medium" ? "bg-s-amber-subtle text-s-star-text" :
                       "bg-s-bg-sunken text-s-ink/40"
@@ -218,7 +218,7 @@ export default function RequestList({
                 </div>
 
                 <div className="flex items-center gap-2 pl-5.5">
-                  <span className="text-[10px] text-s-ink/30">
+                  <span className="text-[12px] text-s-ink/30">
                     {new Date(r.created_at).toLocaleString()}
                   </span>
                 </div>
@@ -229,7 +229,7 @@ export default function RequestList({
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
+                      className="text-[12px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
                     >
                       Reset
                     </button>
@@ -237,7 +237,7 @@ export default function RequestList({
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
+                      className="text-[12px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
                     >
                       In Progress
                     </button>
@@ -245,7 +245,7 @@ export default function RequestList({
                   {r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "done")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-success-bg text-s-success hover:bg-s-success/15 transition-colors"
+                      className="text-[12px] px-2 py-0.5 rounded-btn bg-s-success-bg text-s-success hover:bg-s-success/15 transition-colors"
                     >
                       Done
                     </button>
@@ -254,7 +254,7 @@ export default function RequestList({
                   {/* Copy for Claude */}
                   <button
                     onClick={() => handleCopySingle(r)}
-                    className={`text-[10px] px-2 py-0.5 rounded-btn flex items-center gap-1 transition-colors ${
+                    className={`text-[12px] px-2 py-0.5 rounded-btn flex items-center gap-1 transition-colors ${
                       copiedId === r.id
                         ? "bg-s-success-bg text-s-success"
                         : "bg-s-ink/10 text-s-accent hover:bg-s-ink/20"
@@ -267,7 +267,7 @@ export default function RequestList({
                   {/* Expand details */}
                   <button
                     onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink-2 hover:text-s-ink transition-colors flex items-center gap-1"
+                    className="text-[12px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink-2 hover:text-s-ink transition-colors flex items-center gap-1"
                   >
                     {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
                     Details
@@ -277,7 +277,7 @@ export default function RequestList({
                   <button
                     onClick={() => onDelete(r.id)}
                     disabled={deletingId === r.id}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
+                    className="text-[12px] px-2 py-0.5 rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
                   >
                     {deletingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Trash2 size={9} />}
                     Delete
@@ -289,19 +289,19 @@ export default function RequestList({
                   <div className="space-y-2 pl-5.5 pt-1 border-t border-s-border mt-1">
                     {r.element_selector && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink-2">Selector</p>
-                        <p className="text-[10px] font-mono text-s-ink/40 break-all">{r.element_selector}</p>
+                        <p className="text-[12px] font-medium text-s-ink-2">Selector</p>
+                        <p className="text-[12px] font-mono text-s-ink/40 break-all">{r.element_selector}</p>
                       </div>
                     )}
                     {r.component_hint && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink-2">Component</p>
-                        <p className="text-[10px] font-mono text-s-ink/40">{r.component_hint}</p>
+                        <p className="text-[12px] font-medium text-s-ink-2">Component</p>
+                        <p className="text-[12px] font-mono text-s-ink/40">{r.component_hint}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[10px] font-medium text-s-ink-2 mb-1">Claude Prompt Preview</p>
-                      <pre className="text-[10px] bg-s-bg-sunken rounded-btn p-2 overflow-auto max-h-40 text-s-ink-2 whitespace-pre-wrap">
+                      <p className="text-[12px] font-medium text-s-ink-2 mb-1">Claude Prompt Preview</p>
+                      <pre className="text-[12px] bg-s-bg-sunken rounded-btn p-2 overflow-auto max-h-40 text-s-ink-2 whitespace-pre-wrap">
                         {formatRequestForClaude(r)}
                       </pre>
                     </div>

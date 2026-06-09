@@ -130,7 +130,7 @@ function BadgeModal({
                   <button
                     key={name}
                     onClick={() => setIcon(name)}
-                    className={`flex flex-col items-center gap-0.5 p-2 rounded-[8px] text-[9px] transition-colors ${
+                    className={`flex flex-col items-center gap-0.5 p-2 rounded-[8px] text-[12px] transition-colors ${
                       icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-s-bg-surface text-s-ink/40 hover:bg-s-bg-sunken"
                     }`}
                   >
@@ -407,7 +407,7 @@ export default function BadgeManagerPage() {
                           <p className="font-medium text-sm text-s-ink truncate">{b.name_de}</p>
                           <p className="text-xs text-s-ink/40 truncate">{b.name_en}</p>
                           <span
-                            className={`inline-block mt-1 px-1.5 py-0.5 rounded-pill text-[10px] font-bold ${
+                            className={`inline-block mt-1 px-1.5 py-0.5 rounded-pill text-[12px] font-bold ${
                               b.is_system ? "bg-s-bg-sunken text-s-ink/40" : "bg-s-coral/10 text-s-coral"
                             }`}
                           >

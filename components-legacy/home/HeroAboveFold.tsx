@@ -101,7 +101,7 @@ export default function HeroAboveFold() {
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
             <Search size={18} className="text-s-accent shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
-              <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
+              <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Was
               </span>
               <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">
@@ -113,7 +113,7 @@ export default function HeroAboveFold() {
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
             <MapPin size={18} className="text-s-accent shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
-              <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
+              <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wo
               </span>
               <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">
@@ -125,7 +125,7 @@ export default function HeroAboveFold() {
           <div className="flex items-center gap-3 px-4 py-3.5 min-h-[56px]">
             <Calendar size={18} className="text-s-accent shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
-              <span className="block font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-accent">
+              <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wann
               </span>
               <span className="block font-body text-[14px] text-s-ink-2 truncate mt-0.5">

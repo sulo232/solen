@@ -66,7 +66,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-border bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-accent/40 transition-colors duration-150"
+        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-border bg-white text-[12px] font-heading text-s-ink/70 hover:border-s-accent/40 transition-colors duration-150"
         aria-label={displayLabel}
       >
         <Calendar size={12} className="text-s-ink/40" />
@@ -77,7 +77,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
       {open && (
         <div className="absolute top-full mt-1 right-0 z-50 bg-white rounded-[12px] border border-s-border shadow-warm-md p-4 min-w-[240px]">
           {/* Presets */}
-          <p className="text-[8px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
+          <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
             {t("quickRange")}
           </p>
           <div className="flex flex-wrap gap-1.5 mb-4">
@@ -85,7 +85,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
               <button
                 key={p.days}
                 onClick={() => applyPreset(p.days)}
-                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-ink/10 hover:text-s-accent transition-colors"
+                className="px-2.5 py-1 rounded-pill text-[12px] font-heading bg-s-bg-sunken text-s-ink-2 hover:bg-s-ink/10 hover:text-s-accent transition-colors"
               >
                 {p.label}
               </button>
@@ -93,34 +93,34 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
           </div>
 
           {/* Custom range */}
-          <p className="text-[8px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
+          <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
             {t("customRange")}
           </p>
           <div className="space-y-2 mb-3">
             <div>
-              <label className="block text-[9px] text-s-ink/40 mb-1">{t("from")}</label>
+              <label className="block text-[12px] text-s-ink/40 mb-1">{t("from")}</label>
               <input
                 type="date"
                 value={from}
                 max={to}
                 onChange={(e) => setFrom(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[12px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
             <div>
-              <label className="block text-[9px] text-s-ink/40 mb-1">{t("to")}</label>
+              <label className="block text-[12px] text-s-ink/40 mb-1">{t("to")}</label>
               <input
                 type="date"
                 value={to}
                 min={from}
                 onChange={(e) => setTo(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-border bg-transparent text-[12px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
           </div>
           <button
             onClick={applyCustom}
-            className="w-full py-1.5 rounded-pill bg-s-ink text-white text-[11px] font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full py-1.5 rounded-pill bg-s-ink text-white text-[12px] font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("applyRange")}
           </button>

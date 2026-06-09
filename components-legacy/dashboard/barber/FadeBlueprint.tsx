@@ -140,14 +140,14 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   return (
     <div className="rounded-[16px] border border-s-border bg-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-2">
+        <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink-2">
           {t("fade_blueprint")}
         </p>
         <div className="flex items-center gap-2">
           <button
             aria-pressed={visualMode}
             onClick={() => setVisualMode(!visualMode)}
-            className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
+            className={`rounded-[8px] border px-3 py-1.5 text-[12px] font-heading transition-colors duration-150 ${
               visualMode
                 ? "border-s-ink bg-s-ink text-white"
                 : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"
@@ -213,7 +213,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                     x={zone.labelX}
                     y={zone.labelY}
                     textAnchor="middle"
-                    className="text-[8px] fill-s-ink/50 pointer-events-none select-none"
+                    className="text-[12px] fill-s-ink/50 pointer-events-none select-none"
                     style={{ fontFamily: "DM Sans, sans-serif" }}
                   >
                     {guard
@@ -228,7 +228,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           {/* Guard dropdown */}
           {activeZone && activeZone !== "neckline" && (
             <div className="absolute top-2 right-2 z-10 rounded-[12px] border border-s-border bg-white p-2 shadow-warm-lg">
-              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-2 mb-1">
+              <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink-2 mb-1">
                 {t("guard_size")}
               </p>
               <div className="grid grid-cols-3 gap-1">
@@ -236,7 +236,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                   <button
                     key={opt.value}
                     onClick={() => setZoneGuard(activeZone, opt.value)}
-                    className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
+                    className={`px-2 py-1 text-[12px] rounded-[8px] transition-colors duration-150 ${
                       getZoneGuard(activeZone) === opt.value
                         ? "bg-s-ink text-white"
                         : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"
@@ -256,7 +256,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
       <div className="mt-4 space-y-3">
         {/* Neckline Style */}
         <div>
-          <p className="text-[10px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
+          <p className="text-[12px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
             {t("neckline")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -266,7 +266,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 onClick={() =>
                   setBlueprint((prev) => ({ ...prev, neckline_style: style }))
                 }
-                className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
+                className={`px-3 py-1 text-[12px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.neckline_style === style
                     ? "bg-s-ink text-white"
                     : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"
@@ -281,7 +281,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
         {/* Fade Type */}
         <div>
-          <p className="text-[10px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
+          <p className="text-[12px] font-heading text-s-ink-2 uppercase tracking-[.12em] mb-1">
             {t("fade_type")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -291,7 +291,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 onClick={() =>
                   setBlueprint((prev) => ({ ...prev, fade_type: ft }))
                 }
-                className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
+                className={`px-3 py-1 text-[12px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.fade_type === ft
                     ? "bg-s-ink text-white"
                     : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"

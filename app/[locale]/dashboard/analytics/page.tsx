@@ -152,7 +152,7 @@ export default function AnalyticsPage() {
           <button
             onClick={onToggleComparison}
             aria-label={t("compareAria")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn border text-[10px] font-heading transition-colors ${showComparison ? "border-s-accent-bright/30 bg-s-accent-bright/10 text-s-accent-bright" : "border-s-border text-s-ink-2 hover:border-s-accent-bright/40 hover:text-s-accent-bright"}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn border text-[12px] font-heading transition-colors ${showComparison ? "border-s-accent-bright/30 bg-s-accent-bright/10 text-s-accent-bright" : "border-s-border text-s-ink-2 hover:border-s-accent-bright/40 hover:text-s-accent-bright"}`}
           >
             {showComparison ? <ToggleRight size={13} className="text-s-accent-bright" /> : <ToggleLeft size={13} />}
             {t("compare")}
@@ -241,7 +241,7 @@ export default function AnalyticsPage() {
                 </BarChart>
               </ResponsiveContainer>
               {showComparison && priorData && (
-                <div className="mt-2 flex items-center gap-3 text-[10px] text-s-ink-2">
+                <div className="mt-2 flex items-center gap-3 text-[12px] text-s-ink-2">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-s-accent-bright inline-block" /> {t("current")}</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-s-accent-pale inline-block" /> {t("priorPeriod")}</span>
                 </div>
@@ -385,7 +385,7 @@ export default function AnalyticsPage() {
                     <div key={s.name} className="rounded-[12px] border border-s-border p-3">
                       <p className="text-sm font-medium text-s-ink mb-2">{s.name}</p>
                       <div>
-                        <p className="text-[10px] text-s-ink-2">{t("bookingsLabel")}</p>
+                        <p className="text-[12px] text-s-ink-2">{t("bookingsLabel")}</p>
                         <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.count}</p>
                       </div>
                     </div>

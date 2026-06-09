@@ -64,7 +64,7 @@ export default function EmptyStateFTU({
     >
       <motion.div {...enter} className="max-w-[280px] flex flex-col items-center">
         <div className="mb-4">{illustration}</div>
-        <span className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-accent">
+        <span className="font-body text-[12px] sm:text-[12px] font-bold uppercase tracking-[.22em] text-s-accent">
           {eyebrow}
         </span>
         <h2 className="mt-1 font-heading text-[22px] sm:text-[28px] md:text-[32px] leading-[0.95] text-s-ink uppercase">

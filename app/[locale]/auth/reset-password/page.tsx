@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
             style={{ background: "rgba(22,163,74,.12)" }}>
             <Check size={28} className="text-s-success" />
           </div>
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-success mb-2">
+          <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-success mb-2">
             Erfolgreich
           </p>
           <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
+          <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
               style={{ background: "rgba(27, 77, 27,.10)" }}>
               <Lock size={24} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
+            <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
             </p>
             <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
@@ -187,7 +187,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
-            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
+            className="text-[12px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
             Zurück zur Anmeldung
           </Link>
         </p>

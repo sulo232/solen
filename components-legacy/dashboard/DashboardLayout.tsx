@@ -288,7 +288,7 @@ export default function DashboardLayout({
                 {key === "messages" && unreadCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-s-error ring-2 ring-white" aria-hidden />
                 )}
-                <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
+                <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
               </Link>
             );
           })}
@@ -301,7 +301,7 @@ export default function DashboardLayout({
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
                     className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                     <Icon size={19} strokeWidth={1.9} />
-                    <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
+                    <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
                 );
               })}
@@ -310,7 +310,7 @@ export default function DashboardLayout({
         </nav>
         <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
           <span aria-hidden className="text-[17px] leading-none">←</span>
-          <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
+          <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
         </Link>
         {salonAvatar ? (
           <Image src={salonAvatar} alt={salonName ?? ""} width={34} height={34} className="rounded-full object-cover" />
@@ -370,7 +370,7 @@ export default function DashboardLayout({
                       if (items.length === 0) return null;
                       return (
                         <div key={groupLabel}>
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1 first:mt-1">{groupLabel}</p>
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1 first:mt-1">{groupLabel}</p>
                           {items.map(({ key, href, icon: Icon, label }) => {
                             const active = isActive(href);
                             return (
@@ -379,7 +379,7 @@ export default function DashboardLayout({
                                 <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
                                 <span className="flex-1">{label}</span>
                                 {href === "/dashboard/messages" && unreadCount > 0 && (
-                                  <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                                  <span className="ml-auto text-[12px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
                                 )}
                               </Link>
                             );
@@ -391,7 +391,7 @@ export default function DashboardLayout({
                     {/* Admin */}
                     {role === "admin" && (
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1">Admin</p>
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1">Admin</p>
                         {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
                           const active = isActive(href);
                           return (

@@ -289,7 +289,7 @@ export default function BookingsPage() {
                   <p className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums leading-none">
                     {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[10px] font-semibold text-s-ink-3 tabular-nums mt-1">
+                  <p className="text-[12px] font-semibold text-s-ink-3 tabular-nums mt-1">
                     {new Date(b.starts_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
@@ -302,7 +302,7 @@ export default function BookingsPage() {
                   <div className="flex items-center gap-1.5">
                     <p className="font-heading font-semibold text-[14.5px] text-s-ink leading-tight truncate">{b.customer_name}</p>
                     {b.is_first_visit && (
-                      <span className="shrink-0 text-[10px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright">{t("badgeNew")}</span>
+                      <span className="shrink-0 text-[12px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright">{t("badgeNew")}</span>
                     )}
                     {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-3" aria-label={t("recurring")} />}
                   </div>

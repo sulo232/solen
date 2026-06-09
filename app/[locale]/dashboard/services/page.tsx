@@ -308,7 +308,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-s-ink truncate">{tmpl.name_de}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
+                    <span className="inline-flex items-center gap-0.5 text-[12px] text-s-ink/40">
                       <Clock size={10} /> {tmpl.duration} min
                     </span>
                     <span className="text-xs data-text font-semibold text-s-ink-2">{formatCurrency(tmpl.price, locale)}</span>
@@ -528,7 +528,7 @@ export default function ServicesPage() {
                     <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
                     {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-[10.5px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
+                      <span className="text-[12px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
                       <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
                     </div>
                   </div>

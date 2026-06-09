@@ -88,7 +88,7 @@ export default function CommissionAdminPage() {
         </div>
       ) : (
         <div className="max-w-md rounded-[14px] border border-s-border bg-white p-6 shadow-warm-md">
-          <div className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-s-ink/40">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink/40">
             {t("platformFeeEyebrow")}
           </div>
 
@@ -117,7 +117,7 @@ export default function CommissionAdminPage() {
 
           {/* Live impact preview */}
           <div className="mt-4 overflow-hidden rounded-[13px] border border-s-border">
-            <div className="bg-[#fcfcfc] px-4 pb-2 pt-2.5 text-[11px] text-s-ink/40">
+            <div className="bg-[#fcfcfc] px-4 pb-2 pt-2.5 text-[12px] text-s-ink/40">
               {t("exampleBooking", { amount: formatCurrency(PREVIEW_BASE_CHF, "de-CH") })}
             </div>
             <div className="flex items-center justify-between border-t border-s-border px-4 py-2.5 text-[13.5px]">
@@ -128,7 +128,7 @@ export default function CommissionAdminPage() {
               <span className="text-s-ink">{t("salonReceives")}</span>
               <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(salonGets, "de-CH")}</span>
             </div>
-            <div className="px-4 pb-2.5 pt-1 text-[10.5px] leading-[1.4] text-s-ink/40">
+            <div className="px-4 pb-2.5 pt-1 text-[12px] leading-[1.4] text-s-ink/40">
               {t("feeNote")}
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function CommissionAdminPage() {
               <Check size={18} strokeWidth={3} className="shrink-0 text-s-success" />
               <div>
                 <div className="font-heading text-[13px] font-semibold text-s-success">{t("savedTitle")}</div>
-                <div className="mt-0.5 text-[11.5px] text-s-ink-2">{t("savedDescription", { rate: loadedRate })}</div>
+                <div className="mt-0.5 text-[12px] text-s-ink-2">{t("savedDescription", { rate: loadedRate })}</div>
               </div>
             </div>
           )}

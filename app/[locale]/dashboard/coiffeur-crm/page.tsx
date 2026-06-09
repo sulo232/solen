@@ -63,7 +63,7 @@ export default function CoiffeurCRMPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Coiffeur</p>
+        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Coiffeur</p>
         <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
@@ -71,7 +71,7 @@ export default function CoiffeurCRMPage() {
 
       {/* Client selector */}
       <div className="bg-white rounded-2xl border border-s-border p-4 mb-5">
-        <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
+        <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
           {t("selectClient")}
         </p>
         <ClientSelectorDropdown
@@ -131,24 +131,24 @@ export default function CoiffeurCRMPage() {
                       <p className="text-2xl font-heading data-text text-s-ink">
                         {cycleMetrics.avg_days_between_visits}
                       </p>
-                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAvgDays")}</p>
+                      <p className="text-[12px] text-s-ink/40 mt-1">{t("metricsAvgDays")}</p>
                     </div>
                     <div className="bg-white rounded-2xl border border-s-border p-3 text-center">
                       <p className="text-2xl font-heading data-text text-s-ink">
                         {cycleMetrics.adherence_rate}%
                       </p>
-                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAdherence")}</p>
+                      <p className="text-[12px] text-s-ink/40 mt-1">{t("metricsAdherence")}</p>
                     </div>
                     <div className="bg-white rounded-2xl border border-s-border p-3 text-center">
                       <p className="text-2xl font-heading data-text text-s-ink">
                         {cycleMetrics.total_tracked_clients}
                       </p>
-                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsClients")}</p>
+                      <p className="text-[12px] text-s-ink/40 mt-1">{t("metricsClients")}</p>
                     </div>
                   </div>
                   {/* Sparkline */}
                   <div className="bg-white rounded-2xl border border-s-border p-4">
-                    <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-3">
+                    <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-3">
                       {t("metricsSparkTitle")}
                     </p>
                     <div className="flex items-end gap-1 h-12">

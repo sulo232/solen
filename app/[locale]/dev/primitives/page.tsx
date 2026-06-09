@@ -1087,7 +1087,7 @@ function Grid({ cols, children }: { cols: 2 | 3; children: React.ReactNode }) {
 function Card({ tag, children }: { tag: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-s-ink/[0.06] rounded-2xl p-[22px] flex flex-col gap-1.5">
-      <div className="font-body font-bold text-[11px] uppercase tracking-[0.16em] text-s-ink-3 mb-3.5">
+      <div className="font-body font-bold text-[12px] uppercase tracking-[0.16em] text-s-ink-3 mb-3.5">
         {tag}
       </div>
       {children}

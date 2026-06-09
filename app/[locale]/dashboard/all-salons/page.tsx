@@ -248,7 +248,7 @@ export default function AllSalonsPage() {
                         {salon.categories.slice(0, 3).map((c) => (
                           <span
                             key={c}
-                            className="px-2 py-0.5 bg-s-bg-sunken text-s-ink text-[10px] rounded-full font-medium"
+                            className="px-2 py-0.5 bg-s-bg-sunken text-s-ink text-[12px] rounded-full font-medium"
                           >
                             {c}
                           </span>
@@ -259,7 +259,7 @@ export default function AllSalonsPage() {
 
                   {/* Right: date */}
                   <div className="text-right shrink-0">
-                    <p className="text-[10px] text-s-ink/30">
+                    <p className="text-[12px] text-s-ink/30">
                       {new Date(salon.created_at).toLocaleDateString("de-CH", {
                         day: "2-digit",
                         month: "2-digit",

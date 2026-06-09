@@ -336,7 +336,7 @@ function DayStrip({
         )}
       >
         <CalIcon className="h-5 w-5" strokeWidth={2} />
-        <span className="px-1 text-center text-[11px] font-medium leading-tight">{moreLabel}</span>
+        <span className="px-1 text-center text-[12px] font-medium leading-tight">{moreLabel}</span>
       </button>
     </div>
   );
@@ -419,7 +419,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
           {(day) => (
             <CalendarHeaderCell
               className={cn(
-                "text-center font-body font-semibold text-[11px]",
+                "text-center font-body font-semibold text-[12px]",
                 "text-s-ink-3",
                 "py-1.5",
               )}

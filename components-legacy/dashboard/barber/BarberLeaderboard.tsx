@@ -179,7 +179,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                   {getDisplayName(barber, i)}
                 </span>
                 {i === 0 && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-s-success-bg text-s-success shrink-0">
+                  <span className="px-2 py-0.5 rounded-full text-[12px] font-semibold bg-s-success-bg text-s-success shrink-0">
                     {t("top")}
                   </span>
                 )}
@@ -188,7 +188,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
               <div className="grid grid-cols-3 gap-2.5">
                 {columns.map((col) => (
                   <div key={col.key}>
-                    <p className="text-[10px] text-s-ink-2">{col.label}</p>
+                    <p className="text-[12px] text-s-ink-2">{col.label}</p>
                     <p className="font-heading font-bold text-[14.5px] text-s-ink mt-0.5 tabular-nums">
                       {col.format(barber[col.key] as number)}
                     </p>

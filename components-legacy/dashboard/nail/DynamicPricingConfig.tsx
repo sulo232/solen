@@ -109,7 +109,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           <h3 className="font-heading text-sm text-s-ink">{t("pricing_title")}</h3>
         </div>
         <button onClick={() => setNewRule({ rule_type: "peak_hour", modifier: 1.2, day_of_week: 6, start_time: "10:00", end_time: "14:00" })}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150">
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150">
           <Plus size={12} />
           {t("pricing_new_rule")}
         </button>
@@ -123,13 +123,13 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           <div className="grid gap-0.5" style={{ gridTemplateColumns: "40px repeat(12, 1fr)" }}>
             <div />
             {Array.from({ length: 12 }, (_, h) => (
-              <span key={h} className="text-[8px] text-center text-s-ink/30">{(h + 8).toString().padStart(2, "0")}</span>
+              <span key={h} className="text-[12px] text-center text-s-ink/30">{(h + 8).toString().padStart(2, "0")}</span>
             ))}
           </div>
           {/* Day rows */}
           {DAYS.map((day, dayIdx) => (
             <div key={dayIdx} className="grid gap-0.5 mt-0.5" style={{ gridTemplateColumns: "40px repeat(12, 1fr)" }}>
-              <span className="text-[9px] text-s-ink/40 truncate">{day}</span>
+              <span className="text-[12px] text-s-ink/40 truncate">{day}</span>
               {Array.from({ length: 12 }, (_, h) => {
                 const hour = h + 8;
                 const hourStr = `${hour.toString().padStart(2, "0")}:00`;
@@ -140,7 +140,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
                 const bg = maxMod > 1.3 ? "bg-s-coral-subtle" : maxMod > 1.1 ? "bg-s-coral-subtle/50" : maxMod < 0.9 ? "bg-s-sage-subtle" : "bg-white";
                 return (
                   <div key={h} className={`h-5 rounded-sm ${bg} flex items-center justify-center border border-s-ink/5`}>
-                    {maxMod !== 1 && <span className="text-[7px] text-s-ink-2 data-text">{maxMod.toFixed(1)}x</span>}
+                    {maxMod !== 1 && <span className="text-[12px] text-s-ink-2 data-text">{maxMod.toFixed(1)}x</span>}
                   </div>
                 );
               })}
@@ -148,9 +148,9 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           ))}
           {/* Legend */}
           <div className="flex items-center gap-3 mt-2">
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-sage-subtle" /><span className="text-[8px] text-s-ink/40">{t("pricing_discount")}</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-white border border-s-ink/5" /><span className="text-[8px] text-s-ink/40">{t("pricing_base")}</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-coral-subtle" /><span className="text-[8px] text-s-ink/40">{t("pricing_premium")}</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-sage-subtle" /><span className="text-[12px] text-s-ink/40">{t("pricing_discount")}</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-white border border-s-ink/5" /><span className="text-[12px] text-s-ink/40">{t("pricing_base")}</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-coral-subtle" /><span className="text-[12px] text-s-ink/40">{t("pricing_premium")}</span></div>
           </div>
         </div>
       </div>
@@ -187,7 +187,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
             <input type="range" min="0.5" max="2.0" step="0.1" value={newRule.modifier ?? 1.2}
               onChange={(e) => setNewRule({ ...newRule, modifier: parseFloat(e.target.value) })}
               className="w-full accent-s-coral" />
-            <div className="flex justify-between text-[9px] text-s-ink/30">
+            <div className="flex justify-between text-[12px] text-s-ink/30">
               <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           </p>
           <div className="flex gap-2">
             <button onClick={addRule} disabled={saving}
-              className="flex items-center gap-1 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="flex items-center gap-1 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150">
               <Save size={12} />
               {saving ? t("saving") : t("save")}
             </button>
@@ -215,7 +215,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
               <p className="text-xs font-medium text-s-ink">
                 {getRuleTypeLabel(rule.rule_type)}
               </p>
-              <p className="text-[10px] text-s-ink/40">
+              <p className="text-[12px] text-s-ink/40">
                 {rule.day_of_week != null ? DAYS[rule.day_of_week] : t("pricing_all_days")} {rule.start_time}–{rule.end_time} → {rule.modifier.toFixed(1)}x
               </p>
             </div>

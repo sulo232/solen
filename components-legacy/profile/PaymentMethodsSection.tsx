@@ -126,7 +126,7 @@ export function PaymentMethodsSection() {
   return (
     <div className="pt-4 border-t border-s-border space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30">
+        <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/30">
           {t("title")}
         </p>
         <button
@@ -180,7 +180,7 @@ export function PaymentMethodsSection() {
               <p className="text-sm font-heading text-s-ink">{label}</p>
               <p className="text-xs text-s-ink/40 mt-0.5">{sub}</p>
             </div>
-            <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-star">
+            <span className="px-2 py-0.5 rounded-[6px] text-[12px] font-heading uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-star">
               {t("comingSoon")}
             </span>
           </div>

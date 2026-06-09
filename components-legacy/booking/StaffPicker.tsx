@@ -79,7 +79,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
               </span>
             )}
             {s.languages && s.languages.length > 0 && (
-              <span className="mt-0.5 max-w-[88px] truncate text-center text-[11px] leading-tight tracking-wide text-s-ink-3">
+              <span className="mt-0.5 max-w-[88px] truncate text-center text-[12px] leading-tight tracking-wide text-s-ink-3">
                 {s.languages.map((l) => l.toUpperCase()).join(" / ")}
               </span>
             )}

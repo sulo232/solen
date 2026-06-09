@@ -99,7 +99,7 @@ const CancelModal = memo(function CancelModal({
         <p className="text-xs text-s-ink/40 mb-4">{t("cancelFreeHint")}</p>
 
         <div className="mb-5">
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("reasonOptional")}</label>
+          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("reasonOptional")}</label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
@@ -112,14 +112,14 @@ const CancelModal = memo(function CancelModal({
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-border text-[11px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-border text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -176,7 +176,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
   return (
     <div className="rounded-[12px] border border-s-border bg-white p-5 space-y-4">
       {/* Eyebrow header */}
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35">
+      <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/35">
         Freunde einladen
       </p>
 
@@ -217,21 +217,21 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       <div className="grid grid-cols-3 gap-2">
         <button
           onClick={shareWhatsApp}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[12px] font-heading uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#25D366" }}
         >
           <Share2 size={12} /> WhatsApp
         </button>
         <button
           onClick={shareSMS}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[12px] font-heading uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#0A84FF" }}
         >
           <MessageCircle size={12} /> SMS
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.04em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-border text-[12px] font-heading uppercase tracking-[.04em] text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -242,14 +242,14 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         <div className="flex items-center gap-2">
           <Trophy size={13} className="text-s-star" />
           <div>
-            <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">
+            <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/35">
               Eingeladen
             </p>
             <p className="text-xs font-heading text-s-ink">{stats.friends_invited}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">Verdient</p>
+          <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/35">Verdient</p>
           <p className="font-heading text-sm text-s-accent">
             {formatCurrency(stats.total_earned / 100, locale)}
           </p>
@@ -304,7 +304,7 @@ const BookingCard = memo(function BookingCard({
       <div className="flex justify-between items-start gap-4">
         <div>
           <p className="font-heading text-sm text-s-ink">{b.salon_name}</p>
-          <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{b.service_name}</p>
+          <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{b.service_name}</p>
           <p className="text-xs font-body text-s-ink/40 mt-1">
             {new Date(b.starts_at).toLocaleDateString(localeFmt, {
               weekday: "short", day: "numeric", month: "short",
@@ -315,7 +315,7 @@ const BookingCard = memo(function BookingCard({
         {(() => {
           const badge = STATUS_BADGE[b.status];
           return (
-            <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] shrink-0"
+            <span className="text-[12px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px] shrink-0"
               style={{ background: badge?.bg, color: badge?.color }}>
               {badge?.label ?? b.status}
             </span>
@@ -328,7 +328,7 @@ const BookingCard = memo(function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:text-s-accent hover:border-s-accent/40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:text-s-accent hover:border-s-accent/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -338,7 +338,7 @@ const BookingCard = memo(function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[12px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
             >
               <X size={12} />
               {t("cancelAction")}
@@ -348,7 +348,7 @@ const BookingCard = memo(function BookingCard({
           {b.status === "completed" && (
             <Link
               href={`/${locale}/bookings/${b.id}/report`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[12px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-bg-sunken transition-colors"
             >
               <AlertTriangle size={12} />
               {t("reportProblem")}
@@ -359,14 +359,14 @@ const BookingCard = memo(function BookingCard({
             <div className="relative group inline-block">
               <button
                 disabled
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/20 cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-border text-[12px] font-heading uppercase tracking-[.06em] text-s-ink/20 cursor-not-allowed"
               >
                 <X size={12} />
                 {t("cancelAction")}
               </button>
               <div className="absolute bottom-full left-0 mb-2 w-48 rounded-[8px] px-3 py-2 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
                 style={{ background: "rgba(26,18,9,.92)" }}>
-                <p className="text-[10px] font-heading text-white/80">{t("cancelTooLate")}</p>
+                <p className="text-[12px] font-heading text-white/80">{t("cancelTooLate")}</p>
               </div>
             </div>
           )}
@@ -498,7 +498,7 @@ const SettingsSection = memo(function SettingsSection({
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium text-s-ink">{t("notifDeals")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[12px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
             <p className="text-xs text-s-ink/40 mt-0.5">{t("notifDealsDesc")}</p>
           </div>
@@ -511,7 +511,7 @@ const SettingsSection = memo(function SettingsSection({
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium text-s-ink">{t("notifNewSalons")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[9px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink-2 text-[12px] font-heading uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
             <p className="text-xs text-s-ink/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
           </div>
@@ -532,7 +532,7 @@ const SettingsSection = memo(function SettingsSection({
               type="button"
               onClick={() => setLang(l)}
               className={[
-                "px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
+                "px-4 py-2 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
                   ? "bg-s-ink text-white border-s-accent"
                   : "border-s-border text-s-ink-2 hover:border-s-accent hover:text-s-accent",
@@ -584,7 +584,7 @@ const SettingsSection = memo(function SettingsSection({
                 key={option}
                 type="button"
                 onClick={() => setStylistGender(option)}
-                className={`flex-1 px-4 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
+                className={`flex-1 px-4 py-2 rounded-pill border text-[12px] font-heading uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
                   stylistGender === option
                     ? "border-s-accent bg-s-ink text-white"
                     : "border-s-border text-s-ink-2 hover:border-s-accent hover:text-s-accent"
@@ -637,7 +637,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-elevation-2"
+          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-elevation-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
@@ -647,13 +647,13 @@ const SettingsSection = memo(function SettingsSection({
 
       {/* Danger zone: Delete account */}
       <div className="pt-6 border-t border-s-error/20">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-error mb-3">
+        <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-error mb-3">
           {t("dangerZone")}
         </p>
         <button
           type="button"
           onClick={onDeleteClick}
-          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-error-bg border border-s-error/20 text-s-error text-[11px] font-heading uppercase tracking-[.06em] hover:bg-red-100:bg-red-950/40 transition-[background-color,transform] duration-150"
+          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-error-bg border border-s-error/20 text-s-error text-[12px] font-heading uppercase tracking-[.06em] hover:bg-red-100:bg-red-950/40 transition-[background-color,transform] duration-150"
         >
           {t("deleteAccount")}
         </button>
@@ -669,7 +669,7 @@ const SettingsSection = memo(function SettingsSection({
 const ProfileSectionLabel = ({ children, icon: Icon }: { children: React.ReactNode; icon?: React.ElementType }) => (
   <div className="flex items-center gap-2 mb-4">
     {Icon && <Icon size={13} className="text-s-ink/35" />}
-    <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35">{children}</p>
+    <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/35">{children}</p>
   </div>
 );
 
@@ -1003,7 +1003,7 @@ export default function ProfilePage() {
 
         {/* Settings expanded section — kept inline pending Phase 7 extraction to /profile/settings */}
         <section id="settings" className="mt-8 space-y-6">
-          <h3 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 px-1">
+          <h3 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 px-1">
             Einstellungen
           </h3>
 
@@ -1014,7 +1014,7 @@ export default function ProfilePage() {
 
           {/* Email & Password + Logout */}
           <div className="pt-4 border-t border-s-border space-y-3">
-            <p className="text-[9px] font-body font-bold uppercase tracking-[.18em] text-s-ink/40">Sicherheit</p>
+            <p className="text-[12px] font-body font-bold uppercase tracking-[.18em] text-s-ink/40">Sicherheit</p>
 
             <button
               type="button"

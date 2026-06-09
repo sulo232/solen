@@ -101,7 +101,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-star">
+        <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
           {t("consultation_history")}
         </p>
         <button
@@ -117,40 +117,40 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
         <div className="rounded-[12px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("hair_condition")}</label>
+              <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("hair_condition")}</label>
               <input value={hairCondition} onChange={(e) => setHairCondition(e.target.value)} className={inputClass} aria-label={t("hair_condition")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("scalp_condition")}</label>
+              <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("scalp_condition")}</label>
               <input value={scalpCondition} onChange={(e) => setScalpCondition(e.target.value)} className={inputClass} aria-label={t("scalp_condition")} />
             </div>
           </div>
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("current_dislikes")}</label>
+            <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("current_dislikes")}</label>
             <input value={currentDislikes} onChange={(e) => setCurrentDislikes(e.target.value)} className={inputClass} aria-label={t("current_dislikes")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("desired_outcome")}</label>
+            <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("desired_outcome")}</label>
             <input value={desiredOutcome} onChange={(e) => setDesiredOutcome(e.target.value)} className={inputClass} aria-label={t("desired_outcome")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("allergies")}</label>
+            <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("allergies")}</label>
             <input value={allergies} onChange={(e) => setAllergies(e.target.value)} className={inputClass} aria-label={t("allergies")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("notes")}</label>
+            <label className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("notes")}</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={`${inputClass} resize-none`} aria-label={t("notes")} />
           </div>
 
           {saveError && (
-            <p className="text-[11px] text-s-error" role="alert">{t("save_error")}</p>
+            <p className="text-[12px] text-s-error" role="alert">{t("save_error")}</p>
           )}
           <div className="flex gap-2">
             <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-border text-xs text-s-ink-2 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={saving}
-              className="px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-3 py-1.5 rounded-pill bg-s-coral text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
               aria-label={t("save")}
             >
               {saving && <Spinner size="sm" invert />} {t("save")}
@@ -168,44 +168,44 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
           {notesList.map((n) => (
             <div key={n.id} className="py-3 border-b border-s-ink/[0.04] last:border-0">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] data-text text-s-ink/40">
+                <span className="text-[12px] data-text text-s-ink/40">
                   {new Date(n.created_at).toLocaleDateString("de-CH")}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {n.hair_condition && (
                   <div>
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("hair_condition")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("hair_condition")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.hair_condition}</p>
                   </div>
                 )}
                 {n.scalp_condition && (
                   <div>
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("scalp_condition")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("scalp_condition")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.scalp_condition}</p>
                   </div>
                 )}
                 {n.desired_outcome && (
                   <div>
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("desired_outcome")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("desired_outcome")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.desired_outcome}</p>
                   </div>
                 )}
                 {n.current_dislikes && (
                   <div>
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("current_dislikes")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("current_dislikes")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.current_dislikes}</p>
                   </div>
                 )}
                 {n.allergies && (
                   <div className="col-span-2">
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-coral/60">{t("allergies")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-coral/60">{t("allergies")}</span>
                     <p className="text-xs text-s-coral/80 mt-0.5">{n.allergies}</p>
                   </div>
                 )}
                 {n.notes && (
                   <div className="col-span-2">
-                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
+                    <span className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
                     <p className="text-xs text-s-ink-2 mt-0.5">{n.notes}</p>
                   </div>
                 )}

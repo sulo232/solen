@@ -46,7 +46,7 @@ export default function BarberOpsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">
+        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">
           Barber
         </p>
         <h1 className="font-heading text-[28px] text-s-ink leading-none">
@@ -104,7 +104,7 @@ export default function BarberOpsPage() {
             <div className="space-y-4">
               {/* Client selector — required to save/load blueprints */}
               <div className="bg-white rounded-[16px] border border-s-border p-4">
-                <p className="text-[10px] font-heading uppercase tracking-[.15em] text-s-ink-3 mb-2">
+                <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-3 mb-2">
                   {t("selectClient")}
                 </p>
                 <ClientSelectorDropdown

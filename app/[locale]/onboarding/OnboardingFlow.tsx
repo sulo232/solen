@@ -150,7 +150,7 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
           <div className="h-[5px] rounded-pill bg-s-bg-sunken overflow-hidden">
             <div className="h-full rounded-pill bg-s-ink transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />
           </div>
-          <p className="text-[11px] text-s-ink-2 mt-1.5">Schritt {i + 1} von {TOTAL}</p>
+          <p className="text-[12px] text-s-ink-2 mt-1.5">Schritt {i + 1} von {TOTAL}</p>
         </div>
         <button type="button" onClick={next} className="text-[13px] font-medium text-s-ink-2 hover:text-s-ink transition-colors">Überspringen</button>
       </div>

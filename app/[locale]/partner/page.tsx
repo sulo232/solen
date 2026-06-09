@@ -44,7 +44,7 @@ export default function PartnerPage() {
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-accent mb-3">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-accent mb-3">
               {t("for_owners")}
             </p>
             <h1 className="font-heading text-[clamp(26px,7vw,30px)] md:text-[46px] font-semibold text-s-ink mb-4 leading-[1.0] tracking-[-0.03em]">
@@ -56,7 +56,7 @@ export default function PartnerPage() {
               {t("hero_subtitle")}
             </p>
             <PartnerSignupForm />
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mt-3">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mt-3">
               {t("hero_subtext")}
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
-          <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+          <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
             {t("section_features")}
           </p>
           <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -107,7 +107,7 @@ export default function PartnerPage() {
           {FEATURES.map((f, i) => (
             <div key={i} className="relative p-5 rounded-[14px] bg-s-bg-sunken border border-s-border hover:shadow-elevation-1 transition-[border-color,box-shadow] duration-200">
               {!f.live && (
-                <span className="absolute top-3 right-3 text-[9px] font-heading uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-ink text-white">
+                <span className="absolute top-3 right-3 text-[12px] font-heading uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-ink text-white">
                   {t("coming_soon")}
                 </span>
               )}
@@ -125,7 +125,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
               {t("section_categories")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -158,7 +158,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-sunken">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
               {t("section_how_it_works")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -193,7 +193,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -213,7 +213,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-accent px-3 py-1.5 rounded-pill bg-s-accent-pale">
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -233,7 +233,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step3_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-success px-3 py-1.5 rounded-pill bg-s-success-bg">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-success px-3 py-1.5 rounded-pill bg-s-success-bg">
                   {t("hiw_step3_time")}
                 </span>
               </div>
@@ -246,7 +246,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
               {t("section_testimonials")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -281,7 +281,7 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
               {t("section_pricing")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -296,7 +296,7 @@ export default function PartnerPage() {
             {/* Left — Pricing Card */}
             <div className="bg-white border border-s-border rounded-[18px] p-8 relative overflow-hidden shadow-elevation-2">
               {/* Badge */}
-              <div className="absolute top-4 right-4 bg-s-ink text-white text-[9px] font-heading uppercase tracking-[.14em] px-3 py-1.5 rounded-pill">
+              <div className="absolute top-4 right-4 bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.14em] px-3 py-1.5 rounded-pill">
                 {t("pricing_badge")}
               </div>
 
@@ -306,8 +306,8 @@ export default function PartnerPage() {
                 <span className="font-heading text-4xl text-s-ink">15%</span>
                 <span className="text-s-ink-2 text-sm">{t("pricing_per_booking")}</span>
               </div>
-              <p className="text-[11px] font-body text-s-ink-2 mb-0.5">{t("pricing_intro_model")}</p>
-              <p className="text-[10px] font-body text-s-warning italic mb-5">{t("pricing_intro_qualifier")}</p>
+              <p className="text-[12px] font-body text-s-ink-2 mb-0.5">{t("pricing_intro_model")}</p>
+              <p className="text-[12px] font-body text-s-warning italic mb-5">{t("pricing_intro_qualifier")}</p>
               <p className="text-xs text-s-ink-2 mb-6">{t("pricing_no_fixed")}</p>
 
               {/* Feature checklist */}
@@ -398,7 +398,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-sunken">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+            <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
               {t("section_faq")}
             </p>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">
@@ -480,7 +480,7 @@ export default function PartnerPage() {
       {/* CTA */}
       <div className="py-20 bg-s-bg-sunken">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-[11px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
+          <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
             {t("section_start")}
           </p>
           <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-3">

@@ -146,7 +146,7 @@ export default function SalonReviews({
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
       <div className="mb-4">
-        <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-star mb-2">
+        <span className="block font-heading text-[12px] uppercase tracking-[.22em] text-s-star mb-2">
           {t("reviews")}
         </span>
         <h2
@@ -276,7 +276,7 @@ export default function SalonReviews({
                             </p>
                           ) : (
                             <>
-                              <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/40 mb-2">
+                              <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/40 mb-2">
                                 {t("flagReasonLabel")}
                               </p>
                               <textarea

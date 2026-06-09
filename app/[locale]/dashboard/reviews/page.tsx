@@ -142,7 +142,7 @@ export default function SalonReviewsPage() {
                       </p>
                       <Stars rating={r.rating} />
                     </div>
-                    <p className="text-[10px] text-s-ink/30">
+                    <p className="text-[12px] text-s-ink/30">
                       {new Date(r.created_at).toLocaleDateString("de-CH", {
                         day: "2-digit", month: "2-digit", year: "numeric",
                       })}
@@ -167,7 +167,7 @@ export default function SalonReviewsPage() {
               {/* Existing salon response */}
               {r.review_replies && r.review_replies.length > 0 && (
                 <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
-                  <p className="text-[10px] font-bold text-s-ink mb-1">{t("yourReply")}</p>
+                  <p className="text-[12px] font-bold text-s-ink mb-1">{t("yourReply")}</p>
                   <p className="text-xs text-s-ink/70">{r.review_replies[0].reply_text}</p>
                 </div>
               )}
@@ -186,7 +186,7 @@ export default function SalonReviewsPage() {
                         className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink resize-none"
                       />
                       <div className="flex gap-2 items-center">
-                        <span className="text-[10px] text-s-ink/30">{responseText.length}/500</span>
+                        <span className="text-[12px] text-s-ink/30">{responseText.length}/500</span>
                         <div className="flex-1" />
                         <button
                           onClick={() => { setRespondingTo(null); setResponseText(""); }}

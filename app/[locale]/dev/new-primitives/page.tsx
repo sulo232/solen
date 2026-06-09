@@ -99,7 +99,7 @@ export default function NewPrimitivesDemo() {
         <div className="mt-4 space-y-6">
           {/* SalonCard skeleton */}
           <div>
-            <p className="mb-2 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               SalonCard skeleton
             </p>
             <div className="flex gap-3">
@@ -116,7 +116,7 @@ export default function NewPrimitivesDemo() {
 
           {/* Avatar + text rows */}
           <div>
-            <p className="mb-2 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               List item skeleton
             </p>
             <div className="space-y-3">
@@ -180,7 +180,7 @@ export default function NewPrimitivesDemo() {
         </p>
         <div className="space-y-3">
           <div>
-            <p className="mb-1.5 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               size=sm, showDot=true (inline meta row)
             </p>
             <div className="flex flex-wrap gap-4">
@@ -189,7 +189,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-1.5 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               size=sm, showDot=false (with bullet separators)
             </p>
             <div className="font-body text-[13px] text-s-ink-2 inline-flex items-center gap-2">
@@ -204,7 +204,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-1.5 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               size=md (sidebar block)
             </p>
             <div className="flex flex-wrap gap-4">
@@ -225,7 +225,7 @@ export default function NewPrimitivesDemo() {
         </p>
         <div className="space-y-5">
           <div>
-            <p className="mb-2 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               variant=outline, size=sm (default — filter rows)
             </p>
             <div className="flex flex-wrap gap-2">
@@ -237,7 +237,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-2 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               variant=outline, size=md (sticky segment)
             </p>
             <div className="flex flex-wrap gap-2">
@@ -249,7 +249,7 @@ export default function NewPrimitivesDemo() {
             </div>
           </div>
           <div>
-            <p className="mb-2 font-body text-[11px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
+            <p className="mb-2 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
               variant=ghost (inside styled chrome)
             </p>
             <div className="flex flex-wrap gap-1 rounded-full bg-s-bg-sunken p-1">
@@ -265,8 +265,8 @@ export default function NewPrimitivesDemo() {
 
       <footer className="border-t border-s-border pt-6">
         <p className="font-body text-[12px] font-normal leading-[1.5] text-s-ink-3">
-          To delete this page: <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[11px]">app/[locale]/dev/new-primitives/page.tsx</code>.
-          The primitives themselves live in <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[11px]">app/[locale]/_components/primitives/</code>.
+          To delete this page: <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[12px]">app/[locale]/dev/new-primitives/page.tsx</code>.
+          The primitives themselves live in <code className="rounded bg-s-bg-sunken px-1.5 py-0.5 text-[12px]">app/[locale]/_components/primitives/</code>.
         </p>
       </footer>
     </div>

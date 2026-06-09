@@ -68,7 +68,7 @@ export default function ForYouSection() {
       {sections.map(({ item, similar }) => (
         <div key={item.id}>
           <div className="mb-4 flex items-center gap-2">
-            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/30">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/30">
               {locale === "de"
                 ? `Weil du „${item.style_name || item.category}" gespeichert hast`
                 : `Because you saved "${item.style_name || item.category}"`}
@@ -95,7 +95,7 @@ export default function ForYouSection() {
                   )}
                 </div>
                 <div className="p-2">
-                  <p className="text-[11px] font-medium text-s-ink truncate">
+                  <p className="text-[12px] font-medium text-s-ink truncate">
                     {sim.style_name || sim.category}
                   </p>
                 </div>

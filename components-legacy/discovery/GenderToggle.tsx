@@ -23,7 +23,7 @@ export default function GenderToggle({ selected, onSelect }: GenderToggleProps) 
           /* V3-D392: sentence-case per §2.5 rule A7 — match the drawer's category pills (was uppercase). */
           /* V3-D394: selected segment = accent (blue) — discovery selected-state sweep. */
           className={[
-            "px-3 py-2 rounded-pill text-[11px] font-heading font-medium transition-[background-color,color] duration-150",
+            "px-3 py-2 rounded-pill text-[12px] font-heading font-medium transition-[background-color,color] duration-150",
             selected === key
               ? "bg-s-ink text-white shadow-warm-sm"
               : "text-s-ink/40 hover:text-s-ink-2",

@@ -84,7 +84,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
           <MapPin size={16} className="text-s-ink-2" />
-          <span className="font-body text-[11px] font-bold uppercase tracking-[0.16em] text-s-ink-2">
+          <span className="font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2">
             {cityName}
           </span>
         </div>

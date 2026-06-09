@@ -287,25 +287,25 @@ export default function AdminCasesPage() {
                           <p className="text-[12px] text-s-ink-2 mt-0.5">{fmtDate(c.bookings?.starts_at)} {ref}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 shrink-0">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.05em] rounded-full px-2.5 py-1 bg-s-bg-sunken text-s-ink-2">{isUpcharge ? t("dirUpcharge") : t("dirRefund")}</span>
+                          <span className="text-[12px] font-bold uppercase tracking-[0.05em] rounded-full px-2.5 py-1 bg-s-bg-sunken text-s-ink-2">{isUpcharge ? t("dirUpcharge") : t("dirRefund")}</span>
                           <DashStatusPill tone={st.tone} pulse={st.pulse}>{t(`status.${c.status}`)}</DashStatusPill>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-3.5">
                         <div className="rounded-xl bg-s-bg-sunken px-3.5 py-2.5">
-                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("paid")}</p>
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{t("paid")}</p>
                           <p className="font-heading text-[14px] font-medium text-s-ink-2 mt-0.5 tabular-nums">{chf(c.amount_paid)}</p>
                         </div>
                         <div className={`rounded-xl border px-3.5 py-2.5 ${caseChipClasses(c.status).wrap}`}>
-                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{isUpcharge ? t("disputedCharge") : t("refundRequested")}</p>
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">{isUpcharge ? t("disputedCharge") : t("refundRequested")}</p>
                           <p className={`font-heading text-[20px] font-semibold mt-0.5 tabular-nums tracking-[-0.015em] ${caseChipClasses(c.status).amount}`}>{chf(c.requested_amount)}</p>
                         </div>
                       </div>
 
                       {c.description && (
                         <div className="mb-3">
-                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1">{t("customerStatement")}</p>
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1">{t("customerStatement")}</p>
                           <p className="text-[14px] text-s-ink/70 leading-snug">&ldquo;{c.description}&rdquo;</p>
                         </div>
                       )}
@@ -330,7 +330,7 @@ export default function AdminCasesPage() {
                                       <span className={"absolute inset-0 rounded-full border-2 " + (pulse ? "bg-s-accent border-s-accent" : "bg-white border-[#BBB8B5]")} />
                                     </span>
                                     <p className="text-[13px] font-medium text-s-ink">{ev.to_status ? t(`status.${ev.to_status}`) : ev.action}</p>
-                                    <p className="text-[11px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" ")}</p>
+                                    <p className="text-[12px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" ")}</p>
                                   </div>
                                 );
                               })}

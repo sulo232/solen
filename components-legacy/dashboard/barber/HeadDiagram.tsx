@@ -104,7 +104,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
       {/* Guard size dropdown for active zone */}
       {activeZone && (
         <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] bg-white p-2 shadow-elevation-2">
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-1">
+          <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-1">
             {t("guard_size")}
           </p>
           <div className="grid grid-cols-3 gap-1">
@@ -115,7 +115,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
                   onZoneGuardChange(activeZone, opt.value);
                   setActiveZone(null);
                 }}
-                className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
+                className={`px-2 py-1 text-[12px] rounded-[8px] transition-colors duration-150 ${
                   zoneGuards[activeZone] === opt.value
                     ? "bg-s-coral text-white"
                     : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken"

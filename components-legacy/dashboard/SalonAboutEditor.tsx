@@ -77,7 +77,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onClick={handleSave}
           disabled={isSaving}
           aria-label={t("save_button")}
-          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading text-[12px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {t("save_button")}
@@ -125,7 +125,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           placeholder={t("placeholder")}
           className="w-full h-32 p-4 rounded-input border border-s-border bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30"
         />
-        <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30">
+        <div className="absolute bottom-3 right-3 text-[12px] font-medium text-s-ink/30">
           {texts[activeLang]?.length || 0} / {maxLength}
         </div>
       </div>

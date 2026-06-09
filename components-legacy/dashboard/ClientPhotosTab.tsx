@@ -105,22 +105,22 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
           <p className="text-xs font-medium text-s-ink-2 mb-2">{t("beforeAfter")}</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">{t("before")}</p>
+              <p className="text-[12px] text-s-ink/30 uppercase tracking-wider">{t("before")}</p>
               {beforePhotos.map((p) => (
                 <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
                   <Image src={p.photo_url} alt={t("before")} fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
-                  <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
+                  <span className="absolute bottom-1 left-1 text-[12px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
                 </div>
               ))}
             </div>
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">{t("after")}</p>
+              <p className="text-[12px] text-s-ink/30 uppercase tracking-wider">{t("after")}</p>
               {afterPhotos.map((p) => (
                 <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
                   <Image src={p.photo_url} alt={t("after")} fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
-                  <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
+                  <span className="absolute bottom-1 left-1 text-[12px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
                 </div>
@@ -138,7 +138,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
             {progressPhotos.map((p) => (
               <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5">
                 <Image src={p.photo_url} alt={t("progress")} fill sizes="(max-width: 768px) 33vw, 150px" className="object-cover" />
-                <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
+                <span className="absolute bottom-1 left-1 text-[12px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                   {new Date(p.created_at).toLocaleDateString("de-CH")}
                 </span>
               </div>

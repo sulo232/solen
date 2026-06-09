@@ -223,7 +223,7 @@ export default function AllUsersPage() {
                     {u.email && (
                       <p className="text-xs text-s-ink/40 truncate">{u.email}</p>
                     )}
-                    <p className="text-[10px] text-s-ink/30 mt-0.5">
+                    <p className="text-[12px] text-s-ink/30 mt-0.5">
                       {t("registeredOn", {
                         date: new Date(u.created_at).toLocaleDateString("de-CH", {
                           day: "2-digit",
@@ -238,7 +238,7 @@ export default function AllUsersPage() {
                 {/* Bottom actions */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-border gap-2">
                   {/* Role pill */}
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${cls}`}>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-bold ${cls}`}>
                     <RoleIcon size={10} />
                     {roleLabel(u.role)}
                   </span>

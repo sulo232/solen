@@ -72,12 +72,12 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
             <p className="text-sm font-heading text-s-ink">
               {t("forecastTitle")}
             </p>
-            <p className="text-[10px] text-s-ink/35">
+            <p className="text-[12px] text-s-ink/35">
               {t("forecastSubtitle")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-[9px] text-s-ink/30" title={t("forecastDisclaimer")}>
+        <div className="flex items-center gap-1 text-[12px] text-s-ink/30" title={t("forecastDisclaimer")}>
           <Info size={11} />
           {t("forecastEstimated")}
         </div>

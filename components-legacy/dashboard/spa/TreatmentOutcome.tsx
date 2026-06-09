@@ -96,7 +96,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
   return (
     <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-blue">
+        <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-blue">
           {t("outcomeTitle")}
         </p>
         <button
@@ -111,33 +111,33 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
       {showForm && (
         <div className="space-y-3 mb-4 p-3 rounded-[8px] border border-s-blue/20 bg-s-blue/[0.03]">
           <div>
-            <p className="text-[10px] font-heading text-s-ink/40 mb-1">{t("outcomeSatisfaction")}</p>
+            <p className="text-[12px] font-heading text-s-ink/40 mb-1">{t("outcomeSatisfaction")}</p>
             <StarRating value={form.satisfaction_rating} onChange={(v) => setForm((p) => ({ ...p, satisfaction_rating: v }))} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] text-s-ink/40 mb-1 block">{t("outcomeSkinBefore")}</label>
+              <label className="text-[12px] text-s-ink/40 mb-1 block">{t("outcomeSkinBefore")}</label>
               <textarea rows={2} value={form.skin_before} onChange={(e) => setForm((p) => ({ ...p, skin_before: e.target.value }))}
                 className={`${inputCls} resize-none`} aria-label={t("outcomeSkinBefore")} />
             </div>
             <div>
-              <label className="text-[10px] text-s-ink/40 mb-1 block">{t("outcomeSkinAfter")}</label>
+              <label className="text-[12px] text-s-ink/40 mb-1 block">{t("outcomeSkinAfter")}</label>
               <textarea rows={2} value={form.skin_after} onChange={(e) => setForm((p) => ({ ...p, skin_after: e.target.value }))}
                 className={`${inputCls} resize-none`} aria-label={t("outcomeSkinAfter")} />
             </div>
           </div>
           <div>
-            <label className="text-[10px] text-s-ink/40 mb-1 block">{t("outcomeProducts")}</label>
+            <label className="text-[12px] text-s-ink/40 mb-1 block">{t("outcomeProducts")}</label>
             <input value={form.products_used} onChange={(e) => setForm((p) => ({ ...p, products_used: e.target.value }))}
               placeholder={t("outcomeProductsPlaceholder")} className={inputCls} aria-label={t("outcomeProducts")} />
           </div>
           <div>
-            <label className="text-[10px] text-s-ink/40 mb-1 block">{t("outcomeNotes")}</label>
+            <label className="text-[12px] text-s-ink/40 mb-1 block">{t("outcomeNotes")}</label>
             <textarea rows={2} value={form.follow_up_notes} onChange={(e) => setForm((p) => ({ ...p, follow_up_notes: e.target.value }))}
               className={`${inputCls} resize-none`} aria-label={t("outcomeNotes")} />
           </div>
           <div>
-            <label className="text-[10px] text-s-ink/40 mb-1 block">{t("outcomeNextVisit")}</label>
+            <label className="text-[12px] text-s-ink/40 mb-1 block">{t("outcomeNextVisit")}</label>
             <input type="date" value={form.next_visit_date} onChange={(e) => setForm((p) => ({ ...p, next_visit_date: e.target.value }))}
               className={inputCls} aria-label={t("outcomeNextVisit")} />
           </div>
@@ -161,13 +161,13 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
                     <Star key={s} size={11} className={s <= o.satisfaction_rating ? "text-s-star" : "text-s-ink/15"} fill={s <= o.satisfaction_rating ? "currentColor" : "none"} />
                   ))}
                 </div>
-                <span className="text-[10px] text-s-ink/35 data-text">
+                <span className="text-[12px] text-s-ink/35 data-text">
                   {new Date(o.created_at).toLocaleDateString("de-CH")}
                 </span>
               </div>
-              {o.follow_up_notes && <p className="text-[11px] text-s-ink-2 line-clamp-2">{o.follow_up_notes}</p>}
+              {o.follow_up_notes && <p className="text-[12px] text-s-ink-2 line-clamp-2">{o.follow_up_notes}</p>}
               {o.next_visit_date && (
-                <p className="text-[10px] text-s-blue mt-0.5">{t("outcomeNextVisit")}: {o.next_visit_date}</p>
+                <p className="text-[12px] text-s-blue mt-0.5">{t("outcomeNextVisit")}: {o.next_visit_date}</p>
               )}
             </div>
           ))}

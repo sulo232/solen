@@ -67,7 +67,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           <p className="text-sm font-heading text-s-ink">
             {t("plTitle")}
           </p>
-          <p className="text-[10px] text-s-ink-2">
+          <p className="text-[12px] text-s-ink-2">
             {t("plSubtitle")}
           </p>
         </div>
@@ -87,24 +87,24 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           {/* KPI row */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="bg-s-bg-sunken rounded-[8px] p-3">
-              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-0.5">
+              <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-0.5">
                 {t("appointments")}
               </p>
               <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.appointment_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink-2">
+              <p className="text-[12px] text-s-ink-2">
                 {stats.appointment_count} × {formatCHF(stats.appointment_avg)} ⌀ {apptShare}%
               </p>
             </div>
             <div className="bg-s-warning-bg rounded-[8px] p-3">
-              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-warning-text mb-0.5">
+              <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-warning-text mb-0.5">
                 {t("walkIns")}
               </p>
               <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.walkin_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink-2">
+              <p className="text-[12px] text-s-ink-2">
                 {stats.walkin_count} × {formatCHF(stats.walkin_avg)} ⌀ {walkinShare}%
               </p>
             </div>

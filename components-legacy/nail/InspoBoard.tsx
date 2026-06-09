@@ -119,7 +119,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 scrollbar-hide">
           <button
             onClick={() => setActiveBoard(null)}
-            className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
+            className={`shrink-0 text-[12px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
               activeBoard === null
                 ? "bg-s-ink text-white border-s-accent"
                 : "border-s-border text-s-ink-2 hover:brightness-[1.06]"
@@ -131,7 +131,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
             <button
               key={b.id}
               onClick={() => setActiveBoard(b.id)}
-              className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
+              className={`shrink-0 text-[12px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
                 activeBoard === b.id
                   ? "bg-s-ink text-white border-s-accent"
                   : "border-s-border text-s-ink-2 hover:brightness-[1.06]"
@@ -159,7 +159,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-border bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-[11px] font-heading uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
+            <button onClick={handleCreateBoard} className="text-[12px] font-heading uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} aria-label={t("close")} className="text-xs text-s-ink/40">

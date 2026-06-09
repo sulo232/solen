@@ -102,7 +102,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-accent" : "text-s-ink"].join(" ")}>
                 {t(opt.labelKey)}
               </p>
-              <p className="text-[11px] text-s-ink/40 mt-0.5">{t(opt.descKey)}</p>
+              <p className="text-[12px] text-s-ink/40 mt-0.5">{t(opt.descKey)}</p>
             </div>
           </button>
         ))}
@@ -148,7 +148,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Loader2 size={14} className="animate-spin" />}
         {t("setup.saveAndContinue")}

@@ -121,24 +121,24 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       {/* Reminder metrics (last 30 days) */}
       {metrics && (
         <div className="mt-2 pt-4 border-t border-s-ink/[0.05]">
-          <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/35 mb-3">
+          <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink/35 mb-3">
             {t("infill_metrics_title")}
           </p>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <Send size={12} className="text-s-blue" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.sent}</p>
-              <p className="text-[9px] text-s-ink/40 text-center">{t("infill_sent")}</p>
+              <p className="text-[12px] text-s-ink/40 text-center">{t("infill_sent")}</p>
             </div>
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <CalendarCheck size={12} className="text-s-sage" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.booked}</p>
-              <p className="text-[9px] text-s-ink/40 text-center">{t("infill_booked")}</p>
+              <p className="text-[12px] text-s-ink/40 text-center">{t("infill_booked")}</p>
             </div>
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-bg-sunken">
               <Percent size={12} className="text-s-coral" />
               <p className="text-base font-heading data-text text-s-ink">{metrics.conversion_rate}%</p>
-              <p className="text-[9px] text-s-ink/40 text-center">{t("infill_conversion")}</p>
+              <p className="text-[12px] text-s-ink/40 text-center">{t("infill_conversion")}</p>
             </div>
           </div>
         </div>

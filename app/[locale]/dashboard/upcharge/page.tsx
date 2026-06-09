@@ -163,7 +163,7 @@ export default function SalonUpchargePage() {
                 >
                   <span className="min-w-0">
                     <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">{bookingName(b)}</span>
-                    <span className="block text-[11.5px] text-s-ink-2 truncate mt-0.5">
+                    <span className="block text-[12px] text-s-ink-2 truncate mt-0.5">
                       {[svcName(b), fmtDate(b.starts_at)].filter(Boolean).join(" ")}
                     </span>
                   </span>
@@ -196,7 +196,7 @@ export default function SalonUpchargePage() {
             {/* create form (elevated primary card) */}
             <div className="rounded-2xl border border-[#dcd9d6] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,.04),0_10px_28px_rgba(10,10,10,.07)] mb-7">
               {/* booking picker */}
-              <label className="block text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
+              <label className="block text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
                 {t("selectBooking")}
               </label>
               {bookings.length === 0 ? (
@@ -218,7 +218,7 @@ export default function SalonUpchargePage() {
                 <>
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
+                      <label className="block text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
                         {t("original")}
                       </label>
                       <p className="h-11 flex items-center font-heading text-[15px] font-medium text-s-ink-2 tabular-nums">
@@ -226,7 +226,7 @@ export default function SalonUpchargePage() {
                       </p>
                     </div>
                     <div>
-                      <label className="block text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
+                      <label className="block text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
                         {t("newTotal")}
                       </label>
                       <div className="relative">
@@ -243,18 +243,18 @@ export default function SalonUpchargePage() {
 
                   {/* computed difference (focal amber chip — s-surcharge per LOCKFILE §1) */}
                   <div className="flex items-baseline justify-between gap-3 px-3.5 py-3 rounded-xl bg-s-surcharge-bg mb-1.5">
-                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-surcharge">
+                    <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-surcharge">
                       {t("difference")}
                     </span>
                     <span className="font-heading text-[22px] font-bold text-s-surcharge tabular-nums tracking-[-0.015em]">
                       {difference > 0 ? `+ ${chf(difference)}` : chf(0)}
                     </span>
                   </div>
-                  <p className={"text-[11px] mb-4 " + (difference > cap ? "text-s-error font-medium" : "text-s-ink/40")}>
+                  <p className={"text-[12px] mb-4 " + (difference > cap ? "text-s-error font-medium" : "text-s-ink/40")}>
                     {difference > cap ? t("capExceeded", { max: chf(cap) }) : t("capNote", { max: chf(cap) })}
                   </p>
 
-                  <label className="block text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
+                  <label className="block text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink/40 mb-1.5">
                     {t("reasonLabel")}
                   </label>
                   <textarea

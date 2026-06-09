@@ -18,7 +18,7 @@ export function ExportButton({ onClick, loading = false, label, className = "" }
       onClick={onClick}
       disabled={loading}
       aria-label={label ?? t("exportCSV")}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill border border-s-border text-[10px] font-heading text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent transition-colors disabled:opacity-40 ${className}`}
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill border border-s-border text-[12px] font-heading text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent transition-colors disabled:opacity-40 ${className}`}
     >
       {loading ? (
         <Loader2 size={11} className="animate-spin" />

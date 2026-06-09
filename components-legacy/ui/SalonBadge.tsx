@@ -34,7 +34,7 @@ const BADGE_SHADOW = "0 2px 4px rgba(26,18,9,0.15)";
 const BADGE_SHADOW_LIGHT = "0 2px 4px rgba(26,18,9,0.10)";
 
 const BASE_CLASSES =
-  "inline-flex items-center gap-1 font-heading text-[11px] uppercase tracking-[.04em] px-2.5 py-1 rounded-full leading-[1]";
+  "inline-flex items-center gap-1 font-heading text-[12px] uppercase tracking-[.04em] px-2.5 py-1 rounded-full leading-[1]";
 
 export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProps) {
   const now = Date.now();

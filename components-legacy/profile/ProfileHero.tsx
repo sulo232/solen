@@ -65,7 +65,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
         </h1>
 
         {/* Badge */}
-        <div className="px-3 py-1 rounded-pill text-[11px] font-body" style={{ background: '#F5EEE0', color: '#7A5A2A' }}>
+        <div className="px-3 py-1 rounded-pill text-[12px] font-body" style={{ background: '#F5EEE0', color: '#7A5A2A' }}>
           {t('exclusiveBadge')}
         </div>
       </div>
