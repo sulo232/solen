@@ -143,7 +143,7 @@ export default function NailBookingSteps({
           <div>
             <p className="text-sm font-medium text-s-ink">{t("nail_repeat_last")}</p>
             <p className="text-xs text-s-ink-2">
-              {[repeatLast.style, repeatLast.shape, repeatLast.material].filter(Boolean).join(" · ")}
+              {[repeatLast.style, repeatLast.shape, repeatLast.material].filter(Boolean).join(" | ")}
             </p>
           </div>
         </button>

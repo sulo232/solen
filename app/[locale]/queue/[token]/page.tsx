@@ -261,7 +261,7 @@ export default function QueueTrackingPage() {
           recipientPhoto={data.recipientPhoto}
           recipientRating={data.recipientRating}
           recipientReviewCount={data.recipientReviewCount}
-          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" · ") || undefined}
+          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" | ") || undefined}
           locale={locale}
           createIntent={(amount) =>
             fetch("/api/walkin/tip", {

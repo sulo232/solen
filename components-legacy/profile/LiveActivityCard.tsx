@@ -223,7 +223,7 @@ function EmptyContent({
         >
           {state.headline}
         </h3>
-        <p className="mt-1 font-body text-[12px] text-s-ink-2">Wo · Was · Wann</p>
+        <p className="mt-1 font-body text-[12px] text-s-ink-2">Wo | Was | Wann</p>
       </div>
       <ArrowRight size={20} className="shrink-0 text-s-accent" aria-hidden />
     </div>

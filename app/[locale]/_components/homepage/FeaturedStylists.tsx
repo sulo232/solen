@@ -271,7 +271,7 @@ export default function FeaturedStylists() {
                         metadata stops out-shouting the anchor. */}
                     <div className="truncate font-body text-[12px] font-normal leading-[1.35] text-s-ink-2">
                       <span>{s.distance}</span>
-                      <span> · {CATEGORY_LABELS[s.specialty]} · {s.city}</span>
+                      <span> | {CATEGORY_LABELS[s.specialty]} | {s.city}</span>
                     </div>
                     {/* Row 3 — availability pill (open = ink text, full = muted) */}
                     <span

@@ -149,7 +149,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
   // catLabel/distance stay for /search (both null on a category route).
   const metaBits = [catLabel, city, formatDistance(distanceMeters)]
     .filter(Boolean)
-    .join(" · ");
+    .join(" | ");
   // V3-D374: review count INLINE with the rating ("4.8 (98)") — keeps the social
   // proof but drops the separate reviews line (the card had 5 rows; now 3).
   // Rendered via the <RatingStars> primitive at each site below.
@@ -298,7 +298,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
                 {metaBits}
                 {priceFromCHF != null && (
                   <>
-                    {metaBits ? " · " : ""}
+                    {metaBits ? " | " : ""}
                     <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
                   </>
                 )}

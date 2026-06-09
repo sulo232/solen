@@ -529,7 +529,7 @@ export default function ServicesPage() {
                     {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-[10.5px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
-                      <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} · <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
+                      <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} | <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
                     </div>
                   </div>
                   <button

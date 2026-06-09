@@ -164,7 +164,7 @@ export default function SalonUpchargePage() {
                   <span className="min-w-0">
                     <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">{bookingName(b)}</span>
                     <span className="block text-[11.5px] text-s-ink-2 truncate mt-0.5">
-                      {[svcName(b), fmtDate(b.starts_at)].filter(Boolean).join(" · ")}
+                      {[svcName(b), fmtDate(b.starts_at)].filter(Boolean).join(" | ")}
                     </span>
                   </span>
                   <span className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums shrink-0">{chf(b.paid_amount)}</span>
@@ -208,7 +208,7 @@ export default function SalonUpchargePage() {
                   className="w-full min-h-[44px] mb-4 flex items-center justify-between gap-3 rounded-[12px] border border-s-border bg-white px-3.5 py-3 text-left transition-colors hover:bg-s-bg-sunken"
                 >
                   <span className={"font-heading font-semibold text-[14px] truncate " + (selected ? "text-s-ink" : "text-s-ink-3")}>
-                    {selected ? `${selected.customer_name || selected.guest_name || selected.reference_code || selected.id.slice(0, 8)} · ${svcName(selected)}` : t("selectPlaceholder")}
+                    {selected ? `${selected.customer_name || selected.guest_name || selected.reference_code || selected.id.slice(0, 8)} | ${svcName(selected)}` : t("selectPlaceholder")}
                   </span>
                   <ChevronDown className="w-[18px] h-[18px] text-s-ink-3 shrink-0" />
                 </button>
@@ -291,7 +291,7 @@ export default function SalonUpchargePage() {
                     <div className="min-w-0">
                       <p className="text-[15px] font-semibold text-s-ink font-heading">{c.customer_name || t("unknown")}</p>
                       <p className="text-[12px] text-s-ink-2 mt-0.5">
-                        {c.reference_code || c.booking_id.slice(0, 8)} · {fmtDate(c.created_at)}
+                        {c.reference_code || c.booking_id.slice(0, 8)} | {fmtDate(c.created_at)}
                       </p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0">

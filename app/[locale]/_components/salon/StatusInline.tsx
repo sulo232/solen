@@ -31,7 +31,7 @@ export function StatusInline({
   /** "sm" = 13px, "md" = 15px (default), "lg" = 16px (matches Fresha) */
   size?: "sm" | "md" | "lg";
 }) {
-  const [head, ...rest] = label.split(" · ");
+  const [head, ...rest] = label.split(" | ");
   // V3-D442: no separator dot. The green/red head vs grey tail colour IS the
   // separator (taste rule #2: contrast separates, don't add a dot too).
   const tail = rest.length > 0 ? rest.join(" ") : "";

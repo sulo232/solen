@@ -425,7 +425,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                 <div className={["flex items-center gap-1 mt-0.5", isOwn(msg) ? "justify-end" : ""].join(" ")}>
                   <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-s-ink/30"].join(" ")}>
                     {new Date(msg.created_at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
-                    {msg.id.startsWith("optimistic") && ` · ${t("sending")}`}
+                    {msg.id.startsWith("optimistic") && ` | ${t("sending")}`}
                   </span>
                   {/* Read receipts */}
                   {isOwn(msg) && !msg.id.startsWith("optimistic") && (

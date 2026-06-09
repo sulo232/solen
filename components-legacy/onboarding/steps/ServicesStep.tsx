@@ -109,7 +109,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                 <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-border" : ""].join(" ")}>
                   <div>
                     <p className="text-sm font-medium text-s-ink">{s.name_de}</p>
-                    <p className="text-xs text-s-ink/40 data-text">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
+                    <p className="text-xs text-s-ink/40 data-text">{s.duration_minutes} min | {formatCurrency(Number(s.price), locale)}</p>
                   </div>
                   {s.id && (
                     <button onClick={() => removeService(s.id!)} className="p-1.5 text-s-ink/20 hover:text-s-accent transition-colors">
@@ -185,7 +185,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   <div key={i} className="flex justify-between items-center bg-s-ink/5 border border-s-accent/10 rounded-[12px] px-4 py-3">
                     <div>
                       <p className="text-sm font-medium text-s-ink">{s.name_de}</p>
-                      <p className="text-xs text-s-ink/40">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
+                      <p className="text-xs text-s-ink/40">{s.duration_minutes} min | {formatCurrency(Number(s.price), locale)}</p>
                     </div>
                     <button 
                       onClick={() => addService(s)}

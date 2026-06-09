@@ -228,7 +228,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                         {service.name_de}
                       </p>
                       <p className="text-xs text-s-ink-2">
-                        {service.duration_minutes} min · CHF {service.base_price.toFixed(2)}
+                        {service.duration_minutes} min | CHF {service.base_price.toFixed(2)}
                       </p>
                     </div>
 

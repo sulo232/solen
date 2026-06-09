@@ -284,7 +284,7 @@ export default function AdminCasesPage() {
                         <div className="min-w-0">
                           <p className="text-[13px] font-semibold text-s-ink font-heading">{c.bookings?.salons?.name || t("unknownSalon")}</p>
                           <p className="text-[16px] font-semibold text-s-ink font-heading tracking-[-0.01em] mt-0.5">{c.reporter?.display_name || t("unknown")}</p>
-                          <p className="text-[12px] text-s-ink-2 mt-0.5">{fmtDate(c.bookings?.starts_at)} · {ref}</p>
+                          <p className="text-[12px] text-s-ink-2 mt-0.5">{fmtDate(c.bookings?.starts_at)} | {ref}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 shrink-0">
                           <span className="text-[10px] font-bold uppercase tracking-[0.05em] rounded-full px-2.5 py-1 bg-s-bg-sunken text-s-ink-2">{isUpcharge ? t("dirUpcharge") : t("dirRefund")}</span>
@@ -330,7 +330,7 @@ export default function AdminCasesPage() {
                                       <span className={"absolute inset-0 rounded-full border-2 " + (pulse ? "bg-s-accent border-s-accent" : "bg-white border-[#BBB8B5]")} />
                                     </span>
                                     <p className="text-[13px] font-medium text-s-ink">{ev.to_status ? t(`status.${ev.to_status}`) : ev.action}</p>
-                                    <p className="text-[11px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" · ")}</p>
+                                    <p className="text-[11px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" | ")}</p>
                                   </div>
                                 );
                               })}

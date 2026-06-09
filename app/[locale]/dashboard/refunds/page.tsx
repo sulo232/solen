@@ -198,7 +198,7 @@ export default function SalonRefundsPage() {
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="min-w-0">
                       <p className="text-[16px] font-semibold text-s-ink font-heading tracking-[-0.01em]">{c.customer_name || t("unknown")}</p>
-                      <p className="text-[12px] text-s-ink-2 mt-0.5">{[c.booking?.service_name, fmtDate(c.booking?.starts_at), ref].filter(Boolean).join(" · ")}</p>
+                      <p className="text-[12px] text-s-ink-2 mt-0.5">{[c.booking?.service_name, fmtDate(c.booking?.starts_at), ref].filter(Boolean).join(" | ")}</p>
                     </div>
                     <DashStatusPill tone={st.tone} pulse={st.pulse}>{t(`status.${c.status}`)}</DashStatusPill>
                   </div>

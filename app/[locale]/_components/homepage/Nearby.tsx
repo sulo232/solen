@@ -179,7 +179,7 @@ export default function Nearby({
           <MapPin className="absolute left-[56%] top-[42%] text-s-accent" size={22} strokeWidth={2.5} fill="currentColor" aria-hidden />
           <MapPin className="absolute left-[40%] top-[62%] text-s-ink" size={18} strokeWidth={2.5} fill="currentColor" aria-hidden />
           <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-pill bg-white px-3 py-1.5 text-[13px] font-medium text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
-            <MapPin size={13} className="text-s-accent" aria-hidden /> 14 Salons in der Nähe · Karte öffnen
+            <MapPin size={13} className="text-s-accent" aria-hidden /> 14 Salons in der Nähe | Karte öffnen
           </span>
         </a>
         <ScrollRow ref={scrollRef}>

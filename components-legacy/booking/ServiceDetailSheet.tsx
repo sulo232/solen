@@ -142,7 +142,7 @@ export default function ServiceDetailSheet({
                         {name(o)}
                       </span>
                       <span className="block text-[13px] text-s-ink-2 tabular-nums">
-                        {formatCurrency(o.price, locale)} · {o.duration_minutes}{' '}
+                        {formatCurrency(o.price, locale)} | {o.duration_minutes}{' '}
                         {t('minutes')}
                       </span>
                     </span>
@@ -180,7 +180,7 @@ export default function ServiceDetailSheet({
                       {name(a)}
                     </span>
                     <span className="block text-[13px] text-s-ink-2 tabular-nums">
-                      +{formatCurrency(a.price, locale)} · {a.duration_minutes}{' '}
+                      +{formatCurrency(a.price, locale)} | {a.duration_minutes}{' '}
                       {t('minutes')}
                     </span>
                   </span>

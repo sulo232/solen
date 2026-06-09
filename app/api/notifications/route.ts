@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
       id: `review-${r.id}`,
       type: "review",
       title: "Neue Bewertung",
-      body: `${r.rating} Sterne · Noch keine Antwort`,
+      body: `${r.rating} Sterne | Noch keine Antwort`,
       link: "/dashboard/reviews",
       created_at: r.created_at,
       read: false,

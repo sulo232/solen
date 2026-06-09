@@ -83,7 +83,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
               <div>
                 <p className="text-sm font-mono font-medium text-s-ink">{c.code}</p>
                 <p className="text-xs text-s-ink/40">
-                  {c.recipient_name ?? c.recipient_email ?? "—"} · {new Date(c.created_at).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}
+                  {c.recipient_name ?? c.recipient_email ?? "—"} | {new Date(c.created_at).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}
                 </p>
               </div>
               <div className="text-right">

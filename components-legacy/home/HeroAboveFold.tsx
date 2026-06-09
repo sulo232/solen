@@ -51,7 +51,7 @@ export default function HeroAboveFold() {
           accentLine="DIREKT GEBUCHT."
           subLine={
             <>
-              Coiffeur · Barber · Nails · Spa · Makeup · Waxing.
+              Coiffeur | Barber | Nails | Spa | Makeup | Waxing.
               <br />
               Echte Bewertungen, echte Verfügbarkeit, in unter 30 Sekunden.
             </>

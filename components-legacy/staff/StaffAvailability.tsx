@@ -108,7 +108,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
             {t("Nächster Termin", "Next opening")}
           </div>
           <div className="font-display text-[15px] font-semibold capitalize leading-tight text-s-ink">
-            {nextLabel} <span className="text-s-ink-3">·</span> {t("ab", "from")} {fo.start_time.slice(0, 5)}
+            {nextLabel} <span className="text-s-ink-3">|</span> {t("ab", "from")} {fo.start_time.slice(0, 5)}
           </div>
         </div>
       </div>

@@ -160,7 +160,7 @@ export default function TestimonialCarousel() {
                   </div>
                   {/* Location — 11px ink-3 per ref :309 */}
                   <div className="font-body leading-tight mt-0.5" style={{ fontSize: 11, color: "#9F8A7E" }}>
-                    {review.city || "Basel"} · {getTimeAgo(review.created_at)}
+                    {review.city || "Basel"} | {getTimeAgo(review.created_at)}
                   </div>
                 </div>
               </div>

@@ -49,8 +49,8 @@ export default function WalkinTipPage() {
     ] ?? "dein Coiffeur";
   const recipientName = demo ? "Marco Bianchi" : (info?.recipientName ?? fallback);
   const contextLine = demo
-    ? "Herrenschnitt · Barber Brothers"
-    : [info?.serviceName, info?.salonName].filter(Boolean).join(" · ") || undefined;
+    ? "Herrenschnitt | Barber Brothers"
+    : [info?.serviceName, info?.salonName].filter(Boolean).join(" | ") || undefined;
   const recipientRating = demo ? 4.9 : info?.recipientRating;
   const recipientReviewCount = demo ? 62 : info?.recipientReviewCount;
 

@@ -120,7 +120,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
                     {p.name}
                   </p>
                   <p className="text-[10px] text-s-ink/40">
-                    {p.units} {t("units")} · {fmt(p.revenue)}
+                    {p.units} {t("units")} | {fmt(p.revenue)}
                   </p>
                 </div>
                 <div

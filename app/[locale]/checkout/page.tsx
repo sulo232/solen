@@ -95,7 +95,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       <InteractiveHoverButton
         type="submit"
         disabled={!stripe || loading}
-        text={loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
+        text={loading ? "Verarbeite..." : `Jetzt buchen | ${formatCurrency(intent.deposit_amount, locale)}`}
         className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
 
@@ -423,7 +423,7 @@ export default function CheckoutPage() {
             <div className="flex items-center gap-2.5">
               <Calendar className="w-4 h-4 text-s-accent shrink-0" />
               <p className="text-xs font-heading text-s-ink">
-                {intent.date} · {intent.time} Uhr
+                {intent.date} | {intent.time} Uhr
               </p>
             </div>
             {/* Staff */}
@@ -729,7 +729,7 @@ export default function CheckoutPage() {
         <div className="flex items-center justify-center flex-wrap gap-3 py-6">
           {[
             { icon: Lock,       label: "256-bit SSL" },
-            { icon: CreditCard, label: "Visa · Mastercard · Apple Pay" },
+            { icon: CreditCard, label: "Visa | Mastercard | Apple Pay" },
             { icon: Shield,     label: "Powered by Stripe" },
           ].map(({ icon: Icon, label }) => (
             <span key={label} className="flex items-center gap-1.5 text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/25">

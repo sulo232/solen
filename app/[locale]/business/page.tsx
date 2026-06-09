@@ -234,12 +234,12 @@ export default async function BusinessPage() {
             Schweizer Salons
           </span>
           <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
-          <span>Basel · Zürich · Bern · Lugano</span>
+          <span>Basel | Zürich | Bern | Lugano</span>
           <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
           <span className="inline-flex items-center gap-1.5">
             <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
             <strong className="font-semibold text-s-ink">4.9</strong>
-            <span>· 1&apos;200+ Partner</span>
+            <span>| 1&apos;200+ Partner</span>
           </span>
         </div>
       </section>

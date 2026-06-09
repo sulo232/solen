@@ -410,7 +410,7 @@ export default function VouchersPage() {
               {t("payment.title")}
             </h2>
             <p className="text-sm text-s-ink-2 mb-6">
-              {locale === "en" ? selectedSalon.name_en : selectedSalon.name_de} · {formatCurrency(amount, locale)}
+              {locale === "en" ? selectedSalon.name_en : selectedSalon.name_de} | {formatCurrency(amount, locale)}
             </p>
 
             <div className="bg-white rounded-[12px] border border-s-border p-6">

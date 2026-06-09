@@ -209,7 +209,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
           >
             <Mail size={14} className="text-s-ink-2" aria-hidden />
             {t("emailLabel")}
-            <span className="font-normal text-s-ink-3 text-[12px]">· {t("optional")}</span>
+            <span className="font-normal text-s-ink-3 text-[12px]">| {t("optional")}</span>
           </label>
           <input
             id="guest-email"

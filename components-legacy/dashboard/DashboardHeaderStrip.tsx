@@ -93,7 +93,7 @@ export default function DashboardHeaderStrip() {
             <span className="font-heading text-[12px] uppercase leading-none" style={{ letterSpacing: "0.01em" }}>
               {state.now.client}
             </span>
-            <span className="font-body text-[10px] opacity-90 tabular-nums">·  {state.now.time}</span>
+            <span className="font-body text-[10px] opacity-90 tabular-nums">|  {state.now.time}</span>
           </>
         ) : (
           <span className="font-heading text-[11px] uppercase opacity-90">{t("free")}</span>

@@ -137,7 +137,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
             <div key={f.id} className="bg-white rounded-[16px] border border-s-ink/5 p-3">
               <p className="text-sm font-medium text-s-ink font-mono">{f.mix_formula}</p>
               <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-xs text-s-ink/40">
-                {f.brand && <span>{f.brand}{f.product_line ? ` · ${f.product_line}` : ""}</span>}
+                {f.brand && <span>{f.brand}{f.product_line ? ` | ${f.product_line}` : ""}</span>}
                 {f.developer_volume && <span>{t("developerValue", { volume: f.developer_volume })}</span>}
                 {f.processing_minutes && <span>{t("minutes", { n: f.processing_minutes })}</span>}
               </div>

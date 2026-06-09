@@ -137,7 +137,7 @@ export default function SalonWalkInPanel({
   const hasQueue = ahead > 0;
   const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#16A34A";
   const statusLabel = !isOpen ? l.closedLabel : busy ? l.busyLabel : l.openLabel;
-  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${ahead} ${l.ahead} · ~${wait} ${l.min} ${l.waitW}` : l.emptyBig;
+  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${ahead} ${l.ahead} | ~${wait} ${l.min} ${l.waitW}` : l.emptyBig;
   const subLine = !isOpen ? "" : hasQueue ? l.busySub : l.emptySub;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
@@ -156,7 +156,7 @@ export default function SalonWalkInPanel({
       {/* Explainer — one line + (i) opens the details popup (no long copy, no em-dashes). */}
       <div className="flex items-center justify-between gap-3 rounded-2xl bg-s-bg-sunken px-4 py-3">
         <span className="font-display text-[14.5px] font-semibold tracking-[-.01em] text-s-ink">
-          {l.what} <span className="text-s-ink-3">·</span> <span className="font-medium text-s-ink-2">{l.tagline}</span>
+          {l.what} <span className="text-s-ink-3">|</span> <span className="font-medium text-s-ink-2">{l.tagline}</span>
         </span>
         <button
           type="button"

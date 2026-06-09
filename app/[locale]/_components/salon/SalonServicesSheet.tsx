@@ -335,7 +335,7 @@ export function SalonServicesSheet({
             <div className="font-body text-[12px] text-s-ink-3">
               {selectedIds.size === 0
                 ? "Keine Services ausgewählt"
-                : `${selectedIds.size} Service${selectedIds.size > 1 ? "s" : ""} · ${totalDuration} min`}
+                : `${selectedIds.size} Service${selectedIds.size > 1 ? "s" : ""} | ${totalDuration} min`}
             </div>
             <div className="font-body text-[16px] font-semibold text-s-ink">
               {total === 0 ? "Gratis" : `CHF ${total}`}

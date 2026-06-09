@@ -66,7 +66,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
               {label}
             </button>
             {idx < LOCALE_ENTRIES.length - 1 && (
-              <span aria-hidden="true" className="text-white/20 mx-1.5 select-none text-xs">·</span>
+              <span aria-hidden="true" className="text-white/20 mx-1.5 select-none text-xs">|</span>
             )}
           </span>
         ))}

@@ -167,7 +167,7 @@ export default function SalonRegister() {
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Mitarbeiter</span>
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Woche</span>
                   <span className="flex-1" />
-                  <span className="text-[11px] text-s-ink-3 font-semibold">Di 14. Mai · 2026</span>
+                  <span className="text-[11px] text-s-ink-3 font-semibold">Di 14. Mai | 2026</span>
                 </div>
                 {/* Calendar grid */}
                 <div className="grid gap-1 flex-1" style={{ gridTemplateColumns: "50px repeat(5, 1fr)" }}>
@@ -208,9 +208,9 @@ export default function SalonRegister() {
                   <div className="font-display text-[13px] font-bold text-s-ink mb-1">Salon Maria</div>
                   <div className="flex items-center gap-1 text-[10px] text-s-ink-2">
                     <span style={{ color: "#F3A864" }} className="text-[9px] tracking-[0.06em]">★★★★★</span>
-                    <span>5.0 · 247 Bewertungen</span>
+                    <span>5.0 | 247 Bewertungen</span>
                   </div>
-                  <div className="text-[9px] text-s-ink-3 mt-[2px]">2.0 km · Kleinbasel</div>
+                  <div className="text-[9px] text-s-ink-3 mt-[2px]">2.0 km | Kleinbasel</div>
                   <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-ink text-white text-[9px] font-bold">
                     <Store size={9} aria-hidden />
                     Sofort buchbar

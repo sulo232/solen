@@ -196,8 +196,8 @@ export default function ClientsPage() {
                 {/* meta row */}
                 <div className="text-[12.5px] text-s-ink-2 flex gap-1.5 flex-wrap">
                   <span><b className="font-heading font-semibold text-s-ink">{c.total_bookings}</b> {t("appointments")}</span>
-                  {c.last_visit && <span>· {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString("de-CH") })}</span>}
-                  {c.total_spent != null && <span>· <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
+                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString("de-CH") })}</span>}
+                  {c.total_spent != null && <span>| <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
                 </div>
                 {/* tags row */}
                 {c.tags?.length > 0 && (
@@ -371,7 +371,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                   <div>
                     <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
-                      {new Date(b.starts_at).toLocaleDateString("de-CH")} · {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(b.starts_at).toLocaleDateString("de-CH")} | {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                   <div className="text-right flex flex-col items-end">

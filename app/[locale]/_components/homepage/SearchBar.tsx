@@ -151,7 +151,7 @@ export function SearchBar() {
       month: "short",
     }).format(zeitDate.toDate(getLocalTimeZone()));
     const periodLabel = PERIODS.find((p) => p.value === zeitPeriod)?.label;
-    return periodLabel ? `${dateStr} · ${periodLabel}` : dateStr;
+    return periodLabel ? `${dateStr} | ${periodLabel}` : dateStr;
   }, [zeitDate, zeitPeriod]);
 
   const [isDesktop, setIsDesktop] = React.useState(false);

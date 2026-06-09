@@ -133,7 +133,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                       title={t("confirmDelete")}
                       className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold bg-s-accent-bright/10 text-s-accent-bright tabular-nums transition-colors hover:bg-s-accent-bright/[0.18]"
                     >
-                      {fmtTime(r.start_time)}–{fmtTime(r.end_time)} · −{r.discount_percent}%
+                      {fmtTime(r.start_time)}–{fmtTime(r.end_time)} | −{r.discount_percent}%
                     </button>
                   ))
                 )}

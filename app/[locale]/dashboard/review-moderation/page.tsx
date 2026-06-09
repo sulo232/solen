@@ -183,11 +183,11 @@ export default function ReviewModerationPage() {
                 <span className="text-xs text-s-ink-2">
                   {t("customerLabel")} <strong className="text-s-ink/70">{r.profiles?.display_name ?? t("anonymous")}</strong>
                 </span>
-                <span className="text-xs text-s-ink/30">·</span>
+                <span className="text-xs text-s-ink/30">|</span>
                 <span className="text-xs text-s-ink-2">
                   {t("salonLabel")} <strong className="text-s-ink/70">{r.salons?.name ?? "—"}</strong>
                 </span>
-                <span className="text-xs text-s-ink/30">·</span>
+                <span className="text-xs text-s-ink/30">|</span>
                 <span className="text-xs text-s-ink/30">
                   {new Date(r.created_at).toLocaleDateString("de-CH")}
                 </span>
