@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Users, CheckCircle, AlertCircle } from "lucide-react";
+import { Users, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
 interface RemoteQueueJoinProps {
   salonId: string;
@@ -64,17 +65,23 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
   if (result?.success) {
     return (
-      <div className="rounded-card bg-s-success/10 border border-s-success/20 p-5 text-center">
-        <CheckCircle size={32} className="text-s-success mx-auto mb-3" />
-        <h4 className="font-heading text-base font-semibold text-s-ink mb-1">
+      <div className="rounded-card border border-s-border bg-s-success-bg p-5 text-center">
+        <SuccessMark size={48} className="mx-auto mb-3" />
+        <h4
+          className="celebrate-rise font-display text-[16px] font-semibold text-s-ink mb-1"
+          style={{ animationDelay: "0.42s" }}
+        >
           {t("joinedSuccess")}
         </h4>
-        <p className="text-sm text-s-ink/70 mb-3">
-          {t("position")} <strong>{result.position}</strong> · {t("estimatedWait")}{" "}
-          <strong>~{result.estimated_wait_minutes} {t("minutes")}</strong>
+        <p
+          className="celebrate-rise text-[14px] text-s-ink-2 mb-3"
+          style={{ animationDelay: "0.52s" }}
+        >
+          {t("position")} <strong className="font-semibold text-s-ink">{result.position}</strong> · {t("estimatedWait")}{" "}
+          <strong className="font-semibold text-s-ink">~{result.estimated_wait_minutes} {t("minutes")}</strong>
         </p>
-        <p className="text-xs text-s-ink-2">
-          {t("trackingCode")}: <code className="font-mono">{result.tracking_token}</code>
+        <p className="text-[13px] text-s-ink-2">
+          {t("trackingCode")}: <code className="font-mono-code">{result.tracking_token}</code>
         </p>
       </div>
     );
