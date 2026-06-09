@@ -249,7 +249,7 @@ The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.
 
 **Hard rules:** nothing below **12px** (legibility); titles anchor at **16** (not a stray 15); body is **14** flat (drop the desktop-15 bump). 15px stays reserved for the CTA roles only. Drift-checker flags off-ramp sizes so the sprawl can't return.
 
-**Per-screen budget (HARD, the Tim Gabe "4 levels" senior bar; was a soft "aim for" in SOLEN_UI §199):** the 11 roles are the *app-wide* vocabulary; on any **single screen**, draw from **≤4 distinct sizes and ≤2 weights**. Count them before shipping. This is dimension 4 of `SENIOR_SCORECARD.md` and a hard-fail drift rule (count distinct `text-[*px]` + role sizes per file). The confirmation page shipped with ~11 sizes , exactly the failure this closes. More: a screen ships only at 5/5 on the scorecard.
+**Per-screen budget (HARD, the Tim Gabe "4 levels" senior bar; was a soft "aim for" in SOLEN_UI §199):** the 11 roles are the *app-wide* vocabulary; on any **single screen**, draw from **≤4 distinct sizes and ≤2 weights**. Count them before shipping. This is dimension 4 of `SENIOR_SCORECARD.md`, verified by **DOM measurement** of the rendered screen (count distinct computed font-size/weight on the screen's own container; a static per-file count is too noisy to gate on, so it is NOT a drift rule). Sub-12px specifically IS a static drift rule (A19, INFO until the sub-12px sweep clears the ~102 legacy instances). The confirmation page shipped with ~11 sizes — exactly the failure this closes; the rebuild measures 4 sizes / 2 weights. More: a screen ships only at 5/5 on the scorecard.
 
 ### Canonical tracking values (rule A8 enforces this set)
 

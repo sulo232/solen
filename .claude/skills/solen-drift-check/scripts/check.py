@@ -183,6 +183,15 @@ HEX_RE = re.compile(r"#[0-9A-Fa-f]{6}\b|#[0-9A-Fa-f]{3}\b")
 # A2 — Arbitrary Tailwind values like text-[18px], bg-[#XXX], rounded-[22px]
 ARBITRARY_TW_RE = re.compile(r"\b(?:text|bg|border|rounded|p|m|w|h|gap|leading|tracking)-\[[^\]]+\]")
 
+# A19 — sub-12px text. LOCKFILE §2.5 + SENIOR_SCORECARD dim 4: "nothing below 12px (legibility)".
+# A clean, low-false-positive static check (unlike a per-file size COUNT, which is noisy and best
+# measured on the rendered DOM by the verifier). Catches text-[11px] / text-[10.5px] / text-[9px].
+# INFORMATIONAL for now (same playbook as A2 + A7-A11): turning it HARD instantly created 102
+# findings in already-shipped files, which would drown the gate. It logs to _pending-migration.md;
+# flip to HARD once the sub-12px sweep is done. Does NOT catch the ≤4-sizes budget — that is a DOM
+# measurement (see SENIOR_SCORECARD.md "How to use").
+SUB12_TEXT_RE = re.compile(r"\btext-\[(\d+(?:\.\d+)?)px\]")
+
 # A3 — Tailwind duration. Captures duration-{N} or duration-[Nms].
 DURATION_TW_NUM_RE = re.compile(r"\bduration-(\d+)\b")
 DURATION_TW_ARB_RE = re.compile(r"\bduration-\[(\d+)ms\]")
@@ -491,6 +500,16 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 snippet=line,
                 recommendation=f"`{cls}` — prefer a tokenized class. If intentional, add a V3-D{{n}} comment explaining why.",
             ))
+
+        # A19 — sub-12px text (INFO until the sweep). "nothing below 12px" per LOCKFILE §2.5 / SENIOR_SCORECARD dim 4.
+        for m in SUB12_TEXT_RE.finditer(line):
+            px = float(m.group(1))
+            if px < 12:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="INFO A19: sub-12px text",
+                    snippet=line,
+                    recommendation=f"`text-[{m.group(1)}px]` is below the 12px legibility floor (LOCKFILE §2.5). Use the Meta role (12-13px) or larger.",
+                ))
 
         # A3 — non-canonical durations
         for m in DURATION_TW_NUM_RE.finditer(line):
