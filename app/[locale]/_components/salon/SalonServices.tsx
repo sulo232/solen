@@ -10,17 +10,12 @@ import { PriceFrom } from "../primitives";
 import { cn } from "@/lib/utils";
 
 /**
- * V3-D227 (2026-05-27, user-paste Fresha service-row spec): format duration
- * in German units. Fresha shows "30 Min." / "1 Std." / "1 Std., 15 Min."
- * No Clock icon — text-only second row.
+ * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",
+ * no trailing period. "45 min" / "60 min" / "90 min" (not "1 Std." or "Min.").
+ * No Clock icon, text-only second row.
  */
 function formatDurationDE(mins: number): string {
-  if (mins < 60) return `${mins} Min.`;
-  const hours = Math.floor(mins / 60);
-  const rem = mins % 60;
-  const hPart = hours === 1 ? "1 Std." : `${hours} Std.`;
-  if (rem === 0) return hPart;
-  return `${hPart}, ${rem} Min.`;
+  return `${mins} min`;
 }
 
 /**
@@ -176,7 +171,7 @@ function ServiceRow({
   // V3-D346 (2026-05-28): name 600->500 + price bold->grey-normal per LOCKFILE §2.5
   // card-hierarchy rule A13 — exactly one ink anchor (the service name); duration + price recede.
   const inner = (
-    <div className="flex items-start justify-between gap-4">
+    <div className="flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
         <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
           {service.name_de}
@@ -190,7 +185,7 @@ function ServiceRow({
       </div>
       <Link
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
-        className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-6 md:py-2.5 md:text-[14px]"
+        className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken md:px-6 md:py-2.5 md:text-[14px]"
       >
         Buchen
       </Link>

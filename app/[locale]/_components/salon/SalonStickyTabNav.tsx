@@ -198,7 +198,7 @@ export function SalonStickyTabNav({
           >
             <Share size={18} strokeWidth={2.1} aria-hidden />
           </button>
-          <HeartButton salonId={salon.id} salonName={salon.name} className="!relative !right-auto !top-auto" />
+          <HeartButton salonId={salon.id} salonName={salon.name} className="!relative !right-auto !top-auto" bare iconSize={18} />
         </div>
         <div className="flex gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (

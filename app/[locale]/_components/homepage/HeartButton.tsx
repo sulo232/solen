@@ -31,6 +31,7 @@ export function HeartButton({
   tone: _tone,
   size = 28,
   iconSize = 16,
+  bare = false,
 }: {
   isSaved?: boolean;
   salonName: string;
@@ -43,6 +44,10 @@ export function HeartButton({
   size?: number;
   /** Heart glyph size in px (default 16). */
   iconSize?: number;
+  /** Bare mode: drop the frosted-glass circle, render just the glyph. For controls sitting ON
+   *  white chrome (e.g. the sticky tab nav) where the circle reads inconsistent next to a bare
+   *  share icon. The default frosted circle stays for hearts floating OVER a photo. */
+  bare?: boolean;
 }) {
   const pathname = usePathname();
   const [isSaved, setIsSaved] = React.useState(initialSaved);
@@ -156,7 +161,7 @@ export function HeartButton({
           // V2-D60-cards / V3-D72 / V3-D420: frosted-glass circle wrapper around
           // heart. Recipe now sourced from the shared FROST_GLASS util (was
           // re-derived inline) — 80% white + 4px backdrop blur + 1px white border.
-          style={{ ...FROST_GLASS, height: size, width: size }}
+          style={bare ? { height: size, width: size } : { ...FROST_GLASS, height: size, width: size }}
           className={cn(
             "grid place-items-center rounded-full",
             "transition-transform duration-200 ease-glide",
