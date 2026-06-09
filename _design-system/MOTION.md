@@ -44,8 +44,8 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 - [ ] **Motion sweep**: purposeful transitions + press feedback across the key flows (booking steps, search, salon PDP) using the §4 easings consistently.
 - [ ] **Haptics**: wire `navigator.vibrate` on key mobile taps (Buchen, confirm) where supported.
 - [ ] **App-wide sub-12px sweep**: A19 flags ~840 instances beyond the homepage; floor them all, then flip A19 from INFO to a HARD drift gate.
-- [ ] **Copy pass**: clarity + concision on the key customer surfaces (the video's "messaging" level , the one axis not yet audited).
-- [ ] **Cleanup**: remove the throwaway `public/solen-*.html` + `public/_*.png` mockup artifacts. CAUTION: `solen-confirm-senior.html` + `solen-color-model.html` + `solen-nav-backhome.html` + `solen-home-type.html` are referenced by committed docs/commits as approved specs , re-point or note before deleting.
+- [x] **Copy pass** — DONE (audited 2026-06-09). Customer copy is already tight: the confirmation's actual offenders were fixed earlier this session (`Zum Kalender hinzufügen`→`Kalender hinzufügen`, icon-only copy). A full i18n audit surfaced only 11 "verbose" candidates, and call-site investigation cleared all of them: the `Bitte wähle … aus` strings are `setError()` validation messages (polite error voice is *correct* there, not filler), `Jetzt bezahlen`/`Jetzt anstellen` are intentional payment/queue urgency, `Zur Zahlung` is a directional CTA, `Bitte wählen` is the conventional dropdown placeholder. Nothing safe to blind-change. The codified copy-economy rule (LOCKFILE) governs new copy going forward. LESSON: the same German string can be correct copy or filler depending on call-site (validation vs button) , never blanket-sweep copy.
+- [x] **Cleanup** — DONE (commit dbb9be0e0). Pruned ~300 throwaway `public/solen-*.html` + `public/_*.png` artifacts; kept the 26 referenced by living docs (incl. `solen-confirm-senior` / `solen-color-model` / `solen-nav-backhome` / `solen-home-type` , the approved specs). Doc-reference scan ran before deletion.
 
 ## Session mockups (reference, then delete)
 
