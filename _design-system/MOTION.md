@@ -39,7 +39,8 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 
 ## REMAINING WORK (the to-do , this is what must survive compaction)
 
-- [ ] **SuccessMark on the rest of the peaks**: package/gift-card bought, payment settled. (Booking-confirmed + walk-in-joined DONE. Review form has no inline success state , it toasts/closes; revisit if a success screen is added.)
+- [x] **SuccessMark on the success peaks** — DONE: booking-confirmed, walk-in-joined, gift-card-sent, package-bought all use SuccessMark + staggered `.celebrate-rise` (commits c9e405378, f89587203). Payment-settled = the booking confirmation (done). Review form has no inline success state (it toasts/closes) — revisit only if a success screen is added.
+- [x] **Booking step transition** — DONE: slide+fade on the §4 `glide` curve (V3-D464, 85f46a86c). The flow already had press-feedback (active:scale) + spring sheets.
 - [ ] **Motion sweep**: purposeful transitions + press feedback across the key flows (booking steps, search, salon PDP) using the §4 easings consistently.
 - [ ] **Haptics**: wire `navigator.vibrate` on key mobile taps (Buchen, confirm) where supported.
 - [ ] **App-wide sub-12px sweep**: A19 flags ~840 instances beyond the homepage; floor them all, then flip A19 from INFO to a HARD drift gate.
