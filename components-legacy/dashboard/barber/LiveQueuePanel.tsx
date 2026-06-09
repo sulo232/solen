@@ -173,12 +173,12 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                   </p>
                   <p className="text-xs text-s-ink-2 mt-0.5 truncate">
                     {inChair
-                      ? `${t("in_chair_label")} | ${entry.estimated_wait_minutes ?? "?"} min`
+                      ? `${t("in_chair_label")} ${entry.estimated_wait_minutes ?? "?"} min`
                       : `→ ${
                           entry.preferred_barber_id
                             ? t("preferred_barber")
                             : t("any_barber")
-                        } | ⌀ ${entry.estimated_wait_minutes ?? "?"} min`}
+                        } ⌀ ${entry.estimated_wait_minutes ?? "?"} min`}
                   </p>
                 </div>
 

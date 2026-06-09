@@ -176,7 +176,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         {/* Footer hint */}
         <div className="px-4 py-2.5 border-t border-s-ink/[0.05] flex items-center gap-3 bg-s-bg-sunken">
           <span className="text-[9px] text-s-ink/25">
-            ↑↓ {t("navigate")} | Enter {t("select")} | Esc {t("close")}
+            ↑↓ {t("navigate")} Enter {t("select")} Esc {t("close")}
           </span>
         </div>
       </div>

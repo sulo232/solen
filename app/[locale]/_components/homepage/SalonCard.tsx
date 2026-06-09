@@ -543,7 +543,7 @@ export function SalonCard({
 
         {/* Row 2 — Address · city if available, else category label */}
         <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
-          {address ? `${address} | ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
+          {address ? `${address} ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
         </div>
 
         {/* Row 3 — nextSlotLabel · CHF X (rating moved to Row 1 V3-D174) */}
@@ -554,7 +554,7 @@ export function SalonCard({
           {nextSlotLabel && (
             <span>{nextSlotLabel}</span>
           )}
-          {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" | "}</span>}
+          {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" "}</span>}
           {priceFromCHF != null && (
             <span>CHF {priceFromCHF}</span>
           )}

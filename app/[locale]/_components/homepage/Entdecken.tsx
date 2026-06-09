@@ -332,13 +332,13 @@ export default function Entdecken() {
                         className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
                         style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
                       >
-                        TikTok | TikTok | TikTok | TikTok |
+                        TikTok TikTok TikTok TikTok
                       </span>
                       <span
                         className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
                         style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
                       >
-                        TikTok | TikTok | TikTok | TikTok |
+                        TikTok TikTok TikTok TikTok
                       </span>
                     </div>
                   </div>

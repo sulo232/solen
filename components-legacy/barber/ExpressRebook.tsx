@@ -162,7 +162,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
                   <span className="font-medium">{formatDate(suggested.starts_at)}</span>
                 </div>
                 <p className="text-s-ink-2">
-                  {t("express.staffAt")} {suggested.staff_name} | {formatCurrency(suggested.price)}
+                  {t("express.staffAt")} {suggested.staff_name} {formatCurrency(suggested.price)}
                 </p>
               </div>
               <button

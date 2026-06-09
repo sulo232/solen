@@ -182,7 +182,7 @@ function ReviewCard({ review }: { review: Review }) {
         </div>
       ) : (
         <div className="font-body text-[12px] font-medium text-s-ink-3">
-          Verifizierte Buchung | {formatReviewDate(review.created_at)}
+          Verifizierte Buchung {formatReviewDate(review.created_at)}
         </div>
       )}
 

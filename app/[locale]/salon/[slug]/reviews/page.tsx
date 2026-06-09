@@ -36,7 +36,7 @@ export async function generateMetadata({
     .eq("slug", slug)
     .single();
   return {
-    title: salon ? `Bewertungen | ${salon.name}` : "Bewertungen",
+    title: salon ? `Bewertungen ${salon.name}` : "Bewertungen",
     description: "Alle Bewertungen für diesen Salon",
   };
 }
@@ -102,8 +102,8 @@ export default async function SalonReviewsPage({
       </Link>
 
       <SignatureLockup
-        eyebrow={`Salon | ${salon.name}`}
-        headline={`Bewertungen | ${salon.review_count?.toLocaleString("de-CH") ?? 0}`}
+        eyebrow={`Salon ${salon.name}`}
+        headline={`Bewertungen ${salon.review_count?.toLocaleString("de-CH") ?? 0}`}
         size="md"
       />
 

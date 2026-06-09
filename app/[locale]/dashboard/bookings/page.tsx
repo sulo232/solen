@@ -143,10 +143,10 @@ function BookingActionSheet({
           </span>
           <div className="min-w-0">
             <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
-              {booking.customer_name} | {new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+              {booking.customer_name} {new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
             </p>
             <p className="text-[12px] text-s-ink-2 truncate mt-0.5">
-              {booking.service_name}{booking.staff_name ? ` | ${booking.staff_name}` : ""} | {formatCurrency(Number(booking.price_paid), locale)}
+              {booking.service_name}{booking.staff_name ? ` ${booking.staff_name}` : ""} {formatCurrency(Number(booking.price_paid), locale)}
             </p>
           </div>
         </div>
@@ -307,7 +307,7 @@ export default function BookingsPage() {
                     {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-3" aria-label={t("recurring")} />}
                   </div>
                   <p className="text-[12.5px] text-s-ink-2 truncate mt-0.5">
-                    {b.service_name}{b.staff_name ? ` | ${b.staff_name}` : ""}
+                    {b.service_name}{b.staff_name ? ` ${b.staff_name}` : ""}
                   </p>
                   {salonId && b.user_id && (
                     <div className="mt-1"><ClientTags salonId={salonId} customerId={b.user_id} compact /></div>

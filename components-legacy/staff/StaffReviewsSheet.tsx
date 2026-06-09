@@ -68,7 +68,7 @@ export default function StaffReviewsSheet({
     new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "de-DE", {
       weekday: "short", day: "2-digit", month: "long", year: "numeric",
     }) +
-    " | " +
+    " " +
     new Date(iso).toLocaleTimeString(locale === "en" ? "en-US" : "de-DE", {
       hour: "2-digit", minute: "2-digit",
     });

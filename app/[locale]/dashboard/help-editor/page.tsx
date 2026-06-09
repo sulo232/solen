@@ -229,7 +229,7 @@ export default function HelpEditorPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-s-ink/30 font-body mt-0.5">/{article.slug} | {article.locale}</p>
+                  <p className="text-xs text-s-ink/30 font-body mt-0.5">/{article.slug} {article.locale}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   <button

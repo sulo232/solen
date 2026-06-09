@@ -221,7 +221,7 @@ function StockImportTab() {
               </div>
             )}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-              <p className="text-[10px] text-white/80 truncate">{photo.author} | {photo.source}</p>
+              <p className="text-[10px] text-white/80 truncate">{photo.author} {photo.source}</p>
             </div>
           </div>
         ))}

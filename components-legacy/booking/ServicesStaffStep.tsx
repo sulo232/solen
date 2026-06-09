@@ -415,7 +415,7 @@ export default function ServicesStaffStep({
                       </h4>
                       <p className="text-xs text-s-ink-2 mt-1">
                         {service.duration_minutes} {t('minutes')}
-                        {gLabel && <> | {gLabel}</>}
+                        {gLabel && <> {gLabel}</>}
                       </p>
                       {desc && (
                         <p className="text-[13px] text-s-ink-2 leading-relaxed mt-1.5 line-clamp-2">
@@ -472,7 +472,7 @@ export default function ServicesStaffStep({
             </p>
             <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5">
               <ShoppingCart size={13} aria-hidden />
-              {formData.services.length} {t('items')} | {formData.totalDuration}{' '}
+              {formData.services.length} {t('items')} {formData.totalDuration}{' '}
               {t('minutes')}
             </p>
           </div>

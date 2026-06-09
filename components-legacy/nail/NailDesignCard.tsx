@@ -106,7 +106,7 @@ export default function NailDesignCard({
         <div className="absolute bottom-2 left-2 right-2 z-10">
           <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
-              {staffName}{staffName && salonName ? " | " : ""}{salonName}
+              {staffName}{staffName && salonName ? " " : ""}{salonName}
             </p>
           </div>
         </div>

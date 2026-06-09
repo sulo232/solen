@@ -107,7 +107,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
   const handleShare = async () => {
     const shareData = {
       title: t("shareTitle", { salonName: props.salonName }),
-      text: `${props.salonName} | ${dateStr} ${timeStr}`,
+      text: `${props.salonName} ${dateStr} ${timeStr}`,
       url: `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
     };
     if (navigator.share) {
@@ -119,7 +119,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
   const summaryRows: Array<{ label: string; value: string }> = [
     { label: "Was", value: props.serviceName },
-    { label: "Wann", value: `${dateStr} | ${timeStr}` },
+    { label: "Wann", value: `${dateStr} ${timeStr}` },
     { label: "Wo", value: props.salonName },
   ];
   if (props.staffName) summaryRows.push({ label: "Wer", value: props.staffName });
@@ -133,7 +133,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
       {/* Q48 signature lockup */}
       <SignatureLockup
-        eyebrow={`Bestätigt | #${props.bookingId.slice(0, 8)}`}
+        eyebrow={`Bestätigt #${props.bookingId.slice(0, 8)}`}
         headline="Buchung bestätigt"
         subLine="Wir freuen uns auf dich."
         size="md"

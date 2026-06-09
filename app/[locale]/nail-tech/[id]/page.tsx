@@ -118,7 +118,7 @@ export default function NailTechProfilePage() {
 
               {tech.specialties?.length > 0 && (
                 <p className="text-sm text-s-ink-2 mt-0.5">
-                  {tech.specialties.join(" | ")}
+                  {tech.specialties.join(" ")}
                 </p>
               )}
 

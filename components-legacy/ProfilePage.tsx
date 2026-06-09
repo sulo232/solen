@@ -308,7 +308,7 @@ const BookingCard = memo(function BookingCard({
           <p className="text-xs font-body text-s-ink/40 mt-1">
             {new Date(b.starts_at).toLocaleDateString(localeFmt, {
               weekday: "short", day: "numeric", month: "short",
-            })}{" | "}
+            })}{" "}
             {new Date(b.starts_at).toLocaleTimeString(localeFmt, { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>

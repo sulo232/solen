@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: "chf",
-      description: `Gift voucher for ${salon.name_de} | ${recipient_name}`,
+      description: `Gift voucher for ${salon.name_de} ${recipient_name}`,
       metadata: {
         type: "voucher",
         salon_id,

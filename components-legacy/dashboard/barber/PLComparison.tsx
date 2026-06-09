@@ -94,7 +94,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
                 {formatCHF(stats.appointment_revenue)}
               </p>
               <p className="text-[10px] text-s-ink-2">
-                {stats.appointment_count} × {formatCHF(stats.appointment_avg)} ⌀ | {apptShare}%
+                {stats.appointment_count} × {formatCHF(stats.appointment_avg)} ⌀ {apptShare}%
               </p>
             </div>
             <div className="bg-s-warning-bg rounded-[8px] p-3">
@@ -105,7 +105,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
                 {formatCHF(stats.walkin_revenue)}
               </p>
               <p className="text-[10px] text-s-ink-2">
-                {stats.walkin_count} × {formatCHF(stats.walkin_avg)} ⌀ | {walkinShare}%
+                {stats.walkin_count} × {formatCHF(stats.walkin_avg)} ⌀ {walkinShare}%
               </p>
             </div>
           </div>

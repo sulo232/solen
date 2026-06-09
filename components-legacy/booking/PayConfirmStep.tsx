@@ -261,7 +261,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <div className="flex items-baseline justify-between gap-2">
             <span className="font-body text-s-ink-2">Wann</span>
             <span className="font-body font-semibold text-s-ink tabular-nums">
-              {dateLabel} | {timeLabel}
+              {dateLabel} {timeLabel}
             </span>
           </div>
           <div className="flex items-baseline justify-between gap-2 pt-2 mt-2 border-t border-s-border">
@@ -374,8 +374,8 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             {paymentMode === 'at_salon'
               ? `Buchung bestätigen`
               : paymentMode === 'deposit'
-                ? `Anzahlung bezahlen | ${formatPrice(depositAmount, localeCode)}`
-                : `${t('payment.continueToPayment')} | ${formatPrice(totalPrice, localeCode)}`}
+                ? `Anzahlung bezahlen ${formatPrice(depositAmount, localeCode)}`
+                : `${t('payment.continueToPayment')} ${formatPrice(totalPrice, localeCode)}`}
           </button>
         </div>
       </div>

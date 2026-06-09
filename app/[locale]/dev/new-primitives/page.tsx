@@ -24,7 +24,7 @@ export default function NewPrimitivesDemo() {
       <header className="border-b border-s-border pb-6">
         {/* V3-D331: dropped pseudo-element accent dot + accent color per LOCKFILE §2.5. */}
         <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3">
-          Wave 1 | Agent D
+          Wave 1 Agent D
         </p>
         <h1 className="mt-2 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
           New primitives
@@ -185,7 +185,7 @@ export default function NewPrimitivesDemo() {
             </p>
             <div className="flex flex-wrap gap-4">
               <StatusPill isOpen={true} label="Geöffnet bis 19:30" />
-              <StatusPill isOpen={false} label="Geschlossen | Öffnet 10:00" />
+              <StatusPill isOpen={false} label="Geschlossen Öffnet 10:00" />
             </div>
           </div>
           <div>

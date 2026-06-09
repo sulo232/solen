@@ -334,7 +334,7 @@ export default function ReportRefundEntry({
   const orderCode = booking?.reference_code ?? "";
   const photo = booking?.salon_photo ?? null;
   // service · date · order-code — only the parts we actually have, joined by " · ".
-  const summaryMeta = [svc, apptDate, orderCode].filter(Boolean).join(" | ");
+  const summaryMeta = [svc, apptDate, orderCode].filter(Boolean).join(" ");
 
   return (
     <Shell t={t} title={t("entryTitle")} onBack={() => router.back()}>

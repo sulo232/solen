@@ -88,7 +88,7 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
                     {slot.salon.name}
                   </p>
                   <p className="font-body leading-tight mt-0.5" style={{ fontSize: "11px", color: "#FAD4CC" }}>
-                    {formatSlotTime(slot.starts_at, locale)} | {categoryLabel}
+                    {formatSlotTime(slot.starts_at, locale)} {categoryLabel}
                   </p>
                 </div>
                 {discount && (

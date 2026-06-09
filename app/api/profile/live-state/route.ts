@@ -65,9 +65,9 @@ export async function GET(_request: NextRequest) {
       const timeLabel = minsUntil < 60 ? `In ${minsUntil} min` : `In ${Math.round(minsUntil / 60)}h`;
       return NextResponse.json({
         kind: "upcoming",
-        eyebrow: `${timeLabel} | Termin`,
+        eyebrow: `${timeLabel} Termin`,
         headline: b.salons?.name ?? "Termin",
-        meta: `${b.services?.name ?? ""} | ${slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}`,
+        meta: `${b.services?.name ?? ""} ${slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}`,
         href: `/booking/${b.id}`,
       });
     }
@@ -102,7 +102,7 @@ export async function GET(_request: NextRequest) {
     if (closeToReward) {
       return NextResponse.json({
         kind: "loyalty",
-        eyebrow: `Loyalty | ${closeToReward.remaining} mehr`,
+        eyebrow: `Loyalty ${closeToReward.remaining} mehr`,
         headline: closeToReward.salons?.name ?? "Belohnung",
         meta: closeToReward.reward_text ?? "Stempel sammeln",
         href: `/profile/stamps`,
@@ -136,7 +136,7 @@ export async function GET(_request: NextRequest) {
         const fav: any = favorites.find((f: any) => f.salon_id === deal.salon_id);
         return NextResponse.json({
           kind: "deal",
-          eyebrow: `Last-Minute | Heute`,
+          eyebrow: `Last-Minute Heute`,
           headline: `${deal.discount_percent}% bei ${fav?.salons?.name ?? "Favorit"}`,
           meta: "Tippe für freie Slots",
           href: `/salon/${fav?.salons?.slug ?? ""}`,

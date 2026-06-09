@@ -252,7 +252,7 @@ function SmartSearchTab() {
                   </div>
                 )}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-1.5">
-                  <p className="text-[9px] text-white/80 truncate">{photo.source} | {photo.author}</p>
+                  <p className="text-[9px] text-white/80 truncate">{photo.source} {photo.author}</p>
                 </div>
               </button>
             ))}

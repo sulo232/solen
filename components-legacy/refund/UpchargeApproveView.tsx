@@ -302,7 +302,7 @@ export default function UpchargeApproveView({
   }
 
   const subtitle = booking?.salon_name
-    ? `${booking.salon_name}${booking.starts_at ? ` | ${fmtDate(booking.starts_at, locale)}` : ""}`
+    ? `${booking.salon_name}${booking.starts_at ? ` ${fmtDate(booking.starts_at, locale)}` : ""}`
     : null;
 
   // ── loading ────────────────────────────────────────────────────────────────
@@ -562,7 +562,7 @@ export default function UpchargeApproveView({
               </div>
               <div className="mt-[2px] truncate text-[12.5px] text-s-ink-2">
                 {booking?.reference_code
-                  ? `${t("upBarNeedsApproval")} | ${booking.reference_code}`
+                  ? `${t("upBarNeedsApproval")} ${booking.reference_code}`
                   : t("upBarNeedsApproval")}
               </div>
             </div>
@@ -631,7 +631,7 @@ export default function UpchargeApproveView({
             <CreditCard size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
             <span>
               {t("upSavedCard")}
-              {" | "}
+              {" "}
               {emphasizeAmount(t("upOnlyDifference", { amount: fmtMoney(extra, locale) }), fmtMoney(extra, locale))}
             </span>
           </div>
@@ -821,7 +821,7 @@ function salonPhoto(booking: BookingFacts | null): string | null {
 
 function salonLine(booking: BookingFacts | null, _locale: string): string {
   if (!booking?.salon_name) return "-";
-  return booking.salon_city ? `${booking.salon_name} | ${booking.salon_city}` : booking.salon_name;
+  return booking.salon_city ? `${booking.salon_name} ${booking.salon_city}` : booking.salon_name;
 }
 
 function appointmentLine(t: Tr, booking: BookingFacts | null, locale: string): string {
@@ -829,5 +829,5 @@ function appointmentLine(t: Tr, booking: BookingFacts | null, locale: string): s
   const svc = serviceName(booking.service_name, locale);
   const when = booking.starts_at ? fmtDateTime(booking.starts_at, locale) : null;
   const withStaff = booking.staff_name ? t("rowAppointmentWith", { staff: booking.staff_name }) : null;
-  return [svc, when, withStaff].filter(Boolean).join(" | ") || "-";
+  return [svc, when, withStaff].filter(Boolean).join(" ") || "-";
 }

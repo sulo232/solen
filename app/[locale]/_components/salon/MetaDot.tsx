@@ -7,9 +7,5 @@ import * as React from "react";
  * for back-compat across 12+ call-sites; the glyph is a line. Layer 1 chrome (typographic separator).
  */
 export function MetaDot() {
-  return (
-    <span className="px-1 text-s-ink-3" aria-hidden>
-      |
-    </span>
-  );
+  return <span className="inline-block w-[14px]" aria-hidden />;
 }

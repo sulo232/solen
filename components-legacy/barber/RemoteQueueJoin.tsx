@@ -77,7 +77,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           className="celebrate-rise text-[14px] text-s-ink-2 mb-3"
           style={{ animationDelay: "0.52s" }}
         >
-          {t("position")} <strong className="font-semibold text-s-ink">{result.position}</strong> | {t("estimatedWait")}{" "}
+          {t("position")} <strong className="font-semibold text-s-ink">{result.position}</strong> {t("estimatedWait")}{" "}
           <strong className="font-semibold text-s-ink">~{result.estimated_wait_minutes} {t("minutes")}</strong>
         </p>
         <p className="text-[13px] text-s-ink-2">

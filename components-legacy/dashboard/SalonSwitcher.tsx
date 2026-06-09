@@ -131,7 +131,7 @@ export default function SalonSwitcher({
             >
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
-                  Deine Salons | {salons.length}
+                  Deine Salons {salons.length}
                 </span>
                 <button
                   onClick={() => setOpen(false)}

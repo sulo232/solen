@@ -280,8 +280,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {/* Line 2: Business type · Quartier */}
           <p className="text-sm text-s-ink-secondary leading-5 truncate">
             {showDistance && salon.distance_km != null
-              ? `${salon.quartier ?? getNeighborhood(salon.postal_code)} | ${salon.distance_km.toFixed(1)} km`
-              : `${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || "Salon")} | ${salon.quartier ?? getNeighborhood(salon.postal_code)}`}
+              ? `${salon.quartier ?? getNeighborhood(salon.postal_code)} ${salon.distance_km.toFixed(1)} km`
+              : `${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || "Salon")} ${salon.quartier ?? getNeighborhood(salon.postal_code)}`}
           </p>
 
           {/* Line 3: Price — Q43 tabular numerics + Q43 CHF prefix via formatPrice */}

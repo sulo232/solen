@@ -115,7 +115,7 @@ export default async function ProfileStampsPage({
     return (
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         <SignatureLockup
-          eyebrow={`Mein Profil | 0 Karten`}
+          eyebrow={`Mein Profil 0 Karten`}
           headline="Stempel"
           size="md"
         />
@@ -136,7 +136,7 @@ export default async function ProfileStampsPage({
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <SignatureLockup
-        eyebrow={`Mein Profil | ${allCards.length} Karten`}
+        eyebrow={`Mein Profil ${allCards.length} Karten`}
         headline="Stempel"
         size="md"
       />
@@ -180,7 +180,7 @@ export default async function ProfileStampsPage({
       {redeemed.length > 0 && (
         <section className="mt-8 opacity-70">
           <h2 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
-            Eingelöst | {redeemed.length}
+            Eingelöst {redeemed.length}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {redeemed.map((c) =>

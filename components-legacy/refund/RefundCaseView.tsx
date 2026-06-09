@@ -612,7 +612,7 @@ function buildTimeline(
           title: t("tlSubmitted"),
           time,
           meta: `${e.actor_role === "guest" ? t("tlSubmittedByGuest") : t("tlSubmittedBy")}${
-            reasonLabel ? ` | ${t("tlReasonSuffix", { reason: reasonLabel.toLowerCase() })}` : ""
+            reasonLabel ? ` ${t("tlReasonSuffix", { reason: reasonLabel.toLowerCase() })}` : ""
           }`,
           note: c.description
             ? { who: t("tlYourNote"), body: c.description, tone: "neutral" }
@@ -876,7 +876,7 @@ function ActionInner({
           {t("escalateToSolen")}
         </button>
         <p className="mt-2 text-center text-[11.5px] leading-[1.5] text-s-ink-2">
-          {daysLeft > 0 ? t("escWindowOpen", { days: daysLeft }) : t("escWindowToday")} | {t("escFree")}
+          {daysLeft > 0 ? t("escWindowOpen", { days: daysLeft }) : t("escWindowToday")} {t("escFree")}
         </p>
       </>
     );

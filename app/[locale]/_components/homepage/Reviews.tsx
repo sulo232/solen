@@ -47,7 +47,7 @@ const REVIEWS: Review[] = [
     text: "Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Muse Beauty Studio war wie immer top, aber die Buchung über Solen war diesmal einfach besser.",
     initials: "LK",
     name: "Lara K.",
-    meta: "Basel | vor 2 Wochen",
+    meta: "Basel vor 2 Wochen",
     salonName: "Muse Beauty Studio",
     salonSlug: "muse-beauty-studio",
   },
@@ -56,7 +56,7 @@ const REVIEWS: Review[] = [
     text: "Last-Minute heute Abend zu Old Town Barbers: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist.",
     initials: "MH",
     name: "Marc H.",
-    meta: "Basel | vor 5 Tagen",
+    meta: "Basel vor 5 Tagen",
     salonName: "Old Town Barbers",
     salonSlug: "old-town-barbers",
   },
@@ -65,7 +65,7 @@ const REVIEWS: Review[] = [
     text: "Habe einen Look auf Entdecken gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.",
     initials: "SR",
     name: "Sara R.",
-    meta: "Basel | vor 1 Woche",
+    meta: "Basel vor 1 Woche",
     salonName: "Nail Studio Bliss",
     salonSlug: "nail-studio-bliss",
   },
@@ -74,7 +74,7 @@ const REVIEWS: Review[] = [
     text: "Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in unter zwei Minuten. So sollte das überall funktionieren.",
     initials: "AM",
     name: "Anna M.",
-    meta: "Basel | vor 3 Tagen",
+    meta: "Basel vor 3 Tagen",
     salonName: "Smooth Skin Studio",
     salonSlug: "smooth-skin-studio",
   },
@@ -83,7 +83,7 @@ const REVIEWS: Review[] = [
     text: "Buchung war easy, Salon top. Einziger Kritikpunkt: Wegbeschreibung zeigt nicht alle Eingänge. Aber das ist Detail. Komme wieder.",
     initials: "TW",
     name: "Tobias W.",
-    meta: "Basel | vor 1 Woche",
+    meta: "Basel vor 1 Woche",
     salonName: "Glow Lab Basel",
     salonSlug: "glow-lab-basel",
   },
@@ -92,7 +92,7 @@ const REVIEWS: Review[] = [
     text: "Mein Geburtstagsgeschenk war eigentlich der Salonbesuch, aber dass ich es online buchen konnte, ohne fünfmal anzurufen, war fast besser.",
     initials: "ES",
     name: "Eva S.",
-    meta: "Basel | vor 4 Tagen",
+    meta: "Basel vor 4 Tagen",
     salonName: "Nail Studio Bliss",
     salonSlug: "nail-studio-bliss",
   },
@@ -101,7 +101,7 @@ const REVIEWS: Review[] = [
     text: "Habe den Salon zufällig über die Karte gefunden, 200 m von zu Hause. Wie konnte ich den nicht kennen? Bewertungen waren spot-on.",
     initials: "NB",
     name: "Niklas B.",
-    meta: "Basel | vor 6 Tagen",
+    meta: "Basel vor 6 Tagen",
     salonName: "The Fade Factory",
     salonSlug: "the-fade-factory",
   },
@@ -110,7 +110,7 @@ const REVIEWS: Review[] = [
     text: "Premium ohne Premium-Preise. Spa-Atmosphäre wie in einem 5-Sterne-Hotel, aber ich habe normal mit Solen gebucht: gleicher Preis, sofortige Bestätigung.",
     initials: "SL",
     name: "Sophie L.",
-    meta: "Basel | vor 10 Tagen",
+    meta: "Basel vor 10 Tagen",
     salonName: "Smooth Skin Studio",
     salonSlug: "smooth-skin-studio",
   },
@@ -157,7 +157,7 @@ function ReviewCard({
   // V3-D169 (2026-05-26): split `meta` ("Basel · vor 2 Wochen") so the
   // time-relative portion can sit top-right (Fresha/TexBazar pattern)
   // while the city stays implicit via the salon name below.
-  const metaParts = review.meta.split(" | ");
+  const metaParts = review.meta.split(" ");
   const dateText = metaParts.length > 1 ? metaParts[metaParts.length - 1] : review.meta;
 
   return (

@@ -96,7 +96,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
     : null;
   // Separator is a thin vertical line, not a middle-dot (owner 2026-06-09: "stop using dots, use a line").
   const timeline = `${timeStr}${displayEnd ? ` – ${displayEnd}` : ""}${
-    props.durationMinutes ? `  |  ${props.durationMinutes} min` : ""
+    props.durationMinutes ? ` ${props.durationMinutes} min` : ""
   }`;
   const code = props.referenceCode ?? "";
 

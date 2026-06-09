@@ -55,7 +55,7 @@ export default async function ProfileLooksPage({
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <SignatureLockup
-        eyebrow="Mein Profil | 0 Looks"
+        eyebrow="Mein Profil 0 Looks"
         headline="Looks"
         size="md"
       />

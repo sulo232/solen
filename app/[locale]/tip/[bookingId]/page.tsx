@@ -48,7 +48,7 @@ export default function BookingTipPage() {
   const staffReviews = booking?.staff_review_count ?? booking?.staff?.review_count ?? null;
   const serviceName = booking?.service_name ?? booking?.service?.name_de ?? null;
   const salonName = booking?.salon_name ?? booking?.salon?.name ?? null;
-  const contextLine = [serviceName, salonName].filter(Boolean).join(" | ") || undefined;
+  const contextLine = [serviceName, salonName].filter(Boolean).join(" ") || undefined;
 
   return (
     <div className="min-h-screen bg-s-bg-sunken">

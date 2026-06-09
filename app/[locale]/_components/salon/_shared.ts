@@ -186,7 +186,7 @@ export function computeOpenStatus(
     if (next) {
       return {
         isOpen: false,
-        label: `Geschlossen | Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        label: `Geschlossen Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
         nextOpen: next.open,
       };
     }
@@ -199,7 +199,7 @@ export function computeOpenStatus(
   const minsOpen = openH * 60 + openM;
   const minsClose = closeH * 60 + closeM;
   if (minsNow < minsOpen) {
-    return { isOpen: false, label: `Geschlossen | Öffnet ${today.open}`, nextOpen: today.open };
+    return { isOpen: false, label: `Geschlossen Öffnet ${today.open}`, nextOpen: today.open };
   }
   if (minsNow > minsClose) {
     // V3-D210: after today's close — look ahead instead of "Heute geschlossen".
@@ -207,7 +207,7 @@ export function computeOpenStatus(
     if (next) {
       return {
         isOpen: false,
-        label: `Geschlossen | Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        label: `Geschlossen Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
         nextOpen: next.open,
       };
     }

@@ -73,7 +73,7 @@ function FauxSalonCard({ card, className }: { card: FauxCard; className?: string
       </div>
       {/* Row 2: meta line */}
       <p className="truncate px-3 pb-3 pt-0.5 font-body text-[11px] font-normal text-s-ink-2">
-        {card.meta} | {card.city}
+        {card.meta} {card.city}
       </p>
     </article>
   );

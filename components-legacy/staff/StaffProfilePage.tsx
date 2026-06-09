@@ -321,7 +321,7 @@ export default function StaffProfilePage({
                 <div className="min-w-0">
                   <div className="text-[15px] font-semibold text-s-ink">{sName(s)}</div>
                   <div className="mt-1 text-[13px] text-s-ink-2 tabular-nums">
-                    {s.duration_minutes} Min | {formatCurrency(s.price, locale)}
+                    {s.duration_minutes} Min {formatCurrency(s.price, locale)}
                   </div>
                 </div>
                 <Link href={bookHref} className="shrink-0 rounded-full border border-s-border px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">

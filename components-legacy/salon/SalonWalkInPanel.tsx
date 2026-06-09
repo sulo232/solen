@@ -137,7 +137,7 @@ export default function SalonWalkInPanel({
   const hasQueue = ahead > 0;
   const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#16A34A";
   const statusLabel = !isOpen ? l.closedLabel : busy ? l.busyLabel : l.openLabel;
-  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${ahead} ${l.ahead} | ~${wait} ${l.min} ${l.waitW}` : l.emptyBig;
+  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${ahead} ${l.ahead} ~${wait} ${l.min} ${l.waitW}` : l.emptyBig;
   const subLine = !isOpen ? "" : hasQueue ? l.busySub : l.emptySub;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.

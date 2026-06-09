@@ -371,7 +371,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                   <div>
                     <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
-                      {new Date(b.starts_at).toLocaleDateString("de-CH")} | {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(b.starts_at).toLocaleDateString("de-CH")} {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                   <div className="text-right flex flex-col items-end">

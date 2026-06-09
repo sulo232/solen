@@ -84,12 +84,12 @@ function VisualBooking() {
               Lara K.
             </div>
             <div className="text-[10px] text-s-ink-3">
-              Schnitt + Föhn | 14:00
+              Schnitt + Föhn 14:00
             </div>
           </div>
         </div>
         <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[11px] font-bold text-white">
-          Bestätigt | 23 Sek.
+          Bestätigt 23 Sek.
         </div>
         {/* Animated ping dot */}
         <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center">
@@ -501,7 +501,7 @@ export function JoinUsCard() {
               ))}
             </span>
             <span className="font-body text-[13px] font-normal text-white/70">
-              | von 1&apos;200+ Salon-Partnern
+ von 1&apos;200+ Salon-Partnern
             </span>
           </div>
         </div>

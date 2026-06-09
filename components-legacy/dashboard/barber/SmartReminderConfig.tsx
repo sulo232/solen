@@ -118,8 +118,8 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                           {client.days_overdue > 0
                             ? t("daysOverdue", { days: client.days_overdue })
                             : t("dueToday")}
-                          {client.cycle_days ? ` | ${t("cycle")}: ${client.cycle_days}` : ""}
-                          {client.last_visit_date ? ` | ${t("lastVisit")}: ${new Date(client.last_visit_date).toLocaleDateString()}` : ""}
+                          {client.cycle_days ? ` ${t("cycle")}: ${client.cycle_days}` : ""}
+                          {client.last_visit_date ? ` ${t("lastVisit")}: ${new Date(client.last_visit_date).toLocaleDateString()}` : ""}
                         </p>
                       </div>
 

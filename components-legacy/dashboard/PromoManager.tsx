@@ -245,8 +245,8 @@ export default function PromoManager() {
                   </div>
                   <p className="text-xs text-s-ink-2">
                     {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} {t("discount")}
-                    {promo.max_uses ? ` | ${promo.current_uses}/${promo.max_uses} ${t("used")}` : ` | ${promo.current_uses}x ${t("used")}`}
-                    {promo.valid_until && ` | ${t("until")} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}
+                    {promo.max_uses ? ` ${promo.current_uses}/${promo.max_uses} ${t("used")}` : ` ${promo.current_uses}x ${t("used")}`}
+                    {promo.valid_until && ` ${t("until")} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}
                   </p>
                 </div>
               </div>

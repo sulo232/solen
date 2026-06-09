@@ -526,7 +526,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </div>
                             <div className="font-heading text-[13px] text-s-ink">
                               {category ? tNav(category as Parameters<typeof tNav>[0]) : t("segWasPlaceholder" as Parameters<typeof t>[0])}
-                              {service ? ` | ${service}` : ""}
+                              {service ? ` ${service}` : ""}
                             </div>
                           </div>
                           <button
@@ -602,7 +602,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   {recents.map((r, i) => {
                                     const label = [r.query, r.city !== "all" ? r.city : null]
                                       .filter(Boolean)
-                                      .join(" | ");
+                                      .join(" ");
                                     return (
                                       <button
                                         key={i}

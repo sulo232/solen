@@ -443,7 +443,7 @@ export default function SearchTemplate({
     { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
     { key: "gender", label: gender === "female" ? "Damen" : gender === "male" ? "Herren" : gender === "non_binary" ? "Divers" : "Für wen", active: !!gender },
     { key: "rating", label: minRating ? `${minRating}` : "Bewertung", active: minRating != null },
-    { key: "amenities", label: activeAmenities.length ? `Ausstattung | ${activeAmenities.length}` : "Ausstattung", active: activeAmenities.length > 0 },
+    { key: "amenities", label: activeAmenities.length ? `Ausstattung ${activeAmenities.length}` : "Ausstattung", active: activeAmenities.length > 0 },
     { key: "deals", label: "Angebote", active: deals },
   ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
@@ -941,7 +941,7 @@ export default function SearchTemplate({
                     "inline-block w-0 overflow-hidden opacity-0", // V3-D421d: city stays on line 2 (no inline collapse)
                   )}
                 >
-                  | {cityName}
+                  {" "}{cityName}
                 </span>
               </span>
               {/* line 2 collapses on scroll */}
@@ -952,11 +952,11 @@ export default function SearchTemplate({
                 )}
               >
                 {date ? formatDateLabel(date) : null}
-                {date ? <span className="text-s-ink-3"> | </span> : null}
+                {date ? <span className="text-s-ink-3"> </span> : null}
                 {cityName}
                 {period && (
                   <>
-                    <span className="text-s-ink-3"> | </span>
+                    <span className="text-s-ink-3"> </span>
                     {periodLabel(period)}
                   </>
                 )}

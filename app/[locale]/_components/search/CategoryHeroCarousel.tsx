@@ -153,7 +153,7 @@ export function CategoryHeroCarousel({
                     {(price != null || addr) && (
                       <div className="mt-0.5 font-body text-[13px] text-white/80">
                         {price != null ? `${pick(FROM, locale)} CHF ${price}` : ""}
-                        {price != null && addr ? " | " : ""}
+                        {price != null && addr ? " " : ""}
                         {addr ?? ""}
                       </div>
                     )}

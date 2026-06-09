@@ -218,7 +218,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
               <div>
                 <p className="text-sm font-medium text-s-ink">{pkg.name}</p>
                 <p className="text-xs text-s-ink/40">
-                  {pkg.sessions} + {pkg.bonus_sessions} {t("bonus")} | {pkg.service_name} | {pkg.purchases_count} {t("sold")}
+                  {pkg.sessions} + {pkg.bonus_sessions} {t("bonus")} {pkg.service_name} {pkg.purchases_count} {t("sold")}
                 </p>
               </div>
               <div className="flex items-center gap-3">

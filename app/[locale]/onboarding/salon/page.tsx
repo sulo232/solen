@@ -246,7 +246,7 @@ function Step3({ data, onChange, category, t }: {
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-accent" />
               <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/45">
-                KI-Vorschlag | anpassbar
+                KI-Vorschlag anpassbar
               </p>
             </div>
           )}

@@ -242,7 +242,7 @@ export default function TipFlow({
         {demo ? (
           <div className="mt-4">
             <div className="flex items-center gap-2.5 rounded-input border border-s-border bg-s-bg-sunken px-3.5 py-4 text-[13px] text-s-ink-2">
-              <CreditCard size={18} className="shrink-0 text-s-ink" /> Karte | MM / JJ | CVC
+              <CreditCard size={18} className="shrink-0 text-s-ink" /> Karte MM / JJ CVC
             </div>
             <button
               type="button"

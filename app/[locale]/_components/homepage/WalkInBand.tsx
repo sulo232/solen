@@ -28,9 +28,9 @@ type WalkInShop = {
 };
 
 const SHOPS: WalkInShop[] = [
-  { slug: "fade-lab", name: "Fade Lab", rating: "4.9", meta: "Barber | 800 m", wait: "10–14", ahead: 3, queue: 5 },
-  { slug: "herr-und-co", name: "Herr & Co.", rating: "4.8", meta: "Barber | 1.1 km", wait: "15–20", ahead: 4, queue: 5 },
-  { slug: "sharp-studio", name: "Sharp Studio", rating: "4.7", meta: "Barber | 1.4 km", wait: "8–11", ahead: 2, queue: 5 },
+  { slug: "fade-lab", name: "Fade Lab", rating: "4.9", meta: "Barber 800 m", wait: "10–14", ahead: 3, queue: 5 },
+  { slug: "herr-und-co", name: "Herr & Co.", rating: "4.8", meta: "Barber 1.1 km", wait: "15–20", ahead: 4, queue: 5 },
+  { slug: "sharp-studio", name: "Sharp Studio", rating: "4.7", meta: "Barber 1.4 km", wait: "8–11", ahead: 2, queue: 5 },
 ];
 
 export default function WalkInBand() {
