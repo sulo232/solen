@@ -74,7 +74,7 @@ export default function BusinessTeaser() {
             sind schon dabei.
           </p>
           <Link
-            href="/business"
+            href="/partner"
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 ease-glide hover:-translate-y-[1px] hover:bg-black hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] active:scale-[0.97] md:text-[15px]"
           >
             Mehr erfahren

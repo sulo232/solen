@@ -33,8 +33,8 @@ const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: stri
   {
     heading: "Für Salons",
     items: [
-      { label: "Für Salons", href: "/fuer-salons" },
-      { label: "Salon-Hilfe", href: "/business" },
+      { label: "Für Salons", href: "/partner" },
+      { label: "Salon-Hilfe", href: "/help" },
       { label: "Partner werden", href: "/partner" },
     ],
   },

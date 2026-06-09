@@ -362,7 +362,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               Für Salons
             </h2>
             <Link
-              href={`/${locale}/business#anmelden`}
+              href={`/${locale}/partner`}
               onClick={onClose}
               className={cn(
                 "flex items-center justify-between gap-4",

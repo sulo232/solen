@@ -50,7 +50,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
                 </Link>
               </li>
               <li>
-                <Link href={`${p}/business`} className="text-s-accent hover:underline">
+                <Link href={`${p}/partner`} className="text-s-accent hover:underline">
                   Hilfe für Salons
                 </Link>
               </li>

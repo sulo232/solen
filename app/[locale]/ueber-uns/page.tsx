@@ -59,7 +59,7 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Mit Solen verwaltest du Termine, Walk-ins und Zahlungen an einem Ort.{" "}
-              <Link href={`${p}/fuer-salons`} className="text-s-accent hover:underline">
+              <Link href={`${p}/partner`} className="text-s-accent hover:underline">
                 Mehr für Salons
               </Link>
               .

@@ -69,10 +69,7 @@ const BUSINESS_MENU: { label: string; href: string }[] = [
   // section #9, pricing section #6). Swap to in-page anchors so nav doesn't
   // dead-end. Anchors: #how, #anmelden, #pricing (added to /business page sections
   // when Wave 2 rebuild lands; until then they scroll to nearest section).
-  { label: "Werde Solen-Partner",  href: "/business#anmelden" },
-  { label: "Wie es funktioniert",  href: "/business#how"      },
-  { label: "Demo buchen",          href: "/business#anmelden" },
-  { label: "Preise",               href: "/business#pricing"  },
+  { label: "Werde Solen-Partner",  href: "/partner" },
 ];
 
 // V3-D349 (2026-05-28): compact search pill fused into the mobile header on
