@@ -1022,7 +1022,7 @@ export default function SearchTemplate({
             className={cn(
               "grid h-9 w-9 shrink-0 place-items-center rounded-full border",
               "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
-              "active:scale-[0.95] active:duration-[80ms]",
+              "active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               activeFilterCount > 0
                 ? "border-s-accent bg-white text-s-accent"

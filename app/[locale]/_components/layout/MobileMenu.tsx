@@ -246,7 +246,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
                   "transition-shadow duration-200 ease-glide",
                   "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
-                  "active:scale-[0.99] active:duration-[80ms]",
+                  "active:scale-[0.98] active:duration-[80ms]",
                 )}
               >
                 <span className="flex min-w-0 items-center gap-3">
@@ -371,7 +371,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
                 "transition-shadow duration-200 ease-glide",
                 "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
-                "active:scale-[0.99] active:duration-[80ms]",
+                "active:scale-[0.98] active:duration-[80ms]",
               )}
             >
               <span className="min-w-0 flex-1">

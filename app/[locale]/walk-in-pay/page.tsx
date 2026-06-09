@@ -461,7 +461,7 @@ export default function WalkInPayPage() {
               <button
                 type="button"
                 onClick={() => setQrExpanded(true)}
-                className="animate-enter-up flex items-center gap-4 rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.99]"
+                className="animate-enter-up flex items-center gap-4 rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.98]"
                 style={{ animationDelay: "0.13s" }}
               >
                 {qrUrl && (
@@ -478,7 +478,7 @@ export default function WalkInPayPage() {
                 <button
                   type="button"
                   onClick={() => setReceiptOpen(true)}
-                  className="flex flex-1 flex-col justify-center rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.99]"
+                  className="flex flex-1 flex-col justify-center rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.98]"
                 >
                   <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{paidLabel}</p>
                   <p className="mt-1 font-heading text-[20px] font-extrabold tracking-[-.02em] text-s-ink">{amountStr}</p>
@@ -489,7 +489,7 @@ export default function WalkInPayPage() {
                     type="button"
                     onClick={openBarber}
                     disabled={!canOpenBarber}
-                    className="flex flex-1 flex-col rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.99] disabled:active:scale-100"
+                    className="flex flex-1 flex-col rounded-[20px] bg-s-bg-sunken p-4 text-left transition active:scale-[0.98] disabled:active:scale-100"
                   >
                     <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-s-ink-3">{l.barberEyebrow}</p>
                     <div className="mt-2 flex items-center gap-2.5">
@@ -515,7 +515,7 @@ export default function WalkInPayPage() {
                     type="button"
                     onClick={openSalon}
                     disabled={!canOpenSalon}
-                    className="flex min-w-0 flex-1 items-center gap-2 p-4 text-left transition active:scale-[0.99] disabled:active:scale-100"
+                    className="flex min-w-0 flex-1 items-center gap-2 p-4 text-left transition active:scale-[0.98] disabled:active:scale-100"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-heading text-[14.5px] font-bold leading-tight text-s-ink">{booking.salon_name}</p>

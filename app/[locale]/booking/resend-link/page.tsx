@@ -230,7 +230,7 @@ const inputErr = "border-s-closed focus:border-s-closed focus:ring-0";
 const labelCls = "block text-[12.5px] font-medium text-s-ink mb-[7px]";
 const hintCls = "mt-1.5 text-[12px] leading-[1.4] text-s-ink-2";
 const ctaInk =
-  "flex h-[52px] w-full items-center justify-center gap-2.5 rounded-btn bg-s-ink font-body text-[15px] font-medium tracking-[-0.005em] text-white transition-transform duration-100 ease-snap active:scale-[0.985] disabled:cursor-not-allowed disabled:bg-s-ink-disabled disabled:active:scale-100";
+  "flex h-[52px] w-full items-center justify-center gap-2.5 rounded-btn bg-s-ink font-body text-[15px] font-medium tracking-[-0.005em] text-white transition-transform duration-100 ease-snap active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-s-ink-disabled disabled:active:scale-100";
 
 /* ===================================================================== */
 /* state 1 — request form                                                 */

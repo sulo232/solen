@@ -504,7 +504,7 @@ export function SearchOverlay({
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="flex h-12 w-full items-center justify-center rounded-[13px] bg-s-ink font-heading text-[15px] font-bold text-white transition-colors duration-200 ease-glide hover:bg-black active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
+                className="flex h-12 w-full items-center justify-center rounded-[13px] bg-s-ink font-heading text-[15px] font-bold text-white transition-colors duration-200 ease-glide hover:bg-black active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
               >
                 {t("submit")}
               </button>

@@ -137,7 +137,7 @@ export default function WalkInBand() {
           {/* CTA */}
           <a
             href={`/${locale}/barbershop`}
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] bg-s-accent px-4 py-3 font-heading text-[14px] font-bold text-white shadow-[0_6px_14px_rgba(39,110,241,0.18)] transition-transform duration-200 ease-glide active:scale-[0.99]"
+            className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] bg-s-accent px-4 py-3 font-heading text-[14px] font-bold text-white shadow-[0_6px_14px_rgba(39,110,241,0.18)] transition-transform duration-200 ease-glide active:scale-[0.97]"
           >
             Alle Walk-ins
             <ArrowRight size={16} />

@@ -183,7 +183,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium active:scale-[0.99] transition-transform duration-150 disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
+        className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium active:scale-[0.97] transition-transform duration-150 disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>

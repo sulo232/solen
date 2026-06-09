@@ -530,7 +530,7 @@ export default function Header({ locale }: { locale: string }) {
               // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
               // lifts on scroll, not the buttons).
               "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.95]",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               // V3-D101: invert over dark sections.
@@ -552,7 +552,7 @@ export default function Header({ locale }: { locale: string }) {
             aria-label="Zurück"
             className={cn(
               "grid h-10 w-10 shrink-0 place-items-center rounded-[13px] border",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.95]",
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               isDark

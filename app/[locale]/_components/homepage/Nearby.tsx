@@ -164,7 +164,7 @@ export default function Nearby({
         <a
           href="/de/search?view=map"
           aria-label="Salons in der Nähe auf der Karte ansehen"
-          className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.99]"
+          className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97]"
         >
           <span
             aria-hidden
