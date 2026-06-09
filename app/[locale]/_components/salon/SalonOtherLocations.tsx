@@ -89,7 +89,7 @@ function SiblingCard({
         <div className="mt-1.5 text-[12px] text-s-ink-3">{sibling.address}</div>
         {category && (
           /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */
-          <div className="mt-1.5 text-[11px] uppercase tracking-[0.08em] text-s-ink-3">
+          <div className="mt-1.5 text-[12px] uppercase tracking-[0.08em] text-s-ink-3">
             {capitalize(category)}
           </div>
         )}

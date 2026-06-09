@@ -163,7 +163,7 @@ export function SalonVenuesNearby({
               </div>
               {s.categories?.[0] && (
                 /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */
-                <div className="mt-1 text-[11px] uppercase tracking-[0.08em] text-s-ink-3">
+                <div className="mt-1 text-[12px] uppercase tracking-[0.08em] text-s-ink-3">
                   {capitalize(s.categories[0])}
                 </div>
               )}

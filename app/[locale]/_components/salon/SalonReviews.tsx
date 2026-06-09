@@ -175,7 +175,7 @@ function ReviewCard({ review }: { review: Review }) {
             <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
               {displayName}
             </div>
-            <div className="font-body text-[11px] text-s-ink-3 md:text-[12px]">
+            <div className="font-body text-[12px] text-s-ink-3">
               {formatReviewDate(review.created_at)}
             </div>
           </div>

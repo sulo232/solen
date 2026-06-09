@@ -234,6 +234,21 @@ Hierarchy uses **size** + **position** + **tracking** — NOT compound family co
 | **Eyebrow** | 11→12px | 600 | **UPPERCASE** | 0.08em | `s-ink-3` | **max 1** |
 | **Tag / Status** | 10-12px | 600 | **UPPERCASE** | 0.06-0.08em | semantic (success/warn/error) | small footprint |
 
+### Core ramp , the everyday default (2026-06-09, owner-approved; Tim Gabe "random sizing kills cohesion")
+
+The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.** A salon-page audit found the rest was drift (body scattered across 12/13/14px, micro-text at 11px). Always pick a role, never an ad-hoc `text-[Npx]`:
+
+| Use | Role | Px / weight |
+|---|---|---|
+| Page title | Page H2 | 22 / 600 Inter Tight |
+| Section heading | Section H2 | 18 / 600 Inter Tight |
+| Card title / anchor | Subsection H3 | 16 / 600 |
+| Body | Body | 14 / 400 |
+| Secondary / meta | Meta | 13 / 400 |
+| Label / eyebrow | Eyebrow | 12 / 600 UPPERCASE |
+
+**Hard rules:** nothing below **12px** (legibility); titles anchor at **16** (not a stray 15); body is **14** flat (drop the desktop-15 bump). 15px stays reserved for the CTA roles only. Drift-checker flags off-ramp sizes so the sprawl can't return.
+
 ### Canonical tracking values (rule A8 enforces this set)
 
 ```
