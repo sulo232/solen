@@ -29,6 +29,9 @@ contrast, not the shadow, so keep A unmistakably the over-photo treatment, and l
 → **(C) INK-FILLED** `bg-s-ink text-white`, `rounded-btn`/pill. Max ONE per region (CTA lock). Fill, not
   elevation, encodes "the destination." Ink CTAs MAY carry `shadow-elevation-2` (the one deliberate lift).
 
+**Q1.5: Is it a secondary ACTION (a real tappable action that is NOT the one primary commit — Wegbeschreibung, Kalender hinzufügen, Teilen, Verwalten, a see-all/view-all, a tappable inline label)?**
+→ **(E) BLUE-GHOST** `bg-white border border-s-accent text-s-accent`, press-scale(.97). v2 rule 1: secondary actions are blue, not flat-grey. A plain text link uses `text-s-accent` directly (hover-underline). (B flat-grey below is for genuinely quiet/decorative controls — filters, the `(i)`, steppers — NOT a labeled secondary action.) Never a blue-FILLED button (that reads as a 2nd primary).
+
 **Q2: Does the control sit OVER a photo / image / non-flat surface?** (hero, gallery, Entdecken thumb, lightbox)
 → **(A) ELEVATED WHITE GLASS.** Use the canonical `FROST_GLASS` recipe (frosted white `rgba(255,255,255,.80)`
   + `blur(4px)` + 1px white inner border + soft shadow), already in `SalonHero.tsx`. Over a *light* photo,
@@ -46,7 +49,7 @@ contrast, not the shadow, so keep A unmistakably the over-photo treatment, and l
 **(D) hybrid, REJECTED as a resting treatment.** Fill + shadow + border = three separation mechanisms doing one
 job. The only legit "hybrid moment" is a **pressed state**: an elevated control swaps shadow → inset on `:active`.
 
-**Compressed:** `primary → C (ink)` · `over imagery → A (frosted white)` · `calm → B (flat: text=soft-grey, icon=bordered-white)`.
+**Compressed:** `primary → C (ink)` · `secondary action → E (blue-ghost: bg-white border-s-accent text-s-accent, press-scale)` · `over imagery → A (frosted white)` · `calm/quiet → B (flat: text=soft-grey, icon=bordered-white)`. (v2: a tappable secondary action is blue-ghost, not flat-grey; B is for genuinely quiet/decorative controls only.)
 
 ---
 
@@ -61,7 +64,7 @@ job. The only legit "hybrid moment" is a **pressed state**: an elevated control 
    resting on white or `s-bg-sunken`. (Drift-check candidate: `bg-white` + `shadow-*` NOT over an image/hero/modal.)
 4. **Stepper state:** qty 1 shows a **trash** glyph; qty ≥2 shows **−**. Same chrome, swap glyph + `aria-label` only.
    Quantity numeral = `tabular-nums text-s-ink` (calm, not bold). Disabled `−/+` at min/max = `text-s-ink-3 opacity-30`.
-5. **No blue.** These controls never use `s-accent` as a resting fill; accent appears only on `:focus-visible` (ring).
+5. **Blue = interactivity (v2).** A resting secondary/ghost control MAY wear blue — the **blue-ghost** recipe `bg-white border border-s-accent text-s-accent` (white bg + blue border + blue text; the border clears the ≥3:1 contrast trap). The single primary stays ink (C). Blue also appears on `:focus-visible` rings, tappable text links, active tab/segmented states, and interactive icon tints. Blue marks INTERACTION, never non-interactive emphasis — never a blue-FILLED primary (reads as a 2nd primary), never blue on body/labels/prices/headings/eyebrows. (Drift A14 allows the blue-ghost recipe; it is NOT the banned white+shadow grey-haze.)
 
 ---
 

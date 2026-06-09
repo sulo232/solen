@@ -267,20 +267,41 @@ CANONICAL_TRACKING_EM = {
     "0.08", ".08",
 }
 
-# A9 — text-s-accent outside allowed roles (§1.5)
-# Allowed: focus-visible ring, Spinner arc, form-input focus border.
-# Forbidden: text-s-accent on eyebrow/link/dot/hero-span/decorative-icon.
+# A9 — text-s-accent on NON-INTERACTIVE text (Design Language v2, 2026-06-09)
+# v2 rule 1: BLUE = INTERACTIVITY. s-accent is now ALLOWED (and expected) on any tappable
+# affordance — links, see-all/view-all, active tabs/segments, secondary & ghost buttons,
+# tappable rows, inline action labels, interactive icon tints — plus the system states it
+# always had (focus ring, Spinner, form-input focus). v2 rule 2: it stays OFF non-interactive
+# text (eyebrows, body, prices, headings) and never FILLS a primary CTA.
+# This check now only nudges (INFO) when blue appears with NO sign of interactivity on the line.
 ACCENT_TEXT_RE = re.compile(r"\btext-s-accent\b")
 ACCENT_BG_RE   = re.compile(r"\bbg-s-accent(?:-pale)?\b")
-# Whitelist patterns — these lines are allowed accent applications.
+# Whitelist — lines showing ANY of these are interactive (or system-feedback) → allowed under v2.
 ACCENT_ALLOWED_HINTS = (
     "focus-visible",
     "focus:",
     "Spinner",
     "spinner",
-    "outline-s-accent",  # outline ring
-    "ring-s-accent",     # focus ring
-    "border-s-accent",   # input focus border (paired with focus: usually)
+    "outline-s-accent",   # outline ring
+    "ring-s-accent",      # focus ring
+    "border-s-accent",    # input focus border / blue-ghost secondary button
+    # v2 interactivity markers — blue on these is CORRECT, not drift:
+    "href",               # a link
+    "<a ",
+    "<Link",
+    "onClick",
+    "onPress",
+    'role="tab',
+    "role='tab",
+    "aria-current",
+    "aria-selected",
+    "data-active",
+    "data-state",
+    "cursor-pointer",
+    "hover:underline",    # blue-link hover-underline (v2 rule 7)
+    "hover:text-s-accent",
+    "active:",
+    "Buchen", "Wegbeschreibung", "Verwalten",  # inline action labels
 )
 
 # A10 — non-zero border-radius on <img> elements (§11 non-negotiable rule)
@@ -679,9 +700,9 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
         if ACCENT_TEXT_RE.search(line) or ACCENT_BG_RE.search(line):
             if not any(hint in line for hint in ACCENT_ALLOWED_HINTS):
                 findings.append(Finding(
-                    file=rel, line=ln_no, rule="INFO A9: accent outside allowed roles",
+                    file=rel, line=ln_no, rule="INFO A9: blue on possibly-non-interactive text (v2)",
                     snippet=line,
-                    recommendation="Per LOCKFILE §1.5: `s-accent` is restricted to :focus-visible rings, <Spinner> arcs, and form-input focus borders. Decorative uses → swap to s-ink-3 (eyebrow), s-ink underline (link), s-ink (hero span), or s-success (completion). See §1.5 sweep table.",
+                    recommendation="Design Language v2 (CANON §0): blue `s-accent` = INTERACTIVITY — CORRECT on links / see-all / active tabs / secondary & ghost buttons / tappable rows / inline action labels (those are whitelisted). WRONG only on NON-interactive text — eyebrows, body, prices, headings (→ ink/grey) — or as a FILLED primary CTA (→ bg-s-ink). If this line is a real tappable affordance, it's fine; if it's static text, swap to ink.",
                 ))
 
         # A10 — rounded radius on <img> tags.

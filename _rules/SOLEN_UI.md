@@ -1,5 +1,7 @@
 # Solen UI — Think Before You Output
 
+> ⚠️ PALETTE/COLOR SUPERSEDED (Design Language v2, 2026-06-09): the Earthen Wellness Light palette (emerald/terracotta/cream) and the LIVE_TRUTH token refs below are RETIRED. Current Solen = B&W chrome + blue #276EF1 INTERACTIVITY accent (links/tabs/secondary & ghost buttons/active states, used GENEROUSLY; OFF non-interactive text) + ONE ink #0A0A0A commit CTA, WHITE-first surfaces (cool-grey sunken #F4F4F5, NO cream), success FOCAL = deep green #15803D disc + white check, Inter Tight + Inter. The universal UX PRINCIPLES below stay valid — swap every emerald/terracotta/cream/10%-cap reference for the current palette. Canonical: CANON.md §0 + LOCKFILE §1/§1.5.
+
 > Principles checklist every agent (Claude Code, Claude Design, Cursor, fresh sessions) MUST walk through BEFORE producing any UI/UX output — new screen, component, redesign, layout change, color tweak, copy update. Forces a principle-check so output isn't generic AI slop. Universal UI/UX principles live here; Solen-specific tokens (palette, fonts, retired patterns) live in `_tasks/SOLEN_LIVE_TRUTH.md` (principal) + operational pattern playbook in `_rules/SOLEN_PATTERNS.md`. Both LIVE_TRUTH + this skill are required reading before shipping pixels. Historical Q-lock context: `_tasks/archive/SOLEN_DESIGN.archived.md` §20.
 
 > **Hard stop**: before writing a single line of UI code or generating a mockup, walk through every principle below and answer how your design satisfies it. If you can't answer one, the design isn't ready. Don't output yet.
@@ -79,7 +81,7 @@ Brand primary (Solen coral, or whatever the current brand color is) belongs to *
 
 > Ask: *If the brand primary changes tomorrow (palette pivot, reskin), does my UI still mean what it means? Or does the heart turn green and the "today" indicator turn green and the save toast turn green?*
 
-If brand primary leaks into emotional/semantic uses, you have **brand-color flood** — a junior pattern. The eye stops being trained to recognize "X is brand" because brand is showing up everywhere. Mature systems reserve brand color for ~10% of visual surface (Solen UI #5b "60/30/10 split").
+If brand primary leaks into emotional/semantic uses, you have **brand-color flood** — a junior pattern. The eye stops being trained to recognize "X is brand" because brand is showing up everywhere. Mature systems reserve brand color for ~10% of visual surface (Solen UI #5b "60/30/10 split"). **v2 note (2026-06-09):** this ~10% / 60-30-10 cap governs NON-interactive brand + emotional colour (heart, urgency, success), NOT the interactivity accent — blue `s-accent #276EF1` on links / tabs / ghost buttons / tappable rows is functional and is NOT budgeted (it is never "brand-flood"). The flood rule still bans blue on non-interactive text / emphasis.
 
 **Concrete prohibitions:**
 - Heart save state must use a literal heart-color hex (`#FF4A6B` or warm-red), NOT `var(--coral)` or whatever the brand token resolves to.

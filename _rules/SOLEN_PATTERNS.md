@@ -10,6 +10,8 @@
 
 ## Part 1 — The Solen V3 operating system
 
+> ⚠️ HISTORICAL — the V2-D48 Earthen Wellness Light era (cream + emerald + terracotta) is RETIRED by the B&W pivot + Design Language v2 (2026-06-09). Current: white-first surfaces (#FFFFFF, cool-grey sunken #F4F4F5, NO cream), blue #276EF1 INTERACTIVITY accent (links/tabs/secondary & ghost buttons/active states), ink #0A0A0A commit CTA, success FOCAL = deep #15803D disc + white check, Inter Tight + Inter. Read Parts 4-5-8 for the Fresha-translation IA structure only; IGNORE all color/substrate values in Parts 1-3. Canonical color: CANON.md §0 + LOCKFILE §1.
+
 ### 1.1 Brand foundation (V2-D48 Earthen Wellness Light, locked 2026-05-09)
 
 - **Substrate:** cream `#F5EBDD` (`s-bg-base`). Body bg, hero bg. ~85% of viewport coverage.

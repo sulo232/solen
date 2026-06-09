@@ -13,7 +13,7 @@
 ## §0 — Hard rules (NEVER allowed)
 
 1. **No emoji.** Anywhere in code / files / UI / commits. `lucide-react` icons only. (Sole exception: `·` `→` `●` `★` typographic glyphs are allowed.)
-2. **Primary CTAs stay `bg-s-ink` (#0A0A0A)** — V3-D192-fix lock. Accent blue NEVER on primary action buttons. Only on small highlight moments (eyebrows, link text, badges, focus rings).
+2. **Primary CTAs stay `bg-s-ink` (#0A0A0A)** — V3-D192-fix lock. Accent blue NEVER FILLS a primary action button (never a blue-filled primary, never two ink primaries). But blue IS used generously on every OTHER interactive affordance — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — per Design Language v2 rule 1 (§1.5). Blue stays OFF non-interactive text (eyebrows, body, prices, headings stay ink/grey). The one outcome/status-screen CTA exception is V3-D426.
 3. **No category branches** in components — `if (category === 'X')` is forbidden. Same component renders for Coiffeur / Barber / Nails / Spa / Makeup / Waxing without conditionals. (Drift-checker rule B5.)
 4. **No new semantic hues invented.** Use the §3 universal-color table. Success=green / error=red / warning=amber / info=blue / rating=yellow / save=pink / urgency=burnt-amber / disabled=ink-3. Don't pick a "nice teal" for a status. (V3-D197.)
 5. **No `onClick={() => {}}` dead clicks.** Every interactive surface has a working handler OR uses `<ComingSoon>` wrapper.
@@ -45,11 +45,11 @@
 | `white` | `#FFFFFF` | Pure white (text on dark) |
 | `black` | `#000000` | NEVER use (eye strain). Use `s-ink` instead. |
 
-### Brand accent (Layer 2 — royal blue, SMALL footprint) — V3-D329 token swap
+### Brand accent (Layer 2 — royal blue = INTERACTIVITY, v2 2026-06-09; generous on anything tappable, off everything that isn't)
 
 | Token | Hex | Usage |
 |---|---|---|
-| `s-accent.DEFAULT` | `#185CE0` | **V3-D330 (2026-05-28): NARROWED to system feedback only.** Focus-visible rings + `<Spinner>` arc + form-input focus border. NEVER decorative text, eyebrows, link text, dots, step circles, hero spans, badges. See §1.5 Accent Application Rules. V3-D329 hex unchanged (still calmer than #276EF1). |
+| `s-accent.DEFAULT` | `#276EF1` | **v2 (2026-06-09): BLUE = INTERACTIVITY (supersedes the V3-D330 system-only narrowing).** Generous on interactive affordances — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — plus the system states it always had (focus-visible rings, `<Spinner>` arc, form-input focus). GUARDRAIL: OFF non-interactive text (body, prices, headings, eyebrows stay ink/grey); never FILLS a primary CTA. See §1.5. Hex collapsed to #276EF1 (DEFAULT = deep = bright, matches code + CANON). |
 | `s-accent.deep` | `#185CE0` | Alias (same as DEFAULT now). Kept for callsites that use s-accent-deep explicitly. |
 | `s-accent.bright` | `#276EF1` | The OLD royal #276EF1 preserved for places that need the punchier hit (large icons, hero accent moments). Use sparingly. |
 | `s-accent.pale` | `#EAEFFE` | Pale wash for selected-tab bg / focus glow. Unchanged. |
@@ -58,7 +58,8 @@
 
 | Semantic | Token | Hex | Light bg |
 |---|---|---|---|
-| Success / open | `s-success.DEFAULT` / `.bg` | `#16A34A` | `#E8F5E9` |
+| Success / open (inline chips/pills) | `s-success.DEFAULT` / `.bg` | `#16A34A` | `#E8F5E9` |
+| Success FOCAL (confirm / paid) | `s-success.deep` | `#15803D` | white check on a solid deep-green disc (v2 rule 6) |
 | Error | `s-error.DEFAULT` / `.bg` | `#D32F2F` | `#FFEBEE` |
 | Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424) |
 | Info | use `s-accent` | `#276EF1` | `#EAEFFE` |
@@ -104,44 +105,53 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 **Rule:** `s-accent` (any shade — DEFAULT / deep / bright / pale) may only be applied to surfaces in the ALLOWED list. The FORBIDDEN list is enforced by drift-check rule A9.
 
-**Rationale:** Measured Uber inventory + feedback-blue research (`public/_pixel-refs/uber/feedback-blue/UBER-FEEDBACK-BLUE.md` + `UBER-BLUE-INVENTORY.md`) confirms Uber gates blue exclusively on `:focus-visible` rings and `<Spinner>` arc — zero decorative usages across 8 web surfaces + 26 iOS screens. Solen previously painted accent on ~8-12% of pixels via eyebrows, link text, step circles, hero spans, decorative dots. The user-reported "vibrating blue text" / "blue pill black text contrast" complaints all trace to this overuse.
+**Rationale:** Measured Uber inventory + feedback-blue research (`public/_pixel-refs/uber/feedback-blue/UBER-FEEDBACK-BLUE.md` + `UBER-BLUE-INVENTORY.md`) confirms Uber gates DECORATIVE blue tightly. **UPDATE v2 (2026-06-09):** the owner reversed this for INTERACTIVE elements — "use blue a lot for links/clickable stuff." The Uber-minimal-blue evidence still governs NON-interactive decoration (no blue eyebrows / hero spans / decorative dots / body emphasis — that is the "vibrating blue text" complaint), but links, see-all/view-all, active tabs, secondary & ghost buttons, and inline action labels are now blue. Blue marks INTERACTION, not emphasis. (Solen's old failure was painting blue on ~8-12% of pixels via NON-interactive eyebrows / hero spans / decorative dots — that part stays forbidden.)
 
 ### §1.5.0 — THE COLOR MODEL (V3-D460, 2026-06-09, council + owner-approved) — read first
 
-**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a screen reads *dead* because the NEUTRALS are cool/clinical, NOT because it lacks an accent. The fix for deadness is **warmth + imagery**, never more blue. Adding blue to compensate for missing life is the #1 colour mistake.
+**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a screen reads *dead* because the NEUTRALS are cool/clinical, NOT because it lacks an accent. **SUPERSEDED IN PART BY v2 (2026-06-09, later same-day owner approval):** blue is now the INTERACTIVITY colour, used generously on tappable affordances (links / tabs / secondary & ghost buttons / action labels / tappable rows). The principle below holds for NON-interactive surfaces ONLY: do not paint blue on a dead, non-tappable area to fake life — there, life comes from warmth + imagery + motion. Blue earns its place by marking interaction, not by decorating. Adding blue to NON-interactive decoration to compensate for missing life remains the #1 colour mistake.
 
 **Where "life"/colour comes from, in priority order:**
 1. **Warm neutrals** — the surface itself (stone `#F8F5F2`, hairline `#E8E4DF`, V3-D460). Foundational; carries warmth on *every* screen with zero accent.
 2. **Real photography** — salon photos. On any screen with a photo, the photo IS the colour. Keep adjacent UI neutral and let the image lead.
 3. **Semantic colour (Layer 3)** — green=paid/confirmed/open, yellow=rating, pink=saved, red=error, amber=warning. Colour ONLY where it carries meaning/state.
 4. **Motion** — the dynamic delight layer (SuccessMark, press feedback). Premium feel without a single hue.
-5. **Accent blue** — LAST resort, system-only (see ALLOWED). Almost never.
+5. **Accent blue** — the INTERACTIVITY layer (v2 2026-06-09). Used generously wherever something is tappable (links, see-all, active tabs, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints) plus the system states (focus ring / spinner / input focus). NOT a last resort. Stays OFF non-interactive text/decoration.
 
 **Per-element decision rule** (ask in order, stop at first yes):
 1. Carries state/meaning? → semantic colour.
 2. Strong photo adjacent? → keep neutral, let the photo carry it.
 3. The one primary commit action? → ink fill (`bg-s-ink`).
 4. A system focus/loading state? → blue (ring / spinner / input focus).
-5. Everything else (incl. secondary action BUTTONS — Directions, Add-to-calendar, steppers) → **ink + icon** at 500-600 weight. NEVER blue.
+5. Secondary / ghost action buttons + inline action labels (Wegbeschreibung, Kalender hinzufügen, Buchen, Verwalten) + tappable row affordances → **BLUE** (blue-ghost outline `bg-white border-s-accent text-s-accent`, or plain `text-s-accent` link) per v2 rule 1, since they are tappable. Only the ONE primary commit button stays ink-filled. Steppers / icon controls sitting OVER a photo still follow CONTROL_ELEVATION (frosted glass). Genuinely non-interactive labels stay ink.
 
-**The one carve-out (owner V3-D460):** a single **bare TEXT navigation link** per screen — the "manage your booking / account" escape hatch that has NO button chrome — MAY be `text-s-accent` so it's recognizable as tappable (a bare ink link is invisible). Buttons (chrome/border/icon) stay ink. This is the ONLY sanctioned blue-on-text; do not generalize it to other links.
+**v2 reversal (2026-06-09, supersedes the V3-D460 one-link carve-out):** ALL text links and see-all/view-all links are `text-s-accent` — blue marks tappable, used generously (no one-per-screen cap). Secondary/ghost buttons are blue too (blue-ghost recipe). GUARDRAIL (v2 rule 2): blue stays OFF non-interactive text — a blue word must be a real link, never emphasis; eyebrows / prices / body / headings stay ink/grey. The one primary commit button stays ink-filled.
 
-### ✓ ALLOWED accent applications
+### ✓ ALLOWED accent applications (v2 — BLUE = INTERACTIVITY)
+
+Blue is the interactivity layer: allowed (and expected) on anything tappable, **no per-screen cap.** The V3-D460 "one bare manage-link per screen" carve-out is SUPERSEDED — all links are blue now.
 
 | Surface | Recipe | Notes |
 |---|---|---|
+| Text link + see-all / view-all link | `text-s-accent`, `hover:underline` | every tappable link, no per-screen cap |
+| Active tab / segmented state | `text-s-accent` (+ optional `bg-s-accent-pale` or a thin blue underline/indicator) | the active interactive choice |
+| Secondary / ghost button | blue-ghost `bg-white border-s-accent text-s-accent` | secondary actions; never an ink-filled 2nd primary |
+| Tappable list-row / inline action label | `text-s-accent` | Buchen / Wegbeschreibung / Verwalten |
+| Interactive icon tint (icon IS the tap target) | `text-s-accent` | NOT a decorative icon inside a row (that stays ink — see drift A9 boundary) |
 | `:focus-visible` ring (any focusable element) | `box-shadow: 0 0 0 2px white inset, 0 0 0 2px var(--s-accent)` | Double-ring per Base Web `accent` token |
 | Text link focus-visible | `outline: 3px solid var(--s-accent); outline-offset: 1px` | Per Base Web link-focus pattern |
 | `<Spinner>` arc (loading) | Track grey, arc `var(--s-accent)` | Matches Base Web `<Spinner kind="primary">` |
 | Form input focus border | `border-color: var(--s-accent); box-shadow: 0 0 0 2px var(--s-accent-pale)` | Inline + textarea + select |
-| The ONE "manage booking / account" bare text-link per screen (NO button chrome) | `text-s-accent` + optional chevron | V3-D460 owner carve-out — the single navigational escape hatch needs to read as tappable (a bare ink link is invisible). NOT for general links, body, buttons, or a 2nd link on the same screen. |
+
+**GUARDRAIL (v2 rule 2):** blue stays OFF non-interactive text — eyebrows, body, prices, headings stay ink/grey. Drift rule A9 is re-scoped to flag blue only on non-interactive text + a blue-filled primary (NOT on the interactive surfaces above).
 
 ### ✗ FORBIDDEN — sweep to ink/semantic instead
 
 | Current usage | Sweep to |
 |---|---|
 | `text-s-accent` on eyebrow / label | `text-s-ink-3` |
-| `text-s-accent` on body link | `text-s-ink` — NO underline (V3 2026-05-30); signal via weight / icon affordance |
+| `text-s-accent` on a real tappable link | KEEP blue — links are blue (v2 rule 1); `hover:underline`. (This row no longer sweeps to ink.) |
+| `text-s-accent` on NON-interactive emphasis (a word that is not a link) | `text-s-ink` + bold weight — blue means tappable, not emphasis (v2 rule 2) |
 | `text-s-accent` on hero accent span | `text-s-ink` (single word can use weight contrast instead) |
 | `bg-s-accent-pale text-s-accent` pill | Either `bg-white text-s-accent` OR `bg-s-accent-pale text-s-ink` — never both blue |
 | `bg-s-accent` step circle | `bg-s-ink text-white` |
@@ -251,7 +261,7 @@ Hierarchy uses **size** + **position** + **tracking** — NOT compound family co
 | **Meta** | 12→13px | 400 | sentence | 0 | `s-ink-3` | unlimited |
 | **Primary CTA** | 15px | 500 | sentence | -0.005em | white on `s-ink` | 1-2 |
 | **Secondary CTA** | 15px | 500 | sentence | -0.005em | `s-ink` + `border-s-border` | 1-2 |
-| **Tab label** | 14px | 500 | sentence | 0 | `s-ink-2` (active: `s-ink`) | (one nav per route) |
+| **Tab label** | 14px | 500 | sentence | 0 | `s-ink-2` (active: `s-accent` text + blue underline/indicator — active tab is interactive, blue per v2 rule 1) | (one nav per route) |
 | **Eyebrow** | 11→12px | 600 | **UPPERCASE** | 0.08em | `s-ink-3` | **max 1** |
 | **Tag / Status** | 10-12px | 600 | **UPPERCASE** | 0.06-0.08em | semantic (success/warn/error) | small footprint |
 
@@ -349,7 +359,7 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 | `text-[10-12px] uppercase tracking-[.1Xem] text-s-accent` | Eyebrow (drop) | **Drop entirely** per V3-D331 — sections go straight to H2. Keep only if magazine-style identity label needed |
 | `<span ...rounded-full bg-s-*>` immediately before eyebrow text | Decoration dot (forbidden A12) | **Drop the dot span** — eyebrow is plain text only |
 | `text-[9-12px] uppercase tracking-[.16-.22em]` | Tag/Status | `text-[10-12px] font-semibold uppercase tracking-[0.08em] text-<semantic>` |
-| `text-s-accent` on link | Body link | `text-s-ink` — **NO underline** (V3 2026-05-30, user rule "no underline anywhere"); signal via font-weight or an icon affordance |
+| `text-s-accent` on a real link | Body link | KEEP `text-s-accent` (links are blue, v2 rule 1) + `hover:underline`. Sweep to ink ONLY if it is non-interactive emphasis, not a link. |
 
 ### Escape hatch
 
@@ -408,7 +418,7 @@ The app read "flat / 2018" because surface depth was suppressed (§3 "use shadow
 
 ### Surface rule — gray tray vs white (the "where" of depth)
 
-`s-bg-sunken` (#F5F5F4) is a **grouping tray, not a global wash.** Put gray UNDER: grouped lists / settings / forms, dashboard panels, and any section that clusters a group of cards. The gray tray is what "earns" the white card's lift (consistent with "elevation earned by the background").
+`s-bg-sunken` (#F4F4F5, COOL light grey — v2 rule 4, reverses the V3-D460 warm #F8F5F2) is a **grouping tray, not a global wash.** Put gray UNDER: grouped lists / settings / forms, dashboard panels, and any section that clusters a group of cards. The gray tray is what "earns" the white card's lift (consistent with "elevation earned by the background").
 
 Keep **white** for: the feed (Discover), content + profile pages, heroes, and modals / sheets.
 
@@ -468,7 +478,7 @@ Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-pa
 
 ### Fresha-measured motion patterns
 
-- **Book CTA hover/press:** `transition: max-inline-size 0.2s cubic-bezier(0.85, 0, 0.15, 1)` — width-morph ONLY, no transform/scale
+- **Book CTA hover/press:** press → `scale(.97)` with a pressed shadow (~150ms `thud`) per v2 rule 7 + the §3.5 state matrix. The Fresha width-morph (`max-inline-size 0.2s cubic-bezier(0.85,0,0.15,1)`) is an optional hover flourish, NOT a replacement for press-scale.
 - **TabPill active swap:** `transition-colors duration-200 ease-glide`
 - **Sheet open/close:** `300ms ease-glide`
 - **Hover lift on cards:** `transform translateY(-1px) + shadow-elevation-2`, `duration-200 ease-glide`
@@ -491,6 +501,8 @@ toast.error(msg: string, opts?: { description?: string }): void
 toast.warning(msg: string, opts?: { description?: string }): void
 toast.info(msg: string, opts?: { description?: string }): void
 // Pastel bg + ink text + saturated lucide icon. Auto-dismiss 4s. Max 3 visible.
+// Toasts are transient inline status — pastel pattern is correct here (v2 rule 6 chip/badge carve-out).
+// The FOCAL booking/payment-confirmation moment is NOT a toast: it uses s-success.deep #15803D disc + WHITE check (SuccessMark / §1 success-FOCAL).
 ```
 
 ### Skeleton

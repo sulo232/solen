@@ -71,7 +71,7 @@ Every color use on Solen belongs to **one of three layers**:
 | Layer | Budget | What it is | Where it appears |
 |---|---|---|---|
 | **1 · Chrome** | ~97% (80% white surfaces + 17% ink) | Color is NOT the message. Pure B&W: white/sunken bg, ink text, ink hairlines, ink icons | Page bg, cards, modals, h1-h6, body, default buttons, dividers, footer, layout, photos |
-| **2 · Brand accent** | ~3% | Color says "this is Solen." Single saturated hue, Apple-style usage (small highlight moments only — NOT primary CTAs) | Section eyebrows + bullets, link color, "NEW" pills, selected tab text, focus moments where brand identity matters |
+| **2 · Interactive accent (blue)** | no budget cap — sized by how many interactive affordances are on screen | Color says "this is tappable." Single saturated hue `s-accent #276EF1`, used GENEROUSLY on interactive affordances (NOT the one primary CTA) | Text links, see-all/view-all, active tab/segment state, secondary & ghost buttons, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), interactive icon tints. NOT eyebrows or bullets (those stay text-s-ink-3) — blue marks interaction, never emphasis |
 | **3 · Semantic UI** | Variable (each instance is small but unbudgeted) | **Color IS the message.** Universal-convention hues users recognize at-a-glance. | Toast tones, StatusPill, AlertBanner, FormFieldError, ProgressBar step state, urgency badges, rating, save-fill, validation states |
 
 **The 80/17/3 numbers still describe chrome + brand-accent budget.** They're a budget, not a ceiling — semantic UI is unbudgeted because each instance is small and its presence is justified by meaning, not aesthetic.
@@ -85,10 +85,10 @@ Every color use on Solen belongs to **one of three layers**:
    → YES → Layer 3 semantic UI (see §2.5 universal color conventions)
    → NO  → continue
 
-2. Does this surface represent the BRAND identity moment?
-   (eyebrow, "NEW" pill, link, selected tab, brand bullet)
+2. Is this surface INTERACTIVE — can the user tap it?
+   (text link, see-all/view-all, tab/segment, ghost/secondary button, tappable row, inline action label, interactive icon)
 
-   → YES → Layer 2 brand accent (royal blue, small footprint, see §2.1)
+   → YES → Layer 2 interactive accent. Use `s-accent` royal blue #276EF1, GENEROUSLY (no footprint cap, see §2.1). The one primary COMMIT CTA is the exception — stays `bg-s-ink`. NON-interactive text (eyebrow, label, price, bullet) is NOT blue (v2 rule 2).
    → NO  → continue
 
 3. Default: Layer 1 chrome (B&W, see §2.1 ink table)
@@ -100,14 +100,14 @@ This decision tree is the **canonical onboarding for every new component** (CLAU
 
 Solen uses **the colors humans already recognize** from a lifetime of UI exposure. We do not invent custom semantic colors. If a meaning has a universal hue, we adopt the universal hue and map to our token.
 
-> **HEX SUPERSEDED (2026-06-01, V3-D421), see `CANON.md` §1:** `s-accent` = **#276EF1** (Uber blue, not #1638C4) and is **functional-only** (focus / spinner / input, NOT eyebrows or links). `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with CANON, CANON wins.
+> **HEX SUPERSEDED (2026-06-01, V3-D421), see `CANON.md` §1:** `s-accent` = **#276EF1** (Uber blue) and marks INTERACTIVITY — used generously on links, see-all/view-all, tabs/segments, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints, plus focus / spinner / input. Stays OFF non-interactive text including eyebrows (eyebrows remain text-s-ink-3). `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with CANON, CANON wins.
 
 | Universal semantic | Standard hue | Solen token | Hex | Where it shows up |
 |---|---|---|---|---|
 | Success / Go / Open | Green | `s-success` | `#16A34A` | Toast success, StatusPill "Geöffnet", booking confirmed states |
 | Error / Danger / Closed | Red | `s-error` | `#D32F2F` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
 | Warning / Caution | Amber | `s-warning` | `#F1AE27` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
-| Info / Brand identity | Blue | `s-accent` | `#276EF1` | Toast info; focus rings, Spinner, input focus (functional-only per V3-D421 / §1.5, NOT eyebrows/links) |
+| Interactive / Info | Blue | `s-accent` | `#276EF1` | Links, see-all/view-all, active tab/segment, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints; plus Toast info, focus rings, Spinner, input focus. OFF non-interactive text (eyebrows, body, prices, headings) |
 | Rating | Yellow | `s-star` | `#FFC32B` | Stars only, universal across review surfaces |
 | Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
 | Urgency / Hot | Burnt amber | (inline) | `#9A3412` text on `#FFF1E6` bg | "Nur X heute" Flame badge only |
@@ -158,17 +158,17 @@ All tokens come from `tailwind.config.js` `theme.extend.colors`. Always referenc
 
 #### Accent — Royal Blue (V3-D192-fix, 2026-05-26)
 
-The 3% accent band. **Small highlight moments only — NOT primary CTAs.** Apple-style usage, not Uber-CTA usage.
+The interactivity signal. Used GENEROUSLY on anything tappable — links, see-all/view-all, active tabs/segments, ghost & secondary buttons, tappable rows, inline action labels. **NOT the single primary commit CTA** (that stays `bg-s-ink`, one per screen — v2 rule 3). Blue marks interaction, never emphasis: non-tappable text stays ink/grey.
 
 | Token | Hex | Tailwind class | Use |
 |---|---|---|---|
-| `s-accent.DEFAULT` | `#1638C4` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Section eyebrow text + bullet ●, link color, "NEW"/status pill bg, active/selected tab text, data-emphasis (sparingly) |
+| `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text links, see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), "NEW" pill bg, interactive icon tints. NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
 | `s-accent.deep` | `#0F2A99` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` |
 | `s-accent.pale` | `#EBEFFA` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
 **Contrast vs white** (`text-s-accent #1638C4` on white) ≈ **9.6 : 1 → AAA**. Safe at any text size including 11px metadata.
 
-**Where to use:** Section eyebrow + bullet (Bei dir zuletzt ●), link colors (Mehr lesen →), "NEW" / status pills, tab active state, the chevron→arrow next to section titles (it IS a secondary affordance).
+**Where to use:** text links (Mehr lesen →), see-all/view-all, active tab/segment state, ghost & secondary buttons, tappable row affordances, inline action labels, the chevron→arrow next to section titles. NOT eyebrows or decorative bullets — those stay text-s-ink-3 with no leading dot (v2 rule 2).
 
 **Where NOT to use (V3-D192-fix lock):**
 - ❌ Primary CTAs (Termine finden, Suchen, Booking) — stay `bg-s-ink`. Blue on the main button defeats the "accent" semantic; the eye has nowhere to land as a highlight if blue IS the dominant surface.
@@ -206,9 +206,9 @@ The 3% accent band. **Small highlight moments only — NOT primary CTAs.** Apple
 | `s-bg.base` | `#FFFFFF` | `bg-s-bg-base` | Page substrate |
 | `s-bg.surface` | `#FFFFFF` | `bg-s-bg-surface` | Card / modal bg |
 | `s-bg.raised` | `#FFFFFF` | `bg-s-bg-raised` | Tooltip / popover bg (same hex; semantic distinction reserved) |
-| `s-bg.sunken` | `#F5F5F4` | `bg-s-bg-sunken` | Hover bg, input-active bg, inert recessed surfaces |
-| `s-bg.active` | `#F5F5F4` | `bg-s-bg-active` | Input typing state (same hex as sunken) |
-| `s-border` | `#E7E5E4` | `border-s-border` | Hairlines, dividers, card outlines |
+| `s-bg.sunken` | `#F4F4F5` | `bg-s-bg-sunken` | Hover bg, input-active bg, inert recessed surfaces — COOL light grey, NOT warm cream/stone (v2 rule 4; reverses the V3-D460 warm #F8F5F2) |
+| `s-bg.active` | `#F4F4F5` | `bg-s-bg-active` | Input typing state (same hex as sunken) |
+| `s-border` | `#E4E4E7` | `border-s-border` | Hairlines, dividers, card outlines — COOL neutral (v2; reverses the V3-D460 warm #E8E4DF) |
 
 #### Semantic colors (off-budget — they're signals, not branding)
 
@@ -229,7 +229,7 @@ The 3% accent band. **Small highlight moments only — NOT primary CTAs.** Apple
 
 #### Inline urgency (currently only used in one place — Flame badge "Nur X heute")
 
-The "Nur X heute" badge uses inline hex `#9A3412` (burnt sienna text on `#FFF1E6` peach bg with `rgba(154, 52, 18, 0.22)` border). This is the **single sanctioned warm exception** in the locked B&W palette — urgency reads warm by physiological convention. It does NOT spend the 3% accent budget.
+The "Nur X heute" badge uses inline hex `#9A3412` (burnt sienna text on `#FFF1E6` peach bg with `rgba(154, 52, 18, 0.22)` border). This is the **single sanctioned warm exception** in the locked B&W palette — urgency reads warm by physiological convention. It is an off-budget semantic exception (and v2 retired the old "3% accent" cap entirely — interactive blue is not budgeted).
 
 ### §2.2 · Retired but still defined (drift-checker target)
 
@@ -253,7 +253,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 | `--shadow-warm-*` aliases | various | (warm tint legacy) | Use `elevation-1/2/3` |
 | `--ease-out-strong` `--ease-out-warm` `--ease-in-subtle` `--spring-bounce` `--ease-drawer` | various | V2-D16+ | Use canonical 4: `snap` / `spring` / `glide` / `thud` |
 
-**Reserved**: Royal blue `#1638C4` per memory `project_palette_b_w_pivot.md` — held for future use, NOT introduced now. If introduced, document here.
+**Active accent (v2, 2026-06-09):** Royal blue `s-accent #276EF1` is the INTERACTIVITY accent — used generously on all tappable affordances (links, tabs, ghost/secondary buttons, tappable rows, inline action labels). No longer "reserved / not introduced." See CANON.md §0 + §2.1 above. (Stale hex #1638C4 → #276EF1.)
 
 ### §2.3 · Color anti-patterns
 
@@ -272,7 +272,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 
 | Surface | Meaning | Hue / token | Typical class |
 |---|---|---|---|
-| `<Toast tone="success">` | Confirmation, action completed | green pastel + saturated icon | `bg-s-success-bg text-s-ink border-s-success/15` + `<CheckCircle2 text-s-success>` |
+| `<Toast tone="success">` (inline transient status — KEEP pastel) | low-emphasis confirmation | green pastel + saturated icon (v2 rule 6 chip/badge carve-out) | `bg-s-success-bg text-s-ink border-s-success/15` + `<CheckCircle2 text-s-success>`. *(The FOCAL booking/payment confirmation is NOT a toast: deep `s-success.deep #15803D` disc + WHITE check + motion — see SuccessMark.)* |
 | `<Toast tone="error">` | Failure, blocked action | red pastel + saturated icon | `bg-s-error-bg text-s-ink border-s-error/15` + `<AlertCircle text-s-error>` |
 | `<Toast tone="warning">` | Caution, non-blocking advisory | amber pastel + saturated icon | `bg-s-warning-bg text-s-ink border-s-warning/20` + `<AlertTriangle text-s-warning>` |
 | `<Toast tone="info">` | Neutral information, FYI | blue pastel + saturated icon | `bg-s-accent-pale text-s-ink border-s-accent/15` + `<Info text-s-accent>` |
@@ -358,7 +358,7 @@ Don't use `<em>` (italic banned per V2-D15) or `<u>` (underline banned). To emph
 - ❌ Plus Jakarta Sans (V2-D70 era — retired V3-D75)
 - ❌ Peace Sans / Open Sauce One (V2-D42 era — retired V3-D75)
 - ❌ Italic (`<em>`, `italic` class, font-style:italic)
-- ❌ Underline anywhere — **including `<a>` links** (V3, 2026-05-30: no underlines at all). Signal links / tappable text with weight, an icon affordance (e.g. map pin), or hover color — never an underline.
+- ❌ Underline on RESTING text (body, labels, headings) and on resting links. EXCEPTION (v2 rule 7): a blue text link MAY show an animated underline ON HOVER ONLY — resting links stay un-underlined; static body/labels never underline.
 - ❌ Inventing new sizes outside the role table
 - ❌ `<h1>` more than once per page (semantic)
 
@@ -521,7 +521,7 @@ These are non-negotiable across the system. Drift-checker can flag deviations.
 | **Icon-only button (hamburger, X)** | scale-1 | (none typically) | `active:scale-[0.94] active:duration-[200ms]` |
 | **Tile (MobileCategoriesRow)** | scale-1, bg-[#F3F3F3] | `hover:-translate-y-[2px] hover:bg-[#EFEFEF]` 200ms ease-glide | `active:scale-[0.97] active:duration-[80ms]` |
 | **Pill / badge** | static | (none — they're labels, not buttons) | — |
-| **Link (text)** | text-s-ink-2 | `hover:text-s-ink` 150ms | — |
+| **Link (text)** | text-s-accent (#276EF1) | `hover:text-s-accent` + `hover:underline` 150ms (underline-on-hover only — v2 rule 7) | — |
 
 ### §6.5 · Anti-patterns (where NOT to use motion)
 
@@ -843,11 +843,12 @@ V3-D197 lock. Before picking ANY color class, answer in order:
             Universal colors only — never invent custom semantic hues.
    → NO  → continue
 
-2. Does this surface represent the BRAND identity moment?
-   (eyebrow, "NEW" pill, link, selected tab, brand bullet)
+2. Is this surface INTERACTIVE — can the user tap it?
+   (text link, see-all/view-all, tab/segment, ghost/secondary button, tappable row, inline action label, interactive icon)
 
-   → YES → Layer 2 brand accent. Use `s-accent` (royal blue).
-            Small footprint only — NEVER primary CTAs.
+   → YES → Layer 2 interactive accent. Use `s-accent` royal blue #276EF1, used GENEROUSLY (no footprint cap).
+            The single primary COMMIT CTA is the exception — it stays `bg-s-ink` (v2 rule 3).
+            NON-interactive text (eyebrow, label, price, heading, bullet) is NOT blue — blue marks interaction, never emphasis (v2 rule 2).
    → NO  → continue
 
 3. Default: Layer 1 chrome. Use `s-ink` / `s-ink-2` / `s-ink-3` for text,
@@ -1204,10 +1205,10 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | Decision | Locked at | Where the lock lives |
 |---|---|---|
 | B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
-| Forest emerald `#16A34A` for 3% accent | V3-D139 | This doc §2 |
+| Accent = blue `s-accent` #276EF1, NOT pixel-budgeted (v2 2026-06-09; forest emerald #16A34A retired as accent, survives as success-status hue) | v2 | CANON.md §0 |
 | Bricolage Grotesque + Hanken Grotesk fonts | V3-D75 | This doc §3 |
-| 80 / 17 / 3 color rule | V3-D138 | This doc §1 |
-| Royal blue `#1638C4` reserved (not used yet) | V3-D138 | memory project_palette_b_w_pivot |
+| 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
+| Blue `s-accent` #276EF1 = the interactivity accent — used generously on all tappable affordances (v2, 2026-06-09) | v2 | CANON.md §0 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
 | German `du` not `Sie` | (since launch) | This doc §18 |
 | `card` radius = 16px | V4 era | This doc §5 |
@@ -1293,7 +1294,7 @@ Example: Fresha's "stylist availability" view (per-staff calendar) — not curat
 
 ### §21.5 · What to DROP from Fresha (visual)
 
-- All Fresha colors → Solen B&W (no accent — V3-D189; signals only: `s-star`, `--heart-active`, urgency amber)
+- All Fresha colors → Solen chrome (B&W) for NON-interactive surfaces; interactive affordances (links, tabs, ghost/secondary buttons, tappable rows, inline action labels) take the blue interactivity accent `s-accent #276EF1` (v2 rule 1). The single primary commit CTA stays `bg-s-ink`. Semantic signals unchanged: `s-star`, `--heart-active`, urgency amber, `s-success`/`s-error`/`s-warning`.
 - All Fresha typography → Bricolage + Hanken
 - All Fresha button styles → `bg-s-ink text-white` primary CTA
 - All Fresha card shadows → elevation-1/2/3
