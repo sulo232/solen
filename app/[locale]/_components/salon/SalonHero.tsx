@@ -42,29 +42,46 @@ export function SalonHero({
       ? [salon.cover_photo_url]
       : [];
 
+  // Swipeable mobile hero (2026-06-09, owner-requested): native horizontal scroll-snap
+  // carousel; the live photo index drives the "n / N" counter. Tap a photo to open the
+  // lightbox. Desktop keeps the Fresha 3-photo grid below.
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const onHeroScroll = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || el.clientWidth === 0) return;
+    setActiveIndex(Math.round(el.scrollLeft / el.clientWidth));
+  }, []);
+
   return (
     <section id="section-photos" className="w-full">
-      {/* MOBILE — full-bleed cover with overlay nav */}
+      {/* MOBILE: swipeable full-bleed carousel with overlay nav */}
       <div className="relative md:hidden">
-        <div className="aspect-[4/3] w-full overflow-hidden bg-s-bg-sunken">
-          {photos[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={photos[0]}
-              alt={`Foto von ${salon.name}`}
-              className="h-full w-full object-cover"
-              loading="eager"
-              onClick={() => photos[0] && onOpenLightbox(0)}
-            />
-          ) : (
-            <div className="grid h-full w-full place-items-center">
-              {/* V3-D202 (A2): retired `text-s-ink-3/30` ad-hoc opacity → `text-s-ink-disabled` token. */}
-              <span className="font-display text-[120px] font-black text-s-ink-disabled">
-                {salon.name.charAt(0)}
-              </span>
-            </div>
-          )}
-        </div>
+        {photos.length > 0 ? (
+          <div
+            ref={scrollRef}
+            onScroll={onHeroScroll}
+            className="flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {photos.map((u, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={u}
+                alt={`Foto ${i + 1} von ${salon.name}`}
+                className="h-full w-full shrink-0 snap-center bg-s-bg-sunken object-cover"
+                loading={i === 0 ? "eager" : "lazy"}
+                onClick={() => onOpenLightbox(i)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid aspect-[4/3] w-full place-items-center bg-s-bg-sunken">
+            <span className="font-display text-[120px] font-black text-s-ink-disabled">
+              {salon.name.charAt(0)}
+            </span>
+          </div>
+        )}
 
         {/* V2-D53.3 polish: outline-only icons over the cover photo —
             no white pill backgrounds. White stroke + drop-shadow keeps
@@ -105,14 +122,14 @@ export function SalonHero({
         {photos.length > 1 && (
           <button
             type="button"
-            onClick={() => onOpenLightbox(0)}
+            onClick={() => onOpenLightbox(activeIndex)}
             aria-label="Alle Fotos ansehen"
-            // Minimal photo counter (Fresha pattern) instead of a bulky pill — less visual noise.
-            // bottom-7 (not -4): the content card pulls up -mt-5 (20px) over the hero, so a lower
-            // counter would sit behind the rounded card. This keeps it clear, in the photo.
+            // Minimal photo counter (Fresha pattern). Live index tracks the swipe; tap opens the
+            // lightbox at the current photo. bottom-7 (not -4): the content card pulls up -mt-5
+            // (20px) over the hero, so a lower counter would sit behind the rounded card.
             className="font-body absolute bottom-7 right-4 rounded-full bg-s-ink/55 px-2.5 py-1 text-[12px] font-semibold tabular-nums text-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform active:scale-95"
           >
-            1 / {photos.length}
+            {activeIndex + 1} / {photos.length}
           </button>
         )}
       </div>
