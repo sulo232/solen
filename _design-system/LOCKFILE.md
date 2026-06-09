@@ -363,6 +363,11 @@ header / tab-nav: z-50 / sticky-rail: z-30
 
 The app read "flat / 2018" because surface depth was suppressed (§3 "use shadow sparingly, many cards flat"). This section flips the default to **consistent soft depth on surfaces** (Apple-style), composing the EXISTING §3 shadow tokens + §4 easings — no new tokens. It does NOT change CONTROL_ELEVATION: controls stay calm; depth is for SURFACES. Visual spec (mockups): `public/solen-depth-system.html` + `public/solen-states-motion.html`.
 
+> **CALIBRATED 2026-06-09 (Tim Gabe "4 levels" + "addictive apps" videos; owner: "overmade the depths").** The pendulum overshot from flat into heavy. The fix is restraint, not more shadow:
+> - Depth here is **subtle**, not the wide float that shipped first. Heavy/wide shadows on resting content = "visual overworking" (the named mid-level mistake). The `shadow-float` token was **softened** to a quiet lift (`0 1px 2px` + `0 4px 12px -6px`, ~0.05 to 0.10 alpha); it cascades to the homepage tiles + salon section cards.
+> - Resting cards take a **quiet lift OR a hairline** (both fine; Fresha leans on hairlines + whitespace, per §3). **Only overlays** (sheets, lightbox, gallery, dropdowns) earn strong elevation (elevation-2 / elevation-3). Never stack a heavy shadow on a resting surface.
+> - **Premium feel is bought with MOTION, not shadow weight** , the §4 easings used purposefully on every interaction, celebratory moments on key wins (booking confirmed), and haptics on mobile. "Polish builds trust." That is the real lever; static depth stays quiet.
+
 ### Surface rule — gray tray vs white (the "where" of depth)
 
 `s-bg-sunken` (#F5F5F4) is a **grouping tray, not a global wash.** Put gray UNDER: grouped lists / settings / forms, dashboard panels, and any section that clusters a group of cards. The gray tray is what "earns" the white card's lift (consistent with "elevation earned by the background").

@@ -262,11 +262,12 @@ module.exports = {
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "elevation-2":      "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "elevation-3":      "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
-        // ── Float (V3-D-depth, 2026-06-09) ── the "card floats off the page" recipe:
-        // soft + WIDE (not tight) so a white card reads as lifted, not bordered. Owner-approved
-        // on the homepage tiles + salon section cards. Use for standalone section cards on a
-        // white page (NOT list rows, those use elevation-2). Card must be lighter than the page.
-        "float":            "0 2px 8px rgba(50,47,44,0.08), 0 14px 30px -10px rgba(50,47,44,0.14)",
+        // ── Float (V3-D-depth, 2026-06-09; SOFTENED same day) ── a SUBTLE, restrained lift for
+        // resting cards, NOT a wide decorative float. The original wide float read as over-engineered
+        // ("visual overworking" per Tim Gabe; owner: "overmade the depths"). Premium feel comes from
+        // MOTION, not heavy shadows. Resting content gets this quiet lift; only OVERLAYS (sheets,
+        // lightbox, gallery, dropdowns) earn a stronger shadow. Cascades to tiles + salon cards.
+        "float":            "0 1px 2px rgba(50,47,44,0.05), 0 4px 12px -6px rgba(50,47,44,0.10)",
         // Aliases for backward compat
         "v5-card":       "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "v5-card-hover": "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
