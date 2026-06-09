@@ -8,343 +8,187 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --radius-card:16px; --radius-pill:999px;
-    --shadow-rest:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:#E9E9EC;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-  body{
-    font-family:'Inter',system-ui,sans-serif;
-    color:var(--ink);
-    min-height:100vh;
-    display:flex; align-items:center; justify-content:center;
-    padding:24px 0;
-  }
-  .frame{
-    width:390px; min-height:844px; background:var(--bg);
-    position:relative; overflow:hidden;
-    display:flex; flex-direction:column;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* ---------- status bar ---------- */
-  .statusbar{
-    height:54px; display:flex; align-items:flex-end; justify-content:space-between;
-    padding:0 24px 6px; font-size:15px; font-weight:600; letter-spacing:-.01em;
-  }
-  .statusbar .icons{display:flex;gap:6px;align-items:center}
-  .statusbar svg{display:block}
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
 
-  /* ---------- top app row ---------- */
-  .approw{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:8px 20px 0;
-  }
-  .iconbtn{
-    width:38px;height:38px;border-radius:var(--radius-pill);
-    background:var(--bg);border:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--ink);transition:transform .12s ease;cursor:pointer;
-  }
-  .iconbtn:active{transform:scale(.97)}
-  .approw .eyebrow{
-    font-family:'Inter',sans-serif;font-size:11px;font-weight:600;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
-  }
+  /* ─────────── iOS STATUS BAR (verbatim) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* ---------- content ---------- */
-  .content{padding:0 24px;display:flex;flex-direction:column;flex:1}
+  /* ─────────── TYPE SCALE (verbatim) ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  .live-anim{opacity:0;transform:translateY(8px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
-  .d1{animation-delay:.04s}.d2{animation-delay:.10s}.d3{animation-delay:.16s}
-  .d4{animation-delay:.22s}.d5{animation-delay:.28s}.d6{animation-delay:.34s}
-  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  /* ─────────── CARD (verbatim) ─────────── */
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
+  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
 
-  /* salon header */
-  .salon-head{margin-top:30px;display:flex;align-items:center;gap:13px}
-  .salon-thumb{
-    width:46px;height:46px;border-radius:13px;object-fit:cover;flex:none;
-    border:1px solid var(--border);
-  }
-  .salon-head .name{
-    font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;
-    letter-spacing:-.01em;line-height:1.15;
-  }
-  .salon-head .sub{
-    margin-top:2px;font-size:13px;color:var(--ink-2);font-weight:500;
-    display:flex;align-items:center;gap:5px;
-  }
-  .salon-head .sub svg{color:var(--ink-3)}
+  /* ─────────── BUTTONS / LINKS (verbatim) ─────────── */
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .link:hover{text-decoration:underline;}
 
-  /* live caption pill */
-  .livecap{
-    margin-top:26px;align-self:flex-start;
-    display:inline-flex;align-items:center;gap:8px;
-    padding:7px 13px 7px 11px;border-radius:var(--radius-pill);
-    background:var(--sunken);
-    font-size:12.5px;font-weight:600;letter-spacing:-.005em;color:var(--ink-2);
-  }
-  .dot{
-    width:9px;height:9px;border-radius:50%;background:var(--green);flex:none;position:relative;
-  }
-  .dot::after{
-    content:"";position:absolute;inset:0;border-radius:50%;
-    background:var(--green);animation:pulse 1.8s ease-out infinite;
-  }
-  @keyframes pulse{
-    0%{transform:scale(1);opacity:.55}
-    70%{transform:scale(2.8);opacity:0}
-    100%{transform:scale(2.8);opacity:0}
-  }
-  .livecap .strong{color:var(--ink)}
+  /* ─────────── QUEUE POSITION BAR (kit .dist-track / .dist-fill) ─────────── */
+  .dist-track{flex:1;height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;position:relative;}
+  .dist-fill{height:100%;border-radius:var(--r-pill);background:var(--ink);}
 
-  /* the big number block */
-  .position-block{
-    margin-top:14px;text-align:left;
-  }
-  .position-block .label-top{
-    font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:-.01em;
-  }
-  .bignum{
-    font-family:'JetBrains Mono',monospace;font-weight:600;
-    font-size:148px;line-height:.92;letter-spacing:-.04em;color:var(--ink);
-    margin-top:2px;
-    font-feature-settings:"tnum" 1;
-  }
-  .bignum-row{display:flex;align-items:flex-end;gap:14px}
-  .vor-dir{
-    font-family:'Inter Tight',sans-serif;font-weight:600;font-size:19px;
-    color:var(--ink);letter-spacing:-.01em;line-height:1.15;
-    padding-bottom:22px;
-  }
-  .vor-dir span{display:block;font-size:13px;font-weight:500;color:var(--ink-2);margin-top:3px}
+  /* ─────────── ENTRANCE (verbatim) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-  /* eta line */
-  .eta{
-    margin-top:6px;display:flex;align-items:center;gap:9px;
-    font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--ink);
-  }
-  .eta .green-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--green);position:relative;flex:none;
-  }
-  .eta .green-dot::after{
-    content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);
-    animation:pulse 1.8s ease-out infinite;
-  }
-  .eta .muted{color:var(--ink-2);font-weight:500}
+  /* ─────────── SCREEN-SPECIFIC (built from kit primitives) ─────────── */
 
-  /* queue visualization */
-  .queue-viz{
-    margin-top:30px;
-  }
-  .queue-viz .viz-label{
-    display:flex;align-items:center;justify-content:space-between;
-    font-size:12px;font-weight:600;color:var(--ink-3);
-    letter-spacing:.04em;text-transform:uppercase;margin-bottom:14px;
-  }
-  .dots-row{
-    display:flex;align-items:center;gap:0;
-  }
-  .qdot{
-    flex:1;height:6px;border-radius:var(--radius-pill);background:var(--ink);
-    margin-right:6px;
-  }
-  .qdot:last-child{margin-right:0}
-  .qdot.ahead{background:var(--ink)}
-  .qdot.you{
-    height:6px;background:var(--green);position:relative;
-    box-shadow:0 0 0 4px rgba(22,163,74,.13);
-  }
-  .qdot.behind{background:transparent;border:1px solid var(--border);height:6px}
-  .dots-legend{
-    margin-top:12px;display:flex;align-items:center;gap:16px;
-    font-size:11.5px;font-weight:500;color:var(--ink-2);
-  }
-  .dots-legend .lg{display:flex;align-items:center;gap:6px}
-  .lg .swatch{width:14px;height:6px;border-radius:var(--radius-pill)}
-  .lg .swatch.ink{background:var(--ink)}
-  .lg .swatch.you{background:var(--green)}
-  .lg .swatch.behind{background:transparent;border:1px solid var(--border)}
+  /* salon mini-header: small rounded photo + name + ticket + paid chip */
+  .minihead{display:flex;align-items:center;gap:13px;padding:18px 20px 22px;}
+  .mini-photo{width:48px;height:48px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
+  .mini-main{flex:1;min-width:0;}
+  .mini-sub{display:flex;align-items:center;gap:7px;margin-top:3px;}
+  .ticket{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;letter-spacing:-.01em;color:var(--ink-2);font-variant-numeric:tabular-nums;}
+  /* paid chip — green semantic (kit: --green = paid/success). pale tint + ink-green text + green dot */
+  .paid-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:var(--r-pill);
+    background:rgba(22,163,74,.10);color:var(--green);font-size:12px;font-weight:600;letter-spacing:-.005em;}
+  .paid-dot{width:6px;height:6px;border-radius:var(--r-pill);background:var(--green);}
 
-  /* ticket card */
-  .ticket{
-    margin-top:30px;
-    border:1px solid var(--border);border-radius:var(--radius-card);
-    box-shadow:var(--shadow-rest);
-    padding:18px 18px;
-    display:flex;align-items:center;justify-content:space-between;
-    background:var(--bg);
-  }
-  .ticket .t-left .t-k{
-    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--ink-3);
-  }
-  .ticket .t-left .t-v{
-    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:22px;
-    letter-spacing:.01em;color:var(--ink);margin-top:5px;
-  }
-  .ticket .t-right{text-align:right}
-  .ticket .t-right .t-k{
-    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--ink-3);
-  }
-  .ticket .t-right .t-v{
-    font-size:14px;font-weight:600;color:var(--ink);margin-top:6px;letter-spacing:-.01em;
-  }
-  .ticket .t-right .paid{
-    display:inline-flex;align-items:center;gap:5px;margin-top:6px;
-    font-size:13px;font-weight:600;color:var(--green);letter-spacing:-.01em;
-  }
-  .ticket .t-right .paid svg{display:block}
+  /* THE FOCAL — huge mono number block */
+  .focal{padding:26px 20px 30px;text-align:center;}
+  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:18px;}
+  .live-dot{width:9px;height:9px;border-radius:var(--r-pill);background:var(--green);position:relative;}
+  .live-dot::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);background:var(--green);
+    animation:pulse 1.8s var(--ease) infinite;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.55;}70%{transform:scale(3.2);opacity:0;}100%{opacity:0;}}
+  .live-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
 
-  /* footer area */
-  .foot{
-    margin-top:auto;padding:24px 0 30px;
-    display:flex;flex-direction:column;align-items:center;gap:16px;
-  }
-  .updated{
-    display:flex;align-items:center;gap:8px;
-    font-size:13px;font-weight:500;color:var(--ink-2);letter-spacing:-.005em;
-  }
-  .updated .green-dot{
-    width:7px;height:7px;border-radius:50%;background:var(--green);position:relative;flex:none;
-  }
-  .updated .green-dot::after{
-    content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);
-    animation:pulse 1.8s ease-out infinite;
-  }
-  .updated .live{color:var(--ink);font-weight:600}
-  .share{
-    font-size:14px;font-weight:600;color:var(--blue);letter-spacing:-.01em;
-    display:inline-flex;align-items:center;gap:6px;text-decoration:none;cursor:pointer;
-    transition:transform .12s ease;
-  }
-  .share:hover{text-decoration:underline}
-  .share:active{transform:scale(.97)}
-  .share svg{display:block}
+  .bignum{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:128px;line-height:.92;
+    letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums;display:block;}
+  .vordir{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--ink);
+    margin-top:2px;}
 
-  @media (prefers-reduced-motion: reduce){
-    .live-anim{animation:none;opacity:1;transform:none}
-    .dot::after,.eta .green-dot::after,.updated .green-dot::after{animation:none;opacity:0}
-  }
+  /* ETA pill — calm sunken, ink + mono number */
+  .eta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;height:42px;padding:0 20px;
+    border-radius:var(--r-pill);background:var(--sunken);}
+  .eta-label{font-size:13px;font-weight:500;color:var(--ink-2);}
+  .eta-num{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;color:var(--ink);
+    letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+
+  /* queue bar block */
+  .qbar-wrap{padding:0 20px;}
+  .qbar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .qbar-pos{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--ink);
+    letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .qbar-of{color:var(--ink-3);font-weight:500;}
+  .qbar-track{position:relative;height:8px;border-radius:var(--r-pill);background:var(--sunken);overflow:visible;}
+  .qbar-fill{height:100%;border-radius:var(--r-pill);background:var(--ink);}
+  /* the "you are here" marker sitting on the track */
+  .qbar-you{position:absolute;top:50%;width:16px;height:16px;border-radius:var(--r-pill);background:var(--ink);
+    border:3px solid #fff;box-shadow:0 1px 3px rgba(10,10,10,.18);transform:translate(-50%,-50%);}
+  .qbar-ends{display:flex;justify-content:space-between;margin-top:9px;}
+  .qbar-end{font-size:11.5px;font-weight:500;color:var(--ink-3);}
+
+  /* updated line — calm grey */
+  .updated{display:flex;align-items:center;justify-content:center;gap:6px;padding:24px 20px 4px;}
+  .updated-txt{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .updated-live{color:var(--green);font-weight:600;}
+
+  /* share link row */
+  .sharerow{text-align:center;padding:14px 20px 32px;}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
-  <div class="frame">
 
-    <!-- status bar -->
-    <div class="statusbar">
-      <span>9:41</span>
-      <span class="icons">
-        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0A0A0A"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1" fill="#0A0A0A"/><rect x="9" y="2" width="3" height="10" rx="1" fill="#0A0A0A"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#0A0A0A"/></svg>
-        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2.5c2.3 0 4.4.9 6 2.4l1.2-1.3A11 11 0 0 0 8.5.6 11 11 0 0 0 1.3 3.6l1.2 1.3A8.4 8.4 0 0 1 8.5 2.5Z" fill="#0A0A0A"/><path d="M8.5 6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6.6 6.6 0 0 0 8.5 4 6.6 6.6 0 0 0 4.2 6l1.2 1.3A4.4 4.4 0 0 1 8.5 6Z" fill="#0A0A0A"/><circle cx="8.5" cy="10" r="1.6" fill="#0A0A0A"/></svg>
-        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
-      </span>
-    </div>
+<div class="frame">
 
-    <!-- app row -->
-    <div class="approw">
-      <div class="iconbtn live-anim d1" aria-label="Zurück">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  <!-- iOS status bar (verbatim chrome) -->
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+
+  <!-- salon mini-header -->
+  <div class="minihead rise" style="animation-delay:.02s;">
+    <img class="mini-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
+    <div class="mini-main">
+      <div class="t-row">Studio Eleven · Barber</div>
+      <div class="mini-sub">
+        <span class="ticket">W-047</span>
+        <span class="paid-chip"><span class="paid-dot"></span>Bezahlt</span>
       </div>
-      <div class="eyebrow live-anim d1">Walk-in</div>
-      <div class="iconbtn live-anim d1" aria-label="Mehr">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <!-- salon header -->
-      <div class="salon-head live-anim d2">
-        <img class="salon-thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=140&h=140&fit=crop&q=80" alt="Salon">
-        <div>
-          <div class="name">Bürkli Barbershop</div>
-          <div class="sub">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            Bürkliplatz 6 · Zürich
-          </div>
-        </div>
-      </div>
-
-      <!-- live caption -->
-      <div class="livecap live-anim d3">
-        <span class="dot"></span>
-        <span><span class="strong">In der Warteschlange</span> · bezahlt</span>
-      </div>
-
-      <!-- the big number -->
-      <div class="position-block live-anim d3">
-        <div class="bignum-row">
-          <div class="bignum">3</div>
-          <div class="vor-dir">
-            vor dir
-            <span>warten noch dran</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- eta -->
-      <div class="eta live-anim d4">
-        <span class="green-dot"></span>
-        <span>Noch ca. <strong>12 Min</strong></span>
-        <span class="muted">· dann bist du dran</span>
-      </div>
-
-      <!-- queue visualization -->
-      <div class="queue-viz live-anim d5">
-        <div class="viz-label">
-          <span>Warteschlange</span>
-          <span>8 in der Schlange</span>
-        </div>
-        <div class="dots-row">
-          <div class="qdot ahead"></div>
-          <div class="qdot ahead"></div>
-          <div class="qdot ahead"></div>
-          <div class="qdot you"></div>
-          <div class="qdot behind"></div>
-          <div class="qdot behind"></div>
-          <div class="qdot behind"></div>
-          <div class="qdot behind"></div>
-        </div>
-        <div class="dots-legend">
-          <span class="lg"><span class="swatch ink"></span>Vor dir</span>
-          <span class="lg"><span class="swatch you"></span>Du</span>
-          <span class="lg"><span class="swatch behind"></span>Nach dir</span>
-        </div>
-      </div>
-
-      <!-- ticket card -->
-      <div class="ticket live-anim d6">
-        <div class="t-left">
-          <div class="t-k">Deine Nummer</div>
-          <div class="t-v">W‑047</div>
-        </div>
-        <div class="t-right">
-          <div class="t-k">Herrenschnitt</div>
-          <div class="paid">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            CHF 45 bezahlt
-          </div>
-        </div>
-      </div>
-
-      <!-- footer -->
-      <div class="foot live-anim d6">
-        <div class="updated">
-          <span class="green-dot"></span>
-          Aktualisiert gerade eben · <span class="live">live</span>
-        </div>
-        <a class="share">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
-          Status teilen
-        </a>
-      </div>
-
     </div>
   </div>
+
+  <!-- THE FOCAL: huge number -->
+  <div class="focal rise" style="animation-delay:.08s;">
+    <div class="live-line">
+      <span class="live-dot"></span>
+      <span class="live-label">Live</span>
+    </div>
+    <span class="bignum mono">3</span>
+    <div class="vordir">vor dir</div>
+    <div class="eta">
+      <span class="eta-label">Geschätzte Wartezeit</span>
+      <span class="eta-num">~12 Min</span>
+    </div>
+  </div>
+
+  <!-- queue position bar -->
+  <div class="qbar-wrap rise" style="animation-delay:.14s;">
+    <div class="qbar-head">
+      <span class="t-meta">Deine Position</span>
+      <span class="qbar-pos">4<span class="qbar-of"> / 7</span></span>
+    </div>
+    <div class="qbar-track">
+      <div class="qbar-fill" style="width:43%;"></div>
+      <div class="qbar-you" style="left:43%;"></div>
+    </div>
+    <div class="qbar-ends">
+      <span class="qbar-end">An der Reihe</span>
+      <span class="qbar-end">Ende</span>
+    </div>
+  </div>
+
+  <!-- updated line -->
+  <div class="updated rise" style="animation-delay:.2s;">
+    <span class="updated-txt">Aktualisiert gerade eben · <span class="updated-live">live</span></span>
+  </div>
+
+  <!-- share link -->
+  <div class="sharerow rise" style="animation-delay:.24s;">
+    <a class="link">Status teilen</a>
+  </div>
+
+</div>
+
 </body>
 </html>

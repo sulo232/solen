@@ -8,323 +8,189 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A;
-    --ink-2:#6B6B6B;
-    --ink-3:#9B9B9B;
-    --border:#E4E4E7;
+    --ink:#0A0A0A;        /* primary text, structure, primary CTA fill */
+    --ink-2:#6B6B6B;      /* secondary text, meta */
+    --ink-3:#9B9B9B;      /* tertiary text, eyebrow, counts */
+    --border:#E4E4E7;     /* hairline + card border (cool grey) */
     --bg:#FFFFFF;
-    --sunken:#F4F4F5;
-    --blue:#276EF1;
-    --green:#16A34A;
-    --star:#FFC32B;
-    --error:#DC2626;
-    --heart:#FF3366;
-    --radius-card:16px;
-    --radius-pill:999px;
-    --shadow-rest:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --sunken:#F4F4F5;     /* cool grey fill: chips, "Alle ansehen", icon tiles, tracks */
+    --blue:#276EF1;       /* SMALL clickable bits ONLY: review count, text links */
+    --green:#16A34A;      /* available / open / success / paid */
+    --star:#FFC32B;       /* rating star */
+    --error:#DC2626;      /* error, closed status, destructive */
+    --heart:#FF3366;      /* saved/favourite */
+    /* real geometry */
+    --r-card:24px;        /* rounded-3xl — the card radius */
+    --r-sheet:20px;       /* content sheet rounded top */
+    --r-pill:9999px;      /* every pill: chips, CTAs, "Alle ansehen", badges */
+    --r-tile:14px;        /* small icon tiles / inner blocks */
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;   /* between PDP sections */
+    --ease:cubic-bezier(.16,1,.3,1);
   }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;justify-content:center;min-height:100vh;padding:28px 0;}
 
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;height:844px;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 20px 60px -20px rgba(10,10,10,.25);}
 
-  html,body{height:100%;}
+  /* ─────────── iOS STATUS BAR (real chrome top) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  body{
-    font-family:"Inter",system-ui,-apple-system,sans-serif;
-    background:#E9E9EC;
-    color:var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:100vh;
-    padding:0;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-  }
+  /* ─────────── TYPE SCALE (verbatim from kit) ─────────── */
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* 390px phone frame */
-  .frame{
-    position:relative;
-    width:390px;
-    height:844px;
-    background:var(--bg);
-    overflow:hidden;
-    box-shadow:0 20px 60px -20px rgba(10,10,10,.25);
-  }
+  /* ─────────── CARD (rounded-3xl 24px) ─────────── */
+  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
 
-  /* ── Background context (the booking detail page, dimmed under scrim) ── */
-  .bg-page{
-    position:absolute;
-    inset:0;
-    overflow:hidden;
-    background:var(--bg);
-  }
+  /* ─────────── BUTTONS (kit recipes) ─────────── */
+  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .14s var(--ease),border-color .14s ease,background .15s ease;}
+  .btn-outline:active{transform:scale(.97);}
+  /* link — blue, small */
+  .link{color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .link:hover{text-decoration:underline;}
 
-  .status-bar{
-    height:54px;
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    padding:0 24px 8px;
-    font-family:"Inter Tight";
-    font-weight:600;
-    font-size:15px;
-  }
-  .status-bar .icons{display:flex;gap:6px;align-items:center;color:var(--ink);}
-  .status-bar svg{display:block;}
-
-  .bg-nav{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:6px 20px 14px;
-  }
-  .bg-nav .back{
-    width:38px;height:38px;border-radius:var(--radius-pill);
-    border:1px solid var(--border);background:var(--bg);
-    display:flex;align-items:center;justify-content:center;color:var(--ink);
-  }
-  .bg-nav h1{
-    font-family:"Inter Tight";font-weight:700;font-size:19px;letter-spacing:-.01em;
-  }
-
-  .bg-hero{
-    margin:0 20px;
-    height:150px;border-radius:var(--radius-card);overflow:hidden;position:relative;
-    background:var(--sunken);
-  }
-  .bg-hero img{width:100%;height:100%;object-fit:cover;}
-  .bg-pill{
-    position:absolute;top:12px;left:12px;
-    background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
-    border-radius:var(--radius-pill);padding:6px 12px;
-    font-family:"Inter Tight";font-weight:600;font-size:12.5px;
-    display:flex;align-items:center;gap:6px;color:var(--ink);
-  }
-  .dot-green{width:7px;height:7px;border-radius:50%;background:var(--green);}
-
-  .bg-block{padding:20px;}
-  .bg-block h2{font-family:"Inter Tight";font-weight:700;font-size:22px;letter-spacing:-.015em;margin-bottom:6px;}
-  .bg-block .sub{color:var(--ink-2);font-size:14.5px;line-height:1.5;}
-  .bg-row{
-    display:flex;align-items:center;gap:12px;
-    padding:14px 0;border-top:1px solid var(--border);
-  }
-  .bg-row:first-of-type{margin-top:10px;}
-  .bg-row .ic{
-    width:36px;height:36px;border-radius:10px;background:var(--sunken);
-    display:flex;align-items:center;justify-content:center;color:var(--ink-2);flex-shrink:0;
-  }
-  .bg-row .txt{flex:1;}
-  .bg-row .txt .t{font-weight:600;font-size:14.5px;}
-  .bg-row .txt .d{color:var(--ink-3);font-size:13px;margin-top:1px;}
-
-  /* ── Scrim ── */
-  .scrim{
-    position:absolute;inset:0;
-    background:rgba(10,10,10,.42);
-    opacity:0;
-    animation:scrim-in .32s ease forwards;
-    animation-delay:.05s;
-  }
+  /* ─────────── BOTTOM SHEET (kit .scrim + .bsheet + grab) ─────────── */
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.4);opacity:0;animation:scrim-in .34s ease both;animation-delay:.04s;}
   @keyframes scrim-in{to{opacity:1;}}
+  .bsheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:10px 20px 26px;
+    box-shadow:0 -8px 40px -12px rgba(10,10,10,.22);transform:translateY(100%);animation:up .44s var(--ease) both;animation-delay:.1s;}
+  .bsheet-grab{width:36px;height:4px;border-radius:var(--r-pill);background:var(--border);margin:6px auto 16px;}
+  @keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
 
-  /* ── Bottom sheet ── */
-  .sheet{
-    position:absolute;left:0;right:0;bottom:0;
-    background:var(--bg);
-    border-top-left-radius:24px;border-top-right-radius:24px;
-    box-shadow:0 -8px 40px -12px rgba(10,10,10,.22);
-    padding:0 24px calc(24px + env(safe-area-inset-bottom));
-    transform:translateY(100%);
-    animation:sheet-up .46s cubic-bezier(.16,1,.3,1) forwards;
-    animation-delay:.12s;
-  }
-  @keyframes sheet-up{to{transform:translateY(0);}}
+  /* ─────────── DIMMED BOOKING-DETAIL CONTEXT (behind scrim) ─────────── */
+  .bg-page{position:absolute;inset:0;background:var(--bg);overflow:hidden;}
+  .bg-nav{display:flex;align-items:center;gap:12px;padding:4px 16px 14px;}
+  .bg-back{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .bg-hero{margin:0 16px;height:158px;border-radius:var(--r-card);overflow:hidden;position:relative;background:var(--sunken);}
+  .bg-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+  .bg-statuspill{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,.6);border-radius:var(--r-pill);padding:5px 11px;font-size:12px;font-weight:600;color:var(--green);box-shadow:var(--shadow-frost);}
+  .bg-block{padding:18px 20px 0;}
+  .bg-row{display:flex;align-items:center;gap:14px;padding:14px 0;}
+  .bg-row + .bg-row{border-top:1px solid var(--border);}
+  .bg-row .ic{width:38px;height:38px;border-radius:var(--r-tile);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;}
+  .bg-row .main{flex:1;min-width:0;}
 
-  .grab{
-    width:36px;height:5px;border-radius:999px;background:var(--border);
-    margin:10px auto 0;
-  }
+  /* ─────────── REFUND BLOCK (cool-grey sunken card-flat) ─────────── */
+  .refund{margin-top:16px;background:var(--sunken);border:none;border-radius:var(--r-card);padding:18px 18px 16px;}
+  .refund-amount{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:34px;letter-spacing:-.02em;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:7px;}
+  .refund-line{display:flex;align-items:center;gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid var(--border);font-size:13.5px;font-weight:500;color:var(--ink-2);}
+  .refund-line svg{color:var(--green);flex-shrink:0;}
 
-  .sheet-head{padding:18px 0 0;}
-  .sheet-head h2{
-    font-family:"Inter Tight";font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1.15;
-  }
-
-  /* Refund statement — the focal block */
-  .refund{
-    margin-top:18px;
-    background:var(--sunken);
-    border-radius:var(--radius-card);
-    padding:18px 18px 16px;
-  }
-  .refund .label{
-    font-family:"Inter Tight";
-    font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--ink-3);
-  }
-  .refund .amount{
-    font-family:"JetBrains Mono";font-weight:600;
-    font-size:40px;letter-spacing:-.02em;line-height:1.05;
-    margin-top:6px;color:var(--ink);
-  }
-  .refund .amount .chf{
-    font-family:"Inter Tight";font-weight:700;font-size:19px;color:var(--ink-2);
-    margin-right:8px;letter-spacing:-.01em;vertical-align:2px;
-  }
-  .refund .timeline{
-    display:flex;align-items:center;gap:8px;
-    margin-top:12px;padding-top:13px;border-top:1px solid var(--border);
-    color:var(--ink-2);font-size:13.5px;font-weight:500;
-  }
-  .refund .timeline svg{color:var(--green);flex-shrink:0;}
-
-  /* Summary row */
-  .summary{
-    display:flex;align-items:center;gap:13px;
-    margin-top:14px;
-    padding:13px 4px;
-  }
-  .summary .thumb{
-    width:46px;height:46px;border-radius:11px;overflow:hidden;flex-shrink:0;background:var(--sunken);
-  }
-  .summary .thumb img{width:100%;height:100%;object-fit:cover;}
+  /* ─────────── SUMMARY ROW (thumb + salon/service/date) ─────────── */
+  .summary{display:flex;align-items:center;gap:13px;margin-top:14px;padding:2px 2px;}
+  .summary .thumb{width:46px;height:46px;border-radius:var(--r-tile);overflow:hidden;flex-shrink:0;background:var(--sunken);}
+  .summary .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
   .summary .meta{flex:1;min-width:0;}
-  .summary .meta .salon{font-family:"Inter Tight";font-weight:700;font-size:15px;letter-spacing:-.01em;}
-  .summary .meta .svc{
-    color:var(--ink-2);font-size:13px;margin-top:2px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .summary .meta .svc b{color:var(--ink-2);font-weight:600;}
+  .summary .meta .svc{margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-  /* Actions */
-  .actions{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
-
-  .btn{
-    width:100%;height:54px;border-radius:var(--radius-pill);
-    font-family:"Inter Tight";font-weight:700;font-size:16px;letter-spacing:-.01em;
-    display:flex;align-items:center;justify-content:center;gap:8px;
-    border:1px solid transparent;cursor:pointer;
-    transition:transform .12s ease, background .15s ease;
-    user-select:none;
-  }
-  .btn:active{transform:scale(.97);}
-
-  /* Destructive primary: white bg, error-red text, red hairline border */
-  .btn-destruct{
-    background:var(--bg);
-    color:var(--error);
-    border-color:#F3C9C9;
-  }
+  /* ─────────── STACKED PILL ACTIONS ─────────── */
+  .actions{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+  .btn-stack{width:100%;border-radius:var(--r-pill);font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;
+    padding:15px 28px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:1px solid transparent;
+    transition:transform .14s var(--ease),background .15s ease,border-color .14s ease;}
+  .btn-stack:active{transform:scale(.97);}
+  /* DESTRUCTIVE: white bg, red text, red 1px border, NO fill */
+  .btn-destruct{background:var(--bg);color:var(--error);border-color:var(--error);}
   .btn-destruct:active{background:#FEF2F2;}
-
-  /* Neutral secondary: white + border + ink */
-  .btn-keep{
-    background:var(--bg);
-    color:var(--ink);
-    border-color:var(--border);
-  }
+  /* neutral keep = kit .btn-outline language at full width */
+  .btn-keep{background:var(--bg);color:var(--ink);border-color:var(--border);}
   .btn-keep:active{background:var(--sunken);}
 
-  .fine{
-    text-align:center;
-    color:var(--ink-3);
-    font-size:11.5px;line-height:1.5;
-    margin-top:14px;
-  }
-  .fine a{color:var(--blue);text-decoration:none;}
-  .fine a:hover{text-decoration:underline;}
+  .fine{text-align:center;color:var(--ink-3);font-size:12px;line-height:1.5;margin-top:16px;}
 
-  @media (prefers-reduced-motion: reduce){
-    .scrim,.sheet{animation:none;}
-    .scrim{opacity:1;}
-    .sheet{transform:translateY(0);}
-  }
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}.scrim{opacity:1;}.bsheet{transform:translateY(0);}}
 </style>
 </head>
 <body>
   <div class="frame">
 
-    <!-- ── Booking detail page (context behind the scrim) ── -->
+    <!-- ─── Booking-detail page (dimmed context behind the scrim) ─── -->
     <div class="bg-page" aria-hidden="true">
-      <div class="status-bar">
-        <span>9:41</span>
-        <span class="icons">
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
-          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.5c2.3 0 4.4.9 6 2.4l1.1-1.2A10.4 10.4 0 0 0 8.5 .8 10.4 10.4 0 0 0 1.4 3.7l1.1 1.2c1.6-1.5 3.7-2.4 6-2.4Z"/><path d="M8.5 6c1.3 0 2.5.5 3.4 1.4l1.1-1.2A6.9 6.9 0 0 0 8.5 4.3 6.9 6.9 0 0 0 3.9 6.2L5 7.4A4.8 4.8 0 0 1 8.5 6Z"/><circle cx="8.5" cy="10" r="1.6"/></svg>
-          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".5"/></svg>
-        </span>
-      </div>
+      <div class="statusbar"><span>9:41</span><span class="ico">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+      </span></div>
 
       <div class="bg-nav">
-        <button class="back" aria-label="Zurück">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <h1>Deine Buchung</h1>
+        <button class="bg-back" aria-label="Zurück"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <h1 class="t-section">Deine Buchung</h1>
       </div>
 
       <div class="bg-hero">
-        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80" alt="Salon-Interieur">
-        <span class="bg-pill"><span class="dot-green"></span>Bestätigt</span>
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80" alt="" referrerpolicy="no-referrer">
+        <span class="bg-statuspill">Bestätigt</span>
       </div>
 
       <div class="bg-block">
-        <h2>Damen Schnitt &amp; Föhn</h2>
-        <p class="sub">Maison Lavoie · Niederdorfstrasse 24, 8001 Zürich</p>
+        <h2 class="t-title">Damen Schnitt &amp; Föhn</h2>
+        <p class="t-body" style="margin-top:6px;">Maison Lavoie · Niederdorfstrasse 24, 8001 Zürich</p>
 
-        <div class="bg-row">
-          <span class="ic">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          </span>
-          <span class="txt"><span class="t">Sa, 14. Juni · 14:30</span><span class="d">Dauer ca. 45 Min</span></span>
+        <div class="bg-row" style="margin-top:8px;">
+          <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+          <span class="main"><div class="t-row">Sa, 14. Juni · <span class="mono" style="font-weight:600;">14:30</span></div><div class="t-meta" style="margin-top:1px;">Dauer ca. 45 Min</div></span>
         </div>
         <div class="bg-row">
-          <span class="ic">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
-          </span>
-          <span class="txt"><span class="t">Camille Lavoie</span><span class="d">Coiffeuse</span></span>
+          <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span>
+          <span class="main"><div class="t-row">Camille Lavoie</div><div class="t-meta" style="margin-top:1px;">Coiffeuse</div></span>
         </div>
       </div>
     </div>
 
-    <!-- ── Scrim ── -->
+    <!-- ─── Scrim ─── -->
     <div class="scrim"></div>
 
-    <!-- ── Confirm sheet ── -->
-    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-      <div class="grab"></div>
+    <!-- ─── Confirm sheet ─── -->
+    <div class="bsheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div class="bsheet-grab"></div>
 
-      <div class="sheet-head">
-        <h2 id="sheet-title">Buchung stornieren?</h2>
-      </div>
+      <h2 class="t-title rise" id="sheet-title" style="animation-delay:.16s;">Buchung stornieren?</h2>
 
-      <!-- Refund focal block -->
-      <div class="refund">
-        <div class="label">Du erhältst zurück</div>
-        <div class="amount"><span class="chf">CHF</span>65.00</div>
-        <div class="timeline">
+      <!-- Refund focal block: cool-grey sunken, leads with the amount -->
+      <div class="refund rise" style="animation-delay:.22s;">
+        <div class="t-eyebrow">Du erhältst zurück</div>
+        <div class="refund-amount"><span class="mono">CHF 65.00</span></div>
+        <div class="refund-line">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.7 9.7 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/></svg>
-          <span>Die Rückerstattung dauert 3–5 Werktage.</span>
+          <span>Rückerstattung in 3-5 Werktagen</span>
         </div>
       </div>
 
-      <!-- Summary row -->
-      <div class="summary">
-        <span class="thumb"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=80" alt="Maison Lavoie"></span>
+      <!-- Compact summary: thumb + salon / service / date -->
+      <div class="summary rise" style="animation-delay:.28s;">
+        <span class="thumb"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer"></span>
         <span class="meta">
-          <span class="salon">Maison Lavoie</span>
-          <span class="svc">Damen Schnitt &amp; Föhn · <b>Sa, 14. Juni · 14:30</b></span>
+          <div class="t-row">Maison Lavoie</div>
+          <div class="t-meta svc">Damen Schnitt &amp; Föhn · Sa, 14. Juni</div>
         </span>
       </div>
 
-      <!-- Actions -->
-      <div class="actions">
-        <button class="btn btn-destruct">Ja, stornieren</button>
-        <button class="btn btn-keep">Behalten</button>
+      <!-- Two stacked pill actions -->
+      <div class="actions rise" style="animation-delay:.34s;">
+        <button class="btn-stack btn-destruct">Ja, stornieren</button>
+        <button class="btn-stack btn-keep">Behalten</button>
       </div>
 
-      <p class="fine">Kostenlose Stornierung bis 24 Std. vorher. <a href="#">Stornobedingungen</a></p>
+      <p class="fine rise" style="animation-delay:.4s;">Kostenlose Stornierung bis 24 Std. vorher.</p>
     </div>
 
   </div>

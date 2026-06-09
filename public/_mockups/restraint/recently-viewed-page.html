@@ -8,312 +8,229 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --radius-card:16px; --radius-pill:999px;
-    --shadow:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;        /* primary text, structure, primary CTA fill */
+    --ink-2:#6B6B6B;      /* secondary text, meta */
+    --ink-3:#9B9B9B;      /* tertiary text, eyebrow, counts */
+    --border:#E4E4E7;     /* hairline + card border (cool grey) */
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;     /* cool grey fill: chips, "Alle ansehen", icon tiles, tracks */
+    --blue:#276EF1;       /* SMALL clickable bits ONLY: review count, text links */
+    --green:#16A34A;      /* available / open / success / paid */
+    --star:#FFC32B;       /* rating star */
+    --error:#DC2626;      /* error, closed status, destructive */
+    --heart:#FF3366;      /* saved/favourite */
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
-  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  body{
-    background:#E9E9EC;
-    font-family:"Inter",system-ui,sans-serif;
-    color:var(--ink);
-    display:flex; flex-direction:column; align-items:center;
-    padding:28px 0 64px;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-  }
-  .frame{
-    width:390px; background:var(--bg);
-    min-height:760px;
-    border-radius:0; overflow:hidden;
-    box-shadow:0 24px 64px -24px rgba(10,10,10,.28), 0 4px 12px -8px rgba(10,10,10,.12);
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* ---------- header ---------- */
-  .header{
-    position:sticky; top:0; z-index:10;
-    background:rgba(255,255,255,.86);
-    backdrop-filter:saturate(180%) blur(14px);
-    -webkit-backdrop-filter:saturate(180%) blur(14px);
-    border-bottom:1px solid var(--border);
-    display:flex; align-items:center; gap:6px;
-    padding:14px 16px;
-  }
-  .back-btn{
-    width:38px; height:38px; flex:0 0 38px;
-    display:flex; align-items:center; justify-content:center;
-    border-radius:var(--radius-pill);
-    background:transparent; border:none; cursor:pointer;
-    color:var(--ink);
-    margin-left:-6px;
-    transition:background .16s ease, transform .12s ease;
-  }
-  .back-btn:hover{background:var(--sunken);}
-  .back-btn:active{transform:scale(.94);}
-  .header h1{
-    font-family:"Inter Tight",sans-serif;
-    font-size:19px; font-weight:700; letter-spacing:-.02em;
-    line-height:1.1;
-  }
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;border-radius:0;}
 
-  /* ---------- count line ---------- */
-  .meta-line{
-    padding:16px 20px 4px;
-    font-size:13px; color:var(--ink-3);
-    font-weight:500; letter-spacing:.005em;
-  }
+  /* ─────────── iOS STATUS BAR (verbatim) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* ---------- list ---------- */
-  .list{
-    padding:8px 12px 8px;
-    display:flex; flex-direction:column;
-  }
-  .row{
-    display:flex; gap:14px; align-items:center;
-    padding:12px 8px;
-    border-radius:var(--radius-card);
-    cursor:pointer; position:relative;
-    text-decoration:none; color:inherit;
-    transition:background .16s ease, transform .1s ease;
-    opacity:0;
-    animation:rise .5s cubic-bezier(.22,.61,.36,1) forwards;
-  }
-  .row:hover{background:var(--sunken);}
-  .row:active{transform:scale(.985);}
-  .row:not(:last-child)::after{
-    content:""; position:absolute; left:86px; right:8px; bottom:0;
-    height:1px; background:var(--border);
-  }
-  .row:hover::after{opacity:0;}
+  /* ─────────── TYPE SCALE (verbatim) ─────────── */
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  .thumb{
-    width:64px; height:64px; flex:0 0 64px;
-    border-radius:12px; overflow:hidden;
-    background:var(--sunken);
-    box-shadow:inset 0 0 0 1px rgba(10,10,10,.04);
-  }
-  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  /* ─────────── PAGE HEADER (ink back + title) ─────────── */
+  .pagehead{display:flex;align-items:center;gap:8px;padding:6px 16px 2px;}
+  .btn-back{width:38px;height:38px;border-radius:var(--r-pill);background:transparent;border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;margin-left:-6px;transition:transform .14s var(--ease),background .16s ease;}
+  .btn-back:hover{background:var(--sunken);}
+  .btn-back:active{transform:scale(.92);}
 
-  .row-body{flex:1; min-width:0;}
-  .row-name{
-    font-family:"Inter Tight",sans-serif;
-    font-size:15.5px; font-weight:700; letter-spacing:-.01em;
-    line-height:1.2; color:var(--ink);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .row-rating{
-    display:flex; align-items:center; gap:5px;
-    margin-top:4px; font-size:12.5px; line-height:1;
-  }
-  .row-rating .star{color:var(--star); display:flex;}
-  .row-rating .score{font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
-  .row-rating .count{color:var(--blue); font-weight:500;}
-  .row-rating .city{color:var(--ink-2); font-weight:500; margin-left:5px;}
-  .row-price{
-    margin-top:6px;
-    font-size:12.5px; color:var(--ink-2); font-weight:500;
-  }
-  .row-price b{
-    color:var(--ink); font-weight:600;
-    font-variant-numeric:tabular-nums;
-  }
-  .row-chevron{
-    flex:0 0 auto; color:var(--ink-3);
-    display:flex; align-items:center;
-    margin-right:2px;
-  }
+  /* count line */
+  .meta-line{padding:14px 20px 6px;font-size:13px;color:var(--ink-3);font-weight:400;}
 
-  /* staggered entrance */
-  .row:nth-child(1){animation-delay:.02s;}
-  .row:nth-child(2){animation-delay:.06s;}
-  .row:nth-child(3){animation-delay:.10s;}
-  .row:nth-child(4){animation-delay:.14s;}
-  .row:nth-child(5){animation-delay:.18s;}
-  .row:nth-child(6){animation-delay:.22s;}
+  /* ─────────── SEARCH-CARD ROW (real .rating + .srow anatomy) ─────────── */
+  .list{padding:0 20px;}
+  .srow{display:flex;align-items:center;gap:14px;padding:16px 0;cursor:pointer;text-decoration:none;color:inherit;}
+  .srow + .srow{border-top:1px solid var(--border);}
+  .srow:active{transform:scale(.99);}
+  .srow{transition:transform .12s var(--ease);}
+  .thumb{width:64px;height:64px;flex:0 0 64px;border-radius:var(--r-tile);overflow:hidden;background:var(--sunken);box-shadow:inset 0 0 0 1px rgba(10,10,10,.04);}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .srow-main{flex:1;min-width:0;}
+  .srow-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* real rating row: star · ink score · blue count · middot · city meta */
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;margin-top:5px;}
+  .rating .num{font-weight:600;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:-.01em;}
+  .rating .count{color:var(--blue);font-weight:500;font-family:'JetBrains Mono',monospace;font-size:13px;}
+  .rating .dot-sep{color:var(--ink-3);}
+  .srow-price{margin-top:5px;font-size:13px;color:var(--ink-2);}
+  .srow-price .mono{color:var(--ink);font-size:13.5px;}
+  .srow-chev{flex:0 0 auto;color:var(--ink);display:flex;align-items:center;}  /* chevron INK, never blue/grey */
 
-  @keyframes rise{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
-  }
+  /* ─────────── DIVIDER (mock-only state separator) ─────────── */
+  .demo-divider{margin:30px 20px 0;padding-top:24px;border-top:1px dashed var(--border);text-align:center;}
+  .demo-divider span{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);background:var(--bg);padding:0 6px;}
 
-  /* ---------- divider to empty-state demo ---------- */
-  .demo-divider{
-    margin:36px 20px 0;
-    padding-top:24px;
-    border-top:1px dashed var(--border);
-    text-align:center;
-  }
-  .demo-divider span{
-    display:inline-block;
-    font-family:"JetBrains Mono",monospace;
-    font-size:10px; font-weight:500; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--ink-3);
-    background:var(--bg); padding:0 4px;
-  }
+  /* ─────────── EMPTY STATE (sunken clock disc + ink pill) ─────────── */
+  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 32px 52px;}
+  .empty-disc{width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-pill);background:var(--sunken);color:var(--ink-3);margin-bottom:22px;}
+  .empty h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:8px;}
+  .empty p{font-size:14px;color:var(--ink-2);line-height:1.5;max-width:248px;margin-bottom:26px;}
 
-  /* ---------- empty state ---------- */
-  .empty{
-    display:flex; flex-direction:column; align-items:center; text-align:center;
-    padding:40px 32px 48px;
-  }
-  .empty-icon{
-    width:64px; height:64px;
-    display:flex; align-items:center; justify-content:center;
-    border-radius:var(--radius-pill);
-    background:var(--sunken);
-    color:var(--ink-3);
-    margin-bottom:20px;
-  }
-  .empty h2{
-    font-family:"Inter Tight",sans-serif;
-    font-size:18px; font-weight:700; letter-spacing:-.02em;
-    color:var(--ink); margin-bottom:8px;
-  }
-  .empty p{
-    font-size:14px; color:var(--ink-2); line-height:1.5;
-    max-width:240px; margin-bottom:24px;
-  }
-  .btn-ink{
-    appearance:none; border:none; cursor:pointer;
-    background:var(--ink); color:#fff;
-    font-family:"Inter",sans-serif;
-    font-size:14.5px; font-weight:600; letter-spacing:-.005em;
-    padding:13px 22px; border-radius:var(--radius-pill);
-    display:inline-flex; align-items:center; gap:7px;
-    box-shadow:var(--shadow);
-    transition:transform .12s ease, opacity .16s ease;
-  }
-  .btn-ink:hover{opacity:.92;}
+  /* ─────────── PRIMARY CTA = INK PILL (verbatim) ─────────── */
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:'Inter',sans-serif;transition:transform .14s var(--ease);}
   .btn-ink:active{transform:scale(.97);}
 
-  @media (prefers-reduced-motion: reduce){
-    .row{animation:none; opacity:1;}
-    .back-btn:active,.row:active,.btn-ink:active{transform:none;}
-  }
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .srow:nth-child(1){animation-delay:.03s;}
+  .srow:nth-child(2){animation-delay:.07s;}
+  .srow:nth-child(3){animation-delay:.11s;}
+  .srow:nth-child(4){animation-delay:.15s;}
+  .srow:nth-child(5){animation-delay:.19s;}
+  .srow:nth-child(6){animation-delay:.23s;}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
-  <div class="frame">
 
-    <!-- Header -->
-    <header class="header">
-      <button class="back-btn" aria-label="Zurück">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-      </button>
-      <h1>Zuletzt angesehen</h1>
-    </header>
+<div class="frame">
+  <!-- iOS status bar -->
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
 
-    <!-- Count -->
-    <div class="meta-line">6 Salons</div>
+  <!-- ink back + title -->
+  <div class="pagehead">
+    <button class="btn-back" aria-label="Zurück">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <h1 class="t-title">Zuletzt angesehen</h1>
+  </div>
 
-    <!-- List -->
-    <div class="list">
+  <div class="meta-line">6 Salons</div>
 
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=70" alt="Maison Lumière"></div>
-        <div class="row-body">
-          <div class="row-name">Maison Lumière Coiffure</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">4,9</span>
-            <span class="count">(54)</span>            <span class="city">Zürich</span>
-          </div>
-          <div class="row-price">ab <b>CHF 65</b></div>
+  <!-- search-card rows -->
+  <div class="list">
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Maison Lumière Coiffure</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.9</span><span class="count">(54)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Zürich</span>
         </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=200&q=70" alt="Atelier Noir"></div>
-        <div class="row-body">
-          <div class="row-name">Atelier Noir Barbier</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">4,8</span>
-            <span class="count">(212)</span>            <span class="city">Zürich</span>
-          </div>
-          <div class="row-price">ab <b>CHF 45</b></div>
-        </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=200&q=70" alt="Belle Époque Nails"></div>
-        <div class="row-body">
-          <div class="row-name">Belle Époque Nails</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">4,7</span>
-            <span class="count">(89)</span>            <span class="city">Winterthur</span>
-          </div>
-          <div class="row-price">ab <b>CHF 55</b></div>
-        </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=200&q=70" alt="Spa Serenità"></div>
-        <div class="row-body">
-          <div class="row-name">Spa Serenità Wellness</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">5,0</span>
-            <span class="count">(37)</span>            <span class="city">Zug</span>
-          </div>
-          <div class="row-price">ab <b>CHF 120</b></div>
-        </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?auto=format&fit=crop&w=200&q=70" alt="Studio Klara"></div>
-        <div class="row-body">
-          <div class="row-name">Studio Klara Haar &amp; Make-up</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">4,6</span>
-            <span class="count">(143)</span>            <span class="city">Luzern</span>
-          </div>
-          <div class="row-price">ab <b>CHF 70</b></div>
-        </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-      <a class="row" href="#">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=200&q=70" alt="Le Marais Coiffure"></div>
-        <div class="row-body">
-          <div class="row-name">Le Marais Coiffure</div>
-          <div class="row-rating">
-            <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
-            <span class="score">4,8</span>
-            <span class="count">(61)</span>            <span class="city">Genf</span>
-          </div>
-          <div class="row-price">ab <b>CHF 80</b></div>
-        </div>
-        <span class="row-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      </a>
-
-    </div>
-
-    <!-- Demo divider (mock only) -->
-    <div class="demo-divider"><span>Leerer Zustand</span></div>
-
-    <!-- Empty state variant -->
-    <section class="empty">
-      <div class="empty-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <div class="srow-price">ab <span class="mono">CHF 65</span></div>
       </div>
-      <h2>Noch nichts angesehen</h2>
-      <p>Salons, die du dir ansiehst, erscheinen hier — für den schnellen Weg zurück.</p>
-      <button class="btn-ink">
-        Salons entdecken
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
-    </section>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Atelier Noir Barbier</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.8</span><span class="count">(212)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Zürich</span>
+        </div>
+        <div class="srow-price">ab <span class="mono">CHF 45</span></div>
+      </div>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Belle Époque Nails</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.7</span><span class="count">(89)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Winterthur</span>
+        </div>
+        <div class="srow-price">ab <span class="mono">CHF 55</span></div>
+      </div>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Spa Serenità Wellness</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">5.0</span><span class="count">(37)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Zug</span>
+        </div>
+        <div class="srow-price">ab <span class="mono">CHF 120</span></div>
+      </div>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Studio Klara Haar &amp; Make-up</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.6</span><span class="count">(143)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Luzern</span>
+        </div>
+        <div class="srow-price">ab <span class="mono">CHF 70</span></div>
+      </div>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
+
+    <a class="srow rise" href="#">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=200&q=75" alt="" referrerpolicy="no-referrer"></div>
+      <div class="srow-main">
+        <div class="t-row srow-name">Le Marais Coiffure</div>
+        <div class="rating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.8</span><span class="count">(61)</span>
+          <span class="dot-sep">·</span><span class="t-meta">Genf</span>
+        </div>
+        <div class="srow-price">ab <span class="mono">CHF 80</span></div>
+      </div>
+      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </a>
 
   </div>
+
+  <!-- mock-only state separator -->
+  <div class="demo-divider"><span>Leerer Zustand</span></div>
+
+  <!-- empty-state variant -->
+  <section class="empty">
+    <div class="empty-disc">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    </div>
+    <h2>Noch nichts angesehen</h2>
+    <p>Salons, die du dir ansiehst, erscheinen hier, für den schnellen Weg zurück.</p>
+    <button class="btn-ink">
+      Salons entdecken
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
+  </section>
+
+</div>
 </body>
 </html>

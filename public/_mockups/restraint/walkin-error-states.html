@@ -3,315 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Walk-in Fehlerzustände — Solen</title>
+<title>Solen — Walk-in error states</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
     --error-bg:#FEE2E2;
-    --radius-card:16px; --radius-pill:999px;
-    --shadow:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{background:#E9E9EC;}
-  body{
-    font-family:"Inter",-apple-system,system-ui,sans-serif;
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
-    padding:40px 0 80px;
-    display:flex; flex-direction:column; align-items:center; gap:36px;
-  }
-  /* Page-level label above each frame */
-  .frame-label{
-    width:390px; max-width:calc(100vw - 24px);
-    font-family:"Inter Tight",sans-serif;
-    font-weight:600; font-size:13px; letter-spacing:.01em;
-    color:#5A5A5E; padding:0 4px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .frame-label .tag{
-    font-family:"JetBrains Mono",monospace; font-weight:600; font-size:11px;
-    color:#8A8A8E; background:#fff; border:1px solid var(--border);
-    border-radius:6px; padding:2px 7px;
-  }
-  .frame{
-    width:390px; max-width:calc(100vw - 24px);
-    background:var(--bg);
-    border-radius:24px;
-    box-shadow:0 1px 2px rgba(10,10,10,.04), 0 18px 50px -20px rgba(10,10,10,.22);
-    overflow:hidden;
-    border:1px solid rgba(10,10,10,.04);
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* Top app bar */
-  .appbar{
-    height:54px; display:flex; align-items:center; padding:0 16px; gap:14px;
-    border-bottom:1px solid var(--border);
-  }
-  .appbar .iconbtn{
-    width:38px; height:38px; border-radius:var(--radius-pill);
-    background:var(--bg); border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; color:var(--ink);
-    flex-shrink:0; cursor:pointer; transition:transform .12s ease;
-  }
-  .appbar .iconbtn:active{transform:scale(.94);}
-  .appbar .title{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:16px;
-    letter-spacing:-.01em;
-  }
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;min-height:740px;display:flex;flex-direction:column;}
 
-  /* ---------- A: empty / not-found state ---------- */
-  .notfound{
-    padding:64px 28px 56px;
-    display:flex; flex-direction:column; align-items:center; text-align:center;
-  }
-  .iconchip{
-    width:72px; height:72px; border-radius:20px;
-    background:var(--sunken);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--ink-3);
-    margin-bottom:24px;
-    animation:rise .55s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .notfound h1{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:22px;
-    letter-spacing:-.02em; line-height:1.18;
-    animation:rise .55s .06s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .notfound p{
-    color:var(--ink-2); font-size:15px; line-height:1.5;
-    margin-top:10px; max-width:280px;
-    animation:rise .55s .12s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .notfound .actions{
-    margin-top:32px; width:100%;
-    display:flex; flex-direction:column; align-items:center; gap:18px;
-    animation:rise .55s .18s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .btn-ink{
-    width:100%;
-    background:var(--ink); color:#fff;
-    font-family:"Inter Tight",sans-serif; font-weight:600; font-size:16px;
-    border:none; border-radius:14px; height:54px;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    cursor:pointer; transition:transform .12s ease;
-  }
+  /* ─────────── iOS STATUS BAR ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;flex-shrink:0;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
+
+  /* ─────────── TYPE SCALE ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+
+  /* ─────────── STATUS / RATING ROW ─────────── */
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
+  .rating .num{font-weight:600;color:var(--ink);}
+  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
+  .dot-sep{color:var(--ink-3);}
+
+  /* ─────────── CARD ─────────── */
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
+  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
+
+  /* ─────────── BUTTONS ─────────── */
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .14s var(--ease);}
   .btn-ink:active{transform:scale(.97);}
-  .link-blue{
-    color:var(--blue); font-weight:600; font-size:15px;
-    text-decoration:none; cursor:pointer;
-    border-bottom:1px solid transparent; padding-bottom:1px;
-    transition:border-color .12s ease;
-  }
-  .link-blue:hover{border-bottom-color:var(--blue);}
+  .btn-ink.full{width:100%;padding:16px 28px;}
+  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .14s var(--ease),border-color .14s ease;}
+  .btn-outline:active{transform:scale(.97);}
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .link:hover{text-decoration:underline;}
 
-  /* ---------- B: 409 / pay-at-counter state ---------- */
-  .payview{padding:18px 16px 28px;}
-  .eyebrow{
-    font-family:"Inter Tight",sans-serif; font-weight:600; font-size:11px;
-    letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3);
-    margin:6px 2px 14px;
-  }
-  .alert{
-    display:flex; gap:11px; align-items:flex-start;
-    background:var(--error-bg); color:var(--error);
-    border-radius:14px; padding:14px 14px;
-    margin-bottom:18px;
-    animation:rise .5s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .alert svg{flex-shrink:0; margin-top:1px;}
-  .alert .atxt{font-size:14px; line-height:1.42; font-weight:600;}
-  .alert .atxt .sub{font-weight:400; color:#B91C1C; display:block; margin-top:2px; font-size:13.5px;}
+  /* ─────────── ALERT BANNER (Layer-3 semantic, refined pastel) ─────────── */
+  /* icon DC2626 on FEE2E2 pale tile, ink text — NON-destructive, sits ABOVE the summary */
+  .alert{display:flex;gap:13px;align-items:flex-start;background:var(--bg);border:1px solid var(--border);
+    border-radius:var(--r-card);padding:16px 18px;}
+  .alert-tile{width:38px;height:38px;border-radius:var(--r-tile);background:var(--error-bg);
+    display:flex;align-items:center;justify-content:center;color:var(--error);flex-shrink:0;}
+  .alert-main{flex:1;min-width:0;}
+  .alert-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--ink);}
+  .alert-body{font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:3px;}
 
-  /* booking summary card */
-  .summary{
-    border:1px solid var(--border); border-radius:var(--radius-card);
-    background:var(--bg); box-shadow:var(--shadow);
-    overflow:hidden;
-    animation:rise .5s .08s cubic-bezier(.16,.84,.44,1) both;
-  }
-  .summary-head{
-    display:flex; gap:13px; align-items:center;
-    padding:16px 16px 14px;
-  }
-  .summary-head .thumb{
-    width:52px; height:52px; border-radius:13px; object-fit:cover; flex-shrink:0;
-    background:var(--sunken);
-  }
-  .summary-head .sname{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:16px;
-    letter-spacing:-.01em; line-height:1.2;
-  }
-  .summary-head .smeta{
-    font-size:13px; color:var(--ink-2); margin-top:3px;
-    display:flex; align-items:center; gap:5px;
-  }
-  .summary-head .smeta .star{color:var(--star); display:inline-flex;}
-  .summary-head .smeta .cnt{color:var(--blue); cursor:pointer;}
-  .divider{height:1px; background:var(--border);}
-  .rows{padding:6px 16px 4px;}
-  .row{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:12px 0;
-  }
-  .row + .row{border-top:1px solid var(--border);}
-  .row .rl{display:flex; flex-direction:column; gap:3px;}
-  .row .rl .lbl{font-size:14.5px; font-weight:600; color:var(--ink);}
-  .row .rl .sub{font-size:13px; color:var(--ink-2);}
-  .row .rr{font-size:14px; color:var(--ink-2); font-weight:500;}
+  /* ─────────── EMPTY-STATE DISC (sunken, ticket-off) ─────────── */
+  .empty-disc{width:96px;height:96px;border-radius:var(--r-pill);background:var(--sunken);
+    display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin:0 auto 26px;}
 
-  .total-row{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 16px 18px;
-    border-top:1px solid var(--border);
-  }
-  .total-row .tlbl{
-    font-family:"Inter Tight",sans-serif; font-weight:600; font-size:15px;
-  }
-  .total-row .tnum{
-    font-family:"JetBrains Mono",monospace; font-weight:600; font-size:24px;
-    letter-spacing:-.02em; color:var(--ink);
-  }
-  .pay-note{
-    margin-top:16px;
-    display:flex; gap:9px; align-items:flex-start;
-    color:var(--ink-2); font-size:13px; line-height:1.45;
-    padding:0 4px;
-  }
-  .pay-note svg{flex-shrink:0; margin-top:1px; color:var(--ink-3);}
-  .btn-ghost{
-    margin-top:20px; width:100%;
-    background:var(--bg); color:var(--ink);
-    font-family:"Inter Tight",sans-serif; font-weight:600; font-size:15px;
-    border:1px solid var(--border); border-radius:14px; height:52px;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    cursor:pointer; transition:transform .12s ease, background .12s ease;
-  }
-  .btn-ghost:active{transform:scale(.97); background:var(--sunken);}
+  /* booking-summary inner layout */
+  .sum-row{display:flex;align-items:flex-start;gap:14px;}
+  .sum-thumb{width:56px;height:56px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
+  .sum-main{flex:1;min-width:0;}
+  .sum-line{display:flex;align-items:center;justify-content:space-between;padding:13px 0;}
+  .sum-line + .sum-line{border-top:1px solid var(--border);}
+  .sum-k{font-size:14px;color:var(--ink-2);}
+  .sum-v{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--ink);}
+  .sum-total{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:2px;border-top:1px solid var(--border);}
 
-  @keyframes rise{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none !important; transition:none !important;}
-  }
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .d1{animation-delay:.05s;}.d2{animation-delay:.12s;}.d3{animation-delay:.19s;}.d4{animation-delay:.26s;}
+
+  /* kit-page caption */
+  .kit-label{font-family:'Inter Tight';font-weight:700;font-size:12px;color:#6B6B6B;width:390px;padding:4px 2px;text-transform:uppercase;letter-spacing:.06em;}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
 
-  <!-- ============ A: TICKET NICHT GEFUNDEN ============ -->
-  <div class="frame-label"><span class="tag">A</span> Leerzustand — Ticket nicht gefunden</div>
-  <div class="frame">
-    <div class="appbar">
-      <div class="iconbtn" aria-label="Zurück">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+<!-- ════════════════════ A · TICKET NICHT GEFUNDEN ════════════════════ -->
+<div class="kit-label">A · walk-in · ticket nicht gefunden (full-page empty state)</div>
+<div class="frame">
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 36px 70px;">
+    <div class="empty-disc rise d1">
+      <!-- ticket-off: ticket outline with a diagonal slash -->
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9.5V7a2 2 0 0 1 2-2h11"/>
+        <path d="M20 7v2.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H9"/>
+        <path d="M4 14.5V17a2 2 0 0 0 2 2"/>
+        <path d="M4 9.5a2.5 2.5 0 0 1 1.2 4.7"/>
+        <line x1="3" y1="3" x2="21" y2="21"/>
+      </svg>
+    </div>
+    <h1 class="t-title rise d2">Ticket nicht gefunden</h1>
+    <p class="t-body rise d2" style="margin-top:10px;max-width:280px;">
+      Dieses Walk-in-Ticket ist abgelaufen oder wurde bereits eingelöst. Prüfe den Link oder sichere dir einen neuen Platz.
+    </p>
+    <button class="btn-ink rise d3" style="margin-top:28px;">Zur Startseite</button>
+    <a class="link rise d3" style="margin-top:18px;">Hilfe</a>
+  </div>
+</div>
+
+<!-- ════════════════════ B · 409 · AM TRESEN BEZAHLEN ════════════════════ -->
+<div class="kit-label">B · walk-in · 409 „am tresen bezahlen“ (non-destructive — summary stays readable)</div>
+<div class="frame">
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+
+  <div style="padding:14px 20px 24px;">
+    <h1 class="t-title rise d1">Walk-in bestätigen</h1>
+
+    <!-- AlertBanner — red icon on pale tile, ink text. ABOVE the summary, never replaces it -->
+    <div class="alert rise d2" style="margin-top:18px;">
+      <span class="alert-tile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      </span>
+      <div class="alert-main">
+        <div class="alert-title">Online-Zahlung nicht möglich</div>
+        <div class="alert-body">Dieser Salon nimmt diesen Termin nur vor Ort an. Bitte <strong style="color:var(--ink);font-weight:600;">am Tresen bezahlen</strong> — dein Platz bleibt reserviert.</div>
       </div>
-      <div class="title">Walk-in</div>
     </div>
 
-    <div class="notfound">
-      <div class="iconchip">
-        <!-- ticket-off -->
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 9a3 3 0 0 1 .9-2.1"/>
-          <path d="M4.5 4.5h13.6a3 3 0 0 1 3 3v.5a2 2 0 0 0 0 4v3"/>
-          <path d="M22 13.5v3a3 3 0 0 1-3 3H7"/>
-          <path d="M2 13a2 2 0 0 0 0-4"/>
-          <path d="M9.5 4.5v2"/>
-          <path d="M9.5 19.5v-3"/>
-          <line x1="2" y1="2" x2="22" y2="22"/>
-        </svg>
+    <!-- Booking summary card — FULLY readable, untouched -->
+    <div class="card rise d3" style="margin-top:14px;">
+      <div class="sum-row">
+        <img class="sum-thumb" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sum-main">
+          <div class="t-row">Salon Lumière</div>
+          <div class="rating" style="margin-top:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+            <span class="num">4.9</span><span class="count">(127)</span>
+            <span class="dot-sep">·</span><span class="t-meta">Barber · Zürich</span>
+          </div>
+        </div>
       </div>
-      <h1>Ticket nicht gefunden</h1>
-      <p>Dieser Link ist abgelaufen oder ungültig.</p>
-      <div class="actions">
-        <button class="btn-ink">Zur Startseite</button>
-        <a class="link-blue" href="#">Hilfe</a>
+
+      <div style="margin-top:6px;">
+        <div class="sum-line">
+          <span class="sum-k">Herrenschnitt</span>
+          <span class="sum-v">CHF 45.00</span>
+        </div>
+        <div class="sum-line">
+          <span class="sum-k">Bart trimmen</span>
+          <span class="sum-v">CHF 20.00</span>
+        </div>
       </div>
+
+      <div class="sum-total">
+        <span class="t-row">Total</span>
+        <span class="mono" style="font-size:18px;">CHF 65.00</span>
+      </div>
+    </div>
+
+    <button class="btn-ink full rise d4" style="margin-top:22px;">Platz reservieren</button>
+    <div style="text-align:center;margin-top:16px;">
+      <a class="link rise d4">Anderen Salon wählen</a>
     </div>
   </div>
-
-  <!-- ============ B: 409 — AM TRESEN BEZAHLEN ============ -->
-  <div class="frame-label"><span class="tag">B</span> Fehler 409 — Am Tresen bezahlen</div>
-  <div class="frame">
-    <div class="appbar">
-      <div class="iconbtn" aria-label="Zurück">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </div>
-      <div class="title">Walk-in bezahlen</div>
-    </div>
-
-    <div class="payview">
-      <div class="eyebrow">Deine Buchung</div>
-
-      <!-- RED AlertBanner ABOVE the summary, non-destructive -->
-      <div class="alert" role="alert">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-        <div class="atxt">
-          Online-Zahlung nicht möglich
-          <span class="sub">Bitte bezahle deinen Termin am Tresen im Salon.</span>
-        </div>
-      </div>
-
-      <!-- summary card stays fully readable -->
-      <div class="summary">
-        <div class="summary-head">
-          <img class="thumb" src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=160&q=80" alt="">
-          <div>
-            <div class="sname">Studio Lumière</div>
-            <div class="smeta">
-              <span class="star">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 7.1-1.01z"/></svg>
-              </span>
-              <span style="font-weight:600;color:var(--ink);">4,9</span>
-              <span class="cnt">(218)</span>
-              <span style="color:var(--ink-3);">·</span>
-              <span>Zürich, Kreis 4</span>
-            </div>
-          </div>
-        </div>
-        <div class="divider"></div>
-
-        <div class="rows">
-          <div class="row">
-            <div class="rl">
-              <span class="lbl">Herrenschnitt &amp; Bart</span>
-              <span class="sub">mit Marco · ca. 45 Min.</span>
-            </div>
-            <div class="rr">CHF 55.–</div>
-          </div>
-          <div class="row">
-            <div class="rl">
-              <span class="lbl">Walk-in</span>
-              <span class="sub">Heute · Platz 3 in der Schlange</span>
-            </div>
-            <div class="rr">jetzt</div>
-          </div>
-        </div>
-
-        <div class="total-row">
-          <span class="tlbl">Total</span>
-          <span class="tnum">CHF 55.–</span>
-        </div>
-      </div>
-
-      <div class="pay-note">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span>Dein Platz in der Schlange bleibt reserviert. Du zahlst direkt beim Coiffeur.</span>
-      </div>
-
-      <button class="btn-ghost">Zurück zum Salon</button>
-    </div>
-  </div>
+</div>
 
 </body>
 </html>

@@ -8,324 +8,186 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --radius-card:16px; --radius-pill:999px;
-    --shadow-rest:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{height:100%;}
-  body{
-    font-family:"Inter",-apple-system,system-ui,sans-serif;
-    background:#E9E9EC;
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
-    display:flex; align-items:flex-start; justify-content:center;
-    padding:32px 0;
-    min-height:100vh;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* ---- 390px phone frame ---- */
-  .frame{
-    width:390px;
-    background:var(--bg);
-    min-height:780px;
-    position:relative;
-    display:flex; flex-direction:column;
-    box-shadow:0 12px 48px -12px rgba(10,10,10,.22);
-    border-radius:0;
-    overflow:hidden;
-  }
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;border-radius:0;min-height:844px;display:flex;flex-direction:column;}
 
-  /* ---- Top app bar ---- */
-  .appbar{
-    display:flex; align-items:center; gap:8px;
-    height:56px; padding:0 16px;
-    border-bottom:1px solid var(--border);
-    flex-shrink:0;
-  }
-  .icon-btn{
-    width:40px; height:40px; border-radius:var(--radius-pill);
-    display:flex; align-items:center; justify-content:center;
-    background:var(--bg); border:none; cursor:pointer;
-    margin-left:-8px;
-    transition:transform .12s ease, background .12s ease;
-  }
-  .icon-btn:active{transform:scale(.92); background:var(--sunken);}
-  .icon-btn svg{width:22px; height:22px; stroke:var(--ink); stroke-width:2; fill:none;}
-  .appbar-title{
-    font-family:"Inter Tight"; font-weight:700; font-size:16px;
-    letter-spacing:-.01em; color:var(--ink);
-  }
+  /* ─────────── iOS STATUS BAR ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;flex-shrink:0;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* ---- Step indicator ---- */
-  .steps{
-    display:flex; align-items:center;
-    padding:16px 20px 18px;
-    gap:0;
-    border-bottom:1px solid var(--border);
-    flex-shrink:0;
-  }
-  .step{
-    display:flex; align-items:center; gap:7px;
-    font-family:"Inter Tight"; font-size:13px; letter-spacing:-.005em;
-    white-space:nowrap;
-  }
-  .step-num{
-    width:20px; height:20px; border-radius:var(--radius-pill);
-    display:flex; align-items:center; justify-content:center;
-    font-family:"Inter"; font-size:11px; font-weight:700;
-    flex-shrink:0;
-  }
-  .step.active .step-num{ background:var(--ink); color:#fff; }
-  .step.active .step-label{ color:var(--ink); font-weight:700; }
-  .step.inactive .step-num{ background:var(--sunken); color:var(--ink-3); font-weight:600; }
-  .step.inactive .step-label{ color:var(--ink-3); font-weight:500; }
-  .step-sep{
-    flex:1; height:1px; background:var(--border);
-    margin:0 8px;
-  }
-  .step-sep.thin{ min-width:8px; }
+  /* ─────────── TYPE SCALE (verbatim) ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* ---- Body / empty state ---- */
-  .body{
-    flex:1;
-    display:flex; flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:48px 32px 40px;
-  }
-  .empty-anim{ animation:rise .5s cubic-bezier(.22,.61,.36,1) both; }
-  .empty-anim.d1{ animation-delay:.04s; }
-  .empty-anim.d2{ animation-delay:.10s; }
-  .empty-anim.d3{ animation-delay:.16s; }
-  .empty-anim.d4{ animation-delay:.22s; }
+  /* ─────────── BACK ROW (icon-only flat, kit .btn-icon) ─────────── */
+  .topbar{display:flex;align-items:center;gap:12px;padding:6px 16px 0;flex-shrink:0;}
+  .btn-icon{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;transition:transform .14s var(--ease);}
+  .btn-icon:active{transform:scale(.92);}
 
-  .icon-chip{
-    width:72px; height:72px;
-    border-radius:20px;
-    background:var(--sunken);
-    border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom:24px;
-  }
-  .icon-chip svg{ width:32px; height:32px; stroke:var(--ink-2); stroke-width:1.75; fill:none; }
+  /* ─────────── STEP INDICATOR (Service · Datum · Zeit · Details) ─────────── */
+  .steps{display:flex;align-items:center;padding:16px 20px 18px;flex-shrink:0;}
+  .step{display:flex;align-items:center;gap:7px;white-space:nowrap;}
+  .step-num{width:21px;height:21px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums;}
+  .step-label{font-family:'Inter Tight',sans-serif;font-size:13px;letter-spacing:-.005em;}
+  .step.active .step-num{background:var(--ink);color:#fff;}
+  .step.active .step-label{color:var(--ink);font-weight:700;}
+  .step.inactive .step-num{background:var(--sunken);color:var(--ink-3);font-weight:600;}
+  .step.inactive .step-label{color:var(--ink-3);font-weight:500;}
+  .step-sep{flex:1;height:1px;background:var(--border);margin:0 9px;min-width:8px;}
 
-  .eyebrow{
-    font-family:"Inter Tight";
-    font-size:12px; font-weight:600;
-    letter-spacing:.08em; text-transform:uppercase;
-    color:var(--ink-3);
-    margin-bottom:14px;
-  }
-  h1{
-    font-family:"Inter Tight";
-    font-weight:700;
-    font-size:22px; line-height:1.22;
-    letter-spacing:-.02em;
-    color:var(--ink);
-    max-width:300px;
-    margin-bottom:12px;
-  }
-  .body-text{
-    font-family:"Inter";
-    font-size:15px; line-height:1.5;
-    color:var(--ink-2);
-    max-width:268px;
-    margin-bottom:32px;
-  }
+  /* ─────────── EMPTY-STATE BODY ─────────── */
+  .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 28px 36px;}
 
-  /* ---- Salon mini-context card ---- */
-  .salon-card{
-    width:100%;
-    display:flex; align-items:center; gap:12px;
-    padding:12px;
-    background:var(--bg);
-    border:1px solid var(--border);
-    border-radius:var(--radius-card);
-    box-shadow:var(--shadow-rest);
-    text-align:left;
-    margin-bottom:28px;
-  }
-  .salon-thumb{
-    width:52px; height:52px;
-    border-radius:12px;
-    object-fit:cover;
-    flex-shrink:0;
-    background:var(--sunken);
-  }
-  .salon-meta{ min-width:0; flex:1; }
-  .salon-name{
-    font-family:"Inter Tight"; font-weight:700; font-size:15px;
-    letter-spacing:-.01em; color:var(--ink);
-    margin-bottom:3px;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .salon-sub{
-    display:flex; align-items:center; gap:6px;
-    font-family:"Inter"; font-size:13px; color:var(--ink-2);
-  }
-  .salon-sub .rating{ display:inline-flex; align-items:center; gap:3px; }
-  .salon-sub .rating svg{ width:13px; height:13px; fill:var(--star); }
-  .salon-sub .rating b{ font-weight:600; color:var(--ink); }
-  .salon-sub .count{ color:var(--blue); font-weight:500; }
-  .salon-sub .dot-sep{ width:3px; height:3px; border-radius:50%; background:var(--ink-3); flex-shrink:0; }
-  .salon-sub .loc{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* sunken calendar-off icon disc (flat: sunken, no shadow per CONTROL_ELEVATION) */
+  .disc{width:84px;height:84px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
+  .disc svg{width:34px;height:34px;stroke:var(--ink-2);stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 
-  /* ---- Actions ---- */
-  .actions{
-    width:100%;
-    display:flex; flex-direction:column; align-items:center;
-    gap:18px;
-  }
-  .btn-primary{
-    width:100%;
-    height:52px;
-    background:var(--ink);
-    color:#fff;
-    border:none; border-radius:var(--radius-pill);
-    font-family:"Inter Tight"; font-weight:700; font-size:16px;
-    letter-spacing:-.01em;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    cursor:pointer;
-    transition:transform .12s ease, opacity .12s ease;
-  }
-  .btn-primary:active{ transform:scale(.97); }
-  .btn-primary svg{ width:18px; height:18px; stroke:#fff; stroke-width:2; fill:none; }
+  h1.headline{max-width:300px;margin-bottom:11px;}
+  .body-text{max-width:280px;font-size:14px;line-height:1.5;color:var(--ink-2);margin-bottom:28px;}
 
-  .link-call{
-    display:inline-flex; align-items:center; gap:7px;
-    font-family:"Inter"; font-weight:600; font-size:15px;
-    color:var(--blue);
-    text-decoration:none;
-    cursor:pointer;
-    padding:4px 2px;
-  }
-  .link-call svg{ width:16px; height:16px; stroke:var(--blue); stroke-width:2; fill:none; }
-  .link-call:hover .link-underline{ text-decoration:underline; }
+  /* ─────────── SALON CONTEXT CARD (kit .card 24px + status row) ─────────── */
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:14px;}
+  .salon-card{width:100%;display:flex;align-items:center;gap:14px;text-align:left;margin-bottom:28px;}
+  .salon-thumb{width:56px;height:56px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;background:var(--sunken);}
+  .salon-meta{min-width:0;flex:1;}
+  .salon-name{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.012em;color:var(--ink);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;}
+  .rating svg{width:14px;height:14px;fill:var(--star);}
+  .rating .num{font-weight:600;color:var(--ink);}
+  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
+  .dot-sep{color:var(--ink-3);}
+  .salon-loc{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-  /* ---- bottom safe note ---- */
-  .foot-note{
-    flex-shrink:0;
-    padding:0 32px 26px;
-    text-align:center;
-  }
-  .foot-note p{
-    font-family:"Inter"; font-size:12px; line-height:1.5;
-    color:var(--ink-3);
-  }
-  .home-indicator{
-    width:134px; height:5px; border-radius:99px;
-    background:var(--ink); opacity:.18;
-    margin:0 auto 8px;
-  }
+  /* ─────────── ACTIONS ─────────── */
+  .actions{width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;}
+  /* PRIMARY = INK PILL (kit .btn-ink.full) */
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:16px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    transition:transform .14s var(--ease);font-family:'Inter',sans-serif;}
+  .btn-ink:active{transform:scale(.97);}
+  .btn-ink svg{stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  /* blue text link (kit .link) — call */
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;padding:4px 2px;}
+  .link svg{stroke:var(--blue);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px;}
+  .link:hover .u{text-decoration:underline;}
 
-  @keyframes rise{
-    from{ opacity:0; transform:translateY(10px); }
-    to{ opacity:1; transform:translateY(0); }
-  }
-  @media (prefers-reduced-motion:reduce){
-    .empty-anim, .empty-anim.d1, .empty-anim.d2, .empty-anim.d3, .empty-anim.d4{ animation:none; }
-    .btn-primary:active, .icon-btn:active{ transform:none; }
-  }
+  /* ─────────── HOME INDICATOR ─────────── */
+  .home-indicator{width:134px;height:5px;border-radius:var(--r-pill);background:var(--ink);opacity:.16;margin:0 auto 8px;flex-shrink:0;}
+
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .d1{animation-delay:.05s;}
+  .d2{animation-delay:.11s;}
+  .d3{animation-delay:.17s;}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
-  <div class="frame">
 
-    <!-- App bar -->
-    <header class="appbar">
-      <button class="icon-btn" aria-label="Zurück">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <span class="appbar-title">Termin buchen</span>
-    </header>
+<div class="frame">
 
-    <!-- Step indicator -->
-    <nav class="steps" aria-label="Buchungsschritte">
-      <div class="step active">
-        <span class="step-num">1</span>
-        <span class="step-label">Service</span>
-      </div>
-      <span class="step-sep"></span>
-      <div class="step inactive">
-        <span class="step-num">2</span>
-        <span class="step-label">Datum</span>
-      </div>
-      <span class="step-sep"></span>
-      <div class="step inactive">
-        <span class="step-num">3</span>
-        <span class="step-label">Zeit</span>
-      </div>
-      <span class="step-sep"></span>
-      <div class="step inactive">
-        <span class="step-num">4</span>
-        <span class="step-label">Details</span>
-      </div>
-    </nav>
+  <!-- iOS status bar -->
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
 
-    <!-- Empty-state body -->
-    <main class="body">
-      <div class="icon-chip empty-anim">
-        <!-- calendar-off icon -->
-        <svg viewBox="0 0 24 24">
-          <path d="M16 2v4M8 2v4"/>
-          <path d="M3 8h6m4 0h8"/>
-          <path d="M21 11.5V6a2 2 0 0 0-2-2h-1M3 8v11a2 2 0 0 0 2 2h11"/>
-          <line x1="2" y1="2" x2="22" y2="22"/>
-        </svg>
-      </div>
+  <!-- Back -->
+  <div class="topbar">
+    <button class="btn-icon" aria-label="Zurück"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="t-row">Termin buchen</span>
+  </div>
 
-      <div class="eyebrow empty-anim d1">Online-Buchung</div>
+  <!-- Step indicator -->
+  <nav class="steps" aria-label="Buchungsschritte">
+    <div class="step active"><span class="step-num">1</span><span class="step-label">Service</span></div>
+    <span class="step-sep"></span>
+    <div class="step inactive"><span class="step-num">2</span><span class="step-label">Datum</span></div>
+    <span class="step-sep"></span>
+    <div class="step inactive"><span class="step-num">3</span><span class="step-label">Zeit</span></div>
+    <span class="step-sep"></span>
+    <div class="step inactive"><span class="step-num">4</span><span class="step-label">Details</span></div>
+  </nav>
 
-      <h1 class="empty-anim d1">Dieser Salon bietet noch keine Online-Buchung</h1>
+  <!-- Empty-state body -->
+  <main class="body">
+    <div class="disc rise">
+      <svg viewBox="0 0 24 24">
+        <path d="M16 2v4M8 2v4"/>
+        <path d="M3 8h6m4 0h8"/>
+        <path d="M21 11.5V6a2 2 0 0 0-2-2h-1M3 8v11a2 2 0 0 0 2 2h11"/>
+        <line x1="2" y1="2" x2="22" y2="22"/>
+      </svg>
+    </div>
 
-      <p class="body-text empty-anim d2">Du kannst den Salon direkt kontaktieren, um einen Termin zu vereinbaren.</p>
+    <h1 class="t-title headline rise d1">Online-Buchung nicht verfügbar</h1>
 
-      <!-- Salon context card -->
-      <div class="salon-card empty-anim d2">
-        <img class="salon-thumb" alt="Maison Lumière Salon"
-             src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=160&h=160&fit=crop&q=80">
-        <div class="salon-meta">
-          <div class="salon-name">Maison Lumière</div>
-          <div class="salon-sub">
-            <span class="rating">
-              <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.3 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6z"/></svg>
-              <b>4.9</b>
-            </span>
-            <span class="count">(212)</span>
-            <span class="dot-sep"></span>
-            <span class="loc">Zürich, Kreis 4</span>
-          </div>
+    <p class="body-text rise d1">Dieser Salon nimmt Termine telefonisch oder direkt vor Ort entgegen. Schau auf der Salon-Seite vorbei oder ruf kurz an.</p>
+
+    <!-- Salon context card (kit .card 24px) -->
+    <div class="card salon-card rise d2">
+      <img class="salon-thumb" alt="Maison Lumière"
+           src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer">
+      <div class="salon-meta">
+        <div class="salon-name">Maison Lumière</div>
+        <div class="rating">
+          <svg viewBox="0 0 24 24"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <span class="num">4.9</span><span class="count">(127)</span>
+          <span class="dot-sep">·</span><span class="salon-loc">Basel, Kreis 4</span>
         </div>
       </div>
-
-      <!-- Actions -->
-      <div class="actions empty-anim d3">
-        <button class="btn-primary">
-          Zum Salon
-          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-
-        <a class="link-call" href="tel:+41441234567">
-          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span class="link-underline">Salon anrufen</span>
-        </a>
-      </div>
-    </main>
-
-    <!-- Foot -->
-    <div class="foot-note empty-anim d4">
-      <p>Sobald der Salon Online-Buchung aktiviert, kannst du hier direkt einen Termin reservieren.</p>
     </div>
 
-    <div style="flex-shrink:0; padding-bottom:8px;">
-      <div class="home-indicator"></div>
+    <!-- Actions -->
+    <div class="actions rise d3">
+      <button class="btn-ink">
+        Zum Salon
+        <svg width="18" height="18" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <a class="link" href="tel:+41612340000">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span class="u">Salon anrufen</span>
+      </a>
     </div>
+  </main>
 
-  </div>
+  <div class="home-indicator"></div>
+
+</div>
 </body>
 </html>

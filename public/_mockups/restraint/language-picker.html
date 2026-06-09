@@ -2,288 +2,174 @@
 <html lang="de-CH">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solen — Sprache wählen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --radius-card:16px; --radius-pill:999px;
-    --shadow-rest:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
-  body{
-    font-family:"Inter",-apple-system,system-ui,sans-serif;
-    background:#E9E9EC;
-    color:var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    min-height:100vh;padding:24px 0;
-    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* ---- Phone frame ---- */
-  .frame{
-    position:relative;width:390px;height:844px;background:var(--bg);
-    border-radius:40px;overflow:hidden;
-    box-shadow:0 24px 70px -24px rgba(10,10,10,.45), 0 8px 24px -12px rgba(10,10,10,.25);
-  }
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;height:760px;background:var(--bg);position:relative;overflow:hidden;}
 
-  /* ---- Background app (blurred / dimmed underneath the sheet) ---- */
-  .app-bg{position:absolute;inset:0;display:flex;flex-direction:column;}
-  .statusbar{
-    height:54px;display:flex;align-items:flex-end;justify-content:space-between;
-    padding:0 26px 8px;font-family:"Inter Tight";font-weight:700;font-size:15px;color:var(--ink);
-  }
-  .statusbar .icons{display:flex;gap:6px;align-items:center;}
-  .statusbar svg{display:block;}
-  .app-header{
-    padding:6px 20px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);
-  }
-  .app-header .back{
-    width:38px;height:38px;border-radius:var(--radius-pill);border:1px solid var(--border);
-    background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--ink);
-  }
-  .app-header .ht{font-family:"Inter Tight";font-weight:700;font-size:20px;letter-spacing:-.02em;}
-  /* fake settings rows behind */
-  .app-list{padding:8px 20px;}
-  .row-ghost{
-    display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--border);
-  }
-  .row-ghost .ic{width:40px;height:40px;border-radius:12px;background:var(--sunken);flex:none;}
-  .row-ghost .lines{flex:1;}
-  .row-ghost .l1{height:11px;width:46%;border-radius:6px;background:#EDEDF0;margin-bottom:8px;}
-  .row-ghost .l2{height:9px;width:30%;border-radius:6px;background:#F1F1F3;}
-  .row-ghost .chev{color:var(--ink-3);}
-  .row-ghost.is-language .ic{background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink);}
-  .row-ghost.is-language .l1{width:30%;background:#E2E2E6;}
-  .row-ghost.is-language .val{font-family:"Inter Tight";font-weight:600;font-size:14px;color:var(--ink-2);margin-right:4px;}
+  /* ─────────── iOS STATUS BAR ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;letter-spacing:-.01em;position:relative;z-index:2;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* ---- Scrim ---- */
-  .scrim{
-    position:absolute;inset:0;background:rgba(10,10,10,.42);
-    backdrop-filter:saturate(.9) blur(1.5px);
-    opacity:0;animation:scrimIn .42s cubic-bezier(.22,.61,.36,1) forwards;
-  }
-  @keyframes scrimIn{to{opacity:1;}}
+  /* ─────────── TYPE SCALE ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* ---- Sheet ---- */
-  .sheet{
-    position:absolute;left:0;right:0;bottom:0;
-    background:var(--bg);
-    border-radius:24px 24px 0 0;
-    padding:8px 20px calc(20px + env(safe-area-inset-bottom));
-    box-shadow:0 -8px 40px -12px rgba(10,10,10,.22);
-    transform:translateY(100%);
-    animation:sheetUp .5s cubic-bezier(.16,1,.3,1) .06s forwards;
-  }
-  @keyframes sheetUp{to{transform:translateY(0);}}
+  /* ─────────── ACCOUNT/SETTINGS LIST ROW (the page underneath, dimmed by scrim) ─────────── */
+  .lrow{display:flex;align-items:center;gap:14px;padding:15px 16px;}
+  .lrow-ico{width:38px;height:38px;border-radius:var(--r-tile);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;}
+  .lrow-main{flex:1;min-width:0;}
+  .lrow-sub{font-size:13px;color:var(--ink-3);margin-top:1px;}
+  .lrow-chev{color:var(--ink);}
 
-  .handle{
-    width:40px;height:5px;border-radius:var(--radius-pill);background:var(--border);
-    margin:6px auto 14px;
-  }
+  /* ─────────── BUTTONS ─────────── */
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .14s var(--ease);}
+  .btn-ink:active{transform:scale(.97);}
+  .btn-ink.full{width:100%;padding:16px 28px;}
 
-  .sheet-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 4px 16px;}
-  .sheet-title{font-family:"Inter Tight";font-weight:700;font-size:22px;letter-spacing:-.025em;color:var(--ink);}
-  .sheet-count{font-family:"JetBrains Mono";font-weight:500;font-size:13px;color:var(--ink-3);letter-spacing:-.01em;}
+  /* ═══════════ BOTTOM SHEET (kit recipe) ═══════════ */
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.4);animation:fade .4s var(--ease) both;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .bsheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:10px 20px 26px;
+    box-shadow:0 -12px 40px -16px rgba(10,10,10,.22);animation:up .42s var(--ease) both;}
+  .bsheet-grab{width:36px;height:4px;border-radius:var(--r-pill);background:var(--border);margin:6px auto 16px;}
+  @keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
 
-  /* ---- Language rows ---- */
-  .lang-list{display:flex;flex-direction:column;}
-  .lang{
-    display:flex;align-items:center;gap:14px;
-    padding:14px 6px;border:none;background:transparent;width:100%;text-align:left;
-    cursor:pointer;border-radius:14px;
-    transition:background .18s ease, transform .12s ease;
-  }
+  .bsheet-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+  .bsheet-head .mono{font-size:14px;color:var(--ink-3);}
+
+  /* language rows — built from the kit list-row anatomy (.lrow + sunken icon tile + chev slot) */
+  .lang{display:flex;align-items:center;gap:14px;padding:14px 4px;cursor:pointer;transition:transform .12s var(--ease);}
   .lang + .lang{border-top:1px solid var(--border);}
-  .lang:active{transform:scale(.985);background:var(--sunken);}
+  .lang:active{transform:scale(.98);}
+  .lang-flag{width:42px;height:42px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;flex-shrink:0;}
+  .lang-main{flex:1;min-width:0;}
+  .lang-native{font-size:13px;color:var(--ink-3);margin-top:1px;}
+  /* selected = INK check, never blue, never a fill */
+  .lang-check{color:var(--ink);display:none;flex-shrink:0;}
+  .lang.is-selected .lang-check{display:block;}
 
-  .chip{
-    width:44px;height:44px;border-radius:var(--radius-pill);flex:none;
-    display:flex;align-items:center;justify-content:center;overflow:hidden;
-    border:1px solid var(--border);background:var(--sunken);
-    font-family:"Inter Tight";font-weight:700;font-size:17px;color:var(--ink);
-    position:relative;
-  }
-  .chip .flag{width:100%;height:100%;object-fit:cover;display:block;}
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-  .lang-meta{flex:1;min-width:0;}
-  .lang-name{font-family:"Inter Tight";font-weight:600;font-size:16px;letter-spacing:-.01em;color:var(--ink);line-height:1.2;}
-  .lang-native{font-size:13.5px;color:var(--ink-2);margin-top:2px;line-height:1.2;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 
-  .check{
-    width:26px;height:26px;flex:none;color:var(--ink);
-    opacity:0;transform:scale(.6);
-  }
-  .lang[aria-selected="true"] .check{
-    opacity:1;transform:scale(1);
-    animation:pop .42s cubic-bezier(.18,1.3,.4,1) .34s backwards;
-  }
-  .lang[aria-selected="true"] .check path{
-    stroke-dasharray:24;stroke-dashoffset:24;
-    animation:draw .42s cubic-bezier(.65,0,.35,1) .42s forwards;
-  }
-  @keyframes pop{0%{opacity:0;transform:scale(.5);}60%{transform:scale(1.12);}100%{opacity:1;transform:scale(1);}}
-  @keyframes draw{to{stroke-dashoffset:0;}}
-
-  .lang[aria-selected="true"] .lang-name{font-weight:700;}
-
-  /* ---- Done button ---- */
-  .done{
-    width:100%;margin-top:20px;
-    height:54px;border:none;border-radius:var(--radius-pill);
-    background:var(--ink);color:#fff;
-    font-family:"Inter Tight";font-weight:700;font-size:16px;letter-spacing:-.01em;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:var(--shadow-rest);
-    transition:transform .12s ease;
-  }
-  .done:active{transform:scale(.97);}
-
-  /* load rise-in for sheet contents */
-  .sheet-head, .lang, .done{opacity:0;animation:riseIn .5s cubic-bezier(.16,1,.3,1) forwards;}
-  .sheet-head{animation-delay:.20s;}
-  .lang:nth-of-type(1){animation-delay:.26s;}
-  .lang:nth-of-type(2){animation-delay:.31s;}
-  .lang:nth-of-type(3){animation-delay:.36s;}
-  .lang:nth-of-type(4){animation-delay:.41s;}
-  .done{animation-delay:.48s;}
-  @keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important;}
-    .scrim,.sheet,.sheet-head,.lang,.done,.check{opacity:1 !important;transform:none !important;}
-    .lang[aria-selected="true"] .check path{stroke-dashoffset:0 !important;}
-  }
+  .kit-label{font-family:'Inter Tight';font-weight:700;font-size:12px;color:#6B6B6B;width:390px;padding:4px 2px;text-transform:uppercase;letter-spacing:.06em;}
 </style>
 </head>
 <body>
-  <div class="frame">
 
-    <!-- Background app: a Profile / settings surface, dimmed by the scrim -->
-    <div class="app-bg" aria-hidden="true">
-      <div class="statusbar">
-        <span>9:41</span>
-        <span class="icons">
-          <!-- signal -->
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0A0A0A"/><rect x="5" y="4.5" width="3" height="7.5" rx="1" fill="#0A0A0A"/><rect x="10" y="2" width="3" height="10" rx="1" fill="#0A0A0A"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#0A0A0A"/></svg>
-          <!-- wifi -->
-          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 11.2 11 8.3a4 4 0 0 0-5 0l2.5 2.9Z" fill="#0A0A0A"/><path d="M8.5 2C5.4 2 2.6 3.2.6 5.2l1.7 1.9a8.6 8.6 0 0 1 12.4 0l1.7-1.9C14.4 3.2 11.6 2 8.5 2Z" fill="#0A0A0A" opacity=".9"/></svg>
-          <!-- battery -->
-          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="#0A0A0A" stroke-opacity=".4" stroke-width="1.2"/><rect x="2.6" y="2.6" width="15" height="7.8" rx="1.6" fill="#0A0A0A"/><rect x="23.4" y="4.4" width="1.8" height="4.2" rx="1" fill="#0A0A0A" opacity=".4"/></svg>
-        </span>
-      </div>
+<div class="kit-label">Sprache wählen · bottom sheet</div>
+<div class="frame">
 
-      <div class="app-header">
-        <div class="back">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        </div>
-        <div class="ht">Einstellungen</div>
-      </div>
+  <!-- ───────── PAGE UNDERNEATH (account / settings, dimmed by the scrim) ───────── -->
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
 
-      <div class="app-list">
-        <div class="row-ghost">
-          <div class="ic"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div>
-          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </div>
-        <div class="row-ghost">
-          <div class="ic"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div>
-          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </div>
-        <div class="row-ghost is-language">
-          <div class="ic">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>
-          </div>
-          <div class="lines"><div class="l1"></div></div>
-          <span class="val">Deutsch</span>
-          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </div>
-        <div class="row-ghost">
-          <div class="ic"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div>
-          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dimmed scrim -->
-    <div class="scrim"></div>
-
-    <!-- Bottom sheet -->
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Sprache wählen">
-      <div class="handle"></div>
-
-      <div class="sheet-head">
-        <div class="sheet-title">Sprache</div>
-        <div class="sheet-count">4</div>
-      </div>
-
-      <div class="lang-list" role="listbox" aria-label="Sprache wählen">
-
-        <button class="lang" role="option" aria-selected="true">
-          <span class="chip">
-            <img class="flag" alt="" src="https://flagcdn.com/w80/ch.png">
-          </span>
-          <span class="lang-meta">
-            <span class="lang-name">Deutsch</span>
-            <span class="lang-native">Deutsch (Schweiz)</span>
-          </span>
-          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        </button>
-
-        <button class="lang" role="option" aria-selected="false">
-          <span class="chip">
-            <img class="flag" alt="" src="https://flagcdn.com/w80/gb.png">
-          </span>
-          <span class="lang-meta">
-            <span class="lang-name">English</span>
-            <span class="lang-native">Englisch</span>
-          </span>
-          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        </button>
-
-        <button class="lang" role="option" aria-selected="false">
-          <span class="chip">
-            <img class="flag" alt="" src="https://flagcdn.com/w80/fr.png">
-          </span>
-          <span class="lang-meta">
-            <span class="lang-name">Français</span>
-            <span class="lang-native">Französisch</span>
-          </span>
-          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        </button>
-
-        <button class="lang" role="option" aria-selected="false">
-          <span class="chip">
-            <img class="flag" alt="" src="https://flagcdn.com/w80/it.png">
-          </span>
-          <span class="lang-meta">
-            <span class="lang-name">Italiano</span>
-            <span class="lang-native">Italienisch</span>
-          </span>
-          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        </button>
-
-      </div>
-
-      <button class="done">Fertig</button>
-    </div>
-
+  <div style="padding:6px 20px 0;">
+    <h1 class="t-display">Konto</h1>
+    <p class="t-body" style="margin-top:6px;">Einstellungen &amp; Präferenzen</p>
   </div>
 
-  <script>
-    // Tapping a row swaps the selected locale (moves the ink checkmark).
-    const list = document.querySelector('.lang-list');
-    list.querySelectorAll('.lang').forEach(opt=>{
-      opt.addEventListener('click', ()=>{
-        list.querySelectorAll('.lang').forEach(o=>o.setAttribute('aria-selected','false'));
-        opt.setAttribute('aria-selected','true');
-      });
-    });
-  </script>
+  <div style="padding:16px 16px 0;">
+    <div class="lrow"><span class="lrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><div class="lrow-main"><div class="t-row">Persönliche Daten</div><div class="lrow-sub">Name, E-Mail, Telefon</div></div><span class="lrow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>
+    <div class="lrow" style="border-top:1px solid var(--border);"><span class="lrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></span><div class="lrow-main"><div class="t-row">Sprache</div><div class="lrow-sub">Deutsch (Schweiz)</div></div><span class="lrow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>
+    <div class="lrow" style="border-top:1px solid var(--border);"><span class="lrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><div class="lrow-main"><div class="t-row">Benachrichtigungen</div><div class="lrow-sub">Push &amp; E-Mail</div></div><span class="lrow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  </div>
+
+  <!-- ───────── SCRIM + BOTTOM SHEET ───────── -->
+  <div class="scrim"></div>
+  <div class="bsheet">
+    <div class="bsheet-grab"></div>
+    <div class="bsheet-head">
+      <h2 class="t-section">Sprache</h2>
+      <span class="mono">4</span>
+    </div>
+
+    <div style="margin-top:4px;">
+      <div class="lang is-selected rise" style="animation-delay:.04s">
+        <span class="lang-flag">🇩🇪</span>
+        <div class="lang-main">
+          <div class="t-row">Deutsch</div>
+          <div class="lang-native">German</div>
+        </div>
+        <span class="lang-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      </div>
+
+      <div class="lang rise" style="animation-delay:.09s">
+        <span class="lang-flag">🇬🇧</span>
+        <div class="lang-main">
+          <div class="t-row">English</div>
+          <div class="lang-native">English</div>
+        </div>
+        <span class="lang-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      </div>
+
+      <div class="lang rise" style="animation-delay:.14s">
+        <span class="lang-flag">🇫🇷</span>
+        <div class="lang-main">
+          <div class="t-row">Français</div>
+          <div class="lang-native">French</div>
+        </div>
+        <span class="lang-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      </div>
+
+      <div class="lang rise" style="animation-delay:.19s">
+        <span class="lang-flag">🇮🇹</span>
+        <div class="lang-main">
+          <div class="t-row">Italiano</div>
+          <div class="lang-native">Italian</div>
+        </div>
+        <span class="lang-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      </div>
+    </div>
+
+    <button class="btn-ink full" style="margin-top:22px;">Fertig</button>
+  </div>
+
+</div>
+
 </body>
 </html>

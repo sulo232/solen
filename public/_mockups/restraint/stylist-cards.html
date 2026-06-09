@@ -3,285 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solen — Team (Restraint)</title>
+<title>Solen — Team (stylist cards)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --r-card:16px; --r-pill:999px;
-    --shadow:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-  body{
-    font-family:'Inter',sans-serif;
-    background:#E9E9EC;
-    color:var(--ink);
-    display:flex;justify-content:center;
-    min-height:100vh;padding:24px 0;
-  }
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  /* ---- 390px frame ---- */
-  .frame{
-    width:390px;min-height:844px;background:var(--bg);
-    position:relative;overflow:hidden;
-  }
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
 
-  .body{padding:0 0 44px;}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* section eyebrow + title */
-  .sec-head{
-    padding:30px 20px 0;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .04s;
-  }
-  @keyframes rise{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
-  }
-  .eyebrow{
-    font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
-    color:var(--ink-3);
-  }
-  .sec-title{
-    font-family:'Inter Tight',sans-serif;font-weight:700;
-    font-size:20px;letter-spacing:-0.01em;color:var(--ink);margin-top:6px;
-  }
-  .sec-sub{
-    font-size:14px;line-height:1.5;color:var(--ink-2);margin-top:6px;
-  }
+  /* ─────────── TYPE SCALE (verbatim) ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* ---- horizontal scroll row ---- */
-  .row{
-    display:flex;gap:14px;
-    padding:22px 20px 8px;
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    scroll-snap-type:x mandatory;
-    scrollbar-width:none;
-  }
-  .row::-webkit-scrollbar{display:none;}
+  /* ─────────── RATING ROW (verbatim) ─────────── */
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
+  .rating .num{font-weight:600;color:var(--ink);}
+  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
+  .open{color:var(--green);font-weight:600;}
+  .dot-sep{color:var(--ink-3);}
 
-  /* ---- stylist card ---- */
-  .card{
-    flex:0 0 auto;width:204px;
-    scroll-snap-align:start;
-    border:1px solid var(--border);border-radius:var(--r-card);
-    background:var(--bg);overflow:hidden;
-    box-shadow:var(--shadow);
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both;
-  }
-  .card:nth-child(1){animation-delay:.1s;}
-  .card:nth-child(2){animation-delay:.16s;}
-  .card:nth-child(3){animation-delay:.22s;}
-  .card:nth-child(4){animation-delay:.28s;}
+  /* ─────────── CARD (verbatim, radius 24px) ─────────── */
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
 
-  /* photo = the focal */
-  .photo-mask{
-    position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;
-    background:var(--sunken);
-  }
-  .photo-mask img{
-    width:100%;height:100%;object-fit:cover;display:block;
-    transition:transform .5s cubic-bezier(.16,1,.3,1);
-  }
-  .card:hover .photo-mask img{transform:scale(1.02);}
+  /* ─────────── BUTTONS (verbatim) ─────────── */
+  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .14s var(--ease),border-color .14s ease;}
+  .btn-outline:active{transform:scale(.97);}
+  .btn-outline.selected{border-color:var(--ink);}
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .link:hover{text-decoration:underline;}
+  .link-ink{color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
 
-  /* availability badge over photo */
-  .avail{
-    position:absolute;left:10px;bottom:10px;
-    display:inline-flex;align-items:center;gap:5px;
-    height:24px;padding:0 9px;border-radius:var(--r-pill);
-    background:rgba(255,255,255,.94);
-    backdrop-filter:saturate(140%) blur(4px);
-    -webkit-backdrop-filter:saturate(140%) blur(4px);
-    font-size:11.5px;font-weight:600;color:var(--ink);letter-spacing:-0.005em;
-    box-shadow:0 1px 3px rgba(10,10,10,.1);
-  }
-  .avail .dot{
-    width:7px;height:7px;border-radius:50%;background:var(--green);
-  }
+  /* ─────────── SECTION HEAD (verbatim) ─────────── */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
 
-  .card-body{padding:13px 14px 15px;}
+  /* ─────────── TEAM AVATAR (verbatim: circular 72px + overlaid white star badge) ─────────── */
+  .team-row{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px;}
+  .team-row::-webkit-scrollbar{display:none;}
+  .team-card{flex-shrink:0;width:84px;text-align:center;cursor:pointer;transition:transform .12s var(--ease);}
+  .team-card:active{transform:scale(.96);}
+  .team-ava{position:relative;width:72px;height:72px;margin:0 auto 8px;}
+  .team-ava img{width:72px;height:72px;border-radius:var(--r-pill);object-fit:cover;}
+  /* selected avatar ring = INK (never blue) */
+  .team-card.is-active .team-ava img{box-shadow:0 0 0 2px var(--ink);}
+  .team-badge{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:#fff;
+    border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 7px;font-size:11px;font-weight:600;
+    display:inline-flex;align-items:center;gap:3px;box-shadow:0 1px 2px rgba(10,10,10,.08);}
+  .team-badge .mono{font-size:11px;}
+  .team-name{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;}
+  .team-spec{font-size:12px;color:var(--ink-3);margin-top:1px;}
 
-  .name{
-    font-family:'Inter Tight',sans-serif;font-weight:600;
-    font-size:16.5px;letter-spacing:-0.01em;color:var(--ink);line-height:1.15;
-  }
-  .spec{
-    font-size:12.5px;line-height:1.4;color:var(--ink-2);margin-top:4px;
-    min-height:35px;
-  }
+  /* ─────────── FEATURED STYLIST MINI-CARD (the one leveling move; kit .card) ─────────── */
+  .feat{display:flex;gap:16px;align-items:flex-start;}
+  .feat-ava{flex-shrink:0;}
+  .feat-ava img{width:88px;height:88px;border-radius:var(--r-pill);object-fit:cover;}
+  .feat-main{flex:1;min-width:0;}
+  .feat-name{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;}
+  .feat-spec{font-size:13px;color:var(--ink-2);margin-top:2px;}
+  .feat-rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;margin-top:8px;}
+  .feat-trust{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--ink-2);}
+  .feat-trust .mono{color:var(--ink);}
+  .feat-avail{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-weight:600;font-size:13px;}
+  .feat-dot{width:7px;height:7px;border-radius:var(--r-pill);background:var(--green);}
 
-  /* rating line */
-  .rate{
-    display:inline-flex;align-items:center;gap:5px;margin-top:11px;
-    font-size:13px;color:var(--ink-2);
-  }
-  .rate svg{display:block;margin-top:-1px;}
-  .rate .num{
-    font-family:'JetBrains Mono',monospace;font-weight:600;
-    font-size:13px;color:var(--ink);letter-spacing:-0.01em;
-  }
-  .rate .cnt{
-    font-size:13px;font-weight:500;color:var(--blue);
-    text-decoration:none;cursor:pointer;
-  }
-  .rate .cnt:hover{text-decoration:underline;}
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-  /* experience signal */
-  .signal{
-    margin-top:6px;font-size:12.5px;color:var(--ink-3);line-height:1.3;
-  }
-  .signal b{
-    font-family:'JetBrains Mono',monospace;font-weight:500;
-    color:var(--ink-3);letter-spacing:-0.01em;font-size:12.5px;
-  }
-
-  /* select pill (per-card affordance) */
-  .pick{
-    display:flex;align-items:center;justify-content:center;
-    width:100%;height:38px;margin-top:13px;
-    border-radius:var(--r-pill);
-    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:-0.005em;
-    cursor:pointer;
-    transition:transform .12s cubic-bezier(.16,1,.3,1), background .14s ease, border-color .14s ease;
-  }
-  /* secondary (default): neutral outlined */
-  .pick.out{
-    background:var(--bg);border:1px solid var(--border);color:var(--ink);
-  }
-  .pick.out:active{transform:scale(.97);background:var(--sunken);}
-  /* selected: ink fill */
-  .pick.sel{
-    background:var(--ink);border:1px solid var(--ink);color:#fff;
-  }
-  .pick.sel:active{transform:scale(.97);background:#1c1c1c;}
-  .pick.sel svg{margin-right:6px;display:block;}
-
-  /* ---- divider ---- */
-  .rule{height:1px;background:var(--border);margin:20px 20px 0;}
-
-  /* ---- bottom link ---- */
-  .all-link{
-    display:inline-flex;align-items:center;gap:5px;
-    margin:20px 20px 0;
-    font-size:14px;font-weight:500;color:var(--blue);
-    text-decoration:none;cursor:pointer;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .34s;
-  }
-  .all-link svg{color:var(--ink);transition:transform .16s ease;}
-  .all-link:hover{text-decoration:underline;}
-  .all-link:hover svg{transform:translateX(2px);}
-
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important;transition:none !important;}
-  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
-  <div class="frame">
-    <div class="body">
 
-      <!-- SECTION HEAD -->
-      <div class="sec-head">
-        <div class="eyebrow">Team</div>
-        <h2 class="sec-title">Wer dich bedient</h2>
-        <p class="sec-sub">Wähle deine Fachperson — oder lass den Salon entscheiden.</p>
+<div class="frame">
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+
+  <div style="padding:14px 20px 30px;">
+    <!-- Section head: Team + ink "Alle ansehen" -->
+    <div class="sec-head rise" style="animation-delay:.02s;">
+      <h2 class="t-section">Team</h2>
+      <a class="link-ink">Alle ansehen</a>
+    </div>
+
+    <!-- Avatar row: circular 72px + overlaid white star badge (kit .team-card) -->
+    <div class="team-row rise" style="animation-delay:.06s;">
+      <div class="team-card is-active">
+        <div class="team-ava">
+          <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="mono">4.9</span></span>
+        </div>
+        <div class="team-name">Nadia F.</div>
+        <div class="team-spec">Balayage</div>
       </div>
-
-      <!-- STYLIST ROW -->
-      <div class="row">
-
-        <!-- CARD 1 — selected state (ink-fill pill) -->
-        <article class="card">
-          <div class="photo-mask">
-            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=420&q=80" alt="Sarah K." referrerpolicy="no-referrer">
-            <span class="avail"><span class="dot"></span>Heute frei</span>
-          </div>
-          <div class="card-body">
-            <div class="name">Sarah K.</div>
-            <div class="spec">Spezialistin Damenschnitt &amp; Colour</div>
-            <span class="rate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-              <span class="num">4.9</span>
-              <a class="cnt">(212)</a>
-            </span>
-            <div class="signal"><b>1'240</b> Buchungen · <b>9</b> Jahre</div>
-            <button class="pick sel">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-              Ausgewählt
-            </button>
-          </div>
-        </article>
-
-        <!-- CARD 2 -->
-        <article class="card">
-          <div class="photo-mask">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=420&q=80" alt="Marco B." referrerpolicy="no-referrer">
-            <span class="avail"><span class="dot"></span>Heute frei</span>
-          </div>
-          <div class="card-body">
-            <div class="name">Marco B.</div>
-            <div class="spec">Spezialist Herrenschnitt &amp; Bart</div>
-            <span class="rate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-              <span class="num">4.8</span>
-              <a class="cnt">(168)</a>
-            </span>
-            <div class="signal"><b>980</b> Buchungen · <b>6</b> Jahre</div>
-            <button class="pick out">Auswählen</button>
-          </div>
-        </article>
-
-        <!-- CARD 3 -->
-        <article class="card">
-          <div class="photo-mask">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=420&q=80" alt="Elena R." referrerpolicy="no-referrer">
-          </div>
-          <div class="card-body">
-            <div class="name">Elena R.</div>
-            <div class="spec">Spezialistin Balayage &amp; Strähnen</div>
-            <span class="rate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-              <span class="num">5.0</span>
-              <a class="cnt">(94)</a>
-            </span>
-            <div class="signal"><b>610</b> Buchungen · <b>4</b> Jahre</div>
-            <button class="pick out">Auswählen</button>
-          </div>
-        </article>
-
-        <!-- CARD 4 -->
-        <article class="card">
-          <div class="photo-mask">
-            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=420&q=80" alt="David W." referrerpolicy="no-referrer">
-            <span class="avail"><span class="dot"></span>Heute frei</span>
-          </div>
-          <div class="card-body">
-            <div class="name">David W.</div>
-            <div class="spec">Spezialist Fade &amp; Styling</div>
-            <span class="rate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-              <span class="num">4.9</span>
-              <a class="cnt">(137)</a>
-            </span>
-            <div class="signal"><b>820</b> Buchungen · <b>7</b> Jahre</div>
-            <button class="pick out">Auswählen</button>
-          </div>
-        </article>
-
+      <div class="team-card">
+        <div class="team-ava">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="mono">4.8</span></span>
+        </div>
+        <div class="team-name">Léa M.</div>
+        <div class="team-spec">Coloration</div>
       </div>
+      <div class="team-card">
+        <div class="team-ava">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="mono">5.0</span></span>
+        </div>
+        <div class="team-name">Jonas W.</div>
+        <div class="team-spec">Herrenschnitt</div>
+      </div>
+      <div class="team-card">
+        <div class="team-ava">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="mono">4.7</span></span>
+        </div>
+        <div class="team-name">Sofia R.</div>
+        <div class="team-spec">Make-up</div>
+      </div>
+    </div>
 
-      <div class="rule"></div>
-
-      <!-- ALL LINK -->
-      <a class="all-link">Ganzes Team ansehen
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-      </a>
-
+    <!-- Leveling move: expanded featured-stylist card for the selected avatar (kit .card, radius 24px) -->
+    <div class="card rise" style="margin-top:18px;animation-delay:.12s;">
+      <div class="feat">
+        <div class="feat-ava">
+          <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer" alt="">
+        </div>
+        <div class="feat-main">
+          <div class="feat-name">Nadia F.</div>
+          <div class="feat-spec">Balayage · Coloration</div>
+          <div class="feat-rating">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+            <span class="mono" style="color:var(--ink);">4.9</span>
+            <span class="count">(86)</span>
+          </div>
+          <div class="feat-trust">
+            <span><span class="mono">1'240</span> Buchungen</span>
+            <span class="dot-sep">·</span>
+            <span><span class="mono">8</span> Jahre</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+        <span class="feat-avail"><span class="feat-dot"></span>Heute frei</span>
+        <button class="btn-outline selected">Ausgewählt</button>
+      </div>
     </div>
   </div>
+</div>
+
 </body>
 </html>

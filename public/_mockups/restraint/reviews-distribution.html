@@ -8,264 +8,166 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
-    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
-    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#DC2626; --heart:#FF3366;
-    --r-card:16px; --r-pill:999px;
-    --shadow:0 1px 3px rgba(10,10,10,.05), 0 4px 12px -6px rgba(10,10,10,.08);
+    --ink:#0A0A0A;        /* primary text, structure, primary CTA fill */
+    --ink-2:#6B6B6B;      /* secondary text, meta */
+    --ink-3:#9B9B9B;      /* tertiary text, eyebrow, counts */
+    --border:#E4E4E7;     /* hairline + card border (cool grey) */
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;     /* cool grey fill: chips, "Alle ansehen", icon tiles, tracks */
+    --blue:#276EF1;       /* SMALL clickable bits ONLY: review count, text links */
+    --green:#16A34A;      /* available / open / success / paid */
+    --star:#FFC32B;       /* rating star */
+    --error:#DC2626;      /* error, closed status, destructive */
+    --heart:#FF3366;      /* saved/favourite */
+    --r-card:24px;        /* rounded-3xl — the card radius */
+    --r-sheet:20px;
+    --r-pill:9999px;      /* every pill: chips, CTAs, "Alle ansehen", badges */
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-  body{
-    font-family:'Inter',sans-serif;
-    background:#E9E9EC;
-    color:var(--ink);
-    display:flex;justify-content:center;
-    min-height:100vh;padding:24px 0;
-  }
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;justify-content:center;min-height:100vh;padding:28px 0 60px;}
 
-  /* ---- 390px frame ---- */
-  .frame{
-    width:390px;min-height:844px;background:var(--bg);
-    position:relative;overflow:hidden;
-  }
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
 
-  .body{padding:0 20px 44px;}
+  /* ─────────── iOS STATUS BAR (kit chrome) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
 
-  /* section eyebrow + title */
-  .sec-head{
-    padding-top:30px;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .04s;
-  }
-  @keyframes rise{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
-  }
-  .eyebrow{
-    font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
-    color:var(--ink-3);
-  }
-  .sec-title{
-    font-family:'Inter Tight',sans-serif;font-weight:700;
-    font-size:20px;letter-spacing:-0.01em;color:var(--ink);margin-top:6px;
-  }
+  /* ─────────── TYPE SCALE (verbatim from kit) ─────────── */
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* ---- SCORE BLOCK (the focal: big 4.9) ---- */
-  .score-block{
-    display:flex;align-items:center;gap:20px;
-    padding-top:22px;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .1s;
-  }
-  .score-num{
-    font-family:'Inter Tight',sans-serif;font-weight:700;
-    font-size:62px;line-height:.92;letter-spacing:-0.03em;color:var(--ink);
-  }
-  .score-side{display:flex;flex-direction:column;gap:6px;padding-top:3px;}
-  .score-stars{display:inline-flex;gap:2px;}
-  .score-stars svg{display:block;}
-  .score-count{
-    font-size:14px;color:var(--ink-2);line-height:1;
-  }
-  .score-count b{
-    font-family:'JetBrains Mono',monospace;font-weight:600;
-    color:var(--ink);letter-spacing:-0.01em;font-size:14px;
-  }
+  .body{padding:0 20px 8px;}
 
-  /* ---- DISTRIBUTION histogram ---- */
-  .dist{
-    margin-top:24px;display:flex;flex-direction:column;gap:9px;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .16s;
-  }
-  .dist-row{display:flex;align-items:center;gap:11px;}
-  .dist-label{
-    display:inline-flex;align-items:center;gap:3px;
-    width:30px;flex-shrink:0;
-    font-size:13px;font-weight:500;color:var(--ink-2);
-  }
-  .dist-label svg{display:block;opacity:.85;}
-  .dist-track{
-    flex:1;height:7px;border-radius:var(--r-pill);
-    background:var(--sunken);overflow:hidden;
-  }
-  .dist-fill{
-    height:100%;border-radius:var(--r-pill);background:var(--ink);
-    width:0;
-    animation:grow 1s cubic-bezier(.16,1,.3,1) both .3s;
-  }
-  @keyframes grow{ from{width:0;} to{width:var(--w);} }
-  .dist-count{
-    width:34px;flex-shrink:0;text-align:right;
-    font-family:'JetBrains Mono',monospace;font-weight:500;
-    font-size:12.5px;color:var(--ink-3);letter-spacing:-0.01em;
-  }
+  /* ─────────── SECTION HEAD (kit) ─────────── */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;}
 
-  /* ---- PHRASE chips ---- */
-  .phrases{
-    display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .22s;
-  }
-  .chip{
-    display:inline-flex;align-items:center;gap:6px;
-    height:34px;padding:0 13px;border-radius:var(--r-pill);
-    background:var(--sunken);color:var(--ink);
-    font-size:13px;font-weight:500;letter-spacing:-0.005em;
-    cursor:pointer;
-    transition:transform .12s cubic-bezier(.16,1,.3,1), background .14s ease;
-  }
+  /* ─────────── RATING ROW (kit recipe) ─────────── */
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
+  .rating .num{font-weight:600;color:var(--ink);}
+  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}   /* (127) blue, NO underline */
+
+  /* ─────────── REVIEWS DISTRIBUTION (thin ink bars — kit) ─────────── */
+  .dist{display:flex;flex-direction:column;gap:8px;}
+  .dist-row{display:flex;align-items:center;gap:10px;}
+  .dist-track{flex:1;height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;}
+  .dist-fill{display:block;height:100%;border-radius:var(--r-pill);background:#0A0A0A;width:var(--w);
+    transform-origin:left center;animation:grow .9s cubic-bezier(.16,1,.3,1) both .3s;}
+  @keyframes grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .dist-c{width:30px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-3);}
+
+  /* ─────────── PHRASE CHIPS (kit sunken pill: flat, no shadow) ─────────── */
+  .phrases{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:var(--r-pill);
+    background:var(--sunken);color:var(--ink);font-size:13px;font-weight:500;cursor:pointer;
+    transition:transform .12s var(--ease),background .14s ease;}
   .chip:active{transform:scale(.96);background:#ECECEE;}
-  .chip .cnt{
-    font-family:'JetBrains Mono',monospace;font-weight:500;
-    font-size:11.5px;color:var(--ink-3);
-  }
+  .chip .cnt{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11.5px;color:var(--ink-3);}
 
-  /* ---- divider ---- */
-  .rule{height:1px;background:var(--border);margin:28px 0 0;}
-
-  /* ---- RECENT REVIEW ---- */
-  .recent-eyebrow{
-    font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
-    color:var(--ink-3);margin:26px 0 14px;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .26s;
-  }
-  .review{
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .3s;
-  }
+  /* ─────────── RECENT REVIEW (kit team-style circular avatar + ink structure) ─────────── */
+  .rule{height:1px;background:var(--border);}
   .rev-top{display:flex;align-items:center;gap:12px;}
-  .avatar{
-    width:42px;height:42px;border-radius:50%;flex-shrink:0;
-    object-fit:cover;background:var(--sunken);
-  }
+  .avatar{width:44px;height:44px;border-radius:var(--r-pill);flex-shrink:0;object-fit:cover;background:var(--sunken);}
   .rev-id{flex:1;min-width:0;}
-  .rev-name{
-    font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.2;
-  }
-  .rev-sub{
-    display:flex;align-items:center;gap:7px;margin-top:4px;
-    font-size:12.5px;color:var(--ink-3);
-  }
+  .rev-name{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14.5px;line-height:1.2;}
+  .rev-sub{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12.5px;color:var(--ink-3);}
   .rev-sub .stars{display:inline-flex;gap:1.5px;}
   .rev-sub .stars svg{display:block;}
-  .rev-sub .date{line-height:1;}
-  .verified{
-    display:inline-flex;align-items:center;gap:3px;
-    color:var(--ink-3);font-size:12px;
-  }
-  .verified svg{color:var(--green);}
-  .rev-text{
-    margin-top:13px;font-size:14.5px;line-height:1.55;color:var(--ink);
-  }
-  .rev-meta{
-    margin-top:11px;font-size:12.5px;color:var(--ink-3);
-  }
+  .verified{display:inline-flex;align-items:center;gap:3px;color:var(--ink-3);font-size:12px;}
+  .verified svg{color:var(--green);}    /* check = green, label stays ink-3 */
+  .rev-text{margin-top:13px;font-size:14.5px;line-height:1.55;color:var(--ink);}
+  .rev-meta{margin-top:11px;font-size:12.5px;color:var(--ink-3);}
 
-  /* ---- bottom link ---- */
-  .all-link{
-    display:inline-flex;align-items:center;gap:5px;
-    margin-top:24px;
-    font-size:14px;font-weight:500;color:var(--blue);
-    text-decoration:none;cursor:pointer;
-    animation:rise .6s cubic-bezier(.16,1,.3,1) both .34s;
-  }
-  .all-link svg{color:var(--ink);transition:transform .16s ease;}
-  .all-link:hover{text-decoration:underline;}
-  .all-link:hover svg{transform:translateX(2px);}
+  /* ─────────── ALL LINK (blue text, INK chevron — kit) ─────────── */
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;}
+  .link:hover{text-decoration:underline;}
+  .link svg{color:var(--ink);transition:transform .16s ease;}   /* chevron INK, never blue */
+  .link:hover svg{transform:translateX(2px);}
 
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important;transition:none !important;}
-    .dist-fill{width:var(--w) !important;}
+  /* ─────────── ENTRANCE (stagger — kit) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .dist-fill{width:var(--w)!important;}
   }
 </style>
 </head>
 <body>
   <div class="frame">
+    <div class="statusbar"><span>9:41</span><span class="ico">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+    </span></div>
+
     <div class="body">
 
-      <!-- SECTION HEAD -->
-      <div class="sec-head">
-        <div class="eyebrow">Bewertungen</div>
-        <h2 class="sec-title">Was Gäste sagen</h2>
+      <!-- SECTION HEAD — plain "Bewertungen" (kit/real, no eyebrow) -->
+      <div class="sec-head rise" style="padding-top:24px;">
+        <h2 class="t-section">Bewertungen</h2>
       </div>
 
-      <!-- SCORE FOCAL -->
-      <div class="score-block">
-        <div class="score-num">4.9</div>
-        <div class="score-side">
-          <span class="score-stars">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="score-count"><b>127</b> Bewertungen</span>
-        </div>
+      <!-- RATING ROW: 5 stars + 4.9 + blue (127) -->
+      <div class="rating rise" style="margin-top:14px;margin-bottom:18px;animation-delay:.06s;">
+        <span style="display:inline-flex;gap:2px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+        </span>
+        <span class="num" style="font-size:16px;margin-left:4px;">4.9</span>
+        <span class="count">(127)</span>
       </div>
 
-      <!-- DISTRIBUTION -->
-      <div class="dist">
-        <div class="dist-row">
-          <span class="dist-label">5
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="#0A0A0A" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="dist-track"><span class="dist-fill" style="--w:91%"></span></span>
-          <span class="dist-count">116</span>
-        </div>
-        <div class="dist-row">
-          <span class="dist-label">4
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="#0A0A0A" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="dist-track"><span class="dist-fill" style="--w:6.3%"></span></span>
-          <span class="dist-count">8</span>
-        </div>
-        <div class="dist-row">
-          <span class="dist-label">3
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="#0A0A0A" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="dist-track"><span class="dist-fill" style="--w:1.6%"></span></span>
-          <span class="dist-count">2</span>
-        </div>
-        <div class="dist-row">
-          <span class="dist-label">2
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="#0A0A0A" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="dist-track"><span class="dist-fill" style="--w:0.8%"></span></span>
-          <span class="dist-count">1</span>
-        </div>
-        <div class="dist-row">
-          <span class="dist-label">1
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="#0A0A0A" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-          </span>
-          <span class="dist-track"><span class="dist-fill" style="--w:0%"></span></span>
-          <span class="dist-count">0</span>
-        </div>
+      <!-- DISTRIBUTION histogram: 5→1 thin ink bars + mono counts -->
+      <div class="dist rise" style="animation-delay:.12s;">
+        <div class="dist-row"><span class="t-meta" style="width:14px;">5</span><span class="dist-track"><span class="dist-fill" style="--w:91%;animation-delay:.30s;"></span></span><span class="dist-c">116</span></div>
+        <div class="dist-row"><span class="t-meta" style="width:14px;">4</span><span class="dist-track"><span class="dist-fill" style="--w:7%;animation-delay:.36s;"></span></span><span class="dist-c">8</span></div>
+        <div class="dist-row"><span class="t-meta" style="width:14px;">3</span><span class="dist-track"><span class="dist-fill" style="--w:2%;animation-delay:.42s;"></span></span><span class="dist-c">2</span></div>
+        <div class="dist-row"><span class="t-meta" style="width:14px;">2</span><span class="dist-track"><span class="dist-fill" style="--w:1%;animation-delay:.48s;"></span></span><span class="dist-c">1</span></div>
+        <div class="dist-row"><span class="t-meta" style="width:14px;">1</span><span class="dist-track"><span class="dist-fill" style="--w:0%;animation-delay:.54s;"></span></span><span class="dist-c">0</span></div>
       </div>
 
-      <!-- PHRASE CHIPS -->
-      <div class="phrases">
+      <!-- PHRASE CHIPS: neutral sunken, counts mono ink-3 (NOT blue) -->
+      <div class="phrases rise" style="margin-top:22px;animation-delay:.2s;">
         <span class="chip">Pünktlich <span class="cnt">41</span></span>
         <span class="chip">Toller Schnitt <span class="cnt">38</span></span>
         <span class="chip">Freundlich <span class="cnt">29</span></span>
       </div>
 
-      <div class="rule"></div>
+      <div class="rule rise" style="margin:26px 0 0;animation-delay:.24s;"></div>
 
-      <!-- RECENT REVIEW -->
-      <div class="recent-eyebrow">Neueste Bewertung</div>
-
-      <div class="review">
+      <!-- NEWEST VERIFIED REVIEW -->
+      <div class="rise" style="margin-top:22px;animation-delay:.28s;">
         <div class="rev-top">
-          <img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Lena M." referrerpolicy="no-referrer">
+          <img class="avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" alt="Lena M." referrerpolicy="no-referrer">
           <div class="rev-id">
             <div class="rev-name">Lena M.</div>
             <div class="rev-sub">
               <span class="stars">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
               </span>
-              <span class="date">vor 2 Tagen</span>
+              <span>vor 2 Tagen</span>
               <span class="verified">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                 Verifiziert
@@ -273,14 +175,16 @@
             </div>
           </div>
         </div>
-        <p class="rev-text">Bin seit Jahren auf der Suche nach dem richtigen Coiffeur, jetzt gefunden. Sarah hat genau verstanden, was ich wollte, und der Schnitt sitzt auch nach zwei Wochen noch perfekt. Sehr ruhige, angenehme Atmosphäre.</p>
-        <div class="rev-meta">Damenschnitt &amp; Föhnen · bei Sarah K.</div>
+        <p class="rev-text">Bin seit Jahren auf der Suche nach dem richtigen Coiffeur, jetzt gefunden. Sara hat genau verstanden, was ich wollte, und der Schnitt sitzt auch nach zwei Wochen noch perfekt. Sehr ruhige, angenehme Atmosphäre.</p>
+        <div class="rev-meta">Damenschnitt &middot; bei Sara K.</div>
       </div>
 
-      <!-- ALL LINK -->
-      <a class="all-link">Alle 127 Bewertungen
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-      </a>
+      <!-- ALL LINK: blue text + INK chevron -->
+      <div class="rise" style="margin-top:22px;padding-bottom:8px;animation-delay:.32s;">
+        <a class="link">Alle 127 Bewertungen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
 
     </div>
   </div>

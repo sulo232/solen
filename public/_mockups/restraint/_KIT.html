@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — REAL component kit (copy this, do not invent)</title>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  SOLEN REAL COMPONENT KIT
+  Every value below is EXTRACTED from the live Solen app (computed styles
+  off the running dev server), not invented. Mockups MUST be built by
+  COPYING these recipes, not redrawing from a token list. If a mockup
+  uses a card radius / pill / CTA / chip that is not in this file, it is
+  WRONG and will read as "nothing like the design system".
+
+  Real screenshots to match exactly (Read these):
+    /tmp/real/pdpv_0.png      PDP hero + name + status row + filter chips + service card
+    /tmp/real/pdpv_760.png    sticky subnav + "Alle ansehen" + Team avatars + Bewertungen
+    /tmp/real/homev_0.png     home cards
+    /tmp/real/searchv_0.png   search result cards
+    /tmp/real/profile.png     account list
+  ════════════════════════════════════════════════════════════════════
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* ─────────── TOKENS (exact real values) ─────────── */
+  :root{
+    --ink:#0A0A0A;        /* primary text, structure, primary CTA fill */
+    --ink-2:#6B6B6B;      /* secondary text, meta */
+    --ink-3:#9B9B9B;      /* tertiary text, eyebrow, counts */
+    --border:#E4E4E7;     /* hairline + card border (cool grey) */
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;     /* cool grey fill: chips, "Alle ansehen", icon tiles, tracks */
+    --blue:#276EF1;       /* SMALL clickable bits ONLY: review count, text links */
+    --green:#16A34A;      /* available / open / success / paid */
+    --star:#FFC32B;       /* rating star */
+    --error:#DC2626;      /* error, closed status, destructive */
+    --heart:#FF3366;      /* saved/favourite */
+    /* real geometry */
+    --r-card:24px;        /* rounded-3xl — the card radius */
+    --r-sheet:20px;       /* content sheet rounded top */
+    --r-pill:9999px;      /* every pill: chips, CTAs, "Alle ansehen", badges */
+    --r-tile:14px;        /* small icon tiles / inner blocks */
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;   /* between PDP sections */
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
+
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;border-radius:0;}
+
+  /* ─────────── iOS STATUS BAR (real chrome top) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
+
+  /* ─────────── TYPE SCALE (real) ─────────── */
+  /* salon name / page title: Inter Tight 600, clamp(22-26), -0.02em, lh 1.05 */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}   /* salon name on PDP */
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}                /* "Services", "Team", "Bewertungen" */
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}                   /* service/list row title */
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+
+  /* ─────────── HERO (real: 293px cover + frosted chrome + content sheet) ─────────── */
+  .hero{position:relative;width:100%;height:293px;overflow:hidden;}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-chrome{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;}
+  .hero-chrome-right{display:flex;gap:8px;}
+  /* FROST_GLASS circle button — exact recipe */
+  .frost-btn{width:40px;height:40px;border-radius:var(--r-pill);background:rgba(255,255,255,.8);
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.6);
+    box-shadow:var(--shadow-frost);display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;
+    transition:transform .14s var(--ease);}
+  .frost-btn:active{transform:scale(.92);}
+  /* photo counter pill bottom-right */
+  .hero-counter{position:absolute;right:14px;bottom:14px;background:rgba(10,10,10,.55);color:#fff;
+    border-radius:var(--r-pill);padding:4px 10px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;}
+  /* content sheet pulls up over the photo */
+  .sheet{position:relative;margin-top:-16px;background:var(--bg);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 20px 0;}
+
+  /* ─────────── STATUS ROW (rating · category / open · address) ─────────── */
+  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
+  .rating .num{font-weight:600;color:var(--ink);}
+  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}   /* (11) blue, NO underline */
+  .open{color:var(--green);font-weight:600;}     /* Geöffnet */
+  .closed{color:var(--error);font-weight:600;}   /* Geschlossen */
+  .dot-sep{color:var(--ink-3);}                   /* the middot between meta — the ONE allowed separator */
+
+  /* ─────────── FILTER CHIPS (pill row) ─────────── */
+  .chips{display:flex;gap:8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;height:34px;padding:0 14px;border-radius:var(--r-pill);display:inline-flex;align-items:center;
+    font-size:13px;font-weight:500;color:var(--ink-2);background:#fff;border:1px solid var(--border);cursor:pointer;
+    transition:transform .12s var(--ease);}
+  .chip:active{transform:scale(.96);}
+  .chip.is-selected{background:var(--sunken);color:var(--ink);font-weight:600;border-color:var(--border);}
+  /* alt: a SINGLE primary filter (Fresha "Featured") may be ink-filled */
+  .chip.is-primary{background:var(--ink);color:#fff;font-weight:600;}
+
+  /* ─────────── CARD (rounded-3xl 24px) ─────────── */
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
+  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}  /* no shadow on calm surfaces */
+
+  /* ─────────── SERVICE / LIST ROW ─────────── */
+  .srow{display:flex;align-items:flex-start;gap:14px;padding:16px 0;}
+  .srow + .srow{border-top:1px solid var(--border);}
+  .srow-main{flex:1;min-width:0;}
+  .srow-sub{margin-top:4px;font-size:13px;color:var(--ink-3);}
+  .srow-price{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--ink);white-space:nowrap;}
+
+  /* ─────────── BUTTONS ─────────── */
+  /* primary CTA — real "Termin buchen" = INK PILL */
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .14s var(--ease);}
+  .btn-ink:active{transform:scale(.97);}
+  .btn-ink.full{width:100%;padding:16px 28px;}
+  /* secondary — neutral OUTLINED pill ("Buchen", "Auswählen", "Salon anrufen") */
+  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .14s var(--ease),border-color .14s ease;}
+  .btn-outline:active{transform:scale(.97);}
+  .btn-outline.selected{border-color:var(--ink);}        /* selected = ink border, NOT blue */
+  /* sunken pill ("Alle ansehen", centered) */
+  .btn-sunken{background:var(--sunken);color:var(--ink);border:none;border-radius:var(--r-pill);
+    padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:transform .14s var(--ease);}
+  .btn-sunken:active{transform:scale(.97);}
+  /* small icon-only button (flat per CONTROL_ELEVATION: sunken, no shadow) */
+  .btn-icon{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;transition:transform .14s var(--ease);}
+  .btn-icon:active{transform:scale(.92);}
+  /* text link — blue, small, NO underline default; chevron/arrow stays INK */
+  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .link:hover{text-decoration:underline;}
+  .link-ink{color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}  /* "Alle ansehen →" top-right: ink */
+
+  /* ─────────── SECTION HEAD (top-right "Alle ansehen" ink link) ─────────── */
+  .sec{padding-top:var(--gap-section);}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+
+  /* ─────────── TEAM AVATAR (circular + overlaid star badge) ─────────── */
+  .team-row{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;}
+  .team-row::-webkit-scrollbar{display:none;}
+  .team-card{flex-shrink:0;width:84px;text-align:center;}
+  .team-ava{position:relative;width:72px;height:72px;margin:0 auto 8px;}
+  .team-ava img{width:72px;height:72px;border-radius:var(--r-pill);object-fit:cover;}
+  .team-badge{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:#fff;
+    border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 7px;font-size:11px;font-weight:600;
+    display:inline-flex;align-items:center;gap:3px;box-shadow:0 1px 2px rgba(10,10,10,.08);}
+  .team-name{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;}
+  .team-spec{font-size:12px;color:var(--ink-3);margin-top:1px;}
+
+  /* ─────────── REVIEWS DISTRIBUTION (thin ink bars) ─────────── */
+  .dist-row{display:flex;align-items:center;gap:10px;}
+  .dist-track{flex:1;height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;}
+  .dist-fill{display:block;height:100%;border-radius:var(--r-pill);background:var(--ink);}
+  .dist-c{width:30px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-3);}
+
+  /* ─────────── ACCOUNT/SETTINGS LIST ROW ─────────── */
+  .lrow{display:flex;align-items:center;gap:14px;padding:15px 16px;}
+  .lrow-ico{width:38px;height:38px;border-radius:var(--r-tile);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;}
+  .lrow-main{flex:1;min-width:0;}
+  .lrow-chev{color:var(--ink);}  /* chevron INK, never blue */
+
+  /* ─────────── BOTTOM STICKY BAR ─────────── */
+  .stickybar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+
+  /* ─────────── SUCCESS MARK (green disc + white check, spring) ─────────── */
+  .successmark{width:80px;height:80px;border-radius:var(--r-pill);background:var(--green);display:flex;align-items:center;justify-content:center;
+    animation:pop .42s var(--ease) both;}
+  @keyframes pop{0%{transform:scale(.4);opacity:0;}60%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
+  .successmark svg{stroke:#fff;}
+
+  /* ─────────── BOTTOM SHEET (modals: language, cancel) ─────────── */
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.4);}
+  .bsheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:10px 20px 26px;animation:up .4s var(--ease) both;}
+  .bsheet-grab{width:36px;height:4px;border-radius:var(--r-pill);background:var(--border);margin:6px auto 16px;}
+  @keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
+
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+  /* kit-page only label */
+  .kit-label{font-family:'Inter Tight';font-weight:700;font-size:12px;color:#6B6B6B;width:390px;padding:4px 2px;text-transform:uppercase;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<div class="kit-label">1 · iOS status bar + hero + frosted chrome + content sheet + status row</div>
+<div class="frame">
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=780&q=80" alt="" referrerpolicy="no-referrer">
+    <div class="hero-chrome">
+      <button class="frost-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="hero-chrome-right">
+        <button class="frost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a1 1 0 001 1h14a1 1 0 001-1v-8M16 6l-4-4-4 4M12 2v14"/></svg></button>
+        <button class="frost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></button>
+      </div>
+    </div>
+    <div class="hero-counter">1 / 8</div>
+  </div>
+  <div class="sheet">
+    <h1 class="t-title">Maison Lumière</h1>
+    <div class="rating" style="margin-top:8px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+      <span class="num">4.9</span><span class="count">(127)</span>
+      <span class="dot-sep">·</span><span class="t-meta">Coiffeur</span>
+      <span class="dot-sep">·</span><span class="t-meta">Basel, Kreis 4</span>
+    </div>
+    <div style="margin-top:6px;display:flex;align-items:center;gap:6px;font-size:13.5px;">
+      <span class="open">Geöffnet</span><span class="t-meta">· bis 19:00</span>
+    </div>
+    <button class="btn-ink full" style="margin-top:18px;">Termin buchen</button>
+  </div>
+</div>
+
+<div class="kit-label">2 · filter chips · service rows · "Alle ansehen" · secondary pill</div>
+<div class="frame" style="padding:24px 20px;">
+  <div class="sec-head" style="padding-top:0;"><h2 class="t-section">Services</h2><a class="link-ink">Alle ansehen <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+  <div class="chips" style="margin-bottom:6px;">
+    <span class="chip is-selected">Alle</span><span class="chip">Coiffeur</span><span class="chip">Färben</span><span class="chip">Styling</span>
+  </div>
+  <div class="srow"><div class="srow-main"><div class="t-row">Damenschnitt &amp; Föhnen</div><div class="srow-sub">50 Min · mit Waschen &amp; Beratung</div></div><div class="srow-price">CHF 85</div><button class="btn-outline">Buchen</button></div>
+  <div class="srow"><div class="srow-main"><div class="t-row">Herrenschnitt</div><div class="srow-sub">45 Min · Schnitt &amp; Styling</div></div><div class="srow-price">CHF 65</div><button class="btn-outline">Buchen</button></div>
+  <div style="text-align:center;margin-top:18px;"><button class="btn-sunken">Alle ansehen</button></div>
+</div>
+
+<div class="kit-label">3 · team avatars (circular + star badge) · reviews distribution</div>
+<div class="frame" style="padding:24px 20px;">
+  <div class="sec-head" style="padding-top:0;"><h2 class="t-section">Team</h2><a class="link-ink">Alle ansehen</a></div>
+  <div class="team-row">
+    <div class="team-card"><div class="team-ava"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer"><span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>4.9</span></div><div class="team-name">Sara K.</div><div class="team-spec">Coloration</div></div>
+    <div class="team-card"><div class="team-ava"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer"><span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>4.8</span></div><div class="team-name">Marco B.</div><div class="team-spec">Herrenschnitt</div></div>
+    <div class="team-card"><div class="team-ava"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer"><span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>5.0</span></div><div class="team-name">Elena R.</div><div class="team-spec">Balayage</div></div>
+  </div>
+  <div class="sec-head" style="padding-top:30px;"><h2 class="t-section">Bewertungen</h2></div>
+  <div class="rating" style="margin-bottom:14px;"><span style="display:inline-flex;gap:2px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg></span><span class="num" style="font-size:16px;margin-left:4px;">4.9</span><span class="count">(127)</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div class="dist-row"><span class="t-meta" style="width:14px;">5</span><span class="dist-track"><span class="dist-fill" style="width:91%"></span></span><span class="dist-c">116</span></div>
+    <div class="dist-row"><span class="t-meta" style="width:14px;">4</span><span class="dist-track"><span class="dist-fill" style="width:7%"></span></span><span class="dist-c">8</span></div>
+    <div class="dist-row"><span class="t-meta" style="width:14px;">3</span><span class="dist-track"><span class="dist-fill" style="width:2%"></span></span><span class="dist-c">2</span></div>
+  </div>
+</div>
+
+<div class="kit-label">4 · account list rows · secondary outline · text link · sunken icon tile</div>
+<div class="frame" style="padding:24px 20px;">
+  <div class="card-flat" style="padding:6px 4px;">
+    <div class="lrow"><span class="lrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><div class="lrow-main"><div class="t-row">Meine Buchungen</div><div class="srow-sub">Nächster: Do, 12. Juni</div></div><span class="lrow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>
+    <div class="lrow" style="border-top:1px solid var(--border);"><span class="lrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 7V3M8 21v-7h8v7"/></svg></span><div class="lrow-main"><div class="t-row">Wallet</div><div class="srow-sub">Geschenkkarten &amp; Gutscheine</div></div><span class="lrow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
+    <button class="btn-outline">Auswählen</button>
+    <button class="btn-outline selected">Ausgewählt</button>
+    <a class="link">Code kopieren</a>
+  </div>
+</div>
+
+<div class="kit-label">5 · success moment · sticky summary bar</div>
+<div class="frame" style="padding:40px 20px 0;text-align:center;">
+  <div class="successmark" style="margin:0 auto 20px;"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+  <h1 class="t-display">Du bist gebucht</h1>
+  <p class="t-body" style="margin-top:8px;">Do, 12. Juni · <span class="mono" style="color:var(--ink);">14:00</span></p>
+  <div class="stickybar" style="margin:36px -20px 0;text-align:left;">
+    <div><div class="t-meta">1 Service · 45 Min</div><div class="mono" style="font-size:17px;">CHF 65.00</div></div>
+    <button class="btn-ink">Weiter</button>
+  </div>
+</div>
+
+</body>
+</html>
