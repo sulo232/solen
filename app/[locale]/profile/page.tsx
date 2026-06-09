@@ -80,7 +80,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   const p = (path: string) => `/${locale}${path}`;
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-s-bg-sunken">
       <div className="max-w-md mx-auto px-5 pt-6 pb-16">
         {/* Page header */}
         <div className="flex items-center justify-between mb-5">
@@ -88,14 +88,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           <Link
             href={p("/profile/settings")}
             aria-label={t("settings")}
-            className="grid place-items-center w-10 h-10 rounded-full border border-s-border text-s-ink hover:bg-s-bg-sunken transition-colors duration-200"
+            className="grid place-items-center w-10 h-10 rounded-full bg-white shadow-card text-s-ink hover:shadow-elevation-2 transition-shadow duration-200"
           >
             <Settings size={18} aria-hidden />
           </Link>
         </div>
 
         {/* Identity + stats card */}
-        <section className="rounded-card border border-s-border bg-white shadow-card p-[18px]">
+        <section className="rounded-card bg-white shadow-card p-[18px]">
           <div className="flex items-center gap-[14px]">
             <Avatar src={avatarSrc} name={displayName} size={52} />
             <div className="min-w-0">
@@ -120,7 +120,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
 
         {/* More */}
         <h2 className="text-[13px] font-medium text-s-ink-2 mt-[22px] mb-2 px-0.5">{t("sectionMore")}</h2>
-        <section className="rounded-card border border-s-border bg-white overflow-hidden">
+        <section className="rounded-card bg-white shadow-card overflow-hidden">
           <Row href={p("/profile/looks")} icon={Sparkles} label={t("looks")} />
           <Row href={p("/profile/referral")} icon={UserPlus} label={t("refer")} meta={t("referReward")} />
           <Row href={p("/profile/settings")} icon={SlidersHorizontal} label={t("settings")} />
@@ -131,7 +131,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         <form action="/api/auth/logout" method="post" className="mt-[22px]">
           <button
             type="submit"
-            className="w-full h-[46px] rounded-btn border border-s-border bg-white text-s-ink text-[15px] font-medium flex items-center justify-center gap-2 hover:bg-s-bg-sunken transition-colors duration-200"
+            className="w-full h-[46px] rounded-btn bg-white shadow-card text-s-ink text-[15px] font-medium flex items-center justify-center gap-2 hover:shadow-elevation-2 transition-shadow duration-200"
           >
             <LogOut size={17} className="text-s-ink-2" aria-hidden />
             {t("signOut")}
@@ -171,7 +171,7 @@ function Tile({ href, icon: Icon, label, meta }: { href: string; icon: LucideIco
   return (
     <Link
       href={href}
-      className="block rounded-card border border-s-border bg-white p-[15px] hover:bg-s-bg-sunken transition-colors duration-200"
+      className="block rounded-card bg-white shadow-card p-[15px] hover:shadow-elevation-2 transition-shadow duration-200"
     >
       <div className="w-[34px] h-[34px] rounded-full bg-s-bg-sunken grid place-items-center text-s-ink">
         <Icon size={17} aria-hidden />
