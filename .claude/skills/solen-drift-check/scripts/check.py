@@ -192,6 +192,12 @@ ARBITRARY_TW_RE = re.compile(r"\b(?:text|bg|border|rounded|p|m|w|h|gap|leading|t
 # measurement (see SENIOR_SCORECARD.md "How to use").
 SUB12_TEXT_RE = re.compile(r"\btext-\[(\d+(?:\.\d+)?)px\]")
 
+# A20 — middle-dot separator (V3-D462, 2026-06-09). The owner has rejected separator dots many times
+# ("stop using dots, use a line"). The middle-dot `·` (U+00B7) is FORBIDDEN as a separator — use
+# <MetaDot /> (renders a thin `|` line) or a literal `|`. INFORMATIONAL for now (~83 legacy files);
+# flip to HARD once swept. Comment-stripped so doc prose isn't flagged.
+MIDDLE_DOT_RE = re.compile("·")
+
 # A3 — Tailwind duration. Captures duration-{N} or duration-[Nms].
 DURATION_TW_NUM_RE = re.compile(r"\bduration-(\d+)\b")
 DURATION_TW_ARB_RE = re.compile(r"\bduration-\[(\d+)ms\]")
@@ -510,6 +516,14 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                     snippet=line,
                     recommendation=f"`text-[{m.group(1)}px]` is below the 12px legibility floor (LOCKFILE §2.5). Use the Meta role (12-13px) or larger.",
                 ))
+
+        # A20 — middle-dot separator (INFO until the sweep). Owner: "stop using dots, use a line."
+        if MIDDLE_DOT_RE.search(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO A20: middle-dot separator",
+                snippet=line,
+                recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D462). Use <MetaDot /> (renders a thin `|` line) or a literal `|`.",
+            ))
 
         # A3 — non-canonical durations
         for m in DURATION_TW_NUM_RE.finditer(line):

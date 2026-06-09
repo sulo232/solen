@@ -310,9 +310,9 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 | `before:rounded-full before:bg-s-*` (pseudo-element dot) on eyebrow span | Drop the `before:*` classes |
 | `<Icon /> Eyebrow text` (leading lucide icon as decoration) | Drop the icon; if it has semantic role, justify with V3-D{n} comment |
 | Eyebrow + H2 stack on a section that has no section-identity content above | Drop the eyebrow entirely |
+| **Middle-dot `·` separator** between meta values (`1200+ · Basel · 4.9★`) — V3-D462 (2026-06-09): the owner has rejected separator dots MANY times ("stop using dots, use a line"). The old "KEEP separator dots" entry here was the literal root cause — it kept telling every session that dots were correct. | Use `<MetaDot />` (now renders a thin ` \| ` line, single source) between elements, or ` \| ` inside a string. NEVER a middle-dot `·`. Drift rule **A20** flags any literal `·` in JSX. |
 
 **KEEP (semantic, not decoration):**
-- Separator dots between list values: `1200+ · Basel · Zürich · 4.9★` (Uber + Fresha use middle-dot here too)
 - Status indicator dots: `<StatusPill open=true>` (semantic = open/closed signal)
 - Animated typing-indicator dots in chat mockups
 - Notification count badges (circle around a number)
