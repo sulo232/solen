@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
-import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
+import { getWalkinAvailability } from "@/lib/barber/walkin-availability";
 
 // GET /api/walkin/availability?salon_ids=id1,id2,... — Public.
 // Returns live walk-in wait per BARBERSHOP salon (others omitted). Batched: a fixed
@@ -26,45 +26,6 @@ export async function GET(req: NextRequest) {
   if (salonIds.length === 0) return NextResponse.json({ availability: {} });
 
   const admin = createAdminSupabaseClient();
-
-  // Restrict to salons with walk-in ENABLED (Phase 2 de-gate: was barbershop-only).
-  const { data: salons } = await admin.from("salons").select("id, walkin_enabled").in("id", salonIds);
-  const enabledIds = (salons ?? [])
-    .filter((s) => (s as any).walkin_enabled)
-    .map((s) => s.id);
-  if (enabledIds.length === 0) return NextResponse.json({ availability: {} });
-
-  const [{ data: queue }, { data: staff }, { data: services }] = await Promise.all([
-    admin.from("barber_walkin_queue").select("salon_id").in("salon_id", enabledIds).eq("status", "waiting"),
-    admin.from("staff_members").select("salon_id").in("salon_id", enabledIds).eq("is_active", true),
-    admin.from("services").select("salon_id, duration_minutes").in("salon_id", enabledIds).eq("is_active", true),
-  ]);
-
-  const waitingBySalon = new Map<string, number>();
-  for (const q of queue ?? []) waitingBySalon.set(q.salon_id, (waitingBySalon.get(q.salon_id) ?? 0) + 1);
-
-  const barbersBySalon = new Map<string, number>();
-  for (const s of staff ?? []) barbersBySalon.set(s.salon_id, (barbersBySalon.get(s.salon_id) ?? 0) + 1);
-
-  const durSum = new Map<string, { total: number; count: number }>();
-  for (const sv of services ?? []) {
-    const cur = durSum.get(sv.salon_id) ?? { total: 0, count: 0 };
-    cur.total += sv.duration_minutes ?? 30;
-    cur.count += 1;
-    durSum.set(sv.salon_id, cur);
-  }
-
-  const availability: Record<string, { waitMinutes: number; waitMinutesMax: number; queueLength: number }> = {};
-  for (const id of enabledIds) {
-    const waiting = waitingBySalon.get(id) ?? 0;
-    const barbers = barbersBySalon.get(id) ?? 1;
-    const d = durSum.get(id);
-    const avgDuration = d && d.count > 0 ? Math.round(d.total / d.count) : 30;
-    // Conservative RANGE (council): expose "~X-Y min" so the card isn't a single number that
-    // becomes a broken promise the moment an untracked walk-up arrives. Upper bound = +40%.
-    const wait = estimateWaitMinutes(waiting, avgDuration, barbers);
-    availability[id] = { waitMinutes: wait, waitMinutesMax: Math.ceil(wait * 1.4), queueLength: waiting };
-  }
-
+  const availability = await getWalkinAvailability(admin, salonIds);
   return NextResponse.json({ availability });
 }

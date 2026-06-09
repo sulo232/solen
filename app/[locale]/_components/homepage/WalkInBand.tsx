@@ -6,35 +6,57 @@
 // (2 full + a ~1/4 peek so the rail reads scrollable), and an "Alle Walk-ins"
 // button. Renders the same for everyone (not personalized).
 //
-// TODO (data): SHOPS is static demo. Bind to GET /api/walkin/availability
-// (?salon_ids=…) → { waitMinutes, waitMinutesMax, queueLength } per walk-in
-// salon, fed by a "nearby walk-in salons" list. Render the wait as the RANGE
-// (waitMinutes–waitMinutesMax). Edge cases: 0 free → "Keine Walk-ins frei"
-// fallback line; city with no walk-in salons → render null (hide the band);
-// 1 shop → single full-width chip, no peek.
+// DATA (wired 2026-06-09): fetches GET /api/walkin/nearby on mount → real
+// walk-in-enabled salons WITH live wait/queue (shared getWalkinAvailability).
+// - Wait shown as a conservative RANGE (waitMinutes-waitMinutesMax); 0 → "Sofort frei".
+// - Queue dots driven by real queueLength; 0 waiting → "Niemand wartet".
+// - Meta line is the real street address (no geolocation → never a fake distance).
+// - Each chip → that salon's PDP; "Alle Walk-ins" → the barbershop list.
+// - 0 walk-in salons (feature off / none enabled) → the whole band hides (null).
+// - 1 salon → single full-width chip (no peek).
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { Star, ArrowRight } from "lucide-react";
 
-type WalkInShop = {
+type WalkInSalon = {
+  id: string;
   slug: string;
   name: string;
-  rating: string;
-  meta: string;
-  wait: string; // range, e.g. "10–14"
-  ahead: number; // people ahead in queue
-  queue: number; // total dots shown
+  rating: number;
+  reviewCount: number;
+  address: string;
+  waitMinutes: number;
+  waitMinutesMax: number;
+  queueLength: number;
 };
 
-const SHOPS: WalkInShop[] = [
-  { slug: "fade-lab", name: "Fade Lab", rating: "4.9", meta: "Barber 800 m", wait: "10–14", ahead: 3, queue: 5 },
-  { slug: "herr-und-co", name: "Herr & Co.", rating: "4.8", meta: "Barber 1.1 km", wait: "15–20", ahead: 4, queue: 5 },
-  { slug: "sharp-studio", name: "Sharp Studio", rating: "4.7", meta: "Barber 1.4 km", wait: "8–11", ahead: 2, queue: 5 },
-];
+const QUEUE_DOTS = 5;
 
 export default function WalkInBand() {
   const locale = useLocale();
+  const [salons, setSalons] = useState<WalkInSalon[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/walkin/nearby?limit=8")
+      .then((r) => (r.ok ? r.json() : { salons: [] }))
+      .then((d) => { if (active) setSalons(d.salons ?? []); })
+      .catch((err) => {
+        console.error("[WalkInBand] failed to load walk-in availability:", err);
+        if (active) setSalons([]);
+      })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
+
+  // Hide the whole band when there are no walk-in salons (feature off / none enabled).
+  if (!loading && (!salons || salons.length === 0)) return null;
+
+  const single = !loading && salons != null && salons.length === 1;
+
   return (
     <section aria-label="Walk-in" className="relative z-[1] mb-2 md:mb-4">
       <div className="mx-auto max-w-[1280px] px-4 md:px-6">
@@ -61,37 +83,55 @@ export default function WalkInBand() {
 
           {/* swipeable shop chips */}
           <div className="-mr-4 md:-mr-6 mt-4 flex snap-x gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {SHOPS.map((s) => (
-              <a
-                key={s.slug}
-                href={`/${locale}/barbershop`}
-                className="flex-[0_0_42%] min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)] transition-transform duration-200 ease-glide active:scale-[0.98]"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
-                  <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-s-ink-2">
-                    <Star size={11} className="fill-[#FFC32B] text-[#FFC32B]" />
-                    {s.rating}
-                  </span>
-                </div>
-                <div className="mt-[3px] truncate text-[12px] text-s-ink-2">{s.meta}</div>
-                <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-accent">
-                  <span className="h-[7px] w-[7px] rounded-full bg-s-accent" />
-                  Frei in {s.wait} Min
-                </div>
-                <div className="mt-2.5 flex items-center gap-[7px] text-[12px] text-s-ink-2">
-                  <span className="flex gap-[3px]">
-                    {Array.from({ length: s.queue }).map((_, i) => (
-                      <span
-                        key={i}
-                        className={`h-[6px] w-[6px] rounded-full ${i < s.ahead ? "bg-s-ink" : "bg-s-border"}`}
-                      />
-                    ))}
-                  </span>
-                  {s.ahead} vor dir
-                </div>
-              </a>
-            ))}
+            {loading
+              ? [0, 1].map((i) => (
+                  <div
+                    key={i}
+                    className="flex-[0_0_42%] min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)]"
+                  >
+                    <div className="h-[16px] w-3/4 rounded bg-s-bg-sunken animate-pulse" />
+                    <div className="mt-2.5 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse" />
+                    <div className="mt-3 h-[12px] w-2/3 rounded bg-s-bg-sunken animate-pulse" />
+                    <div className="mt-3 h-[12px] w-1/2 rounded bg-s-bg-sunken animate-pulse" />
+                  </div>
+                ))
+              : salons!.map((s) => {
+                  const sofort = s.waitMinutes <= 0;
+                  const filled = Math.min(s.queueLength, QUEUE_DOTS);
+                  return (
+                    <a
+                      key={s.id}
+                      href={`/${locale}/salon/${s.slug}`}
+                      className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)] transition-transform duration-200 ease-glide active:scale-[0.98]`}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
+                        {s.reviewCount > 0 && (
+                          <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-s-ink-2">
+                            <Star size={11} className="fill-s-star text-s-star" />
+                            {s.rating.toFixed(1)}
+                          </span>
+                        )}
+                      </div>
+                      {s.address && <div className="mt-[3px] truncate text-[12px] text-s-ink-2">{s.address}</div>}
+                      <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-accent">
+                        <span className="h-[7px] w-[7px] rounded-full bg-s-accent" />
+                        {sofort ? "Sofort frei" : `Frei in ${s.waitMinutes}-${s.waitMinutesMax} Min`}
+                      </div>
+                      <div className="mt-2.5 flex items-center gap-[7px] text-[12px] text-s-ink-2">
+                        <span className="flex gap-[3px]">
+                          {Array.from({ length: QUEUE_DOTS }).map((_, i) => (
+                            <span
+                              key={i}
+                              className={`h-[6px] w-[6px] rounded-full ${i < filled ? "bg-s-ink" : "bg-s-border"}`}
+                            />
+                          ))}
+                        </span>
+                        {s.queueLength === 0 ? "Niemand wartet" : `${s.queueLength} vor dir`}
+                      </div>
+                    </a>
+                  );
+                })}
           </div>
 
           {/* CTA */}
