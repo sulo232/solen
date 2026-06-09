@@ -186,17 +186,18 @@ ARBITRARY_TW_RE = re.compile(r"\b(?:text|bg|border|rounded|p|m|w|h|gap|leading|t
 # A19 — sub-12px text. LOCKFILE §2.5 + SENIOR_SCORECARD dim 4: "nothing below 12px (legibility)".
 # A clean, low-false-positive static check (unlike a per-file size COUNT, which is noisy and best
 # measured on the rendered DOM by the verifier). Catches text-[11px] / text-[10.5px] / text-[9px].
-# INFORMATIONAL for now (same playbook as A2 + A7-A11): turning it HARD instantly created 102
-# findings in already-shipped files, which would drown the gate. It logs to _pending-migration.md;
-# flip to HARD once the sub-12px sweep is done. Does NOT catch the ≤4-sizes budget — that is a DOM
-# measurement (see SENIOR_SCORECARD.md "How to use").
+# HARD as of 2026-06-09: the app-wide sweep floored all 826 instances (text-[Npx] N<12 -> text-[12px],
+# commit e97d6906f), so the gate now blocks net-new sub-12px. Does NOT catch the ≤4-sizes budget — that
+# is a DOM measurement (see SENIOR_SCORECARD.md "How to use").
 SUB12_TEXT_RE = re.compile(r"\btext-\[(\d+(?:\.\d+)?)px\]")
 
 # A20 — middle-dot separator (V3-D462, 2026-06-09). The owner has rejected separator dots many times
-# ("stop using dots, use a line"). The middle-dot `·` (U+00B7) is FORBIDDEN as a separator — use
-# <MetaDot /> (renders a thin `|` line) or a literal `|`. INFORMATIONAL for now (~83 legacy files);
-# flip to HARD once swept. Comment-stripped so doc prose isn't flagged.
-MIDDLE_DOT_RE = re.compile("·")
+# ("stop using dots, use a line"). The middle-dot `·` (U+00B7) is FORBIDDEN as a SEPARATOR — use
+# <MetaDot /> (a no-glyph gap) or an em-space. HARD as of 2026-06-09 (separator sweep done).
+# Comment-stripped so doc prose isn't flagged. Matches the SEPARATOR pattern only (whitespace-adjacent
+# ` · `), NOT a lone `"·"` glyph used as a fallback avatar initial (Header/profile/salonInitials) —
+# that is content, not a separator, and stays allowed.
+MIDDLE_DOT_RE = re.compile(r"\s·|·\s")
 
 # A3 — Tailwind duration. Captures duration-{N} or duration-[Nms].
 DURATION_TW_NUM_RE = re.compile(r"\bduration-(\d+)\b")
@@ -507,20 +508,20 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 recommendation=f"`{cls}` — prefer a tokenized class. If intentional, add a V3-D{{n}} comment explaining why.",
             ))
 
-        # A19 — sub-12px text (INFO until the sweep). "nothing below 12px" per LOCKFILE §2.5 / SENIOR_SCORECARD dim 4.
+        # A19 — sub-12px text (HARD as of 2026-06-09; app-wide sweep done, 826 instances floored). "nothing below 12px" per LOCKFILE §2.5 / SENIOR_SCORECARD dim 4.
         for m in SUB12_TEXT_RE.finditer(line):
             px = float(m.group(1))
             if px < 12:
                 findings.append(Finding(
-                    file=rel, line=ln_no, rule="INFO A19: sub-12px text",
+                    file=rel, line=ln_no, rule="A19: sub-12px text",
                     snippet=line,
                     recommendation=f"`text-[{m.group(1)}px]` is below the 12px legibility floor (LOCKFILE §2.5). Use the Meta role (12-13px) or larger.",
                 ))
 
-        # A20 — middle-dot separator (INFO until the sweep). Owner: "stop using dots, use a line."
+        # A20 — middle-dot separator (HARD as of 2026-06-09; separator sweep done). Owner: "stop using dots, use a line."
         if MIDDLE_DOT_RE.search(code_line):
             findings.append(Finding(
-                file=rel, line=ln_no, rule="INFO A20: middle-dot separator",
+                file=rel, line=ln_no, rule="A20: middle-dot separator",
                 snippet=line,
                 recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D463). NO separator glyph — use <MetaDot /> (a no-glyph gap) or an em-space (U+2003). Not a `·`, not a `|`.",
             ))
