@@ -84,7 +84,7 @@ export default function MobileCategoriesRow({
               >
                 {/* Depth fix (2026-06-09, owner-approved): unselected tiles FLOAT = white + a soft, wide
                     shadow, not the old sinking gray (#F3F3F3). The card must be LIGHTER than the page with a
-                    soft-wide (not tight) shadow — the council's core fix for "flat". */}
+                    soft-wide (not tight) shadow, the council's core fix for "flat". */}
                 <div
                   className={`
                     relative flex aspect-[1.15/1] flex-col items-center justify-between
@@ -94,9 +94,8 @@ export default function MobileCategoriesRow({
                     group-active:scale-[0.97] group-active:duration-[80ms]
                     ${isPick
                       ? "bg-white border-[1.5px] border-s-ink"
-                      : "bg-white"}
+                      : "bg-white shadow-float"}
                   `}
-                  style={!isPick ? { boxShadow: "0 2px 8px rgba(50,47,44,0.08), 0 14px 30px -10px rgba(50,47,44,0.14)" } : undefined}
                 >
                   {isPick && (
                     <span className="absolute right-2 top-2 grid h-[18px] w-[18px] place-items-center rounded-full bg-s-ink">

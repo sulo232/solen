@@ -262,6 +262,11 @@ module.exports = {
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "elevation-2":      "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "elevation-3":      "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
+        // ── Float (V3-D-depth, 2026-06-09) ── the "card floats off the page" recipe:
+        // soft + WIDE (not tight) so a white card reads as lifted, not bordered. Owner-approved
+        // on the homepage tiles + salon section cards. Use for standalone section cards on a
+        // white page (NOT list rows, those use elevation-2). Card must be lighter than the page.
+        "float":            "0 2px 8px rgba(50,47,44,0.08), 0 14px 30px -10px rgba(50,47,44,0.14)",
         // Aliases for backward compat
         "v5-card":       "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "v5-card-hover": "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",

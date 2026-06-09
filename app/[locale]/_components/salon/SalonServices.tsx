@@ -197,11 +197,12 @@ function ServiceRow({
     </div>
   );
 
-  // V3-D227: unify mobile + desktop into the same bordered card.
-  // Per-variant only changes padding density (mobile slightly tighter).
+  // V3-D227: unify mobile + desktop into the same card.
+  // Depth fix (2026-06-09): drop the flat hairline for a soft lift at rest (elevation-2),
+  // lifting more on hover (elevation-3). Per-variant only changes padding density.
   return (
     <li className={cn(
-      "rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-elevation-2",
+      "rounded-2xl bg-white shadow-elevation-2 transition-shadow hover:shadow-elevation-3",
       variant === "mobile" ? "p-5" : "p-6 md:p-7",
     )}>
       {inner}

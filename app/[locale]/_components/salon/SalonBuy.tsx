@@ -57,7 +57,7 @@ export function SalonBuy({
     <section>
       <Link
         href={href}
-        className="font-body group flex items-center gap-4 rounded-2xl border border-s-border bg-white p-4 transition-colors hover:bg-s-bg-sunken md:p-5"
+        className="font-body group flex items-center gap-4 rounded-2xl bg-white shadow-float p-4 transition-shadow hover:shadow-elevation-3 md:p-5"
       >
         <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white md:h-16 md:w-16">
           <Gift size={24} strokeWidth={2} className="text-s-ink md:h-7 md:w-7" />

@@ -49,7 +49,7 @@ export function SalonTeam({
   return (
     <section
       id="section-team"
-      className="overflow-hidden rounded-3xl bg-s-bg-sunken p-5 md:p-7"
+      className="overflow-hidden rounded-3xl bg-white shadow-float p-5 md:p-7"
     >
       {/* Title row + "Alle ansehen" → opens the booking flow's stylist picker */}
       <div className="flex items-baseline justify-between">
