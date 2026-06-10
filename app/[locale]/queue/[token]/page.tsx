@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import {
   Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
-  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket, HelpCircle, Send,
+  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket, HelpCircle, Send, X,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
@@ -35,14 +35,15 @@ interface QueueStatus {
   salonSlug?: string | null;
   salonAddress?: string | null;
   salonPhoto?: string | null;
+  salonPhotos?: string[] | null; // swipeable hero gallery (PDP-style)
   salonLat?: number | null;
   salonLng?: number | null;
 }
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
-  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket Nr", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket No", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
   fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au salon.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le salon", fbSend: "Envoyer", skip2: "Passer" },
   it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
 };
@@ -60,6 +61,7 @@ export default function QueueTrackingPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [photoIdx, setPhotoIdx] = useState(0);
   const [cancelling, setCancelling] = useState(false);
   const dataRef = useRef<QueueStatus | null>(null);
   useEffect(() => { dataRef.current = data; }, [data]);
@@ -305,6 +307,7 @@ export default function QueueTrackingPage() {
     { key: "chair", label: l.st_chair, Icon: Armchair },
   ];
 
+  const photos = (data.salonPhotos?.length ? data.salonPhotos : data.salonPhoto ? [data.salonPhoto] : []).filter(Boolean);
   const mapsHref = data.salonLat != null && data.salonLng != null
     ? `https://www.google.com/maps/dir/?api=1&destination=${data.salonLat},${data.salonLng}`
     : data.salonAddress
@@ -317,12 +320,22 @@ export default function QueueTrackingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* salon hero */}
-      <div className="relative h-[150px] overflow-hidden bg-s-bg-sunken">
-        {data.salonPhoto && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={data.salonPhoto} alt="" className="h-full w-full object-cover" />
+      <div className="relative h-[280px] overflow-hidden bg-s-bg-sunken">
+        {/* swipeable photo gallery — mirrors the PDP mobile carousel (native scroll-snap) */}
+        {photos.length > 0 ? (
+          <div
+            onScroll={(e) => { const w = e.currentTarget.clientWidth || 1; setPhotoIdx(Math.round(e.currentTarget.scrollLeft / w)); }}
+            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {photos.map((u, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} src={u} alt="" className="h-full w-full shrink-0 snap-center object-cover" />
+            ))}
+          </div>
+        ) : (
+          <div className="h-full w-full bg-s-bg-sunken" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/35" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/45" />
         <Link
           href={`/${locale}`}
           aria-label={l.home}
@@ -330,8 +343,24 @@ export default function QueueTrackingPage() {
         >
           <ChevronLeft size={20} />
         </Link>
-        <div className="absolute bottom-3.5 left-[18px] text-white">
-          <div className="font-heading text-[18px] font-bold tracking-[-.015em]">{data.salonName ?? "Salon"}</div>
+        {/* top-right help — same frosted-circle treatment as the back button */}
+        {data.salonSlug && (
+          <Link
+            href={`/${locale}/salon/${data.salonSlug}`}
+            aria-label={l.helpTitle}
+            className="absolute right-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+          >
+            <HelpCircle size={20} />
+          </Link>
+        )}
+        {/* photo counter (Fresha/PDP pattern) — only with more than one photo */}
+        {photos.length > 1 && (
+          <div className="pointer-events-none absolute bottom-8 right-3.5 rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-bold tabular-nums text-white backdrop-blur-sm">
+            {photoIdx + 1} / {photos.length}
+          </div>
+        )}
+        <div className="pointer-events-none absolute bottom-8 left-[18px] text-white">
+          <div className="font-heading text-[19px] font-bold tracking-[-.015em]">{data.salonName ?? "Salon"}</div>
           {data.salonAddress && (
             <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] opacity-90">
               <MapPin size={13} />{data.salonAddress}
@@ -340,7 +369,7 @@ export default function QueueTrackingPage() {
         </div>
       </div>
 
-      <div className="flex-1 px-5 pt-[18px]">
+      <div className="relative z-10 -mt-5 flex-1 rounded-t-[20px] bg-white px-5 pt-5">
         {/* LIVE badge */}
         <span className="inline-flex items-center gap-[7px] rounded-full bg-s-accent-pale py-[5px] pl-2.5 pr-[11px] text-[10.5px] font-bold uppercase tracking-[0.1em] text-s-accent">
           <span className="relative flex h-[7px] w-[7px]">
@@ -467,30 +496,29 @@ export default function QueueTrackingPage() {
           <Ticket size={13} /> {l.ticketNr} <span className="font-heading font-semibold tabular-nums text-s-ink-2">{data.customerName}</span>
         </div>
 
-        {/* quiet cancel only while still waiting (DELETE rejects once in the chair) */}
-        {isWaiting && (
-          <div className="mt-3 text-center">
-            <button onClick={handleCancel} disabled={cancelling} className="text-[13px] font-medium text-s-ink-3 underline underline-offset-2 transition-colors hover:text-s-error disabled:opacity-50">
-              {cancelling ? "…" : l.cancel}
-            </button>
-          </div>
-        )}
+        {/* help moved to the top-right hero icon (mirrors the back button) */}
       </div>
 
       {/* action bar */}
       <div className="flex gap-2.5 px-5 pb-6 pt-4">
         {mapsHref ? (
           <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-[7px] rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
-            <Navigation size={17} /> {l.directions}
+            <Navigation size={17} className="fill-white" /> {l.directions}
           </a>
         ) : (
           <Link href={`/${locale}`} className="flex flex-1 items-center justify-center rounded-full bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
             {l.home}
           </Link>
         )}
-        <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex w-[54px] items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
-          <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
-        </button>
+        {isWaiting ? (
+          <button onClick={handleCancel} disabled={cancelling} aria-label={l.cancel} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-s-error text-white transition active:scale-[0.98] disabled:opacity-50">
+            <X size={22} strokeWidth={3} />
+          </button>
+        ) : (
+          <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
+            <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
     entry.service_id
       ? admin.from("services").select("name_de, name_en, price, duration_minutes").eq("id", entry.service_id).maybeSingle()
       : Promise.resolve({ data: null as any }),
-    admin.from("salons").select("name, slug, address, cover_photo_url, latitude, longitude").eq("id", entry.salon_id).maybeSingle(),
+    admin.from("salons").select("name, slug, address, cover_photo_url, gallery_urls, latitude, longitude").eq("id", entry.salon_id).maybeSingle(),
   ]);
 
   return NextResponse.json({
@@ -90,6 +90,7 @@ export async function GET(req: NextRequest) {
     salonSlug: (salonRes.data as any)?.slug ?? null,
     salonAddress: (salonRes.data as any)?.address ?? null,
     salonPhoto: (salonRes.data as any)?.cover_photo_url ?? null,
+    salonPhotos: (salonRes.data as any)?.gallery_urls ?? null, // swipeable hero gallery (PDP-style)
     salonLat: (salonRes.data as any)?.latitude ?? null,
     salonLng: (salonRes.data as any)?.longitude ?? null,
   });
