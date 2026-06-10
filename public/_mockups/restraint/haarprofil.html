@@ -3,385 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solen — Mein Haarprofil</title>
-<!--
-  ════════════════════════════════════════════════════════════════════
-  MEIN HAARPROFIL  (hair profile / ultra-personalization)  — VISION mockup
-  Built by COPYING the recipes in _KIT.html (extracted from the live app).
-  Revisions (owner brief):
-    (1) Haartyp = REAL discovery hair-pattern masks (straight/wavy/coily/
-        protective .png), currentColor mask tiles matching the discovery
-        PatternSelector (rounded-2xl tile, glyph + label, SELECTED = ink
-        fill + white glyph, UNSELECTED = sunken + ink glyph).
-    (2) Top progress bar REMOVED — clean title + name + one-line intro.
-    (3) Reference photos: add "Aus Gespeicherten" / "Aus Discovery"
-        tappable tiles alongside "+ Foto".
-    (4) AI note: subtle "KI-Vorschlag" (Lucide sparkles) affordance.
-    (5) Keep Länge, Dicke, Kopfhaut, Allergien, Coloration-Verlauf,
-        Bevorzugte:r Stylist:in, sticky Speichern.
-    (6) Full Lucide icon swap on all section icons + back chevron.
-  Global rules honoured:
-    NO middot separators (decorative-dot ban) — German connectors /
-    commas / whitespace only. Numbers (durations, counts, dates) in .num
-    (Inter Tight tabular), never JetBrains Mono. Restraint: blue only on
-    small clickable bits; ink for structure, CTAs, chevrons; white +
-    cool-grey surfaces; semantic colour kept. Card radius 24px, pills
-    9999px, primary CTA = ink pill. de-CH copy. iOS status bar.
-    reduced-motion guard at the end. Real Lucide icons (no hand-drawn svg
-    product icons — only the iOS status bar keeps inline svg chrome).
-  ════════════════════════════════════════════════════════════════════
--->
+<title>Solen — Haarprofil</title>
+<!-- Structure: Tinder "Edit Info" grouped list (owner pick) — grouped cards of rows
+     (label + value + chevron), allergies as inline chips, the reference photos kept as a
+     visual row, the note kept. Clean white cards (the colour-card version was rejected). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
-  /* ─────────── TOKENS (copied from _KIT.html) ─────────── */
-  :root{
-    --ink:#0A0A0A;
-    --ink-2:#6B6B6B;
-    --ink-3:#9B9B9B;
-    --border:#E4E4E7;
-    --bg:#FFFFFF;
-    --sunken:#F4F4F5;
-    --blue:#276EF1;
-    --green:#16A34A;
-    --star:#FFC32B;
-    --error:#DC2626;
-    --heart:#FF3366;
-    --r-card:24px;
-    --r-sheet:20px;
-    --r-pill:9999px;
-    --r-tile:14px;
-    --pad-card:20px;
-    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
-    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
-    --gap-section:30px;
-    --ease:cubic-bezier(.16,1,.3,1);
-  }
+  .lucide{stroke-width:1.8;flex-shrink:0}
+  :root{--ink:#0A0A0A;--ink-2:#6B6B6B;--ink-3:#9B9B9B;--border:#E7E7EA;--bg:#FFFFFF;--sunken:#F4F4F5;
+    --blue:#276EF1;--green:#16A34A;--star:#FFC32B;--r-pill:9999px;--ease:cubic-bezier(.16,1,.3,1);}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
-
-  /* ═══════════ THE 390px FRAME ═══════════ */
-  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:844px;}
-
-  /* ─────────── iOS STATUS BAR (real chrome top) ─────────── */
-  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;flex-shrink:0;}
+  .frame{width:390px;background:var(--sunken);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:844px;}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;flex-shrink:0;}
   .statusbar .ico{display:flex;gap:6px;align-items:center;}
+  .num{font-family:'Inter Tight';font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
 
-  /* ─────────── TYPE SCALE (copied) ─────────── */
-  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
-  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
-  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
-  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
-  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
-  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
-  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
-  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  /* top bar — like Tinder Edit Info */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 12px;background:var(--sunken);flex-shrink:0;}
+  .topbar .t{font-family:'Inter Tight';font-weight:700;font-size:18px;letter-spacing:-.015em;}
+  .btn-back{width:38px;height:38px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;}
+  .done{color:var(--blue);font-size:15px;font-weight:600;cursor:pointer;}
 
-  /* ─────────── TOP BAR (ink back chevron + title) ─────────── */
-  .topbar{display:flex;align-items:center;gap:12px;padding:6px 16px 4px;flex-shrink:0;}
-  .btn-back{width:40px;height:40px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;flex-shrink:0;transition:transform .14s var(--ease);}
-  .btn-back:active{transform:scale(.92);}
-
-  /* ─────────── SCROLL BODY ─────────── */
-  .scroll{flex:1;overflow-y:auto;padding:8px 20px 24px;}
+  .scroll{flex:1;overflow-y:auto;padding:6px 16px 24px;}
   .scroll::-webkit-scrollbar{display:none;}
-  .greeting{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.1;margin-top:6px;}
-  .intro{color:var(--ink-2);font-size:14px;line-height:1.5;margin-top:6px;}
 
-  /* ─────────── SECTION + CARD ─────────── */
-  .sec{padding-top:var(--gap-section);}
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
-  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
-  .card-label{font-family:'Inter Tight';font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-  .card-label i{color:var(--ink-2);}
+  .geyebrow{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:22px 6px 8px;}
+  .gcard{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(10,10,10,.04);}
 
-  /* ─────────── HAIR-TYPE TILES (real discovery hair-pattern mask icons — what we had before) ─────────── */
-  .hairtypes{display:flex;gap:8px;}
-  .htile{flex:1;min-height:80px;border-radius:16px;border:1px solid transparent;background:var(--sunken);color:var(--ink);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:12px 6px;cursor:pointer;
-    transition:transform .12s var(--ease),background-color .15s ease,color .15s ease;}
-  .htile:active{transform:scale(.96);}
-  .htile .glyph{display:inline-block;width:28px;height:28px;background-color:currentColor;}
-  .htile .lbl{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:12.5px;}
-  .htile.is-selected{background:var(--ink);color:#fff;}
-  .htile.is-selected .lbl{font-weight:600;}
+  .grow{display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;transition:background .14s ease;}
+  .grow:active{background:var(--sunken);}
+  .grow + .grow{border-top:1px solid var(--border);}
+  .grow-ico{width:30px;height:30px;border-radius:9px;background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink-2);flex-shrink:0;}
+  .grow-ico .glyph{width:18px;height:18px;background:var(--ink);display:inline-block;}
+  .grow-label{font-size:15px;font-weight:500;color:var(--ink);}
+  .grow-val{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--ink-3);max-width:60%;}
+  .grow-val .v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .grow-chev{color:var(--ink-3);flex-shrink:0;}
+  .grow-val .vphoto{width:26px;height:26px;border-radius:var(--r-pill);object-fit:cover;}
+  .grow-val .vname{color:var(--ink);font-weight:500;}
 
-  /* ─────────── SELECTABLE PILLS (selected = ink fill, calm) ─────────── */
-  .pillset{display:flex;flex-wrap:wrap;gap:8px;}
-  .opt{height:38px;padding:0 16px;border-radius:var(--r-pill);display:inline-flex;align-items:center;
-    font-size:14px;font-weight:500;color:var(--ink-2);background:#fff;border:1px solid var(--border);cursor:pointer;
-    transition:transform .12s var(--ease),border-color .14s ease;}
-  .opt:active{transform:scale(.96);}
-  .opt.is-selected{background:var(--ink);color:#fff;font-weight:600;border-color:var(--ink);}
+  .gchips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 16px 16px;}
+  .achip{height:30px;padding:0 11px;border-radius:var(--r-pill);background:var(--sunken);color:var(--ink);font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:5px;}
+  .achip .x{color:var(--ink-3);display:flex;}
+  .achip.add{background:#fff;border:1px solid var(--border);color:var(--ink);font-weight:600;}
 
-  /* allergy chips: removable, calm outline (selected = ink border, not fill) */
-  .chipset{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
-  .achip{height:34px;padding:0 12px 0 14px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:7px;
-    font-size:13px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--ink);cursor:default;}
-  .achip .x{display:flex;align-items:center;justify-content:center;color:var(--ink-3);cursor:pointer;transition:transform .12s var(--ease);}
-  .achip .x:active{transform:scale(.86);}
-  .achip-add{height:34px;padding:0 14px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:6px;
-    font-size:13px;font-weight:600;color:var(--ink);background:var(--sunken);border:none;cursor:pointer;transition:transform .12s var(--ease);}
-  .achip-add:active{transform:scale(.96);}
+  .refblock{padding:14px 16px 16px;}
+  .refrow{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;}
+  .refrow::-webkit-scrollbar{display:none;}
+  .refrow img{width:84px;height:104px;border-radius:14px;object-fit:cover;flex-shrink:0;}
+  .refadd{width:84px;height:104px;border-radius:14px;flex-shrink:0;background:var(--sunken);border:1.5px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--ink-2);font-size:11.5px;font-weight:600;cursor:pointer;}
+  .refsrc{position:relative;width:84px;height:104px;border-radius:14px;overflow:hidden;flex-shrink:0;cursor:pointer;}
+  .refsrc img{width:100%;height:100%;object-fit:cover;filter:brightness(.6);}
+  .refsrc .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:11px;font-weight:600;text-align:center;padding:0 5px;}
 
-  /* note field (coloration history) — sunken input block */
-  .field{background:var(--sunken);border-radius:var(--r-tile);padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;}
-  .field-txt{font-size:14px;color:var(--ink);font-weight:500;}
-  .field-sub{font-size:12px;color:var(--ink-3);margin-top:3px;}
-  .field .edit{color:var(--blue);font-size:13px;font-weight:500;flex-shrink:0;}
+  .noteblock{padding:14px 16px 16px;}
+  .note-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+  .note-head .lbl{font-size:15px;font-weight:500;}
+  .ki{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:var(--r-pill);background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
+  .note{background:var(--sunken);border-radius:12px;padding:13px;font-size:14px;line-height:1.55;color:var(--ink);}
+  .ki-hint{margin-top:8px;font-size:12px;color:var(--ink-3);}
 
-  /* preferred stylist avatar row (copied team-row recipe, single + add) */
-  .pref-row{display:flex;align-items:center;gap:16px;}
-  .pref-ava{position:relative;width:60px;height:60px;flex-shrink:0;}
-  .pref-ava img{width:60px;height:60px;border-radius:var(--r-pill);object-fit:cover;}
-  .pref-ava .check{position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-radius:var(--r-pill);background:var(--green);border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;}
-  .pref-name{font-family:'Inter Tight';font-weight:600;font-size:15px;}
-  .pref-spec{font-size:13px;color:var(--ink-3);margin-top:2px;}
-  .pref-change{margin-left:auto;}
-  .btn-change{background:var(--sunken);color:var(--ink);border:none;border-radius:var(--r-pill);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .14s var(--ease);}
-  .btn-change:active{transform:scale(.96);}
-
-  /* reference photos row (rounded thumbnails + source tiles) */
-  .photo-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;}
-  .photo-row::-webkit-scrollbar{display:none;}
-  .photo{width:96px;height:120px;border-radius:18px;object-fit:cover;flex-shrink:0;background:var(--sunken);}
-  .photo-src{position:relative;width:96px;height:120px;border-radius:18px;flex-shrink:0;overflow:hidden;cursor:pointer;
-    transition:transform .14s var(--ease);}
-  .photo-src:active{transform:scale(.96);}
-  .photo-src img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.62);}
-  .photo-src .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-    color:#fff;font-size:11.5px;font-weight:600;text-align:center;padding:0 6px;}
-  .photo-src .ov i{color:#fff;}
-  .photo-add{width:96px;height:120px;border-radius:18px;flex-shrink:0;background:var(--sunken);border:1.5px dashed var(--border);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink-2);cursor:pointer;
-    font-size:12px;font-weight:600;transition:transform .14s var(--ease);}
-  .photo-add:active{transform:scale(.96);}
-
-  /* note for the coiffeur — textarea block + AI affordance */
-  .note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
-  .ai-chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:var(--r-pill);
-    background:var(--sunken);border:none;color:var(--ink);font-size:12.5px;font-weight:600;cursor:pointer;
-    transition:transform .12s var(--ease);}
-  .ai-chip:active{transform:scale(.95);}
-  .ai-chip i{color:var(--ink);}
-  .note{background:var(--sunken);border-radius:var(--r-tile);padding:14px;min-height:96px;font-size:14px;line-height:1.55;color:var(--ink);}
-  .note .ph{color:var(--ink-3);}
-  .ai-hint{margin-top:10px;font-size:12px;color:var(--ink-3);line-height:1.5;display:flex;align-items:flex-start;gap:6px;}
-  .ai-hint i{color:var(--ink-3);margin-top:1px;}
-
-  /* ─────────── BOTTOM STICKY BAR ─────────── */
-  .stickybar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:16px;flex-shrink:0;}
-  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
-    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    transition:transform .14s var(--ease);}
-  .btn-ink:active{transform:scale(.97);}
-  .btn-ink.full{width:100%;padding:16px 28px;}
-
-  /* ─────────── ENTRANCE (stagger) ─────────── */
-  .rise{animation:rise .55s var(--ease) both;}
-  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
+  .savebar{position:sticky;bottom:0;background:var(--sunken);padding:12px 16px calc(12px + env(safe-area-inset-bottom));flex-shrink:0;}
+  .btn-save{width:100%;background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);padding:16px;font-size:15px;font-weight:600;cursor:pointer;}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
 
 <div class="frame">
-  <!-- iOS status bar (system chrome — keeps inline svg per brief) -->
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
     <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <!-- top bar: ink back chevron + title -->
   <div class="topbar">
     <button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button>
-    <h1 class="t-title">Haarprofil</h1>
+    <span class="t">Haarprofil</span>
+    <span class="done">Fertig</span>
   </div>
 
   <div class="scroll">
 
-    <!-- (1) Haartyp — real discovery hair-pattern mask icons -->
-    <div class="sec rise" style="padding-top:26px;">
-      <div class="card-flat" style="border-left:4px solid #3B5BDB;background:#3B5BDB0E">
-        <div class="card-label">
-          <i data-lucide="waves" style="width:18px;height:18px;color:#3B5BDB"></i>
-          Haartyp
-        </div>
-        <div class="hairtypes">
-          <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/straight.png) center/contain no-repeat;mask:url(/hair-patterns/straight.png) center/contain no-repeat;"></span>
-            <span class="lbl">Glatt</span>
-          </button>
-          <button class="htile is-selected">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat;"></span>
-            <span class="lbl">Wellig</span>
-          </button>
-          <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/coily.png) center/contain no-repeat;mask:url(/hair-patterns/coily.png) center/contain no-repeat;"></span>
-            <span class="lbl">Lockig</span>
-          </button>
-          <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/protective.png) center/contain no-repeat;mask:url(/hair-patterns/protective.png) center/contain no-repeat;"></span>
-            <span class="lbl">Kraus</span>
-          </button>
+    <!-- HAAR -->
+    <div class="geyebrow">Haar</div>
+    <div class="gcard">
+      <div class="grow">
+        <span class="grow-ico"><span class="glyph" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat"></span></span>
+        <span class="grow-label">Haartyp</span>
+        <span class="grow-val"><span class="v">Wellig</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+      <div class="grow">
+        <span class="grow-ico"><i data-lucide="ruler" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Länge</span>
+        <span class="grow-val"><span class="v">Mittel</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+      <div class="grow">
+        <span class="grow-ico"><i data-lucide="layers" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Dicke</span>
+        <span class="grow-val"><span class="v">Mittel</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+      <div class="grow">
+        <span class="grow-ico"><i data-lucide="scissors" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Bart</span>
+        <span class="grow-val"><span class="v">Kein Bart</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+    </div>
+
+    <!-- PFLEGE & FARBE -->
+    <div class="geyebrow">Pflege &amp; Farbe</div>
+    <div class="gcard">
+      <div class="grow" style="cursor:default">
+        <span class="grow-ico"><i data-lucide="triangle-alert" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Allergien</span>
+      </div>
+      <div class="gchips">
+        <span class="achip">Ammoniak <span class="x"><i data-lucide="x" style="width:12px;height:12px"></i></span></span>
+        <span class="achip">Sulfate <span class="x"><i data-lucide="x" style="width:12px;height:12px"></i></span></span>
+        <span class="achip">Duftstoffe <span class="x"><i data-lucide="x" style="width:12px;height:12px"></i></span></span>
+        <span class="achip add"><i data-lucide="plus" style="width:13px;height:13px"></i> Hinzufügen</span>
+      </div>
+      <div class="grow" style="border-top:1px solid var(--border)">
+        <span class="grow-ico"><i data-lucide="palette" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Coloration</span>
+        <span class="grow-val"><span class="v">Balayage, vor 3 Mt.</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+    </div>
+
+    <!-- PERSÖNLICH -->
+    <div class="geyebrow">Persönlich</div>
+    <div class="gcard">
+      <div class="grow">
+        <span class="grow-ico"><i data-lucide="user" style="width:17px;height:17px"></i></span>
+        <span class="grow-label">Bevorzugte:r Stylist:in</span>
+        <span class="grow-val"><img class="vphoto" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" referrerpolicy="no-referrer"><span class="vname">Sara K.</span><span class="grow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></span></span>
+      </div>
+    </div>
+
+    <!-- REFERENZEN (kept visual) -->
+    <div class="geyebrow">Referenzfotos</div>
+    <div class="gcard">
+      <div class="refblock">
+        <div class="refrow">
+          <img src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer">
+          <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer">
+          <button class="refsrc"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer"><span class="ov"><i data-lucide="bookmark" style="width:17px;height:17px;color:#fff"></i>Gespeichert</span></button>
+          <button class="refadd"><i data-lucide="plus" style="width:19px;height:19px"></i>Foto</button>
         </div>
       </div>
     </div>
 
-    <!-- (5) Länge -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #0CA678;background:#0CA6780E">
-        <div class="card-label">
-          <i data-lucide="ruler" style="width:18px;height:18px;color:#0CA678"></i>
-          Länge
-        </div>
-        <div class="pillset">
-          <span class="opt">Kurz</span>
-          <span class="opt is-selected">Mittel</span>
-          <span class="opt">Lang</span>
-          <span class="opt">Sehr lang</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- (5) Dicke / Dichte -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #E8590C;background:#E8590C0E">
-        <div class="card-label">
-          <i data-lucide="align-justify" style="width:18px;height:18px;color:#E8590C"></i>
-          Dicke und Dichte
-        </div>
-        <div class="pillset">
-          <span class="opt">Fein</span>
-          <span class="opt is-selected">Mittel</span>
-          <span class="opt">Dick</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bart (for men) -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #7048E8;background:#7048E80E">
-        <div class="card-label">
-          <i data-lucide="scissors" style="width:18px;height:18px;color:#7048E8"></i>
-          Bart
-        </div>
-        <div class="pillset">
-          <span class="opt is-selected">Kein Bart</span>
-          <span class="opt">Stoppeln</span>
-          <span class="opt">Voll</span>
-          <span class="opt">Goatee</span>
-          <span class="opt">Fade</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- (5) Allergien & Sensibilitäten -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #E03131;background:#E031310E">
-        <div class="card-label">
-          <i data-lucide="triangle-alert" style="width:18px;height:18px;color:#E03131"></i>
-          Allergien und Sensibilitäten
-        </div>
-        <div class="chipset">
-          <span class="achip">Ammoniak <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
-          <span class="achip">Sulfate <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
-          <span class="achip">Duftstoffe <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
-          <button class="achip-add"><i data-lucide="plus" style="width:13px;height:13px"></i>Hinzufügen</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- (5) Coloration-Verlauf -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #C2255C;background:#C2255C0E">
-        <div class="card-label">
-          <i data-lucide="palette" style="width:18px;height:18px;color:#C2255C"></i>
-          Coloration-Verlauf
-        </div>
-        <div class="field">
-          <div>
-            <div class="field-txt">Zuletzt gefärbt: vor <span class="num">3</span> Monaten, Balayage</div>
-            <div class="field-sub">Naturbasis dunkelblond, kalte Töne</div>
-          </div>
-          <span class="edit">Bearbeiten</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- (5) Bevorzugte:r Stylist:in -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #1098AD;background:#1098AD0E">
-        <div class="card-label">
-          <i data-lucide="user" style="width:18px;height:18px;color:#1098AD"></i>
-          Bevorzugte:r Stylist:in
-        </div>
-        <div class="pref-row">
-          <div class="pref-ava">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
-            <span class="check"><i data-lucide="check" style="width:12px;height:12px;stroke-width:3"></i></span>
-          </div>
-          <div>
-            <div class="pref-name">Sara K.</div>
-            <div class="pref-spec">Coloration und Balayage</div>
-          </div>
-          <div class="pref-change"><button class="btn-change">Ändern</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- (3) Referenzfotos — upload + Aus Gespeicherten + Aus Discovery -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat" style="border-left:4px solid #F08C00;background:#F08C000E">
-        <div class="card-label">
-          <i data-lucide="image" style="width:18px;height:18px;color:#F08C00"></i>
-          Referenzfotos
-        </div>
-        <div class="photo-row">
-          <img class="photo" src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-          <img class="photo" src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-          <button class="photo-add">
-            <i data-lucide="plus" style="width:20px;height:20px"></i>
-            Foto
-          </button>
-          <button class="photo-src">
-            <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-            <span class="ov"><i data-lucide="bookmark" style="width:18px;height:18px"></i>Aus Gespeicherten</span>
-          </button>
-          <button class="photo-src">
-            <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-            <span class="ov"><i data-lucide="compass" style="width:18px;height:18px"></i>Aus Discovery</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- (4) Notiz für den Coiffeur — KI-Vorschlag affordance -->
-    <div class="sec rise" style="padding-top:14px;">
-      <div class="card-flat">
-        <div class="note-head">
-          <div class="card-label" style="margin-bottom:0;">
-            <i data-lucide="pencil" style="width:18px;height:18px;color:#495057"></i>
-            Notiz für den Coiffeur
-          </div>
-          <button class="ai-chip">KI-Vorschlag</button>
-        </div>
+    <!-- NOTIZ -->
+    <div class="geyebrow">Notiz für den Coiffeur</div>
+    <div class="gcard">
+      <div class="noteblock">
+        <div class="note-head"><span class="lbl">Was soll dein Coiffeur wissen?</span><span class="ki"><i data-lucide="sparkles" style="width:13px;height:13px;margin-right:5px"></i>KI</span></div>
         <div class="note">Bitte die Spitzen nur leicht nachschneiden, ich lasse die Länge wachsen. Bei der Coloration gerne kühle Töne, kein Rotstich.</div>
-        <div class="ai-hint">Aus deinen Referenzfotos und deinem Haartyp generiert.</div>
+        <div class="ki-hint">Vorschlag aus deinen Referenzfotos und deinem Haartyp.</div>
       </div>
     </div>
+
   </div>
 
-  <!-- sticky bottom ink-pill Speichern -->
-  <div class="stickybar">
-    <button class="btn-ink full">Speichern</button>
-  </div>
+  <div class="savebar"><button class="btn-save">Speichern</button></div>
 </div>
 
 <script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
