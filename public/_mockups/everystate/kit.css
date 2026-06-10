@@ -1,0 +1,173 @@
+/* Solen every-state mockup kit (Phase 4, 2026-06-11)
+   Tokens = LOCKFILE literal values. One kit so all 10 page-files render identically. */
+:root{
+  --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B; --ink-dis:#C5C8C4;
+  --border:#E4E4E7; --sunken:#F4F4F5;
+  --blue:#276EF1; --blue-deep:#1E54B7; --blue-pale:#EAEFFE;
+  --green:#16A34A; --green-bg:#EAF8EF; --green-text:#15803D;
+  --red:#D32F2F; --red-bg:#FDECEC;
+  --warn:#F1AE27; --warn-bg:#FDF6E7; --warn-text:#B45309;
+  --star:#FFC32B; --pink:#FF3366;
+  --r-card:16px; --r-card-lg:20px; --r-input:12px; --r-sheet:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:30px;padding:36px 0 90px}
+.note{max-width:380px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+.note b{font-family:'Inter Tight',sans-serif}
+.lbl{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:#555;margin-bottom:-18px;max-width:390px;text-align:center}
+.lbl small{display:block;font-weight:500;font-size:11px;color:#888;margin-top:2px}
+
+.frame{width:390px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.16);position:relative}
+.frame.gray{background:var(--sunken)}
+.statusbar{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;background:transparent}
+.statusbar .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.statusbar .sig{display:flex;gap:5px;align-items:center}
+.statusbar .sig .lucide{width:16px;height:16px}
+
+/* app bars */
+.appbar{display:flex;align-items:center;gap:12px;padding:8px 16px 12px}
+.appbar.line{border-bottom:1px solid var(--border);background:#fff}
+.circ{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;flex:none}
+.circ .lucide{width:17px;height:17px}
+.appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar .spacer{flex:1}
+
+/* type roles */
+.h-page{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.15}
+.h-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em}
+.h-card{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.sub{font-size:14px;color:var(--ink-2);line-height:1.55}
+.meta{font-size:12.5px;color:var(--ink-2)}
+.num{font-family:'Inter Tight',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* DS-5 rhythm helpers */
+.body{padding:12px 16px 24px}
+.sect{margin-top:32px}
+.stack > * + *{margin-top:12px}
+
+/* cards */
+.card{background:#fff;border-radius:var(--r-card);box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:16px}
+.row{display:flex;align-items:center;gap:13px}
+.row + .row{margin-top:4px;padding-top:14px}
+.row.hair + .row.hair{border-top:1px solid rgba(10,10,10,.06);margin-top:12px;padding-top:12px}
+.icobox{width:40px;height:40px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;flex:none}
+.icobox .lucide{width:19px;height:19px;stroke-width:1.9;color:var(--ink)}
+.rt{flex:1;min-width:0}
+.rt .t{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt .m{font-size:12px;color:var(--ink-2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{width:16px;height:16px;color:var(--ink-3);flex:none}
+
+/* salon result card */
+.salcard{cursor:pointer}
+.salcard .ph{position:relative;border-radius:var(--r-card);overflow:hidden;height:150px}
+.salcard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.salcard .heart{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.salcard .heart .lucide{width:17px;height:17px}
+.salcard .heart.on .lucide{color:var(--pink);fill:var(--pink)}
+.salcard .nm{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:10px}
+.salcard .nm b{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rate{font-size:12.5px;font-weight:600;display:flex;gap:4px;align-items:center;flex:none}
+.rate svg{width:12px;height:12px;fill:var(--star)}
+.rate .cnt{color:var(--blue)}
+.rate .cnt:hover{color:var(--blue-deep)}
+.salcard .loc{font-size:12.5px;color:var(--ink-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.det{display:flex;gap:13px;margin-top:7px;color:var(--ink-2);font-size:12px;align-items:center}
+.det span{display:flex;gap:4px;align-items:center}
+.det .lucide{width:13px;height:13px}
+.det b{color:var(--ink);font-weight:600}
+
+/* DS-10 scrim */
+.scrim-band{position:absolute;left:0;right:0;bottom:0;height:64px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.38));pointer-events:none}
+.scrim-full{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.62) 100%);pointer-events:none}
+
+/* gallery dots */
+.dots{position:absolute;bottom:11px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:2}
+.dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55);transition:all .25s cubic-bezier(.16,1,.3,1)}
+.dots span.on{width:18px;background:#fff}
+
+/* pills + chips */
+.pill{border:1px solid var(--border);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:500;background:#fff;display:inline-flex;align-items:center;gap:6px}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pill .lucide{width:14px;height:14px}
+.statuspill{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;display:inline-flex;align-items:center;gap:5px}
+.statuspill.ok{background:var(--green-bg);color:var(--green-text)}
+.statuspill.warn{background:var(--warn-bg);color:var(--warn-text)}
+.statuspill.err{background:var(--red-bg);color:var(--red)}
+.statuspill .lucide{width:12px;height:12px}
+
+/* CTA bar + buttons (btn radius = pill per LOCKFILE §3) */
+.ctabar{position:sticky;bottom:0;background:#fff;padding:13px 16px 22px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.14)}
+.cta{width:100%;height:52px;border:0;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s}
+.cta:active{transform:scale(.98)}
+.cta .lucide{width:16px;height:16px}
+.cta.disabled{background:var(--ink-dis);pointer-events:none}
+.cta.loading{opacity:.85;pointer-events:none}
+.cta.ghost{background:#fff;border:1px solid var(--border);color:var(--ink)}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:99px;animation:sp .7s linear infinite;flex:none}
+.spin.dark{border-color:rgba(10,10,10,.15);border-top-color:var(--ink)}
+@keyframes sp{to{transform:rotate(360deg)}}
+.linkblue{color:var(--blue);font-weight:600;text-decoration:none;font-size:13px;cursor:pointer}
+.linkblue:hover{color:var(--blue-deep)}
+
+/* inputs */
+.input{height:48px;background:var(--sunken);border:1px solid transparent;border-radius:var(--r-input);padding:0 14px;font-size:14.5px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:9px;color:var(--ink-3)}
+.input.filled{color:var(--ink)}
+.input.focus{background:#fff;border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-pale)}
+.input.err{background:#fff;border-color:var(--red)}
+.input .lucide{width:16px;height:16px;flex:none;color:var(--ink-3)}
+.fielderr{font-size:11.5px;color:var(--red);margin-top:5px;display:flex;gap:4px;align-items:center}
+.fielderr .lucide{width:12px;height:12px}
+
+/* DS unified blue stepper (§13.2) */
+.steps{display:flex;align-items:flex-start;padding:14px 18px 4px;background:#fff}
+.stepnode{display:flex;flex-direction:column;align-items:center;gap:7px;width:64px;flex:none}
+.disc{width:42px;height:42px;border-radius:999px;display:grid;place-items:center}
+.disc.done{background:var(--blue);color:#fff}
+.disc.current{background:#fff;color:var(--blue);box-shadow:inset 0 0 0 2px var(--blue),0 0 0 5px rgba(39,110,241,.14)}
+.disc.future{background:var(--sunken);color:var(--ink-3)}
+.stepnode span{font-size:10.5px;font-weight:600;line-height:1.2;color:var(--ink);text-align:center}
+.stepnode.future span{color:var(--ink-3)}
+.stepnode.current span{font-weight:700}
+.conn{flex:1;height:2px;border-radius:99px;background:var(--border);margin-top:20px;min-width:8px}
+.conn.done{background:var(--blue)}
+.steps .lucide{width:18px;height:18px;stroke-width:2}
+
+/* skeleton loading */
+.sk{background:linear-gradient(90deg,#EEEEEF 25%,#F6F6F7 45%,#EEEEEF 65%);background-size:200% 100%;animation:shim 1.3s ease-in-out infinite;border-radius:10px}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* toast */
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;border-radius:999px;padding:10px 18px;display:flex;gap:8px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:nowrap;z-index:50}
+.toast .lucide{width:15px;height:15px;color:#4ADE80}
+
+/* sheet (§16.1, option B) */
+.sheetdemo{position:relative;overflow:hidden}
+.sheetdemo .pgscale{transition:transform .32s cubic-bezier(.16,1,.3,1)}
+.sheetdemo.open .pgscale{transform:translateY(10px) scale(.965);border-radius:22px;filter:brightness(.96)}
+.dim{position:absolute;inset:0;background:rgba(10,10,10,.42);z-index:10}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:8px 18px 22px;box-shadow:0 -18px 50px rgba(0,0,0,.22);z-index:11}
+.grab{width:38px;height:4.5px;border-radius:99px;background:var(--border);margin:6px auto 14px}
+.sheet h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;margin-bottom:6px}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 0;font-size:14.5px}
+.radio{width:20px;height:20px;border-radius:99px;border:2px solid var(--border);flex:none}
+.radio.on{border-color:var(--ink);border-width:6px}
+
+/* empty / personality (§15, Option A typographic) */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:46px 30px}
+.empty .bigtype{font-family:'Inter Tight',sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1;background:linear-gradient(180deg,var(--ink) 30%,#BBB);-webkit-background-clip:text;background-clip:text;color:transparent}
+.empty h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;margin-top:16px}
+.empty p{font-size:14px;color:var(--ink-2);line-height:1.55;margin-top:9px;max-width:280px}
+.empty .cta{width:auto;padding:0 26px;margin-top:20px;height:48px}
+.iconwrap{width:96px;height:96px;border-radius:999px;background:var(--sunken);display:grid;place-items:center}
+.iconwrap .lucide{width:38px;height:38px;stroke-width:1.5}
+
+/* success */
+.successdisc{width:58px;height:58px;border-radius:999px;background:var(--green);display:grid;place-items:center;animation:popin .45s cubic-bezier(.34,1.7,.5,1)}
+.successdisc .lucide{width:28px;height:28px;color:#fff;stroke-width:2.6}
+@keyframes popin{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+.avatar{border-radius:999px;object-fit:cover;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+.seg{display:flex;background:var(--sunken);border-radius:999px;padding:4px;margin:0 0 4px}
+.seg button{flex:1;height:42px;border:0;border-radius:999px;background:transparent;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:7px}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.10)}
+.seg .lucide{width:16px;height:16px}
