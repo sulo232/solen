@@ -11,20 +11,20 @@
 
 | # | ID | Title | Status |
 |---|----|-------|--------|
-| V1 | EcbgbKtOELY | Every UI/UX Concept Explained in Under 10 Minutes | pending |
-| V2 | 66oOi9OLMCw | Why the 60-30-10 Rule is RUINING Your UI Designs | pending |
-| V3 | 7cTdCu8HMgM | The DEFINITIVE process to present UIs like a pro | pending |
-| V4 | SfX43uIubj4 | 4 UI Design Hacks to KILL boring designs | pending |
-| V5 | HE4rLEQpiXY | How to think like a GENIUS UI/UX designer | pending |
-| V6 | AH_ugxmLeUM | 7 UI/UX mistakes that SCREAM you're a beginner | pending |
-| V7 | c1TvOcKdBVE | The 8 UI/UX Cheat Codes for INSTANTLY Better Designs | pending |
-| V8 | 14h1VnkQvIc | Master the 3 Types of CRAZY Mobile UI Swipe Interactions | pending |
+| V1 | EcbgbKtOELY | Every UI/UX Concept Explained in Under 10 Minutes | ✅ watched |
+| V2 | 66oOi9OLMCw | Why the 60-30-10 Rule is RUINING Your UI Designs | ✅ watched |
+| V3 | 7cTdCu8HMgM | The DEFINITIVE process to present UIs like a pro | ✅ watched |
+| V4 | SfX43uIubj4 | 4 UI Design Hacks to KILL boring designs | ✅ watched |
+| V5 | HE4rLEQpiXY | How to think like a GENIUS UI/UX designer | ✅ watched |
+| V6 | AH_ugxmLeUM | 7 UI/UX mistakes that SCREAM you're a beginner | ✅ watched |
+| V7 | c1TvOcKdBVE | The 8 UI/UX Cheat Codes for INSTANTLY Better Designs | ✅ watched |
+| V8 | 14h1VnkQvIc | Master the 3 Types of CRAZY Mobile UI Swipe Interactions | ✅ watched |
 
 (One URL was pasted twice — SfX43uIubj4 — watch once.)
 
 ## Phases (in order, with gates)
 
-### Phase 1 — WATCH + AUDIT  ← current
+### Phase 1 — WATCH + AUDIT  ✅ DONE (AUDIT.md complete, 12 ADOPTs synthesized)
 - Watch each video (transcript + frames). After EACH video, append its full claim list to
   `_design-system/_video-audit/AUDIT.md` (persist immediately — compaction-proof).
 - Each claim gets: what the video says (detail), whether Solen already has it (cite LOCKFILE/SOURCE/CANON
@@ -33,7 +33,7 @@
   no bottom nav, no haptics, Inter Tight/Inter, ink CTAs, Fresha structure × Uber aesthetic.
 - Deliverable: the BIG AUDIT (owner reads this).
 
-### Phase 2 — CLAIM-VERIFICATION MOCKUPS (gate: owner approval)
+### Phase 2 — CLAIM-VERIFICATION MOCKUPS ✅ BUILT (public/_mockups/video-audit/, 6 files) ← AWAITING OWNER APPROVAL
 - For each major page, make mockups showing the video claims APPLIED to our real design so the owner
   can judge: home/search, salon PDP, booking wizard (incl. new hair+pay steps), queue tracker,
   walk-in-pay, profile, confirmation, reviews. Multiple options per mockup where the call isn't obvious.
