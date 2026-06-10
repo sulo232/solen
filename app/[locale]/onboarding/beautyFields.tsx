@@ -28,6 +28,13 @@ export const HAIR_OPTS: Choice[] = [
   { value: "unknown", label: "Weiss nicht" },
 ];
 
+export const HAIR_LENGTH_OPTS: Choice[] = [
+  { value: "short", label: "Kurz" },
+  { value: "medium", label: "Mittel" },
+  { value: "long", label: "Lang" },
+  { value: "very_long", label: "Sehr lang" },
+];
+
 export const SKIN_OPTS: Choice[] = [
   { value: "dry", label: "Trocken" },
   { value: "normal", label: "Normal" },

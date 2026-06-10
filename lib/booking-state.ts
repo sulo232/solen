@@ -10,7 +10,7 @@
 // compatibility with in-progress sessions; BookingWizard normalizes them to 'pay-confirm'.
 // Even older step names ('services'|'staff'|'date'|'time') kept for any legacy state
 // that might still exist in browser storage.
-export type BookingStep = 'services-staff' | 'datetime' | 'pay-confirm' | 'confirm' | 'payment' | 'services' | 'staff' | 'date' | 'time';
+export type BookingStep = 'services-staff' | 'datetime' | 'hair' | 'pay-confirm' | 'confirm' | 'payment' | 'services' | 'staff' | 'date' | 'time';
 
 export interface SelectedService {
   id: string;

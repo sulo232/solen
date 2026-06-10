@@ -78,6 +78,7 @@ export const updateProfileSchema = z.object({
   avatar_url: z.string().url().optional().nullable(),
   bio: z.string().max(500).optional().nullable(),
   hair_type: z.string().max(50).optional().nullable(),
+  hair_length: z.string().max(30).optional().nullable(),
   age_group: z.string().max(20).optional().nullable(),
   gender: z.string().max(20).optional().nullable(),
   locale: z.enum(["de", "en", "fr", "it"]).optional(),

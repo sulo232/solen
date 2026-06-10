@@ -3,11 +3,13 @@
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Check } from 'lucide-react';
 import { BackButton } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
   DateTimeStep,
   PayConfirmStep,
+  HairStep,
 } from '@/components-legacy/booking';
 import type { Salon, StaffMember } from '@/lib/types';
 
@@ -30,14 +32,31 @@ import type { Salon, StaffMember } from '@/lib/types';
  * Legacy currentStep values 'confirm' + 'payment' are mapped to 'pay-confirm'
  * so existing in-progress sessions don't lose state on first load post-deploy.
  */
-const STEPS = ['services-staff', 'datetime', 'pay-confirm'] as const;
-type ActiveStep = typeof STEPS[number];
+// Owner mockup booking-hair-step (2026-06-10): an optional "Deine Haare" step sits
+// between Zeit and Bezahlen WHEN the cart contains hair services. Steps are computed
+// per cart, so non-hair bookings (nails/spa) keep the original 3-step flow.
+const BASE_STEPS = ['services-staff', 'datetime', 'pay-confirm'] as const;
+const HAIR_STEPS = ['services-staff', 'datetime', 'hair', 'pay-confirm'] as const;
+type ActiveStep = typeof HAIR_STEPS[number];
 
 const STEP_LABELS: Record<ActiveStep, string> = {
   'services-staff': 'Auswahl',
   'datetime': 'Datum & Zeit',
+  'hair': 'Deine Haare',
   'pay-confirm': 'Bestätigen & Zahlen',
 };
+
+// Short circle labels for the step indicator (owner mockup: Service · Zeit · Haare · Bezahlen)
+const INDICATOR_LABELS: Record<ActiveStep, string> = {
+  'services-staff': 'Service',
+  'datetime': 'Zeit',
+  'hair': 'Haare',
+  'pay-confirm': 'Bezahlen',
+};
+
+// Hair step shows only for hair categories — data-driven via the service rows
+// (NOT a component-level category branch; V3-D205 stays intact).
+const HAIR_CATEGORIES = new Set(['coiffeur', 'barbershop']);
 
 interface Service {
   id: string;
@@ -102,7 +121,12 @@ export default function BookingWizard({ services, staffList, salon, staffService
   const t = useTranslations('booking') as any;
   const { currentStep, goToStep, formData } = useBooking();
 
-  // Map legacy step keys to the new 3-step enum (graceful migration for in-progress sessions)
+  // Hair step is part of the flow when ANY cart service belongs to a hair category.
+  const cartIds = new Set(formData.services.map((s) => s.id));
+  const hairRelevant = services.some((s) => cartIds.has(s.id) && HAIR_CATEGORIES.has(s.category));
+  const STEPS: readonly ActiveStep[] = hairRelevant ? HAIR_STEPS : BASE_STEPS;
+
+  // Map legacy step keys to the active enum (graceful migration for in-progress sessions)
   const normalizedStep: ActiveStep =
     currentStep === 'confirm' || currentStep === 'payment'
       ? 'pay-confirm'
@@ -133,7 +157,9 @@ export default function BookingWizard({ services, staffList, salon, staffService
       case 'services-staff':
         return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
       case 'datetime':
-        return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} />;
+        return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} nextStep={hairRelevant ? 'hair' : 'confirm'} />;
+      case 'hair':
+        return <HairStep />;
       case 'pay-confirm':
         return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} />;
       default:
@@ -143,26 +169,43 @@ export default function BookingWizard({ services, staffList, salon, staffService
 
   return (
     <div className="w-full">
-      {/* Q56 progress indicator — 3-segment bar + eyebrow + Anton step label */}
+      {/* Step indicator — owner mockup booking-hair-step (2026-06-10): numbered circles
+          with labels below; done = green disc + white check, current = green ring +
+          green number, future = sunken grey. Supersedes the Q56 segment bar. Done
+          circles stay tappable for jump-back. */}
       <div className="px-1 pt-2 pb-4">
-        {/* 3-segment bar */}
-        <div className="flex items-center gap-[3px] mb-3" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
+        <div className="mb-4 flex items-start" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
           {STEPS.map((step, i) => {
-            const isFilled = i <= currentIndex;
-            const isPast = i < currentIndex;
+            const isDone = i < currentIndex;
+            const isCurrent = i === currentIndex;
             return (
-              <button
-                key={step}
-                type="button"
-                onClick={() => handleSegmentJump(i)}
-                disabled={!isPast}
-                aria-label={`Zurück zu Schritt ${i + 1}: ${STEP_LABELS[step]}`}
-                className={[
-                  'flex-1 h-1.5 rounded-full transition-colors duration-200',
-                  isFilled ? 'bg-s-ink' : 'bg-s-bg-sunken',
-                  isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1' : 'cursor-default',
-                ].join(' ')}
-              />
+              <div key={step} className={`flex items-start ${i < STEPS.length - 1 ? 'flex-1' : ''}`}>
+                <button
+                  type="button"
+                  onClick={() => handleSegmentJump(i)}
+                  disabled={!isDone}
+                  aria-label={`${isDone ? 'Zurück zu ' : ''}Schritt ${i + 1}: ${STEP_LABELS[step]}`}
+                  aria-current={isCurrent ? 'step' : undefined}
+                  className={`flex flex-col items-center gap-1.5 px-1 ${isDone ? 'cursor-pointer' : 'cursor-default'}`}
+                >
+                  <span
+                    className={[
+                      'grid h-[34px] w-[34px] place-items-center rounded-full text-[14px] font-semibold tabular-nums transition-colors duration-200',
+                      isDone
+                        ? 'bg-s-success text-white'
+                        : isCurrent
+                          ? 'border-2 border-s-success bg-white text-s-success'
+                          : 'bg-s-bg-sunken text-s-ink-3',
+                    ].join(' ')}
+                  >
+                    {isDone ? <Check size={16} strokeWidth={3} aria-hidden /> : i + 1}
+                  </span>
+                  <span className={`text-[12px] ${isCurrent ? 'font-semibold text-s-ink' : 'text-s-ink-3'}`}>
+                    {INDICATOR_LABELS[step]}
+                  </span>
+                </button>
+                {i < STEPS.length - 1 && <div className={`mx-1 mt-[17px] h-px flex-1 ${i < currentIndex ? 'bg-s-success/40' : 'bg-s-border'}`} aria-hidden />}
+              </div>
             );
           })}
         </div>

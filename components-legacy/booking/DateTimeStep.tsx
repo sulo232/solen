@@ -17,6 +17,9 @@ interface DateTimeStepProps {
   staffList: StaffMember[];
   isLoggedIn: boolean;
   salonName: string;
+  /** Where "Weiter" advances. The wizard passes 'hair' when the cart has hair services
+   *  (owner mockup booking-hair-step); defaults to the legacy 'confirm' (= pay-confirm). */
+  nextStep?: import('@/lib/booking-state').BookingStep;
 }
 
 interface TimeSlot {
@@ -30,7 +33,7 @@ const ymd = (d: Date) =>
     d.getDate()
   ).padStart(2, '0')}`;
 
-export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName }: DateTimeStepProps) {
+export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName, nextStep = 'confirm' }: DateTimeStepProps) {
   const tDate = useTranslations('booking.dateSelection');
   const tTime = useTranslations('booking.timeSelection');
   const tWait = useTranslations('booking.waitlist');
@@ -119,7 +122,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
       return;
     }
     setIsChecking(true);
-    goToStep('confirm');
+    goToStep(nextStep);
     setIsChecking(false);
   };
 
