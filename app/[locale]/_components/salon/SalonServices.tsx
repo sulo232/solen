@@ -86,6 +86,20 @@ export function SalonServices({
   // Always show only first 5 inline — full list lives in the sheet (V2-D53.3 polish).
   const shown = visible.slice(0, 5);
 
+  // Owner mockup service-grouping (2026-06-10): the inline list groups by DURATION tier
+  // (Express / Klassisch / Signature) under the existing subcategory filter pills.
+  // Pure derivation from duration_minutes — no schema change, no invented data.
+  const TIERS: { key: string; label: string; range: string; match: (d: number) => boolean }[] = [
+    { key: "express", label: "Express", range: "15–30 Min", match: (d) => d > 0 && d <= 30 },
+    { key: "klassisch", label: "Klassisch", range: "45–60 Min", match: (d) => d > 30 && d <= 60 },
+    { key: "signature", label: "Signature", range: "90+ Min", match: (d) => d > 60 },
+  ];
+  const tiered = TIERS
+    .map((tier) => ({ tier, rows: shown.filter((s) => tier.match(s.duration_minutes ?? 0)) }))
+    .filter((g) => g.rows.length > 0);
+  // Services with no usable duration fall outside every tier — keep them visible, untiered.
+  const untiered = shown.filter((s) => !TIERS.some((tier) => tier.match(s.duration_minutes ?? 0)));
+
   return (
     <section id="section-services">
       <SectionHeader>Services</SectionHeader>
@@ -108,20 +122,42 @@ export function SalonServices({
         </div>
       )}
 
-      {/* MOBILE — spaced bordered cards (same card as desktop per V3-D227, so
-          the rounded cards need a gap, not divide-y which stacked them flush) */}
-      <ul className="mt-5 space-y-3 md:hidden">
-        {shown.map((s) => (
-          <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
+      {/* Duration-tier groups (owner mockup): tier header (name + range) above its rows.
+          Same bordered ServiceRow cards as before (V3-D227) — only the grouping changed. */}
+      <div className="mt-5 space-y-6">
+        {tiered.map(({ tier, rows }) => (
+          <div key={tier.key}>
+            <div className="flex items-baseline gap-2">
+              <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
+              <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
+            </div>
+            <ul className="mt-2.5 space-y-3 md:hidden">
+              {rows.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
+              ))}
+            </ul>
+            <ul className="mt-2.5 hidden space-y-3 md:block">
+              {rows.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="desktop" />
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
-
-      {/* DESKTOP — bordered cards */}
-      <ul className="mt-5 hidden space-y-3 md:block">
-        {shown.map((s) => (
-          <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="desktop" />
-        ))}
-      </ul>
+        {untiered.length > 0 && (
+          <div>
+            <ul className="space-y-3 md:hidden">
+              {untiered.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
+              ))}
+            </ul>
+            <ul className="hidden space-y-3 md:block">
+              {untiered.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="desktop" />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
 
       {/* "Alle ansehen" — V2-D53.3 polish: now opens a full-screen sheet
           matching Fresha's services-selection step instead of expanding

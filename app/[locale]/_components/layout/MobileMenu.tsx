@@ -328,7 +328,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   <Globe size={20} strokeWidth={1.75} aria-hidden />
                   {t("language")}
                 </span>
-                <LanguageSwitcher locale={locale} variant="menu" />
+                <LanguageSwitcher locale={locale} variant="sheet" />
               </div>
             </div>
 

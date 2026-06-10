@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 
 const LOCALE_LABELS: Record<string, string> = {
   de: "DE",
@@ -11,7 +12,15 @@ const LOCALE_LABELS: Record<string, string> = {
   it: "IT",
 };
 
-export default function LanguageSwitcher({ locale, variant = "header" }: { locale: string; variant?: "header" | "footer" | "menu" }) {
+// Sheet variant (owner mockup language-picker.html): full names + flags, bottom sheet.
+const LOCALE_FULL: Record<string, { name: string; flag: string }> = {
+  de: { name: "Deutsch", flag: "🇩🇪" },
+  en: { name: "English", flag: "🇬🇧" },
+  fr: { name: "Français", flag: "🇫🇷" },
+  it: { name: "Italiano", flag: "🇮🇹" },
+};
+
+export default function LanguageSwitcher({ locale, variant = "header" }: { locale: string; variant?: "header" | "footer" | "menu" | "sheet" }) {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -47,6 +56,48 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
     router.refresh();
     setOpen(false);
   };
+
+  if (variant === "sheet") {
+    // Bottom sheet per the owner mockup: trigger shows the current language, the sheet
+    // lists full names + flags with a radio mark. Reuses the same switchLocale logic.
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Sprache wählen"
+          className="flex items-center gap-1.5 text-[14px] font-medium text-s-ink-2 transition-colors hover:text-s-ink"
+        >
+          <span aria-hidden>{LOCALE_FULL[locale]?.flag}</span>
+          <span>{LOCALE_FULL[locale]?.name ?? "Deutsch"}</span>
+          <ChevronRight size={15} className="text-s-ink-3" aria-hidden />
+        </button>
+        <Sheet isOpen={open} onOpenChange={setOpen} height="auto" aria-label="Sprache wählen">
+          <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1">
+            <h2 className="font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">Sprache wählen</h2>
+            <div className="mt-2">
+              {Object.entries(LOCALE_FULL).map(([key, v]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => switchLocale(key)}
+                  className="flex w-full items-center justify-between border-b border-s-border py-4 text-left last:border-b-0"
+                >
+                  <span className="flex items-center gap-3 text-[16px] text-s-ink">
+                    <span aria-hidden className="text-[20px]">{v.flag}</span>
+                    {v.name}
+                  </span>
+                  <span className={`grid h-5 w-5 place-items-center rounded-full border-2 ${key === locale ? "border-s-accent" : "border-s-border"}`}>
+                    {key === locale && <span className="h-2.5 w-2.5 rounded-full bg-s-accent" />}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </Sheet>
+      </>
+    );
+  }
 
   if (variant === "footer") {
     const LOCALE_ENTRIES = Object.entries(LOCALE_LABELS);

@@ -398,7 +398,25 @@ export default function QueueTrackingPage() {
           </p>
         )}
 
-        {/* blue step tracker the ONE progress indicator */}
+        {/* time-progress bar (owner mockup walkin-rich-v2): elapsed wait vs estimated total.
+            Real numbers only — joinedAt + the live ETA; hidden once you're up. */}
+        {isWaiting && data.joinedAt && data.estimatedWaitMinutes > 0 && (() => {
+          const elapsedMin = Math.max(0, Math.round((Date.now() - new Date(data.joinedAt).getTime()) / 60000));
+          const totalMin = elapsedMin + data.estimatedWaitMinutes;
+          const pct = Math.min(95, Math.round((elapsedMin / Math.max(1, totalMin)) * 100));
+          return (
+            <div className="mt-3.5">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-s-bg-sunken">
+                <div className="h-full rounded-full bg-s-accent transition-[width] duration-700" style={{ width: `${pct}%` }} />
+              </div>
+              <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-3">
+                {elapsedMin} / ~{totalMin} {l.min}
+              </p>
+            </div>
+          );
+        })()}
+
+        {/* blue step tracker */}
         <div className="mt-[22px] flex items-start justify-between px-1.5">
           {STEPS.map((s, i) => {
             const st = nodeState(s.key);
