@@ -9,7 +9,7 @@ import {
   Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
-import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
+import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
 interface QueueStatus {
@@ -41,10 +41,10 @@ interface QueueStatus {
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig, danke!", doneSub: "Wir hoffen, es hat dir gefallen", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
-  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done, thanks!", doneSub: "Hope you loved it", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
-  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé, merci !", doneSub: "On espère que ça vous a plu", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
-  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto, grazie!", doneSub: "Speriamo ti sia piaciuto", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
+  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
+  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
 };
 
 type NodeState = "done" | "current" | "future";
@@ -60,7 +60,6 @@ export default function QueueTrackingPage() {
   const [notFound, setNotFound] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [cancelling, setCancelling] = useState(false);
-  const [tipOpen, setTipOpen] = useState(false);
   const dataRef = useRef<QueueStatus | null>(null);
   useEffect(() => { dataRef.current = data; }, [data]);
 
@@ -156,45 +155,52 @@ export default function QueueTrackingPage() {
   const isLive = isWaiting || isUp;
   const almost = isWaiting && data.aheadCount <= 1;
 
-  // ---- Terminal states: focused, centered ----
-  if (isDone || isCancelled || isNoShow) {
+  // ---- Done: the success moment MERGED with the tip flow on one screen ----
+  // Reuses the real Stripe-wired <TipFlow> inline under a green success peak (owner-approved
+  // walkin-done-tip mockup), replacing the old "Fertig danke" + separate tip sheet.
+  if (isDone) {
+    const tipRecipient = data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur");
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <div className="flex flex-1 flex-col items-center px-5 pb-8 pt-12">
+          {/* success peak (green = the moment of delight, then tip below) */}
+          <div className="flex h-[66px] w-[66px] items-center justify-center rounded-full bg-s-success text-white shadow-[0_8px_20px_rgba(22,163,74,.32)]">
+            <Check size={32} strokeWidth={3} />
+          </div>
+          <h1 className="mt-4 font-heading text-[26px] font-bold tracking-[-.02em] text-s-ink">{l.done}</h1>
+          <p className="mt-1.5 max-w-[20rem] text-center text-[14px] leading-[1.45] text-s-ink-2">{l.doneSub}</p>
+
+          {/* inline tip flow (real component: presets + Stripe card + blue send + its own 'Danke!') */}
+          <div className="mt-6 w-full max-w-sm overflow-hidden rounded-[22px] border border-s-border bg-white shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
+            <TipFlow
+              recipientName={tipRecipient}
+              recipientPhoto={data.recipientPhoto}
+              recipientRating={data.recipientRating}
+              recipientReviewCount={data.recipientReviewCount}
+              contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
+              locale={locale}
+              createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
+            />
+          </div>
+
+          <Link href={`/${locale}`} className="mt-4 text-[13.5px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2">
+            {l.noTip}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Cancelled / no-show: focused, centered ----
+  if (isCancelled || isNoShow) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
-        {isDone ? (
-          <>
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-s-success">
-              <Check size={26} className="text-white" strokeWidth={3} />
-            </div>
-            <h1 className="mt-4 font-heading text-[22px] font-bold text-s-ink">{l.done}</h1>
-            <p className="mt-1.5 text-[14px] text-s-ink-2">{l.doneSub}</p>
-            <button
-              type="button"
-              onClick={() => setTipOpen(true)}
-              className="mt-7 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
-            >
-              {l.tip}
-            </button>
-          </>
-        ) : (
-          <>
-            <AlertCircle size={40} className="mb-4 text-s-ink-3" />
-            <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
-            <p className="mt-1.5 text-[14px] text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
-            <Link href={`/${locale}`} className="mt-6 rounded-btn bg-s-ink px-5 py-2.5 font-heading text-[14px] font-semibold text-white">
-              {l.home}
-            </Link>
-          </>
-        )}
-        {data && (
-          <TipSheet
-            open={tipOpen} onClose={() => setTipOpen(false)}
-            recipientName={data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur")}
-            recipientPhoto={data.recipientPhoto} recipientRating={data.recipientRating} recipientReviewCount={data.recipientReviewCount}
-            contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
-            locale={locale}
-            createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
-          />
-        )}
+        <AlertCircle size={40} className="mb-4 text-s-ink-3" />
+        <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
+        <p className="mt-1.5 text-[14px] text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
+        <Link href={`/${locale}`} className="mt-6 rounded-btn bg-s-ink px-5 py-2.5 font-heading text-[14px] font-semibold text-white">
+          {l.home}
+        </Link>
       </div>
     );
   }
@@ -402,17 +408,6 @@ export default function QueueTrackingPage() {
           <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
         </button>
       </div>
-
-      {data && (
-        <TipSheet
-          open={tipOpen} onClose={() => setTipOpen(false)}
-          recipientName={data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur")}
-          recipientPhoto={data.recipientPhoto} recipientRating={data.recipientRating} recipientReviewCount={data.recipientReviewCount}
-          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
-          locale={locale}
-          createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
-        />
-      )}
     </div>
   );
 }
