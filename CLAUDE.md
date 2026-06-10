@@ -157,6 +157,13 @@ Before applying, building, or committing ANY visual / design change: **show the 
 1. **Drop words the context already says.** A button inside the reviews list is "Mehr laden", never "Weitere Bewertungen laden" — the user knows they're reviews. Same family: "Zum Kalender hinzufügen" → "Kalender hinzufügen"; a "Kopieren" label next to a copy icon → icon-only. Test: delete each word; if the meaning survives in place, the word was padding.
 2. **Long text truncates with a blue "Mehr lesen".** Reviews/descriptions clamp (~150 chars / 3 lines) with an inline `text-s-accent` "Mehr lesen" that expands in place (Fresha pattern). Never render a wall of text; never a grey/underlined read-more.
 3. **Action verbosity ladder:** icon-only when the icon is unambiguous next to its object (copy, flag/report, share) — keep `aria-label`; icon+label when the action is rarer (Wegbeschreibung); label-only for commitments (Buchen, Bezahlen). One primary commit phrasing per screen.
+4. **No redundant tags/badges/meta.** A tag must add a decision-relevant fact not already on the row. Banned examples (owner, 2026-06-11): language tags ("DE / EN") on a barber row at checkout, a policy line repeated twice on one screen, decorative chips. Test: remove the tag — if the user loses nothing, it was noise.
+5. **These rules bind MOCKUPS too** (`public/_mockups/**`). A mockup that breaks them gets rejected just like real UI. Mockup-specific banned list (all owner-rejected at least once):
+   - tracked-uppercase labels/eyebrows (`text-transform:uppercase` + letter-spacing) — use normal-case 13px semibold
+   - hand-drawn inline SVG glyph paths — Lucide icons only (memory `feedback_actual_icons_lucide`)
+   - placeholder junk in the status bar (`●●●`) — use the kit's signal/wifi/battery glyphs
+   - bare X close — the design system close is a 38px circled X (border, white bg)
+   - fake/false claims (payment timing, saved cards that don't exist, invented counts) — same no-fabrication rule as production
 
 ---
 

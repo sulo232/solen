@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Booking — Haare step v2 (walk-in-aligned, short copy, more options)</title>
+<title>Booking — Haare step v3 (punch-list pass)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -18,14 +18,16 @@
   body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
   .note{max-width:360px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
   .note b{font-family:'Inter Tight',sans-serif}
-  .frame{width:390px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18)}
-  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 6px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
-  .appbar{display:flex;align-items:center;gap:12px;padding:10px 16px 12px;border-bottom:1px solid var(--border)}
-  .appbar .x{width:24px;height:24px;display:grid;place-items:center}
+  .frame{width:390px;background:var(--sunken);border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18)}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;background:#fff}
+  .statusbar .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .sig{display:flex;gap:5px;align-items:center}
+  .appbar{display:flex;align-items:center;gap:12px;padding:8px 16px 12px;background:#fff;border-bottom:1px solid var(--border)}
+  .btn-close{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;flex:none}
   .appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em}
 
-  /* unified stepper — identical to booking-pay-step.html */
-  .steps{display:flex;align-items:flex-start;padding:16px 18px 4px}
+  /* unified stepper — identical to booking-pay-step */
+  .steps{display:flex;align-items:flex-start;padding:16px 18px 4px;background:#fff}
   .stepnode{display:flex;flex-direction:column;align-items:center;gap:7px;width:64px;flex:none}
   .disc{width:42px;height:42px;border-radius:999px;display:grid;place-items:center}
   .disc.done{background:var(--blue);color:#fff}
@@ -37,46 +39,51 @@
   .conn.done{background:var(--blue)}
   .steps .lucide{width:18px;height:18px;stroke-width:2}
 
-  .body{padding:14px 18px 110px}
-  .body h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
-  .sub{font-size:14px;color:var(--ink-2);margin-top:3px}
+  .pagehead{padding:14px 18px 12px;background:#fff;border-bottom:1px solid var(--border)}
+  .pagehead h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .pagehead p{font-size:14px;color:var(--ink-2);margin-top:3px}
 
-  .chip{display:flex;align-items:center;gap:10px;background:var(--blue-pale);border-radius:12px;padding:9px 12px;margin-top:12px;font-size:13px;color:var(--ink-2)}
+  .body{padding:12px 16px 8px}
+  .card{background:#fff;border-radius:var(--r-card);box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:16px;margin-bottom:12px}
+
+  .chip{display:flex;align-items:center;gap:10px;background:var(--blue-pale);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--ink-2)}
   .chip img{width:26px;height:26px;border-radius:999px;object-fit:cover}
   .chip b{color:var(--ink);font-weight:600}
   .chip .lucide{width:14px;height:14px;color:var(--blue);margin-left:auto;flex:none}
 
-  .lbl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 9px}
-  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .tile{display:flex;flex-direction:column;align-items:center;gap:7px;border:1px solid var(--border);border-radius:14px;padding:13px 0 11px;background:#fff;font-size:12.5px;font-weight:500}
-  .tile svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
-  .tile.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .lbl{font-size:13px;font-weight:600;color:var(--ink);margin:16px 0 9px}
+  .lbl:first-of-type{margin-top:14px}
   .pills{display:flex;flex-wrap:wrap;gap:8px}
   .pill{border:1px solid var(--border);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:500;background:#fff}
   .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
-  .notefield{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-top:9px;color:var(--ink-3);font-size:13.5px}
+  .barberhead{display:flex;align-items:center;gap:11px}
+  .barberhead img{width:38px;height:38px;border-radius:999px;object-fit:cover;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+  .barberhead .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .barberhead .m{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+
+  .notefield{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-top:10px;color:var(--ink-3);font-size:13.5px}
   .notefield .lucide{width:16px;height:16px;stroke-width:1.9;flex:none}
 
-  .mismatch{display:flex;gap:9px;align-items:flex-start;background:var(--amber-bg);border-radius:12px;padding:10px 12px;margin-top:12px}
+  .mismatch{display:flex;gap:9px;align-items:flex-start;background:var(--amber-bg);border-radius:12px;padding:10px 12px;margin-bottom:12px}
   .mismatch .lucide{width:15px;height:15px;color:var(--amber);flex:none;margin-top:2px}
   .mismatch p{font-size:12.5px;color:var(--ink-2);line-height:1.45}
   .mismatch b{color:var(--ink);font-weight:600}
   .mismatch a{color:var(--blue);font-weight:600;text-decoration:none}
 
-  .ctabar{position:relative;background:#fff;padding:14px 16px 26px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.12)}
+  .ctabar{background:#fff;padding:14px 16px 26px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.12)}
   .cta{width:100%;height:54px;border:0;border-radius:var(--r-btn);background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px}
-  .skip{display:block;text-align:center;margin-top:11px;font-size:13.5px;font-weight:500;color:var(--ink-3)}
+  .skip{display:block;text-align:center;margin-top:11px;font-size:13.5px;font-weight:500;color:var(--ink-3);text-decoration:none}
 </style>
 </head>
 <body>
 
-<div class="note"><b>Haare step v2.</b> Same blue walk-in stepper. Copy cut to one short line. MORE options: + Dicke (real column) + Bart (barber carts; needs a tiny column) + optional 1-line Notiz. Pre-fill chip compact in blue-pale; mismatch hint stays non-blocking. "Überspringen" makes the whole step skippable — it prepares, never gates.</div>
+<div class="note"><b>Haare — v3 punch-list pass.</b> White cards on grey (matches Bezahlen — not a monochrome wall), normal-case labels (no tracked uppercase), uniform pills everywhere — the hand-drawn hair glyphs are GONE (banned), Haare icon = brush. Bart + Notiz live in Luca's card (photo = richness). Real status glyphs, circled close.</div>
 
 <div class="frame">
-  <div class="statusbar"><span>9:41</span><span>●●●</span></div>
+  <div class="statusbar"><span class="num">9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
   <div class="appbar">
-    <div class="x"><i data-lucide="x" style="width:22px;height:22px"></i></div>
+    <button class="btn-close"><i data-lucide="x" style="width:17px;height:17px"></i></button>
     <h1>Termin bei Old Town Barbers</h1>
   </div>
 
@@ -85,53 +92,69 @@
     <div class="conn done"></div>
     <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Zeit</span></div>
     <div class="conn"></div>
-    <div class="stepnode"><div class="disc current"><i data-lucide="sparkles"></i></div><span style="font-weight:700">Haare</span></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="brush"></i></div><span style="font-weight:700">Haare</span></div>
     <div class="conn"></div>
     <div class="stepnode future"><div class="disc future"><i data-lucide="credit-card"></i></div><span>Bezahlen</span></div>
   </div>
 
-  <div class="body">
+  <div class="pagehead">
     <h2>Deine Haare</h2>
-    <p class="sub">Für die Vorbereitung. Alles optional.</p>
+    <p>Für die Vorbereitung. Alles optional.</p>
+  </div>
 
-    <div class="chip">
-      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80" alt="">
-      <span>Aus deinem <b>Haarprofil</b></span>
-      <i data-lucide="check"></i>
+  <div class="body">
+    <!-- Card 1: hair facts, pre-filled from the profile -->
+    <div class="card">
+      <div class="chip">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80" alt="">
+        <span>Aus deinem <b>Haarprofil</b></span>
+        <i data-lucide="check"></i>
+      </div>
+
+      <div class="lbl">Haartyp</div>
+      <div class="pills">
+        <div class="pill">Glatt</div>
+        <div class="pill on">Wellig</div>
+        <div class="pill">Lockig</div>
+        <div class="pill">Kraus</div>
+      </div>
+
+      <div class="lbl">Länge</div>
+      <div class="pills">
+        <div class="pill">Kurz</div>
+        <div class="pill on">Mittel</div>
+        <div class="pill">Lang</div>
+        <div class="pill">Sehr lang</div>
+      </div>
+
+      <div class="lbl">Dicke</div>
+      <div class="pills">
+        <div class="pill">Dünn</div>
+        <div class="pill on">Mittel</div>
+        <div class="pill">Dick</div>
+      </div>
     </div>
 
-    <div class="lbl">Haartyp</div>
-    <div class="tiles">
-      <div class="tile"><svg viewBox="0 0 24 24"><path d="M8 4v16M12 4v16M16 4v16"/></svg>Glatt</div>
-      <div class="tile on"><svg viewBox="0 0 24 24"><path d="M8 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4M13 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4M18 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4"/></svg>Wellig</div>
-      <div class="tile"><svg viewBox="0 0 24 24"><path d="M8 4a2 2 0 1 1 0 4 2 2 0 1 0 0 4 2 2 0 1 1 0 4 2 2 0 1 0 0 4M15 4a2 2 0 1 1 0 4 2 2 0 1 0 0 4 2 2 0 1 1 0 4 2 2 0 1 0 0 4"/></svg>Lockig</div>
-      <div class="tile"><svg viewBox="0 0 24 24"><path d="M7 4q3 1.5 0 3t0 3 0 3 0 3 0 3M12 4q3 1.5 0 3t0 3 0 3 0 3 0 3M17 4q3 1.5 0 3t0 3 0 3 0 3 0 3"/></svg>Kraus</div>
-    </div>
+    <!-- Card 2: for the barber — beard + a short note, with his face (richness) -->
+    <div class="card">
+      <div class="barberhead">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="">
+        <div>
+          <div class="n">Für Luca</div>
+          <div class="m">Dein Barber</div>
+        </div>
+      </div>
 
-    <div class="lbl">Länge</div>
-    <div class="pills">
-      <div class="pill">Kurz</div>
-      <div class="pill on">Mittel</div>
-      <div class="pill">Lang</div>
-      <div class="pill">Sehr lang</div>
-    </div>
+      <div class="lbl">Bart</div>
+      <div class="pills">
+        <div class="pill">Kein Bart</div>
+        <div class="pill on">Kurz</div>
+        <div class="pill">Voll</div>
+      </div>
 
-    <div class="lbl">Dicke</div>
-    <div class="pills">
-      <div class="pill">Dünn</div>
-      <div class="pill on">Mittel</div>
-      <div class="pill">Dick</div>
+      <div class="lbl">Notiz</div>
+      <div class="notefield"><i data-lucide="pencil-line"></i>Optional, z. B. «Spitzen nur leicht»</div>
     </div>
-
-    <div class="lbl">Bart</div>
-    <div class="pills">
-      <div class="pill">Kein Bart</div>
-      <div class="pill on">Kurz</div>
-      <div class="pill">Voll</div>
-    </div>
-
-    <div class="lbl">Notiz an deinen Barber</div>
-    <div class="notefield"><i data-lucide="pencil-line"></i>Optional, z. B. «Spitzen nur leicht»</div>
 
     <div class="mismatch">
       <i data-lucide="triangle-alert"></i>

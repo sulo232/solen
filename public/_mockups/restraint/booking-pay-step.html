@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Booking — Bezahlen step (walk-in-aligned)</title>
+<title>Booking — Bezahlen step (walk-in-aligned, v2)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
   :root{
     --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
-    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1; --blue-pale:#EAF1FE;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1;
     --green:#16A34A; --star:#FFC32B;
     --r-card:18px; --r-btn:14px;
   }
@@ -19,12 +19,14 @@
   .note{max-width:360px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
   .note b{font-family:'Inter Tight',sans-serif}
   .frame{width:390px;background:var(--sunken);border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18)}
-  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 6px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;background:#fff}
-  .appbar{display:flex;align-items:center;gap:12px;padding:10px 16px 12px;background:#fff;border-bottom:1px solid var(--border)}
-  .appbar .x{width:24px;height:24px;display:grid;place-items:center}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;background:#fff}
+  .statusbar .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .sig{display:flex;gap:5px;align-items:center}
+  .appbar{display:flex;align-items:center;gap:12px;padding:8px 16px 12px;background:#fff;border-bottom:1px solid var(--border)}
+  .btn-close{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;flex:none}
   .appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em}
 
-  /* ───── UNIFIED STEPPER — walk-in language: 42px icon discs, blue accent ───── */
+  /* ───── UNIFIED STEPPER — walk-in language: 42px blue icon discs ───── */
   .steps{display:flex;align-items:flex-start;padding:16px 18px 4px;background:#fff}
   .stepnode{display:flex;flex-direction:column;align-items:center;gap:7px;width:64px;flex:none}
   .disc{width:42px;height:42px;border-radius:999px;display:grid;place-items:center}
@@ -41,7 +43,6 @@
   .pagehead h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
   .body{padding:12px 16px 0}
 
-  /* white cards on grey — the approved walk-in-pay checkout pattern */
   .card{background:#fff;border-radius:var(--r-card);box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:16px;margin-bottom:12px}
   .row{display:flex;align-items:center;gap:12px}
   .row + .row{margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,10,10,.06)}
@@ -64,16 +65,15 @@
   .total .lbl{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
   .total .amt{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--blue)}
 
-  .payfield{border:1px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-2)}
-  .payfield + .payfield{margin-top:10px}
-  .payfield .lucide{width:18px;height:18px;stroke-width:1.9;color:var(--ink-2)}
-  .payfield.filled{color:var(--ink);font-weight:500}
+  /* honest Stripe placeholder — the real PaymentElement mounts here */
+  .stripebox{border:1px dashed var(--border);border-radius:12px;padding:18px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-3)}
+  .stripebox .lucide{width:16px;height:16px;stroke-width:1.9}
 
   .policy{display:flex;gap:8px;align-items:flex-start;padding:2px 4px 0;margin-bottom:12px}
   .policy .lucide{width:14px;height:14px;stroke-width:2;color:var(--green);flex:none;margin-top:2px}
   .policy p{font-size:12.5px;color:var(--ink-2);line-height:1.5}
 
-  .ctabar{background:#fff;padding:14px 16px calc(18px + 12px);box-shadow:0 -10px 28px -14px rgba(10,10,10,.12)}
+  .ctabar{background:#fff;padding:14px 16px 26px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.12)}
   .cta{width:100%;height:54px;border:0;border-radius:var(--r-btn);background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
   .cta .lucide{width:16px;height:16px;stroke-width:2.4}
   .secure{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:12px;font-weight:500;color:var(--ink-2)}
@@ -82,30 +82,28 @@
 </head>
 <body>
 
-<div class="note"><b>Bezahlen step — redesigned.</b> Stepper = the walk-in blue icon language (42px discs, blue done, ring-pulse current — NOT green, NOT numbers). Content = the approved walk-in-pay checkout pattern: white icon-rows on grey, no uppercase/tracked eyebrows anywhere, MwSt line, blue total, one ink CTA.</div>
+<div class="note"><b>Bezahlen — v2 punch-list pass.</b> Real status-bar glyphs (no dots), circled close per the design system, no redundant tags (language tag + duplicate policy line cut), no fake payment rows — one honest Stripe-Element placeholder, truthful policy copy (C1 = pay now), Haare icon = brush (no sparkles, no hand-drawn glyphs).</div>
 
 <div class="frame">
-  <div class="statusbar"><span>9:41</span><span>●●●</span></div>
+  <div class="statusbar"><span class="num">9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
   <div class="appbar">
-    <div class="x"><i data-lucide="x" style="width:22px;height:22px"></i></div>
+    <button class="btn-close"><i data-lucide="x" style="width:17px;height:17px"></i></button>
     <h1>Termin bei Old Town Barbers</h1>
   </div>
 
-  <!-- unified stepper -->
   <div class="steps">
     <div class="stepnode"><div class="disc done"><i data-lucide="scissors"></i></div><span>Service</span></div>
     <div class="conn done"></div>
     <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Zeit</span></div>
     <div class="conn done"></div>
-    <div class="stepnode"><div class="disc done"><i data-lucide="sparkles"></i></div><span>Haare</span></div>
+    <div class="stepnode"><div class="disc done"><i data-lucide="brush"></i></div><span>Haare</span></div>
     <div class="conn"></div>
-    <div class="stepnode future"><div class="disc current"><i data-lucide="credit-card"></i></div><span style="color:var(--ink);font-weight:700">Bezahlen</span></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="credit-card"></i></div><span style="font-weight:700">Bezahlen</span></div>
   </div>
 
   <div class="pagehead"><h2>Bezahlen</h2></div>
 
   <div class="body">
-    <!-- Card 1: the booking, icon-led rows, each editable -->
     <div class="card">
       <div class="row">
         <img class="thumb" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=120&q=80" alt="">
@@ -118,7 +116,7 @@
         <img class="face" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="">
         <div class="rt">
           <div class="name">Luca</div>
-          <div class="meta">Herrenschnitt · DE / EN</div>
+          <div class="meta">Dein Barber</div>
         </div>
         <span class="edit">Ändern</span>
       </div>
@@ -134,28 +132,24 @@
         <div class="icobox"><i data-lucide="calendar"></i></div>
         <div class="rt">
           <div class="name">Do, 11. Juni um 09:00</div>
-          <div class="meta">Kostenlos stornierbar bis 24 Std. vorher</div>
         </div>
         <span class="edit">Ändern</span>
       </div>
     </div>
 
-    <!-- Card 2: price incl. VAT, blue total (walk-in-pay pattern) -->
     <div class="card">
       <div class="price-line"><span>Herrenschnitt</span><span style="font-variant-numeric:tabular-nums">CHF 45.00</span></div>
       <div class="price-line"><span class="sub">inkl. 8.1% MwSt</span><span class="sub" style="font-variant-numeric:tabular-nums">CHF 3.37</span></div>
       <div class="total"><span class="lbl">Gesamt</span><span class="amt">CHF 45.00</span></div>
     </div>
 
-    <!-- Card 3: payment element (Stripe) -->
     <div class="card">
-      <div class="payfield filled"><i data-lucide="credit-card"></i>Karte&nbsp;·&nbsp;···· 4242<span style="margin-left:auto;color:var(--blue);font-weight:600;font-size:13px">Ändern</span></div>
-      <div class="payfield"><i data-lucide="smartphone"></i>Apple Pay / TWINT</div>
+      <div class="stripebox"><i data-lucide="credit-card"></i>Stripe Payment Element — Karte, TWINT, Apple Pay</div>
     </div>
 
     <div class="policy">
       <i data-lucide="shield-check"></i>
-      <p>Erst nach dem Termin wird abgebucht. Kostenlose Stornierung bis 24 Std. vorher.</p>
+      <p>Kostenlose Stornierung bis 24 Std. vor dem Termin.</p>
     </div>
   </div>
 
