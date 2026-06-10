@@ -63,9 +63,9 @@ export async function GET(req: NextRequest) {
       ? admin.from("staff_members").select("name, avatar_url, average_rating, review_count").eq("id", barberId).maybeSingle()
       : Promise.resolve({ data: null as any }),
     entry.service_id
-      ? admin.from("services").select("name_de, name_en").eq("id", entry.service_id).maybeSingle()
+      ? admin.from("services").select("name_de, name_en, price, duration_minutes").eq("id", entry.service_id).maybeSingle()
       : Promise.resolve({ data: null as any }),
-    admin.from("salons").select("name").eq("id", entry.salon_id).maybeSingle(),
+    admin.from("salons").select("name, slug, address, cover_photo_url, latitude, longitude").eq("id", entry.salon_id).maybeSingle(),
   ]);
 
   return NextResponse.json({
@@ -84,6 +84,13 @@ export async function GET(req: NextRequest) {
     recipientRating: (staffRes.data as any)?.average_rating ?? null,
     recipientReviewCount: (staffRes.data as any)?.review_count ?? null,
     serviceName: (svcRes.data as any)?.name_de ?? (svcRes.data as any)?.name_en ?? null,
+    servicePrice: (svcRes.data as any)?.price ?? null,
+    serviceDuration: (svcRes.data as any)?.duration_minutes ?? null,
     salonName: (salonRes.data as any)?.name ?? null,
+    salonSlug: (salonRes.data as any)?.slug ?? null,
+    salonAddress: (salonRes.data as any)?.address ?? null,
+    salonPhoto: (salonRes.data as any)?.cover_photo_url ?? null,
+    salonLat: (salonRes.data as any)?.latitude ?? null,
+    salonLng: (salonRes.data as any)?.longitude ?? null,
   });
 }

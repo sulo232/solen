@@ -53,6 +53,11 @@ export default function HideInBooking({
   if (
     /\/(booking|staff\/[^/]+|walk-in-pay)\/?$/.test(pathname) ||
     /\/booking\/(lookup|resend-link)\/?$/.test(pathname) ||
+    // Walk-in live-queue tracker (/queue/[token]) is a self-contained focused screen —
+    // own salon hero + back affordance + sticky action bar. Drop the marketing chrome
+    // so the footer/newsletter/cookie banner don't stack onto the live status (same
+    // rationale as /walk-in-pay). V3-D470c.
+    /\/queue\/[^/]+\/?$/.test(pathname) ||
     // Refund/appeal flows (report-a-problem + case status/timeline + escalate) and the
     // salon-upcharge approve/decline screen are self-contained — own app bar + back
     // affordance + sticky CTA. Drop the marketing chrome (same rationale as

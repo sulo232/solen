@@ -805,6 +805,22 @@ html {
   animation: heartBounce 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* ── Walk-in live tracker: active-step blue ring + halo pulse (V3-D470c) ──
+   The class owns the box-shadow (inset ring) so the ring shows even with
+   reduced motion; the outer halo only pulses. Blue #276EF1 = walk-in primary. */
+.walkin-ring-pulse {
+  box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0.35);
+  animation: walkinRingPulse 2.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes walkinRingPulse {
+  0%   { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0.35); }
+  70%  { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 9px rgba(39, 110, 241, 0); }
+  100% { box-shadow: inset 0 0 0 3px #276EF1, 0 0 0 0 rgba(39, 110, 241, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .walkin-ring-pulse { animation: none; }
+}
+
 /* ── V5 Page enter animation ──────────────────────────────────────── */
 .page-enter {
   animation: v5PageIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;

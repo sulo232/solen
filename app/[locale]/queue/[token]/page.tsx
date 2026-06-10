@@ -4,7 +4,10 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { Clock, Check, Scissors, AlertCircle, RefreshCw } from "lucide-react";
+import {
+  Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
+  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket,
+} from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
 
@@ -12,6 +15,7 @@ import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
 interface QueueStatus {
   id: string;
   customerName: string; // the ticket code, e.g. "A01"
+  firstName?: string | null; // real customer first name NOT captured yet (backend gap); always null today
   position: number;
   status: "waiting" | "in_chair" | "completed" | "no_show" | "cancelled";
   estimatedWaitMinutes: number;
@@ -25,16 +29,25 @@ interface QueueStatus {
   recipientRating?: number | null;
   recipientReviewCount?: number | null;
   serviceName?: string | null;
+  servicePrice?: number | null;
+  serviceDuration?: number | null;
   salonName?: string | null;
+  salonSlug?: string | null;
+  salonAddress?: string | null;
+  salonPhoto?: string | null;
+  salonLat?: number | null;
+  salonLng?: number | null;
 }
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { yourNumber: "Deine Nummer", inQueue: "Du bist in der Schlange", ahead: "vor dir", waitSuffix: "Min Wartezeit", soon: "Gleich bist du dran", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", done: "Fertig — danke!", doneSub: "Wir hoffen, es hat dir gefallen", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", refresh: "Aktualisieren", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
-  en: { yourNumber: "Your number", inQueue: "You're in the queue", ahead: "ahead of you", waitSuffix: "min wait", soon: "You're up soon", youreUp: "You're up!", goToChair: "Head to the chair", done: "All done — thanks!", doneSub: "Hope you loved it", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", refresh: "Refresh", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
-  fr: { yourNumber: "Votre numéro", inQueue: "Vous êtes dans la file", ahead: "devant vous", waitSuffix: "min d'attente", soon: "Bientôt à vous", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", done: "Terminé — merci !", doneSub: "On espère que ça vous a plu", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", refresh: "Actualiser", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
-  it: { yourNumber: "Il tuo numero", inQueue: "Sei in coda", ahead: "prima di te", waitSuffix: "min di attesa", soon: "Presto tocca a te", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", done: "Fatto — grazie!", doneSub: "Speriamo ti sia piaciuto", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", refresh: "Aggiorna", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig, danke!", doneSub: "Wir hoffen, es hat dir gefallen", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done, thanks!", doneSub: "Hope you loved it", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
+  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé, merci !", doneSub: "On espère que ça vous a plu", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
+  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto, grazie!", doneSub: "Speriamo ti sia piaciuto", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
 };
+
+type NodeState = "done" | "current" | "future";
 
 export default function QueueTrackingPage() {
   const params = useParams<{ token: string }>()!;
@@ -56,10 +69,7 @@ export default function QueueTrackingPage() {
     setRefreshing(true);
     try {
       const res = await fetch(`/api/walkin/queue/status?token=${encodeURIComponent(token)}`, { cache: "no-store" });
-      if (res.status === 404) {
-        setNotFound(true);
-        return;
-      }
+      if (res.status === 404) { setNotFound(true); return; }
       if (!res.ok) throw new Error(`status ${res.status}`);
       const json = (await res.json()) as QueueStatus;
       setData(json);
@@ -72,14 +82,12 @@ export default function QueueTrackingPage() {
     }
   }, [token]);
 
-  // Adaptive, visibility-aware polling — feels near-live without hammering the API:
+  // Adaptive, visibility-aware polling feels near-live without hammering the API:
   // faster when you're near the front, PAUSED when the tab is hidden, instant refetch
-  // when you return, and it stops once the visit is terminal. (True websocket realtime
-  // would need a sanitized broadcast channel — postgres_changes leaks tracking tokens.)
+  // when you return, and it stops once the visit is terminal.
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
     const isTerminal = (s?: string) => s === "completed" || s === "cancelled" || s === "no_show";
-
     const schedule = () => {
       if (timer) clearTimeout(timer);
       const s = dataRef.current?.status;
@@ -88,12 +96,10 @@ export default function QueueTrackingPage() {
       const delay = s === "in_chair" ? 10000 : ahead <= 1 ? 8000 : ahead <= 4 ? 15000 : 25000;
       timer = setTimeout(async () => { await fetchStatus(); schedule(); }, delay);
     };
-
     const onVisibility = () => {
       if (document.hidden) { if (timer) { clearTimeout(timer); timer = null; } }
-      else { fetchStatus().then(schedule); } // came back → refresh immediately, resume
+      else { fetchStatus().then(schedule); }
     };
-
     fetchStatus().then(schedule);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
@@ -102,8 +108,6 @@ export default function QueueTrackingPage() {
     };
   }, [fetchStatus]);
 
-  // Customer self-cancel (only allowed while still waiting) — the DELETE endpoint
-  // releases the card hold / refunds, then we flip the UI to the cancelled state.
   const handleCancel = async () => {
     if (!data || !token || cancelling) return;
     if (!window.confirm(l.cancelConfirm)) return;
@@ -149,127 +153,264 @@ export default function QueueTrackingPage() {
   const isDone = data.status === "completed";
   const isCancelled = data.status === "cancelled";
   const isNoShow = data.status === "no_show";
+  const isLive = isWaiting || isUp;
   const almost = isWaiting && data.aheadCount <= 1;
+
+  // ---- Terminal states: focused, centered ----
+  if (isDone || isCancelled || isNoShow) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
+        {isDone ? (
+          <>
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-s-success">
+              <Check size={26} className="text-white" strokeWidth={3} />
+            </div>
+            <h1 className="mt-4 font-heading text-[22px] font-bold text-s-ink">{l.done}</h1>
+            <p className="mt-1.5 text-[14px] text-s-ink-2">{l.doneSub}</p>
+            <button
+              type="button"
+              onClick={() => setTipOpen(true)}
+              className="mt-7 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
+            >
+              {l.tip}
+            </button>
+          </>
+        ) : (
+          <>
+            <AlertCircle size={40} className="mb-4 text-s-ink-3" />
+            <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
+            <p className="mt-1.5 text-[14px] text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
+            <Link href={`/${locale}`} className="mt-6 rounded-btn bg-s-ink px-5 py-2.5 font-heading text-[14px] font-semibold text-white">
+              {l.home}
+            </Link>
+          </>
+        )}
+        {data && (
+          <TipSheet
+            open={tipOpen} onClose={() => setTipOpen(false)}
+            recipientName={data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur")}
+            recipientPhoto={data.recipientPhoto} recipientRating={data.recipientRating} recipientReviewCount={data.recipientReviewCount}
+            contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
+            locale={locale}
+            createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // ---- Live (waiting / in_chair): the rich v2 layout ----
+  // Stepper node states from real data: Bezahlt → In der Schlange → Fast dran → Dran.
+  const nodeState = (node: "paid" | "queue" | "almost" | "chair"): NodeState => {
+    if (isUp) return node === "chair" ? "current" : "done";
+    if (node === "paid") return "done";
+    if (node === "queue") return almost ? "done" : "current";
+    if (node === "almost") return almost ? "current" : "future";
+    return "future"; // chair
+  };
+  const STEPS: { key: "paid" | "queue" | "almost" | "chair"; label: string; Icon: typeof Check }[] = [
+    { key: "paid", label: l.st_paid, Icon: Check },
+    { key: "queue", label: l.st_queue, Icon: Users },
+    { key: "almost", label: l.st_almost, Icon: Clock },
+    { key: "chair", label: l.st_chair, Icon: Armchair },
+  ];
+
+  const mapsHref = data.salonLat != null && data.salonLng != null
+    ? `https://www.google.com/maps/dir/?api=1&destination=${data.salonLat},${data.salonLng}`
+    : data.salonAddress
+      ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.salonAddress)}`
+      : null;
+  // Name-led header only once the backend captures a real first name (today firstName is always null
+  // because the queue stores the ticket code AS the name). Falls back to no name never fabricated.
+  const waitHeader = data.firstName ? `${l.whileYouWait}, ${data.firstName}` : l.whileYouWait;
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
-        {/* Ticket number */}
-        <p className="text-[12px] font-semibold uppercase tracking-[1px] text-s-ink-3">{l.yourNumber}</p>
-        <div
-          className={`mt-2 font-heading text-[88px] font-bold leading-none tracking-[-.03em] tabular-nums ${
-            isUp ? "text-s-success" : isCancelled || isNoShow ? "text-s-ink-3" : "text-s-ink"
-          }`}
+      {/* salon hero */}
+      <div className="relative h-[150px] overflow-hidden bg-s-bg-sunken">
+        {data.salonPhoto && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={data.salonPhoto} alt="" className="h-full w-full object-cover" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/35" />
+        <Link
+          href={`/${locale}`}
+          aria-label={l.home}
+          className="absolute left-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
         >
-          {data.customerName}
+          <ChevronLeft size={20} />
+        </Link>
+        <div className="absolute bottom-3.5 left-[18px] text-white">
+          <div className="font-heading text-[18px] font-bold tracking-[-.015em]">{data.salonName ?? "Salon"}</div>
+          {data.salonAddress && (
+            <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] opacity-90">
+              <MapPin size={13} />{data.salonAddress}
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Status block */}
-        <div className="mt-8 w-full max-w-sm">
-          {isWaiting && (
-            <div className="rounded-2xl border border-s-ink/[0.08] bg-white p-5 text-center shadow-[0_1px_2px_rgba(20,18,16,.04),0_8px_24px_rgba(20,18,16,.05)]">
-              <div className="flex items-center justify-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-s-success opacity-60" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-s-success" />
-                </span>
-                <span className="font-heading text-[16px] font-semibold text-s-ink">
-                  {almost ? l.soon : l.inQueue}
-                </span>
-              </div>
-              <div className="mt-4 flex items-stretch justify-center divide-x divide-s-ink/[0.08]">
-                <div className="px-6">
-                  <div className="font-heading text-[28px] font-bold tabular-nums text-s-ink">{data.aheadCount}</div>
-                  <div className="mt-0.5 text-[12px] text-s-ink-2">{l.ahead}</div>
-                </div>
-                <div className="px-6">
-                  <div className="flex items-center justify-center gap-1 font-heading text-[28px] font-bold tabular-nums text-s-ink">
-                    <Clock size={18} className="text-s-ink-3" />~{data.estimatedWaitMinutes}
+      <div className="flex-1 px-5 pt-[18px]">
+        {/* LIVE badge */}
+        <span className="inline-flex items-center gap-[7px] rounded-full bg-s-accent-pale py-[5px] pl-2.5 pr-[11px] text-[10.5px] font-bold uppercase tracking-[0.1em] text-s-accent">
+          <span className="relative flex h-[7px] w-[7px]">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-s-accent opacity-60" />
+            <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-s-accent" />
+          </span>
+          {l.live}
+        </span>
+
+        {/* clean status: ETA + position (no ticket code here) */}
+        <h1 className="mt-[9px] font-heading text-[30px] font-bold leading-[1.05] tracking-[-.02em] text-s-ink">
+          {isUp ? l.youreUp : data.estimatedWaitMinutes > 0 ? `${l.minLeft} ${data.estimatedWaitMinutes} ${l.min}` : l.soon}
+        </h1>
+        {isUp ? (
+          <p className="mt-[5px] text-[14px] text-s-ink-2">{l.goToChair}</p>
+        ) : (
+          <p className="mt-[5px] text-[14px] text-s-ink-2">
+            <span className="font-heading font-bold text-s-ink tabular-nums">{data.aheadCount}</span> {l.aheadLine}
+          </p>
+        )}
+
+        {/* blue step tracker the ONE progress indicator */}
+        <div className="mt-[22px] flex items-start justify-between px-1.5">
+          {STEPS.map((s, i) => {
+            const st = nodeState(s.key);
+            const lineDone = nodeState(STEPS[i].key) === "done";
+            return (
+              <div key={s.key} className="contents">
+                <div className="relative z-[2] flex w-16 flex-col items-center gap-2">
+                  <div
+                    className={[
+                      "flex h-[42px] w-[42px] items-center justify-center rounded-full",
+                      st === "done" ? "bg-s-accent text-white" : "",
+                      st === "current" ? "bg-white text-s-accent walkin-ring-pulse" : "",
+                      st === "future" ? "bg-s-bg-sunken text-s-ink-3" : "",
+                    ].join(" ")}
+                  >
+                    <s.Icon size={18} strokeWidth={s.key === "paid" ? 2.6 : 2} />
                   </div>
-                  <div className="mt-0.5 text-[12px] text-s-ink-2">{l.waitSuffix}</div>
+                  <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-3" : "text-s-ink"}`}>{s.label}</span>
                 </div>
+                {i < STEPS.length - 1 && (
+                  <div className={`mt-[19px] h-[2px] min-w-[8px] flex-1 rounded-full ${lineDone ? "bg-s-accent" : "bg-s-border"}`} />
+                )}
               </div>
-            </div>
-          )}
-
-          {isUp && (
-            <div className="rounded-2xl bg-s-success/[0.08] p-6 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-s-success">
-                <Scissors size={22} className="text-white" />
-              </div>
-              <h2 className="mt-3 font-heading text-[22px] font-bold text-s-success">{l.youreUp}</h2>
-              <p className="mt-1 text-[14px] text-s-ink-2">{l.goToChair}</p>
-            </div>
-          )}
-
-          {isDone && (
-            <div>
-              <div className="rounded-2xl bg-s-success/[0.08] p-6 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-s-success">
-                  <Check size={24} className="text-white" />
-                </div>
-                <h2 className="mt-3 font-heading text-[20px] font-bold text-s-ink">{l.done}</h2>
-                <p className="mt-1 text-[14px] text-s-ink-2">{l.doneSub}</p>
-              </div>
-              {/* Tip entry — appears AFTER the cut. Ink primary action (matches the shared TipFlow). */}
-              <button
-                type="button"
-                onClick={() => setTipOpen(true)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
-              >
-                {l.tip}
-              </button>
-            </div>
-          )}
-
-          {(isCancelled || isNoShow) && (
-            <div className="rounded-2xl bg-s-ink-1 p-6 text-center">
-              <h2 className="font-heading text-[18px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h2>
-              <p className="mt-1 text-[14px] text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
-            </div>
-          )}
+            );
+          })}
         </div>
 
-        {/* Cancel — only while still waiting (DELETE rejects once in the chair) */}
-        {isWaiting && (
-          <button
-            onClick={handleCancel}
-            disabled={cancelling}
-            className="mt-6 text-[13px] font-medium text-s-ink-3 underline underline-offset-2 transition-colors hover:text-s-error disabled:opacity-50"
-          >
-            {cancelling ? "…" : l.cancel}
-          </button>
+        {/* WHILE YOU WAIT - Uber pattern: header + one rich card (hidden once you're in the chair) */}
+        {isWaiting && data.salonSlug && (
+          <>
+            <div className="mb-3 mt-6 font-heading text-[17px] font-bold tracking-[-.01em] text-s-ink">{waitHeader}</div>
+            <Link
+              href={`/${locale}/salon/${data.salonSlug}`}
+              className="block overflow-hidden rounded-[18px] border border-s-border bg-white shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)] transition-transform active:scale-[0.98]"
+            >
+              <div className="p-4">
+                <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-s-accent-pale text-s-accent">
+                  <Scissors size={18} />
+                </span>
+                <div className="mt-2.5 font-heading text-[16px] font-bold tracking-[-.01em] text-s-ink">{l.inspoTitle}</div>
+                <div className="mt-1 text-[13px] leading-[1.42] text-s-ink-2">{l.inspoSub}</div>
+                <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-s-accent-pale px-[15px] py-[9px] text-[13.5px] font-semibold text-s-accent">
+                  {l.seeLooks} <ArrowRight size={15} />
+                </span>
+              </div>
+            </Link>
+          </>
         )}
 
-        {/* Auto-refresh footer (only while the visit is live) */}
-        {(isWaiting || isUp) && (
-          <button
-            onClick={fetchStatus}
-            className="mt-5 flex items-center gap-1.5 text-[12px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2"
-          >
-            <RefreshCw size={12} className={refreshing ? "animate-spin" : ""} />
-            {l.autoUpdate}
-          </button>
+        {/* Dein Termin barber + service */}
+        {(data.recipientName || data.serviceName) && (
+          <div className="mt-4 rounded-[20px] border border-s-border bg-white p-4 shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
+            {data.recipientName && (
+              <div className="flex items-center gap-[13px]">
+                {data.recipientPhoto ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={data.recipientPhoto} alt="" className="h-12 w-12 flex-shrink-0 rounded-full object-cover" />
+                ) : (
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-s-bg-sunken text-s-ink-2">
+                    <Scissors size={20} />
+                  </div>
+                )}
+                <div>
+                  <div className="font-heading text-[15.5px] font-bold text-s-ink">{data.recipientName}</div>
+                  <div className="mt-0.5 flex items-center gap-[5px] text-[12.5px] text-s-ink-3">
+                    {data.recipientRating != null && (
+                      <><Star size={13} className="fill-s-star text-s-star" /><span className="font-heading font-bold tabular-nums text-s-ink">{data.recipientRating.toFixed(1)}</span></>
+                    )}
+                    {l.yourBarber}
+                  </div>
+                </div>
+              </div>
+            )}
+            {data.serviceName && (
+              <div className={`flex items-center gap-3 ${data.recipientName ? "mt-3.5 border-t border-s-border pt-3.5" : ""}`}>
+                <div className="flex-1">
+                  <div className="font-heading text-[14.5px] font-semibold text-s-ink">{data.serviceName}</div>
+                  {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-3"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
+                </div>
+                {data.servicePrice != null && (
+                  <span className="font-heading text-[15px] font-bold tabular-nums text-s-ink">CHF {data.servicePrice}</span>
+                )}
+              </div>
+            )}
+          </div>
         )}
+
+        {/* location row → opens maps (no fake map / no fabricated walking time) */}
+        {data.salonAddress && mapsHref && (
+          <a
+            href={mapsHref} target="_blank" rel="noopener noreferrer"
+            className="mt-4 flex items-center gap-3 rounded-[20px] border border-s-border bg-white p-4 shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)] transition-transform active:scale-[0.98]"
+          >
+            <MapPin size={18} className="text-s-ink-2" />
+            <div className="flex-1 font-heading text-[14px] font-semibold text-s-ink">{data.salonAddress}</div>
+            <ChevronRight size={18} className="text-s-ink-3" />
+          </a>
+        )}
+
+        {/* small, support-only ticket reference */}
+        <div className="mt-[18px] flex items-center justify-center gap-[7px] text-[12px] text-s-ink-3">
+          <Ticket size={13} /> {l.ticketNr} <span className="font-heading font-semibold tabular-nums text-s-ink-2">{data.customerName}</span>
+        </div>
+
+        {/* quiet cancel only while still waiting (DELETE rejects once in the chair) */}
+        {isWaiting && (
+          <div className="mt-3 text-center">
+            <button onClick={handleCancel} disabled={cancelling} className="text-[13px] font-medium text-s-ink-3 underline underline-offset-2 transition-colors hover:text-s-error disabled:opacity-50">
+              {cancelling ? "…" : l.cancel}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* action bar */}
+      <div className="flex gap-2.5 px-5 pb-6 pt-4">
+        {mapsHref ? (
+          <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-[7px] rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
+            <Navigation size={17} /> {l.directions}
+          </a>
+        ) : (
+          <Link href={`/${locale}`} className="flex flex-1 items-center justify-center rounded-full bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
+            {l.home}
+          </Link>
+        )}
+        <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex w-[54px] items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
+          <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
+        </button>
       </div>
 
       {data && (
         <TipSheet
-          open={tipOpen}
-          onClose={() => setTipOpen(false)}
+          open={tipOpen} onClose={() => setTipOpen(false)}
           recipientName={data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur")}
-          recipientPhoto={data.recipientPhoto}
-          recipientRating={data.recipientRating}
-          recipientReviewCount={data.recipientReviewCount}
-          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
+          recipientPhoto={data.recipientPhoto} recipientRating={data.recipientRating} recipientReviewCount={data.recipientReviewCount}
+          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
           locale={locale}
-          createIntent={(amount) =>
-            fetch("/api/walkin/tip", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token, amount }),
-            }).then((r) => r.json())
-          }
+          createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
         />
       )}
     </div>
