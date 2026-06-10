@@ -104,6 +104,9 @@ export function SalonHero({
             onClick={() => {
               if (typeof navigator !== "undefined" && navigator.share) {
                 navigator.share({ title: salon.name, url: window.location.href }).catch(() => {});
+              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+                // fallback for browsers without the Web Share API (audit #20) — copy the link
+                navigator.clipboard.writeText(window.location.href).catch(() => {});
               }
             }}
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"

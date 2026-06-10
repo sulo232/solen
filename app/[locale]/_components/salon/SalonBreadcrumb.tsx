@@ -28,11 +28,20 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
     barbershop: "Barbershops",
     nails: "Nagelstudios",
     spa: "Spa & Wellness",
+    massage: "Massage",
+    wellness: "Wellness",
+    kosmetik: "Kosmetik",
   };
+  // Only these slugs have a category landing route; anything else links to /search so the
+  // breadcrumb never points at a non-existent route (audit #21).
+  const CATEGORY_ROUTES = new Set(["coiffeur", "barbershop", "nails", "spa"]);
 
   const segments = [
     { label: "Home", href: `/${locale}` },
-    { label: catLabel[primaryCat] ?? capitalize(primaryCat), href: `/${locale}/${primaryCat}` },
+    {
+      label: catLabel[primaryCat] ?? capitalize(primaryCat),
+      href: CATEGORY_ROUTES.has(primaryCat) ? `/${locale}/${primaryCat}` : `/${locale}/search`,
+    },
   ];
 
   // City from postal-code map (V2-D53.3 fix). Falls back to "der Schweiz"
