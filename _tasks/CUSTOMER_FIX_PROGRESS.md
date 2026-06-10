@@ -24,7 +24,7 @@ Started working the HIGH bucket 2026-06-10.
 ## 🟡 MEDIUM — open
 - [x] **#11** walk-in undefined tokens — moot: queue is v2, walk-in-join now redirects (`49e5a8ec7`)
 - [x] **#12** orphaned `walk-in-join` → redirects to home (`49e5a8ec7`)
-- [ ] **#13** fake language switcher in MobileMenu (→ mockup gap #5 language picker)
+- [x] **#13** fake language switcher → real (wired existing LanguageSwitcher into MobileMenu) (`d008458eb`)
 - [ ] **#14** always-on/never-shown buy rows (`hasGiftCards=true`, `hasPackages=false`)
 - [x] **#15** wallet tile copy → "Geschenkkarten" (honest; 4 locales) (`49e5a8ec7`)
 - [ ] **#16** Recently-Viewed invented addresses/prices/availability — LEAVE (fabricated-data, per #9 owner call)
@@ -40,14 +40,17 @@ Started working the HIGH bucket 2026-06-10.
 - [x] #24 cancel button literal "…" — moot: old text-link cancel replaced by the red ✕ icon (`5c7675c68`)
 - [x] #25 dead `SearchResults.tsx` deleted (`49e5a8ec7`)
 
-## 🎨 Mockup gaps — need a new screen (pause for mockup)
-- [ ] #1 account hub for 5 orphaned pages
-- [ ] #4 notifications panel (or just keep the bell gated from #5)
-- [ ] #5 language picker sheet
-- [ ] #6 walk-in error states
-- [ ] #7 money-moving self-cancel confirm sheet
-- [ ] #8 empty-service-list state
-- [ ] #9 recently-viewed destination
+## 🎨 "Mockup gaps" — MOCKUPS ALREADY EXIST (in public/_mockups/restraint/). Work = IMPLEMENT, not design.
+For each: FIRST check for an existing real component/route (the #13 check found LanguageSwitcher
+already built — saved a duplicate). Then build the mockup into the real app.
+- [x] #5/#13 language picker → `language-picker.html` + existing LanguageSwitcher → wired into MobileMenu (`d008458eb`)
+- [ ] #1 account hub → mockup `account-hub.html` (implement; check existing /profile routes first)
+- [ ] #4 notifications panel → mockup `notifications-panel.html` (Bell was removed; ties to a real notif source)
+- [ ] #6 walk-in error states → mockup `walkin-error-states.html`
+- [ ] #7 self-cancel confirm sheet → mockup `cancel-confirm-sheet.html`
+- [ ] #8 empty-service-list state → mockup `booking-empty-services.html`
+- [ ] #9 recently-viewed destination → mockup `recently-viewed-page.html` (links now point to /search; build page or keep)
+- council redesigns (mockups exist, not started): `pdp-hero`, `reviews-distribution`, `service-grouping`, `stylist-cards`, `confirmation-moment`, `haarprofil`
 
 ## 🔁 DUPLICATION — RESOLVED (`068a4e5ca`, 2026-06-10)
 queue/[token] is now the SINGLE "in queue" surface. walk-in-pay is payment-only and
