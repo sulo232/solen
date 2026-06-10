@@ -6,7 +6,7 @@
 <title>Walk-in Live Status</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
   .lucide{stroke-width:1.9;flex-shrink:0}
@@ -17,7 +17,7 @@
   body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
   .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
   .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
-  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;font-variant-numeric:tabular-nums;}
+  .mono{font-family:'Inter Tight',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
   .eyebrow{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);}
 
   .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;}
@@ -115,15 +115,19 @@
       </div>
     </div>
 
-    <!-- Deine Haare: the saved hair-profile info (replaces "text barber") + edit -->
-    <div class="card">
-      <div class="crow" style="margin-bottom:13px">
-        <span style="width:36px;height:36px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center"><span style="width:19px;height:19px;background:var(--ink);-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat"></span></span>
-        <div class="nm" style="font-size:15px">Deine Haare</div>
-        <span class="cedit"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
+    <!-- Map: salon location + walking route -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="position:relative;height:150px;background:repeating-linear-gradient(0deg,#EAEAEE 0 1px,transparent 1px 42px),repeating-linear-gradient(90deg,#EAEAEE 0 1px,transparent 1px 42px),#F4F4F5">
+        <div style="position:absolute;top:42%;left:0;right:0;height:9px;background:#E0E0E5"></div>
+        <div style="position:absolute;top:0;bottom:0;left:58%;width:9px;background:#E0E0E5"></div>
+        <div style="position:absolute;top:44%;left:20%;width:38%;height:4px;background:var(--blue);border-radius:var(--r-pill)"></div>
+        <div style="position:absolute;top:44%;left:20%;width:15px;height:15px;border-radius:var(--r-pill);background:#fff;border:4px solid var(--blue);box-shadow:0 2px 6px rgba(10,10,10,.25);transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;top:45%;left:58%;transform:translate(-50%,-100%)"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-pill) var(--r-pill) var(--r-pill) 2px;transform:rotate(45deg);background:var(--blue);border:3px solid #fff;box-shadow:0 4px 10px rgba(10,10,10,.3)"><i data-lucide="scissors" style="width:14px;height:14px;color:#fff;transform:rotate(-45deg)"></i></span></div>
       </div>
-      <div class="hchips">
-        <span class="hchip">Wellig</span><span class="hchip">Mittel</span><span class="hchip">Allergie: Ammoniak</span>
+      <div style="display:flex;align-items:center;gap:11px;padding:14px 16px">
+        <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--ink-2)"></i>
+        <div style="flex:1"><div style="font-family:'Inter Tight';font-weight:600;font-size:14px">Steinenvorstadt 28, Basel</div><div style="font-size:12.5px;color:var(--ink-3);margin-top:1px"><span class="num" style="font-size:12.5px;color:var(--ink-2)">6</span> Min zu Fuss</div></div>
+        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--ink-3)"></i>
       </div>
     </div>
   </div>
