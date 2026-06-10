@@ -51,6 +51,22 @@ Started working the HIGH bucket 2026-06-10.
 - [ ] #8 empty-service-list state
 - [ ] #9 recently-viewed destination
 
+## 🔁 DUPLICATION flagged (2026-06-10, owner caught it)
+The walk-in "you're in the queue" screen exists TWICE, two designs:
+- `app/[locale]/walk-in-pay/page.tsx` **paid state** — static (set-once), big DEINE NUMMER,
+  dot stepper (Bezahlt/Warten/Bald/Stuhl), QR (salon-scan), receipt. Its status is FROZEN
+  = audit #8.
+- `app/[locale]/queue/[token]/page.tsx` — v2 LIVE tracker (rebuilt this session), icon
+  stepper (Bezahlt/In der Schlange/Fast dran/Dran), while-you-wait, tip-on-done. Polls.
+- Overlap: number, position, stepper, barber, salon, cancel — rendered in both.
+- Unique to walk-in-pay: the payment step + the scannable QR. Unique to queue: live polling.
+- The uncommitted "Live-Status ansehen" tile (walk-in-pay) is a band-aid over this; its
+  fate depends on the consolidation decision below. NOT committed.
+- DECISION PENDING: consolidate. Recommended (A): queue/[token] = the single "in queue"
+  surface; walk-in-pay → pay + slim paid confirmation (number + QR + receipt) that links to
+  the tracker; drop walk-in-pay's frozen stepper+pill (fixes #8). Needs the QR ported to
+  queue/[token]. Mockup + sign-off required.
+
 ## 🏗️ Walk-in operator gap (option A — not picked)
 - [ ] owner control: enable / pause / pay-mode (backend exists, no UI)
 - [ ] busy dot: `max_walkin_queue` column never added
