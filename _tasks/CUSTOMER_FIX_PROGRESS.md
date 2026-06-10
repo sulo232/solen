@@ -33,8 +33,8 @@ Started working the HIGH bucket 2026-06-10.
 ## ⚪ LOW
 - [x] #18 referral shareUrl → /{locale} (`49e5a8ec7`)
 - [ ] #19 duplicate Footer nav (`/partner` ×2)
-- [ ] #20 SalonHero share no clipboard fallback
-- [ ] #21 breadcrumb maps only 4 categories
+- [x] #20 SalonHero share → clipboard fallback (`0a4eb6d74`)
+- [x] #21 breadcrumb href gated to real category routes, else /search (`0a4eb6d74`)
 - [x] #22 register "Anmelden" → locale-prefixed Link (`49e5a8ec7`)
 - [ ] #23 waitlist drops multi-service
 - [x] #24 cancel button literal "…" — moot: old text-link cancel replaced by the red ✕ icon (`5c7675c68`)
