@@ -5298,6 +5298,14 @@
     "rebook": "Prenota di nuovo",
     "total": "Totale"
   },
+  "recentlyViewed": {
+    "title": "Visti di recente",
+    "back": "Indietro",
+    "count": "{count, plural, one {# salone} other {# saloni}}",
+    "emptyTitle": "Niente di visto finora",
+    "emptyBody": "I saloni che guardi compaiono qui, per tornarci in fretta.",
+    "emptyCta": "Scopri i saloni"
+  },
   "bookingsList": {
     "upcoming": "Prossimi",
     "past": "Passato",

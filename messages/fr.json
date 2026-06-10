@@ -5309,6 +5309,14 @@
     "rebook": "Réserver à nouveau",
     "total": "Total"
   },
+  "recentlyViewed": {
+    "title": "Vus récemment",
+    "back": "Retour",
+    "count": "{count, plural, one {# salon} other {# salons}}",
+    "emptyTitle": "Rien de consulté pour l’instant",
+    "emptyBody": "Les salons que vous consultez apparaissent ici, pour y revenir rapidement.",
+    "emptyCta": "Découvrir des salons"
+  },
   "bookingsList": {
     "upcoming": "À venir",
     "past": "Passé",

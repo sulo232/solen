@@ -5326,6 +5326,14 @@
     "rebook": "Rebook",
     "total": "Total"
   },
+  "recentlyViewed": {
+    "title": "Recently viewed",
+    "back": "Back",
+    "count": "{count, plural, one {# salon} other {# salons}}",
+    "emptyTitle": "Nothing viewed yet",
+    "emptyBody": "Salons you look at show up here, for a quick way back.",
+    "emptyCta": "Discover salons"
+  },
   "bookingsList": {
     "upcoming": "Upcoming",
     "past": "Past",

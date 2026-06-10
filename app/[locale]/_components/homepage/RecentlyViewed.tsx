@@ -160,10 +160,10 @@ export default function RecentlyViewed({
     : sortByCategoryPicks(DEMO_SALONS, prefs?.categories ?? []);
   const locale = useLocale();
   const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
-  // Both go to search: /profile/recently-viewed doesn't exist (soft 404) and ?sort=top-rated
-  // is an invalid sort that's silently dropped. Locale-prefixed so en/fr/it don't 404 (audit #17).
+  // With real history → the dedicated /recently-viewed page (audit #9). The "Top auf Solen"
+  // fallback has no history page, so it still points at search. Locale-prefixed (audit #17).
   const linkLabel = "Alle entdecken →";
-  const linkHref = `/${locale}/search`;
+  const linkHref = hasHistory ? `/${locale}/recently-viewed` : `/${locale}/search`;
 
   return (
     // V3-D112 (2026-05-23): bg-s-peach REMOVED per user "remove ths color like
