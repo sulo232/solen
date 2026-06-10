@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
@@ -124,11 +126,8 @@
 
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 36px 70px;">
     <div class="empty-disc rise d1">
-      <!-- clean outline ticket -->
-      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 9.5V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2.5a2.5 2.5 0 0 0 0-5Z"/>
-        <path d="M14 5v14"/>
-      </svg>
+      <!-- walk-in = footprints (Lucide) -->
+      <i data-lucide="footprints" style="width:42px;height:42px"></i>
     </div>
     <h1 class="t-title rise d2">Ticket nicht gefunden</h1>
     <p class="t-body rise d2" style="margin-top:10px;max-width:280px;">
@@ -154,7 +153,7 @@
     <!-- AlertBanner — red icon on pale tile, ink text. ABOVE the summary, never replaces it -->
     <div class="alert rise d2" style="margin-top:18px;">
       <span class="alert-tile">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <i data-lucide="alert-triangle" style="width:20px;height:20px"></i>
       </span>
       <div class="alert-main">
         <div class="alert-title">Online-Zahlung nicht möglich</div>
@@ -169,7 +168,7 @@
         <div class="sum-main">
           <div class="t-row">Salon Lumière</div>
           <div class="rating" style="margin-top:5px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+            <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
             <span class="num">4.9</span><span class="count">(127)</span>
             <span class="t-meta">Barber in Zürich</span>
           </div>
@@ -200,5 +199,6 @@
   </div>
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

@@ -6,22 +6,36 @@
 <title>Solen — Mein Haarprofil</title>
 <!--
   ════════════════════════════════════════════════════════════════════
-  MEIN HAARPROFIL  (hair profile / ultra-personalization)
+  MEIN HAARPROFIL  (hair profile / ultra-personalization)  — VISION mockup
   Built by COPYING the recipes in _KIT.html (extracted from the live app).
+  Revisions (owner brief):
+    (1) Haartyp = REAL discovery hair-pattern masks (straight/wavy/coily/
+        protective .png), currentColor mask tiles matching the discovery
+        PatternSelector (rounded-2xl tile, glyph + label, SELECTED = ink
+        fill + white glyph, UNSELECTED = sunken + ink glyph).
+    (2) Top progress bar REMOVED — clean title + name + one-line intro.
+    (3) Reference photos: add "Aus Gespeicherten" / "Aus Discovery"
+        tappable tiles alongside "+ Foto".
+    (4) AI note: subtle "KI-Vorschlag" (Lucide sparkles) affordance.
+    (5) Keep Länge, Dicke, Kopfhaut, Allergien, Coloration-Verlauf,
+        Bevorzugte:r Stylist:in, sticky Speichern.
+    (6) Full Lucide icon swap on all section icons + back chevron.
   Global rules honoured:
-    NO middot separators between meta (decorative-dot ban) — German
-    connectors / commas / whitespace only.
-    Numbers (durations, counts, dates) in .num (Inter Tight tabular),
-    never JetBrains Mono. Mono allowed only for actual codes.
-    Restraint: blue only on small clickable bits; ink for structure,
-    CTAs, chevrons; white + cool-grey surfaces; semantic colour kept.
-    Card radius 24px, pills 9999px, primary CTA = ink pill. de-CH copy.
-    iOS status bar. reduced-motion guard at the end.
+    NO middot separators (decorative-dot ban) — German connectors /
+    commas / whitespace only. Numbers (durations, counts, dates) in .num
+    (Inter Tight tabular), never JetBrains Mono. Restraint: blue only on
+    small clickable bits; ink for structure, CTAs, chevrons; white +
+    cool-grey surfaces; semantic colour kept. Card radius 24px, pills
+    9999px, primary CTA = ink pill. de-CH copy. iOS status bar.
+    reduced-motion guard at the end. Real Lucide icons (no hand-drawn svg
+    product icons — only the iOS status bar keeps inline svg chrome).
   ════════════════════════════════════════════════════════════════════
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
   /* ─────────── TOKENS (copied from _KIT.html) ─────────── */
   :root{
@@ -69,29 +83,34 @@
 
   /* ─────────── TOP BAR (ink back chevron + title) ─────────── */
   .topbar{display:flex;align-items:center;gap:12px;padding:6px 16px 4px;flex-shrink:0;}
-  .topbar .frost-btn{position:static;}
   .btn-back{width:40px;height:40px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;flex-shrink:0;transition:transform .14s var(--ease);}
   .btn-back:active{transform:scale(.92);}
 
   /* ─────────── SCROLL BODY ─────────── */
   .scroll{flex:1;overflow-y:auto;padding:8px 20px 24px;}
   .scroll::-webkit-scrollbar{display:none;}
-  .intro{color:var(--ink-2);font-size:14px;line-height:1.5;margin-top:2px;}
-
-  /* completeness meter (Airbnb-style profile progress, ink track) */
-  .progress{margin-top:18px;}
-  .progress-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
-  .progress-head .lbl{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink-2);}
-  .progress-head .pct{font-size:13px;color:var(--ink);}
-  .progress-track{height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;}
-  .progress-fill{display:block;height:100%;border-radius:var(--r-pill);background:var(--ink);}
+  .greeting{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.1;margin-top:6px;}
+  .intro{color:var(--ink-2);font-size:14px;line-height:1.5;margin-top:6px;}
 
   /* ─────────── SECTION + CARD ─────────── */
   .sec{padding-top:var(--gap-section);}
   .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
   .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
   .card-label{font-family:'Inter Tight';font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-  .card-label svg{color:var(--ink-2);}
+  .card-label i{color:var(--ink-2);}
+
+  /* ─────────── HAIR-TYPE TILES (real discovery pattern masks) ─────────── */
+  /* matches discovery PatternSelector: rounded-2xl tile, 28px currentColor mask glyph + label below,
+     SELECTED = bg ink + white glyph/label, UNSELECTED = bg sunken + ink glyph. */
+  .hairtypes{display:flex;gap:8px;}
+  .htile{flex:1;min-height:78px;border-radius:16px;border:1px solid transparent;background:var(--sunken);color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 6px;cursor:pointer;
+    transition:transform .12s var(--ease),background-color .15s ease,color .15s ease;}
+  .htile:active{transform:scale(.96);}
+  .htile .glyph{display:inline-block;width:28px;height:28px;background-color:currentColor;}
+  .htile .lbl{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:12.5px;}
+  .htile.is-selected{background:var(--ink);color:#fff;}
+  .htile.is-selected .lbl{font-weight:600;}
 
   /* ─────────── SELECTABLE PILLS (selected = ink fill, calm) ─────────── */
   .pillset{display:flex;flex-wrap:wrap;gap:8px;}
@@ -121,25 +140,40 @@
   .pref-row{display:flex;align-items:center;gap:16px;}
   .pref-ava{position:relative;width:60px;height:60px;flex-shrink:0;}
   .pref-ava img{width:60px;height:60px;border-radius:var(--r-pill);object-fit:cover;}
-  .pref-ava .check{position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-radius:var(--r-pill);background:var(--green);border:2px solid #fff;display:flex;align-items:center;justify-content:center;}
+  .pref-ava .check{position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-radius:var(--r-pill);background:var(--green);border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;}
   .pref-name{font-family:'Inter Tight';font-weight:600;font-size:15px;}
   .pref-spec{font-size:13px;color:var(--ink-3);margin-top:2px;}
   .pref-change{margin-left:auto;}
   .btn-change{background:var(--sunken);color:var(--ink);border:none;border-radius:var(--r-pill);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .14s var(--ease);}
   .btn-change:active{transform:scale(.96);}
 
-  /* reference photos row (rounded thumbnails + add tile) */
+  /* reference photos row (rounded thumbnails + source tiles) */
   .photo-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;}
   .photo-row::-webkit-scrollbar{display:none;}
   .photo{width:96px;height:120px;border-radius:18px;object-fit:cover;flex-shrink:0;background:var(--sunken);}
+  .photo-src{position:relative;width:96px;height:120px;border-radius:18px;flex-shrink:0;overflow:hidden;cursor:pointer;
+    transition:transform .14s var(--ease);}
+  .photo-src:active{transform:scale(.96);}
+  .photo-src img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.62);}
+  .photo-src .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    color:#fff;font-size:11.5px;font-weight:600;text-align:center;padding:0 6px;}
+  .photo-src .ov i{color:#fff;}
   .photo-add{width:96px;height:120px;border-radius:18px;flex-shrink:0;background:var(--sunken);border:1.5px dashed var(--border);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink-2);cursor:pointer;
     font-size:12px;font-weight:600;transition:transform .14s var(--ease);}
   .photo-add:active{transform:scale(.96);}
 
-  /* note for the coiffeur — textarea block */
+  /* note for the coiffeur — textarea block + AI affordance */
+  .note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .ai-chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:var(--r-pill);
+    background:var(--sunken);border:none;color:var(--ink);font-size:12.5px;font-weight:600;cursor:pointer;
+    transition:transform .12s var(--ease);}
+  .ai-chip:active{transform:scale(.95);}
+  .ai-chip i{color:var(--ink);}
   .note{background:var(--sunken);border-radius:var(--r-tile);padding:14px;min-height:96px;font-size:14px;line-height:1.55;color:var(--ink);}
   .note .ph{color:var(--ink-3);}
+  .ai-hint{margin-top:10px;font-size:12px;color:var(--ink-3);line-height:1.5;display:flex;align-items:flex-start;gap:6px;}
+  .ai-hint i{color:var(--ink-3);margin-top:1px;}
 
   /* ─────────── BOTTOM STICKY BAR ─────────── */
   .stickybar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:16px;flex-shrink:0;}
@@ -159,7 +193,7 @@
 <body>
 
 <div class="frame">
-  <!-- iOS status bar -->
+  <!-- iOS status bar (system chrome — keeps inline svg per brief) -->
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
     <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
@@ -168,43 +202,48 @@
 
   <!-- top bar: ink back chevron + title -->
   <div class="topbar">
-    <button class="btn-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button>
     <h1 class="t-title">Mein Haarprofil</h1>
   </div>
 
   <div class="scroll">
-    <p class="intro rise">Damit dein Coiffeur dich besser kennt.</p>
+    <!-- (2) clean title + name + one-line intro (no progress bar) -->
+    <h2 class="greeting rise">Hallo, Lena</h2>
+    <p class="intro rise">Lena, damit dein Coiffeur dich besser kennt.</p>
 
-    <!-- completeness meter -->
-    <div class="progress rise">
-      <div class="progress-head">
-        <span class="lbl">Profil zu <span class="num" style="color:var(--ink);">80</span>% ausgefüllt</span>
-        <span class="pct"><span class="num">7</span> von <span class="num">9</span></span>
-      </div>
-      <div class="progress-track"><span class="progress-fill" style="width:80%"></span></div>
-    </div>
-
-    <!-- (1) Haartyp -->
+    <!-- (1) Haartyp — REAL discovery hair-pattern masks -->
     <div class="sec rise" style="padding-top:26px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c4-2 4-9 8-9s4 7 8 9"/><path d="M4 20c4-2 4-9 8-9s4 7 8 9"/></svg>
+          <i data-lucide="waves" style="width:18px;height:18px"></i>
           Haartyp
         </div>
-        <div class="pillset">
-          <span class="opt">Glatt</span>
-          <span class="opt is-selected">Wellig</span>
-          <span class="opt">Lockig</span>
-          <span class="opt">Kraus</span>
+        <div class="hairtypes">
+          <button class="htile">
+            <span class="glyph" style="-webkit-mask:url(/hair-patterns/straight.png) center/contain no-repeat;mask:url(/hair-patterns/straight.png) center/contain no-repeat;"></span>
+            <span class="lbl">Glatt</span>
+          </button>
+          <button class="htile is-selected">
+            <span class="glyph" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat;"></span>
+            <span class="lbl">Wellig</span>
+          </button>
+          <button class="htile">
+            <span class="glyph" style="-webkit-mask:url(/hair-patterns/coily.png) center/contain no-repeat;mask:url(/hair-patterns/coily.png) center/contain no-repeat;"></span>
+            <span class="lbl">Lockig</span>
+          </button>
+          <button class="htile">
+            <span class="glyph" style="-webkit-mask:url(/hair-patterns/protective.png) center/contain no-repeat;mask:url(/hair-patterns/protective.png) center/contain no-repeat;"></span>
+            <span class="lbl">Kraus</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- (2) Länge -->
+    <!-- (5) Länge -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 7l5-4 5 4M7 17l5 4 5-4"/></svg>
+          <i data-lucide="ruler" style="width:18px;height:18px"></i>
           Länge
         </div>
         <div class="pillset">
@@ -216,11 +255,11 @@
       </div>
     </div>
 
-    <!-- (3) Dicke / Dichte -->
+    <!-- (5) Dicke / Dichte -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <i data-lucide="align-justify" style="width:18px;height:18px"></i>
           Dicke und Dichte
         </div>
         <div class="pillset">
@@ -231,11 +270,11 @@
       </div>
     </div>
 
-    <!-- (4) Kopfhaut -->
+    <!-- (5) Kopfhaut -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <i data-lucide="droplet" style="width:18px;height:18px"></i>
           Kopfhaut
         </div>
         <div class="pillset">
@@ -251,23 +290,23 @@
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          <i data-lucide="triangle-alert" style="width:18px;height:18px"></i>
           Allergien und Sensibilitäten
         </div>
         <div class="chipset">
-          <span class="achip">Ammoniak <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
-          <span class="achip">Sulfate <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
-          <span class="achip">Duftstoffe <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
-          <button class="achip-add"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Hinzufügen</button>
+          <span class="achip">Ammoniak <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
+          <span class="achip">Sulfate <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
+          <span class="achip">Duftstoffe <span class="x"><i data-lucide="x" style="width:13px;height:13px"></i></span></span>
+          <button class="achip-add"><i data-lucide="plus" style="width:13px;height:13px"></i>Hinzufügen</button>
         </div>
       </div>
     </div>
 
-    <!-- (6) Coloration-Verlauf -->
+    <!-- (5) Coloration-Verlauf -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <i data-lucide="palette" style="width:18px;height:18px"></i>
           Coloration-Verlauf
         </div>
         <div class="field">
@@ -280,17 +319,17 @@
       </div>
     </div>
 
-    <!-- (7) Bevorzugte:r Stylist:in -->
+    <!-- (5) Bevorzugte:r Stylist:in -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <i data-lucide="user" style="width:18px;height:18px"></i>
           Bevorzugte:r Stylist:in
         </div>
         <div class="pref-row">
           <div class="pref-ava">
             <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
-            <span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <span class="check"><i data-lucide="check" style="width:12px;height:12px;stroke-width:3"></i></span>
           </div>
           <div>
             <div class="pref-name">Sara K.</div>
@@ -301,33 +340,44 @@
       </div>
     </div>
 
-    <!-- (8) Referenzfotos -->
+    <!-- (3) Referenzfotos — upload + Aus Gespeicherten + Aus Discovery -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          <i data-lucide="image" style="width:18px;height:18px"></i>
           Referenzfotos
         </div>
         <div class="photo-row">
           <img class="photo" src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
           <img class="photo" src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-          <img class="photo" src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
           <button class="photo-add">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            <i data-lucide="plus" style="width:20px;height:20px"></i>
             Foto
+          </button>
+          <button class="photo-src">
+            <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
+            <span class="ov"><i data-lucide="bookmark" style="width:18px;height:18px"></i>Aus Gespeicherten</span>
+          </button>
+          <button class="photo-src">
+            <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
+            <span class="ov"><i data-lucide="sparkles" style="width:18px;height:18px"></i>Aus Discovery</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- (9) Notiz für den Coiffeur -->
+    <!-- (4) Notiz für den Coiffeur — KI-Vorschlag affordance -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
-        <div class="card-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-          Notiz für den Coiffeur
+        <div class="note-head">
+          <div class="card-label" style="margin-bottom:0;">
+            <i data-lucide="pencil" style="width:18px;height:18px"></i>
+            Notiz für den Coiffeur
+          </div>
+          <button class="ai-chip"><i data-lucide="sparkles" style="width:14px;height:14px"></i>KI-Vorschlag</button>
         </div>
         <div class="note">Bitte die Spitzen nur leicht nachschneiden, ich lasse die Länge wachsen. Bei der Coloration gerne kühle Töne, kein Rotstich.</div>
+        <div class="ai-hint"><i data-lucide="sparkles" style="width:13px;height:13px"></i>Aus deinen Referenzfotos und deinem Haartyp generiert.</div>
       </div>
     </div>
   </div>
@@ -338,5 +388,6 @@
   </div>
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

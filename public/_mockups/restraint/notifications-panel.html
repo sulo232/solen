@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
@@ -70,8 +72,11 @@
 
   /* ═══════════ NOTIFICATIONS — full page ═══════════ */
   /* sticky header */
-  .nhead{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--border);}
-  .nhead-l{display:flex;flex-direction:column;gap:6px;}
+  .nhead{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);}
+  .nhead-l{display:flex;align-items:flex-end;gap:12px;min-width:0;}
+  .nhead-back{width:38px;height:38px;flex-shrink:0;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;transition:transform .14s var(--ease);}
+  .nhead-back:active{transform:scale(.92);}
+  .nhead-titles{display:flex;flex-direction:column;gap:6px;min-width:0;}
   .nhead-meta{display:flex;align-items:center;gap:5px;font-size:13px;}
   .nhead-meta .num{color:var(--blue);font-size:13px;}  /* "3" unread count — small blue clickable-feel number */
 
@@ -87,12 +92,12 @@
   /* rounded salon avatar/photo — the leading richness that kills the monochrome */
   .nava{position:relative;width:48px;height:48px;flex-shrink:0;}
   .nava img{width:48px;height:48px;border-radius:14px;object-fit:cover;display:block;}
-  /* tiny semantic badge clipped to the avatar corner (green check / star / bolt) */
-  .nava-badge{position:absolute;right:-3px;bottom:-3px;width:21px;height:21px;border-radius:var(--r-pill);
-    background:#fff;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(10,10,10,.18);}
-  .nava-badge.is-green{background:var(--green);color:#fff;}
-  .nava-badge.is-star{background:var(--star);color:#fff;}
-  .nava-badge.is-bolt{background:var(--green);color:#fff;}
+  /* tiny semantic badge clipped to the avatar corner — calm: WHITE disc, single semantic icon */
+  .nava-badge{position:absolute;right:-4px;bottom:-4px;width:22px;height:22px;border-radius:var(--r-pill);
+    background:#fff;border:1.5px solid var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(10,10,10,.18);color:var(--ink);}
+  .nava-badge.is-green{color:var(--green);}
+  .nava-badge.is-star{color:var(--star);}
+  .nava-badge.is-bolt{color:var(--green);}
 
   /* refined-pastel icon tile — SYSTEM notifications only (no salon behind them) */
   .nico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--sunken);color:var(--ink);}
@@ -109,12 +114,6 @@
 
   /* small blue unread dot — affordance, sits at far right aligned with time */
   .unread-dot{flex-shrink:0;width:8px;height:8px;border-radius:var(--r-pill);background:var(--blue);margin-top:6px;}
-
-  /* calm empty-state note */
-  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 24px 20px;}
-  .empty-disc{width:52px;height:52px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin-bottom:12px;}
-  .empty-title{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em;}
-  .empty-sub{margin-top:5px;font-size:13px;color:var(--ink-3);line-height:1.45;max-width:250px;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -133,8 +132,11 @@
   <!-- sticky header: title + "3 ungelesen" + "Alle gelesen" link -->
   <div class="nhead">
     <div class="nhead-l">
-      <h1 class="t-title">Benachrichtigungen</h1>
-      <div class="nhead-meta"><span class="num">3</span><span class="t-meta">ungelesen</span></div>
+      <button class="nhead-back" aria-label="Zurück"><i data-lucide="chevron-left" style="width:22px;height:22px"></i></button>
+      <div class="nhead-titles">
+        <h1 class="t-title">Benachrichtigungen</h1>
+        <div class="nhead-meta"><span class="num">3</span><span class="t-meta">ungelesen</span></div>
+      </div>
     </div>
     <a class="link rise rise-1">Alle gelesen</a>
   </div>
@@ -146,7 +148,7 @@
   <div class="nrow is-unread rise rise-1">
     <div class="nava">
       <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
-      <span class="nava-badge is-green"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <span class="nava-badge is-green"><i data-lucide="check" style="width:13px;height:13px;stroke-width:3"></i></span>
     </div>
     <div class="nrow-main">
       <div class="nrow-title">Termin bestätigt</div>
@@ -160,7 +162,7 @@
   <div class="nrow is-unread rise rise-2">
     <div class="nava">
       <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
-      <span class="nava-badge is-bolt"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H12l-1 8.5 8.5-11.5H11z"/></svg></span>
+      <span class="nava-badge is-bolt"><i data-lucide="zap" style="width:12px;height:12px;fill:currentColor;stroke:currentColor"></i></span>
     </div>
     <div class="nrow-main">
       <div class="nrow-title">Sofort frei: <span style="color:var(--green);">heute <span class="num" style="color:var(--green);">15:00</span></span></div>
@@ -190,7 +192,7 @@
   <div class="nrow rise rise-5">
     <div class="nava">
       <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
-      <span class="nava-badge is-star"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg></span>
+      <span class="nava-badge is-star"><i data-lucide="star" style="width:12px;height:12px;fill:currentColor;stroke:currentColor"></i></span>
     </div>
     <div class="nrow-main">
       <div class="nrow-title">Wie war dein Besuch?</div>
@@ -217,7 +219,7 @@
 
   <!-- App-Update — SYSTEM notification, refined-pastel icon tile (no salon) — read -->
   <div class="nrow rise rise-7">
-    <span class="nico is-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+    <span class="nico is-blue"><i data-lucide="sparkles" style="width:20px;height:20px"></i></span>
     <div class="nrow-main">
       <div class="nrow-title">Neu: Sofort-frei-Plätze in deiner Nähe</div>
       <div class="nrow-sub">Sieh freie Termine in Echtzeit, ohne zu warten</div>
@@ -225,14 +227,8 @@
     <span class="nrow-time">vor 5 Tagen</span>
   </div>
 
-  <!-- calm empty-state note below -->
-  <div class="empty rise rise-8">
-    <div class="empty-disc"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
-    <div class="empty-title">Das ist alles für jetzt</div>
-    <div class="empty-sub">Du bist auf dem neuesten Stand. Wir melden uns bei Updates zu deinen Terminen.</div>
-  </div>
-
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

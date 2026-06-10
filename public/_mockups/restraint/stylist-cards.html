@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+  .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
     --ink:#0A0A0A;
@@ -102,8 +104,6 @@
   .feat-rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;margin-top:8px;}
   .feat-trust{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--ink-2);}
   .feat-trust .num{color:var(--ink);}
-  .feat-avail{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-weight:600;font-size:13px;}
-  .feat-dot{width:7px;height:7px;border-radius:var(--r-pill);background:var(--green);}
 
   .rise{animation:rise .55s var(--ease) both;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -124,7 +124,7 @@
     <!-- Section head: Team + ink "Alle ansehen" -->
     <div class="sec-head rise" style="animation-delay:.02s;">
       <h2 class="t-section">Team</h2>
-      <a class="link-ink">Alle ansehen</a>
+      <a class="link-ink">Alle ansehen <i data-lucide="chevron-right" style="width:15px;height:15px"></i></a>
     </div>
 
     <!-- Avatar row: circular 72px + overlaid white star badge (kit .team-card) -->
@@ -132,7 +132,7 @@
       <div class="team-card is-active">
         <div class="team-ava">
           <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="num">4.9</span></span>
+          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.9</span></span>
         </div>
         <div class="team-name">Nadia F.</div>
         <div class="team-spec">Balayage</div>
@@ -140,7 +140,7 @@
       <div class="team-card">
         <div class="team-ava">
           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="num">4.8</span></span>
+          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.8</span></span>
         </div>
         <div class="team-name">Léa M.</div>
         <div class="team-spec">Coloration</div>
@@ -148,7 +148,7 @@
       <div class="team-card">
         <div class="team-ava">
           <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="num">5.0</span></span>
+          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">5.0</span></span>
         </div>
         <div class="team-name">Jonas W.</div>
         <div class="team-spec">Herrenschnitt</div>
@@ -156,7 +156,7 @@
       <div class="team-card">
         <div class="team-ava">
           <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg><span class="num">4.7</span></span>
+          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.7</span></span>
         </div>
         <div class="team-name">Sofia R.</div>
         <div class="team-spec">Make-up</div>
@@ -173,7 +173,7 @@
           <div class="feat-name">Nadia F.</div>
           <div class="feat-spec">Balayage &amp; Coloration</div>
           <div class="feat-rating">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+            <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
             <span class="num" style="color:var(--ink);">4.9</span>
             <span class="count">(86)</span>
           </div>
@@ -182,13 +182,13 @@
           </div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
-        <span class="feat-avail"><span class="feat-dot"></span>Heute frei</span>
-        <button class="btn-outline selected is-blue">Ausgewählt</button>
+      <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-outline selected is-blue"><i data-lucide="check" style="width:16px;height:16px"></i>Ausgewählt</button>
       </div>
     </div>
   </div>
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

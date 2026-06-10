@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+  .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
     --ink:#0A0A0A;        /* primary text, structure, primary CTA fill */
@@ -121,7 +123,7 @@
   <!-- ink back + title -->
   <div class="pagehead">
     <button class="btn-back" aria-label="Zurück">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      <i data-lucide="arrow-left" style="width:22px;height:22px;stroke-width:2.2"></i>
     </button>
     <h1 class="t-title">Zuletzt angesehen</h1>
   </div>
@@ -136,12 +138,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Maison Lumière Coiffure</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.9</span><span class="count">(54)</span><span class="t-meta">Zürich</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 65</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
     <a class="srow rise" href="#">
@@ -149,12 +151,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Atelier Noir Barbier</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.8</span><span class="count">(212)</span><span class="t-meta">Zürich</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 45</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
     <a class="srow rise" href="#">
@@ -162,12 +164,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Belle Époque Nails</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.7</span><span class="count">(89)</span><span class="t-meta">Winterthur</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 55</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
     <a class="srow rise" href="#">
@@ -175,12 +177,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Spa Serenità Wellness</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">5.0</span><span class="count">(37)</span><span class="t-meta">Zug</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 120</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
     <a class="srow rise" href="#">
@@ -188,12 +190,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Studio Klara Haar &amp; Make-up</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.6</span><span class="count">(143)</span><span class="t-meta">Luzern</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 70</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
     <a class="srow rise" href="#">
@@ -201,12 +203,12 @@
       <div class="srow-main">
         <div class="t-row srow-name">Le Marais Coiffure</div>
         <div class="rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.8</span><span class="count">(61)</span><span class="t-meta">Genf</span>
         </div>
         <div class="srow-price">ab <span class="num">CHF 80</span></div>
       </div>
-      <span class="srow-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <span class="srow-chev"><i data-lucide="chevron-right" style="width:18px;height:18px;stroke-width:2.2"></i></span>
     </a>
 
   </div>
@@ -217,16 +219,17 @@
   <!-- empty-state variant -->
   <section class="empty">
     <div class="empty-disc">
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <i data-lucide="clock" style="width:30px;height:30px;stroke-width:1.8"></i>
     </div>
     <h2>Noch nichts angesehen</h2>
     <p>Salons, die du dir ansiehst, erscheinen hier, für den schnellen Weg zurück.</p>
     <button class="btn-ink">
       Salons entdecken
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2.2"></i>
     </button>
   </section>
 
 </div>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

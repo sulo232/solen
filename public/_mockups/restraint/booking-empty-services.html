@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+  .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
     --ink:#0A0A0A;
@@ -74,7 +76,7 @@
   .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 28px 36px;}
 
   /* sunken calendar-off icon disc (flat: sunken, no shadow per CONTROL_ELEVATION) */
-  .disc{width:84px;height:84px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
+  .disc{width:84px;height:84px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;margin-bottom:24px;color:var(--ink-2);}
   .disc svg{width:34px;height:34px;stroke:var(--ink-2);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 
   h1.headline{max-width:300px;margin-bottom:11px;}
@@ -131,7 +133,7 @@
 
   <!-- Back -->
   <div class="topbar">
-    <button class="btn-icon" aria-label="Zurück"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="btn-icon" aria-label="Zurück"><i data-lucide="chevron-left" style="width:19px;height:19px"></i></button>
     <span class="t-row">Termin buchen</span>
   </div>
 
@@ -149,12 +151,7 @@
   <!-- Empty-state body -->
   <main class="body">
     <div class="disc rise">
-      <svg viewBox="0 0 24 24">
-        <path d="M3 9l1.5-5h15L21 9"/>
-        <path d="M3 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 3 0"/>
-        <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/>
-        <path d="M10 20v-5h4v5"/>
-      </svg>
+      <i data-lucide="store" style="width:34px;height:34px"></i>
     </div>
 
     <h1 class="t-title headline rise d1">Online-Buchung nicht verfügbar</h1>
@@ -168,7 +165,7 @@
       <div class="salon-meta">
         <div class="salon-name">Maison Lumière</div>
         <div class="rating">
-          <svg viewBox="0 0 24 24"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+          <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
           <span class="num">4.9</span><span class="count">(127)</span>
           <span class="salon-loc" style="margin-left:7px;">Basel, Kreis 4</span>
         </div>
@@ -179,10 +176,10 @@
     <div class="actions rise d3">
       <button class="btn-ink">
         Zum Salon
-        <svg width="18" height="18" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
       </button>
       <a class="link" href="tel:+41612340000">
-        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <i data-lucide="phone" style="width:15px;height:15px"></i>
         <span class="u">Salon anrufen</span>
       </a>
     </div>
@@ -191,5 +188,6 @@
   <div class="home-indicator"></div>
 
 </div>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

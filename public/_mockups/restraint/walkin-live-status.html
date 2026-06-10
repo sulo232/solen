@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
@@ -53,13 +55,12 @@
   /* MONO — CODES ONLY (ticket W-047). Never on prices/times/queue numbers. */
   .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* ─────────── CARD (verbatim) ─────────── */
-  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
-  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
-
   /* ─────────── BUTTONS / LINKS (verbatim) ─────────── */
-  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
-  .link:hover{text-decoration:underline;}
+  /* secondary — neutral OUTLINED pill */
+  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:13px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    transition:transform .14s var(--ease),border-color .14s ease;}
+  .btn-outline:active{transform:scale(.97);}
 
   /* ─────────── ENTRANCE (verbatim) ─────────── */
   .rise{animation:rise .55s var(--ease) both;}
@@ -67,79 +68,60 @@
 
   /* ═══════════ SCREEN-SPECIFIC (built from kit primitives) ═══════════ */
 
-  /* salon mini-header: small rounded photo + name + ticket code + paid chip */
-  .minihead{display:flex;align-items:center;gap:13px;padding:16px 20px 18px;}
-  .mini-photo{width:46px;height:46px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
-  .mini-main{flex:1;min-width:0;}
-  .mini-sub{display:flex;align-items:center;gap:9px;margin-top:4px;}
+  /* ─────────── SALON ROW — tap-to-open store: 72px photo + name + ticket code + chevron ─────────── */
+  .salonrow{display:flex;align-items:center;gap:14px;padding:14px 20px 18px;cursor:pointer;}
+  .salon-photo{width:72px;height:72px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
+  .salon-main{flex:1;min-width:0;}
+  .salon-name{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.015em;line-height:1.15;}
+  .salon-meta{display:flex;align-items:center;gap:8px;margin-top:6px;}
   /* ticket code → mono (it IS a code) */
   .ticket{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;letter-spacing:-.01em;color:var(--ink-2);font-variant-numeric:tabular-nums;}
-  /* paid chip — green semantic: pale tint + green text + green dot */
-  .paid-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:var(--r-pill);
-    background:rgba(22,163,74,.10);color:var(--green);font-size:12px;font-weight:600;letter-spacing:-.005em;}
-  .paid-dot{width:6px;height:6px;border-radius:var(--r-pill);background:var(--green);}
+  .salon-cat{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .salon-chev{color:var(--ink-3);flex-shrink:0;}
 
-  /* ─────────── STAGE PROGRESS JOURNEY (fixes raggedy + monochrome) ─────────── */
-  .journey{padding:6px 20px 4px;}
-  .jtrack{position:relative;display:flex;justify-content:space-between;}
-  /* the connecting hairline track behind the nodes */
-  .jline{position:absolute;top:13px;left:13px;right:13px;height:2px;background:var(--sunken);border-radius:var(--r-pill);}
-  /* the done/progress portion of the track (green up to the current node) */
-  .jline-done{position:absolute;top:13px;left:13px;height:2px;background:var(--green);border-radius:var(--r-pill);
-    width:calc((100% - 26px) * 0.6667);}
-  .jnode{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;width:64px;text-align:center;}
-  .jdot{width:26px;height:26px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
-    background:#fff;border:2px solid var(--border);flex-shrink:0;}
-  .jdot.done{background:var(--green);border-color:var(--green);color:#fff;}
-  /* current node — emphasised ink fill with a soft ring */
-  .jdot.current{background:var(--ink);border-color:var(--ink);color:#fff;
-    box-shadow:0 0 0 4px rgba(10,10,10,.10);}
-  .jdot.current::after{content:"";position:absolute;width:26px;height:26px;border-radius:var(--r-pill);
-    border:2px solid var(--ink);opacity:.35;animation:ring 2s var(--ease) infinite;}
-  @keyframes ring{0%{transform:scale(1);opacity:.35;}70%{transform:scale(1.9);opacity:0;}100%{opacity:0;}}
-  .jdot-num{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;}
-  .jlabel{font-size:11px;font-weight:500;line-height:1.2;color:var(--ink-3);}
-  .jnode.is-done .jlabel{color:var(--ink-2);}
-  .jnode.is-current .jlabel{color:var(--ink);font-weight:600;}
+  /* ─────────── DOORDASH STEPPER — 4 distinct icons, only current carries weight ─────────── */
+  .stepper{padding:22px 26px 6px;}
+  .strack{position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
+  /* base track: light-grey from current node forward */
+  .sline{position:absolute;top:22px;left:22px;right:22px;height:2px;background:#E4E4E7;border-radius:var(--r-pill);}
+  /* ink track: completed segments up to the current node (current example = 1-2 done, 3 current → 2 of 3 segments) */
+  .sline-done{position:absolute;top:22px;left:22px;height:2px;background:var(--ink);border-radius:var(--r-pill);
+    width:calc((100% - 44px) * 0.6667);}
+  .snode{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:9px;width:60px;}
+  /* circle sits centered on the 44px current diameter so the track stays level */
+  .scircle-wrap{height:44px;display:flex;align-items:center;justify-content:center;}
+  /* past node — 36px ink fill, white icon, NO label */
+  .scircle{width:36px;height:36px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
+    background:var(--ink);color:#fff;}
+  /* future node — 36px sunken, grey icon, NO label */
+  .scircle.future{background:var(--sunken);color:var(--ink-3);}
+  /* current node — 44px ink fill + white icon + soft halo (subtle pulse) + label */
+  .scircle.current{width:44px;height:44px;background:var(--ink);color:#fff;position:relative;}
+  .scircle.current::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);
+    box-shadow:0 0 0 0 rgba(10,10,10,.18);animation:halo 2.2s var(--ease) infinite;}
+  @keyframes halo{0%{box-shadow:0 0 0 0 rgba(10,10,10,.22);}70%{box-shadow:0 0 0 12px rgba(10,10,10,0);}100%{box-shadow:0 0 0 0 rgba(10,10,10,0);}}
+  /* only the current node shows its label */
+  .slabel{font-size:13px;font-weight:600;color:var(--ink);line-height:1.2;}
 
-  /* ─────────── THE FOCAL — big number in Inter Tight (.num), green pulse + LIVE ─────────── */
-  .focal{padding:26px 20px 28px;text-align:center;}
-  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;}
-  .live-dot{width:9px;height:9px;border-radius:var(--r-pill);background:var(--green);position:relative;}
+  /* ─────────── THE ONE FOCAL — queue position + ETA + calm Live indicator ─────────── */
+  .focal{padding:30px 20px 6px;text-align:center;}
+  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:18px;}
+  .live-dot{width:8px;height:8px;border-radius:var(--r-pill);background:var(--green);position:relative;}
   .live-dot::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);background:var(--green);
     animation:pulse 1.8s var(--ease) infinite;}
-  @keyframes pulse{0%{transform:scale(1);opacity:.55;}70%{transform:scale(3.2);opacity:0;}100%{opacity:0;}}
-  .live-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
-  /* big "3" — Inter Tight tabular, NOT mono */
-  .bignum{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:120px;line-height:.9;
-    letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums;display:inline-block;}
-  .vordir{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--ink);
-    margin-top:2px;}
-  /* ETA pill — calm sunken, ink + Inter Tight number */
-  .eta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;height:42px;padding:0 20px;
-    border-radius:var(--r-pill);background:var(--sunken);}
-  .eta-label{font-size:13px;font-weight:500;color:var(--ink-2);}
-  .eta-num{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:16px;color:var(--ink);
-    letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(3);opacity:0;}100%{opacity:0;}}
+  .live-label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--green);}
+  /* "3 vor dir" — Inter Tight ~40px */
+  .position{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:-.03em;color:var(--ink);}
+  .position .vordir{font-weight:600;color:var(--ink-2);}
+  /* ETA — calmer weight right below */
+  .eta{margin-top:10px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:19px;letter-spacing:-.015em;color:var(--ink-2);}
+  /* updated line */
+  .updated{margin-top:16px;font-size:13px;font-weight:400;color:var(--ink-3);}
 
-  /* ─────────── SALON-INTERIOR PHOTO CARD (carries warmth, kills monochrome) ─────────── */
-  .shopwrap{padding:6px 20px 0;}
-  .shopcard{position:relative;border-radius:var(--r-card);overflow:hidden;height:128px;box-shadow:var(--shadow-card);}
-  .shopcard img{width:100%;height:100%;object-fit:cover;display:block;}
-  .shop-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.62) 0%,rgba(10,10,10,.05) 60%);}
-  .shop-cap{position:absolute;left:16px;right:16px;bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
-  .shop-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;color:#fff;}
-  .shop-sub{font-size:12px;font-weight:400;color:rgba(255,255,255,.85);margin-top:2px;}
-  .shop-go{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:var(--r-pill);
-    background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-    color:var(--ink);font-size:12.5px;font-weight:600;flex-shrink:0;cursor:pointer;}
-
-  /* ─────────── UPDATED LINE — calm grey, no middot ─────────── */
-  .updated{display:flex;align-items:center;justify-content:center;gap:7px;padding:24px 20px 4px;}
-  .updated-txt{font-size:13px;font-weight:400;color:var(--ink-3);}
-
-  /* share link row */
-  .sharerow{text-align:center;padding:12px 20px 32px;}
+  /* ─────────── ACTIONS — two equal neutral-outline pills ─────────── */
+  .actions{display:flex;gap:10px;padding:28px 20px 32px;}
+  .actions .btn-outline{flex:1;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -148,91 +130,70 @@
 
 <div class="frame">
 
-  <!-- iOS status bar (verbatim chrome) -->
+  <!-- iOS status bar (system chrome — inline SVG glyphs stay) -->
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
     <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <!-- salon mini-header: photo + name + ticket code + paid chip (no middot, "Barber" as a plain descriptor) -->
-  <div class="minihead rise" style="animation-delay:.02s;">
-    <img class="mini-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
-    <div class="mini-main">
-      <div class="t-row">Studio Eleven Barber</div>
-      <div class="mini-sub">
+  <!-- SALON ROW — tap-to-open store: 72px photo + name + ticket code + chevron -->
+  <div class="salonrow rise" style="animation-delay:.02s;">
+    <img class="salon-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
+    <div class="salon-main">
+      <div class="salon-name">Studio Eleven Barber</div>
+      <div class="salon-meta">
         <span class="ticket">W-047</span>
-        <span class="paid-chip"><span class="paid-dot"></span>Bezahlt</span>
+        <span class="salon-cat">Barber, Basel</span>
+      </div>
+    </div>
+    <span class="salon-chev"><i data-lucide="chevron-right" style="width:22px;height:22px"></i></span>
+  </div>
+
+  <!-- DOORDASH STEPPER: Bezahlt (past) → In der Schlange (past) → Fast dran (current) → Dran (future) -->
+  <div class="stepper rise" style="animation-delay:.06s;">
+    <div class="strack">
+      <div class="sline"></div>
+      <div class="sline-done"></div>
+      <!-- 1 Bezahlt — past -->
+      <div class="snode">
+        <span class="scircle-wrap"><span class="scircle"><i data-lucide="ticket" style="width:18px;height:18px"></i></span></span>
+      </div>
+      <!-- 2 In der Schlange — past -->
+      <div class="snode">
+        <span class="scircle-wrap"><span class="scircle"><i data-lucide="users" style="width:18px;height:18px"></i></span></span>
+      </div>
+      <!-- 3 Fast dran — current -->
+      <div class="snode">
+        <span class="scircle-wrap"><span class="scircle current"><i data-lucide="clock" style="width:20px;height:20px"></i></span></span>
+        <span class="slabel">Fast dran</span>
+      </div>
+      <!-- 4 Dran — future -->
+      <div class="snode">
+        <span class="scircle-wrap"><span class="scircle future"><i data-lucide="scissors" style="width:18px;height:18px"></i></span></span>
       </div>
     </div>
   </div>
 
-  <!-- STAGE PROGRESS JOURNEY: Bezahlt → In der Schlange → Fast dran (current) → Dran -->
-  <div class="journey rise" style="animation-delay:.06s;">
-    <div class="jtrack">
-      <div class="jline"></div>
-      <div class="jline-done"></div>
-      <div class="jnode is-done">
-        <span class="jdot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-        <span class="jlabel">Bezahlt</span>
-      </div>
-      <div class="jnode is-done">
-        <span class="jdot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-        <span class="jlabel">In der Schlange</span>
-      </div>
-      <div class="jnode is-current">
-        <span class="jdot current"><span class="jdot-num">3</span></span>
-        <span class="jlabel">Fast dran</span>
-      </div>
-      <div class="jnode">
-        <span class="jdot"></span>
-        <span class="jlabel">Dran</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- THE FOCAL: big number in Inter Tight (.num), green LIVE pulse + ETA -->
+  <!-- THE ONE FOCAL: queue position + ETA + calm Live indicator -->
   <div class="focal rise" style="animation-delay:.1s;">
     <div class="live-line">
       <span class="live-dot"></span>
       <span class="live-label">Live</span>
     </div>
-    <span class="bignum num">3</span>
-    <div class="vordir">vor dir</div>
-    <div class="eta">
-      <span class="eta-label">Geschätzte Wartezeit</span>
-      <span class="eta-num">~12 Min</span>
-    </div>
+    <div class="position"><span class="num">3</span> <span class="vordir">vor dir</span></div>
+    <div class="eta">~<span class="num">12</span> Min</div>
+    <div class="updated">Aktualisiert gerade eben</div>
   </div>
 
-  <!-- SALON-INTERIOR PHOTO (warmth, kills monochrome) -->
-  <div class="shopwrap rise" style="animation-delay:.14s;">
-    <div class="shopcard">
-      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=780&q=80" alt="" referrerpolicy="no-referrer">
-      <div class="shop-veil"></div>
-      <div class="shop-cap">
-        <div>
-          <div class="shop-title">Studio Eleven Barber</div>
-          <div class="shop-sub">Geöffnet bis 19:00, Basel</div>
-        </div>
-        <span class="shop-go">Wegbeschreibung
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- updated line — calm grey, no middot -->
-  <div class="updated rise" style="animation-delay:.2s;">
-    <span class="updated-txt">Aktualisiert gerade eben</span>
-  </div>
-
-  <!-- one blue text link, no blue button -->
-  <div class="sharerow rise" style="animation-delay:.24s;">
-    <a class="link">Status teilen</a>
+  <!-- ACTIONS — two equal neutral-outline pills, no primary CTA, no blue -->
+  <div class="actions rise" style="animation-delay:.16s;">
+    <button class="btn-outline"><i data-lucide="navigation" style="width:17px;height:17px"></i>Wegbeschreibung</button>
+    <button class="btn-outline"><i data-lucide="share-2" style="width:17px;height:17px"></i>Status teilen</button>
   </div>
 
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>

@@ -133,3 +133,24 @@ the element, never shipping fake values. (Listed as bugs #9, #16 above.)
 ## Recommended fix order
 P0 (1-4) immediately , they corrupt bookings + dead-end paid flows + email unpaid codes. Then HIGH (5-9), then the
 mockup gaps (each needs a design pass), then MEDIUM/LOW as a sweep. The restraint fixes are already in.
+
+---
+
+## 🧬 Personalization / future systems (owner vision, 2026-06-10 , NOT built, mockup-only)
+
+The "Mein Haarprofil" screen (`public/_mockups/restraint/haarprofil.html`) is a forward-looking proposal. The owner wants it
+as a pre-visit personalization the salon sees. These need real systems, not just the mockup:
+
+1. **Store-side receiving.** Salons need a view that *receives* a customer's hair profile (and the booking flow must attach
+   it to the appointment). No backend exists today , the profile would have nowhere to go. Build: a `customer_hair_profile`
+   table + attach-to-booking + a dashboard panel for the stylist.
+2. **Auto-personalization from the profile.** Once the profile exists, the account + recommendations should use it
+   automatically (filter/sort salons by capability match, pre-fill, etc.) , no manual re-entry. Personalization-engine task.
+3. **Reference photos from Saved / Discovery + AI notes.** Reference pictures should be pullable from the customer's Saved
+   set and the Discovery feed (not only uploads). The "Notiz für den Coiffeur" can be **AI-generated** from the reference
+   photos + hair type ("✨ KI-Vorschlag" in the mockup). Real feature: vision model → structured style note.
+4. **Store colour-capability matching (algorithm , "we need that").** If a customer wants colour, identify which salons
+   actually offer colour service (service-capability tagging + a match/filter), so colour-seekers aren't shown salons that
+   can't do it. Build: per-salon service-capability flags + a matching filter in search/recommendations.
+
+These are flagged so they're tracked, not forgotten , the mockup shows the UX, the systems above make it real.

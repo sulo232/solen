@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+  .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
   /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
   :root{
     --ink:#0A0A0A;
@@ -146,10 +148,10 @@
   <div class="hero">
     <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=820&q=80" alt="" referrerpolicy="no-referrer">
     <div class="hero-chrome">
-      <button class="frost-btn" aria-label="Zurück"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="frost-btn" aria-label="Zurück"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button>
       <div class="hero-chrome-right">
-        <button class="frost-btn" aria-label="Teilen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a1 1 0 001 1h14a1 1 0 001-1v-8M16 6l-4-4-4 4M12 2v14"/></svg></button>
-        <button class="frost-btn" aria-label="Speichern"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></button>
+        <button class="frost-btn" aria-label="Teilen"><i data-lucide="share-2" style="width:18px;height:18px"></i></button>
+        <button class="frost-btn" aria-label="Speichern"><i data-lucide="heart" style="width:18px;height:18px"></i></button>
       </div>
     </div>
     <div class="hero-counter"><span class="num">1 / 8</span></div>
@@ -159,7 +161,7 @@
   <div class="sheet">
     <h1 class="t-title rise d1">Maison Lumière</h1>
     <div class="rating rise d2" style="margin-top:9px;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
+      <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
       <span class="num">4.9</span><span class="count">(127)</span>
       <span class="t-meta">Coiffeur in Basel, Kreis&nbsp;4</span>
     </div>
@@ -167,7 +169,7 @@
       <span class="open">Geöffnet</span><span class="t-meta">bis 19:00</span>
     </div>
     <div class="meta-row rise d3" style="margin-top:7px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B9B9B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      <i data-lucide="map-pin" style="width:14px;height:14px;color:#9B9B9B"></i>
       <span class="t-body" style="font-size:13.5px;">Steinenvorstadt 28, Basel</span>
     </div>
     <button class="btn-ink full rise d4" style="margin-top:18px;margin-bottom:20px;">Termin buchen</button>
@@ -186,7 +188,7 @@
   <div style="padding:24px 20px 28px;">
     <div class="sec-head">
       <h2 class="t-section">Services</h2>
-      <a class="link-ink">Alle ansehen <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+      <a class="link-ink">Alle ansehen <i data-lucide="chevron-right" style="width:15px;height:15px"></i></a>
     </div>
     <div class="chips">
       <span class="chip is-selected">Alle</span>
@@ -225,5 +227,6 @@
 
 </div>
 
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>
