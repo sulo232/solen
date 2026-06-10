@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking stepper, softening options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --green:#16A34A; --green-bg:#E8F5E9; --green-pale:#DCFCE7; --charcoal:#3F3F46;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  .lucide{stroke-width:1.9;flex-shrink:0;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;justify-content:center;padding:30px 0 90px;}
+  .frame{width:390px;background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 30px 70px rgba(10,10,10,.16);}
+
+  .head{padding:28px 22px 20px;border-bottom:1px solid var(--border);}
+  .head .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
+  .head h1{font-family:'Inter Tight';font-size:23px;font-weight:700;letter-spacing:-.02em;margin-top:7px;line-height:1.1;}
+  .head p{font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.5;}
+
+  .opt{padding:22px 22px;border-bottom:1px solid var(--border);}
+  .opt:last-child{border-bottom:none;}
+  .opt-h{display:flex;align-items:baseline;gap:8px;}
+  .opt-t{font-family:'Inter Tight';font-size:15px;font-weight:700;letter-spacing:-.01em;}
+  .rec{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:var(--green-bg);padding:3px 8px;border-radius:9999px;}
+  .opt-d{font-size:12px;color:var(--ink-2);margin-top:5px;line-height:1.45;}
+
+  /* stepper */
+  .stepper{display:flex;align-items:flex-start;gap:6px;margin-top:16px;}
+  .si{display:flex;flex-direction:column;align-items:center;gap:8px;width:64px;flex-shrink:0;text-align:center;font-size:11px;font-weight:600;line-height:1.2;}
+  .si .dot{width:36px;height:36px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:'Inter Tight';}
+  .si-line{flex:1;height:2px;background:var(--border);border-radius:2px;margin-top:17px;min-width:8px;}
+
+  /* ---- BEFORE (pitch black) ---- */
+  .v0 .done .dot{background:var(--green);color:#fff;} .v0 .done{color:var(--ink-3);}
+  .v0 .cur  .dot{background:var(--ink);color:#fff;}   .v0 .cur{color:var(--ink);font-weight:700;}
+  .v0 .up   .dot{background:var(--sunken);color:var(--ink-3);} .v0 .up{color:var(--ink-3);}
+
+  /* ---- A · Charcoal (current stays neutral, just softened) ---- */
+  .vA .done .dot{background:var(--green);color:#fff;} .vA .done{color:var(--ink-3);}
+  .vA .cur  .dot{background:var(--charcoal);color:#fff;} .vA .cur{color:var(--ink);font-weight:700;}
+  .vA .up   .dot{background:var(--sunken);color:var(--ink-3);} .vA .up{color:var(--ink-3);}
+
+  /* ---- B · Green ring (keeps solid-green done, current = green ring) ---- */
+  .vB .done .dot{background:var(--green);color:#fff;} .vB .done{color:var(--ink-3);}
+  .vB .cur  .dot{background:#fff;border:2.5px solid var(--green);color:var(--green);} .vB .cur{color:var(--ink);font-weight:700;}
+  .vB .up   .dot{background:var(--sunken);color:var(--ink-3);} .vB .up{color:var(--ink-3);}
+
+  /* ---- C · N26 (done pales to mint, current = solid green) ---- */
+  .vC .done .dot{background:var(--green-bg);color:var(--green);} .vC .done{color:var(--ink-3);}
+  .vC .cur  .dot{background:var(--green);color:#fff;} .vC .cur{color:var(--ink);font-weight:700;}
+  .vC .up   .dot{background:#fff;border:1.5px solid var(--border);color:var(--ink-3);} .vC .up{color:var(--ink-3);}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="head">
+    <div class="eyebrow">Booking stepper / softening</div>
+    <h1>Kill the harsh black. Keep the green.</h1>
+    <p>Same 4 steps, four treatments of the active node. Which circle feels right?</p>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="opt">
+    <div class="opt-h"><span class="opt-t">Now</span></div>
+    <div class="opt-d">Pitch-black active disc between two vivid-green done discs. The contrast you called too harsh.</div>
+    <div class="stepper v0">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si up"><span class="dot">4</span>Bezahlen</span>
+    </div>
+  </div>
+
+  <!-- A Charcoal -->
+  <div class="opt">
+    <div class="opt-h"><span class="opt-t">A. Charcoal</span></div>
+    <div class="opt-d">Smallest change. Active stays a neutral pointer (per the system), just dialled from pitch-black to a soft charcoal so it stops shouting.</div>
+    <div class="stepper vA">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si up"><span class="dot">4</span>Bezahlen</span>
+    </div>
+  </div>
+
+  <!-- B Green ring -->
+  <div class="opt">
+    <div class="opt-h"><span class="opt-t">B. Green ring</span><span class="rec">recommended</span></div>
+    <div class="opt-d">Keeps the solid-green done discs you loved in the sheet. Active = white disc + green ring (no black). All one green family, soft, still clearly "you are here".</div>
+    <div class="stepper vB">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si up"><span class="dot">4</span>Bezahlen</span>
+    </div>
+  </div>
+
+  <!-- C N26 -->
+  <div class="opt">
+    <div class="opt-h"><span class="opt-t">C. N26 (done pales)</span></div>
+    <div class="opt-d">The literal N26 look. Done recedes to pale mint, the active step is the one solid green. Calmest overall, but it changes the done discs you liked.</div>
+    <div class="stepper vC">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si up"><span class="dot">4</span>Bezahlen</span>
+    </div>
+  </div>
+
+</div>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
+</body>
+</html>
