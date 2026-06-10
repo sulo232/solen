@@ -35,6 +35,12 @@ export const HAIR_LENGTH_OPTS: Choice[] = [
   { value: "very_long", label: "Sehr lang" },
 ];
 
+export const HAIR_THICKNESS_OPTS: Choice[] = [
+  { value: "thin", label: "Dünn" },
+  { value: "medium", label: "Mittel" },
+  { value: "thick", label: "Dick" },
+];
+
 export const SKIN_OPTS: Choice[] = [
   { value: "dry", label: "Trocken" },
   { value: "normal", label: "Normal" },

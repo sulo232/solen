@@ -31,6 +31,10 @@
     "stampsCount": "{count} timbri",
     "walletDesc": "Carte regalo",
     "sectionMore": "Altro",
+    "haarprofil": "Profilo capelli",
+    "vouchers": "Buoni",
+    "packages": "Pacchetti",
+    "intakeForms": "Moduli di consultazione",
     "looks": "Looks",
     "refer": "Invita un amico",
     "referReward": "CHF 10",
@@ -4968,7 +4972,12 @@
     "salonsAvailable": "{count, plural, =1 {1 salone} other {# saloni}} disponibile"
   },
   "recentlyViewed": {
-    "title": "Visti di recente"
+    "title": "Visti di recente",
+    "back": "Indietro",
+    "count": "{count, plural, one {# salone} other {# saloni}}",
+    "emptyTitle": "Niente di visto finora",
+    "emptyBody": "I saloni che guardi compaiono qui, per tornarci in fretta.",
+    "emptyCta": "Scopri i saloni"
   },
   "vouchers": {
     "loading": "Caricamento...",
@@ -5307,14 +5316,6 @@
     "cancel": "Annulla",
     "rebook": "Prenota di nuovo",
     "total": "Totale"
-  },
-  "recentlyViewed": {
-    "title": "Visti di recente",
-    "back": "Indietro",
-    "count": "{count, plural, one {# salone} other {# saloni}}",
-    "emptyTitle": "Niente di visto finora",
-    "emptyBody": "I saloni che guardi compaiono qui, per tornarci in fretta.",
-    "emptyCta": "Scopri i saloni"
   },
   "bookingsList": {
     "upcoming": "Prossimi",
@@ -5845,5 +5846,15 @@
     "errMissingParams": "Parametri mancanti",
     "errActionFailed": "Azione non riuscita",
     "errRequestFailed": "Richiesta non riuscita"
+  },
+  "haarprofil": {
+    "title": "Profilo capelli",
+    "subtitle": "Così il tuo parrucchiere è preparato.",
+    "type": "Tipo di capelli",
+    "length": "Lunghezza",
+    "thickness": "Spessore",
+    "save": "Salva",
+    "saved": "Salvato",
+    "saveError": "Salvataggio non riuscito. Riprova."
   }
 }

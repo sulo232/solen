@@ -31,6 +31,10 @@
     "stampsCount": "{count} tampons",
     "walletDesc": "Cartes cadeaux",
     "sectionMore": "Plus",
+    "haarprofil": "Profil capillaire",
+    "vouchers": "Bons",
+    "packages": "Forfaits",
+    "intakeForms": "Formulaires de consultation",
     "looks": "Looks",
     "refer": "Parrainer un ami",
     "referReward": "CHF 10",
@@ -4979,7 +4983,12 @@
     "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} disponible"
   },
   "recentlyViewed": {
-    "title": "Récemment consulté"
+    "title": "Vus récemment",
+    "back": "Retour",
+    "count": "{count, plural, one {# salon} other {# salons}}",
+    "emptyTitle": "Rien de consulté pour l’instant",
+    "emptyBody": "Les salons que vous consultez apparaissent ici, pour y revenir rapidement.",
+    "emptyCta": "Découvrir des salons"
   },
   "vouchers": {
     "loading": "Chargement...",
@@ -5318,14 +5327,6 @@
     "cancel": "Annuler",
     "rebook": "Réserver à nouveau",
     "total": "Total"
-  },
-  "recentlyViewed": {
-    "title": "Vus récemment",
-    "back": "Retour",
-    "count": "{count, plural, one {# salon} other {# salons}}",
-    "emptyTitle": "Rien de consulté pour l’instant",
-    "emptyBody": "Les salons que vous consultez apparaissent ici, pour y revenir rapidement.",
-    "emptyCta": "Découvrir des salons"
   },
   "bookingsList": {
     "upcoming": "À venir",
@@ -5856,5 +5857,15 @@
     "errMissingParams": "Paramètres manquants",
     "errActionFailed": "Échec de l'action",
     "errRequestFailed": "Échec de la requête"
+  },
+  "haarprofil": {
+    "title": "Profil capillaire",
+    "subtitle": "Pour que votre coiffeur soit préparé.",
+    "type": "Type de cheveux",
+    "length": "Longueur",
+    "thickness": "Épaisseur",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "saveError": "Échec de l’enregistrement. Veuillez réessayer."
   }
 }

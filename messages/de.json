@@ -31,6 +31,10 @@
     "stampsCount": "{count} Stempel",
     "walletDesc": "Geschenkkarten",
     "sectionMore": "Mehr",
+    "haarprofil": "Haarprofil",
+    "vouchers": "Gutscheine",
+    "packages": "Abo-Pakete",
+    "intakeForms": "Konsultationsformulare",
     "looks": "Looks",
     "refer": "Freunde einladen",
     "referReward": "CHF 10",
@@ -5006,7 +5010,12 @@
     "salonsAvailable": "{count, plural, =1 {1 Salon} other {# Salons}} verfügbar"
   },
   "recentlyViewed": {
-    "title": "Zuletzt angesehen"
+    "title": "Zuletzt angesehen",
+    "back": "Zurück",
+    "count": "{count, plural, one {# Salon} other {# Salons}}",
+    "emptyTitle": "Noch nichts angesehen",
+    "emptyBody": "Salons, die du dir ansiehst, erscheinen hier, für den schnellen Weg zurück.",
+    "emptyCta": "Salons entdecken"
   },
   "vouchers": {
     "loading": "Lade...",
@@ -5345,14 +5354,6 @@
     "cancel": "Stornieren",
     "rebook": "Erneut buchen",
     "total": "Gesamtpreis"
-  },
-  "recentlyViewed": {
-    "title": "Zuletzt angesehen",
-    "back": "Zurück",
-    "count": "{count, plural, one {# Salon} other {# Salons}}",
-    "emptyTitle": "Noch nichts angesehen",
-    "emptyBody": "Salons, die du dir ansiehst, erscheinen hier, für den schnellen Weg zurück.",
-    "emptyCta": "Salons entdecken"
   },
   "bookingsList": {
     "upcoming": "Anstehend",
@@ -5883,5 +5884,15 @@
     "errMissingParams": "Fehlende Parameter",
     "errActionFailed": "Aktion fehlgeschlagen",
     "errRequestFailed": "Anfrage fehlgeschlagen"
+  },
+  "haarprofil": {
+    "title": "Haarprofil",
+    "subtitle": "Damit dein Coiffeur vorbereitet ist.",
+    "type": "Haartyp",
+    "length": "Länge",
+    "thickness": "Dicke",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen."
   }
 }

@@ -14,6 +14,10 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import {
   Settings,
   Calendar,
+  Scissors,
+  Ticket,
+  Package,
+  ClipboardList,
   Heart,
   Award,
   Gift,
@@ -121,7 +125,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         {/* More */}
         <h2 className="text-[13px] font-medium text-s-ink-2 mt-[22px] mb-2 px-0.5">{t("sectionMore")}</h2>
         <section className="rounded-card bg-white shadow-card overflow-hidden">
+          <Row href={p("/profile/haarprofil")} icon={Scissors} label={t("haarprofil")} />
           <Row href={p("/profile/looks")} icon={Sparkles} label={t("looks")} />
+          <Row href={p("/profile/vouchers")} icon={Ticket} label={t("vouchers")} />
+          <Row href={p("/profile/packages")} icon={Package} label={t("packages")} />
+          <Row href={p("/profile/intake-forms")} icon={ClipboardList} label={t("intakeForms")} />
           <Row href={p("/profile/referral")} icon={UserPlus} label={t("refer")} meta={t("referReward")} />
           <Row href={p("/profile/settings")} icon={SlidersHorizontal} label={t("settings")} />
           <Row href={p("/help")} icon={HelpCircle} label={t("help")} />

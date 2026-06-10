@@ -31,6 +31,10 @@
     "stampsCount": "{count} stamps",
     "walletDesc": "Gift cards",
     "sectionMore": "More",
+    "haarprofil": "Hair profile",
+    "vouchers": "Vouchers",
+    "packages": "Packages",
+    "intakeForms": "Consultation forms",
     "looks": "Looks",
     "refer": "Refer a friend",
     "referReward": "CHF 10",
@@ -4996,7 +5000,12 @@
     "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} available"
   },
   "recentlyViewed": {
-    "title": "Recently viewed"
+    "title": "Recently viewed",
+    "back": "Back",
+    "count": "{count, plural, one {# salon} other {# salons}}",
+    "emptyTitle": "Nothing viewed yet",
+    "emptyBody": "Salons you look at show up here, for a quick way back.",
+    "emptyCta": "Discover salons"
   },
   "vouchers": {
     "loading": "Loading...",
@@ -5335,14 +5344,6 @@
     "cancel": "Cancel",
     "rebook": "Rebook",
     "total": "Total"
-  },
-  "recentlyViewed": {
-    "title": "Recently viewed",
-    "back": "Back",
-    "count": "{count, plural, one {# salon} other {# salons}}",
-    "emptyTitle": "Nothing viewed yet",
-    "emptyBody": "Salons you look at show up here, for a quick way back.",
-    "emptyCta": "Discover salons"
   },
   "bookingsList": {
     "upcoming": "Upcoming",
@@ -5871,5 +5872,15 @@
     "errMissingParams": "Missing parameters",
     "errActionFailed": "Action failed",
     "errRequestFailed": "Request failed"
+  },
+  "haarprofil": {
+    "title": "Hair profile",
+    "subtitle": "So your stylist is prepared.",
+    "type": "Hair type",
+    "length": "Length",
+    "thickness": "Thickness",
+    "save": "Save",
+    "saved": "Saved",
+    "saveError": "Saving failed. Please try again."
   }
 }
