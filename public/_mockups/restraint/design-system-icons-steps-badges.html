@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen Icons, Steps and Badges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  /* V3-D470 reference sheet. Annotations English (internal doc); component labels German (real product strings). */
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --blue:#276EF1; --green:#16A34A; --star:#FFC32B; --error:#D32F2F; --heart:#FF3366;
+    --r-card:24px; --r-pill:9999px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  .lucide{stroke-width:1.9;flex-shrink:0;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;justify-content:center;padding:30px 0 90px;}
+  .frame{width:390px;background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 30px 70px rgba(10,10,10,.16);}
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+  .code{font-family:'Inter Tight',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+
+  /* header */
+  .head{padding:30px 22px 22px;border-bottom:1px solid var(--border);}
+  .head .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
+  .head h1{font-family:'Inter Tight';font-size:27px;font-weight:700;letter-spacing:-.02em;margin-top:7px;line-height:1.08;}
+  .head p{font-size:13px;color:var(--ink-2);margin-top:9px;line-height:1.5;}
+  .head .phil{margin-top:13px;font-size:12.5px;color:var(--ink);background:var(--sunken);border-radius:12px;padding:11px 13px;line-height:1.45;}
+  .head .phil b{font-weight:700;}
+
+  /* section */
+  .sec{padding:24px 22px;border-bottom:1px solid var(--border);}
+  .sec:last-child{border-bottom:none;}
+  .sec-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
+  .sec-title{font-family:'Inter Tight';font-size:17px;font-weight:700;letter-spacing:-.01em;margin-top:5px;}
+  .sec-sub{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.45;}
+  .cap{font-size:11.5px;color:var(--ink-3);margin-top:9px;line-height:1.4;}
+  .cap b{color:var(--ink-2);font-weight:600;}
+  .label{font-size:10.5px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:18px 0 9px;}
+
+  /* settings-style rows (icon color default) */
+  .rows{border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .row{display:flex;align-items:center;gap:13px;padding:13px 15px;border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:none;}
+  .row .ricon{color:var(--ink);}            /* glyph = ink (matches title) */
+  .row .rtxt{flex:1;}
+  .row .rtitle{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .row .rsub{font-size:12px;color:var(--ink-2);margin-top:1px;}
+  .row .chev{color:var(--ink-3);}           /* chevron = always grey */
+
+  /* override chips */
+  .ovr{display:flex;flex-direction:column;gap:11px;}
+  .ovr-row{display:flex;align-items:center;gap:13px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;}
+  .ovr-demo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .ovr-txt .ot{font-size:13px;font-weight:600;}
+  .ovr-txt .od{font-size:11.5px;color:var(--ink-2);margin-top:1px;line-height:1.35;}
+  .disc{width:34px;height:34px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .frost{width:34px;height:34px;border-radius:var(--r-pill);background:rgba(255,255,255,.8);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.7);box-shadow:0 2px 8px rgba(10,10,10,.18);display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .photo-chip{position:relative;width:64px;height:34px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#C9B8A6 0%,#8A7765 60%,#5E4F42 100%);}
+  .photo-chip .frost{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;}
+
+  /* stepper (icon-above-text) */
+  .stepper{display:flex;align-items:flex-start;gap:6px;}
+  .si{display:flex;flex-direction:column;align-items:center;gap:8px;width:64px;flex-shrink:0;text-align:center;font-size:11px;font-weight:600;color:var(--ink-3);line-height:1.2;}
+  .si .dot{width:36px;height:36px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  .si.done .dot{background:var(--green);color:#fff;}
+  .si.done{color:var(--ink-3);}
+  .si.cur .dot{background:var(--ink);color:#fff;}
+  .si.cur{color:var(--ink);font-weight:700;}
+  .si.up .dot{background:var(--sunken);color:var(--ink-3);}
+  .si-line{flex:1;height:2px;background:var(--border);border-radius:2px;margin-top:17px;min-width:8px;}
+
+  /* vertical checklist */
+  .vlist{display:flex;flex-direction:column;}
+  .vrow{display:flex;align-items:flex-start;gap:13px;position:relative;}
+  .vrow .vdot{width:30px;height:30px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+  .vrow.done .vdot{background:var(--green);color:#fff;}
+  .vrow.cur .vdot{background:var(--ink);color:#fff;}
+  .vrow.up .vdot{background:var(--sunken);color:var(--ink-3);}
+  .vrow .vseg{position:absolute;left:14.5px;top:30px;width:2px;height:calc(100% - 22px);background:var(--border);}
+  .vrow:last-child .vseg{display:none;}
+  .vrow .vtxt{padding-bottom:18px;}
+  .vrow .vt{font-size:14px;font-weight:600;}
+  .vrow.done .vt,.vrow.up .vt{color:var(--ink-3);}
+  .vrow.cur .vt{color:var(--ink);}
+  .vrow .vd{font-size:11.5px;color:var(--ink-3);margin-top:1px;}
+
+  /* badges */
+  .badges{display:flex;flex-wrap:wrap;gap:14px;}
+  .badge-cell{display:flex;flex-direction:column;align-items:center;gap:8px;width:104px;}
+  .badge-art{height:60px;display:flex;align-items:center;justify-content:center;}
+  .badge-lbl{font-size:11px;font-weight:600;color:var(--ink-2);text-align:center;line-height:1.25;}
+  .badge-lbl span{display:block;color:var(--ink-3);font-weight:400;font-size:10px;}
+  /* selected avatar */
+  .av{position:relative;width:46px;height:46px;border-radius:var(--r-pill);background:linear-gradient(135deg,#D8C7B5,#8A7765);}
+  .av .sel{position:absolute;bottom:-3px;right:-3px;width:20px;height:20px;border-radius:var(--r-pill);background:var(--ink);border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;}
+  .focal{width:54px;height:54px;border-radius:var(--r-pill);background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 16px rgba(22,163,74,.32);}
+  .pill-status{display:inline-flex;align-items:center;gap:5px;background:#E8F5E9;color:#15803D;font-size:12px;font-weight:600;padding:5px 11px;border-radius:var(--r-pill);}
+  .rate{display:inline-flex;align-items:center;gap:4px;font-size:14px;}
+  .rate .num{color:var(--ink);}
+  .bell{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .bell .ct{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:var(--r-pill);background:var(--error);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+
+  /* codes */
+  .codebox{display:flex;gap:10px;flex-wrap:wrap;}
+  .code-chip{background:var(--sunken);border-radius:11px;padding:11px 15px;display:flex;flex-direction:column;gap:3px;}
+  .code-chip .cv{font-size:18px;color:var(--ink);}
+  .code-chip .cl{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="head">
+    <div class="eyebrow">Solen Design System / V3-D470</div>
+    <h1>Icons, Steps &amp; Badges</h1>
+    <p>How grey, black, and colour are spent on every glyph, step tracker, and badge. Grounded in Apple / N26 / Beli (Mobbin).</p>
+    <div class="phil"><b>Philosophy: colour is earned, not default.</b> A glyph is monochrome until it earns colour from state, interactivity, or selection. If every icon is tinted, colour stops meaning anything.</div>
+  </div>
+
+  <!-- SECTION A: icon color model -->
+  <div class="sec">
+    <div class="sec-eyebrow">A. Icon colour model</div>
+    <div class="sec-title">Default: monochrome, matches its text</div>
+    <div class="sec-sub">Row glyph = ink (its title). Chevron + meta = grey. Never tinted.</div>
+
+    <div class="rows" style="margin-top:14px">
+      <div class="row"><i data-lucide="user" class="ricon" style="width:21px;height:21px"></i><div class="rtxt"><div class="rtitle">Persönliches</div><div class="rsub">Name, Telefon, E-Mail</div></div><i data-lucide="chevron-right" class="chev" style="width:19px;height:19px"></i></div>
+      <div class="row"><i data-lucide="bell" class="ricon" style="width:21px;height:21px"></i><div class="rtxt"><div class="rtitle">Benachrichtigungen</div><div class="rsub">E-Mail und Push</div></div><i data-lucide="chevron-right" class="chev" style="width:19px;height:19px"></i></div>
+      <div class="row"><i data-lucide="credit-card" class="ricon" style="width:21px;height:21px"></i><div class="rtxt"><div class="rtitle">Zahlungsmittel</div><div class="rsub">Visa •••• 4242</div></div><i data-lucide="chevron-right" class="chev" style="width:19px;height:19px"></i></div>
+    </div>
+    <div class="cap"><b>Ink glyph + grey chevron.</b> The chevron is always <b>grey</b>, never tinted. Same rule as Beli / Instagram / Flighty.</div>
+
+    <div class="label">Colour overrides, only these four</div>
+    <div class="ovr">
+      <div class="ovr-row">
+        <div class="ovr-demo">
+          <i data-lucide="check" style="width:21px;height:21px;color:var(--green)"></i>
+          <i data-lucide="trash-2" style="width:20px;height:20px;color:var(--error)"></i>
+          <i data-lucide="star" style="width:20px;height:20px;color:var(--star);fill:var(--star)"></i>
+          <i data-lucide="heart" style="width:20px;height:20px;color:var(--heart);fill:var(--heart)"></i>
+        </div>
+        <div class="ovr-txt"><div class="ot">1. State / meaning</div><div class="od">Green = done/paid, red = delete, yellow = rating, pink = saved. The icon IS the message.</div></div>
+      </div>
+      <div class="ovr-row">
+        <div class="ovr-demo"><div class="disc" style="background:#fff;border:1px solid var(--border)"><i data-lucide="navigation" style="width:18px;height:18px;color:var(--blue)"></i></div></div>
+        <div class="ovr-txt"><div class="ot">2. Tap target IS the icon</div><div class="od">Blue, only when the glyph itself is the button (a bare icon-action). Not a decorative icon inside a row.</div></div>
+      </div>
+      <div class="ovr-row">
+        <div class="ovr-demo"><div class="disc" style="background:var(--ink);color:#fff"><i data-lucide="check" style="width:17px;height:17px;stroke-width:3"></i></div></div>
+        <div class="ovr-txt"><div class="ot">3. Selection</div><div class="od">Ink check (Layer-1 chrome). Solen picks ink over Apple's blue tint for selected staff/options.</div></div>
+      </div>
+      <div class="ovr-row">
+        <div class="ovr-demo"><div class="photo-chip"><div class="frost"><i data-lucide="heart" style="width:15px;height:15px"></i></div></div></div>
+        <div class="ovr-txt"><div class="ot">4. Over a photo</div><div class="od">Frosted white glass (FROST_GLASS). A glyph on imagery is never bare-tinted.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION B: progress stepper -->
+  <div class="sec">
+    <div class="sec-eyebrow">B. Progress stepper</div>
+    <div class="sec-title">Icon above text, everywhere</div>
+    <div class="sec-sub">Done = green check. Current = ink. Upcoming = grey. Never blue. One per screen.</div>
+
+    <div class="label">Booking flow (horizontal, ≤4 nodes)</div>
+    <div class="stepper">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si up"><span class="dot">4</span>Bezahlen</span>
+    </div>
+
+    <div class="label">Walk-in tracker (distinct icon per node)</div>
+    <div class="stepper">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Bezahlt</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>In der Schlange</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot"><i data-lucide="clock" style="width:17px;height:17px"></i></span>Fast dran</span><span class="si-line"></span>
+      <span class="si up"><span class="dot"><i data-lucide="armchair" style="width:16px;height:16px"></i></span>Dran</span>
+    </div>
+    <div class="cap"><b>Only the current node's icon is weighted.</b> Done nodes show the green check, upcoming show a thin glyph. No repeated checkmarks.</div>
+
+    <div class="label">Onboarding checklist (vertical, 5+ items)</div>
+    <div class="vlist">
+      <div class="vrow done"><div class="vdot"><i data-lucide="check" style="width:15px;height:15px;stroke-width:3"></i></div><div class="vseg"></div><div class="vtxt"><div class="vt">Konto erstellt</div><div class="vd">E-Mail bestätigt</div></div></div>
+      <div class="vrow done"><div class="vdot"><i data-lucide="check" style="width:15px;height:15px;stroke-width:3"></i></div><div class="vseg"></div><div class="vtxt"><div class="vt">Profil ergänzt</div><div class="vd">Name und Foto</div></div></div>
+      <div class="vrow cur"><div class="vdot">3</div><div class="vseg"></div><div class="vtxt"><div class="vt">Haarprofil</div><div class="vd">Haartyp, Länge, Allergien</div></div></div>
+      <div class="vrow up"><div class="vdot">4</div><div class="vseg"></div><div class="vtxt"><div class="vt">Erste Buchung</div><div class="vd">Salon in deiner Nähe</div></div></div>
+      <div class="vrow up"><div class="vdot">5</div><div class="vtxt"><div class="vt">Bewertung</div><div class="vd">Nach dem Termin</div></div></div>
+    </div>
+  </div>
+
+  <!-- SECTION C: badge taxonomy -->
+  <div class="sec">
+    <div class="sec-eyebrow">C. Badge taxonomy</div>
+    <div class="sec-title">Which mark is which colour</div>
+    <div class="sec-sub">Each badge's colour is locked. The count badge is the one owner-flag (Q21).</div>
+
+    <div class="badges" style="margin-top:16px">
+      <div class="badge-cell"><div class="badge-art"><div class="av"><div class="sel"><i data-lucide="check" style="width:11px;height:11px;stroke-width:3"></i></div></div></div><div class="badge-lbl">Selected<span>ink check</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><div class="disc" style="width:36px;height:36px;background:var(--green);color:#fff"><i data-lucide="check" style="width:18px;height:18px;stroke-width:2.8"></i></div></div><div class="badge-lbl">Done step<span>green check</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><div class="focal"><i data-lucide="check" style="width:26px;height:26px;stroke-width:3"></i></div></div><div class="badge-lbl">Success focal<span>green disc</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><span class="pill-status"><i data-lucide="dot" style="display:none"></i>Geöffnet</span></div><div class="badge-lbl">Status<span>semantic pill</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><span class="rate"><i data-lucide="star" style="width:17px;height:17px;color:var(--star);fill:var(--star)"></i><span class="num">4.9</span></span></div><div class="badge-lbl">Rating<span>yellow star</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><i data-lucide="heart" style="width:26px;height:26px;color:var(--heart);fill:var(--heart)"></i></div><div class="badge-lbl">Saved<span>pink heart</span></div></div>
+      <div class="badge-cell"><div class="badge-art"><div class="bell"><i data-lucide="bell" style="width:24px;height:24px"></i><span class="ct num">3</span></div></div><div class="badge-lbl">Count<span>red (Q21)</span></div></div>
+    </div>
+  </div>
+
+  <!-- SECTION D: codes -->
+  <div class="sec">
+    <div class="sec-eyebrow">D. Codes</div>
+    <div class="sec-title">Inter Tight tabular, not mono</div>
+    <div class="sec-sub">JetBrains Mono retired. The "W-047 font" clashed with the all-Inter-Tight UI.</div>
+    <div class="codebox" style="margin-top:14px">
+      <div class="code-chip"><span class="cv code">W-047</span><span class="cl">Ticket</span></div>
+      <div class="code-chip"><span class="cv code">GIFT-7K2M</span><span class="cl">Gutschein</span></div>
+      <div class="code-chip"><span class="cv code">SOL-8841</span><span class="cl">Buchung</span></div>
+    </div>
+    <div class="cap">Aligned digits via <b>tabular-nums</b>, weight 600, slight negative tracking. Reads as a code without a foreign monospace texture.</div>
+  </div>
+
+</div>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
+</body>
+</html>
