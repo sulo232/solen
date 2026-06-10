@@ -5011,6 +5011,11 @@
       "title": "Payment",
       "payNow": "Pay now"
     },
+    "success": {
+      "title": "Voucher sent!",
+      "sub": "{amount} for {recipient}",
+      "again": "Done"
+    },
     "profile": {
       "title": "My vouchers",
       "subtitle": "Vouchers total",

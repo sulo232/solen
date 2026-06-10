@@ -15,6 +15,7 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { getPublicEnv } from "@/lib/env";
 
 const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -36,7 +37,6 @@ function VoucherPaymentForm({
   clientSecret: string;
   onSuccess: () => void;
 }) {
-  const locale = useLocale();
   const t = useTranslations("vouchers.payment") as any;
   const stripe = useStripe();
   const elements = useElements();
@@ -52,14 +52,18 @@ function VoucherPaymentForm({
 
     const { error: confirmError } = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/${locale}/vouchers/success`,
-      },
+      // Stay on this page: success renders inline (there is no /vouchers/success route —
+      // it used to 404). redirect:"if_required" lets a non-3DS charge resolve here so
+      // onSuccess fires; a 3DS method returns to this URL and the webhook finalizes.
+      confirmParams: { return_url: window.location.href },
+      redirect: "if_required",
     });
 
     if (confirmError) {
       setError(confirmError.message ?? "Payment failed");
       setLoading(false);
+    } else {
+      onSuccess();
     }
   };
 
@@ -90,7 +94,7 @@ export default function VouchersPage() {
   const locale = useLocale();
   const t = useTranslations("vouchers") as any;
 
-  const [step, setStep] = useState<"browse" | "configure" | "payment">("browse");
+  const [step, setStep] = useState<"browse" | "configure" | "payment" | "success">("browse");
   const [salons, setSalons] = useState<Salon[]>([]);
   const [loadingSalons, setLoadingSalons] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -162,28 +166,60 @@ export default function VouchersPage() {
     }
   };
 
-  const handlePaymentSuccess = async () => {
-    // Confirm voucher with server
-    if (!clientSecret || !voucherId) return;
-
-    try {
-      const res = await fetch("/api/vouchers/confirm", {
+  const handlePaymentSuccess = () => {
+    // Payment already succeeded → show the inline success state now. The webhook
+    // (salon-voucher-handler) is the AUTHORITATIVE finalize + recipient email; this
+    // confirm POST is a best-effort instant finalize for snappier UX (both idempotent).
+    if (clientSecret && voucherId) {
+      fetch("/api/vouchers/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           payment_intent_id: clientSecret.split("_secret_")[0],
           voucher_id: voucherId,
         }),
-      });
-
-      if (res.ok) {
-        setStep("browse"); // Reset for next purchase
-        // Redirect will happen from Stripe success page
-      }
-    } catch (error) {
-      console.error("[Vouchers] confirmation error:", error);
+      }).catch((error) => console.error("[Vouchers] confirmation error:", error));
     }
+    setStep("success");
   };
+
+  // Step 4: Success (inline — payment confirmed). Mirrors the gift-card SuccessMark moment.
+  if (step === "success") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-surface px-4">
+        <div className="text-center max-w-sm">
+          <SuccessMark size={58} className="mx-auto mb-4" />
+          <h1
+            className="celebrate-rise font-display text-[24px] font-semibold tracking-[-0.02em] text-s-ink mb-2"
+            style={{ animationDelay: "0.46s" }}
+          >
+            {t("success.title")}
+          </h1>
+          <p
+            className="celebrate-rise text-[14px] text-s-ink-2 mb-6"
+            style={{ animationDelay: "0.56s" }}
+          >
+            {t("success.sub", { amount: formatCurrency(amount, locale), recipient: recipientName })}
+          </p>
+          <button
+            onClick={() => {
+              setStep("browse");
+              setSelectedSalon(null);
+              setClientSecret(null);
+              setVoucherId(null);
+              setRecipientName("");
+              setRecipientEmail("");
+              setMessage("");
+            }}
+            className="celebrate-rise px-6 py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors"
+            style={{ animationDelay: "0.68s" }}
+          >
+            {t("success.again")}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Step 1: Browse salons
   if (step === "browse") {

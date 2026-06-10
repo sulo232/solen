@@ -4983,6 +4983,11 @@
       "title": "Pagamento",
       "payNow": "Paga ora"
     },
+    "success": {
+      "title": "Buono inviato!",
+      "sub": "{amount} per {recipient}",
+      "again": "Fatto"
+    },
     "profile": {
       "title": "I miei voucher",
       "subtitle": "Voucher totali",

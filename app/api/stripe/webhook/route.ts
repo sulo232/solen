@@ -87,6 +87,13 @@ export async function POST(req: NextRequest) {
       const wasVoucherPurchase = await handleVoucherPurchase(pi);
       if (wasVoucherPurchase) break;
 
+      // Salon GIFT vouchers (type:"voucher" from /api/vouchers) — finalize remaining_amount
+      // + email the recipient the code. Reliable here regardless of 3DS/redirect, replacing
+      // the dead client-side confirm path. Guard like the handlers around it.
+      const { handleSalonVoucherPaid } = await import("./salon-voucher-handler");
+      const wasSalonVoucher = await handleSalonVoucherPaid(pi);
+      if (wasSalonVoucher) break;
+
       // Package + retail purchases: finalize the purchase row (paid_amount in
       // Rappen, status) + write a salon_payouts ledger row so the canonical
       // charge.refunded reconciler can adjust it when issuePurchaseRefund runs.

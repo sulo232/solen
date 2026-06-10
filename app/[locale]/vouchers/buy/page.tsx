@@ -20,21 +20,19 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { Gift, CreditCard, Mail } from "lucide-react";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { getPublicEnv } from "@/lib/env";
 
 const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
 interface CheckoutFormProps {
-  clientSecret: string;
-  voucherCode: string;
+  onSuccess: () => void;
 }
 
-function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
+function CheckoutForm({ onSuccess }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const router = useRouter();
-  const t = useTranslations("vouchers") as any;
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -50,14 +48,18 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
 
     const { error } = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/vouchers/success?code=${voucherCode}`,
-      },
+      // Inline success (no /vouchers/success route — it 404'd). redirect:"if_required"
+      // resolves a non-3DS charge here; a 3DS method returns to this URL and the webhook
+      // (voucher-handler) finalizes server-side regardless.
+      confirmParams: { return_url: window.location.href },
+      redirect: "if_required",
     });
 
     if (error) {
       setErrorMessage(error.message || "Ein Fehler ist aufgetreten");
       setIsProcessing(false);
+    } else {
+      onSuccess();
     }
   };
 
@@ -94,6 +96,7 @@ export default function VoucherBuyPage() {
   const [voucherCode, setVoucherCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   // Optional user profile — vouchers work for guests too
   const [user, setUser] = useState<{ id: string; email?: string; name?: string } | null>(null);
@@ -145,6 +148,38 @@ export default function VoucherBuyPage() {
       setLoading(false);
     }
   };
+
+  // Success (inline — payment confirmed). Mirrors the gift-card SuccessMark moment.
+  if (done) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-surface px-4">
+        <div className="text-center max-w-sm">
+          <SuccessMark size={58} className="mx-auto mb-4" />
+          <h1
+            className="celebrate-rise font-display text-[24px] font-semibold tracking-[-0.02em] text-s-ink mb-2"
+            style={{ animationDelay: "0.46s" }}
+          >
+            Gutschein gekauft!
+          </h1>
+          <p
+            className="celebrate-rise text-[14px] text-s-ink-2 mb-4"
+            style={{ animationDelay: "0.56s" }}
+          >
+            {isGift ? `An ${recipientEmail} gesendet` : "Dein Gutschein ist bereit"}
+          </p>
+          {voucherCode && (
+            <div
+              className="celebrate-rise rounded-card p-4 border border-s-border bg-s-bg-surface shadow-float"
+              style={{ animationDelay: "0.68s" }}
+            >
+              <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2 mb-1">Code</p>
+              <p className="font-mono-code text-[20px] font-bold text-s-ink">{voucherCode}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     // V3-D277 (W6): retired s-cream → s-bg-sunken; H1 → LOCKFILE Page H2 spec
@@ -299,7 +334,7 @@ export default function VoucherBuyPage() {
             </div>
 
             <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm clientSecret={clientSecret} voucherCode={voucherCode!} />
+              <CheckoutForm onSuccess={() => setDone(true)} />
             </Elements>
           </div>
         )}

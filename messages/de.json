@@ -5021,6 +5021,11 @@
       "title": "Zahlung",
       "payNow": "Jetzt zahlen"
     },
+    "success": {
+      "title": "Gutschein gesendet!",
+      "sub": "{amount} für {recipient}",
+      "again": "Fertig"
+    },
     "profile": {
       "title": "Meine Gutscheine",
       "subtitle": "Gutscheine insgesamt",

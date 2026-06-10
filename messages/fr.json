@@ -4994,6 +4994,11 @@
       "title": "Paiement",
       "payNow": "Payer maintenant"
     },
+    "success": {
+      "title": "Bon envoyé !",
+      "sub": "{amount} pour {recipient}",
+      "again": "Terminé"
+    },
     "profile": {
       "title": "Mes bons",
       "subtitle": "Bons au total",
