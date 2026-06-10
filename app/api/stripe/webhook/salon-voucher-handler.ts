@@ -42,19 +42,21 @@ export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
       return true;
     }
 
-    // Finalize: set remaining_amount = face amount (CHF). Gated on still-NULL so a
-    // concurrent/re-delivered event flips nothing and the email fires exactly once.
-    const { data: flipped } = await admin
+    // Idempotent finalize: set remaining_amount = face amount (CHF) if still unset. The
+    // client-side confirm POST (vouchers/page.tsx, non-3DS path) may have set it FIRST —
+    // that's fine, this simply no-ops then.
+    //
+    // The recipient email below is deliberately NOT gated on whether this write flipped.
+    // The outer processed_webhook_events claim (route.ts) already guarantees this handler
+    // runs exactly once per event — a Stripe re-delivery short-circuits before reaching
+    // here — so the email cannot double-send. Gating it on the CAS dropped the email
+    // whenever the client confirm won the race (the common non-3DS case): money taken,
+    // voucher valid, recipient never notified.
+    await admin
       .from("vouchers")
       .update({ remaining_amount: (voucher as any).amount })
       .eq("id", (voucher as any).id)
-      .is("remaining_amount", null)
-      .select("id")
-      .maybeSingle();
-
-    if (!flipped) {
-      return true; // already finalized by an earlier delivery — no re-email.
-    }
+      .is("remaining_amount", null);
 
     const salonName = (voucher as any).salons?.name_de ?? "Solen";
     const recipientEmail = (voucher as any).recipient_email as string | null;
