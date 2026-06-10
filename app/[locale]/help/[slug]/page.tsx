@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useParams } from "next/navigation";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
@@ -76,15 +76,6 @@ export default function HelpArticlePage() {
     <div className="min-h-screen bg-white">
       {/* V3-D306: arbitrary s-ink/X opacities → canonical s-ink-2; H1 normalized to Page H2 spec; H2/H3 weighted per LOCKFILE §2 */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
-        {/* Back link */}
-        <Link
-          href={`/${locale}/help`}
-          className="inline-flex items-center gap-1.5 text-sm font-body text-s-ink-2 hover:text-s-accent transition-colors mb-6"
-        >
-          <ArrowLeft size={16} />
-          Zurück zur Hilfe
-        </Link>
-
         {/* Article */}
         <h1 className="font-display text-2xl sm:text-[40px] font-semibold tracking-tight text-s-ink leading-[1.05] mb-2">
           {article.title}

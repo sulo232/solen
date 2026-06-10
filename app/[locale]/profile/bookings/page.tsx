@@ -1,8 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
 import { BookingsList } from '@/components-legacy/booking';
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { buildAlternates } from '@/lib/seo';
 
@@ -41,14 +39,6 @@ export default async function BookingsPage({
       <div className="sticky top-0 z-40 bg-[--raised] border-b border-s-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link
-              href={`/${locale}/profile`}
-              // V3-D283: fix corrupted concatenated dark-mode class (was `hover:bg-s-bg-sunken:bg-white/[0.08]` — invalid Tailwind)
-              className="p-2 hover:bg-s-bg-sunken rounded-pill transition-colors"
-              aria-label="Back"
-            >
-              <ChevronLeft size={24} className="text-s-ink" />
-            </Link>
             <h1 className="font-heading text-2xl font-semibold text-s-ink">
               {tNav('bookings')}
             </h1>

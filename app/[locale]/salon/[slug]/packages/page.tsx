@@ -4,11 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Gift, ArrowLeft, X, AlertCircle } from "lucide-react";
+import { Package, Gift, X, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
-import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { getPublicEnv } from "@/lib/env";
@@ -245,12 +244,6 @@ export default function SalonPackagesPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* V3-D253 (W3): retired s-coral → s-accent for link, s-ink for data/CTA per LOCKFILE */}
-        {/* V3-D337 (T5): decorative accent link → ink underline per §1.5; H1 tracking -0.03em → -0.02em canonical. */}
-        <Link href={`/${locale}/salon/${slug}`} className="text-sm text-s-ink underline underline-offset-2 flex items-center gap-1 mb-6 hover:no-underline transition-colors">
-          <ArrowLeft size={14} /> {l.back}
-        </Link>
-
         <h1 className="font-heading text-[clamp(25px,4vw,40)] font-semibold text-s-ink mb-1 tracking-[-0.02em]">{l.title}</h1>
         {salonName && <p className="text-sm text-s-ink-2 mb-6">{salonName}</p>}
 

@@ -15,9 +15,7 @@
  */
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
@@ -121,15 +119,6 @@ export default async function SalonReviewsPage({
 
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-      {/* Back link — V3-D251 (W3, 2026-05-27): retired s-coral → s-accent (LOCKFILE §1) */}
-      <Link
-        href={`/${locale}/salon/${slug}`}
-        className="inline-flex items-center gap-1.5 font-body text-[13px] text-s-ink-2 hover:text-s-accent transition-colors duration-150 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
-      >
-        <ChevronLeft size={16} aria-hidden />
-        {salon.name}
-      </Link>
-
       <SignatureLockup
         eyebrow={`Salon ${salon.name}`}
         headline={`Bewertungen ${salon.review_count?.toLocaleString("de-CH") ?? 0}`}

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { Scissors, Star, ArrowLeft, Share2, MapPin } from "lucide-react";
+import { Scissors, Star, Share2, MapPin } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
@@ -116,14 +116,8 @@ export default function BarberProfilePage() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
 
-        {/* Back + Share */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between">
-          <Link
-            href={`/${locale}/salon/${salonSlug}`}
-            className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"
-          >
-            <ArrowLeft size={18} />
-          </Link>
+        {/* Share */}
+        <div className="absolute top-4 left-4 right-4 flex justify-end">
           <button
             onClick={handleShare}
             className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"

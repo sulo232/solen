@@ -1,5 +1,3 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,15 +8,6 @@ export default function ImpressumPage() {
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="max-w-2xl mx-auto px-4 pt-8">
-        {/* V3-D296: bg-[--base] → bg-white; hover:text-s-accent → hover:text-s-accent (retired token swap, LOCKFILE §1) */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-s-ink-2 hover:text-s-accent text-sm font-body transition-colors mb-8"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Zurück
-        </Link>
-
         {/* V3-D296: tracking-wider (too loose for LOCKFILE -0.03em); ALL-CAPS dropped; weight 700 per LOCKFILE §2 Page H2 role */}
         <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-s-ink mb-2">
           Impressum

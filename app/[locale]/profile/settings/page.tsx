@@ -6,9 +6,7 @@
 
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import SettingsForm, { type SettingsLocale } from "./SettingsForm";
@@ -62,13 +60,6 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
     <main className="min-h-screen bg-white">
       <div className="max-w-md mx-auto px-5 pt-6 pb-20">
         <div className="flex items-center gap-2 mb-6">
-          <Link
-            href={`/${locale}/profile`}
-            aria-label={t("back")}
-            className="grid place-items-center w-10 h-10 -ml-2 rounded-full text-s-ink hover:bg-s-bg-sunken transition-colors duration-200"
-          >
-            <ChevronLeft size={22} aria-hidden />
-          </Link>
           <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-s-ink">{t("settingsTitle")}</h1>
         </div>
 

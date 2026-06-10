@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ArrowLeft, Sparkles, Award } from "lucide-react";
+import { Star, Sparkles, Award } from "lucide-react";
 import TechPortfolio from "@/components-legacy/nail/TechPortfolio";
 import Spinner from "@/components-legacy/ui/Spinner";
 
@@ -77,14 +77,6 @@ export default function NailTechProfilePage() {
       {/* Header */}
       <div className="bg-white border-b border-s-ink/5">
         <div className="max-w-5xl mx-auto px-4 py-6">
-          <Link
-            href={tech.salon_slug ? `/${locale}/salon/${tech.salon_slug}` : `/${locale}`}
-            className="inline-flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-accent mb-4"
-          >
-            <ArrowLeft size={14} />
-            {tech.salon_name ?? "Zurück"}
-          </Link>
-
           <div className="flex items-center gap-4">
             {/* Avatar */}
             <div className="w-20 h-20 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">

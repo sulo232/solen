@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-import { ChevronLeft, ClipboardList, Clock, Sparkles } from "lucide-react";
+import { ClipboardList, Clock, Sparkles } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
 import type { IntakeFormResponse } from "@/lib/types";
@@ -71,9 +70,6 @@ export default function MyIntakeFormsPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
         {/* Header — V3-D286: fix corrupted dark-mode hover + swap undefined s-amber → s-warning (defined token per LOCKFILE §1) */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
-            <ChevronLeft size={20} className="text-s-ink-2" />
-          </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <ClipboardList size={20} className="text-s-ink" />
             Meine Konsultationsformulare
