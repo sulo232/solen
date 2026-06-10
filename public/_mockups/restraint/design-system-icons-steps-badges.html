@@ -72,6 +72,9 @@
   .si.cur{color:var(--ink);font-weight:700;}
   .si.up .dot{background:var(--sunken);color:var(--ink-3);}
   .si-line{flex:1;height:2px;background:var(--border);border-radius:2px;margin-top:17px;min-width:8px;}
+  /* blue variant — the walk-in surface (its primary is blue, §13.2 exception) */
+  .stepper.blue .si.done .dot{background:var(--blue);}
+  .stepper.blue .si.cur .dot{background:#fff;box-shadow:inset 0 0 0 3px var(--blue);color:var(--blue);}
 
   /* vertical checklist */
   .vlist{display:flex;flex-direction:column;}
@@ -164,9 +167,9 @@
   <div class="sec">
     <div class="sec-eyebrow">B. Progress stepper</div>
     <div class="sec-title">Icon above text, everywhere</div>
-    <div class="sec-sub">Done = green check. Current = ink. Upcoming = grey. Never blue. One per screen.</div>
+    <div class="sec-sub">Done = filled green. Current = green ring. Upcoming = grey. One indicator per screen. (Walk-in is the one blue-themed surface, below.)</div>
 
-    <div class="label">Booking flow (horizontal, ≤4 nodes)</div>
+    <div class="label">Booking flow (horizontal, ≤4 nodes) — green default</div>
     <div class="stepper">
       <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Service</span><span class="si-line"></span>
       <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Zeit</span><span class="si-line"></span>
@@ -174,14 +177,14 @@
       <span class="si up"><span class="dot">4</span>Bezahlen</span>
     </div>
 
-    <div class="label">Walk-in tracker (distinct icon per node)</div>
-    <div class="stepper">
+    <div class="label">Walk-in tracker (distinct icon per node) — blue surface</div>
+    <div class="stepper blue">
       <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>Bezahlt</span><span class="si-line"></span>
-      <span class="si done"><span class="dot"><i data-lucide="check" style="width:17px;height:17px;stroke-width:2.8"></i></span>In der Schlange</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="users" style="width:18px;height:18px"></i></span>In der Schlange</span><span class="si-line"></span>
       <span class="si cur"><span class="dot"><i data-lucide="clock" style="width:17px;height:17px"></i></span>Fast dran</span><span class="si-line"></span>
       <span class="si up"><span class="dot"><i data-lucide="armchair" style="width:16px;height:16px"></i></span>Dran</span>
     </div>
-    <div class="cap"><b>Only the current node's icon is weighted.</b> Done nodes show the green check, upcoming show a thin glyph. No repeated checkmarks.</div>
+    <div class="cap"><b>Walk-in is blue</b> (its surface primary, §13.2 exception) — same ring form, blue hue. Each node keeps its own icon; only the current node's icon is weighted. No checkmark on a non-done node.</div>
 
     <div class="label">Onboarding checklist (vertical, 5+ items)</div>
     <div class="vlist">
