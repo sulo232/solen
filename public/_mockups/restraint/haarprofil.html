@@ -99,18 +99,18 @@
   .card-label{font-family:'Inter Tight';font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
   .card-label i{color:var(--ink-2);}
 
-  /* ─────────── HAIR-TYPE TILES (real discovery pattern masks) ─────────── */
-  /* matches discovery PatternSelector: rounded-2xl tile, 28px currentColor mask glyph + label below,
-     SELECTED = bg ink + white glyph/label, UNSELECTED = bg sunken + ink glyph. */
+  /* ─────────── HAIR-TYPE TILES (real colour hair-texture photos — kills the monochrome) ─────────── */
   .hairtypes{display:flex;gap:8px;}
-  .htile{flex:1;min-height:78px;border-radius:16px;border:1px solid transparent;background:var(--sunken);color:var(--ink);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 6px;cursor:pointer;
-    transition:transform .12s var(--ease),background-color .15s ease,color .15s ease;}
+  .htile{flex:1;position:relative;border-radius:16px;overflow:hidden;border:2.5px solid transparent;cursor:pointer;
+    aspect-ratio:1/1.18;background:var(--sunken);transition:transform .12s var(--ease);}
   .htile:active{transform:scale(.96);}
-  .htile .glyph{display:inline-block;width:28px;height:28px;background-color:currentColor;}
-  .htile .lbl{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:12.5px;}
-  .htile.is-selected{background:var(--ink);color:#fff;}
-  .htile.is-selected .lbl{font-weight:600;}
+  .htile img{width:100%;height:100%;object-fit:cover;display:block;}
+  .htile .lbl{position:absolute;left:0;right:0;bottom:0;padding:18px 6px 7px;color:#fff;font-family:'Inter Tight',sans-serif;
+    font-weight:600;font-size:12.5px;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.62));}
+  .htile.is-selected{border-color:var(--ink);}
+  .htile.is-selected::after{content:"";position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:var(--r-pill);
+    background:var(--ink);display:flex;}
+  .htile.is-selected .tick{position:absolute;top:9px;right:9px;z-index:2;color:#fff;display:flex;}
 
   /* ─────────── SELECTABLE PILLS (selected = ink fill, calm) ─────────── */
   .pillset{display:flex;flex-wrap:wrap;gap:8px;}
@@ -203,15 +203,12 @@
   <!-- top bar: ink back chevron + title -->
   <div class="topbar">
     <button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button>
-    <h1 class="t-title">Mein Haarprofil</h1>
+    <h1 class="t-title">Haarprofil</h1>
   </div>
 
   <div class="scroll">
-    <!-- (2) clean title + name + one-line intro (no progress bar) -->
-    <h2 class="greeting rise">Hallo, Lena</h2>
-    <p class="intro rise">Lena, damit dein Coiffeur dich besser kennt.</p>
 
-    <!-- (1) Haartyp — REAL discovery hair-pattern masks -->
+    <!-- (1) Haartyp — real colour hair-texture photos -->
     <div class="sec rise" style="padding-top:26px;">
       <div class="card-flat">
         <div class="card-label">
@@ -220,19 +217,20 @@
         </div>
         <div class="hairtypes">
           <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/straight.png) center/contain no-repeat;mask:url(/hair-patterns/straight.png) center/contain no-repeat;"></span>
+            <img src="https://images.unsplash.com/photo-1605980776566-0486c3ac7617?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
             <span class="lbl">Glatt</span>
           </button>
           <button class="htile is-selected">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat;"></span>
+            <i class="tick" data-lucide="check" style="width:13px;height:13px;stroke-width:3"></i>
+            <img src="https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
             <span class="lbl">Wellig</span>
           </button>
           <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/coily.png) center/contain no-repeat;mask:url(/hair-patterns/coily.png) center/contain no-repeat;"></span>
+            <img src="https://images.unsplash.com/photo-1567894340315-735d7c361db0?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
             <span class="lbl">Lockig</span>
           </button>
           <button class="htile">
-            <span class="glyph" style="-webkit-mask:url(/hair-patterns/protective.png) center/contain no-repeat;mask:url(/hair-patterns/protective.png) center/contain no-repeat;"></span>
+            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
             <span class="lbl">Kraus</span>
           </button>
         </div>
@@ -270,18 +268,19 @@
       </div>
     </div>
 
-    <!-- (5) Kopfhaut -->
+    <!-- Bart (for men) -->
     <div class="sec rise" style="padding-top:14px;">
       <div class="card-flat">
         <div class="card-label">
-          <i data-lucide="droplet" style="width:18px;height:18px"></i>
-          Kopfhaut
+          <i data-lucide="scissors" style="width:18px;height:18px"></i>
+          Bart
         </div>
         <div class="pillset">
-          <span class="opt is-selected">Normal</span>
-          <span class="opt">Trocken</span>
-          <span class="opt">Fettig</span>
-          <span class="opt">Empfindlich</span>
+          <span class="opt is-selected">Kein Bart</span>
+          <span class="opt">Stoppeln</span>
+          <span class="opt">Voll</span>
+          <span class="opt">Goatee</span>
+          <span class="opt">Fade</span>
         </div>
       </div>
     </div>
@@ -360,7 +359,7 @@
           </button>
           <button class="photo-src">
             <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
-            <span class="ov"><i data-lucide="sparkles" style="width:18px;height:18px"></i>Aus Discovery</span>
+            <span class="ov"><i data-lucide="compass" style="width:18px;height:18px"></i>Aus Discovery</span>
           </button>
         </div>
       </div>
@@ -374,10 +373,10 @@
             <i data-lucide="pencil" style="width:18px;height:18px"></i>
             Notiz für den Coiffeur
           </div>
-          <button class="ai-chip"><i data-lucide="sparkles" style="width:14px;height:14px"></i>KI-Vorschlag</button>
+          <button class="ai-chip">KI-Vorschlag</button>
         </div>
         <div class="note">Bitte die Spitzen nur leicht nachschneiden, ich lasse die Länge wachsen. Bei der Coloration gerne kühle Töne, kein Rotstich.</div>
-        <div class="ai-hint"><i data-lucide="sparkles" style="width:13px;height:13px"></i>Aus deinen Referenzfotos und deinem Haartyp generiert.</div>
+        <div class="ai-hint">Aus deinen Referenzfotos und deinem Haartyp generiert.</div>
       </div>
     </div>
   </div>

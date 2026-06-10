@@ -84,10 +84,18 @@
   .strack{position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
   /* base track: light-grey from current node forward */
   .sline{position:absolute;top:22px;left:22px;right:22px;height:2px;background:#E4E4E7;border-radius:var(--r-pill);}
-  /* ink track: completed segments up to the current node (current example = 1-2 done, 3 current → 2 of 3 segments) */
+  /* ink track: completed segments up to the current node — ANIMATES filling in on load */
   .sline-done{position:absolute;top:22px;left:22px;height:2px;background:var(--ink);border-radius:var(--r-pill);
-    width:calc((100% - 44px) * 0.6667);}
+    width:calc((100% - 44px) * 0.6667);transform-origin:left center;animation:grow-track 1s var(--ease) both .4s;}
+  @keyframes grow-track{from{transform:scaleX(0);}to{transform:scaleX(1);}}
   .snode{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:9px;width:60px;}
+  /* nodes pop in one after another */
+  .scircle-wrap > span{animation:nodepop .5s var(--ease) both;}
+  .snode:nth-child(3) .scircle-wrap > span{animation-delay:.12s;}
+  .snode:nth-child(4) .scircle-wrap > span{animation-delay:.30s;}
+  .snode:nth-child(5) .scircle-wrap > span{animation-delay:.52s;}
+  .snode:nth-child(6) .scircle-wrap > span{animation-delay:.66s;}
+  @keyframes nodepop{0%{transform:scale(.3);opacity:0;}65%{transform:scale(1.12);}100%{transform:scale(1);opacity:1;}}
   /* circle sits centered on the 44px current diameter so the track stays level */
   .scircle-wrap{height:44px;display:flex;align-items:center;justify-content:center;}
   /* past node — 36px ink fill, white icon, NO label */
@@ -111,11 +119,13 @@
     animation:pulse 1.8s var(--ease) infinite;}
   @keyframes pulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(3);opacity:0;}100%{opacity:0;}}
   .live-label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--green);}
-  /* "3 vor dir" — Inter Tight ~40px */
-  .position{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:-.03em;color:var(--ink);}
-  .position .vordir{font-weight:600;color:var(--ink-2);}
+  /* "3 vor dir" — Inter Tight, big, pops in */
+  .position{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:52px;line-height:1;letter-spacing:-.03em;color:var(--ink);}
+  .position .num{display:inline-block;animation:numpop .6s var(--ease) both .55s;}
+  @keyframes numpop{0%{transform:scale(.5);opacity:0;}62%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+  .position .vordir{font-weight:600;color:var(--ink-2);font-size:34px;}
   /* ETA — calmer weight right below */
-  .eta{margin-top:10px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:19px;letter-spacing:-.015em;color:var(--ink-2);}
+  .eta{margin-top:12px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:20px;letter-spacing:-.015em;color:var(--ink-2);}
   /* updated line */
   .updated{margin-top:16px;font-size:13px;font-weight:400;color:var(--ink-3);}
 
@@ -189,7 +199,7 @@
   <!-- ACTIONS — two equal neutral-outline pills, no primary CTA, no blue -->
   <div class="actions rise" style="animation-delay:.16s;">
     <button class="btn-outline"><i data-lucide="navigation" style="width:17px;height:17px"></i>Wegbeschreibung</button>
-    <button class="btn-outline"><i data-lucide="share-2" style="width:17px;height:17px"></i>Status teilen</button>
+    <button class="btn-outline"><i data-lucide="share" style="width:17px;height:17px"></i>Status teilen</button>
   </div>
 
 </div>

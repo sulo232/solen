@@ -85,8 +85,10 @@
   .team-card:active{transform:scale(.96);}
   .team-ava{position:relative;width:72px;height:72px;margin:0 auto 8px;}
   .team-ava img{width:72px;height:72px;border-radius:var(--r-pill);object-fit:cover;}
-  /* selected avatar ring = BLUE (owner override of the usual ink-selected rule) */
-  .team-card.is-active .team-ava img{box-shadow:0 0 0 2px var(--blue);}
+  /* selected = a small clean ink check badge (top-right) — NO coloured ring around the avatar */
+  .sel-tick{position:absolute;top:-2px;right:4px;width:21px;height:21px;border-radius:var(--r-pill);background:var(--ink);
+    border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 1px 3px rgba(10,10,10,.2);}
+  .team-card.is-active .team-name{font-weight:700;}
   .team-badge{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:#fff;
     border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 7px;font-size:11px;font-weight:600;
     display:inline-flex;align-items:center;gap:3px;box-shadow:0 1px 2px rgba(10,10,10,.08);}
@@ -132,6 +134,7 @@
       <div class="team-card is-active">
         <div class="team-ava">
           <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="sel-tick"><i data-lucide="check" style="width:13px;height:13px;stroke-width:3.2"></i></span>
           <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.9</span></span>
         </div>
         <div class="team-name">Nadia F.</div>
@@ -183,7 +186,7 @@
         </div>
       </div>
       <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:16px;">
-        <button class="btn-outline selected is-blue"><i data-lucide="check" style="width:16px;height:16px"></i>Ausgewählt</button>
+        <button class="btn-outline selected"><i data-lucide="check" style="width:16px;height:16px"></i>Ausgewählt</button>
       </div>
     </div>
   </div>

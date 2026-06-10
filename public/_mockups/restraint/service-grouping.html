@@ -95,21 +95,23 @@
   .grp{display:flex;align-items:baseline;gap:8px;padding:32px 0 12px;}
   .grp .grp-min{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:12px;letter-spacing:-.01em;color:var(--ink-3);font-variant-numeric:tabular-nums;}
 
-  /* ─────────── SERVICE BOX (the new idea — a card per service, NO shadow) ─────────── */
-  /* PDP full-bleed box language: card-flat, 24px radius, 1px border, no shadow. */
+  /* ─────────── SERVICE BOX (PDP-full-bleed language: a PHOTO card per service, NO shadow) ─────────── */
   .group{display:flex;flex-direction:column;gap:12px;}
-  .sbox{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:18px;
-    display:flex;align-items:center;gap:14px;transition:transform .14s var(--ease),border-color .14s ease;}
+  .sbox{background:var(--bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;
+    display:flex;align-items:stretch;transition:transform .14s var(--ease),border-color .14s ease;}
   .sbox:active{transform:scale(.99);}
+  /* the service photo fills the left of the box (the warmth + the "full-bleed box" feel) */
+  .sbox-photo{width:104px;object-fit:cover;flex-shrink:0;background:var(--sunken);align-self:stretch;display:block;}
+  .sbox-body{flex:1;min-width:0;padding:15px 16px;display:flex;align-items:center;gap:12px;}
   .sbox-main{flex:1;min-width:0;}
-  .sbox-name{display:flex;align-items:center;gap:8px;}
-  .sbox-name .t-row{font-size:16px;}
-  .sbox-sub{margin-top:5px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3);}
-  .sbox-sub .lucide{width:14px;height:14px;color:var(--ink-3);}
-  /* PRICE prominent — Inter Tight ~18px */
+  .sbox-name{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .sbox-name .t-row{font-size:15.5px;line-height:1.2;}
+  .sbox-sub{margin-top:6px;display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3);}
+  .sbox-sub .lucide{width:13px;height:13px;color:var(--ink-3);}
+  /* PRICE prominent — Inter Tight ~19px */
   .sbox-side{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;}
-  .sbox-price{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;}
-  .sbox-price .cur{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-right:1px;}
+  .sbox-price{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;}
+  .sbox-price .cur{font-size:12px;font-weight:600;color:var(--ink-2);margin-right:1px;}
   /* the ONE "Beliebt" per group: Inter Tight 800 name + tiny sunken/ink tag (never coloured) */
   .sbox.is-pop .t-row{font-family:'Inter Tight',sans-serif;font-weight:800;letter-spacing:-.015em;}
   .tag-pop{flex-shrink:0;background:var(--sunken);color:var(--ink);border-radius:var(--r-pill);
@@ -180,23 +182,29 @@
     </div>
     <div class="group">
       <div class="sbox is-pop rise" style="animation-delay:.22s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Pony-Schnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">25</span> Min, Nachschnitt &amp; Finish</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">35</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Pony-Schnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">25</span> Min, Nachschnitt</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">35</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
       <div class="sbox rise" style="animation-delay:.24s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Bartkontur</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">20</span> Min, Trimmen &amp; Rasur</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">42</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Bartkontur</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">20</span> Min, Trimmen &amp; Rasur</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">42</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
     </div>
@@ -207,33 +215,42 @@
     </div>
     <div class="group">
       <div class="sbox is-pop rise" style="animation-delay:.28s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Damenschnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">55</span> Min, mit Waschen &amp; Beratung</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">95</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Damenschnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">55</span> Min, mit Waschen</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">95</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
       <div class="sbox rise" style="animation-delay:.30s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Herrenschnitt</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">45</span> Min, Schnitt &amp; Styling</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">68</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Herrenschnitt</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">45</span> Min, Schnitt &amp; Styling</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">68</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
       <div class="sbox rise" style="animation-delay:.32s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Ansatzfarbe</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">60</span> Min, Coloration &amp; Föhnen</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">110</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Ansatzfarbe</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">60</span> Min, Coloration</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">110</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
     </div>
@@ -244,23 +261,29 @@
     </div>
     <div class="group">
       <div class="sbox is-pop rise" style="animation-delay:.36s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Balayage &amp; Schnitt</span><span class="tag-pop">Beliebt</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">150</span> Min, Freihand-Coloration &amp; Pflege</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">220</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Balayage &amp; Schnitt</span><span class="tag-pop">Beliebt</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">150</span> Min, Freihand-Coloration</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">220</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
       <div class="sbox rise" style="animation-delay:.38s;">
-        <div class="sbox-main">
-          <div class="sbox-name"><span class="t-row">Keratin-Glättung</span></div>
-          <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">120</span> Min, Behandlung &amp; Styling</div>
-        </div>
-        <div class="sbox-side">
-          <div class="sbox-price"><span class="cur">CHF</span> <span class="num">185</span></div>
-          <button class="btn-outline">Buchen</button>
+        <img class="sbox-photo" src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=260&q=80" alt="" referrerpolicy="no-referrer">
+        <div class="sbox-body">
+          <div class="sbox-main">
+            <div class="sbox-name"><span class="t-row">Keratin-Glättung</span></div>
+            <div class="sbox-sub"><i data-lucide="clock"></i><span class="num">120</span> Min, Behandlung</div>
+          </div>
+          <div class="sbox-side">
+            <div class="sbox-price"><span class="cur">CHF</span> <span class="num">185</span></div>
+            <button class="btn-outline">Buchen</button>
+          </div>
         </div>
       </div>
     </div>
