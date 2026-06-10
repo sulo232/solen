@@ -57,6 +57,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 // Step 0.5 — Register Email/Pass/DOB (NEW)
 // ─────────────────────────────────────────
 function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boolean }) {
+  const locale = useLocale();
   const tc = useTranslations("common");
   const t = useTranslations("authRegister");
   const [email, setEmail] = useState("");
@@ -192,9 +193,9 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
       <p className="text-center text-[13px] text-s-ink-2 mt-2">
         {t("haveAccount")}{" "}
-        <a href="/auth/login" className="text-s-ink font-medium underline underline-offset-2">
+        <Link href={`/${locale}/auth/login`} className="text-s-ink font-medium underline underline-offset-2">
           {t("signIn")}
-        </a>
+        </Link>
       </p>
     </form>
   );

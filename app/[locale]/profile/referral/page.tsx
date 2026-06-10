@@ -26,7 +26,7 @@ export default function ReferralPage() {
   }, []);
 
   const shareUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/de?ref=${data?.referral_code ?? ""}`
+    ? `${window.location.origin}/${locale}?ref=${data?.referral_code ?? ""}`
     : "";
 
   const copyCode = () => {

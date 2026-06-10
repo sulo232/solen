@@ -4,6 +4,7 @@ import * as React from "react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
+import { useLocale } from "next-intl";
 
 /**
  * Recently Viewed — V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
@@ -157,9 +158,12 @@ export default function RecentlyViewed({
   const list: RecentEntry[] = hasHistory
     ? entries
     : sortByCategoryPicks(DEMO_SALONS, prefs?.categories ?? []);
+  const locale = useLocale();
   const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
-  const linkLabel = hasHistory ? "Im Profil →" : "Alle entdecken →";
-  const linkHref = hasHistory ? "/profile/recently-viewed" : "/search?sort=top-rated";
+  // Both go to search: /profile/recently-viewed doesn't exist (soft 404) and ?sort=top-rated
+  // is an invalid sort that's silently dropped. Locale-prefixed so en/fr/it don't 404 (audit #17).
+  const linkLabel = "Alle entdecken →";
+  const linkHref = `/${locale}/search`;
 
   return (
     // V3-D112 (2026-05-23): bg-s-peach REMOVED per user "remove ths color like
