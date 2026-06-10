@@ -15,10 +15,8 @@ Started working the HIGH bucket 2026-06-10.
 - [x] **#5** Dead notification Bell removed site-wide (`fdf99b183`)
 - [x] **#6** `profile/stamps` guest redirect → canonical `/auth/login` (`fdf99b183`)
 - [x] **#7** `profile/referral` guest dead-end → Anmelden CTA (`fdf99b183`)
-- [ ] **#8** ⏸️ DECISION — walk-in-pay paid screen has a QR (other-device) but no tappable
-  "Live-Status ansehen" link to `/queue/[token]`, and its stepper looks static. Decide:
-  make the paid screen poll-live, OR add a link-out tile to the bento grid (designed
-  surface → wants a mockup).
+- [x] **#8** RESOLVED via the de-dup below — walk-in-pay no longer shows a frozen status
+  view; after payment it redirects to the single live `/queue/[token]` tracker (`068a4e5ca`).
 - [ ] **#9** ⏸️ DECISION — fabricated "14 Salons in der Nähe" (`Nearby.tsx`). No real
   geolocation backend. Options: (a) remove the section, (b) wire to real proximity
   (feature), (c) empty/skeleton state. Visible homepage change → needs sign-off.
@@ -50,6 +48,12 @@ Started working the HIGH bucket 2026-06-10.
 - [ ] #7 money-moving self-cancel confirm sheet
 - [ ] #8 empty-service-list state
 - [ ] #9 recently-viewed destination
+
+## 🔁 DUPLICATION — RESOLVED (`068a4e5ca`, 2026-06-10)
+queue/[token] is now the SINGLE "in queue" surface. walk-in-pay is payment-only and
+redirects there on payment success; its old frozen in-queue view + ALL QR were deleted
+(−269 lines). No QR anywhere in walk-in (QR still fine for stamps/loyalty). Stripe test-card
+e2e still owner-verifiable. Original (stale) finding below for history:
 
 ## 🔁 DUPLICATION flagged (2026-06-10, owner caught it)
 The walk-in "you're in the queue" screen exists TWICE, two designs:
