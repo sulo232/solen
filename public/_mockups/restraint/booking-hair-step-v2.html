@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking — Haare step v2 (walk-in-aligned, short copy, more options)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1; --blue-pale:#EAF1FE;
+    --amber:#B45309; --amber-bg:#FEF3E2;
+    --r-card:18px; --r-btn:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
+  .note{max-width:360px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+  .note b{font-family:'Inter Tight',sans-serif}
+  .frame{width:390px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18)}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 6px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .appbar{display:flex;align-items:center;gap:12px;padding:10px 16px 12px;border-bottom:1px solid var(--border)}
+  .appbar .x{width:24px;height:24px;display:grid;place-items:center}
+  .appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em}
+
+  /* unified stepper — identical to booking-pay-step.html */
+  .steps{display:flex;align-items:flex-start;padding:16px 18px 4px}
+  .stepnode{display:flex;flex-direction:column;align-items:center;gap:7px;width:64px;flex:none}
+  .disc{width:42px;height:42px;border-radius:999px;display:grid;place-items:center}
+  .disc.done{background:var(--blue);color:#fff}
+  .disc.current{background:#fff;color:var(--blue);box-shadow:inset 0 0 0 2px var(--blue),0 0 0 5px rgba(39,110,241,.14)}
+  .disc.future{background:var(--sunken);color:var(--ink-3)}
+  .stepnode span{font-size:10.5px;font-weight:600;line-height:1.2;color:var(--ink);text-align:center}
+  .stepnode.future span{color:var(--ink-3)}
+  .conn{flex:1;height:2px;border-radius:99px;background:var(--border);margin-top:20px;min-width:8px}
+  .conn.done{background:var(--blue)}
+  .steps .lucide{width:18px;height:18px;stroke-width:2}
+
+  .body{padding:14px 18px 110px}
+  .body h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .sub{font-size:14px;color:var(--ink-2);margin-top:3px}
+
+  .chip{display:flex;align-items:center;gap:10px;background:var(--blue-pale);border-radius:12px;padding:9px 12px;margin-top:12px;font-size:13px;color:var(--ink-2)}
+  .chip img{width:26px;height:26px;border-radius:999px;object-fit:cover}
+  .chip b{color:var(--ink);font-weight:600}
+  .chip .lucide{width:14px;height:14px;color:var(--blue);margin-left:auto;flex:none}
+
+  .lbl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 9px}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:7px;border:1px solid var(--border);border-radius:14px;padding:13px 0 11px;background:#fff;font-size:12.5px;font-weight:500}
+  .tile svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+  .tile.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{border:1px solid var(--border);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:500;background:#fff}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .notefield{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-top:9px;color:var(--ink-3);font-size:13.5px}
+  .notefield .lucide{width:16px;height:16px;stroke-width:1.9;flex:none}
+
+  .mismatch{display:flex;gap:9px;align-items:flex-start;background:var(--amber-bg);border-radius:12px;padding:10px 12px;margin-top:12px}
+  .mismatch .lucide{width:15px;height:15px;color:var(--amber);flex:none;margin-top:2px}
+  .mismatch p{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+  .mismatch b{color:var(--ink);font-weight:600}
+  .mismatch a{color:var(--blue);font-weight:600;text-decoration:none}
+
+  .ctabar{position:relative;background:#fff;padding:14px 16px 26px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.12)}
+  .cta{width:100%;height:54px;border:0;border-radius:var(--r-btn);background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px}
+  .skip{display:block;text-align:center;margin-top:11px;font-size:13.5px;font-weight:500;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>Haare step v2.</b> Same blue walk-in stepper. Copy cut to one short line. MORE options: + Dicke (real column) + Bart (barber carts; needs a tiny column) + optional 1-line Notiz. Pre-fill chip compact in blue-pale; mismatch hint stays non-blocking. "Überspringen" makes the whole step skippable — it prepares, never gates.</div>
+
+<div class="frame">
+  <div class="statusbar"><span>9:41</span><span>●●●</span></div>
+  <div class="appbar">
+    <div class="x"><i data-lucide="x" style="width:22px;height:22px"></i></div>
+    <h1>Termin bei Old Town Barbers</h1>
+  </div>
+
+  <div class="steps">
+    <div class="stepnode"><div class="disc done"><i data-lucide="scissors"></i></div><span>Service</span></div>
+    <div class="conn done"></div>
+    <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Zeit</span></div>
+    <div class="conn"></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="sparkles"></i></div><span style="font-weight:700">Haare</span></div>
+    <div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="credit-card"></i></div><span>Bezahlen</span></div>
+  </div>
+
+  <div class="body">
+    <h2>Deine Haare</h2>
+    <p class="sub">Für die Vorbereitung. Alles optional.</p>
+
+    <div class="chip">
+      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80" alt="">
+      <span>Aus deinem <b>Haarprofil</b></span>
+      <i data-lucide="check"></i>
+    </div>
+
+    <div class="lbl">Haartyp</div>
+    <div class="tiles">
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M8 4v16M12 4v16M16 4v16"/></svg>Glatt</div>
+      <div class="tile on"><svg viewBox="0 0 24 24"><path d="M8 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4M13 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4M18 4c2 2-2 4 0 6s-2 4 0 6 2 4 0 4"/></svg>Wellig</div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M8 4a2 2 0 1 1 0 4 2 2 0 1 0 0 4 2 2 0 1 1 0 4 2 2 0 1 0 0 4M15 4a2 2 0 1 1 0 4 2 2 0 1 0 0 4 2 2 0 1 1 0 4 2 2 0 1 0 0 4"/></svg>Lockig</div>
+      <div class="tile"><svg viewBox="0 0 24 24"><path d="M7 4q3 1.5 0 3t0 3 0 3 0 3 0 3M12 4q3 1.5 0 3t0 3 0 3 0 3 0 3M17 4q3 1.5 0 3t0 3 0 3 0 3 0 3"/></svg>Kraus</div>
+    </div>
+
+    <div class="lbl">Länge</div>
+    <div class="pills">
+      <div class="pill">Kurz</div>
+      <div class="pill on">Mittel</div>
+      <div class="pill">Lang</div>
+      <div class="pill">Sehr lang</div>
+    </div>
+
+    <div class="lbl">Dicke</div>
+    <div class="pills">
+      <div class="pill">Dünn</div>
+      <div class="pill on">Mittel</div>
+      <div class="pill">Dick</div>
+    </div>
+
+    <div class="lbl">Bart</div>
+    <div class="pills">
+      <div class="pill">Kein Bart</div>
+      <div class="pill on">Kurz</div>
+      <div class="pill">Voll</div>
+    </div>
+
+    <div class="lbl">Notiz an deinen Barber</div>
+    <div class="notefield"><i data-lucide="pencil-line"></i>Optional, z. B. «Spitzen nur leicht»</div>
+
+    <div class="mismatch">
+      <i data-lucide="triangle-alert"></i>
+      <p><b>Passt das?</b> Dein Profil sagt <b>langes Haar</b>. <a href="#">Service ändern</a></p>
+    </div>
+  </div>
+
+  <div class="ctabar">
+    <button class="cta">Weiter</button>
+    <a class="skip" href="#">Überspringen</a>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
