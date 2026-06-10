@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking — Deine Haare step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .lucide{stroke-width:1.8;flex-shrink:0}
+  :root{--ink:#0A0A0A;--ink-2:#6B6B6B;--ink-3:#9B9B9B;--border:#E7E7EA;--bg:#FFFFFF;--sunken:#F4F4F5;
+    --blue:#276EF1;--green:#16A34A;--warn:#B45309;--warn-bg:#FEF6E7;--r-pill:9999px;--ease:cubic-bezier(.16,1,.3,1);}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);padding:28px 16px 70px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:800;letter-spacing:-.02em;max-width:840px;margin:0 auto 4px;}
+  .sub{max-width:840px;margin:0 auto 24px;color:var(--ink-2);font-size:13.5px;line-height:1.6;}
+  .grid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;}
+  .tag{font-family:'Inter Tight';font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);padding:0 2px 8px;}
+  .tag b{color:var(--ink);}
+  .frame{width:390px;height:790px;background:#fff;border-radius:34px;position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(10,10,10,.05),0 20px 44px -18px rgba(10,10,10,.24);display:flex;flex-direction:column;}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;flex-shrink:0;}
+  .sig{display:flex;gap:5px;align-items:center;}
+  .num{font-family:'Inter Tight';font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+
+  .topbar{display:flex;align-items:center;gap:12px;padding:4px 16px 0;flex-shrink:0;}
+  .btn-back{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;}
+  /* named step indicator */
+  .stepind{display:flex;align-items:center;gap:7px;padding:14px 20px 4px;flex-shrink:0;font-size:12px;}
+  .si{display:flex;align-items:center;gap:6px;color:var(--ink-3);font-weight:500;}
+  .si .dot{width:18px;height:18px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink-3);}
+  .si.done .dot{background:var(--ink);color:#fff;}
+  .si.cur{color:var(--ink);font-weight:700;}
+  .si.cur .dot{background:var(--ink);color:#fff;}
+  .si-line{flex:1;height:1.5px;background:var(--border);border-radius:2px;}
+
+  .body{flex:1;overflow-y:auto;padding:14px 20px 0;}
+  .body::-webkit-scrollbar{display:none;}
+  .title{font-family:'Inter Tight';font-weight:700;font-size:24px;letter-spacing:-.02em;}
+  .lead{font-size:14px;color:var(--ink-2);margin-top:6px;line-height:1.5;}
+
+  /* "from your profile" note */
+  .fromprofile{display:flex;align-items:center;gap:9px;background:var(--sunken);border-radius:12px;padding:11px 14px;margin-top:18px;font-size:13px;color:var(--ink-2);}
+  .fromprofile .av{width:26px;height:26px;border-radius:var(--r-pill);object-fit:cover;}
+  .fromprofile b{color:var(--ink);font-weight:600;}
+
+  /* mismatch warning banner (non-blocking) */
+  .warn{display:flex;gap:11px;align-items:flex-start;background:var(--warn-bg);border:1px solid #F3D9A8;border-radius:14px;padding:13px 14px;margin-top:18px;}
+  .warn .ic{color:var(--warn);flex-shrink:0;margin-top:1px;}
+  .warn .t{font-family:'Inter Tight';font-weight:700;font-size:14px;color:var(--warn);}
+  .warn .d{font-size:13px;color:#8A5A12;line-height:1.45;margin-top:2px;}
+
+  .seclabel{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:24px 0 12px;}
+  /* hair-type tiles (mask glyphs) */
+  .htiles{display:flex;gap:8px;}
+  .ht{flex:1;min-height:78px;border-radius:16px;border:1.5px solid var(--border);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px 6px;cursor:pointer;}
+  .ht .g{width:26px;height:26px;background:var(--ink);display:inline-block;}
+  .ht .l{font-family:'Inter Tight';font-weight:500;font-size:12.5px;}
+  .ht.sel{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .ht.sel .g{background:#fff;}
+  /* length pills */
+  .pills{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill{height:40px;padding:0 18px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:500;color:var(--ink-2);display:inline-flex;align-items:center;cursor:pointer;}
+  .pill.sel{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600;}
+
+  .footer{padding:14px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--border);flex-shrink:0;background:#fff;}
+  .btn-ink{width:100%;background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);padding:16px;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn-warn{width:100%;background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);padding:16px;font-size:15px;font-weight:600;cursor:pointer;}
+  .ghost{display:block;text-align:center;margin-top:10px;font-size:14px;font-weight:600;color:var(--blue);cursor:pointer;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;}}
+</style>
+</head>
+<body>
+<h1>Booking step — "Deine Haare" (light, pre-filled from the profile)</h1>
+<p class="sub">A step in the booking flow before you confirm. #1 pre-fills from the hair profile (essentials only, no photo grid). #2 is the non-blocking mismatch warning when the chosen service conflicts with the profile. The values save back to the profile.</p>
+<div class="grid">
+
+  <!-- 1 · PRE-FILLED -->
+  <div><div class="tag"><b>1 · Pre-filled from profile</b></div>
+  <div class="frame">
+    <div class="statusbar"><span>9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
+    <div class="topbar"><button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button></div>
+    <div class="stepind">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:11px;height:11px;stroke-width:3"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:11px;height:11px;stroke-width:3"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si"><span class="dot">4</span>Bezahlen</span>
+    </div>
+    <div class="body">
+      <div class="title">Deine Haare</div>
+      <div class="lead">Damit dein Coiffeur vorbereitet ist. Du kannst alles anpassen.</div>
+      <div class="fromprofile"><img class="av" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&q=80" referrerpolicy="no-referrer"><span>Aus deinem <b>Haarprofil</b> übernommen</span></div>
+
+      <div class="seclabel">Haartyp</div>
+      <div class="htiles">
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/straight.png) center/contain no-repeat;mask:url(/hair-patterns/straight.png) center/contain no-repeat"></span><span class="l">Glatt</span></div>
+        <div class="ht sel"><span class="g" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat"></span><span class="l">Wellig</span></div>
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/coily.png) center/contain no-repeat;mask:url(/hair-patterns/coily.png) center/contain no-repeat"></span><span class="l">Lockig</span></div>
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/protective.png) center/contain no-repeat;mask:url(/hair-patterns/protective.png) center/contain no-repeat"></span><span class="l">Kraus</span></div>
+      </div>
+
+      <div class="seclabel">Länge</div>
+      <div class="pills">
+        <span class="pill">Kurz</span><span class="pill sel">Mittel</span><span class="pill">Lang</span><span class="pill">Sehr lang</span>
+      </div>
+    </div>
+    <div class="footer"><button class="btn-ink">Weiter</button></div>
+  </div></div>
+
+  <!-- 2 · MISMATCH WARNING -->
+  <div><div class="tag"><b>2 · Mismatch warning</b> — non-blocking</div>
+  <div class="frame">
+    <div class="statusbar"><span>9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
+    <div class="topbar"><button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button></div>
+    <div class="stepind">
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:11px;height:11px;stroke-width:3"></i></span>Service</span><span class="si-line"></span>
+      <span class="si done"><span class="dot"><i data-lucide="check" style="width:11px;height:11px;stroke-width:3"></i></span>Zeit</span><span class="si-line"></span>
+      <span class="si cur"><span class="dot">3</span>Haare</span><span class="si-line"></span>
+      <span class="si"><span class="dot">4</span>Bezahlen</span>
+    </div>
+    <div class="body">
+      <div class="title">Deine Haare</div>
+      <div class="warn">
+        <span class="ic"><i data-lucide="triangle-alert" style="width:19px;height:19px"></i></span>
+        <div><div class="t">Passt der Service zu deinem Haar?</div><div class="d">Du hast «Kurzhaarschnitt» gewählt, dein Profil sagt aber <b>langes Haar</b>. Du kannst trotzdem buchen, der Coiffeur wird informiert.</div></div>
+      </div>
+
+      <div class="seclabel">Haartyp</div>
+      <div class="htiles">
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/straight.png) center/contain no-repeat;mask:url(/hair-patterns/straight.png) center/contain no-repeat"></span><span class="l">Glatt</span></div>
+        <div class="ht sel"><span class="g" style="-webkit-mask:url(/hair-patterns/wavy.png) center/contain no-repeat;mask:url(/hair-patterns/wavy.png) center/contain no-repeat"></span><span class="l">Wellig</span></div>
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/coily.png) center/contain no-repeat;mask:url(/hair-patterns/coily.png) center/contain no-repeat"></span><span class="l">Lockig</span></div>
+        <div class="ht"><span class="g" style="-webkit-mask:url(/hair-patterns/protective.png) center/contain no-repeat;mask:url(/hair-patterns/protective.png) center/contain no-repeat"></span><span class="l">Kraus</span></div>
+      </div>
+
+      <div class="seclabel">Länge</div>
+      <div class="pills">
+        <span class="pill">Kurz</span><span class="pill">Mittel</span><span class="pill sel">Lang</span><span class="pill">Sehr lang</span>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn-warn">Trotzdem buchen</button>
+      <span class="ghost">Service ändern</span>
+    </div>
+  </div></div>
+
+</div>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
+</body>
+</html>
