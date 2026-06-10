@@ -62,3 +62,24 @@
 - Known inconsistency hotspots to fold into Phase 4 (from prior sessions): mixed card radii/shadows,
   heading sizes drift per page, section spacing rhythm varies, icon sizes inconsistent, empty states
   unstyled on some routes, button height variance, divider vs gap-only lists mixed.
+
+## Phase 3 — CODIFY ✅ DONE (2026-06-11, commit fc04ee3dc)
+All approved rules written into LOCKFILE (§1, §1.5, §2.5, §3, §3.5, §11, §13.2/.3/.5/.7, §14, §15, §16),
+tailwind (s-accent.deep #1E54B7), CLAUDE.md pointer, memory (project_video_audit_ds_upgrade). Owner picks
+logged: sheet bg Option B, 404 Option A typographic, View Transition direct-build. Stepper flipped to
+UNIFIED BLUE (supersedes the green default; green = state only).
+
+## Phase 4 — EVERY-STATE MOCKUP INVENTORY (next; one HTML file per page, all states in one scroll)
+Per page: default + loading (skeleton) + empty + error + long-content (DS-9) + key interaction states.
+1. Home (logged in/out, skeletons, no-results city)
+2. Search results (+filters sheet, empty, map)
+3. Salon PDP (gallery, services long-names, reviews, closed-salon, walk-in tab)
+4. Booking wizard ×4 steps (incl. guest form, slot-taken error, 3DS processing)
+5. Confirmation (paid/confirming/in-person + add-calendar)
+6. Walk-in-pay (+payBlocked variants) & queue tracker (all 4 nodes + done + tip + review)
+7. Profile hub + subpages (haarprofil, vouchers empty/full, notifications, bookings list + cancel sheet)
+8. Favorites (empty per DS-12 + filled)
+9. 404 / error / offline set (typographic language)
+10. Auth (login/magic-link sent/expired)
+Each file states which DS rules it exercises; long-content + empty are MANDATORY per §14.3. Owner
+approves per page → Phase 5 implements route-by-route.
