@@ -10,6 +10,62 @@ import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { logAuditEvent } from "@/lib/audit";
 
+// Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
+// policy math as POST (calculateCancellationFee) but mutates nothing — so the sheet can
+// show the REAL "you'll get back CHF X" before the customer confirms, never the gross price.
+// Salon-owner cancels are always a full refund (mirrors the POST fast-track).
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
+  if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const { data: booking, error } = await supabase
+    .from("bookings")
+    .select("user_id, starts_at, status, paid_amount, price_paid, payment_intent_id, salons(owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours)")
+    .eq("id", id)
+    .single();
+  if (error || !booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+
+  const isCustomer = booking.user_id === user.id;
+  const isSalonOwner = (booking.salons as any)?.owner_id === user.id;
+  if (!isCustomer && !isSalonOwner) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+
+  const salon = booking.salons as any;
+  const baseCents = (booking.paid_amount as number | null) ?? toRappen(Number(booking.price_paid ?? 0));
+  const freeCancelHours = salon?.free_cancel_hours ?? 24;
+
+  let feeCents = 0;
+  let isWithinWindow = false;
+  if (isCustomer) {
+    const calc = calculateCancellationFee(
+      salon?.cancellation_fee_type,
+      salon?.cancellation_fee_value,
+      freeCancelHours,
+      baseCents,
+      new Date(booking.starts_at),
+    );
+    feeCents = calc.feeCents;
+    isWithinWindow = calc.isWithinWindow;
+  }
+  const refundCents = Math.max(0, baseCents - feeCents);
+
+  return NextResponse.json({
+    data: {
+      base_cents: baseCents,
+      fee_cents: feeCents,
+      refund_cents: refundCents,
+      within_free_window: !isWithinWindow, // true = early/free cancel (no fee)
+      free_cancel_hours: freeCancelHours,
+      currency: "CHF",
+    },
+  });
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

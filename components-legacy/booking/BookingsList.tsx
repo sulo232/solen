@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
+import CancelBookingSheet from './CancelBookingSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import EmptyState from '@/components-legacy/ui/EmptyState';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
@@ -21,6 +22,9 @@ export default function BookingsList({ userId }: BookingsListProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Cancel-confirm sheet (audit #7) — the booking pending cancellation + in-flight state.
+  const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
+  const [cancelling, setCancelling] = useState(false);
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
@@ -45,11 +49,15 @@ export default function BookingsList({ userId }: BookingsListProps) {
     fetchBookings();
   }, [fetchBookings]);
 
-  // Cancel: confirm, POST the existing cancel route, then refetch the list.
-  const handleCancel = async (booking: Booking) => {
-    if (!window.confirm(t('confirmCancel'))) return;
+  // Cancel: open the confirm sheet (shows the real refund preview). The actual POST runs
+  // from the sheet's confirm button (audit #7 — replaces the old window.confirm()).
+  const handleCancel = (booking: Booking) => setCancelTarget(booking);
+
+  const confirmCancel = async () => {
+    if (!cancelTarget) return;
+    setCancelling(true);
     try {
-      const response = await fetch(`/api/bookings/${booking.id}/cancel`, {
+      const response = await fetch(`/api/bookings/${cancelTarget.id}/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({}),
@@ -59,10 +67,13 @@ export default function BookingsList({ userId }: BookingsListProps) {
         throw new Error(data.message || data.error || `Cancel failed: ${response.statusText}`);
       }
       toast.success(t('cancelledToast'));
+      setCancelTarget(null);
       await fetchBookings();
     } catch (err) {
       console.error('[BookingsList] Failed to cancel booking:', err);
       toast.error(err instanceof Error ? err.message : t('cancelError'));
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -193,6 +204,14 @@ export default function BookingsList({ userId }: BookingsListProps) {
           ))}
         </div>
       )}
+
+      <CancelBookingSheet
+        booking={cancelTarget}
+        isOpen={cancelTarget !== null}
+        onOpenChange={(open) => { if (!open && !cancelling) setCancelTarget(null); }}
+        onConfirm={confirmCancel}
+        cancelling={cancelling}
+      />
     </div>
   );
 }

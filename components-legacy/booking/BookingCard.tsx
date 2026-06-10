@@ -29,6 +29,7 @@ export interface Booking {
     address: string;
     average_rating: number;
     review_count: number;
+    cover_photo_url?: string | null;
   };
   service?: {
     id: string;

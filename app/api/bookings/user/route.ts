@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       .select(
         `
         *,
-        salon:salons(id, slug, name, address, average_rating, review_count),
+        salon:salons(id, slug, name, address, average_rating, review_count, cover_photo_url),
         service:services(id, name_de, name_en, duration_minutes, price),
         staff:staff_members(id, name, avatar_url)
       `
