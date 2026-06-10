@@ -516,3 +516,73 @@ Numbered as DS-1…DS-12; mockups in Phase 2 carry these IDs.
 6. Slide-to-confirm (V8.6) — poor web a11y; confirm dialogs already cover it.
 7. Bottom nav bar / haptics — not in the videos as claims we adopted, but restating: WE ARE A WEBSITE. Never.
 
+
+---
+
+# APPENDIX — fine-grain ledger (every micro-detail, where it went)
+
+Owner question 2026-06-11: "there was a lot more inside the videos, what happens with those?"
+Answer: every spoken detail maps to a row here. Column 3 = its fate. Nothing is dropped silently.
+
+## Concrete numbers the videos gave (now absorbed into rules)
+
+| Detail (video) | Spec | Fate |
+|---|---|---|
+| Large-text tracking (V1 3:50, V7 0:43) | −2…−3% (V7: −2…−4% above 70–80px) | → DS-A1 display recipe; our canonical tracking set already has −0.02em top end (§2.5) |
+| Large-text line-height (V1 3:54) | 110–120% | → DS-A1; added to §2 display roles |
+| Max font sizes (V1 4:10) | ≤6 marketing / ≤24px dashboards | → DS-A1 dashboard cap; customer screens already ≤4 per SCORECARD |
+| Section rhythm (V1 2:52) | ~32px between section items | → DS-5 (32/12/16) |
+| Spacing base (V6/V7) | 4/8px grid; round big sizes to 5/10 | → DS-5 note; 8pt already in SOURCE |
+| Button padding ratio (V1 7:21) | horizontal ≈ 2× vertical | → DS-2/§3 button note |
+| Icon size (V1 7:03) | = text line-height, never bigger; tighten gap | → DS-2 pairing table |
+| Small-component radius (V6 3:16) | one value (he used 10px) | → DS-4: ours stays the locked §3 set; the RULE adopted is "closed set, no ad-hoc" |
+| Nested radius (V7 1:43) | inner = outer − gap; pills exempt | → DS-4 formula |
+| Card border (V2 1:38) | no thin black borders; ~85%-white stroke | → already locked (s-border #E4E4E7 ≈ 90% white) |
+| Text darkness ladder (V2 1:58) | headings ~11% white, body 15–20%, sub 30–40% | → noted; ours is darker by the Uber lock (ink #0A0A0A), deliberate, no change |
+| Accent ramp steps (V2 2:27) | main 500/600, hover 700, links 400/500 | → DS-6: s-accent-deep #1E54B7 as the single hover/pressed step |
+| Chart hue stepping (V2 5:31) | OKLCH fixed L+C, hue +25–30 per series | → DS-A3 (dashboard-only) |
+| Shadow recipe (V1 6:27, V6 1:46) | lower opacity, raise blur, recolor light-grey, or remove | → already locked (§3 elevation set + §3.5 calibration) |
+| Sheet/popover elevation (V1 6:35) | floating content needs MORE shadow than cards | → already locked (§3.5: only overlays earn elevation-2/3) |
+| Scrim (V1 8:48) | gradient converging to readable bg; progressive blur variant | → DS-10 recipe (supersedes §11's blanket no-scrim for UI-over-photo cases) |
+| Skew/present specs (V3 2:07) | 2° vertical / −14° horizontal etc. | → REJECT (portfolio presentation, not product) |
+| HSB palette steps (V7 3:45) | +20 saturation / −10 brightness per layer; hue toward blue | → REJECT as method (our saturation contract + OKLCH cover it) |
+| Tailwind 50/500 bg trick (V7 7:11) | tinted page backgrounds | → REJECT (surfaces locked white + cool grey, owner 2026-06-10) |
+| Drag-dismiss threshold (V8 4:50) | sheets dismiss on swipe-down | → DS-11 (90px threshold in the mockup; will tune in build) |
+
+## Patterns mentioned but not individually mocked (fate per item)
+
+| Pattern | Video | Fate |
+|---|---|---|
+| Tooltips for unusual icons | V1 0:40, V6 4:28 | folded into DS-2 label ladder (label > tooltip on mobile web; tooltips desktop-only) |
+| Ghost buttons (bg only on hover) | V1 7:08 | folded into DS-2; recipe = transparent → `bg-s-bg-sunken` hover (matches §3.5 list-row) |
+| "Let the color find you" (announcement bar, New chip) | V1 5:25 | already our Layer-3 philosophy; no change |
+| Sidebar tinted 2% (Mercury) | V2 1:02 | parked, dashboard-only idea; NOT adopted (customer app has no sidebar) |
+| 4-layer background inventory | V2 0:44 | DS-3 codifies OUR closed set (2 bg + 1 stroke + ink trio); his 4-layer count is for dense dashboards |
+| Exploding image / collage / glow-blob presentation | V3 1:21–3:20 | REJECT for product; available someday for marketing/social shots of the app |
+| AI-generated device mockups | V3 4:53 | process tool, noted; not a system rule |
+| Prototype-the-motion when presenting | V3 5:47 | adopted as PROCESS (animated HTML mockups, e.g. sheets-motion.html) |
+| Doodles/twinkles/scribbles as context | V4 1:05 | scoped OUT of chrome by DS-12; personality only in dead zones |
+| Off-grid elements aim at the focal center | V4 1:41 | one-liner kept with DS-12 (only relevant on hero/marketing) |
+| Word→progress-bar text morphs (Apple-style) | V4 4:37 | PARKED (logged-out home hero, someday; rejected for product funnel) |
+| Parallax in margins | V4 3:52 | DS-A4, allowed subtle on home/category heroes only |
+| Search collapses to icon on scroll, expands on tap | V5 3:56 | noted as an available progressive-disclosure pattern; no current surface needs it (our search lives on home, not in a sticky bar) |
+| Load-more over infinite scroll | V5 4:09 | already shipped ("Mehr laden", 2026-06-10) |
+| "Every button gets a small animation; scrolljack never" | V5 4:22 | folded into DS-1 + §4 anti-patterns |
+| Flow escape hatches (search/skip/other) | V6 0:30 | DS-A6 checklist (hair step already has Überspringen + Notiz free-text) |
+| Press grey-out while next screen loads | V6 5:47 | DS-1 loading state |
+| Save = fill icon + badge the destination tab | V6 6:00 | DS-1 outcome confirmations (mocked: heart + Favorites dot + toast) |
+| Different icon styles in separate zones is OK | V6 4:36 | noted in DS-2 (e.g. 3D category icons vs Lucide UI icons — already separate zones) |
+| iOS corner smoothing / squircles | V7 2:16 | REJECT (no clean CSS path; not worth SVG hacks) |
+| Card carousels w/ momentum + magnetic dot indicators | V8 0:29 | DS-A4 gallery dots (mocked on PDP); momentum = native scroll-snap physics |
+| 3D ring / horizon-shrink swipe effects | V8 1:01 | REJECT (native-app demo theater, off-brand) |
+| Circle-expand onboarding transition | V8 3:46 | REJECT (too theatrical for a booking funnel) |
+| Card-expands-into-page continuity | V8 2:50 | DS-A4 View Transitions flagship (approved direct-build) |
+| Long-press context menus | V8 4:38 | REJECT (no reliable long-press on mobile web; buttons cover it) |
+| Slide-to-confirm | V8 5:13 | REJECT (web a11y; confirm dialogs cover it) |
+
+## Owner decisions logged 2026-06-11 (all DS items approved as recommended)
+- Sheet background: **Option B** (dim + page scales back 3.5%).
+- 404/personality language: **Option A typographic** (carries to empty/error states).
+- Card→PDP View Transition: **approved direct** (no demo branch needed).
+- All 12 ADOPTs + 6 ADAPTs: approved as written.
+

@@ -214,7 +214,10 @@ module.exports = {
         // The "deep" hex is now the DEFAULT; "deep" alias kept as itself for
         // backward compat with existing callsites that use s-accent-deep.
         // V3-D421 (2026-06-01): DEFAULT reverted #185CE0 -> #276EF1 (Uber's exact blue, verified vs Uber brand palette). Accent is functional-only now (focus ring / spinner / input per CANON.md), so the old "blue text vibrates" reason for deepening is moot; #276EF1 = 4.6:1 on white (passes AA). Split collapsed: DEFAULT = deep = bright.
-        "s-accent":   { DEFAULT: "#276EF1", deep: "#276EF1", bright: "#276EF1", pale: "#EAEFFE" },
+        // DS-6 (2026-06-11, video-audit, owner-approved): deep re-activated as the
+        // hover/pressed step for interactive blue (links/chips/inline actions):
+        // hover:text-s-accent-deep, 150ms. Never used at rest. LOCKFILE §1 + §1.5.
+        "s-accent":   { DEFAULT: "#276EF1", deep: "#1E54B7", bright: "#276EF1", pale: "#EAEFFE" },
       },
       fontFamily: {
         // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75

@@ -45,12 +45,18 @@
 | `white` | `#FFFFFF` | Pure white (text on dark) |
 | `black` | `#000000` | NEVER use (eye strain). Use `s-ink` instead. |
 
+**Closed-inventory rule (DS-3, video-audit 2026-06-11, owner-approved):** the table above is the ENTIRE
+neutral vocabulary. Every grey in code must be one of these tokens — no new `rgba()` greys, no one-off
+`#`-hex neutrals, no ad-hoc `/40`-style opacity neutrals (the in-card divider `border-s-border/60` and
+the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc neutrals are where
+"inconsistent everywhere" starts; drift-checker should flag any hex/rgba neutral outside this set.
+
 ### Brand accent (Layer 2 — royal blue = INTERACTIVITY, v2 2026-06-09; generous on anything tappable, off everything that isn't)
 
 | Token | Hex | Usage |
 |---|---|---|
 | `s-accent.DEFAULT` | `#276EF1` | **v2 (2026-06-09): BLUE = INTERACTIVITY (supersedes the V3-D330 system-only narrowing).** Generous on interactive affordances — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — plus the system states it always had (focus-visible rings, `<Spinner>` arc, form-input focus). GUARDRAIL: OFF non-interactive text (body, prices, headings, eyebrows stay ink/grey); never FILLS a primary CTA. See §1.5. Hex collapsed to #276EF1 (DEFAULT = deep = bright, matches code + CANON). |
-| `s-accent.deep` | `#185CE0` | Alias (same as DEFAULT now). Kept for callsites that use s-accent-deep explicitly. |
+| `s-accent.deep` | `#1E54B7` | **DS-6 (2026-06-11, video-audit, owner-approved): the hover/pressed step for interactive blue.** Any blue text link / chip / inline action darkens to this on hover + active (150ms). Re-activated from the flattened alias; supersedes the old #185CE0 value (shown + approved on the ds-site mockup). NOT a second accent — never used at rest. |
 | `s-accent.bright` | `#276EF1` | The OLD royal #276EF1 preserved for places that need the punchier hit (large icons, hero accent moments). Use sparingly. |
 | `s-accent.pale` | `#EAEFFE` | Pale wash for selected-tab bg / focus glow. Unchanged. |
 
@@ -86,6 +92,12 @@
 | `s-chart-3` | `#D1D5DB` | Tertiary chart row (e.g. competitor range / "others" bar in /partner pricing chart) |
 
 **Why discrete tokens (not opacity-modifier):** opacity-modifier-on-ink-2 (`bg-s-ink-2/40` / `bg-s-ink-2/30`) is a smell — it conflates hierarchy with transparency. Discrete chart-grey tokens make data-vis intent explicit + readable to drift-checker. Use this scale ONLY for bar/line/area charts (NOT for general UI grey).
+
+**Multi-series + legibility (DS-A3, video-audit 2026-06-11, dashboard-only):** when a dashboard chart
+needs >2 DISTINCT series (not hierarchy), derive hues in OKLCH from `s-accent` — fixed lightness+chroma,
+hue stepped +25–30 per series (perceptually even, no neon-green-next-to-dull-blue). Customer surfaces
+keep the grey scale above. Legibility rules for every chart: visible axis labels, FLAT bar tops (no
+rounded caps that hide the value), bar count = datum count. "Dribbble-pretty but unreadable" is drift.
 
 ### RETIRED — never use in new code
 
@@ -134,6 +146,7 @@ Blue is the interactivity layer: allowed (and expected) on anything tappable, **
 | Surface | Recipe | Notes |
 |---|---|---|
 | Text link + see-all / view-all link | `text-s-accent`, `hover:underline` | every tappable link, no per-screen cap |
+| Hover / pressed on ANY interactive blue (DS-6, 2026-06-11) | `hover:text-s-accent-deep active:text-s-accent-deep` (#1E54B7, 150ms) | the one darkening step; applies to links, blue chips, inline actions, review counts |
 | Active tab / segmented state | `text-s-accent` (+ optional `bg-s-accent-pale` or a thin blue underline/indicator) | the active interactive choice |
 | Secondary / ghost button | blue-ghost `bg-white border-s-accent text-s-accent` | secondary actions; never an ink-filled 2nd primary |
 | Tappable list-row / inline action label | `text-s-accent` | Buchen / Wegbeschreibung / Verwalten |
@@ -154,7 +167,7 @@ Blue is the interactivity layer: allowed (and expected) on anything tappable, **
 | `text-s-accent` on NON-interactive emphasis (a word that is not a link) | `text-s-ink` + bold weight — blue means tappable, not emphasis (v2 rule 2) |
 | `text-s-accent` on hero accent span | `text-s-ink` (single word can use weight contrast instead) |
 | `bg-s-accent-pale text-s-accent` pill | Either `bg-white text-s-accent` OR `bg-s-accent-pale text-s-ink` — never both blue |
-| `bg-s-accent` step circle (blue is banned on steppers) | the §13.2 recipe: done = `bg-s-success` fill, current = green ring (`inset 0 0 0 3px #16A34A` on white), upcoming = `bg-s-bg-sunken` |
+| ~~`bg-s-accent` step circle (blue is banned on steppers)~~ **SUPERSEDED 2026-06-11:** steppers ARE blue (owner-approved booking mockups + shipped walk-in tracker + BookingWizard). Recipe in §13.2: done = `bg-s-accent` + white icon, current = white + inset blue ring + 5px halo, future = `bg-s-bg-sunken`. Green stays a STATE color (success/confirmed), never progress. | use the §13.2 blue recipe |
 | `text-s-accent` decorative dot / icon tint | `text-s-ink-3` or `text-s-success` (if completion-coded) |
 | `border-s-accent` on resting card | `border-s-border` |
 
@@ -298,6 +311,10 @@ The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.
 
 Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, `.18em`, `.1em`, `.20em`, `.22em` — currently 20 distinct values in use) → drift rule A8 logs to `_pending-migration.md`. Phase 2 sweep collapses callsites onto canonical set.
 
+**Display-type recipe (DS-A1, video-audit 2026-06-11):** any text ≥22px takes `-0.02em` tracking +
+line-height 110–120% (`leading-[1.1]`–`leading-tight`) as ONE recipe — no per-page improvising.
+Dashboard surfaces cap at 24px (information density); customer marketing/heroes may go larger.
+
 ### Uppercase application policy (rule A7)
 
 Only TWO roles allow `uppercase` Tailwind class:
@@ -387,6 +404,33 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `rounded-2xl` | 16px | Sidebar card, info cards |
 | `rounded-3xl` | 24px | Bento cards, larger surfaces |
 
+### Nested radius formula (DS-4, video-audit 2026-06-11, owner-approved)
+
+When a rounded element sits INSIDE a rounded container: **inner radius = outer radius − gap.**
+(18px card with 14px padding → inner thumb/chip ≈ 4px; if the math goes ≤0 use 4px minimum or square.)
+Pills (`9999px`) are exempt — their distance is constant around the curve. Same-radius-inside-same-radius
+makes the corner gap visibly bulge; this is the #1 "small detail" amateur tell.
+
+**Twin-control rule (DS-4):** two controls with the same purpose (back/skip, the two Ändern links, paired
+filters) are the SAME component instance — identical size, radius, weight, color. Styling twins
+differently is drift.
+
+**Button padding ratio (DS-2 detail):** standalone buttons aim for horizontal padding ≈ 2× vertical
+(e.g. 12px/24px). Full-width CTAs are exempt (height-driven, 52-54px).
+
+### Spacing rhythm (DS-5, video-audit 2026-06-11, owner-approved)
+
+Three numbers, sitewide. Everything vertical maps to one of them:
+
+| Tier | Value | Between |
+|---|---|---|
+| **Section** | `32px` (`mt-8` / `space-y-8`) | page sections (heading-to-heading blocks) |
+| **Card** | `12px` (`gap-3` / `mt-3`) | sibling cards / list items in a section |
+| **Group** | `16px` (`mt-4`) | groups INSIDE a card (e.g. pill groups in HairStep) |
+
+Mobile gets MORE air, never less. Larger one-off dimensions round to clean 5/10s (8pt pedantry above
+~100px buys nothing). Drift signal: any `mt-5/mt-6/mt-7/space-y-5/...` between sections or cards.
+
 ### Box shadow (3-level system + legacy aliases)
 
 | Token | Value |
@@ -441,6 +485,23 @@ Alternate gray ↔ white down a page for rhythm. **Never** the whole app gray; n
 | **Photo chip** | vibrant + `elevation-1` | `elevation-2` | `scale(.96)` | scrim `bg-s-ink/70` (option E) | `ring-2` s-accent | `opacity .45` |
 | **List row** | transparent | `bg-s-bg-sunken` | `bg-s-bg-sunken` | `bg-s-accent-bg` + accent text + check | inset ring | `opacity .5` |
 | **Input** | filled `bg-s-bg-sunken`, radius `input` (12px) | same | n/a | n/a | white bg + `ring-2` s-accent | `opacity .5` |
+
+### Loading + outcome confirmation (DS-1, video-audit 2026-06-11, owner-approved)
+
+The matrix above covers rest/hover/pressed/selected/focus/disabled. Two more are MANDATORY:
+
+- **Loading:** any control that triggers async work shows it inline — button keeps its label + a 15px
+  spinner (`opacity .85`, pointer-events none); pressed-grey-out the instant a navigation is triggered
+  (a laggy route change with zero feedback reads as broken). Skeletons for content, spinner for actions.
+- **Outcome confirmation:** completing an action confirms at BOTH ends —
+  | Action | At the control | At the destination |
+  |---|---|---|
+  | Save/favorite | heart fills + spring-pop | Favorites entry point gets a dot/badge |
+  | Add to cart / select service | row check + count pill updates | sticky CTA total updates |
+  | Copy (codes/links) | icon swaps to check 1.2s | toast "Kopiert" |
+  | Booking/payment success | SuccessMark spring-pop | confirmation screen (the ONE delight peak) |
+  | Note/profile saved | toast | pre-filled next time (provenance chip) |
+- **No gesture-only actions, ever** (DS-11): every swipe/drag affordance has a visible button twin.
 
 ### Motion per transition (uses §4 tokens — no new values)
 
@@ -1019,10 +1080,26 @@ This single test catches 80% of axis-confusion mistakes.
 | Rule | Why |
 |---|---|
 | **`border-radius: 0` on all images** | Uber doesn't round photos. Rounding implies avatar/icon. Exceptions: (1) avatar circles in `Avatar` primitive; (2) **V3-D350 (2026-05-28): search-result cards (`SalonResultCard`) use rounded photo corners (`rounded-card`), an explicit exception to the rounded-none imagery rule, per user direction 2026-05-28 — these are Airbnb-style result cards, not editorial/hero imagery. All other images stay flush.** |
-| **No `rgba(0,0,0,*)` overlay scrims** | Art-direct the photo so text falls on naturally-empty zone. Saves a layer + reads cleaner. |
+| **No FLAT `rgba(0,0,0,*)` overlay washes** | For MARKETING/editorial photos: art-direct so text falls on naturally-empty zones (unchanged). For UI that must overlay **arbitrary user-uploaded photos** (PDP hero gallery dots/counters, photo-card titles, category cards): a flat wash is still banned, but the **DS-10 gradient scrim** below is the sanctioned tool (2026-06-11, owner-approved — refines this rule, doesn't break it). |
 | **No `<video>` on marketing surfaces** | Uber's 8 surfaces use zero. Stills + Lottie illustrations only. (Carve-out: `/entdecken` TikTok-stream feature exempt — that's content, not chrome.) |
 | **Single image-CDN pipeline** | All images route through `next/image` + Supabase Storage. Mirror Uber's `cn-geo1.uber.com/image-proc` pattern. |
 | **Same images mobile + desktop, stacked** | Don't hide images on mobile. Crop/resize the same asset. Hero photos resize from 1440×700 desktop → 375×480 mobile (same image, different crop). |
+
+### Text-on-photo scrim recipe (DS-10, video-audit 2026-06-11, owner-approved)
+
+When text or controls MUST sit over an arbitrary photo (salon uploads — brightness unknowable), ONE recipe:
+
+```css
+/* bottom-anchored gradient: photo stays clean, text zone earns contrast */
+background: linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(0,0,0,.62) 100%);
+/* scope it: full-card for photo-card titles; bottom 64px band when only dots/chips need backing */
+```
+
+- Premium variant (heroes only): progressive blur UNDER the gradient —
+  `backdrop-filter: blur(7px)` masked with `linear-gradient(transparent, black 70%)` on the bottom band.
+- Never a flat full wash (kills the photo), never text on a bare photo (fails on bright uploads, DS-9).
+- Small floating controls over photos keep using `FROST_GLASS` discs (CONTROL_ELEVATION A) — the scrim
+  is for text/indicator ZONES, the disc is for tappable CONTROLS.
 
 ### Sourcing policy (V3-D330)
 
@@ -1100,19 +1177,20 @@ Owner 2026-06-10: _"will they research how apple does it by using grey and black
 
 The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the walk-in live tracker (Bezahlt → In der Schlange → Fast dran → Dran). Owner locked the **icon-ABOVE-text** form ("should be like that everywhere") — the DoorDash/Uber delivery-tracker shape, not the old icon-beside-text inline chip.
 
-**Three node states — LITERAL recipes:**
+**Three node states — LITERAL recipes (UNIFIED BLUE, 2026-06-11):**
+
+> **Supersession note (2026-06-11, owner-approved booking-pay/-hair mockups, shipped in `BookingWizard.tsx`):** the 2026-06-10 green-family stepper + walk-in-blue-exception model is REPLACED by ONE blue stepper language everywhere. Owner on the green booking stepper: _"green doesn't really align with the design system… like in walk-in."_ **Blue = progress, green = state (success/confirmed), never the reverse.** The walk-in "exception" is now simply the rule.
 
 | State | Disc | Glyph | Label |
 |---|---|---|---|
-| **Done** (completed step) | `bg-s-success` #16A34A, 36px | white `check`, 17px, stroke 2.8 | `text-s-ink-3`, 11px, weight 600 |
-| **Current** (active step) | white disc, 36px, **inset 3px green ring** (`box-shadow: inset 0 0 0 3px #16A34A`; inset keeps the 36px box aligned) | green `#16A34A` numeral OR weighted step-icon, 14-17px | `text-s-ink`, 11px, weight 700 |
-| **Upcoming** (future step) | `bg-s-bg-sunken` #F4F4F5, 36px | `text-s-ink-3` numeral OR thin step-icon | `text-s-ink-3`, 11px, weight 600 |
+| **Done** (completed step) | `bg-s-accent` #276EF1, 42px | white step-icon, 18px, stroke 2 | `text-s-ink`, 10.5px, weight 600 |
+| **Current** (active step) | white disc, 42px, **inset 2px blue ring + 5px halo** (`box-shadow: inset 0 0 0 2px #276EF1, 0 0 0 5px rgba(39,110,241,.14)`) | blue step-icon, 18px | `text-s-ink`, 10.5px, weight 700 |
+| **Upcoming** (future step) | `bg-s-bg-sunken` #F4F4F5, 42px | `text-s-ink-3` step-icon | `text-s-ink-3`, 10.5px, weight 600 |
 
-- **Done = GREEN (solid fill + white check).** Owner: _"the black check mark, isn't it green."_ Completed is a SUCCESS state → solid `#16A34A` (the reconciled normal green, NOT deep #15803D, reverted 2026-06-10).
-- **Current = GREEN RING, not black, not a solid fill (V3-D470b, owner pick B 2026-06-10).** White disc + a 3px inset `#16A34A` ring + green glyph. The earlier "current = ink/pitch-black" was rejected as TOO HARSH against the green done discs (owner: _"i dont like the pitch black, like N26, i like the greens, contrast too harsh"_). So the stepper is now a **single green family**: done = filled green, current = ring green, upcoming = grey. done-vs-current reads as **filled-vs-ring** (no black, no blue). A tracker reads: green(filled) → green(filled) → green(ring) → grey. (This supersedes the original §13 "current = neutral ink pointer" — the owner chose green-family cohesion + softness over a neutral pointer. Blue stays banned on every node.)
-- **Connector line:** `bg-s-border` #E4E4E7, 2px, `border-radius: 2px`, vertically centered on the discs (`margin-top: 17px` for a 36px disc). The done-portion MAY render green/ink to show progress; the future-portion stays grey. No dotted unless the gap is genuinely conditional (Minna Bank uses dotted for "not yet reachable").
-- **Distinct icon per node** when the steps have real identity (the DoorDash pattern the owner liked): e.g. walk-in = `check` (Bezahlt) → `users` (In der Schlange) → `clock` (Fast dran) → `armchair`/`scissors` (Dran). When nodes carry distinct icons, each node keeps its own glyph at every state (state is shown by the disc treatment, not by swapping to a check); for a generic flow, done nodes show a check and steps use numerals (1, 2, 3, 4). **Only the current node's icon is weighted.** No checkmark on a non-done node.
-- **🔵 Walk-in surface = BLUE (per-surface exception, V3-D470c, owner 2026-06-10: _"in walk in make it blue, that's the primary color of walk in"_).** The walk-in / live-queue surface is **blue-themed**: its stepper uses blue in place of green (done = `s-accent` #276EF1 fill + white glyph, current = blue ring `inset 0 0 0 3px #276EF1` + live halo pulse, upcoming = grey), and the LIVE badge + primary CTA + map accents are blue. This is the **one sanctioned blue-stepper exception** — every other flow (booking, onboarding, checkout) uses the green default above. Rationale: the walk-in queue is a live/transit experience the owner brands blue; green stays the "success/done" hue for committed-booking flows. Blue is still banned on non-interactive text everywhere (§1.5).
+- **Connector line:** `bg-s-border` #E4E4E7, 2px, `border-radius: 2px`, vertically centered on the discs (`margin-top: 20px` for a 42px disc). Done-portion renders `bg-s-accent`; future stays grey. One connector per gap (no doubling).
+- **Distinct icon per node** when the steps have real identity (the DoorDash pattern the owner liked): booking = `scissors` (Service) → `clock` (Zeit) → `brush` (Haare) → `credit-card` (Bezahlen); walk-in = `check` → `users` → `clock` → `armchair`. Each node keeps its own glyph at every state (state is shown by the disc treatment, not by swapping to a check). Hand-drawn glyphs + `sparkles` are banned. **Only the current node's label is weighted up.**
+- **Green on a stepper node = NEVER.** Green remains the success/confirmed STATE color (SuccessMark, paid pills); a live tracker's "done" disc is blue. (Historical: the green-family recipe V3-D470b lived 2026-06-10 → 2026-06-11.)
+- Done discs stay tappable for jump-back when the flow allows editing previous steps (shipped BookingWizard behavior).
 
 **Orientation rule:**
 - **Horizontal, icon-above-text** — the default for a top-of-screen tracker with **≤4 nodes** (booking step bar, walk-in live tracker). Discs 36px, labels under, `si-line` connectors between.
@@ -1125,7 +1203,7 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 | Badge | Visual | Token | Layer | Used for |
 |---|---|---|---|---|
 | **Selected** (picker) | ink disc + white check, `border-2 border-white` | `bg-s-ink` | 1 (chrome) | staff/barber pickers — `SelectedCheckBadge` |
-| **Done** (stepper node) | green disc + white check, 36px | `bg-s-success` #16A34A | 3 (semantic) | completed step in §13.2 |
+| **Done** (stepper node) | blue disc + white step-icon, 42px | `bg-s-accent` #276EF1 | 2 (progress) | completed step in §13.2 (unified blue, 2026-06-11) |
 | **Success focal** (confirm/paid) | green disc + white check, ~58px, spring-pop | `bg-s-success` #16A34A | 3 (semantic) | the ONE delight peak — `SuccessMark` (one per screen) |
 | **Status** (open/closed/pending) | pastel `.bg` + ink/semantic text pill | `StatusPill` | 3 (semantic) | inline live state |
 | **Rating** | filled star | `fill-s-star` #FFC32B | 3 (semantic) | review counts, ratings |
@@ -1141,8 +1219,9 @@ Owner 2026-06-10 rejected the code font hard: _"the font is not correct about �
 ### §13.5 — Drift signals (you are violating §13 if…)
 - a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
 - a decorative row icon is `text-s-accent` blue (blue is only for an icon that IS the tap target);
-- a done/completed step or a success disc is ink/black instead of green `#16A34A`;
-- a current step circle is a solid fill (black/ink OR solid green) or blue, instead of a **green ring** on white (`box-shadow: inset 0 0 0 3px #16A34A`) — V3-D470b;
+- a SUCCESS disc (SuccessMark, paid/confirmed) is anything but green `#16A34A`; a STEPPER done-disc is anything but blue `bg-s-accent` (unified blue 2026-06-11);
+- a current step circle is a solid fill of any color, instead of the **blue ring + halo** on white (`inset 0 0 0 2px #276EF1, 0 0 0 5px rgba(39,110,241,.14)`);
+- a stepper node renders green (green = state, never progress — supersedes V3-D470b);
 - a screen shows two progress indicators (a stepper AND a bar);
 - a code (`W-047`, `GIFT-7K2M`) renders in JetBrains Mono / any monospace;
 - a `·` middot separates meta (banned — §0.1 / §6 service-row format).
@@ -1150,3 +1229,145 @@ Owner 2026-06-10 rejected the code font hard: _"the font is not correct about �
 ### §13.6 — References (Mobbin, captured 2026-06-10)
 - Steppers: [Minna Bank](https://mobbin.com/screens/ee0764da-eba8-4c79-8fa0-7f3d262e71fe) (B&W box-check / ink-numeral / dotted-future) · [N26](https://mobbin.com/screens/b6ec6a4b-56c2-49f7-b46d-ddbd62bf1096) (**green-check done / filled current / grey-outline future** — closest to ours) · [Monzo](https://mobbin.com/screens/858f6b4b-d550-46c5-9134-95e3c9a34f61) (green-check done / highlighted current card / greyed future) · [Booking.com](https://mobbin.com/screens/863aee66-2ec7-45fc-8c0d-72f66afa243a) (horizontal check / filled / grey-number).
 - Icon-color (monochrome glyphs + grey chevrons; color only for state/selection): [Beli](https://mobbin.com/screens/e2647ce3-56f4-436e-a69d-35891ddd99f9) (red ONLY on Logout) · [Instagram](https://mobbin.com/screens/83c9dde8-a66e-4860-bfd4-dfc1c070827d) (grey trailing counts) · [Flighty](https://mobbin.com/screens/da15e520-056a-4a1c-a086-5f1ce25bea11) · [Afterpay](https://mobbin.com/screens/e55375ea-44d7-4290-8cad-738fcfead73d).
+
+### §13.7 — Icon-size pairing table (DS-2, video-audit 2026-06-11, owner-approved)
+
+Icon size is DERIVED from the text it rides with — never eyeballed. Lucide only, `strokeWidth 2`
+(1.75 at ≥24px). Rule of thumb from the audit: icon ≤ the text's line-height, then tighten the gap.
+
+| Context | Text size | Icon size | Gap |
+|---|---|---|---|
+| Meta line / chips / counts | 12–13px | **14px** | 4–5px |
+| Body rows / buttons / inline actions | 14–15px | **16–18px** | 6–8px |
+| List-row leading icon | 15px title | **18–20px** inside a 38–44px `bg-s-bg-sunken` box (radius per nesting formula) | 12–13px |
+| Stepper / hero discs | — | **18px** inside 42px disc | — |
+| Empty-state / focal | — | **22–26px** inside a 56px+ disc | — |
+
+- **Label ladder (with §6 copy economy):** famous icons (house, heart, search, bell, share, X) ride
+  label-free; anything less iconic gets a visible label on mobile (tooltips are desktop-only).
+- **Ghost control recipe:** rows/sidebar items are ghost buttons — transparent at rest,
+  `bg-s-bg-sunken` on hover/pressed (the §3.5 list-row recipe). Never give them borders.
+- **Zone rule:** different icon STYLES may coexist only in visually separate zones (3D category tiles
+  vs Lucide UI glyphs is sanctioned; mixing within one zone is drift).
+
+---
+
+## §14 — Card grammar + content resilience (DS-7 / DS-8 / DS-9, video-audit 2026-06-11, owner-approved)
+
+### §14.1 — Card grammar (the 5-step recipe)
+
+Every card/list-item is built in this order — "Label: value" pairs are a spreadsheet, not a card:
+
+1. **Group** related facts (name+address; price+rating; time+duration).
+2. **Rank** the groups — the user's scan order, most important top-left.
+3. **De-label** — the UI implies labels (a star implies rating; CHF implies price). A label survives
+   ONLY where genuinely ambiguous (check-in vs check-out class of problems).
+4. **Icon the details row** — one row of icon+value pairs (14px icons per §13.7) instead of label text.
+5. **One differentiated element** per card (size/weight/photo) — if everything is 13px/regular, the
+   card is a spreadsheet again. Photos whenever honest (rich-not-bland).
+
+### §14.2 — Divider decision rule (DS-8)
+
+Whitespace FIRST. The ladder: (1) gap-only separation (default for menus, profile rows, review lists —
+the §3 "hairlines stay only as dividers INSIDE a grouped list" rule narrows further); (2) hairline
+`border-s-border/60` only inside dense receipt-style clusters (price breakdowns, booking summaries);
+(3) alternating row tint only in true data tables (dashboard). A divider next to generous padding =
+delete the divider.
+
+### §14.3 — Content resilience (DS-9)
+
+Design for the WORST content, not the demo content:
+
+| Role | Rule |
+|---|---|
+| Salon/service names | 1 line, `truncate` (word-safe ellipsis). Never mid-word clips ("Old Town Bar…"-class bugs). |
+| Addresses / meta | 1 line, `truncate` |
+| Review/body text | clamp + blue "Mehr lesen" expander (§6) |
+| Icons over photos | ALWAYS on a backed disc (frost-glass or white 92%) — never bare on an unknown photo |
+| Numbers | `tabular-nums` so columns don't dance |
+
+Phase-4+ mockups MUST include a long-content variant per card type. Empty/edge states are first-class:
+every list ships empty + loading + error designed (not an afterthought).
+
+### §14.4 — Flow escape hatches (DS-A6)
+
+Every optional step is skippable (visible "Überspringen"); every preset-choice list has an escape hatch
+(free-text/"other"/search); every async transition shows feedback (§3.5 loading). A flow with a dead end
+is a bug, not a design choice.
+
+---
+
+## §15 — Vibe statement + personality zones (DS-12, video-audit 2026-06-11, owner-approved)
+
+### §15.1 — The vibe statement (test every decision against it)
+
+> "Solen is premium-warm. Photography carries the emotion; the chrome stays quiet. Personality lives in
+> the dead zones — empty states, errors, success moments — never in the funnel. Human, never corporate.
+> Rich, never cluttered."
+
+### §15.2 — Personality zones
+
+| Zone | Personality allowed? |
+|---|---|
+| 404 / error pages | ✅ YES — the sanctioned playground |
+| Empty states | ✅ YES (light) |
+| Success moments (confirmation, queue-done) | ✅ YES (SuccessMark + one warm line) |
+| Onboarding | ✅ YES (light) |
+| Booking flow / checkout / pay | ❌ NO — funnel stays quiet |
+| Queue tracker / search results / PDP chrome | ❌ NO |
+
+### §15.3 — The 404/empty language (Option A typographic, owner pick 2026-06-11)
+
+Locked direction: **typographic** — oversized Inter Tight number/word (ink→grey gradient fade), one
+subtle Lucide accent animation (e.g. the scissors snip), human one-liner, single ink CTA. The same
+voice carries to empty states (bold human headline + one explanatory line + ghost CTA + small
+illustrative icon tiles). NO mascots, NO games, NO photographic 404 (Options B/C rejected).
+Reference mockup: `public/_mockups/video-audit/personality.html`.
+
+### §15.4 — Voice: human, not corporate (DS-A5)
+
+German register examples (test new copy against these):
+| ❌ Corporate | ✅ Solen |
+|---|---|
+| "Wir legen grossen Wert auf Details." | "Wir feilen an den Details." |
+| "Ihre Anfrage wurde erfolgreich übermittelt." | "Geschafft. Wir melden uns gleich." |
+| "Keine Einträge vorhanden." | "Noch nichts gespeichert. Tipp aufs Herz und es landet hier." |
+
+Du-form everywhere (existing rule), no exclamation-mark cheer, no jargon.
+
+---
+
+## §16 — Sheet physics + motion additions (DS-11 / DS-A4, video-audit 2026-06-11, owner-approved)
+
+### §16.1 — Bottom sheets (every sheet, no exceptions)
+
+- **Grabber:** 38×4.5px `bg-s-border` pill, centered, 6px from top.
+- **Drag-to-dismiss:** sheet follows the finger (transition off while dragging), releases home under
+  ~90px, dismisses past it. Tap-outside + a visible control still work — gesture never the only way.
+- **Background = Option B (owner pick):** page scales back behind the sheet —
+  `translateY(10px) scale(.965)` + `border-radius 22px` + `brightness(.96)`, 320ms `glide`,
+  reversing on close. Dim layer `rgba(10,10,10,.42)` as today.
+- Open/close timing stays §3.5 (300ms glide). z-index per §3 scale.
+
+### §16.2 — Gallery position indicators (DS-A4)
+
+Any swipeable image gallery (PDP hero, review photos) shows position dots: 6px white 55% dots,
+active stretches to 18px white 100%, 250ms glide; dots sit in a bottom 64px DS-10 scrim band.
+Replaces lone "1/6" counters. CSS scroll-snap carries the momentum (no JS physics).
+
+### §16.3 — The ONE shared-element transition (DS-A4 flagship, approved direct-build)
+
+Salon card → PDP via the **View Transitions API**: the tapped card's photo expands into the PDP hero;
+content fades up after (§4 glide). Progressive enhancement — browsers without support get the normal
+navigation. This is the only shared-element moment; every other route change keeps slide/fade.
+Subtle parallax is permitted on home/category heroes only. No scrolljacking, ever.
+
+### §16.4 — Entrance recipes (extends §4)
+
+| Element | Entrance |
+|---|---|
+| Badges / SuccessMark | pop-rotate (scale .6→1 + slight rotate, spring) |
+| Card grids | 40ms stagger rise-in |
+| Hero imagery (marketing only) | fly-in + slow bob (4s ease-in-out loop), ONE element max |
+| Toast / chips | slide-up + settle (§4 glide) |
+
