@@ -34,7 +34,7 @@
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
 
-  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;min-height:844px;}
 
   /* ─────────── iOS STATUS BAR (verbatim) ─────────── */
   .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
@@ -48,6 +48,9 @@
   .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
   .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
   .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  /* NUMBERS: Inter Tight tabular (NOT mono) — prices, times, dates, counts. */
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  /* MONO: JetBrains Mono is for CODES ONLY (voucher GIFT-7K2M, ticket W-047). */
   .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
   /* ─────────── BUTTONS / LINKS (verbatim) ─────────── */
@@ -61,51 +64,57 @@
   /* ─────────── ENTRANCE (verbatim) ─────────── */
   .rise{animation:rise .55s var(--ease) both;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-  .rise-1{animation-delay:.05s;} .rise-2{animation-delay:.10s;} .rise-3{animation-delay:.15s;}
-  .rise-4{animation-delay:.20s;} .rise-5{animation-delay:.25s;} .rise-6{animation-delay:.31s;}
+  .rise-1{animation-delay:.04s;} .rise-2{animation-delay:.09s;} .rise-3{animation-delay:.14s;}
+  .rise-4{animation-delay:.19s;} .rise-5{animation-delay:.24s;} .rise-6{animation-delay:.29s;}
+  .rise-7{animation-delay:.34s;} .rise-8{animation-delay:.39s;}
 
-  /* ═══════════ NOTIFICATIONS PANEL (kit-derived: slide-in sheet over a dimmed page) ═══════════ */
-  /* dimmed underlying page */
-  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.4);z-index:1;animation:fade .35s var(--ease) both;}
-  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  /* ═══════════ NOTIFICATIONS — full page ═══════════ */
+  /* sticky header */
+  .nhead{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .nhead-l{display:flex;flex-direction:column;gap:6px;}
+  .nhead-meta{display:flex;align-items:center;gap:5px;font-size:13px;}
+  .nhead-meta .num{color:var(--blue);font-size:13px;}  /* "3" unread count — small blue clickable-feel number */
 
-  /* top-anchored slide-in panel — pulls down from the bell, rounded BOTTOM corners (mirror of .sheet) */
-  .panel{position:absolute;top:0;left:0;right:0;z-index:2;background:var(--bg);
-    border-radius:0 0 var(--r-sheet) var(--r-sheet);box-shadow:0 18px 44px -16px rgba(10,10,10,.35);
-    padding-bottom:18px;animation:slidein .42s var(--ease) both;overflow:hidden;}
-  @keyframes slidein{from{transform:translateY(-16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  /* time group label */
+  .group-label{padding:20px 20px 6px;}
 
-  /* panel header */
-  .panel-head{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 18px 14px;}
-  .panel-head-l{display:flex;flex-direction:column;gap:4px;}
-  .panel-head-meta{display:flex;align-items:center;gap:7px;font-size:13px;}
-  .unread-count{color:var(--blue);}   /* mono "3" — blue, the one small clickable-feel count */
-
-  /* notification row (kit .lrow geometry + leading icon tile + trailing unread dot) */
-  .nrow{display:flex;align-items:flex-start;gap:13px;padding:14px 18px;cursor:pointer;position:relative;
-    transition:background .16s ease;}
+  /* notification row — leading AVATAR/PHOTO (salon) OR refined-pastel icon tile (system) */
+  .nrow{display:flex;align-items:flex-start;gap:13px;padding:13px 20px;cursor:pointer;position:relative;transition:background .16s ease;}
   .nrow:active{background:var(--sunken);}
   .nrow + .nrow{border-top:1px solid var(--border);}
-  .nrow.is-unread{background:rgba(244,244,245,.55);}
-  /* icon tile: ink glyph on sunken; semantic tint ONLY where colour carries meaning */
-  .nrow-ico{width:38px;height:38px;border-radius:var(--r-tile);background:var(--sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
-  .nrow-ico.is-green{background:#E7F6EC;color:var(--green);}
-  .nrow-ico.is-star{background:#FFF6E0;color:var(--star);}
+  .nrow.is-unread{background:rgba(244,244,245,.5);}
+
+  /* rounded salon avatar/photo — the leading richness that kills the monochrome */
+  .nava{position:relative;width:48px;height:48px;flex-shrink:0;}
+  .nava img{width:48px;height:48px;border-radius:14px;object-fit:cover;display:block;}
+  /* tiny semantic badge clipped to the avatar corner (green check / star / bolt) */
+  .nava-badge{position:absolute;right:-3px;bottom:-3px;width:21px;height:21px;border-radius:var(--r-pill);
+    background:#fff;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(10,10,10,.18);}
+  .nava-badge.is-green{background:var(--green);color:#fff;}
+  .nava-badge.is-star{background:var(--star);color:#fff;}
+  .nava-badge.is-bolt{background:var(--green);color:#fff;}
+
+  /* refined-pastel icon tile — SYSTEM notifications only (no salon behind them) */
+  .nico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--sunken);color:var(--ink);}
+  .nico.is-blue{background:#EAF1FE;color:var(--blue);}
+
   .nrow-main{flex:1;min-width:0;padding-top:1px;}
   .nrow-title{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em;line-height:1.25;}
   .nrow-sub{margin-top:3px;font-size:13px;line-height:1.45;color:var(--ink-2);}
   .nrow-time{flex-shrink:0;font-size:11.5px;color:var(--ink-3);padding-top:2px;white-space:nowrap;}
-  /* small blue unread dot — affordance, not decoration */
-  .unread-dot{position:absolute;top:19px;left:7px;width:7px;height:7px;border-radius:var(--r-pill);background:var(--blue);}
 
-  /* divider into the empty-state variant */
-  .panel-divider-label{padding:18px 18px 4px;}
+  /* inline media thumbnail (Google-Photos style) under a row */
+  .nrow-thumb{margin-top:9px;display:flex;gap:7px;}
+  .nrow-thumb img{width:64px;height:64px;border-radius:12px;object-fit:cover;}
 
-  /* calm empty-state (sunken bell disc) */
-  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 24px 12px;}
-  .empty-disc{width:60px;height:60px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin-bottom:14px;}
-  .empty-title{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:16px;letter-spacing:-.01em;}
-  .empty-sub{margin-top:5px;font-size:13px;color:var(--ink-3);line-height:1.45;max-width:240px;}
+  /* small blue unread dot — affordance, sits at far right aligned with time */
+  .unread-dot{flex-shrink:0;width:8px;height:8px;border-radius:var(--r-pill);background:var(--blue);margin-top:6px;}
+
+  /* calm empty-state note */
+  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 24px 20px;}
+  .empty-disc{width:52px;height:52px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin-bottom:12px;}
+  .empty-title{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em;}
+  .empty-sub{margin-top:5px;font-size:13px;color:var(--ink-3);line-height:1.45;max-width:250px;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -121,100 +130,106 @@
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <!-- dimmed underlying page peeking below the sheet -->
-  <div style="padding:0 20px;">
-    <h1 class="t-display" style="margin-top:6px;">Entdecken</h1>
-    <p class="t-body" style="margin-top:6px;">Coiffeur, Barber &amp; Spa in deiner Nähe</p>
-    <div style="height:130px;background:var(--sunken);border-radius:var(--r-card);margin-top:18px;"></div>
-    <div style="height:130px;background:var(--sunken);border-radius:var(--r-card);margin-top:14px;"></div>
-    <div style="height:130px;background:var(--sunken);border-radius:var(--r-card);margin-top:14px;"></div>
+  <!-- sticky header: title + "3 ungelesen" + "Alle gelesen" link -->
+  <div class="nhead">
+    <div class="nhead-l">
+      <h1 class="t-title">Benachrichtigungen</h1>
+      <div class="nhead-meta"><span class="num">3</span><span class="t-meta">ungelesen</span></div>
+    </div>
+    <a class="link rise rise-1">Alle gelesen</a>
   </div>
 
-  <!-- scrim dims the page behind -->
-  <div class="scrim"></div>
+  <!-- ─────────── HEUTE ─────────── -->
+  <div class="group-label rise rise-1"><span class="t-eyebrow">Heute</span></div>
 
-  <!-- top-anchored slide-in notifications panel -->
-  <div class="panel">
+  <!-- Termin bestätigt — salon avatar + green check badge (semantic) — unread -->
+  <div class="nrow is-unread rise rise-1">
+    <div class="nava">
+      <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
+      <span class="nava-badge is-green"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </div>
+    <div class="nrow-main">
+      <div class="nrow-title">Termin bestätigt</div>
+      <div class="nrow-sub">Maison Lumière, Do 12. Juni um <span class="num" style="color:var(--ink);">14:00</span></div>
+    </div>
+    <span class="nrow-time">vor 2 Min</span>
+    <span class="unread-dot"></span>
+  </div>
 
-    <!-- status-bar inset inside the panel -->
-    <div class="statusbar"><span>9:41</span><span class="ico">
-      <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
-      <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
-      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
-    </span></div>
+  <!-- Sofort frei — slot alert, salon photo + bolt badge (green = available) — unread -->
+  <div class="nrow is-unread rise rise-2">
+    <div class="nava">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
+      <span class="nava-badge is-bolt"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H12l-1 8.5 8.5-11.5H11z"/></svg></span>
+    </div>
+    <div class="nrow-main">
+      <div class="nrow-title">Sofort frei: <span style="color:var(--green);">heute <span class="num" style="color:var(--green);">15:00</span></span></div>
+      <div class="nrow-sub">BarberHaus Zürich hat gerade einen Platz frei</div>
+    </div>
+    <span class="nrow-time">vor 1 Std</span>
+    <span class="unread-dot"></span>
+  </div>
 
-    <div class="panel-head">
-      <div class="panel-head-l">
-        <h2 class="t-section">Benachrichtigungen</h2>
-        <div class="panel-head-meta">
-          <span class="mono unread-count">3</span><span class="t-meta">ungelesen</span>
-        </div>
+  <!-- Erinnerung — salon avatar, no semantic badge — unread -->
+  <div class="nrow is-unread rise rise-3">
+    <div class="nava">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
+    </div>
+    <div class="nrow-main">
+      <div class="nrow-title">Dein Termin ist morgen</div>
+      <div class="nrow-sub">Herrenschnitt bei Marco B. um <span class="num" style="color:var(--ink);">10:30</span></div>
+    </div>
+    <span class="nrow-time">vor 3 Std</span>
+    <span class="unread-dot"></span>
+  </div>
+
+  <!-- ─────────── FRÜHER ─────────── -->
+  <div class="group-label rise rise-4"><span class="t-eyebrow">Früher</span></div>
+
+  <!-- Bewertung erbeten — salon avatar + star badge, with inline media thumbnail (Google Photos style) — read -->
+  <div class="nrow rise rise-5">
+    <div class="nava">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
+      <span class="nava-badge is-star"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg></span>
+    </div>
+    <div class="nrow-main">
+      <div class="nrow-title">Wie war dein Besuch?</div>
+      <div class="nrow-sub">Bewerte Sara K. bei Maison Lumière</div>
+      <div class="nrow-thumb">
+        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
+        <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
       </div>
-      <a class="link rise rise-1">Alle gelesen</a>
     </div>
+    <span class="nrow-time">Gestern</span>
+  </div>
 
-    <!-- LIVE ROWS -->
-    <!-- 1 · Termin bestätigt (green check) — unread -->
-    <div class="nrow is-unread rise rise-1">
-      <span class="unread-dot"></span>
-      <span class="nrow-ico is-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-      <div class="nrow-main">
-        <div class="nrow-title">Termin bestätigt</div>
-        <div class="nrow-sub">Maison Lumière · Do, 12. Juni um <span class="mono" style="color:var(--ink);">14:00</span></div>
-      </div>
-      <span class="nrow-time">vor 2 Min</span>
+  <!-- Gutschein eingelöst — salon avatar — read -->
+  <div class="nrow rise rise-6">
+    <div class="nava">
+      <img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?auto=format&fit=crop&w=120&q=80" alt="" referrerpolicy="no-referrer">
     </div>
-
-    <!-- 2 · Erinnerung (clock) — unread -->
-    <div class="nrow is-unread rise rise-2">
-      <span class="unread-dot"></span>
-      <span class="nrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
-      <div class="nrow-main">
-        <div class="nrow-title">Dein Termin ist morgen</div>
-        <div class="nrow-sub">Herrenschnitt bei Marco B. · <span class="mono" style="color:var(--ink);">10:30</span></div>
-      </div>
-      <span class="nrow-time">vor 1 Std</span>
+    <div class="nrow-main">
+      <div class="nrow-title">Gutschein eingelöst</div>
+      <div class="nrow-sub"><span class="num" style="color:var(--ink);">CHF 40.00</span> wurden auf deine Buchung angerechnet</div>
     </div>
+    <span class="nrow-time">vor 2 Tagen</span>
+  </div>
 
-    <!-- 3 · Sofort frei — slot alert (green = available, semantic) — unread -->
-    <div class="nrow is-unread rise rise-3">
-      <span class="unread-dot"></span>
-      <span class="nrow-ico is-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H12l-1 8.5 8.5-11.5H11z"/></svg></span>
-      <div class="nrow-main">
-        <div class="nrow-title">Sofort frei: <span style="color:var(--green);">heute 15:00</span></div>
-        <div class="nrow-sub">BarberHaus Zürich hat einen Platz frei</div>
-      </div>
-      <span class="nrow-time">vor 3 Std</span>
+  <!-- App-Update — SYSTEM notification, refined-pastel icon tile (no salon) — read -->
+  <div class="nrow rise rise-7">
+    <span class="nico is-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+    <div class="nrow-main">
+      <div class="nrow-title">Neu: Sofort-frei-Plätze in deiner Nähe</div>
+      <div class="nrow-sub">Sieh freie Termine in Echtzeit, ohne zu warten</div>
     </div>
+    <span class="nrow-time">vor 5 Tagen</span>
+  </div>
 
-    <!-- 4 · Bewertung erbeten (star) — read -->
-    <div class="nrow rise rise-4">
-      <span class="nrow-ico is-star"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg></span>
-      <div class="nrow-main">
-        <div class="nrow-title">Wie war dein Besuch?</div>
-        <div class="nrow-sub">Bewerte Sara K. bei Maison Lumière</div>
-      </div>
-      <span class="nrow-time">Gestern</span>
-    </div>
-
-    <!-- 5 · Gutschein eingelöst (voucher) — read -->
-    <div class="nrow rise rise-5">
-      <span class="nrow-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V6a2 2 0 012-2h14a2 2 0 012 2v3a2 2 0 000 6v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 000-6z"/><path d="M14.5 4v16" stroke-dasharray="2 2.5"/></svg></span>
-      <div class="nrow-main">
-        <div class="nrow-title">Gutschein eingelöst</div>
-        <div class="nrow-sub"><span class="mono" style="color:var(--ink);">CHF 40.00</span> auf deine Buchung angerechnet</div>
-      </div>
-      <span class="nrow-time">2 Tage</span>
-    </div>
-
-    <!-- divider into the calm empty-state variant -->
-    <div class="panel-divider-label"><span class="t-eyebrow">Ältere</span></div>
-    <div class="empty rise rise-6">
-      <div class="empty-disc"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
-      <div class="empty-title">Keine neuen Benachrichtigungen</div>
-      <div class="empty-sub">Du bist auf dem neuesten Stand. Wir melden uns bei Updates zu deinen Terminen.</div>
-    </div>
-
+  <!-- calm empty-state note below -->
+  <div class="empty rise rise-8">
+    <div class="empty-disc"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+    <div class="empty-title">Das ist alles für jetzt</div>
+    <div class="empty-sub">Du bist auf dem neuesten Stand. Wir melden uns bei Updates zu deinen Terminen.</div>
   </div>
 
 </div>

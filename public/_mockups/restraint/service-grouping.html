@@ -48,6 +48,9 @@
   .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
   .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
   .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  /* NUMBERS: prices, durations, counts, dates, times → Inter Tight tabular (NOT mono). */
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  /* MONO: JetBrains Mono for CODES ONLY. Never on prices/times. */
   .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
   /* ─────────── HERO ─────────── */
@@ -70,7 +73,7 @@
   .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
   .open{color:var(--green);font-weight:600;}
   .closed{color:var(--error);font-weight:600;}
-  .dot-sep{color:var(--ink-3);}
+  /* (.dot-sep removed — middot separators are banned; separate meta with spacing/commas) */
 
   /* ─────────── FILTER CHIPS ─────────── */
   .chips{display:flex;gap:8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
@@ -86,17 +89,17 @@
   .link-ink{color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
 
   /* ─────────── TIER GROUP HEADER (the one new idea) ─────────── */
-  /* t-eyebrow label + mono minute range. No colour — structural only. */
-  .grp{display:flex;align-items:baseline;gap:8px;padding:24px 0 2px;}
-  .grp .grp-min{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11.5px;letter-spacing:-.01em;color:var(--ink-3);font-variant-numeric:tabular-nums;}
+  /* t-eyebrow label + Inter-tabular minute range. No colour — structural only. */
+  .grp{display:flex;align-items:baseline;gap:8px;padding:30px 0 6px;}
+  .grp .grp-min{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:12px;letter-spacing:-.01em;color:var(--ink-3);font-variant-numeric:tabular-nums;}
 
   /* ─────────── SERVICE / LIST ROW (verbatim anatomy) ─────────── */
-  .srow{display:flex;align-items:flex-start;gap:14px;padding:16px 0;}
+  .srow{display:flex;align-items:flex-start;gap:14px;padding:19px 0;}
   .srow + .srow{border-top:1px solid var(--border);}
   .srow-main{flex:1;min-width:0;}
   .srow-name{display:flex;align-items:center;gap:8px;}
   .srow-sub{margin-top:4px;font-size:13px;color:var(--ink-3);}
-  .srow-price{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--ink);white-space:nowrap;}
+  .srow-price{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;}
   /* the ONE "Beliebt" per group: Inter Tight 800 name + tiny sunken/ink tag (never coloured) */
   .srow.is-pop .t-row{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.015em;}
   .tag-pop{flex-shrink:0;background:var(--sunken);color:var(--ink);border-radius:var(--r-pill);
@@ -146,11 +149,10 @@
     <div class="rating rise" style="margin-top:8px;animation-delay:.08s;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
       <span class="num">4.8</span><span class="count">(96)</span>
-      <span class="dot-sep">·</span><span class="t-meta">Coiffeur</span>
-      <span class="dot-sep">·</span><span class="t-meta">Zürich, Kreis 5</span>
+      <span class="t-meta">Coiffeur in Zürich, Kreis 5</span>
     </div>
     <div class="rise" style="margin-top:6px;display:flex;align-items:center;gap:6px;font-size:13.5px;animation-delay:.10s;">
-      <span class="open">Geöffnet</span><span class="t-meta">· bis 19:00 · Limmatstrasse 112</span>
+      <span class="open">Geöffnet bis 19:00</span><span class="t-meta">Limmatstrasse 112</span>
     </div>
 
     <!-- SERVICES -->
@@ -162,74 +164,74 @@
       <span class="chip is-selected">Alle</span><span class="chip">Schnitt</span><span class="chip">Färben</span><span class="chip">Styling</span><span class="chip">Pflege</span>
     </div>
 
-    <!-- GROUP 1 · Express -->
+    <!-- GROUP 1 Express -->
     <div class="grp rise" style="animation-delay:.20s;">
       <span class="t-eyebrow">Express</span><span class="grp-min">15–30 Min</span>
     </div>
     <div class="srow is-pop rise" style="animation-delay:.22s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Pony-Schnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
-        <div class="srow-sub">25 Min · Nachschnitt &amp; Finish</div>
+        <div class="srow-sub"><span class="num">25</span> Min, Nachschnitt &amp; Finish</div>
       </div>
-      <div class="srow-price">CHF 35</div>
+      <div class="srow-price">CHF <span class="num">35</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
     <div class="srow rise" style="animation-delay:.24s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Bartkontur</span></div>
-        <div class="srow-sub">20 Min · Trimmen &amp; Rasur</div>
+        <div class="srow-sub"><span class="num">20</span> Min, Trimmen &amp; Rasur</div>
       </div>
-      <div class="srow-price">CHF 42</div>
+      <div class="srow-price">CHF <span class="num">42</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
 
-    <!-- GROUP 2 · Klassisch -->
+    <!-- GROUP 2 Klassisch -->
     <div class="grp rise" style="animation-delay:.26s;">
       <span class="t-eyebrow">Klassisch</span><span class="grp-min">45–60 Min</span>
     </div>
     <div class="srow is-pop rise" style="animation-delay:.28s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Damenschnitt &amp; Föhnen</span><span class="tag-pop">Beliebt</span></div>
-        <div class="srow-sub">55 Min · mit Waschen &amp; Beratung</div>
+        <div class="srow-sub"><span class="num">55</span> Min, mit Waschen &amp; Beratung</div>
       </div>
-      <div class="srow-price">CHF 95</div>
+      <div class="srow-price">CHF <span class="num">95</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
     <div class="srow rise" style="animation-delay:.30s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Herrenschnitt</span></div>
-        <div class="srow-sub">45 Min · Schnitt &amp; Styling</div>
+        <div class="srow-sub"><span class="num">45</span> Min, Schnitt &amp; Styling</div>
       </div>
-      <div class="srow-price">CHF 68</div>
+      <div class="srow-price">CHF <span class="num">68</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
     <div class="srow rise" style="animation-delay:.32s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Ansatzfarbe</span></div>
-        <div class="srow-sub">60 Min · Coloration &amp; Föhnen</div>
+        <div class="srow-sub"><span class="num">60</span> Min, Coloration &amp; Föhnen</div>
       </div>
-      <div class="srow-price">CHF 110</div>
+      <div class="srow-price">CHF <span class="num">110</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
 
-    <!-- GROUP 3 · Signature -->
+    <!-- GROUP 3 Signature -->
     <div class="grp rise" style="animation-delay:.34s;">
       <span class="t-eyebrow">Signature</span><span class="grp-min">90+ Min</span>
     </div>
     <div class="srow is-pop rise" style="animation-delay:.36s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Balayage &amp; Schnitt</span><span class="tag-pop">Beliebt</span></div>
-        <div class="srow-sub">150 Min · Freihand-Coloration &amp; Pflege</div>
+        <div class="srow-sub"><span class="num">150</span> Min, Freihand-Coloration &amp; Pflege</div>
       </div>
-      <div class="srow-price">CHF 220</div>
+      <div class="srow-price">CHF <span class="num">220</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
     <div class="srow rise" style="animation-delay:.38s;">
       <div class="srow-main">
         <div class="srow-name"><span class="t-row">Keratin-Glättung</span></div>
-        <div class="srow-sub">120 Min · Behandlung &amp; Styling</div>
+        <div class="srow-sub"><span class="num">120</span> Min, Behandlung &amp; Styling</div>
       </div>
-      <div class="srow-price">CHF 185</div>
+      <div class="srow-price">CHF <span class="num">185</span></div>
       <button class="btn-outline">Buchen</button>
     </div>
 

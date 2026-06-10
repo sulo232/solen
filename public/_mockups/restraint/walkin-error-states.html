@@ -56,7 +56,8 @@
   .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
   .rating .num{font-weight:600;color:var(--ink);}
   .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
-  .dot-sep{color:var(--ink-3);}
+  /* NUMBERS: prices, durations, counts, dates, times → Inter Tight tabular (NOT mono) */
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
   /* ─────────── CARD ─────────── */
   .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
@@ -96,7 +97,7 @@
   .sum-line{display:flex;align-items:center;justify-content:space-between;padding:13px 0;}
   .sum-line + .sum-line{border-top:1px solid var(--border);}
   .sum-k{font-size:14px;color:var(--ink-2);}
-  .sum-v{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--ink);}
+  .sum-v{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;font-size:14px;color:var(--ink);}
   .sum-total{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:2px;border-top:1px solid var(--border);}
 
   /* ─────────── ENTRANCE (stagger) ─────────── */
@@ -112,8 +113,8 @@
 </head>
 <body>
 
-<!-- ════════════════════ A · TICKET NICHT GEFUNDEN ════════════════════ -->
-<div class="kit-label">A · walk-in · ticket nicht gefunden (full-page empty state)</div>
+<!-- ════════════════════ A - TICKET NICHT GEFUNDEN ════════════════════ -->
+<div class="kit-label">A - walk-in - ticket nicht gefunden (full-page empty state)</div>
 <div class="frame">
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
@@ -123,13 +124,10 @@
 
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 36px 70px;">
     <div class="empty-disc rise d1">
-      <!-- ticket-off: ticket outline with a diagonal slash -->
-      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 9.5V7a2 2 0 0 1 2-2h11"/>
-        <path d="M20 7v2.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H9"/>
-        <path d="M4 14.5V17a2 2 0 0 0 2 2"/>
-        <path d="M4 9.5a2.5 2.5 0 0 1 1.2 4.7"/>
-        <line x1="3" y1="3" x2="21" y2="21"/>
+      <!-- clean outline ticket -->
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9.5V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2.5a2.5 2.5 0 0 0 0-5Z"/>
+        <path d="M14 5v14"/>
       </svg>
     </div>
     <h1 class="t-title rise d2">Ticket nicht gefunden</h1>
@@ -141,8 +139,8 @@
   </div>
 </div>
 
-<!-- ════════════════════ B · 409 · AM TRESEN BEZAHLEN ════════════════════ -->
-<div class="kit-label">B · walk-in · 409 „am tresen bezahlen“ (non-destructive — summary stays readable)</div>
+<!-- ════════════════════ B - 409 AM TRESEN BEZAHLEN ════════════════════ -->
+<div class="kit-label">B - walk-in - 409 „am tresen bezahlen“ (non-destructive, summary stays readable)</div>
 <div class="frame">
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
@@ -173,7 +171,7 @@
           <div class="rating" style="margin-top:5px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
             <span class="num">4.9</span><span class="count">(127)</span>
-            <span class="dot-sep">·</span><span class="t-meta">Barber · Zürich</span>
+            <span class="t-meta">Barber in Zürich</span>
           </div>
         </div>
       </div>
@@ -191,7 +189,7 @@
 
       <div class="sum-total">
         <span class="t-row">Total</span>
-        <span class="mono" style="font-size:18px;">CHF 65.00</span>
+        <span class="num" style="font-size:18px;">CHF 65.00</span>
       </div>
     </div>
 

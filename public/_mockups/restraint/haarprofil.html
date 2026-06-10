@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — Mein Haarprofil</title>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  MEIN HAARPROFIL  (hair profile / ultra-personalization)
+  Built by COPYING the recipes in _KIT.html (extracted from the live app).
+  Global rules honoured:
+    NO middot separators between meta (decorative-dot ban) — German
+    connectors / commas / whitespace only.
+    Numbers (durations, counts, dates) in .num (Inter Tight tabular),
+    never JetBrains Mono. Mono allowed only for actual codes.
+    Restraint: blue only on small clickable bits; ink for structure,
+    CTAs, chevrons; white + cool-grey surfaces; semantic colour kept.
+    Card radius 24px, pills 9999px, primary CTA = ink pill. de-CH copy.
+    iOS status bar. reduced-motion guard at the end.
+  ════════════════════════════════════════════════════════════════════
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* ─────────── TOKENS (copied from _KIT.html) ─────────── */
+  :root{
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --border:#E4E4E7;
+    --bg:#FFFFFF;
+    --sunken:#F4F4F5;
+    --blue:#276EF1;
+    --green:#16A34A;
+    --star:#FFC32B;
+    --error:#DC2626;
+    --heart:#FF3366;
+    --r-card:24px;
+    --r-sheet:20px;
+    --r-pill:9999px;
+    --r-tile:14px;
+    --pad-card:20px;
+    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
+    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
+    --gap-section:30px;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
+
+  /* ═══════════ THE 390px FRAME ═══════════ */
+  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:844px;}
+
+  /* ─────────── iOS STATUS BAR (real chrome top) ─────────── */
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;flex-shrink:0;}
+  .statusbar .ico{display:flex;gap:6px;align-items:center;}
+
+  /* ─────────── TYPE SCALE (copied) ─────────── */
+  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
+  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
+  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
+  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
+  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+
+  /* ─────────── TOP BAR (ink back chevron + title) ─────────── */
+  .topbar{display:flex;align-items:center;gap:12px;padding:6px 16px 4px;flex-shrink:0;}
+  .topbar .frost-btn{position:static;}
+  .btn-back{width:40px;height:40px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;flex-shrink:0;transition:transform .14s var(--ease);}
+  .btn-back:active{transform:scale(.92);}
+
+  /* ─────────── SCROLL BODY ─────────── */
+  .scroll{flex:1;overflow-y:auto;padding:8px 20px 24px;}
+  .scroll::-webkit-scrollbar{display:none;}
+  .intro{color:var(--ink-2);font-size:14px;line-height:1.5;margin-top:2px;}
+
+  /* completeness meter (Airbnb-style profile progress, ink track) */
+  .progress{margin-top:18px;}
+  .progress-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+  .progress-head .lbl{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink-2);}
+  .progress-head .pct{font-size:13px;color:var(--ink);}
+  .progress-track{height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;}
+  .progress-fill{display:block;height:100%;border-radius:var(--r-pill);background:var(--ink);}
+
+  /* ─────────── SECTION + CARD ─────────── */
+  .sec{padding-top:var(--gap-section);}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+  .card-flat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--pad-card);}
+  .card-label{font-family:'Inter Tight';font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .card-label svg{color:var(--ink-2);}
+
+  /* ─────────── SELECTABLE PILLS (selected = ink fill, calm) ─────────── */
+  .pillset{display:flex;flex-wrap:wrap;gap:8px;}
+  .opt{height:38px;padding:0 16px;border-radius:var(--r-pill);display:inline-flex;align-items:center;
+    font-size:14px;font-weight:500;color:var(--ink-2);background:#fff;border:1px solid var(--border);cursor:pointer;
+    transition:transform .12s var(--ease),border-color .14s ease;}
+  .opt:active{transform:scale(.96);}
+  .opt.is-selected{background:var(--ink);color:#fff;font-weight:600;border-color:var(--ink);}
+
+  /* allergy chips: removable, calm outline (selected = ink border, not fill) */
+  .chipset{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .achip{height:34px;padding:0 12px 0 14px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--ink);cursor:default;}
+  .achip .x{display:flex;align-items:center;justify-content:center;color:var(--ink-3);cursor:pointer;transition:transform .12s var(--ease);}
+  .achip .x:active{transform:scale(.86);}
+  .achip-add{height:34px;padding:0 14px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:6px;
+    font-size:13px;font-weight:600;color:var(--ink);background:var(--sunken);border:none;cursor:pointer;transition:transform .12s var(--ease);}
+  .achip-add:active{transform:scale(.96);}
+
+  /* note field (coloration history) — sunken input block */
+  .field{background:var(--sunken);border-radius:var(--r-tile);padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;}
+  .field-txt{font-size:14px;color:var(--ink);font-weight:500;}
+  .field-sub{font-size:12px;color:var(--ink-3);margin-top:3px;}
+  .field .edit{color:var(--blue);font-size:13px;font-weight:500;flex-shrink:0;}
+
+  /* preferred stylist avatar row (copied team-row recipe, single + add) */
+  .pref-row{display:flex;align-items:center;gap:16px;}
+  .pref-ava{position:relative;width:60px;height:60px;flex-shrink:0;}
+  .pref-ava img{width:60px;height:60px;border-radius:var(--r-pill);object-fit:cover;}
+  .pref-ava .check{position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-radius:var(--r-pill);background:var(--green);border:2px solid #fff;display:flex;align-items:center;justify-content:center;}
+  .pref-name{font-family:'Inter Tight';font-weight:600;font-size:15px;}
+  .pref-spec{font-size:13px;color:var(--ink-3);margin-top:2px;}
+  .pref-change{margin-left:auto;}
+  .btn-change{background:var(--sunken);color:var(--ink);border:none;border-radius:var(--r-pill);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .14s var(--ease);}
+  .btn-change:active{transform:scale(.96);}
+
+  /* reference photos row (rounded thumbnails + add tile) */
+  .photo-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;}
+  .photo-row::-webkit-scrollbar{display:none;}
+  .photo{width:96px;height:120px;border-radius:18px;object-fit:cover;flex-shrink:0;background:var(--sunken);}
+  .photo-add{width:96px;height:120px;border-radius:18px;flex-shrink:0;background:var(--sunken);border:1.5px dashed var(--border);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink-2);cursor:pointer;
+    font-size:12px;font-weight:600;transition:transform .14s var(--ease);}
+  .photo-add:active{transform:scale(.96);}
+
+  /* note for the coiffeur — textarea block */
+  .note{background:var(--sunken);border-radius:var(--r-tile);padding:14px;min-height:96px;font-size:14px;line-height:1.55;color:var(--ink);}
+  .note .ph{color:var(--ink-3);}
+
+  /* ─────────── BOTTOM STICKY BAR ─────────── */
+  .stickybar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:16px;flex-shrink:0;}
+  .btn-ink{background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);
+    padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .14s var(--ease);}
+  .btn-ink:active{transform:scale(.97);}
+  .btn-ink.full{width:100%;padding:16px 28px;}
+
+  /* ─────────── ENTRANCE (stagger) ─────────── */
+  .rise{animation:rise .55s var(--ease) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <!-- iOS status bar -->
+  <div class="statusbar"><span>9:41</span><span class="ico">
+    <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+    <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
+  </span></div>
+
+  <!-- top bar: ink back chevron + title -->
+  <div class="topbar">
+    <button class="btn-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <h1 class="t-title">Mein Haarprofil</h1>
+  </div>
+
+  <div class="scroll">
+    <p class="intro rise">Damit dein Coiffeur dich besser kennt.</p>
+
+    <!-- completeness meter -->
+    <div class="progress rise">
+      <div class="progress-head">
+        <span class="lbl">Profil zu <span class="num" style="color:var(--ink);">80</span>% ausgefüllt</span>
+        <span class="pct"><span class="num">7</span> von <span class="num">9</span></span>
+      </div>
+      <div class="progress-track"><span class="progress-fill" style="width:80%"></span></div>
+    </div>
+
+    <!-- (1) Haartyp -->
+    <div class="sec rise" style="padding-top:26px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c4-2 4-9 8-9s4 7 8 9"/><path d="M4 20c4-2 4-9 8-9s4 7 8 9"/></svg>
+          Haartyp
+        </div>
+        <div class="pillset">
+          <span class="opt">Glatt</span>
+          <span class="opt is-selected">Wellig</span>
+          <span class="opt">Lockig</span>
+          <span class="opt">Kraus</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- (2) Länge -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 7l5-4 5 4M7 17l5 4 5-4"/></svg>
+          Länge
+        </div>
+        <div class="pillset">
+          <span class="opt">Kurz</span>
+          <span class="opt is-selected">Mittel</span>
+          <span class="opt">Lang</span>
+          <span class="opt">Sehr lang</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- (3) Dicke / Dichte -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          Dicke und Dichte
+        </div>
+        <div class="pillset">
+          <span class="opt">Fein</span>
+          <span class="opt is-selected">Mittel</span>
+          <span class="opt">Dick</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- (4) Kopfhaut -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Kopfhaut
+        </div>
+        <div class="pillset">
+          <span class="opt is-selected">Normal</span>
+          <span class="opt">Trocken</span>
+          <span class="opt">Fettig</span>
+          <span class="opt">Empfindlich</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- (5) Allergien & Sensibilitäten -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          Allergien und Sensibilitäten
+        </div>
+        <div class="chipset">
+          <span class="achip">Ammoniak <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
+          <span class="achip">Sulfate <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
+          <span class="achip">Duftstoffe <span class="x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
+          <button class="achip-add"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Hinzufügen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- (6) Coloration-Verlauf -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Coloration-Verlauf
+        </div>
+        <div class="field">
+          <div>
+            <div class="field-txt">Zuletzt gefärbt: vor <span class="num">3</span> Monaten, Balayage</div>
+            <div class="field-sub">Naturbasis dunkelblond, kalte Töne</div>
+          </div>
+          <span class="edit">Bearbeiten</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- (7) Bevorzugte:r Stylist:in -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Bevorzugte:r Stylist:in
+        </div>
+        <div class="pref-row">
+          <div class="pref-ava">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
+            <span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          </div>
+          <div>
+            <div class="pref-name">Sara K.</div>
+            <div class="pref-spec">Coloration und Balayage</div>
+          </div>
+          <div class="pref-change"><button class="btn-change">Ändern</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (8) Referenzfotos -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          Referenzfotos
+        </div>
+        <div class="photo-row">
+          <img class="photo" src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
+          <img class="photo" src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
+          <img class="photo" src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=240&q=80" alt="" referrerpolicy="no-referrer">
+          <button class="photo-add">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Foto
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- (9) Notiz für den Coiffeur -->
+    <div class="sec rise" style="padding-top:14px;">
+      <div class="card-flat">
+        <div class="card-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          Notiz für den Coiffeur
+        </div>
+        <div class="note">Bitte die Spitzen nur leicht nachschneiden, ich lasse die Länge wachsen. Bei der Coloration gerne kühle Töne, kein Rotstich.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- sticky bottom ink-pill Speichern -->
+  <div class="stickybar">
+    <button class="btn-ink full">Speichern</button>
+  </div>
+</div>
+
+</body>
+</html>

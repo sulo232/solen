@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Walk-in · Live Warteschlange</title>
+<title>Walk-in — Live Status</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -48,6 +48,9 @@
   .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
   .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
   .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+  /* NUMBERS — Inter Tight tabular (NOT mono). prices, durations, counts, dates, times, queue position. */
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  /* MONO — CODES ONLY (ticket W-047). Never on prices/times/queue numbers. */
   .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
   /* ─────────── CARD (verbatim) ─────────── */
@@ -58,69 +61,85 @@
   .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
   .link:hover{text-decoration:underline;}
 
-  /* ─────────── QUEUE POSITION BAR (kit .dist-track / .dist-fill) ─────────── */
-  .dist-track{flex:1;height:6px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;position:relative;}
-  .dist-fill{height:100%;border-radius:var(--r-pill);background:var(--ink);}
-
   /* ─────────── ENTRANCE (verbatim) ─────────── */
   .rise{animation:rise .55s var(--ease) both;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-  /* ─────────── SCREEN-SPECIFIC (built from kit primitives) ─────────── */
+  /* ═══════════ SCREEN-SPECIFIC (built from kit primitives) ═══════════ */
 
-  /* salon mini-header: small rounded photo + name + ticket + paid chip */
-  .minihead{display:flex;align-items:center;gap:13px;padding:18px 20px 22px;}
-  .mini-photo{width:48px;height:48px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
+  /* salon mini-header: small rounded photo + name + ticket code + paid chip */
+  .minihead{display:flex;align-items:center;gap:13px;padding:16px 20px 18px;}
+  .mini-photo{width:46px;height:46px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
   .mini-main{flex:1;min-width:0;}
-  .mini-sub{display:flex;align-items:center;gap:7px;margin-top:3px;}
+  .mini-sub{display:flex;align-items:center;gap:9px;margin-top:4px;}
+  /* ticket code → mono (it IS a code) */
   .ticket{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;letter-spacing:-.01em;color:var(--ink-2);font-variant-numeric:tabular-nums;}
-  /* paid chip — green semantic (kit: --green = paid/success). pale tint + ink-green text + green dot */
+  /* paid chip — green semantic: pale tint + green text + green dot */
   .paid-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:var(--r-pill);
     background:rgba(22,163,74,.10);color:var(--green);font-size:12px;font-weight:600;letter-spacing:-.005em;}
   .paid-dot{width:6px;height:6px;border-radius:var(--r-pill);background:var(--green);}
 
-  /* THE FOCAL — huge mono number block */
-  .focal{padding:26px 20px 30px;text-align:center;}
-  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:18px;}
+  /* ─────────── STAGE PROGRESS JOURNEY (fixes raggedy + monochrome) ─────────── */
+  .journey{padding:6px 20px 4px;}
+  .jtrack{position:relative;display:flex;justify-content:space-between;}
+  /* the connecting hairline track behind the nodes */
+  .jline{position:absolute;top:13px;left:13px;right:13px;height:2px;background:var(--sunken);border-radius:var(--r-pill);}
+  /* the done/progress portion of the track (green up to the current node) */
+  .jline-done{position:absolute;top:13px;left:13px;height:2px;background:var(--green);border-radius:var(--r-pill);
+    width:calc((100% - 26px) * 0.6667);}
+  .jnode{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;width:64px;text-align:center;}
+  .jdot{width:26px;height:26px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
+    background:#fff;border:2px solid var(--border);flex-shrink:0;}
+  .jdot.done{background:var(--green);border-color:var(--green);color:#fff;}
+  /* current node — emphasised ink fill with a soft ring */
+  .jdot.current{background:var(--ink);border-color:var(--ink);color:#fff;
+    box-shadow:0 0 0 4px rgba(10,10,10,.10);}
+  .jdot.current::after{content:"";position:absolute;width:26px;height:26px;border-radius:var(--r-pill);
+    border:2px solid var(--ink);opacity:.35;animation:ring 2s var(--ease) infinite;}
+  @keyframes ring{0%{transform:scale(1);opacity:.35;}70%{transform:scale(1.9);opacity:0;}100%{opacity:0;}}
+  .jdot-num{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;}
+  .jlabel{font-size:11px;font-weight:500;line-height:1.2;color:var(--ink-3);}
+  .jnode.is-done .jlabel{color:var(--ink-2);}
+  .jnode.is-current .jlabel{color:var(--ink);font-weight:600;}
+
+  /* ─────────── THE FOCAL — big number in Inter Tight (.num), green pulse + LIVE ─────────── */
+  .focal{padding:26px 20px 28px;text-align:center;}
+  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;}
   .live-dot{width:9px;height:9px;border-radius:var(--r-pill);background:var(--green);position:relative;}
   .live-dot::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);background:var(--green);
     animation:pulse 1.8s var(--ease) infinite;}
   @keyframes pulse{0%{transform:scale(1);opacity:.55;}70%{transform:scale(3.2);opacity:0;}100%{opacity:0;}}
   .live-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
-
-  .bignum{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:128px;line-height:.92;
-    letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums;display:block;}
+  /* big "3" — Inter Tight tabular, NOT mono */
+  .bignum{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:120px;line-height:.9;
+    letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums;display:inline-block;}
   .vordir{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--ink);
     margin-top:2px;}
-
-  /* ETA pill — calm sunken, ink + mono number */
+  /* ETA pill — calm sunken, ink + Inter Tight number */
   .eta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;height:42px;padding:0 20px;
     border-radius:var(--r-pill);background:var(--sunken);}
   .eta-label{font-size:13px;font-weight:500;color:var(--ink-2);}
-  .eta-num{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;color:var(--ink);
+  .eta-num{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:16px;color:var(--ink);
     letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
-  /* queue bar block */
-  .qbar-wrap{padding:0 20px;}
-  .qbar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .qbar-pos{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--ink);
-    letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-  .qbar-of{color:var(--ink-3);font-weight:500;}
-  .qbar-track{position:relative;height:8px;border-radius:var(--r-pill);background:var(--sunken);overflow:visible;}
-  .qbar-fill{height:100%;border-radius:var(--r-pill);background:var(--ink);}
-  /* the "you are here" marker sitting on the track */
-  .qbar-you{position:absolute;top:50%;width:16px;height:16px;border-radius:var(--r-pill);background:var(--ink);
-    border:3px solid #fff;box-shadow:0 1px 3px rgba(10,10,10,.18);transform:translate(-50%,-50%);}
-  .qbar-ends{display:flex;justify-content:space-between;margin-top:9px;}
-  .qbar-end{font-size:11.5px;font-weight:500;color:var(--ink-3);}
+  /* ─────────── SALON-INTERIOR PHOTO CARD (carries warmth, kills monochrome) ─────────── */
+  .shopwrap{padding:6px 20px 0;}
+  .shopcard{position:relative;border-radius:var(--r-card);overflow:hidden;height:128px;box-shadow:var(--shadow-card);}
+  .shopcard img{width:100%;height:100%;object-fit:cover;display:block;}
+  .shop-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.62) 0%,rgba(10,10,10,.05) 60%);}
+  .shop-cap{position:absolute;left:16px;right:16px;bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+  .shop-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;color:#fff;}
+  .shop-sub{font-size:12px;font-weight:400;color:rgba(255,255,255,.85);margin-top:2px;}
+  .shop-go{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:var(--r-pill);
+    background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    color:var(--ink);font-size:12.5px;font-weight:600;flex-shrink:0;cursor:pointer;}
 
-  /* updated line — calm grey */
-  .updated{display:flex;align-items:center;justify-content:center;gap:6px;padding:24px 20px 4px;}
+  /* ─────────── UPDATED LINE — calm grey, no middot ─────────── */
+  .updated{display:flex;align-items:center;justify-content:center;gap:7px;padding:24px 20px 4px;}
   .updated-txt{font-size:13px;font-weight:400;color:var(--ink-3);}
-  .updated-live{color:var(--green);font-weight:600;}
 
   /* share link row */
-  .sharerow{text-align:center;padding:14px 20px 32px;}
+  .sharerow{text-align:center;padding:12px 20px 32px;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -136,11 +155,11 @@
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <!-- salon mini-header -->
+  <!-- salon mini-header: photo + name + ticket code + paid chip (no middot, "Barber" as a plain descriptor) -->
   <div class="minihead rise" style="animation-delay:.02s;">
     <img class="mini-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=160&q=80" alt="" referrerpolicy="no-referrer">
     <div class="mini-main">
-      <div class="t-row">Studio Eleven · Barber</div>
+      <div class="t-row">Studio Eleven Barber</div>
       <div class="mini-sub">
         <span class="ticket">W-047</span>
         <span class="paid-chip"><span class="paid-dot"></span>Bezahlt</span>
@@ -148,13 +167,37 @@
     </div>
   </div>
 
-  <!-- THE FOCAL: huge number -->
-  <div class="focal rise" style="animation-delay:.08s;">
+  <!-- STAGE PROGRESS JOURNEY: Bezahlt → In der Schlange → Fast dran (current) → Dran -->
+  <div class="journey rise" style="animation-delay:.06s;">
+    <div class="jtrack">
+      <div class="jline"></div>
+      <div class="jline-done"></div>
+      <div class="jnode is-done">
+        <span class="jdot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <span class="jlabel">Bezahlt</span>
+      </div>
+      <div class="jnode is-done">
+        <span class="jdot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <span class="jlabel">In der Schlange</span>
+      </div>
+      <div class="jnode is-current">
+        <span class="jdot current"><span class="jdot-num">3</span></span>
+        <span class="jlabel">Fast dran</span>
+      </div>
+      <div class="jnode">
+        <span class="jdot"></span>
+        <span class="jlabel">Dran</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE FOCAL: big number in Inter Tight (.num), green LIVE pulse + ETA -->
+  <div class="focal rise" style="animation-delay:.1s;">
     <div class="live-line">
       <span class="live-dot"></span>
       <span class="live-label">Live</span>
     </div>
-    <span class="bignum mono">3</span>
+    <span class="bignum num">3</span>
     <div class="vordir">vor dir</div>
     <div class="eta">
       <span class="eta-label">Geschätzte Wartezeit</span>
@@ -162,28 +205,29 @@
     </div>
   </div>
 
-  <!-- queue position bar -->
-  <div class="qbar-wrap rise" style="animation-delay:.14s;">
-    <div class="qbar-head">
-      <span class="t-meta">Deine Position</span>
-      <span class="qbar-pos">4<span class="qbar-of"> / 7</span></span>
-    </div>
-    <div class="qbar-track">
-      <div class="qbar-fill" style="width:43%;"></div>
-      <div class="qbar-you" style="left:43%;"></div>
-    </div>
-    <div class="qbar-ends">
-      <span class="qbar-end">An der Reihe</span>
-      <span class="qbar-end">Ende</span>
+  <!-- SALON-INTERIOR PHOTO (warmth, kills monochrome) -->
+  <div class="shopwrap rise" style="animation-delay:.14s;">
+    <div class="shopcard">
+      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=780&q=80" alt="" referrerpolicy="no-referrer">
+      <div class="shop-veil"></div>
+      <div class="shop-cap">
+        <div>
+          <div class="shop-title">Studio Eleven Barber</div>
+          <div class="shop-sub">Geöffnet bis 19:00, Basel</div>
+        </div>
+        <span class="shop-go">Wegbeschreibung
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
     </div>
   </div>
 
-  <!-- updated line -->
+  <!-- updated line — calm grey, no middot -->
   <div class="updated rise" style="animation-delay:.2s;">
-    <span class="updated-txt">Aktualisiert gerade eben · <span class="updated-live">live</span></span>
+    <span class="updated-txt">Aktualisiert gerade eben</span>
   </div>
 
-  <!-- share link -->
+  <!-- one blue text link, no blue button -->
   <div class="sharerow rise" style="animation-delay:.24s;">
     <a class="link">Status teilen</a>
   </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solen · Buchung — keine Online-Buchung</title>
+<title>Solen Buchung — keine Online-Buchung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -48,6 +48,9 @@
   .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
   .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
   .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
+  /* NUMBERS: prices, durations, counts, dates, times, queue position → Inter Tight tabular (NOT mono). */
+  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  /* MONO: JetBrains Mono is for CODES ONLY (voucher code, ticket). Never on prices/times. */
   .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
 
   /* ─────────── BACK ROW (icon-only flat, kit .btn-icon) ─────────── */
@@ -55,11 +58,11 @@
   .btn-icon{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);border:none;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;transition:transform .14s var(--ease);}
   .btn-icon:active{transform:scale(.92);}
 
-  /* ─────────── STEP INDICATOR (Service · Datum · Zeit · Details) ─────────── */
+  /* ─────────── STEP INDICATOR (Service, Datum, Zeit, Details) ─────────── */
   .steps{display:flex;align-items:center;padding:16px 20px 18px;flex-shrink:0;}
   .step{display:flex;align-items:center;gap:7px;white-space:nowrap;}
   .step-num{width:21px;height:21px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
-    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums;}
+    font-family:'Inter Tight',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;font-variant-numeric:tabular-nums;}
   .step-label{font-family:'Inter Tight',sans-serif;font-size:13px;letter-spacing:-.005em;}
   .step.active .step-num{background:var(--ink);color:#fff;}
   .step.active .step-label{color:var(--ink);font-weight:700;}
@@ -72,7 +75,7 @@
 
   /* sunken calendar-off icon disc (flat: sunken, no shadow per CONTROL_ELEVATION) */
   .disc{width:84px;height:84px;border-radius:var(--r-pill);background:var(--sunken);display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
-  .disc svg{width:34px;height:34px;stroke:var(--ink-2);stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .disc svg{width:34px;height:34px;stroke:var(--ink-2);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 
   h1.headline{max-width:300px;margin-bottom:11px;}
   .body-text{max-width:280px;font-size:14px;line-height:1.5;color:var(--ink-2);margin-bottom:28px;}
@@ -87,7 +90,6 @@
   .rating svg{width:14px;height:14px;fill:var(--star);}
   .rating .num{font-weight:600;color:var(--ink);}
   .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
-  .dot-sep{color:var(--ink-3);}
   .salon-loc{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
   /* ─────────── ACTIONS ─────────── */
@@ -148,10 +150,10 @@
   <main class="body">
     <div class="disc rise">
       <svg viewBox="0 0 24 24">
-        <path d="M16 2v4M8 2v4"/>
-        <path d="M3 8h6m4 0h8"/>
-        <path d="M21 11.5V6a2 2 0 0 0-2-2h-1M3 8v11a2 2 0 0 0 2 2h11"/>
-        <line x1="2" y1="2" x2="22" y2="22"/>
+        <path d="M3 9l1.5-5h15L21 9"/>
+        <path d="M3 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 3 0"/>
+        <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/>
+        <path d="M10 20v-5h4v5"/>
       </svg>
     </div>
 
@@ -168,7 +170,7 @@
         <div class="rating">
           <svg viewBox="0 0 24 24"><path d="M12 2.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 20.7l1.2-6.5L2.5 9.6l6.6-.9z"/></svg>
           <span class="num">4.9</span><span class="count">(127)</span>
-          <span class="dot-sep">·</span><span class="salon-loc">Basel, Kreis 4</span>
+          <span class="salon-loc" style="margin-left:7px;">Basel, Kreis 4</span>
         </div>
       </div>
     </div>
