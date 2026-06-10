@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, Star, Clock } from "lucide-react";
+import { ChevronRight, Star, Clock } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useRecentlyViewed } from "@/app/[locale]/_components/homepage/useRecentlyViewed";
 
@@ -33,7 +32,6 @@ type RichSalon = {
 export default function RecentlyViewedClient() {
   const t = useTranslations("recentlyViewed");
   const locale = useLocale();
-  const router = useRouter();
   const { items } = useRecentlyViewed(12);
   const [rich, setRich] = React.useState<RichSalon[] | null>(null);
   // The hook reads localStorage in a mount effect, so the very first pass always sees an
@@ -63,23 +61,14 @@ export default function RecentlyViewedClient() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header — back button + title + count (mockup pattern) */}
+      {/* Header — title + count only. The global site Header already provides the deep-page
+          back arrow (V3-D461); a second back here would duplicate it. */}
       <header className="sticky top-0 z-40 border-b border-s-border bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3.5">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label={t("back")}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-s-border bg-white text-s-ink transition active:scale-[0.94]"
-          >
-            <ChevronLeft size={22} strokeWidth={2.2} />
-          </button>
-          <div className="min-w-0">
-            <h1 className="truncate font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{t("title")}</h1>
-            {!loading && list.length > 0 && (
-              <p className="text-[13px] text-s-ink-3">{t("count", { count: list.length })}</p>
-            )}
-          </div>
+        <div className="mx-auto flex max-w-2xl flex-col px-4 py-3.5">
+          <h1 className="truncate font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{t("title")}</h1>
+          {!loading && list.length > 0 && (
+            <p className="text-[13px] text-s-ink-3">{t("count", { count: list.length })}</p>
+          )}
         </div>
       </header>
 
