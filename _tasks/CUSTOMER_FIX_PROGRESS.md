@@ -40,17 +40,27 @@ Started working the HIGH bucket 2026-06-10.
 - [x] #24 cancel button literal "…" — moot: old text-link cancel replaced by the red ✕ icon (`5c7675c68`)
 - [x] #25 dead `SearchResults.tsx` deleted (`49e5a8ec7`)
 
-## 🎨 "Mockup gaps" — MOCKUPS ALREADY EXIST (in public/_mockups/restraint/). Work = IMPLEMENT, not design.
-For each: FIRST check for an existing real component/route (the #13 check found LanguageSwitcher
-already built — saved a duplicate). Then build the mockup into the real app.
-- [x] #5/#13 language picker → `language-picker.html` + existing LanguageSwitcher → wired into MobileMenu (`d008458eb`)
-- [ ] #1 account hub → mockup `account-hub.html` (implement; check existing /profile routes first)
-- [ ] #4 notifications panel → mockup `notifications-panel.html` (Bell was removed; ties to a real notif source)
-- [ ] #6 walk-in error states → mockup `walkin-error-states.html`
-- [ ] #7 self-cancel confirm sheet → mockup `cancel-confirm-sheet.html`
-- [ ] #8 empty-service-list state → mockup `booking-empty-services.html`
-- [ ] #9 recently-viewed destination → mockup `recently-viewed-page.html` (links now point to /search; build page or keep)
-- council redesigns (mockups exist, not started): `pdp-hero`, `reviews-distribution`, `service-grouping`, `stylist-cards`, `confirmation-moment`, `haarprofil`
+## 🎨 "Mockup gaps" — CHECKED FOR DUPLICATES 2026-06-10. Mockups all exist in public/_mockups/restraint/.
+Verdict per item after grepping the real app (the #13 check saved one dup; this found more):
+- [x] #5/#13 language picker → existing LanguageSwitcher wired into MobileMenu (`d008458eb`). DONE.
+- [x] #1 account hub → **ALREADY BUILT** as `app/[locale]/profile/page.tsx` ("customer account hub" V3-D348);
+  `/account` redirects to it. NOT a gap. Residual = 3 pages not linked from the hub
+  (`/profile/vouchers`, `/profile/packages`, `/profile/intake-forms`). → tiny surgical "add 3 rows", not a build.
+- [x] #7 self-cancel confirm sheet → **DONE** (`0bf1fda2f`). Replaced `window.confirm` in BookingsList with the
+  styled Sheet (`CancelBookingSheet`). New read-only GET /api/bookings/[id]/cancel = real refund preview (no
+  fabricated amount). Verified live: CHF 120 free-cancel full refund + real 24h policy note.
+- [x] #6 walk-in error states → **DONE** (`7055275b0`). State A: tracker not-found polished to mockup (TicketX
+  circle + richer copy + Hilfe). State B: walk-in-pay 409 is now non-destructive (summary stays readable +
+  amber pay-at-counter/paused banner + Anderen-Salon/Zum-Salon). pay-intent returns a `code`. Dropped the
+  mockup's fake "Platz reservieren" (no reserve backend). Verified live (counter case).
+- [x] #8 empty-service-list state → **DONE** (`24c458d2b`). Booking flow renders the empty state when a salon has
+  0 active services (store icon + Zum-Salon ink + call link). Real data only. Verified live.
+- [ ] #4 notifications panel → **HALF-BUILT, not fabricated (corrected).** Real `notifications` table exists +
+  22 event types write to it (verified live, 0 rows in dev). Missing only the READ UI (panel + list endpoint +
+  mark-read) and the bell entry. Buildable for real later — NOT in this batch.
+- [ ] #9 recently-viewed page → hook (`useRecentlyViewed.ts`) + homepage rail exist; no dedicated route. Links now → /search.
+  DECISION (shown to user): build the dedicated page (`recently-viewed-page.html`) or keep the /search redirect.
+- council redesigns (mockups exist, separate track): `pdp-hero`, `reviews-distribution`, `service-grouping`, `stylist-cards`, `confirmation-moment`, `haarprofil`
 
 ## 🔁 DUPLICATION — RESOLVED (`068a4e5ca`, 2026-06-10)
 queue/[token] is now the SINGLE "in queue" surface. walk-in-pay is payment-only and
