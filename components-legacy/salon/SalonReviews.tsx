@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Star, ShieldCheck, MessageSquare } from "lucide-react";
+import { Star, ShieldCheck, MessageSquare, Check, ChevronDown, Flag } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import ReviewBreakdown from "@/components-legacy/ReviewBreakdown";
+import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import type { Review } from "@/lib/types";
 
@@ -85,6 +85,9 @@ export default function SalonReviews({
   const [reviewPage, setReviewPage] = useState(1);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
+  // Fresha-style rating filter + sort sheet (structure source: Fresha reviews page).
+  const [ratingFilter, setRatingFilter] = useState<Set<number>>(new Set());
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
 
   // Flag state
   const [flaggingReviewId, setFlaggingReviewId] = useState<string | null>(null);
@@ -98,7 +101,24 @@ export default function SalonReviews({
     if (reviewSort === "lowest") return a.rating - b.rating;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
-  const reviewsVisible = sortedReviews.slice(0, reviewPage * 5);
+  // When ≥1 star bucket is checked, show only those ratings (Fresha "Filter by").
+  const filteredReviews =
+    ratingFilter.size > 0
+      ? sortedReviews.filter((r) => ratingFilter.has(Math.round(r.rating)))
+      : sortedReviews;
+  const reviewsVisible = filteredReviews.slice(0, reviewPage * 5);
+  const starCounts = [5, 4, 3, 2, 1].map((s) => reviews.filter((r) => Math.round(r.rating) === s).length);
+  const maxStarCount = Math.max(1, ...starCounts);
+  const toggleRating = (s: number) => {
+    setReviewPage(1);
+    setRatingFilter((prev) => {
+      const n = new Set(prev);
+      if (n.has(s)) n.delete(s);
+      else n.add(s);
+      return n;
+    });
+  };
+  const sortLabel = reviewSort === "highest" ? t("sortHighest") : reviewSort === "lowest" ? t("sortLowest") : t("sortNewest");
 
   const handleFlagReview = (reviewId: string) => {
     setFlaggingReviewId(reviewId);
@@ -139,23 +159,11 @@ export default function SalonReviews({
     setExpandedReviews(next);
   };
 
-  const scrollToReviews = () => {
-    document.getElementById("section-bewertungen")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
-      <div className="mb-4">
-        <span className="block font-heading text-[12px] uppercase tracking-[.22em] text-s-star mb-2">
-          {t("reviews")}
-        </span>
-        <h2
-          className="font-heading text-s-ink"
-          style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}
-        >
-          {t("whatCustomersSay")}
-        </h2>
-      </div>
+      <h2 className="font-heading text-[24px] font-bold tracking-[-0.01em] text-s-ink">
+        {t("reviews")}
+      </h2>
       <div className="mt-3 md:mt-0">
         {reviews.length === 0 ? (
           <EmptyState
@@ -165,12 +173,45 @@ export default function SalonReviews({
           />
         ) : (
           <>
-            <ReviewBreakdown
-              reviews={reviews}
-              averageRating={averageRating}
-              reviewCount={reviewCount}
-              onReviewCountClick={scrollToReviews}
-            />
+            {/* Summary — big rating + count. Blue (s-accent) on the count where Fresha uses
+                purple; Inter Tight bold number (not the lighter data-text weight). */}
+            <div className="mt-3 flex items-center gap-2">
+              <Star className="h-6 w-6 fill-s-star text-s-star" />
+              {/* number + count share a BASELINE (measured: items-center floated the count 3-5px high vs the Fresha ref) */}
+              <span className="flex items-baseline gap-1.5">
+                <span className="font-heading text-[32px] font-bold leading-none tracking-[-0.01em] tabular-nums text-s-ink">{averageRating.toFixed(1)}</span>
+                <span className="text-[17px] font-medium leading-none tabular-nums text-s-accent">({reviewCount.toLocaleString("de-CH")})</span>
+              </span>
+            </div>
+
+            {/* Filter by rating — interactive checkboxes that filter the list (Fresha). */}
+            <div className="mt-6">
+              <p className="mb-2.5 text-[15px] font-semibold text-s-ink">Filtern nach</p>
+              <div className="space-y-0.5">
+                {[5, 4, 3, 2, 1].map((s, i) => {
+                  const c = starCounts[i];
+                  const on = ratingFilter.has(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => toggleRating(s)}
+                      aria-pressed={on}
+                      className="flex w-full items-center gap-3 py-1.5 text-left"
+                    >
+                      <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border transition-colors ${on ? "border-s-accent bg-s-accent text-white" : "border-s-border bg-white"}`}>
+                        {on && <Check size={14} strokeWidth={3} />}
+                      </span>
+                      <span className="w-2.5 text-[15px] tabular-nums text-s-ink">{s}</span>
+                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
+                        <span className="block h-full rounded-full bg-s-ink" style={{ width: `${(c / maxStarCount) * 100}%` }} />
+                      </span>
+                      <span className="w-12 text-right text-[14px] tabular-nums text-s-ink-3">{c.toLocaleString("de-CH")}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Write Review Button */}
             {unreviewedBookingId && (
@@ -179,36 +220,29 @@ export default function SalonReviews({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowReviewForm(true)}
-                  className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-ink text-white font-medium text-sm transition-colors duration-150"
-                  style={{ boxShadow: "0 1px 3px rgba(27, 77, 27,.25), 0 2px 8px rgba(27, 77, 27,.15)" }}
+                  className="w-full rounded-btn bg-s-ink px-6 py-2.5 text-sm font-medium text-white transition-colors duration-150 sm:w-auto"
                 >
                   {t("writeReview")}
                 </motion.button>
               </div>
             )}
 
-            {/* Review sort */}
-            <div className="flex items-center gap-2 mt-4 mb-4">
-              <span className="text-xs text-s-ink/40">{t("sortBy")}:</span>
-              {(["newest", "highest", "lowest"] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    setReviewSort(s);
-                    setReviewPage(1);
-                  }}
-                  className={`px-3 py-1.5 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
-                    reviewSort === s
-                      ? "bg-s-ink text-white"
-                      : "bg-s-bg-surface border border-s-border text-s-ink-2 hover:border-s-accent/40 hover:text-s-accent"
-                  }`}
-                >
-                  {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
-                </button>
-              ))}
+            {/* Count + sort trigger (Fresha: "N reviews" + "Best ▾" → sheet) */}
+            <div className="mb-4 mt-6 flex items-center justify-between border-t border-s-border pt-5">
+              <span className="text-[15px] tabular-nums text-s-ink-2">
+                {filteredReviews.length.toLocaleString("de-CH")} Bewertungen
+              </span>
+              <button
+                type="button"
+                onClick={() => setSortSheetOpen(true)}
+                className="flex items-center gap-1.5 rounded-full border border-s-border bg-white px-4 py-2 text-[14px] font-medium text-s-ink transition active:scale-[0.98]"
+              >
+                {sortLabel}
+                <ChevronDown size={16} className="text-s-ink-2" />
+              </button>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               {reviewsVisible.map((rev) => {
                 const isExpanded = expandedReviews.has(rev.id);
                 const needsTruncation = (rev.comment?.length ?? 0) > 150;
@@ -216,42 +250,48 @@ export default function SalonReviews({
                   !isExpanded && needsTruncation ? rev.comment?.slice(0, 150) + "..." : rev.comment;
 
                 return (
-                  <div key={rev.id} className="border border-s-border rounded-[16px] p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-s-accent-pale overflow-hidden flex items-center justify-center text-xs font-semibold text-s-accent">
-                          {rev.profiles?.avatar_url ? (
-                            <Image src={rev.profiles.avatar_url} alt="" width={28} height={28} className="object-cover" />
-                          ) : (
-                            rev.profiles?.display_name?.[0] ?? "?"
-                          )}
-                        </div>
-                        <span className="text-sm font-medium text-s-ink">
-                          {rev.profiles?.display_name ?? "Anonym"}
-                        </span>
-                        {(rev as any).booking_id && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-success/10 text-s-success text-xs font-medium">
-                            <ShieldCheck size={12} />
-                            {t("verifiedBooking")}
-                          </span>
-                        )}
-                        {/* Reply badge — signals "salon has replied" at-a-glance before scrolling to read the reply */}
-                        {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-ink/10 text-s-accent text-xs font-medium" aria-label={t("salonReplied")}>
-                            <MessageSquare size={12} />
-                            {t("salonReplied")}
-                          </span>
+                  <div key={rev.id} className="border-b border-s-border pb-5 last:border-b-0 last:pb-0">
+                    {/* Header — avatar + name/date STACKED (measured Fresha anatomy: avatar ~56px,
+                        name bold, date + subtle verified beneath. No inline pill — that wrapping
+                        green badge is what knocked every row out of vertical alignment). */}
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full bg-s-accent-pale text-[17px] font-semibold text-s-accent">
+                        {rev.profiles?.avatar_url ? (
+                          <Image src={rev.profiles.avatar_url} alt="" width={56} height={56} className="h-full w-full object-cover" />
+                        ) : (
+                          rev.profiles?.display_name?.[0] ?? "?"
                         )}
                       </div>
-                      <Stars rating={rev.rating} size="sm" />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-[15px] font-semibold text-s-ink">
+                          {rev.profiles?.display_name ?? "Anonym"}
+                        </div>
+                        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-3">
+                          <span>
+                            {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                          </span>
+                          {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
+                            <span className="flex items-center gap-1 text-s-accent">
+                              <MessageSquare size={13} />
+                              {t("salonReplied")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Stars on their own line below the header (Fresha, ~16px) */}
+                    <div className="mt-3">
+                      <Stars rating={rev.rating} size="md" />
+                    </div>
+
                     {displayText && (
-                      <p className="text-sm text-s-ink/70 leading-relaxed">
+                      <p className="mt-2.5 text-[14px] leading-relaxed text-s-ink-2">
                         {displayText}
                         {needsTruncation && (
                           <button
                             onClick={() => toggleExpanded(rev.id)}
-                            className="ml-1 text-s-ink-2 font-medium hover:text-s-ink hover:underline"
+                            className="ml-1 font-medium text-s-accent"
                           >
                             {isExpanded ? t("readLess") : t("readMore")}
                           </button>
@@ -311,9 +351,11 @@ export default function SalonReviews({
                       ) : (
                         <button
                           onClick={() => handleFlagReview(rev.id)}
-                          className="text-xs text-s-ink/30 hover:text-s-ink-2 transition-colors duration-150 font-heading uppercase tracking-[.08em]"
+                          aria-label={t("flagReview")}
+                          title={t("flagReview")}
+                          className="grid h-8 w-8 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
                         >
-                          {t("flagReview")}
+                          <Flag size={15} aria-hidden />
                         </button>
                       )}
                     </div>
@@ -351,10 +393,6 @@ export default function SalonReviews({
                         </div>
                       );
                     })()}
-
-                    <p className="text-xs text-s-ink/30 mt-2">
-                      {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB")}
-                    </p>
                   </div>
                 );
               })}
@@ -384,6 +422,33 @@ export default function SalonReviews({
           onClose={() => setShowReviewForm(false)}
         />
       )}
+
+      {/* Sort sheet (Fresha: "Best ▾" → bottom sheet with radio options) */}
+      <Sheet isOpen={sortSheetOpen} onOpenChange={setSortSheetOpen} height="auto" aria-label={t("sortBy")}>
+        <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1">
+          {([
+            { key: "highest", label: t("sortHighest") },
+            { key: "newest", label: t("sortNewest") },
+            { key: "lowest", label: t("sortLowest") },
+          ] as const).map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => {
+                setReviewSort(opt.key);
+                setReviewPage(1);
+                setSortSheetOpen(false);
+              }}
+              className="flex w-full items-center justify-between border-b border-s-border py-4 text-left text-[16px] text-s-ink last:border-b-0"
+            >
+              {opt.label}
+              <span className={`grid h-5 w-5 place-items-center rounded-full border-2 ${reviewSort === opt.key ? "border-s-accent" : "border-s-border"}`}>
+                {reviewSort === opt.key && <span className="h-2.5 w-2.5 rounded-full bg-s-accent" />}
+              </span>
+            </button>
+          ))}
+        </div>
+      </Sheet>
     </div>
   );
 }

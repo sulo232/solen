@@ -19,7 +19,6 @@ import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
-import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 
 export async function generateMetadata({
   params,
@@ -118,14 +117,8 @@ export default async function SalonReviewsPage({
   }));
 
   return (
-    <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-      <SignatureLockup
-        eyebrow={`Salon ${salon.name}`}
-        headline={`Bewertungen ${salon.review_count?.toLocaleString("de-CH") ?? 0}`}
-        size="md"
-      />
-
-      <div className="mt-8">
+    <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+      <div>
         <SalonReviews
           reviews={enrichedReviews as any}
           averageRating={salon.average_rating ?? 0}
