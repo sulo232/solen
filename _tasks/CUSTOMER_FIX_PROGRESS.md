@@ -61,6 +61,15 @@ Verdict per item after grepping the real app (the #13 check saved one dup; this 
 - [x] #9 recently-viewed page → **DONE** (`c563215d3`). New `/[locale]/recently-viewed` built from the mockup;
   slugs from localStorage → live rows via GET /api/salons/by-slugs (real rating/reviews/photo/address, no fake
   price). Homepage rail "Alle entdecken" → here when there's history. Verified live (3 rows).
+- [x] #4 notifications panel → **DONE** (`41ef28c60`). /notifications page + GET/PATCH /api/profile/notifications
+  (real table; RLS own-rows) + header Bell restored (badge, hidden for guests). Verified live.
+- [x] booking-hair-step + stepper → **DONE** (`8349cbeb0`). 'Deine Haare' step (hair carts only) + green
+  circle stepper replaces the segment bar; saves back to profile. Verified end-to-end.
+- [x] haarprofil V1 → **DONE** (`09b0968d3`). /profile/haarprofil edits real hair columns; hub rows added for
+  haarprofil + vouchers/packages/intake-forms (#1 residual). V2 (Allergien/Coloration/Stylist/Fotos/KI-Notiz)
+  needs new schema — deferred.
+- [x] service-grouping / language-picker sheet / walk-in time bar → **DONE** (`9ccb8d9d0`).
+- copy economy: 'Mehr laden', filter labels i18n'd, rules codified in CLAUDE.md (`6cbdb0b2d`).
 - council redesigns (mockups exist, separate track): `pdp-hero`, `reviews-distribution`, `service-grouping`, `stylist-cards`, `confirmation-moment`, `haarprofil`
 
 ## 🔁 DUPLICATION — RESOLVED (`068a4e5ca`, 2026-06-10)
