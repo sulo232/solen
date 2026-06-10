@@ -22,23 +22,23 @@ Started working the HIGH bucket 2026-06-10.
   (feature), (c) empty/skeleton state. Visible homepage change → needs sign-off.
 
 ## 🟡 MEDIUM — open
-- [ ] **#11** walk-in undefined tokens `s-ink-1/4/5` → broken render (`walk-in-join`, `queue/[token]`)
-- [ ] **#12** orphaned `walk-in-join` route returns 200 (dead-end)
+- [x] **#11** walk-in undefined tokens — moot: queue is v2, walk-in-join now redirects (`49e5a8ec7`)
+- [x] **#12** orphaned `walk-in-join` → redirects to home (`49e5a8ec7`)
 - [ ] **#13** fake language switcher in MobileMenu (→ mockup gap #5 language picker)
 - [ ] **#14** always-on/never-shown buy rows (`hasGiftCards=true`, `hasPackages=false`)
-- [ ] **#15** wallet tile copy lie (links only gift-cards)
-- [ ] **#16** Recently-Viewed invented addresses/prices/availability (fabricated data)
-- [ ] **#17** Recently-Viewed broken links (soft 404 + invalid sort + missing locale)
+- [x] **#15** wallet tile copy → "Geschenkkarten" (honest; 4 locales) (`49e5a8ec7`)
+- [ ] **#16** Recently-Viewed invented addresses/prices/availability — LEAVE (fabricated-data, per #9 owner call)
+- [x] **#17** Recently-Viewed links → valid locale-prefixed /search (`49e5a8ec7`)
 
-## ⚪ LOW — open
-- [ ] #18 referral shareUrl hardcoded `/de`
+## ⚪ LOW
+- [x] #18 referral shareUrl → /{locale} (`49e5a8ec7`)
 - [ ] #19 duplicate Footer nav (`/partner` ×2)
 - [ ] #20 SalonHero share no clipboard fallback
 - [ ] #21 breadcrumb maps only 4 categories
-- [ ] #22 register "Anmelden" bare `<a>` (no locale prefix)
+- [x] #22 register "Anmelden" → locale-prefixed Link (`49e5a8ec7`)
 - [ ] #23 waitlist drops multi-service
-- [ ] #24 cancel button literal "…"
-- [ ] #25 dead `SearchResults.tsx` (delete)
+- [x] #24 cancel button literal "…" — moot: old text-link cancel replaced by the red ✕ icon (`5c7675c68`)
+- [x] #25 dead `SearchResults.tsx` deleted (`49e5a8ec7`)
 
 ## 🎨 Mockup gaps — need a new screen (pause for mockup)
 - [ ] #1 account hub for 5 orphaned pages
