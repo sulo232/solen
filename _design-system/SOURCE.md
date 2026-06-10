@@ -272,7 +272,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 
 | Surface | Meaning | Hue / token | Typical class |
 |---|---|---|---|
-| `<Toast tone="success">` (inline transient status — KEEP pastel) | low-emphasis confirmation | green pastel + saturated icon (v2 rule 6 chip/badge carve-out) | `bg-s-success-bg text-s-ink border-s-success/15` + `<CheckCircle2 text-s-success>`. *(The FOCAL booking/payment confirmation is NOT a toast: deep `s-success.deep #15803D` disc + WHITE check + motion — see SuccessMark.)* |
+| `<Toast tone="success">` (inline transient status — KEEP pastel) | low-emphasis confirmation | green pastel + saturated icon (v2 rule 6 chip/badge carve-out) | `bg-s-success-bg text-s-ink border-s-success/15` + `<CheckCircle2 text-s-success>`. *(The FOCAL booking/payment confirmation is NOT a toast: normal-green `s-success #16A34A` disc + WHITE check + motion — see SuccessMark. Deep #15803D reverted 2026-06-10.)* |
 | `<Toast tone="error">` | Failure, blocked action | red pastel + saturated icon | `bg-s-error-bg text-s-ink border-s-error/15` + `<AlertCircle text-s-error>` |
 | `<Toast tone="warning">` | Caution, non-blocking advisory | amber pastel + saturated icon | `bg-s-warning-bg text-s-ink border-s-warning/20` + `<AlertTriangle text-s-warning>` |
 | `<Toast tone="info">` | Neutral information, FYI | blue pastel + saturated icon | `bg-s-accent-pale text-s-ink border-s-accent/15` + `<Info text-s-accent>` |
@@ -1206,7 +1206,7 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 |---|---|---|
 | B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
 | Accent = blue `s-accent` #276EF1, NOT pixel-budgeted (v2 2026-06-09; forest emerald #16A34A retired as accent, survives as success-status hue) | v2 | CANON.md §0 |
-| Inter Tight (display) + Inter (body) + JetBrains Mono (codes) — Bricolage + Hanken retired | CANON §3 / V3-D410 | This doc §3 |
+| Inter Tight (display + codes-as-tabular) + Inter (body) — Bricolage + Hanken + JetBrains Mono retired (mono retired 2026-06-10 / V3-D470; codes → Inter Tight tabular per LOCKFILE §13.4) | CANON §3 / V3-D410 / V3-D470 | This doc §3 |
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
 | Blue `s-accent` #276EF1 = the interactivity accent — used generously on all tappable affordances (v2, 2026-06-09) | v2 | CANON.md §0 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |

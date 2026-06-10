@@ -1,10 +1,12 @@
 /* Solen Design System — globals.css */
-/* Type system (2026-05-31, V3-D410): Inter Tight (display/headings) + Inter (body)
-   + JetBrains Mono (codes). Body Hanken Grotesk → Inter — mirrors Uber's one-family
-   display+text structure (Uber Move / Uber Move Text) and reads solid where Hanken's
-   400 read thin. WEIGHT SCALE (Uber-derived): 400 body · 500 nav/labels/prices/buttons
-   · 700 headings. No font below 500 for those roles. Do NOT reintroduce Geist. */
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap');
+/* Type system (V3-D410 2026-05-31 + V3-D470 2026-06-10): Inter Tight (display/headings
+   + codes-as-tabular) + Inter (body). Body Hanken Grotesk → Inter — mirrors Uber's
+   one-family display+text structure (Uber Move / Uber Move Text) and reads solid where
+   Hanken's 400 read thin. JetBrains Mono RETIRED 2026-06-10 (owner: "the W-047 font is
+   different") — codes use .font-mono-code = Inter Tight tabular. WEIGHT SCALE
+   (Uber-derived): 400 body · 500 nav/labels/prices/buttons · 700 headings. No font below
+   500 for those roles. Do NOT reintroduce Geist or any monospace. */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -161,11 +163,17 @@
   .font-display {
     font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
   }
-  /* V3-D317 + V3-D318: JetBrains Mono now backs font-mono-code (gift codes,
-     voucher codes, receipt amounts). Tabular-nums kept for column alignment. */
+  /* V3-D470 (2026-06-10): codes are NOT mono. JetBrains Mono retired (owner: "the
+     W-047 font is different"); font-mono-code now renders Inter Tight tabular — same
+     family as the rest of the UI, aligned digits via tabular-nums, no foreign mono
+     texture. Class name kept so all ~20 call sites (gift/voucher/ticket/ref codes)
+     update from this one definition. See LOCKFILE §13.4. Weight 600 + slight tracking
+     give the "code" feel without a monospace. */
   .font-mono-code {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   .data-text {
     font-family: "Inter Tight", system-ui, -apple-system, sans-serif;

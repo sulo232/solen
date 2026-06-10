@@ -12,7 +12,7 @@
 
 ## §0 — Hard rules (NEVER allowed)
 
-1. **No emoji.** Anywhere in code / files / UI / commits. `lucide-react` icons only. (Sole exception: `·` `→` `●` `★` typographic glyphs are allowed.)
+1. **No emoji.** Anywhere in code / files / UI / commits. `lucide-react` icons only. (Allowed typographic glyphs: `→` `★`. The `·` middot is BANNED as a meta-separator — owner repeated flag; use spacing/comma/connector word per §6 + §13.5. The `●` status dot is banned as decoration except the live-status carve-out in §0.11.)
 2. **Primary CTAs stay `bg-s-ink` (#0A0A0A)** — V3-D192-fix lock. Accent blue NEVER FILLS a primary action button (never a blue-filled primary, never two ink primaries). But blue IS used generously on every OTHER interactive affordance — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — per Design Language v2 rule 1 (§1.5). Blue stays OFF non-interactive text (eyebrows, body, prices, headings stay ink/grey). The one outcome/status-screen CTA exception is V3-D426.
 3. **No category branches** in components — `if (category === 'X')` is forbidden. Same component renders for Coiffeur / Barber / Nails / Spa / Makeup / Waxing without conditionals. (Drift-checker rule B5.)
 4. **No new semantic hues invented.** Use the §3 universal-color table. Success=green / error=red / warning=amber / info=blue / rating=yellow / save=pink / urgency=burnt-amber / disabled=ink-3. Don't pick a "nice teal" for a status. (V3-D197.)
@@ -59,7 +59,7 @@
 | Semantic | Token | Hex | Light bg |
 |---|---|---|---|
 | Success / open (inline chips/pills) | `s-success.DEFAULT` / `.bg` | `#16A34A` | `#E8F5E9` |
-| Success FOCAL (confirm / paid) | `s-success.deep` | `#15803D` | white check on a solid deep-green disc (v2 rule 6) |
+| Success FOCAL (confirm / paid / done-step) | `s-success.DEFAULT` | `#16A34A` | white check on a solid **normal-green** disc. **Deep `#15803D` REVERTED 2026-06-10** (owner: normal green, not deep) — focal + inline now share `#16A34A`. The disc reads confident via SIZE + solid fill + white check + spring-pop, not via a darker hue. |
 | Error | `s-error.DEFAULT` / `.bg` | `#D32F2F` | `#FFEBEE` |
 | Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424) |
 | Info | use `s-accent` | `#276EF1` | `#EAEFFE` |
@@ -95,7 +95,7 @@
 - `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
 - `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
 - `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
-- `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. Active type = Inter Tight + Inter + JetBrains Mono. See §2.
+- `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. `JetBrains Mono` — **RETIRED 2026-06-10 (V3-D470)** for codes (owner: "the W-047 font is different"); codes now Inter Tight tabular (§13.4). Active type = Inter Tight + Inter only. See §2.
 
 Drift-check `RETIRED_TOKENS` list flags any new usage.
 
@@ -168,13 +168,15 @@ Blue is the interactivity layer: allowed (and expected) on anything tappable, **
 display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"]
 heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"]
 body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"]
-mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"]
+// NO mono family. Codes (W-047 / GIFT-7K2M / refs) = Inter Tight tabular — see §13.4. JetBrains Mono RETIRED 2026-06-10.
 ```
+
+**Codes are NOT a monospace.** Owner rejected the mono code-face 2026-06-10 (the "W-047 font is different"). Ticket numbers, voucher/gift codes, and booking refs use **`Inter Tight` 600–700 + `font-variant-numeric: tabular-nums` + `-0.01em`** (the `.num` recipe), giving aligned digits + a code feel without a foreign mono texture. JetBrains Mono is retired; no `mono` font key. See §13.4.
 
 **History (doc was stale — fixed 2026-05-31):** V3-D317 swapped everything to single-family **Geist**; that was **reverted app-wide 2026-05-30** per user ("no Geist anywhere") back to Inter Tight + Hanken Grotesk. V3-D410 (2026-05-31) then swapped **body Hanken → Inter**: Hanken's 400 read thin, and Inter mirrors Uber's own structure — one family in two optical cuts (`Inter Tight` + `Inter` ≈ Uber Move + Uber Move Text, verified against uber.com computed styles). Hierarchy = weight + size, not family contrast.
 
-**NEVER:** Geist (rejected by user — "no Geist anywhere"), Hanken Grotesk (replaced by Inter, V3-D410), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
-**ACTIVE:** Inter Tight (display/headings) · Inter (body) · JetBrains Mono (codes).
+**NEVER:** Geist (rejected by user — "no Geist anywhere"), Hanken Grotesk (replaced by Inter, V3-D410), JetBrains Mono / any monospace for codes (rejected V3-D470 2026-06-10 — codes → Inter Tight tabular per §13.4), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
+**ACTIVE:** Inter Tight (display/headings + codes-as-tabular) · Inter (body). Two optical cuts of one family — no third face.
 
 ### Scale (role × size × weight × line-height × tracking)
 
@@ -502,7 +504,7 @@ toast.warning(msg: string, opts?: { description?: string }): void
 toast.info(msg: string, opts?: { description?: string }): void
 // Pastel bg + ink text + saturated lucide icon. Auto-dismiss 4s. Max 3 visible.
 // Toasts are transient inline status — pastel pattern is correct here (v2 rule 6 chip/badge carve-out).
-// The FOCAL booking/payment-confirmation moment is NOT a toast: it uses s-success.deep #15803D disc + WHITE check (SuccessMark / §1 success-FOCAL).
+// The FOCAL booking/payment-confirmation moment is NOT a toast: it uses a normal-green s-success #16A34A disc + WHITE check (SuccessMark / §1 success-FOCAL / §13.2). Deep #15803D reverted 2026-06-10.
 ```
 
 ### Skeleton
@@ -1065,3 +1067,84 @@ Dashboard cards/panels = `rounded-card-lg` (20px). Calendar blocks = 12px. Pills
 
 ### §12.4 — Drift-checker scope
 Files under `app/[locale]/dashboard/**` and `app/[locale]/_components/dashboard/**` are **exempt from A9** (accent-restriction) and may use `s-accent-bright` as primary + the vibrant semantics/service palette. They are NOT exempt from A4 (retired easings), A5 (RETIRED tokens like s-coral/s-amber/makeup), A6 (emoji). Primitives: `DashButton` (primary=`s-accent-bright`), `DashStatusPill` (semantic colored text). See `_components/dashboard/DashboardUI.tsx` + `_design-system/components/DashboardUI.md`.
+
+---
+
+## §13 — Icons · Steppers · Badges (the grey/black system) (V3-D470, 2026-06-10, owner-demanded + Mobbin-grounded)
+
+Owner 2026-06-10: _"will they research how apple does it by using grey and black … go fix that and put it in your design system … in the walk-in we have icon and underneath text, should be like that everywhere … the black check mark, isn't it green … fix the fucking design system too."_ This section is the canonical spec for **every icon, step indicator, and badge**, on the AESTHETIC axis (companion to §1.5 color model + CONTROL_ELEVATION). Grounded in measured Mobbin references (citations at end), reconciled with §1 tokens, §1.5 accent rule, SelectedCheckBadge.md, SuccessMark.md.
+
+**The one-line philosophy: _color is earned, not default._** An icon's job is to aid scanning, not to decorate. If every icon is tinted, color stops carrying information and the eye can't find the one icon that means something. So the DEFAULT for any glyph is monochrome (ink/grey), and color is spent only where it buys meaning, interactivity, or selection. This is the same root principle as 80/17/3 and "blue = interactivity" — applied to glyphs. (First-principles, not imitation: Apple / Beli / Instagram / Uber all converge here because the principle is sound, not because they're the reference.)
+
+### §13.1 — Icon color model (monochrome-default; 4 earned overrides)
+
+**Default (no override applies): the icon is monochrome and matches its paired text role.**
+
+| Icon context | Color | Token |
+|---|---|---|
+| Glyph paired with primary text (row title, header) | ink | `text-s-ink` |
+| Glyph paired with secondary/meta text | grey | `text-s-ink-2` |
+| Navigation / disclosure affordance (chevron-right, the faint trailing glyph) | faint grey | `text-s-ink-3` |
+| Decorative glyph inside a tappable row (the ROW is the target, not the icon) | ink / grey (per its text), **never tinted** | `text-s-ink` / `text-s-ink-2` |
+
+**Color OVERRIDES the monochrome default ONLY in these four cases (check in order, stop at first match):**
+
+1. **State / meaning (semantic, Layer 3)** — the icon IS the message. Green check = done/paid/confirmed (`s-success` #16A34A). Red = error/destructive (`s-error`, e.g. a "Logout"/"Löschen" glyph). Yellow star = rating (`s-star` #FFC32B). Pink heart = saved (`#FF3366`). Amber triangle = warning (`s-warning`). Never invent a hue (§0.4).
+2. **The tap target IS an icon-only control** — blue (`text-s-accent` #276EF1). A standalone icon-button or inline action icon whose whole job is to be tapped (a bare directions pin-button, a "copy" icon-button). NOT a decorative icon that merely sits inside a larger tappable row — that stays monochrome (this is the drift-A9 boundary; getting it wrong is the #1 icon mistake).
+3. **Selection** — ink (`bg-s-ink` disc + white check). Solen's `SelectedCheckBadge`. This is an **intentional divergence** from Apple's blue-tint selection: Solen selection lives in Layer-1 chrome, so the marker is ink, not accent. (Per CANON §6 / SelectedCheckBadge.md.)
+4. **On a photo** — frosted white glass (`FROST_GLASS`), per CONTROL_ELEVATION (A). A glyph over imagery is never bare-tinted.
+
+**Hard "never":** never tint a decorative/inline icon blue "to add life" (that is the §1.5 dead-grey trap inverted — life comes from imagery/motion/semantic, not from painting chevrons blue), never give a row three colored icons, never color an icon a hue it doesn't earn from the table above. Stroke width: Lucide default `1.9` for inline glyphs, `2.8–3` only on a check inside a filled disc (so the white check reads against the fill).
+
+### §13.2 — Progress stepper / step tracker (the icon-above-text pattern)
+
+The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the walk-in live tracker (Bezahlt → In der Schlange → Fast dran → Dran). Owner locked the **icon-ABOVE-text** form ("should be like that everywhere") — the DoorDash/Uber delivery-tracker shape, not the old icon-beside-text inline chip.
+
+**Three node states — LITERAL recipes:**
+
+| State | Disc | Glyph | Label |
+|---|---|---|---|
+| **Done** (completed step) | `bg-s-success` #16A34A, 36px | white `check`, 17px, stroke 2.8 | `text-s-ink-3`, 11px, weight 600 |
+| **Current** (active step) | `bg-s-ink` #0A0A0A, 36px | white numeral OR weighted step-icon, 14–17px | `text-s-ink`, 11px, weight 700 |
+| **Upcoming** (future step) | `bg-s-bg-sunken` #F4F4F5, 36px | `text-s-ink-3` numeral OR thin step-icon | `text-s-ink-3`, 11px, weight 600 |
+
+- **Done = GREEN, not ink.** Owner: _"the black check mark, isn't it green, does it have to be a check mark."_ Completed is a SUCCESS state → it borrows the semantic green (#16A34A, the reconciled normal green — NOT deep #15803D, reverted 2026-06-10). The CURRENT step stays ink (it is chrome, the "you are here" pointer, never blue — §1.5 forbidden: `bg-s-accent` step circle → `bg-s-ink`). So a tracker is: green-green-ink-grey, never blue.
+- **Connector line:** `bg-s-border` #E4E4E7, 2px, `border-radius: 2px`, vertically centered on the discs (`margin-top: 17px` for a 36px disc). The done-portion MAY render green/ink to show progress; the future-portion stays grey. No dotted unless the gap is genuinely conditional (Minna Bank uses dotted for "not yet reachable").
+- **Distinct icon per node** when the steps have real identity (the DoorDash pattern the owner liked): e.g. walk-in = `check` (Bezahlt) → `users` (In der Schlange) → `clock` (Fast dran) → `armchair`/`scissors` (Dran). **Only the current node's icon is weighted**; done shows the green check, upcoming shows the thin glyph. No repeated checkmarks across nodes (only DONE nodes get a check). For a generic numbered flow, use numerals (1·2·3·4) instead of distinct icons.
+
+**Orientation rule:**
+- **Horizontal, icon-above-text** — the default for a top-of-screen tracker with **≤4 nodes** (booking step bar, walk-in live tracker). Discs 36px, labels under, `si-line` connectors between.
+- **Vertical, icon-left-of-text** — for a longer onboarding/setup CHECKLIST (5+ items, N26/Monzo style): disc on the left, title + 1-line description to the right, vertical connector. Same three node-state recipes.
+
+**One progress indicator per screen.** Owner flagged a screen showing both a step tracker AND a separate time/progress bar — _"why two."_ Pick the step tracker OR a single bar, never both.
+
+### §13.3 — Badge taxonomy (when a small mark is which color)
+
+| Badge | Visual | Token | Layer | Used for |
+|---|---|---|---|---|
+| **Selected** (picker) | ink disc + white check, `border-2 border-white` | `bg-s-ink` | 1 (chrome) | staff/barber pickers — `SelectedCheckBadge` |
+| **Done** (stepper node) | green disc + white check, 36px | `bg-s-success` #16A34A | 3 (semantic) | completed step in §13.2 |
+| **Success focal** (confirm/paid) | green disc + white check, ~58px, spring-pop | `bg-s-success` #16A34A | 3 (semantic) | the ONE delight peak — `SuccessMark` (one per screen) |
+| **Status** (open/closed/pending) | pastel `.bg` + ink/semantic text pill | `StatusPill` | 3 (semantic) | inline live state |
+| **Rating** | filled star | `fill-s-star` #FFC32B | 3 (semantic) | review counts, ratings |
+| **Saved** | filled heart | `--heart-active` #FF3366 | 3 (semantic) | save/favourite |
+| **Notification count** | small filled pill on a bell/tab, white numeral | **red `s-error` #D32F2F** (recommended) | 3 (semantic) | unread count — see note |
+
+**Notification-count note (owner-flag, OPEN):** the near-universal mobile convention is a **red count badge** (iOS springboard, Instagram, etc.). It reads as "unread count," NOT as "error," because context + shape differ (a tiny numeral pill riding a bell/tab icon, never an inline message). Recommended: red `s-error` #D32F2F, white `font-num` numeral, `99+` cap. The ink alternative (neutral count) is calmer but loses the instant "you have new things" signal. **Flagged for owner confirmation in QUESTIONS.md (Q-stepper-1)** — until confirmed, red is the default since it matches every reference.
+
+### §13.4 — Codes are NOT mono (Inter Tight tabular)
+
+Owner 2026-06-10 rejected the code font hard: _"the font is not correct about … W-047 … that w thingy the font is different."_ Ticket numbers (`W-047`), voucher/gift codes (`GIFT-7K2M`), booking refs render in **`Inter Tight`, weight 600–700, `font-variant-numeric: tabular-nums`, slight `-0.01em`** — the `.num`/`.mono` mock-kit class now points at Inter Tight, NOT JetBrains Mono. JetBrains Mono is **RETIRED** (see §2 + §1 retired list). Rationale: a mono code-face was a foreign texture against an all-Inter-Tight UI; tabular Inter Tight gives aligned digits + a code feel without the texture clash.
+
+### §13.5 — Drift signals (you are violating §13 if…)
+- a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
+- a decorative row icon is `text-s-accent` blue (blue is only for an icon that IS the tap target);
+- a done/completed step or a success disc is ink/black instead of green `#16A34A`;
+- a current step circle is blue (`bg-s-accent`) instead of ink;
+- a screen shows two progress indicators (a stepper AND a bar);
+- a code (`W-047`, `GIFT-7K2M`) renders in JetBrains Mono / any monospace;
+- a `·` middot separates meta (banned — §0.1 / §6 service-row format).
+
+### §13.6 — References (Mobbin, captured 2026-06-10)
+- Steppers: [Minna Bank](https://mobbin.com/screens/ee0764da-eba8-4c79-8fa0-7f3d262e71fe) (B&W box-check / ink-numeral / dotted-future) · [N26](https://mobbin.com/screens/b6ec6a4b-56c2-49f7-b46d-ddbd62bf1096) (**green-check done / filled current / grey-outline future** — closest to ours) · [Monzo](https://mobbin.com/screens/858f6b4b-d550-46c5-9134-95e3c9a34f61) (green-check done / highlighted current card / greyed future) · [Booking.com](https://mobbin.com/screens/863aee66-2ec7-45fc-8c0d-72f66afa243a) (horizontal check / filled / grey-number).
+- Icon-color (monochrome glyphs + grey chevrons; color only for state/selection): [Beli](https://mobbin.com/screens/e2647ce3-56f4-436e-a69d-35891ddd99f9) (red ONLY on Logout) · [Instagram](https://mobbin.com/screens/83c9dde8-a66e-4860-bfd4-dfc1c070827d) (grey trailing counts) · [Flighty](https://mobbin.com/screens/da15e520-056a-4a1c-a086-5f1ce25bea11) · [Afterpay](https://mobbin.com/screens/e55375ea-44d7-4290-8cad-738fcfead73d).

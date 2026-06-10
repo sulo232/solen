@@ -339,7 +339,17 @@ When introducing a new token, both forms must be defined together. Pastel comput
 
 ---
 
-## Adding new questions during builds
+### Q21 — Notification-count badge color: red or ink?
+**Severity:** LOW
+**SOURCE.md anchor:** LOCKFILE §13.3 (badge taxonomy)
+**Question:** Should the unread-notification count badge (the small numeral pill on the bell/tab) be red `s-error #D32F2F` or neutral ink?
+**Observation:** Every other badge color is locked in §13.3 (selected=ink, done/success=green, rating=yellow, saved=pink). The count badge is the one open slot. Near-universal mobile convention (iOS springboard, Instagram) is a RED count pill.
+**Options:**
+- A. **Red `s-error #D32F2F`** + white numeral, `99+` cap (recommended). Matches every reference; reads as "unread count," not "error," because shape+context differ from an inline error message.
+- B. **Ink** count pill. Calmer, on-brand B&W, but loses the instant "you have new things" signal — a neutral count is easy to miss.
+- C. **Blue `s-accent`.** Ties the count to the interactivity layer, but blue=interactivity not count, and it competes with real links.
+**Recommendation:** A (red) — the convention is strong enough that a tiny numeral pill on a bell reads as count, not error; the §13.3 default is already red pending this confirmation.
+**Status:** OPEN
 
 When you (Claude) discover a new drift/decision during a build:
 

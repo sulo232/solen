@@ -25,7 +25,7 @@ This file records the 7 rules, every doc/memory edit made, the decisions taken, 
    (`s-bg-sunken`), NOT warm cream. Reverses the V3-D460 warming (sunken #F8F5F2, border #E8E4DF → cool #F4F4F5 / #E4E4E7).
 5. **NO DARK SURFACES ANYWHERE.** The dark walk-in/queue panel and any dark surface are dropped. Every customer surface
    is light. (Sole survivor: the queue-display kiosk/TV page, a deliberate full-screen kiosk pattern.)
-6. **SUCCESS = DEEP SOLID GREEN + WHITE ICON.** The success/confirmation FOCAL moment = deep `s-success.deep #15803D`
+6. **SUCCESS = SOLID GREEN + WHITE ICON.** ⚠️ **SUPERSEDED 2026-06-10 (V3-D470): the deep `#15803D` was REVERTED to normal `s-success #16A34A`** (owner: normal green, not deep). The rest of this rule stands — the FOCAL moment is a solid-green disc + WHITE check, confident not pale, just at #16A34A. (Historical record kept below as written 2026-06-09.) The success/confirmation FOCAL moment = ~~deep `s-success.deep #15803D`~~ `s-success #16A34A`
    disc + WHITE check, confident not pale. Overrides "refined pastel" FOR THE FOCAL MOMENT ONLY. Inline status chips /
    badges / low-emphasis toasts MAY keep the pastel pattern — that is the explicit boundary. Other semantics UNCHANGED:
    star `#FFC32B`, error `#D32F2F` (`s-error`; closed-status red = `#DC2626` / `s-closed`), warning `#F1AE27`, save `#FF3366`.

@@ -36,7 +36,7 @@ The current, owner-locked design language. **Supersedes the v2 "blue = interacti
 | `s-accent.pale` | `#EAEFFE` | accent tint |
 | **`s-warning`** | **`#F1AE27`** | **the amber twin.** Derived from the accent: same HSL S+L (88% / 55%), hue rotated to 40°. `.bg #FDF6E7`, `.text #906309`. |
 | `s-success` | `#16A34A` | available / open status (inline chips/pills keep pastel `.bg`) |
-| `s-success.deep` | `#15803D` | success/confirmation FOCAL moment — deep solid green disc/fill + WHITE check (booking confirmed, payment success). Confident, NOT a pale tint (v2 rule 6). Value already in code as `s-brand.mid`. |
+| ~~`s-success.deep`~~ | ~~`#15803D`~~ | **REVERTED 2026-06-10 (V3-D470).** The deep-green focal disc was rejected — owner wants normal green. The FOCAL success disc now uses `s-success #16A34A` (same as inline), confident via size + solid fill + white check + spring-pop. Don't use deep #15803D for success. |
 | **`s-closed`** | **`#DC2626`** | closed status = RED (user call 2026-05-30). Distinct from `s-error #D32F2F`. |
 | `s-error` | `#D32F2F` | form / payment errors |
 | `s-star` | `#FFC32B` | rating stars (inline literal OK, Lucide needs it) |
@@ -53,7 +53,7 @@ The current, owner-locked design language. **Supersedes the v2 "blue = interacti
 
 - **Display = Inter Tight.** Hero H1 = **700**. All other headings (section H2, page H2) = **600**. Tracking **-0.02em**. NEVER 800. NEVER Bricolage / Geist.
 - **Body = Inter.** Default weight **400** (body + meta). 500 = card names + sub. 600 = semibold. NEVER Hanken, NEVER 300-as-default.
-- **Code = JetBrains Mono** (confirmation codes, ticket numbers).
+- **Code = Inter Tight tabular** (confirmation codes, ticket numbers like `W-047`, voucher/gift codes). `font-variant-numeric: tabular-nums`, weight 600-700, `-0.01em`. **NOT JetBrains Mono** — retired 2026-06-10 (V3-D470, owner: "the W-047 font is different"); a mono face clashed with the all-Inter-Tight UI. See LOCKFILE §13.4.
 - **Eyebrow:** Inter, 600, 11-12px, uppercase, tracking **0.08em**, `text-s-ink-3`, no dot.
 
 ## 4. Closed status = red

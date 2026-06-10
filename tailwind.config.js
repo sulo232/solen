@@ -226,8 +226,11 @@ module.exports = {
         display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
         heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
         body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"],
-        // V3-D318 (2026-05-27): JetBrains Mono for codes/receipts (font-mono-code class)
-        mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+        // V3-D470 (2026-06-10): JetBrains Mono RETIRED (owner: "the W-047 font is
+        // different"). Codes render Inter Tight tabular via .font-mono-code (globals.css).
+        // `mono` key kept pointing at Inter Tight so any stray font-mono resolves in-family,
+        // never browser-default monospace. See LOCKFILE §13.4.
+        mono:    ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)

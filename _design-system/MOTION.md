@@ -22,7 +22,7 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 
 ## SuccessMark , the celebration component
 
-- `app/[locale]/_components/primitives/SuccessMark.tsx` , solid green disc + white check, springs in (spring overshoot) with a ring pulse. **v2 rule 6 FOCAL target = DEEP green `s-success.deep #15803D`** (CANON §0.6); code currently fills `s-success #16A34A` — token swap to #15803D pending (see V2_RECONCILIATION).
+- `app/[locale]/_components/primitives/SuccessMark.tsx` , solid green disc + white check, springs in (spring overshoot) with a ring pulse. **Disc = normal green `s-success #16A34A`** (deep #15803D REVERTED 2026-06-10 / V3-D470 — owner: normal green; CANON §0.4). Code + doc agree, no token swap pending. The motion carries the confidence, not a darker hue.
 - Pair with the `.celebrate-rise` utility on the content that follows (staggered delays) for the full beat.
 - Easings map to the §4 core tokens (NOT ad-hoc): disc pop = `spring` `cubic-bezier(0.34,1.56,0.64,1)` (bouncy reveal); text rise = `glide` `cubic-bezier(0.16,1,0.3,1)` (smooth, no overshoot , text must not bounce). Choreography: ring 0s → disc pop 0.07s → check draw 0.36s → title 0.46s → subtitle 0.56s → order hero 0.68s.
 - `prefers-reduced-motion` safe (base state = final/visible; animations only add the entrance).

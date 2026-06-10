@@ -14,7 +14,7 @@ reads legible-but-inert ("dead-grey"). Apple / Airbnb / Fresha avoid this with O
 
 1. **Photo focal?** Is there a real, large photograph carrying the screen (salon space / the work / the stylist)? On a PDP the hero photo IS the page top (full-bleed, ~80vh mobile, no card chrome, no filter wash). A screen of 14px ink-on-white blocks fails.
 2. **One big thing?** Can you name the single focal in 0.5s, enforced by SIZE + WEIGHT (never colour)? PDP = the photo; booking step = the date/time grid; confirmation = the SuccessMark + headline. If you can't name it, the screen is dead-grey.
-3. **Mono on the one number?** Is the single most important number (price / queue position / slot count / date+time) in JetBrains Mono at a confident size? One mono numeral reads premium in a way colour can't fake.
+3. **Tabular on the one number?** Is the single most important number (price / queue position / slot count / date+time) in Inter Tight tabular (`font-variant-numeric: tabular-nums`, weight 700) at a confident size? One bold tabular numeral reads premium in a way colour can't fake. (NOT JetBrains Mono — mono retired 2026-06-10, LOCKFILE §13.4.)
 4. **Motion at the peak?** Does the screen's peak moment animate (press-feedback scale .98/120ms everywhere; slot-fill 180ms ink from centre; SuccessMark ~80px spring + haptic; sheet spring; image hover scale 1.02 in-mask)? Static restraint = pharmacy. But ONLY the peak , not everything.
 5. **Semantic colours present + used?** Yellow star, green availability dot, green success disc, pink save heart, red error, orange surcharge. These are NOT in the blue debate , they signal "finished product, not wireframe." If they were "tidied out" in the name of restraint, the screen collapses.
 
