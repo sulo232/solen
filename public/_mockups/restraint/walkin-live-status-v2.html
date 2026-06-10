@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Walk-in v2 — clean status + ticket box + while you wait</title>
+<title>Walk-in v2 — Uber-style "while you wait" + small ticket</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,9 +14,7 @@
     --blue:#276EF1;--blue-bg:#EAF1FE;--green:#16A34A;--star:#FFC32B;--r-pill:9999px;--ease:cubic-bezier(.16,1,.3,1);
     --shadow:0 8px 26px -16px rgba(10,10,10,.16);}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:30px;padding:30px 0 80px;}
-  .col{display:flex;flex-direction:column;align-items:center;gap:12px;}
-  .flabel{font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.02em;}
+  body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;justify-content:center;padding:30px 0 80px;}
   .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;border-radius:30px;box-shadow:0 30px 70px rgba(10,10,10,.14);}
   .num{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
 
@@ -53,20 +51,14 @@
   .step .l{font-size:10.5px;font-weight:600;color:var(--ink-3);text-align:center;line-height:1.2;}
   .step.done .l,.step.current .l{color:var(--ink);}
 
-  /* TICKET box — code pulled from status, revealed on tap */
-  .ticket{display:flex;align-items:center;gap:12px;background:var(--sunken);border-radius:20px;padding:13px 15px;margin-top:16px;cursor:pointer;}
-  .tkt-av{width:38px;height:38px;border-radius:var(--r-pill);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0;}
-  .tkt-txt{flex:1;min-width:0;}
-  .tkt-lbl{font-size:11.5px;color:var(--ink-3);font-weight:600;}
-  .tkt-name{font-family:'Inter Tight';font-size:16px;font-weight:700;color:var(--ink);margin-top:1px;}
-  .tkt-cta{display:flex;align-items:center;gap:3px;font-size:13.5px;font-weight:600;color:var(--blue);flex-shrink:0;}
-  /* revealed */
-  .ticket.open{flex-direction:column;align-items:stretch;text-align:center;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);padding:18px 16px 18px;cursor:default;}
-  .ticket.open .tkt-lbl{text-transform:uppercase;letter-spacing:.07em;}
-  .ticket.open .tkt-name{font-size:17px;margin-top:2px;}
-  .tkt-code{font-family:'Inter Tight';font-weight:800;font-size:52px;letter-spacing:-.01em;color:var(--ink);line-height:1.04;margin-top:9px;font-variant-numeric:tabular-nums;}
-  .tkt-help{font-size:13px;color:var(--ink-2);margin-top:7px;}
-  .tkt-hide{display:inline-flex;align-items:center;gap:3px;justify-content:center;font-size:13px;font-weight:600;color:var(--blue);margin-top:14px;}
+  /* WHILE YOU WAIT — Uber pattern: personalized header + ONE rich card */
+  .wuw-h{font-family:'Inter Tight';font-weight:700;font-size:17px;letter-spacing:-.01em;margin:24px 0 12px;}
+  .wuw{background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;}
+  .wuw img{width:100%;height:126px;object-fit:cover;display:block;}
+  .wuw .pad{padding:14px 16px 16px;}
+  .wuw .t{font-family:'Inter Tight';font-weight:700;font-size:16px;letter-spacing:-.01em;}
+  .wuw .s{font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.42;}
+  .wuw .pill{display:inline-flex;align-items:center;gap:5px;margin-top:13px;background:var(--blue-bg);color:var(--blue);font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:var(--r-pill);}
 
   /* "Dein Termin" barber card */
   .card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-top:16px;}
@@ -81,19 +73,11 @@
   .csub .mt2{font-size:12.5px;color:var(--ink-3);margin-top:2px;}
   .csub .pr{margin-left:auto;font-family:'Inter Tight';font-weight:700;font-size:15px;}
 
-  /* WHILE YOU WAIT carousel (Uber-style) */
-  .seclabel{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 11px;}
-  .ww{display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 4px;}
-  .ww::-webkit-scrollbar{display:none;}
-  .ww-card{flex:0 0 154px;scroll-snap-align:start;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer;}
-  .ww-card .pad{padding:13px;}
-  .ww-card img{width:100%;height:82px;object-fit:cover;display:block;}
-  .ww-ic{width:34px;height:34px;border-radius:10px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;color:var(--blue);}
-  .ww-card .t{font-family:'Inter Tight';font-weight:700;font-size:13.5px;margin-top:10px;}
-  .ww-card.img .t{margin-top:0;}
-  .ww-card .s{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.35;}
+  /* small ticket line — only for support, quiet */
+  .tkt-mini{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:18px;font-size:12px;color:var(--ink-3);}
+  .tkt-mini .num{font-size:12px;color:var(--ink-2);font-weight:600;letter-spacing:0;}
 
-  .actions{display:flex;gap:10px;padding:18px 20px 24px;}
+  .actions{display:flex;gap:10px;padding:16px 20px 24px;}
   .btn-blue{flex:1;background:var(--blue);color:#fff;border:none;border-radius:var(--r-pill);padding:14px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;}
   .btn-out{flex:0 0 auto;width:54px;background:#fff;color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);padding:14px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
 
@@ -103,166 +87,86 @@
   .body>*:nth-child(1){animation-delay:.04s}.body>*:nth-child(2){animation-delay:.09s}.body>*:nth-child(3){animation-delay:.14s}
   .body>*:nth-child(4){animation-delay:.20s}.body>*:nth-child(5){animation-delay:.27s}.body>*:nth-child(6){animation-delay:.34s}
   .body>*:nth-child(7){animation-delay:.41s}.body>*:nth-child(8){animation-delay:.47s}.body>*:nth-child(9){animation-delay:.53s}
-  .btn-blue,.btn-out,.frost,.cedit,.ticket,.ww-card{transition:transform .12s var(--ease);}
-  .btn-blue:active,.btn-out:active,.frost:active,.cedit:active,.ticket:active,.ww-card:active{transform:scale(.97);}
+  .btn-blue,.btn-out,.frost,.cedit,.wuw{transition:transform .12s var(--ease);}
+  .btn-blue:active,.btn-out:active,.frost:active,.cedit:active,.wuw:active{transform:scale(.98);}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;}}
 </style>
 </head>
 <body>
 
-<!-- ============ FRAME 1: waiting (ticket collapsed) ============ -->
-<div class="col">
-  <div class="flabel">1 · Warten — Ticket eingeklappt</div>
-  <div class="frame">
-    <div class="hero">
-      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=820&q=80" referrerpolicy="no-referrer">
-      <div class="hero-grad"></div>
-      <div class="statusbar" style="position:relative;color:#fff"><span>9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
-      <div style="position:absolute;top:48px;left:14px;right:14px;display:flex;justify-content:space-between"><span class="frost"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></span><span class="frost" style="width:auto;padding:0 16px;font-size:13.5px;font-weight:600">Hilfe</span></div>
-      <div class="hero-name"><div class="n">Studio Eleven Barber</div><div class="m"><i data-lucide="map-pin" style="width:13px;height:13px"></i>Steinenvorstadt 28, Basel</div></div>
+<div class="frame">
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=820&q=80" referrerpolicy="no-referrer">
+    <div class="hero-grad"></div>
+    <div class="statusbar" style="position:relative;color:#fff"><span>9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
+    <div style="position:absolute;top:48px;left:14px;right:14px;display:flex;justify-content:space-between"><span class="frost"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></span><span class="frost" style="width:auto;padding:0 16px;font-size:13.5px;font-weight:600">Hilfe</span></div>
+    <div class="hero-name"><div class="n">Studio Eleven Barber</div><div class="m"><i data-lucide="map-pin" style="width:13px;height:13px"></i>Steinenvorstadt 28, Basel</div></div>
+  </div>
+
+  <div class="body">
+    <span class="live"><span class="pulse"></span>Live</span>
+    <div class="headline">Noch 10-15 Min</div>
+    <div class="subline">Noch <b>3</b> vor dir in der Schlange</div>
+
+    <div class="steps">
+      <div class="fill"></div>
+      <div class="step done"><span class="c"><i data-lucide="check" style="width:19px;height:19px;stroke-width:2.6"></i></span><span class="l">Bezahlt</span></div>
+      <div class="step done"><span class="c"><i data-lucide="users" style="width:18px;height:18px"></i></span><span class="l">In der Schlange</span></div>
+      <div class="step current"><span class="c"><i data-lucide="clock" style="width:18px;height:18px"></i></span><span class="l">Fast dran</span></div>
+      <div class="step future"><span class="c"><i data-lucide="armchair" style="width:18px;height:18px"></i></span><span class="l">Dran</span></div>
     </div>
 
-    <div class="body">
-      <span class="live"><span class="pulse"></span>Live</span>
-      <div class="headline">Noch 10-15 Min</div>
-      <div class="subline">Noch <b>3</b> vor dir in der Schlange</div>
-
-      <div class="steps">
-        <div class="fill"></div>
-        <div class="step done"><span class="c"><i data-lucide="check" style="width:19px;height:19px;stroke-width:2.6"></i></span><span class="l">Bezahlt</span></div>
-        <div class="step done"><span class="c"><i data-lucide="users" style="width:18px;height:18px"></i></span><span class="l">In der Schlange</span></div>
-        <div class="step current"><span class="c"><i data-lucide="clock" style="width:18px;height:18px"></i></span><span class="l">Fast dran</span></div>
-        <div class="step future"><span class="c"><i data-lucide="armchair" style="width:18px;height:18px"></i></span><span class="l">Dran</span></div>
-      </div>
-
-      <!-- TICKET collapsed: name leads, code hidden until tap -->
-      <div class="ticket">
-        <span class="tkt-av"><i data-lucide="ticket" style="width:19px;height:19px"></i></span>
-        <div class="tkt-txt"><div class="tkt-lbl">Dein Ticket</div><div class="tkt-name">Lukas M.</div></div>
-        <span class="tkt-cta">Anzeigen <i data-lucide="chevron-down" style="width:16px;height:16px"></i></span>
-      </div>
-
-      <div class="card">
-        <div class="crow">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=140&q=80" referrerpolicy="no-referrer">
-          <div><div class="nm">Marco B.</div><div class="mt"><i data-lucide="star" style="width:13px;height:13px;color:#FFC32B;fill:#FFC32B"></i><span class="num" style="font-size:12.5px;color:var(--ink)">4.8</span> Dein Barber</div></div>
-          <span class="cedit"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
-        </div>
-        <div class="csub">
-          <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=120&q=80" referrerpolicy="no-referrer">
-          <div><div class="nm2">Herrenschnitt &amp; Bart</div><div class="mt2">45 Min</div></div>
-          <span class="pr">CHF 45</span>
-        </div>
-      </div>
-
-      <!-- WHILE YOU WAIT -->
-      <div class="seclabel">Während du wartest</div>
-      <div class="ww">
-        <div class="ww-card img">
-          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=320&q=80" referrerpolicy="no-referrer">
-          <div class="pad"><div class="t">Looks ansehen</div><div class="s">Marcos Arbeiten, lass dich inspirieren</div></div>
-        </div>
-        <div class="ww-card"><div class="pad"><span class="ww-ic"><i data-lucide="scissors" style="width:18px;height:18px"></i></span><div class="t">Noch etwas dazu?</div><div class="s">Bart-Trim oder Styling, frag deinen Barber</div></div></div>
-        <div class="ww-card"><div class="pad"><span class="ww-ic"><i data-lucide="wifi" style="width:18px;height:18px"></i></span><div class="t">Kostenloses WLAN</div><div class="s">Mach es dir bequem</div></div></div>
-      </div>
-
-      <!-- map -->
-      <div class="card" style="padding:0;overflow:hidden">
-        <div style="position:relative;height:130px;background:repeating-linear-gradient(0deg,#EAEAEE 0 1px,transparent 1px 42px),repeating-linear-gradient(90deg,#EAEAEE 0 1px,transparent 1px 42px),#F4F4F5">
-          <div style="position:absolute;top:42%;left:0;right:0;height:9px;background:#E0E0E5"></div>
-          <div style="position:absolute;top:0;bottom:0;left:58%;width:9px;background:#E0E0E5"></div>
-          <div style="position:absolute;top:44%;left:20%;width:38%;height:4px;background:var(--blue);border-radius:var(--r-pill)"></div>
-          <div style="position:absolute;top:44%;left:20%;width:15px;height:15px;border-radius:var(--r-pill);background:#fff;border:4px solid var(--blue);box-shadow:0 2px 6px rgba(10,10,10,.25);transform:translate(-50%,-50%)"></div>
-          <div style="position:absolute;top:45%;left:58%;transform:translate(-50%,-100%)"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-pill) var(--r-pill) var(--r-pill) 2px;transform:rotate(45deg);background:var(--blue);border:3px solid #fff;box-shadow:0 4px 10px rgba(10,10,10,.3)"><i data-lucide="scissors" style="width:14px;height:14px;color:#fff;transform:rotate(-45deg)"></i></span></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:11px;padding:14px 16px">
-          <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--ink-2)"></i>
-          <div style="flex:1"><div style="font-family:'Inter Tight';font-weight:600;font-size:14px">Steinenvorstadt 28, Basel</div><div style="font-size:12.5px;color:var(--ink-3);margin-top:1px"><span class="num" style="font-size:12.5px;color:var(--ink-2)">6</span> Min zu Fuss</div></div>
-          <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--ink-3)"></i>
-        </div>
+    <!-- WHILE YOU WAIT — Uber pattern: "Während du wartest, [Name]" + one rich card -->
+    <div class="wuw-h">Während du wartest, Lukas</div>
+    <div class="wuw">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=720&q=80" referrerpolicy="no-referrer">
+      <div class="pad">
+        <div class="t">Brauchst du Inspiration?</div>
+        <div class="s">Stöber durch Marcos Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.</div>
+        <span class="pill">Looks ansehen <i data-lucide="arrow-right" style="width:15px;height:15px"></i></span>
       </div>
     </div>
 
-    <div class="actions">
-      <button class="btn-blue"><i data-lucide="navigation" style="width:17px;height:17px"></i> Wegbeschreibung</button>
-      <button class="btn-out"><i data-lucide="share" style="width:18px;height:18px"></i></button>
+    <!-- Dein Termin -->
+    <div class="card">
+      <div class="crow">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=140&q=80" referrerpolicy="no-referrer">
+        <div><div class="nm">Marco B.</div><div class="mt"><i data-lucide="star" style="width:13px;height:13px;color:#FFC32B;fill:#FFC32B"></i><span class="num" style="font-size:12.5px;color:var(--ink)">4.8</span> Dein Barber</div></div>
+        <span class="cedit"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
+      </div>
+      <div class="csub">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=120&q=80" referrerpolicy="no-referrer">
+        <div><div class="nm2">Herrenschnitt &amp; Bart</div><div class="mt2">45 Min</div></div>
+        <span class="pr">CHF 45</span>
+      </div>
     </div>
+
+    <!-- map -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="position:relative;height:128px;background:repeating-linear-gradient(0deg,#EAEAEE 0 1px,transparent 1px 42px),repeating-linear-gradient(90deg,#EAEAEE 0 1px,transparent 1px 42px),#F4F4F5">
+        <div style="position:absolute;top:42%;left:0;right:0;height:9px;background:#E0E0E5"></div>
+        <div style="position:absolute;top:0;bottom:0;left:58%;width:9px;background:#E0E0E5"></div>
+        <div style="position:absolute;top:44%;left:20%;width:38%;height:4px;background:var(--blue);border-radius:var(--r-pill)"></div>
+        <div style="position:absolute;top:44%;left:20%;width:15px;height:15px;border-radius:var(--r-pill);background:#fff;border:4px solid var(--blue);box-shadow:0 2px 6px rgba(10,10,10,.25);transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;top:45%;left:58%;transform:translate(-50%,-100%)"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-pill) var(--r-pill) var(--r-pill) 2px;transform:rotate(45deg);background:var(--blue);border:3px solid #fff;box-shadow:0 4px 10px rgba(10,10,10,.3)"><i data-lucide="scissors" style="width:14px;height:14px;color:#fff;transform:rotate(-45deg)"></i></span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:11px;padding:14px 16px">
+        <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--ink-2)"></i>
+        <div style="flex:1"><div style="font-family:'Inter Tight';font-weight:600;font-size:14px">Steinenvorstadt 28, Basel</div><div style="font-size:12.5px;color:var(--ink-3);margin-top:1px"><span class="num" style="font-size:12.5px;color:var(--ink-2)">6</span> Min zu Fuss</div></div>
+        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--ink-3)"></i>
+      </div>
+    </div>
+
+    <!-- ticket: small, support-only -->
+    <div class="tkt-mini"><i data-lucide="ticket" style="width:13px;height:13px"></i> Ticket-Nr. <span class="num">W-047</span></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-blue"><i data-lucide="navigation" style="width:17px;height:17px"></i> Wegbeschreibung</button>
+    <button class="btn-out"><i data-lucide="share" style="width:18px;height:18px"></i></button>
   </div>
 </div>
 
-<!-- ============ FRAME 2: ticket revealed (after tap) ============ -->
-<div class="col">
-  <div class="flabel">2 · Ticket getippt — Code für den Tresen</div>
-  <div class="frame">
-    <div class="hero">
-      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=820&q=80" referrerpolicy="no-referrer">
-      <div class="hero-grad"></div>
-      <div class="statusbar" style="position:relative;color:#fff"><span>9:41</span><span class="sig"><i data-lucide="signal" style="width:16px;height:16px"></i><i data-lucide="wifi" style="width:16px;height:16px"></i><i data-lucide="battery-full" style="width:20px;height:16px"></i></span></div>
-      <div style="position:absolute;top:48px;left:14px;right:14px;display:flex;justify-content:space-between"><span class="frost"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></span><span class="frost" style="width:auto;padding:0 16px;font-size:13.5px;font-weight:600">Hilfe</span></div>
-      <div class="hero-name"><div class="n">Studio Eleven Barber</div><div class="m"><i data-lucide="map-pin" style="width:13px;height:13px"></i>Steinenvorstadt 28, Basel</div></div>
-    </div>
-
-    <div class="body">
-      <span class="live"><span class="pulse"></span>Live</span>
-      <div class="headline">Noch 10-15 Min</div>
-      <div class="subline">Noch <b>3</b> vor dir in der Schlange</div>
-
-      <div class="steps">
-        <div class="fill"></div>
-        <div class="step done"><span class="c"><i data-lucide="check" style="width:19px;height:19px;stroke-width:2.6"></i></span><span class="l">Bezahlt</span></div>
-        <div class="step done"><span class="c"><i data-lucide="users" style="width:18px;height:18px"></i></span><span class="l">In der Schlange</span></div>
-        <div class="step current"><span class="c"><i data-lucide="clock" style="width:18px;height:18px"></i></span><span class="l">Fast dran</span></div>
-        <div class="step future"><span class="c"><i data-lucide="armchair" style="width:18px;height:18px"></i></span><span class="l">Dran</span></div>
-      </div>
-
-      <!-- TICKET revealed: name leads, big code for the counter -->
-      <div class="ticket open">
-        <div class="tkt-lbl">Dein Ticket</div>
-        <div class="tkt-name">Lukas M.</div>
-        <div class="tkt-code">W-047</div>
-        <div class="tkt-help">Zeig das beim Aufruf am Tresen</div>
-        <div class="tkt-hide">Verbergen <i data-lucide="chevron-up" style="width:16px;height:16px"></i></div>
-      </div>
-
-      <div class="card">
-        <div class="crow">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=140&q=80" referrerpolicy="no-referrer">
-          <div><div class="nm">Marco B.</div><div class="mt"><i data-lucide="star" style="width:13px;height:13px;color:#FFC32B;fill:#FFC32B"></i><span class="num" style="font-size:12.5px;color:var(--ink)">4.8</span> Dein Barber</div></div>
-          <span class="cedit"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
-        </div>
-        <div class="csub">
-          <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=120&q=80" referrerpolicy="no-referrer">
-          <div><div class="nm2">Herrenschnitt &amp; Bart</div><div class="mt2">45 Min</div></div>
-          <span class="pr">CHF 45</span>
-        </div>
-      </div>
-
-      <div class="seclabel">Während du wartest</div>
-      <div class="ww">
-        <div class="ww-card img">
-          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=320&q=80" referrerpolicy="no-referrer">
-          <div class="pad"><div class="t">Looks ansehen</div><div class="s">Marcos Arbeiten, lass dich inspirieren</div></div>
-        </div>
-        <div class="ww-card"><div class="pad"><span class="ww-ic"><i data-lucide="scissors" style="width:18px;height:18px"></i></span><div class="t">Noch etwas dazu?</div><div class="s">Bart-Trim oder Styling, frag deinen Barber</div></div></div>
-        <div class="ww-card"><div class="pad"><span class="ww-ic"><i data-lucide="wifi" style="width:18px;height:18px"></i></span><div class="t">Kostenloses WLAN</div><div class="s">Mach es dir bequem</div></div></div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn-blue"><i data-lucide="navigation" style="width:17px;height:17px"></i> Wegbeschreibung</button>
-      <button class="btn-out"><i data-lucide="share" style="width:18px;height:18px"></i></button>
-    </div>
-  </div>
-</div>
-
-<script>
-  window.addEventListener('DOMContentLoaded',()=>{
-    lucide.createIcons();
-    // make the collapsed ticket in frame 1 actually expand on tap (for the live link)
-    document.querySelectorAll('.ticket:not(.open)').forEach(t=>{
-      t.addEventListener('click',()=>{ t.classList.toggle('peek'); });
-    });
-  });
-</script>
+<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
 </body>
 </html>
