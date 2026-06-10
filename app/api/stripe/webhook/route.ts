@@ -95,6 +95,14 @@ export async function POST(req: NextRequest) {
       const wasPurchase = await handlePurchasePaid(pi);
       if (wasPurchase) break;
 
+      // Gift-card purchases: activate the card (is_active:true) + email the recipient
+      // the redeemable code — both ONLY on real payment success (previously the email
+      // was sent eagerly at PI creation and the card was never activated). Guard like
+      // the handlers above.
+      const { handleGiftCardPurchase } = await import("./gift-card-handler");
+      const wasGiftCard = await handleGiftCardPurchase(pi);
+      if (wasGiftCard) break;
+
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
         // SP-G2 full prepay: type:"booking" PIs are captured in full at booking
