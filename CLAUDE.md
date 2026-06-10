@@ -136,6 +136,22 @@ Before applying, building, or committing ANY visual / design change: **show the 
 
 ---
 
+## ⚡ Binary triggers — specific inputs fire specific tools FIRST (no eyeballing)
+
+**Enforced mechanically** by `.claude/hooks/user-prompt-binary-triggers.sh` (UserPromptSubmit — injects the matching row into context on every prompt). This table is the canonical copy; the memory one-liner (`feedback_binary_triggers`) points here. Restored 2026-06-10 after the section was found missing: the agent eyeballed attached Fresha reference screenshots twice, shipped a misaligned reviews page, and the owner had to ask why the trigger never fired.
+
+| Input arrives | FIRST tool call of the turn — before ANY edit or opinion |
+|---|---|
+| Reference image attached / pointed at ("ss folder", IMG_xxxx, "screenshot") | `python3 ~/.claude/skills/pixel-spec-auto/scripts/extract.py <image> <outdir>` → implement against spec.md. If detection fails (borderless UI), PIL pixel-sample the measurements directly. Escalate to `screenshot-spec` if still missing elements. |
+| `<launch-selected-element>` XML pasted | `preview_eval` → `getBoundingClientRect()` + `getComputedStyle` on the element, its container, and siblings. Report NUMBERS, then one fix. |
+| Measurement-complaint words: "overlap", "clipped", "off", "not like the ss/picture", "unbalanced", "different heights", "not 1:1", "compare", "still wrong" | Measure live UI (`preview_eval` rects) AND the reference (PIL) BEFORE editing. Confirmation-bias warning: do NOT pattern-match to recently-changed elements. |
+| Brand-named structure rebuild ("like Fresha('s) X") | `fresha-section-capture` (live URL) or pixel-measure the provided screenshots. STRUCTURE=Fresha / AESTHETIC=Uber-LOCKFILE (§ dual-axis above). |
+| Any visual just changed (screenshot taken / mockup ported) | `gemini-visual-check` (image vs reference) before claiming a match. |
+
+**Detection = fire.** No interpreting first, no "let me look at the code first", no rationalizing that the case is different. The asymmetry: measuring costs ~30s; eyeballing wrong costs 3-5 correction turns and trust.
+
+---
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the reported bug.
