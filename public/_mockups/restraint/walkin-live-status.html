@@ -6,132 +6,78 @@
 <title>Walk-in — Live Status</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<style>.lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}</style>
 <style>
-  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
+  .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
   :root{
-    --ink:#0A0A0A;
-    --ink-2:#6B6B6B;
-    --ink-3:#9B9B9B;
-    --border:#E4E4E7;
-    --bg:#FFFFFF;
-    --sunken:#F4F4F5;
-    --blue:#276EF1;
-    --green:#16A34A;
-    --star:#FFC32B;
-    --error:#DC2626;
-    --heart:#FF3366;
-    --r-card:24px;
-    --r-sheet:20px;
-    --r-pill:9999px;
-    --r-tile:14px;
-    --pad-card:20px;
-    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
-    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
-    --gap-section:30px;
-    --ease:cubic-bezier(.16,1,.3,1);
+    --ink:#0A0A0A;--ink-2:#6B6B6B;--ink-3:#9B9B9B;--border:#E4E4E7;--bg:#FFFFFF;--sunken:#F4F4F5;
+    --blue:#276EF1;--green:#16A34A;--star:#FFC32B;--r-card:24px;--r-pill:9999px;--ease:cubic-bezier(.16,1,.3,1);
+    --shadow-3:0 2px 6px rgba(10,10,10,.05), 0 18px 40px -16px rgba(10,10,10,.22);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
-
-  .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
-
-  /* ─────────── iOS STATUS BAR (verbatim) ─────────── */
-  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  /* the page behind the ticket is cool-grey — the card floats (earns the white) */
+  .frame{width:390px;background:var(--sunken);position:relative;overflow:hidden;min-height:760px;}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;letter-spacing:-.01em;}
   .statusbar .ico{display:flex;gap:6px;align-items:center;}
-
-  /* ─────────── TYPE SCALE (verbatim) ─────────── */
-  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
-  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
-  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
-  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
-  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
-  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
-  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
-  /* NUMBERS — Inter Tight tabular (NOT mono). prices, durations, counts, dates, times, queue position. */
   .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-  /* MONO — CODES ONLY (ticket W-047). Never on prices/times/queue numbers. */
-  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;font-variant-numeric:tabular-nums;}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
 
-  /* ─────────── BUTTONS / LINKS (verbatim) ─────────── */
-  /* secondary — neutral OUTLINED pill */
-  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
-    padding:13px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-    transition:transform .14s var(--ease),border-color .14s ease;}
+  /* top bar: back + live "updated" with a pulsing dot */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 14px;}
+  .btn-back{width:38px;height:38px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;transition:transform .14s var(--ease);}
+  .btn-back:active{transform:scale(.92);}
+  .updated{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-3);}
+  .pulse-dot{width:7px;height:7px;border-radius:var(--r-pill);background:var(--green);position:relative;}
+  .pulse-dot::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);background:var(--green);animation:pulse 2s var(--ease) infinite;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.55;}70%{transform:scale(3.2);opacity:0;}100%{opacity:0;}}
+
+  /* THE TICKET CARD */
+  .ticket{margin:0 16px;background:#fff;border-radius:var(--r-card);box-shadow:var(--shadow-3);overflow:hidden;
+    animation:rise .6s var(--ease) both .05s;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  /* hero photo — the ONE warm photographic moment, slow Ken-Burns */
+  .ticket-photo{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;}
+  .ticket-photo img{width:100%;height:100%;object-fit:cover;display:block;animation:kenburns 20s ease-in-out infinite alternate;}
+  @keyframes kenburns{from{transform:scale(1.0);}to{transform:scale(1.07);}}
+  /* frosted salon pill, bottom-left (tap = open store) */
+  .salon-pill{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.6);border-radius:var(--r-pill);padding:7px 12px 7px 14px;box-shadow:0 2px 8px rgba(10,10,10,.14);cursor:pointer;}
+  .salon-pill .nm{font-family:'Inter Tight';font-weight:600;font-size:14px;letter-spacing:-.01em;color:var(--ink);}
+  .salon-pill .lucide{color:var(--ink-2);}
+
+  /* code row */
+  .ticket-body{padding:18px 22px 0;}
+  .code-row{display:flex;align-items:flex-end;justify-content:space-between;}
+  .code-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:22px;letter-spacing:.04em;color:var(--ink);margin-top:3px;}
+  .paid{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);}
+  .paid .disc{width:18px;height:18px;border-radius:var(--r-pill);background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;}
+
+  /* ticket-notch divider (the "tear" — side semicircles + hairline, NO dotted line) */
+  .notch{position:relative;height:30px;margin-top:18px;}
+  .notch::before,.notch::after{content:"";position:absolute;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:var(--r-pill);background:var(--sunken);}
+  .notch::before{left:-12px;}
+  .notch::after{right:-12px;}
+  .notch .hair{position:absolute;top:50%;left:18px;right:18px;height:1px;background:var(--border);}
+
+  /* HERO INFO ROW — 2 columns, vertical hairline */
+  .hero-info{display:flex;align-items:stretch;padding:4px 22px 24px;}
+  .hi-col{flex:1;display:flex;flex-direction:column;}
+  .hi-col.right{padding-left:22px;border-left:1px solid var(--border);}
+  .position{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:72px;line-height:.95;letter-spacing:-.04em;color:var(--ink);margin-top:6px;}
+  .vordir{font-size:14px;font-weight:500;color:var(--ink-2);margin-top:2px;}
+  .eta-val{font-family:'Inter Tight';font-weight:700;font-size:30px;line-height:1;letter-spacing:-.02em;color:var(--ink);margin-top:6px;font-variant-numeric:tabular-nums;}
+  .live{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);}
+
+  /* actions below the card */
+  .actions{display:flex;gap:10px;padding:20px 16px 0;}
+  .btn-outline{flex:1;background:#fff;color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
+    padding:13px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .14s var(--ease);}
   .btn-outline:active{transform:scale(.97);}
-
-  /* ─────────── ENTRANCE (verbatim) ─────────── */
-  .rise{animation:rise .55s var(--ease) both;}
-  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
-  /* ═══════════ SCREEN-SPECIFIC (built from kit primitives) ═══════════ */
-
-  /* ─────────── SALON ROW — tap-to-open store: 72px photo + name + ticket code + chevron ─────────── */
-  .salonrow{display:flex;align-items:center;gap:14px;padding:14px 20px 18px;cursor:pointer;}
-  .salon-photo{width:72px;height:72px;border-radius:var(--r-tile);object-fit:cover;flex-shrink:0;}
-  .salon-main{flex:1;min-width:0;}
-  .salon-name{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.015em;line-height:1.15;}
-  .salon-meta{display:flex;align-items:center;gap:8px;margin-top:6px;}
-  /* ticket code → mono (it IS a code) */
-  .ticket{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;letter-spacing:-.01em;color:var(--ink-2);font-variant-numeric:tabular-nums;}
-  .salon-cat{font-size:13px;font-weight:400;color:var(--ink-3);}
-  .salon-chev{color:var(--ink-3);flex-shrink:0;}
-
-  /* ─────────── DOORDASH STEPPER — 4 distinct icons, only current carries weight ─────────── */
-  .stepper{padding:22px 26px 6px;}
-  .strack{position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
-  /* base track: light-grey from current node forward */
-  .sline{position:absolute;top:22px;left:22px;right:22px;height:2px;background:#E4E4E7;border-radius:var(--r-pill);}
-  /* ink track: completed segments up to the current node — ANIMATES filling in on load */
-  .sline-done{position:absolute;top:22px;left:22px;height:2px;background:var(--ink);border-radius:var(--r-pill);
-    width:calc((100% - 44px) * 0.6667);transform-origin:left center;animation:grow-track 1s var(--ease) both .4s;}
-  @keyframes grow-track{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-  .snode{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:9px;width:60px;}
-  /* nodes pop in one after another */
-  .scircle-wrap > span{animation:nodepop .5s var(--ease) both;}
-  .snode:nth-child(3) .scircle-wrap > span{animation-delay:.12s;}
-  .snode:nth-child(4) .scircle-wrap > span{animation-delay:.30s;}
-  .snode:nth-child(5) .scircle-wrap > span{animation-delay:.52s;}
-  .snode:nth-child(6) .scircle-wrap > span{animation-delay:.66s;}
-  @keyframes nodepop{0%{transform:scale(.3);opacity:0;}65%{transform:scale(1.12);}100%{transform:scale(1);opacity:1;}}
-  /* circle sits centered on the 44px current diameter so the track stays level */
-  .scircle-wrap{height:44px;display:flex;align-items:center;justify-content:center;}
-  /* past node — 36px ink fill, white icon, NO label */
-  .scircle{width:36px;height:36px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
-    background:var(--ink);color:#fff;}
-  /* future node — 36px sunken, grey icon, NO label */
-  .scircle.future{background:var(--sunken);color:var(--ink-3);}
-  /* current node — 44px ink fill + white icon + soft halo (subtle pulse) + label */
-  .scircle.current{width:44px;height:44px;background:var(--ink);color:#fff;position:relative;}
-  .scircle.current::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);
-    box-shadow:0 0 0 0 rgba(10,10,10,.18);animation:halo 2.2s var(--ease) infinite;}
-  @keyframes halo{0%{box-shadow:0 0 0 0 rgba(10,10,10,.22);}70%{box-shadow:0 0 0 12px rgba(10,10,10,0);}100%{box-shadow:0 0 0 0 rgba(10,10,10,0);}}
-  /* only the current node shows its label */
-  .slabel{font-size:13px;font-weight:600;color:var(--ink);line-height:1.2;}
-
-  /* ─────────── THE ONE FOCAL — queue position + ETA + calm Live indicator ─────────── */
-  .focal{padding:30px 20px 6px;text-align:center;}
-  .live-line{display:inline-flex;align-items:center;gap:7px;margin-bottom:18px;}
-  .live-dot{width:8px;height:8px;border-radius:var(--r-pill);background:var(--green);position:relative;}
-  .live-dot::after{content:"";position:absolute;inset:0;border-radius:var(--r-pill);background:var(--green);
-    animation:pulse 1.8s var(--ease) infinite;}
-  @keyframes pulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(3);opacity:0;}100%{opacity:0;}}
-  .live-label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--green);}
-  /* "3 vor dir" — Inter Tight, big, pops in */
-  .position{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:52px;line-height:1;letter-spacing:-.03em;color:var(--ink);}
-  .position .num{display:inline-block;animation:numpop .6s var(--ease) both .55s;}
-  @keyframes numpop{0%{transform:scale(.5);opacity:0;}62%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
-  .position .vordir{font-weight:600;color:var(--ink-2);font-size:34px;}
-  /* ETA — calmer weight right below */
-  .eta{margin-top:12px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:20px;letter-spacing:-.015em;color:var(--ink-2);}
-  /* updated line */
-  .updated{margin-top:16px;font-size:13px;font-weight:400;color:var(--ink-3);}
-
-  /* ─────────── ACTIONS — two equal neutral-outline pills ─────────── */
-  .actions{display:flex;gap:10px;padding:28px 20px 32px;}
-  .actions .btn-outline{flex:1;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -139,71 +85,71 @@
 <body>
 
 <div class="frame">
-
-  <!-- iOS status bar (system chrome — inline SVG glyphs stay) -->
   <div class="statusbar"><span>9:41</span><span class="ico">
     <svg width="17" height="11" viewBox="0 0 17 11" fill="#0A0A0A"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
     <svg width="16" height="11" viewBox="0 0 16 11" fill="#0A0A0A"><path d="M8 2.2c2.1 0 4 .8 5.4 2.2l1.2-1.3A9.5 9.5 0 0 0 8 .3 9.5 9.5 0 0 0 1.4 3.1l1.2 1.3A7.6 7.6 0 0 1 8 2.2z"/><path d="M8 5.6c1.2 0 2.3.5 3.1 1.3l1.2-1.3A6 6 0 0 0 8 3.9a6 6 0 0 0-4.3 1.7l1.2 1.3A4.4 4.4 0 0 1 8 5.6z"/><circle cx="8" cy="9" r="1.6"/></svg>
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <!-- SALON ROW — tap-to-open store: 72px photo + name + ticket code + chevron -->
-  <div class="salonrow rise" style="animation-delay:.02s;">
-    <img class="salon-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=200&q=80" alt="" referrerpolicy="no-referrer">
-    <div class="salon-main">
-      <div class="salon-name">Studio Eleven Barber</div>
-      <div class="salon-meta">
-        <span class="ticket">W-047</span>
-        <span class="salon-cat">Barber, Basel</span>
-      </div>
-    </div>
-    <span class="salon-chev"><i data-lucide="chevron-right" style="width:22px;height:22px"></i></span>
+  <!-- top bar -->
+  <div class="topbar">
+    <button class="btn-back"><i data-lucide="chevron-left" style="width:20px;height:20px"></i></button>
+    <span class="updated"><span class="pulse-dot"></span>Aktualisiert gerade eben</span>
   </div>
 
-  <!-- DOORDASH STEPPER: Bezahlt (past) → In der Schlange (past) → Fast dran (current) → Dran (future) -->
-  <div class="stepper rise" style="animation-delay:.06s;">
-    <div class="strack">
-      <div class="sline"></div>
-      <div class="sline-done"></div>
-      <!-- 1 Bezahlt — past -->
-      <div class="snode">
-        <span class="scircle-wrap"><span class="scircle"><i data-lucide="ticket" style="width:18px;height:18px"></i></span></span>
+  <!-- THE TICKET -->
+  <div class="ticket">
+    <div class="ticket-photo">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=820&q=80" alt="" referrerpolicy="no-referrer">
+      <span class="salon-pill"><span class="nm">Studio Eleven Barber</span><i data-lucide="chevron-right" style="width:16px;height:16px"></i></span>
+    </div>
+
+    <div class="ticket-body">
+      <div class="code-row">
+        <div>
+          <div class="eyebrow">Ticket</div>
+          <div class="code-val">W-047</div>
+        </div>
+        <span class="paid"><span class="disc"><i data-lucide="check" style="width:12px;height:12px;stroke-width:3.4"></i></span>Bezahlt</span>
       </div>
-      <!-- 2 In der Schlange — past -->
-      <div class="snode">
-        <span class="scircle-wrap"><span class="scircle"><i data-lucide="users" style="width:18px;height:18px"></i></span></span>
+    </div>
+
+    <!-- ticket-notch tear -->
+    <div class="notch"><span class="hair"></span></div>
+
+    <!-- hero info -->
+    <div class="hero-info">
+      <div class="hi-col">
+        <span class="eyebrow">Position</span>
+        <span class="position"><span class="num" data-countup="3">3</span></span>
+        <span class="vordir">vor dir</span>
       </div>
-      <!-- 3 Fast dran — current -->
-      <div class="snode">
-        <span class="scircle-wrap"><span class="scircle current"><i data-lucide="clock" style="width:20px;height:20px"></i></span></span>
-        <span class="slabel">Fast dran</span>
-      </div>
-      <!-- 4 Dran — future -->
-      <div class="snode">
-        <span class="scircle-wrap"><span class="scircle future"><i data-lucide="scissors" style="width:18px;height:18px"></i></span></span>
+      <div class="hi-col right">
+        <span class="eyebrow">Wartezeit</span>
+        <span class="eta-val">~12 Min</span>
+        <span class="live"><span class="pulse-dot"></span>Live</span>
       </div>
     </div>
   </div>
 
-  <!-- THE ONE FOCAL: queue position + ETA + calm Live indicator -->
-  <div class="focal rise" style="animation-delay:.1s;">
-    <div class="live-line">
-      <span class="live-dot"></span>
-      <span class="live-label">Live</span>
-    </div>
-    <div class="position"><span class="num">3</span> <span class="vordir">vor dir</span></div>
-    <div class="eta">~<span class="num">12</span> Min</div>
-    <div class="updated">Aktualisiert gerade eben</div>
-  </div>
-
-  <!-- ACTIONS — two equal neutral-outline pills, no primary CTA, no blue -->
-  <div class="actions rise" style="animation-delay:.16s;">
+  <!-- actions -->
+  <div class="actions">
     <button class="btn-outline"><i data-lucide="navigation" style="width:17px;height:17px"></i>Wegbeschreibung</button>
     <button class="btn-outline"><i data-lucide="share" style="width:17px;height:17px"></i>Status teilen</button>
   </div>
 
 </div>
 
-<script>window.addEventListener('DOMContentLoaded',()=>lucide.createIcons());</script>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  lucide.createIcons();
+  const el=document.querySelector('[data-countup]');
+  if(el && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const target=+el.dataset.countup; let cur=0; el.textContent='0';
+    const step=()=>{ el.textContent=cur; if(cur<target){cur++; setTimeout(step,170);} };
+    setTimeout(step,520);
+  }
+});
+</script>
 </body>
 </html>

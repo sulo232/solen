@@ -3,112 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solen — Team (stylist cards)</title>
+<title>Solen — Team (PDP)</title>
+<!-- Matches the REAL app component app/[locale]/_components/salon/SalonTeam.tsx:
+     rounded-3xl white card + shadow-float, "Team" + ink "Alle ansehen", a horizontal
+     carousel of 88px avatars each with a rating badge + name + first specialty.
+     No featured card / no selection ring / no bookings-count — those were invented. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
   .lucide{width:20px;height:20px;stroke-width:1.8;flex-shrink:0}
-  /* ─────────── TOKENS (verbatim from _KIT.html) ─────────── */
-  :root{
-    --ink:#0A0A0A;
-    --ink-2:#6B6B6B;
-    --ink-3:#9B9B9B;
-    --border:#E4E4E7;
-    --bg:#FFFFFF;
-    --sunken:#F4F4F5;
-    --blue:#276EF1;
-    --green:#16A34A;
-    --star:#FFC32B;
-    --error:#DC2626;
-    --heart:#FF3366;
-    --r-card:24px;
-    --r-sheet:20px;
-    --r-pill:9999px;
-    --r-tile:14px;
-    --pad-card:20px;
-    --shadow-card:0 1px 3px rgba(10,10,10,.05), 0 6px 16px -10px rgba(10,10,10,.10);
-    --shadow-frost:0 1px 3px rgba(0,0,0,.10);
-    --gap-section:30px;
-    --ease:cubic-bezier(.16,1,.3,1);
-  }
+  :root{--ink:#0A0A0A;--ink-2:#6B6B6B;--ink-3:#9B9B9B;--border:#E4E4E7;--bg:#FFFFFF;--sunken:#F4F4F5;
+    --blue:#276EF1;--star:#FFC32B;--r-pill:9999px;--ease:cubic-bezier(.16,1,.3,1);
+    --shadow-float:0 1px 3px rgba(10,10,10,.05), 0 10px 30px -12px rgba(10,10,10,.12);}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   body{font-family:'Inter',sans-serif;background:#E9E9EC;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 80px;}
-
   .frame{width:390px;background:var(--bg);position:relative;overflow:hidden;}
-
-  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-.01em;}
+  .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:15px;font-weight:600;letter-spacing:-.01em;}
   .statusbar .ico{display:flex;gap:6px;align-items:center;}
+  .num{font-family:'Inter Tight',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
 
-  /* ─────────── TYPE SCALE (verbatim) ─────────── */
-  .t-display{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.022em;line-height:1.05;}
-  .t-title{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.1;}
-  .t-section{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.015em;}
-  .t-row{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
-  .t-body{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink-2);}
-  .t-meta{font-size:13px;font-weight:400;color:var(--ink-3);}
-  .t-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
-  /* NUMBERS: prices, durations, counts, ratings → Inter Tight tabular (NOT mono). */
-  .num{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-  /* MONO: JetBrains Mono for CODES ONLY (voucher/ticket). Never on ratings/counts. */
-  .mono{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-
-  /* ─────────── RATING ROW (verbatim) ─────────── */
-  .rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;}
-  .rating .num{font-weight:600;color:var(--ink);}
-  .rating .count{color:var(--blue);font-weight:500;cursor:pointer;}
-  .open{color:var(--green);font-weight:600;}
-
-  /* ─────────── CARD (verbatim, radius 24px) ─────────── */
-  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--pad-card);}
-
-  /* ─────────── BUTTONS (verbatim) ─────────── */
-  .btn-outline{background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:var(--r-pill);
-    padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    transition:transform .14s var(--ease),border-color .14s ease;}
-  .btn-outline:active{transform:scale(.97);}
-  .btn-outline.selected{border-color:var(--ink);}
-  /* owner override on this screen: selected stylist pill highlights BLUE, not ink */
-  .btn-outline.selected.is-blue{border-color:var(--blue);color:var(--blue);}
-  .link{color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;}
-  .link:hover{text-decoration:underline;}
-  .link-ink{color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
-
-  /* ─────────── SECTION HEAD (verbatim) ─────────── */
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
-
-  /* ─────────── TEAM AVATAR (verbatim: circular 72px + overlaid white star badge) ─────────── */
-  .team-row{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px;}
-  .team-row::-webkit-scrollbar{display:none;}
-  .team-card{flex-shrink:0;width:84px;text-align:center;cursor:pointer;transition:transform .12s var(--ease);}
-  .team-card:active{transform:scale(.96);}
-  .team-ava{position:relative;width:72px;height:72px;margin:0 auto 8px;}
-  .team-ava img{width:72px;height:72px;border-radius:var(--r-pill);object-fit:cover;}
-  /* selected = a small clean ink check badge (top-right) — NO coloured ring around the avatar */
-  .sel-tick{position:absolute;top:-2px;right:4px;width:21px;height:21px;border-radius:var(--r-pill);background:var(--ink);
-    border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 1px 3px rgba(10,10,10,.2);}
-  .team-card.is-active .team-name{font-weight:700;}
-  .team-badge{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:#fff;
-    border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 7px;font-size:11px;font-weight:600;
-    display:inline-flex;align-items:center;gap:3px;box-shadow:0 1px 2px rgba(10,10,10,.08);}
-  .team-badge .num{font-size:11px;}
-  .team-name{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;}
-  .team-spec{font-size:12px;color:var(--ink-3);margin-top:1px;}
-
-  /* ─────────── FEATURED STYLIST MINI-CARD (the one leveling move; kit .card) ─────────── */
-  .feat{display:flex;gap:16px;align-items:flex-start;}
-  .feat-ava{flex-shrink:0;}
-  .feat-ava img{width:88px;height:88px;border-radius:var(--r-pill);object-fit:cover;}
-  .feat-main{flex:1;min-width:0;}
-  .feat-name{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;}
-  .feat-spec{font-size:13px;color:var(--ink-2);margin-top:2px;}
-  .feat-rating{display:inline-flex;align-items:center;gap:5px;font-size:14px;margin-top:8px;}
-  .feat-trust{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--ink-2);}
-  .feat-trust .num{color:var(--ink);}
-
-  .rise{animation:rise .55s var(--ease) both;}
+  /* the real SalonTeam card: rounded-3xl, white, shadow-float, p-5 */
+  .team-card{margin:14px 16px;background:#fff;border-radius:24px;box-shadow:var(--shadow-float);padding:20px;
+    animation:rise .55s var(--ease) both .05s;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .team-head{display:flex;align-items:baseline;justify-content:space-between;}
+  .team-head h2{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:20px;letter-spacing:-.02em;line-height:1.2;}
+  /* "Alle ansehen" = INK (per the real component), not blue */
+  .team-head a{font-size:14px;font-weight:500;color:var(--ink);text-decoration:none;cursor:pointer;}
+  .team-head a:hover{opacity:.8;}
+
+  /* horizontal carousel of members */
+  .team-row{display:flex;gap:20px;overflow-x:auto;scrollbar-width:none;margin-top:20px;padding-top:2px;padding-bottom:4px;}
+  .team-row::-webkit-scrollbar{display:none;}
+  .member{flex-shrink:0;width:104px;text-align:center;cursor:pointer;}
+  .member .av-wrap{position:relative;width:88px;height:88px;margin:0 auto;transition:transform .2s var(--ease);}
+  .member:hover .av-wrap{transform:scale(1.04);}
+  .member .av-wrap img{width:88px;height:88px;border-radius:var(--r-pill);object-fit:cover;display:block;}
+  /* rating badge folded into the avatar bottom edge (white pill, ★ + rating) */
+  .rate-badge{position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:3px;
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-pill);padding:2px 8px;box-shadow:0 1px 3px rgba(10,10,10,.1);}
+  .rate-badge .num{font-size:12px;color:var(--ink);}
+  .member .nm{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:15px;color:var(--ink);margin-top:16px;line-height:1.2;}
+  .member .role{font-size:13px;color:var(--ink-2);margin-top:3px;line-height:1.25;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
@@ -122,71 +60,43 @@
     <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx="1" fill="#0A0A0A" fill-opacity=".4"/></svg>
   </span></div>
 
-  <div style="padding:14px 20px 30px;">
-    <!-- Section head: Team + ink "Alle ansehen" -->
-    <div class="sec-head rise" style="animation-delay:.02s;">
-      <h2 class="t-section">Team</h2>
-      <a class="link-ink">Alle ansehen <i data-lucide="chevron-right" style="width:15px;height:15px"></i></a>
+  <div class="team-card">
+    <div class="team-head">
+      <h2>Team</h2>
+      <a>Alle ansehen</a>
     </div>
-
-    <!-- Avatar row: circular 72px + overlaid white star badge (kit .team-card) -->
-    <div class="team-row rise" style="animation-delay:.06s;">
-      <div class="team-card is-active">
-        <div class="team-ava">
-          <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="sel-tick"><i data-lucide="check" style="width:13px;height:13px;stroke-width:3.2"></i></span>
-          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.9</span></span>
-        </div>
-        <div class="team-name">Nadia F.</div>
-        <div class="team-spec">Balayage</div>
-      </div>
-      <div class="team-card">
-        <div class="team-ava">
-          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.8</span></span>
-        </div>
-        <div class="team-name">Léa M.</div>
-        <div class="team-spec">Coloration</div>
-      </div>
-      <div class="team-card">
-        <div class="team-ava">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">5.0</span></span>
-        </div>
-        <div class="team-name">Jonas W.</div>
-        <div class="team-spec">Herrenschnitt</div>
-      </div>
-      <div class="team-card">
-        <div class="team-ava">
-          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80" referrerpolicy="no-referrer" alt="">
-          <span class="team-badge"><i data-lucide="star" style="width:12px;height:12px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.7</span></span>
-        </div>
-        <div class="team-name">Sofia R.</div>
-        <div class="team-spec">Make-up</div>
-      </div>
-    </div>
-
-    <!-- Leveling move: expanded featured-stylist card for the selected avatar (kit .card, radius 24px) -->
-    <div class="card rise" style="margin-top:18px;animation-delay:.12s;">
-      <div class="feat">
-        <div class="feat-ava">
+    <div class="team-row">
+      <div class="member">
+        <div class="av-wrap">
           <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="rate-badge"><i data-lucide="star" style="width:11px;height:11px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.9</span></span>
         </div>
-        <div class="feat-main">
-          <div class="feat-name">Nadia F.</div>
-          <div class="feat-spec">Balayage &amp; Coloration</div>
-          <div class="feat-rating">
-            <i data-lucide="star" style="width:15px;height:15px;color:#FFC32B;fill:#FFC32B"></i>
-            <span class="num" style="color:var(--ink);">4.9</span>
-            <span class="count">(86)</span>
-          </div>
-          <div class="feat-trust">
-            <span><span class="num">1'240</span> Buchungen, <span class="num">8</span> Jahre</span>
-          </div>
-        </div>
+        <div class="nm">Nadia F.</div>
+        <div class="role">Balayage</div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:16px;">
-        <button class="btn-outline selected"><i data-lucide="check" style="width:16px;height:16px"></i>Ausgewählt</button>
+      <div class="member">
+        <div class="av-wrap">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="rate-badge"><i data-lucide="star" style="width:11px;height:11px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.8</span></span>
+        </div>
+        <div class="nm">Léa M.</div>
+        <div class="role">Coloration</div>
+      </div>
+      <div class="member">
+        <div class="av-wrap">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="rate-badge"><i data-lucide="star" style="width:11px;height:11px;color:#FFC32B;fill:#FFC32B"></i><span class="num">5.0</span></span>
+        </div>
+        <div class="nm">Jonas W.</div>
+        <div class="role">Herrenschnitt</div>
+      </div>
+      <div class="member">
+        <div class="av-wrap">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" referrerpolicy="no-referrer" alt="">
+          <span class="rate-badge"><i data-lucide="star" style="width:11px;height:11px;color:#FFC32B;fill:#FFC32B"></i><span class="num">4.7</span></span>
+        </div>
+        <div class="nm">Sofia R.</div>
+        <div class="role">Make-up</div>
       </div>
     </div>
   </div>
