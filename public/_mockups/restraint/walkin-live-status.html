@@ -45,12 +45,12 @@
   /* step tracker — the ONE progress indicator */
   .steps{display:flex;align-items:flex-start;justify-content:space-between;position:relative;padding:0 6px;margin-top:24px;}
   .steps::before{content:"";position:absolute;top:21px;left:28px;right:28px;height:3px;background:var(--border);border-radius:var(--r-pill);}
-  .steps .fill{position:absolute;top:21px;left:28px;height:3px;background:var(--blue);border-radius:var(--r-pill);width:0;animation:sgrow 1s var(--ease) both .35s;}
+  .steps .fill{position:absolute;top:21px;left:28px;height:3px;background:var(--green);border-radius:var(--r-pill);width:0;animation:sgrow 1s var(--ease) both .35s;}
   @keyframes sgrow{to{width:calc((100% - 56px) * .66);}}
   .step{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;width:64px;}
-  .step .c{width:42px;height:42px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;}
+  .step .c{width:42px;height:42px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;background:var(--green);color:#fff;}   /* done = green fill (was blue) */
   .step.future .c{background:var(--sunken);color:var(--ink-3);}
-  .step.current .c{box-shadow:0 0 0 5px var(--blue-bg);}
+  .step.current .c{background:#fff;box-shadow:inset 0 0 0 3px var(--green);color:var(--green);}   /* active = green ring (system §13.2, was blue fill+halo) */
   .step .l{font-size:10.5px;font-weight:600;color:var(--ink-3);text-align:center;line-height:1.2;}
   .step.done .l,.step.current .l{color:var(--ink);}
 
