@@ -86,7 +86,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
       try {
         const params = new URLSearchParams({
           salon_id: salonId,
-          date: formData.selectedDate!.toISOString().split('T')[0],
+          date: ymd(formData.selectedDate!),
           staff_id:
             formData.selectedStaffId === 'any' ? '' : formData.selectedStaffId,
           service_ids: formData.services.map((s) => s.id).join(','),

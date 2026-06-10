@@ -15,6 +15,12 @@ import GuestBookingForm, {
 import BookingPaymentForm from '@/components-legacy/booking/BookingPaymentForm';
 import type { Salon, StaffMember } from '@/lib/types';
 
+// Local-parts yyyy-mm-dd (timezone-safe — avoids the UTC date shift toISOString() causes).
+const ymd = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+    d.getDate()
+  ).padStart(2, '0')}`;
+
 /**
  * PayConfirmStep — Q55 (locked 2026-05-02) wizard step 3 of 3.
  *
@@ -147,8 +153,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
     setError(null);
 
     try {
-      const dateStr = formData.selectedDate.toISOString().split('T')[0];
-      const startsAt = new Date(`${dateStr}T${formData.selectedTime}:00Z`).toISOString();
+      // TZ-safe: selectedDate is a LOCAL calendar day and selectedTime is a Swiss wall-clock
+      // "HH:MM". Use local date parts (toISOString() UTC-shifts the day, rolling it near midnight),
+      // and DON'T append `Z` — `Z` forces the wall-clock to UTC, storing 14:00 CH as 16:00. A
+      // local-time Date yields the correct instant on a CH-local device.
+      const dateStr = ymd(formData.selectedDate);
+      const startsAt = new Date(`${dateStr}T${formData.selectedTime}:00`).toISOString();
 
       // 1. Create the booking. For online-pay it lands as status "pending" / payment_status "none"
       //    (the abandon-sweep cron cancels it if the card step is never completed). For in_person
