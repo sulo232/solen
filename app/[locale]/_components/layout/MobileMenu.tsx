@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -319,13 +320,16 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 icon={<Info size={20} strokeWidth={1.75} aria-hidden />}
                 onClick={onClose}
               />
-              <MenuRow
-                href={`/${locale}`}
-                label={t("language")}
-                icon={<Globe size={20} strokeWidth={1.75} aria-hidden />}
-                onClick={onClose}
-                isLast
-              />
+              {/* Language — real locale switch via the existing LanguageSwitcher (sets the
+                  NEXT_LOCALE cookie + swaps the path segment). Was a fake MenuRow that just
+                  linked to its own homepage and never changed language (audit #13). */}
+              <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5">
+                <span className="flex items-center gap-3 text-[15px] font-medium text-s-ink">
+                  <Globe size={20} strokeWidth={1.75} aria-hidden />
+                  {t("language")}
+                </span>
+                <LanguageSwitcher locale={locale} variant="menu" />
+              </div>
             </div>
 
             {/* ─── Stöbern (categories) ─── */}
