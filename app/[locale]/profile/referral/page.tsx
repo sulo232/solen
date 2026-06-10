@@ -51,8 +51,14 @@ export default function ReferralPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
-        <p className="text-s-ink-2 text-sm">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
+      <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center px-4 text-center">
+        <p className="text-s-ink-2 text-sm mb-4">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
+        <Link
+          href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/referral`)}`}
+          className="px-6 py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors"
+        >
+          Anmelden
+        </Link>
       </div>
     );
   }

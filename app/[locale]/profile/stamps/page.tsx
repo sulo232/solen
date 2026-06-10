@@ -74,7 +74,7 @@ export default async function ProfileStampsPage({
   } = await supabase.auth.getSession();
 
   if (!session?.user) {
-    redirect(`/${locale}/auth/sign-in?redirect=/${locale}/profile/stamps`);
+    redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/stamps`)}`);
   }
 
   const { data: cardsRaw } = await supabase
