@@ -22,6 +22,8 @@ export interface SelectedService {
 
 export interface BookingFormData {
   services: SelectedService[];
+  /** One-line wish for THIS appointment (hair step v3) — persists to bookings.customer_note. */
+  customerNote?: string | null;
   selectedStaffId: string | 'any'; // 'any' = next available
   selectedDate: Date | null;
   selectedTime: string | null; // '09:00', '09:30', etc.

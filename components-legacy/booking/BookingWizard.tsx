@@ -3,7 +3,7 @@
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Scissors, Clock, Brush, CreditCard, type LucideIcon } from 'lucide-react';
 import { BackButton } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
@@ -52,6 +52,16 @@ const INDICATOR_LABELS: Record<ActiveStep, string> = {
   'datetime': 'Zeit',
   'hair': 'Haare',
   'pay-confirm': 'Bezahlen',
+};
+
+// Owner punch-list 2026-06-11: the stepper uses the walk-in tracker's blue icon
+// language (LOCKFILE §12) — icon per node, NOT numbers, NOT green (green = state
+// color, blue = progress). Brush for Haare (hand-drawn glyphs + sparkles banned).
+const STEP_ICONS: Record<ActiveStep, LucideIcon> = {
+  'services-staff': Scissors,
+  'datetime': Clock,
+  'hair': Brush,
+  'pay-confirm': CreditCard,
 };
 
 // Hair step shows only for hair categories — data-driven via the service rows
@@ -159,7 +169,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
       case 'datetime':
         return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} nextStep={hairRelevant ? 'hair' : 'confirm'} />;
       case 'hair':
-        return <HairStep />;
+        return <HairStep staff={selectedStaff} showBeard={services.some((s) => cartIds.has(s.id) && s.category === 'barbershop')} />;
       case 'pay-confirm':
         return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} />;
       default:
@@ -169,15 +179,16 @@ export default function BookingWizard({ services, staffList, salon, staffService
 
   return (
     <div className="w-full">
-      {/* Step indicator — owner mockup booking-hair-step (2026-06-10): numbered circles
-          with labels below; done = green disc + white check, current = green ring +
-          green number, future = sunken grey. Supersedes the Q56 segment bar. Done
-          circles stay tappable for jump-back. */}
+      {/* Step indicator — owner-approved mockups booking-pay-step/-hair-step-v2
+          (2026-06-11): the walk-in tracker's blue icon language. 42px discs — blue +
+          white icon when done, white + blue ring when current, sunken when future;
+          2px connectors. Done discs stay tappable for jump-back. */}
       <div className="px-1 pt-2 pb-4">
         <div className="mb-4 flex items-start" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
           {STEPS.map((step, i) => {
             const isDone = i < currentIndex;
             const isCurrent = i === currentIndex;
+            const Icon = STEP_ICONS[step];
             return (
               <div key={step} className={`flex items-start ${i < STEPS.length - 1 ? 'flex-1' : ''}`}>
                 <button
@@ -186,25 +197,25 @@ export default function BookingWizard({ services, staffList, salon, staffService
                   disabled={!isDone}
                   aria-label={`${isDone ? 'Zurück zu ' : ''}Schritt ${i + 1}: ${STEP_LABELS[step]}`}
                   aria-current={isCurrent ? 'step' : undefined}
-                  className={`flex flex-col items-center gap-1.5 px-1 ${isDone ? 'cursor-pointer' : 'cursor-default'}`}
+                  className={`flex flex-col items-center gap-[7px] px-1 ${isDone ? 'cursor-pointer' : 'cursor-default'}`}
                 >
                   <span
                     className={[
-                      'grid h-[34px] w-[34px] place-items-center rounded-full text-[14px] font-semibold tabular-nums transition-colors duration-200',
+                      'grid h-[42px] w-[42px] place-items-center rounded-full transition-colors duration-200',
                       isDone
-                        ? 'bg-s-success text-white'
+                        ? 'bg-s-accent text-white'
                         : isCurrent
-                          ? 'border-2 border-s-success bg-white text-s-success'
+                          ? 'bg-white text-s-accent shadow-[inset_0_0_0_2px_var(--color-s-accent,#276EF1),0_0_0_5px_rgba(39,110,241,0.14)]'
                           : 'bg-s-bg-sunken text-s-ink-3',
                     ].join(' ')}
                   >
-                    {isDone ? <Check size={16} strokeWidth={3} aria-hidden /> : i + 1}
+                    <Icon size={18} strokeWidth={2} aria-hidden />
                   </span>
-                  <span className={`text-[12px] ${isCurrent ? 'font-semibold text-s-ink' : 'text-s-ink-3'}`}>
+                  <span className={`text-[10.5px] font-semibold leading-[1.2] ${isCurrent ? 'text-s-ink' : isDone ? 'text-s-ink' : 'text-s-ink-3'}`}>
                     {INDICATOR_LABELS[step]}
                   </span>
                 </button>
-                {i < STEPS.length - 1 && <div className={`mx-1 mt-[17px] h-px flex-1 ${i < currentIndex ? 'bg-s-success/40' : 'bg-s-border'}`} aria-hidden />}
+                {i < STEPS.length - 1 && <div className={`mx-1 mt-[20px] h-[2px] flex-1 rounded-full ${i < currentIndex ? 'bg-s-accent' : 'bg-s-border'}`} aria-hidden />}
               </div>
             );
           })}

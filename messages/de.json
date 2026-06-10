@@ -894,7 +894,7 @@
     "emptyBody": "Dieser Salon nimmt Termine telefonisch oder direkt vor Ort entgegen. Schau auf der Salon-Seite vorbei oder ruf kurz an.",
     "emptyToSalon": "Zum Salon",
     "emptyCallSalon": "Salon anrufen",
-    "hairSub": "Damit dein Coiffeur vorbereitet ist. Du kannst alles anpassen.",
+    "hairSub": "Für die Vorbereitung. Alles optional.",
     "hairFromProfile": "Aus deinem <b>Haarprofil</b> übernommen",
     "hairMismatchTitle": "Passt das zu deinem Haar?",
     "hairMismatchBody": "Dein Profil sagt {length}.",
@@ -1088,7 +1088,15 @@
       "browseOther": "Andere Daten ansehen",
       "close": "Schliessen",
       "error": "Eintrag fehlgeschlagen. Bitte versuch es erneut."
-    }
+    },
+    "hairThicknessLabel": "Dicke",
+    "hairBeardLabel": "Bart",
+    "hairNoteLabel": "Notiz",
+    "hairNotePlaceholder": "Optional, z. B. «Spitzen nur leicht»",
+    "hairForStaff": "Für {name}",
+    "hairYourStylist": "Dein:e Stylist:in",
+    "hairForSalon": "Für deinen Termin",
+    "hairSkip": "Überspringen"
   },
   "chat": {
     "send": "Senden",
@@ -5815,7 +5823,10 @@
     "payOnlineNow": "Jetzt online bezahlen",
     "fullPrepayment": "Vollständige Vorauszahlung",
     "confirmBooking": "Buchung bestätigen",
-    "payDeposit": "Anzahlung bezahlen"
+    "payDeposit": "Anzahlung bezahlen",
+    "changeLabel": "Ändern",
+    "yourStylist": "Dein:e Stylist:in",
+    "vatIncl": "inkl. 8.1% MwSt"
   },
   "searchUi": {
     "sort_rating": "Beliebteste",

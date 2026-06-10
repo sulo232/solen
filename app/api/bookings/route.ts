@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const { slot_id, salon_id, service_id, staff_member_id, starts_at, is_first_visit,
-          referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids } = validated;
+          referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids, customer_note } = validated;
   const isOnlinePay = payment_method === "online";
 
   // Zod cannot see the session, so it keeps guest fields optional. The route enforces them:
@@ -315,6 +315,7 @@ export async function POST(request: NextRequest) {
       is_first_visit: firstVisit,
       // Lane A consent (SP-AC): frozen policy terms + acceptance timestamp, written for
       // EVERY booking (guest + logged-in). Gates the cancellation/no-show auto-charge.
+      customer_note: customer_note?.trim() || null,
       policy_accepted_at: new Date().toISOString(),
       policy_snapshot: policySnapshot,
     })

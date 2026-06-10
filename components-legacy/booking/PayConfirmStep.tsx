@@ -4,8 +4,9 @@ import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Wallet, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Wallet, ShieldCheck, AlertCircle, Scissors, Calendar, Star } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
+import { Avatar } from '@/app/[locale]/_components/primitives';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
 import GuestBookingForm, {
@@ -56,7 +57,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const tg = useTranslations('guestBookingForm') as any;
   const locale = useLocale();
   const router = useRouter();
-  const { formData } = useBooking();
+  const { formData, goToStep } = useBooking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Phase D: paymentMethod is now DERIVED from the salon's payment_mode (computed below), not a
@@ -177,6 +178,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           gift_card_code: formData.giftCardCode || null,
           total_price: totalPrice,
           is_first_visit: true,
+          customer_note: formData.customerNote || null,
           // SP-1: send guest fields only when logged out. The route ignores them for a session
           // user; for a guest it requires name + phone (email optional).
           ...(!isLoggedIn && resolvedGuest
@@ -205,7 +207,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       // 2a. IN-PERSON (and any non-online method): unchanged — the booking is created without a
       //     charge; go straight to the confirmation page.
       if (paymentMethod !== 'online') {
-        router.push(path);
+        // Locale-prefix the push — without it next-intl middleware rerouted /de bookings
+        // to the default-locale /en/confirmation (found in the 2026-06-11 e2e).
+        router.push(`/${locale}${path}`);
         return;
       }
 
@@ -238,58 +242,117 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   return (
     <div className="space-y-5 pb-28">
       {/* Step title comes from the wizard header (matches the services + date steps) — no duplicate lockup / green eyebrow here. */}
-      {/* (b) Summary card */}
-      <div className="rounded-[12px] p-4 bg-s-bg-sunken">
-        <div className="flex items-start gap-3 mb-3 pb-3 border-b border-s-border">
-          {salon.cover_photo_url && (
+      {/* (b) Booking summary — owner-approved mockup booking-pay-step (2026-06-11):
+          white icon-led rows (walk-in-pay checkout language), normal-case Inter Tight,
+          Ändern links jump back to the owning step, MwSt line + blue total. NO
+          uppercase/tracked eyebrows (owner-banned). */}
+      <div className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+        {/* Salon */}
+        <div className="flex items-center gap-3">
+          {salon.cover_photo_url ? (
             <Image
               src={salon.cover_photo_url}
               alt={salon.name}
-              width={48}
-              height={48}
-              className="rounded-[8px] object-cover shrink-0"
+              width={44}
+              height={44}
+              className="h-11 w-11 shrink-0 rounded-[12px] object-cover"
             />
+          ) : (
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken font-heading text-base font-semibold text-s-ink">
+              {salon.name.charAt(0)}
+            </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="font-heading text-[14px] uppercase text-s-ink leading-[1.05]" style={{ letterSpacing: '0.01em' }}>
-              {salon.name}
-            </p>
-            <p className="font-body text-[12px] text-s-ink-2 truncate mt-0.5">{salon.address}</p>
+            <p className="truncate font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{salon.name}</p>
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px]">
+              {(salon as any).average_rating != null && Number((salon as any).average_rating) > 0 && (
+                <span className="flex items-center gap-1">
+                  <Star size={13} className="fill-s-star text-s-star" aria-hidden />
+                  <span className="font-semibold tabular-nums text-s-ink">{Number((salon as any).average_rating).toFixed(1)}</span>
+                  {(salon as any).review_count != null && Number((salon as any).review_count) > 0 && (
+                    <span className="tabular-nums text-s-accent">({(salon as any).review_count})</span>
+                  )}
+                </span>
+              )}
+              {salon.address && <span className="truncate text-s-ink-2">{salon.address}</span>}
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2.5 text-[13px]">
+        {/* Stylist */}
+        {staff && (
+          <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+            <Avatar src={staff.avatar_url} name={staff.name} size={44} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-heading text-[15px] font-semibold text-s-ink">{staff.name}</p>
+              <p className="text-[13px] text-s-ink-2">{tp('yourStylist')}</p>
+            </div>
+            {phase === 'select' && (
+              <button type="button" onClick={() => goToStep('services-staff')} className="shrink-0 text-[13px] font-semibold text-s-accent">
+                {tp('changeLabel')}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Services */}
+        {formData.services.map((s, i) => (
+          <div key={s.id} className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+            <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
+              <Scissors size={20} strokeWidth={1.9} aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-heading text-[15px] font-semibold text-s-ink">{locale === 'en' ? s.name_en : s.name_de}</p>
+              {s.duration_minutes ? <p className="text-[13px] tabular-nums text-s-ink-2">{s.duration_minutes} Min</p> : null}
+            </div>
+            {phase === 'select' && i === 0 && (
+              <button type="button" onClick={() => goToStep('services-staff')} className="shrink-0 text-[13px] font-semibold text-s-accent">
+                {tp('changeLabel')}
+              </button>
+            )}
+          </div>
+        ))}
+
+        {/* When */}
+        <div className="mt-3 flex items-center gap-3 border-t border-s-ink/[0.06] pt-3">
+          <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
+            <Calendar size={20} strokeWidth={1.9} aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-heading text-[15px] font-semibold tabular-nums text-s-ink">{dateLabel} {timeLabel}</p>
+          </div>
+          {phase === 'select' && (
+            <button type="button" onClick={() => goToStep('datetime')} className="shrink-0 text-[13px] font-semibold text-s-accent">
+              {tp('changeLabel')}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Price card — per-service lines + included VAT + blue total (walk-in-pay pattern) */}
+      <div className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+        <div className="space-y-1.5">
           {formData.services.map((s) => (
-            <div key={s.id} className="flex items-baseline justify-between gap-2">
-              <span className="font-body text-s-ink">{locale === 'en' ? s.name_en : s.name_de}</span>
-              <span className="font-body font-semibold text-s-ink tabular-nums">{formatPrice(s.price, localeCode)}</span>
+            <div key={s.id} className="flex items-baseline justify-between gap-3 text-[14px]">
+              <span className="truncate text-s-ink">{locale === 'en' ? s.name_en : s.name_de}</span>
+              <span className="shrink-0 tabular-nums text-s-ink">{formatPrice(s.price, localeCode)}</span>
             </div>
           ))}
-          {staff && (
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="font-body text-s-ink-2">{tp('withLabel')}</span>
-              <span className="font-body font-semibold text-s-ink">{staff.name}</span>
-            </div>
-          )}
-          <div className="flex items-baseline justify-between gap-2">
-            <span className="font-body text-s-ink-2">{tp('whenLabel')}</span>
-            <span className="font-body font-semibold text-s-ink tabular-nums">
-              {dateLabel} {timeLabel}
-            </span>
+          <div className="flex items-baseline justify-between gap-3 text-[13px]">
+            <span className="text-s-ink-2">{tp('vatIncl')}</span>
+            <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice((totalPrice * 0.081) / 1.081, localeCode)}</span>
           </div>
-          <div className="flex items-baseline justify-between gap-2 pt-2 mt-2 border-t border-s-border">
-            <span className="font-body font-bold text-[12px] uppercase tracking-[.18em] text-s-ink/45">{tp('totalLabel')}</span>
-            <span className="font-heading text-[20px] text-s-ink tabular-nums" style={{ letterSpacing: '0.01em' }}>
-              {formatPrice(totalPrice, localeCode)}
-            </span>
-          </div>
+        </div>
+        <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
+          <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
+          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-accent">{formatPrice(totalPrice, localeCode)}</span>
         </div>
       </div>
 
       {/* (c) Cancellation policy mini-banner */}
-      <div className="flex items-start gap-2 rounded-[10px] px-3 py-2.5 bg-s-warning-bg">
-        <ShieldCheck size={14} className="text-s-star shrink-0 mt-[1px]" aria-hidden />
-        <p className="font-body text-[12px] text-s-ink-2 leading-[1.5]">
+      <div className="flex items-start gap-2 px-1">
+        <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
+        <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
           {tp('cancellationPolicy', { hours: cancellationHours })}
         </p>
       </div>
@@ -320,7 +383,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* (d) Payment — driven by the salon's payment_mode (Phase D), not a free customer choice */}
       <div>
-        <p className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-accent mb-2">
+        <p className="mb-2 text-[13px] font-semibold text-s-ink">
           {tp('paymentEyebrow')}
         </p>
         {paymentMode === 'at_salon' ? (
@@ -405,7 +468,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             locale={locale}
             localeCode={localeCode}
             returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
-            onSucceeded={() => router.push(confirmationPath)}
+            onSucceeded={() => router.push(`/${locale}${confirmationPath}`)}
             onUseOtherMethod={() => {
               // Drop back to the selector. The pending online booking is left for the
               // abandon-sweep cron; a fresh selection creates its own booking.

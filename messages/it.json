@@ -850,7 +850,7 @@
     "emptyBody": "Questo salone accetta appuntamenti per telefono o di persona. Visita la pagina del salone o fai una breve chiamata.",
     "emptyToSalon": "Vai al salone",
     "emptyCallSalon": "Chiama il salone",
-    "hairSub": "Così il tuo parrucchiere è preparato. Puoi modificare tutto.",
+    "hairSub": "Per la preparazione. Tutto facoltativo.",
     "hairFromProfile": "Ripreso dal tuo <b>profilo capelli</b>",
     "hairMismatchTitle": "È adatto ai tuoi capelli?",
     "hairMismatchBody": "Il tuo profilo indica {length}.",
@@ -1044,7 +1044,15 @@
       "browseOther": "Vedi altre date",
       "close": "Chiudi",
       "error": "Iscrizione non riuscita. Riprova."
-    }
+    },
+    "hairThicknessLabel": "Spessore",
+    "hairBeardLabel": "Barba",
+    "hairNoteLabel": "Nota",
+    "hairNotePlaceholder": "Facoltativo, es. «solo una spuntatina»",
+    "hairForStaff": "Per {name}",
+    "hairYourStylist": "Il tuo stilista",
+    "hairForSalon": "Per il tuo appuntamento",
+    "hairSkip": "Salta"
   },
   "chat": {
     "send": "Invia",
@@ -5777,7 +5785,10 @@
     "payOnlineNow": "Paga online ora",
     "fullPrepayment": "Pagamento anticipato completo",
     "confirmBooking": "Conferma prenotazione",
-    "payDeposit": "Paga acconto"
+    "payDeposit": "Paga acconto",
+    "changeLabel": "Modifica",
+    "yourStylist": "Il tuo stilista",
+    "vatIncl": "IVA 8.1% inclusa"
   },
   "searchUi": {
     "sort_rating": "Piu popolari",

@@ -868,7 +868,7 @@
     "emptyBody": "Ce salon prend les rendez-vous par téléphone ou sur place. Passez sur la page du salon ou appelez-le rapidement.",
     "emptyToSalon": "Voir le salon",
     "emptyCallSalon": "Appeler le salon",
-    "hairSub": "Pour que votre coiffeur soit préparé. Vous pouvez tout ajuster.",
+    "hairSub": "Pour la préparation. Tout est facultatif.",
     "hairFromProfile": "Repris de votre <b>profil capillaire</b>",
     "hairMismatchTitle": "Est-ce adapté à vos cheveux ?",
     "hairMismatchBody": "Votre profil indique {length}.",
@@ -1062,7 +1062,15 @@
       "browseOther": "Voir d'autres dates",
       "close": "Fermer",
       "error": "Inscription impossible. Veuillez réessayer."
-    }
+    },
+    "hairThicknessLabel": "Épaisseur",
+    "hairBeardLabel": "Barbe",
+    "hairNoteLabel": "Note",
+    "hairNotePlaceholder": "Facultatif, p. ex. « juste les pointes »",
+    "hairForStaff": "Pour {name}",
+    "hairYourStylist": "Votre styliste",
+    "hairForSalon": "Pour votre rendez-vous",
+    "hairSkip": "Passer"
   },
   "chat": {
     "send": "Envoyer",
@@ -5788,7 +5796,10 @@
     "payOnlineNow": "Payer en ligne maintenant",
     "fullPrepayment": "Prépaiement intégral",
     "confirmBooking": "Confirmer la réservation",
-    "payDeposit": "Payer l'acompte"
+    "payDeposit": "Payer l'acompte",
+    "changeLabel": "Modifier",
+    "yourStylist": "Votre styliste",
+    "vatIncl": "TVA 8.1% incluse"
   },
   "searchUi": {
     "sort_rating": "Les plus populaires",

@@ -41,6 +41,12 @@ export const HAIR_THICKNESS_OPTS: Choice[] = [
   { value: "thick", label: "Dick" },
 ];
 
+export const HAIR_BEARD_OPTS: Choice[] = [
+  { value: "none", label: "Kein Bart" },
+  { value: "short", label: "Kurz" },
+  { value: "full", label: "Voll" },
+];
+
 export const SKIN_OPTS: Choice[] = [
   { value: "dry", label: "Trocken" },
   { value: "normal", label: "Normal" },

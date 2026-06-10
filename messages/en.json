@@ -884,7 +884,7 @@
     "emptyBody": "This salon takes appointments by phone or in person. Visit the salon page or give them a quick call.",
     "emptyToSalon": "View salon",
     "emptyCallSalon": "Call salon",
-    "hairSub": "So your stylist is prepared. You can adjust everything.",
+    "hairSub": "For preparation. All optional.",
     "hairFromProfile": "Taken from your <b>hair profile</b>",
     "hairMismatchTitle": "Does this match your hair?",
     "hairMismatchBody": "Your profile says {length}.",
@@ -1078,7 +1078,15 @@
       "browseOther": "Browse other dates",
       "close": "Close",
       "error": "Couldn't join the waitlist. Please try again."
-    }
+    },
+    "hairThicknessLabel": "Thickness",
+    "hairBeardLabel": "Beard",
+    "hairNoteLabel": "Note",
+    "hairNotePlaceholder": "Optional, e.g. “just a light trim”",
+    "hairForStaff": "For {name}",
+    "hairYourStylist": "Your stylist",
+    "hairForSalon": "For your appointment",
+    "hairSkip": "Skip"
   },
   "chat": {
     "send": "Send",
@@ -5803,7 +5811,10 @@
     "payOnlineNow": "Pay online now",
     "fullPrepayment": "Full prepayment",
     "confirmBooking": "Confirm booking",
-    "payDeposit": "Pay deposit"
+    "payDeposit": "Pay deposit",
+    "changeLabel": "Change",
+    "yourStylist": "Your stylist",
+    "vatIncl": "incl. 8.1% VAT"
   },
   "searchUi": {
     "sort_rating": "Most popular",

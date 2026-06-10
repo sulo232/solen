@@ -52,6 +52,8 @@ export const createBookingSchema = z
     guest_name: z.string().min(2).max(100).optional(),
     guest_phone: z.string().regex(/^\+41[0-9]{9}$/).optional(),
     guest_email: z.string().email().optional(),
+    // Hair step v3: one-line customer wish for THIS appointment (bookings.customer_note).
+    customer_note: z.string().max(140).optional().nullable(),
   })
   .refine((d) => Boolean(d.slot_id) || Boolean(d.salon_id && d.starts_at), {
     message: "Either slot_id or (salon_id + starts_at) is required",
@@ -80,6 +82,7 @@ export const updateProfileSchema = z.object({
   hair_type: z.string().max(50).optional().nullable(),
   hair_length: z.string().max(30).optional().nullable(),
   hair_thickness: z.string().max(30).optional().nullable(),
+  hair_beard: z.string().max(30).optional().nullable(),
   age_group: z.string().max(20).optional().nullable(),
   gender: z.string().max(20).optional().nullable(),
   locale: z.enum(["de", "en", "fr", "it"]).optional(),
