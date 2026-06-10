@@ -186,7 +186,7 @@ export default function SalonReviews({
 
             {/* Filter by rating — interactive checkboxes that filter the list (Fresha). */}
             <div className="mt-6">
-              <p className="mb-2.5 text-[15px] font-semibold text-s-ink">Filtern nach</p>
+              <p className="mb-2.5 text-[15px] font-semibold text-s-ink">{t("filterBy")}</p>
               <div className="space-y-0.5">
                 {[5, 4, 3, 2, 1].map((s, i) => {
                   const c = starCounts[i];
@@ -230,7 +230,7 @@ export default function SalonReviews({
             {/* Count + sort trigger (Fresha: "N reviews" + "Best ▾" → sheet) */}
             <div className="mb-4 mt-6 flex items-center justify-between border-t border-s-border pt-5">
               <span className="text-[15px] tabular-nums text-s-ink-2">
-                {filteredReviews.length.toLocaleString("de-CH")} Bewertungen
+                {t("reviewsCount", { count: filteredReviews.length.toLocaleString("de-CH") })}
               </span>
               <button
                 type="button"

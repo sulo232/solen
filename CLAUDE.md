@@ -152,6 +152,14 @@ Before applying, building, or committing ANY visual / design change: **show the 
 
 ---
 
+## 🪶 Copy economy (owner rules, 2026-06-11)
+
+1. **Drop words the context already says.** A button inside the reviews list is "Mehr laden", never "Weitere Bewertungen laden" — the user knows they're reviews. Same family: "Zum Kalender hinzufügen" → "Kalender hinzufügen"; a "Kopieren" label next to a copy icon → icon-only. Test: delete each word; if the meaning survives in place, the word was padding.
+2. **Long text truncates with a blue "Mehr lesen".** Reviews/descriptions clamp (~150 chars / 3 lines) with an inline `text-s-accent` "Mehr lesen" that expands in place (Fresha pattern). Never render a wall of text; never a grey/underlined read-more.
+3. **Action verbosity ladder:** icon-only when the icon is unambiguous next to its object (copy, flag/report, share) — keep `aria-label`; icon+label when the action is rarer (Wegbeschreibung); label-only for commitments (Buchen, Bezahlen). One primary commit phrasing per screen.
+
+---
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the reported bug.
