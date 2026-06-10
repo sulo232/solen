@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile rows + outcome feedback (DS-7 / DS-8 / DS-1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1; --blue-deep:#1E54B7;
+    --pink:#FF3366; --green:#16A34A; --star:#FFC32B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
+  .note{max-width:380px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+  .note b{font-family:'Inter Tight',sans-serif}
+  .lbl{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:#666;margin-bottom:-16px}
+  .frame{width:390px;background:var(--sunken);border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18);padding:22px 16px 28px;position:relative}
+  h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;padding:0 2px}
+
+  .card{background:#fff;border-radius:18px;padding:4px 16px;margin-top:14px;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05)}
+  .row{display:flex;align-items:center;gap:13px;padding:14px 0;cursor:pointer;transition:background .15s}
+  .row .ico{width:38px;height:38px;border-radius:12px;background:var(--sunken);display:grid;place-items:center;flex:none}
+  .row .ico .lucide{width:18px;height:18px;stroke-width:1.9}
+  .row .t{flex:1;min-width:0}
+  .row .t b{font-size:14.5px;font-weight:600;display:block}
+  .row .t span{font-size:12px;color:var(--ink-2);display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row > .lucide{width:16px;height:16px;color:var(--ink-3);flex:none}
+
+  /* BEFORE styles */
+  .old .row + .row{border-top:1px solid var(--border)}
+  .old .row .t b{font-weight:500}
+  .old .row .t .kv{color:var(--ink-2);font-size:12px}
+  .old .row .t .kv em{font-style:normal;font-weight:600;color:var(--ink)}
+
+  /* booking card */
+  .bk{background:#fff;border-radius:18px;margin-top:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05)}
+  .bk .top{display:flex;gap:12px;padding:14px 16px;align-items:center}
+  .bk img{width:48px;height:48px;border-radius:12px;object-fit:cover;flex:none}
+  .bk .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .bk .m{font-size:12.5px;color:var(--ink-2);margin-top:2px;display:flex;gap:10px}
+  .bk .m span{display:flex;gap:4px;align-items:center}
+  .bk .m .lucide{width:13px;height:13px}
+  .pillst{margin-left:auto;flex:none;font-size:11.5px;font-weight:700;border-radius:99px;padding:4px 10px;background:#EAF8EF;color:#15803D}
+
+  /* outcome feedback demo */
+  .savebar{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;padding:14px 16px;margin-top:14px;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05)}
+  .heartbtn{width:44px;height:44px;border-radius:99px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .12s}
+  .heartbtn:active{transform:scale(.92)}
+  .heartbtn .lucide{width:20px;height:20px;transition:all .15s}
+  .heartbtn.on{border-color:transparent;background:#FFF0F4}
+  .heartbtn.on .lucide{color:var(--pink);fill:var(--pink);animation:pop .35s cubic-bezier(.34,1.7,.5,1)}
+  @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .favtab{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2);position:relative}
+  .favtab .lucide{width:18px;height:18px}
+  .favtab .dot{position:absolute;top:-3px;right:-7px;width:8px;height:8px;border-radius:99px;background:var(--pink);opacity:0;transform:scale(.4);transition:all .3s cubic-bezier(.34,1.7,.5,1)}
+  .favtab .dot.show{opacity:1;transform:scale(1)}
+  .toast{position:absolute;left:50%;bottom:22px;transform:translate(-50%,70px);background:var(--ink);color:#fff;font-size:13px;font-weight:600;border-radius:99px;padding:10px 18px;display:flex;gap:8px;align-items:center;transition:transform .35s cubic-bezier(.16,1,.3,1);box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:nowrap}
+  .toast.show{transform:translate(-50%,0)}
+  .toast .lucide{width:15px;height:15px;color:#4ADE80}
+</style>
+</head>
+<body>
+
+<div class="note"><b>Two things in one frame.</b> Top: the profile hub rows, BEFORE has hairlines between every row + "Label: value" texts; AFTER (DS-8) separates with whitespace + hover tint, and (DS-7) rows say their VALUE not their label ("Wavy · Medium", not "Hair type: configured"). Bottom: DS-1 outcome feedback, <b>tap the heart</b>: it pops + fills, the Favorites tab up top gets a dot, a toast confirms. Feedback at the action AND the destination.</div>
+
+<div class="lbl">BEFORE: hairline walls + label:value rows</div>
+<div class="frame">
+  <h1>Profile</h1>
+  <div class="card old">
+    <div class="row"><div class="ico"><i data-lucide="brush"></i></div><div class="t"><b>Hair profile</b><span class="kv">Status: <em>configured</em></span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="ticket"></i></div><div class="t"><b>Vouchers</b><span class="kv">Count: <em>2</em></span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="bell"></i></div><div class="t"><b>Notifications</b><span class="kv">Unread: <em>1</em></span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="globe"></i></div><div class="t"><b>Language</b><span class="kv">Selected: <em>German</em></span></div><i data-lucide="chevron-right"></i></div>
+  </div>
+</div>
+
+<div class="lbl">AFTER: whitespace rows, value-first copy (hover the rows)</div>
+<div class="frame">
+  <h1>Profile</h1>
+  <div class="card" id="afterRows">
+    <div class="row"><div class="ico"><i data-lucide="brush"></i></div><div class="t"><b>Hair profile</b><span>Wavy · Medium · fine</span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="ticket"></i></div><div class="t"><b>Vouchers</b><span>2 active · CHF 65 total</span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="bell"></i></div><div class="t"><b>Notifications</b><span>1 new</span></div><i data-lucide="chevron-right"></i></div>
+    <div class="row"><div class="ico"><i data-lucide="globe"></i></div><div class="t"><b>Language</b><span>Deutsch</span></div><i data-lucide="chevron-right"></i></div>
+  </div>
+
+  <div class="bk">
+    <div class="top">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=140&q=80" alt="">
+      <div>
+        <div class="n">Old Town Barbers</div>
+        <div class="m"><span><i data-lucide="calendar"></i>Thu 11 Jun, 10:00</span><span><i data-lucide="scissors"></i>Men's cut</span></div>
+      </div>
+      <span class="pillst">Paid</span>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">DS-1: outcome feedback (TAP THE HEART)</div>
+<div class="frame" style="padding-bottom:80px">
+  <div class="savebar">
+    <button class="heartbtn" id="hb" onclick="saveIt()"><i data-lucide="heart"></i></button>
+    <div>
+      <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14.5px">Muse Beauty Studio</div>
+      <div style="font-size:12px;color:var(--ink-2)">tap to save</div>
+    </div>
+    <div class="favtab"><i data-lucide="heart"></i>Favorites<span class="dot" id="dot"></span></div>
+  </div>
+  <div class="toast" id="toast"><i data-lucide="check"></i>Saved to favorites</div>
+</div>
+
+<script>
+lucide.createIcons();
+document.querySelectorAll('#afterRows .row').forEach(r => {
+  r.addEventListener('mouseenter', () => r.style.background = 'var(--sunken)');
+  r.addEventListener('mouseleave', () => r.style.background = '');
+});
+function saveIt(){
+  const hb = document.getElementById('hb');
+  const on = hb.classList.toggle('on');
+  document.getElementById('dot').classList.toggle('show', on);
+  const t = document.getElementById('toast');
+  if (on) { t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+  lucide.createIcons();
+}
+</script>
+</body>
+</html>

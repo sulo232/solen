@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheet physics, grabber + drag-dismiss + background options (DS-11)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
+  .note{max-width:380px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+  .note b{font-family:'Inter Tight',sans-serif}
+  .lbl{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:#666;margin-bottom:-16px}
+  .frame{width:390px;height:560px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18);position:relative}
+
+  .pg{position:absolute;inset:0;transition:transform .32s cubic-bezier(.16,1,.3,1), filter .32s, border-radius .32s;background:#fff;overflow:hidden}
+  .pgin{padding:22px 18px}
+  .pgin h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;font-size:14.5px}
+  .row .lucide{width:16px;height:16px;color:var(--ink-3)}
+  .openbtn{margin-top:18px;height:48px;width:100%;border-radius:14px;border:1px solid var(--border);background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:14px}
+
+  .dim{position:absolute;inset:0;background:rgba(10,10,10,.42);opacity:0;pointer-events:none;transition:opacity .32s}
+  .frame.open .dim{opacity:1;pointer-events:auto}
+  .frame.open.scaleback .pg{transform:translateY(10px) scale(.965);border-radius:22px;filter:brightness(.96)}
+
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:8px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .36s cubic-bezier(.16,1,.3,1);box-shadow:0 -18px 50px rgba(0,0,0,.22);touch-action:none}
+  .frame.open .sheet{transform:translateY(0)}
+  .grab{width:38px;height:4.5px;border-radius:99px;background:var(--border);margin:6px auto 14px}
+  .sheet h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;margin-bottom:6px}
+  .opt{display:flex;align-items:center;gap:12px;padding:13px 0;font-size:14.5px}
+  .radio{width:20px;height:20px;border-radius:99px;border:2px solid var(--border);flex:none}
+  .radio.on{border-color:var(--ink);border-width:6px}
+  .hint{font-size:11.5px;color:var(--ink-3);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="note"><b>DS-11: sheet physics, two options for the background.</b> Both add what every sheet gets: a <b>grabber handle</b> + <b>drag-down to dismiss</b> (drag the sheet!) + tap-outside + the usual buttons (gesture never the only way). The question is the page BEHIND the sheet: <b>Option A</b> just dims (today's behavior + handle). <b>Option B</b> dims AND the page scales back 3.5%, the iOS depth cue. Open both, then pick A or B.</div>
+
+<div class="lbl">OPTION A: dim only</div>
+<div class="frame" id="fa">
+  <div class="pg"><div class="pgin">
+    <h1>Reviews</h1>
+    <div class="row"><span>★★★★★ · 2 weeks ago</span></div>
+    <div class="row" style="color:var(--ink-2);font-size:13.5px">"Booked in 30 seconds, no calls…"</div>
+    <button class="openbtn" onclick="document.getElementById('fa').classList.add('open')">Sort: Best first</button>
+  </div></div>
+  <div class="dim" onclick="this.parentNode.classList.remove('open')"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>Sort</h3>
+    <div class="opt"><span class="radio on"></span>Best first</div>
+    <div class="opt"><span class="radio"></span>Newest</div>
+    <div class="opt"><span class="radio"></span>Critical first</div>
+    <div class="hint">drag down, tap outside, or pick, all three close it</div>
+  </div>
+</div>
+
+<div class="lbl">OPTION B: dim + page scales back (recommended)</div>
+<div class="frame scaleback" id="fb">
+  <div class="pg"><div class="pgin">
+    <h1>Reviews</h1>
+    <div class="row"><span>★★★★★ · 2 weeks ago</span></div>
+    <div class="row" style="color:var(--ink-2);font-size:13.5px">"Booked in 30 seconds, no calls…"</div>
+    <button class="openbtn" onclick="document.getElementById('fb').classList.add('open')">Sort: Best first</button>
+  </div></div>
+  <div class="dim" onclick="this.parentNode.classList.remove('open')"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>Sort</h3>
+    <div class="opt"><span class="radio on"></span>Best first</div>
+    <div class="opt"><span class="radio"></span>Newest</div>
+    <div class="opt"><span class="radio"></span>Critical first</div>
+    <div class="hint">the page behind steps back, depth without darkness</div>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+// drag-to-dismiss on both sheets
+document.querySelectorAll('.sheet').forEach(sheet => {
+  let startY = null, dy = 0;
+  const frame = sheet.closest('.frame');
+  const onMove = e => {
+    if (startY === null) return;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY);
+    dy = Math.max(0, y - startY);
+    sheet.style.transition = 'none';
+    sheet.style.transform = `translateY(${dy}px)`;
+  };
+  const onUp = () => {
+    if (startY === null) return;
+    sheet.style.transition = '';
+    if (dy > 90) { frame.classList.remove('open'); sheet.style.transform = ''; }
+    else sheet.style.transform = '';
+    startY = null; dy = 0;
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+  };
+  sheet.addEventListener('pointerdown', e => {
+    startY = e.clientY;
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  });
+});
+</script>
+</body>
+</html>

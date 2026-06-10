@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salon PDP, gallery dots + scrim + rhythm (DS-10 / DS-A4 / DS-5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1; --blue-deep:#1E54B7;
+    --star:#FFC32B; --green:#16A34A; --red:#DC2626;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
+  .note{max-width:380px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+  .note b{font-family:'Inter Tight',sans-serif}
+  .lbl{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:#666;margin-bottom:-16px}
+  .frame{width:390px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18);padding-bottom:24px}
+
+  .hero{position:relative;height:300px;overflow:hidden}
+  .strip{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
+  .strip img{width:390px;height:100%;object-fit:cover;flex:none;scroll-snap-align:start}
+  .hero .frost{position:absolute;top:14px;width:38px;height:38px;border-radius:99px;background:rgba(255,255,255,.86);backdrop-filter:blur(8px);display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.14);border:0}
+  .hero .frost .lucide{width:18px;height:18px}
+  /* DS-10 scrim: only behind the dots zone, photo stays clean */
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:64px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.38));pointer-events:none}
+  /* DS-A4 gallery indicators, active dot stretches */
+  .dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:2}
+  .dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55);transition:all .25s cubic-bezier(.16,1,.3,1)}
+  .dots span.on{width:18px;background:#fff}
+
+  .head{padding:18px 18px 0}
+  h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em}
+  .meta1{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:14.5px;font-weight:600}
+  .meta1 svg{width:14px;height:14px;fill:var(--star);align-self:center}
+  .meta1 .cnt{color:var(--blue);cursor:pointer}
+  .meta1 .cnt:hover{color:var(--blue-deep)}
+  .meta2{margin-top:6px;font-size:13.5px;display:flex;gap:5px;align-items:center}
+  .meta2 .open{color:var(--green);font-weight:600}
+  .meta3{margin-top:5px;font-size:13.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+  .meta3 .lucide{width:14px;height:14px;color:var(--ink-3)}
+
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:4px;margin:24px 18px 0}
+  .seg button{flex:1;height:44px;border:0;border-radius:999px;background:transparent;font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:7px}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.10)}
+  .seg .lucide{width:17px;height:17px}
+
+  .sect{margin-top:32px;padding:0 18px} /* DS-5 */
+  .sect h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em}
+  .pills{display:flex;gap:8px;margin-top:12px}
+  .pill{border:1px solid var(--border);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:500;background:#fff}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .tier{margin-top:16px;display:flex;align-items:baseline;gap:8px}
+  .tier b{font-family:'Inter Tight',sans-serif;font-size:15px;font-weight:700}
+  .tier span{font-size:12.5px;color:var(--ink-2)}
+  .svc{margin-top:12px;border:1px solid var(--border);border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px} /* DS-5: 12 between cards */
+  .svc .rt{flex:1;min-width:0}
+  .svc .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .svc .m{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:11px;align-items:center}
+  .svc .m span{display:flex;gap:4px;align-items:center}
+  .svc .m .lucide{width:13px;height:13px}
+  .svc .m b{color:var(--ink);font-weight:600}
+  .book{flex:none;height:40px;padding:0 18px;border-radius:12px;border:1px solid var(--border);background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;transition:border-color .15s, transform .12s}
+  .book:hover{border-color:var(--ink)}
+  .book:active{transform:scale(.96)}
+
+  .ctabar{position:sticky;bottom:0;background:#fff;padding:13px 16px 8px;box-shadow:0 -10px 28px -14px rgba(10,10,10,.14);margin-top:30px}
+  .cta{width:100%;height:54px;border:0;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta .lucide{width:16px;height:16px}
+
+  .vt-note{max-width:380px;font-size:12.5px;line-height:1.55;color:#555;background:#fff;border-radius:14px;padding:13px 16px;border-left:3px solid var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>Salon PDP, three changes only, structure untouched.</b> (1) DS-A4: the 6-photo gallery finally gets position dots (swipe the photos, active dot stretches, replaces the lonely "1/6" chip), (2) DS-10: a bottom-only gradient scrim sits behind the dots so they survive bright photos, the photo itself stays clean, (3) DS-5: every section sits exactly 32px apart, cards 12px. Plus DS-2 icon row in service cards and DS-6 blue hover on the review count.</div>
+
+<div class="frame">
+  <div class="hero">
+    <div class="strip" id="strip">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80">
+    </div>
+    <button class="frost" style="left:14px"><i data-lucide="arrow-left"></i></button>
+    <button class="frost" style="right:62px"><i data-lucide="share"></i></button>
+    <button class="frost" style="right:14px"><i data-lucide="heart"></i></button>
+    <div class="dots" id="dots"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="head">
+    <h1>Old Town Barbers</h1>
+    <div class="meta1"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></div>
+    <div class="meta2"><span class="open">Open</span><span style="color:var(--ink-2)">· closes 19:00</span></div>
+    <div class="meta3"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel</div>
+  </div>
+
+  <div class="seg">
+    <button class="on"><i data-lucide="calendar"></i>Appointment</button>
+    <button><i data-lucide="footprints"></i>Walk-in</button>
+  </div>
+
+  <div class="sect">
+    <h2>Services</h2>
+    <div class="pills"><span class="pill on">All</span><span class="pill">Barbershop</span></div>
+
+    <div class="tier"><b>Express</b><span>15–30 min</span></div>
+    <div class="svc">
+      <div class="rt">
+        <div class="n">Men's cut</div>
+        <div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div>
+      </div>
+      <button class="book">Book</button>
+    </div>
+    <div class="svc">
+      <div class="rt">
+        <div class="n">Beard trim</div>
+        <div class="m"><span><i data-lucide="clock"></i>20 min</span><span><b>CHF 25</b></span></div>
+      </div>
+      <button class="book">Book</button>
+    </div>
+
+    <div class="tier"><b>Classic</b><span>31–60 min</span></div>
+    <div class="svc">
+      <div class="rt">
+        <div class="n">Cut + beard combo</div>
+        <div class="m"><span><i data-lucide="clock"></i>50 min</span><span><b>CHF 65</b></span></div>
+      </div>
+      <button class="book">Book</button>
+    </div>
+  </div>
+
+  <div class="ctabar">
+    <button class="cta">Book appointment <i data-lucide="arrow-right"></i></button>
+  </div>
+</div>
+
+<div class="vt-note"><b style="font-family:'Inter Tight',sans-serif">DS-A4 part 2: card→page transition (can't be faked in HTML, needs a yes/no):</b> when you tap a salon card on home, the card's photo would EXPAND into this hero (View Transitions API, built into the browser, free fallback to a normal navigation on old browsers). One flagship moment, everything else keeps the current slide/fade. Want it mocked as a screen recording on a branch, or trust + build behind approval?</div>
+
+<script>
+lucide.createIcons();
+const strip = document.getElementById('strip');
+const dots = Array.from(document.getElementById('dots').children);
+strip.addEventListener('scroll', () => {
+  const i = Math.round(strip.scrollLeft / 390) % dots.length;
+  dots.forEach((d, j) => d.classList.toggle('on', j === i));
+});
+</script>
+</body>
+</html>

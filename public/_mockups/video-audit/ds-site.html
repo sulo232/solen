@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS upgrade, the system itself (DS-1…DS-12)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --border-soft:#F1EFED;
+    --sunken:#F4F4F5; --blue:#276EF1; --blue-deep:#1E54B7; --blue-pale:#EAF1FE;
+    --green:#16A34A; --red:#DC2626; --star:#FFC32B;
+    --r-card:18px; --r-btn:14px; --r-input:12px; --r-chip:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;padding:40px 16px 90px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .page{width:min(720px,100%);background:#fff;border-radius:24px;padding:34px 30px 40px;box-shadow:0 24px 60px rgba(0,0,0,.12)}
+  h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1.12}
+  .sub{font-size:14.5px;color:var(--ink-2);margin-top:8px;line-height:1.55;max-width:560px}
+  section{margin-top:38px}
+  .tag{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);color:var(--blue);font-weight:700;font-size:12px;border-radius:8px;padding:4px 9px;font-family:'Inter Tight',sans-serif}
+  h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em;margin-top:10px}
+  .why{font-size:13.5px;color:var(--ink-2);margin-top:5px;line-height:1.55;max-width:600px}
+  .demo{margin-top:16px;border:1px solid var(--border);border-radius:var(--r-card);padding:18px;background:#fff}
+  .demo + .demo{margin-top:12px}
+  .demo .cap{font-size:11.5px;font-weight:600;color:var(--ink-3);margin-bottom:12px}
+
+  /* DS-3 neutral inventory */
+  .swatches{display:flex;flex-wrap:wrap;gap:10px}
+  .sw{width:120px;border:1px solid var(--border-soft);border-radius:12px;overflow:hidden}
+  .sw .c{height:52px}
+  .sw .t{padding:7px 9px;font-size:11px;line-height:1.45}
+  .sw .t b{display:block;font-family:'Inter Tight',sans-serif;font-size:11.5px}
+
+  /* DS-1 states */
+  .staterow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .btn{height:44px;padding:0 22px;border-radius:var(--r-btn);border:0;background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:transform .12s, background .15s, opacity .15s}
+  .btn:hover{background:#232323}
+  .btn:active{transform:scale(.97)}
+  .btn.disabled{opacity:.45;cursor:not-allowed}
+  .btn.loading{opacity:.85;pointer-events:none}
+  .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:99px;animation:sp 0.7s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .statelbl{font-size:10.5px;color:var(--ink-3);text-align:center;margin-top:6px;font-weight:600}
+  .stategrp{display:flex;flex-direction:column;align-items:center}
+  input.f{height:46px;border:1px solid var(--border);border-radius:var(--r-input);padding:0 13px;font-size:14px;font-family:'Inter',sans-serif;outline:none;width:170px}
+  input.f:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(39,110,241,.15)}
+  input.f.err{border-color:var(--red)}
+  .errmsg{font-size:11.5px;color:var(--red);margin-top:5px;display:flex;gap:4px;align-items:center}
+
+  /* DS-2 icon table */
+  .icontbl{width:100%;border-collapse:collapse;font-size:13px}
+  .icontbl th{font-family:'Inter Tight',sans-serif;font-size:11.5px;color:var(--ink-3);text-align:left;font-weight:600;padding:6px 10px;border-bottom:1px solid var(--border)}
+  .icontbl td{padding:9px 10px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+  .pairdemo{display:flex;align-items:center;gap:7px}
+
+  /* DS-4 radius + nesting */
+  .nest{display:flex;gap:18px;flex-wrap:wrap}
+  .nest .box{width:200px;padding:14px;border:1px solid var(--border)}
+  .nest .inner{height:70px;background:var(--sunken);display:grid;place-items:center;font-size:11px;color:var(--ink-2);font-weight:600}
+  .good{outline:2px solid var(--green);outline-offset:3px}
+  .bad{outline:2px solid var(--red);outline-offset:3px}
+  .verdict{margin-top:8px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:5px}
+
+  /* DS-5 rhythm */
+  .ruler{display:flex;flex-direction:column;gap:0}
+  .rband{background:var(--blue-pale);color:var(--blue);font-size:10.5px;font-weight:700;display:grid;place-items:center;font-family:'Inter Tight',sans-serif}
+  .rcard{background:#fff;border:1px solid var(--border);border-radius:14px;padding:13px 14px;font-size:13px;font-weight:600}
+
+  /* DS-6 accent hover */
+  .lnk{color:var(--blue);font-weight:600;font-size:14px;text-decoration:none;transition:color .15s}
+  .lnk:hover{color:var(--blue-deep)}
+  .lnk:active{color:var(--blue-deep)}
+
+  /* DS-7 card grammar */
+  .grammar{display:flex;gap:14px;flex-wrap:wrap}
+  .gcard{width:235px;border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;background:#fff}
+  .gcard img{width:100%;height:120px;object-fit:cover;display:block}
+  .gbody{padding:12px 13px 13px}
+  .spread td{font-size:12.5px;padding:3px 0;color:var(--ink-2)}
+  .spread td:first-child{font-weight:600;color:var(--ink);padding-right:10px}
+  .grank .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em}
+  .grank .loc{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+  .grank .pr{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
+  .grank .pr b{font-size:14px}
+  .grank .pr .rt{font-size:12.5px;font-weight:600;display:flex;gap:4px;align-items:center}
+  .grank .pr .rt svg{width:12px;height:12px;fill:var(--star)}
+  .grank .det{display:flex;gap:12px;margin-top:9px;color:var(--ink-2);font-size:12px;align-items:center}
+  .grank .det span{display:flex;gap:4px;align-items:center}
+  .grank .det .lucide{width:13px;height:13px}
+
+  /* DS-8 dividers */
+  .lists{display:flex;gap:14px;flex-wrap:wrap}
+  .lst{width:225px;border:1px solid var(--border);border-radius:14px;padding:6px 14px;background:#fff}
+  .lst .row{display:flex;justify-content:space-between;font-size:13px;padding:11px 0}
+  .lst.lines .row + .row{border-top:1px solid var(--border)}
+  .lst.space .row{padding:12px 0}
+
+  /* DS-10 scrim */
+  .scrims{display:flex;gap:14px;flex-wrap:wrap}
+  .scr{width:225px;height:150px;border-radius:16px;overflow:hidden;position:relative}
+  .scr img{width:100%;height:100%;object-fit:cover}
+  .scr .txt{position:absolute;left:13px;bottom:11px;color:#fff;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;z-index:2}
+  .scr.flat::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45)}
+  .scr.grad::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.62) 100%)}
+  .scr .blurband{position:absolute;left:0;right:0;bottom:0;height:54%;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);mask-image:linear-gradient(180deg,transparent 0%,black 70%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 70%)}
+
+  /* DS-12 vibe */
+  .vibe{border-left:3px solid var(--blue);padding:4px 0 4px 14px;font-size:14px;line-height:1.6;color:var(--ink);font-style:italic;background:linear-gradient(90deg,var(--blue-pale),transparent 70%);border-radius:0 10px 10px 0;padding-top:10px;padding-bottom:10px}
+  .zones{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .zone{font-size:12px;font-weight:600;border-radius:99px;padding:6px 12px}
+  .zone.yes{background:#EAF8EF;color:#15803D}
+  .zone.no{background:var(--sunken);color:var(--ink-3)}
+  code{font-family:'Inter Tight',monospace;background:var(--sunken);border-radius:6px;padding:1px 6px;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>The system, upgraded.</h1>
+  <p class="sub">Every proposed rule from the 8-video audit, shown as the system itself would document it. Each block = one rule (DS-#). Approve, punch-list, or kill per block, these then get written into the LOCKFILE / SOURCE.</p>
+
+  <!-- DS-3 -->
+  <section>
+    <span class="tag">DS-3</span>
+    <h2>The closed neutral inventory</h2>
+    <p class="why">Every grey on the site must be one of these seven. No new rgba() greys, no one-off opacities. (This is where "inconsistent everywhere" starts, ad-hoc neutrals.)</p>
+    <div class="demo">
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:#FFFFFF;border-bottom:1px solid var(--border-soft)"></div><div class="t"><b>surface</b>#FFFFFF</div></div>
+        <div class="sw"><div class="c" style="background:#F4F4F5"></div><div class="t"><b>sunken</b>#F4F4F5</div></div>
+        <div class="sw"><div class="c" style="background:#E8E6E4"></div><div class="t"><b>border</b>#E8E6E4</div></div>
+        <div class="sw"><div class="c" style="background:#F1EFED"></div><div class="t"><b>border-soft</b>#F1EFED · in-card rows</div></div>
+        <div class="sw"><div class="c" style="background:#0A0A0A"></div><div class="t"><b>ink</b>#0A0A0A · headings</div></div>
+        <div class="sw"><div class="c" style="background:#6B6B6B"></div><div class="t"><b>ink-2</b>#6B6B6B · body/meta</div></div>
+        <div class="sw"><div class="c" style="background:#9B9B9B"></div><div class="t"><b>ink-3</b>#9B9B9B · hints/disabled</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-1 -->
+  <section>
+    <span class="tag">DS-1</span>
+    <h2>Every control, five states</h2>
+    <p class="why">default · hover · pressed · disabled · loading, defined for every interactive component, no exceptions. Try the buttons; the loading one spins, the pressed one scales. Inputs: focus ring + error with message.</p>
+    <div class="demo">
+      <div class="cap">BUTTON: hover &amp; press these</div>
+      <div class="staterow">
+        <div class="stategrp"><button class="btn">Book now</button><div class="statelbl">default / hover / press</div></div>
+        <div class="stategrp"><button class="btn disabled">Book now</button><div class="statelbl">disabled 45%</div></div>
+        <div class="stategrp"><button class="btn loading"><span class="spin"></span>Booking…</button><div class="statelbl">loading</div></div>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="cap">INPUT: click into the first one</div>
+      <div class="staterow" style="align-items:flex-start">
+        <div class="stategrp"><input class="f" placeholder="Your name"><div class="statelbl">default → focus ring</div></div>
+        <div class="stategrp">
+          <input class="f err" value="077 123">
+          <div class="errmsg"><i data-lucide="circle-alert" style="width:12px;height:12px"></i>Phone number is incomplete</div>
+          <div class="statelbl">error</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-2 -->
+  <section>
+    <span class="tag">DS-2</span>
+    <h2>Icon pairing table</h2>
+    <p class="why">Icon size is decided by the text it sits with, never eyeballed. Lucide only, strokeWidth 2 (1.75 at ≥24px). Famous icons go label-free; unusual ones always get a label.</p>
+    <div class="demo">
+      <table class="icontbl">
+        <tr><th>Context</th><th>Text</th><th>Icon</th><th>Looks like</th></tr>
+        <tr><td>Meta line / chips</td><td>12–13px</td><td><b>14px</b></td><td><span class="pairdemo" style="font-size:12.5px;color:var(--ink-2)"><i data-lucide="map-pin" style="width:14px;height:14px"></i>Münsterplatz 11, Basel</span></td></tr>
+        <tr><td>Body rows / buttons</td><td>14–15px</td><td><b>16–18px</b></td><td><span class="pairdemo" style="font-size:14.5px"><i data-lucide="calendar" style="width:17px;height:17px"></i>Thu, 11 June at 09:00</span></td></tr>
+        <tr><td>List-row leading icon</td><td>15px title</td><td><b>20px</b> in 44px box</td><td><span class="pairdemo"><span style="width:38px;height:38px;border-radius:12px;background:var(--sunken);display:grid;place-items:center"><i data-lucide="scissors" style="width:19px;height:19px"></i></span><b style="font-size:14.5px">Men's cut</b></span></td></tr>
+        <tr><td>Stepper / hero discs</td><td>-</td><td><b>18px in 42px disc</b></td><td><span style="width:42px;height:42px;border-radius:99px;background:var(--blue);color:#fff;display:grid;place-items:center"><i data-lucide="credit-card" style="width:18px;height:18px"></i></span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- DS-4 -->
+  <section>
+    <span class="tag">DS-4</span>
+    <h2>Radius scale + the nesting formula</h2>
+    <p class="why">Closed set: card 18 · button 14 · input 12 · chip 10 · pill ∞. And when rounded sits inside rounded: <code>inner&nbsp;radius&nbsp;=&nbsp;outer&nbsp;−&nbsp;gap</code>. Same-radius-everywhere makes corners visibly bulge.</p>
+    <div class="demo">
+      <div class="nest">
+        <div>
+          <div class="box bad" style="border-radius:18px"><div class="inner" style="border-radius:18px">inner also 18px</div></div>
+          <div class="verdict" style="color:var(--red)"><i data-lucide="x" style="width:13px;height:13px"></i>corner gap bulges</div>
+        </div>
+        <div>
+          <div class="box good" style="border-radius:18px"><div class="inner" style="border-radius:5px">inner 18 − 13 gap ≈ 5px</div></div>
+          <div class="verdict" style="color:var(--green)"><i data-lucide="check" style="width:13px;height:13px"></i>concentric, even gap</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-5 -->
+  <section>
+    <span class="tag">DS-5</span>
+    <h2>Three spacing numbers, everywhere</h2>
+    <p class="why">One rhythm for the whole site: <b>32px</b> between sections · <b>12px</b> between cards · <b>16px</b> between groups inside a card. Mobile gets MORE air, never less.</p>
+    <div class="demo">
+      <div class="ruler">
+        <div class="rcard">Section heading</div>
+        <div class="rband" style="height:32px">32, between sections</div>
+        <div class="rcard">Card A</div>
+        <div class="rband" style="height:12px">12, between cards</div>
+        <div class="rcard">Card B<br><span style="display:block;height:16px;background:var(--blue-pale);border-radius:6px;margin:8px 0;font-size:10.5px;color:var(--blue);font-weight:700;display:grid;place-items:center">16, between groups inside a card</span><span style="font-weight:400;font-size:12.5px;color:var(--ink-2)">second group in the same card</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-6 -->
+  <section>
+    <span class="tag">DS-6</span>
+    <h2>Blue gets a hover step</h2>
+    <p class="why">Blue stays sparse (small clickable bits only, unchanged). But interactive blue needs a pressed/hover colour: <b>s-accent-deep #1E54B7</b>, one ramp step darker. Hover the links.</p>
+    <div class="demo">
+      <div class="staterow" style="gap:26px">
+        <a class="lnk" href="#">Change</a>
+        <a class="lnk" href="#">Read more</a>
+        <a class="lnk" href="#">(54 reviews)</a>
+        <span style="font-size:12px;color:var(--ink-3)">→ hover: #276EF1 → #1E54B7, 150ms</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-7 -->
+  <section>
+    <span class="tag">DS-7</span>
+    <h2>Card grammar: group → rank → de-label → icon row</h2>
+    <p class="why">"Label: value" pairs are a spreadsheet, not a card. Group related facts, rank by importance, let the UI imply the labels, fold details into one icon row. Labels survive ONLY where genuinely ambiguous.</p>
+    <div class="demo">
+      <div class="grammar">
+        <div class="gcard">
+          <div class="gbody">
+            <div class="cap" style="color:var(--red)">BEFORE: spreadsheet</div>
+            <table class="spread">
+              <tr><td>Salon:</td><td>Muse Beauty Studio</td></tr>
+              <tr><td>Location:</td><td>Basel</td></tr>
+              <tr><td>Price:</td><td>CHF 80</td></tr>
+              <tr><td>Rating:</td><td>4.9</td></tr>
+              <tr><td>Duration:</td><td>45 min</td></tr>
+              <tr><td>Next slot:</td><td>15:30</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="gcard">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=470&q=80" alt="">
+          <div class="gbody grank">
+            <div class="cap" style="color:var(--green)">AFTER: ranked &amp; grouped</div>
+            <div class="nm">Muse Beauty Studio</div>
+            <div class="loc">Steinenvorstadt 18, Basel</div>
+            <div class="pr"><b>from CHF 80</b><span class="rt"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9 <span style="color:var(--blue)">(54)</span></span></div>
+            <div class="det"><span><i data-lucide="clock"></i>45 min</span><span><i data-lucide="calendar"></i>today 15:30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-8 -->
+  <section>
+    <span class="tag">DS-8</span>
+    <h2>Whitespace first, hairlines second</h2>
+    <p class="why">Dividers are the last resort: whitespace separates lists; hairlines only inside dense receipt-style clusters; alternating tint only in true data tables (dashboard).</p>
+    <div class="demo">
+      <div class="lists">
+        <div class="lst lines">
+          <div class="cap" style="margin:8px 0 0">HAIRLINES: ok for dense receipts</div>
+          <div class="row"><span>Men's cut</span><b>CHF 45.00</b></div>
+          <div class="row"><span>Beard trim</span><b>CHF 25.00</b></div>
+          <div class="row"><span style="color:var(--ink-2)">incl. 8.1% VAT</span><span style="color:var(--ink-2)">CHF 5.25</span></div>
+        </div>
+        <div class="lst space">
+          <div class="cap" style="margin:8px 0 0">WHITESPACE: default for menus/lists</div>
+          <div class="row"><span>Hair profile</span><i data-lucide="chevron-right" style="width:15px;height:15px;color:var(--ink-3)"></i></div>
+          <div class="row"><span>Vouchers</span><i data-lucide="chevron-right" style="width:15px;height:15px;color:var(--ink-3)"></i></div>
+          <div class="row"><span>Notifications</span><i data-lucide="chevron-right" style="width:15px;height:15px;color:var(--ink-3)"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-9 -->
+  <section>
+    <span class="tag">DS-9</span>
+    <h2>Content resilience</h2>
+    <p class="why">Design for the worst content, not the demo content. Names: max 1 line, ellipsis at the END of a word-safe cut. Addresses: 1 line. Icons over photos: always on a backed disc. (The live home page today shows "Old Town Bar…" + "Aeschenvorstadt 55  B…", this rule kills that.)</p>
+    <div class="demo">
+      <div class="grammar">
+        <div class="gcard" style="width:300px">
+          <div class="gbody grank">
+            <div class="nm" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Coiffeur &amp; Barbier Maison Lumière am Münsterplatz</div>
+            <div class="loc" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Sankt-Alban-Vorstadt 113, 4052 Basel</div>
+            <div class="det" style="margin-top:8px"><span><i data-lucide="clock"></i>45 min</span><span><i data-lucide="calendar"></i>today 16:00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-10 -->
+  <section>
+    <span class="tag">DS-10</span>
+    <h2>Text-on-photo: the one scrim recipe</h2>
+    <p class="why">Flat dark washes kill the photo. Locked recipe: transparent until 38%, then to 62% black at the bottom. Optional premium variant adds progressive blur under the gradient. Compare:</p>
+    <div class="demo">
+      <div class="scrims">
+        <div class="scr flat"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=470&q=80"><div class="txt">Flat wash ✕</div></div>
+        <div class="scr grad"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=470&q=80"><div class="txt">Gradient ✓</div></div>
+        <div class="scr grad"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=470&q=80"><div class="blurband"></div><div class="txt">+ progressive blur</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DS-12 -->
+  <section>
+    <span class="tag">DS-12</span>
+    <h2>The vibe statement + personality zones</h2>
+    <p class="why">Written down so every future decision can be tested against it:</p>
+    <div class="demo">
+      <div class="vibe">"Solen is premium-warm. Photography carries the emotion; the chrome stays quiet. Personality lives in the dead zones, empty states, errors, success moments, never in the funnel. Human, never corporate. Rich, never cluttered."</div>
+      <div class="zones">
+        <span class="zone yes">✓ 404 / errors</span>
+        <span class="zone yes">✓ empty states</span>
+        <span class="zone yes">✓ success moments</span>
+        <span class="zone yes">✓ onboarding</span>
+        <span class="zone no">✕ booking flow</span>
+        <span class="zone no">✕ checkout / pay</span>
+        <span class="zone no">✕ queue tracker</span>
+        <span class="zone no">✕ search results</span>
+      </div>
+    </div>
+  </section>
+
+  <p class="sub" style="margin-top:38px">Also in the written audit but shown in their own mockups: <b>DS-11</b> sheet physics (sheets-motion.html), gallery indicators + card→page transition (salon-pdp.html), and the smaller ADAPTs (display-type recipe, overlay elevation, chart rules, voice examples).</p>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

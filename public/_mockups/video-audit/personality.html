@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personality zones, 404 + empty states, 3 voices (DS-12)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E8E6E4; --sunken:#F4F4F5; --blue:#276EF1; --star:#FFC32B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px 0 80px}
+  .note{max-width:380px;font-size:13px;line-height:1.5;color:#444;background:#fff;border-radius:14px;padding:14px 16px}
+  .note b{font-family:'Inter Tight',sans-serif}
+  .lbl{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:#666;margin-bottom:-16px}
+  .frame{width:390px;height:480px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px;text-align:center;position:relative}
+  .cta{height:48px;padding:0 26px;border:0;border-radius:14px;background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;margin-top:22px}
+  .ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+  h2{font-family:'Inter Tight',sans-serif;font-weight:700;letter-spacing:-.02em}
+  p.sub{font-size:14px;color:var(--ink-2);line-height:1.55;margin-top:10px;max-width:280px}
+
+  /* A: typographic */
+  .big404{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:120px;letter-spacing:-.05em;line-height:1;background:linear-gradient(180deg,var(--ink) 30%,#bbb);-webkit-background-clip:text;background-clip:text;color:transparent;animation:settle .7s cubic-bezier(.16,1,.3,1)}
+  @keyframes settle{from{transform:translateY(-14px) rotate(-2deg);opacity:0}to{transform:none;opacity:1}}
+  .scissor-cut{position:relative;display:inline-block}
+  .scissor-cut .lucide{position:absolute;right:-34px;top:-8px;width:26px;height:26px;color:var(--ink-2);transform:rotate(-20deg);animation:snip 2.4s ease-in-out infinite}
+  @keyframes snip{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-32deg)}}
+
+  /* B: photographic */
+  .photoframe{position:absolute;inset:0}
+  .photoframe img{width:100%;height:100%;object-fit:cover}
+  .photoframe::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12) 0%,rgba(0,0,0,.66) 100%)}
+  .overcopy{position:relative;z-index:2;color:#fff;margin-top:auto;padding-bottom:44px}
+  .overcopy h2{font-size:26px}
+  .overcopy p{color:rgba(255,255,255,.85)}
+  .overcopy .cta{background:#fff;color:var(--ink)}
+
+  /* C: line-art chair */
+  .chairwrap{width:130px;height:130px;border-radius:99px;background:var(--sunken);display:grid;place-items:center;margin-bottom:6px;animation:bob 3.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .chairwrap .lucide{width:56px;height:56px;stroke-width:1.4;color:var(--ink)}
+
+  /* empty state demo */
+  .emptyrow{display:flex;gap:10px;margin-top:18px}
+  .mini{width:84px;height:104px;border-radius:14px;background:var(--sunken);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-3)}
+  .mini .lucide{width:22px;height:22px;stroke-width:1.7}
+  .mini span{font-size:9.5px;font-weight:600}
+  .mini.hero{background:linear-gradient(140deg,#EAF1FE,#F4F4F5);color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>DS-12: where personality is ALLOWED: 404, errors, empty states.</b> Product chrome stays restrained; these dead zones get a voice. Three directions for the 404, pick ONE language and it carries to all empty/error states. All copy is human-voice (V4.6), all motion is subtle. No dark mode, no gimmick games.</div>
+
+<div class="lbl">OPTION A: typographic (Uber-est, recommended)</div>
+<div class="frame">
+  <div class="big404 scissor-cut">404<i data-lucide="scissors"></i></div>
+  <h2 style="font-size:22px;margin-top:18px">This page got cut.</h2>
+  <p class="sub">It moved, or it never existed. Either way, your next appointment is one tap away.</p>
+  <button class="cta">Find salons</button>
+</div>
+
+<div class="lbl">OPTION B: photographic (warmest)</div>
+<div class="frame" style="justify-content:flex-end">
+  <div class="photoframe"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt=""></div>
+  <div class="overcopy">
+    <h2>Wrong door, but a great chair.</h2>
+    <p class="sub" style="margin:10px auto 0">This page doesn't exist. The salons do.</p>
+    <button class="cta">Back to Solen</button>
+  </div>
+</div>
+
+<div class="lbl">OPTION C: line-art icon (lightest)</div>
+<div class="frame">
+  <div class="chairwrap"><i data-lucide="armchair"></i></div>
+  <h2 style="font-size:22px">Nobody's sitting here.</h2>
+  <p class="sub">The page you wanted isn't on our books. Let's get you back.</p>
+  <button class="cta">Find salons</button>
+</div>
+
+<div class="lbl">SAME VOICE, APPLIED: empty states (style A shown)</div>
+<div class="frame" style="height:380px">
+  <h2 style="font-size:20px">No favorites yet.</h2>
+  <p class="sub">Tap the heart on any salon and it lands here, your shortlist for next time.</p>
+  <div class="emptyrow">
+    <div class="mini hero"><i data-lucide="heart"></i><span>your first</span></div>
+    <div class="mini"><i data-lucide="scissors"></i><span>coiffeur</span></div>
+    <div class="mini"><i data-lucide="sparkle"></i><span>nails</span></div>
+  </div>
+  <button class="cta ghost">Browse salons</button>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
