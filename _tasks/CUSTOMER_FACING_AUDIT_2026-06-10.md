@@ -14,6 +14,12 @@ green = availability + success (normal #16A34A); no fabricated data; no decorati
 
 ## 🔴 P0 , fix first (data corruption / money / dead terminal steps)
 
+> ✅ **ALL 4 P0s FIXED 2026-06-10** (commits on `main`): #1 timezone `00a31644a` · #4 gift-card
+> `dcf7345c9` · #2+#3 vouchers `53d491ba0` (+ review fix `a54a495bd`). Found + fixed two hidden
+> companions: gift cards were never *activated* after payment (no webhook branch), and salon gift
+> vouchers were never *finalized* + the recipient email was a dead TODO. Stripe e2e (test-card) still
+> owner-verifiable; voucher route is coming-soon-gated in dev so the success screen wasn't screenshotted.
+
 1. **Every booking is stored 1-2h WRONG (timezone).** `components-legacy/booking/PayConfirmStep.tsx:150-151` builds
    `starts_at = new Date(\`${'$'}{dateStr}T${'$'}{selectedTime}:00Z\`)`. The slot is local CH "HH:MM" but the `Z`
    forces UTC, so 14:00 CH is stored as 14:00 UTC = **16:00 CH**. Near midnight the **date rolls**. The confirmation
