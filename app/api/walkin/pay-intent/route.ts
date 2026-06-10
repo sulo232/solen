@@ -47,10 +47,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Walk-in is not enabled for this salon" }, { status: 403 });
   }
   if ((salon as any).walkin_paused) {
-    return NextResponse.json({ error: "This shop has paused new walk-ins right now" }, { status: 409 });
+    return NextResponse.json({ error: "This shop has paused new walk-ins right now", code: "walkins_paused" }, { status: 409 });
   }
   if (!salon.accepts_online_payment) {
-    return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
+    // This salon only takes walk-ins in person — surface it as the pay-at-counter state,
+    // not a generic failure, so the client can keep the summary readable (audit #6 state B).
+    return NextResponse.json({ error: "Salon does not accept online payments", code: "counter_only" }, { status: 409 });
   }
   // PAY-IN-APP REQUIRES a connected Stripe account. Without one, the PaymentIntent
   // below would be created with no transfer_data / application_fee → the money would
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
   // first (or run the free pay-at-counter mode instead).
   if (!salon.stripe_account_id) {
     return NextResponse.json(
-      { error: "This shop hasn't finished connecting payouts yet. Pay at the counter or try again later." },
+      { error: "This shop hasn't finished connecting payouts yet. Pay at the counter or try again later.", code: "payouts_not_connected" },
       { status: 409 },
     );
   }
