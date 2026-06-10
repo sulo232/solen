@@ -242,7 +242,8 @@ export default function SalonReviews({
               </button>
             </div>
 
-            <div className="flex flex-col gap-5">
+            {/* Whitespace-separated cards (Fresha: no hairlines between reviews) */}
+            <div className="flex flex-col gap-8">
               {reviewsVisible.map((rev) => {
                 const isExpanded = expandedReviews.has(rev.id);
                 const needsTruncation = (rev.comment?.length ?? 0) > 150;
@@ -250,43 +251,55 @@ export default function SalonReviews({
                   !isExpanded && needsTruncation ? rev.comment?.slice(0, 150) + "..." : rev.comment;
 
                 return (
-                  <div key={rev.id} className="border-b border-s-border pb-5 last:border-b-0 last:pb-0">
-                    {/* Header — avatar + name/date STACKED (measured Fresha anatomy: avatar ~56px,
-                        name bold, date + subtle verified beneath. No inline pill — that wrapping
-                        green badge is what knocked every row out of vertical alignment). */}
-                    <div className="flex items-center gap-3">
-                      <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full bg-s-accent-pale text-[17px] font-semibold text-s-accent">
-                        {rev.profiles?.avatar_url ? (
-                          <Image src={rev.profiles.avatar_url} alt="" width={56} height={56} className="h-full w-full object-cover" />
-                        ) : (
-                          rev.profiles?.display_name?.[0] ?? "?"
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-[15px] font-semibold text-s-ink">
-                          {rev.profiles?.display_name ?? "Anonym"}
-                        </div>
-                        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-3">
-                          <span>
-                            {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
-                          </span>
-                          {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
-                            <span className="flex items-center gap-1 text-s-accent">
-                              <MessageSquare size={13} />
-                              {t("salonReplied")}
-                            </span>
+                  <div key={rev.id}>
+                    {/* Header — avatar + name/date stacked, flag icon top-right (measured Fresha
+                        anatomy: avatar 56px; no trailing action row — that lone flag row left
+                        ~60px of dead space per card). */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full bg-s-accent-pale text-[17px] font-semibold text-s-accent">
+                          {rev.profiles?.avatar_url ? (
+                            <Image src={rev.profiles.avatar_url} alt="" width={56} height={56} className="h-full w-full object-cover" />
+                          ) : (
+                            rev.profiles?.display_name?.[0] ?? "?"
                           )}
                         </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-[15px] font-semibold text-s-ink">
+                            {rev.profiles?.display_name ?? "Anonym"}
+                          </div>
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-3">
+                            <span>
+                              {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                            </span>
+                            {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
+                              <span className="flex items-center gap-1 text-s-accent">
+                                <MessageSquare size={13} />
+                                {t("salonReplied")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
+                      {flaggingReviewId !== rev.id && (
+                        <button
+                          onClick={() => handleFlagReview(rev.id)}
+                          aria-label={t("flagReview")}
+                          title={t("flagReview")}
+                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
+                        >
+                          <Flag size={15} aria-hidden />
+                        </button>
+                      )}
                     </div>
 
-                    {/* Stars on their own line below the header (Fresha, ~16px) */}
-                    <div className="mt-3">
+                    {/* Measured Fresha rhythm: header→stars 14px, stars→text 16px */}
+                    <div className="mt-3.5">
                       <Stars rating={rev.rating} size="md" />
                     </div>
 
                     {displayText && (
-                      <p className="mt-2.5 text-[14px] leading-relaxed text-s-ink-2">
+                      <p className="mt-4 text-[14px] leading-relaxed text-s-ink-2">
                         {displayText}
                         {needsTruncation && (
                           <button
@@ -299,17 +312,10 @@ export default function SalonReviews({
                       </p>
                     )}
 
-                    {/* Flag Review */}
-                    <div className="mt-2 flex justify-end">
-                      {flaggingReviewId === rev.id ? (
-                        <div
-                          className="w-full rounded-[12px] p-3 mt-1"
-                          style={{
-                            background: "rgba(255,255,255,.70)",
-                            backdropFilter: "blur(12px)",
-                            border: "1px solid rgba(27, 77, 27,.15)",
-                          }}
-                        >
+                    {/* Flag form — only while flagging (the icon lives in the header) */}
+                    {flaggingReviewId === rev.id && (
+                      <div className="mt-3">
+                        <div className="w-full rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
                           {flagSuccess ? (
                             <p className="text-xs text-s-success font-heading py-1">
                               ✓ {t("flagSuccess")}
@@ -348,17 +354,8 @@ export default function SalonReviews({
                             </>
                           )}
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => handleFlagReview(rev.id)}
-                          aria-label={t("flagReview")}
-                          title={t("flagReview")}
-                          className="grid h-8 w-8 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2"
-                        >
-                          <Flag size={15} aria-hidden />
-                        </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Review photos */}
                     {rev.review_photos && rev.review_photos.length > 0 && (
