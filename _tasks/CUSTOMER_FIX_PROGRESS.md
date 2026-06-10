@@ -58,8 +58,9 @@ Verdict per item after grepping the real app (the #13 check saved one dup; this 
 - [ ] #4 notifications panel → **HALF-BUILT, not fabricated (corrected).** Real `notifications` table exists +
   22 event types write to it (verified live, 0 rows in dev). Missing only the READ UI (panel + list endpoint +
   mark-read) and the bell entry. Buildable for real later — NOT in this batch.
-- [ ] #9 recently-viewed page → hook (`useRecentlyViewed.ts`) + homepage rail exist; no dedicated route. Links now → /search.
-  DECISION (shown to user): build the dedicated page (`recently-viewed-page.html`) or keep the /search redirect.
+- [x] #9 recently-viewed page → **DONE** (`c563215d3`). New `/[locale]/recently-viewed` built from the mockup;
+  slugs from localStorage → live rows via GET /api/salons/by-slugs (real rating/reviews/photo/address, no fake
+  price). Homepage rail "Alle entdecken" → here when there's history. Verified live (3 rows).
 - council redesigns (mockups exist, separate track): `pdp-hero`, `reviews-distribution`, `service-grouping`, `stylist-cards`, `confirmation-moment`, `haarprofil`
 
 ## 🔁 DUPLICATION — RESOLVED (`068a4e5ca`, 2026-06-10)
