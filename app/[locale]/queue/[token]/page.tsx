@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import {
   Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
-  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket,
+  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket, HelpCircle, Send,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
@@ -41,10 +41,10 @@ interface QueueStatus {
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
-  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
-  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
-  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket-Nr.", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket no.", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
+  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au salon.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le salon", fbSend: "Envoyer", skip2: "Passer" },
+  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
 };
 
 type NodeState = "done" | "current" | "future";
@@ -53,6 +53,7 @@ export default function QueueTrackingPage() {
   const params = useParams<{ token: string }>()!;
   const token = params?.token;
   const locale = useLocale();
+  const router = useRouter();
   const l = COPY[locale] ?? COPY.de;
 
   const [data, setData] = useState<QueueStatus | null>(null);
@@ -62,6 +63,29 @@ export default function QueueTrackingPage() {
   const [cancelling, setCancelling] = useState(false);
   const dataRef = useRef<QueueStatus | null>(null);
   useEffect(() => { dataRef.current = data; }, [data]);
+
+  // Done-screen rating: stars → submit to the token-gated review endpoint → reveal tip (>=3)
+  // or feedback+help (<3). One write per visit (reviewSentRef). High path submits on tap; low
+  // path submits on "Feedback senden"/skip so the typed comment is included.
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const ratingRef = useRef(0); // latest rating, read by the exit actions (avoids stale-closure / wrong-rating sends)
+  const reviewSentRef = useRef(false);
+  const sendReview = useCallback(async (n: number, withComment: boolean) => {
+    if (reviewSentRef.current || !token) return;
+    reviewSentRef.current = true;
+    try {
+      await fetch("/api/walkin/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true, // survive the navigation that follows "Feedback senden" / skip
+        body: JSON.stringify({ token, rating: n, comment: withComment && feedback.trim() ? feedback.trim() : undefined }),
+      });
+    } catch (e) {
+      console.error("[queue-track] review submit failed:", e);
+      reviewSentRef.current = false;
+    }
+  }, [token, feedback]);
 
   const fetchStatus = useCallback(async () => {
     if (!token) return;
@@ -155,37 +179,97 @@ export default function QueueTrackingPage() {
   const isLive = isWaiting || isUp;
   const almost = isWaiting && data.aheadCount <= 1;
 
-  // ---- Done: the success moment MERGED with the tip flow on one screen ----
-  // Reuses the real Stripe-wired <TipFlow> inline under a green success peak (owner-approved
-  // walkin-done-tip mockup), replacing the old "Fertig danke" + separate tip sheet.
+  // ---- Done: rate (stars) → then tip (>=3) OR feedback+help (<3), one smooth screen ----
+  // Owner-approved walkin-rate-tip: capture a per-staff rating on every visit (feeds the
+  // token-gated /api/walkin/review), prime tipping for happy customers, and route unhappy
+  // ones to feedback + help instead of a tip prompt. Tip reuses the real Stripe <TipFlow>.
   if (isDone) {
     const tipRecipient = data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur");
+    // Don't submit on tap (a 5→2 re-tap would otherwise lock a wrong rating). Track the latest;
+    // the review is sent once at the exit action below, reading ratingRef.
+    const onRate = (n: number) => { setRating(n); ratingRef.current = n; };
+    const exitHome = async (withComment: boolean) => { await sendReview(ratingRef.current, withComment); router.push(`/${locale}`); };
+    const senti = [l.r1, l.r2, l.r3, l.r4, l.r5];
+    const sentiColor = rating >= 4 ? "text-s-success" : rating === 3 ? "text-s-ink-2" : "text-s-warning-text";
     return (
       <div className="flex min-h-screen flex-col bg-white">
         <div className="flex flex-1 flex-col items-center px-5 pb-8 pt-12">
-          {/* success peak (green = the moment of delight, then tip below) */}
-          <div className="flex h-[66px] w-[66px] items-center justify-center rounded-full bg-s-success text-white shadow-[0_8px_20px_rgba(22,163,74,.32)]">
-            <Check size={32} strokeWidth={3} />
+          {/* success peak */}
+          <div className="flex h-[58px] w-[58px] items-center justify-center rounded-full bg-s-success text-white shadow-[0_8px_20px_rgba(22,163,74,.32)]">
+            <Check size={28} strokeWidth={3} />
           </div>
-          <h1 className="mt-4 font-heading text-[26px] font-bold tracking-[-.02em] text-s-ink">{l.done}</h1>
-          <p className="mt-1.5 max-w-[20rem] text-center text-[14px] leading-[1.45] text-s-ink-2">{l.doneSub}</p>
+          <h1 className="mt-3.5 font-heading text-[24px] font-bold tracking-[-.02em] text-s-ink">{l.done}</h1>
 
-          {/* inline tip flow (real component: presets + Stripe card + blue send + its own 'Danke!') */}
-          <div className="mt-6 w-full max-w-sm overflow-hidden rounded-[22px] border border-s-border bg-white shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
-            <TipFlow
-              recipientName={tipRecipient}
-              recipientPhoto={data.recipientPhoto}
-              recipientRating={data.recipientRating}
-              recipientReviewCount={data.recipientReviewCount}
-              contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
-              locale={locale}
-              createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
-            />
+          {/* barber chip + rate prompt */}
+          {data.recipientName && (
+            <div className="mt-3.5 flex items-center gap-2 rounded-full bg-s-bg-sunken py-1.5 pl-1.5 pr-3.5">
+              {data.recipientPhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={data.recipientPhoto} alt="" className="h-[30px] w-[30px] rounded-full object-cover" />
+              ) : (
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-s-ink-2"><Scissors size={15} /></span>
+              )}
+              <span className="font-heading text-[14px] font-bold text-s-ink">{data.recipientName}</span>
+            </div>
+          )}
+          <p className="mt-4 text-[14px] text-s-ink-2">{l.ask}</p>
+
+          {/* interactive stars */}
+          <div className="mt-3 flex gap-2">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" onClick={() => onRate(n)} aria-label={`${n} ${n === 1 ? "Stern" : "Sterne"}`} className="p-1 transition-transform active:scale-90">
+                <Star size={38} className={n <= rating ? "fill-s-star text-s-star" : "fill-s-border text-s-border"} />
+              </button>
+            ))}
           </div>
+          {rating > 0 && <div className={`mt-3 font-heading text-[16px] font-bold ${sentiColor}`}>{senti[rating - 1]}</div>}
+          {rating === 0 && <p className="mt-2.5 text-[12.5px] text-s-ink-3">{locale === "en" ? "Tap to rate" : locale === "fr" ? "Touchez pour noter" : locale === "it" ? "Tocca per votare" : "Tippe zum Bewerten"}</p>}
 
-          <Link href={`/${locale}`} className="mt-4 text-[13.5px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2">
-            {l.noTip}
-          </Link>
+          {/* >=3 → tip (reuses the real Stripe-wired TipFlow) */}
+          {rating >= 3 && (
+            <>
+              <div className="mt-6 w-full max-w-sm overflow-hidden rounded-[22px] border border-s-border bg-white shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
+                <TipFlow
+                  recipientName={tipRecipient}
+                  recipientPhoto={data.recipientPhoto}
+                  recipientRating={data.recipientRating}
+                  recipientReviewCount={data.recipientReviewCount}
+                  contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
+                  locale={locale}
+                  createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
+                  onClose={() => { void sendReview(ratingRef.current, false); router.push(`/${locale}`); }}
+                />
+              </div>
+              <button type="button" onClick={() => exitHome(false)} className="mt-4 text-[13.5px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2">{l.noTip}</button>
+            </>
+          )}
+
+          {/* <3 → feedback + help instead of a tip ask */}
+          {rating > 0 && rating < 3 && (
+            <>
+              <div className="mt-6 w-full max-w-sm rounded-[22px] border border-s-border bg-white p-[18px] shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
+                <div className="font-heading text-[16px] font-bold text-s-ink">{l.lowTitle}</div>
+                <div className="mt-1 text-[13px] leading-[1.4] text-s-ink-2">{l.lowSub}</div>
+                <textarea
+                  value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={l.fbPlaceholder}
+                  className="mt-3 min-h-[74px] w-full resize-none rounded-[14px] border border-s-border bg-s-bg-sunken p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
+                />
+                {data.salonSlug && (
+                  <Link href={`/${locale}/salon/${data.salonSlug}`} className="mt-3 flex items-center gap-3 rounded-[14px] border border-s-border p-3 transition-transform active:scale-[0.98]">
+                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[9px] bg-s-accent-pale text-s-accent"><HelpCircle size={19} /></span>
+                    <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-3">{l.helpSub}</div></div>
+                    <ChevronRight size={18} className="text-s-ink-3" />
+                  </Link>
+                )}
+              </div>
+              <div className="mt-5 w-full max-w-sm">
+                <button type="button" onClick={() => exitHome(true)} className="flex w-full items-center justify-center gap-2 rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
+                  <Send size={17} /> {l.fbSend}
+                </button>
+                <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-3">{l.skip2}</button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
