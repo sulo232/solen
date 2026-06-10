@@ -5867,5 +5867,15 @@
     "save": "Enregistrer",
     "saved": "Enregistré",
     "saveError": "Échec de l’enregistrement. Veuillez réessayer."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "non lues",
+    "markAll": "Tout marquer lu",
+    "today": "Aujourd’hui",
+    "earlier": "Plus tôt",
+    "unreadDot": "Non lue",
+    "emptyTitle": "Aucune notification",
+    "emptyBody": "Les mises à jour de vos réservations, remboursements et avis apparaissent ici."
   }
 }

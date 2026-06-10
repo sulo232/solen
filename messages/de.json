@@ -5894,5 +5894,15 @@
     "save": "Speichern",
     "saved": "Gespeichert",
     "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "unread": "ungelesen",
+    "markAll": "Alle gelesen",
+    "today": "Heute",
+    "earlier": "Früher",
+    "unreadDot": "Ungelesen",
+    "emptyTitle": "Keine Benachrichtigungen",
+    "emptyBody": "Updates zu deinen Buchungen, Erstattungen und Bewertungen erscheinen hier."
   }
 }

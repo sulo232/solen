@@ -5882,5 +5882,15 @@
     "save": "Save",
     "saved": "Saved",
     "saveError": "Saving failed. Please try again."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "markAll": "Mark all read",
+    "today": "Today",
+    "earlier": "Earlier",
+    "unreadDot": "Unread",
+    "emptyTitle": "No notifications",
+    "emptyBody": "Updates about your bookings, refunds and reviews show up here."
   }
 }

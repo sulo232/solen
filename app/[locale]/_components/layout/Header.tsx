@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { Session } from "@supabase/supabase-js";
 import MobileMenu from "./MobileMenu";
+import NotificationBell from "./NotificationBell";
 import DesktopCitySelector from "./DesktopCitySelector";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
@@ -687,10 +688,11 @@ export default function Header({ locale }: { locale: string }) {
               V3-D171 (2026-05-26): also fades out when menu opens (same
               pattern as Solen logo) — only the X close button remains
               visible while the menu is open. */}
-          {/* V3-D (2026-06-10): notification Bell REMOVED — it was a dead control
-              site-wide (empty onClick / "TODO: open notifications panel"), i.e. a
-              dead-click on every page. Restore this button when the notifications
-              panel + data source actually ship (audit mockup gap #4). */}
+          {/* V3-D (2026-06-11): notification Bell RESTORED — the customer panel
+              (/notifications) + data source (/api/profile/notifications over the real
+              notifications table) now exist. Logged-out renders nothing (no dead control,
+              the reason it was removed 2026-06-10). [Bell] [Menu] rhythm per V3-D167. */}
+          <NotificationBell hidden={menuOpen} />
           {/* V3-D155 (2026-05-25): mobile map icon removed — the Karte tile
               in MobileCategoriesRow ("Für dich" 3×2 grid, position 6) now
               serves the same entry point, so the header icon was redundant. */}

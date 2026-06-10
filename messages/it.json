@@ -5856,5 +5856,15 @@
     "save": "Salva",
     "saved": "Salvato",
     "saveError": "Salvataggio non riuscito. Riprova."
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "unread": "non lette",
+    "markAll": "Segna tutte come lette",
+    "today": "Oggi",
+    "earlier": "Prima",
+    "unreadDot": "Non letta",
+    "emptyTitle": "Nessuna notifica",
+    "emptyBody": "Gli aggiornamenti su prenotazioni, rimborsi e recensioni compaiono qui."
   }
 }
