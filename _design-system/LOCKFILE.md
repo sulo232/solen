@@ -154,7 +154,7 @@ Blue is the interactivity layer: allowed (and expected) on anything tappable, **
 | `text-s-accent` on NON-interactive emphasis (a word that is not a link) | `text-s-ink` + bold weight — blue means tappable, not emphasis (v2 rule 2) |
 | `text-s-accent` on hero accent span | `text-s-ink` (single word can use weight contrast instead) |
 | `bg-s-accent-pale text-s-accent` pill | Either `bg-white text-s-accent` OR `bg-s-accent-pale text-s-ink` — never both blue |
-| `bg-s-accent` step circle | `bg-s-ink text-white` |
+| `bg-s-accent` step circle (blue is banned on steppers) | the §13.2 recipe: done = `bg-s-success` fill, current = green ring (`inset 0 0 0 3px #16A34A` on white), upcoming = `bg-s-bg-sunken` |
 | `text-s-accent` decorative dot / icon tint | `text-s-ink-3` or `text-s-success` (if completion-coded) |
 | `border-s-accent` on resting card | `border-s-border` |
 
@@ -1105,10 +1105,11 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 | State | Disc | Glyph | Label |
 |---|---|---|---|
 | **Done** (completed step) | `bg-s-success` #16A34A, 36px | white `check`, 17px, stroke 2.8 | `text-s-ink-3`, 11px, weight 600 |
-| **Current** (active step) | `bg-s-ink` #0A0A0A, 36px | white numeral OR weighted step-icon, 14–17px | `text-s-ink`, 11px, weight 700 |
+| **Current** (active step) | white disc, 36px, **inset 3px green ring** (`box-shadow: inset 0 0 0 3px #16A34A`; inset keeps the 36px box aligned) | green `#16A34A` numeral OR weighted step-icon, 14-17px | `text-s-ink`, 11px, weight 700 |
 | **Upcoming** (future step) | `bg-s-bg-sunken` #F4F4F5, 36px | `text-s-ink-3` numeral OR thin step-icon | `text-s-ink-3`, 11px, weight 600 |
 
-- **Done = GREEN, not ink.** Owner: _"the black check mark, isn't it green, does it have to be a check mark."_ Completed is a SUCCESS state → it borrows the semantic green (#16A34A, the reconciled normal green — NOT deep #15803D, reverted 2026-06-10). The CURRENT step stays ink (it is chrome, the "you are here" pointer, never blue — §1.5 forbidden: `bg-s-accent` step circle → `bg-s-ink`). So a tracker is: green-green-ink-grey, never blue.
+- **Done = GREEN (solid fill + white check).** Owner: _"the black check mark, isn't it green."_ Completed is a SUCCESS state → solid `#16A34A` (the reconciled normal green, NOT deep #15803D, reverted 2026-06-10).
+- **Current = GREEN RING, not black, not a solid fill (V3-D470b, owner pick B 2026-06-10).** White disc + a 3px inset `#16A34A` ring + green glyph. The earlier "current = ink/pitch-black" was rejected as TOO HARSH against the green done discs (owner: _"i dont like the pitch black, like N26, i like the greens, contrast too harsh"_). So the stepper is now a **single green family**: done = filled green, current = ring green, upcoming = grey. done-vs-current reads as **filled-vs-ring** (no black, no blue). A tracker reads: green(filled) → green(filled) → green(ring) → grey. (This supersedes the original §13 "current = neutral ink pointer" — the owner chose green-family cohesion + softness over a neutral pointer. Blue stays banned on every node.)
 - **Connector line:** `bg-s-border` #E4E4E7, 2px, `border-radius: 2px`, vertically centered on the discs (`margin-top: 17px` for a 36px disc). The done-portion MAY render green/ink to show progress; the future-portion stays grey. No dotted unless the gap is genuinely conditional (Minna Bank uses dotted for "not yet reachable").
 - **Distinct icon per node** when the steps have real identity (the DoorDash pattern the owner liked): e.g. walk-in = `check` (Bezahlt) → `users` (In der Schlange) → `clock` (Fast dran) → `armchair`/`scissors` (Dran). **Only the current node's icon is weighted**; done shows the green check, upcoming shows the thin glyph. No repeated checkmarks across nodes (only DONE nodes get a check). For a generic numbered flow, use numerals (1·2·3·4) instead of distinct icons.
 
@@ -1140,7 +1141,7 @@ Owner 2026-06-10 rejected the code font hard: _"the font is not correct about �
 - a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
 - a decorative row icon is `text-s-accent` blue (blue is only for an icon that IS the tap target);
 - a done/completed step or a success disc is ink/black instead of green `#16A34A`;
-- a current step circle is blue (`bg-s-accent`) instead of ink;
+- a current step circle is a solid fill (black/ink OR solid green) or blue, instead of a **green ring** on white (`box-shadow: inset 0 0 0 3px #16A34A`) — V3-D470b;
 - a screen shows two progress indicators (a stepper AND a bar);
 - a code (`W-047`, `GIFT-7K2M`) renders in JetBrains Mono / any monospace;
 - a `·` middot separates meta (banned — §0.1 / §6 service-row format).

@@ -38,11 +38,11 @@ Derived per-node state: index `< current` → **done**, `=== current` → **curr
 | State | Disc | Glyph | Label |
 |---|---|---|---|
 | **Done** | `bg-s-success` #16A34A, 36px circle | white `Check`, 17px, stroke 2.8 | `text-s-ink-3`, 11px, weight 600 |
-| **Current** | `bg-s-ink` #0A0A0A, 36px | white numeral OR weighted step icon | `text-s-ink`, 11px, weight 700 |
+| **Current** | white disc, 36px, **inset 3px green ring** (`box-shadow: inset 0 0 0 3px #16A34A`) | green `#16A34A` numeral OR weighted step icon | `text-s-ink`, 11px, weight 700 |
 | **Upcoming** | `bg-s-bg-sunken` #F4F4F5, 36px | `text-s-ink-3` numeral OR thin icon | `text-s-ink-3`, 11px, weight 600 |
 
-- **Done = GREEN, never ink.** "The black check mark, isn't it green" — completed is a SUCCESS state (#16A34A, the reconciled normal green; deep #15803D reverted 2026-06-10). Same green as `SuccessMark`.
-- **Current = INK, never blue.** The active node is the "you are here" chrome pointer. Per LOCKFILE §1.5 forbidden list, a `bg-s-accent` step circle sweeps to `bg-s-ink`. So a tracker reads **green → green → ink → grey**, with blue nowhere on it.
+- **Done = GREEN (solid fill + white check).** "The black check mark, isn't it green" — completed is a SUCCESS state (#16A34A, the reconciled normal green; deep #15803D reverted 2026-06-10). Same green as `SuccessMark`.
+- **Current = GREEN RING, never black/solid-fill, never blue (V3-D470b, owner pick B 2026-06-10).** White disc + 3px inset `#16A34A` ring + green glyph. The earlier "current = ink" was rejected as too harsh against the green done discs (owner: _"i dont like the pitch black, like N26, i like the greens, contrast too harsh"_). The stepper is now one green family: done = filled green, current = ring green, upcoming = grey, so done-vs-current reads as **filled-vs-ring**. A tracker reads **green(filled) → green(filled) → green(ring) → grey** — no black, no blue.
 - **Connector:** `bg-s-border` #E4E4E7, 2px, `border-radius: 2px`, vertically centered on the discs (`margin-top: 17px` for a 36px disc). Done-portion MAY render green/ink; future-portion grey.
 - **Icons:** distinct Lucide glyph per node when steps have identity (walk-in: `Check` → `Users` → `Clock` → `Armchair`/`Scissors`). Only the CURRENT node's icon is weighted; done shows the green check; upcoming shows a thin glyph. **No repeated checkmarks** — only DONE nodes get a check. Generic numbered flows use numerals (1·2·3·4).
 
