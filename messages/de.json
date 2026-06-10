@@ -886,6 +886,10 @@
     "stepConfirm": "Bestätigen",
     "stepPayment": "Zahlung",
     "bookingAt": "Termin bei {salon}",
+    "emptyTitle": "Online-Buchung nicht verfügbar",
+    "emptyBody": "Dieser Salon nimmt Termine telefonisch oder direkt vor Ort entgegen. Schau auf der Salon-Seite vorbei oder ruf kurz an.",
+    "emptyToSalon": "Zum Salon",
+    "emptyCallSalon": "Salon anrufen",
     "cart": {
       "title": "Warenkorb",
       "minutes": "Min",

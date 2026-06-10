@@ -860,6 +860,10 @@
     "stepConfirm": "Confirmer",
     "stepPayment": "Paiement",
     "bookingAt": "Réservez votre rendez-vous chez {salon}",
+    "emptyTitle": "Réservation en ligne indisponible",
+    "emptyBody": "Ce salon prend les rendez-vous par téléphone ou sur place. Passez sur la page du salon ou appelez-le rapidement.",
+    "emptyToSalon": "Voir le salon",
+    "emptyCallSalon": "Appeler le salon",
     "cart": {
       "title": "Panier",
       "minutes": "Min",

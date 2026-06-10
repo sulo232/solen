@@ -842,6 +842,10 @@
     "stepConfirm": "Conferma",
     "stepPayment": "Pagamento",
     "bookingAt": "Prenota il tuo appuntamento presso {salon}",
+    "emptyTitle": "Prenotazione online non disponibile",
+    "emptyBody": "Questo salone accetta appuntamenti per telefono o di persona. Visita la pagina del salone o fai una breve chiamata.",
+    "emptyToSalon": "Vai al salone",
+    "emptyCallSalon": "Chiama il salone",
     "cart": {
       "title": "Carrello",
       "minutes": "Min",

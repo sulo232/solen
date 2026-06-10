@@ -876,6 +876,10 @@
     "stepConfirm": "Confirm",
     "stepPayment": "Payment",
     "bookingAt": "Book your appointment at {salon}",
+    "emptyTitle": "Online booking unavailable",
+    "emptyBody": "This salon takes appointments by phone or in person. Visit the salon page or give them a quick call.",
+    "emptyToSalon": "View salon",
+    "emptyCallSalon": "Call salon",
     "cart": {
       "title": "Shopping Cart",
       "minutes": "Min",

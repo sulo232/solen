@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient, getSessionUser } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
-import { BookingWizard } from '@/components-legacy/booking';
+import { BookingWizard, EmptyServicesState } from '@/components-legacy/booking';
 import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
 import type { StaffMember, Salon } from '@/lib/types';
 
@@ -44,7 +44,7 @@ export default async function BookingSalonPage({
     .select(
       `id, name, slug, description_de, description_en, address, latitude, longitude,
       cover_photo_url, average_rating, review_count, cancellation_window_hours,
-      payment_mode, deposit_percent`
+      payment_mode, deposit_percent, phone`
     )
     .eq('slug', slug)
     .eq('is_active', true)
@@ -164,6 +164,11 @@ export default async function BookingSalonPage({
       ).data ?? []
     : [];
 
+  // No bookable services (onboarded-but-empty, or all deactivated) → the wizard would dump
+  // the user on a dead step 1. Show the empty state with real paths forward instead (audit #8).
+  const hasServices = Array.isArray(services) && services.length > 0;
+  const salonAny = salon as unknown as { phone: string | null; cover_photo_url: string | null; average_rating: number | null; review_count: number | null; address: string | null };
+
   return (
     <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
       <div className="min-h-screen bg-[--base]">
@@ -179,15 +184,28 @@ export default async function BookingSalonPage({
 
         {/* Main content */}
         <main className="max-w-2xl mx-auto px-4 py-6">
-          <BookingWizard
-            services={services}
-            staffList={staff}
-            salon={salon as unknown as Salon}
-            staffServices={staffServices}
-            serviceAddons={serviceAddons}
-            serviceOptions={serviceOptions}
-            isLoggedIn={isLoggedIn}
-          />
+          {hasServices ? (
+            <BookingWizard
+              services={services}
+              staffList={staff}
+              salon={salon as unknown as Salon}
+              staffServices={staffServices}
+              serviceAddons={serviceAddons}
+              serviceOptions={serviceOptions}
+              isLoggedIn={isLoggedIn}
+            />
+          ) : (
+            <EmptyServicesState
+              locale={locale}
+              slug={slug}
+              salonName={salon.name}
+              coverPhotoUrl={salonAny.cover_photo_url}
+              rating={salonAny.average_rating}
+              reviewCount={salonAny.review_count}
+              address={salonAny.address}
+              phone={salonAny.phone}
+            />
+          )}
         </main>
       </div>
     </BookingProvider>

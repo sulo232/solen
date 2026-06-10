@@ -8,3 +8,4 @@ export { default as GuestBookingForm } from './GuestBookingForm';
 export { default as PackageRedeemBanner } from './PackageRedeemBanner';
 export { default as BookingCard } from './BookingCard';
 export { default as BookingsList } from './BookingsList';
+export { default as EmptyServicesState } from './EmptyServicesState';
