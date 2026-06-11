@@ -139,24 +139,38 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 **v2 reversal (2026-06-09, supersedes the V3-D460 one-link carve-out):** ALL text links and see-all/view-all links are `text-s-accent` — blue marks tappable, used generously (no one-per-screen cap). Secondary/ghost buttons are blue too (blue-ghost recipe). GUARDRAIL (v2 rule 2): blue stays OFF non-interactive text — a blue word must be a real link, never emphasis; eyebrows / prices / body / headings stay ink/grey. The one primary commit button stays ink-filled.
 
-### ✓ ALLOWED accent applications (v2 — BLUE = INTERACTIVITY)
+### ✓ ALLOWED accent applications (v3 BALANCE, 2026-06-11 — council-ruled, supersedes the v2 "generous" model)
 
-Blue is the interactivity layer: allowed (and expected) on anything tappable, **no per-screen cap.** The V3-D460 "one bare manage-link per screen" carve-out is SUPERSEDED — all links are blue now.
+**Philosophy (Opus council, owner-triggered): BLUE IS THE HYPERLINK COLOR, NOT THE CLICKABILITY COLOR.**
+Nearly everything on a dense booking screen is tappable — if blue marks "tappable", blue eats the chrome
+(the exact owner complaint, twice). Affordance (chevron / weight / position / underline) signals tappable
+universally; blue is reserved for text that would read as an `<a href>` inside prose. The v2 "generous,
+no cap" model is RETIRED (it contradicted the 2026-06-10 sparse owner lock in CANON §0 / memory — this
+rewrite resolves that contradiction).
 
-| Surface | Recipe | Notes |
+**Squint test (per screen):** zoom out — blue must disappear into the prose. Soft ceiling ~3 blue strings
+per viewport on content screens, 0–1 on forms/full-page states. If one blue string repeats inside the
+same component, or 3+ blues line up vertically ("blue staircase"), demote the weakest to ink.
+
+| Surface | Verdict | Recipe |
 |---|---|---|
-| Text link + see-all / view-all link | `text-s-accent`, `hover:underline` | every tappable link, no per-screen cap |
-| Hover / pressed on ANY interactive blue (DS-6, 2026-06-11) | `hover:text-s-accent-deep active:text-s-accent-deep` (#1E54B7, 150ms) | the one darkening step; applies to links, blue chips, inline actions, review counts |
-| Active tab / segmented state | `text-s-accent` (+ optional `bg-s-accent-pale` or a thin blue underline/indicator) | the active interactive choice |
-| Secondary / ghost button | blue-ghost `bg-white border-s-accent text-s-accent` | secondary actions; never an ink-filled 2nd primary |
-| Tappable list-row / inline action label | `text-s-accent` | Buchen / Wegbeschreibung / Verwalten |
-| Interactive icon tint (icon IS the tap target) | `text-s-accent` | NOT a decorative icon inside a row (that stays ink — see drift A9 boundary) |
-| `:focus-visible` ring (any focusable element) | `box-shadow: 0 0 0 2px white inset, 0 0 0 2px var(--s-accent)` | Double-ring per Base Web `accent` token |
-| Text link focus-visible | `outline: 3px solid var(--s-accent); outline-offset: 1px` | Per Base Web link-focus pattern |
-| `<Spinner>` arc (loading) | Track grey, arc `var(--s-accent)` | Matches Base Web `<Spinner kind="primary">` |
-| Form input focus border | `border-color: var(--s-accent); box-shadow: 0 0 0 2px var(--s-accent-pale)` | Inline + textarea + select |
+| Review counts "(12)" / small tappable metadata in text | **BLUE** | `text-s-accent` semibold, `hover:text-s-accent-deep` |
+| Inline "Mehr lesen" expander (owner-ordered) | **BLUE** | inline, semibold |
+| Inline links inside body sentences | **BLUE** | the canonical case; underline on hover |
+| "Passwort vergessen?" (the ONE auth helper) | **BLUE** | only blue string on the form |
+| Ändern jump-links in checkout summary | **BLUE** (owner-approved exception to no-repeat) | right-aligned 13px semibold |
+| Bare inline action label attached to data (Wegbeschreibung next to an address, as TEXT not a button) | **BLUE** | text-as-link; if given button geometry → ink |
+| See-all / Alle ansehen section links | **INK** + chevron | color off, affordance on |
+| Skip / Später / tertiary under a primary CTA | **INK-2/3** lighter weight, centered | never blue |
+| "Zur Startseite" / "Stattdessen anmelden" under CTAs (404/success/auth) | **INK** + underline | classic calm pattern |
+| Secondary / ghost buttons | **INK** outline (never blue-filled, never blue-ghost) | CONTROL_ELEVATION B |
+| Feature-row icon tints (gift, voucher, …) | **INK** on `bg-s-bg-sunken` | icons are content, not actions |
+| `:focus-visible` ring / `<Spinner>` arc / form-input focus | **BLUE** (locked system states) | unchanged |
+| Stepper discs (§13.2) / walk-in LIVE pill | **BLUE** (locked progress language) | unchanged |
 
-**GUARDRAIL (v2 rule 2):** blue stays OFF non-interactive text — eyebrows, body, prices, headings stay ink/grey. Drift rule A9 is re-scoped to flag blue only on non-interactive text + a blue-filled primary (NOT on the interactive surfaces above).
+**GUARDRAIL:** blue stays OFF non-interactive text (eyebrows, body, prices, headings) AND off
+button-geometry elements (anything padded / right-aligned / centered-under-a-CTA / arrowed). Drift A9
+flags blue on non-interactive text + blue-filled primaries; the squint test catches the rest.
 
 ### ✗ FORBIDDEN — sweep to ink/semantic instead
 

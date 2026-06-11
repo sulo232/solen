@@ -170,7 +170,12 @@ If owner says it was login, redo login as iteration-of-live instead.
 1. Think as you go; when a live feature is missing from a mockup, FLAG + ADD a frame, never rewrite the file.
 2. Measure with the browser, never guess from screenshots/crops.
 3. Back/X buttons in mockups must navigate (history.back()).
-4. All text links = DS blue, no grey/ink-underline links.
+4. ~~All text links = DS blue~~ SUPERSEDED by round-3 + council v3 (2026-06-11): blue is the
+   HYPERLINK color, not the clickability color. Blue = review counts, inline "Mehr lesen",
+   inline body links, ONE "Passwort vergessen?", checkout "Ändern" jump-links. INK = See-all
+   (+chevron), Skip/Später/Back-home/Log-in-instead (ink-2 + underline), secondary buttons,
+   feature-row icon tints. Squint test: ~3 blue strings max per viewport, 0-1 on forms.
+   Canonical: LOCKFILE §1.5 v3.
 5. Error copy names the exact cause (now LOCKFILE §14.4).
 6. Frames must fit real iPhone viewports (kit media query handles it).
 7. Lean annotation text; no walls of words in mockup cards (notifications lesson).
@@ -246,4 +251,22 @@ recently-viewed (built this session, current), loyalty (ComingSoon primitive, fi
 LIVE BUGS FLAGGED from captures: packages price renders "24.000 CHF" for CHF 240 (de-CH formatting);
 last-minute carries a banned tracked eyebrow + decorative orange dot + uppercase chips; gift-card has
 tracked-uppercase EIGENER BETRAG/VORSCHAU buttons; register/lookup "Anmelden" links are ink-underline
-(should be DS blue). All queued for Phase-5 run 3.
+(~~should be DS blue~~ RESOLVED 2026-06-11 round-3: per council v3 these tertiary links stay
+ink-underline — live was already correct, no fix needed). Others queued for Phase-5 run 3.
+
+## 🔒 Owner ROUND 3 (2026-06-11) — NO-TOUCH locks + blue balance v3
+
+1. **DISCOVERY NO-TOUCH (permanent lock).** Do NOT touch the /entdecken discovery page, AND do
+   NOT touch the discovery section on the home page. Not structure, not treatment, not mockups
+   (13-discover.html frozen as-is). Exception: only if the owner asks BY NAME.
+2. **Duplication fear.** Owner is scared of duplicated artifacts. Audit result (2026-06-11):
+   (a) TWO SalonCard components exist — `components-legacy/SalonCard.tsx` (used by brand/[slug],
+   dashboard/settings, profile/favorites, account/saved) vs `homepage/SalonCard.tsx` (homepage
+   feeds). PRE-EXISTING, not created by this program. Flagged for a future consolidation wave,
+   NOT auto-deleted ("nothing gets deleted"). (b) globals.css 1E54B7 ×2 = the intentional
+   hover+active pair, not a dup. (c) Stray older mockup HTMLs at public/_mockups/ root
+   (account-messages, city-landing, design-language-v2, empty-states, reset-password, index) —
+   older artifacts, left in place pending owner call.
+3. **Blue balance v3 (council-ruled, supersedes the round-2 "all links blue" rule).** Philosophy:
+   "Blue is the HYPERLINK color, not the clickability color." Codified in LOCKFILE §1.5 v3;
+   mockups + shipped 404/error swept the same day.

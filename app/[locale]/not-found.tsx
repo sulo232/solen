@@ -52,7 +52,7 @@ export default function NotFound() {
           </Link>
           <Link
             href={`/${locale}`}
-            className="text-s-accent font-body text-[13.5px] font-semibold"
+            className="font-body text-[13.5px] font-semibold text-s-ink-2 underline underline-offset-2"
           >
             {t("404_home")}
           </Link>

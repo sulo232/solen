@@ -179,6 +179,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:
 .toast .lucide{width:15px;height:15px;color:#4ADE80}
 .linkblue{color:var(--blue);font-weight:600;text-decoration:none;font-size:13.5px;cursor:pointer}
 .linkblue:hover{color:var(--blue-deep)}
+.tert{color:var(--ink-2);font-weight:600;text-decoration:underline;text-underline-offset:2px;font-size:13.5px;cursor:pointer}
 .avatar{border-radius:999px;object-fit:cover;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
 
 /* iPhone fit (owner round-2): frames never exceed the real viewport */
