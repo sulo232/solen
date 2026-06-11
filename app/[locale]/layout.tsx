@@ -12,6 +12,7 @@ import { Toaster } from "./_components/primitives/Toast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
 import HideInBooking from "./_components/layout/HideInBooking";
+import OfflineBanner from "./_components/layout/OfflineBanner";
 // V3-D348 (tweak #3): CityTopBar retired — city control moved into the Header
 // as a single responsive "Basel" location pill (DesktopCitySelector). File kept on
 // disk for revert.
@@ -129,6 +130,8 @@ export default async function LocaleLayout({
         {/* V3-D195: primitives Toaster portal — the single mount for the
             toast.success()/toast.error() module-singleton API. */}
         <Toaster />
+        {/* Mockup 10 offline, as a connectivity banner (see OfflineBanner.md) */}
+        <OfflineBanner />
       </PostHogProvider>
     </NextIntlClientProvider>
     </MotionProvider>

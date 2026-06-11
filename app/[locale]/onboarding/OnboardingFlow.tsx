@@ -8,6 +8,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import {
   GENDER_OPTS, HAIR_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
@@ -119,11 +120,11 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
     ].slice(0, 4) as string[];
     return (
       <div className="flex flex-col items-center text-center pt-8">
-        <div className="grid place-items-center w-16 h-16 rounded-full mb-5 bg-s-success-bg text-s-success">
-          <Check size={32} aria-hidden />
-        </div>
-        <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-s-ink">Alles bereit</h1>
-        <p className="text-[15px] text-s-ink-2 mt-2 max-w-[300px] leading-[1.4]">Deine Solen-Startseite ist auf das zugeschnitten, was du gewählt hast.</p>
+        {/* 15 success moment (mockup 15, 2026-06-11): SuccessMark + staggered rise,
+            consistent with booking / walk-in / gift-card celebrations. */}
+        <SuccessMark size={58} className="mb-5" />
+        <h1 className="celebrate-rise text-[24px] font-semibold tracking-[-0.02em] text-s-ink" style={{ animationDelay: "0.46s" }}>Alles bereit</h1>
+        <p className="celebrate-rise text-[15px] text-s-ink-2 mt-2 max-w-[300px] leading-[1.4]" style={{ animationDelay: "0.56s" }}>Deine Solen-Startseite ist auf das zugeschnitten, was du gewählt hast.</p>
         {picks.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 mt-5">
             {picks.map((p) => (
