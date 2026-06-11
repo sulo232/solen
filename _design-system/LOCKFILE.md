@@ -13,7 +13,7 @@
 ## §0 — Hard rules (NEVER allowed)
 
 1. **No emoji.** Anywhere in code / files / UI / commits. `lucide-react` icons only. (Allowed typographic glyphs: `→` `★`. The `·` middot is BANNED as a meta-separator — owner repeated flag; use spacing/comma/connector word per §6 + §13.5. The `●` status dot is banned as decoration except the live-status carve-out in §0.11.)
-2. **Primary CTAs stay `bg-s-ink` (#0A0A0A)** — V3-D192-fix lock. Accent blue NEVER FILLS a primary action button (never a blue-filled primary, never two ink primaries). But blue IS used generously on every OTHER interactive affordance — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — per Design Language v2 rule 1 (§1.5). Blue stays OFF non-interactive text (eyebrows, body, prices, headings stay ink/grey). The one outcome/status-screen CTA exception is V3-D426.
+2. **Primary CTAs stay `bg-s-ink` (#0A0A0A)** — V3-D192-fix lock. Accent blue NEVER FILLS a primary action button (never a blue-filled primary, never two ink primaries). Blue is the HYPERLINK color, not the clickability color (v3 BALANCE, §1.5 — supersedes the v2 "generous on every interactive affordance" wording): blue lands on hyperlink-reading text only (review counts, inline body links, Mehr lesen, the one Passwort vergessen, Ändern jump-links); See-all / tertiary / secondary buttons / icon tints stay INK. Blue stays OFF non-interactive text (eyebrows, body, prices, headings stay ink/grey). The one outcome/status-screen CTA exception is V3-D426.
 3. **No category branches** in components — `if (category === 'X')` is forbidden. Same component renders for Coiffeur / Barber / Nails / Spa / Makeup / Waxing without conditionals. (Drift-checker rule B5.)
 4. **No new semantic hues invented.** Use the §3 universal-color table. Success=green / error=red / warning=amber / info=blue / rating=yellow / save=pink / urgency=burnt-amber / disabled=ink-3. Don't pick a "nice teal" for a status. (V3-D197.)
 5. **No `onClick={() => {}}` dead clicks.** Every interactive surface has a working handler OR uses `<ComingSoon>` wrapper.
@@ -55,7 +55,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 
 | Token | Hex | Usage |
 |---|---|---|
-| `s-accent.DEFAULT` | `#276EF1` | **v2 (2026-06-09): BLUE = INTERACTIVITY (supersedes the V3-D330 system-only narrowing).** Generous on interactive affordances — text links, see-all/view-all links, active tab/segmented states, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints — plus the system states it always had (focus-visible rings, `<Spinner>` arc, form-input focus). GUARDRAIL: OFF non-interactive text (body, prices, headings, eyebrows stay ink/grey); never FILLS a primary CTA. See §1.5. Hex collapsed to #276EF1 (DEFAULT = deep = bright, matches code + CANON). |
+| `s-accent.DEFAULT` | `#276EF1` | **v3 (2026-06-11, council): BLUE = THE HYPERLINK COLOR, not the clickability color (supersedes v2 "generous").** Lands ONLY on text that reads as an `<a href>` inside prose — review counts "(12)", inline body links, Mehr lesen, the one Passwort vergessen, checkout Ändern jump-links — plus locked system states (focus-visible rings, `<Spinner>` arc, form-input focus, §13.2 stepper discs). See-all / Skip / tertiary links / secondary buttons / icon tints = INK. Squint test ~3 blue strings per viewport, 0-1 on forms. GUARDRAIL: OFF non-interactive text; never FILLS a primary CTA. See §1.5 v3. Hex collapsed to #276EF1 (DEFAULT = deep = bright, matches code + CANON). |
 | `s-accent.deep` | `#1E54B7` | **DS-6 (2026-06-11, video-audit, owner-approved): the hover/pressed step for interactive blue.** Any blue text link / chip / inline action darkens to this on hover + active (150ms). Re-activated from the flattened alias; supersedes the old #185CE0 value (shown + approved on the ds-site mockup). NOT a second accent — never used at rest. |
 | `s-accent.bright` | `#276EF1` | The OLD royal #276EF1 preserved for places that need the punchier hit (large icons, hero accent moments). Use sparingly. |
 | `s-accent.pale` | `#EAEFFE` | Pale wash for selected-tab bg / focus glow. Unchanged. |
@@ -121,32 +121,37 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 ### §1.5.0 — THE COLOR MODEL (V3-D460, 2026-06-09, council + owner-approved) — read first
 
-**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a non-interactive area reads *dead* when it has no imagery, motion, or semantic colour — NOT because it lacks blue. **v2 (2026-06-09) reverses two things from the earlier V3-D460 model:** (a) blue is now the INTERACTIVITY colour, used generously on tappable affordances (links / tabs / secondary & ghost buttons / action labels / tappable rows); and (b) surfaces are WHITE-FIRST + COOL (white #FFFFFF, cool sunken #F4F4F5, cool hairline #E4E4E7) — the warm-cream "stone" foundation is DROPPED (rule 4). So life on a non-interactive area comes from imagery + motion + semantic colour on a clean cool surface, never from warm cream and never from painting blue on a non-tappable thing. Blue earns its place by marking interaction; adding blue to NON-interactive decoration to fake life remains the #1 colour mistake.
+**The root insight (resolves the "too dead-grey" ↔ "too much blue" oscillation):** a non-interactive area reads *dead* when it has no imagery, motion, or semantic colour — NOT because it lacks blue. Surfaces are WHITE-FIRST + COOL (white #FFFFFF, cool sunken #F4F4F5, cool hairline #E4E4E7) — the warm-cream "stone" foundation is DROPPED (rule 4). Life on a non-interactive area comes from imagery + motion + semantic colour on a clean cool surface, never from warm cream and never from painting blue on a non-tappable thing. **v3 (2026-06-11) scope for blue: the HYPERLINK colour** (~~v2's "generous interactivity colour" is retired~~ — it flooded the chrome). Adding blue to NON-interactive decoration to fake life remains the #1 colour mistake; the #2 is painting blue on tappable-but-not-hyperlink chrome (See-alls, secondaries, icon tints).
 
 **Where "life"/colour comes from, in priority order:**
 1. **Cool neutrals + whitespace** — the surface itself (white #FFFFFF default, cool sunken `#F4F4F5`, cool hairline `#E4E4E7`; v2 rule 4 reverses the V3-D460 warm #F8F5F2/#E8E4DF). The clean B&W base; whitespace + restraint carry *every* screen with zero accent.
 2. **Real photography** — salon photos. On any screen with a photo, the photo IS the colour. Keep adjacent UI neutral and let the image lead.
 3. **Semantic colour (Layer 3)** — green=paid/confirmed/open, yellow=rating, pink=saved, red=error, amber=warning. Colour ONLY where it carries meaning/state.
 4. **Motion** — the dynamic delight layer (SuccessMark, press feedback). Premium feel without a single hue.
-5. **Accent blue** — the INTERACTIVITY layer (v2 2026-06-09). Used generously wherever something is tappable (links, see-all, active tabs, secondary & ghost buttons, tappable rows, inline action labels, interactive icon tints) plus the system states (focus ring / spinner / input focus). NOT a last resort. Stays OFF non-interactive text/decoration.
+5. **Accent blue** — the HYPERLINK layer (v3 2026-06-11, supersedes the v2 "generous interactivity" framing). Reserved for text that reads as a hyperlink inside prose (review counts, inline body links, Mehr lesen, Passwort vergessen, Ändern jump-links) plus the system states (focus ring / spinner / input focus / stepper discs). Everything else tappable signals with AFFORDANCE (chevron / weight / position), in ink. Stays OFF non-interactive text/decoration.
 
 **Per-element decision rule** (ask in order, stop at first yes):
 1. Carries state/meaning? → semantic colour.
 2. Strong photo adjacent? → keep neutral, let the photo carry it.
 3. The one primary commit action? → ink fill (`bg-s-ink`).
 4. A system focus/loading state? → blue (ring / spinner / input focus).
-5. Secondary / ghost action buttons + inline action labels (Wegbeschreibung, Kalender hinzufügen, Buchen, Verwalten) + tappable row affordances → **BLUE** (blue-ghost outline `bg-white border-s-accent text-s-accent`, or plain `text-s-accent` link) per v2 rule 1, since they are tappable. Only the ONE primary commit button stays ink-filled. Steppers / icon controls sitting OVER a photo still follow CONTROL_ELEVATION (frosted glass). Genuinely non-interactive labels stay ink.
+5. Would this text read as an `<a href>` inside prose (review count, inline body link, Mehr lesen, the one form helper, Ändern jump-link)? → **BLUE** `text-s-accent`. Everything else tappable — secondary/ghost buttons, See-all, Skip/Später, tertiary under-CTA links, icon tints, tappable rows → **INK** with affordance (chevron / weight / position), per v3. Only the ONE primary commit button is ink-FILLED. Steppers / icon controls sitting OVER a photo still follow CONTROL_ELEVATION (frosted glass).
 
-**v2 reversal (2026-06-09, supersedes the V3-D460 one-link carve-out):** ALL text links and see-all/view-all links are `text-s-accent` — blue marks tappable, used generously (no one-per-screen cap). Secondary/ghost buttons are blue too (blue-ghost recipe). GUARDRAIL (v2 rule 2): blue stays OFF non-interactive text — a blue word must be a real link, never emphasis; eyebrows / prices / body / headings stay ink/grey. The one primary commit button stays ink-filled.
+~~v2 reversal (2026-06-09): ALL text links blue, generous, blue-ghost secondaries~~ **RETIRED by v3 BALANCE below (2026-06-11)** — the generous model produced the owner's "you made everything blue" rejection. Standing guardrail survives: blue stays OFF non-interactive text — a blue word must be a real link, never emphasis; eyebrows / prices / body / headings stay ink/grey. The one primary commit button stays ink-filled.
 
 ### ✓ ALLOWED accent applications (v3 BALANCE, 2026-06-11 — council-ruled, supersedes the v2 "generous" model)
 
 **Philosophy (Opus council, owner-triggered): BLUE IS THE HYPERLINK COLOR, NOT THE CLICKABILITY COLOR.**
 Nearly everything on a dense booking screen is tappable — if blue marks "tappable", blue eats the chrome
-(the exact owner complaint, twice). Affordance (chevron / weight / position / underline) signals tappable
+(the exact owner complaint, twice). Affordance (chevron / weight / position) signals tappable
 universally; blue is reserved for text that would read as an `<a href>` inside prose. The v2 "generous,
 no cap" model is RETIRED (it contradicted the 2026-06-10 sparse owner lock in CANON §0 / memory — this
 rewrite resolves that contradiction).
+
+**v3.1 (owner, 2026-06-11): NO UNDERLINES on ink links.** The ink-link affordance is weight
+(`font-semibold`) + the lighter `text-s-ink-2` shade + position (centered under a CTA / trailing a
+sentence), NEVER `underline` at rest. Hover may darken to `text-s-ink`. Blue inline links also sit
+bare at rest (no resting underline).
 
 **Squint test (per screen):** zoom out — blue must disappear into the prose. Soft ceiling ~3 blue strings
 per viewport on content screens, 0–1 on forms/full-page states. If one blue string repeats inside the
@@ -156,13 +161,13 @@ same component, or 3+ blues line up vertically ("blue staircase"), demote the we
 |---|---|---|
 | Review counts "(12)" / small tappable metadata in text | **BLUE** | `text-s-accent` semibold, `hover:text-s-accent-deep` |
 | Inline "Mehr lesen" expander (owner-ordered) | **BLUE** | inline, semibold |
-| Inline links inside body sentences | **BLUE** | the canonical case; underline on hover |
+| Inline links inside body sentences | **BLUE** | the canonical case; bare at rest, hover darkens to deep |
 | "Passwort vergessen?" (the ONE auth helper) | **BLUE** | only blue string on the form |
 | Ändern jump-links in checkout summary | **BLUE** (owner-approved exception to no-repeat) | right-aligned 13px semibold |
 | Bare inline action label attached to data (Wegbeschreibung next to an address, as TEXT not a button) | **BLUE** | text-as-link; if given button geometry → ink |
 | See-all / Alle ansehen section links | **INK** + chevron | color off, affordance on |
 | Skip / Später / tertiary under a primary CTA | **INK-2/3** lighter weight, centered | never blue |
-| "Zur Startseite" / "Stattdessen anmelden" under CTAs (404/success/auth) | **INK** + underline | classic calm pattern |
+| "Zur Startseite" / "Stattdessen anmelden" under CTAs (404/success/auth) | **INK-2** semibold, NO underline (v3.1) | weight + position carry it; hover → `text-s-ink` |
 | Secondary / ghost buttons | **INK** outline (never blue-filled, never blue-ghost) | CONTROL_ELEVATION B |
 | Feature-row icon tints (gift, voucher, …) | **INK** on `bg-s-bg-sunken` | icons are content, not actions |
 | `:focus-visible` ring / `<Spinner>` arc / form-input focus | **BLUE** (locked system states) | unchanged |
@@ -177,7 +182,7 @@ flags blue on non-interactive text + blue-filled primaries; the squint test catc
 | Current usage | Sweep to |
 |---|---|
 | `text-s-accent` on eyebrow / label | `text-s-ink-3` |
-| `text-s-accent` on a real tappable link | KEEP blue — links are blue (v2 rule 1); `hover:underline`. (This row no longer sweeps to ink.) |
+| `text-s-accent` on a real tappable link | v3 split: hyperlink-reading text (review counts, inline body links, Mehr lesen, Passwort vergessen, Ändern) KEEPS blue (bare at rest, hover → deep); See-all / Skip / tertiary / button-geometry links sweep to INK + affordance, no underline (v3.1) |
 | `text-s-accent` on NON-interactive emphasis (a word that is not a link) | `text-s-ink` + bold weight — blue means tappable, not emphasis (v2 rule 2) |
 | `text-s-accent` on hero accent span | `text-s-ink` (single word can use weight contrast instead) |
 | `bg-s-accent-pale text-s-accent` pill | Either `bg-white text-s-accent` OR `bg-s-accent-pale text-s-ink` — never both blue |

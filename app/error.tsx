@@ -42,7 +42,7 @@ export default function Error({
         >
           Erneut versuchen
         </button>
-        <a href="/" className="font-body text-[13.5px] font-semibold text-s-ink-2 underline underline-offset-2">
+        <a href="/" className="font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:text-s-ink">
           Zur Startseite
         </a>
       </div>
