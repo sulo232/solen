@@ -122,8 +122,9 @@ export function SalonServices({
         </div>
       )}
 
-      {/* Duration-tier groups (owner mockup): tier header (name + range) above its rows.
-          Same bordered ServiceRow cards as before (V3-D227) — only the grouping changed. */}
+      {/* Grouped cards per the Atelier-Nord service-grouping mockup (owner, 2026-06-11):
+          ONE rounded-24 card per tier with whisper shadow (exact mockup values), rows
+          inside divided by hairlines — not separate cards per service. */}
       <div className="mt-5 space-y-6">
         {tiered.map(({ tier, rows }) => (
           <div key={tier.key}>
@@ -131,31 +132,19 @@ export function SalonServices({
               <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
               <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
             </div>
-            <ul className="mt-2.5 space-y-3 md:hidden">
+            <ul className="mt-3 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-[0_1px_3px_rgba(10,10,10,0.04),0_10px_28px_-14px_rgba(10,10,10,0.10)]">
               {rows.map((s) => (
-                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
-              ))}
-            </ul>
-            <ul className="mt-2.5 hidden space-y-3 md:block">
-              {rows.map((s) => (
-                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="desktop" />
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
               ))}
             </ul>
           </div>
         ))}
         {untiered.length > 0 && (
-          <div>
-            <ul className="space-y-3 md:hidden">
-              {untiered.map((s) => (
-                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
-              ))}
-            </ul>
-            <ul className="hidden space-y-3 md:block">
-              {untiered.map((s) => (
-                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="desktop" />
-              ))}
-            </ul>
-          </div>
+          <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-[0_1px_3px_rgba(10,10,10,0.04),0_10px_28px_-14px_rgba(10,10,10,0.10)]">
+            {untiered.map((s) => (
+              <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
+            ))}
+          </ul>
         )}
       </div>
 
@@ -190,12 +179,10 @@ function ServiceRow({
   service,
   locale,
   slug,
-  variant,
 }: {
   service: Service;
   locale: string;
   slug: string;
-  variant: "mobile" | "desktop";
 }) {
   // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
   //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
@@ -228,15 +215,10 @@ function ServiceRow({
     </div>
   );
 
-  // V3-D227: unify mobile + desktop into the same card.
-  // FLAT per the approved every-state mockup 03 .svc (owner, 2026-06-11): hairline
-  // border, NO shadow. Reverts the 2026-06-09 elevation-2/3 "depth fix" — white +
-  // shadow on the calm white page is the banned grey-haze (CONTROL_ELEVATION B).
+  // Row inside the grouped card (Atelier mockup .srow): 18x20 padding, hairline
+  // divider between rows (border-top, first row none). The card owns the chrome.
   return (
-    <li className={cn(
-      "rounded-2xl border border-s-border bg-white transition-colors hover:border-s-ink/30",
-      variant === "mobile" ? "p-5" : "p-6 md:p-7",
-    )}>
+    <li className="border-t border-s-border px-5 py-[18px] first:border-t-0 md:px-6">
       {inner}
     </li>
   );
