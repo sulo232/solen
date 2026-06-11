@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08 Profile subpages, hair profile + vouchers + notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .subbar{display:flex;align-items:center;gap:12px;padding:10px 16px}
+  .subbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;flex:1;text-align:center;margin-right:44px}
+  .pillgrp{margin-top:16px}
+  .pillgrp p{font-size:13px;font-weight:600}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .hairpill{border:1px solid var(--border);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:500;background:#fff}
+  .hairpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .vcard{background:#fff;border-radius:18px;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:16px;display:flex;gap:13px;align-items:center}
+  .vcard .vic{width:44px;height:44px;border-radius:12px;background:var(--blue-pale);display:grid;place-items:center;flex:none}
+  .vcard .vic .lucide{width:20px;height:20px;color:var(--blue)}
+  .ncard{background:#fff;border-radius:18px;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+  .ncard .nic{width:38px;height:38px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex:none}
+  .ncard .nic .lucide{width:17px;height:17px}
+  .ncard.unread{box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05),inset 3px 0 0 var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>08 Profile subpages.</b> Hair profile editor (same pills as the booking hair step, one source of truth), vouchers (filled + empty), notifications (unread = blue inset edge + red count on the bell, list + empty). DS-8 whitespace, §15 empty voices, codes in Inter Tight tabular (never mono).</div>
+
+<div class="lbl">HAIR PROFILE · editor</div>
+<div class="frame tray">
+  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Hair profile</h1></div>
+  <div class="pagepad" style="padding-bottom:24px">
+    <p class="sub" style="font-size:13.5px">Pre-fills your bookings. Stylists see it before you arrive.</p>
+    <div class="card" style="margin-top:14px">
+      <div class="pillgrp" style="margin-top:0"><p>Hair type</p><div class="pills"><span class="hairpill">Straight</span><span class="hairpill on">Wavy</span><span class="hairpill">Curly</span><span class="hairpill">Coily</span></div></div>
+      <div class="pillgrp"><p>Length</p><div class="pills"><span class="hairpill">Short</span><span class="hairpill on">Medium</span><span class="hairpill">Long</span><span class="hairpill">Very long</span></div></div>
+      <div class="pillgrp"><p>Thickness</p><div class="pills"><span class="hairpill on">Fine</span><span class="hairpill">Medium</span><span class="hairpill">Thick</span></div></div>
+      <div class="pillgrp"><p>Beard</p><div class="pills"><span class="hairpill on">No beard</span><span class="hairpill">Short</span><span class="hairpill">Full</span></div></div>
+    </div>
+    <button class="cta" style="margin-top:14px;height:52px;font-size:15px">Save</button>
+  </div>
+</div>
+
+<div class="lbl">VOUCHERS · filled + empty</div>
+<div class="frame tray">
+  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Vouchers</h1></div>
+  <div class="pagepad stack" style="padding-bottom:10px">
+    <div class="vcard">
+      <span class="vic"><i data-lucide="gift"></i></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px">Gift card</div>
+        <div class="meta num" style="margin-top:2px">GIFT-7K2M · valid until Dec 2026</div>
+      </div>
+      <b class="num" style="font-size:16px">CHF 50</b>
+    </div>
+    <div class="vcard">
+      <span class="vic"><i data-lucide="ticket"></i></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px">Welcome credit</div>
+        <div class="meta" style="margin-top:2px">Applies automatically at checkout</div>
+      </div>
+      <b class="num" style="font-size:16px">CHF 15</b>
+    </div>
+  </div>
+  <div class="empty" style="padding-top:26px;padding-bottom:40px">
+    <h2 style="font-size:17px;margin-top:0">No more vouchers.</h2>
+    <p style="margin-top:6px">Gift cards from friends and Solen credits land here, ready at checkout.</p>
+  </div>
+</div>
+
+<div class="lbl">NOTIFICATIONS · list + empty</div>
+<div class="frame tray">
+  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Notifications</h1></div>
+  <div class="pagepad stack" style="padding-bottom:8px">
+    <div class="ncard unread">
+      <span class="nic"><i data-lucide="calendar-check"></i></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">Booking confirmed</div>
+        <p class="meta" style="margin-top:2px;line-height:1.45">Thu 12 June, 10:30 at Old Town Barbers. Luca's expecting you.</p>
+        <p class="meta" style="margin-top:5px;font-size:11.5px;color:var(--ink-3)">2 min ago</p>
+      </div>
+    </div>
+    <div class="ncard">
+      <span class="nic"><i data-lucide="star"></i></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">How was Muse Beauty Studio?</div>
+        <p class="meta" style="margin-top:2px;line-height:1.45">Leave a rating, it takes ten seconds and helps the next person.</p>
+        <p class="meta" style="margin-top:5px;font-size:11.5px;color:var(--ink-3)">2 weeks ago</p>
+      </div>
+    </div>
+  </div>
+  <div class="empty" style="padding-top:24px;padding-bottom:38px">
+    <h2 style="font-size:17px;margin-top:0">All caught up.</h2>
+    <p style="margin-top:6px">Booking updates and reminders show up here.</p>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

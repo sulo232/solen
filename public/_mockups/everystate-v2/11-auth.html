@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11 Auth, login every state</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .auth{padding:10px 16px 30px}
+  .auth h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em}
+  .auth .sub{margin-top:8px}
+  .or{display:flex;align-items:center;gap:12px;color:var(--ink-2);font-size:13px;margin:22px 0}
+  .or::before,.or::after{content:'';flex:1;height:1px;background:var(--border)}
+  .social{width:100%;height:54px;border:1px solid var(--border);border-radius:999px;background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+  .terms{font-size:12.5px;color:var(--ink-2);text-align:center;margin-top:18px;line-height:1.5}
+  .reg{font-size:13.5px;color:var(--ink-2);text-align:center;margin-top:18px}
+  .reg a{color:var(--ink);font-weight:600;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="note"><b>11 Auth, login in every state.</b> Mirrors the live page (Welcome back, pill inputs, social buttons, terms, register link) with DS-1 states made explicit: disabled CTA until valid, focus ring, inline field error, loading, and the §15-voice expired-link recovery.</div>
+
+<div class="lbl">DEFAULT · CTA disabled until valid</div>
+<div class="frame">
+  <div class="apphead"><span class="circ"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="auth">
+    <h1>Welcome back</h1>
+    <p class="sub">Log in to book and manage appointments.</p>
+    <div style="margin-top:22px">
+      <div class="finput pillr">Email address</div>
+      <div class="finput pillr" style="margin-top:12px;justify-content:space-between">Password<i data-lucide="eye"></i></div>
+    </div>
+    <button class="cta disabled" style="margin-top:14px">Log in</button>
+    <div style="text-align:center;margin-top:16px"><a class="linkblue" style="font-size:14px">Forgot password?</a></div>
+    <div class="or">or</div>
+    <button class="social"><i data-lucide="apple" style="width:18px;height:18px"></i>Continue with Apple</button>
+    <button class="social"><span style="font-weight:800;color:#4285F4">G</span>Continue with Google</button>
+    <p class="terms">By logging in you accept our terms of service.</p>
+    <p class="reg">New here? <a>Create account</a></p>
+  </div>
+</div>
+
+<div class="lbl">FOCUS + ERROR · DS-1 input states</div>
+<div class="frame">
+  <div class="auth" style="padding-top:26px">
+    <div class="finput pillr focus" style="color:var(--ink)">lara@web.ch</div>
+    <p class="meta" style="margin:8px 0 18px;color:var(--green-text);font-weight:600">focus: white bg + blue ring (locked recipe)</p>
+    <div class="finput pillr err" style="color:var(--ink)">lara@web</div>
+    <div class="fielderr" style="padding-left:8px"><i data-lucide="circle-alert"></i>That email looks incomplete.</div>
+    <p class="meta" style="margin:8px 0 0;color:var(--green-text);font-weight:600">error: red border + message under the field, never a bare red border</p>
+  </div>
+</div>
+
+<div class="lbl">LOADING + WRONG PASSWORD</div>
+<div class="frame">
+  <div class="auth" style="padding-top:26px">
+    <button class="cta loading"><span class="spin"></span>Logging in…</button>
+    <div style="display:flex;gap:9px;align-items:flex-start;background:var(--red-bg);border-radius:12px;padding:11px 12px;margin-top:18px">
+      <i data-lucide="circle-alert" style="width:15px;height:15px;color:var(--red);flex:none;margin-top:1px"></i>
+      <p style="font-size:12.5px;line-height:1.5"><b>Email or password is wrong.</b> Try again, or reset your password below.</p>
+    </div>
+    <button class="cta ghost" style="margin-top:12px;height:48px;font-size:14px">Reset password</button>
+  </div>
+</div>
+
+<div class="lbl">EXPIRED LINK · §15 voice recovery</div>
+<div class="frame">
+  <div class="empty" style="padding-top:70px;padding-bottom:80px">
+    <div style="width:96px;height:96px;border-radius:999px;background:var(--sunken);display:grid;place-items:center"><i data-lucide="timer-off" style="width:36px;height:36px;stroke-width:1.5"></i></div>
+    <h2>That link has expired.</h2>
+    <p>Login links only live for a short while. Grab a fresh one and you're in.</p>
+    <button class="cta">Send a new link</button>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

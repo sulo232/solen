@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09 Favorites, filled + empty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .subbar{display:flex;align-items:center;gap:12px;padding:10px 16px}
+  .subbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;flex:1;text-align:center;margin-right:44px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+  .emptyrow{display:flex;gap:10px;margin-top:18px}
+  .mini{width:84px;height:104px;border-radius:14px;background:var(--sunken);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-3)}
+  .mini .lucide{width:22px;height:22px;stroke-width:1.7}
+  .mini span{font-size:9.5px;font-weight:600}
+  .mini.hero{background:linear-gradient(140deg,var(--blue-pale),var(--sunken));color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>09 Favorites.</b> Same real card grammar as home (square 22px photos, DS-7 details row); hearts filled pink and tappable to remove (with the outcome toast). Empty state speaks the §15 typographic voice.</div>
+
+<div class="lbl">FILLED (tap a heart to remove)</div>
+<div class="frame">
+  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
+  <div class="pagepad" style="padding-top:6px;padding-bottom:26px">
+    <div class="grid2">
+      <div class="salcard" style="width:auto">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=480&h=480&fit=crop&q=80"><span class="heart on" onclick="unfav(this)"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Muse Beauty Studio</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9</span></div>
+          <div class="loc">Steinenvorstadt 18, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>15:30</b></span></div>
+        </div>
+      </div>
+      <div class="salcard" style="width:auto">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=480&h=480&fit=crop&q=80"><span class="heart on" onclick="unfav(this)"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Old Town Barbers</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span></div>
+          <div class="loc">Klybeckstrasse 12, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>16:00</b></span></div>
+        </div>
+      </div>
+      <div class="salcard" style="width:auto">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=480&h=480&fit=crop&q=80"><span class="heart on" onclick="unfav(this)"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Blade &amp; Stone</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4</span></div>
+          <div class="loc">Feldbergstrasse 82, Basel</div>
+          <div class="detrow"><span><i data-lucide="footprints"></i><b>Walk-in</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" style="display:none"><i data-lucide="check"></i>Removed from favorites</div>
+</div>
+
+<div class="lbl">EMPTY · §15 voice</div>
+<div class="frame">
+  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
+  <div class="empty" style="padding-top:48px;padding-bottom:60px">
+    <h2 style="margin-top:0">No favorites yet.</h2>
+    <p>Tap the heart on any salon and it lands here, your shortlist for next time.</p>
+    <div class="emptyrow">
+      <div class="mini hero"><i data-lucide="heart"></i><span>your first</span></div>
+      <div class="mini"><i data-lucide="scissors"></i><span>coiffeur</span></div>
+      <div class="mini"><i data-lucide="hand"></i><span>nails</span></div>
+    </div>
+    <button class="cta ghost" style="margin-top:22px">Browse salons</button>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+function unfav(el){
+  el.classList.remove('on');
+  const t = document.getElementById('toast');
+  t.style.display = 'flex';
+  setTimeout(() => t.style.display = 'none', 1600);
+}
+</script>
+</body>
+</html>
