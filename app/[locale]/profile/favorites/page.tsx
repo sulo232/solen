@@ -68,23 +68,23 @@ export default async function ProfileFavoritesPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <div>
-        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Favoriten</h1>
-        {salons.length > 0 && (
-          <p className="mt-1 font-body text-[13px] text-s-ink-2">{salons.length} Salons</p>
-        )}
-      </div>
+      {/* Title lives in the global header beside the back tile (owner, 2026-06-11) */}
+      {salons.length > 0 && (
+        <p className="font-body text-[13px] text-s-ink-2">{salons.length} Salons</p>
+      )}
 
       {salons.length === 0 ? (
         <div className="mt-6">
           <EmptyStateDiscovery
             locale={locale}
-            lead="Noch nichts gespeichert. Tipp auf das Herz auf einem Salon und du findest ihn hier wieder."
-            heroImg={topSalons?.[0]?.cover_photo_url ?? null}
-            heroEyebrow="Entdecken"
-            heroTitle="Finde deinen Lieblingssalon."
-            heroHref={`/${locale}/entdecken`}
+            title="Noch keine Favoriten."
+            lead="Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal."
+            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
+            bannerTitle="Entdecken öffnen"
+            bannerSub="Styles, Salons und Inspiration aus Basel"
+            bannerHref={`/${locale}/entdecken`}
             hintIcon="heart"
+            hintText="Das Herz findest du oben rechts auf jedem Salon-Foto."
             railTitle="Top bewertet"
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}

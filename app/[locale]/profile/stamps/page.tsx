@@ -102,16 +102,18 @@ export default async function ProfileStampsPage({
       .limit(6);
     return (
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Stempel</h1>
+        {/* Title lives in the global header beside the back tile */}
         <div className="mt-8">
           <EmptyStateDiscovery
             locale={locale}
-            lead="Noch keine Stempel. Pro besuchtem Termin gibt's automatisch einen, volle Karte = Belohnung."
-            heroImg={topSalons?.[0]?.cover_photo_url ?? null}
-            heroEyebrow="Treuekarten"
-            heroTitle="Sammle bei deinem nächsten Besuch."
-            heroHref={`/${locale}/coiffeur`}
+            title="Noch keine Stempel."
+            lead="Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung."
+            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
+            bannerTitle="So funktioniert's"
+            bannerSub="Pro Besuch ein Stempel, volle Karte = Belohnung"
+            bannerHref={`/${locale}/coiffeur`}
             hintIcon="stamp"
+            hintText="Der Stempel kommt automatisch nach jedem abgeschlossenen Termin."
             railTitle="Beliebt in Basel"
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}
@@ -123,10 +125,7 @@ export default async function ProfileStampsPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <div>
-        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Stempel</h1>
-        <p className="mt-1 font-body text-[13px] text-s-ink-2">{allCards.length} Karten</p>
-      </div>
+      <p className="font-body text-[13px] text-s-ink-2">{allCards.length} Karten</p>
 
       {heroCard && heroCard.salons && (
         <div className="mt-6">

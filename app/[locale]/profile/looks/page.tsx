@@ -41,16 +41,18 @@ export default async function ProfileLooksPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Looks</h1>
+      <span aria-hidden className="hidden" /> {/* title lives in the global header */}
       <div className="mt-8">
         <EmptyStateDiscovery
           locale={locale}
-          lead="Noch keine Looks. Speichere Inspiration aus Discovery und Salon-Portfolios, hier findest du sie wieder."
-          heroImg={topSalons?.[0]?.cover_photo_url ?? null}
-          heroEyebrow="Entdecken"
-          heroTitle="Frische Looks aus Basler Salons."
-          heroHref={`/${locale}/entdecken`}
+          title="Noch keine Looks."
+          lead="Sammle Inspiration aus Salon-Profilen und Discovery, hier findest du sie wieder."
+          bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
+          bannerTitle="Entdecken öffnen"
+          bannerSub="Frische Looks aus Basler Salons"
+          bannerHref={`/${locale}/entdecken`}
           hintIcon="bookmark"
+          hintText="Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios."
           railTitle="Top bewertet"
           railHref={`/${locale}/coiffeur`}
           salons={topSalons ?? []}

@@ -379,6 +379,17 @@ export default function Header({ locale }: { locale: string }) {
   const isDiscover = !!pathname && /^\/[a-z]{2}\/discover\/?$/.test(pathname);
   const tDiscover = useTranslations("discover");
 
+  // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
+  // page h1 below the header read unbalanced). Same slot idea as the V3-D410
+  // discover-title; route-gated so every other page is untouched.
+  const deepPageTitle = React.useMemo(() => {
+    if (!pathname) return null;
+    if (/\/profile\/favorites\/?$/.test(pathname)) return "Favoriten";
+    if (/\/profile\/stamps\/?$/.test(pathname)) return "Stempel";
+    if (/\/profile\/looks\/?$/.test(pathname)) return "Looks";
+    return null;
+  }, [pathname]);
+
   React.useEffect(() => {
     const HEADER_H = 80; // approximate header height incl. padding
     const onScroll = () => {
@@ -559,6 +570,18 @@ export default function Header({ locale }: { locale: string }) {
           >
             <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
           </button>
+        )}
+
+        {deepPageTitle && (
+          <span
+            className={cn(
+              "shrink-0 font-heading text-[18px] font-bold tracking-[-0.01em]",
+              menuOpen && "opacity-0 pointer-events-none",
+              isDark ? "text-white" : "text-s-ink",
+            )}
+          >
+            {deepPageTitle}
+          </span>
         )}
 
         {/* Mobile: middle area. Empty by default (flex spacer pushes the
