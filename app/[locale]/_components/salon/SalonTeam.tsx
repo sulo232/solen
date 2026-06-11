@@ -4,6 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import type { StaffMember } from "./_shared";
 import { Avatar } from "@/app/[locale]/_components/primitives";
+import { Sheet, SheetBody } from "@/app/[locale]/_components/primitives/Sheet";
+import dynamic from "next/dynamic";
+
+// Heavy client profile, loaded only when the sheet opens (owner 2026-06-11:
+// staff profile = bottom-up sheet over the PDP, Fresha employee-profile pattern).
+const StaffProfilePage = dynamic(() => import("@/components-legacy/staff/StaffProfilePage"), { ssr: false });
 
 /**
  * SalonTeam — V3-D234 (2026-05-27, austerity rebuild per real Fresha capture).
@@ -44,6 +50,46 @@ export function SalonTeam({
   slug: string;
   locale: string;
 }) {
+  const [openStaffId, setOpenStaffId] = React.useState<string | null>(null);
+  const pushedRef = React.useRef(false);
+
+  // Deep-link in: /salon/<slug>?staff_profile=<id> opens the sheet directly.
+  React.useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("staff_profile");
+    if (id) setOpenStaffId(id);
+    const onPop = () =>
+      setOpenStaffId(new URLSearchParams(window.location.search).get("staff_profile"));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const openProfile = (id: string) => {
+    // Desktop keeps the dedicated route (sheets are the mobile pattern, like Fresha).
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      window.location.assign(`/${locale}/salon/${slug}/staff/${id}`);
+      return;
+    }
+    setOpenStaffId(id);
+    const u = new URL(window.location.href);
+    u.searchParams.set("staff_profile", id);
+    window.history.pushState({ staffSheet: true }, "", u);
+    pushedRef.current = true;
+  };
+
+  const closeProfile = () => {
+    if (pushedRef.current) {
+      pushedRef.current = false;
+      window.history.back(); // popstate clears the param + state
+    } else {
+      setOpenStaffId(null);
+      const u = new URL(window.location.href);
+      if (u.searchParams.has("staff_profile")) {
+        u.searchParams.delete("staff_profile");
+        window.history.replaceState({}, "", u);
+      }
+    }
+  };
+
   if (staff.length === 0) return null;
 
   return (
@@ -69,15 +115,31 @@ export function SalonTeam({
           panel's rounded edge as a subtle "scroll for more" cue. */}
       <div className="mt-5 flex gap-5 overflow-x-auto pt-2 pb-3 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {staff.map((s) => (
-          <Link
+          <button
             key={s.id}
-            href={`/${locale}/salon/${slug}/staff/${s.id}`}
-            className="group w-[104px] shrink-0 snap-start md:w-[112px]"
+            type="button"
+            onClick={() => openProfile(s.id)}
+            className="group w-[104px] shrink-0 snap-start text-left md:w-[112px]"
           >
             <TeamMember member={s} salonAverageRating={salonAverageRating} />
-          </Link>
+          </button>
         ))}
       </div>
+
+      {/* Staff profile as a bottom-up full sheet (mobile); desktop navigates to the route.
+          ?staff_profile=<id> keeps it deep-linkable; browser back closes the sheet. */}
+      <Sheet
+        isOpen={!!openStaffId}
+        onOpenChange={(o) => { if (!o) closeProfile(); }}
+        height="full"
+        aria-label="Mitarbeiterprofil"
+      >
+        <SheetBody className="p-0">
+          {openStaffId && (
+            <StaffProfilePage staffId={openStaffId} salonSlug={slug} onClose={closeProfile} />
+          )}
+        </SheetBody>
+      </Sheet>
     </section>
   );
 }

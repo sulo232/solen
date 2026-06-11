@@ -205,8 +205,8 @@ export default function StaffProfilePage({
       {/* Top bar — back (left) + name on scroll */}
       <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
-          <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
-            <ArrowLeft size={20} className="text-s-ink" />
+          <button type="button" onClick={onClose} aria-label="Schliessen" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
+            <X size={20} className="text-s-ink" />
           </button>
         ) : (
           <Link href={`/${locale}/salon/${salonSlug}`} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
@@ -445,7 +445,7 @@ export default function StaffProfilePage({
 
       {/* Portfolio lightbox */}
       {lightboxIndex !== null && portfolio[lightboxIndex] && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
           <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label="Schließen" className="absolute right-4 top-4 text-white/80 hover:text-white">
             <X size={24} />
           </button>
@@ -476,7 +476,7 @@ export default function StaffProfilePage({
       )}
 
       {/* CTA — Auswählen (selection mode) or Jetzt buchen */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-s-border bg-white px-4 py-3">
+      <div className={`${onClose ? "sticky" : "fixed"} bottom-0 left-0 right-0 z-20 border-t border-s-border bg-white px-4 py-3`}>
         {onSelect ? (
           <button
             type="button"
