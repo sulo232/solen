@@ -2,38 +2,62 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>06 Walk-in pay + queue tracker, every state</title>
+<title>06 Walk-in pay + queue, mirrors the real pages</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  .appbar{display:flex;align-items:center;gap:12px;padding:10px 16px 12px;background:#fff;border-bottom:1px solid var(--border)}
-  .appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1}
-  .appbar .circ{width:38px;height:38px}
-  .body{background:var(--sunken);padding:12px 16px 18px}
-  .salhead{display:flex;align-items:center;gap:12px}
-  .salhead img{width:48px;height:48px;border-radius:12px;object-fit:cover}
-  .salhead .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
-  .salhead .mt{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  .pgpad{padding:8px 16px 18px;background:var(--sunken)}
+  .h1row{display:flex;align-items:center;gap:12px;padding:12px 16px 4px}
+  .h1row h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:23px;letter-spacing:-.02em}
+  .salhead{display:flex;gap:12px}
+  .salhead img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none}
+  .salhead .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px}
+  .salhead .mt{font-size:13px;margin-top:3px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .salhead .ad{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:5px;align-items:center}
+  .salhead .ad .lucide{width:12px;height:12px;color:var(--ink-3)}
+  .strow{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(10,10,10,.06)}
+  .strow img{width:44px;height:44px;border-radius:999px;object-fit:cover;flex:none;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+  .strow .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .strow .sp{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  /* the green "Sofort" wait widget (live) */
+  .sofort{display:flex;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(10,10,10,.06)}
+  .sofort .ci{width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--ink-2)}
+  .sofort .ci .lucide{width:20px;height:20px;stroke-width:1.9}
+  .sofort .t1{font-size:14.5px;font-weight:700;color:var(--green-text)}
+  .sofort .t2{font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.45}
+  .priceline{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+  .priceline + .priceline{margin-top:7px}
+  .priceline .s{color:var(--ink-2);font-size:13px}
+  .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px;padding-top:11px;border-top:1px solid rgba(10,10,10,.08)}
+  .total .l{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .total .a{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--blue)}
+  .stripebox{border:1px dashed var(--border);border-radius:12px;padding:18px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-3);background:#fff}
+  .stripebox .lucide{width:16px;height:16px;stroke-width:1.9}
   .tiprow{display:flex;gap:9px;margin-top:12px}
   .tip{flex:1;border:1px solid var(--border);border-radius:12px;background:#fff;padding:12px 0;text-align:center;font-weight:600;font-size:14px}
   .tip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .stripebox{border:1px dashed var(--border);border-radius:12px;padding:18px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-3);background:#fff}
-  .stripebox .lucide{width:16px;height:16px;stroke-width:1.9}
-  .warnbanner{display:flex;gap:9px;align-items:flex-start;border-radius:12px;padding:11px 12px;margin-bottom:12px}
-  .warnbanner.amber{background:var(--warn-bg)}
+  .warnbanner{display:flex;gap:9px;align-items:flex-start;border-radius:12px;padding:11px 12px;background:var(--warn-bg)}
+  .warnbanner + .warnbanner{margin-top:10px}
   .warnbanner .lucide{width:15px;height:15px;color:var(--warn-text);flex:none;margin-top:1px}
   .warnbanner p{font-size:12.5px;color:var(--ink);line-height:1.5}
-  /* queue tracker */
-  .qhero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 20px 4px}
-  .qhero .pos{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:64px;letter-spacing:-.03em;line-height:1}
-  .qhero .lblp{font-size:13px;color:var(--ink-2);font-weight:600}
-  .qhero .eta{font-size:14px;color:var(--ink-2);margin-top:8px}
-  .qhero .eta b{color:var(--ink)}
-  .live{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);color:var(--blue);font-weight:700;font-size:11.5px;border-radius:999px;padding:4px 11px;margin-bottom:14px}
+  /* queue page: photo hero (live) */
+  .qhero{position:relative;height:190px;overflow:hidden}
+  .qhero img{width:100%;height:100%;object-fit:cover}
+  .qhero .info{position:absolute;left:16px;bottom:14px;color:#fff;z-index:2}
+  .qhero .info b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em;display:block}
+  .qhero .info span{font-size:12.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:5px;margin-top:3px}
+  .qhero .info .lucide{width:12px;height:12px}
+  .live{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);color:var(--blue);font-weight:700;font-size:11.5px;border-radius:999px;padding:4px 11px}
   .live .dotp{width:7px;height:7px;border-radius:99px;background:var(--blue);animation:pulse 1.6s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .qtitle{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.025em;margin-top:10px}
+  .qsub{font-size:14.5px;color:var(--ink-2);margin-top:4px}
+  .barbercard{display:flex;align-items:center;gap:12px}
+  .barbercard img{width:48px;height:48px;border-radius:999px;object-fit:cover;flex:none;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+  .barbercard .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .barbercard .mt{font-size:12.5px;color:var(--ink-2);margin-top:2px;display:flex;gap:5px;align-items:center}
   .ratestars{display:flex;gap:8px;justify-content:center;margin-top:12px}
   .ratestars svg{width:34px;height:34px;fill:var(--star)}
   .ratestars svg.off{fill:var(--border)}
@@ -41,63 +65,100 @@
 </head>
 <body>
 
-<div class="note"><b>06 Walk-in pay + queue tracker, every state.</b> Walk-in-pay stays payment-only (the tracker is the single in-queue surface, no QR anywhere). Tracker uses the unified blue stepper with the walk-in icons (check / users / clock / armchair), position number focal, honest ETA from the real pace engine. States: pay default, blocked variants, queue waiting, almost-there, your-turn, done + rate.</div>
+<div class="note"><b>06 Walk-in pay + queue, now mirroring the real pages.</b> Pay = the live "Confirm &amp; pay": salon (rating count + open-until), your barber (specialty + rating), service, the green Instant/wait-time widget ("number comes after payment"), tip, price card with VAT + blue total, Stripe, CTA. Queue = the live tracker: photo hero with name overlay + gallery dots, LIVE pill, big status line, the unified blue stepper, your barber card, position/ETA, directions + ticket. All full pages.</div>
 
-<div class="lbl">WALK-IN PAY, default</div>
+<div class="lbl">WALK-IN PAY, default (mirrors the live demo)</div>
 <div class="frame">
-  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Walk-in at Blade &amp; Stone</h1></div>
-  <div class="body">
+  <div class="h1row"><span class="circ"><i data-lucide="arrow-left"></i></span></div>
+  <div class="h1row" style="padding-top:0"><h1>Confirm &amp; pay</h1></div>
+  <div class="pgpad">
     <div class="card">
       <div class="salhead">
-        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=120&q=80" alt="">
-        <div style="flex:1;min-width:0"><div class="nm">Blade &amp; Stone</div><div class="mt">Feldbergstrasse 82, Basel</div></div>
-        <span class="statuspill ok"><i data-lucide="users"></i>3 in queue</span>
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=160&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="nm">Blade &amp; Stone</div>
+          <div class="mt"><span class="rate" style="font-size:13px;font-weight:600;color:var(--ink)"><svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4 <span class="cnt">(11)</span></span><span style="color:var(--green-text);font-weight:600;font-size:13px">Open until 19:00</span></div>
+          <div class="ad"><i data-lucide="map-pin"></i>Feldbergstrasse 82, Basel</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(10,10,10,.06)">
-        <div class="icobox"><i data-lucide="scissors"></i></div>
-        <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Walk-in cut</div><div class="meta" style="margin-top:1px">30 min</div></div>
-        <b class="num" style="font-size:15px">CHF 40.00</b>
+      <div class="strow">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="nm">Marco Bianchi</div>
+          <div class="sp">Fade &amp; beard specialist <span class="rate" style="font-size:12px;font-weight:600;color:var(--ink)"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9 <span class="cnt">(62)</span></span></div>
+        </div>
+      </div>
+      <div class="strow">
+        <div style="width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--ink-2)"><i data-lucide="scissors" style="width:20px;height:20px;stroke-width:1.9"></i></div>
+        <div style="flex:1;min-width:0"><div class="nm">Men's cut &amp; beard</div><div class="sp">about 45 min</div></div>
+      </div>
+      <div class="sofort">
+        <div class="ci"><i data-lucide="clock"></i></div>
+        <div>
+          <div class="t1">Right away</div>
+          <div class="t2">~12 min wait<br>Your number comes right after payment.</div>
+        </div>
       </div>
     </div>
     <div class="card" style="margin-top:12px">
       <p style="font-size:13px;font-weight:600">Tip for the team</p>
       <div class="tiprow"><span class="tip">None</span><span class="tip on">CHF 2</span><span class="tip">CHF 4</span><span class="tip">Custom</span></div>
     </div>
+    <div class="card" style="margin-top:12px">
+      <div class="priceline"><span>Men's cut &amp; beard</span><span class="num">CHF 45.00</span></div>
+      <div class="priceline"><span>Tip</span><span class="num">CHF 2.00</span></div>
+      <div class="priceline"><span class="s">incl. 8.1% VAT</span><span class="s num">CHF 3.37</span></div>
+      <div class="total"><span class="l">Total</span><span class="a">CHF 47.00</span></div>
+    </div>
     <div class="card" style="margin-top:12px;padding:12px">
-      <div class="stripebox"><i data-lucide="credit-card"></i>Stripe Payment Element, card, TWINT, Apple Pay</div>
+      <div class="stripebox"><i data-lucide="credit-card"></i>Stripe Payment Element, card · TWINT · Apple Pay</div>
     </div>
   </div>
   <div class="ctabar">
-    <button class="cta" style="height:54px;font-size:15px">Pay CHF 42.00 &amp; join <i data-lucide="arrow-right"></i></button>
-    <div class="secure"><i data-lucide="lock"></i>Your number appears right after payment</div>
+    <button class="cta" style="height:54px;font-size:15px">Pay CHF 47.00 &amp; join <i data-lucide="arrow-right"></i></button>
+    <div class="secure"><i data-lucide="lock"></i>Secure payment via Stripe</div>
   </div>
 </div>
 
 <div class="lbl">WALK-IN PAY, blocked variants (real 409 codes)</div>
 <div class="frame">
-  <div class="body" style="padding-top:16px;padding-bottom:24px">
-    <div class="warnbanner amber"><i data-lucide="pause"></i><p><b>Walk-ins are paused right now.</b> The queue is full, check back shortly or book an appointment instead.</p></div>
-    <div class="warnbanner amber"><i data-lucide="store"></i><p><b>Pay at the counter today.</b> Online payment is off; walk in and the team will take it from there.</p></div>
-    <button class="cta ghost" style="height:48px;font-size:14px">Book an appointment instead</button>
+  <div class="pgpad" style="padding-top:18px;padding-bottom:24px">
+    <div class="warnbanner"><i data-lucide="pause"></i><p><b>Walk-ins are paused right now.</b> The queue is full, check back shortly or book an appointment instead.</p></div>
+    <div class="warnbanner"><i data-lucide="store"></i><p><b>Pay at the counter today.</b> Online payment is off; walk in and the team will take it from there.</p></div>
+    <button class="cta ghost" style="height:48px;font-size:14px;margin-top:12px">Book an appointment instead</button>
   </div>
 </div>
 
-<div class="lbl">QUEUE, waiting (position 3)</div>
+<div class="lbl">QUEUE, waiting (position 3), full page</div>
 <div class="frame">
-  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Blade &amp; Stone</h1></div>
-  <div class="steps">
-    <div class="stepnode"><div class="disc done"><i data-lucide="check"></i></div><span>Paid</span></div><div class="conn done"></div>
-    <div class="stepnode"><div class="disc current"><i data-lucide="users"></i></div><span>In queue</span></div><div class="conn"></div>
-    <div class="stepnode future"><div class="disc future"><i data-lucide="clock"></i></div><span>Almost</span></div><div class="conn"></div>
-    <div class="stepnode future"><div class="disc future"><i data-lucide="armchair"></i></div><span>Your turn</span></div>
+  <div class="qhero">
+    <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80">
+    <button class="circ frost" style="left:14px"><i data-lucide="arrow-left"></i></button>
+    <button class="circ frost" style="right:14px"><i data-lucide="circle-help"></i></button>
+    <div class="scrim-band" style="height:90px"></div>
+    <div class="info" style="position:absolute;left:16px;bottom:14px;color:#fff;z-index:2">
+      <b style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em;display:block">Blade &amp; Stone</b>
+      <span style="font-size:12.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:5px;margin-top:3px"><i data-lucide="map-pin" style="width:12px;height:12px"></i>Feldbergstrasse 82, Basel</span>
+    </div>
+    <div class="dots"><span class="on"></span><span></span><span></span></div>
   </div>
-  <div class="body">
-    <div class="card" style="text-align:center;padding:24px 16px">
-      <span class="live"><span class="dotp"></span>LIVE</span>
-      <div class="qhero" style="padding:0">
-        <span class="lblp">Your place in line</span>
-        <div class="pos num">3</div>
-        <p class="eta">Estimated wait <b>about 25 min</b></p>
+  <div class="pgpad" style="padding-top:16px">
+    <span class="live"><span class="dotp"></span>LIVE</span>
+    <div class="qtitle">Almost there.</div>
+    <p class="qsub">3 ahead of you, estimated wait about 25 min.</p>
+    <div class="steps" style="background:transparent;padding:18px 2px 4px">
+      <div class="stepnode"><div class="disc done"><i data-lucide="check"></i></div><span>Paid</span></div><div class="conn done"></div>
+      <div class="stepnode current"><div class="disc current"><i data-lucide="users"></i></div><span>In queue</span></div><div class="conn"></div>
+      <div class="stepnode future"><div class="disc future"><i data-lucide="clock"></i></div><span>Almost</span></div><div class="conn"></div>
+      <div class="stepnode future"><div class="disc future"><i data-lucide="armchair"></i></div><span>Your turn</span></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="barbercard">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="nm">Marco</div>
+          <div class="mt"><span class="rate" style="font-size:12.5px;font-weight:600;color:var(--ink)"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.6</span>Your barber</div>
+        </div>
       </div>
     </div>
     <div class="card" style="margin-top:12px;display:flex;gap:12px;align-items:center">
@@ -109,24 +170,36 @@
       <div class="icobox"><i data-lucide="receipt"></i></div>
       <div style="flex:1"><div style="font-size:14.5px;font-weight:600" class="num">W-047</div><div class="meta" style="margin-top:1px">Just give your name when you arrive</div></div>
     </div>
+    <button class="cta ghost" style="height:48px;font-size:14px;color:var(--red);margin-top:12px">Leave the queue</button>
   </div>
-  <div class="ctabar"><button class="cta ghost" style="height:48px;font-size:14px;color:var(--red);border-color:var(--border)">Leave the queue</button></div>
 </div>
 
 <div class="lbl">QUEUE, your turn</div>
 <div class="frame">
-  <div class="steps">
-    <div class="stepnode"><div class="disc done"><i data-lucide="check"></i></div><span>Paid</span></div><div class="conn done"></div>
-    <div class="stepnode"><div class="disc done"><i data-lucide="users"></i></div><span>In queue</span></div><div class="conn done"></div>
-    <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Almost</span></div><div class="conn done"></div>
-    <div class="stepnode"><div class="disc current"><i data-lucide="armchair"></i></div><span>Your turn</span></div>
+  <div class="qhero" style="height:150px">
+    <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80">
+    <button class="circ frost" style="left:14px"><i data-lucide="arrow-left"></i></button>
+    <button class="circ frost" style="right:14px"><i data-lucide="circle-help"></i></button>
+    <div class="scrim-band" style="height:80px"></div>
+    <div class="info" style="position:absolute;left:16px;bottom:12px;color:#fff;z-index:2"><b style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;display:block">Blade &amp; Stone</b></div>
   </div>
-  <div class="body" style="padding-bottom:26px">
-    <div class="card" style="text-align:center;padding:26px 16px">
-      <div class="qhero" style="padding:0">
-        <span class="lblp">It's you</span>
-        <div class="pos num" style="font-size:34px;margin-top:6px">Take a seat</div>
-        <p class="eta">Luca is ready, chair by the window.</p>
+  <div class="pgpad" style="padding-top:16px;padding-bottom:26px">
+    <span class="live"><span class="dotp"></span>LIVE</span>
+    <div class="qtitle">You're up!</div>
+    <p class="qsub">Head to the chair.</p>
+    <div class="steps" style="background:transparent;padding:18px 2px 4px">
+      <div class="stepnode"><div class="disc done"><i data-lucide="check"></i></div><span>Paid</span></div><div class="conn done"></div>
+      <div class="stepnode"><div class="disc done"><i data-lucide="users"></i></div><span>In queue</span></div><div class="conn done"></div>
+      <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Almost</span></div><div class="conn done"></div>
+      <div class="stepnode current"><div class="disc current"><i data-lucide="armchair"></i></div><span>Your turn</span></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="barbercard">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="nm">Marco</div>
+          <div class="mt"><span class="rate" style="font-size:12.5px;font-weight:600;color:var(--ink)"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.6</span>Your barber, chair by the window</div>
+        </div>
       </div>
     </div>
   </div>
@@ -134,7 +207,7 @@
 
 <div class="lbl">QUEUE, done + rate (tip flows from the stars)</div>
 <div class="frame">
-  <div class="body" style="padding-top:20px;padding-bottom:26px">
+  <div class="pgpad" style="padding-top:20px;padding-bottom:26px">
     <div class="card" style="text-align:center;padding:26px 16px">
       <div style="display:flex;justify-content:center"><div class="successdisc"><i data-lucide="check"></i></div></div>
       <h2 style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;margin-top:14px">Fresh cut.</h2>
@@ -148,7 +221,7 @@
       </div>
     </div>
     <div class="card" style="margin-top:12px">
-      <p style="font-size:13px;font-weight:600">Add a tip for Luca</p>
+      <p style="font-size:13px;font-weight:600">Add a tip for Marco</p>
       <div class="tiprow"><span class="tip">None</span><span class="tip">CHF 2</span><span class="tip on">CHF 4</span><span class="tip">Custom</span></div>
       <button class="cta" style="margin-top:12px;height:48px;font-size:14.5px">Tip CHF 4.00</button>
     </div>

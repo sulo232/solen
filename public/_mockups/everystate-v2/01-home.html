@@ -19,7 +19,20 @@
   .walkhead{display:flex;align-items:center;gap:13px}
   .walkhead .tile{width:52px;height:52px;border-radius:15px;background:var(--sunken);display:grid;place-items:center;flex:none}
   .walkhead .tile img{width:34px;height:34px;object-fit:contain}
+  /* walk-in compact cards (mirror live section) */
+  .wcard{width:172px;flex:none;border:1px solid var(--border);border-radius:16px;background:#fff;padding:13px 14px}
+  .wcard .r1{display:flex;align-items:baseline;gap:8px}
+  .wcard h3{font-family:'Inter',sans-serif;font-weight:600;font-size:14px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .wcard .loc{font-size:11.5px;color:var(--ink-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wcard .wmeta{display:flex;flex-direction:column;gap:3px;margin-top:9px}
+  .wcard .free{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--green-text)}
+  .wcard .dotw{width:7px;height:7px;border-radius:99px;background:var(--green);animation:wpulse 1.8s ease-in-out infinite}
+  @keyframes wpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .wcard .ahead{font-size:11.5px;color:var(--ink-2)}
   .inspo{width:170px;flex:none;position:relative;aspect-ratio:9/14;border-radius:18px;overflow:hidden}
+  .inspo .src{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:4px 10px;font-size:10.5px;font-weight:700;z-index:2;display:flex;align-items:center;gap:5px;backdrop-filter:blur(4px)}
+  .inspo .hrt{position:absolute;right:10px;top:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.94);display:grid;place-items:center;z-index:2}
+  .inspo .hrt .lucide{width:15px;height:15px}
   .inspo img{width:100%;height:100%;object-fit:cover}
   .inspo .tag{position:absolute;left:10px;bottom:10px;right:44px;background:rgba(255,255,255,.94);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
   .inspo .clap{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.94);display:grid;place-items:center;z-index:2}
@@ -130,32 +143,40 @@
     </div>
   </div>
 
-  <div class="sect pagepad">
-    <div class="walkhead">
+  <div class="sect">
+    <div class="walkhead pagepad">
       <span class="tile"><img src="/icons/categories/walkin.png" alt=""></span>
       <div>
         <h2 class="h-section">Walk-in</h2>
         <p class="meta" style="margin-top:2px">No appointment. Pay on your phone, walk right in.</p>
       </div>
     </div>
-    <div class="stack" style="margin-top:14px">
-      <div class="card" style="display:flex;align-items:center;gap:13px;padding:13px 14px">
-        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=160&h=160&fit=crop&q=80" style="width:52px;height:52px;border-radius:14px;object-fit:cover" alt="">
-        <div class="rt" style="flex:1;min-width:0">
-          <div class="t" style="font-size:14.5px;font-weight:600">Blade &amp; Stone</div>
-          <div class="m" style="font-size:12px;color:var(--ink-2)">Feldbergstrasse 82, <span class="rate" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:10px;height:10px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4</span></div>
-        </div>
-        <span class="statuspill ok"><i data-lucide="users"></i>3 in queue</span>
+    <div class="scroller" style="margin-top:14px">
+      <div class="wcard">
+        <div class="r1"><h3>Blade &amp; Stone</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4</span></div>
+        <div class="loc">Feldbergstrasse 82, Basel</div>
+        <div class="wmeta"><span class="free"><span class="dotw"></span>Free in ~30 min</span><span class="ahead">3 ahead</span></div>
+      </div>
+      <div class="wcard">
+        <div class="r1"><h3>The Fade Room</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span></div>
+        <div class="loc">Hammerstrasse 65, Basel</div>
+        <div class="wmeta"><span class="free"><span class="dotw"></span>Free now</span><span class="ahead">0 ahead</span></div>
+      </div>
+      <div class="wcard">
+        <div class="r1"><h3>Old Town Barbers</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span></div>
+        <div class="loc">Klybeckstrasse 12, Basel</div>
+        <div class="wmeta"><span class="free"><span class="dotw"></span>Free in ~15 min</span><span class="ahead">1 ahead</span></div>
       </div>
     </div>
+    <div class="pagepad" style="margin-top:12px"><button class="cta" style="height:48px;font-size:14.5px;background:var(--sunken);color:var(--ink);border:0">All walk-ins <i data-lucide="chevron-right" style="width:15px;height:15px"></i></button></div>
   </div>
 
   <div class="sect">
     <div class="shead pagepad"><h2 class="h-section">Find your inspiration.</h2></div>
     <div class="scroller">
-      <div class="inspo"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=400&q=80"><div class="scrim-band"></div><span class="tag">Voluminous Layers</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
-      <div class="inspo"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80"><div class="scrim-band"></div><span class="tag">Curtain Bangs</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
-      <div class="inspo"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&q=80"><div class="scrim-band"></div><span class="tag">Skin Fade</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=400&q=80"><div class="scrim-band"></div><span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span><span class="tag">Voluminous Layers</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80"><div class="scrim-band"></div><span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span><span class="tag">Curtain Bangs</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&q=80"><div class="scrim-band"></div><span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span><span class="tag">Skin Fade</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
     </div>
   </div>
 

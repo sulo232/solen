@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>03 Salon PDP, full page, new rules</title>
+<title>03 Salon PDP, ALL live sections, new rules</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -28,22 +28,62 @@
   .svc .m b{color:var(--ink);font-weight:600}
   .book{flex:none;height:40px;padding:0 19px;border-radius:999px;border:1px solid var(--border);background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;transition:border-color .15s}
   .book:hover{border-color:var(--ink)}
-  .team{display:flex;gap:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .allbtn{width:100%;height:46px;border:0;border-radius:999px;background:var(--sunken);font-family:'Inter',sans-serif;font-weight:600;font-size:14px;margin-top:14px}
+  /* team (live: avatar + rating badge pill + name + specialty) */
+  .team{display:flex;gap:18px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
   .team::-webkit-scrollbar{display:none}
-  .member{display:flex;flex-direction:column;align-items:center;gap:8px;flex:none;width:76px}
-  .member img{width:64px;height:64px}
-  .member b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
-  .member span{font-size:11px;color:var(--ink-2);margin-top:-4px}
+  .member{display:flex;flex-direction:column;align-items:center;flex:none;width:86px;position:relative}
+  .member img{width:72px;height:72px}
+  .member .rb{margin-top:-11px;background:#fff;border-radius:999px;box-shadow:0 1px 5px rgba(0,0,0,.12);padding:2px 8px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;z-index:2}
+  .member .rb svg{width:9px;height:9px;fill:var(--star)}
+  .member b{font-size:13.5px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:86px}
+  .member span{font-size:11px;color:var(--ink-2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:86px}
+  /* reviews: histogram + approved review block */
+  .hist{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+  .hrow{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-2)}
+  .hrow .bar{flex:1;height:5px;border-radius:99px;background:var(--sunken);overflow:hidden}
+  .hrow .bar i{display:block;height:100%;border-radius:99px;background:var(--ink)}
+  .hrow .l{width:10px;text-align:center;font-variant-numeric:tabular-nums}
+  .hrow .c{width:14px;text-align:right;font-variant-numeric:tabular-nums}
   .stars{display:flex;gap:2px}
   .stars svg{width:15px;height:15px;fill:var(--star)}
   .rev .av{width:44px;height:44px;border-radius:99px;background:var(--sunken);display:grid;place-items:center;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:14px;flex:none}
+  /* portfolio mosaic (live: 6-photo grid) */
+  .mosaic{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
+  .mosaic img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block}
+  /* gift card row */
+  .giftrow{display:flex;align-items:center;gap:13px;border:1px solid var(--border);border-radius:18px;padding:15px;margin-top:14px}
+  .giftrow .gi{width:42px;height:42px;border-radius:12px;background:var(--blue-pale);display:grid;place-items:center;flex:none}
+  .giftrow .gi .lucide{width:19px;height:19px;color:var(--blue)}
+  /* map */
+  .mapcard{position:relative;height:170px;border-radius:18px;background:
+    linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:34px 34px;background-color:#FAFAFA;overflow:hidden;display:grid;place-items:center;margin-top:14px}
+  .mapcard .lucide{width:26px;height:26px;color:var(--ink)}
+  /* hours */
+  .hours{margin-top:10px}
+  .hrr{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:8px 0;color:var(--ink-2)}
+  .hrr .d{width:8px;height:8px;border-radius:99px;background:var(--green);flex:none}
+  .hrr.closed .d{background:var(--ink-dis)}
+  .hrr .day{flex:1}
+  .hrr.today{font-weight:700;color:var(--ink)}
+  .hrr .t{font-variant-numeric:tabular-nums}
+  /* amenities */
+  .amen{margin-top:10px}
+  .amr{display:flex;align-items:center;gap:11px;font-size:13.5px;padding:8px 0;color:var(--ink)}
+  .amr .lucide{width:16px;height:16px;color:var(--ink-2);flex:none}
+  /* nearby 2-up */
+  .near{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  /* link pills */
+  .lpills{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .lpill{border:1px solid var(--border);border-radius:999px;padding:9px 15px;font-size:13px;font-weight:500;background:#fff}
 </style>
 </head>
 <body>
 
-<div class="note"><b>03 Salon PDP, full page with the new rules.</b> Real structure top to bottom: hero gallery (frosted 38px controls), title block, Termin/Walk-in segmented, services with duration tiers + Book pills, team, reviews, address. Applied: DS-A4 dots over a DS-10 band (replaces the "1/6" chip), DS-6 blue hover on the review count, DS-2 icon row in service cards, DS-5 rhythm. Then: walk-in tab, closed, empty reviews, long names.</div>
+<div class="note"><b>03 Salon PDP, the COMPLETE live page.</b> Every section the real page has, in real order: gallery hero, title block, segmented tabs, services (tiers + See-all), team (rating badges + specialty), reviews (histogram + the approved review block), portfolio mosaic, gift cards, about, location map, opening hours, good-to-know, nearby salons, explore pills, sticky CTA. New rules where they apply: gallery dots over a DS-10 band, blue hover counts, DS-2 icon rows, DS-5 rhythm, normal-case section labels (no tracked-uppercase on nearby cards). States follow below.</div>
 
-<div class="lbl">DEFAULT, appointment tab</div>
+<div class="lbl">DEFAULT, full page (scroll inside)</div>
 <div class="frame">
   <div class="hero">
     <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80">
@@ -56,7 +96,7 @@
   <div class="pagepad" style="margin-top:18px">
     <h1 class="h-page">Old Town Barbers</h1>
     <div class="meta1"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></div>
-    <div class="meta2"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)">, closes 19:00</span></div>
+    <div class="meta2"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)"> until 19:00</span></div>
     <div class="meta3"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel</div>
   </div>
   <div class="pagepad" style="margin-top:24px"><div class="seg"><button class="on"><i data-lucide="calendar"></i>Appointment</button><button><i data-lucide="footprints"></i>Walk-in</button></div></div>
@@ -65,46 +105,139 @@
     <h2 class="h-section">Services</h2>
     <div style="display:flex;gap:8px;margin-top:12px"><span class="pill on">All</span><span class="pill">Barbershop</span></div>
     <div class="tier"><b>Express</b><span>15–30 min</span></div>
-    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div></div><button class="book">Book</button></div>
-    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Beard trim</div><div class="m"><span><i data-lucide="clock"></i>20 min</span><span><b>CHF 25</b></span></div></div><button class="book">Book</button></div>
-    <div class="tier"><b>Classic</b><span>31–60 min</span></div>
-    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Cut + beard combo</div><div class="m"><span><i data-lucide="clock"></i>50 min</span><span><b>CHF 65</b></span></div></div><button class="book">Book</button></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span>from <b>CHF 45</b></span></div></div><button class="book">Book</button></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Beard trim</div><div class="m"><span><i data-lucide="clock"></i>20 min</span><span>from <b>CHF 28</b></span></div></div><button class="book">Book</button></div>
+    <div class="tier"><b>Classic</b><span>45–60 min</span></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Cut + beard combo</div><div class="m"><span><i data-lucide="clock"></i>45 min</span><span>from <b>CHF 68</b></span></div></div><button class="book">Book</button></div>
+    <button class="allbtn">See all services</button>
   </div>
 
   <div class="sect pagepad">
-    <h2 class="h-section">Team</h2>
-    <div class="team" style="margin-top:14px">
-      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&q=80" alt=""><b>Luca</b><span>Barber</span></div>
-      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80" alt=""><b>Dario</b><span>Barber</span></div>
-      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&q=80" alt=""><b>Nik</b><span>Owner</span></div>
+    <div style="display:flex;align-items:baseline"><h2 class="h-section">Team</h2><span class="spacer"></span><a class="linkblue">See all</a></div>
+    <div class="team" style="margin-top:16px">
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=160&q=80" alt=""><span class="rb"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span><b>Luca</b><span>Men's cuts</span></div>
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&q=80" alt=""><span class="rb"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span><b>Emma</b><span>Men's cuts</span></div>
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&q=80" alt=""><span class="rb"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span><b>Mara</b><span>Men's cuts</span></div>
     </div>
   </div>
 
   <div class="sect pagepad">
     <div style="display:flex;align-items:center;gap:8px"><h2 class="h-section">Reviews</h2><span class="spacer"></span><i data-lucide="flag" style="width:16px;height:16px;color:var(--ink-3)"></i></div>
-    <div class="meta1" style="margin-top:10px;font-size:16px"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><b class="num">4.3</b> <span class="cnt num">(12)</span></div>
-    <div class="rev" style="margin-top:14px">
-      <div style="display:flex;gap:12px;align-items:center"><span class="av">LK</span><div><b style="font-size:14px">Lara K.</b><div class="meta">2 weeks ago</div></div></div>
+    <div class="meta1" style="margin-top:12px;font-size:16px"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><b class="num">4.3</b> <span class="cnt num">(12)</span></div>
+    <div class="hist">
+      <div class="hrow"><span class="l">5</span><span class="bar"><i style="width:50%"></i></span><span class="c">6</span></div>
+      <div class="hrow"><span class="l">4</span><span class="bar"><i style="width:25%"></i></span><span class="c">3</span></div>
+      <div class="hrow"><span class="l">3</span><span class="bar"><i style="width:25%"></i></span><span class="c">3</span></div>
+      <div class="hrow"><span class="l">2</span><span class="bar"><i style="width:0%"></i></span><span class="c">0</span></div>
+      <div class="hrow"><span class="l">1</span><span class="bar"><i style="width:0%"></i></span><span class="c">0</span></div>
+    </div>
+    <div class="rev" style="margin-top:18px">
+      <div style="display:flex;gap:12px;align-items:center"><span class="av">LK</span><div><b style="font-size:14px">Lara K.</b><div class="meta">Verified booking, 2 weeks ago</div></div></div>
       <div class="stars" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg></div>
       <p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:8px">Booked in 30 seconds, no calls. The cut itself was exactly what I asked for and the place has a great… <a class="linkblue">Read more</a></p>
     </div>
     <button class="cta ghost" style="margin-top:18px;height:48px;font-size:14.5px">Load more</button>
   </div>
 
-  <div class="sect pagepad" style="padding-bottom:20px">
-    <h2 class="h-section">Where you'll find us</h2>
-    <div class="meta3" style="margin-top:12px"><i data-lucide="map-pin"></i>Münsterplatz 11, 4051 Basel<a class="linkblue" style="margin-left:auto">Directions</a></div>
-    <div class="meta3"><i data-lucide="clock"></i>Mon to Sat, 09:00 to 19:00</div>
+  <div class="sect pagepad">
+    <div style="display:flex;align-items:baseline;gap:8px"><h2 class="h-section">Portfolio</h2><span class="meta num">6</span></div>
+    <div class="mosaic">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=320&h=320&fit=crop&q=80">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=320&h=320&fit=crop&q=80">
+      <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=320&h=320&fit=crop&q=80">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=320&h=320&fit=crop&q=80">
+      <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=320&h=320&fit=crop&q=80">
+      <img src="https://images.unsplash.com/photo-1567894340315-735d7c361db0?w=320&h=320&fit=crop&q=80">
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <div class="giftrow">
+      <span class="gi"><i data-lucide="gift"></i></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14.5px">Gift cards</div>
+        <div class="meta" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Give someone a day at Old Town Barbers.</div>
+      </div>
+      <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink-3);flex:none"></i>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">About us</h2>
+    <p class="sub" style="font-size:14px;margin-top:10px">Classic barbershop with hot-towel shaves.</p>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Location</h2>
+    <div class="mapcard"><i data-lucide="map-pin"></i></div>
+    <div class="meta3" style="margin-top:12px"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel<a class="linkblue" style="margin-left:auto;display:flex;align-items:center;gap:4px"><i data-lucide="navigation" style="width:13px;height:13px"></i>Open in Maps</a></div>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Opening hours</h2>
+    <div class="hours">
+      <div class="hrr"><span class="d"></span><span class="day">Monday</span><span class="t">09:00 – 18:00</span></div>
+      <div class="hrr"><span class="d"></span><span class="day">Tuesday</span><span class="t">09:00 – 19:00</span></div>
+      <div class="hrr"><span class="d"></span><span class="day">Wednesday</span><span class="t">09:00 – 19:00</span></div>
+      <div class="hrr today"><span class="d"></span><span class="day">Thursday</span><span class="t">09:00 – 19:00</span></div>
+      <div class="hrr"><span class="d"></span><span class="day">Friday</span><span class="t">09:00 – 19:00</span></div>
+      <div class="hrr"><span class="d"></span><span class="day">Saturday</span><span class="t">09:00 – 17:00</span></div>
+      <div class="hrr closed"><span class="d"></span><span class="day">Sunday</span><span class="t">Closed</span></div>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Good to know</h2>
+    <div class="amen">
+      <div class="amr"><i data-lucide="badge-check"></i>Instant confirmation</div>
+      <div class="amr"><i data-lucide="shield-check"></i>Free cancellation until 24 h before</div>
+      <div class="amr"><i data-lucide="baby"></i>Kid-friendly</div>
+      <div class="amr"><i data-lucide="wifi"></i>Free Wi-Fi</div>
+      <div class="amr"><i data-lucide="accessibility"></i>Wheelchair accessible</div>
+      <div class="amr"><i data-lucide="train-front"></i>Near public transport</div>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Nearby</h2>
+    <div class="near">
+      <div class="salcard" style="width:auto">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=480&h=480&fit=crop&q=80"></div>
+        <div class="tx">
+          <div class="r1"><h3>Blade &amp; Stone</h3></div>
+          <div class="detrow"><span class="rate" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4 <span class="cnt">(11)</span></span><span class="meta" style="font-size:12px">Barbershop</span></div>
+        </div>
+      </div>
+      <div class="salcard" style="width:auto">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=480&h=480&fit=crop&q=80"></div>
+        <div class="tx">
+          <div class="r1"><h3>The Fade Factory</h3></div>
+          <div class="detrow"><span class="rate" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(11)</span></span><span class="meta" style="font-size:12px">Barbershop</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect pagepad" style="padding-bottom:18px">
+    <h2 class="h-section" style="font-size:18px">Treat yourself, anytime.</h2>
+    <div class="lpills">
+      <span class="lpill">Other salons in Basel</span>
+      <span class="lpill">Other salons in Grossbasel</span>
+      <span class="lpill">Coiffeurs</span>
+      <span class="lpill">Barbershops</span>
+      <span class="lpill">Nail studios</span>
+      <span class="lpill">Spa &amp; wellness</span>
+    </div>
   </div>
 
   <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Book appointment <i data-lucide="arrow-right"></i></button></div>
 </div>
 
-<div class="lbl">WALK-IN TAB<small>real queue facts only, nothing invented</small></div>
+<div class="lbl">WALK-IN TAB</div>
 <div class="frame">
   <div class="pagepad" style="margin-top:16px">
     <h1 class="h-page">Old Town Barbers</h1>
-    <div class="meta2" style="margin-top:6px"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)">, closes 19:00</span></div>
+    <div class="meta2" style="margin-top:6px"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)"> until 19:00</span></div>
   </div>
   <div class="pagepad" style="margin-top:20px"><div class="seg"><button><i data-lucide="calendar"></i>Appointment</button><button class="on"><i data-lucide="footprints"></i>Walk-in</button></div></div>
   <div class="pagepad" style="margin-top:16px;padding-bottom:22px">
@@ -122,17 +255,17 @@
   <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Join the queue <i data-lucide="arrow-right"></i></button></div>
 </div>
 
-<div class="lbl">CLOSED<small>honest status; future booking open; walk-in disabled</small></div>
+<div class="lbl">CLOSED</div>
 <div class="frame">
   <div class="pagepad" style="margin-top:16px">
     <h1 class="h-page">Old Town Barbers</h1>
     <div class="meta1"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></div>
-    <div class="meta2"><span style="color:var(--red);font-weight:600">Closed</span><span style="color:var(--ink-2)">, opens tomorrow 09:00</span></div>
+    <div class="meta2"><span style="color:var(--red);font-weight:600">Closed</span><span style="color:var(--ink-2)"> opens tomorrow 09:00</span></div>
     <div class="meta3"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel</div>
   </div>
   <div class="pagepad" style="margin-top:20px"><div class="seg"><button class="on"><i data-lucide="calendar"></i>Appointment</button><button style="opacity:.45"><i data-lucide="footprints"></i>Walk-in</button></div></div>
   <div class="pagepad" style="margin-top:4px;padding-bottom:22px">
-    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div></div><button class="book">Book</button></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span>from <b>CHF 45</b></span></div></div><button class="book">Book</button></div>
   </div>
   <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Book for tomorrow <i data-lucide="arrow-right"></i></button></div>
 </div>
@@ -146,7 +279,7 @@
       <h2 style="font-size:18px">No reviews yet.</h2>
       <p>Be the first: book, visit, and tell the next person what to expect.</p>
     </div>
-    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Balayage + gloss + structured blowout treatment package</div><div class="m"><span><i data-lucide="clock"></i>2 h 30 min</span><span><b>CHF 240</b></span></div></div><button class="book">Book</button></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Balayage + gloss + structured blowout treatment package</div><div class="m"><span><i data-lucide="clock"></i>2 h 30 min</span><span>from <b>CHF 240</b></span></div></div><button class="book">Book</button></div>
     <p class="meta" style="margin-top:10px;color:var(--green-text);font-weight:600">long service name: one line, never pushes the Book button</p>
   </div>
 </div>

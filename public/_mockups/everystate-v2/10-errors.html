@@ -41,15 +41,21 @@
   </div>
 </div>
 
-<div class="lbl">OFFLINE</div>
+<div class="lbl">OFFLINE (iterated: typographic like its siblings, searching animation)</div>
 <div class="frame">
-  <div class="empty" style="padding-top:84px;padding-bottom:84px">
-    <div style="width:96px;height:96px;border-radius:999px;background:var(--sunken);display:grid;place-items:center"><i data-lucide="wifi-off" style="width:36px;height:36px;stroke-width:1.5"></i></div>
-    <h2 style="font-size:20px">You're offline.</h2>
-    <p>No connection right now. We'll pick up where you left off the moment you're back.</p>
-    <button class="cta ghost">Retry</button>
+  <div class="empty" style="padding-top:80px;padding-bottom:84px">
+    <div class="bigtype" style="font-size:64px;display:flex;align-items:flex-start;gap:6px">Offline<span class="wifiwrap"><svg viewBox="0 0 24 24" fill="none" stroke="#9B9B9B" stroke-width="2" stroke-linecap="round" style="width:30px;height:30px;margin-top:6px"><path class="arc a3" d="M2 8.5a16 16 0 0 1 20 0"/><path class="arc a2" d="M5 12.5a11 11 0 0 1 14 0"/><path class="arc a1" d="M8.5 16.5a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1" fill="#9B9B9B" stroke="none"/></svg></span></div>
+    <h2 style="font-size:20px">No connection.</h2>
+    <p>We keep looking and reconnect the moment you're back. Nothing you did is lost.</p>
+    <button class="cta ghost">Retry now</button>
   </div>
 </div>
+<style>
+  .arc{animation:seek 2.1s ease-in-out infinite}
+  .a2{animation-delay:.25s}
+  .a3{animation-delay:.5s}
+  @keyframes seek{0%,100%{opacity:.2}40%{opacity:1}}
+</style>
 
 <script>lucide.createIcons();</script>
 </body>
