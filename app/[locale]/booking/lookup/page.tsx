@@ -316,9 +316,7 @@ function FormView(props: {
       noValidate
       className="flex flex-1 flex-col"
     >
-      <div className="hidden md:mb-3.5 md:block md:text-[12px] md:font-semibold md:uppercase md:tracking-[0.08em] md:text-s-ink-2">
-        {t("eyebrow")}
-      </div>
+      {/* Tracked-uppercase eyebrow deleted (A21, 2026-06-11 mockup-15 sweep) */}
       <h1 className="font-display text-[21px] font-semibold leading-[1.2] tracking-[-0.018em] md:text-[38px] md:font-bold md:leading-[1.1] md:tracking-[-0.02em]">
         {t("title")}
       </h1>
@@ -578,7 +576,7 @@ function OpenedView({
         <h1 className="font-display text-[21px] font-semibold tracking-[-0.018em]">
           {t("yourBooking")}
         </h1>
-        <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[5px] text-[12px] font-semibold uppercase tracking-[0.04em] text-s-success">
+        <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[5px] text-[12px] font-semibold text-s-success">
           <span className="h-1.5 w-1.5 rounded-pill bg-s-success" aria-hidden />
           {t("statusCompleted")}
         </span>
@@ -587,7 +585,7 @@ function OpenedView({
       {/* order-number strip with copy */}
       <div className="mt-3.5 flex items-center justify-between gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-[11px]">
         <div>
-          <div className="text-[12px] font-semibold uppercase tracking-[0.07em] text-s-ink-2">
+          <div className="text-[12px] font-medium text-s-ink-2">
             {t("orderNumber")}
           </div>
           <div className="mt-[2px] font-mono-code text-[16px] font-semibold tracking-[0.04em] text-s-ink">

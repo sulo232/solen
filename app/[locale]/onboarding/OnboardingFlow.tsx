@@ -219,7 +219,7 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
           {i === TOTAL - 1 ? "Fertig" : "Weiter"}
         </button>
         <div className="text-center">
-          <button type="button" onClick={next} className="text-[13px] text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors">Später</button>
+          <button type="button" onClick={next} className="text-[13px] font-medium text-s-ink-2 hover:text-s-ink transition-colors">Später</button>
         </div>
       </div>
     </div>

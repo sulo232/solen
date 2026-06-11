@@ -269,4 +269,12 @@ ink-underline — live was already correct, no fix needed). Others queued for Ph
    older artifacts, left in place pending owner call.
 3. **Blue balance v3 (council-ruled, supersedes the round-2 "all links blue" rule).** Philosophy:
    "Blue is the HYPERLINK color, not the clickability color." Codified in LOCKFILE §1.5 v3;
-   mockups + shipped 404/error swept the same day.
+   mockups + shipped 404/error swept the same day. **v3.1 addendum (same day): NO resting
+   underlines on ink links** — affordance = weight + ink-2 shade + position; hover darkens.
+4. **Mockup-15 mismatch error NOT built (flagged, 2026-06-11):** the mockup's "That email
+   doesn't match this order number" error would break the lookup endpoint's deliberate
+   anti-enumeration design (POST /api/bookings/resend-access returns a uniform 200 so the
+   page never leaks whether a booking exists; see the header comment in
+   app/[locale]/booking/lookup/page.tsx). Security wins; the uniform "check your email"
+   state stays. If the owner wants a mismatch error, it requires a product decision to
+   accept the enumeration leak.
