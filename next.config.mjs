@@ -15,6 +15,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // W10 IA flip (2026-06-12): /fuer-salons is the canonical B2B route.
+      { source: '/:locale(de|en|fr|it)/partner', destination: '/:locale/fuer-salons', permanent: true },
+      { source: '/partner', destination: '/de/fuer-salons', permanent: true },
+      { source: '/:locale(de|en|fr|it)/business', destination: '/:locale/fuer-salons', permanent: true },
+      { source: '/business', destination: '/de/fuer-salons', permanent: true },
       {
         source: "/:locale/coiffeur",
         has: [{ type: "query", key: "quartier" }],

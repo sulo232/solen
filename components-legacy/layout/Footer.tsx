@@ -84,7 +84,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {[
-                { label: t("forSalonsPartner") || "Partner werden", href: `/${locale}/partner` },
+                { label: t("forSalonsPartner") || "Partner werden", href: `/${locale}/fuer-salons` },
                 { label: t("forSalonsDashboard") || "Dashboard", href: `/${locale}/dashboard` },
               ].map(({ label, href }) => (
                 <li key={label}>

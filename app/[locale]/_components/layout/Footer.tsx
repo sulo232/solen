@@ -35,7 +35,7 @@ const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: stri
     items: [
       // "Partner werden" duplicate row removed 2026-06-11: it pointed at the same
       // /partner route as "Für Salons" (li key={item.href} -> React dup-key error).
-      { label: "Für Salons", href: "/partner" },
+      { label: "Für Salons", href: "/fuer-salons" },
       { label: "Salon-Hilfe", href: "/help" },
     ],
   },

@@ -17,7 +17,7 @@ const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priorit
   { path: "/spa",         freq: "weekly",  priority: 0.8 },
   { path: "/makeup",      freq: "weekly",  priority: 0.8 },
   { path: "/waxing",      freq: "weekly",  priority: 0.8 },
-  { path: "/partner",     freq: "weekly",  priority: 0.7 },
+  { path: "/fuer-salons", freq: "weekly",  priority: 0.7 },
   { path: "/impressum",   freq: "weekly",  priority: 0.3 },
   { path: "/agb",         freq: "weekly",  priority: 0.3 },
   { path: "/datenschutz", freq: "weekly",  priority: 0.3 },
