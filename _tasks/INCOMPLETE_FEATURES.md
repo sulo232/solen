@@ -227,3 +227,9 @@ Replaced the fabricated walk-in analytics (`Math.random`/`Math.sin` sparklines, 
 
 ## Auto-assignment + daily-limit ENFORCEMENT — RESOLVED (Phase E, 2026-06-03)
 - SchedulingTab persists `auto_assign_method` / `daily_limit_enabled` / `daily_limit`. The booking POST now consumes them via `lib/bookings/auto-assign.ts`: an "any staff" booking auto-assigns per **least_busy** (fewest bookings that day) / **round_robin** (least-recently assigned) / **manual** (first available); the per-stylist **daily cap** drops over-capped stylists for "any" and rejects (`STAFF_DAILY_LIMIT`) a specifically-chosen capped stylist. Opt-in: defaults (`manual` + limit off) keep the exact prior "first available" behaviour, and any engine error falls back to the first slot. **Verify** with a live multi-staff booking (set round_robin/least_busy + a low daily_limit, book "egal" a few times, confirm rotation + the cap).
+
+## Booking: per-service staff assignment (Fresha parity gap)
+- **Where:** `components-legacy/booking/StaffStep.tsx` (mockup-20 flow, 2026-06-12)
+- **What:** Fresha's team step also offers "choose a different team member per service" for multi-service carts; Solen supports ONE stylist per booking (`formData.selectedStaffId`). StaffStep filters to staff capable of ALL selected services, so mixed carts (e.g. cut + nails) can collapse to "Keine Präferenz" only.
+- **Blocker:** booking schema stores a single `staff_member_id` per booking; per-service assignment needs per-line staff + slot intersection logic.
+- **Next steps:** if demanded, add per-service staff rows on StaffStep + extend slot engine to intersect availability per line item.
