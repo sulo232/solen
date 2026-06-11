@@ -12,8 +12,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import SalonCard from "@/components-legacy/SalonCard";
-import Link from "next/link";
-import { Heart } from "lucide-react";
+import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
 
 export default async function ProfileFavoritesPage({
   params,
@@ -58,6 +57,15 @@ export default async function ProfileFavoritesPage({
     });
   }
 
+  // Mockup-19 Option B (owner-picked 2026-06-11): real top-rated salons for the
+  // empty-state rail + banner photo. Light query, only runs when the list is empty.
+  const { data: topSalons } = await supabase
+    .from("salons")
+    .select("slug, name, cover_photo_url, average_rating, review_count, quartier")
+    .eq("is_active", true)
+    .order("average_rating", { ascending: false })
+    .limit(6);
+
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <div>
@@ -68,37 +76,21 @@ export default async function ProfileFavoritesPage({
       </div>
 
       {salons.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center px-6 pb-16 pt-12 text-center">
-          {/* Mockup 09 empty state (approved 2026-06-11): 15 voice, heart hero tile +
-              the real 3D category icons (owner round-2: "use the real 3D icons"). */}
-          <h2 className="font-heading text-[19px] font-semibold tracking-[-0.01em] text-s-ink">
-            Noch keine Favoriten.
-          </h2>
-          <p className="mt-2 max-w-[300px] font-body text-[13.5px] leading-relaxed text-s-ink-2">
-            Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal.
-          </p>
-          <div className="mt-5 flex gap-2.5">
-            <div className="flex h-[104px] w-[84px] flex-col items-center justify-center gap-2 rounded-[14px] bg-s-ink text-white">
-              <Heart size={22} strokeWidth={1.7} aria-hidden />
-              <span className="text-[9.5px] font-semibold">dein erster</span>
-            </div>
-            <div className="flex h-[104px] w-[84px] flex-col items-center justify-center gap-2 rounded-[14px] bg-s-bg-sunken text-s-ink-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/icons/categories/scissors.png" alt="" className="h-[34px] w-[34px] object-contain" />
-              <span className="text-[9.5px] font-semibold">Coiffeur</span>
-            </div>
-            <div className="flex h-[104px] w-[84px] flex-col items-center justify-center gap-2 rounded-[14px] bg-s-bg-sunken text-s-ink-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/icons/categories/nails.png" alt="" className="h-[34px] w-[34px] object-contain" />
-              <span className="text-[9.5px] font-semibold">Nails</span>
-            </div>
-          </div>
-          <Link
-            href={`/${locale}/coiffeur`}
-            className="mt-6 inline-flex h-[46px] items-center justify-center rounded-btn border border-s-border bg-white px-7 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink"
-          >
-            Salons entdecken
-          </Link>
+        <div className="mt-6">
+          <EmptyStateDiscovery
+            locale={locale}
+            title="Noch keine Favoriten."
+            lead="Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal."
+            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
+            bannerTitle="Entdecken öffnen"
+            bannerSub="Styles, Salons und Inspiration aus Basel"
+            bannerHref={`/${locale}/entdecken`}
+            hintIcon="heart"
+            hintText="Das Herz findest du oben rechts auf jedem Salon-Foto."
+            railTitle="Top bewertet"
+            railHref={`/${locale}/coiffeur`}
+            salons={topSalons ?? []}
+          />
         </div>
       ) : (
         <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">

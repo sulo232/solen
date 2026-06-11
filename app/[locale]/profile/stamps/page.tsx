@@ -19,6 +19,7 @@ import { Check } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import StampCard from "@/components-legacy/loyalty/StampCard";
 import HeroStampCard from "@/components-legacy/loyalty/HeroStampCard";
+import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
 
 /**
  * Schema note (verified 2026-05-02): loyalty programs live in `loyalty_cards`;
@@ -92,24 +93,31 @@ export default async function ProfileStampsPage({
   const otherActive = active.filter((c) => c.id !== heroId);
 
   if (allCards.length === 0) {
+    // Mockup-19 Option B: real top-rated salons for the empty-state rail + banner.
+    const { data: topSalons } = await supabase
+      .from("salons")
+      .select("slug, name, cover_photo_url, average_rating, review_count, quartier")
+      .eq("is_active", true)
+      .order("average_rating", { ascending: false })
+      .limit(6);
     return (
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Stempel</h1>
         <div className="mt-8">
-          <div className="flex flex-col items-center px-6 pb-16 pt-10 text-center">
-            <h2 className="font-heading text-[19px] font-semibold tracking-[-0.01em] text-s-ink">
-              Noch keine Stempel.
-            </h2>
-            <p className="mt-2 max-w-[300px] font-body text-[13.5px] leading-relaxed text-s-ink-2">
-              Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung.
-            </p>
-            <Link
-              href={`/${locale}/coiffeur`}
-              className="mt-6 inline-flex h-[46px] items-center justify-center rounded-btn border border-s-border bg-white px-7 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink"
-            >
-              Salons entdecken
-            </Link>
-          </div>
+          <EmptyStateDiscovery
+            locale={locale}
+            title="Noch keine Stempel."
+            lead="Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung."
+            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
+            bannerTitle="So funktioniert's"
+            bannerSub="Pro Besuch ein Stempel, volle Karte = Belohnung"
+            bannerHref={`/${locale}/coiffeur`}
+            hintIcon="stamp"
+            hintText="Der Stempel kommt automatisch nach jedem abgeschlossenen Termin."
+            railTitle="Beliebt in Basel"
+            railHref={`/${locale}/coiffeur`}
+            salons={topSalons ?? []}
+          />
         </div>
       </main>
     );

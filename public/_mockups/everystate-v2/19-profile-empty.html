@@ -2,89 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>19 Profile empty states v2, balanced full-height (2 options)</title>
+<title>19 Profile empty states v3, Option B at real phone size (390x844)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
+  /* REAL iPhone viewport: 390x844, overflow hidden — what you see is exactly one screen */
+  .phone{width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;background:#fff;border-radius:34px;box-shadow:0 24px 60px rgba(0,0,0,.16);position:relative}
+  .body{flex:1;display:flex;flex-direction:column;padding:0 16px}
   .ph1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em}
-  .lead{font-size:14px;line-height:1.55;color:var(--ink-2);margin-top:6px;max-width:300px}
-  .catgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-  .cat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1/1.05;border-radius:16px;background:var(--sunken);font-size:12px;font-weight:600;color:var(--ink)}
-  .cat img{width:44px;height:44px;object-fit:contain}
-  .railhead{display:flex;align-items:center;justify-content:space-between;margin-top:28px}
+  .lead{font-size:14px;line-height:1.55;color:var(--ink-2);margin-top:6px}
+  .bigdisc{position:relative;border-radius:18px;overflow:hidden;margin-top:18px;height:200px;flex:none}
+  .bigdisc img{width:100%;height:100%;object-fit:cover}
+  .bigdisc .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.62));display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
+  .bigdisc .ov b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;color:#fff}
+  .bigdisc .ov span{font-size:13px;color:rgba(255,255,255,.85);margin-top:2px}
+  .heartrow{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--sunken);border-radius:14px;padding:13px 14px;flex:none}
+  .heartrow .hd{width:36px;height:36px;border-radius:999px;background:#fff;display:grid;place-items:center;flex:none}
+  .heartrow .hd .lucide{width:18px;height:18px;color:#FF3366}
+  .heartrow p{font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+  .railhead{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:18px}
   .railhead h2{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em}
   .railhead a{display:inline-flex;align-items:center;gap:2px;font-size:13.5px;font-weight:600;color:var(--ink)}
   .railhead a .lucide{width:14px;height:14px}
-  .rail{display:flex;gap:12px;overflow-x:auto;margin:12px -16px 0;padding:0 16px 6px;scrollbar-width:none}
-  .scard{flex:none;width:200px}
-  .scard .pic{position:relative;height:130px;border-radius:16px;overflow:hidden;background:var(--sunken)}
+  .rail{display:flex;gap:12px;overflow-x:auto;margin:12px -16px 0;padding:0 16px;scrollbar-width:none;flex:none}
+  .scard{flex:none;width:210px;padding-bottom:22px}
+  .scard .pic{position:relative;height:140px;border-radius:16px;overflow:hidden;background:var(--sunken)}
   .scard .pic img{width:100%;height:100%;object-fit:cover}
-  .scard .pic .hb{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);display:grid;place-items:center}
-  .scard .pic .hb .lucide{width:15px;height:15px}
-  .scard .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;margin-top:8px}
+  .scard .pic .hb{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);display:grid;place-items:center}
+  .scard .pic .hb .lucide{width:16px;height:16px}
+  .scard .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14.5px;margin-top:9px}
   .scard .meta{display:flex;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-2);margin-top:3px}
   .scard .meta .lucide{width:12px;height:12px;color:#FFC32B;fill:#FFC32B}
-  .bigdisc{position:relative;border-radius:18px;overflow:hidden;margin-top:18px;height:170px}
-  .bigdisc img{width:100%;height:100%;object-fit:cover}
-  .bigdisc .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.62));display:flex;flex-direction:column;justify-content:flex-end;padding:14px}
-  .bigdisc .ov b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;color:#fff}
-  .bigdisc .ov span{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:2px}
-  .heartrow{display:flex;align-items:center;gap:9px;margin-top:16px;background:var(--sunken);border-radius:14px;padding:12px 14px}
-  .heartrow .hd{width:34px;height:34px;border-radius:999px;background:#fff;display:grid;place-items:center;flex:none}
-  .heartrow .hd .lucide{width:17px;height:17px;color:#FF3366}
-  .heartrow p{font-size:12.5px;line-height:1.5;color:var(--ink-2)}
 </style>
 </head>
 <body>
 
-<div class="note"><b>19 Profile empty states v2.</b> Round-3 punch: the centered minimal version read unbalanced + empty (footer visible) and the ink "dein erster" tile read pitch black. Both options: content starts high, no black tile, the heart cue is a small pink hint row, and a REAL discovery rail fills the page (live page pulls actual nearby/top salons — demo content here). Option A = category grid + salon rail. Option B = discovery banner + salon rail. Same pattern applies to Stempel + Looks (last frame).</div>
+<div class="note"><b>19 Profile empty states v3 — Option B, REAL phone size.</b> Each frame is exactly 390×844 (iPhone viewport, overflow hidden): what you see is one full screen, no stretching, no visible footer. Layout fills the height: header + message top, discovery banner + heart hint middle, salon rail anchored to the bottom. Live page pulls real top/nearby salons for the rail.</div>
 
-<div class="lbl">FAVORITES, OPTION A — category grid + rail</div>
-<div class="frame">
+<div class="lbl">FAVORITES, empty (390×844)</div>
+<div class="phone">
   <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Favoriten</h1></div>
-  <div class="pagepad" style="padding-bottom:26px">
-    <div class="ph1" style="margin-top:10px">Noch keine Favoriten.</div>
-    <p class="lead">Tipp auf das Herz bei einem Salon und er landet hier. Fang bei deiner Kategorie an:</p>
-    <div class="catgrid">
-      <div class="cat"><img src="/icons/categories/scissors.png" alt="">Coiffeur</div>
-      <div class="cat"><img src="/icons/categories/clippers.png" alt="">Barber</div>
-      <div class="cat"><img src="/icons/categories/nails.png" alt="">Nails</div>
-    </div>
-    <div class="heartrow">
-      <span class="hd"><i data-lucide="heart"></i></span>
-      <p>Das Herz findest du oben rechts auf jedem Salon-Foto.</p>
-    </div>
-    <div class="railhead">
-      <h2>Beliebt in Basel</h2>
-      <a>Alle <i data-lucide="chevron-right"></i></a>
-    </div>
-    <div class="rail">
-      <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
-        <div class="nm">Muse Beauty Studio</div>
-        <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(82)</span> · Grossbasel</div>
-      </div>
-      <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
-        <div class="nm">Old Town Barbers</div>
-        <div class="meta"><i data-lucide="star"></i>4.8 <span class="num" style="color:var(--blue)">(64)</span> · Altstadt</div>
-      </div>
-      <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
-        <div class="nm">Nail Studio Bliss</div>
-        <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(51)</span> · Gundeli</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="lbl">FAVORITES, OPTION B — discovery banner + rail</div>
-<div class="frame">
-  <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Favoriten</h1></div>
-  <div class="pagepad" style="padding-bottom:26px">
-    <div class="ph1" style="margin-top:10px">Noch keine Favoriten.</div>
+  <div class="body">
+    <div class="ph1" style="margin-top:8px">Noch keine Favoriten.</div>
     <p class="lead">Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal.</p>
     <div class="bigdisc">
       <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=700&q=75" alt="">
@@ -100,44 +61,88 @@
     </div>
     <div class="rail">
       <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=400&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="pic"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=420&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
         <div class="nm">Joliz Aeschen</div>
         <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(120)</span> · Vorstädte</div>
       </div>
       <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="pic"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=420&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
         <div class="nm">Muse Beauty Studio</div>
         <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(82)</span> · Grossbasel</div>
+      </div>
+      <div class="scard">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=420&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="nm">Old Town Barbers</div>
+        <div class="meta"><i data-lucide="star"></i>4.8 <span class="num" style="color:var(--blue)">(64)</span> · Altstadt</div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="lbl">SAME PATTERN: STEMPEL + LOOKS (Option-A layout)</div>
-<div class="frame">
+<div class="lbl">STEMPEL, empty (390×844, same pattern)</div>
+<div class="phone">
   <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Stempel</h1></div>
-  <div class="pagepad" style="padding-bottom:10px">
-    <div class="ph1" style="margin-top:10px">Noch keine Stempel.</div>
+  <div class="body">
+    <div class="ph1" style="margin-top:8px">Noch keine Stempel.</div>
     <p class="lead">Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung.</p>
+    <div class="bigdisc">
+      <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=700&q=75" alt="">
+      <div class="ov"><b>So funktioniert's</b><span>Pro Besuch ein Stempel, volle Karte = Belohnung</span></div>
+    </div>
+    <div class="heartrow">
+      <span class="hd"><i data-lucide="stamp" style="color:var(--ink)"></i></span>
+      <p>Der Stempel kommt automatisch nach jedem abgeschlossenen Termin.</p>
+    </div>
     <div class="railhead">
       <h2>Salons mit Treuekarte</h2>
       <a>Alle <i data-lucide="chevron-right"></i></a>
     </div>
     <div class="rail">
       <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&q=70" alt=""></div>
+        <div class="pic"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=420&q=70" alt=""></div>
         <div class="nm">Old Town Barbers</div>
         <div class="meta"><i data-lucide="star"></i>4.8 <span class="num" style="color:var(--blue)">(64)</span> · 10 Stempel = 1 Cut</div>
       </div>
       <div class="scard">
-        <div class="pic"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=70" alt=""></div>
+        <div class="pic"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=420&q=70" alt=""></div>
         <div class="nm">Nail Studio Bliss</div>
-        <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(51)</span> · 8 Stempel = Gratis-Lack</div>
+        <div class="meta"><i data-lucide="star"></i>4.9 <span class="num" style="color:var(--blue)">(51)</span> · 8 Stempel = Lack gratis</div>
       </div>
     </div>
-    <div style="border-top:1px solid var(--border);margin-top:22px;padding-top:18px">
-      <div class="ph1" style="font-size:18px">Looks: gleiches Muster</div>
-      <p class="lead">"Noch keine Looks." + Discovery-Banner (Option B Stil) + Feed-Kacheln statt Salon-Rail.</p>
+  </div>
+</div>
+
+<div class="lbl">LOOKS, empty (390×844, same pattern)</div>
+<div class="phone">
+  <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Looks</h1></div>
+  <div class="body">
+    <div class="ph1" style="margin-top:8px">Noch keine Looks.</div>
+    <p class="lead">Sammle Inspiration aus Salon-Profilen und Discovery, hier findest du sie wieder.</p>
+    <div class="bigdisc">
+      <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=700&q=75" alt="">
+      <div class="ov"><b>Entdecken öffnen</b><span>Frische Looks aus Basler Salons</span></div>
+    </div>
+    <div class="heartrow">
+      <span class="hd"><i data-lucide="bookmark" style="color:var(--ink)"></i></span>
+      <p>Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios.</p>
+    </div>
+    <div class="railhead">
+      <h2>Beliebte Looks</h2>
+      <a>Alle <i data-lucide="chevron-right"></i></a>
+    </div>
+    <div class="rail">
+      <div class="scard" style="width:150px">
+        <div class="pic" style="height:190px"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=320&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="nm">Skin Fade</div>
+      </div>
+      <div class="scard" style="width:150px">
+        <div class="pic" style="height:190px"><img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=320&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="nm">Chrome Nails</div>
+      </div>
+      <div class="scard" style="width:150px">
+        <div class="pic" style="height:190px"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=320&q=70" alt=""><span class="hb"><i data-lucide="heart"></i></span></div>
+        <div class="nm">Balayage</div>
+      </div>
     </div>
   </div>
 </div>
