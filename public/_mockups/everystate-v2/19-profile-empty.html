@@ -13,11 +13,14 @@
   .body{flex:1;display:flex;flex-direction:column;padding:0 16px}
   .ph1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em}
   .lead{font-size:14px;line-height:1.55;color:var(--ink-2);margin-top:6px}
-  .bigdisc{position:relative;border-radius:18px;overflow:hidden;margin-top:18px;height:200px;flex:none}
+  .bigdisc{position:relative;border-radius:16px;overflow:hidden;margin-top:24px;height:330px;flex:none}
   .bigdisc img{width:100%;height:100%;object-fit:cover}
   .bigdisc .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.62));display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
-  .bigdisc .ov b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;color:#fff}
-  .bigdisc .ov span{font-size:13px;color:rgba(255,255,255,.85);margin-top:2px}
+  .bigdisc .ov b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;color:#fff}
+  .bigdisc .frost{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .bigdisc .frost .lucide{width:18px;height:18px;color:#FF3366}
+  .bigdisc .ov span{font-size:13px;font-weight:600;color:rgba(255,255,255,.85)}
+  .bigdisc .ov b{margin-top:2px}
   .heartrow{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--sunken);border-radius:14px;padding:13px 14px;flex:none}
   .heartrow .hd{width:36px;height:36px;border-radius:999px;background:#fff;display:grid;place-items:center;flex:none}
   .heartrow .hd .lucide{width:18px;height:18px;color:#FF3366}
@@ -39,21 +42,17 @@
 </head>
 <body>
 
-<div class="note"><b>19 Profile empty states v3 — Option B, REAL phone size.</b> Each frame is exactly 390×844 (iPhone viewport, overflow hidden): what you see is one full screen, no stretching, no visible footer. Layout fills the height: header + message top, discovery banner + heart hint middle, salon rail anchored to the bottom. Live page pulls real top/nearby salons for the rail.</div>
+<div class="note"><b>19 Profile empty states v4 — council-balanced (SHIPPED).</b> Council recipe after "not balanced": ONE heading (the page title), lead merges the gesture hint, the banner is promoted to a 330px HERO with the frosted heart/stamp button in-situ (teaches the gesture where it lives), binary gap rhythm 16/32, rail bottom. Frames = exact 390×844.</div>
 
 <div class="lbl">FAVORITES, empty (390×844)</div>
 <div class="phone">
   <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Favoriten</h1></div>
   <div class="body">
-    <div class="ph1" style="margin-top:8px">Noch keine Favoriten.</div>
-    <p class="lead">Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal.</p>
+    <p class="lead" style="margin-top:14px;max-width:300px">Noch nichts gespeichert. Tipp auf das Herz auf einem Salon und du findest ihn hier wieder.</p>
     <div class="bigdisc">
       <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=700&q=75" alt="">
-      <div class="ov"><b>Entdecken öffnen</b><span>Styles, Salons und Inspiration aus Basel</span></div>
-    </div>
-    <div class="heartrow">
-      <span class="hd"><i data-lucide="heart"></i></span>
-      <p>Das Herz findest du oben rechts auf jedem Salon-Foto.</p>
+      <span class="frost"><i data-lucide="heart"></i></span>
+      <div class="ov"><span>Entdecken</span><b>Finde deinen Lieblingssalon.</b></div>
     </div>
     <div class="railhead">
       <h2>Top bewertet</h2>
@@ -83,15 +82,11 @@
 <div class="phone">
   <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Stempel</h1></div>
   <div class="body">
-    <div class="ph1" style="margin-top:8px">Noch keine Stempel.</div>
-    <p class="lead">Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung.</p>
+    <p class="lead" style="margin-top:14px;max-width:300px">Noch keine Stempel. Pro besuchtem Termin gibt's automatisch einen, volle Karte = Belohnung.</p>
     <div class="bigdisc">
       <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=700&q=75" alt="">
-      <div class="ov"><b>So funktioniert's</b><span>Pro Besuch ein Stempel, volle Karte = Belohnung</span></div>
-    </div>
-    <div class="heartrow">
-      <span class="hd"><i data-lucide="stamp" style="color:var(--ink)"></i></span>
-      <p>Der Stempel kommt automatisch nach jedem abgeschlossenen Termin.</p>
+      <span class="frost"><i data-lucide="stamp" style="color:var(--ink)"></i></span>
+      <div class="ov"><span>Treuekarten</span><b>Sammle bei deinem nächsten Besuch.</b></div>
     </div>
     <div class="railhead">
       <h2>Salons mit Treuekarte</h2>
@@ -116,15 +111,11 @@
 <div class="phone">
   <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Looks</h1></div>
   <div class="body">
-    <div class="ph1" style="margin-top:8px">Noch keine Looks.</div>
-    <p class="lead">Sammle Inspiration aus Salon-Profilen und Discovery, hier findest du sie wieder.</p>
+    <p class="lead" style="margin-top:14px;max-width:300px">Noch keine Looks. Speichere Inspiration aus Discovery und Salon-Portfolios, hier findest du sie wieder.</p>
     <div class="bigdisc">
       <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=700&q=75" alt="">
-      <div class="ov"><b>Entdecken öffnen</b><span>Frische Looks aus Basler Salons</span></div>
-    </div>
-    <div class="heartrow">
-      <span class="hd"><i data-lucide="bookmark" style="color:var(--ink)"></i></span>
-      <p>Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios.</p>
+      <span class="frost"><i data-lucide="bookmark" style="color:var(--ink)"></i></span>
+      <div class="ov"><span>Entdecken</span><b>Frische Looks aus Basler Salons.</b></div>
     </div>
     <div class="railhead">
       <h2>Beliebte Looks</h2>

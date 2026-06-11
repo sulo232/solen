@@ -106,14 +106,12 @@ export default async function ProfileStampsPage({
         <div className="mt-8">
           <EmptyStateDiscovery
             locale={locale}
-            title="Noch keine Stempel."
-            lead="Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung."
-            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-            bannerTitle="So funktioniert's"
-            bannerSub="Pro Besuch ein Stempel, volle Karte = Belohnung"
-            bannerHref={`/${locale}/coiffeur`}
+            lead="Noch keine Stempel. Pro besuchtem Termin gibt's automatisch einen, volle Karte = Belohnung."
+            heroImg={topSalons?.[0]?.cover_photo_url ?? null}
+            heroEyebrow="Treuekarten"
+            heroTitle="Sammle bei deinem nächsten Besuch."
+            heroHref={`/${locale}/coiffeur`}
             hintIcon="stamp"
-            hintText="Der Stempel kommt automatisch nach jedem abgeschlossenen Termin."
             railTitle="Beliebt in Basel"
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}

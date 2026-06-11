@@ -79,14 +79,12 @@ export default async function ProfileFavoritesPage({
         <div className="mt-6">
           <EmptyStateDiscovery
             locale={locale}
-            title="Noch keine Favoriten."
-            lead="Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal."
-            bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-            bannerTitle="Entdecken öffnen"
-            bannerSub="Styles, Salons und Inspiration aus Basel"
-            bannerHref={`/${locale}/entdecken`}
+            lead="Noch nichts gespeichert. Tipp auf das Herz auf einem Salon und du findest ihn hier wieder."
+            heroImg={topSalons?.[0]?.cover_photo_url ?? null}
+            heroEyebrow="Entdecken"
+            heroTitle="Finde deinen Lieblingssalon."
+            heroHref={`/${locale}/entdecken`}
             hintIcon="heart"
-            hintText="Das Herz findest du oben rechts auf jedem Salon-Foto."
             railTitle="Top bewertet"
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}
