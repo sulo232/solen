@@ -2,100 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>18 Staff profile (barber), mirrors the live component anatomy</title>
+<title>18 Staff profile v2, Fresha employee-profile bones + Solen skin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  .cover{position:relative;height:192px;overflow:hidden}
-  .cover img{width:100%;height:100%;object-fit:cover}
-  .cover .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.62))}
-  .cover .circ{position:absolute;top:14px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px)}
-  .phead{padding:0 16px;margin-top:-48px;position:relative;z-index:2;display:flex;align-items:flex-end;gap:14px}
-  .phead .av{width:96px;height:96px;border-radius:999px;border:4px solid #fff;overflow:hidden;flex:none;background:var(--sunken)}
-  .phead .av img{width:100%;height:100%;object-fit:cover}
-  .phead h1{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.02em;line-height:1.05}
-  .phead .sal{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-2);margin-top:3px}
-  .phead .sal .lucide{width:12px;height:12px}
-  .stats{display:flex;gap:16px;padding:14px 16px 0;font-size:13.5px;color:var(--ink-2);align-items:center}
-  .stats b{color:var(--ink);font-weight:600}
-  .stats .lucide{width:14px;height:14px}
-  .stats .star{color:#FFC32B;fill:#FFC32B}
-  .avail{margin:14px 16px 0;border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
-  .avail .dot{width:8px;height:8px;border-radius:99px;background:var(--green)}
-  .avail p{font-size:13px;color:var(--ink-2)}
-  .avail b{color:var(--ink)}
-  .pills{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 4px}
-  .pill2{flex:none;border:1px solid var(--border);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:500;background:#fff;text-transform:capitalize}
-  .pill2.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px 26px}
-  .grid2 .ph{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden}
-  .grid2 .ph img{width:100%;height:100%;object-fit:cover}
-  .grid2 .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 8px;font-size:11px;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.55))}
+  .shead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+  .shead .lucide{width:20px;height:20px;stroke-width:2}
+  .pcenter{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 16px 0}
+  .pcenter .av{width:172px;height:172px;border-radius:999px;overflow:hidden;background:var(--sunken)}
+  .pcenter .av img{width:100%;height:100%;object-fit:cover}
+  .pcenter h1{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.015em;margin-top:14px}
+  .pcenter .role{font-size:15px;color:var(--ink-2);margin-top:3px}
+  .pcenter .rate{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:15px;font-weight:700}
+  .pcenter .rate .lucide{width:15px;height:15px;color:#FFC32B;fill:#FFC32B}
+  .pcenter .rate a{color:var(--blue);font-weight:600}
+  .ptabs{display:flex;gap:8px;overflow-x:auto;padding:18px 16px 4px;scrollbar-width:none}
+  .ptab{flex:none;display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:500;background:#fff}
+  .ptab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .ptab .cnt{font-size:11.5px;font-weight:700;background:var(--sunken);color:var(--ink-2);border-radius:999px;padding:1px 7px}
+  .ptab.on .cnt{background:rgba(255,255,255,.18);color:#fff}
+  .statrow{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(10,10,10,.06);font-size:14.5px}
+  .statrow b{font-weight:600}
+  .statrow .num{color:var(--ink-2)}
+  .sec{padding:0 16px}
+  .sec h2{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:18px;letter-spacing:-.01em;margin-top:22px}
+  .sec p.bio{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin-top:8px}
+  .rev{display:flex;gap:11px;margin-top:16px}
+  .rev .ini{width:40px;height:40px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;flex:none}
+  .rev .nm{font-weight:600;font-size:14px}
+  .rev .dt{font-size:12px;color:var(--ink-3);margin-top:1px}
+  .rev .stars{display:flex;gap:2px;margin-top:5px}
+  .rev .stars .lucide{width:13px;height:13px;color:#FFC32B;fill:#FFC32B}
+  .rev .tx{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin-top:5px}
+  .pillghost{display:flex;align-items:center;justify-content:center;height:44px;border:1px solid var(--border);border-radius:999px;background:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13.5px;margin-top:16px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px}
+  .pgrid .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--sunken)}
+  .pgrid .ph img{width:100%;height:100%;object-fit:cover}
+  .pgrid .more{position:absolute;inset:0;display:grid;place-items:center;background:rgba(10,10,10,.55);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px}
+  .svc{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid rgba(10,10,10,.06)}
+  .svc .n{font-weight:600;font-size:14.5px}
+  .svc .m{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  .svc .bk{flex:none;border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13px;background:#fff}
 </style>
 </head>
 <body>
 
-<div class="note"><b>18 Staff profile (the /salon/[slug]/barber/[barberSlug] page).</b> Mirrors the live component 1:1: cover + DS-10 scrim, frosted share circle, overlapping avatar, H1 + salon link, cuts + specialty stats, availability widget, ONE ink CTA, portfolio style filters (ink-selected TabPills) + 2-col grid; empty-portfolio state below. ⚠️ FLAGGED DATA BUG: the live page is currently DEAD for every seed staff — staff_members.slug is never populated and /api/barber gates on salon.categories containing "barbershop". Treatments only; structure is the live structure.</div>
+<div class="note"><b>18 Staff profile v2 — Fresha employee-profile bones (captured: public/_pixel-refs/fresha/staff-profile/SPEC.md, Joliz Aeschen "Jilliane") + Solen skin.</b> Anatomy is the exact Fresha sheet order: share/X header, big centered round avatar, name + langs/role, rating with BLUE count, tab pills (Profil / Leistungen / Portfolio N), stats rows, Über bio, sticky ink CTA, reviews with initial discs, portfolio 3-col grid with +N tile. Skin: Inter Tight/Inter, s-tokens, yellow stars, ink-selected TabPills. Our page is a ROUTE (salon/[slug]/staff/[id]), not a sheet — back arrow instead of X. ⚠ The duplicate dead barber/[slug] page should be deleted when this ships.</div>
 
-<div class="lbl">DEFAULT (portfolio filled)</div>
+<div class="lbl">DEFAULT (Profil tab)</div>
 <div class="frame">
-  <div class="cover">
-    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=900&q=75" alt="">
-    <div class="scrim"></div>
-    <span class="circ" style="left:14px" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
-    <span class="circ" style="right:14px"><i data-lucide="share" style="width:16px;height:16px"></i></span>
+  <div class="shead">
+    <span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
+    <span class="circ"><i data-lucide="share" style="width:17px;height:17px"></i></span>
   </div>
-  <div class="phead">
-    <div class="av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&q=80" alt=""></div>
-    <div style="padding-bottom:6px;min-width:0">
-      <h1>Marco Bianchi</h1>
-      <div class="sal"><i data-lucide="map-pin"></i>Old Town Barbers</div>
+  <div class="pcenter">
+    <div class="av"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80" alt=""></div>
+    <h1>Jilliane</h1>
+    <div class="role">EN/FR Nail Artist</div>
+    <div class="rate"><i data-lucide="star"></i>4.8 <a class="num">(20)</a></div>
+  </div>
+  <div class="ptabs">
+    <span class="ptab on">Profil</span>
+    <span class="ptab">Leistungen</span>
+    <span class="ptab">Portfolio <span class="cnt">30</span></span>
+  </div>
+  <div class="sec" style="margin-top:6px">
+    <div class="statrow"><b>Abgeschlossene Termine</b><span class="num">90</span></div>
+    <div class="statrow"><b>Bediente Kund:innen</b><span class="num">84</span></div>
+    <h2>Über</h2>
+    <p class="bio">Nail Artist seit 2020. Mein Stil dreht sich um Kreativität, Technik und ständige Weiterentwicklung — von French bis Chrome, am liebsten mit ruhiger Hand und viel Geduld.</p>
+    <h2 style="margin-top:24px">Bewertungen</h2>
+    <div class="rev">
+      <span class="ini">A</span>
+      <div>
+        <div class="nm">Aislig W.</div><div class="dt">Mi, 10. Juni 2026</div>
+        <div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+        <p class="tx">Charlotte war so freundlich, effizient und schnell. Ich komme sicher wieder!</p>
+      </div>
+    </div>
+    <div class="rev">
+      <span class="ini">T</span>
+      <div>
+        <div class="nm">Tamara S.</div><div class="dt">Fr, 6. Juni 2026</div>
+        <div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+        <p class="tx">Merci für diese perfekte Maniküre!</p>
+      </div>
+    </div>
+    <div class="pillghost">Alle anzeigen</div>
+    <h2 style="margin-top:26px">Portfolio</h2>
+    <div class="pgrid" style="margin-bottom:26px">
+      <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&q=70" alt=""></div>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=300&q=70" alt=""></div>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=300&q=70" alt="">
+        <div class="more num">+27</div>
+      </div>
     </div>
   </div>
-  <div class="stats">
-    <span style="display:flex;align-items:center;gap:6px"><i data-lucide="scissors" style="color:var(--ink-3)"></i><b>412</b> cuts</span>
-    <span style="display:flex;align-items:center;gap:6px"><i data-lucide="star" class="star"></i><b>4.9</b><span class="num" style="color:var(--blue)">(62)</span></span>
-  </div>
-  <div class="avail">
-    <span class="dot"></span>
-    <p>Next free slot <b>today 16:30</b></p>
-  </div>
-  <div style="padding:14px 16px 0">
-    <button class="cta" style="height:48px;font-size:14.5px">Book with Marco</button>
-  </div>
-  <div class="pills">
-    <span class="pill2 on">All</span><span class="pill2">Fade</span><span class="pill2">Buzz</span><span class="pill2">Crop</span><span class="pill2">Pompadour</span><span class="pill2">Razor art</span>
-  </div>
-  <div class="grid2">
-    <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=70" alt=""><div class="cap">Skin fade</div></div>
-    <div class="ph"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&q=70" alt=""><div class="cap">Classic crop</div></div>
-    <div class="ph"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400&q=70" alt=""><div class="cap">Beard line-up</div></div>
-    <div class="ph"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&q=70" alt=""><div class="cap">Mid fade</div></div>
+  <div class="ctabar">
+    <button class="cta" style="height:52px;font-size:15px">Jetzt buchen</button>
   </div>
 </div>
 
-<div class="lbl">EMPTY PORTFOLIO (§15 voice) + DEAD-DATA STATE FLAG</div>
+<div class="lbl">LEISTUNGEN tab (per-staff services, Fresha order)</div>
 <div class="frame">
-  <div class="cover" style="height:150px">
-    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=900&q=75" alt="">
-    <div class="scrim"></div>
-    <span class="circ" style="left:14px" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
+  <div class="shead">
+    <span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
+    <span class="circ"><i data-lucide="share" style="width:17px;height:17px"></i></span>
   </div>
-  <div class="phead">
-    <div class="av"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=240&q=80" alt=""></div>
-    <div style="padding-bottom:6px"><h1 style="font-size:22px">Emma</h1>
-      <div class="sal"><i data-lucide="map-pin"></i>Old Town Barbers</div>
+  <div class="pcenter" style="flex-direction:row;justify-content:flex-start;gap:12px;text-align:left;padding-top:10px">
+    <div class="av" style="width:52px;height:52px"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80" alt=""></div>
+    <div>
+      <h1 style="font-size:18px;margin-top:0">Jilliane</h1>
+      <div class="rate" style="margin-top:2px;font-size:13.5px"><i data-lucide="star" style="width:13px;height:13px"></i>4.8 <a class="num">(20)</a></div>
     </div>
   </div>
-  <div class="empty" style="padding-top:34px;padding-bottom:20px">
-    <h2 style="font-size:17px;margin-top:0">No work photos yet.</h2>
-    <p style="margin-top:5px">Emma's portfolio shows up here once the salon adds it. You can still book.</p>
-    <button class="cta" style="margin-top:18px;height:46px;font-size:14px">Book with Emma</button>
+  <div class="ptabs">
+    <span class="ptab">Profil</span>
+    <span class="ptab on">Leistungen</span>
+    <span class="ptab">Portfolio <span class="cnt">30</span></span>
   </div>
-  <div class="empty" style="padding-top:8px;padding-bottom:34px;border-top:1px solid var(--border);margin:0 16px">
-    <p style="margin-top:14px;font-size:12px;color:var(--ink-3)">⚠ Implementation note (not UI): live page 404s for ALL staff today — staff_members.slug is null in seed data and the API requires the salon category "barbershop". Needs a data + gate fix before any visual work matters.</p>
+  <div class="sec">
+    <div class="svc"><div><div class="n">Maniküre mit Shellac</div><div class="m">60 Min · CHF 85</div></div><span class="bk">Buchen</span></div>
+    <div class="svc"><div><div class="n">Nagelverlängerung Gel</div><div class="m">120 Min · CHF 140</div></div><span class="bk">Buchen</span></div>
+    <div class="svc"><div><div class="n">Nail Art pro Nagel</div><div class="m">10 Min · CHF 8</div></div><span class="bk">Buchen</span></div>
+    <div class="svc" style="border-bottom:none"><div><div class="n">Pediküre Deluxe</div><div class="m">75 Min · CHF 110</div></div><span class="bk">Buchen</span></div>
+  </div>
+  <div class="ctabar">
+    <button class="cta" style="height:52px;font-size:15px">Jetzt buchen</button>
   </div>
 </div>
 
