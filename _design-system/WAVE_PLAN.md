@@ -323,6 +323,7 @@ If a wave introduces a regression post-merge:
 
 ## Changelog
 
+- **2026-06-12 — PHASE PLAN + W14/W14.5:** booking flow rebuilt to mockup 20 (services-only step → StaffStep → Zeit → Haare → Bezahlen, no progress UI, Atelier grouped cards) + pay-in-salon e2e verified; W14.5 dashboard triage DONE (verdict signup-ready; 1 blocker — blank setup-banner labels — fixed; 2,248 cosmetic findings deferred). Waves regrouped into 6 phases (see top). /entdecken items cancelled (Discovery NO-TOUCH lock).
 - **2026-05-28 — V3-D331 (Wave 8 done):** dot-eyebrow sweep across 5 files + LOCKFILE §2.5 expansion + drift rule A12.
 - **2026-05-28 — V3-D332 (council stress-test):** Opus + Grok + Gemini consulted; user picked 4 decisions; plan revised. W14 ↔ W15 swap, multilingual from W9, /dashboard triaged, real Supabase signup, W12 split into discovery + fix, per-route commits, rollback procedure added, core routes locked.
 
