@@ -343,9 +343,11 @@ export default function ServicesStaffStep({
         </div>
       )}
 
-      {/* Services grouped by category — mockup 20 (Fresha bones): one white
-          floating card per service on the sunken body, selected = ink border. */}
-      <div className="space-y-7 pt-4">
+      {/* Services grouped by category — Atelier grouped card (owner 2026-06-12:
+          'the atelier mockups lit nailed it'): rows + hairline dividers in ONE
+          rounded-24 card per category, whisper shadow; selection = sunken wash +
+          ToggleCircle (grouped-list rule, no border jumps). 32px chapter rhythm. */}
+      <div className="space-y-8 pt-4">
         {categories.map((category) => {
           const categoryServices = visibleServices.filter(
             (s) => groupKey(s) === category
@@ -355,7 +357,7 @@ export default function ServicesStaffStep({
               <h3 className="font-heading text-[20px] font-bold capitalize tracking-[-0.01em] text-s-ink mb-3">
                 {category}
               </h3>
-              <div className="space-y-3">
+              <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
                 {categoryServices.map((service) => {
                   const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
@@ -382,8 +384,8 @@ export default function ServicesStaffStep({
                           ? setSheetServiceId(service.id)
                           : handleSelectService(service)
                       }
-                      className={`w-full rounded-[16px] border-2 bg-white p-[18px] text-left transition-[border-color] duration-200 ${
-                        inCart ? 'border-s-ink' : 'border-transparent'
+                      className={`w-full border-t border-s-border px-5 py-[18px] text-left transition-colors duration-200 first:border-t-0 ${
+                        inCart ? 'bg-s-bg-sunken/60' : 'hover:bg-s-bg-sunken/40'
                       }`}
                     >
                       <h4 className="font-body text-[16px] font-semibold text-s-ink leading-snug">
