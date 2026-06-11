@@ -3133,10 +3133,10 @@
     "slot_taken": "Ce créneau est déjà pris",
     "review_exists": "Vous avez déjà évalué cette réservation",
     "booking_not_completed": "La réservation n'est pas encore terminée",
-    "404_title": "Oups ! Cette page n'existe pas",
-    "404_description": "Elle a peut-être été déplacée ou n'existe plus. Nous t'aidons à revenir !",
+    "404_title": "Cette page a été coupée.",
+    "404_description": "Déplacée, ou jamais existé. Ton prochain rendez-vous reste à un clic.",
     "404_home": "Retour à l'accueil",
-    "404_browse": "Découvrir les salons"
+    "404_browse": "Trouver des salons"
   },
   "discovery": {
     "meta": {

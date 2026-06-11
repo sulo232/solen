@@ -3115,10 +3115,10 @@
     "slot_taken": "Questo orario è già prenotato",
     "review_exists": "Hai già recensito questa prenotazione",
     "booking_not_completed": "La prenotazione non è ancora completata",
-    "404_title": "Oops! Questa pagina non esiste",
-    "404_description": "Potrebbe essere stata spostata o non esiste più. Ti aiutiamo a tornare!",
+    "404_title": "Questa pagina è stata tagliata.",
+    "404_description": "Spostata, o mai esistita. Il tuo prossimo appuntamento resta a un tocco.",
     "404_home": "Torna alla home",
-    "404_browse": "Scopri i saloni"
+    "404_browse": "Trova saloni"
   },
   "discovery": {
     "meta": {

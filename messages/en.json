@@ -3150,10 +3150,10 @@
     "slot_taken": "This slot is already booked",
     "review_exists": "You have already reviewed this booking",
     "booking_not_completed": "Booking is not yet completed",
-    "404_title": "Oops! Page not found",
-    "404_description": "This page may have been moved or no longer exists. We'll help you get back!",
-    "404_home": "Back to homepage",
-    "404_browse": "Discover salons"
+    "404_title": "This page got cut.",
+    "404_description": "It moved, or it never existed. Your next appointment is still one tap away.",
+    "404_home": "Back to home",
+    "404_browse": "Find salons"
   },
   "discovery": {
     "meta": {

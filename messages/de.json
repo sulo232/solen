@@ -3160,10 +3160,10 @@
     "slot_taken": "Dieser Termin ist bereits vergeben",
     "review_exists": "Du hast diese Buchung bereits bewertet",
     "booking_not_completed": "Buchung ist noch nicht abgeschlossen",
-    "404_title": "Ups! Diese Seite gibt es nicht",
-    "404_description": "Vielleicht wurde sie verschoben oder existiert nicht mehr. Wir helfen dir gerne zurück!",
+    "404_title": "Diese Seite wurde abgeschnitten.",
+    "404_description": "Verschoben oder nie da gewesen. Dein nächster Termin ist trotzdem nur einen Tipp entfernt.",
     "404_home": "Zur Startseite",
-    "404_browse": "Salons entdecken"
+    "404_browse": "Salons finden"
   },
   "discovery": {
     "meta": {
