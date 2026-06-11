@@ -60,7 +60,7 @@ function PackagePaymentForm({
       <button
         type="submit"
         disabled={submitting || !stripe}
-        className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {submitting && <Spinner size="sm" invert />}
         Jetzt bezahlen
@@ -138,7 +138,7 @@ function PurchaseModal({
               </span>
             )}
           </span>
-          <span className="data-text font-bold text-s-ink">{formatCurrency(pkg.price, locale)}</span>
+          <span className="data-text font-bold text-s-ink">{formatCurrency(pkg.price / 100, locale)}</span>
         </div>
 
         {success ? (
@@ -236,8 +236,8 @@ export default function SalonPackagesPage() {
   );
 
   const labels = {
-    de: { title: "Pakete", sessions: "Sitzungen", bonus: "Bonus", perSession: "Pro Sitzung", buy: "Paket kaufen", empty: "Keine Pakete verfügbar", back: "Zurück zum Salon" },
-    en: { title: "Packages", sessions: "sessions", bonus: "bonus", perSession: "Per session", buy: "Buy Package", empty: "No packages available", back: "Back to salon" },
+    de: { title: "Pakete", sessions: "Sitzungen", bonus: "Bonus", perSession: "Pro Sitzung", buy: "Paket kaufen", empty: "Keine Pakete verfügbar", back: "Zurück zum Salon", save: "Spare" },
+    en: { title: "Packages", sessions: "sessions", bonus: "bonus", perSession: "Per session", buy: "Buy package", empty: "No packages available", back: "Back to salon", save: "Save" },
   };
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
@@ -259,6 +259,8 @@ export default function SalonPackagesPage() {
             {packages.map((pkg, i) => {
               const totalSessions = pkg.total_sessions + (pkg.bonus_sessions ?? 0);
               const perSession = Math.round(pkg.price / totalSessions);
+              // Value of the free bonus sessions at the paid per-session rate (cents)
+              const savings = (pkg.bonus_sessions ?? 0) * Math.round(pkg.price / pkg.total_sessions);
 
               return (
                 <motion.div
@@ -274,7 +276,7 @@ export default function SalonPackagesPage() {
                       <p className="text-xs text-s-ink-2">{serviceName(pkg)}</p>
                     </div>
                     <span className="data-text text-xl font-bold text-s-ink">
-                      {formatCurrency(pkg.price, locale)}
+                      {formatCurrency(pkg.price / 100, locale)}
                     </span>
                   </div>
 
@@ -289,14 +291,20 @@ export default function SalonPackagesPage() {
                       </span>
                     )}
                     <span className="text-s-ink-2 ml-auto">
-                      {l.perSession}: {formatCurrency(perSession, locale)}
+                      {l.perSession}: {formatCurrency(perSession / 100, locale)}
                     </span>
+                    {savings > 0 && (
+                      // Mockup 14 savings pill — semantic green (saving = positive outcome)
+                      <span className="rounded-full bg-s-success-bg px-2.5 py-1 text-[11.5px] font-bold text-s-success">
+                        {l.save} {formatCurrency(savings / 100, locale)}
+                      </span>
+                    )}
                   </div>
 
                   {/* Primary CTA — V3-D253: coral → ink per LOCKFILE §0 rule 2 */}
                   <button
                     onClick={() => setPurchasing(pkg)}
-                    className="w-full py-2.5 rounded-btn bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
+                    className="w-full py-2.5 rounded-btn bg-s-ink text-white text-[13px] font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
                   >
                     {l.buy}
                   </button>

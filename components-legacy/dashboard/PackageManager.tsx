@@ -9,12 +9,11 @@ import Spinner from "@/components-legacy/ui/Spinner";
 interface ServicePackage {
   id: string;
   name: string;
-  service_name: string;
-  sessions: number;
+  total_sessions: number;
   bonus_sessions: number;
-  price: number;
+  price: number; // rappen/cents (Stripe convention, see /api/packages/purchase)
   is_active: boolean;
-  purchases_count: number;
+  services: { name_de: string; name_en: string; category: string } | null;
 }
 
 interface PackagePurchase {
@@ -83,15 +82,23 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
       const res = await fetch("/api/packages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ salon_id: salonId, ...form }),
+        // API contract (packageSchema): total_sessions + price in rappen/cents
+        body: JSON.stringify({
+          salon_id: salonId,
+          name: form.name,
+          service_id: form.service_id,
+          total_sessions: form.sessions,
+          bonus_sessions: form.bonus_sessions,
+          price: Math.round(form.price * 100),
+        }),
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
         setFormError(d.error ?? d.message ?? t("createError"));
         return;
       }
-      const newPkg = await res.json();
-      setPackages((prev) => [...prev, newPkg]);
+      const d = await res.json();
+      if (d.data) setPackages((prev) => [...prev, d.data]);
       setShowForm(false);
       setForm({ name: "", service_id: "", sessions: 5, bonus_sessions: 1, price: 0 });
     } catch {
@@ -128,7 +135,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
         </h3>
         <button
           onClick={() => { setShowForm(!showForm); setFormError(null); }}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12.5px] font-heading font-semibold hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Plus size={12} /> {t("newPkg")}
         </button>
@@ -197,7 +204,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name.trim() || !form.service_id}
-              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12.5px] font-heading font-semibold disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving ? t("saving") : t("create")}
             </button>
@@ -218,12 +225,12 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
               <div>
                 <p className="text-sm font-medium text-s-ink">{pkg.name}</p>
                 <p className="text-xs text-s-ink/40">
-                  {pkg.sessions} + {pkg.bonus_sessions} {t("bonus")} {pkg.service_name} {pkg.purchases_count} {t("sold")}
+                  {pkg.total_sessions} + {pkg.bonus_sessions} {t("bonus")} {locale === "en" ? pkg.services?.name_en : pkg.services?.name_de}
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="data-text text-sm font-semibold text-s-ink">
-                  {formatCurrency(pkg.price, locale)}
+                  {formatCurrency(pkg.price / 100, locale)}
                 </span>
                 <button
                   onClick={() => toggleActive(pkg)}
