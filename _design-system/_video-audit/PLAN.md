@@ -188,3 +188,23 @@ If owner says it was login, redo login as iteration-of-live instead.
    (j) View Transitions card→PDP flagship. Commit per verified chunk, verifier loops per CLAUDE.md rule 7.
 4. Drift-checker additions queued in LOCKFILE (closed neutral set, radius set, middot, eyebrows) — wire
    into `_design-system/check.py` during Phase 5.
+
+## Phase 5 progress (2026-06-11, autonomous run)
+SHIPPED + live-verified, each its own commit:
+- DS-6 global blue hover step (globals.css single-point rule; verified computed transition on .text-s-accent links)
+- DS-7 SalonCard details row: calendar glyph + bold time/price (homepage/search/favorites callers inherit)
+- Banned BARBERSHOP eyebrow removed from WalkInBand
+- Typographic 404 (not-found.tsx) + copy x4 locales; typographic crash page (app/error.tsx, killed retired s-coral)
+- PDP mobile gallery: dots over DS-10 band replace the n/N counter (SalonHero.tsx)
+- Notifications: one-line bodies (line-clamp-1)
+- Sheet primitive §16.1: drag-to-dismiss grabber + Option-B page scale-back (#main-content matrix(0.965,…,10) verified live on the reviews sort sheet)
+- Middot sweep: no rendered meta middots in live code (only avatar-initial fallbacks, fine)
+- Login: already uses official brand SVGs (no change needed)
+
+REMAINING for next session (in order):
+1. View Transitions card→PDP flagship (needs Next experimental.viewTransition + React flag — own session, don't bolt on blind)
+2. Register/auth: specific error copy per §14.4 in real validation messages (component + i18n x4)
+3. DS-5 spacing-rhythm sweep across pages (32/12/16) — mechanical but wide; verify per route
+4. DS-9 truncation hardening on remaining surfaces (search result names/addresses)
+5. Drift-checker rules: closed neutral set, radius set, middot, eyebrow count (check.py)
+6. Scrim recipe on category cards (home discover band already has one; category landings pending)
