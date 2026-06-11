@@ -13,13 +13,12 @@
 export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Check } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import StampCard from "@/components-legacy/loyalty/StampCard";
 import HeroStampCard from "@/components-legacy/loyalty/HeroStampCard";
-import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
-import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 
 /**
  * Schema note (verified 2026-05-02): loyalty programs live in `loyalty_cards`;
@@ -41,25 +40,6 @@ interface LoyaltyCardRow {
   } | null;
   loyalty_stamps: { id: string }[];
 }
-
-// V3-D289: empty-state illustration stroke — was hardcoded #1B4D1B (legacy green) → currentColor + ink text class
-const StampIllustration = () => (
-  <svg
-    width="80"
-    height="80"
-    viewBox="0 0 100 100"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    className="text-s-ink"
-  >
-    <circle cx="50" cy="50" r="32" />
-    <path d="M38 50l8 8 16-16" />
-  </svg>
-);
 
 export default async function ProfileStampsPage({
   params,
@@ -114,20 +94,22 @@ export default async function ProfileStampsPage({
   if (allCards.length === 0) {
     return (
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-        <SignatureLockup
-          eyebrow={`Mein Profil 0 Karten`}
-          headline="Stempel"
-          size="md"
-        />
+        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Stempel</h1>
         <div className="mt-8">
-          <EmptyStateFTU
-            eyebrow="Noch keine Stempel"
-            headline="Sammle Stempel bei deinem ersten Termin"
-            subCopy="Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung."
-            ctaLabel="Salon entdecken →"
-            ctaHref={`/${locale}/entdecken`}
-            illustration={<StampIllustration />}
-          />
+          <div className="flex flex-col items-center px-6 pb-16 pt-10 text-center">
+            <h2 className="font-heading text-[19px] font-semibold tracking-[-0.01em] text-s-ink">
+              Noch keine Stempel.
+            </h2>
+            <p className="mt-2 max-w-[300px] font-body text-[13.5px] leading-relaxed text-s-ink-2">
+              Buche bei einem Salon mit Treuekarte und sammle Stempel für deine nächste Belohnung.
+            </p>
+            <Link
+              href={`/${locale}/coiffeur`}
+              className="mt-6 inline-flex h-[46px] items-center justify-center rounded-btn border border-s-border bg-white px-7 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink"
+            >
+              Salons entdecken
+            </Link>
+          </div>
         </div>
       </main>
     );
@@ -135,11 +117,10 @@ export default async function ProfileStampsPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <SignatureLockup
-        eyebrow={`Mein Profil ${allCards.length} Karten`}
-        headline="Stempel"
-        size="md"
-      />
+      <div>
+        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Stempel</h1>
+        <p className="mt-1 font-body text-[13px] text-s-ink-2">{allCards.length} Karten</p>
+      </div>
 
       {heroCard && heroCard.salons && (
         <div className="mt-6">

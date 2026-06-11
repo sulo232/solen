@@ -11,30 +11,8 @@
 export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
-import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
-
-// V3-D287: empty-state illustration stroke — was hardcoded #1B4D1B (legacy green) → currentColor + ink text class
-const SparkleIllustration = () => (
-  <svg
-    width="80"
-    height="80"
-    viewBox="0 0 100 100"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    className="text-s-ink"
-  >
-    {/* Stylized polaroid + spark */}
-    <rect x="22" y="22" width="48" height="56" rx="3" />
-    <rect x="22" y="22" width="48" height="40" />
-    <path d="M76 32l4 8 8 4-8 4-4 8-4-8-8-4 8-4z" />
-  </svg>
-);
 
 export default async function ProfileLooksPage({
   params,
@@ -54,20 +32,22 @@ export default async function ProfileLooksPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <SignatureLockup
-        eyebrow="Mein Profil 0 Looks"
-        headline="Looks"
-        size="md"
-      />
+      <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Looks</h1>
       <div className="mt-8">
-        <EmptyStateFTU
-          eyebrow="Noch keine Looks"
-          headline="Speicher Looks für später"
-          subCopy="Inspiration aus Salon-Profilen und Discovery sammeln, hier wieder finden."
-          ctaLabel="Discover öffnen →"
-          ctaHref={`/${locale}/entdecken`}
-          illustration={<SparkleIllustration />}
-        />
+        <div className="flex flex-col items-center px-6 pb-16 pt-10 text-center">
+          <h2 className="font-heading text-[19px] font-semibold tracking-[-0.01em] text-s-ink">
+            Noch keine Looks.
+          </h2>
+          <p className="mt-2 max-w-[300px] font-body text-[13.5px] leading-relaxed text-s-ink-2">
+            Sammle Inspiration aus Salon-Profilen und Discovery, hier findest du sie wieder.
+          </p>
+          <Link
+            href={`/${locale}/entdecken`}
+            className="mt-6 inline-flex h-[46px] items-center justify-center rounded-btn border border-s-border bg-white px-7 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink"
+          >
+            Discover öffnen
+          </Link>
+        </div>
       </div>
     </main>
   );

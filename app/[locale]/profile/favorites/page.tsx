@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 import SalonCard from "@/components-legacy/SalonCard";
 import Link from "next/link";
 import { Heart } from "lucide-react";
@@ -61,11 +60,12 @@ export default async function ProfileFavoritesPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <SignatureLockup
-        eyebrow={`Mein Profil ${salons.length} Salons`}
-        headline="Favoriten"
-        size="md"
-      />
+      <div>
+        <h1 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">Favoriten</h1>
+        {salons.length > 0 && (
+          <p className="mt-1 font-body text-[13px] text-s-ink-2">{salons.length} Salons</p>
+        )}
+      </div>
 
       {salons.length === 0 ? (
         <div className="mt-8 flex flex-col items-center px-6 pb-16 pt-12 text-center">
