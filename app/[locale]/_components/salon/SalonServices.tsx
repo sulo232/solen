@@ -229,11 +229,12 @@ function ServiceRow({
   );
 
   // V3-D227: unify mobile + desktop into the same card.
-  // Depth fix (2026-06-09): drop the flat hairline for a soft lift at rest (elevation-2),
-  // lifting more on hover (elevation-3). Per-variant only changes padding density.
+  // FLAT per the approved every-state mockup 03 .svc (owner, 2026-06-11): hairline
+  // border, NO shadow. Reverts the 2026-06-09 elevation-2/3 "depth fix" — white +
+  // shadow on the calm white page is the banned grey-haze (CONTROL_ELEVATION B).
   return (
     <li className={cn(
-      "rounded-2xl bg-white shadow-elevation-2 transition-shadow hover:shadow-elevation-3",
+      "rounded-2xl border border-s-border bg-white transition-colors hover:border-s-ink/30",
       variant === "mobile" ? "p-5" : "p-6 md:p-7",
     )}>
       {inner}

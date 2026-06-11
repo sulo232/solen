@@ -261,8 +261,8 @@ export function SalonServicesSheet({
                           "rounded-2xl border-2 bg-white p-5 transition-all md:p-6",
                           isSelected
                             // V3-D202 (A21): tinted emerald shadow → shadow-elevation-2.
-                            ? "border-s-ink shadow-elevation-2"
-                            : "border-s-border hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                            ? "border-s-ink"
+                            : "border-s-border hover:border-s-ink/30"
                         )}
                       >
                         <div className="flex items-start justify-between gap-4">
