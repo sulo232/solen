@@ -72,10 +72,9 @@ export default function WalkInBand() {
               />
             </span>
             <div>
-              <p className="font-heading text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
-                Barbershop
-              </p>
-              <h2 className="mt-0.5 font-display text-[18px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
+              {/* Eyebrow "BARBERSHOP" deleted 2026-06-11 (owner-approved every-state
+                  home mockup): tracked-uppercase eyebrows are banned; the H2 + sub carry it. */}
+              <h2 className="font-display text-[18px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
                 Walk-in
               </h2>
             </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Flame } from "lucide-react";
+import { Calendar, Flame } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HeartButton } from "./HeartButton";
@@ -337,6 +337,20 @@ function AvailabilityPill({ state, label }: AvailabilityProps) {
   );
 }
 
+
+/** DS-7 details row: bold the trailing HH:MM of a pre-formatted slot label
+ *  ("Heute 14:30" -> "Heute " grey + "14:30" 600 ink). Non-matching labels render as-is. */
+function NextSlotText({ label }: { label: string }) {
+  const m = label.match(/^(.*?)(\d{1,2}:\d{2})$/);
+  if (!m) return <span className="truncate">{label}</span>;
+  return (
+    <span className="truncate">
+      {m[1]}
+      <strong className="font-semibold text-s-ink">{m[2]}</strong>
+    </span>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Main SalonCard
 // ─────────────────────────────────────────────────────────────────────────────
@@ -546,17 +560,19 @@ export function SalonCard({
           {address ? `${address} ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
         </div>
 
-        {/* Row 3 — nextSlotLabel · CHF X (rating moved to Row 1 V3-D174) */}
-        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
-          {/* V3-D346 (2026-05-28): nextSlot time was font-semibold text-s-ink (600/ink) —
-              bolder + darker than the salon name (500). The time was out-shouting the name.
-              Dropped to inherit grey-regular so the name is the one anchor. */}
+        {/* Row 3, DS-7 icon details row (owner-approved every-state home mockup,
+            2026-06-11). Supersedes V3-D346's all-grey row: a calendar glyph says
+            what the naked time IS, and the time + price values re-bold to 600 ink
+            while their labels stay grey. 12px icon per LOCKFILE 13.7 pairing. */}
+        <div className="flex items-center gap-2.5 font-body text-[12px] font-normal leading-[1.35] text-s-ink-2">
           {nextSlotLabel && (
-            <span>{nextSlotLabel}</span>
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <Calendar size={12} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+              <NextSlotText label={nextSlotLabel} />
+            </span>
           )}
-          {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" "}</span>}
           {priceFromCHF != null && (
-            <span>CHF {priceFromCHF}</span>
+            <strong className="shrink-0 font-semibold text-s-ink">CHF {priceFromCHF}</strong>
           )}
         </div>
       </div>

@@ -152,6 +152,18 @@
 }
 
 @layer utilities {
+  /* DS-6 (2026-06-11, video-audit, owner-approved): interactive blue darkens one
+     ramp step on hover/pressed — s-accent #276EF1 -> s-accent-deep #1E54B7, 150ms.
+     Single-point rule so every existing text-s-accent link/button gets the step
+     without touching call sites. Scoped to real interactive elements only. */
+  :where(a, button, [role="button"], summary).text-s-accent {
+    transition: color 150ms ease;
+  }
+  :where(a, button, [role="button"], summary).text-s-accent:hover,
+  :where(a, button, [role="button"], summary).text-s-accent:active {
+    color: #1e54b7;
+  }
+
   /* 2026-05-31 (V3-D410): .font-heading / .font-display → Inter Tight,
      .font-body → Inter (was Hanken Grotesk). Uber-style one-family display+text. */
   .font-heading {
