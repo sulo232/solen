@@ -118,7 +118,8 @@ export default function NotificationsClient() {
             <p className={`truncate text-[15px] ${n.read ? "font-medium text-s-ink" : "font-semibold text-s-ink"}`}>{n.title}</p>
             <span className="shrink-0 text-[12px] text-s-ink-3">{relTime(n.created_at, locale)}</span>
           </div>
-          <p className="mt-0.5 line-clamp-2 text-[13.5px] leading-snug text-s-ink-2">{n.body}</p>
+          {/* Owner round-2 (2026-06-11): "too much text" — bodies clamp to ONE line. */}
+          <p className="mt-0.5 line-clamp-1 text-[13px] leading-snug text-s-ink-2">{n.body}</p>
         </div>
         {!n.read && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-s-accent" aria-label={t("unreadDot")} />}
       </div>
