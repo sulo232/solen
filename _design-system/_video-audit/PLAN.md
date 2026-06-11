@@ -127,3 +127,64 @@ guessing; wire back buttons so mockups navigate; keep annotation text lean.
 - 09 favorites: APPROVED except empty "your first" tile: why blue? → pink heart (save semantic), neutral bg.
 - 10 errors: APPROVED; offline: drop the wifi animation, plain typographic "Offline."
 - 11 login: APPROVED (final statement; earlier "not good" item read as booking, flagged to owner).
+
+---
+
+# 🧭 HANDOFF / COMPACTION ANCHOR (written 2026-06-11 late, read this FIRST after compaction)
+
+## Where everything lives
+- Rules: ALL codified + committed. LOCKFILE §1/§1.5/§2.5/§3/§3.5/§11/§13.2-.8/§14/§15/§16,
+  tailwind `s-accent.deep #1E54B7`, CLAUDE.md pointer block, memory
+  (`project_video_audit_ds_upgrade` + sharpened `feedback_mockup_first_always` + clarified
+  `feedback_no_decorative_artifacts`). §14.4 now also carries the specific-error-copy rule.
+- Mockups: `public/_mockups/everystate-v2/` (11 pages + index hub + kit.css). ALL real edits in the
+  MAIN checkout `/Users/sulo/Documents/solen`. Mockups committed through `894607f15`.
+- Capture tooling: `_design-system/_video-audit/capture/` (capture-home.mjs, investigate.mjs);
+  live-page measurement = Playwright `getBoundingClientRect` (NEVER estimate from crops — owner burned me).
+  Measured search values: hero/result photos 358×286, cat chips 40px/15px font, filter chips 36px/13.5px,
+  search pill 54px.
+- Dev server :3000 was RESTARTED (new preview serverId; serves main checkout). The old cloudflare tunnel
+  likely DIED with it — start a fresh `cloudflared tunnel --url http://localhost:3000` before sending links.
+
+## Approval matrix (after round-2, owner 2026-06-11 late)
+| Page | Status |
+|---|---|
+| 01 Home | ✅ approved (discovery kept live-style + arrow; walk-in live-style) |
+| 02 Search | ✅ fixed to measured live sizes — awaiting re-look |
+| 03 Salon | structure locked to live 1:1, treatment-only — awaiting re-look ("you're gonna fuck it up" risk page, touch nothing structural) |
+| 04 Booking | aligned to live shipped steps — awaiting re-look ⚠️ plus the open ambiguity below |
+| 05 Confirmation | mirrors real component — iPhone-fit fixed — awaiting re-look |
+| 06 Walk-in+queue | ✅ approved ("actually quite good") |
+| 07 Profile | ✅ approved |
+| 08 Subpages | ✅ (notifications text trimmed per round-2) |
+| 09 Favorites | ✅ (first-fav tile now pink/neutral) |
+| 10 Errors | ✅ (offline = plain typographic) |
+| 11 Login | ✅ approved (+ flagged register-errors frame added) |
+
+## OPEN QUESTION for owner (asked, unanswered)
+Round-2 said "[X] tab... not good at all, we already have all of it, just iterate" right after the salon
+item, then later "login: approved". I interpreted X = BOOKING (iterate on live shipped steps, which I did).
+If owner says it was login, redo login as iteration-of-live instead.
+
+## Owner process rules now BINDING (from round-2, don't relearn the hard way)
+1. Think as you go; when a live feature is missing from a mockup, FLAG + ADD a frame, never rewrite the file.
+2. Measure with the browser, never guess from screenshots/crops.
+3. Back/X buttons in mockups must navigate (history.back()).
+4. All text links = DS blue, no grey/ink-underline links.
+5. Error copy names the exact cause (now LOCKFILE §14.4).
+6. Frames must fit real iPhone viewports (kit media query handles it).
+7. Lean annotation text; no walls of words in mockup cards (notifications lesson).
+
+## NEXT STEPS in order
+1. Owner re-look at 02/03/04/05 (the four reworked pages) + answer the booking-vs-login question.
+2. Any punch list → surgical edits only (protocol above).
+3. When pages are green → **Phase 5 implementation**, route-by-route waves per WORK_TYPES.md, suggested
+   order: (a) global token/link/hover sweep (s-accent-deep hover, blue links, eyebrow deletions, middot
+   removals), (b) home (walk-in section is already live-correct; mainly card details row + rhythm),
+   (c) search sizes stay AS LIVE (mockup matched live, so little to do), (d) salon PDP treatments
+   (dots+scrim, blue counts, normal-case nearby labels), (e) confirmation (already mirrors shipped
+   component — verify only), (f) sheets physics (grabber + drag + scale-back into the Sheet primitive),
+   (g) 404/error/empty personality set, (h) auth error-copy + brand SVGs, (i) notifications trim,
+   (j) View Transitions card→PDP flagship. Commit per verified chunk, verifier loops per CLAUDE.md rule 7.
+4. Drift-checker additions queued in LOCKFILE (closed neutral set, radius set, middot, eyebrows) — wire
+   into `_design-system/check.py` during Phase 5.

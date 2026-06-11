@@ -1294,6 +1294,10 @@ every list ships empty + loading + error designed (not an afterthought).
 Every optional step is skippable (visible "Überspringen"); every preset-choice list has an escape hatch
 (free-text/"other"/search); every async transition shows feedback (§3.5 loading). A flow with a dead end
 is a bug, not a design choice.
+ **Error copy names the exact cause (owner, 2026-06-11 round-2):** "The email addresses
+don't match." / "Password needs at least 8 characters." — never a generic "Invalid input"/"Error". One
+sentence: the cause, and when not obvious, the fix. Field errors sit UNDER the field (red border + 11.5px
+red line w/ alert icon); banner errors only for whole-form failures (wrong password).
 
 ---
 
