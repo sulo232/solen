@@ -77,15 +77,12 @@ export default function MessagesPage() {
         <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2 bg-s-bg-sunken">
           <MessageCircle size={28} className="text-s-ink-2" />
         </div>
-        <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-ink-2">
-          Nachrichten
-        </p>
         <p className="font-heading text-lg text-s-ink">Noch keine Nachrichten</p>
         <p className="text-sm font-body text-s-ink/45 max-w-xs leading-relaxed">
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <Link href={`/${locale}/coiffeur`}
-          className="mt-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
+          className="mt-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-[13px] font-heading font-semibold active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
           Salons entdecken
         </Link>
       </div>
@@ -96,9 +93,6 @@ export default function MessagesPage() {
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <div className="mb-6">
-          <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-ink-2 mb-1">
-            Account
-          </p>
           <h1 className="font-heading text-2xl text-s-ink">Nachrichten</h1>
         </div>
 
@@ -141,7 +135,7 @@ export default function MessagesPage() {
                       </p>
                     )}
                     {conv.last_message_at && (
-                      <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink/25 mt-0.5">
+                      <p className="text-[12px] font-body text-s-ink/25 mt-0.5">
                         {new Date(conv.last_message_at).toLocaleDateString("de-CH", {
                           day: "numeric",
                           month: "short",
@@ -167,7 +161,7 @@ export default function MessagesPage() {
                     <p className="text-sm font-heading text-s-ink">
                       {selectedConv?.other_party_name}
                     </p>
-                    <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2">Salon</p>
+                    <p className="text-[12px] font-body text-s-ink-2">Salon</p>
                   </div>
                 </div>
                 <div className="h-[calc(100%-36px)]">
@@ -180,9 +174,7 @@ export default function MessagesPage() {
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-center">
-                <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/25">
-                  Unterhaltung auswählen
-                </p>
+                <p className="font-heading text-[15px] text-s-ink-2">Unterhaltung auswählen</p>
                 <p className="text-xs font-body text-s-ink/25">Wähle links eine Unterhaltung</p>
               </div>
             )}

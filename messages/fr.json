@@ -5189,7 +5189,8 @@
     "offersEmptyMessage": "De nouvelles offres arrivent bientôt. Revenez régulièrement !",
     "offersSubscribe": "Être informé des nouvelles offres",
     "recentlyViewedTitle": "Récemment consultés",
-    "instantBookBadge": "Réservation instantanée"
+    "instantBookBadge": "Réservation instantanée",
+    "lastMinuteNoSlotsMessage": "Les offres apparaissent dès que les salons libèrent des créneaux de dernière minute. Repasse plus tard dans la journée."
   },
   "salonDetail": {
     "notFound": "Salon introuvable",

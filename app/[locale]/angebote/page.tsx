@@ -178,21 +178,15 @@ export default function LastMinutePage() {
   return (
     // V3-D313 (W9 follow-up, 2026-05-27): retired s-coral + raw rgba(27,77,27,*) sweep per LOCKFILE
     <div className="min-h-screen bg-white">
-      {/* Hero — dropped green linear-gradient; eyebrow → LOCKFILE Eyebrow spec; live dot → s-urgency (the dot signals real-time activity per universal-color: urgency = burnt amber) */}
+      {/* Hero — mockup 16 (2026-06-11): tracked-uppercase eyebrow deleted (A21) + decorative
+          pulsing dot removed (no decorative artifacts); count line is real data, normal case. */}
       <div className="pt-8 pb-6 bg-s-bg-sunken">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="font-body text-[12px] md:text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
-            letzte freie Termine
-          </p>
-          <div className="flex items-center gap-3">
-            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
-              Last-Minute Angebote
-            </h1>
-            {/* Live indicator dot — V3-D313: coral → s-urgency (universal-color: urgency burnt amber #C2410C per LOCKFILE §1) */}
-            <span className="w-2.5 h-2.5 rounded-full bg-s-urgency animate-pulse shrink-0" aria-label="Live" />
-          </div>
+          <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
+            Last-Minute Angebote
+          </h1>
           {total > 0 && (
-            <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 mt-2">
+            <p className="font-body text-[13.5px] text-s-ink-2 mt-2">
               {total} verfügbare Termine heute
             </p>
           )}
@@ -218,7 +212,7 @@ export default function LastMinutePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
         {/* Sorting toggle */}
         <div className="mb-4 flex items-center gap-2 flex-wrap">
-          <span className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/40">
+          <span className="font-body text-[12.5px] font-medium text-s-ink-3">
             Sortieren nach:
           </span>
           {/* V3-D313: chips → TabPill pattern (ink active / white+hairline inactive); fix corrupted dark-mode hovers + retired green shadows */}
@@ -249,7 +243,7 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => toggleCategory(key)}
               className={[
-                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] transition-colors duration-150",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[12.5px] font-heading font-medium transition-colors duration-150",
                 selectedCategories.includes(key)
                   ? "bg-s-ink text-white"
                   : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
@@ -277,7 +271,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-border text-[12px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-border text-[12.5px] font-heading font-medium text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150"
             >
               <X size={11} />
               Zurücksetzen
@@ -307,7 +301,7 @@ export default function LastMinutePage() {
             <EmptyState
               icon={Clock}
               title={tEmpty("lastMinuteNoSlots")}
-              message="Heute sind keine Last-Minute Angebote verfügbar. Schau später noch einmal rein."
+              message={tEmpty("lastMinuteNoSlotsMessage")}
             />
 
             {/* Suggested categories */}
@@ -366,7 +360,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white border border-s-border text-xs font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white border border-s-border text-[13px] font-heading font-medium text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150 disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

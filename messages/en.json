@@ -5206,7 +5206,8 @@
     "offersEmptyMessage": "New offers are coming soon. Check back regularly!",
     "offersSubscribe": "Get notified about new offers",
     "recentlyViewedTitle": "Recently viewed",
-    "instantBookBadge": "Instant book"
+    "instantBookBadge": "Instant book",
+    "lastMinuteNoSlotsMessage": "Deals appear when salons open up short-notice slots. Check back later today."
   },
   "salonDetail": {
     "notFound": "Salon not found",

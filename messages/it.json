@@ -5178,7 +5178,8 @@
     "offersEmptyMessage": "Nuove offerte in arrivo. Torna presto!",
     "offersSubscribe": "Ricevi notifiche per nuove offerte",
     "recentlyViewedTitle": "Visti di recente",
-    "instantBookBadge": "Prenotazione immediata"
+    "instantBookBadge": "Prenotazione immediata",
+    "lastMinuteNoSlotsMessage": "Le offerte appaiono quando i saloni liberano slot dell'ultimo minuto. Ricontrolla più tardi oggi."
   },
   "salonDetail": {
     "notFound": "Salone non trovato",

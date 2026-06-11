@@ -5216,7 +5216,8 @@
     "offersEmptyMessage": "Neue Angebote kommen bald. Schau regelmässig vorbei!",
     "offersSubscribe": "Über neue Angebote informiert werden",
     "recentlyViewedTitle": "Zuletzt besucht",
-    "instantBookBadge": "Sofort buchbar"
+    "instantBookBadge": "Sofort buchbar",
+    "lastMinuteNoSlotsMessage": "Deals erscheinen, sobald Salons kurzfristig Termine freigeben. Schau später heute nochmal rein."
   },
   "salonDetail": {
     "notFound": "Salon nicht gefunden",
