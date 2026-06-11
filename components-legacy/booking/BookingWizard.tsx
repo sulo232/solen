@@ -3,13 +3,17 @@
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BackButton } from '@/app/[locale]/_components/primitives';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
 import {
   ServicesStaffStep,
+  StaffStep,
   DateTimeStep,
   PayConfirmStep,
   HairStep,
 } from '@/components-legacy/booking';
+import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
 import type { Salon, StaffMember } from '@/lib/types';
 
 /**
@@ -31,18 +35,19 @@ import type { Salon, StaffMember } from '@/lib/types';
  * Legacy currentStep values 'confirm' + 'payment' are mapped to 'pay-confirm'
  * so existing in-progress sessions don't lose state on first load post-deploy.
  */
-// 'Deine Haare' (2026-06-10 owner mockup) joins the flow when the cart holds hair
-// services — computed per cart, so nails/spa keep the 3-step flow. The Q56 segment
-// bar simply grows a 4th segment (owner 2026-06-11: old bar structure, new rules).
-const BASE_STEPS = ['services-staff', 'datetime', 'pay-confirm'] as const;
-const HAIR_STEPS = ['services-staff', 'datetime', 'hair', 'pay-confirm'] as const;
-type ActiveStep = typeof HAIR_STEPS[number];
+// Mockup 20 (owner-approved 2026-06-11) — exact Fresha bones: services-only
+// step, then the team picker as its OWN step, then Zeit (+ 'Deine Haare' when
+// the cart holds hair services, 2026-06-10 mockup). NO progress UI anywhere —
+// the back arrow is the navigation, the big title names the task (i18n keys
+// booking.stepTitles.*). The staff step is skipped for 0/1-staff salons.
+type ActiveStep = 'services-staff' | 'staff' | 'datetime' | 'hair' | 'pay-confirm';
 
-const STEP_LABELS: Record<ActiveStep, string> = {
-  'services-staff': 'Auswahl',
-  'datetime': 'Datum & Zeit',
-  'hair': 'Deine Haare',
-  'pay-confirm': 'Bestätigen & Zahlen',
+const STEP_TITLE_KEYS: Record<ActiveStep, string> = {
+  'services-staff': 'services',
+  'staff': 'staff',
+  'datetime': 'datetime',
+  'hair': 'hair',
+  'pay-confirm': 'payConfirm',
 };
 
 // Hair step shows only for hair categories — data-driven via the service rows
@@ -110,12 +115,21 @@ const slideVariants = {
 
 export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
   const t = useTranslations('booking') as any;
+  const locale = useLocale();
+  const router = useRouter();
   const { currentStep, goToStep, formData } = useBooking();
 
   // Hair step is part of the flow when ANY cart service belongs to a hair category.
   const cartIds = new Set(formData.services.map((s) => s.id));
   const hairRelevant = services.some((s) => cartIds.has(s.id) && HAIR_CATEGORIES.has(s.category));
-  const STEPS: readonly ActiveStep[] = hairRelevant ? HAIR_STEPS : BASE_STEPS;
+  const hasStaffStep = staffList.length > 1;
+  const STEPS: readonly ActiveStep[] = [
+    'services-staff',
+    ...(hasStaffStep ? (['staff'] as const) : []),
+    'datetime',
+    ...(hairRelevant ? (['hair'] as const) : []),
+    'pay-confirm',
+  ];
 
   // Map legacy step keys to the active enum (graceful migration for in-progress sessions)
   const normalizedStep: ActiveStep =
@@ -138,15 +152,12 @@ export default function BookingWizard({ services, staffList, salon, staffService
     if (canGoBack) goToStep(STEPS[currentIndex - 1]);
   };
 
-  const handleSegmentJump = (i: number) => {
-    // Q56: only previous segments are tappable (forward-jumping breaks validation order)
-    if (i < currentIndex) goToStep(STEPS[i]);
-  };
-
   const renderStep = () => {
     switch (normalizedStep) {
       case 'services-staff':
-        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
+        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} nextStep={hasStaffStep ? 'staff' : 'datetime'} />;
+      case 'staff':
+        return <StaffStep staffList={staffList} staffServices={staffServices} salonSlug={salon.slug} />;
       case 'datetime':
         return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} nextStep={hairRelevant ? 'hair' : 'confirm'} />;
       case 'hair':
@@ -160,48 +171,35 @@ export default function BookingWizard({ services, staffList, salon, staffService
 
   return (
     <div className="w-full">
-      {/* Q56 progress indicator — 3-segment bar + eyebrow + Anton step label */}
-      <div className="px-1 pt-2 pb-4">
-        {/* 3-segment bar */}
-        <div className="flex items-center gap-[3px] mb-3" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
-          {STEPS.map((step, i) => {
-            const isFilled = i <= currentIndex;
-            const isPast = i < currentIndex;
-            return (
-              <button
-                key={step}
-                type="button"
-                onClick={() => handleSegmentJump(i)}
-                disabled={!isPast}
-                aria-label={`Zurück zu Schritt ${i + 1}: ${STEP_LABELS[step]}`}
-                className={[
-                  'flex-1 h-1.5 rounded-full transition-colors duration-200',
-                  isFilled ? 'bg-s-ink' : 'bg-s-bg-sunken',
-                  isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1' : 'cursor-default',
-                ].join(' ')}
-              />
-            );
-          })}
-        </div>
-
-        {/* Eyebrow + Anton step label */}
-        <div className="flex items-center gap-3">
-          {canGoBack && (
-            <BackButton
-              variant="flat"
-              onClick={handleBack}
-              aria-label={t('back')}
-              label={t('back')}
-              className="-ml-2"
-            />
-          )}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-heading text-[20px] sm:text-[24px] font-bold text-s-ink leading-tight">
-              {STEP_LABELS[normalizedStep]}
-            </h3>
-          </div>
-        </div>
+      {/* Mockup 20 nav — back + X on the sunken body (no bar, no salon name,
+          no progress UI; exactly the captured Fresha anatomy) */}
+      <div className="flex items-center justify-between pt-1 pb-1">
+        {canGoBack ? (
+          <button
+            type="button"
+            onClick={handleBack}
+            aria-label={t('back')}
+            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-s-ink/5"
+          >
+            <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => router.push(`/${locale}/salon/${salon.slug}`)}
+            aria-label={t('back')}
+            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-s-ink/5"
+          >
+            <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
+          </button>
+        )}
+        <BookingExitButton slug={salon.slug} />
       </div>
+
+      {/* Big task title — ONE heading per screen */}
+      <h1 className="pt-3 pb-1 font-heading text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-s-ink">
+        {t(`stepTitles.${STEP_TITLE_KEYS[normalizedStep]}`)}
+      </h1>
 
       {/* Step content with slide animation */}
       <AnimatePresence mode="wait" custom={1}>

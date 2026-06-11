@@ -7,7 +7,6 @@ import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock } from 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
-import { StaffPicker, StaffListSheet } from '@/components-legacy/booking';
 import ToggleCircle from './ToggleCircle';
 import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -55,6 +54,8 @@ interface ServicesStaffStepProps {
   staffServices: StaffService[];
   serviceAddons: ServiceAddon[];
   serviceOptions: ServiceOption[];
+  /** mockup 20: services -> staff step (or straight to datetime when 0/1 staff) */
+  nextStep: 'staff' | 'datetime';
 }
 
 const catId = (category: string) => `cat-${category.replace(/[^a-z0-9]/gi, '-')}`;
@@ -67,6 +68,7 @@ export default function ServicesStaffStep({
   staffServices,
   serviceAddons,
   serviceOptions,
+  nextStep,
 }: ServicesStaffStepProps) {
   const t = useTranslations('booking.serviceSelection');
   const locale = useLocale();
@@ -74,7 +76,6 @@ export default function ServicesStaffStep({
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCatSheet, setShowCatSheet] = useState(false);
-  const [showStaffList, setShowStaffList] = useState(false);
   const [sheetServiceId, setSheetServiceId] = useState<string | null>(null);
 
   const selectedServiceIds = new Set(formData.services.map((s) => s.id));
@@ -137,17 +138,13 @@ export default function ServicesStaffStep({
     }
   };
 
-  const handleSelectStaff = (staffId: string) => {
-    updateFormData({ selectedStaffId: staffId });
-  };
-
   const handleContinue = async () => {
     if (formData.services.length === 0) {
       setError(t('selectAtLeastOne'));
       return;
     }
     setIsChecking(true);
-    goToStep('datetime');
+    goToStep(nextStep);
     setIsChecking(false);
   };
 
@@ -312,7 +309,7 @@ export default function ServicesStaffStep({
       {categories.length > 1 && (
         <div
           ref={tabsRef}
-          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-[--base] border-b border-s-border"
+          className="sticky top-0 z-30 -mx-4 bg-s-bg-sunken px-4 py-2.5"
         >
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => {
@@ -325,7 +322,7 @@ export default function ServicesStaffStep({
                   // NOT pure black. Instant (no layoutId spring — that slide was laggy).
                   className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
-                      ? 'border-s-border bg-s-bg-sunken text-s-ink'
+                      ? 'border-s-ink bg-s-ink text-white'
                       : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
                   }`}
                 >
@@ -346,40 +343,19 @@ export default function ServicesStaffStep({
         </div>
       )}
 
-      {/* Staff picker — top, always visible (stylist-first) */}
-      {!singleStaff && (
-        <div className="pt-5">
-          <div className="mb-1 flex items-center justify-end px-1">
-            <button
-              type="button"
-              onClick={() => setShowStaffList(true)}
-              className="inline-flex items-center gap-0.5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:text-s-ink-2"
-            >
-              Alle ansehen
-              <ChevronRight size={15} strokeWidth={2.2} aria-hidden />
-            </button>
-          </div>
-          <StaffPicker
-            staffList={staffList}
-            selectedStaff={formData.selectedStaffId}
-            onSelect={handleSelectStaff}
-          />
-        </div>
-      )}
-
-      {/* Services grouped by category */}
-      <div className={`space-y-7 pt-5 ${!singleStaff ? 'border-t border-s-border mt-5' : ''}`}>
+      {/* Services grouped by category — mockup 20 (Fresha bones): one white
+          floating card per service on the sunken body, selected = ink border. */}
+      <div className="space-y-7 pt-4">
         {categories.map((category) => {
           const categoryServices = visibleServices.filter(
             (s) => groupKey(s) === category
           );
           return (
             <section key={category} id={catId(category)} className="scroll-mt-[120px]">
-              <h3 className="font-heading text-lg font-bold capitalize text-s-ink mb-3">
+              <h3 className="font-heading text-[20px] font-bold capitalize tracking-[-0.01em] text-s-ink mb-3">
                 {category}
               </h3>
-              {/* Grouped card per category (Atelier pattern, owner 2026-06-11): rows + dividers */}
-              <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+              <div className="space-y-3">
                 {categoryServices.map((service) => {
                   const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
@@ -406,9 +382,11 @@ export default function ServicesStaffStep({
                           ? setSheetServiceId(service.id)
                           : handleSelectService(service)
                       }
-                      className="w-full border-t border-s-border px-5 py-[18px] text-left transition-colors duration-200 first:border-t-0 hover:bg-s-bg-sunken/50"
+                      className={`w-full rounded-[16px] border-2 bg-white p-[18px] text-left transition-[border-color] duration-200 ${
+                        inCart ? 'border-s-ink' : 'border-transparent'
+                      }`}
                     >
-                      <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
+                      <h4 className="font-body text-[16px] font-semibold text-s-ink leading-snug">
                         {serviceName(service)}
                       </h4>
                       <p className="flex items-center gap-1 text-xs text-s-ink-2 mt-1">
@@ -559,16 +537,6 @@ export default function ServicesStaffStep({
         />
       )}
 
-      {/* Full-screen "Select professional" list (Fresha pattern) */}
-      {showStaffList && (
-        <StaffListSheet
-          staffList={staffList}
-          selectedStaff={formData.selectedStaffId}
-          onSelect={handleSelectStaff}
-          onClose={() => setShowStaffList(false)}
-          salonSlug={salonSlug}
-        />
-      )}
     </div>
   );
 }

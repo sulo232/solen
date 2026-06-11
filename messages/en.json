@@ -1078,7 +1078,20 @@
     "hairYourStylist": "Your stylist",
     "hairForSalon": "For your appointment",
     "hairSkip": "Skip",
-    "chooseServices": "Select services"
+    "chooseServices": "Select services",
+    "stepTitles": {
+      "services": "Select services",
+      "staff": "Select stylist",
+      "datetime": "Date & time",
+      "hair": "Your hair",
+      "payConfirm": "Confirm & pay"
+    },
+    "staffStep": {
+      "any": "No preference",
+      "maxAvailability": "Maximum availability",
+      "choose": "Select",
+      "viewProfile": "View profile"
+    }
   },
   "chat": {
     "send": "Send",

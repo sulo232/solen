@@ -1044,7 +1044,20 @@
     "hairYourStylist": "Il tuo stilista",
     "hairForSalon": "Per il tuo appuntamento",
     "hairSkip": "Salta",
-    "chooseServices": "Scegli i servizi"
+    "chooseServices": "Scegli i servizi",
+    "stepTitles": {
+      "services": "Scegli i servizi",
+      "staff": "Scegli lo/la stilista",
+      "datetime": "Data e ora",
+      "hair": "I tuoi capelli",
+      "payConfirm": "Conferma e paga"
+    },
+    "staffStep": {
+      "any": "Nessuna preferenza",
+      "maxAvailability": "Massima disponibilità",
+      "choose": "Seleziona",
+      "viewProfile": "Vedi profilo"
+    }
   },
   "chat": {
     "send": "Invia",

@@ -4,7 +4,6 @@ import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient, getSessionUser } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard, EmptyServicesState } from '@/components-legacy/booking';
-import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
 import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
@@ -171,19 +170,11 @@ export default async function BookingSalonPage({
 
   return (
     <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
-      <div className="min-h-screen bg-[--base]">
-        {/* Header with salon name */}
-        <header className="sticky top-0 z-40 border-b border-s-border bg-white">
-          <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
-            <BookingExitButton slug={slug} />
-            <h1 className="min-w-0 flex-1 font-heading text-lg font-semibold tracking-[-0.01em] text-s-ink truncate">
-              {t('bookingAt', { salon: salon.name })}
-            </h1>
-          </div>
-        </header>
-
-        {/* Main content */}
-        <main className="max-w-2xl mx-auto px-4 py-6">
+      {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
+          no salon-name header bar; nav (back + X) + the big task title live
+          inside the wizard. */}
+      <div className="min-h-screen bg-s-bg-sunken">
+        <main className="max-w-2xl mx-auto px-4 pt-3 pb-6">
           {hasServices ? (
             <BookingWizard
               services={services}

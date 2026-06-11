@@ -1088,7 +1088,20 @@
     "hairYourStylist": "Dein:e Stylist:in",
     "hairForSalon": "Für deinen Termin",
     "hairSkip": "Überspringen",
-    "chooseServices": "Service wählen"
+    "chooseServices": "Service wählen",
+    "stepTitles": {
+      "services": "Services auswählen",
+      "staff": "Stylist:in auswählen",
+      "datetime": "Datum & Zeit",
+      "hair": "Deine Haare",
+      "payConfirm": "Bestätigen & Zahlen"
+    },
+    "staffStep": {
+      "any": "Keine Präferenz",
+      "maxAvailability": "Maximale Verfügbarkeit",
+      "choose": "Auswählen",
+      "viewProfile": "Profil ansehen"
+    }
   },
   "chat": {
     "send": "Senden",

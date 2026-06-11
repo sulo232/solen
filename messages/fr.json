@@ -1062,7 +1062,20 @@
     "hairYourStylist": "Votre styliste",
     "hairForSalon": "Pour votre rendez-vous",
     "hairSkip": "Passer",
-    "chooseServices": "Choisir des services"
+    "chooseServices": "Choisir des services",
+    "stepTitles": {
+      "services": "Choisir des services",
+      "staff": "Choisir un·e styliste",
+      "datetime": "Date et heure",
+      "hair": "Tes cheveux",
+      "payConfirm": "Confirmer et payer"
+    },
+    "staffStep": {
+      "any": "Sans préférence",
+      "maxAvailability": "Disponibilité maximale",
+      "choose": "Choisir",
+      "viewProfile": "Voir le profil"
+    }
   },
   "chat": {
     "send": "Envoyer",
