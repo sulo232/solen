@@ -1,4 +1,7 @@
-import Link from "next/link";
+// DS-A4 (2026-06-11): Link from next-view-transitions so the card photo can
+// morph into the PDP hero (16.3 flagship). API-identical to next/link.
+import { Link } from "next-view-transitions";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import { Calendar, Flame } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -424,6 +427,10 @@ export function SalonCard({
   city,
   className,
 }: SalonCardProps) {
+  // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
+  // next-intl middleware to guess a locale — which (a) could land on the wrong
+  // language and (b) inserts a redirect that kills the 16.3 view transition.
+  const locale = useLocale();
   const cat = cardCategoryColors[category];
   // V2-D48: spa cat flipped to light moss-pale bg, so this is false for all cats.
   // Kept for forward-compat when real salon photos may have dark composition.
@@ -437,7 +444,7 @@ export function SalonCard({
 
   return (
     <Link
-      href={`/salon/${slug}`}
+      href={`/${locale}/salon/${slug}`}
       aria-label={`${name}, Termin buchen`}
       className={cn(
         "group flex shrink-0 flex-col snap-start",
@@ -481,7 +488,13 @@ export function SalonCard({
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
           "group-hover:shadow-elevation-3",
         )}
-        style={{ backgroundColor: cat.bg }}
+        style={{
+          backgroundColor: cat.bg,
+          // 16.3: shared-element name; PDP hero carries the same name. Unique per
+          // slug — if a salon appears twice on one page, the browser skips that
+          // name's morph and falls back to the default cross-fade (harmless).
+          viewTransitionName: `vt-salon-${slug}`,
+        }}
       >
         {/* V3-D101 (2026-05-22): stock photos restored per user. Falls back to
             monogram tile when photoUrl is absent. */}

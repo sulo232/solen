@@ -72,6 +72,10 @@ export function SalonHero({
                 src={u}
                 alt={`Foto ${i + 1} von ${salon.name}`}
                 className="h-full w-full shrink-0 snap-center bg-s-bg-sunken object-cover"
+                // 16.3 shared element: the FIRST hero photo carries the same
+                // view-transition-name as the tapped SalonCard photo, so the card
+                // morphs into the hero on navigation (and back).
+                style={i === 0 ? { viewTransitionName: `vt-salon-${salon.slug}` } : undefined}
                 loading={i === 0 ? "eager" : "lazy"}
                 onClick={() => onOpenLightbox(i)}
               />

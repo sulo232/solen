@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ViewTransitions } from "next-view-transitions";
 import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 
@@ -47,7 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           transparent (set in globals.css `body { background: transparent }`)
           so the wash shows. text-s-ink kept. */}
       <body style={{ margin: 0, padding: 0 }} className="text-s-ink">
-        {children}
+        {/* DS-A4 / LOCKFILE 16.3 (2026-06-11): View Transitions provider — enables
+            the ONE shared-element moment (salon card photo -> PDP hero) via the
+            native View Transitions API. No-ops on unsupported browsers. */}
+        <ViewTransitions>{children}</ViewTransitions>
       </body>
     </html>
   );
