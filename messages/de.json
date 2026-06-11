@@ -5804,7 +5804,10 @@
     "successBody": "Überprüfe deine E-Mails und klicke auf den Bestätigungslink.",
     "continue": "Weiter",
     "errorMinAge": "Du musst mindestens 16 Jahre alt sein.",
-    "errorAccountExists": "Du hast bereits ein Konto. Bitte logge dich ein."
+    "errorAccountExists": "Du hast bereits ein Konto. Bitte logge dich ein.",
+    "errorPasswordMin": "Das Passwort braucht mindestens 8 Zeichen.",
+    "errorPasswordDigit": "Das Passwort braucht mindestens eine Zahl.",
+    "errorPasswordUpper": "Das Passwort braucht mindestens einen Grossbuchstaben."
   },
   "payConfirm": {
     "fillRequiredFields": "Bitte fülle alle erforderlichen Felder aus",

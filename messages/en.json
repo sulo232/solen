@@ -5792,7 +5792,10 @@
     "successBody": "Check your email and click the confirmation link.",
     "continue": "Continue",
     "errorMinAge": "You must be at least 16 years old.",
-    "errorAccountExists": "You already have an account. Please sign in."
+    "errorAccountExists": "You already have an account. Please sign in.",
+    "errorPasswordMin": "The password needs at least 8 characters.",
+    "errorPasswordDigit": "The password needs at least one number.",
+    "errorPasswordUpper": "The password needs at least one uppercase letter."
   },
   "payConfirm": {
     "fillRequiredFields": "Please fill in all required fields",

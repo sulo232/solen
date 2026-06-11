@@ -5766,7 +5766,10 @@
     "successBody": "Controlla la tua e-mail e clicca sul link di conferma.",
     "continue": "Continua",
     "errorMinAge": "Devi avere almeno 16 anni.",
-    "errorAccountExists": "Hai già un account. Accedi."
+    "errorAccountExists": "Hai già un account. Accedi.",
+    "errorPasswordMin": "La password deve contenere almeno 8 caratteri.",
+    "errorPasswordDigit": "La password deve contenere almeno un numero.",
+    "errorPasswordUpper": "La password deve contenere almeno una lettera maiuscola."
   },
   "payConfirm": {
     "fillRequiredFields": "Compila tutti i campi obbligatori",

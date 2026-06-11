@@ -84,6 +84,24 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       return;
     }
 
+    // LOCKFILE 14.4 (2026-06-11): errors name the exact cause BEFORE the server
+    // gets a chance to answer generically. Mirrors the placeholder's stated policy.
+    if (password.length < 8) {
+      toast.error(t("errorPasswordMin"));
+      setSaving(false);
+      return;
+    }
+    if (!/\d/.test(password)) {
+      toast.error(t("errorPasswordDigit"));
+      setSaving(false);
+      return;
+    }
+    if (!/[A-ZÄÖÜ]/.test(password)) {
+      toast.error(t("errorPasswordUpper"));
+      setSaving(false);
+      return;
+    }
+
     try {
       const payload = isSalon 
         ? { email, password, salon_name: salonName } 

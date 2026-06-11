@@ -5777,7 +5777,10 @@
     "successBody": "Vérifie tes e-mails et clique sur le lien de confirmation.",
     "continue": "Continuer",
     "errorMinAge": "Tu dois avoir au moins 16 ans.",
-    "errorAccountExists": "Tu as déjà un compte. Connecte-toi."
+    "errorAccountExists": "Tu as déjà un compte. Connecte-toi.",
+    "errorPasswordMin": "Le mot de passe doit contenir au moins 8 caractères.",
+    "errorPasswordDigit": "Le mot de passe doit contenir au moins un chiffre.",
+    "errorPasswordUpper": "Le mot de passe doit contenir au moins une majuscule."
   },
   "payConfirm": {
     "fillRequiredFields": "Veuillez remplir tous les champs obligatoires",
