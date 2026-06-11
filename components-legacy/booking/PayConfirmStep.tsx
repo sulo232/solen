@@ -345,7 +345,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         </div>
         <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
           <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
-          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-accent">{formatPrice(totalPrice, localeCode)}</span>
+          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">{formatPrice(totalPrice, localeCode)}</span>
         </div>
       </div>
 

@@ -57,6 +57,8 @@ export interface BookingConfirmationProps {
    */
   status: string | null; // 'pending' | 'confirmed' | 'pending_approval' | 'cancelled' | ...
   paymentStatus: string | null; // 'none' | 'pending' | 'paid' | 'card_saved' | ...
+  /** true when the row carries a Stripe payment_intent_id (online pay initiated). */
+  hasOnlinePayment?: boolean;
   isGuest: boolean;
   /** Guest only: the full re-entry link incl. the raw token (?code=&t=). */
   accessLink: string | null;
@@ -100,11 +102,14 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   }`;
   const code = props.referenceCode ?? "";
 
-  // Payment truth, gated on the row (never an unconditional "paid in full"). The discriminator is
-  // payment_status, NOT paid_via (paid_via defaults to 'stripe' for both online AND pay-at-salon).
+  // Payment truth, gated on the row (never an unconditional "paid in full").
+  // payment_status 'none' is the DB DEFAULT for pay-at-salon too, so it can't
+  // discriminate alone (bug seen 2026-06-12: salon-pay bookings showed
+  // "Zahlung wird bestätigt…"). The online-pay fingerprint is payment_intent_id:
+  // only the C1 create-then-charge path sets it.
   const isPaid = props.paymentStatus === "paid";
   const isConfirming =
-    !isPaid && (props.paymentStatus === "none" || props.paymentStatus === "processing");
+    !isPaid && (props.hasOnlinePayment || props.paymentStatus === "processing");
 
   // VAT shown only on a settled payment from a registered salon. The label carries "(inkl. MWST)"
   // and the footer carries the MWST-Nr; the itemized net/rate split lives on the emailed receipt.
