@@ -713,7 +713,16 @@
       "back": "Indietro",
       "skip": "Salta",
       "next": "Avanti",
-      "goLive": "Attiva il salone"
+      "goLive": "Attiva il salone",
+      "steps": {
+        "profile": "Profilo del salone",
+        "hours": "Orari di apertura",
+        "services": "Servizi",
+        "staff": "Team",
+        "schedule": "Orari di lavoro",
+        "payments": "Pagamenti",
+        "go_live": "Pronto!"
+      }
     },
     "profile": {
       "title": "Il tuo salone",

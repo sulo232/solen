@@ -14,7 +14,9 @@ interface Step {
 export default function SetupBanner() {
   const locale = useLocale();
   const t = useTranslations("dashboard.setupBanner");
-  const isDE = locale === "de" || locale === "fr";
+  // Step names come from the same i18n map the setup wizard uses — the API
+  // sends only { key, complete } (blank-label bug, W14.5 triage 2026-06-12).
+  const tSteps = useTranslations("onboarding.setup.steps");
   const [data, setData] = useState<{ steps: Step[]; completed: number; total: number; percentage: number } | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -58,7 +60,7 @@ export default function SetupBanner() {
           <div className="w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 border border-s-ink/15">
           </div>
           <p className="text-xs font-heading text-s-ink flex-1">
-            {isDE ? step.label : step.label_en}
+            {tSteps(step.key as Parameters<typeof tSteps>[0])}
           </p>
           <Link href={`/${locale}/dashboard/setup`}
             className="text-[12px] font-heading uppercase tracking-[.06em] text-s-coral">

@@ -731,7 +731,16 @@
       "back": "Retour",
       "skip": "Passer",
       "next": "Suivant",
-      "goLive": "Mettre en ligne"
+      "goLive": "Mettre en ligne",
+      "steps": {
+        "profile": "Profil du salon",
+        "hours": "Horaires d'ouverture",
+        "services": "Services",
+        "staff": "Équipe",
+        "schedule": "Horaires de travail",
+        "payments": "Paiements",
+        "go_live": "C'est parti !"
+      }
     },
     "profile": {
       "title": "Votre salon",
