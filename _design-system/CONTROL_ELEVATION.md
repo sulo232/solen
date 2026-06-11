@@ -94,3 +94,12 @@ Verified against the codebase by an inventory agent. ✅ = fixed this pass · �
 **Structural root (still open):** there is no shared `QuantityStepper` primitive, BUT the inventory found ZERO quantity-stepper callsites in the app (you add a service once, you don't buy N of it), so building one now would be dead code. The live add-control is the already-compliant toggle (`SalonServicesSheet` / `ToggleCircle`); its only real debt is duplication, fixable as an `IconToggleButton` primitive. `QuantityStepper` stays a documented spec (the mockup) until a multi-quantity surface needs it.
 
 **Dashboard (`/dashboard/*`) is EXEMPT:** it has its own vibrant skin (LOCKFILE §12). **Discovery (`components-legacy/discovery/**`) is DEFERRED, not exempt:** the rule applies, the user just excluded it from this sweep.
+
+
+## Grouped list cards (2026-06-11 owner addition)
+
+The Atelier service-grouping pattern is the ONE sanctioned at-rest shadow on a calm
+surface: a grouped rows-in-one-card list may carry `shadow-whisper` (0 1px 3px 4% +
+0 10px 28px -14px 10%). It is a whisper, not a lift — anything heavier (elevation-1/2/3
+at rest, hover shadow bumps) on a list card is the grey-haze drift this doc bans.
+Full rule: LOCKFILE "Grouped list cards".

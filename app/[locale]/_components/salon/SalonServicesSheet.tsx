@@ -251,18 +251,17 @@ export function SalonServicesSheet({
                 <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.01em] text-s-ink">
                   {capitalize(cat)}
                 </h2>
-                <ul className="mt-5 space-y-3">
+                <ul className="mt-5 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
                   {grouped[cat].map((s) => {
                     const isSelected = selectedIds.has(s.id);
                     return (
                       <li
                         key={s.id}
                         className={cn(
-                          "rounded-2xl border-2 bg-white p-5 transition-all md:p-6",
-                          isSelected
-                            // V3-D202 (A21): tinted emerald shadow → shadow-elevation-2.
-                            ? "border-s-ink"
-                            : "border-s-border hover:border-s-ink/30"
+                          // Atelier grouped rows (owner 2026-06-11): divider rows in one card;
+                          // selection = the ToggleCircle disc + a soft sunken wash, no border jump.
+                          "border-t border-s-border px-5 py-[18px] transition-colors first:border-t-0 md:px-6",
+                          isSelected ? "bg-s-bg-sunken/60" : "hover:bg-s-bg-sunken/40"
                         )}
                       >
                         <div className="flex items-start justify-between gap-4">

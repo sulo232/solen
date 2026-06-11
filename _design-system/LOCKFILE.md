@@ -458,6 +458,22 @@ dense home feed. Measured pass 2026-06-11 confirmed home is internally consisten
 values; apparent outliers (Walk-in band, Für dich bento) were icon-row / hero-overlap measurement
 artifacts, not drift. Do NOT re-inflate home gaps to 32px.
 
+### 🔒 Grouped list cards (owner-approved 2026-06-11, Atelier service-grouping mockup)
+
+**Rule:** any LIST of same-kind rows (services, per-staff Leistungen, selectable booking
+services) renders as **ONE grouped card per group** — `rounded-[24px] border border-s-border
+bg-white shadow-whisper overflow-hidden` — with ROWS inside (`px-5 py-[18px]`, `border-t
+border-s-border first:border-t-0`). NEVER separate bordered/shadowed cards per row.
+- `shadow-whisper` = `0 1px 3px rgba(10,10,10,.04), 0 10px 28px -14px rgba(10,10,10,.10)`
+  (tailwind token). It is the ONLY sanctioned at-rest shadow for these cards; elevation-2/3
+  on a list card is the banned grey-haze (CONTROL_ELEVATION B). Hover = `bg-s-bg-sunken/40`
+  wash or `border-s-ink/30`, never a shadow bump.
+- Selection inside a grouped row = ToggleCircle/check disc + `bg-s-bg-sunken/60` wash; no
+  border-2 jumps (rows share the card's chrome).
+- Group header sits ABOVE the card: name + range baseline row (16px/600 + 13px ink-3 tabular).
+- Applied 2026-06-11: SalonServices, SalonServicesSheet, booking ServicesStaffStep,
+  StaffProfilePage Leistungen. Reference: `public/_mockups/restraint/service-grouping.html`.
+
 ### Box shadow (3-level system + legacy aliases)
 
 | Token | Value |

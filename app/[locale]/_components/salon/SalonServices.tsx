@@ -132,7 +132,7 @@ export function SalonServices({
               <h3 className="font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{tier.label}</h3>
               <span className="text-[13px] tabular-nums text-s-ink-3">{tier.range}</span>
             </div>
-            <ul className="mt-3 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-[0_1px_3px_rgba(10,10,10,0.04),0_10px_28px_-14px_rgba(10,10,10,0.10)]">
+            <ul className="mt-3 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
               {rows.map((s) => (
                 <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
               ))}
@@ -140,7 +140,7 @@ export function SalonServices({
           </div>
         ))}
         {untiered.length > 0 && (
-          <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-[0_1px_3px_rgba(10,10,10,0.04),0_10px_28px_-14px_rgba(10,10,10,0.10)]">
+          <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
             {untiered.map((s) => (
               <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
             ))}

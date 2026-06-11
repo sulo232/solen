@@ -337,9 +337,10 @@ export default function StaffProfilePage({
       {services.length > 0 && (
         <section ref={setRef("services")} data-tab="services" className="scroll-mt-[112px] px-5 pt-9">
           <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Leistungen</p>
-          <div className="space-y-2.5">
+          {/* Atelier grouped card (owner 2026-06-11): rows + dividers in one card */}
+          <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
             {visibleServices.map((s) => (
-              <div key={s.id} className="flex items-center justify-between gap-3 rounded-input border border-s-border p-4">
+              <div key={s.id} className="flex items-center justify-between gap-3 border-t border-s-border px-5 py-[18px] first:border-t-0">
                 <div className="min-w-0">
                   <div className="text-[15px] font-semibold text-s-ink">{sName(s)}</div>
                   <div className="mt-1 text-[13px] text-s-ink-2 tabular-nums">

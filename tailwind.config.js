@@ -265,6 +265,9 @@ module.exports = {
         "warm-float": "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
         "pressed":          "0 1px 1px rgba(50,47,44,.12), inset 0 1px 2px rgba(50,47,44,.06)",
         // ── Solen Shadow System (DESIGN_SPEC.md — 3 levels, warm-tinted) ──
+        // whisper — the GROUPED LIST CARD shadow (Atelier service-grouping mockup,
+        // owner-approved 2026-06-11). Barely-there lift for rows-in-one-card lists.
+        whisper:            "0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10)",
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "elevation-2":      "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "elevation-3":      "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",

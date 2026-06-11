@@ -380,7 +380,8 @@ export default function ServicesStaffStep({
               <h3 className="font-heading text-lg font-bold capitalize text-s-ink mb-3">
                 {category}
               </h3>
-              <div className="space-y-2.5">
+              {/* Grouped card per category (Atelier pattern, owner 2026-06-11): rows + dividers */}
+              <div className="overflow-hidden rounded-[24px] border border-s-border bg-[--raised] shadow-whisper">
                 {categoryServices.map((service) => {
                   const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
@@ -407,7 +408,7 @@ export default function ServicesStaffStep({
                           ? setSheetServiceId(service.id)
                           : handleSelectService(service)
                       }
-                      className="w-full text-left rounded-input border border-s-border bg-[--raised] p-4 transition-[border-color] duration-200 hover:border-s-ink/30"
+                      className="w-full border-t border-s-border px-5 py-[18px] text-left transition-colors duration-200 first:border-t-0 hover:bg-s-bg-sunken/50"
                     >
                       <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
                         {serviceName(service)}
