@@ -365,7 +365,6 @@ export function salonOutreachInvitation(
       <p>Vorteile:</p>
       <ul>
         <li>Online-Buchungen 24/7 entgegennehmen</li>
-        <li>Last-Minute-Angebote veröffentlichen</li>
         <li>Direktnachrichten von Kunden erhalten</li>
         <li>Kostenlos — keine Grundgebühr</li>
       </ul>
@@ -463,22 +462,18 @@ export function welcomeEmail(
   const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [
       { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
-      { subject: `Entdecke Last-Minute-Angebote, ${vars.name}`, html: `<p>Wusstest du, dass viele Salons Last-Minute-Rabatte anbieten? Spare bis zu 50 % auf freie Termine.</p><p><a href="https://solen.ch/de/explore?filter=lastminute">Last-Minute-Angebote ansehen →</a></p>` },
       { subject: `Dein Profil vervollständigen`, html: `<p>Vervollständige dein Profil, um personalisierte Empfehlungen zu erhalten und schneller zu buchen.</p><p><a href="https://solen.ch/de/account">Profil bearbeiten →</a></p>` },
     ],
     en: [
       { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/explore">Discover salons near you →</a></p>` },
-      { subject: `Discover last-minute deals, ${vars.name}`, html: `<p>Did you know many salons offer last-minute discounts? Save up to 50% on available slots.</p><p><a href="https://solen.ch/en/explore?filter=lastminute">View last-minute deals →</a></p>` },
       { subject: `Complete your profile`, html: `<p>Complete your profile to get personalized recommendations and faster bookings.</p><p><a href="https://solen.ch/en/account">Edit profile →</a></p>` },
     ],
     fr: [
       { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
-      { subject: `Offres de dernière minute, ${vars.name}`, html: `<p>Saviez-vous que de nombreux salons proposent des réductions de dernière minute ? Économisez jusqu'à 50 %.</p><p><a href="https://solen.ch/fr/explore?filter=lastminute">Voir les offres →</a></p>` },
       { subject: `Complétez votre profil`, html: `<p>Complétez votre profil pour des recommandations personnalisées.</p><p><a href="https://solen.ch/fr/account">Modifier le profil →</a></p>` },
     ],
     it: [
       { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/explore">Scopri i saloni vicini →</a></p>` },
-      { subject: `Offerte last-minute, ${vars.name}`, html: `<p>Sapevi che molti saloni offrono sconti last-minute? Risparmia fino al 50%.</p><p><a href="https://solen.ch/it/explore?filter=lastminute">Vedi le offerte →</a></p>` },
       { subject: `Completa il tuo profilo`, html: `<p>Completa il tuo profilo per raccomandazioni personalizzate.</p><p><a href="https://solen.ch/it/account">Modifica profilo →</a></p>` },
     ],
   };

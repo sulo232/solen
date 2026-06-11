@@ -37,7 +37,6 @@ const FEATURE_LINKS = [
   { labelKey: "linkMakeup", href: "/dashboard/makeup-admin" },
   { labelKey: "linkWaxing", href: "/dashboard/waxing-admin" },
   { labelKey: "linkCoiffeur", href: "/dashboard/coiffeur-crm" },
-  { labelKey: "linkLastMinute", href: "/last-minute" },
   { labelKey: "linkPublicPage", href: "/salon/{slug}" },
 ] as const;
 

@@ -2,7 +2,7 @@
  * Featured salons for the search-hub empty state (V2-D51 Phase 5).
  *
  * STATIC DEMO data matching the homepage's current pattern (Coiffeur,
- * LastMinute, Nearby etc. all use DEMO arrays inline). When the rest of the
+ * Nearby etc. all use DEMO arrays inline). When the rest of the
  * homepage wires up real Supabase queries via Server Components, this constant
  * gets replaced by a `featuredSalons` prop passed from `app/[locale]/page.tsx`
  * → Hero → SearchBar (per plan D3).

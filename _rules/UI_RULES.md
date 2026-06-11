@@ -62,7 +62,6 @@
 - **Login:** Centered, single glassmorphic card.
 - **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location.
 - **Dashboard Stats:** Must include count-up number animations and mini sparkline charts.
-- **Last-Minute:** Must include an urgency timer counting down to when the appointment *starts*. 
 
 ## 7. 21st.dev Components
 - **InteractiveHoverButton:** Use for all primary CTAs. Customized with `bg-s-coral` and `text-white`.
@@ -73,13 +72,11 @@
 ## 8. New Components (Phase 6–14)
 - **ThemeToggle** (`components/ui/ThemeToggle.tsx`): Moon/Sun icon in Header, cycles light → dark → system. Stores in `localStorage('solen_theme')`.
 - **ThemeScript** (`components/ui/ThemeScript.tsx`): Inline script in `<head>` to prevent theme flash. No XSS risk (static content).
-- **TutorialTour** (`components/TutorialTour.tsx`): 3 driver.js tooltip steps (search, categories, last-minute). Shows once after first login (`localStorage('tutorial_completed')`).
 - **Help Center** (`app/[locale]/help/`): Public help articles grouped by category (Für Kunden, Für Salons, Kontakt) with search.
 - **Help Editor** (`app/[locale]/dashboard/help-editor/`): Admin CMS for creating/editing/publishing help articles.
 - **ChatWindow** (`components/ChatWindow.tsx`): Now supports media upload (Paperclip button, 10MB limit) and price offer messages.
 - **Dashboard Calendar** (`app/[locale]/dashboard/calendar/`): Weekly grid with staff-colored slots, click-to-reschedule modal, day blocking.
 - **SalonCard** (`components/SalonCard.tsx`): Heart button for favorites, hover prefetch, lazy image loading, dark mode surface.
-- **Last-Minute Page** (`app/[locale]/last-minute/`): Category chip filters + price range pills + client-side filtering.
 
 ## 9. Dark Mode Tokens
 | Token | Light | Dark |
@@ -351,7 +348,6 @@ Use this checklist when building or reviewing ANY component:
 ## 20. Next-Gen Fluidity & Urgency (Phase 2 Vision)
 - **Map vs Grid Equality:** The discovery experience (`app/[locale]/search`) MUST feature a Split View architecture on desktop (50% Map, 50% Grid) and a "Coin-Flip" floating action button on mobile that instantly swaps views without a page reload.
 - **Hyper-Fluid Booking Success:** Do not use full-page redirects for booking success. The `[Book Now]` button MUST use Framer Motion `layoutId` to compress, morph into a circle spinner, and then expand into a glassmorphic Receipt Card Modal containing a self-drawing premium SVG checkmark. **No Confetti.**
-- **Sneaker-Drop Urgency (Last-Minute):** The Last-Minute booking section MUST enforce high urgency. Disappearing slots require `shadow-coral-glow` pulsing. Slots expiring in <2 hours require a floating translucent countdown timer.
 - **Playful, Premium Micro-Delight:** Enforce `.blob-interactive` squish physics on major interactive cards. Favoriting a salon MUST trigger a haptic heart-pop animation (`scale: 1.2` bezier easing down to `scale: 1.0`).
 
 ---

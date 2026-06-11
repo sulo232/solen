@@ -29,7 +29,6 @@ interface AnalyticsData {
   no_show_rate?: number;
   avg_rating: number;
   rating_trend?: "up" | "down" | "flat";
-  last_minute_performance?: { week: string; booked: number; expired: number }[];
   percentile_rank?: number;
   peak_hours_heatmap?: Record<string, Record<string, number>>;
   retention_rate?: number;
@@ -282,22 +281,6 @@ export default function AnalyticsPage() {
               <div className="bg-white rounded-[16px] border border-s-border p-5 shadow-warm-md">
                 <h2 className="font-heading text-base text-s-ink mb-4">{t("peakHours")}</h2>
                 <HeatmapChart data={data.peak_hours_heatmap} />
-              </div>
-            )}
-
-            {data.last_minute_performance && (
-              <div className="bg-white rounded-[16px] border border-s-border p-5 shadow-warm-md">
-                <h2 className="font-heading text-base text-s-ink mb-4">{t("lastMinutePerformance")}</h2>
-                <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={data.last_minute_performance}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                    <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
-                    <Bar dataKey="booked" fill={ACCENT} radius={[4, 4, 0, 0]} stackId="a" name={t("booked")} />
-                    <Bar dataKey="expired" fill="#D1D5DB" radius={[4, 4, 0, 0]} stackId="a" name={t("expired")} />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             )}
           </>)}

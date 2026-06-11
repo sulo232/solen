@@ -361,15 +361,6 @@ export interface UserPreferences {
 // Composite / Derived Types
 // ---------------------------------------------------------------------------
 
-/** Availability slot enriched with salon + service data — used for Last-Minute page */
-export interface LastMinuteSlot extends AvailabilitySlot {
-  salon: Pick<Salon, "id" | "name" | "slug" | "cover_photo_url" | "average_rating">;
-  service: Pick<Service, "id" | "name_de" | "name_en" | "category" | "duration_minutes">;
-  staff_member: Pick<StaffMember, "id" | "name" | "avatar_url"> | null;
-  discounted_price: number;
-  original_price?: number;
-}
-
 export interface SalonBadge {
   icon: string;
   name_de: string;

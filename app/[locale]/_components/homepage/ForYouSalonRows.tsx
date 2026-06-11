@@ -15,42 +15,9 @@ import { useLocale } from "next-intl";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 import { useCustomerPrefs, type CustomerPrefs } from "./useCustomerPrefs";
-import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, FORYOU_DEALS, type ForYouCategory } from "./forYouSalons";
+import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, type ForYouCategory } from "./forYouSalons";
 
 const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a "Weil du X magst" row
-
-function DealsRow({ locale }: { locale: string }) {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  return (
-    <Section>
-      <SectionFrame>
-        <SectionTitle
-          title="Deals für dich"
-          link={{ label: "Alle Angebote", href: `/${locale}/search?deals=true` }}
-          scrollRef={scrollRef}
-        />
-        <ScrollRow ref={scrollRef}>
-          {FORYOU_DEALS.map((s) => (
-            <SalonCard
-              key={`deal-${s.slug}`}
-              slug={s.slug}
-              salonId={s.id}
-              name={s.name}
-              rating={s.rating}
-              category={s.category}
-              photoUrl={s.photoUrl}
-              variant="service"
-              priceFromCHF={s.priceFromCHF}
-              address={s.address}
-              city="Basel"
-              discountPercent={s.discountPercent}
-            />
-          ))}
-        </ScrollRow>
-      </SectionFrame>
-    </Section>
-  );
-}
 
 function ForYouRow({
   category,
@@ -91,8 +58,6 @@ function ForYouRow({
               priceFromCHF={s.priceFromCHF}
               address={s.address}
               city="Basel"
-              // deals interest → one card carries a discount; top_rated → lead card badged.
-              discountPercent={wantsDeals && i === 1 ? 20 : null}
               curation={wantsTopRated && i === 0 ? "top-bewertet" : null}
             />
           ))}
@@ -130,7 +95,6 @@ export function ForYouSalonRowsView({
           wantsTopRated={wantsTopRated}
         />
       ))}
-      {wantsDeals && <DealsRow locale={locale} />}
     </>
   );
 }

@@ -29,7 +29,6 @@ export default function HeroAboveFold() {
 
   // Quick-action chips — links to filtered discovery
   const quickActions = [
-    { key: "last-minute", icon: Clock, href: `/${locale}/last-minute`, label: "Last-Minute" },
     { key: "nearby", icon: MapPin, href: `/${locale}/entdecken?near=1`, label: "In der Nähe" },
     { key: "trending", icon: Sparkles, href: `/${locale}/entdecken?sort=trending`, label: "Trending" },
   ];

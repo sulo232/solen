@@ -7,7 +7,6 @@ import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 
 const SECTION_ORDER = [
   "featured",
-  "last_minute",
   "partner_cta",
   "trending",
   "nearby",
@@ -28,7 +27,6 @@ export default function HomepageAdminPage() {
     new_salons: t("sectionNewSalons"),
     rebook: t("sectionRebook"),
     reviews: t("sectionReviews"),
-    last_minute: t("sectionLastMinute"),
     featured: t("sectionFeatured"),
     social_proof: t("sectionSocialProof"),
     partner_cta: t("sectionPartnerCta"),

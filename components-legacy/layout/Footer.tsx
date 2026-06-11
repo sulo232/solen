@@ -60,8 +60,6 @@ export default function Footer() {
               {[
                 { label: t("platformDiscover") || "Entdecken", href: `/${locale}/discover` },
                 { label: t("platformSearch") || "Suchen", href: `/${locale}/search` },
-                { label: t("platformOffers") || "Angebote", href: `/${locale}/angebote` },
-                { label: t("platformLastMinute") || "Last Minute", href: `/${locale}/angebote` },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link

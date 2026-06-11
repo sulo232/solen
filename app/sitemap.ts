@@ -11,7 +11,6 @@ const CATEGORIES = ["coiffeur", "barbershop", "nails", "spa"];
 
 const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priority: number }[] = [
   { path: "",             freq: "daily",   priority: 1.0 },
-  { path: "/angebote", freq: "hourly",  priority: 0.9 },
   { path: "/barbershop",  freq: "weekly",  priority: 0.8 },
   { path: "/coiffeur",    freq: "weekly",  priority: 0.8 },
   { path: "/nails",       freq: "weekly",  priority: 0.8 },

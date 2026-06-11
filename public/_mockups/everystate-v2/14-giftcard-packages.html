@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>14 Gift card + packages, de-uppercased + price-format fix</title>
+<title>14 Gift card, de-uppercased + real card preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -22,20 +22,11 @@
   .gprev .amtbig{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:32px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
   .gprev .for{font-size:13px;color:rgba(255,255,255,.85);margin-top:12px}
   .gprev .lucide{position:absolute;right:16px;top:16px;width:22px;height:22px;color:rgba(255,255,255,.5)}
-  .pk{border:1px solid var(--border);border-radius:18px;padding:16px;margin-top:12px}
-  .pk .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px}
-  .pk .m{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:11px;align-items:center}
-  .pk .m span{display:flex;gap:4px;align-items:center}
-  .pk .m .lucide{width:13px;height:13px}
-  .pk .pr{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,10,10,.06)}
-  .pk .pr b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:19px;font-variant-numeric:tabular-nums}
-  .pk .pr span{font-size:12px;color:var(--ink-2)}
-  .save{font-size:11.5px;font-weight:700;color:var(--green-text);background:var(--green-bg);border-radius:999px;padding:3px 9px}
 </style>
 </head>
 <body>
 
-<div class="note"><b>14 Gift card + packages.</b> Live structure kept; treatments applied: the tracked-uppercase "EIGENER BETRAG" / "VORSCHAU" / "PAKET KAUFEN" go normal-case (banned), the preview becomes a real gift-card visual, per-session value gets a savings pill. FLAGGED BUG (live): package price renders "24.000 CHF" for CHF 240, the de-CH number formatting reads as 24 thousand. Fix queued.</div>
+<div class="note"><b>14 Gift card.</b> Live structure kept; treatments applied: the tracked-uppercase "EIGENER BETRAG" / "VORSCHAU" go normal-case (banned), the preview becomes a real gift-card visual. (Packages frame removed, feature deleted 2026-06-11.)</div>
 
 <div class="lbl">GIFT CARD, default</div>
 <div class="frame">
@@ -64,28 +55,6 @@
   <div class="ctabar">
     <button class="cta" style="height:54px;font-size:15px">Pay CHF 50.00 <i data-lucide="arrow-right"></i></button>
     <div class="secure"><i data-lucide="lock"></i>Secure payment via Stripe</div>
-  </div>
-</div>
-
-<div class="lbl">PACKAGES (price format FIXED: CHF 240.00, not "24.000 CHF")</div>
-<div class="frame">
-  <div class="apphead"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ"><i data-lucide="menu"></i></span></div>
-  <div class="pagepad" style="padding-bottom:26px">
-    <h1 class="h-page" style="font-size:22px;margin-top:8px">Packages</h1>
-    <p class="sub" style="font-size:13.5px;margin-top:3px">Old Town Barbers</p>
-    <div class="pk">
-      <div class="n">6× men's cut package</div>
-      <div class="m"><span><i data-lucide="scissors"></i>Men's cut</span><span><i data-lucide="repeat"></i>6 sessions</span></div>
-      <div class="pr">
-        <div><b class="num">CHF 240.00</b><span style="display:block;margin-top:2px">CHF 40.00 per session</span></div>
-        <span class="save">Save CHF 30</span>
-      </div>
-      <button class="cta" style="margin-top:14px;height:48px;font-size:14.5px">Buy package</button>
-    </div>
-    <div class="empty" style="padding-top:30px;padding-bottom:14px">
-      <h2 style="font-size:17px;margin-top:0">That's all for now.</h2>
-      <p style="margin-top:5px">New packages from this salon show up here.</p>
-    </div>
   </div>
 </div>
 

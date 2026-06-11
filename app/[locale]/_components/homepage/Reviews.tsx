@@ -53,7 +53,7 @@ const REVIEWS: Review[] = [
   },
   {
     stars: 5,
-    text: "Last-Minute heute Abend zu Old Town Barbers: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist.",
+    text: "Spontan ohne Termin zu Old Town Barbers: Nummer auf dem Handy gezogen, kurz Kaffee geholt und der beste Fade meines Lebens. Die Warteschlangen-Anzeige ist Gold wert.",
     initials: "MH",
     name: "Marc H.",
     meta: "Basel vor 5 Tagen",

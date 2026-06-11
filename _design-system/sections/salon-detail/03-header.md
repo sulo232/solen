@@ -10,7 +10,7 @@
 H1 (Inter Tight 800 clamp 28-44px)         [Share][Heart cluster on desktop only]
 Category eyebrow (royal-blue uppercase 11px / 12px md)
 Meta row: ★ rating · StatusPill · 📍address Wegbeschreibung
-[Featured pill] [Last-Minute Flame pill]
+[Featured pill]
 ```
 
 ### Measured (375 mobile, populated seed Atelier Haarwerk)
@@ -18,7 +18,6 @@ Meta row: ★ rating · StatusPill · 📍address Wegbeschreibung
 - Category eyebrow: `11px font-bold uppercase tracking-[0.06em] text-s-accent` (Layer 2 royal blue)
 - Meta row: `13px text-s-ink-2` w `font-body` weight 300 default — star is 14px yellow filled
 - Featured pill: `bg-s-accent/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-s-accent rounded-full`
-- Last-Minute pill: `bg-[#FFF1E6] text-[#9A3412] border border-[rgba(154,52,18,0.22)]` (Flame token)
 
 ## Tokens
 - H1 color: `text-s-ink`
@@ -35,7 +34,6 @@ Meta row: ★ rating · StatusPill · 📍address Wegbeschreibung
 
 ## Intentional deviations
 - Solen Featured pill uses royal blue `s-accent` instead of Fresha's purple — V3-D204 brand lock
-- Last-Minute pill uses Solen Flame token (burnt amber on peach) instead of Fresha's amber-light — §2.5 catalog row
 - H1 uses Inter Tight (Fresha uses different sans) — V3-D190 Solen lock
 
 ## Category labels

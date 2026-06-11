@@ -67,7 +67,6 @@
     "spa": "Spa",
     "makeup": "Makeup",
     "waxing": "Waxing",
-    "last_minute": "Angebote",
     "account": "Profil",
     "bookings": "Buchungen",
     "favorites": "Favoriten",
@@ -93,8 +92,6 @@
     "hero_subtitle": "Finde und buche die besten Salons in deiner Nähe",
     "search_placeholder": "Salon, Service oder Stadt suchen...",
     "services_heading": "Unsere Kategorien",
-    "last_minute_heading": "Last-Minute Angebote",
-    "last_minute_subtitle": "Günstige Termine, die heute noch frei sind",
     "no_results": "Keine Salons gefunden",
     "hero": {
       "byline": "Deine Schweizer Salon-Plattform",
@@ -116,7 +113,6 @@
     },
     "cta": {
       "findSalon": "Salon finden",
-      "lastMinute": "Angebote",
       "partner": "Partner"
     },
     "categories": {
@@ -158,13 +154,6 @@
       "beliebtInBasel": "Beliebt in Basel",
       "beliebtInZuerich": "Beliebt in Zürich",
       "beliebtInBern": "Beliebt in Bern"
-    },
-    "lastMinute": {
-      "eyebrow": "Angebote",
-      "title": "Spare bis zu 50%",
-      "viewAll": "Alle ansehen",
-      "viewOffers": "Angebote ansehen",
-      "badge": "Last Minute"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -225,7 +214,6 @@
       "empty_sub": "Bald verfügbar — schau später wieder vorbei!",
       "new": "Neue Salons",
       "new_sub": "Frisch auf Solen — entdecke die neuesten Salons in Basel",
-      "lastminute": "Last-Minute Angebote",
       "lastminute_sub": "Spare bis zu 50% auf kurzfristige Termine",
       "rebook": "Wieder buchen?",
       "rebook_last": "Dein letzter Besuch: {name}",
@@ -717,8 +705,6 @@
     "platform": "Plattform",
     "platformDiscover": "Entdecken",
     "platformSearch": "Suchen",
-    "platformOffers": "Angebote",
-    "platformLastMinute": "Last Minute",
     "forSalonsTitle": "Für Salons",
     "forSalonsPartner": "Partner werden",
     "forSalonsDashboard": "Dashboard",
@@ -1640,27 +1626,6 @@
       "inactive": "Inaktiv",
       "copyAriaLabel": "Code {code} kopieren"
     },
-    "packages": {
-      "title": "Service-Pakete",
-      "newPkg": "Neues Paket",
-      "namePlaceholder": "Paketname (z.B. '5er Karte Haarschnitt')",
-      "selectService": "Service wählen...",
-      "sessions": "Sitzungen",
-      "bonus": "Bonus",
-      "price": "Preis (CHF)",
-      "cancel": "Abbrechen",
-      "saving": "Speichern...",
-      "create": "Erstellen",
-      "empty": "Noch keine Pakete erstellt",
-      "sold": "verkauft",
-      "recentPurchases": "Letzte Käufe",
-      "toggleActiveAriaLabel": "Paket {status}",
-      "activate": "Aktivieren",
-      "deactivate": "Deaktivieren",
-      "createError": "Fehler beim Erstellen. Bitte erneut versuchen.",
-      "toggleError": "Status konnte nicht geändert werden.",
-      "priceMinError": "Preis muss grösser als 0 sein."
-    },
     "pricing": {
       "title": "Preisänderung anfragen",
       "currentPrice": "Aktueller Preis",
@@ -2580,7 +2545,6 @@
       "sectionNewSalons": "Neue Salons",
       "sectionRebook": "Wieder buchen?",
       "sectionReviews": "Bewertungen Karussell",
-      "sectionLastMinute": "Last-Minute Angebote",
       "sectionFeatured": "Beliebte Salons",
       "sectionSocialProof": "Social Proof Strip",
       "sectionPartnerCta": "Partner CTA Banner"
@@ -5133,11 +5097,9 @@
   "marketing": {
     "title": "Marketing",
     "subtitle": "Pakete, Geschenkkarten, Empfehlungen & Aktionen",
-    "tab_packages": "Pakete",
     "tab_gift_cards": "Geschenkkarten",
     "tab_referrals": "Empfehlungen",
     "tab_promos": "Aktionen",
-    "tab_last_minute": "Angebote",
     "loading_salon": "Salon wird geladen...",
     "loadErrorTitle": "Marketing konnte nicht geladen werden",
     "loadErrorMessage": "Beim Laden deines Salons ist etwas schiefgelaufen.",
@@ -5209,15 +5171,11 @@
     "searchTryRemoveFilters": "Filter zurücksetzen",
     "searchPopularTitle": "Beliebte Salons in deiner Nähe",
     "searchTrySuggestions": "Oder probiere:",
-    "lastMinuteNoSlots": "Gerade keine Last-Minute Slots",
-    "lastMinuteNotifyMe": "Benachrichtigen wenn verfügbar",
-    "lastMinuteSuggestedTitle": "Diese Salons bieten oft Last-Minute Slots an",
     "offersEmpty": "Aktuell keine Angebote",
     "offersEmptyMessage": "Neue Angebote kommen bald. Schau regelmässig vorbei!",
     "offersSubscribe": "Über neue Angebote informiert werden",
     "recentlyViewedTitle": "Zuletzt besucht",
-    "instantBookBadge": "Sofort buchbar",
-    "lastMinuteNoSlotsMessage": "Deals erscheinen, sobald Salons kurzfristig Termine freigeben. Schau später heute nochmal rein."
+    "instantBookBadge": "Sofort buchbar"
   },
   "salonDetail": {
     "notFound": "Salon nicht gefunden",

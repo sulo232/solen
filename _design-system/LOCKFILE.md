@@ -725,7 +725,7 @@ Subagents may NOT paraphrase. If a captured Fresha spec needs a phrase variation
 - Primary book on legacy / sticky mobile: `"Termin buchen"` (kept for back-compat surfaces, prefer "Jetzt buchen" on new work)
 - Homepage hero CTA: `"Termine finden"`
 - Service-row CTA: `"Buchen"`
-- Buy buttons (gift card / packages / vouchers): `"Kaufen"`
+- Buy buttons (gift card / vouchers): `"Kaufen"`
 - Reset filters: `"Filter zurücksetzen"`
 - Empty state CTA: `"Zur Startseite"`
 - Show-all: `"Alle ansehen"` (preferred) or `"Mehr anzeigen"` (in-place expand)
@@ -762,7 +762,6 @@ Duration format (German): `"{n} Min."` if <60, `"{h} Std."` if exact hours, `"{h
 
 ### Salon-card secondary line patterns
 
-- Discount badge: `"-{N}% Last-Minute"` (with lucide `TicketPercent` icon)
 - Urgency badge: `"Nur noch {N} heute"` (with lucide `Flame` icon)
 - Featured: `"EMPFOHLEN"` — ONLY in listings, NOT on PDP hero
 - Price line on card: `"ab CHF {N}"` (note: card uses "CHF N" prefix, service-row uses "ab N CHF" suffix — different surfaces, different patterns)

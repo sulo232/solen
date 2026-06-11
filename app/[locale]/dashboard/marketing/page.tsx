@@ -1,23 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Package, Gift, Users, Tag, Clock, Store } from "lucide-react";
+import { Gift, Users, Tag, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import PromoManager from "@/components-legacy/dashboard/PromoManager";
-import PackageManager from "@/components-legacy/dashboard/PackageManager";
 import ReferralDashboard from "@/components-legacy/dashboard/ReferralDashboard";
 import GiftCardManager from "@/components-legacy/dashboard/GiftCardManager";
-import LastMinuteManager from "@/components-legacy/dashboard/LastMinuteManager";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import ErrorState from "@/components-legacy/ui/ErrorState";
 
-type MarketingTab = "pakete" | "geschenkkarten" | "empfehlungen" | "aktionen" | "lastminute";
+type MarketingTab = "geschenkkarten" | "empfehlungen" | "aktionen";
 
 export default function MarketingPage() {
   const t = useTranslations("marketing") as any;
-  const [tab, setTab] = useState<MarketingTab>("pakete");
+  const [tab, setTab] = useState<MarketingTab>("geschenkkarten");
   const [salonId, setSalonId] = useState<string | null>(null);
   const [loadingSalon, setLoadingSalon] = useState(true);
   // H2: a failed salon-resolution gets an error state + retry instead of the misleading
@@ -37,11 +35,9 @@ export default function MarketingPage() {
   useEffect(() => { loadSalon(); }, []);
 
   const TABS: { key: MarketingTab; label: string; icon: React.ElementType }[] = [
-    { key: "pakete", label: t("tab_packages"), icon: Package },
     { key: "geschenkkarten", label: t("tab_gift_cards"), icon: Gift },
     { key: "empfehlungen", label: t("tab_referrals"), icon: Users },
     { key: "aktionen", label: t("tab_promos"), icon: Tag },
-    { key: "lastminute", label: t("tab_last_minute"), icon: Clock },
   ];
 
   return (
@@ -80,11 +76,9 @@ export default function MarketingPage() {
           <EmptyState icon={Store} title={t("noSalonTitle")} message={t("noSalonMessage")} />
         ) : (
           <>
-            {tab === "pakete" && salonId && <PackageManager salonId={salonId} />}
             {tab === "geschenkkarten" && salonId && <GiftCardManager salonId={salonId} />}
             {tab === "empfehlungen" && salonId && <ReferralDashboard salonId={salonId} />}
             {tab === "aktionen" && <PromoManager />}
-            {tab === "lastminute" && salonId && <LastMinuteManager salonId={salonId} />}
           </>
         )}
       </div>

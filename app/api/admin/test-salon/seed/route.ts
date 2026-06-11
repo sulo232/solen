@@ -116,23 +116,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ seeded: "reviews", count: data?.length ?? 0 });
     }
 
-    case "last_minute": {
-      // Seed 3 last-minute slots in the next 6 hours
-      const now = new Date();
-      const entries = Array.from({ length: 3 }, (_, i) => ({
-        salon_id,
-        service_id: serviceId,
-        starts_at: addHours(now, i + 1).toISOString(),
-        ends_at: addHours(now, i + 2).toISOString(),
-        original_price: 6500,
-        discounted_price: randInt(3000, 5000),
-        status: "available",
-        notes: `Kurzfristig verfügbar — Slot ${i + 1}`,
-      }));
-      const { data } = await admin.from("last_minute_slots").insert(entries).select();
-      return NextResponse.json({ seeded: "last_minute", count: data?.length ?? 0 });
-    }
-
     case "reset": {
       // Clear all seeded data but keep salon structure (services + staff)
       await Promise.all([

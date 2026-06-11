@@ -81,7 +81,6 @@ All other routes: A7-A12 stays INFORMATIONAL.
 | 2 | Pattern 3 hero rebuild (search-card over full-bleed photo) | 4 ground-up rebuild (hero portion) | 1.5h | Salon's existing cover photo, no AI placeholders needed |
 | 3 | /salon/[slug]/barber/[barberSlug] | 2 route sweep | 30 min | |
 | 4 | /salon/[slug]/gift-card | 2 route sweep | 30 min | |
-| 5 | /salon/[slug]/packages | 2 route sweep | 30 min | |
 | 6 | /salon/[slug]/reviews | 2 route sweep | 30 min | |
 | 7 | EN/FR/IT translation pass for all 5 routes | 1 surgical × per locale | 1.5h | Multilingual decision applied |
 | 8 | A11y + perf verifier gates per route | 1 surgical × per route | 30 min | Lighthouse a11y ≥95, LCP ≤2.5s mobile |

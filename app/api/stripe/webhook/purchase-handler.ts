@@ -71,7 +71,8 @@ async function writePurchasePayout(
 
 export async function handlePurchasePaid(pi: any): Promise<boolean> {
   const type = pi.metadata?.type;
-  if (type !== "package_purchase" && type !== "retail_purchase") {
+  // Packages feature removed (owner, 2026-06-11) — only retail purchases remain refundable here.
+  if (type !== "retail_purchase") {
     return false; // not a refundable purchase — fall through to other handlers.
   }
 
@@ -98,21 +99,7 @@ export async function handlePurchasePaid(pi: any): Promise<boolean> {
   }
 
   try {
-    if (type === "package_purchase") {
-      // The purchase row was inserted (pending) by /api/packages/purchase keyed on
-      // the PI. Set paid_amount so the refund helper can cap + CAS. Advance-only:
-      // only set it from null so a duplicate delivery is a no-op.
-      await admin
-        .from("package_purchases")
-        .update({
-          paid_amount: paidAmount,
-          vat_amount: vat.vatRappen, // Rappen — VAT portion of paid_amount.
-          net_amount: vat.netRappen, // Rappen — paid_amount − vat_amount.
-          vat_rate: vat.ratePercent, // rate applied (0 if salon not registered).
-        })
-        .eq("stripe_payment_intent_id", pi.id)
-        .is("paid_amount", null);
-    } else {
+    {
       // retail_purchase: /api/salon/retail/purchase inserted a pending row keyed on
       // the PI. Flip to paid + set paid_amount. Advance-only via the status guard so
       // a re-delivery never overwrites a row a refund already moved past 'paid'.

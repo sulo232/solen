@@ -5,7 +5,7 @@
 1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
 2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.
 3. **Authentication**: Supabase-powered (Google OAuth, Email magic link).
-4. **Last Minute Offers**: Salon owners expose canceled slots with category filters and price range filtering.
+4. ~~Last Minute Offers~~ REMOVED (owner, 2026-06-11): no standalone page/feature. Survives ONLY as the search 'Angebote' deals filter (salon sets the discount in Settings > Angebote) + coupons (PromoManager). Do NOT rebuild a last-minute page.
 5. **Favorites & Retention**: Heart button on SalonCards, "Wieder buchen?" widget, top-rated badge auto-assign.
 6. **Loyalty System**: Stamp cards with per-salon rewards and progress tracking.
 7. **Client Notes (CRM)**: Salon owners can add permanent/booking notes for clients.
@@ -30,7 +30,7 @@
 26. **Staff Accounts**: Invite-based staff onboarding, role-limited dashboard (STAFF_NAV), per-staff service mapping, break/time-off management.
 27. **Guest Booking**: No account required for booking. Email-only checkout with automatic profile creation on confirmation.
 28. **Walk-in Mode**: SMS-based payment links for walk-in customers via seven.io. HMAC-signed tokenized payment pages.
-29. **Service Packages**: Multi-session punch cards with bonus sessions. PackageManager in marketing dashboard. Purchase tracking.
+29. ~~Service Packages~~ REMOVED COMPLETELY (owner, 2026-06-11): pages, APIs, dashboard manager all deleted. Do NOT rebuild. (Admin refund plumbing for legacy package_purchases rows kept in lib/purchases.)
 30. **Digital Gift Cards**: Per-salon gift cards with custom amounts, recipient email delivery, code-based redemption, balance tracking.
 31. **Tip System**: Post-service tipping via tokenized tip pages. Preset + custom amounts. Stripe PaymentIntents for tip processing.
 32. **Group Bookings**: Multi-person bookings with shared `group_booking_id`. RPC function for atomic multi-slot booking.

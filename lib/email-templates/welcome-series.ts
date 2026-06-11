@@ -15,10 +15,10 @@ export function welcomeDay0(to: string, vars: WelcomeVars, locale: EmailLocale =
     it: `Benvenuto su Solen, ${vars.name}!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p>Entdecke hunderte Salons, buche Termine online und profitiere von Last-Minute-Angeboten.</p><p><a href="https://solen.ch/de">Jetzt entdecken →</a></p><p>Dein solen.ch Team</p>`,
-    en: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p>Discover hundreds of salons, book appointments online, and enjoy last-minute deals.</p><p><a href="https://solen.ch/en">Explore now →</a></p><p>Your solen.ch team</p>`,
-    fr: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p>Découvrez des centaines de salons et profitez d'offres de dernière minute.</p><p><a href="https://solen.ch/fr">Découvrir →</a></p><p>L'équipe solen.ch</p>`,
-    it: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p>Scopri centinaia di saloni, prenota online e approfitta delle offerte last-minute.</p><p><a href="https://solen.ch/it">Scopri ora →</a></p><p>Il tuo team solen.ch</p>`,
+    de: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p>Entdecke hunderte Salons, buche Termine online oder geh spontan ohne Termin vorbei.</p><p><a href="https://solen.ch/de">Jetzt entdecken →</a></p><p>Dein solen.ch Team</p>`,
+    en: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p>Discover hundreds of salons, book appointments online, or walk in without one.</p><p><a href="https://solen.ch/en">Explore now →</a></p><p>Your solen.ch team</p>`,
+    fr: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p>Découvrez des centaines de salons et réservez en ligne en quelques secondes.</p><p><a href="https://solen.ch/fr">Découvrir →</a></p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p>Scopri centinaia di saloni e prenota online in pochi secondi.</p><p><a href="https://solen.ch/it">Scopri ora →</a></p><p>Il tuo team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

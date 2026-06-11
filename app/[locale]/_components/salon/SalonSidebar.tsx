@@ -89,13 +89,8 @@ export function SalonSidebar({
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // V3-D230: conditional buy rows. Fresha's LES MAINS sidebar has neither;
-  // Mina Beauty has both. Without explicit data on salon.has_packages /
-  // salon.has_gift_cards, default to showing GIFT CARD (universal Solen
-  // feature) and HIDING packages (per-salon feature). When the salon-data
-  // schema gains explicit flags, swap to data-driven.
+  // V3-D230: conditional buy rows; packages feature removed entirely (owner, 2026-06-11).
   const hasGiftCards = true; // universal Solen feature
-  const hasPackages = false; // until salon.packages schema lands
 
   return (
     /* V3-D230 (2026-05-27): box-shadow DROPPED to match real Fresha capture
@@ -204,18 +199,11 @@ export function SalonSidebar({
       {/* 7-8. Conditional buy rows — V3-D230: data-driven, not unconditional.
               LES MAINS has neither, Mina Beauty has both, ours renders only what
               the salon actually offers. */}
-      {(hasPackages || hasGiftCards) && (
+      {hasGiftCards && (
         <>
           <div className="my-5 border-t border-s-border" />
-          {hasPackages && (
-            <BuyRow
-              title="Mitgliedschaft kaufen"
-              subtitle="Kaufe mehrere Termine im Paket."
-              href={`/${locale}/salon/${salon.slug}/packages`}
-            />
-          )}
           {hasGiftCards && (
-            <div className={hasPackages ? "mt-4" : ""}>
+            <div>
               <BuyRow
                 title="Geschenkgutschein kaufen"
                 subtitle={`Mach dir selbst oder jemand anderem eine Freude.`}

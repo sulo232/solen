@@ -79,10 +79,10 @@ export function onboardingReady(to: string, vars: OnboardingVars, locale: EmailL
     it: `Pronto per la tua prima prenotazione! 🎉 ${vars.salonName}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Gratulation! Dein Profil bei <strong>${vars.salonName}</strong> ist vollständig. Kunden können dich jetzt finden und buchen.</p><p>Tipp: Aktiviere Last-Minute-Angebote, um leere Slots zu füllen!</p><p><a href="https://solen.ch/de/dashboard">Zum Dashboard →</a></p>`,
-    en: `<p>Congratulations! Your profile at <strong>${vars.salonName}</strong> is complete. Customers can now find and book you.</p><p>Tip: Enable last-minute deals to fill empty slots!</p><p><a href="https://solen.ch/en/dashboard">Go to dashboard →</a></p>`,
+    de: `<p>Gratulation! Dein Profil bei <strong>${vars.salonName}</strong> ist vollständig. Kunden können dich jetzt finden und buchen.</p><p>Tipp: Aktiviere Walk-ins, um leere Slots zu füllen!</p><p><a href="https://solen.ch/de/dashboard">Zum Dashboard →</a></p>`,
+    en: `<p>Congratulations! Your profile at <strong>${vars.salonName}</strong> is complete. Customers can now find and book you.</p><p>Tip: Enable walk-ins to fill empty slots!</p><p><a href="https://solen.ch/en/dashboard">Go to dashboard →</a></p>`,
     fr: `<p>Félicitations ! Votre profil chez <strong>${vars.salonName}</strong> est complet. Les clients peuvent maintenant vous trouver.</p><p><a href="https://solen.ch/fr/dashboard">Aller au tableau de bord →</a></p>`,
-    it: `<p>Congratulazioni! Il tuo profilo presso <strong>${vars.salonName}</strong> è completo. I clienti possono ora trovarti e prenotare.</p><p>Suggerimento: attiva le offerte last-minute per riempire gli slot vuoti!</p><p><a href="https://solen.ch/it/dashboard">Vai alla dashboard →</a></p>`,
+    it: `<p>Congratulazioni! Il tuo profilo presso <strong>${vars.salonName}</strong> è completo. I clienti possono ora trovarti e prenotare.</p><p>Suggerimento: attiva i walk-in per riempire gli slot vuoti!</p><p><a href="https://solen.ch/it/dashboard">Vai alla dashboard →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

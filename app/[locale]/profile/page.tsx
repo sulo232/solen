@@ -128,7 +128,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           <Row href={p("/profile/haarprofil")} icon={Scissors} label={t("haarprofil")} />
           <Row href={p("/profile/looks")} icon={Sparkles} label={t("looks")} />
           <Row href={p("/profile/vouchers")} icon={Ticket} label={t("vouchers")} />
-          <Row href={p("/profile/packages")} icon={Package} label={t("packages")} />
           <Row href={p("/profile/intake-forms")} icon={ClipboardList} label={t("intakeForms")} />
           <Row href={p("/profile/referral")} icon={UserPlus} label={t("refer")} meta={t("referReward")} />
           <Row href={p("/profile/settings")} icon={SlidersHorizontal} label={t("settings")} />

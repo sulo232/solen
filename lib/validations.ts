@@ -368,14 +368,6 @@ export const scheduleSchema = z.object({
   alternate_week_parity: z.number().int().min(0).max(1).optional(),
 });
 
-export const packageSchema = z.object({
-  service_id: z.string().uuid(),
-  name: z.string().min(2).max(100),
-  total_sessions: z.number().int().min(2).max(50),
-  bonus_sessions: z.number().int().min(0).max(10),
-  price: z.number().int().min(100),
-});
-
 // ---------------------------------------------------------------------------
 // Nail Schemas
 // ---------------------------------------------------------------------------

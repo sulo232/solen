@@ -302,3 +302,19 @@ SHIPPED, each its own commit:
   states (V3-D450 owner decision) + DateTimePicker accent tone (council mockup) + queue
   page walk-in language (owner-approved) + Toast/info + unread badges (Layer-3/Layer-2
   small footprint) + notification type discs.
+
+## 🔒 Owner ROUND 4 (2026-06-11): LAST-MINUTE + PAKETE REMOVED
+Owner: "wtf is last minute and pakete... remove em completely" + "last minute is jst filter and
+coupons ok" + "also in rules claude.md or othr files w ths mentioning delete".
+REMOVED: /angebote + /last-minute pages, /salon/[slug]/packages + /profile/packages pages,
+api/packages/* + api/slots/last-minute + api/salons/last-minute + api/salon/last-minute-settings,
+PackageManager + LastMinuteManager + LastMinuteCard + LastMinuteStrip + PackageRedeemBanner +
+homepage LastMinute section, marketing dashboard pakete/lastminute tabs, sitemap + footer + hero +
+tour + email + seed mentions, orphaned i18n keys, doc mentions (_rules/KEY_FEATURES + UI_RULES,
+WAVE_PLAN, LOCKFILE copy patterns, component docs, mockup frames 14/16).
+KEPT (per the clarification "just filter and coupons"): the search "Angebote" deals filter
+(SearchTemplate pill + FilterSheet group + /api/salons deals param + CategoryBrowseRails rail),
+the dashboard Settings > Angebote tab (sets last_minute_discount_percent that powers the filter),
+PromoManager coupons, calendar discount-slot legend, DB tables (legacy rows; admin refund plumbing
+in lib/purchases stays for historical package purchases).
+DO NOT REBUILD a standalone last-minute page or any packages feature.

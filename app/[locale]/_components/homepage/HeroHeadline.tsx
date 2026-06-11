@@ -91,15 +91,6 @@ const SLOGANS: Slogan[] = [
     ),
   },
   // 7. Coupon slogan — TWO highlights now (broke? + Coupons) + CTA link
-  {
-    headline: (
-      <>
-        Auch <span className="text-s-ink">broke?</span>
-        {"\n"}Dw, wir haben <span className="text-s-ink">Coupons.</span>
-      </>
-    ),
-    cta: { label: "Check it out", href: "/de/angebote" },
-  },
 ];
 
 // Module-level cache for the picked index. Survives React Strict Mode's

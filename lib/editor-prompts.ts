@@ -11,7 +11,6 @@ components/CategoryPage.tsx
 components/ChatWindow.tsx
 components/FilterBar.tsx
 components/HomePage.tsx
-components/LastMinuteCard.tsx
 components/MapView.tsx
 components/NearbySalons.tsx
 components/ProfilePage.tsx

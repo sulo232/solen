@@ -67,7 +67,6 @@
     "spa": "Spa",
     "makeup": "Maquillage",
     "waxing": "Épilation",
-    "last_minute": "Offres",
     "account": "Profil",
     "bookings": "Réservations",
     "favorites": "Favoris",
@@ -93,8 +92,6 @@
     "hero_subtitle": "Trouvez et réservez les meilleurs salons près de chez vous",
     "search_placeholder": "Chercher salon, service ou ville...",
     "services_heading": "Nos catégories",
-    "last_minute_heading": "Offres de dernière minute",
-    "last_minute_subtitle": "Rendez-vous à prix réduit disponibles aujourd'hui",
     "no_results": "Aucun salon trouvé",
     "hero": {
       "byline": "Ta plateforme suisse de salons",
@@ -116,7 +113,6 @@
     },
     "cta": {
       "findSalon": "Trouver un salon",
-      "lastMinute": "Offres",
       "partner": "Partenaire"
     },
     "categories": {
@@ -158,13 +154,6 @@
       "beliebtInBasel": "Populaire à Bâle",
       "beliebtInZuerich": "Populaire à Zurich",
       "beliebtInBern": "Populaire à Berne"
-    },
-    "lastMinute": {
-      "eyebrow": "Offres",
-      "title": "Économisez jusqu'à 50%",
-      "viewAll": "Voir tout",
-      "viewOffers": "Voir les offres",
-      "badge": "Dernière minute"
     },
     "trending": {
       "eyebrow": "Tendance",
@@ -225,7 +214,6 @@
       "empty_sub": "Bientôt disponible — revenez plus tard!",
       "new": "Nouveaux salons",
       "new_sub": "Nouveau sur Solen — découvrez les derniers salons à Bâle",
-      "lastminute": "Offres de dernière minute",
       "lastminute_sub": "Économisez jusqu'à 50% sur les réservations de dernière minute",
       "rebook": "Réserver à nouveau?",
       "rebook_last": "Votre dernière visite: {name}",
@@ -717,8 +705,6 @@
     "platform": "Plateforme",
     "platformDiscover": "Découvrir",
     "platformSearch": "Rechercher",
-    "platformOffers": "Offres",
-    "platformLastMinute": "Dernière minute",
     "forSalonsTitle": "Pour les salons",
     "forSalonsPartner": "Devenir partenaire",
     "forSalonsDashboard": "Tableau de bord",
@@ -1592,27 +1578,6 @@
       "active": "Actif",
       "inactive": "Inactif",
       "copyAriaLabel": "Copier le code {code}"
-    },
-    "packages": {
-      "title": "Forfaits",
-      "newPkg": "Nouveau forfait",
-      "namePlaceholder": "Nom du forfait (p.ex. 'Carte 5 coupes')",
-      "selectService": "Choisir un service...",
-      "sessions": "Séances",
-      "bonus": "Bonus",
-      "price": "Prix (CHF)",
-      "cancel": "Annuler",
-      "saving": "Enregistrement...",
-      "create": "Créer",
-      "empty": "Aucun forfait créé",
-      "sold": "vendu(s)",
-      "recentPurchases": "Derniers achats",
-      "toggleActiveAriaLabel": "{status} forfait",
-      "activate": "Activer",
-      "deactivate": "Désactiver",
-      "createError": "Erreur lors de la création. Veuillez réessayer.",
-      "toggleError": "Impossible de changer le statut.",
-      "priceMinError": "Le prix doit être supérieur à 0."
     },
     "pricing": {
       "title": "Demander un ajustement de prix",
@@ -2553,7 +2518,6 @@
       "sectionNewSalons": "Nouveaux salons",
       "sectionRebook": "Réserver à nouveau ?",
       "sectionReviews": "Carrousel d'avis",
-      "sectionLastMinute": "Offres de dernière minute",
       "sectionFeatured": "Salons populaires",
       "sectionSocialProof": "Bandeau de preuve sociale",
       "sectionPartnerCta": "Bannière CTA partenaire"
@@ -5106,11 +5070,9 @@
   "marketing": {
     "title": "Marketing",
     "subtitle": "Forfaits, Cartes cadeaux, Parrainage & Promotions",
-    "tab_packages": "Forfaits",
     "tab_gift_cards": "Cartes cadeaux",
     "tab_referrals": "Parrainage",
     "tab_promos": "Promotions",
-    "tab_last_minute": "Offres",
     "loading_salon": "Chargement du salon...",
     "loadErrorTitle": "Impossible de charger le marketing",
     "loadErrorMessage": "Une erreur est survenue lors du chargement de votre salon.",
@@ -5182,15 +5144,11 @@
     "searchTryRemoveFilters": "Réinitialiser les filtres",
     "searchPopularTitle": "Salons populaires près de vous",
     "searchTrySuggestions": "Ou essayez :",
-    "lastMinuteNoSlots": "Aucun créneau last minute en ce moment",
-    "lastMinuteNotifyMe": "M'avertir quand disponible",
-    "lastMinuteSuggestedTitle": "Ces salons proposent souvent des créneaux last minute",
     "offersEmpty": "Aucune offre en cours",
     "offersEmptyMessage": "De nouvelles offres arrivent bientôt. Revenez régulièrement !",
     "offersSubscribe": "Être informé des nouvelles offres",
     "recentlyViewedTitle": "Récemment consultés",
-    "instantBookBadge": "Réservation instantanée",
-    "lastMinuteNoSlotsMessage": "Les offres apparaissent dès que les salons libèrent des créneaux de dernière minute. Repasse plus tard dans la journée."
+    "instantBookBadge": "Réservation instantanée"
   },
   "salonDetail": {
     "notFound": "Salon introuvable",

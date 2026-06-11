@@ -11,7 +11,7 @@
 
 The single canonical card for every salon surface. Reused across:
 
-- Homepage feeds: Recently Viewed, Last-Minute, Nearby, 4 category feeds (Coiffeur/Barber/Nails/Spa)
+- Homepage feeds: Recently Viewed, Nearby, 4 category feeds (Coiffeur/Barber/Nails/Spa)
 - Search results: `/search`
 - Favourites page: `/favoriten`
 - Look-detail sheet (salon list inside content)
@@ -150,8 +150,6 @@ The card itself doesn't define a save heart pop — that lives in [HeartButton.m
 Is this card on a homepage feed (Top/Nearby/Categories)?
 ├─ YES → variant="service" + nextSlotLabel + priceFromCHF + (optional) curation
 └─ NO
-   ├─ Is this a Last-Minute feed card?
-   │  └─ YES → variant="service" + discountPercent + nextSlotLabel
    └─ Is this a saved/favorites card?
       └─ YES → variant="service" + isSaved={true} (heart pre-filled)
 ```

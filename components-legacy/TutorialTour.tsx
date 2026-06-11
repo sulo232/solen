@@ -72,17 +72,6 @@ export default function TutorialTour({ isLoggedIn }: { isLoggedIn: boolean }) {
                 description: t("step2Desc"),
                 side: "top",
                 align: "start",
-                onNextClick: () => driverObj.moveNext(),
-                onPrevClick: () => driverObj.movePrevious(),
-              },
-            },
-            {
-              element: "#tour-last-minute",
-              popover: {
-                title: t("step3Title"),
-                description: t("step3Desc"),
-                side: "top",
-                align: "start",
                 onNextClick: () => {
                   complete();
                   driverObj.destroy();

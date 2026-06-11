@@ -92,7 +92,6 @@ export default function PartnerBlock() {
               <div className="flex flex-wrap mb-8" style={{ gap: 24 }}>
                 {[
                   "Kostenloser Einstieg",
-                  "Last-Minute Angebote",
                   "Echtzeit-Kalender",
                   "TWINT-Zahlung",
                 ].map((label) => (
