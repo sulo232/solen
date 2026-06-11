@@ -84,7 +84,7 @@ Per page: default + loading (skeleton) + empty + error + long-content (DS-9) + k
 Each file states which DS rules it exercises; long-content + empty are MANDATORY per §14.3. Owner
 approves per page → Phase 5 implements route-by-route.
 
-## Phase 4 punch list (owner, 2026-06-11) — edit v2 files IN PLACE, delete nothing
+## Phase 4 punch list (owner, 2026-06-11) ✅ APPLIED (same day) — edits in place, nothing deleted
 - 01 home: APPROVED except (a) Walk-in section: keep the CURRENT live style (icon tile + salon cards row), mine was too simplified; (b) Discover/inspiration: study the REAL discover feature and mirror it faithfully.
 - 02 search: APPROVED except widget sizes: match the REAL page sizes (measure, don't eyeball).
 - 03 salon page: NOT approved (reviews section approved). Keep ALL current live features/sections, full page, new design system applied.
@@ -97,3 +97,14 @@ approves per page → Phase 5 implements route-by-route.
 - 10 errors: APPROVED; iterate the offline (no-wifi) one a bit.
 - 11 login: APPROVED; use ACTUAL brand icons (real Apple/Google logos, not Lucide).
 - Then: update design rules + memory, ensure zero contradictions.
+
+### Punch-list application notes (2026-06-11)
+- Live-app investigation captures in /tmp/inv (home/search/pdp/booking/walkinpay/queue, full-page).
+- "Remove the body" on confirmation decoded: my mockup had invented a grey-tray layout; the REAL
+  BookingConfirmation is a white page w/ ONE card (salon row, date block, service, grey total strip)
+  + ink Add-to-calendar. Mockup now mirrors the component 1:1.
+- Notifications v2 pattern (owner: old one "not good at all"): salon-photo-led cards, blue unread dot +
+  inset edge, time right, inline actions (calendar/directions, tap-to-rate stars), New/Earlier groups.
+- Walk-in home section: LIVE style kept (compact cards w/ green "Free in ~X" from the real ETA engine +
+  "N ahead" + All-walk-ins button). Discover cards: TikTok attribution chip + heart + caption + clap.
+- Search widget sizes matched to measured live values (hero 400px, pill 52, chips smaller).

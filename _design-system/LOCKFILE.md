@@ -1371,3 +1371,12 @@ Subtle parallax is permitted on home/category heroes only. No scrolljacking, eve
 | Hero imagery (marketing only) | fly-in + slow bob (4s ease-in-out loop), ONE element max |
 | Toast / chips | slide-up + settle (§4 glide) |
 
+
+### §13.8 — Brand + 3D icon assets (owner punch list, 2026-06-11)
+
+- **Third-party brand marks use the OFFICIAL brand SVG** (Apple logo, Google G, TWINT, etc.) — never a
+  Lucide lookalike (`apple` icon) or a styled letter. Lucide stays the UI glyph set (§13.1); brands are
+  brands.
+- **The 3D category icon set** (`/icons/categories/*.png`) is a sanctioned separate icon ZONE (per the
+  §13.7 zone rule): category tiles, section headers (walk-in), and empty-state accents may use it.
+  Never mix 3D icons into rows/buttons where Lucide glyphs live.
