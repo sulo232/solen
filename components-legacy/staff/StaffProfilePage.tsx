@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { Share2, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
@@ -234,7 +234,7 @@ export default function StaffProfilePage({
           }}
           className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
         >
-          <Share2 size={18} className="text-s-ink" />
+          <Share size={18} strokeWidth={2.1} className="text-s-ink" />
         </button>
       </div>
 

@@ -312,7 +312,9 @@ export default function ServicesStaffStep({
       {categories.length > 1 && (
         <div
           ref={tabsRef}
-          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-[--base] border-b border-s-border"
+          // Bar blends into the sunken step body (the white patch on grey read as a
+          // contrast bug, owner 2026-06-11); occlusion comes from the bg, not a border.
+          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-s-bg-sunken"
         >
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => {
@@ -321,11 +323,11 @@ export default function ServicesStaffStep({
                 <button
                   key={cat}
                   onClick={() => goToCat(cat)}
-                  // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
-                  // NOT pure black. Instant (no layoutId spring — that slide was laggy).
+                  // On the sunken bar a soft-grey active fill vanishes, so the active
+                  // pill uses the ink-selected TabPill language (mockup 18 ptab.on).
                   className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
-                      ? 'border-s-border bg-s-bg-sunken text-s-ink'
+                      ? 'border-s-ink bg-s-ink text-white'
                       : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
                   }`}
                 >
@@ -338,7 +340,7 @@ export default function ServicesStaffStep({
               type="button"
               onClick={() => setShowCatSheet(true)}
               aria-label={t('categories')}
-              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
+              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors hover:border-s-ink/25"
             >
               <List size={17} strokeWidth={2} />
             </button>
@@ -381,7 +383,7 @@ export default function ServicesStaffStep({
                 {category}
               </h3>
               {/* Grouped card per category (Atelier pattern, owner 2026-06-11): rows + dividers */}
-              <div className="overflow-hidden rounded-[24px] border border-s-border bg-[--raised] shadow-whisper">
+              <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
                 {categoryServices.map((service) => {
                   const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
@@ -465,7 +467,8 @@ export default function ServicesStaffStep({
       )}
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-[--raised] z-40">
+      {/* Solid white — --raised is 95%-alpha and content ghosted through (no blur) */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
           <div>
             <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none">

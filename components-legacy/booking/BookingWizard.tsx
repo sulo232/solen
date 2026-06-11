@@ -221,23 +221,19 @@ export default function BookingWizard({ services, staffList, salon, staffService
           })}
         </div>
 
-        {/* Eyebrow + Anton step label */}
-        <div className="flex items-center gap-3">
-          {canGoBack && (
-            <BackButton
-              variant="flat"
-              onClick={handleBack}
-              aria-label={t('back')}
-              label={t('back')}
-              className="-ml-2"
-            />
-          )}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-heading text-[20px] sm:text-[24px] font-bold text-s-ink leading-tight">
-              {STEP_LABELS[normalizedStep]}
-            </h3>
-          </div>
-        </div>
+        {/* Back row only — the big step title duplicated the stepper's node label
+            ("Auswahl" under "Service" etc.) and stacked a third heading layer under
+            the page h1 (owner de-clutter 2026-06-11). The stepper carries the step
+            name; "Termin bei X" stays the one screen heading. */}
+        {canGoBack && (
+          <BackButton
+            variant="flat"
+            onClick={handleBack}
+            aria-label={t('back')}
+            label={t('back')}
+            className="-ml-2"
+          />
+        )}
       </div>
 
       {/* Step content with slide animation */}

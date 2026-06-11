@@ -93,7 +93,6 @@ const COPY: Record<string, {
   },
 };
 
-const VIEW_ALL: Record<string, string> = { de: "Alle ansehen", en: "View all", fr: "Voir tout", it: "Vedi tutti" };
 const CLOSED_PILL: Record<string, string> = { de: "Geschlossen", en: "Closed", fr: "Fermé", it: "Chiuso" };
 
 export default function SalonWalkInPanel({
@@ -187,16 +186,13 @@ export default function SalonWalkInPanel({
 
       {/* Barber picker — the SAME card as the booking "Team" section, selectable.
           78px avatar + rating pill + name + role. "Egal" first. Selected = dark photo
-          overlay + white check (Option 4); "Alle ansehen" opens the full team. */}
+          overlay + white check (Option 4). NO "Alle ansehen" here: the strip already
+          shows every barber, and linking into /booking from walk-in mode let users
+          fall out of the queue flow into appointment booking (owner bug 2026-06-11). */}
       {staff.length > 0 && (
         <div>
           <div className="mb-3 flex items-baseline justify-between gap-3">
             <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.barberPick}</h2>
-            {slug && (
-              <Link href={`/${locale}/salon/${slug}/booking`} className="font-body shrink-0 text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80">
-                {VIEW_ALL[locale] ?? VIEW_ALL.de}
-              </Link>
-            )}
           </div>
           <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* Egal / anyone */}

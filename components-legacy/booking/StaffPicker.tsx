@@ -73,14 +73,12 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             >
               {s.name}
             </span>
+            {/* V3-D234 card anatomy: name + role only. The all-caps language row was a
+                third text line that read cluttered (owner 2026-06-11); languages live
+                on the staff profile + StaffListSheet. */}
             {role && (
               <span className="text-[12px] text-s-ink-2 text-center leading-tight truncate max-w-[88px]">
                 {role}
-              </span>
-            )}
-            {s.languages && s.languages.length > 0 && (
-              <span className="mt-0.5 max-w-[88px] truncate text-center text-[12px] leading-tight tracking-wide text-s-ink-3">
-                {s.languages.map((l) => l.toUpperCase()).join(" / ")}
               </span>
             )}
           </button>

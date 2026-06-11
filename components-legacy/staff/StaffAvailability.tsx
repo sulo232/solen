@@ -22,10 +22,11 @@ interface DaySchedule {
  * at 60% opacity, so an empty week read as broken. Plus a duplicate "Verfügbarkeit"
  * heading (this component's h3 sat under the section title in StaffProfilePage).
  *
- * Now: lead with the answer (next open day + start time), a compact week strip
- * (open days = ink date + working hours in success; closed = calm "zu"; today =
- * ink ring), and ONE honest empty-state when the whole week is closed. No inner
- * heading — the section title lives in the page.
+ * Now (calm pass 2026-06-11): lead with the answer (next open day + start time
+ * in the ONE green box), then day-by-day rows in the SalonOpeningTimes pattern
+ * (status dot + label left, hours right, today bold — no tiles, no ink ring,
+ * no per-day green text), and ONE honest empty-state when the whole week is
+ * closed. No inner heading — the section title lives in the page.
  *
  * Data note: the API returns WEEKLY recurring schedules (day_of_week + hours),
  * not bookable slots, so the strip shows working hours, not slot counts.
@@ -67,9 +68,9 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
 
   if (loading) {
     return (
-      <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar pb-1 animate-pulse">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-[78px] w-[62px] shrink-0 rounded-[14px] bg-s-ink/5" />
+      <div className="mt-4 space-y-2.5 animate-pulse">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div key={i} className="h-[20px] rounded-[6px] bg-s-ink/5" />
         ))}
       </div>
     );
@@ -113,34 +114,40 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
         </div>
       </div>
 
-      {/* Week strip */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+      {/* Day-by-day rows — same calm pattern as SalonOpeningTimes (dot + label
+          left, hours right, today bold). Replaces the tile strip whose ink ring
+          + per-day green hours read cluttered (owner 2026-06-11). */}
+      <ul className="space-y-2.5">
         {days.map((date) => {
           const s = scheduleFor(date);
           const isToday = isSameDay(date, today);
-          const hours = s ? `${parseInt(s.start_time, 10)}-${parseInt(s.end_time, 10)}` : null;
           return (
-            <div
+            <li
               key={date.toISOString()}
-              className={`flex w-[62px] shrink-0 flex-col items-center rounded-[14px] border border-s-border bg-white px-1.5 py-2.5 text-center ${
-                isToday ? "ring-2 ring-s-ink" : ""
+              className={`font-body flex items-center justify-between text-[14px] ${
+                isToday ? "font-semibold text-s-ink" : "text-s-ink-2"
               }`}
             >
-              <span className={`font-body text-[12px] font-semibold capitalize ${s ? "text-s-ink-2" : "text-s-ink-3"}`}>
-                {format(date, "EEEEEE", { locale: dateLocale })}
+              <span className="inline-flex items-center gap-3">
+                <span
+                  className={`h-2 w-2 shrink-0 rounded-full ${s ? "bg-s-success" : "bg-s-ink-3/40"}`}
+                  aria-hidden
+                />
+                <span className="capitalize">
+                  {isToday
+                    ? t("Heute", "Today")
+                    : format(date, "EEEE, d. MMM", { locale: dateLocale })}
+                </span>
               </span>
-              <span className={`font-display text-[18px] font-semibold leading-none mt-1 ${s ? "text-s-ink" : "text-s-ink-3"}`}>
-                {format(date, "d")}
+              <span className="tabular-nums">
+                {s
+                  ? `${s.start_time.slice(0, 5)} – ${s.end_time.slice(0, 5)}`
+                  : t("Geschlossen", "Closed")}
               </span>
-              {hours ? (
-                <span className="mt-2 font-body text-[12px] font-semibold tabular-nums text-s-success">{hours}</span>
-              ) : (
-                <span className="mt-2 font-body text-[12px] text-s-ink-3">{t("zu", "closed")}</span>
-              )}
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }
