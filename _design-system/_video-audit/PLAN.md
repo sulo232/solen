@@ -208,3 +208,21 @@ REMAINING for next session (in order):
 4. DS-9 truncation hardening on remaining surfaces (search result names/addresses)
 5. Drift-checker rules: closed neutral set, radius set, middot, eyebrow count (check.py)
 6. Scrim recipe on category cards (home discover band already has one; category landings pending)
+
+## Phase 5 run 2 (2026-06-11, autonomous)
+1. ✅ 16.3 View-Transitions flagship: next-view-transitions installed, provider in root layout,
+   SalonCard photo + PDP first hero photo share `vt-salon-<slug>`; verified live (names match, morph
+   path clean). BONUS pre-existing bug fixed: SalonCard hrefs now locale-prefixed (were landing /de
+   users on /en via middleware guess + the redirect was killing the transition).
+2. ✅ 14.4 register validation: specific password errors (min 8 / digit / uppercase) x4 locales.
+3. ◐ DS-5 rhythm: MEASURED — FeedZone box-gaps are uniformly 8px; visual rhythm lives inside each
+   section's own padding. Full normalization = per-section verified pass (V3-D322/326 history says
+   blind global spacing changes on home get rejected). Queued as its own work item.
+4. ✅ DS-9 search truncation: already implemented in SalonResultCard (verified, no change needed).
+5. ✅ Drift-checker: A21 tracked-uppercase-eyebrow rule added (A15/A20 middot existed; my dup removed);
+   s-accent-deep allowlisted. 26 eyebrows found; the 4 real customer-surface ones FIXED same run
+   (SolenStory kicker, Modal + Sheet eyebrow slots de-uppercased, reviews-landing blue eyebrow).
+   Footer legal caps / booking-ref code field / LIVE status pill = legit exemptions.
+6. ✅ DS-10: search hero gradient top-wash removed (photo clean above the text zone).
+REMAINING QUEUE: DS-5 per-section rhythm pass (homepage sections), remaining ~20 eyebrow findings on
+dashboard/dev surfaces, A21+A1 sweep of _pending-migration backlog.
