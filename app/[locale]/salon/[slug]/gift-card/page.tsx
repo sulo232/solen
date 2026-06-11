@@ -181,7 +181,9 @@ export default function GiftCardPage() {
       <div className="max-w-md mx-auto">
         {/* V3-D337 (T5): Gift icon decorative accent → ink-3 per §1.5 forbidden. */}
         <div className="text-center mb-6">
-          <Gift size={32} className="text-s-ink-3 mx-auto mb-2" />
+          <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-[16px] bg-s-bg-sunken">
+            <Gift size={26} className="text-s-ink" strokeWidth={1.7} />
+          </div>
           <h1 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">Geschenkkarte</h1>
           <p className="text-sm text-s-ink-2">{salon.name}</p>
         </div>
@@ -193,14 +195,14 @@ export default function GiftCardPage() {
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-btn text-[14px] font-semibold tabular-nums transition-colors ${!useCustom && selectedAmount === a ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink"}`}>
+                  className={`py-2.5 rounded-[12px] text-[14px] font-semibold tabular-nums transition-colors ${!useCustom && selectedAmount === a ? "bg-s-ink text-white" : "border border-s-border bg-white text-s-ink hover:border-s-ink"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             {/* Selected state = ink fill (twin of the presets); blue on button geometry is banned per §1.5 v3 */}
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-btn text-[13px] font-semibold transition-colors ${useCustom ? "bg-s-ink text-white" : "border border-s-border text-s-ink-2 hover:border-s-ink"}`}>
+              className={`w-full py-2.5 rounded-[12px] text-[13px] font-semibold transition-colors ${useCustom ? "bg-s-ink text-white" : "bg-s-bg-sunken text-s-ink-2 hover:text-s-ink"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
@@ -208,7 +210,7 @@ export default function GiftCardPage() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink-2">CHF</span>
                 <input type="number" min="5" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
-                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
+                  className="w-full pl-12 pr-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
               </div>
             )}
           </div>
@@ -217,16 +219,16 @@ export default function GiftCardPage() {
           <div>
             <label className="text-xs font-medium text-s-ink-2 mb-1 block">Empfänger *</label>
             <input value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Name"
-              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent mb-2" />
+              className="w-full px-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent mb-2" />
             <input type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} placeholder="E-Mail"
-              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent" />
+              className="w-full px-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent" />
           </div>
 
           {/* Message */}
           <div>
             <label className="text-xs font-medium text-s-ink-2 mb-1 block">Persönliche Nachricht</label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} placeholder="Optional…"
-              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent resize-none" />
+              className="w-full px-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent resize-none" />
           </div>
 
           {/* Preview — mockup 14 (2026-06-11): a real gift-card visual (ink card, white type),
