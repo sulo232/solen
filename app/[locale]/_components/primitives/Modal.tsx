@@ -192,7 +192,8 @@ export function ModalHeader({
     >
       <div className="flex flex-col gap-1 min-w-0">
         {eyebrow && (
-          <div className="font-body font-bold text-[13px] uppercase tracking-[0.16em] text-s-ink-3">
+          {/* Eyebrow slot de-uppercased 2026-06-11 (owner ban): normal-case kicker. */}
+          <div className="font-body font-semibold text-[13px] text-s-ink-3">
             {eyebrow}
           </div>
         )}

@@ -81,7 +81,9 @@ export default async function ReviewsPage({
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
       <header>
-        <span className="block font-display text-[12px] font-semibold uppercase tracking-[0.18em] text-s-accent">
+        {/* 2026-06-11: was a BLUE tracked-uppercase eyebrow — double violation
+            (blue on non-interactive text + banned eyebrow). Normal-case grey kicker. */}
+        <span className="block font-body text-[13px] font-semibold text-s-ink-3">
           {t("eyebrow")}
         </span>
         <h1 className="mt-2 font-display text-[clamp(26px,4vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink">
