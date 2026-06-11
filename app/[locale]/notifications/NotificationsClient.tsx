@@ -153,7 +153,7 @@ export default function NotificationsClient() {
             <h1 className="font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{t("title")}</h1>
             {unread > 0 && (
               <p className="text-[13px] text-s-ink-3">
-                <span className="font-semibold text-s-accent">{unread}</span> {t("unread")}
+                <span className="font-semibold text-s-ink">{unread}</span> {t("unread")}
               </p>
             )}
           </div>

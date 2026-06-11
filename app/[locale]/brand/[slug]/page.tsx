@@ -89,7 +89,7 @@ export default function BrandPage() {
                   href={group.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-s-accent hover:text-s-accent-deep hover:underline transition-colors"
+                  className="inline-flex items-center gap-1 text-xs text-s-accent hover:text-s-accent-deep transition-colors"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Website

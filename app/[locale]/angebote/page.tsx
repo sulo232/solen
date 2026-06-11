@@ -334,7 +334,7 @@ export default function LastMinutePage() {
                     }).catch((err) => console.error("[LastMinute] Waitlist error:", err));
                   }
                 }}
-                className="mt-4 text-sm text-s-accent hover:text-s-accent-deep hover:underline transition-colors"
+                className="mt-4 text-sm text-s-accent hover:text-s-accent-deep transition-colors"
                 aria-label={tEmpty("lastMinuteNotifyMe")}
               >
                 {tEmpty("lastMinuteNotifyMe")}

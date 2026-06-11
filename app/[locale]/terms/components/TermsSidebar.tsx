@@ -91,7 +91,7 @@ export default function TermsSidebar() {
                   onClick={() => scrollToSection(section.id)}
                   className={`text-left px-4 py-3 rounded-[8px] text-sm transition-colors ${
                     activeSection === section.id
-                      ? "bg-s-accent-pale text-s-accent font-medium"
+                      ? "bg-s-bg-sunken text-s-ink font-semibold"
                       : "text-s-ink-2 hover:bg-s-bg-sunken"
                   }`}
                 >
@@ -116,7 +116,7 @@ export default function TermsSidebar() {
                 onClick={() => scrollToSection(section.id)}
                 className={`text-left px-3 py-2 rounded-[8px] text-sm transition-colors duration-200 border-l-2 ${
                   activeSection === section.id
-                    ? "border-s-accent bg-s-accent-pale text-s-accent font-medium pl-4"
+                    ? "border-s-ink bg-s-bg-sunken text-s-ink font-semibold pl-4"
                     : "border-transparent text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border"
                 }`}
               >

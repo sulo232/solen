@@ -87,7 +87,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.namePlaceholder")}
           />
-          {errors.name && <p className="text-xs text-s-accent mt-0.5">{errors.name}</p>}
+          {errors.name && <p className="text-xs text-s-error mt-0.5">{errors.name}</p>}
         </div>
 
         <div>
@@ -99,7 +99,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-accent" : "border-s-border"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
-          {errors.email && <p className="text-xs text-s-accent mt-0.5">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-s-error mt-0.5">{errors.email}</p>}
         </div>
 
         <div>
@@ -113,15 +113,15 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 className={[
                   "px-4 py-2.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
-                    ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
-                    : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-accent/50",
+                    ? "bg-s-ink text-white border-s-ink shadow-elevation-2"
+                    : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-ink/40",
                 ].join(" ")}
               >
                 {c.label}
               </button>
             ))}
           </div>
-          {errors.categories && <p className="text-xs text-s-accent mt-1">{errors.categories}</p>}
+          {errors.categories && <p className="text-xs text-s-error mt-1">{errors.categories}</p>}
         </div>
 
         <div className="grid grid-cols-1 gap-4">
@@ -137,7 +137,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
               <option value="basel">Basel</option>
               <option value="bern">Bern</option>
             </select>
-            {errors.city && <p className="text-xs text-s-accent mt-0.5">{errors.city}</p>}
+            {errors.city && <p className="text-xs text-s-error mt-0.5">{errors.city}</p>}
           </div>
         </div>
 
@@ -150,7 +150,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             placeholder={t("step1.addressPlaceholder")}
             hasError={!!errors.address}
           />
-          {errors.address && <p className="text-xs text-s-accent mt-0.5">{errors.address}</p>}
+          {errors.address && <p className="text-xs text-s-error mt-0.5">{errors.address}</p>}
         </div>
 
         {/* TOS checkbox */}
@@ -169,7 +169,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
               <a href={`/${locale}/legal/privacy`} target="_blank" rel="noopener noreferrer" className="text-s-accent hover:underline">{t("step1.privacyLink")}</a>
             </span>
           </label>
-          {errors.tos_accepted && <p className="text-xs text-s-accent mt-1 ml-6">{errors.tos_accepted}</p>}
+          {errors.tos_accepted && <p className="text-xs text-s-error mt-1 ml-6">{errors.tos_accepted}</p>}
         </div>
       </div>
     </StepContainer>
@@ -244,7 +244,7 @@ function Step3({ data, onChange, category, t }: {
           </div>
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
-              <Sparkles size={10} className="text-s-accent" />
+              <Sparkles size={10} className="text-s-ink-2" />
               <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/45">
                 KI-Vorschlag anpassbar
               </p>
@@ -282,10 +282,10 @@ function Step3({ data, onChange, category, t }: {
           </div>
         </div>
 
-        <div className="rounded-[12px] border border-s-accent/[0.12] p-4 bg-s-bg-sunken">
+        <div className="rounded-[12px] border border-s-border p-4 bg-s-bg-sunken">
           <div className="flex items-center gap-1.5 mb-1.5">
-            <Sparkles size={12} className="text-s-accent shrink-0" />
-            <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
+            <Sparkles size={12} className="text-s-ink-2 shrink-0" />
+            <p className="text-[12.5px] font-heading font-semibold text-s-ink-2">
               {t("step3Quick.hint")}
             </p>
           </div>
@@ -326,10 +326,10 @@ function StepPhotos({
           pathPrefix="onboarding"
         />
 
-        <div className="rounded-[12px] border border-s-accent/[0.12] p-4 bg-s-bg-sunken">
+        <div className="rounded-[12px] border border-s-border p-4 bg-s-bg-sunken">
           <div className="flex items-center gap-1.5 mb-1.5">
-            <Camera size={12} className="text-s-accent shrink-0" />
-            <p className="text-[12px] font-heading uppercase tracking-[.14em] text-s-accent">
+            <Camera size={12} className="text-s-ink-2 shrink-0" />
+            <p className="text-[12.5px] font-heading font-semibold text-s-ink-2">
               {t("stepPhotos.hint")}
             </p>
           </div>
@@ -592,11 +592,11 @@ export default function SalonOnboardingPage() {
             >
               {/* Icon box — NO scale animation */}
               <div className="w-20 h-20 rounded-[22px] flex items-center justify-center bg-s-success-bg">
-                <PartyPopper size={34} className="text-s-accent" />
+                <PartyPopper size={34} className="text-s-ink" />
               </div>
 
               <div>
-                <p className="text-[12px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
+                <p className="text-[13px] font-heading font-semibold text-s-ink-2 mb-2">
                   Willkommen
                 </p>
                 <h2 className="font-heading text-2xl text-s-ink">

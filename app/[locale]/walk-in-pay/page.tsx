@@ -543,7 +543,7 @@ export default function WalkInPayPage() {
               </div>
               <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
                 <span className="self-center font-heading text-[15px] font-semibold text-s-ink">{l.total}</span>
-                <span className="font-body text-[22px] font-semibold tabular-nums text-s-accent">{amountStr}</span>
+                <span className="font-body text-[22px] font-semibold tabular-nums text-s-ink">{amountStr}</span>
               </div>
             </div>
 
@@ -606,7 +606,7 @@ export default function WalkInPayPage() {
                 {booking.salon_slug && (
                   <button
                     onClick={() => router.push(`/${locale}/salon/${booking.salon_slug}`)}
-                    className="mt-3 w-full text-center text-[14px] font-semibold text-s-accent transition-opacity active:opacity-60"
+                    className="mt-3 w-full text-center text-[14px] font-semibold text-s-ink-2 transition-colors hover:text-s-ink active:opacity-60"
                   >
                     {l.viewSalon}
                   </button>

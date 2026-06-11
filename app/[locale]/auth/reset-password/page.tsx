@@ -182,7 +182,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
-            className="text-[12px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
+            className="text-[13.5px] font-body font-semibold text-s-ink-2 transition-colors hover:text-s-ink">
             Zurück zur Anmeldung
           </Link>
         </p>

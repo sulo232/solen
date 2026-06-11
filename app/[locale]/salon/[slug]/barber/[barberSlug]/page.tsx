@@ -83,8 +83,8 @@ export default function BarberProfilePage() {
         <Scissors size={40} className="text-s-ink-2" />
         <p className="text-s-ink-2">Barber nicht gefunden</p>
         {/* V3-D255 (W3): s-coral → s-accent (link role) per LOCKFILE §1 */}
-        {/* V3-D337 (overnight T5): decorative accent link → ink underline per §1.5. */}
-        <Link href={`/${locale}/salon/${salonSlug}`} className="text-s-ink text-sm underline underline-offset-2 hover:no-underline transition-colors">
+        {/* v3.1 (2026-06-11): tertiary back link = ink-2 semibold, no underline */}
+        <Link href={`/${locale}/salon/${salonSlug}`} className="text-sm font-semibold text-s-ink-2 hover:text-s-ink transition-colors">
           Zurück zum Salon
         </Link>
       </main>

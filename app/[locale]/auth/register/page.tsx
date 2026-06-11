@@ -211,7 +211,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
       <p className="text-center text-[13px] text-s-ink-2 mt-2">
         {t("haveAccount")}{" "}
-        <Link href={`/${locale}/auth/login`} className="text-s-ink font-medium underline underline-offset-2">
+        <Link href={`/${locale}/auth/login`} className="text-s-ink font-semibold">
           {t("signIn")}
         </Link>
       </p>
@@ -290,7 +290,7 @@ export default function RegisterPage() {
           <p className="text-center mt-8 text-[13px] text-s-ink-2">
             {t("alreadyRegistered")}{" "}
             <Link href={`/${locale}/auth/login`}
-              className="text-s-ink font-medium underline underline-offset-2">
+              className="text-s-ink font-semibold">
               {t("signIn")}
             </Link>
           </p>

@@ -20,7 +20,7 @@ export default async function TermsPage() {
       {/* Sticky header area just for the back link and updated date */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-s-border print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <Link href="/" className="text-sm font-medium text-s-accent hover:underline flex items-center gap-1 group">
+          <Link href="/" className="text-sm font-semibold text-s-ink-2 transition-colors hover:text-s-ink flex items-center gap-1 group">
             <span className="transition-transform group-hover:-translate-x-1">←</span> Zurück zur Startseite / Back to Home
           </Link>
           <div className="text-xs font-body text-s-ink-2 bg-s-bg-sunken py-1 px-3 rounded-full">
@@ -64,10 +64,10 @@ export default async function TermsPage() {
                   © 2026 solen.ch. Alle Rechte vorbehalten.
                 </div>
                 <div className="flex gap-4">
-                  <Link href="/privacy" className="hover:text-s-accent transition-colors underline underline-offset-4">
+                  <Link href="/privacy" className="text-s-accent">
                     Datenschutzerklärung / Privacy Policy
                   </Link>
-                  <a href="mailto:support@solen.ch" className="hover:text-s-accent transition-colors underline underline-offset-4">
+                  <a href="mailto:support@solen.ch" className="text-s-accent">
                     Kontakt / Contact
                   </a>
                 </div>

@@ -67,7 +67,7 @@ export default function ReferralPage() {
     <div className="min-h-screen bg-s-bg-surface py-8 px-4">
       {/* Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
-        <Link href={`/${locale}/profile`} className="hover:text-s-accent transition-colors">Profil</Link>
+        <Link href={`/${locale}/profile`} className="hover:text-s-ink transition-colors">Profil</Link>
         <ChevronRight className="w-3 h-3" />
         <span className="text-s-ink-2">Freunde einladen</span>
       </div>

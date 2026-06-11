@@ -211,7 +211,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("fixed")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "fixed"
-                      ? "border-s-accent bg-s-accent-pale"
+                      ? "border-s-ink bg-s-bg-sunken"
                       : "border-s-border hover:border-s-ink"
                   }`}
                 >
@@ -229,7 +229,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("percent")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "percent"
-                      ? "border-s-accent bg-s-accent-pale"
+                      ? "border-s-ink bg-s-bg-sunken"
                       : "border-s-border hover:border-s-ink"
                   }`}
                 >

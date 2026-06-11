@@ -45,7 +45,7 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Unangemessene Inhalte, Profile oder Bewertungen kannst du jederzeit{" "}
-              <Link href={`${p}/report`} className="text-s-accent hover:underline">
+              <Link href={`${p}/report`} className="text-s-accent">
                 melden
               </Link>
               . Wir prüfen jede Meldung.
@@ -58,7 +58,7 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Wie wir mit deinen Daten umgehen, steht in der{" "}
-              <Link href={`${p}/privacy`} className="text-s-accent hover:underline">
+              <Link href={`${p}/privacy`} className="text-s-accent">
                 Datenschutzerklärung
               </Link>
               .

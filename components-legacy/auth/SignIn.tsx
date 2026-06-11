@@ -193,7 +193,7 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[13px] text-s-ink-2 hover:text-s-ink transition-colors text-center py-1">
+        className="text-[13px] font-medium text-s-accent transition-colors text-center py-1">
         Passwort vergessen?
       </button>
 

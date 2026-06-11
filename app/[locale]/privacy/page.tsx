@@ -19,7 +19,7 @@ export default async function PrivacyPage() {
       {/* V3-D299: retired s-coral → s-accent (Layer 2 link accent per LOCKFILE §1); s-yellow-subtle/s-yellow undefined → s-warning-bg + s-warning/20 (universal-color warning per LOCKFILE §1 + §0.4); arbitrary s-ink/X opacities → canonical s-ink-2; font-mono → font-body (LOCKFILE §2 — only Inter Tight + Hanken Grotesk) */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-s-border print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <Link href="/" className="text-sm font-medium text-s-accent hover:underline flex items-center gap-1 group">
+          <Link href="/" className="text-sm font-semibold text-s-ink-2 transition-colors hover:text-s-ink flex items-center gap-1 group">
             <span className="transition-transform group-hover:-translate-x-1">←</span> Zurück zur Startseite / Back to Home
           </Link>
           <div className="text-xs font-body text-s-ink-2 bg-s-bg-sunken py-1 px-3 rounded-full">
@@ -59,10 +59,10 @@ export default async function PrivacyPage() {
                   © 2026 solen.ch. Alle Rechte vorbehalten.
                 </div>
                 <div className="flex gap-4">
-                  <Link href="/terms" className="hover:text-s-accent transition-colors underline underline-offset-4">
+                  <Link href="/terms" className="text-s-accent">
                     AGB / Terms of Service
                   </Link>
-                  <a href="mailto:support@solen.ch" className="hover:text-s-accent transition-colors underline underline-offset-4">
+                  <a href="mailto:support@solen.ch" className="text-s-accent">
                     Kontakt / Contact
                   </a>
                 </div>

@@ -100,7 +100,7 @@ export default function ComingSoonPage() {
 
         <Link
           href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-200"
+          className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-ink transition-colors duration-200"
         >
           <ArrowLeft size={14} />
           {t("backHome")}

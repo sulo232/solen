@@ -50,7 +50,7 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Mit Solen verwaltest du Termine, Walk-ins und Zahlungen an einem Ort.{" "}
-              <Link href={`${p}/partner`} className="text-s-accent hover:underline">
+              <Link href={`${p}/partner`} className="text-s-accent">
                 Mehr für Salons
               </Link>
               .
@@ -63,11 +63,11 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Fragen oder Feedback? Schreib uns an{" "}
-              <a href="mailto:hallo@solen.ch" className="text-s-accent hover:underline">
+              <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch
               </a>{" "}
               oder über die{" "}
-              <Link href={`${p}/kontakt`} className="text-s-accent hover:underline">
+              <Link href={`${p}/kontakt`} className="text-s-accent">
                 Kontaktseite
               </Link>
               .

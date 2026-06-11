@@ -123,7 +123,7 @@ export function SalonSidebar({
           type="button"
           onClick={scrollToReviews}
           // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
-          className="font-body text-[18px] font-medium leading-none text-s-ink transition-opacity hover:opacity-80 md:text-[20px]"
+          className="font-body text-[18px] font-medium leading-none text-s-accent transition-colors hover:text-s-accent-deep md:text-[20px]"
         >
           ({salon.review_count.toLocaleString("de-CH")})
         </button>

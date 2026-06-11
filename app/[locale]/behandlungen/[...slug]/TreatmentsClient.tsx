@@ -144,7 +144,7 @@ export default function TreatmentsClient() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}
         <nav className="text-xs text-s-ink/40 mb-4">
-          <Link href={`/${locale}`} className="hover:text-s-accent">Home</Link>
+          <Link href={`/${locale}`} className="hover:text-s-ink">Home</Link>
           <span className="mx-1">›</span>
           <span className="text-s-ink/70">Behandlungen</span>
           {slugParts.map((part, i) => (
@@ -152,7 +152,7 @@ export default function TreatmentsClient() {
               <span className="mx-1">›</span>
               <Link
                 href={`/${locale}/behandlungen/${slugParts.slice(0, i + 1).join("/")}`}
-                className="capitalize hover:text-s-accent"
+                className="capitalize hover:text-s-ink"
               >
                 {part.replace(/-/g, " ")}
               </Link>
@@ -169,7 +169,7 @@ export default function TreatmentsClient() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="font-heading uppercase text-4xl sm:text-5xl text-s-ink leading-none">
-                  {pageTitle || "Behandlungen"}<span className="text-s-accent">.</span>
+                  {pageTitle || "Behandlungen"}<span className="text-s-ink">.</span>
                 </h1>
                 {!loading && (
                   <p className="text-sm text-s-ink-2 mt-1">

@@ -89,7 +89,7 @@ export default function StaffInvitePage() {
         {success ? (
           <div className="text-center">
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
-              <Check size={24} className="text-s-accent" />
+              <Check size={24} className="text-s-success" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.success}</h2>
             {salonName && <p className="text-sm text-s-ink-2 mb-1">{salonName}</p>}
@@ -109,7 +109,7 @@ export default function StaffInvitePage() {
           <>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-s-ink/10 flex items-center justify-center">
-                <Users size={22} className="text-s-accent" />
+                <Users size={22} className="text-s-ink" />
               </div>
               <div>
                 <h1 className="font-heading text-lg text-s-ink">{l.title}</h1>

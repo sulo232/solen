@@ -83,7 +83,7 @@ export default function MyGiftCardsPage() {
 
               return (
                 // V3-D285: card chrome — retired s-coral wash + gradient stripped, active-state uses s-accent (Layer 2) pale wash
-                <div key={card.id} className={`bg-white rounded-[12px] border ${isInactive ? "border-s-border opacity-60" : "border-s-accent/30 shadow-elevation-1"} p-5 relative overflow-hidden`}>
+                <div key={card.id} className={`bg-white rounded-[12px] border ${isInactive ? "border-s-border opacity-60" : "border-s-border shadow-elevation-1"} p-5 relative overflow-hidden`}>
                   <div className="flex justify-between items-start mb-6 align-top">
                     <div>
                       <p className="text-xs font-semibold text-s-ink/40 uppercase tracking-widest mb-1">GIFT CARD</p>

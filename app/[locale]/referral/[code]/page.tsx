@@ -73,7 +73,7 @@ export default function ReferralLandingPage({ params }: Props) {
           className="w-16 h-16 rounded-full bg-s-ink/10 flex items-center justify-center"
           aria-hidden="true"
         >
-          <Gift className="w-8 h-8 text-s-accent" strokeWidth={1.75} />
+          <Gift className="w-8 h-8 text-s-ink" strokeWidth={1.75} />
         </div>
 
         {/* Headline */}
@@ -91,14 +91,14 @@ export default function ReferralLandingPage({ params }: Props) {
           className={cn(
             "flex items-center gap-2 px-5 py-2.5",
             "rounded-pill bg-s-bg-sunken",
-            "border border-s-accent/20"
+            "border border-s-border"
           )}
         >
-          <Sparkles className="w-4 h-4 text-s-accent flex-shrink-0" strokeWidth={1.75} aria-hidden="true" />
+          <Sparkles className="w-4 h-4 text-s-ink-2 flex-shrink-0" strokeWidth={1.75} aria-hidden="true" />
           <span className="font-body text-xs font-semibold text-s-ink-2 uppercase tracking-widest mr-1">
             {t("codeLabel")}
           </span>
-          <span className="font-body text-sm font-bold text-s-accent tracking-wider">
+          <span className="font-body text-sm font-bold text-s-ink tracking-wider">
             {code}
           </span>
         </div>

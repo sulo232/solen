@@ -148,10 +148,10 @@ export default function HelpPage() {
                         href={`/${locale}/help/${article.slug}`}
                         className="flex items-center justify-between px-4 py-3 rounded-[12px] bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
                       >
-                        <span className="font-body text-sm text-s-ink group-hover:text-s-accent transition-colors">
+                        <span className="font-body text-sm text-s-ink transition-colors">
                           {article.title}
                         </span>
-                        <ChevronRight size={16} className="text-s-ink-2 group-hover:text-s-accent transition-colors shrink-0" />
+                        <ChevronRight size={16} className="text-s-ink-2 group-hover:text-s-ink transition-colors shrink-0" />
                       </Link>
                     ))}
                   </div>

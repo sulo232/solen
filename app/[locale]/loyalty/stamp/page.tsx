@@ -75,9 +75,9 @@ export default function LoyaltyStampPage() {
             className="rounded-card bg-white p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
-            {/* Icon box — V3-D341 (W13): stale green rgba (#1B4D1B pre-V3-D329) snapped to bg-s-accent-pale (semantic blue post-shift). */}
-            <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
-              <Award size={30} className="text-s-accent" />
+            {/* Icon box — icons are content, not actions: sunken + ink (1.5 v3, 2026-06-11) */}
+            <div className="w-16 h-16 rounded-[18px] bg-s-bg-sunken flex items-center justify-center mx-auto mb-5">
+              <Award size={30} className="text-s-ink" />
             </div>
             <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-2">
               Stempelkarte
@@ -122,9 +122,9 @@ export default function LoyaltyStampPage() {
               {result.stamps_collected}/{result.stamps_required} Stempel
             </p>
             {result.is_complete && (
-              /* V3-D341 (W13): stale green rgba snapped to bg-s-accent-pale; emoji removed per V3-D203 no-emoji-in-code. */
-              <div className="mt-4 px-4 py-2.5 rounded-[10px] inline-block bg-s-accent-pale">
-                <p className="text-xs font-heading uppercase tracking-[.08em] text-s-accent">
+              /* Reward unlocked = success: semantic green, normal case (universal-color + A21) */
+              <div className="mt-4 px-4 py-2.5 rounded-[10px] inline-block bg-s-success-bg">
+                <p className="text-[13px] font-heading font-semibold text-s-success">
                   Belohnung freigeschaltet
                 </p>
               </div>
@@ -137,13 +137,10 @@ export default function LoyaltyStampPage() {
             className="rounded-card bg-white p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
-            {/* V3-D341 (W13): stale green rgba snapped to bg-s-accent-pale. */}
-            <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
-              <AlertCircle size={28} className="text-s-accent" />
+            {/* Error = red semantic (universal-color); was wrongly blue */}
+            <div className="w-16 h-16 rounded-[18px] bg-s-error-bg flex items-center justify-center mx-auto mb-5">
+              <AlertCircle size={28} className="text-s-error" />
             </div>
-            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-accent mb-2">
-              Fehler
-            </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">
               Etwas ist schiefgelaufen
             </h1>

@@ -35,7 +35,7 @@ export default function ImpressumPage() {
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink-2">E-Mail</dt>
                 <dd className="text-s-ink">
-                  <a href="mailto:info@solen.ch" className="hover:text-s-accent transition-colors">
+                  <a href="mailto:info@solen.ch" className="text-s-accent">
                     info@solen.ch
                   </a>
                 </dd>

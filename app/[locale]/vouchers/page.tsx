@@ -312,7 +312,7 @@ export default function VouchersPage() {
           {/* V3-D276 (W6): retired-token configure form sweep */}
           <button
             onClick={() => setStep("browse")}
-            className="mb-6 text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2 hover:text-s-accent transition-colors flex items-center gap-1.5"
+            className="mb-6 text-[13px] font-body font-semibold text-s-ink-2 hover:text-s-ink transition-colors flex items-center gap-1.5"
           >
             <ChevronRight size={12} className="rotate-180" />
             {t("backToSalons")}

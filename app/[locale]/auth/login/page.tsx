@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <p className="text-center mt-8 text-[13px] text-s-ink-2">
           Noch kein Konto?{" "}
           <Link href={`/${locale}/auth/register`}
-            className="text-s-ink font-medium underline underline-offset-2">
+            className="text-s-ink font-semibold">
             Registrieren
           </Link>
         </p>

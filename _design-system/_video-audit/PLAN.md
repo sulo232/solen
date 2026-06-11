@@ -278,3 +278,27 @@ ink-underline — live was already correct, no fix needed). Others queued for Ph
    app/[locale]/booking/lookup/page.tsx). Security wins; the uniform "check your email"
    state stays. If the owner wants a mismatch error, it requires a product decision to
    accept the enumeration leak.
+
+## Phase 5 run 3 (2026-06-11, "build em" + blue/ink consistency sweep)
+SHIPPED, each its own commit:
+- v3.1 no-underline rule + LOCKFILE generous-v2 purge (94fe1d949)
+- gift-card + packages mockup-14 build incl. the 24.000-CHF price-unit double bug +
+  broken dashboard PackageManager create (3abc02c83)
+- last-minute + account/messages mockup-16 drift fixes (59378ff15)
+- lookup + onboarding mockup-15 treatments; mismatch error NOT built (anti-enumeration,
+  see Owner ROUND 3 item 4) (f2f13e118)
+- TipFlow v3 sweep + walk-in-tip 7-day expiry (backend 410 + page state) (b9ab9e492)
+- App-wide blue/ink consistency sweep (this commit): tertiary links -> ink no underline
+  (walk-in-pay viewSalon, reset-password, nail-tech, barber back, register/login sign-in
+  links); semantic fixes (onboarding/salon errors blue->RED, loyalty stamp success->green
+  error->red, booking-action check->green); icon tints -> ink (referral, staff-invite,
+  loyalty, onboarding, reviews disc, intake-forms); forbidden pale+accent pairings ->
+  sunken+ink (terms/privacy sidebars, vouchers/buy selected, gift-cards border);
+  breadcrumb/back hovers blue->ink (behandlungen, referral, coming-soon, vouchers, help);
+  inline prose links keep blue but lose resting underlines (terms/privacy/kontakt/
+  ueber-uns/karriere/presse/sicherheit/impressum); links-that-should-be-blue fixed
+  (SalonSidebar review count, SignIn Passwort-vergessen); footer duplicate /partner row
+  removed (React dup-key error). DELIBERATELY KEPT: search components' blue selected
+  states (V3-D450 owner decision) + DateTimePicker accent tone (council mockup) + queue
+  page walk-in language (owner-approved) + Toast/info + unread badges (Layer-3/Layer-2
+  small footprint) + notification type discs.

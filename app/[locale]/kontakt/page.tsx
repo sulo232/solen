@@ -24,7 +24,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
               Allgemeine Anfragen
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              <a href="mailto:hallo@solen.ch" className="text-s-accent hover:underline">
+              <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch
               </a>
             </p>
@@ -36,18 +36,18 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
             </h2>
             <ul className="space-y-2 text-sm text-s-ink-2">
               <li>
-                <Link href={`${p}/help`} className="text-s-accent hover:underline">
+                <Link href={`${p}/help`} className="text-s-accent">
                   Hilfe für Kund:innen
                 </Link>
               </li>
               <li>
-                <Link href={`${p}/partner`} className="text-s-accent hover:underline">
+                <Link href={`${p}/partner`} className="text-s-accent">
                   Hilfe für Salons
                 </Link>
               </li>
               <li>
                 Direkt:{" "}
-                <a href="mailto:support@solen.ch" className="text-s-accent hover:underline">
+                <a href="mailto:support@solen.ch" className="text-s-accent">
                   support@solen.ch
                 </a>
               </li>
@@ -60,11 +60,11 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Medienanfragen über die{" "}
-              <Link href={`${p}/presse`} className="text-s-accent hover:underline">
+              <Link href={`${p}/presse`} className="text-s-accent">
                 Presseseite
               </Link>{" "}
               oder{" "}
-              <a href="mailto:hallo@solen.ch" className="text-s-accent hover:underline">
+              <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch
               </a>
               .
@@ -77,7 +77,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               solen.ch, Basel-Stadt, 4000 Basel, Schweiz.{" "}
-              <Link href={`${p}/impressum`} className="text-s-accent hover:underline">
+              <Link href={`${p}/impressum`} className="text-s-accent">
                 Impressum
               </Link>
               .

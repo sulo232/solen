@@ -120,8 +120,8 @@ export default function MyIntakeFormsPage() {
                           <div className="p-4 pt-0 border-t border-s-border">
                             {form.ai_recommendation && (
                               // V3-D286: AI recommendation block — undefined s-amber → s-accent pale (Layer 2 info wash, refined pastel pattern per CLAUDE.md V3-D199)
-                              <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-accent-pale border border-s-accent/20">
-                                <p className="text-xs font-bold text-s-accent flex items-center gap-1 mb-1.5 uppercase tracking-wide">
+                              <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-bg-sunken border border-s-border">
+                                <p className="text-xs font-bold text-s-ink flex items-center gap-1 mb-1.5">
                                   <Sparkles size={12} /> AI Analyse
                                 </p>
                                 <p className="text-sm text-s-ink/80 leading-relaxed">

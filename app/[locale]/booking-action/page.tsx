@@ -57,7 +57,7 @@ export default function BookingActionPage() {
         ) : result === "confirmed" ? (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
-              <Check size={24} className="text-s-accent" />
+              <Check size={24} className="text-s-success" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{t("confirmed")}</h2>
             <p className="text-sm text-s-ink-2">{t("confirmedDesc")}</p>

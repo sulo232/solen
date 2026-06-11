@@ -35,7 +35,7 @@ export default async function KarrierePage({ params }: { params: Promise<{ local
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Du willst trotzdem mit uns arbeiten? Schreib uns, woran du arbeiten möchtest,
               an{" "}
-              <a href="mailto:hallo@solen.ch" className="text-s-accent hover:underline">
+              <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch
               </a>
               .

@@ -58,7 +58,7 @@ export default function NailTechProfilePage() {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
         <p className="text-s-ink-2 mb-4">Nail Tech nicht gefunden</p>
-        <Link href={`/${locale}`} className="text-s-accent text-sm hover:underline">
+        <Link href={`/${locale}`} className="text-sm font-semibold text-s-ink-2 transition-colors hover:text-s-ink">
           Zurück zur Startseite
         </Link>
       </main>
@@ -68,7 +68,7 @@ export default function NailTechProfilePage() {
   const TIER_COLORS: Record<string, string> = {
     junior: "bg-s-sand/20 text-s-sand-text",
     senior: "bg-s-blue/20 text-s-blue",
-    master: "bg-s-ink/20 text-s-accent",
+    master: "bg-s-ink/10 text-s-ink",
     specialist: "bg-s-plum/20 text-s-plum",
   };
 
