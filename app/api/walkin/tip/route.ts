@@ -33,8 +33,18 @@ export async function POST(req: NextRequest) {
     assigned_barber_id: string | null;
     preferred_barber_id: string | null;
     customer_id: string | null;
-  }>(admin, validated.token, "id, salon_id, assigned_barber_id, preferred_barber_id, customer_id");
+    completed_at: string | null;
+  }>(admin, validated.token, "id, salon_id, assigned_barber_id, preferred_barber_id, customer_id, completed_at");
   if (!entry) return NextResponse.json({ error: "Queue entry not found" }, { status: 404 });
+
+  // Tips stay open for 7 days after the visit (mockup 17, 2026-06-11). After that the
+  // deep link is dead — 410 so the page can show the specific expired state.
+  if (entry.completed_at) {
+    const ageMs = Date.now() - new Date(entry.completed_at).getTime();
+    if (ageMs > 7 * 24 * 60 * 60 * 1000) {
+      return NextResponse.json({ error: "tip_window_expired" }, { status: 410 });
+    }
+  }
 
   // Tips ride the salon's Connect account. No connected account → tip at the counter instead.
   const { data: salon } = await admin

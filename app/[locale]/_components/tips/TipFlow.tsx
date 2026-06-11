@@ -1,10 +1,11 @@
 "use client";
 
 // Shared SINGLE-SCREEN tip flow, powers booking (/tip/[bookingId]) + walk-in (/walk-in-tip/[token]).
-// One screen, matching the approved mockup (variant B, no avatar ring): staff avatar + name,
-// amount presets (blue selected), Stripe card field, green "100% to your stylist" pill, and a blue
-// "CHF X Trinkgeld senden" button with the coins icon. The tip endpoints REUSE + UPDATE one
-// PaymentIntent across amount changes, so clientSecret stays stable and the card field never remounts.
+// One screen: staff avatar + name, amount presets (ink selected, twin-control with the pay page),
+// Stripe card field, and an ink "CHF X Trinkgeld senden" commit CTA (blue never fills a primary —
+// LOCKFILE §0 rule 2; the 2026-06-09 blue-CTA variant predates the v3 balance). The tip endpoints
+// REUSE + UPDATE one PaymentIntent across amount changes, so clientSecret stays stable and the card
+// field never remounts.
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -25,10 +26,10 @@ const chf = (rappen: number) =>
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { choose: "Betrag wählen", custom: "Eigener", send: "Trinkgeld senden", to100: "100% geht an deinen Coiffeur", thanks: "Danke!", sent: "gesendet", sub: "freut sich. Schönen Tag!", err: "Etwas ist schiefgelaufen. Bitte erneut versuchen." },
-  en: { choose: "Choose an amount", custom: "Custom", send: "Send tip", to100: "100% goes to your stylist", thanks: "Thank you!", sent: "sent", sub: "appreciates it. Have a great day!", err: "Something went wrong. Please try again." },
-  fr: { choose: "Choisir un montant", custom: "Autre", send: "Envoyer", to100: "100% va à votre coiffeur", thanks: "Merci !", sent: "envoyé", sub: "vous remercie. Bonne journée !", err: "Une erreur est survenue. Veuillez réessayer." },
-  it: { choose: "Scegli un importo", custom: "Altro", send: "Invia", to100: "100% va al tuo parrucchiere", thanks: "Grazie!", sent: "inviata", sub: "ti ringrazia. Buona giornata!", err: "Qualcosa è andato storto. Riprova." },
+  de: { choose: "Betrag wählen", custom: "Eigener", send: "Trinkgeld senden", to100: "100% geht an deinen Coiffeur", thanks: "Danke!", sent: "gesendet", sub: "freut sich. Schönen Tag!", err: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", noTip: "Kein Trinkgeld diesmal" },
+  en: { choose: "Choose an amount", custom: "Custom", send: "Send tip", to100: "100% goes to your stylist", thanks: "Thank you!", sent: "sent", sub: "appreciates it. Have a great day!", err: "Something went wrong. Please try again.", noTip: "No tip this time" },
+  fr: { choose: "Choisir un montant", custom: "Autre", send: "Envoyer", to100: "100% va à votre coiffeur", thanks: "Merci !", sent: "envoyé", sub: "vous remercie. Bonne journée !", err: "Une erreur est survenue. Veuillez réessayer.", noTip: "Pas de pourboire cette fois" },
+  it: { choose: "Scegli un importo", custom: "Altro", send: "Invia", to100: "100% va al tuo parrucchiere", thanks: "Grazie!", sent: "inviata", sub: "ti ringrazia. Buona giornata!", err: "Qualcosa è andato storto. Riprova.", noTip: "Niente mancia stavolta" },
 };
 
 export interface TipFlowProps {
@@ -79,7 +80,7 @@ function SendButton({
       type="button"
       onClick={submit}
       disabled={submitting || disabled || !stripe}
-      className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-accent py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
+      className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
     >
       {submitting && <Spinner size="sm" invert />}
       {chf(amount)} {label}
@@ -156,7 +157,7 @@ export default function TipFlow({
   }, [done, onClose]);
 
   const Avatar = (
-    <div className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-[#F0A868] to-[#C0524A] font-heading text-base font-semibold text-white">
+    <div className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken font-heading text-base font-semibold text-s-ink">
       {recipientPhoto ? <Image src={recipientPhoto} alt="" fill className="object-cover" unoptimized /> : initial}
     </div>
   );
@@ -167,7 +168,7 @@ export default function TipFlow({
         <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-s-success-bg">
           <Check size={30} className="text-s-success" />
         </div>
-        <p className="mb-1.5 font-heading text-[12px] font-semibold uppercase tracking-[.2em] text-s-success">
+        <p className="mb-1.5 font-heading text-[13px] font-semibold text-s-success">
           {chf(amount)} {l.sent}
         </p>
         <h1 className="font-heading text-[20px] font-semibold text-s-ink">{l.thanks}</h1>
@@ -197,7 +198,7 @@ export default function TipFlow({
         </div>
 
         {/* Amount */}
-        <p className="mb-3 font-heading text-[12px] font-semibold uppercase tracking-[.14em] text-s-accent">{l.choose}</p>
+        <p className="mb-3 font-body text-[13px] font-semibold text-s-ink">{l.choose}</p>
         <div className="grid grid-cols-2 gap-2.5">
           {presets.map((p) => {
             const sel = !useCustom && selected === p;
@@ -206,8 +207,8 @@ export default function TipFlow({
                 key={p}
                 type="button"
                 onClick={() => { setSelected(p); setUseCustom(false); }}
-                className={`rounded-[16px] border-2 py-4 text-center font-heading text-[17px] font-bold tabular-nums transition-colors ${
-                  sel ? "border-s-accent bg-s-accent/[0.07] text-s-accent" : "border-s-border text-s-ink hover:border-s-ink/40"
+                className={`rounded-[16px] border py-4 text-center font-heading text-[17px] font-bold tabular-nums transition-colors ${
+                  sel ? "border-s-ink bg-s-ink text-white" : "border-s-border text-s-ink hover:border-s-ink"
                 }`}
               >
                 {chf(p)}
@@ -217,8 +218,8 @@ export default function TipFlow({
           <button
             type="button"
             onClick={() => setUseCustom(true)}
-            className={`rounded-[16px] border-2 py-4 text-center font-heading text-[15px] font-bold transition-colors ${
-              useCustom ? "border-s-accent bg-s-accent/[0.07] text-s-accent" : "border-s-border text-s-ink hover:border-s-ink/40"
+            className={`rounded-[16px] border py-4 text-center font-heading text-[15px] font-bold transition-colors ${
+              useCustom ? "border-s-ink bg-s-ink text-white" : "border-s-border text-s-ink hover:border-s-ink"
             }`}
           >
             {l.custom}
@@ -226,7 +227,7 @@ export default function TipFlow({
         </div>
 
         {useCustom && (
-          <div className="mt-2.5 flex items-center gap-2 rounded-[16px] border-2 border-s-accent bg-s-accent/[0.04] px-4 py-3.5">
+          <div className="mt-2.5 flex items-center gap-2 rounded-[16px] border border-s-ink px-4 py-3.5">
             <span className="shrink-0 text-[15px] font-semibold text-s-ink-2">CHF</span>
             <input
               type="number" min="1" step="0.5" inputMode="decimal" autoFocus
@@ -247,7 +248,7 @@ export default function TipFlow({
             <button
               type="button"
               onClick={() => setDone(true)}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-accent py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
             >
               {chf(amount)} {l.send}
             </button>
@@ -280,6 +281,19 @@ export default function TipFlow({
             ) : (
               <Spinner size="md" />
             )}
+          </div>
+        )}
+
+        {/* Mockup 17: explicit no-tip exit under the CTA — ink tertiary, no underline (v3.1) */}
+        {onClose && !done && (
+          <div className="mt-3.5 text-center">
+            <button
+              type="button"
+              onClick={onClose}
+              className="font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors hover:text-s-ink"
+            >
+              {l.noTip}
+            </button>
           </div>
         )}
     </div>
