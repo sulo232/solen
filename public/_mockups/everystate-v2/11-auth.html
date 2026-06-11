@@ -16,7 +16,8 @@
   .social{width:100%;height:54px;border:1px solid var(--border);border-radius:999px;background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
   .terms{font-size:12.5px;color:var(--ink-2);text-align:center;margin-top:18px;line-height:1.5}
   .reg{font-size:13.5px;color:var(--ink-2);text-align:center;margin-top:18px}
-  .reg a{color:var(--ink);font-weight:600;text-decoration:underline}
+  .reg a{color:var(--blue);font-weight:600;text-decoration:none}
+  .reg a:hover{color:var(--blue-deep)}
 </style>
 </head>
 <body>
@@ -25,7 +26,7 @@
 
 <div class="lbl">DEFAULT, CTA disabled until valid</div>
 <div class="frame">
-  <div class="apphead"><span class="circ"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="apphead"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ"><i data-lucide="menu"></i></span></div>
   <div class="auth">
     <h1>Welcome back</h1>
     <p class="sub">Log in to book and manage appointments.</p>
@@ -73,6 +74,22 @@
     <h2>That link has expired.</h2>
     <p>Login links only live for a short while. Grab a fresh one and you're in.</p>
     <button class="cta">Send a new link</button>
+  </div>
+</div>
+
+
+<div class="lbl">FLAGGED + ADDED: register, specific error copy<small>every error names the exact cause (owner rule)</small></div>
+<div class="frame">
+  <div class="auth" style="padding-top:26px">
+    <h1 style="font-size:24px">Create account</h1>
+    <div style="margin-top:18px">
+      <div class="finput pillr" style="color:var(--ink)">lara@web.ch</div>
+      <div class="finput pillr err" style="margin-top:12px;color:var(--ink)">lara@gmx.ch</div>
+      <div class="fielderr" style="padding-left:8px"><i data-lucide="circle-alert"></i>The email addresses don't match.</div>
+      <div class="finput pillr err" style="margin-top:12px;color:var(--ink);justify-content:space-between">••••<i data-lucide="eye"></i></div>
+      <div class="fielderr" style="padding-left:8px"><i data-lucide="circle-alert"></i>Password needs at least 8 characters.</div>
+    </div>
+    <button class="cta disabled" style="margin-top:14px">Create account</button>
   </div>
 </div>
 

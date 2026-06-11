@@ -15,7 +15,7 @@
   .mini{width:84px;height:104px;border-radius:14px;background:var(--sunken);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-3)}
   .mini .lucide{width:22px;height:22px;stroke-width:1.7}
   .mini span{font-size:9.5px;font-weight:600}
-  .mini.hero{background:linear-gradient(140deg,var(--blue-pale),var(--sunken));color:var(--blue)}
+  .mini.hero{background:var(--sunken);color:var(--pink)}
 </style>
 </head>
 <body>
@@ -24,7 +24,7 @@
 
 <div class="lbl">FILLED (tap a heart to remove)</div>
 <div class="frame">
-  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
+  <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
   <div class="pagepad" style="padding-top:6px;padding-bottom:26px">
     <div class="grid2">
       <div class="salcard" style="width:auto">
@@ -58,7 +58,7 @@
 
 <div class="lbl">EMPTY, §15 voice</div>
 <div class="frame">
-  <div class="subbar"><span class="circ"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
+  <div class="subbar"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><h1>Favorites</h1></div>
   <div class="empty" style="padding-top:48px;padding-bottom:60px">
     <h2 style="margin-top:0">No favorites yet.</h2>
     <p>Tap the heart on any salon and it lands here, your shortlist for next time.</p>

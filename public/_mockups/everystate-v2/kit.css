@@ -180,3 +180,11 @@ body{font-family:'Inter',sans-serif;color:var(--ink);background:#E9E9EB;display:
 .linkblue{color:var(--blue);font-weight:600;text-decoration:none;font-size:13.5px;cursor:pointer}
 .linkblue:hover{color:var(--blue-deep)}
 .avatar{border-radius:999px;object-fit:cover;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+
+/* iPhone fit (owner round-2): frames never exceed the real viewport */
+@media (max-width: 430px){
+  body{padding:24px 8px 70px;gap:24px}
+  .frame{width:100%;max-width:390px}
+  .note,.lbl{max-width:calc(100% - 8px)}
+}
+.circ{cursor:pointer}

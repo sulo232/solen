@@ -108,3 +108,22 @@ approves per page → Phase 5 implements route-by-route.
 - Walk-in home section: LIVE style kept (compact cards w/ green "Free in ~X" from the real ETA engine +
   "N ahead" + All-walk-ins button). Discover cards: TikTok attribution chip + heart + caption + clap.
 - Search widget sizes matched to measured live values (hero 400px, pill 52, chips smaller).
+
+## Phase 4 punch list ROUND 2 (owner, 2026-06-11, late) + SELF-IMPROVEMENT PROTOCOL
+**Protocol (owner-demanded, applies from now on):** think as you go; when a live feature is found that a
+mockup forgot, FLAG it + ADD a new frame instead of rewriting everything; analyze (measure) instead of
+guessing; wire back buttons so mockups navigate; keep annotation text lean.
+- 01 home: APPROVED except discovery: keep EXACTLY like live + header arrow opens the discover page.
+- 02 search: measure the LIVE widget dimensions precisely (getBoundingClientRect) + apply exactly.
+- 03 salon: NO structure changes. 1:1 live order/sections (incl. histogram + verified-booking star rows,
+  team-in-card, full-bleed hero). Treatment-only: tokens, blue counts, dots+scrim, normal-case.
+- 04 booking ("we already have all of it, iterate"): align frames to the LIVE shipped steps, no inventions.
+- Links: ALL interactive text links = DS blue (no grey links, no ink-underline links). Sweep.
+- Error copy: every error names the exact cause (email mismatch, password too short). Generic = banned.
+- iPhone fit: frames must fit real iPhone viewports (≤390px incl. mini 375) — kit responsive fix.
+  Confirmation specifically flagged.
+- 06 walk-in/queue: APPROVED.
+- 08 notifications: structure ok, TOO MUCH TEXT — one-line bodies, drop extra rows.
+- 09 favorites: APPROVED except empty "your first" tile: why blue? → pink heart (save semantic), neutral bg.
+- 10 errors: APPROVED; offline: drop the wifi animation, plain typographic "Offline."
+- 11 login: APPROVED (final statement; earlier "not good" item read as booking, flagged to owner).
