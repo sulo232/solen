@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 Booking wizard, all 4 steps + states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .appbar{display:flex;align-items:center;gap:12px;padding:10px 16px 12px;background:#fff;border-bottom:1px solid var(--border)}
+  .appbar h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .appbar .circ{width:38px;height:38px}
+  .stephead{padding:6px 18px 12px;background:#fff}
+  .stephead h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .stephead p{font-size:14px;color:var(--ink-2);margin-top:3px}
+  .body{background:var(--sunken);padding:12px 16px 18px}
+  .svcrow{display:flex;align-items:center;gap:12px;padding:14px 0}
+  .svcrow + .svcrow{border-top:1px solid rgba(10,10,10,.06)}
+  .svcrow .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .svcrow .m{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:10px}
+  .svcrow .m span{display:flex;gap:4px;align-items:center}
+  .svcrow .m .lucide{width:13px;height:13px}
+  .svcrow .m b{color:var(--ink);font-weight:600}
+  .addbtn{width:34px;height:34px;border-radius:999px;background:var(--sunken);border:0;display:grid;place-items:center;flex:none}
+  .addbtn .lucide{width:17px;height:17px}
+  .addbtn.on{background:var(--ink);color:#fff}
+  .staff{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 4px;scrollbar-width:none}
+  .staff::-webkit-scrollbar{display:none}
+  .stf{display:flex;flex-direction:column;align-items:center;gap:7px;flex:none;width:72px;position:relative}
+  .stf img,.stf .any{width:60px;height:60px}
+  .stf .any{border-radius:999px;background:var(--sunken);display:grid;place-items:center}
+  .stf .any .lucide{width:24px;height:24px;stroke-width:1.6}
+  .stf b{font-size:12.5px;font-weight:600}
+  .stf.sel img{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink)}
+  .stf .badge{position:absolute;top:42px;right:6px;width:20px;height:20px;border-radius:99px;background:var(--ink);border:2px solid #fff;display:grid;place-items:center}
+  .stf .badge .lucide{width:11px;height:11px;color:#fff}
+  .days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .days::-webkit-scrollbar{display:none}
+  .day{flex:none;width:58px;border:1px solid var(--border);border-radius:14px;background:#fff;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .day b{font-family:'Inter Tight',sans-serif;font-size:16px}
+  .day span{font-size:11px;color:var(--ink-2)}
+  .day.sel{background:var(--ink);border-color:var(--ink)}
+  .day.sel b,.day.sel span{color:#fff}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .slot{border:1px solid var(--border);border-radius:12px;background:#fff;padding:11px 0;text-align:center;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+  .slot.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .slot.off{color:var(--ink-dis);text-decoration:line-through;background:var(--sunken);border-color:transparent}
+  .pillgrp{margin-top:16px}
+  .pillgrp p{font-size:13px;font-weight:600}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .hairpill{border:1px solid var(--border);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:500;background:#fff}
+  .hairpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip{display:flex;align-items:center;gap:10px;background:var(--blue-pale);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--ink-2)}
+  .chip b{color:var(--ink);font-weight:600}
+  .chip .lucide{width:14px;height:14px;color:var(--blue);margin-left:auto;flex:none}
+  .notefield{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-top:8px;color:var(--ink-3);font-size:13.5px;background:#fff}
+  .notefield .lucide{width:16px;height:16px;stroke-width:1.9;flex:none}
+  .prow{display:flex;align-items:center;gap:12px}
+  .prow + .prow{margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,10,10,.06)}
+  .prow .thumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
+  .prow .face{width:44px;height:44px;border-radius:999px;object-fit:cover;flex:none}
+  .prow .ib{width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--ink-2)}
+  .prow .ib .lucide{width:20px;height:20px;stroke-width:1.9}
+  .prow .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prow .mt{font-size:13px;color:var(--ink-2);margin-top:2px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .prow .edit{flex:none;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer}
+  .prow .edit:hover{color:var(--blue-deep)}
+  .priceline{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+  .priceline + .priceline{margin-top:7px}
+  .priceline .s{color:var(--ink-2);font-size:13px}
+  .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px;padding-top:11px;border-top:1px solid rgba(10,10,10,.08)}
+  .total .l{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .total .a{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--blue)}
+  .stripebox{border:1px dashed var(--border);border-radius:12px;padding:18px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-3);background:#fff}
+  .stripebox .lucide{width:16px;height:16px;stroke-width:1.9}
+  .policy{display:flex;gap:8px;align-items:flex-start;padding:2px 4px 0;margin-top:12px}
+  .policy .lucide{width:14px;height:14px;stroke-width:2;color:var(--green);flex:none;margin-top:2px}
+  .policy p{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+  .errbanner{display:flex;gap:9px;align-items:flex-start;background:var(--red-bg);border-radius:12px;padding:11px 12px;margin-bottom:12px}
+  .errbanner .lucide{width:15px;height:15px;color:var(--red);flex:none;margin-top:1px}
+  .errbanner p{font-size:12.5px;color:var(--ink);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="note"><b>04 Booking wizard, all four steps + the states.</b> Mirrors the SHIPPED components (BookingWizard blue stepper, HairStep v3, PayConfirm two-card checkout) with the new rules everywhere. States included: slot taken (real error surfaced inline), processing/3DS, disabled CTA. The X is the focused-flow close; done discs are tappable jump-backs.</div>
+
+<div class="lbl">STEP 1 · Service & staff</div>
+<div class="frame">
+  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Booking at Old Town Barbers</h1></div>
+  <div class="steps">
+    <div class="stepnode"><div class="disc current"><i data-lucide="scissors"></i></div><span>Service</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="clock"></i></div><span>Time</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="brush"></i></div><span>Hair</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="credit-card"></i></div><span>Pay</span></div>
+  </div>
+  <div class="stephead"><h2>Your selection</h2></div>
+  <div class="body">
+    <div class="card" style="padding:4px 16px">
+      <div class="svcrow"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div></div><button class="addbtn on"><i data-lucide="check"></i></button></div>
+      <div class="svcrow"><div style="flex:1;min-width:0"><div class="n">Beard trim</div><div class="m"><span><i data-lucide="clock"></i>20 min</span><span><b>CHF 25</b></span></div></div><button class="addbtn"><i data-lucide="plus"></i></button></div>
+      <div class="svcrow"><div style="flex:1;min-width:0"><div class="n">Cut + beard combo</div><div class="m"><span><i data-lucide="clock"></i>50 min</span><span><b>CHF 65</b></span></div></div><button class="addbtn"><i data-lucide="plus"></i></button></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <p style="font-size:13px;font-weight:600;margin-bottom:12px">Your barber</p>
+      <div class="staff">
+        <div class="stf"><span class="any"><i data-lucide="users"></i></span><b>Anyone</b></div>
+        <div class="stf sel"><img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&q=80" alt=""><span class="badge"><i data-lucide="check"></i></span><b>Luca</b></div>
+        <div class="stf"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80" alt=""><b>Dario</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="ctabar"><button class="cta" style="height:52px;font-size:15px">Continue · CHF 45 <i data-lucide="arrow-right"></i></button></div>
+</div>
+
+<div class="lbl">STEP 2 · Time (+ slot-taken error)</div>
+<div class="frame">
+  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Booking at Old Town Barbers</h1></div>
+  <div class="steps">
+    <div class="stepnode"><div class="disc done"><i data-lucide="scissors"></i></div><span>Service</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="clock"></i></div><span>Time</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="brush"></i></div><span>Hair</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="credit-card"></i></div><span>Pay</span></div>
+  </div>
+  <div class="stephead"><h2>Date &amp; time</h2></div>
+  <div class="body">
+    <div class="errbanner"><i data-lucide="circle-alert"></i><p><b>That slot was just taken.</b> Pick another one, the rest of your booking is unchanged.</p></div>
+    <div class="days">
+      <div class="day"><span>Wed</span><b>11</b></div>
+      <div class="day sel"><span>Thu</span><b>12</b></div>
+      <div class="day"><span>Fri</span><b>13</b></div>
+      <div class="day"><span>Sat</span><b>14</b></div>
+      <div class="day"><span>Mon</span><b>16</b></div>
+    </div>
+    <div class="slots">
+      <div class="slot off">09:00</div><div class="slot">09:30</div><div class="slot">10:00</div>
+      <div class="slot sel">10:30</div><div class="slot">11:00</div><div class="slot">14:00</div>
+      <div class="slot">15:30</div><div class="slot">16:00</div><div class="slot">17:30</div>
+    </div>
+  </div>
+  <div class="ctabar"><button class="cta" style="height:52px;font-size:15px">Continue <i data-lucide="arrow-right"></i></button></div>
+</div>
+
+<div class="lbl">STEP 3 · Hair (shipped HairStep v3)</div>
+<div class="frame">
+  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Booking at Old Town Barbers</h1></div>
+  <div class="steps">
+    <div class="stepnode"><div class="disc done"><i data-lucide="scissors"></i></div><span>Service</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Time</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="brush"></i></div><span>Hair</span></div><div class="conn"></div>
+    <div class="stepnode future"><div class="disc future"><i data-lucide="credit-card"></i></div><span>Pay</span></div>
+  </div>
+  <div class="stephead"><h2>Your hair</h2><p>Helps them prepare. All optional.</p></div>
+  <div class="body">
+    <div class="card">
+      <div class="chip"><img class="avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&q=80" style="width:26px;height:26px" alt=""><span>From your <b>hair profile</b></span><i data-lucide="check"></i></div>
+      <div class="pillgrp"><p>Hair type</p><div class="pills"><span class="hairpill">Straight</span><span class="hairpill on">Wavy</span><span class="hairpill">Curly</span><span class="hairpill">Coily</span></div></div>
+      <div class="pillgrp"><p>Length</p><div class="pills"><span class="hairpill">Short</span><span class="hairpill on">Medium</span><span class="hairpill">Long</span><span class="hairpill">Very long</span></div></div>
+      <div class="pillgrp"><p>Thickness</p><div class="pills"><span class="hairpill">Fine</span><span class="hairpill on">Medium</span><span class="hairpill">Thick</span></div></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&q=80" style="width:38px;height:38px" alt="">
+        <div><div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px">For Luca</div><div class="meta" style="font-size:12.5px">Your barber</div></div>
+      </div>
+      <div class="pillgrp"><p>Beard</p><div class="pills"><span class="hairpill">No beard</span><span class="hairpill on">Short</span><span class="hairpill">Full</span></div></div>
+      <div class="pillgrp"><p>Note</p><div class="notefield"><i data-lucide="pencil-line"></i>Optional, e.g. "just a light trim"</div></div>
+    </div>
+  </div>
+  <div class="ctabar">
+    <button class="cta" style="height:52px;font-size:15px">Continue</button>
+    <div style="text-align:center;margin-top:10px"><a style="font-size:13.5px;font-weight:500;color:var(--ink-3);text-decoration:none">Skip</a></div>
+  </div>
+</div>
+
+<div class="lbl">STEP 4 · Pay (shipped PayConfirm) + processing state</div>
+<div class="frame">
+  <div class="appbar"><span class="circ"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1>Booking at Old Town Barbers</h1></div>
+  <div class="steps">
+    <div class="stepnode"><div class="disc done"><i data-lucide="scissors"></i></div><span>Service</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc done"><i data-lucide="clock"></i></div><span>Time</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc done"><i data-lucide="brush"></i></div><span>Hair</span></div><div class="conn done"></div>
+    <div class="stepnode"><div class="disc current"><i data-lucide="credit-card"></i></div><span>Pay</span></div>
+  </div>
+  <div class="stephead"><h2>Pay</h2></div>
+  <div class="body">
+    <div class="card">
+      <div class="prow">
+        <img class="thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="nm">Old Town Barbers</div>
+          <div class="mt"><span class="rate" style="font-size:12.5px;font-weight:600;color:var(--ink)"><svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></span><span>Münsterplatz 11, Basel</span></div>
+        </div>
+      </div>
+      <div class="prow">
+        <img class="face" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0"><div class="nm">Luca</div><div class="mt">Your barber</div></div>
+        <span class="edit">Change</span>
+      </div>
+      <div class="prow">
+        <div class="ib"><i data-lucide="scissors"></i></div>
+        <div style="flex:1;min-width:0"><div class="nm">Men's cut</div><div class="mt">30 min</div></div>
+        <span class="edit">Change</span>
+      </div>
+      <div class="prow">
+        <div class="ib"><i data-lucide="calendar"></i></div>
+        <div style="flex:1;min-width:0"><div class="nm">Thu, 12 June at 10:30</div></div>
+        <span class="edit">Change</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="priceline"><span>Men's cut</span><span class="num">CHF 45.00</span></div>
+      <div class="priceline"><span class="s">incl. 8.1% VAT</span><span class="s num">CHF 3.37</span></div>
+      <div class="total"><span class="l">Total</span><span class="a">CHF 45.00</span></div>
+    </div>
+    <div class="card" style="margin-top:12px;padding:12px">
+      <div class="stripebox"><i data-lucide="credit-card"></i>Stripe Payment Element, card · TWINT · Apple Pay</div>
+    </div>
+    <div class="policy"><i data-lucide="shield-check"></i><p>Free cancellation until 24 h before the appointment.</p></div>
+  </div>
+  <div class="ctabar">
+    <button class="cta" style="height:54px;font-size:15px">Pay CHF 45.00 <i data-lucide="arrow-right"></i></button>
+    <div class="secure"><i data-lucide="lock"></i>Secure payment via Stripe</div>
+  </div>
+</div>
+
+<div class="lbl">PAY · processing + disabled (DS-1 states)</div>
+<div class="frame">
+  <div class="body" style="padding-top:18px">
+    <div class="card" style="padding:12px"><div class="stripebox" style="border-style:solid;color:var(--ink)"><i data-lucide="credit-card"></i>•••• 4242 · 12/27</div></div>
+  </div>
+  <div class="ctabar" style="position:static">
+    <button class="cta loading" style="height:54px;font-size:15px"><span class="spin"></span>Confirming with your bank…</button>
+    <div class="secure"><i data-lucide="lock"></i>3-D Secure, don't close this window</div>
+  </div>
+  <div class="ctabar" style="position:static;box-shadow:none;padding-top:0">
+    <button class="cta disabled" style="height:54px;font-size:15px">Pay CHF 45.00</button>
+    <div class="secure">disabled until the payment form is complete</div>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

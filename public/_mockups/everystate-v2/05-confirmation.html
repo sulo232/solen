@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05 Confirmation, every state</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .wrap{background:var(--sunken);min-height:100%;padding:0 16px 18px}
+  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:34px 20px 6px}
+  .hero h1{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;margin-top:16px}
+  .hero p{font-size:14px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+  .bkcard{background:#fff;border-radius:18px;box-shadow:0 1px 2px rgba(20,18,16,.04),0 6px 18px rgba(20,18,16,.05);padding:16px;margin-top:22px}
+  .prow{display:flex;align-items:center;gap:12px}
+  .prow + .prow{margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,10,10,.06)}
+  .prow .thumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
+  .prow .ib{width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--ink-2)}
+  .prow .ib .lucide{width:20px;height:20px;stroke-width:1.9}
+  .prow .nm{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px}
+  .prow .mt{font-size:13px;color:var(--ink-2);margin-top:2px}
+  .ref{font-family:'Inter Tight',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .copybtn{width:34px;height:34px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;border:0;flex:none}
+  .copybtn .lucide{width:15px;height:15px}
+  .actions{display:flex;gap:10px;margin-top:14px}
+  .actions .cta{height:48px;font-size:14px}
+  .spinhero{width:58px;height:58px;border-radius:999px;background:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(20,18,16,.07)}
+  .spinhero .ring{width:26px;height:26px;border:3px solid var(--blue-pale);border-top-color:var(--blue);border-radius:99px;animation:sp .8s linear infinite}
+</style>
+</head>
+<body>
+
+<div class="note"><b>05 Confirmation, the three real outcomes.</b> PAID (webhook confirmed): green SuccessMark, the ONE delight peak. CONFIRMING (paid but webhook pending): honest blue spinner, no fake "paid". IN-PERSON (pay at the salon): booked, amount due there. Booking ref gets the copy-confirmation micro-interaction (tap it). Calendar + manage actions on all three.</div>
+
+<div class="lbl">PAID<small>SuccessMark spring-pop, one per screen</small></div>
+<div class="frame">
+  <div class="wrap">
+    <div class="hero">
+      <div class="successdisc"><i data-lucide="check"></i></div>
+      <h1>Booked &amp; paid.</h1>
+      <p>See you Thursday. We sent the details to lara@web.ch.</p>
+    </div>
+    <div class="bkcard">
+      <div class="prow">
+        <img class="thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0"><div class="nm">Old Town Barbers</div><div class="mt">Münsterplatz 11, Basel</div></div>
+        <span class="statuspill ok"><i data-lucide="check"></i>Paid</span>
+      </div>
+      <div class="prow"><div class="ib"><i data-lucide="calendar"></i></div><div style="flex:1"><div class="nm">Thu, 12 June at 10:30</div><div class="mt">Men's cut · 30 min · Luca</div></div></div>
+      <div class="prow">
+        <div class="ib"><i data-lucide="receipt"></i></div>
+        <div style="flex:1"><div class="nm ref">SLN-4K7M2</div><div class="mt">Booking reference</div></div>
+        <button class="copybtn" id="cp" onclick="copied()"><i data-lucide="copy"></i></button>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="cta ghost"><i data-lucide="calendar-plus"></i>Add to calendar</button>
+      <button class="cta ghost"><i data-lucide="map-pin"></i>Directions</button>
+    </div>
+    <div style="text-align:center;margin-top:16px"><a class="linkblue">Manage booking</a></div>
+  </div>
+  <div class="toast" id="toast" style="display:none"><i data-lucide="check"></i>Reference copied</div>
+</div>
+
+<div class="lbl">CONFIRMING<small>paid, webhook pending, honest state</small></div>
+<div class="frame">
+  <div class="wrap" style="padding-bottom:30px">
+    <div class="hero">
+      <div class="spinhero"><span class="ring"></span></div>
+      <h1>Confirming your payment…</h1>
+      <p>Takes a few seconds. You can close this, we'll email the confirmation.</p>
+    </div>
+    <div class="bkcard">
+      <div class="prow">
+        <img class="thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0"><div class="nm">Old Town Barbers</div><div class="mt">Münsterplatz 11, Basel</div></div>
+        <span class="statuspill warn"><i data-lucide="clock"></i>Processing</span>
+      </div>
+      <div class="prow"><div class="ib"><i data-lucide="calendar"></i></div><div style="flex:1"><div class="nm">Thu, 12 June at 10:30</div><div class="mt">Men's cut · 30 min · Luca</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">IN-PERSON<small>booked, pay at the salon</small></div>
+<div class="frame">
+  <div class="wrap" style="padding-bottom:30px">
+    <div class="hero">
+      <div class="successdisc"><i data-lucide="check"></i></div>
+      <h1>Booked.</h1>
+      <p>Pay at the salon. CHF 45.00 due after your appointment.</p>
+    </div>
+    <div class="bkcard">
+      <div class="prow">
+        <img class="thumb" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0"><div class="nm">Old Town Barbers</div><div class="mt">Münsterplatz 11, Basel</div></div>
+        <span class="statuspill ok"><i data-lucide="calendar-check"></i>Booked</span>
+      </div>
+      <div class="prow"><div class="ib"><i data-lucide="calendar"></i></div><div style="flex:1"><div class="nm">Thu, 12 June at 10:30</div><div class="mt">Men's cut · 30 min · Luca</div></div></div>
+      <div class="prow"><div class="ib"><i data-lucide="banknote"></i></div><div style="flex:1"><div class="nm num">CHF 45.00</div><div class="mt">Pay at the salon, card or cash</div></div></div>
+    </div>
+    <div class="actions">
+      <button class="cta ghost"><i data-lucide="calendar-plus"></i>Add to calendar</button>
+      <button class="cta ghost"><i data-lucide="map-pin"></i>Directions</button>
+    </div>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+function copied(){
+  const t = document.getElementById('toast');
+  t.style.display = 'flex';
+  setTimeout(() => t.style.display = 'none', 1600);
+}
+</script>
+</body>
+</html>
