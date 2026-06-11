@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17 Walk-in tip (standalone route)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .pgpad{padding:8px 16px 18px;background:var(--sunken)}
+  .tiprow{display:flex;gap:9px;margin-top:12px}
+  .tip{flex:1;border:1px solid var(--border);border-radius:12px;background:#fff;padding:12px 0;text-align:center;font-weight:600;font-size:14px}
+  .tip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .bhead{display:flex;align-items:center;gap:12px}
+  .bhead img{width:48px;height:48px;border-radius:999px;object-fit:cover;flex:none;box-shadow:0 0 0 1px rgba(10,10,10,.06)}
+  .stripebox{border:1px dashed var(--border);border-radius:12px;padding:18px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink-3);background:#fff}
+  .stripebox .lucide{width:16px;height:16px;stroke-width:1.9}
+</style>
+</head>
+<body>
+
+<div class="note"><b>17 Walk-in tip (the standalone /walk-in-tip route, shared TipFlow).</b> Reached from the queue done-screen link or a follow-up message. Same anatomy as the queue tip card: who you're tipping (photo = richness), amount pills, Stripe, one CTA. States: default, paid (§15 success), expired token.</div>
+
+<div class="lbl">DEFAULT</div>
+<div class="frame">
+  <div class="apphead"><span class="circ" onclick="history.back()"><i data-lucide="x" style="width:17px;height:17px"></i></span><h1 style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;flex:1">Tip for your visit</h1></div>
+  <div class="pgpad">
+    <div class="card">
+      <div class="bhead">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80" alt="">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px">Marco at Blade &amp; Stone</div>
+          <div class="meta" style="margin-top:2px">Today, men's cut &amp; beard</div>
+        </div>
+      </div>
+      <div class="tiprow"><span class="tip">CHF 2</span><span class="tip on">CHF 4</span><span class="tip">CHF 6</span><span class="tip">Custom</span></div>
+      <p class="meta" style="margin-top:10px;font-size:12px">100% goes to the team.</p>
+    </div>
+    <div class="card" style="margin-top:12px;padding:12px">
+      <div class="stripebox"><i data-lucide="credit-card"></i>Stripe Payment Element, card · TWINT · Apple Pay</div>
+    </div>
+  </div>
+  <div class="ctabar">
+    <button class="cta" style="height:54px;font-size:15px">Tip CHF 4.00</button>
+    <div style="text-align:center;margin-top:10px"><a class="linkblue" style="font-size:13.5px">No tip this time</a></div>
+  </div>
+</div>
+
+<div class="lbl">PAID + EXPIRED</div>
+<div class="frame">
+  <div class="empty" style="padding-top:46px;padding-bottom:20px">
+    <div class="successdisc"><i data-lucide="check"></i></div>
+    <h2 style="font-size:19px">Marco says thanks.</h2>
+    <p>CHF 4.00 on its way to the team.</p>
+  </div>
+  <div class="empty" style="padding-top:10px;padding-bottom:44px;border-top:1px solid var(--border);margin:0 16px">
+    <h2 style="font-size:17px;margin-top:18px">This tip link has expired.</h2>
+    <p style="margin-top:5px">Tips stay open for 7 days after your visit. Next time's on the queue screen.</p>
+    <button class="cta ghost" style="height:46px;font-size:14px">Back to home</button>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

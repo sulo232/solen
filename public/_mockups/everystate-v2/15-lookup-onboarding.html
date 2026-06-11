@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15 Booking lookup + customer onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .auth{padding:10px 16px 30px}
+  .auth h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
+  .secnote{display:flex;gap:9px;align-items:flex-start;background:var(--sunken);border-radius:12px;padding:12px 13px;margin-top:16px}
+  .secnote .lucide{width:15px;height:15px;color:var(--ink-2);flex:none;margin-top:1px}
+  .secnote p{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+  .obbar{display:flex;align-items:center;gap:12px;padding:14px 16px 4px}
+  .obtrack{flex:1;height:4px;border-radius:99px;background:var(--sunken);overflow:hidden}
+  .obtrack i{display:block;height:100%;border-radius:99px;background:var(--ink)}
+  .obstep{font-size:12px;color:var(--ink-2);font-weight:600;white-space:nowrap}
+  .obpills{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .obpill{border:1px solid var(--border);border-radius:999px;padding:11px 18px;font-size:14px;font-weight:500;background:#fff}
+  .obpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="note"><b>15 Booking lookup (guest manage) + customer onboarding.</b> Lookup mirrors the live page (order number + email + security note + magic link) with the link-sent and §14.4 mismatch states added; "Stattdessen anmelden" goes DS-blue. Onboarding mirrors the live 5-step (progress bar, Überspringen, pills); "Später" goes DS-blue too.</div>
+
+<div class="lbl">LOOKUP, default (CTA disabled until both fields)</div>
+<div class="frame">
+  <div class="apphead"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="auth">
+    <h1>Find your booking</h1>
+    <p class="sub" style="font-size:14px;margin-top:7px">Booked as a guest? Enter your order number and we'll send you a secure link. No account needed.</p>
+    <p style="font-size:13px;font-weight:600;margin-top:20px">Order number</p>
+    <div class="finput num" style="margin-top:8px;font-size:16px;letter-spacing:.04em">SOL-&nbsp;<span style="color:var(--ink-3)">7K2QX</span></div>
+    <p class="meta" style="margin-top:6px;font-size:11.5px">On your confirmation, e.g. SOL-7K2QX.</p>
+    <p style="font-size:13px;font-weight:600;margin-top:16px">Email used for the booking</p>
+    <div class="finput" style="margin-top:8px">you@email.ch</div>
+    <div class="secnote"><i data-lucide="lock"></i><p>For your safety the order number alone never opens the booking. We always send a one-time link to your email.</p></div>
+    <button class="cta disabled" style="margin-top:16px"><i data-lucide="send"></i>Send link</button>
+    <p style="font-size:13.5px;color:var(--ink-2);text-align:center;margin-top:16px">Booked with an account? <a class="linkblue" style="font-size:13.5px">Log in instead</a></p>
+  </div>
+</div>
+
+<div class="lbl">LOOKUP, link sent + mismatch error (14.4)</div>
+<div class="frame">
+  <div class="auth" style="padding-top:26px">
+    <div class="empty" style="padding:14px 10px 24px">
+      <div class="successdisc"><i data-lucide="mail-check"></i></div>
+      <h2 style="font-size:19px">Link sent.</h2>
+      <p>Check you@email.ch, the link opens your booking and lives for 30 minutes.</p>
+    </div>
+    <div style="display:flex;gap:9px;align-items:flex-start;background:var(--red-bg);border-radius:12px;padding:11px 12px">
+      <i data-lucide="circle-alert" style="width:15px;height:15px;color:var(--red);flex:none;margin-top:1px"></i>
+      <p style="font-size:12.5px;line-height:1.5"><b>That email doesn't match this order number.</b> Use the address you booked with.</p>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">ONBOARDING, step 1 of 5 (live structure)</div>
+<div class="frame">
+  <div class="obbar">
+    <span class="circ" style="width:36px;height:36px" onclick="history.back()"><i data-lucide="arrow-left" style="width:16px;height:16px"></i></span>
+    <div class="obtrack"><i style="width:20%"></i></div>
+    <span class="obstep">Step 1 of 5</span>
+    <a class="linkblue" style="font-size:13px">Skip</a>
+  </div>
+  <div class="auth" style="padding-top:16px">
+    <h1 style="font-size:23px">How do you identify?</h1>
+    <p class="sub" style="font-size:13.5px;margin-top:6px">So we match stylists and services to you.</p>
+    <div class="obpills">
+      <span class="obpill on">Woman</span>
+      <span class="obpill">Man</span>
+      <span class="obpill">Non-binary</span>
+      <span class="obpill">Prefer not to say</span>
+    </div>
+    <button class="cta" style="margin-top:24px">Continue</button>
+    <div style="text-align:center;margin-top:14px"><a class="linkblue" style="font-size:13.5px">Later</a></div>
+  </div>
+</div>
+
+<div class="lbl">ONBOARDING, done (§15 success moment)</div>
+<div class="frame">
+  <div class="empty" style="padding-top:64px;padding-bottom:70px">
+    <div class="successdisc"><i data-lucide="check"></i></div>
+    <h2>All set, Lara.</h2>
+    <p>Your picks now shape what you see. Change them anytime in your profile.</p>
+    <button class="cta">Find your first appointment</button>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

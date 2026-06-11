@@ -234,3 +234,16 @@ Same format as everystate-v2 (kit, full-page, real structure, new rules, states)
 17 booking lookup + guest manage · 18 walk-in-join + walk-in-tip · 19 reviews landing + salon reviews
 subpage states · 20 customer onboarding · 21 account + reset-password · 22 last-minute +
 recently-viewed + loyalty. Protocol: capture live route FIRST (Playwright full-page), then draw.
+
+### Phase 4b results (2026-06-11)
+Built (everystate-v2): 12 register · 13 discover · 14 gift-card+packages · 15 lookup+onboarding ·
+16 account+last-minute · 17 walk-in-tip. All grounded in fresh live captures (/tmp/inv2).
+DELIBERATELY NOT MOCKED (flagged, not invented): category landings (same template as 02 search —
+live /coiffeur confirmed identical anatomy), staff profile page (needs a real staff id to capture —
+capture+mock next session), reviews landing (live page already matches the system post-de-eyebrow),
+recently-viewed (built this session, current), loyalty (ComingSoon primitive, fine), reset-password
+(trivial form, covered by 11-auth patterns), walk-in-join (route redirects home without params).
+LIVE BUGS FLAGGED from captures: packages price renders "24.000 CHF" for CHF 240 (de-CH formatting);
+last-minute carries a banned tracked eyebrow + decorative orange dot + uppercase chips; gift-card has
+tracked-uppercase EIGENER BETRAG/VORSCHAU buttons; register/lookup "Anmelden" links are ink-underline
+(should be DS blue). All queued for Phase-5 run 3.
