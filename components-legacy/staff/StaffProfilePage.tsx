@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Share2, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
@@ -223,6 +223,19 @@ export default function StaffProfilePage({
           </span>
           <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{staff.name}</span>
         </div>
+        {/* Mockup 18 (approved 2026-06-11): share, native share with clipboard fallback */}
+        <button
+          type="button"
+          aria-label="Teilen"
+          onClick={() => {
+            const url = window.location.href;
+            if (navigator.share) navigator.share({ title: staff.name, url }).catch(() => {});
+            else navigator.clipboard?.writeText(url).catch(() => {});
+          }}
+          className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
+        >
+          <Share2 size={18} className="text-s-ink" />
+        </button>
       </div>
 
       {/* Centered hero */}
@@ -244,6 +257,15 @@ export default function StaffProfilePage({
             </a>
           )}
         </div>
+        {/* Mockup 18: Fresha stats row — only rendered with REAL data, never fabricated */}
+        {staff.appointments_completed != null && staff.appointments_completed > 0 && (
+          <div className="mt-4 w-full max-w-[340px]">
+            <div className="flex items-center justify-between border-t border-s-border/70 py-2.5 text-[14px]">
+              <span className="font-semibold text-s-ink">Abgeschlossene Termine</span>
+              <span className="tabular-nums text-s-ink-2">{staff.appointments_completed}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sticky tabs */}
