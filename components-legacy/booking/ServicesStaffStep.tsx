@@ -3,12 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock, Users } from 'lucide-react';
+import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
-import { StaffListSheet } from '@/components-legacy/booking';
-import { Avatar } from '@/app/[locale]/_components/primitives';
+import { StaffPicker, StaffListSheet } from '@/components-legacy/booking';
 import ToggleCircle from './ToggleCircle';
 import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -56,8 +55,6 @@ interface ServicesStaffStepProps {
   staffServices: StaffService[];
   serviceAddons: ServiceAddon[];
   serviceOptions: ServiceOption[];
-  /** B1: step 1 has no stepper; the bottom bar shows "Schritt 1 von N" instead. */
-  totalSteps: number;
 }
 
 const catId = (category: string) => `cat-${category.replace(/[^a-z0-9]/gi, '-')}`;
@@ -70,7 +67,6 @@ export default function ServicesStaffStep({
   staffServices,
   serviceAddons,
   serviceOptions,
-  totalSteps,
 }: ServicesStaffStepProps) {
   const t = useTranslations('booking.serviceSelection');
   const locale = useLocale();
@@ -316,8 +312,7 @@ export default function ServicesStaffStep({
       {categories.length > 1 && (
         <div
           ref={tabsRef}
-          // B1: white body, white bar, hairline below — Fresha's two-tier surface model.
-          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-white border-b border-s-border"
+          className="sticky top-[60px] z-30 -mx-4 px-4 py-2.5 bg-[--base] border-b border-s-border"
         >
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => {
@@ -326,11 +321,11 @@ export default function ServicesStaffStep({
                 <button
                   key={cat}
                   onClick={() => goToCat(cat)}
-                  // On the sunken bar a soft-grey active fill vanishes, so the active
-                  // pill uses the ink-selected TabPill language (mockup 18 ptab.on).
+                  // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
+                  // NOT pure black. Instant (no layoutId spring — that slide was laggy).
                   className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
-                      ? 'border-s-ink bg-s-ink text-white'
+                      ? 'border-s-border bg-s-bg-sunken text-s-ink'
                       : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
                   }`}
                 >
@@ -343,7 +338,7 @@ export default function ServicesStaffStep({
               type="button"
               onClick={() => setShowCatSheet(true)}
               aria-label={t('categories')}
-              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors hover:border-s-ink/25"
+              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink/25"
             >
               <List size={17} strokeWidth={2} />
             </button>
@@ -351,37 +346,29 @@ export default function ServicesStaffStep({
         </div>
       )}
 
-      {/* Stylist — B1 (owner pick, council round 2026-06-11): the avatar strip
-          collapsed into ONE tappable row that opens the full picker sheet.
-          Selecting is optional; services stay the screen's protagonist. */}
-      {!singleStaff && (() => {
-        const sel =
-          formData.selectedStaffId && formData.selectedStaffId !== 'any'
-            ? staffList.find((s) => s.id === formData.selectedStaffId) ?? null
-            : null;
-        return (
-          <button
-            type="button"
-            onClick={() => setShowStaffList(true)}
-            className="mt-4 flex w-full items-center gap-3 rounded-[16px] border border-s-border bg-white px-4 py-3.5 text-left transition-colors hover:bg-s-bg-sunken/40"
-          >
-            {sel ? (
-              <Avatar src={sel.avatar_url} name={sel.name} size={36} />
-            ) : (
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-                <Users size={18} strokeWidth={2} className="text-s-ink" />
-              </span>
-            )}
-            <span className="min-w-0 flex-1 truncate font-body text-[15px] text-s-ink">
-              {t('stylist')}: <b className="font-semibold">{sel ? sel.name : t('anyStylist')}</b>
-            </span>
-            <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink" aria-hidden />
-          </button>
-        );
-      })()}
+      {/* Staff picker — top, always visible (stylist-first) */}
+      {!singleStaff && (
+        <div className="pt-5">
+          <div className="mb-1 flex items-center justify-end px-1">
+            <button
+              type="button"
+              onClick={() => setShowStaffList(true)}
+              className="inline-flex items-center gap-0.5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:text-s-ink-2"
+            >
+              Alle ansehen
+              <ChevronRight size={15} strokeWidth={2.2} aria-hidden />
+            </button>
+          </div>
+          <StaffPicker
+            staffList={staffList}
+            selectedStaff={formData.selectedStaffId}
+            onSelect={handleSelectStaff}
+          />
+        </div>
+      )}
 
       {/* Services grouped by category */}
-      <div className="space-y-7 pt-5">
+      <div className={`space-y-7 pt-5 ${!singleStaff ? 'border-t border-s-border mt-5' : ''}`}>
         {categories.map((category) => {
           const categoryServices = visibleServices.filter(
             (s) => groupKey(s) === category
@@ -476,7 +463,6 @@ export default function ServicesStaffStep({
       )}
 
       {/* Bottom bar */}
-      {/* Solid white — --raised is 95%-alpha and content ghosted through (no blur) */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
           <div>
@@ -486,7 +472,7 @@ export default function ServicesStaffStep({
             <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5">
               <ShoppingCart size={13} aria-hidden />
               {formData.services.length} {t('items')} {formData.totalDuration}{' '}
-              {t('minutes')} · {t('stepOf', { current: 1, total: totalSteps })}
+              {t('minutes')}
             </p>
           </div>
           <button

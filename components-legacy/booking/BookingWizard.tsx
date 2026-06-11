@@ -3,7 +3,6 @@
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scissors, Clock, Brush, CreditCard, type LucideIcon } from 'lucide-react';
 import { BackButton } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
@@ -32,9 +31,9 @@ import type { Salon, StaffMember } from '@/lib/types';
  * Legacy currentStep values 'confirm' + 'payment' are mapped to 'pay-confirm'
  * so existing in-progress sessions don't lose state on first load post-deploy.
  */
-// Owner mockup booking-hair-step (2026-06-10): an optional "Deine Haare" step sits
-// between Zeit and Bezahlen WHEN the cart contains hair services. Steps are computed
-// per cart, so non-hair bookings (nails/spa) keep the original 3-step flow.
+// 'Deine Haare' (2026-06-10 owner mockup) joins the flow when the cart holds hair
+// services — computed per cart, so nails/spa keep the 3-step flow. The Q56 segment
+// bar simply grows a 4th segment (owner 2026-06-11: old bar structure, new rules).
 const BASE_STEPS = ['services-staff', 'datetime', 'pay-confirm'] as const;
 const HAIR_STEPS = ['services-staff', 'datetime', 'hair', 'pay-confirm'] as const;
 type ActiveStep = typeof HAIR_STEPS[number];
@@ -44,24 +43,6 @@ const STEP_LABELS: Record<ActiveStep, string> = {
   'datetime': 'Datum & Zeit',
   'hair': 'Deine Haare',
   'pay-confirm': 'Bestätigen & Zahlen',
-};
-
-// Short circle labels for the step indicator (owner mockup: Service · Zeit · Haare · Bezahlen)
-const INDICATOR_LABELS: Record<ActiveStep, string> = {
-  'services-staff': 'Service',
-  'datetime': 'Zeit',
-  'hair': 'Haare',
-  'pay-confirm': 'Bezahlen',
-};
-
-// Owner punch-list 2026-06-11: the stepper uses the walk-in tracker's blue icon
-// language (LOCKFILE §12) — icon per node, NOT numbers, NOT green (green = state
-// color, blue = progress). Brush for Haare (hand-drawn glyphs + sparkles banned).
-const STEP_ICONS: Record<ActiveStep, LucideIcon> = {
-  'services-staff': Scissors,
-  'datetime': Clock,
-  'hair': Brush,
-  'pay-confirm': CreditCard,
 };
 
 // Hair step shows only for hair categories — data-driven via the service rows
@@ -165,7 +146,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
   const renderStep = () => {
     switch (normalizedStep) {
       case 'services-staff':
-        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} totalSteps={STEPS.length} />;
+        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
       case 'datetime':
         return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} nextStep={hairRelevant ? 'hair' : 'confirm'} />;
       case 'hair':
@@ -179,67 +160,48 @@ export default function BookingWizard({ services, staffList, salon, staffService
 
   return (
     <div className="w-full">
-      {/* Step indicator — owner-approved mockups booking-pay-step/-hair-step-v2
-          (2026-06-11): the walk-in tracker's blue icon language. 42px discs — blue +
-          white icon when done, white + blue ring when current, sunken when future;
-          2px connectors. Done discs stay tappable for jump-back.
-          B1 (owner pick, council round 2026-06-11): HIDDEN on step 1 — discovery
-          needs no progress reassurance; the stepper appears from step 2 on, and
-          step 1's bottom bar carries "Schritt 1 von N" instead. */}
-      {currentIndex > 0 && (
+      {/* Q56 progress indicator — 3-segment bar + eyebrow + Anton step label */}
       <div className="px-1 pt-2 pb-4">
-        <div className="mb-4 flex items-start" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
+        {/* 3-segment bar */}
+        <div className="flex items-center gap-[3px] mb-3" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
           {STEPS.map((step, i) => {
-            const isDone = i < currentIndex;
-            const isCurrent = i === currentIndex;
-            const Icon = STEP_ICONS[step];
+            const isFilled = i <= currentIndex;
+            const isPast = i < currentIndex;
             return (
-              <div key={step} className={`flex items-start ${i < STEPS.length - 1 ? 'flex-1' : ''}`}>
-                <button
-                  type="button"
-                  onClick={() => handleSegmentJump(i)}
-                  disabled={!isDone}
-                  aria-label={`${isDone ? 'Zurück zu ' : ''}Schritt ${i + 1}: ${STEP_LABELS[step]}`}
-                  aria-current={isCurrent ? 'step' : undefined}
-                  className={`flex flex-col items-center gap-[7px] px-1 ${isDone ? 'cursor-pointer' : 'cursor-default'}`}
-                >
-                  <span
-                    className={[
-                      'grid h-[42px] w-[42px] place-items-center rounded-full transition-colors duration-200',
-                      isDone
-                        ? 'bg-s-accent text-white'
-                        : isCurrent
-                          ? 'bg-white text-s-accent shadow-[inset_0_0_0_2px_var(--color-s-accent,#276EF1),0_0_0_5px_rgba(39,110,241,0.14)]'
-                          : 'bg-s-bg-sunken text-s-ink-3',
-                    ].join(' ')}
-                  >
-                    <Icon size={18} strokeWidth={2} aria-hidden />
-                  </span>
-                  <span className={`text-[10.5px] font-semibold leading-[1.2] ${isCurrent ? 'text-s-ink' : isDone ? 'text-s-ink' : 'text-s-ink-3'}`}>
-                    {INDICATOR_LABELS[step]}
-                  </span>
-                </button>
-                {i < STEPS.length - 1 && <div className={`mx-1 mt-[20px] h-[2px] flex-1 rounded-full ${i < currentIndex ? 'bg-s-accent' : 'bg-s-border'}`} aria-hidden />}
-              </div>
+              <button
+                key={step}
+                type="button"
+                onClick={() => handleSegmentJump(i)}
+                disabled={!isPast}
+                aria-label={`Zurück zu Schritt ${i + 1}: ${STEP_LABELS[step]}`}
+                className={[
+                  'flex-1 h-1.5 rounded-full transition-colors duration-200',
+                  isFilled ? 'bg-s-ink' : 'bg-s-bg-sunken',
+                  isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1' : 'cursor-default',
+                ].join(' ')}
+              />
             );
           })}
         </div>
 
-        {/* Back row only — the big step title duplicated the stepper's node label
-            ("Auswahl" under "Service" etc.) and stacked a third heading layer under
-            the page h1 (owner de-clutter 2026-06-11). The stepper carries the step
-            name; "Termin bei X" stays the one screen heading. */}
-        {canGoBack && (
-          <BackButton
-            variant="flat"
-            onClick={handleBack}
-            aria-label={t('back')}
-            label={t('back')}
-            className="-ml-2"
-          />
-        )}
+        {/* Eyebrow + Anton step label */}
+        <div className="flex items-center gap-3">
+          {canGoBack && (
+            <BackButton
+              variant="flat"
+              onClick={handleBack}
+              aria-label={t('back')}
+              label={t('back')}
+              className="-ml-2"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-heading text-[20px] sm:text-[24px] font-bold text-s-ink leading-tight">
+              {STEP_LABELS[normalizedStep]}
+            </h3>
+          </div>
+        </div>
       </div>
-      )}
 
       {/* Step content with slide animation */}
       <AnimatePresence mode="wait" custom={1}>
