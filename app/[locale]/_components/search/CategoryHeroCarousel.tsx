@@ -129,7 +129,9 @@ export function CategoryHeroCarousel({
                     className="absolute inset-0"
                     style={{
                       background:
-                        "linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.12) 72%, rgba(0,0,0,0.20) 100%)",
+                        // DS-10 (2026-06-11): top wash removed — the photo stays clean above the
+                        // text zone; the gradient only earns contrast where text sits.
+                        "linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 72%)",
                     }}
                     aria-hidden
                   />
