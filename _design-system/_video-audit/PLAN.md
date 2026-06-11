@@ -226,3 +226,11 @@ REMAINING for next session (in order):
 6. ✅ DS-10: search hero gradient top-wash removed (photo clean above the text zone).
 REMAINING QUEUE: DS-5 per-section rhythm pass (homepage sections), remaining ~20 eyebrow findings on
 dashboard/dev surfaces, A21+A1 sweep of _pending-migration backlog.
+
+## Phase 4b — mockups for the NOT-YET-MOCKED surfaces (owner, 2026-06-11)
+Same format as everystate-v2 (kit, full-page, real structure, new rules, states). Files 12+:
+12 register (customer + salon variants, birthday, §14.4 errors) · 13 discover/entdecken feed ·
+14 category landing (/coiffeur representative) · 15 staff profile page · 16 gift card + packages ·
+17 booking lookup + guest manage · 18 walk-in-join + walk-in-tip · 19 reviews landing + salon reviews
+subpage states · 20 customer onboarding · 21 account + reset-password · 22 last-minute +
+recently-viewed + loyalty. Protocol: capture live route FIRST (Playwright full-page), then draw.
