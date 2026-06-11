@@ -120,6 +120,50 @@ export function Sheet({
   children,
   ...ariaProps
 }: SheetProps) {
+  const modalRef = React.useRef<HTMLDivElement | null>(null);
+
+  // §16.1 (2026-06-11, owner-approved sheets mockup): the page behind an open
+  // sheet steps back (translateY 10px + scale .965 + brightness .96) — Option B.
+  // Targets #main-content (portals mount on <body>, so the sheet itself is
+  // unaffected). Class + transition live in globals.css.
+  React.useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (!main) return;
+    if (isOpen) main.classList.add("sheet-scale-back");
+    else main.classList.remove("sheet-scale-back");
+    return () => main.classList.remove("sheet-scale-back");
+  }, [isOpen]);
+
+  // §16.1 drag-to-dismiss — the grabber follows the finger; releases home under
+  // 90px, dismisses past it. Buttons/backdrop/Escape still work (gesture is
+  // never the only way out). Wires the §F.3.2 "v2 swipe gesture" TODO.
+  const dragStart = React.useRef<number | null>(null);
+  const dragDy = React.useRef(0);
+  const onGrabPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = e.clientY;
+    dragDy.current = 0;
+    if (modalRef.current) modalRef.current.style.transition = "none";
+    const onMove = (ev: PointerEvent) => {
+      if (dragStart.current == null) return;
+      dragDy.current = Math.max(0, ev.clientY - dragStart.current);
+      if (modalRef.current)
+        modalRef.current.style.transform = `translateY(${dragDy.current}px)`;
+    };
+    const onUp = () => {
+      const el = modalRef.current;
+      if (el) {
+        el.style.transition = "";
+        el.style.transform = "";
+      }
+      if (dragDy.current > 90) onOpenChange?.(false);
+      dragStart.current = null;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   return (
     <ModalOverlay
       isOpen={isOpen}
@@ -137,10 +181,15 @@ export function Sheet({
         overlayClassName,
       )}
     >
-      <AriaModal className={cn(sheetSurfaceVariants({ height }), "z-sheet", className)}>
+      <AriaModal ref={modalRef} className={cn(sheetSurfaceVariants({ height }), "z-sheet", className)}>
         <Dialog className="outline-none flex flex-col h-full overflow-hidden" {...ariaProps}>
-          {/* Drag handle — visual only in v1 per §F.3.2. v2 will wire swipe gesture. */}
-          <div className="flex justify-center pt-3 pb-2 shrink-0" aria-hidden="true">
+          {/* Drag handle — §16.1: drags the sheet, >90px dismisses. Generous hit
+              zone, touch-action none so the browser doesn't scroll instead. */}
+          <div
+            className="flex cursor-grab touch-none justify-center pb-2 pt-3 shrink-0 active:cursor-grabbing"
+            aria-hidden="true"
+            onPointerDown={onGrabPointerDown}
+          >
             <div className="w-9 h-1 rounded-full bg-s-ink/20" />
           </div>
           {children}
