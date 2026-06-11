@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 Search results, full page, new rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .citybar{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+  .city{display:flex;align-items:center;gap:6px;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;flex:1;justify-content:center}
+  .city .lucide{width:16px;height:16px}
+  .catchips{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 10px;scrollbar-width:none}
+  .catchips::-webkit-scrollbar{display:none}
+  .catchips .pill img{width:22px;height:22px;object-fit:contain}
+  .searchpill{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:999px;margin:4px 16px 0;padding:9px 9px 9px 19px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .searchpill .q{flex:1;min-width:0}
+  .searchpill .q b{display:block;font-size:15px;font-weight:600}
+  .searchpill .q span{font-size:12px;color:var(--ink-3)}
+  .searchpill .map{width:44px;height:44px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;flex:none}
+  .searchpill .map .lucide{width:19px;height:19px}
+  .heroresult{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:3/4;margin:14px 16px 0;box-shadow:0 4px 12px rgba(50,47,44,.08)}
+  .heroresult img{width:100%;height:100%;object-fit:cover}
+  .heroresult .heart{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;z-index:3}
+  .heroresult .heart .lucide{width:18px;height:18px}
+  .heroresult .info{position:absolute;left:18px;right:18px;bottom:26px;color:#fff;z-index:2}
+  .heroresult .info h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .heroresult .info .r{display:flex;gap:6px;align-items:center;font-size:14.5px;font-weight:600;margin-top:6px}
+  .heroresult .info .r svg{width:13px;height:13px;fill:var(--star)}
+  .heroresult .info .m{font-size:13px;margin-top:4px;color:rgba(255,255,255,.85);display:flex;gap:12px;align-items:center;white-space:nowrap;overflow:hidden}
+  .heroresult .info .m .lucide{width:12px;height:12px}
+  .heroresult .info .m b{color:#fff;font-weight:600}
+  .resulthead{display:flex;justify-content:space-between;align-items:center;padding:0 16px}
+</style>
+</head>
+<body>
+
+<div class="note"><b>02 Search results, full page with the new rules.</b> Real structure (city header, real-3D-icon category chips, search pill + map button, full-bleed hero result, filter chips, count + sort, result cards). Applied: DS-10 gradient on the hero (replaces today's flat fade), DS-A4 gallery dots, DS-7 details row, DS-5 rhythm, §16.1 filter sheet with grabber + Option-B scale-back (tap Filter), §15 typographic empty, real skeletons, DS-9 long-content card.</div>
+
+<div class="lbl">DEFAULT · results (tap Filter for the sheet)</div>
+<div class="frame sheetdemo" id="f1">
+  <div class="pgscale" style="background:#fff">
+    <div class="citybar"><span class="circ"><i data-lucide="house"></i></span><span class="city"><i data-lucide="map-pin"></i>Basel<i data-lucide="chevron-down" style="width:14px;height:14px"></i></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+    <div class="catchips">
+      <span class="pill on"><img src="/icons/categories/clippers.png" alt="">Barber</span>
+      <span class="pill"><img src="/icons/categories/scissors.png" alt="">Coiffeur</span>
+      <span class="pill"><img src="/icons/categories/nails.png" alt="">Nails</span>
+      <span class="pill"><img src="/icons/categories/spa.png" alt="">Spa</span>
+    </div>
+    <div class="searchpill"><i data-lucide="search" style="width:19px;height:19px;color:var(--ink-2)"></i><span class="q"><b>Search</b><span>All of Switzerland</span></span><span class="map"><i data-lucide="map"></i></span></div>
+
+    <div class="heroresult">
+      <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80">
+      <div class="scrim-full"></div>
+      <span class="heart"><i data-lucide="heart"></i></span>
+      <div class="info">
+        <h3>Blade &amp; Stone</h3>
+        <div class="r"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4 (11)</div>
+        <div class="m"><span style="display:inline-flex;gap:4px;align-items:center"><i data-lucide="map-pin"></i>Feldbergstrasse 82, Basel</span><span>from <b>CHF 43</b></span></div>
+      </div>
+      <div class="dots"><span class="on"></span><span></span><span></span></div>
+    </div>
+
+    <div class="catchips" style="margin-top:14px">
+      <span class="pill" onclick="document.getElementById('f1').classList.add('open')" style="cursor:pointer"><i data-lucide="sliders-horizontal"></i>Filter</span>
+      <span class="pill">Walk-in</span><span class="pill">Open now</span><span class="pill">Price <i data-lucide="chevron-down"></i></span>
+    </div>
+
+    <div class="resulthead sect" style="margin-top:24px"><h2 class="h-section" style="font-size:19px">3 salons</h2><span class="pill" style="padding:8px 14px">Most popular <i data-lucide="chevron-down"></i></span></div>
+    <div class="pagepad stack" style="margin-top:12px;padding-bottom:26px">
+      <div class="salcard wide">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=760&q=80"><span class="heart"><i data-lucide="heart"></i></span><div class="scrim-band"></div><div class="dots"><span class="on"></span><span></span><span></span></div></div>
+        <div class="tx">
+          <div class="r1"><h3 style="font-size:15px;font-weight:600;font-family:'Inter Tight',sans-serif">Old Town Barbers</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></span></div>
+          <div class="loc" style="font-size:12.5px">Klybeckstrasse 12, Basel</div>
+          <div class="detrow" style="font-size:12.5px;margin-top:4px"><span><i data-lucide="calendar"></i>today <b>16:00</b></span><span>from <b>CHF 50</b></span><span class="statuspill ok" style="margin-left:auto"><i data-lucide="footprints"></i>Walk-in</span></div>
+        </div>
+      </div>
+      <div class="salcard wide">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=760&q=80"><span class="heart on"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3 style="font-size:15px;font-weight:600;font-family:'Inter Tight',sans-serif">The Fade Room</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(8)</span></span></div>
+          <div class="loc" style="font-size:12.5px">Hammerstrasse 65, Basel</div>
+          <div class="detrow" style="font-size:12.5px;margin-top:4px"><span><i data-lucide="calendar"></i>tomorrow <b>09:30</b></span><span>from <b>CHF 45</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dim" style="display:none" onclick="document.getElementById('f1').classList.remove('open')"></div>
+  <div class="sheet" style="display:none">
+    <div class="grab"></div>
+    <h3>Filter</h3>
+    <div class="opt"><span class="radio on"></span>All salons</div>
+    <div class="opt"><span class="radio"></span>Walk-in available</div>
+    <div class="opt"><span class="radio"></span>Open now</div>
+    <button class="cta" style="margin-top:8px;height:52px;font-size:15px">Show 3 salons</button>
+  </div>
+</div>
+
+<div class="lbl">EMPTY · no results<small>§15 voice + recovery</small></div>
+<div class="frame">
+  <div class="citybar"><span class="circ"><i data-lucide="house"></i></span><span class="city"><i data-lucide="map-pin"></i>Zermatt<i data-lucide="chevron-down" style="width:14px;height:14px"></i></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="empty" style="padding-top:62px;padding-bottom:64px">
+    <div class="bigtype" style="font-size:76px">0</div>
+    <h2>Nothing in Zermatt yet.</h2>
+    <p>No salons match this search. Widen the area or drop a filter and we'll look again.</p>
+    <button class="cta">Search all of Switzerland</button>
+    <a class="linkblue" style="margin-top:14px">Clear filters</a>
+  </div>
+</div>
+
+<div class="lbl">LOADING</div>
+<div class="frame">
+  <div class="citybar"><span class="circ"><i data-lucide="house"></i></span><span class="city"><i data-lucide="map-pin"></i>Basel<i data-lucide="chevron-down" style="width:14px;height:14px"></i></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div style="padding:6px 16px 26px">
+    <div class="sk" style="aspect-ratio:3/4;border-radius:22px;margin-top:12px"></div>
+    <div style="display:flex;gap:8px;margin-top:14px"><div class="sk" style="width:84px;height:38px;border-radius:999px"></div><div class="sk" style="width:92px;height:38px;border-radius:999px"></div><div class="sk" style="width:104px;height:38px;border-radius:999px"></div></div>
+    <div class="sk" style="width:110px;height:19px;margin-top:24px"></div>
+    <div class="sk" style="aspect-ratio:3/2;border-radius:22px;margin-top:12px"></div>
+    <div class="sk" style="width:65%;height:14px;margin-top:10px"></div>
+  </div>
+</div>
+
+<div class="lbl">LONG CONTENT · DS-9</div>
+<div class="frame">
+  <div class="pagepad" style="padding-top:14px;padding-bottom:24px">
+    <div class="salcard wide">
+      <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=760&q=80"><span class="heart"><i data-lucide="heart"></i></span></div>
+      <div class="tx">
+        <div class="r1"><h3 style="font-size:15px;font-weight:600;font-family:'Inter Tight',sans-serif">Coiffeur &amp; Barbier Maison Lumière am Münsterplatz</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>5.0 <span class="cnt">(3)</span></span></div>
+        <div class="loc" style="font-size:12.5px">Sankt-Alban-Vorstadt 113, 4052 Basel-Altstadt Grossbasel</div>
+        <div class="detrow" style="font-size:12.5px;margin-top:4px"><span><i data-lucide="calendar"></i>today <b>17:15</b></span><span>from <b>CHF 110</b></span></div>
+      </div>
+    </div>
+    <p class="meta" style="margin-top:10px;color:var(--green-text);font-weight:600">name + address: one line each, word-safe ellipsis, rating never wraps</p>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+const f1 = document.getElementById('f1');
+new MutationObserver(() => {
+  const open = f1.classList.contains('open');
+  f1.querySelector('.dim').style.display = open ? 'block' : 'none';
+  f1.querySelector('.sheet').style.display = open ? 'block' : 'none';
+}).observe(f1, {attributes:true});
+</script>
+</body>
+</html>

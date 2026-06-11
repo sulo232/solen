@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 Salon PDP, full page, new rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .hero{position:relative;height:300px;overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover}
+  .meta1{display:flex;align-items:baseline;gap:6px;margin-top:8px;font-size:15px;font-weight:600}
+  .meta1 svg{width:14px;height:14px;fill:var(--star);align-self:center}
+  .meta1 .cnt{color:var(--blue);cursor:pointer}
+  .meta1 .cnt:hover{color:var(--blue-deep)}
+  .meta2{margin-top:6px;font-size:14px}
+  .meta3{margin-top:5px;font-size:14px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+  .meta3 .lucide{width:14px;height:14px;color:var(--ink-3)}
+  .tier{margin-top:18px;display:flex;align-items:baseline;gap:8px}
+  .tier b{font-family:'Inter Tight',sans-serif;font-size:15.5px;font-weight:700}
+  .tier span{font-size:12.5px;color:var(--ink-2)}
+  .svc{border:1px solid var(--border);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;margin-top:12px}
+  .svc .n{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .svc .m{font-size:12.5px;color:var(--ink-2);margin-top:4px;display:flex;gap:11px;align-items:center}
+  .svc .m span{display:flex;gap:4px;align-items:center}
+  .svc .m .lucide{width:13px;height:13px}
+  .svc .m b{color:var(--ink);font-weight:600}
+  .book{flex:none;height:40px;padding:0 19px;border-radius:999px;border:1px solid var(--border);background:#fff;font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;transition:border-color .15s}
+  .book:hover{border-color:var(--ink)}
+  .team{display:flex;gap:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .team::-webkit-scrollbar{display:none}
+  .member{display:flex;flex-direction:column;align-items:center;gap:8px;flex:none;width:76px}
+  .member img{width:64px;height:64px}
+  .member b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
+  .member span{font-size:11px;color:var(--ink-2);margin-top:-4px}
+  .stars{display:flex;gap:2px}
+  .stars svg{width:15px;height:15px;fill:var(--star)}
+  .rev .av{width:44px;height:44px;border-radius:99px;background:var(--sunken);display:grid;place-items:center;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:14px;flex:none}
+</style>
+</head>
+<body>
+
+<div class="note"><b>03 Salon PDP, full page with the new rules.</b> Real structure top to bottom: hero gallery (frosted 38px controls), title block, Termin/Walk-in segmented, services with duration tiers + Book pills, team, reviews, address. Applied: DS-A4 dots over a DS-10 band (replaces the "1/6" chip), DS-6 blue hover on the review count, DS-2 icon row in service cards, DS-5 rhythm. Then: walk-in tab, closed, empty reviews, long names.</div>
+
+<div class="lbl">DEFAULT · appointment tab</div>
+<div class="frame">
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80">
+    <button class="circ frost" style="left:14px"><i data-lucide="arrow-left"></i></button>
+    <button class="circ frost" style="right:62px"><i data-lucide="share"></i></button>
+    <button class="circ frost" style="right:14px"><i data-lucide="heart"></i></button>
+    <div class="scrim-band"></div>
+    <div class="dots"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="pagepad" style="margin-top:18px">
+    <h1 class="h-page">Old Town Barbers</h1>
+    <div class="meta1"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></div>
+    <div class="meta2"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)"> · closes 19:00</span></div>
+    <div class="meta3"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel</div>
+  </div>
+  <div class="pagepad" style="margin-top:24px"><div class="seg"><button class="on"><i data-lucide="calendar"></i>Appointment</button><button><i data-lucide="footprints"></i>Walk-in</button></div></div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Services</h2>
+    <div style="display:flex;gap:8px;margin-top:12px"><span class="pill on">All</span><span class="pill">Barbershop</span></div>
+    <div class="tier"><b>Express</b><span>15–30 min</span></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div></div><button class="book">Book</button></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Beard trim</div><div class="m"><span><i data-lucide="clock"></i>20 min</span><span><b>CHF 25</b></span></div></div><button class="book">Book</button></div>
+    <div class="tier"><b>Classic</b><span>31–60 min</span></div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Cut + beard combo</div><div class="m"><span><i data-lucide="clock"></i>50 min</span><span><b>CHF 65</b></span></div></div><button class="book">Book</button></div>
+  </div>
+
+  <div class="sect pagepad">
+    <h2 class="h-section">Team</h2>
+    <div class="team" style="margin-top:14px">
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&q=80" alt=""><b>Luca</b><span>Barber</span></div>
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80" alt=""><b>Dario</b><span>Barber</span></div>
+      <div class="member"><img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&q=80" alt=""><b>Nik</b><span>Owner</span></div>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <div style="display:flex;align-items:center;gap:8px"><h2 class="h-section">Reviews</h2><span class="spacer"></span><i data-lucide="flag" style="width:16px;height:16px;color:var(--ink-3)"></i></div>
+    <div class="meta1" style="margin-top:10px;font-size:16px"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><b class="num">4.3</b> <span class="cnt num">(12)</span></div>
+    <div class="rev" style="margin-top:14px">
+      <div style="display:flex;gap:12px;align-items:center"><span class="av">LK</span><div><b style="font-size:14px">Lara K.</b><div class="meta">2 weeks ago</div></div></div>
+      <div class="stars" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg></div>
+      <p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:8px">Booked in 30 seconds, no calls. The cut itself was exactly what I asked for and the place has a great… <a class="linkblue">Read more</a></p>
+    </div>
+    <button class="cta ghost" style="margin-top:18px;height:48px;font-size:14.5px">Load more</button>
+  </div>
+
+  <div class="sect pagepad" style="padding-bottom:20px">
+    <h2 class="h-section">Where you'll find us</h2>
+    <div class="meta3" style="margin-top:12px"><i data-lucide="map-pin"></i>Münsterplatz 11, 4051 Basel<a class="linkblue" style="margin-left:auto">Directions</a></div>
+    <div class="meta3"><i data-lucide="clock"></i>Mon to Sat, 09:00 to 19:00</div>
+  </div>
+
+  <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Book appointment <i data-lucide="arrow-right"></i></button></div>
+</div>
+
+<div class="lbl">WALK-IN TAB<small>real queue facts only, nothing invented</small></div>
+<div class="frame">
+  <div class="pagepad" style="margin-top:16px">
+    <h1 class="h-page">Old Town Barbers</h1>
+    <div class="meta2" style="margin-top:6px"><span style="color:var(--green-text);font-weight:600">Open</span><span style="color:var(--ink-2)"> · closes 19:00</span></div>
+  </div>
+  <div class="pagepad" style="margin-top:20px"><div class="seg"><button><i data-lucide="calendar"></i>Appointment</button><button class="on"><i data-lucide="footprints"></i>Walk-in</button></div></div>
+  <div class="pagepad" style="margin-top:16px;padding-bottom:22px">
+    <div class="card" style="text-align:center;padding:22px 16px">
+      <p class="meta">In the queue right now</p>
+      <div class="num" style="font-weight:800;font-size:40px;letter-spacing:-.02em;font-family:'Inter Tight',sans-serif">3</div>
+      <p class="sub" style="font-size:13.5px;margin-top:4px">Pay on your phone, get your number, walk right in.</p>
+    </div>
+    <div class="card" style="margin-top:12px;display:flex;gap:12px;align-items:center">
+      <div class="icobox"><i data-lucide="scissors"></i></div>
+      <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:600">Walk-in cut</div><div class="meta" style="margin-top:1px">30 min · CHF 40</div></div>
+      <span class="statuspill ok"><i data-lucide="check"></i>Available</span>
+    </div>
+  </div>
+  <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Join the queue <i data-lucide="arrow-right"></i></button></div>
+</div>
+
+<div class="lbl">CLOSED<small>honest status; future booking open; walk-in disabled</small></div>
+<div class="frame">
+  <div class="pagepad" style="margin-top:16px">
+    <h1 class="h-page">Old Town Barbers</h1>
+    <div class="meta1"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3 <span class="cnt">(12)</span></div>
+    <div class="meta2"><span style="color:var(--red);font-weight:600">Closed</span><span style="color:var(--ink-2)"> · opens tomorrow 09:00</span></div>
+    <div class="meta3"><i data-lucide="map-pin"></i>Münsterplatz 11, Basel</div>
+  </div>
+  <div class="pagepad" style="margin-top:20px"><div class="seg"><button class="on"><i data-lucide="calendar"></i>Appointment</button><button style="opacity:.45"><i data-lucide="footprints"></i>Walk-in</button></div></div>
+  <div class="pagepad" style="margin-top:4px;padding-bottom:22px">
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Men's cut</div><div class="m"><span><i data-lucide="clock"></i>30 min</span><span><b>CHF 45</b></span></div></div><button class="book">Book</button></div>
+  </div>
+  <div class="ctabar"><button class="cta" style="height:54px;font-size:15px">Book for tomorrow <i data-lucide="arrow-right"></i></button></div>
+</div>
+
+<div class="lbl">EMPTY REVIEWS + LONG NAME · §15 + DS-9</div>
+<div class="frame">
+  <div class="pagepad" style="padding-top:18px;padding-bottom:24px">
+    <div style="display:flex;align-items:center;gap:8px"><h2 class="h-section">Reviews</h2></div>
+    <div class="empty" style="padding:28px 10px 18px">
+      <div style="width:72px;height:72px;border-radius:999px;background:var(--sunken);display:grid;place-items:center"><i data-lucide="message-square" style="width:28px;height:28px;stroke-width:1.5"></i></div>
+      <h2 style="font-size:18px">No reviews yet.</h2>
+      <p>Be the first: book, visit, and tell the next person what to expect.</p>
+    </div>
+    <div class="svc"><div style="flex:1;min-width:0"><div class="n">Balayage + gloss + structured blowout treatment package</div><div class="m"><span><i data-lucide="clock"></i>2 h 30 min</span><span><b>CHF 240</b></span></div></div><button class="book">Book</button></div>
+    <p class="meta" style="margin-top:10px;color:var(--green-text);font-weight:600">long service name: one line, never pushes the Book button</p>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

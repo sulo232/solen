@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 Home, full page, new rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .mapcard{position:relative;height:130px;border-radius:18px;background:
+    linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:36px 36px;background-color:#FAFAFA;overflow:hidden;display:grid;place-items:center}
+  .mapcard .pinrow{position:absolute;inset:0}
+  .mapcard .pin{position:absolute;width:18px;height:18px;color:var(--ink)}
+  .mapcard .chip{background:#fff;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.10);padding:11px 18px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;z-index:2}
+  .mapcard .chip .lucide{width:15px;height:15px}
+  .mapcard .chip a{color:var(--ink);text-decoration:none;font-weight:600}
+  .walkhead{display:flex;align-items:center;gap:13px}
+  .walkhead .tile{width:52px;height:52px;border-radius:15px;background:var(--sunken);display:grid;place-items:center;flex:none}
+  .walkhead .tile img{width:34px;height:34px;object-fit:contain}
+  .inspo{width:170px;flex:none;position:relative;aspect-ratio:9/14;border-radius:18px;overflow:hidden}
+  .inspo img{width:100%;height:100%;object-fit:cover}
+  .inspo .tag{position:absolute;left:10px;bottom:10px;right:44px;background:rgba(255,255,255,.94);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
+  .inspo .clap{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.94);display:grid;place-items:center;z-index:2}
+  .inspo .clap .lucide{width:15px;height:15px}
+  .reviewcard{width:280px;flex:none;border:1px solid var(--border);border-radius:18px;padding:16px;background:#fff}
+  .reviewcard .stars{display:flex;gap:2px}
+  .reviewcard .stars svg{width:14px;height:14px;fill:var(--star)}
+  .reviewcard .q{font-size:13.5px;line-height:1.55;color:var(--ink);margin-top:10px}
+  .reviewcard .who{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .reviewcard .who .av{width:38px;height:38px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:12.5px}
+  .bizcard{border-radius:22px;background:var(--ink);color:#fff;padding:24px 20px;position:relative;overflow:hidden}
+  .bizcard h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.18}
+  .bizcard p{font-size:13.5px;color:rgba(255,255,255,.75);margin-top:8px;line-height:1.5}
+  .bizcard .cta{background:#fff;color:var(--ink);height:48px;font-size:14.5px;margin-top:16px}
+</style>
+</head>
+<body>
+
+<div class="note"><b>01 Home, the full page with the new rules.</b> Everything the live page has, in order: header, greeting, search, For-you (real 3D icons), Top on Solen, Nearby + map, Walk-in, Inspiration feed, Reviews, business banner. Applied rules: DS-5 32px rhythm, DS-7 icon details row on cards, DS-9 truncation + backed hearts, banned eyebrow deleted (Walk-in section), real square 22px photos. Alt states follow below the main frame.</div>
+
+<div class="lbl">DEFAULT · logged in</div>
+<div class="frame">
+  <div class="apphead"><span class="circ"><i data-lucide="house"></i></span><span class="spacer"></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+
+  <div class="pagepad" style="margin-top:14px">
+    <p class="sub" style="font-size:14px">Hi, Lara</p>
+    <h1 class="display" style="margin-top:6px">Booked in<br>30 seconds.</h1>
+    <p class="sub" style="margin-top:8px">Beauty &amp; wellness across Switzerland.</p>
+    <div class="searchpanel">
+      <div class="sinput"><i data-lucide="search"></i>Service</div>
+      <div class="sinput"><i data-lucide="map-pin"></i>City</div>
+      <div class="sinput"><i data-lucide="calendar"></i>Time</div>
+      <button class="cta">Find appointments</button>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <div class="shead"><h2 class="h-section">For you</h2></div>
+    <div class="cats">
+      <div class="cat"><img src="/icons/categories/scissors.png" alt="">Coiffeur</div>
+      <div class="cat"><img src="/icons/categories/clippers.png" alt="">Barber</div>
+      <div class="cat"><img src="/icons/categories/nails.png" alt="">Nails</div>
+      <div class="cat"><img src="/icons/categories/map.png" alt="">Nearby</div>
+      <div class="cat"><img src="/icons/categories/walkin.png" alt="">Walk-in</div>
+      <div class="cat"><img src="/icons/categories/spa.png" alt="">Spa</div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <div class="shead pagepad"><h2 class="h-section">Top on Solen</h2><i data-lucide="chevron-right"></i></div>
+    <div class="scroller">
+      <div class="salcard">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=480&h=480&fit=crop&q=80"><span class="heart"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Muse Beauty Studio</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9</span></div>
+          <div class="loc">Aeschenvorstadt 55, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>14:30</b></span><span><b>CHF 80</b></span></div>
+        </div>
+      </div>
+      <div class="salcard">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=480&h=480&fit=crop&q=80"><span class="heart on"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Old Town Barbers</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.3</span></div>
+          <div class="loc">Klybeckstrasse 12, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>16:00</b></span><span><b>CHF 50</b></span></div>
+        </div>
+      </div>
+      <div class="salcard">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=480&h=480&fit=crop&q=80"><span class="heart"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Nail Atelier</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.8</span></div>
+          <div class="loc">Spalenberg 12, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>17:00</b></span><span><b>CHF 60</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <div class="shead pagepad"><h2 class="h-section">Nearby</h2><i data-lucide="chevron-right"></i></div>
+    <div class="pagepad">
+      <div class="mapcard">
+        <div class="pinrow">
+          <i data-lucide="map-pin" class="pin" style="left:28%;top:24%"></i>
+          <i data-lucide="map-pin" class="pin" style="left:58%;top:38%"></i>
+          <i data-lucide="map-pin" class="pin" style="left:42%;top:58%"></i>
+        </div>
+        <span class="chip"><i data-lucide="map-pin"></i>14 salons nearby<a class="linkblue" style="font-size:14px">Open map</a></span>
+      </div>
+    </div>
+    <div class="scroller" style="margin-top:12px">
+      <div class="salcard">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=480&h=480&fit=crop&q=80"><span class="heart on"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Muse Beauty Studio</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9</span></div>
+          <div class="loc">Steinenvorstadt 18, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>15:30</b></span><span><b>CHF 80</b></span></div>
+        </div>
+      </div>
+      <div class="salcard">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=480&h=480&fit=crop&q=80"><span class="heart"><i data-lucide="heart"></i></span></div>
+        <div class="tx">
+          <div class="r1"><h3>Glow Lab Basel</h3><span class="rate"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.9</span></div>
+          <div class="loc">Spalenberg 5, Basel</div>
+          <div class="detrow"><span><i data-lucide="calendar"></i>today <b>14:30</b></span><span><b>CHF 80</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect pagepad">
+    <div class="walkhead">
+      <span class="tile"><img src="/icons/categories/walkin.png" alt=""></span>
+      <div>
+        <h2 class="h-section">Walk-in</h2>
+        <p class="meta" style="margin-top:2px">No appointment. Pay on your phone, walk right in.</p>
+      </div>
+    </div>
+    <div class="stack" style="margin-top:14px">
+      <div class="card" style="display:flex;align-items:center;gap:13px;padding:13px 14px">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=160&h=160&fit=crop&q=80" style="width:52px;height:52px;border-radius:14px;object-fit:cover" alt="">
+        <div class="rt" style="flex:1;min-width:0">
+          <div class="t" style="font-size:14.5px;font-weight:600">Blade &amp; Stone</div>
+          <div class="m" style="font-size:12px;color:var(--ink-2)">Feldbergstrasse 82 · <span class="rate" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:10px;height:10px"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg>4.4</span></div>
+        </div>
+        <span class="statuspill ok"><i data-lucide="users"></i>3 in queue</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <div class="shead pagepad"><h2 class="h-section">Find your inspiration.</h2></div>
+    <div class="scroller">
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=400&q=80"><div class="scrim-band"></div><span class="tag">Voluminous Layers</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80"><div class="scrim-band"></div><span class="tag">Curtain Bangs</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+      <div class="inspo"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&q=80"><div class="scrim-band"></div><span class="tag">Skin Fade</span><span class="clap"><i data-lucide="clapperboard"></i></span></div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <div class="shead pagepad"><h2 class="h-section">Reviews</h2><i data-lucide="chevron-right"></i></div>
+    <div class="scroller">
+      <div class="reviewcard">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg></span><span class="meta">2 weeks ago</span></div>
+        <p class="q">"Booked in 30 seconds, no calls, no prepayment. Muse Beauty Studio was great as always, and booking through Solen was simply easier this time."</p>
+        <div class="who"><span class="av">LK</span><div><b style="font-size:13.5px">Lara K.</b><div class="meta" style="display:flex;align-items:center;gap:5px"><i data-lucide="store" style="width:12px;height:12px"></i>Muse Beauty Studio <i data-lucide="chevron-right" style="width:11px;height:11px"></i></div></div></div>
+      </div>
+      <div class="reviewcard">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.1-1.01z"/></svg></span><span class="meta">1 month ago</span></div>
+        <p class="q">"Last-minute slot at Old Town Barbers, best fade I've had in Basel. The walk-in queue thing is genius when you're already in town."</p>
+        <div class="who"><span class="av">MH</span><div><b style="font-size:13.5px">Marco H.</b><div class="meta" style="display:flex;align-items:center;gap:5px"><i data-lucide="store" style="width:12px;height:12px"></i>Old Town Barbers <i data-lucide="chevron-right" style="width:11px;height:11px"></i></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect pagepad" style="padding-bottom:26px">
+    <div class="bizcard">
+      <h3>Solen for<br>your business.</h3>
+      <p>Bookings, walk-ins, payments and your team, one calm dashboard.</p>
+      <button class="cta">Discover Solen Business</button>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">LOADING<small>skeletons mirror the layout 1:1</small></div>
+<div class="frame">
+  <div class="apphead"><span class="circ"><i data-lucide="house"></i></span><span class="spacer"></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="pagepad" style="margin-top:14px;padding-bottom:28px">
+    <div class="sk" style="width:70px;height:14px"></div>
+    <div class="sk" style="width:300px;height:34px;margin-top:10px"></div>
+    <div class="sk" style="width:230px;height:34px;margin-top:6px"></div>
+    <div class="searchpanel">
+      <div class="sk" style="height:56px;border-radius:999px"></div>
+      <div class="sk" style="height:56px;border-radius:999px;margin-top:10px"></div>
+      <div class="sk" style="height:56px;border-radius:999px;margin-top:10px"></div>
+      <div class="sk" style="height:56px;border-radius:999px;margin-top:12px"></div>
+    </div>
+    <div class="sk" style="width:120px;height:21px;margin-top:32px"></div>
+    <div style="display:flex;gap:12px;margin-top:14px">
+      <div style="flex:1"><div class="sk" style="aspect-ratio:1/1;border-radius:22px"></div><div class="sk" style="width:85%;height:13px;margin-top:10px"></div><div class="sk" style="width:60%;height:11px;margin-top:6px"></div></div>
+      <div style="flex:1"><div class="sk" style="aspect-ratio:1/1;border-radius:22px"></div><div class="sk" style="width:85%;height:13px;margin-top:10px"></div><div class="sk" style="width:60%;height:11px;margin-top:6px"></div></div>
+      <div style="width:60px"><div class="sk" style="aspect-ratio:1/2.4;border-radius:22px 0 0 22px"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">LOGGED OUT<small>greeting gone, everything else identical</small></div>
+<div class="frame">
+  <div class="apphead"><span class="circ"><i data-lucide="house"></i></span><span class="spacer"></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="pagepad" style="margin-top:14px;padding-bottom:30px">
+    <h1 class="display">Booked in<br>30 seconds.</h1>
+    <p class="sub" style="margin-top:8px">Beauty &amp; wellness across Switzerland.</p>
+    <div class="searchpanel">
+      <div class="sinput"><i data-lucide="search"></i>Service</div>
+      <div class="sinput"><i data-lucide="map-pin"></i>City</div>
+      <div class="sinput"><i data-lucide="calendar"></i>Time</div>
+      <button class="cta">Find appointments</button>
+    </div>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
