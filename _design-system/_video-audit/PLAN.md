@@ -83,3 +83,17 @@ Per page: default + loading (skeleton) + empty + error + long-content (DS-9) + k
 10. Auth (login/magic-link sent/expired)
 Each file states which DS rules it exercises; long-content + empty are MANDATORY per §14.3. Owner
 approves per page → Phase 5 implements route-by-route.
+
+## Phase 4 punch list (owner, 2026-06-11) — edit v2 files IN PLACE, delete nothing
+- 01 home: APPROVED except (a) Walk-in section: keep the CURRENT live style (icon tile + salon cards row), mine was too simplified; (b) Discover/inspiration: study the REAL discover feature and mirror it faithfully.
+- 02 search: APPROVED except widget sizes: match the REAL page sizes (measure, don't eyeball).
+- 03 salon page: NOT approved (reviews section approved). Keep ALL current live features/sections, full page, new design system applied.
+- 04 booking: NOT approved. All features of the real steps, full pages (the datetime step esp. — real calendar, not 5 chips).
+- 05 confirmation: "remove the body" + I mix things up — investigate the real BookingConfirmation component, mirror it exactly; ask only if still unclear.
+- 06 walk-in+queue: remake as FULL pages incl. the widget (time-progress) — mirror the real queue/[token] + walk-in-pay pages.
+- 07 profile: APPROVED.
+- 08 subpages: APPROVED except notifications list — redo, "not good at all" (richer).
+- 09 favorites: APPROVED except empty-state icons — use the real 3D icons.
+- 10 errors: APPROVED; iterate the offline (no-wifi) one a bit.
+- 11 login: APPROVED; use ACTUAL brand icons (real Apple/Google logos, not Lucide).
+- Then: update design rules + memory, ensure zero contradictions.
