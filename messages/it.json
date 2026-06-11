@@ -954,7 +954,10 @@
       "add": "Aggiungi",
       "categories": "Categorie",
       "yourStylist": "Il tuo stilista",
-      "seeAll": "Vedi tutti"
+      "seeAll": "Vedi tutti",
+      "stylist": "Stilista",
+      "anyStylist": "Indifferente",
+      "stepOf": "Passo {current} di {total}"
     },
     "staffSelection": {
       "title": "Quale stilista preferisci?",
@@ -1040,7 +1043,8 @@
     "hairForStaff": "Per {name}",
     "hairYourStylist": "Il tuo stilista",
     "hairForSalon": "Per il tuo appuntamento",
-    "hairSkip": "Salta"
+    "hairSkip": "Salta",
+    "chooseServices": "Scegli i servizi"
   },
   "chat": {
     "send": "Invia",

@@ -988,7 +988,10 @@
       "add": "Add",
       "categories": "Categories",
       "yourStylist": "Your stylist",
-      "seeAll": "See all"
+      "seeAll": "See all",
+      "stylist": "Stylist",
+      "anyStylist": "Any",
+      "stepOf": "Step {current} of {total}"
     },
     "staffSelection": {
       "title": "Which stylist would you prefer?",
@@ -1074,7 +1077,8 @@
     "hairForStaff": "For {name}",
     "hairYourStylist": "Your stylist",
     "hairForSalon": "For your appointment",
-    "hairSkip": "Skip"
+    "hairSkip": "Skip",
+    "chooseServices": "Select services"
   },
   "chat": {
     "send": "Send",

@@ -5,6 +5,7 @@ import { createAdminSupabaseClient, getSessionUser } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard, EmptyServicesState } from '@/components-legacy/booking';
 import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
+import BookingHeaderTitle from '@/components-legacy/booking/BookingHeaderTitle';
 import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
@@ -171,18 +172,17 @@ export default async function BookingSalonPage({
 
   return (
     <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
-      {/* Mockup-04 verify (2026-06-11): sunken step body — cards earn their surface
-          (CONTROL_ELEVATION: elevation is earned by the background). */}
-      <div className="min-h-screen bg-s-bg-sunken">
+      {/* B1 (owner pick, council round 2026-06-11): white body — Fresha's two-tier
+          surface model (white page + white cards with hairlines), no grey patchwork. */}
+      <div className="min-h-screen bg-white">
         {/* Header with salon name */}
         {/* Solid white: --raised is 95%-alpha, which let scrolling content ghost
             through the sticky header (no backdrop blur here). */}
         <header className="sticky top-0 z-40 border-b border-s-border bg-white">
           <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
             <BookingExitButton slug={slug} />
-            <h1 className="min-w-0 flex-1 font-heading text-lg font-semibold tracking-[-0.01em] text-s-ink truncate">
-              {t('bookingAt', { salon: salon.name })}
-            </h1>
+            {/* B1: step 1 titles the task; steps 2+ restore "Termin bei {salon}" */}
+            <BookingHeaderTitle salonName={salon.name} />
           </div>
         </header>
 

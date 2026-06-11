@@ -165,7 +165,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
   const renderStep = () => {
     switch (normalizedStep) {
       case 'services-staff':
-        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
+        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} totalSteps={STEPS.length} />;
       case 'datetime':
         return <DateTimeStep salonId={salon.id} staffList={staffList} isLoggedIn={isLoggedIn} salonName={salon.name} nextStep={hairRelevant ? 'hair' : 'confirm'} />;
       case 'hair':
@@ -182,7 +182,11 @@ export default function BookingWizard({ services, staffList, salon, staffService
       {/* Step indicator — owner-approved mockups booking-pay-step/-hair-step-v2
           (2026-06-11): the walk-in tracker's blue icon language. 42px discs — blue +
           white icon when done, white + blue ring when current, sunken when future;
-          2px connectors. Done discs stay tappable for jump-back. */}
+          2px connectors. Done discs stay tappable for jump-back.
+          B1 (owner pick, council round 2026-06-11): HIDDEN on step 1 — discovery
+          needs no progress reassurance; the stepper appears from step 2 on, and
+          step 1's bottom bar carries "Schritt 1 von N" instead. */}
+      {currentIndex > 0 && (
       <div className="px-1 pt-2 pb-4">
         <div className="mb-4 flex items-start" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
           {STEPS.map((step, i) => {
@@ -235,6 +239,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
           />
         )}
       </div>
+      )}
 
       {/* Step content with slide animation */}
       <AnimatePresence mode="wait" custom={1}>

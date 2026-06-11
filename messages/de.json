@@ -998,7 +998,10 @@
       "add": "Hinzufügen",
       "categories": "Kategorien",
       "yourStylist": "Dein Stylist",
-      "seeAll": "Alle ansehen"
+      "seeAll": "Alle ansehen",
+      "stylist": "Stylist",
+      "anyStylist": "Beliebig",
+      "stepOf": "Schritt {current} von {total}"
     },
     "staffSelection": {
       "title": "Welcher Stylist darf's sein?",
@@ -1084,7 +1087,8 @@
     "hairForStaff": "Für {name}",
     "hairYourStylist": "Dein:e Stylist:in",
     "hairForSalon": "Für deinen Termin",
-    "hairSkip": "Überspringen"
+    "hairSkip": "Überspringen",
+    "chooseServices": "Service wählen"
   },
   "chat": {
     "send": "Senden",

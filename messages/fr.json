@@ -972,7 +972,10 @@
       "add": "Ajouter",
       "categories": "Catégories",
       "yourStylist": "Ton styliste",
-      "seeAll": "Tout voir"
+      "seeAll": "Tout voir",
+      "stylist": "Styliste",
+      "anyStylist": "Indifférent",
+      "stepOf": "Étape {current} sur {total}"
     },
     "staffSelection": {
       "title": "Quel styliste préférez-vous ?",
@@ -1058,7 +1061,8 @@
     "hairForStaff": "Pour {name}",
     "hairYourStylist": "Votre styliste",
     "hairForSalon": "Pour votre rendez-vous",
-    "hairSkip": "Passer"
+    "hairSkip": "Passer",
+    "chooseServices": "Choisir des services"
   },
   "chat": {
     "send": "Envoyer",
