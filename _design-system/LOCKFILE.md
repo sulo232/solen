@@ -450,6 +450,14 @@ Three numbers, sitewide. Everything vertical maps to one of them:
 Mobile gets MORE air, never less. Larger one-off dimensions round to clean 5/10s (8pt pedantry above
 ~100px buys nothing). Drift signal: any `mt-5/mt-6/mt-7/space-y-5/...` between sections or cards.
 
+**HOME-FEED EXCEPTION (measured 2026-06-11):** the homepage feed keeps the OWNER-TUNED Airbnb-tight
+rhythm from V3-D132 (2026-05-25, owner: "gap too big vs Airbnb") — ~24px visible section gap
+(Section `mb-2` + `py-2` + SectionFrame `pt-1 pb-2`), 12px heading top, 4px heading-to-ScrollRow.
+The 32px Section tier applies to CONTENT pages (profile, PDP sections, legal, wizard steps), not the
+dense home feed. Measured pass 2026-06-11 confirmed home is internally consistent at the tuned
+values; apparent outliers (Walk-in band, Für dich bento) were icon-row / hero-overlap measurement
+artifacts, not drift. Do NOT re-inflate home gaps to 32px.
+
 ### Box shadow (3-level system + legacy aliases)
 
 | Token | Value |
