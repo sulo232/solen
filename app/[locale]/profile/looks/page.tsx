@@ -40,9 +40,9 @@ export default async function ProfileLooksPage({
       .limit(6);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
       <span aria-hidden className="hidden" /> {/* title lives in the global header */}
-      <div className="mt-8">
+      <div className="mt-2">
         <EmptyStateDiscovery
           locale={locale}
           title="Noch keine Looks."

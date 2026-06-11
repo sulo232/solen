@@ -101,9 +101,9 @@ export default async function ProfileStampsPage({
       .order("average_rating", { ascending: false })
       .limit(6);
     return (
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
         {/* Title lives in the global header beside the back tile */}
-        <div className="mt-8">
+        <div className="mt-2">
           <EmptyStateDiscovery
             locale={locale}
             title="Noch keine Stempel."
@@ -124,11 +124,11 @@ export default async function ProfileStampsPage({
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
       <p className="font-body text-[13px] text-s-ink-2">{allCards.length} Karten</p>
 
       {heroCard && heroCard.salons && (
-        <div className="mt-6">
+        <div className="mt-2">
           <HeroStampCard
             salonName={heroCard.salons.name}
             salonSlug={heroCard.salons.slug}

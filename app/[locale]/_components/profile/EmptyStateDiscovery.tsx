@@ -62,7 +62,7 @@ export default function EmptyStateDiscovery({
 
   return (
     <div className="flex min-h-[70vh] flex-col">
-      <h2 className="mt-2 font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">
+      <h2 className="font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">
         {title}
       </h2>
       <p className="mt-1.5 font-body text-[14px] leading-[1.55] text-s-ink-2">{lead}</p>
@@ -70,7 +70,7 @@ export default function EmptyStateDiscovery({
       {/* Discovery banner — DS-10 scrim, top stays clean */}
       <Link
         href={bannerHref}
-        className="relative mt-[18px] block h-[200px] shrink-0 overflow-hidden rounded-[18px] bg-s-bg-sunken"
+        className="relative mt-[18px] block h-[220px] shrink-0 overflow-hidden rounded-[18px] bg-s-bg-sunken"
       >
         {bannerImg && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -114,7 +114,7 @@ export default function EmptyStateDiscovery({
       <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {salons.map((s) => (
           <Link key={s.slug} href={`/${locale}/salon/${s.slug}`} className="w-[210px] shrink-0">
-            <span className="block h-[140px] overflow-hidden rounded-[16px] bg-s-bg-sunken">
+            <span className="block h-[160px] overflow-hidden rounded-[16px] bg-s-bg-sunken">
               {s.cover_photo_url && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={s.cover_photo_url} alt="" className="h-full w-full object-cover" />

@@ -67,14 +67,14 @@ export default async function ProfileFavoritesPage({
     .limit(6);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
       {/* Title lives in the global header beside the back tile (owner, 2026-06-11) */}
       {salons.length > 0 && (
         <p className="font-body text-[13px] text-s-ink-2">{salons.length} Salons</p>
       )}
 
       {salons.length === 0 ? (
-        <div className="mt-6">
+        <div className="mt-2">
           <EmptyStateDiscovery
             locale={locale}
             title="Noch keine Favoriten."
