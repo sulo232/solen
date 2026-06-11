@@ -510,7 +510,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
   if (isLoading) {
     return (
       <div className="flex-1 min-w-[240px] max-w-[360px] bg-s-bg-base border border-s-border rounded-[12px] p-4">
-        <div className="font-body font-semibold text-[12px] uppercase tracking-[0.08em] text-s-ink-3 mb-2">
+        <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
           {labels.availableTimes}
         </div>
         <div className="grid grid-cols-4 gap-1.5">
@@ -556,7 +556,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
     >
       {groups.map((group) => (
         <div key={group.label} className="mb-4 last:mb-0">
-          <div className="font-body font-semibold text-[12px] uppercase tracking-[0.08em] text-s-ink-3 mb-2">
+          <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
             {group.label}
           </div>
           <div className="grid grid-cols-4 gap-1.5">

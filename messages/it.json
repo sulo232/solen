@@ -952,7 +952,9 @@
       "remove": "Rimuovi",
       "update": "Aggiorna",
       "add": "Aggiungi",
-      "categories": "Categorie"
+      "categories": "Categorie",
+      "yourStylist": "Il tuo stilista",
+      "seeAll": "Vedi tutti"
     },
     "staffSelection": {
       "title": "Quale stilista preferisci?",
@@ -4886,7 +4888,7 @@
     "subtitle": "I tuoi dati di contatto",
     "nameLabel": "Nome",
     "phoneLabel": "Telefono",
-    "emailLabel": "Email (opzionale)",
+    "emailLabel": "Email",
     "namePlaceholder": "Nome e cognome",
     "phonePlaceholder": "+41791234567",
     "emailPlaceholder": "tua@email.ch",

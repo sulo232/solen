@@ -364,3 +364,9 @@ When the user resolves a question:
 2. Move to **Resolved** section at bottom.
 3. Update `SOURCE.md` to bake the decision in.
 4. If a drift-checker rule encoded the open question (e.g. `// suppressed: Q1`), update the rule.
+
+## Q-2026-06-11-slot-radius
+Booking mockup 04 draws time slots as 12px-radius rectangles; the shared DateTimePicker
+primitive renders 999px pills (both booking + search use it). Changing the primitive
+would also restyle search (owner-approved as-is). Which shape is canonical for slots?
+Until answered: pills stay (primitive untouched), mockup 04 diverges on this one detail.

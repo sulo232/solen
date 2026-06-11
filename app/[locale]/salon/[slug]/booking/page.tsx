@@ -171,7 +171,9 @@ export default async function BookingSalonPage({
 
   return (
     <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
-      <div className="min-h-screen bg-[--base]">
+      {/* Mockup-04 verify (2026-06-11): sunken step body — cards earn their surface
+          (CONTROL_ELEVATION: elevation is earned by the background). */}
+      <div className="min-h-screen bg-s-bg-sunken">
         {/* Header with salon name */}
         <header className="sticky top-0 z-40 border-b border-s-border bg-[--raised]">
           <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">

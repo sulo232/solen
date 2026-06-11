@@ -996,7 +996,9 @@
       "remove": "Entfernen",
       "update": "Aktualisieren",
       "add": "Hinzufügen",
-      "categories": "Kategorien"
+      "categories": "Kategorien",
+      "yourStylist": "Dein Stylist",
+      "seeAll": "Alle ansehen"
     },
     "staffSelection": {
       "title": "Welcher Stylist darf's sein?",
@@ -4924,7 +4926,7 @@
     "subtitle": "Deine Kontaktdaten",
     "nameLabel": "Name",
     "phoneLabel": "Telefon",
-    "emailLabel": "E-Mail (optional)",
+    "emailLabel": "E-Mail",
     "namePlaceholder": "Vor- und Nachname",
     "phonePlaceholder": "+41791234567",
     "emailPlaceholder": "deine@email.ch",

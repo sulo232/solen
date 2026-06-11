@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { ArrowUp, ArrowRight, ShoppingCart, List, X } from 'lucide-react';
+import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
@@ -349,13 +349,16 @@ export default function ServicesStaffStep({
       {/* Staff picker — top, always visible (stylist-first) */}
       {!singleStaff && (
         <div className="pt-5">
-          <div className="mb-1 flex items-center justify-end px-1">
+          {/* Mockup-04 verify (2026-06-11): heading row added; See-all = ink + chevron (1.5 v3) */}
+          <div className="mb-2 flex items-center justify-between px-1">
+            <h3 className="font-heading text-[15px] font-semibold text-s-ink">{t("yourStylist")}</h3>
             <button
               type="button"
               onClick={() => setShowStaffList(true)}
-              className="font-body text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80"
+              className="inline-flex items-center gap-0.5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:text-s-ink-2"
             >
-              Alle ansehen
+              {t("seeAll")}
+              <ChevronRight size={15} strokeWidth={2.2} aria-hidden />
             </button>
           </div>
           <StaffPicker
@@ -404,16 +407,13 @@ export default function ServicesStaffStep({
                           ? setSheetServiceId(service.id)
                           : handleSelectService(service)
                       }
-                      className={`w-full text-left rounded-input border-2 bg-[--raised] p-4 transition-[border-color] duration-200 ${
-                        inCart
-                          ? 'border-s-ink'
-                          : 'border-s-border hover:border-s-ink/30'
-                      }`}
+                      className="w-full text-left rounded-input border border-s-border bg-[--raised] p-4 transition-[border-color] duration-200 hover:border-s-ink/30"
                     >
                       <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
                         {serviceName(service)}
                       </h4>
-                      <p className="text-xs text-s-ink-2 mt-1">
+                      <p className="flex items-center gap-1 text-xs text-s-ink-2 mt-1">
+                        <Clock size={13} strokeWidth={1.9} aria-hidden />
                         {service.duration_minutes} {t('minutes')}
                         {gLabel && <> {gLabel}</>}
                       </p>

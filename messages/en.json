@@ -986,7 +986,9 @@
       "remove": "Remove",
       "update": "Update",
       "add": "Add",
-      "categories": "Categories"
+      "categories": "Categories",
+      "yourStylist": "Your stylist",
+      "seeAll": "See all"
     },
     "staffSelection": {
       "title": "Which stylist would you prefer?",
@@ -4914,7 +4916,7 @@
     "subtitle": "Your contact details",
     "nameLabel": "Name",
     "phoneLabel": "Phone",
-    "emailLabel": "Email (optional)",
+    "emailLabel": "Email",
     "namePlaceholder": "First and last name",
     "phonePlaceholder": "+41791234567",
     "emailPlaceholder": "your@email.ch",

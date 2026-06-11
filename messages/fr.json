@@ -970,7 +970,9 @@
       "remove": "Retirer",
       "update": "Mettre à jour",
       "add": "Ajouter",
-      "categories": "Catégories"
+      "categories": "Catégories",
+      "yourStylist": "Ton styliste",
+      "seeAll": "Tout voir"
     },
     "staffSelection": {
       "title": "Quel styliste préférez-vous ?",
@@ -4897,7 +4899,7 @@
     "subtitle": "Vos coordonnées",
     "nameLabel": "Nom",
     "phoneLabel": "Téléphone",
-    "emailLabel": "Email (optionnel)",
+    "emailLabel": "Email",
     "namePlaceholder": "Prénom et nom",
     "phonePlaceholder": "+41791234567",
     "emailPlaceholder": "votre@email.ch",
