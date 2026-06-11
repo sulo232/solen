@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12 Register, chooser + both variants + errors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .choose{border:1px solid var(--border);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .15s, transform .12s}
+  .choose:hover{border-color:var(--ink)}
+  .choose:active{transform:scale(.985)}
+  .choose .ic{width:44px;height:44px;border-radius:12px;background:var(--sunken);display:grid;place-items:center;flex:none}
+  .choose .ic .lucide{width:21px;height:21px;stroke-width:1.8}
+  .choose b{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15.5px;display:block}
+  .choose span{font-size:12.5px;color:var(--ink-2);display:block;margin-top:2px}
+  .auth{padding:10px 16px 30px}
+  .auth h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
+</style>
+</head>
+<body>
+
+<div class="note"><b>12 Register.</b> Mirrors the live flow: chooser card (customer vs salon owner), then the form per type (customer carries the birthday for the 16+ check). New rules: §14.4 specific errors (now SHIPPED in the real register), the "Anmelden" link goes DS-blue (was ink underline), iPhone-fit kit.</div>
+
+<div class="lbl">STEP 0, chooser (live structure)</div>
+<div class="frame">
+  <div class="apphead"><span class="circ" onclick="history.back()"><i data-lucide="arrow-left"></i></span><span class="spacer"></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="auth">
+    <div class="card" style="padding:22px 18px">
+      <h1 style="font-size:22px">How do you want to start?</h1>
+      <p class="sub" style="font-size:13.5px;margin-top:4px">Choose how you'll use Solen.</p>
+      <div class="choose" style="margin-top:18px">
+        <span class="ic"><i data-lucide="user"></i></span>
+        <div style="flex:1;min-width:0"><b>I'm a customer</b><span>Discover salons and book appointments</span></div>
+        <i data-lucide="chevron-right" class="chev"></i>
+      </div>
+      <div class="choose" style="margin-top:12px">
+        <span class="ic"><i data-lucide="store"></i></span>
+        <div style="flex:1;min-width:0"><b>I'm a salon owner</b><span>Register and manage my salon</span></div>
+        <i data-lucide="chevron-right" class="chev"></i>
+      </div>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-2);text-align:center;margin-top:22px">Already registered? <a class="linkblue" style="font-size:13.5px">Log in</a></p>
+  </div>
+</div>
+
+<div class="lbl">CUSTOMER form + the shipped 14.4 errors</div>
+<div class="frame">
+  <div class="auth" style="padding-top:24px">
+    <h1>Create account</h1>
+    <p class="sub" style="margin-top:6px">Book in 30 seconds, from then on.</p>
+    <div style="margin-top:20px">
+      <div class="finput pillr filled">lara@web.ch</div>
+      <div class="finput pillr err" style="margin-top:12px;justify-content:space-between;color:var(--ink)">solen1<i data-lucide="eye"></i></div>
+      <div class="fielderr" style="padding-left:8px"><i data-lucide="circle-alert"></i>The password needs at least 8 characters.</div>
+      <div class="finput pillr" style="margin-top:12px;justify-content:space-between">Birthday<i data-lucide="calendar"></i></div>
+      <p class="meta" style="margin-top:7px;padding-left:8px;font-size:11.5px">You need to be 16 or older.</p>
+    </div>
+    <button class="cta disabled" style="margin-top:16px">Create account</button>
+    <p class="meta" style="text-align:center;margin-top:14px;font-size:12.5px">By registering you accept our terms of service.</p>
+  </div>
+</div>
+
+<div class="lbl">SALON-OWNER form variant</div>
+<div class="frame">
+  <div class="auth" style="padding-top:24px">
+    <h1>Register your salon</h1>
+    <p class="sub" style="margin-top:6px">Bookings, walk-ins and payments, one calm dashboard.</p>
+    <div style="margin-top:20px">
+      <div class="finput pillr">Salon name</div>
+      <div class="finput pillr" style="margin-top:12px">Email address</div>
+      <div class="finput pillr" style="margin-top:12px;justify-content:space-between">Password<i data-lucide="eye"></i></div>
+    </div>
+    <button class="cta" style="margin-top:16px">Continue</button>
+    <p class="meta" style="text-align:center;margin-top:14px;font-size:12.5px">Next: address, services and your team.</p>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

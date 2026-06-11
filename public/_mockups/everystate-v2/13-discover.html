@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 Discover feed, live structure + new rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .dsearch{height:44px;background:var(--sunken);border-radius:999px;padding:0 16px;font-size:14px;display:flex;align-items:center;gap:9px;color:var(--ink-3);margin:4px 16px 0}
+  .dsearch .lucide{width:16px;height:16px;flex:none}
+  .texrow{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none;align-items:center}
+  .texrow::-webkit-scrollbar{display:none}
+  .texchip{position:relative;width:74px;height:44px;border-radius:12px;overflow:hidden;flex:none}
+  .texchip img{width:100%;height:100%;object-fit:cover}
+  .texchip span{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.45))}
+  .texchip.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink)}
+  .kick{font-size:13px;font-weight:600;color:var(--ink-3);margin:18px 16px 0}
+  .colrow{display:flex;gap:10px;overflow-x:auto;padding:10px 16px 4px;scrollbar-width:none}
+  .colrow::-webkit-scrollbar{display:none}
+  .col{flex:none;width:104px}
+  .col .ph{position:relative;height:104px;border-radius:14px;overflow:hidden}
+  .col .ph img{width:100%;height:100%;object-fit:cover}
+  .col b{display:block;font-size:12px;font-weight:600;margin-top:6px}
+  .masonry{columns:2;column-gap:10px;padding:14px 16px 24px}
+  .tile{position:relative;border-radius:16px;overflow:hidden;margin-bottom:10px;break-inside:avoid}
+  .tile img{width:100%;display:block}
+  .tile .src{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700;z-index:2;backdrop-filter:blur(4px)}
+  .tile .hrt{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.94);display:grid;place-items:center;z-index:2}
+  .tile .hrt .lucide{width:14px;height:14px}
+  .tile .play{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+  .tile .play span{width:40px;height:40px;border-radius:999px;background:rgba(0,0,0,.45);display:grid;place-items:center;backdrop-filter:blur(3px)}
+  .tile .play .lucide{width:17px;height:17px;color:#fff;fill:#fff}
+  .tile .cap{position:absolute;left:8px;bottom:8px;right:8px;display:flex;align-items:center;gap:6px;z-index:2}
+  .tile .cap b{background:rgba(255,255,255,.94);border-radius:999px;padding:5px 11px;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .attr{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2);margin:-4px 0 10px 2px}
+  .attr .lucide{width:11px;height:11px}
+</style>
+</head>
+<body>
+
+<div class="note"><b>13 Discover feed.</b> Mirrors the live /entdecken: style search, texture chips, Collections rail, 2-col masonry of TikTok looks (attribution chip + heart + play + caption pill + DS-10 scrim) with salon attribution under tiles. New rules: "Kollektionen" kicker normal-case (was an eyebrow candidate), scrims per DS-10, all hearts backed (DS-9). States: feed, loading, empty search.</div>
+
+<div class="lbl">FEED, default</div>
+<div class="frame">
+  <div class="apphead"><span class="circ"><i data-lucide="house"></i></span><span class="spacer"></span><span class="circ naked"><i data-lucide="bell"></i></span><span class="circ"><i data-lucide="menu"></i></span></div>
+  <div class="dsearch"><i data-lucide="search"></i>Search styles…</div>
+  <div class="texrow">
+    <span class="pill" style="flex:none;padding:8px 14px">Texture <i data-lucide="chevron-down"></i></span>
+    <div class="texchip on"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=200&q=70"><span>Shag</span></div>
+    <div class="texchip"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=200&q=70"><span>Textured</span></div>
+    <div class="texchip"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&q=70"><span>Layered</span></div>
+  </div>
+  <p class="kick">Collections</p>
+  <div class="colrow">
+    <div class="col"><div class="ph"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=300&q=70"><div class="scrim-band" style="height:40px"></div></div><b>Textured Crops</b></div>
+    <div class="col"><div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&q=70"><div class="scrim-band" style="height:40px"></div></div><b>Fades</b></div>
+    <div class="col"><div class="ph"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=300&q=70"><div class="scrim-band" style="height:40px"></div></div><b>Balayage</b></div>
+  </div>
+  <div class="masonry">
+    <div>
+      <div class="tile">
+        <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=400&h=560&fit=crop&q=75">
+        <span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span>
+        <div class="scrim-band"></div>
+        <div class="cap"><b>Voluminous Layers</b></div>
+      </div>
+      <div class="attr"><i data-lucide="store"></i>Muse Beauty Studio</div>
+      <div class="tile">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=420&fit=crop&q=75">
+        <span class="src">TikTok</span><span class="hrt on" style="color:var(--pink)"><i data-lucide="heart"></i></span>
+        <div class="play"><span><i data-lucide="play"></i></span></div>
+        <div class="scrim-band"></div>
+        <div class="cap"><b>Balayage</b></div>
+      </div>
+      <div class="attr"><i data-lucide="store"></i>Glow Lab Basel</div>
+    </div>
+    <div>
+      <div class="tile">
+        <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=440&fit=crop&q=75">
+        <span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span>
+        <div class="play"><span><i data-lucide="play"></i></span></div>
+        <div class="scrim-band"></div>
+        <div class="cap"><b>Skin Fade</b></div>
+      </div>
+      <div class="attr"><i data-lucide="store"></i>Old Town Barbers</div>
+      <div class="tile">
+        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=560&fit=crop&q=75">
+        <span class="src">TikTok</span><span class="hrt"><i data-lucide="heart"></i></span>
+        <div class="scrim-band"></div>
+        <div class="cap"><b>Curtain Bangs</b></div>
+      </div>
+      <div class="attr"><i data-lucide="store"></i>Muse Beauty Studio</div>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">LOADING + EMPTY SEARCH</div>
+<div class="frame">
+  <div class="masonry" style="padding-top:18px">
+    <div>
+      <div class="sk" style="height:220px;border-radius:16px;margin-bottom:10px"></div>
+      <div class="sk" style="height:160px;border-radius:16px"></div>
+    </div>
+    <div>
+      <div class="sk" style="height:170px;border-radius:16px;margin-bottom:10px"></div>
+      <div class="sk" style="height:210px;border-radius:16px"></div>
+    </div>
+  </div>
+  <div class="empty" style="padding-top:8px;padding-bottom:40px">
+    <h2 style="font-size:18px;margin-top:0">Nothing for "wolf cut x mullet".</h2>
+    <p style="margin-top:6px">Try a broader style, or browse the collections above.</p>
+    <button class="cta ghost" style="height:46px;font-size:14px">Clear search</button>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
