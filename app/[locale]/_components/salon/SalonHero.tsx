@@ -125,17 +125,35 @@ export function SalonHero({
         </div>
 
         {photos.length > 1 && (
-          <button
-            type="button"
-            onClick={onOpenGallery}
-            aria-label="Alle Fotos ansehen"
-            // Minimal photo counter (Fresha pattern). Live index tracks the swipe; tap opens the
-            // lightbox at the current photo. bottom-7 (not -4): the content card pulls up -mt-5
-            // (20px) over the hero, so a lower counter would sit behind the rounded card.
-            className="font-body absolute bottom-7 right-4 rounded-full bg-s-ink/55 px-2.5 py-1 text-[12px] font-semibold tabular-nums text-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform active:scale-95"
-          >
-            {activeIndex + 1} / {photos.length}
-          </button>
+          <>
+            {/* DS-10 bottom gradient band (LOCKFILE §11): dots survive bright photos,
+                the photo itself stays clean. Replaces the lone "n / N" counter chip
+                (owner-approved every-state PDP mockup, 2026-06-11). */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent"
+            />
+            {/* §16.2 gallery position dots — active stretches to 18px. Swiping the
+                photos drives them; tapping a photo still opens the lightbox, so the
+                gesture is never the only way in (§16.1 duality). */}
+            <div
+              className="absolute inset-x-0 bottom-8 z-[1] flex justify-center gap-[5px]"
+              role="tablist"
+              aria-label={`Foto ${activeIndex + 1} von ${photos.length}`}
+            >
+              {photos.map((_, i) => (
+                <span
+                  key={i}
+                  aria-hidden
+                  className={
+                    i === activeIndex
+                      ? "h-[6px] w-[18px] rounded-full bg-white transition-all duration-200 ease-glide"
+                      : "h-[6px] w-[6px] rounded-full bg-white/55 transition-all duration-200 ease-glide"
+                  }
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
 
