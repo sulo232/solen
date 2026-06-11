@@ -35,6 +35,7 @@ from typing import Iterable
 # Most colors should come from Tailwind tokens; these are the exceptions
 # (signal colors, brand chrome that doesn't have a token yet, etc.).
 ALLOWED_HEX = {
+    "#1E54B7",  # s-accent-deep hover step (DS-6, single-point rule in globals.css)
     "#FFC32B",  # star yellow — universal signal, see Q1
     "#FF3366",  # heart pink — universal --heart-active signal, V3-D103
     "#FFFFFF",  # white — fine inline
@@ -368,6 +369,10 @@ EMOJI_RE = re.compile(
     r"[\U0001F300-\U0001F9FF\U0001F600-\U0001F64F\U0001F680-\U0001F6FF\U0001FA00-\U0001FAFF\U00002700-\U000027BF\U00002B50]"
 )
 
+# A21 — tracked-uppercase eyebrow (banned on customer surfaces, owner 2026-06-11;
+# the WalkInBand one was the last live instance).
+A21_EYEBROW_RE = re.compile(r'uppercase[^"\']*tracking-\[0\.1|tracking-\[0\.1[^"\']*uppercase')
+
 # B5 — Category-specific branches (V3-D205 universal-components rule).
 # Catches: if (category === 'coiffeur'), category == "barber", etc.
 CATEGORY_BRANCH_RE = re.compile(
@@ -654,6 +659,14 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 file=rel, line=ln_no, rule="A6: emoji in code",
                 snippet=line,
                 recommendation="Emoji are banned in code/UI per V3-D203. Use lucide icons instead. Unicode geometric shapes (·, →, ●, ★) are allowed.",
+            ))
+
+        # A21 — tracked-uppercase eyebrow (owner ban, 2026-06-11).
+        if A21_EYEBROW_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A21: tracked-uppercase eyebrow",
+                snippet=line,
+                recommendation="Tracked-uppercase eyebrows are banned on customer surfaces (owner 2026-06-11; LOCKFILE 2.5 eyebrow policy superseded). The H2 + a normal-case sub carries the section.",
             ))
 
         # B5 — universal-components rule (V3-D205). Catches category-specific branches.
