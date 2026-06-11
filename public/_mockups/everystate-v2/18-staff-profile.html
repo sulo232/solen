@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>18 Staff profile (barber), mirrors the live component anatomy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .cover{position:relative;height:192px;overflow:hidden}
+  .cover img{width:100%;height:100%;object-fit:cover}
+  .cover .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.62))}
+  .cover .circ{position:absolute;top:14px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px)}
+  .phead{padding:0 16px;margin-top:-48px;position:relative;z-index:2;display:flex;align-items:flex-end;gap:14px}
+  .phead .av{width:96px;height:96px;border-radius:999px;border:4px solid #fff;overflow:hidden;flex:none;background:var(--sunken)}
+  .phead .av img{width:100%;height:100%;object-fit:cover}
+  .phead h1{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.02em;line-height:1.05}
+  .phead .sal{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-2);margin-top:3px}
+  .phead .sal .lucide{width:12px;height:12px}
+  .stats{display:flex;gap:16px;padding:14px 16px 0;font-size:13.5px;color:var(--ink-2);align-items:center}
+  .stats b{color:var(--ink);font-weight:600}
+  .stats .lucide{width:14px;height:14px}
+  .stats .star{color:#FFC32B;fill:#FFC32B}
+  .avail{margin:14px 16px 0;border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .avail .dot{width:8px;height:8px;border-radius:99px;background:var(--green)}
+  .avail p{font-size:13px;color:var(--ink-2)}
+  .avail b{color:var(--ink)}
+  .pills{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 4px}
+  .pill2{flex:none;border:1px solid var(--border);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:500;background:#fff;text-transform:capitalize}
+  .pill2.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px 26px}
+  .grid2 .ph{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden}
+  .grid2 .ph img{width:100%;height:100%;object-fit:cover}
+  .grid2 .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 8px;font-size:11px;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.55))}
+</style>
+</head>
+<body>
+
+<div class="note"><b>18 Staff profile (the /salon/[slug]/barber/[barberSlug] page).</b> Mirrors the live component 1:1: cover + DS-10 scrim, frosted share circle, overlapping avatar, H1 + salon link, cuts + specialty stats, availability widget, ONE ink CTA, portfolio style filters (ink-selected TabPills) + 2-col grid; empty-portfolio state below. ⚠️ FLAGGED DATA BUG: the live page is currently DEAD for every seed staff — staff_members.slug is never populated and /api/barber gates on salon.categories containing "barbershop". Treatments only; structure is the live structure.</div>
+
+<div class="lbl">DEFAULT (portfolio filled)</div>
+<div class="frame">
+  <div class="cover">
+    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=900&q=75" alt="">
+    <div class="scrim"></div>
+    <span class="circ" style="left:14px" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
+    <span class="circ" style="right:14px"><i data-lucide="share" style="width:16px;height:16px"></i></span>
+  </div>
+  <div class="phead">
+    <div class="av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&q=80" alt=""></div>
+    <div style="padding-bottom:6px;min-width:0">
+      <h1>Marco Bianchi</h1>
+      <div class="sal"><i data-lucide="map-pin"></i>Old Town Barbers</div>
+    </div>
+  </div>
+  <div class="stats">
+    <span style="display:flex;align-items:center;gap:6px"><i data-lucide="scissors" style="color:var(--ink-3)"></i><b>412</b> cuts</span>
+    <span style="display:flex;align-items:center;gap:6px"><i data-lucide="star" class="star"></i><b>4.9</b><span class="num" style="color:var(--blue)">(62)</span></span>
+  </div>
+  <div class="avail">
+    <span class="dot"></span>
+    <p>Next free slot <b>today 16:30</b></p>
+  </div>
+  <div style="padding:14px 16px 0">
+    <button class="cta" style="height:48px;font-size:14.5px">Book with Marco</button>
+  </div>
+  <div class="pills">
+    <span class="pill2 on">All</span><span class="pill2">Fade</span><span class="pill2">Buzz</span><span class="pill2">Crop</span><span class="pill2">Pompadour</span><span class="pill2">Razor art</span>
+  </div>
+  <div class="grid2">
+    <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=70" alt=""><div class="cap">Skin fade</div></div>
+    <div class="ph"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&q=70" alt=""><div class="cap">Classic crop</div></div>
+    <div class="ph"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400&q=70" alt=""><div class="cap">Beard line-up</div></div>
+    <div class="ph"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&q=70" alt=""><div class="cap">Mid fade</div></div>
+  </div>
+</div>
+
+<div class="lbl">EMPTY PORTFOLIO (§15 voice) + DEAD-DATA STATE FLAG</div>
+<div class="frame">
+  <div class="cover" style="height:150px">
+    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=900&q=75" alt="">
+    <div class="scrim"></div>
+    <span class="circ" style="left:14px" onclick="history.back()"><i data-lucide="arrow-left"></i></span>
+  </div>
+  <div class="phead">
+    <div class="av"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=240&q=80" alt=""></div>
+    <div style="padding-bottom:6px"><h1 style="font-size:22px">Emma</h1>
+      <div class="sal"><i data-lucide="map-pin"></i>Old Town Barbers</div>
+    </div>
+  </div>
+  <div class="empty" style="padding-top:34px;padding-bottom:20px">
+    <h2 style="font-size:17px;margin-top:0">No work photos yet.</h2>
+    <p style="margin-top:5px">Emma's portfolio shows up here once the salon adds it. You can still book.</p>
+    <button class="cta" style="margin-top:18px;height:46px;font-size:14px">Book with Emma</button>
+  </div>
+  <div class="empty" style="padding-top:8px;padding-bottom:34px;border-top:1px solid var(--border);margin:0 16px">
+    <p style="margin-top:14px;font-size:12px;color:var(--ink-3)">⚠ Implementation note (not UI): live page 404s for ALL staff today — staff_members.slug is null in seed data and the API requires the salon category "barbershop". Needs a data + gate fix before any visual work matters.</p>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
