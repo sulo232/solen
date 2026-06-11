@@ -347,7 +347,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-s-ink md:text-[28px]">
             {active.count}
           </div>
-          <div className="mt-1 font-body text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
+          <div className="mt-1 font-body text-[13px] font-semibold text-s-ink-3">
             {active.countLabel}
           </div>
         </div>
@@ -355,7 +355,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[18px] font-semibold leading-none tracking-[-0.01em] text-s-ink md:text-[19px]">
             {active.revenue}
           </div>
-          <div className="mt-1.5 flex items-center gap-1 font-body text-[12px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
+          <div className="mt-1.5 flex items-center gap-1 font-body text-[13px] font-semibold text-s-ink-3">
             <span className="inline-flex items-center gap-0.5 text-s-ink">
               <ArrowRight size={10} className="rotate-[-45deg]" aria-hidden />
               {active.trend}
@@ -432,7 +432,7 @@ function VisualAnalyticsTabbed() {
       </div>
 
       {/* ── X-axis labels ── */}
-      <div className="mt-1.5 flex justify-between font-body text-[12px] font-bold uppercase tracking-[0.1em] text-s-ink-3">
+      <div className="mt-1.5 flex justify-between font-body text-[13px] font-semibold text-s-ink-3">
         {active.labels.map((l) => (
           <span key={l}>{l}</span>
         ))}
