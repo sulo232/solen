@@ -7,7 +7,6 @@ import { useLocale } from "next-intl";
 import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
-import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -42,9 +41,9 @@ const LANG: Record<string, string> = {
   de: "Deutsch", en: "English", fr: "Français", it: "Italiano",
   es: "Español", uk: "Українська", pt: "Português", ru: "Русский",
 };
-type Tab = "about" | "availability" | "services" | "portfolio" | "reviews";
+type Tab = "about" | "services" | "portfolio" | "reviews";
 const TAB_LABEL: Record<Tab, string> = {
-  about: "Über", availability: "Verfügbarkeit", services: "Leistungen", portfolio: "Portfolio", reviews: "Bewertungen",
+  about: "Über", services: "Leistungen", portfolio: "Portfolio", reviews: "Bewertungen",
 };
 const SERVICES_PREVIEW = 4;
 const REVIEWS_PREVIEW = 3;
@@ -115,7 +114,6 @@ export default function StaffProfilePage({
 
   const tabs: Tab[] = [
     "about",
-    "availability",
     ...(services.length > 0 ? (["services"] as Tab[]) : []),
     "portfolio",
     "reviews",
@@ -327,11 +325,9 @@ export default function StaffProfilePage({
         )}
       </section>
 
-      {/* Verfügbarkeit */}
-      <section ref={setRef("availability")} data-tab="availability" className="scroll-mt-[112px] px-5 pt-9">
-        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Verfügbarkeit</p>
-        <StaffAvailability staffId={staffId} locale={locale} />
-      </section>
+      {/* No Verfügbarkeit section — owner picked A2 (2026-06-11, council round):
+          pure Fresha employee-profile anatomy; availability lives in the booking
+          date picker, not on the profile. */}
 
       {/* Leistungen */}
       {services.length > 0 && (
