@@ -169,6 +169,20 @@ Before applying, building, or committing ANY visual / design change: **show the 
 
 ---
 
+## 🪦 Exists-check protocol (anti-duplication, council 2026-06-12)
+
+The #1 post-compression failure: proposing/rebuilding what already exists or was deliberately removed.
+Three layers, all live:
+
+1. **`npm run exists <keyword>`** — live scan over routes, APIs, components, lib, DB, **page-inline
+   sections**, and the **🪦 graveyard** (`_design-system/REMOVED.md`: owner-deleted/rejected things;
+   a hit there = do not re-propose without an explicit owner yes). Run it BEFORE proposing anything.
+2. **`_design-system/REMOVED.md`** — when the owner deletes/rejects a feature, ADD A LINE in the same
+   turn (keywords | what | why/when | record). The graveyard only works if it's fed.
+3. **Hook-enforced**: new routes/APIs/migrations/mockups block unless `npm run exists` ran this turn,
+   and every NEW mockup file must contain an `Exists-check:` line naming what the target surface
+   already renders + any REMOVED hits + the one thing that's actually new.
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the reported bug.

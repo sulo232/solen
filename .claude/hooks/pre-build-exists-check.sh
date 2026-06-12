@@ -48,6 +48,7 @@ case "$FILE" in
   */app/*/route.ts|*/app/*/route.js) SURFACE="API endpoint";;
   */supabase/migrations/*.sql)       SURFACE="DB migration";;
   */public/solen-*.html)             SURFACE="design mockup";;
+  */public/_mockups/*.html)          SURFACE="design mockup";;
   *) exit 0;;
 esac
 
@@ -56,6 +57,24 @@ FLAG="$PROJECT_DIR/.claude/exists-skip.flag"
 if [[ -f "$FLAG" ]]; then
   AGE=$(( $(date +%s) - $(stat -f %m "$FLAG" 2>/dev/null || stat -c %Y "$FLAG" 2>/dev/null || echo 0) ))
   [[ $AGE -le 1800 ]] && exit 0
+fi
+
+# 2b. Mockups must carry an explicit Exists-check: line in their note (council
+# anti-duplication design 2026-06-12) — names what already exists on the target
+# surface and why this proposal is not it. No marker → block regardless of step 3.
+if [[ "$SURFACE" == "design mockup" ]]; then
+  CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
+  if [[ -n "$CONTENT" && "$CONTENT" != *"Exists-check:"* ]]; then
+    cat <<EOM >&2
+[pre-build-exists-check] New mockup without an "Exists-check:" line:
+  $FILE
+Every mockup note must name (a) what the TARGET route/surface already renders
+(npm run exists <term> + read the live page) and (b) any 🪦 REMOVED.md hits.
+Add a line like:  Exists-check: /fuer-salons already has categories grid +
+comparison chart + badges (page.tsx:124/245/279); REMOVED: none. NEW: only X.
+EOM
+    exit 2
+  fi
 fi
 
 # 3. Did `npm run exists` run in this turn? (scan recent transcript Bash commands)
