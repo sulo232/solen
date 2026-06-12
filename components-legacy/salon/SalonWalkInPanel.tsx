@@ -40,7 +40,7 @@ const COPY: Record<string, {
       "Karte wird nur gehalten, belastet wenn du dran bist.",
       "Kostenlos stornierbar, bis du aufgerufen wirst.",
     ],
-    openLabel: "Walk-ins offen", busyLabel: "Stark gefragt", closedLabel: "Momentan geschlossen",
+    openLabel: "Offen", busyLabel: "Stark gefragt", closedLabel: "Geschlossen",
     emptyBig: "Keine Wartezeit, komm vorbei", emptySub: "Jetzt zahlen und Platz sichern",
     busySub: "Jetzt zahlen, Platz in der Schlange sichern", closedBig: "Gerade geschlossen",
     ahead: "vor dir", min: "Min", waitW: "Wartezeit",
@@ -55,7 +55,7 @@ const COPY: Record<string, {
       "Card is held now, charged when it's your turn.",
       "Cancel free until you're called.",
     ],
-    openLabel: "Open for walk-ins", busyLabel: "In demand", closedLabel: "Currently closed",
+    openLabel: "Open", busyLabel: "In demand", closedLabel: "Closed",
     emptyBig: "No wait, walk right in", emptySub: "Pay now to lock your spot",
     busySub: "Pay now to hold your place in line", closedBig: "Closed right now",
     ahead: "ahead", min: "min", waitW: "wait",
@@ -70,7 +70,7 @@ const COPY: Record<string, {
       "Carte préautorisée, débitée quand c'est votre tour.",
       "Annulation gratuite jusqu'à votre appel.",
     ],
-    openLabel: "Walk-ins ouverts", busyLabel: "Forte affluence", closedLabel: "Actuellement fermé",
+    openLabel: "Ouvert", busyLabel: "Forte affluence", closedLabel: "Fermé",
     emptyBig: "Pas d'attente, entrez", emptySub: "Payez pour réserver votre place",
     busySub: "Payez pour garder votre place", closedBig: "Fermé pour le moment",
     ahead: "devant vous", min: "min", waitW: "d'attente",
@@ -85,7 +85,7 @@ const COPY: Record<string, {
       "Carta trattenuta, addebitata quando tocca a te.",
       "Annullamento gratuito fino alla chiamata.",
     ],
-    openLabel: "Walk-in aperti", busyLabel: "Molto richiesto", closedLabel: "Attualmente chiuso",
+    openLabel: "Aperto", busyLabel: "Molto richiesto", closedLabel: "Chiuso",
     emptyBig: "Nessuna attesa, entra pure", emptySub: "Paga ora per assicurarti il posto",
     busySub: "Paga ora per tenere il posto", closedBig: "Ora chiuso",
     ahead: "prima di te", min: "min", waitW: "di attesa",
@@ -113,18 +113,20 @@ export default function SalonWalkInPanel({
   isOpen?: boolean;
 }) {
   const l = COPY[locale] ?? COPY.de;
-  const [stats, setStats] = useState<{ ahead: number; wait_minutes: number; busy?: boolean } | null>(null);
+  const [stats, setStats] = useState<{ ahead: number; wait_minutes: number; wait_low?: number; busy?: boolean } | null>(null);
   const [barberId, setBarberId] = useState<string | null>(null); // null = "Egal"
   const [infoOpen, setInfoOpen] = useState(false);
 
+  // Per-barber dynamic wait (owner 2026-06-12): picking a barber refetches THEIR
+  // line; Egal shows the anyone-wait across the whole crew.
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/walkin/queue-stats?salon_id=${salonId}`)
+    fetch(`/api/walkin/queue-stats?salon_id=${salonId}${barberId ? `&staff_id=${barberId}` : ""}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d) setStats(d); })
       .catch((e) => console.error("[SalonWalkInPanel] queue-stats failed:", e));
     return () => { cancelled = true; };
-  }, [salonId]);
+  }, [salonId, barberId]);
 
   const svcName = (s: WalkInService) => (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service";
 
@@ -137,10 +139,11 @@ export default function SalonWalkInPanel({
   // Fresha open-green #1F8900 (s-open token; owner: the bright #16A34A read off)
   const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#1F8900";
   const statusLabel = !isOpen ? l.closedLabel : busy ? l.busyLabel : l.openLabel;
-  // Owner 2026-06-12: "3 vor dir ~35 Min Wartezeit" crammed in one line read wrong.
-  // Big line = the wait ("ca. 35 Min Wartezeit"); the queue depth is the sub line.
-  const bigLine = !isOpen ? l.closedBig : hasQueue ? `ca. ${wait} ${l.min} ${l.waitW}` : l.emptyBig;
-  const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead}, ${l.busySub.charAt(0).toLowerCase()}${l.busySub.slice(1)}` : l.emptySub;
+  // v3 (LOCKFILE §0 rule 12): wait is a RANGE "20–35 Min" (en-dash allowed only
+  // in numeric ranges), caption is the count only ("3 vor dir").
+  const low = stats?.wait_low ?? 0;
+  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${low}–${wait} ${l.min}` : l.emptyBig;
+  const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead}` : l.emptySub;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -159,36 +162,32 @@ export default function SalonWalkInPanel({
           booking and walk-in") — sunken header + live status + barber + services all
           INSIDE one bordered card, visually distinct from the booking sections. */}
       <div className="overflow-hidden rounded-[24px] border border-s-border bg-white">
-        {/* Header — title + tagline + (i) on the sunken band */}
-        <div className="flex items-center justify-between gap-3 bg-s-bg-sunken px-5 py-3.5">
-          <span className="font-display text-[14.5px] font-semibold tracking-[-.01em] text-s-ink">
-            {l.what} <span className="text-s-ink-3">|</span> <span className="font-medium text-s-ink-2">{l.tagline}</span>
-          </span>
-          <button
-            type="button"
-            onClick={() => setInfoOpen(true)}
-            aria-label={l.howTitle}
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
-          >
-            <Info className="h-[15px] w-[15px]" />
-          </button>
-        </div>
-
-        {/* Live status */}
+        {/* Live status — v3: (i) lives here, big line is the wait range */}
         <div className="px-5 py-[18px]">
-          <div className="flex items-center gap-2.5">
-            {isOpen ? (
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
-                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
-              </span>
-            ) : (
-              <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
-            )}
-            <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
+          <div className="flex items-center justify-between">
+            <span className="inline-flex items-center gap-2.5">
+              {isOpen ? (
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
+                </span>
+              ) : (
+                <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
+              )}
+              <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setInfoOpen(true)}
+              aria-label={l.howTitle}
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
+            >
+              <Info className="h-[15px] w-[15px]" />
+            </button>
           </div>
-          <div className="mt-2.5 font-display text-[19px] font-semibold leading-[1.15] tracking-[-.02em] tabular-nums text-s-ink">{bigLine}</div>
-          {subLine ? <div className="mt-1 font-body text-[13px] text-s-ink-2">{subLine}</div> : null}
+          {hasQueue && isOpen && <div className="mt-2.5 font-body text-[13px] text-s-ink-2">{l.waitW}</div>}
+          <div className={`font-display font-semibold leading-none tracking-[-.02em] tabular-nums text-s-ink ${hasQueue && isOpen ? "mt-1 text-[32px]" : "mt-2.5 text-[19px] leading-[1.15]"}`}>{bigLine}</div>
+          {subLine ? <div className="mt-2 font-body text-[13px] text-s-ink-2">{subLine}</div> : null}
         </div>
 
         {/* Barber pick — inside the card */}

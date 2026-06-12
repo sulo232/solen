@@ -35,8 +35,9 @@ export function SalonOpeningTimes({
           const dayHours = hours[day];
           const isOpen = Boolean(dayHours);
           return (
-            /* Fresha hours anatomy (pdp-bottom capture, owner 2026-06-12): NO per-day
-               dots (banned decoration); plain day + times, today bold, closed grey. */
+            /* Hours rows: per-day status dot RESTORED (owner 2026-06-12: 'I like the
+               green dot on the date section, bring that back') in the Fresha s-open
+               green; today bold, closed grey. */
             <li
               key={day}
               className={cn(
@@ -44,7 +45,13 @@ export function SalonOpeningTimes({
                 isToday ? "font-semibold text-s-ink" : "text-s-ink-2"
               )}
             >
-              <span>{DAY_LABEL[day]}</span>
+              <span className="inline-flex items-center gap-3">
+                <span
+                  className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-open" : "bg-s-ink-3/40")}
+                  aria-hidden
+                />
+                {DAY_LABEL[day]}
+              </span>
               <span className={cn(!isOpen && "text-s-ink-3")}>
                 {dayHours ? `${dayHours.open} bis ${dayHours.close}` : "Geschlossen"}
               </span>

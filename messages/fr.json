@@ -5784,6 +5784,8 @@
     "contactTitle": "Vos coordonnées",
     "contactName": "Nom",
     "contactPhone": "Numéro de téléphone",
+    "contactChange": "Modifier",
+    "contactHint": "Pour la confirmation. Enregistré dans votre profil.",
     "payOnlineSub": "Carte ou TWINT, sécurisé par Stripe",
     "payAtSalonSub": "{amount} directement au salon",
     "payAtSalonDesc": "Vous payez {amount} directement sur place. Aucun paiement en ligne nécessaire.",

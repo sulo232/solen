@@ -5773,6 +5773,8 @@
     "contactTitle": "I tuoi contatti",
     "contactName": "Nome",
     "contactPhone": "Numero di telefono",
+    "contactChange": "Modifica",
+    "contactHint": "Per la conferma. Salvato nel tuo profilo.",
     "payOnlineSub": "Carta o TWINT, sicuro con Stripe",
     "payAtSalonSub": "{amount} direttamente in salone",
     "payAtSalonDesc": "Paghi {amount} direttamente sul posto. Nessun pagamento online necessario.",

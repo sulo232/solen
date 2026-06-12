@@ -5802,6 +5802,8 @@
     "contactTitle": "Deine Kontaktdaten",
     "contactName": "Name",
     "contactPhone": "Telefonnummer",
+    "contactChange": "Ändern",
+    "contactHint": "Für die Terminbestätigung. Wird gespeichert.",
     "payOnlineSub": "Karte oder TWINT, sicher per Stripe",
     "payAtSalonSub": "{amount} direkt vor Ort",
     "payAtSalonDesc": "Du bezahlst {amount} direkt vor Ort. Keine Online-Zahlung nötig.",

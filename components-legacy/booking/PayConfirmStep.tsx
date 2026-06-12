@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store } from 'lucide-react';
+import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store, UserRound } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
 import { formatSwissPhoneInput } from '@/lib/format-phone';
@@ -72,6 +72,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [contactLoaded, setContactLoaded] = useState(false);
+  const [editingContact, setEditingContact] = useState(false);
   useEffect(() => {
     if (!isLoggedIn) return;
     let alive = true;
@@ -406,18 +407,44 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       {/* SP-1: guest contact form (logged-out only). Rebuilt to the review-and-confirm mockup
           (solen-refund-guest-booking-form.html): fields-only, lifts GuestInfo live; the single
           Buchen CTA force-validates via the form ref. */}
+      {/* Contact — mockup 28/28b (owner-approved 2026-06-12): complete data shows a
+          quiet SUMMARY ROW with Ändern; anything missing (or editing) shows only the
+          needed fields. Guests keep GuestBookingForm below (they ARE the type-in case). */}
       {isLoggedIn && contactLoaded && (
-        <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
-          <p className="font-heading text-[15px] font-semibold text-s-ink tracking-[-0.01em]">{tp('contactTitle')}</p>
-          <div className="mt-3 flex flex-col gap-3">
-            <input
-              type="text"
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              placeholder={tp('contactName')}
-              aria-label={tp('contactName')}
-              className="w-full"
-            />
+        contactName.trim() && contactPhone.replace(/\D/g, '').length >= 9 && !editingContact ? (
+          <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+            <div className="flex items-center gap-3">
+              <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
+                <p className="font-body mt-px text-[13px] text-s-ink-2">{contactPhone}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingContact(true)}
+                className="font-body text-[13.5px] font-semibold text-s-accent transition-opacity hover:opacity-80"
+              >
+                {tp('contactChange')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+            {contactName.trim() && !editingContact ? (
+              <div className="flex items-center gap-3">
+                <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
+                <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                placeholder={tp('contactName')}
+                aria-label={tp('contactName')}
+                className="w-full"
+              />
+            )}
             <input
               type="tel"
               inputMode="tel"
@@ -425,10 +452,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               onChange={(e) => setContactPhone(formatSwissPhoneInput(e.target.value))}
               placeholder={tp('contactPhone')}
               aria-label={tp('contactPhone')}
-              className="w-full"
+              className="mt-3 w-full"
             />
+            <p className="font-body mt-1.5 text-[12px] text-s-ink-3">{tp('contactHint')}</p>
           </div>
-        </div>
+        )
       )}
 
       {!isLoggedIn && (
