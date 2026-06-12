@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -72,6 +73,14 @@ export default function StaffProfilePage({
   onSelect?: (staffId: string) => void;
 }) {
   const locale = useLocale();
+  const router = useRouter();
+  // Back goes BACK in history (the old <Link> PUSHED the salon page, so the
+  // salon's back returned here — endless ping-pong, owner 2026-06-12).
+  // Deep links (fresh tab, no history) still land on the salon page.
+  const handleBack = () => {
+    if (window.history.length > 1) router.back();
+    else router.push(`/${locale}/salon/${salonSlug}`);
+  };
   const [staff, setStaff] = useState<StaffProfile | null>(null);
   const [portfolio, setPortfolio] = useState<PortfolioImage[]>([]);
   const [services, setServices] = useState<StaffService[]>([]);
@@ -207,9 +216,9 @@ export default function StaffProfilePage({
             <X size={20} className="text-s-ink" />
           </button>
         ) : (
-          <Link href={`/${locale}/salon/${salonSlug}`} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
+          <button type="button" onClick={handleBack} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <ArrowLeft size={20} className="text-s-ink" />
-          </Link>
+          </button>
         )}
         <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>
           <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
