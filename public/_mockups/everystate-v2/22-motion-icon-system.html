@@ -2,174 +2,189 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>22 — ONE motion language + icon fixes (live animations)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="kit.css">
+<title>22 v2 — NEW animation ideas (big live demos)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  body{padding-bottom:80px}
-  .row{display:flex;gap:14px;flex-wrap:wrap}
-  .card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px;width:300px}
-  .card h4{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;margin:0 0 4px}
-  .card p.d{font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0 0 16px}
-  .stage{background:var(--sunken);border-radius:14px;padding:18px;min-height:120px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+  /* self-contained — no kit.css dependency */
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#A1A1AA;--border:#E4E4E7;--sunken:#F4F4F5;--blue:#276EF1;--star:#FFC32B;--heart:#FF3366;--green:#16A34A}
+  *{box-sizing:border-box;margin:0}
+  body{background:#fff;color:var(--ink);font-family:Inter,sans-serif;padding:20px 16px 90px;max-width:480px;margin:0 auto}
+  h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{font-size:13.5px;color:var(--ink2);line-height:1.5;margin-bottom:26px}
+  .demo{margin-bottom:18px;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:#fff}
+  .demo .head{padding:14px 18px 0}
+  .demo .num{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:12px;color:var(--ink3);letter-spacing:.06em}
+  .demo h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:17px;margin:2px 0 3px}
+  .demo .cap{font-size:13px;color:var(--ink2);line-height:1.45}
+  .stage{background:var(--sunken);margin:14px;border-radius:16px;min-height:170px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 
-  /* 1 — skeleton shimmer (THE loading language) */
-  .sk{position:relative;overflow:hidden;background:#E9E9EB;border-radius:10px}
-  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
-    animation:shim 1.4s infinite}
-  @keyframes shim{100%{transform:translateX(100%)}}
-  .spin{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:999px;animation:rot 0.8s linear infinite;margin:24px auto}
-  @keyframes rot{100%{transform:rotate(360deg)}}
+  /* 1 — ADD-TO-CART FLY: the + sends a dot arcing into the cart pill, count bumps */
+  .s1{flex-direction:column;gap:26px;padding:24px}
+  .svcrow{width:100%;background:#fff;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600}
+  .plus{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;animation:p94 3.2s ease infinite}
+  .flydot{position:absolute;width:12px;height:12px;border-radius:999px;background:var(--ink);right:54px;top:58px;opacity:0;animation:fly 3.2s cubic-bezier(.4,0,.6,1) infinite}
+  @keyframes fly{8%{opacity:1;transform:translate(0,0) scale(1)}30%{opacity:1;transform:translate(-60px,70px) scale(.5)}34%,100%{opacity:0;transform:translate(-60px,80px) scale(.3)}}
+  .cartpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:12px 20px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px}
+  .cartn{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:999px;background:#fff;color:var(--ink);font-size:12.5px;font-weight:800;animation:bump 3.2s cubic-bezier(.34,1.56,.64,1) infinite}
+  @keyframes bump{30%{transform:scale(1)}38%{transform:scale(1.5)}48%,100%{transform:scale(1)}}
+  @keyframes p94{4%{transform:scale(.9)}10%{transform:scale(1)}}
 
-  /* 2 — X collapse press (0.94 icon tier) */
-  .xbtn{width:44px;height:44px;border-radius:999px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;margin:0 auto;animation:xpress 2.2s cubic-bezier(.34,1.56,.64,1) infinite}
-  @keyframes xpress{0%,100%{transform:scale(1)}12%{transform:scale(.94)}24%{transform:scale(1)}}
+  /* 2 — HEART BURST: pop + particles */
+  .hwrap{position:relative;width:72px;height:72px;display:grid;place-items:center}
+  .hbtn{width:64px;height:64px;border-radius:999px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.08);display:grid;place-items:center;animation:hpop 2.6s cubic-bezier(.34,1.56,.64,1) infinite}
+  .hbtn .lucide{width:28px;height:28px;color:var(--heart);fill:var(--heart)}
+  @keyframes hpop{10%{transform:scale(.8)}22%{transform:scale(1.18)}32%,100%{transform:scale(1)}}
+  .pt{position:absolute;width:7px;height:7px;border-radius:999px;background:var(--heart);opacity:0}
+  .pt:nth-child(2){animation:pa 2.6s ease-out infinite}.pt:nth-child(3){animation:pb 2.6s ease-out infinite}
+  .pt:nth-child(4){animation:pc 2.6s ease-out infinite}.pt:nth-child(5){animation:pd 2.6s ease-out infinite}
+  .pt:nth-child(6){animation:pe 2.6s ease-out infinite}.pt:nth-child(7){animation:pf 2.6s ease-out infinite}
+  @keyframes pa{20%{opacity:1}45%{transform:translate(-38px,-30px) scale(.4);opacity:0}100%{opacity:0}}
+  @keyframes pb{20%{opacity:1}45%{transform:translate(38px,-30px) scale(.4);opacity:0}100%{opacity:0}}
+  @keyframes pc{20%{opacity:1}45%{transform:translate(-44px,8px) scale(.4);opacity:0}100%{opacity:0}}
+  @keyframes pd{20%{opacity:1}45%{transform:translate(44px,8px) scale(.4);opacity:0}100%{opacity:0}}
+  @keyframes pe{20%{opacity:1}45%{transform:translate(-20px,-46px) scale(.4);opacity:0}100%{opacity:0}}
+  @keyframes pf{20%{opacity:1}45%{transform:translate(20px,-46px) scale(.4);opacity:0}100%{opacity:0}}
 
-  /* 3 — press tiers */
-  .tier-cta{height:46px;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;animation:p97 2.4s ease infinite}
-  .tier-row{height:54px;border-radius:14px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;padding:0 16px;font-size:14px;animation:p98 2.4s .3s ease infinite}
-  .tier-icon{width:40px;height:40px;border-radius:999px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;animation:p94 2.4s .6s ease infinite}
-  @keyframes p97{0%,100%{transform:scale(1)}10%{transform:scale(.97)}20%{transform:scale(1)}}
-  @keyframes p98{0%,100%{transform:scale(1)}10%{transform:scale(.98)}20%{transform:scale(1)}}
-  @keyframes p94{0%,100%{transform:scale(1)}10%{transform:scale(.94)}20%{transform:scale(1)}}
+  /* 3 — PRICE ODOMETER: digits roll when the total changes */
+  .odo{display:flex;align-items:baseline;gap:6px;font-family:'Inter Tight',sans-serif;font-weight:800;font-size:34px}
+  .odo small{font-size:15px;color:var(--ink2);font-weight:600}
+  .digit{display:inline-block;height:38px;overflow:hidden}
+  .digit span{display:block;line-height:38px;animation:roll 3s cubic-bezier(.16,1,.3,1) infinite}
+  @keyframes roll{0%,25%{transform:translateY(0)}45%,100%{transform:translateY(-38px)}}
 
-  /* 4 — cart count bump */
-  .cartpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:11px 18px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13.5px;margin:0 auto}
-  .cartn{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:#fff;color:var(--ink);font-size:12px;font-weight:700;animation:bump 2.6s cubic-bezier(.34,1.56,.64,1) infinite}
-  @keyframes bump{0%,100%{transform:scale(1)}8%{transform:scale(1.45)}18%{transform:scale(1)}}
+  /* 4 — CTA → SUCCESS MORPH: button collapses into the green disc */
+  .morphwrap{position:relative;width:240px;height:64px;display:grid;place-items:center}
+  .morphbtn{position:absolute;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;animation:morph 3.6s cubic-bezier(.34,1.56,.64,1) infinite;width:240px}
+  .morphbtn .t{animation:morphtxt 3.6s ease infinite}
+  @keyframes morph{0%,28%{width:240px;background:#0A0A0A}48%,86%{width:52px;background:#16A34A}100%{width:240px;background:#0A0A0A}}
+  @keyframes morphtxt{0%,28%{opacity:1}38%,86%{opacity:0}100%{opacity:1}}
+  .morphcheck{position:absolute;color:#fff;opacity:0;animation:mck 3.6s ease infinite}
+  .morphcheck .lucide{width:24px;height:24px;stroke-width:3}
+  @keyframes mck{0%,46%{opacity:0;transform:scale(.4)}56%,84%{opacity:1;transform:scale(1)}92%,100%{opacity:0}}
 
-  /* 5 — star rating pop */
-  .stars{display:flex;gap:8px;justify-content:center}
-  .stars .lucide{width:26px;height:26px;color:#FFC32B;fill:#FFC32B;opacity:0;transform:scale(.3);animation:starpop .5s cubic-bezier(.34,1.56,.64,1) forwards}
-  .stars .lucide:nth-child(1){animation-delay:.2s}.stars .lucide:nth-child(2){animation-delay:.35s}
-  .stars .lucide:nth-child(3){animation-delay:.5s}.stars .lucide:nth-child(4){animation-delay:.65s}
-  .stars .lucide:nth-child(5){animation-delay:.8s}
-  @keyframes starpop{60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
-  .starwrap{animation:starreset 3.4s infinite}
+  /* 5 — SLOT CASCADE: pick a day → time chips cascade in */
+  .s5{flex-direction:column;gap:14px;padding:22px}
+  .days{display:flex;gap:8px}
+  .day{width:52px;height:62px;border-radius:14px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:var(--ink2)}
+  .day b{font-family:'Inter Tight',sans-serif;font-size:17px;color:var(--ink)}
+  .day.on{background:var(--ink);color:#fff}.day.on b{color:#fff}
+  .day.on{animation:daypick 3.4s cubic-bezier(.34,1.56,.64,1) infinite}
+  @keyframes daypick{8%{transform:scale(.92)}18%{transform:scale(1.06)}26%,100%{transform:scale(1)}}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .chip{background:#fff;border:1px solid var(--border);border-radius:999px;padding:9px 15px;font-size:13.5px;font-weight:600;opacity:0;transform:translateY(10px) scale(.9)}
+  .chip:nth-child(1){animation:chipin 3.4s .25s ease infinite}.chip:nth-child(2){animation:chipin 3.4s .33s ease infinite}
+  .chip:nth-child(3){animation:chipin 3.4s .41s ease infinite}.chip:nth-child(4){animation:chipin 3.4s .49s ease infinite}
+  @keyframes chipin{8%{opacity:0;transform:translateY(10px) scale(.9)}16%,94%{opacity:1;transform:none}100%{opacity:1}}
 
-  /* 6 — live pulse dot */
-  .live{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;margin:0 auto}
-  .dotwrap{position:relative;width:8px;height:8px}
-  .dot{position:absolute;inset:0;border-radius:999px;background:#16A34A}
-  .dot.ping{animation:ping 1.6s cubic-bezier(0,0,.2,1) infinite}
-  @keyframes ping{75%,100%{transform:scale(2.4);opacity:0}}
+  /* 6 — QUEUE FLIP: position number flips down when the queue moves */
+  .flipwrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .fliplbl{font-size:13px;color:var(--ink2)}
+  .flip{perspective:300px;font-family:'Inter Tight',sans-serif;font-weight:800;font-size:46px;line-height:1}
+  .flip span{display:inline-block;animation:flipnum 3.2s cubic-bezier(.34,1.56,.64,1) infinite;transform-origin:center 60%}
+  @keyframes flipnum{0%,40%{transform:rotateX(0)}50%{transform:rotateX(90deg)}60%{transform:rotateX(0)}100%{transform:rotateX(0)}}
 
-  /* 7 — stagger rise-in */
-  .riselist .r{height:46px;border-radius:12px;background:#fff;border:1px solid var(--border);opacity:0;transform:translateY(12px);animation:rise .55s cubic-bezier(.16,1,.3,1) forwards}
-  .riselist .r:nth-child(1){animation-delay:.15s}.riselist .r:nth-child(2){animation-delay:.27s}.riselist .r:nth-child(3){animation-delay:.39s}
-  @keyframes rise{100%{opacity:1;transform:none}}
-  .riseloop{animation:none}
+  /* 7 — STAMP SLAM: loyalty stamp slams in with ring */
+  .stampcard{display:flex;gap:10px}
+  .slot{width:44px;height:44px;border-radius:999px;border:2px dashed var(--border);display:grid;place-items:center;background:#fff}
+  .slot.filled{border:none;background:var(--ink)}
+  .slot.filled .lucide{width:20px;height:20px;color:#fff}
+  .slot.slam{position:relative;border:none;background:var(--ink)}
+  .slot.slam .lucide{width:20px;height:20px;color:#fff}
+  .slot.slam{animation:slam 3s cubic-bezier(.34,1.56,.64,1) infinite}
+  .slot.slam::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid var(--ink);opacity:0;animation:slamring 3s ease-out infinite}
+  @keyframes slam{0%,30%{transform:scale(2.2) rotate(-14deg);opacity:0}42%{transform:scale(.92) rotate(2deg);opacity:1}52%,100%{transform:scale(1) rotate(0)}}
+  @keyframes slamring{40%{opacity:.6;transform:scale(.8)}70%,100%{opacity:0;transform:scale(1.5)}}
 
-  /* 8 — SuccessMark (tip-sent) */
-  .smk{position:relative;width:64px;height:64px;margin:0 auto}
-  .smk .ring{position:absolute;inset:0;border-radius:999px;background:rgba(22,163,74,.25);animation:ringp 2.8s ease-out infinite}
-  .smk .disc{position:absolute;inset:0;border-radius:999px;background:#16A34A;display:grid;place-items:center;animation:discp 2.8s cubic-bezier(.34,1.56,.64,1) infinite}
-  .smk .lucide{width:30px;height:30px;color:#fff;stroke-width:3}
-  @keyframes discp{0%{transform:scale(0)}14%{transform:scale(1.12)}22%,100%{transform:scale(1)}}
-  @keyframes ringp{0%{transform:scale(.6);opacity:1}40%,100%{transform:scale(1.7);opacity:0}}
+  /* 8 — AVATAR WAVE: team bounces hello once */
+  .avs{display:flex;gap:14px}
+  .av{width:56px;height:56px;border-radius:999px;background:linear-gradient(135deg,#D4D4D8,#A1A1AA);display:grid;place-items:center;color:#fff;font-family:'Inter Tight',sans-serif;font-weight:700}
+  .av:nth-child(1){animation:wave 3.6s .2s cubic-bezier(.34,1.56,.64,1) infinite}
+  .av:nth-child(2){animation:wave 3.6s .34s cubic-bezier(.34,1.56,.64,1) infinite}
+  .av:nth-child(3){animation:wave 3.6s .48s cubic-bezier(.34,1.56,.64,1) infinite}
+  .av:nth-child(4){animation:wave 3.6s .62s cubic-bezier(.34,1.56,.64,1) infinite}
+  @keyframes wave{6%{transform:translateY(-10px)}14%,100%{transform:translateY(0)}}
 
-  table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;border-radius:14px;overflow:hidden}
-  th,td{border-bottom:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
-  th{background:var(--sunken);font-family:'Inter Tight',sans-serif;font-size:12px}
-  td code{font-size:11px;background:var(--sunken);padding:1px 5px;border-radius:5px}
+  /* 9 — BREATHING EMPTY STATE: icon floats on empty screens */
+  .breath{width:72px;height:72px;border-radius:999px;background:#fff;display:grid;place-items:center;box-shadow:0 6px 24px rgba(0,0,0,.07);animation:breathe 3.4s ease-in-out infinite}
+  .breath .lucide{width:30px;height:30px;color:var(--heart)}
+  @keyframes breathe{50%{transform:translateY(-8px) scale(1.05)}}
+
+  /* 10 — TOAST TILT-SETTLE */
+  .toast{background:var(--ink);color:#fff;border-radius:14px;padding:13px 18px;font-size:14px;font-weight:500;display:flex;gap:9px;align-items:center;animation:toastin 3s cubic-bezier(.34,1.56,.64,1) infinite}
+  .toast .lucide{width:16px;height:16px;color:#4ade80}
+  @keyframes toastin{0%,12%{transform:translateY(70px) rotate(2.5deg);opacity:0}26%{transform:translateY(-4px) rotate(-.6deg);opacity:1}34%,86%{transform:none;opacity:1}96%,100%{transform:translateY(70px);opacity:0}}
+
+  .sectionbreak{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:18px;margin:34px 0 10px}
+  .consist{font-size:13.5px;line-height:1.6;color:var(--ink2);background:var(--sunken);border-radius:16px;padding:16px}
+  .consist b{color:var(--ink)}
 </style>
 </head>
 <body>
 
-<div class="note"><b>22 — ONE motion language + icon normalization (owner ask 2026-06-12: "same animation in similar places, everywhere").</b>
-<br><b>Exists-check:</b> motion canon EXISTS (MOTION.md easings + 3-tier press + SuccessMark + LoadingStates.md skeleton grammar + .salon-card-stagger/.celebrate-rise utilities in globals.css; Skeleton primitive in registry). This sheet proposes NO new system — it ENFORCES the existing one where the audits found divergence: 24 divergent + 8 missing loading states, 83/90 X buttons without press feedback (fix = Sheet.tsx + Modal.tsx primitives, cascades app-wide), 27 scale-tier violations, 10 cute-moment gaps, 4 glyph splits + 8 hand-drawn SVGs + ~18 icon color drifts. 🪦 REMOVED checked: /entdecken NO-TOUCH (zero changes there); "imperceptible 500ms fade" rejected 2026-06-09 — all entrances below are the PERCEPTIBLE variant. Full evidence: _audits/MOTION_CONSISTENCY_AUDIT.md + _audits/ICON_CONSISTENCY_AUDIT.md.</div>
+<!-- Exists-check: NEW ideas only — none of these 10 exist in code today (verified vs MOTION.md done-list +
+     audits). The EXISTING canon (skeleton grammar, 3-tier press, X-collapse via Sheet/Modal, stagger, live
+     ping, SuccessMark on peaks) is approved-for-consistency per owner 2026-06-12 and listed at the bottom.
+     🪦 REMOVED: /entdecken untouched; "imperceptible fade" lesson respected — everything here is BIG. -->
 
-<div class="lbl">THE MOTION LANGUAGE — live, loop forever (all from existing canon)</div>
-<div class="row">
-  <div class="card">
-    <h4>1 · Loading = skeleton shimmer, never spinners</h4>
-    <p class="d">19 pages show a centered spinner (right). The ONE language: content-shaped shimmer (left) on every list/page load. Spinner survives only INSIDE buttons (submitting).</p>
-    <div class="stage">
-      <div class="sk" style="height:14px;width:60%"></div>
-      <div class="sk" style="height:14px;width:85%"></div>
-      <div class="sk" style="height:44px;border-radius:14px"></div>
-    </div>
-    <div class="stage" style="margin-top:10px"><div class="spin"></div><p style="text-align:center;font-size:11px;color:var(--ink-3);margin:0">today, on 19 pages — dies</p></div>
-  </div>
+<h1>10 NEW animation ideas</h1>
+<p class="sub">All live — watch each loop. Everything uses the locked spring/glide curves. Tell me the numbers you want (e.g. "1, 2, 4, 7") or kill the ones you hate.</p>
 
-  <div class="card">
-    <h4>2 · The X collapse — everywhere</h4>
-    <p class="d">83 of 90 close buttons have zero feedback. Fix = 2 lines in the Sheet + Modal primitives (icon tier scale .94, spring) → cascades to every sheet, modal, banner, chip.</p>
-    <div class="stage"><div class="xbtn"><i data-lucide="x" style="width:20px;height:20px"></i></div></div>
-  </div>
-
-  <div class="card">
-    <h4>3 · Press tiers (already locked, 27 violators)</h4>
-    <p class="d">CTA/card .97 · row .98 · icon .94 — the existing convention, just enforced on the 27 outliers (scale-90/95/985/99 strays).</p>
-    <div class="stage">
-      <div class="tier-cta">Weiter · .97</div>
-      <div class="tier-row">List row · .98</div>
-      <div style="display:flex;justify-content:center"><div class="tier-icon"><i data-lucide="heart" style="width:18px;height:18px"></i></div></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h4>4 · Cart count bump</h4>
-    <p class="d">Adding a service updates the number with zero motion today. The count pops (spring 1.45×) on every add — booking cart pill + "N ausgewählt".</p>
-    <div class="stage" style="align-items:center"><div class="cartpill"><i data-lucide="shopping-cart" style="width:15px;height:15px"></i>Auswahl <span class="cartn">2</span></div></div>
-  </div>
-
-  <div class="card">
-    <h4>5 · Star rating pop</h4>
-    <p class="d">Queue review stars currently just appear. Each tap pops the star in with the spring curve (and fills left-to-right on load).</p>
-    <div class="stage starwrap"><div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div></div>
-  </div>
-
-  <div class="card">
-    <h4>6 · Live dots pulse</h4>
-    <p class="d">The queue tracker pings; StatusPill "Geöffnet" + WalkInBand "Sofort frei" don't. Same ping on every LIVE state (real data only — no fabrication).</p>
-    <div class="stage" style="align-items:center"><span class="live"><span class="dotwrap"><span class="dot ping"></span><span class="dot"></span></span>Geöffnet · bis 18:00</span></div>
-  </div>
-
-  <div class="card">
-    <h4>7 · Stagger rise-in on list loads</h4>
-    <p class="d">.salon-card-stagger exists but only 3 of ~9 lists use it. First-load only, perceptible (12px + clear stagger — the subtle version was rejected).</p>
-    <div class="stage riselist"><div class="r"></div><div class="r"></div><div class="r"></div></div>
-    <p class="d" style="margin:8px 0 0;font-size:11px;color:var(--ink-3)">reload the page to replay</p>
-  </div>
-
-  <div class="card">
-    <h4>8 · SuccessMark on every peak</h4>
-    <p class="d">Tip-sent shows a static pale check today (also breaks the focal-green rule). The existing SuccessMark spring (disc pop + ring pulse) goes on ALL peaks.</p>
-    <div class="stage"><div class="smk"><span class="ring"></span><span class="disc"><i data-lucide="check"></i></span></div></div>
+<div class="demo"><div class="head"><div class="num">IDEA 1</div><h3>Add-to-cart fly</h3><p class="cap">Tap + on a service → a dot arcs down into the cart pill and the count spring-bumps. Booking step 1.</p></div>
+  <div class="stage s1">
+    <div class="svcrow">Balayage · CHF 220 <span class="plus"><i data-lucide="plus" style="width:18px;height:18px"></i></span></div>
+    <span class="flydot"></span>
+    <div class="cartpill"><i data-lucide="shopping-cart" style="width:15px;height:15px"></i>Auswahl <span class="cartn">2</span></div>
   </div>
 </div>
 
-<div class="lbl" style="margin-top:34px">ICON FIXES — mechanical, to the locked standard (top of 25+, full table in _audits/ICON_CONSISTENCY_AUDIT.md)</div>
-<table>
-  <tr><th>What</th><th>Where</th><th>Fix</th></tr>
-  <tr><td>Hand-drawn Search/Pin/Calendar SVGs</td><td>homepage Hero ×3 + SearchBar ×3</td><td>real Lucide (banned-SVG rule)</td></tr>
-  <tr><td>Hand-drawn stars</td><td>Avatar badge, TestimonialCarousel, FeaturedSalonCarousel</td><td>RatingStars primitive / <code>fill-s-star</code></td></tr>
-  <tr><td>ChevronLeft used as back</td><td>~10 sites (lookup, resend-link, queue, walk-in-pay, refund views…)</td><td>ArrowLeft / BackButton primitive</td></tr>
-  <tr><td>Stale heart pink <code>#FF4A6B</code></td><td>legacy SalonCard + FeaturedSalonCarousel</td><td><code>#FF3366</code> (canon)</td></tr>
-  <tr><td>Hex star fills <code>#FFC32B</code></td><td>walk-in-pay, SalonReviews, ServicesSheet, Staff sheets (6×)</td><td><code>fill-s-star</code> token</td></tr>
-  <tr><td>Blue icons that should be ink</td><td>HeroAboveFold rows, GuidedSearch/HairStep selection checks, search-row icons (~8)</td><td>ink per blue v3</td></tr>
-  <tr><td>CheckCircle/AlertTriangle one-offs</td><td>vouchers, ErrorFallback</td><td>bare Check / AlertCircle</td></tr>
-</table>
+<div class="demo"><div class="head"><div class="num">IDEA 2</div><h3>Heart burst</h3><p class="cap">Saving a salon: heart squashes then pops with a 6-particle burst. Salon cards + PDP + staff profiles.</p></div>
+  <div class="stage"><div class="hwrap"><div class="hbtn"><i data-lucide="heart"></i></div><span class="pt"></span><span class="pt"></span><span class="pt"></span><span class="pt"></span><span class="pt"></span><span class="pt"></span></div></div>
+</div>
 
-<div class="lbl" style="margin-top:26px">4 PICKS ONLY YOU CAN MAKE (same-context values currently split)</div>
-<table>
-  <tr><th>#</th><th>Question</th><th>Options in the wild</th><th>My pick</th></tr>
-  <tr><td>1</td><td>Hero icon-button stroke</td><td>2.1 / 2.2 / 2.25</td><td><b>2.1</b> (the approved salon-hero pair)</td></tr>
-  <tr><td>2</td><td>Sheet-close X size</td><td>16/18/20/22/24</td><td><b>20</b> inside 44px hit-area</td></tr>
-  <tr><td>3</td><td>Empty-star color</td><td>4 different greys</td><td><b>s-border #E4E4E7</b></td></tr>
-  <tr><td>4</td><td>Meta icon size</td><td>§13.7 says 14, code converged on 12-13</td><td><b>13</b> (update §13.7 to match reality)</td></tr>
-</table>
+<div class="demo"><div class="head"><div class="num">IDEA 3</div><h3>Price odometer</h3><p class="cap">The cart total ROLLS to the new number instead of snapping. Booking bottom bar + pay step.</p></div>
+  <div class="stage"><div class="odo"><small>CHF</small><span>2</span><span class="digit"><span>2<br>5</span></span><span class="digit"><span>0<br>5</span></span></div></div>
+</div>
 
-<script>lucide.createIcons();
-// replay star pop + rise-in on a loop for the demo
-setInterval(() => {
-  document.querySelectorAll('.stars .lucide, .riselist .r').forEach(el => {
-    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
-  });
-}, 4200);
-</script>
+<div class="demo"><div class="head"><div class="num">IDEA 4</div><h3>CTA → success morph</h3><p class="cap">"Buchung bestätigen" collapses into the green success disc in place — the button BECOMES the confirmation. Booking, tips, walk-in pay.</p></div>
+  <div class="stage"><div class="morphwrap"><div class="morphbtn"><span class="t">Buchung bestätigen</span></div><span class="morphcheck"><i data-lucide="check"></i></span></div></div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 5</div><h3>Day pick → slot cascade</h3><p class="cap">Choosing a date squash-pops the day card, then the free time chips cascade in. Zeit step.</p></div>
+  <div class="stage s5">
+    <div class="days"><div class="day"><span>Fr</span><b>12</b></div><div class="day on"><span>Sa</span><b>13</b></div><div class="day"><span>Mo</span><b>15</b></div></div>
+    <div class="chips"><span class="chip">09:00</span><span class="chip">10:30</span><span class="chip">14:00</span><span class="chip">16:30</span></div>
+  </div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 6</div><h3>Queue number flip</h3><p class="cap">Your position flips like a departure board when the queue moves. Queue tracker.</p></div>
+  <div class="stage"><div class="flipwrap"><span class="fliplbl">Vor dir</span><div class="flip"><span>2</span></div></div></div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 7</div><h3>Stamp slam</h3><p class="cap">Earning a loyalty stamp: it drops in big, rotates, SLAMS with a ring shockwave. Stamps page after a visit.</p></div>
+  <div class="stage"><div class="stampcard">
+    <div class="slot filled"><i data-lucide="check"></i></div>
+    <div class="slot filled"><i data-lucide="check"></i></div>
+    <div class="slot slam"><i data-lucide="check"></i></div>
+    <div class="slot"></div><div class="slot"></div>
+  </div></div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 8</div><h3>Team wave</h3><p class="cap">Staff avatars bounce hello one-by-one when the team section first scrolls into view. PDP + stylist step.</p></div>
+  <div class="stage"><div class="avs"><div class="av">E</div><div class="av">L</div><div class="av">M</div><div class="av">T</div></div></div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 9</div><h3>Breathing empty states</h3><p class="cap">The empty-state icon gently floats — the screen feels alive, not dead. Favorites/stamps/looks empties.</p></div>
+  <div class="stage"><div class="breath"><i data-lucide="heart"></i></div></div>
+</div>
+
+<div class="demo"><div class="head"><div class="num">IDEA 10</div><h3>Toast tilt-settle</h3><p class="cap">Toasts enter with a tiny tilt and settle straight — feels physical instead of sliding flat.</p></div>
+  <div class="stage"><div class="toast"><i data-lucide="check-circle"></i>Salon gespeichert</div></div>
+</div>
+
+<div class="sectionbreak">+ the consistency pass (already approved)</div>
+<p class="consist"><b>Rolling regardless of the picks above</b> (your "use em for consistency" call): skeleton shimmer replaces all 19 spinner pages · X-collapse press on every close button (2 primitive edits) · 27 press-scale strays normalized · stagger rise-in on all 9 lists · live ping on every real live-status dot · SuccessMark on the tip-sent peak · the 25 icon fixes (hand-drawn SVGs → Lucide, ChevronLeft backs → ArrowLeft, hex stars/hearts → tokens, blue icons → ink). Full evidence: _audits/MOTION_CONSISTENCY_AUDIT.md + _audits/ICON_CONSISTENCY_AUDIT.md.</p>
+
+<script>lucide.createIcons();</script>
 </body>
 </html>
