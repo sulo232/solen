@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Wallet, ShieldCheck, AlertCircle, Scissors, Calendar, Star } from 'lucide-react';
+import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
 import { Avatar } from '@/app/[locale]/_components/primitives';
@@ -109,9 +109,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const depositPct = Math.min(100, Math.max(1, Number(salonExt.deposit_percent) || 20));
   const depositAmount = Math.round(totalPrice * depositPct) / 100;              // CHF charged now (deposit)
   const remainingAtSalon = Math.round((totalPrice - depositAmount) * 100) / 100;
-  const chargeNow = paymentMode === 'at_salon' ? 0 : paymentMode === 'deposit' ? depositAmount : totalPrice;
-  // online for deposit/prepay (card step); in_person for at_salon (booked without a charge).
-  const paymentMethod: 'online' | 'in_person' = paymentMode === 'at_salon' ? 'in_person' : 'online';
+
+  // deposit/prepay -> online (salon-mandated). at_salon -> the CUSTOMER chooses
+  // (mockup 24d ink, owner-approved 2026-06-12): online preselected, salon below.
+  const [payChoice, setPayChoice] = useState<'online' | 'in_person'>('online');
+  const paymentMethod: 'online' | 'in_person' = paymentMode === 'at_salon' ? payChoice : 'online';
+  const chargeNow = paymentMode === 'at_salon' ? (paymentMethod === 'online' ? totalPrice : 0) : paymentMode === 'deposit' ? depositAmount : totalPrice;
 
   // Build the /confirmation path. A guest carries access_token (+ ref) so the page can show the
   // order number + exchange the token for the httpOnly cookie; a logged-in user just gets the id.
@@ -353,13 +356,6 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         </div>
       </div>
 
-      {/* (c) Cancellation policy mini-banner */}
-      <div className="flex items-start gap-2 px-1">
-        <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
-        <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
-          {tp('cancellationPolicy', { hours: cancellationHours })}
-        </p>
-      </div>
 
       {/* ── PHASE 'select' — payment-method selector + (guest) contact form + Buchen CTA ── */}
       {phase === 'select' && (
@@ -391,14 +387,43 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           {tp('paymentEyebrow')}
         </p>
         {paymentMode === 'at_salon' ? (
-          <div className="flex items-start gap-3 px-4 py-3.5 rounded-[12px] border border-s-border">
-            <Wallet size={20} className="text-s-ink shrink-0 mt-0.5" aria-hidden />
-            <div>
-              <p className="font-body text-[14px] font-semibold text-s-ink">{tp('payAtSalonTitle')}</p>
-              <p className="font-body text-[12px] text-s-ink-2 mt-0.5">
-                {tp('payAtSalonDesc', { amount: formatPrice(totalPrice, localeCode) })}
-              </p>
-            </div>
+          /* Mockup 24d (ink, owner 2026-06-12): online ABOVE, salon below; selected =
+             2px ink wrap (no radio dots); icon discs (blue card / ink store). */
+          <div className="flex flex-col gap-2.5">
+            <button
+              type="button"
+              aria-pressed={payChoice === 'online'}
+              onClick={() => setPayChoice('online')}
+              className={`flex w-full items-center gap-3 rounded-[12px] bg-white px-4 py-4 text-left transition-colors ${
+                payChoice === 'online' ? 'border-2 border-s-ink' : 'border border-s-border'
+              }`}
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-accent-pale">
+                <CreditCard size={20} strokeWidth={2.1} className="text-s-accent" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-body text-[14px] font-semibold text-s-ink">{tp('payOnlineTitle')}</span>
+                <span className="mt-0.5 block font-body text-[12.5px] text-s-ink-2">{tp('payOnlineSub')}</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-pressed={payChoice === 'in_person'}
+              onClick={() => setPayChoice('in_person')}
+              className={`flex w-full items-center gap-3 rounded-[12px] bg-white px-4 py-4 text-left transition-colors ${
+                payChoice === 'in_person' ? 'border-2 border-s-ink' : 'border border-s-border'
+              }`}
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-bg-sunken">
+                <Store size={20} strokeWidth={2.1} className="text-s-ink" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-body text-[14px] font-semibold text-s-ink">{tp('payAtSalonTitle')}</span>
+                <span className="mt-0.5 block font-body text-[12.5px] text-s-ink-2">
+                  {tp('payAtSalonSub', { amount: formatPrice(totalPrice, localeCode) })}
+                </span>
+              </span>
+            </button>
           </div>
         ) : paymentMode === 'deposit' ? (
           <>
@@ -430,6 +455,14 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             <p className="font-body text-[12px] text-s-ink/40 mt-0.5">{tp('fullPrepayment')}</p>
           </div>
         )}
+      </div>
+
+      {/* Cancellation policy mini-banner — below Zahlung per owner (mockup 24c/24d) */}
+      <div className="flex items-start gap-2 px-1">
+        <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
+        <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
+          {tp('cancellationPolicy', { hours: cancellationHours })}
+        </p>
       </div>
 
 

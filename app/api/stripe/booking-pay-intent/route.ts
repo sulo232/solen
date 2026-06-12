@@ -137,14 +137,15 @@ export async function POST(req: NextRequest) {
   //   flow offers only in-person). Unset defaults to at_salon to match the settings default,
   //   PayConfirmStep, and the bookings-route guard (the other 3 of 4 places all treat unset as at_salon).
   const paymentMode = String((salon as { payment_mode?: string }).payment_mode ?? "at_salon");
-  if (paymentMode === "at_salon") {
-    return NextResponse.json({ error: "Dieser Salon kassiert vor Ort.", code: "AT_SALON" }, { status: 400 });
-  }
+  // at_salon: online pay is the CUSTOMER's optional choice (mockup 24d, owner
+  // 2026-06-12) — an intent request only ever comes from a customer who picked
+  // "Jetzt online bezahlen", so charge the full price. The accepts_online_payment
+  // + stripe_account_id gates above still fail-closed for unconfigured salons.
   const fullRappen = toRappen(priceChf);
   const depositPct = Math.min(100, Math.max(1, Number((salon as { deposit_percent?: number }).deposit_percent) || 20));
   const amountRappen = paymentMode === "deposit"
     ? Math.max(50, Math.round((fullRappen * depositPct) / 100))   // ≥ CHF 0.50 (Stripe minimum)
-    : fullRappen;
+    : fullRappen;                                                  // prepay AND at_salon-by-choice → full
   const chargeChf = amountRappen / 100;
 
   // 4. Re-verify the slot is still held by THIS booking (don't take a card for
