@@ -233,6 +233,17 @@ export default function RegisterPage() {
   const [prevStep, setPrevStep] = useState<WizardStep>(-1);
   const [salonIntent, setSalonIntent] = useState(false);
 
+  // Already signed in (e.g. browser-back onto this page) -> leave immediately,
+  // same guard as SignIn; otherwise the wizard reads as "you got logged out".
+  useEffect(() => {
+    import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) =>
+      createBrowserSupabaseClient().auth.getSession().then(({ data }) => {
+        if (data.session) window.location.replace(`/${locale}`);
+      })
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Read intent=salon from URL on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

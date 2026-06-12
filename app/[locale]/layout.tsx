@@ -24,8 +24,6 @@ import OfflineBanner from "./_components/layout/OfflineBanner";
 // components-legacy/ui/CookieBanner.tsx kept until next sweep.
 import { CookieConsentProvider } from "./_components/primitives/CookieConsent";
 import PWAInstallPrompt from "@/components-legacy/ui/PWAInstallPrompt";
-import TosPrompt from "@/components-legacy/auth/TosPrompt";
-import TOSUpdateBanner from "@/components-legacy/global/TOSUpdateBanner";
 import Breadcrumb from "@/components-legacy/ui/Breadcrumb";
 import PageTransitionWrapper from "@/components-legacy/layout/PageTransitionWrapper";
 import MotionProvider from "@/components-legacy/layout/MotionProvider";
@@ -124,8 +122,6 @@ export default async function LocaleLayout({
           {/* CookieConsentProvider auto-mounts the banner; placed at provider
               level so analytics / marketing consent is queryable everywhere. */}
           <PWAInstallPrompt />
-          <TosPrompt />
-          <TOSUpdateBanner />
         </CookieConsentProvider>
         {/* V3-D195: primitives Toaster portal — the single mount for the
             toast.success()/toast.error() module-singleton API. */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
@@ -24,6 +24,15 @@ export default function SignIn() {
   const [resetSent, setResetSent] = useState(false);
 
   const supabase = createBrowserSupabaseClient();
+
+  // Already signed in (e.g. browser-back onto this page) -> leave immediately.
+  // Without this the form renders again and reads as "you got logged out".
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) window.location.replace(redirect);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleGoogle = async () => {
     setLoading(true);
