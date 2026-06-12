@@ -216,23 +216,37 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
         />
       </div>
 
-      {/* Mockup-04 verify (2026-06-11): waitlist card is persistent below the picker,
-          not only inside the no-slots empty state. */}
-      <div className="mt-5 rounded-2xl border border-s-border bg-[--raised] p-4">
-        <div className="flex items-center gap-2 font-heading text-[15px] font-bold text-s-ink">
-          {tWait('dontMissTitle')}
+      {/* Waitlist (restructured, owner 2026-06-12): the FULL card appears only when
+          the selected day genuinely has nothing free (it IS the answer then); on a
+          normal day it shrinks to one quiet ink line. One primary per screen —
+          the old always-on ink card competed with Weiter. */}
+      {formData.selectedDate && !isLoadingSlots && slots.filter((sl) => sl.available).length === 0 && !slotsError ? (
+        <div className="mt-5 rounded-2xl border border-s-border bg-[--raised] p-4">
+          <div className="flex items-center gap-2 font-heading text-[15px] font-bold text-s-ink">
+            {tWait('dontMissTitle')}
+          </div>
+          <p className="mt-1.5 mb-3.5 text-[13px] leading-snug text-s-ink-2">
+            {tWait('triggerBody')}
+          </p>
+          <button
+            type="button"
+            onClick={handleWaitlist}
+            className="w-full rounded-btn bg-s-ink py-3 font-heading text-sm font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98]"
+          >
+            {tWait('joinButton')}
+          </button>
         </div>
-        <p className="mt-1.5 mb-3.5 text-[13px] leading-snug text-s-ink-2">
-          {tWait('triggerBody')}
+      ) : (
+        <p className="mt-5 text-center">
+          <button
+            type="button"
+            onClick={handleWaitlist}
+            className="font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors hover:text-s-ink"
+          >
+            {tWait('quietLink')}
+          </button>
         </p>
-        <button
-          type="button"
-          onClick={handleWaitlist}
-          className="w-full rounded-btn bg-s-ink py-3 font-heading text-sm font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98]"
-        >
-          {tWait('joinButton')}
-        </button>
-      </div>
+      )}
 
       {error && (
         <p className="mt-4 text-center text-sm text-s-error">{error}</p>

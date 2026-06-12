@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { AlertTriangle, PencilLine, Check } from "lucide-react";
+import { AlertTriangle, Check } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { HAIR_OPTS, HAIR_LENGTH_OPTS, HAIR_THICKNESS_OPTS, HAIR_BEARD_OPTS, type Choice } from "@/app/[locale]/onboarding/beautyFields";
@@ -175,19 +175,23 @@ export default function HairStep({
           <PillGroup label={t("hairBeardLabel")} opts={HAIR_BEARD_OPTS} value={beard} onSelect={setBeard} />
         )}
 
+        {/* Notiz — the standard textarea primitive (globals.css input base:
+            filled grey, no bespoke shell/icon), short placeholder + counter.
+            Owner 2026-06-12 (3rd ask): the pencil-disc one-liner was off-system. */}
         <div className="mt-4">
-          <p className="text-[13px] font-semibold text-s-ink">{t("hairNoteLabel")}</p>
-          <div className="mt-2 flex items-center gap-2.5 rounded-[12px] border border-s-border px-3.5 py-3 focus-within:border-s-accent">
-            <PencilLine size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-3" aria-hidden />
-            <input
-              type="text"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              maxLength={140}
-              placeholder={t("hairNotePlaceholder")}
-              className="w-full bg-transparent text-[13.5px] text-s-ink outline-none placeholder:text-s-ink-3"
-            />
-          </div>
+          <label htmlFor="booking-note" className="text-[13px] font-semibold text-s-ink">
+            {t("hairNoteLabel")}
+          </label>
+          <textarea
+            id="booking-note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            maxLength={140}
+            rows={3}
+            placeholder={t("hairNotePlaceholder")}
+            className="mt-2 w-full"
+          />
+          <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-3">{note.length}/140</p>
         </div>
       </div>
 

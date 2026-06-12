@@ -1070,13 +1070,16 @@ body::after {
 .animate-value-roll { display: inline-block; animation: value-roll 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 
 /* 5 · slot cascade — set on the chips container, re-mount with key={selectedDay} */
-.slot-cascade > * { opacity: 0; transform: translateY(10px) scale(0.92); animation: slot-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+/* fill-mode BACKWARDS (not forwards): forwards pinned opacity:1 forever, which
+   beat the .opacity-40 class on DISABLED slots (greyed already-booked times,
+   2026-06-12). backwards covers the stagger delay, then releases the cascade. */
+.slot-cascade > * { animation: slot-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 .slot-cascade > *:nth-child(1) { animation-delay: 0.03s; } .slot-cascade > *:nth-child(2) { animation-delay: 0.08s; }
 .slot-cascade > *:nth-child(3) { animation-delay: 0.13s; } .slot-cascade > *:nth-child(4) { animation-delay: 0.18s; }
 .slot-cascade > *:nth-child(5) { animation-delay: 0.23s; } .slot-cascade > *:nth-child(6) { animation-delay: 0.28s; }
 .slot-cascade > *:nth-child(7) { animation-delay: 0.33s; } .slot-cascade > *:nth-child(8) { animation-delay: 0.38s; }
 .slot-cascade > *:nth-child(n+9) { animation-delay: 0.43s; }
-@keyframes slot-in { to { opacity: 1; transform: none; } }
+@keyframes slot-in { from { opacity: 0; transform: translateY(10px) scale(0.92); } }
 
 /* 6 · number flip — re-mount with key={position}; departure-board beat */
 @keyframes num-flip { 0% { transform: rotateX(90deg); opacity: 0.4; } 100% { transform: rotateX(0); opacity: 1; } }

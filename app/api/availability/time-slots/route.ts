@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/supabase';
+import { createAdminSupabaseClient, createServerSupabaseClient } from '@/lib/supabase';
 
 export async function GET(req: NextRequest) {
   try {
@@ -87,10 +87,31 @@ export async function GET(req: NextRequest) {
       )
     ).sort();
 
+    // Grey out times the LOGGED-IN customer already booked at this salon that day
+    // (owner 2026-06-12: "is there even a mechanism of graying it out?") — better
+    // than letting the tap run into the 409 DUPLICATE_BOOKING backstop.
+    const mineTimes = new Set<string>();
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: mine } = await adminClient
+          .from('bookings')
+          .select('starts_at')
+          .eq('salon_id', salonId)
+          .eq('user_id', session.user.id)
+          .in('status', ['pending', 'confirmed'])
+          .gte('starts_at', startOfDay)
+          .lte('starts_at', endOfDay);
+        const fmt = new Intl.DateTimeFormat('de-CH', { timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hour12: false });
+        for (const b of mine ?? []) mineTimes.add(fmt.format(new Date(b.starts_at)));
+      }
+    } catch { /* anon / cookie-less callers: no personal greying, the 409 guard remains */ }
+
     // Every returned slot is already filtered to status='available' above, so it IS bookable.
     // DateTimeStep gates each slot on `slot.isAvailable`; emit it explicitly so the field the
     // UI reads is never undefined (undefined → every slot rendered disabled → booking dead).
-    return NextResponse.json({ slots: times.map((time) => ({ time, isAvailable: true })) });
+    return NextResponse.json({ slots: times.map((time) => ({ time, isAvailable: !mineTimes.has(time) })) });
   } catch (error) {
     console.error('[/api/availability/time-slots]', error);
     return NextResponse.json(
