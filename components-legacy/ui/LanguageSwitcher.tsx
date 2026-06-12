@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Globe } from "lucide-react";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 
 const LOCALE_LABELS: Record<string, string> = {
@@ -12,12 +12,13 @@ const LOCALE_LABELS: Record<string, string> = {
   it: "IT",
 };
 
-// Sheet variant (owner mockup language-picker.html): full names + flags, bottom sheet.
-const LOCALE_FULL: Record<string, { name: string; flag: string }> = {
-  de: { name: "Deutsch", flag: "🇩🇪" },
-  en: { name: "English", flag: "🇬🇧" },
-  fr: { name: "Français", flag: "🇫🇷" },
-  it: { name: "Italiano", flag: "🇮🇹" },
+// Sheet variant: full names + 2-letter code discs (owner 2026-06-12: no emoji,
+// real icons only; the 2-letter code is the app-wide language affordance).
+const LOCALE_FULL: Record<string, { name: string; code: string }> = {
+  de: { name: "Deutsch", code: "DE" },
+  en: { name: "English", code: "EN" },
+  fr: { name: "Français", code: "FR" },
+  it: { name: "Italiano", code: "IT" },
 };
 
 export default function LanguageSwitcher({ locale, variant = "header" }: { locale: string; variant?: "header" | "footer" | "menu" | "sheet" }) {
@@ -59,7 +60,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
 
   if (variant === "sheet") {
     // Bottom sheet per the owner mockup: trigger shows the current language, the sheet
-    // lists full names + flags with a radio mark. Reuses the same switchLocale logic.
+    // lists full names + code discs with a radio mark. Reuses the same switchLocale logic.
     return (
       <>
         <button
@@ -68,7 +69,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
           aria-label="Sprache wählen"
           className="flex items-center gap-1.5 text-[14px] font-medium text-s-ink-2 transition-colors hover:text-s-ink"
         >
-          <span aria-hidden>{LOCALE_FULL[locale]?.flag}</span>
+          <Globe size={16} strokeWidth={2.1} className="text-s-ink-2" aria-hidden />
           <span>{LOCALE_FULL[locale]?.name ?? "Deutsch"}</span>
           <ChevronRight size={15} className="text-s-ink-3" aria-hidden />
         </button>
@@ -84,7 +85,9 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
                   className="flex w-full items-center justify-between border-b border-s-border py-4 text-left last:border-b-0"
                 >
                   <span className="flex items-center gap-3 text-[16px] text-s-ink">
-                    <span aria-hidden className="text-[20px]">{v.flag}</span>
+                    <span aria-hidden className="grid h-8 w-8 place-items-center rounded-full bg-s-bg-sunken font-heading text-[11.5px] font-semibold text-s-ink">
+                      {v.code}
+                    </span>
                     {v.name}
                   </span>
                   <span className={`grid h-5 w-5 place-items-center rounded-full border-2 ${key === locale ? "border-s-accent" : "border-s-border"}`}>

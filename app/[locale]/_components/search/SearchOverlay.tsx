@@ -221,6 +221,11 @@ export function SearchOverlay({
     if (open) {
       setService(initialService);
       setStadt(initialCity);
+      // Open straight into the Service drill (autofocused input) — Fresha's
+      // search opens ready-to-type; the 3-field composer was a dead extra tap
+      // (owner 2026-06-12: "it can't automatically type"). Stadt/Zeit stay
+      // reachable: the drill's back returns to the composer.
+      setSegment("service");
     }
     // Intentionally only on open toggle — typed state is reset on close below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
