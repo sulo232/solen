@@ -403,6 +403,9 @@ export default function Header({ locale }: { locale: string }) {
       [/\/profile\/intake-forms\/?$/, "Formulare"],
       [/\/profile\/referral\/?$/, "Freunde einladen"],
       [/\/profile\/settings\/?$/, "Einstellungen"],
+      // The hub itself ("profile rn it says account" — its body title read "Konto").
+      // $-anchored so it never matches the sub-pages above.
+      [/\/profile\/?$/, "Konto"],
     ];
     for (const [re, label] of TITLES) if (re.test(pathname)) return label;
     return null;

@@ -12,7 +12,6 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import {
-  Settings,
   Calendar,
   Scissors,
   Ticket,
@@ -86,18 +85,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   return (
     <main className="min-h-screen bg-s-bg-sunken">
       <div className="max-w-md mx-auto px-5 pt-6 pb-16">
-        {/* Page header */}
-        <div className="flex items-center justify-between mb-5">
-          <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
-          <Link
-            href={p("/profile/settings")}
-            aria-label={t("settings")}
-            className="grid place-items-center w-10 h-10 rounded-full bg-white shadow-card text-s-ink hover:shadow-elevation-2 transition-shadow duration-200"
-          >
-            <Settings size={18} aria-hidden />
-          </Link>
-        </div>
-
+        {/* "Konto" now sits beside the global back tile (Header deepPageTitle); the
+            top gear was a 3rd path to Settings (also the "More" row + the menu). */}
         {/* Identity + stats card */}
         <section className="rounded-card bg-white shadow-card p-[18px]">
           <div className="flex items-center gap-[14px]">
