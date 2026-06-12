@@ -23,6 +23,7 @@
 9. **No `.env.local` edits** without explicit ask.
 10. **No `npm run build`** unless asked — dev runs on port 3000.
 11. **No decorative dots / pips.** (V3-D421L, owner: _"stop adding dotts everywhere"_.) No leading/trailing status dot on chips, toggles, eyebrows, list items, segmented controls, or any control. A toggle's ON state is shown by its active fill (blue tint) ALONE; a dropdown's affordance is its chevron. The ONLY exception is a universal-color status dot that IS the message and carries real live meaning — e.g. a `bg-s-success` "geöffnet" indicator or the `bg-s-accent` walk-in availability pulse ON A CARD. Decoration is never a valid reason for a dot. (Extends §2.5 eyebrow no-dot + §1 accent decorative-dot ban to ALL controls.)
+12. **Copy minimalism (owner round 7, 2026-06-12).** (a) Wait times are RANGES, never point estimates with "ca." / "~": `20–35 Min` (the en-dash is allowed ONLY inside numeric ranges — everywhere else the no-dash rule stands). (b) Status labels are ONE word where possible: `Offen`, not "Walk-ins offen". (c) A module never repeats the name its entry control already gave it (the Termin/Walk-in toggle names the mode → the card shows NO "Walk-in" header) and carries NO tagline. (d) Queue/people visualization: at most 4 ahead-icons then `+N`, the customer's own spot blue-outlined; caption is the count only ("3 vor dir"). (e) No middot `·` separators in running copy — commas or stacked lines (extends rule 11).
 
 ---
 

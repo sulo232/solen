@@ -200,13 +200,13 @@ export default function BookingWizard({ services, staffList, salon, staffService
             <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>
         )}
+        {/* Compact header (mockup 26, owner-approved 2026-06-12): the step title sits
+            small in the bar between back and X — the 30px page title read unbalanced. */}
+        <h1 className="min-w-0 flex-1 truncate text-center font-heading text-[16.5px] font-semibold tracking-[-0.01em] text-s-ink">
+          {t(`stepTitles.${STEP_TITLE_KEYS[normalizedStep]}`)}
+        </h1>
         <BookingExitButton slug={salon.slug} />
       </div>
-
-      {/* Big task title — ONE heading per screen */}
-      <h1 className="pt-3 pb-1 font-heading text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-s-ink">
-        {t(`stepTitles.${STEP_TITLE_KEYS[normalizedStep]}`)}
-      </h1>
 
       {/* Step content with slide animation */}
       <AnimatePresence mode="wait" custom={1}>
