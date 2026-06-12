@@ -28,9 +28,17 @@ export async function GET(req: NextRequest) {
     // Get admin client to bypass RLS
     const adminClient = createAdminSupabaseClient();
 
-    // Query: available slots that can accommodate the duration
-    const startOfDay = `${date}T00:00:00`;
-    const endOfDay = `${date}T23:59:59`;
+    // Query: available slots that can accommodate the duration.
+    // Day boundaries are the SWISS calendar day rendered as true UTC instants
+    // (slots store real instants since the 2026-06-12 generator fix).
+    const zOff = (() => {
+      const guess = new Date(`${date}T12:00:00Z`);
+      const asUtc = new Date(guess.toLocaleString("en-US", { timeZone: "UTC" }));
+      const asZ = new Date(guess.toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
+      return asZ.getTime() - asUtc.getTime();
+    })();
+    const startOfDay = new Date(new Date(`${date}T00:00:00Z`).getTime() - zOff).toISOString();
+    const endOfDay = new Date(new Date(`${date}T23:59:59Z`).getTime() - zOff).toISOString();
 
     let query = adminClient
       .from('availability_slots')
@@ -64,17 +72,18 @@ export async function GET(req: NextRequest) {
     // Extract unique start times (30-min intervals)
     const times = Array.from(
       new Set(
-        validSlots.map((slot) => {
-          const date = new Date(slot.starts_at);
-          // V3-D421 (G1, 2026-06-01): read the slot's stored wall-clock with getUTC*, not
-          // getHours/getMinutes. Slots are stored wall-clock-tagged-UTC, so on a non-UTC
-          // server getHours() double-shifts the time (off by the server's offset). getUTC*
-          // is a no-op on UTC (prod / Netlify) and correct on any other server TZ.
-          return `${date.getUTCHours().toString().padStart(2, '0')}:${date
-            .getUTCMinutes()
-            .toString()
-            .padStart(2, '0')}`;
-        })
+        validSlots.map((slot) =>
+          // 2026-06-12: slots now store TRUE instants (generator tz fix), so labels
+          // are formatted in Europe/Zurich. The old getUTC* read assumed the retired
+          // "wall-clock-tagged-UTC" convention and showed 09:00 CH as "07:00" — the
+          // picked label then round-tripped to a nonexistent instant -> 409 SLOT_TAKEN.
+          new Intl.DateTimeFormat("de-CH", {
+            timeZone: "Europe/Zurich",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }).format(new Date(slot.starts_at))
+        )
       )
     ).sort();
 
