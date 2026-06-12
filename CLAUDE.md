@@ -178,7 +178,12 @@ Three layers, all live:
    sections**, and the **🪦 graveyard** (`_design-system/REMOVED.md`: owner-deleted/rejected things;
    a hit there = do not re-propose without an explicit owner yes). Run it BEFORE proposing anything.
 2. **`_design-system/REMOVED.md`** — when the owner deletes/rejects a feature, ADD A LINE in the same
-   turn (keywords | what | why/when | record). The graveyard only works if it's fed.
+   turn: `npm run removed -- "<keywords>" "<what>" "<why>" "<record>"`. The graveyard only works if
+   it's fed — and feeding is MECHANICALLY enforced, it grows forever:
+   - a UserPromptSubmit trigger fires the reminder whenever the owner's message smells like a
+     rejection/deletion ("remove it", "never again", "stop adding", "we don't need"…)
+   - `pre-commit-graveyard.sh` BLOCKS any `git commit` that deletes an app page/route/component
+     without a REMOVED.md line in the same commit (mechanical deletions: `touch .claude/graveyard-skip.flag`)
 3. **Hook-enforced**: new routes/APIs/migrations/mockups block unless `npm run exists` ran this turn,
    and every NEW mockup file must contain an `Exists-check:` line naming what the target surface
    already renders + any REMOVED hits + the one thing that's actually new.

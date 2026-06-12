@@ -44,6 +44,11 @@ if echo "$P" | grep -qE 'like (the )?fresha|fresha('"'"'s)? (screenshot|ss|ref|p
   TRIGGERS+=("FRESHA STRUCTURE reference → fire fresha-section-capture (or measure the provided screenshots with PIL/pixel-spec-auto) before rebuilding. STRUCTURE=Fresha, AESTHETIC=Uber/LOCKFILE.")
 fi
 
+# 5. Removal/rejection vocabulary → the graveyard must grow THIS TURN (owner 2026-06-12).
+if echo "$P" | grep -qE 'remove (it|that|this|them|wm|completely)|delete (it|that|this|them)|get rid|never (rebuild|add|again)|stop adding|we don.?t need|kill (it|that|this)|entfern|wieso gibt es das noch'; then
+  TRIGGERS+=("POSSIBLE OWNER REJECTION/DELETION → if this turn removes or rejects a feature/section/treatment, append a 🪦 line SAME TURN: npm run removed -- \"<keywords>\" \"<what>\" \"<why>\" \"<record>\" (_design-system/REMOVED.md). The anti-dup system decays if the graveyard isn't fed.")
+fi
+
 [[ ${#TRIGGERS[@]} -eq 0 ]] && exit 0
 
 echo "⚡ BINARY TRIGGERS FIRED (mechanical — .claude/hooks/user-prompt-binary-triggers.sh; rule table: CLAUDE.md '⚡ Binary triggers'):"

@@ -12,7 +12,8 @@
     "inventory:check": "node scripts/inventory.mjs --check",
     "exists": "node scripts/exists.mjs",
     "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:visual:update": "playwright test --update-snapshots",
+    "removed": "node scripts/removed.mjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
