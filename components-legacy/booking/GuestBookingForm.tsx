@@ -1,5 +1,6 @@
 "use client";
 
+import { formatSwissPhoneInput } from "@/lib/format-phone";
 import {
   useState,
   useImperativeHandle,
@@ -176,7 +177,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
               autoComplete="tel-national"
               value={phone}
               onChange={(ev) => {
-                setPhone(ev.target.value);
+                setPhone(formatSwissPhoneInput(ev.target.value));
                 sync(name, ev.target.value, email);
               }}
               placeholder={t("phonePlaceholder")}

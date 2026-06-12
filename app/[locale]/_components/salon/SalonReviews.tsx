@@ -69,7 +69,14 @@ export function SalonReviews({
   }, [reviews.length, salonId]);
 
   const all = reviews.length > 0 ? reviews : fetched ?? [];
-  const visible = expanded ? all : all.slice(0, 6);
+  // Anti-wall (owner 2026-06-12): a list of identical "Anonym + 5 stars, no text"
+  // rows reads fake. Rows = reviews with TEXT or a real name; rating-only
+  // anonymous reviews collapse into one honest count line below the list.
+  const hasIdentity = (r: Review) =>
+    Boolean(r.comment ?? r.comment_de ?? r.comment_en) || Boolean(r.profiles?.display_name);
+  const rows = all.filter(hasIdentity);
+  const silentCount = all.length - rows.length;
+  const visible = expanded ? rows : rows.slice(0, 6);
 
   return (
     <section id="section-reviews" className="rounded-2xl bg-white shadow-float p-5 md:p-7">
@@ -121,7 +128,12 @@ export function SalonReviews({
               <ReviewCard key={r.id} review={r} />
             ))}
           </div>
-          {all.length > 6 && !expanded && (
+          {silentCount > 0 && (
+            <p className="mt-5 font-body text-[13.5px] text-s-ink-3">
+              {rows.length > 0 ? "+ " : ""}{silentCount} {silentCount === 1 ? "Bewertung" : "Bewertungen"} ohne Kommentar
+            </p>
+          )}
+          {rows.length > 6 && !expanded && (
             <div className="mt-6 flex justify-center">
               <button
                 type="button"

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
+import { formatSwissPhoneInput } from '@/lib/format-phone';
 import { Avatar } from '@/app/[locale]/_components/primitives';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -64,6 +65,28 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   // Owner 2026-06-12: errors surface as the standard top toast, not a block
   // buried at the bottom of the page. State is kept for CTA gating logic.
   const showError = (m: string) => { setError(m); toast.error(m); };
+
+  // Owner 2026-06-12: booking requires NAME + PHONE for everyone. Logged-in users
+  // get a compact contact block prefilled from the profile; missing fields gate the
+  // CTA. Saved back to the profile on confirm (so it's a one-time ask).
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactLoaded, setContactLoaded] = useState(false);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    let alive = true;
+    fetch('/api/profile')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (!alive) return;
+        const prof = j?.data ?? j;
+        setContactName(prof?.display_name ?? '');
+        setContactPhone(prof?.phone_number ? formatSwissPhoneInput(String(prof.phone_number)) : '');
+        setContactLoaded(true);
+      })
+      .catch(() => { if (alive) setContactLoaded(true); });
+    return () => { alive = false; };
+  }, [isLoggedIn]);
   // Phase D: paymentMethod is now DERIVED from the salon's payment_mode (computed below), not a
   // free customer choice — at_salon books in person (no charge), deposit/prepay pay online.
   // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. It lifts a
@@ -160,6 +183,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
     // C1: guard against a double-create (re-render / double-tap) while the round-trip is open.
     if (chargeRef.current) return;
+    if (isLoggedIn && (!contactName.trim() || contactPhone.replace(/\D/g, '').length < 9)) {
+      showError(tp('fillRequiredFields'));
+      return;
+    }
     chargeRef.current = true;
     setIsSubmitting(true);
     setError(null);
@@ -175,6 +202,14 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       // 1. Create the booking. For online-pay it lands as status "pending" / payment_status "none"
       //    (the abandon-sweep cron cancels it if the card step is never completed). For in_person
       //    it's created exactly as before (no charge) — behaviour below is byte-for-byte unchanged.
+      // Persist the contact onto the profile (best-effort; booking proceeds regardless)
+      if (isLoggedIn && contactName.trim()) {
+        fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ display_name: contactName.trim(), phone_number: contactPhone.replace(/\s/g, '') }),
+        }).catch(() => {});
+      }
       const bookingRes = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -371,6 +406,31 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       {/* SP-1: guest contact form (logged-out only). Rebuilt to the review-and-confirm mockup
           (solen-refund-guest-booking-form.html): fields-only, lifts GuestInfo live; the single
           Buchen CTA force-validates via the form ref. */}
+      {isLoggedIn && contactLoaded && (
+        <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+          <p className="font-heading text-[15px] font-semibold text-s-ink tracking-[-0.01em]">{tp('contactTitle')}</p>
+          <div className="mt-3 flex flex-col gap-3">
+            <input
+              type="text"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              placeholder={tp('contactName')}
+              aria-label={tp('contactName')}
+              className="w-full"
+            />
+            <input
+              type="tel"
+              inputMode="tel"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(formatSwissPhoneInput(e.target.value))}
+              placeholder={tp('contactPhone')}
+              aria-label={tp('contactPhone')}
+              className="w-full"
+            />
+          </div>
+        </div>
+      )}
+
       {!isLoggedIn && (
         <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
           <div className="mb-4">

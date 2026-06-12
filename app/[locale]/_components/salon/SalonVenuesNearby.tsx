@@ -14,6 +14,7 @@ interface NearbyVenue {
   average_rating: number;
   review_count?: number;
   categories?: string[];
+  address?: string | null;
 }
 
 /**
@@ -90,7 +91,7 @@ export function SalonVenuesNearby({
         </h2>
         <div className="mt-5 flex gap-4 overflow-hidden">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-[190px] w-[46vw] max-w-[200px] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
+            <div key={i} className="h-[200px] w-[calc(50%-8px)] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
           ))}
         </div>
       </section>
@@ -131,13 +132,13 @@ export function SalonVenuesNearby({
 
       <div
         ref={scrollRef}
-        className="-mx-4 mt-5 flex gap-4 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-0"
+        className="mt-5 flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((s) => (
           <Link
             key={s.id}
             href={`/${locale}/salon/${s.slug}`}
-            className="font-body group flex w-[46vw] max-w-[200px] shrink-0 flex-col snap-start md:w-[260px] md:max-w-none"
+            className="font-body group flex w-[calc(50%-8px)] shrink-0 flex-col snap-start md:w-[260px]"
           >
             <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-s-bg-sunken">
               {s.cover_photo_url && (
@@ -150,12 +151,15 @@ export function SalonVenuesNearby({
                 />
               )}
             </div>
-            {/* Fresha card meta (pdp-bottom capture): name 600, sentence-case grey
-                type line, rating line. No uppercase tags. */}
+            {/* Fresha card meta (pdp-bottom capture): name 16/600, grey ADDRESS line,
+                sentence-case type · rating. No uppercase tags. */}
             <div className="mt-2.5">
-              <div className="truncate text-[15px] font-semibold text-s-ink">
+              <div className="truncate text-[16px] font-semibold text-s-ink">
                 {s.name}
               </div>
+              {s.address && (
+                <div className="mt-0.5 truncate text-[13px] text-s-ink-3">{s.address}</div>
+              )}
               {s.categories?.[0] && (
                 <div className="mt-0.5 text-[13px] text-s-ink-3">
                   {capitalize(s.categories[0])}

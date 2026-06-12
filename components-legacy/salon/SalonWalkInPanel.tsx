@@ -136,8 +136,10 @@ export default function SalonWalkInPanel({
   const hasQueue = ahead > 0;
   const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#16A34A";
   const statusLabel = !isOpen ? l.closedLabel : busy ? l.busyLabel : l.openLabel;
-  const bigLine = !isOpen ? l.closedBig : hasQueue ? `${ahead} ${l.ahead} ~${wait} ${l.min} ${l.waitW}` : l.emptyBig;
-  const subLine = !isOpen ? "" : hasQueue ? l.busySub : l.emptySub;
+  // Owner 2026-06-12: "3 vor dir ~35 Min Wartezeit" crammed in one line read wrong.
+  // Big line = the wait ("ca. 35 Min Wartezeit"); the queue depth is the sub line.
+  const bigLine = !isOpen ? l.closedBig : hasQueue ? `ca. ${wait} ${l.min} ${l.waitW}` : l.emptyBig;
+  const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead} · ${l.busySub}` : l.emptySub;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -151,139 +153,135 @@ export default function SalonWalkInPanel({
     : services;
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Explainer — one line + (i) opens the details popup (no long copy, no em-dashes). */}
-      <div className="flex items-center justify-between gap-3 rounded-2xl bg-s-bg-sunken px-4 py-3">
-        <span className="font-display text-[14.5px] font-semibold tracking-[-.01em] text-s-ink">
-          {l.what} <span className="text-s-ink-3">|</span> <span className="font-medium text-s-ink-2">{l.tagline}</span>
-        </span>
-        <button
-          type="button"
-          onClick={() => setInfoOpen(true)}
-          aria-label={l.howTitle}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
-        >
-          <Info className="h-[15px] w-[15px]" />
-        </button>
-      </div>
-
-      {/* Live queue status — Variant A: status word + one confident line. Slow pulse (2.6s). */}
-      <div className="rounded-2xl border border-s-border bg-white p-[18px]">
-        <div className="flex items-center gap-2.5">
-          {isOpen ? (
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
-              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
-            </span>
-          ) : (
-            <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
-          )}
-          <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
+    <div>
+      {/* ONE module card (owner 2026-06-12: "not one big card... hard to distinguish
+          booking and walk-in") — sunken header + live status + barber + services all
+          INSIDE one bordered card, visually distinct from the booking sections. */}
+      <div className="overflow-hidden rounded-[24px] border border-s-border bg-white">
+        {/* Header — title + tagline + (i) on the sunken band */}
+        <div className="flex items-center justify-between gap-3 bg-s-bg-sunken px-5 py-3.5">
+          <span className="font-display text-[14.5px] font-semibold tracking-[-.01em] text-s-ink">
+            {l.what} <span className="text-s-ink-3">|</span> <span className="font-medium text-s-ink-2">{l.tagline}</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setInfoOpen(true)}
+            aria-label={l.howTitle}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
+          >
+            <Info className="h-[15px] w-[15px]" />
+          </button>
         </div>
-        <div className="mt-3 font-display text-[19px] font-semibold leading-[1.15] tracking-[-.02em] tabular-nums text-s-ink">{bigLine}</div>
-        {subLine ? <div className="mt-1 font-body text-[13px] text-s-ink-2">{subLine}</div> : null}
-      </div>
 
-      {/* Barber picker — the SAME card as the booking "Team" section, selectable.
-          78px avatar + rating pill + name + role. "Egal" first. Selected = dark photo
-          overlay + white check (Option 4). NO "Alle ansehen" here: the strip already
-          shows every barber, and linking into /booking from walk-in mode let users
-          fall out of the queue flow into appointment booking (owner bug 2026-06-11). */}
-      {staff.length > 0 && (
-        <div>
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.barberPick}</h2>
+        {/* Live status */}
+        <div className="px-5 py-[18px]">
+          <div className="flex items-center gap-2.5">
+            {isOpen ? (
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: dotColor, animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: dotColor }} />
+              </span>
+            ) : (
+              <span className="h-2 w-2 rounded-full" style={{ background: dotColor }} />
+            )}
+            <span className="font-display text-[13px] font-semibold tracking-[-.01em]" style={{ color: dotColor }}>{statusLabel}</span>
           </div>
-          <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {/* Egal / anyone */}
-            <button
-              type="button"
-              onClick={() => setBarberId(null)}
-              aria-pressed={barberId === null}
-              className="flex w-[88px] shrink-0 flex-col items-center text-center"
-            >
-              <div className="relative">
-                <div className="grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
-                  <Users className="h-7 w-7 text-s-ink-2" />
+          <div className="mt-2.5 font-display text-[19px] font-semibold leading-[1.15] tracking-[-.02em] tabular-nums text-s-ink">{bigLine}</div>
+          {subLine ? <div className="mt-1 font-body text-[13px] text-s-ink-2">{subLine}</div> : null}
+        </div>
+
+        {/* Barber pick — inside the card */}
+        {staff.length > 0 && (
+          <div className="border-t border-s-border px-5 py-[18px]">
+            <p className="mb-3 text-[13px] font-semibold text-s-ink">{l.barberPick}</p>
+            <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {/* Egal / anyone */}
+              <button
+                type="button"
+                onClick={() => setBarberId(null)}
+                aria-pressed={barberId === null}
+                className="flex w-[88px] shrink-0 flex-col items-center text-center"
+              >
+                <div className="relative">
+                  <div className="grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
+                    <Users className="h-7 w-7 text-s-ink-2" />
+                  </div>
+                  <SelectedCheckBadge selected={barberId === null} size={24} />
                 </div>
-                <SelectedCheckBadge selected={barberId === null} size={24} />
-              </div>
-              <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
-              <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{l.noPref}</div>
-            </button>
-            {staff.map((b) => {
-              const active = barberId === b.id;
-              const role = b.specialties?.[0] ?? null;
-              const hasRating = (b.staff_review_count ?? 0) > 0;
-              const displayRating = hasRating ? b.staff_average_rating : salonAverageRating;
-              const showRating = displayRating != null && displayRating > 0;
-              return (
-                <button
-                  key={b.id}
-                  type="button"
-                  onClick={() => setBarberId(active ? null : b.id)}
-                  aria-pressed={active}
-                  className="flex w-[88px] shrink-0 flex-col items-center text-center"
-                >
-                  <div className="relative">
-                    <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
-                      {b.avatar_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={b.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
-                      ) : (
-                        <span className="font-display text-[28px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
+                <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
+                <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{l.noPref}</div>
+              </button>
+              {staff.map((b) => {
+                const active = barberId === b.id;
+                const role = b.specialties?.[0] ?? null;
+                const hasRating = (b.staff_review_count ?? 0) > 0;
+                const displayRating = hasRating ? b.staff_average_rating : salonAverageRating;
+                const showRating = displayRating != null && displayRating > 0;
+                return (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setBarberId(active ? null : b.id)}
+                    aria-pressed={active}
+                    className="flex w-[88px] shrink-0 flex-col items-center text-center"
+                  >
+                    <div className="relative">
+                      <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
+                        {b.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={b.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                        ) : (
+                          <span className="font-display text-[28px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      <SelectedCheckBadge selected={active} size={24} />
+                      {showRating && (
+                        <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
+                          <Star size={11} stroke="none" className="fill-s-star" />
+                          <span className={`text-[12px] font-semibold leading-none tabular-nums text-s-ink ${!hasRating ? "opacity-70" : ""}`}>{displayRating?.toFixed(1)}</span>
+                        </span>
                       )}
                     </div>
-                    <SelectedCheckBadge selected={active} size={24} />
-                    {showRating && (
-                      <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
-                        <Star size={11} stroke="none" className="fill-s-star" />
-                        <span className={`text-[12px] font-semibold leading-none tabular-nums text-s-ink ${!hasRating ? "opacity-70" : ""}`}>{displayRating?.toFixed(1)}</span>
-                      </span>
-                    )}
-                  </div>
-                  <div className={`mt-4 font-body text-[14px] leading-tight text-s-ink ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
-                  {role && <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{role}</div>}
-                </button>
-              );
-            })}
+                    <div className={`mt-4 font-body text-[14px] leading-tight text-s-ink ${active ? "font-semibold" : "font-medium"}`}>{b.name.split(" ")[0]}</div>
+                    {role && <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{role}</div>}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Service pick — SAME card as the Services (Termin) section. Per-row pill → pay. */}
-      <div>
-        <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.pick}</h2>
-        <ul className="flex flex-col gap-3">
-          {visibleServices.map((s) => (
-            <li key={s.id} className="rounded-2xl border border-s-border bg-white p-5 transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-              <div className="flex items-start justify-between gap-4">
+        {/* Service pick — hairline rows inside the card (not separate cards) */}
+        <div className="border-t border-s-border px-5 pb-1 pt-[18px]">
+          <p className="text-[13px] font-semibold text-s-ink">{l.pick}</p>
+          <ul>
+            {visibleServices.map((s, i) => (
+              <li key={s.id} className={`flex items-center justify-between gap-4 py-4 ${i > 0 ? "border-t border-s-border" : ""}`}>
                 <div className="min-w-0 flex-1">
-                  <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">{svcName(s)}</div>
-                  {s.duration_minutes ? (
-                    <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">{s.duration_minutes} {l.min}</div>
-                  ) : null}
-                  <div className="font-body mt-3 text-[14px] text-s-ink-2 md:text-[15px]">{l.from} {Number(s.price).toFixed(0)} CHF</div>
+                  <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
+                  <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+                    {s.duration_minutes ? `${s.duration_minutes} ${l.min} · ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
+                  </div>
                 </div>
                 {isOpen ? (
                   <Link
                     href={joinHref(s.id)}
-                    className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-6 md:py-2.5 md:text-[14px]"
+                    className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border"
                   >
                     {l.join}
                   </Link>
                 ) : (
                   <span
                     aria-disabled="true"
-                    className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70 md:px-6 md:py-2.5 md:text-[14px]"
+                    className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
                   >
                     {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
                   </span>
                 )}
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* "How walk-in works" popup — bottom sheet on mobile, centered on desktop. */}
