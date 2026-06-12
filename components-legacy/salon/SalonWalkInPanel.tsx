@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, Users, Info, Star, X } from "lucide-react";
+import { Clock, Users, Info, Star, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 
 interface WalkInService {
@@ -134,12 +134,13 @@ export default function SalonWalkInPanel({
   const wait = stats?.wait_minutes ?? 0;
   const busy = !!stats?.busy;
   const hasQueue = ahead > 0;
-  const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#16A34A";
+  // Fresha open-green #1F8900 (s-open token; owner: the bright #16A34A read off)
+  const dotColor = !isOpen ? "#9CA3AF" : busy ? "#C2410C" : "#1F8900";
   const statusLabel = !isOpen ? l.closedLabel : busy ? l.busyLabel : l.openLabel;
   // Owner 2026-06-12: "3 vor dir ~35 Min Wartezeit" crammed in one line read wrong.
   // Big line = the wait ("ca. 35 Min Wartezeit"); the queue depth is the sub line.
   const bigLine = !isOpen ? l.closedBig : hasQueue ? `ca. ${wait} ${l.min} ${l.waitW}` : l.emptyBig;
-  const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead} · ${l.busySub}` : l.emptySub;
+  const subLine = !isOpen ? "" : hasQueue ? `${ahead} ${l.ahead}, ${l.busySub.charAt(0).toLowerCase()}${l.busySub.slice(1)}` : l.emptySub;
 
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
@@ -260,7 +261,7 @@ export default function SalonWalkInPanel({
                 <div className="min-w-0 flex-1">
                   <div className="font-body text-[15px] font-semibold text-s-ink">{svcName(s)}</div>
                   <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
-                    {s.duration_minutes ? `${s.duration_minutes} ${l.min} · ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
+                    {s.duration_minutes ? `${s.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(s.price).toFixed(0)} CHF
                   </div>
                 </div>
                 {isOpen ? (
@@ -302,7 +303,7 @@ export default function SalonWalkInPanel({
             <ul className="mt-4 space-y-3.5">
               {l.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 font-body text-[13.5px] leading-relaxed text-s-ink-2">
-                  <span className="mt-[7px] h-[7px] w-[7px] shrink-0 rounded-full bg-s-success" />
+                  <Check size={15} strokeWidth={2.4} className="mt-[3px] shrink-0 text-s-open" aria-hidden />
                   <span>{b}</span>
                 </li>
               ))}

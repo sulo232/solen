@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * SalonOpeningTimes — V2-D53.3 (2026-05-11).
  *
- * Day-by-day list with green dot for open days, gray dot for closed.
+ * Day-by-day list, Fresha anatomy: no dots, today bold, closed grey.
  * Today's row is bold. No outer card border — whitespace + dividers only.
  *
  * Designed to sit in the side-by-side grid with SalonAdditionalInfo on
@@ -35,25 +35,18 @@ export function SalonOpeningTimes({
           const dayHours = hours[day];
           const isOpen = Boolean(dayHours);
           return (
+            /* Fresha hours anatomy (pdp-bottom capture, owner 2026-06-12): NO per-day
+               dots (banned decoration); plain day + times, today bold, closed grey. */
             <li
               key={day}
               className={cn(
-                "font-body flex items-center justify-between text-[14px]",
+                "font-body flex items-center justify-between text-[15px]",
                 isToday ? "font-semibold text-s-ink" : "text-s-ink-2"
               )}
             >
-              <span className="inline-flex items-center gap-3">
-                <span
-                  className={cn(
-                    "h-2 w-2 shrink-0 rounded-full",
-                    isOpen ? "bg-s-open" : "bg-s-ink-3/40"
-                  )}
-                  aria-hidden
-                />
-                {DAY_LABEL[day]}
-              </span>
-              <span>
-                {dayHours ? `${dayHours.open} – ${dayHours.close}` : "Geschlossen"}
+              <span>{DAY_LABEL[day]}</span>
+              <span className={cn(!isOpen && "text-s-ink-3")}>
+                {dayHours ? `${dayHours.open} bis ${dayHours.close}` : "Geschlossen"}
               </span>
             </li>
           );
