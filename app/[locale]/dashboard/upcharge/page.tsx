@@ -235,7 +235,7 @@ export default function SalonUpchargePage() {
                           type="number"
                           value={newTotal}
                           onChange={(e) => setNewTotal(e.target.value)}
-                          className="w-full h-11 pl-11 pr-3 rounded-[10px] border border-s-border font-heading text-[15px] font-semibold tabular-nums text-s-ink focus:outline-none focus:border-s-accent"
+                          className="w-full h-11 !pl-11 pr-3 rounded-[10px] border border-s-border font-heading text-[15px] font-semibold tabular-nums text-s-ink focus:outline-none focus:border-s-accent"
                         />
                       </div>
                     </div>

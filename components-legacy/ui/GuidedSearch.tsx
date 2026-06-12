@@ -748,7 +748,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 onBlur={() => setInputFocused(false)}
                                 placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
                                 aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
-                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none"
+                                className="w-full !pl-10 pr-4 py-3 text-[13px] font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none"
                               />
                               {query && (
                                 <button

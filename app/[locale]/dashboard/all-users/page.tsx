@@ -174,7 +174,7 @@ export default function AllUsersPage() {
           placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
+          className="w-full !pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
         />
       </div>
 

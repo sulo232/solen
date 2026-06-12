@@ -154,7 +154,9 @@ export function CategoryHeroCarousel({
                     )}
                     {(price != null || addr) && (
                       <div className="mt-0.5 font-body text-[13px] text-white/80">
-                        {price != null ? `${pick(FROM, locale)} CHF ${price}` : ""}
+                        {/* "ab {N} CHF" — currency-suffix per the PriceFrom primitive
+                            (CONTRADICTIONS.md §4); was "ab CHF {N}", the one deviation. */}
+                        {price != null ? `${pick(FROM, locale)} ${price} CHF` : ""}
                         {price != null && addr ? " " : ""}
                         {addr ?? ""}
                       </div>

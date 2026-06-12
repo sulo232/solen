@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { SalonDetail } from "./_shared";
 import { capitalize, postalToCity } from "./_shared";
+import { formatQuartier } from "@/lib/basel-neighborhoods";
 
 /**
  * SalonBreadcrumb — V2-D53.3 polish (2026-05-11).
@@ -57,7 +58,7 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
     salon.quartier.toLowerCase() !== city.toLowerCase()
   ) {
     segments.push({
-      label: capitalize(salon.quartier),
+      label: formatQuartier(salon.quartier),
       href: cityIsKnown
         ? `/${locale}/${city.toLowerCase()}/${salon.quartier.toLowerCase()}`
         : `/${locale}/search?q=${encodeURIComponent(salon.quartier)}`,

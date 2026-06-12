@@ -80,7 +80,7 @@ export default function ComingSoonPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("emailPlaceholder")}
               aria-label={t("emailPlaceholder")}
-              className="flex-1 px-4 py-3 rounded-btn bg-white border border-s-border text-sm font-body text-s-ink placeholder:text-s-ink-2 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
+              className="min-w-0 flex-1 px-4 py-3 rounded-btn bg-white border border-s-border text-sm font-body text-s-ink placeholder:text-s-ink-2 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
             />
             <button
               onClick={handleNotify}

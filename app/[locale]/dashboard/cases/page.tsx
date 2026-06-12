@@ -232,7 +232,7 @@ export default function AdminCasesPage() {
                 onKeyDown={(e) => e.key === "Enter" && setActiveCode(codeInput.trim())}
                 placeholder={t("searchPlaceholder")}
                 aria-label={t("searchPlaceholder")}
-                className="w-full h-11 pl-10 pr-10 rounded-full bg-white border border-s-border text-[13.5px] text-s-ink placeholder:text-s-ink/40 focus:outline-none focus:border-s-accent"
+                className="w-full h-11 !pl-10 !pr-10 rounded-full bg-white border border-s-border text-[13.5px] text-s-ink placeholder:text-s-ink/40 focus:outline-none focus:border-s-accent"
               />
               {activeCode && (
                 <button onClick={() => { setCodeInput(""); setActiveCode(""); }} aria-label={t("clear")} className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/40 hover:text-s-ink">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 /**
  * NotificationBell — header entry to /notifications (restored per the V3-D removal
@@ -19,10 +20,15 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
 
   React.useEffect(() => {
     let alive = true;
-    fetch("/api/profile/notifications")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => { if (alive && j) setUnread(j.unread ?? 0); })
-      .catch(() => { /* guest / offline — stay hidden */ });
+    // Local session read first (no network) — guests skip the fetch entirely,
+    // otherwise every anonymous page view logs a 401 console error.
+    createBrowserSupabaseClient().auth.getSession().then(({ data }) => {
+      if (!alive || !data.session) return;
+      fetch("/api/profile/notifications")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => { if (alive && j) setUnread(j.unread ?? 0); })
+        .catch(() => { /* offline — stay hidden */ });
+    });
     return () => { alive = false; };
   }, []);
 

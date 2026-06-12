@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { formatQuartier } from "@/lib/basel-neighborhoods";
 import { formatPrice } from "@/lib/format";
 import type { SalonCard } from "@/lib/types";
 import { DEMO_SALONS } from "@/lib/demo-data";
@@ -141,20 +142,6 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // A3 LOCKED 2026-05-03: photos killed pre-launch. Card cover always renders
   // solid category color + Anton uppercase salon name via ImageFallback.
   const showRating = (salon.review_count ?? 0) >= 3;
-  // Quartier comes as a raw slug (e.g. `grossbasel`, `st_johann`, `kleinbasel`).
-  // Format for display: replace underscores with spaces, title-case, special-case
-  // common Basel district names. Page-level verifier flagged raw slugs leaking.
-  const formatQuartier = (q?: string | null): string => {
-    if (!q) return "";
-    const cleaned = q.replace(/_/g, " ").trim();
-    return cleaned
-      .split(/\s+/)
-      .map((word) => {
-        if (word.toLowerCase() === "st") return "St.";
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(" ");
-  };
   const locationParts = [formatQuartier(salon.quartier), salon.city_name ?? "Basel"].filter(Boolean);
   const locationText = locationParts.join(", ");
 

@@ -75,7 +75,7 @@ export default function HelpPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-border bg-white text-sm font-body text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30 focus:border-s-accent transition-colors"
+              className="w-full !pl-10 pr-4 py-2.5 rounded-pill border border-s-border bg-white text-sm font-body text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30 focus:border-s-accent transition-colors"
             />
           </div>
         </div>

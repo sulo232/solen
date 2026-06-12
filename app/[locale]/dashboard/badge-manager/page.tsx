@@ -452,7 +452,7 @@ export default function BadgeManagerPage() {
                   placeholder={t("salonSearchPlaceholder")}
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+                  className="w-full !pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
                 />
                 {salonResults.length > 0 && !selectedSalon && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md z-10 overflow-hidden">

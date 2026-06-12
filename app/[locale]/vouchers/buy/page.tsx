@@ -11,6 +11,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { useTranslations } from "next-intl";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -102,15 +103,22 @@ export default function VoucherBuyPage() {
   const [user, setUser] = useState<{ id: string; email?: string; name?: string } | null>(null);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then((r) => {
-        if (!r.ok) return null;
-        return r.json();
-      })
-      .then((p) => {
-        if (p?.id) setUser(p);
-      })
-      .catch((err) => console.error("[VoucherBuy] Profile fetch error:", err));
+    let alive = true;
+    // Local session read first (no network) — guests skip the fetch entirely,
+    // otherwise every anonymous visit logs a 401 console error.
+    createBrowserSupabaseClient().auth.getSession().then(({ data }) => {
+      if (!alive || !data.session) return;
+      fetch("/api/profile")
+        .then((r) => {
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .then((p) => {
+          if (alive && p?.id) setUser(p);
+        })
+        .catch((err) => console.error("[VoucherBuy] Profile fetch error:", err));
+    });
+    return () => { alive = false; };
   }, []);
 
   const handleCreateVoucher = async () => {
@@ -191,7 +199,7 @@ export default function VoucherBuyPage() {
             Gutschein kaufen
           </h1>
           <p className="text-s-ink-2">
-            Verschenke Schönheit — perfekt für jeden Anlass
+            Verschenke Schönheit, perfekt für jeden Anlass
           </p>
         </div>
 
@@ -261,8 +269,8 @@ export default function VoucherBuyPage() {
                   onChange={(e) => setDiscountValue(Number(e.target.value))}
                   min={1}
                   max={discountType === "percent" ? 100 : 1000}
-                  className={`w-full rounded-input bg-s-bg-sunken border border-s-border px-4 py-3 font-heading text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent ${
-                    discountType === "fixed" ? "pl-16" : ""
+                  className={`w-full rounded-input bg-s-bg-sunken border border-s-border py-3 font-heading text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent ${
+                    discountType === "fixed" ? "!pl-16 pr-4" : "px-4"
                   }`}
                 />
                 {discountType === "percent" && (

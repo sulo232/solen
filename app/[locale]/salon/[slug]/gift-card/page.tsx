@@ -210,7 +210,7 @@ export default function GiftCardPage() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink-2">CHF</span>
                 <input type="number" min="5" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
-                  className="w-full pl-12 pr-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
+                  className="w-full !pl-12 pr-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
               </div>
             )}
           </div>

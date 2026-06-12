@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { capitalize } from "./_shared";
+import { formatQuartier } from "@/lib/basel-neighborhoods";
 
 /**
  * SalonAppCta — V2-D53.3 polish (2026-05-11).
@@ -29,7 +30,7 @@ export function SalonAppCta({
   quartier?: string | null;
 }) {
   const cityLabel = capitalize(city);
-  const quartierLabel = quartier ? capitalize(quartier) : null;
+  const quartierLabel = quartier ? formatQuartier(quartier) : null;
   const chips = [
     { label: `Andere Salons in ${cityLabel}`, href: `/${locale}/search?city=${encodeURIComponent(cityLabel)}` },
     ...(quartierLabel && quartierLabel.toLowerCase() !== cityLabel.toLowerCase()

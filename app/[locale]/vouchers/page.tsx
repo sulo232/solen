@@ -256,7 +256,7 @@ export default function VouchersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("searchPlaceholder")}
-              className="w-full pl-10 pr-4 py-3 rounded-input border border-s-border bg-white text-sm placeholder:text-s-ink-2 focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 outline-none"
+              className="w-full !pl-10 pr-4 py-3 rounded-input border border-s-border bg-white text-sm placeholder:text-s-ink-2 focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 outline-none"
             />
           </div>
 

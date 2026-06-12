@@ -22,7 +22,10 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isConfirmed = confirmText.trim().toUpperCase() === "DELETE MY ACCOUNT";
+  // Client-side-only gate (the DELETE API takes no phrase) — compare against the
+  // locale's phrase so German users aren't asked to type English.
+  const requiredPhrase = String(t("deleteAccountConfirmPlaceholder")).trim().toUpperCase();
+  const isConfirmed = confirmText.trim().toUpperCase() === requiredPhrase;
 
   const handleDelete = async () => {
     if (!isConfirmed) return;

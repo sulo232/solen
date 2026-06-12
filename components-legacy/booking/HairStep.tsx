@@ -4,6 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { AlertTriangle, PencilLine, Check } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { HAIR_OPTS, HAIR_LENGTH_OPTS, HAIR_THICKNESS_OPTS, HAIR_BEARD_OPTS, type Choice } from "@/app/[locale]/onboarding/beautyFields";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import type { StaffMember } from "@/lib/types";
@@ -77,23 +78,28 @@ export default function HairStep({
 
   React.useEffect(() => {
     let alive = true;
-    fetch("/api/profile")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (!alive || !j) return;
-        const p = j.data ?? j;
-        setLoggedIn(true);
-        const ht = p?.hair_type && p.hair_type !== "unknown" ? p.hair_type : "";
-        const hl = p?.hair_length ?? "";
-        const hd = p?.hair_thickness ?? "";
-        const hb = p?.hair_beard ?? "";
-        if (ht) setHairType(ht);
-        if (hl) setHairLength(hl);
-        if (hd) setHairThickness(hd);
-        if (hb) setBeard(hb);
-        if (ht || hl || hd) setPrefilled(true);
-      })
-      .catch(() => { /* guest — picker still usable, nothing persisted */ });
+    // Local session read first (no network) — guests skip the fetch entirely,
+    // otherwise the guest hair step logs a 401 console error.
+    createBrowserSupabaseClient().auth.getSession().then(({ data }) => {
+      if (!alive || !data.session) return;
+      fetch("/api/profile")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => {
+          if (!alive || !j) return;
+          const p = j.data ?? j;
+          setLoggedIn(true);
+          const ht = p?.hair_type && p.hair_type !== "unknown" ? p.hair_type : "";
+          const hl = p?.hair_length ?? "";
+          const hd = p?.hair_thickness ?? "";
+          const hb = p?.hair_beard ?? "";
+          if (ht) setHairType(ht);
+          if (hl) setHairLength(hl);
+          if (hd) setHairThickness(hd);
+          if (hb) setBeard(hb);
+          if (ht || hl || hd) setPrefilled(true);
+        })
+        .catch(() => { /* offline — picker still usable, nothing persisted */ });
+    });
     return () => { alive = false; };
   }, []);
 

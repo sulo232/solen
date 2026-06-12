@@ -24,3 +24,19 @@ export function getNeighborhood(zipCode?: string | null): string {
   if (!zipCode) return "Basel";
   return BASEL_NEIGHBORHOODS[zipCode] || zipCode;
 }
+
+// Quartier comes from the DB as a raw slug (e.g. `st_johann`, `grossbasel`).
+// Display format: underscores → spaces, title-case, "st" → "St." (matches the
+// canonical labels above). Hoisted from FeaturedSalonCarousel — the same raw
+// slug leaked on SalonCard meta, the PDP chips, and the breadcrumb.
+export function formatQuartier(q?: string | null): string {
+  if (!q) return "";
+  const cleaned = q.replace(/_/g, " ").trim();
+  return cleaned
+    .split(/\s+/)
+    .map((word) => {
+      if (word.toLowerCase() === "st") return "St.";
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(" ");
+}
