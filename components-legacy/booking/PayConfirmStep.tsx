@@ -58,7 +58,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const tg = useTranslations('guestBookingForm') as any;
   const locale = useLocale();
   const router = useRouter();
-  const { formData, goToStep } = useBooking();
+  const { formData, goToStep, resetForm } = useBooking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Owner 2026-06-12: errors surface as the standard top toast, not a block
@@ -102,7 +102,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
   // Phase D — the salon's payment_mode drives the pay step (was a free choice that ignored it):
   //   at_salon → no online charge (pay in person);  deposit → deposit_percent% now;  prepay → full.
-  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number };
+  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number; accepts_online_payment?: boolean };
+  // Online pay is offered ONLY when the salon can actually take it (owner repro
+  // 2026-06-12: the chooser offered online, the server then errored "kassiert vor
+  // Ort"). The pay-intent route stays the fail-closed backstop.
+  const onlineAvailable = salonExt.accepts_online_payment === true;
   // Unset / unknown → at_salon (the DB default), the safe choice: book without an online charge.
   const paymentMode: 'at_salon' | 'deposit' | 'prepay' =
     salonExt.payment_mode === 'deposit' || salonExt.payment_mode === 'prepay' ? salonExt.payment_mode : 'at_salon';
@@ -112,7 +116,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
   // deposit/prepay -> online (salon-mandated). at_salon -> the CUSTOMER chooses
   // (mockup 24d ink, owner-approved 2026-06-12): online preselected, salon below.
-  const [payChoice, setPayChoice] = useState<'online' | 'in_person'>('online');
+  const [payChoice, setPayChoice] = useState<'online' | 'in_person'>(onlineAvailable ? 'online' : 'in_person');
   const paymentMethod: 'online' | 'in_person' = paymentMode === 'at_salon' ? payChoice : 'online';
   const chargeNow = paymentMode === 'at_salon' ? (paymentMethod === 'online' ? totalPrice : 0) : paymentMode === 'deposit' ? depositAmount : totalPrice;
 
@@ -216,6 +220,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       if (paymentMethod !== 'online') {
         // Locale-prefix the push — without it next-intl middleware rerouted /de bookings
         // to the default-locale /en/confirmation (found in the 2026-06-11 e2e).
+        // Reset the wizard so browser-back can't re-confirm a fully-armed flow
+        // (owner 2026-06-12: "they can just click back and book as many times as
+        // they want"); the server DUPLICATE_BOOKING guard is the backstop.
+        resetForm();
         router.push(`/${locale}${path}`);
         return;
       }
@@ -390,6 +398,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           /* Mockup 24d (ink, owner 2026-06-12): online ABOVE, salon below; selected =
              2px ink wrap (no radio dots); icon discs (blue card / ink store). */
           <div className="flex flex-col gap-2.5">
+            {onlineAvailable && (
             <button
               type="button"
               aria-pressed={payChoice === 'online'}
@@ -406,6 +415,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
                 <span className="mt-0.5 block font-body text-[12.5px] text-s-ink-2">{tp('payOnlineSub')}</span>
               </span>
             </button>
+            )}
             <button
               type="button"
               aria-pressed={payChoice === 'in_person'}
@@ -498,7 +508,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             locale={locale}
             localeCode={localeCode}
             returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
-            onSucceeded={() => router.push(`/${locale}${confirmationPath}`)}
+            onSucceeded={() => { resetForm(); router.push(`/${locale}${confirmationPath}`); }}
             onUseOtherMethod={() => {
               // Drop back to the selector. The pending online booking is left for the
               // abandon-sweep cron; a fresh selection creates its own booking.

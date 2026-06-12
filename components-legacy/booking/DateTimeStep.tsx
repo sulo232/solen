@@ -49,6 +49,13 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
       router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
+    // Dead-click fix (owner 2026-06-12): the modal needs a date; without one the
+    // button silently did nothing. Ask for the day first.
+    if (!formData.selectedDate) {
+      setError(tDate('selectDate'));
+      return;
+    }
+    setError(null);
     setShowWaitlist(true);
   };
 
@@ -252,6 +259,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
           salonName={salonName}
           service={formData.services[0] ?? null}
           preferredDate={formData.selectedDate}
+          staff={selectedStaff}
           onClose={() => setShowWaitlist(false)}
         />
       )}

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { data: validated, error: validationError } = validateBody(waitlistSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
-  const { salon_id, service_id, preferred_date, preferred_time_range } = validated;
+  const { salon_id, service_id, preferred_date, preferred_time_range, staff_member_id } = validated;
 
   const admin = createAdminSupabaseClient();
   const { error } = await admin.from("waitlist").upsert(
@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       service_id,
       preferred_date,
       preferred_time_range: preferred_time_range ?? "any",
+      staff_member_id: staff_member_id ?? null,
     },
     { onConflict: "user_id,salon_id,service_id,preferred_date" }
   );

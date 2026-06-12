@@ -1057,6 +1057,8 @@
       "salonLabel": "Salon",
       "serviceLabel": "Service",
       "dateLabel": "Date",
+      "staffLabel": "Stylist",
+      "staffAny": "No preference",
       "preferredTime": "Preferred time",
       "time_any": "Any time",
       "time_morning": "Morning",

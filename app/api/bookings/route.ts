@@ -291,6 +291,28 @@ export async function POST(request: NextRequest) {
     accepted_via: "booking_create",
   };
 
+  // Duplicate guard (owner 2026-06-12: "they can just click back and book as many
+  // times as they want"): the same customer re-confirming the same salon+time gets a
+  // 409 instead of a second booking (auto-assign would otherwise grab another stylist's
+  // slot at the identical time). Keyed on user_id (logged-in) or guest_phone (guest).
+  {
+    let dupQuery = db
+      .from("bookings")
+      .select("id")
+      .eq("salon_id", slot.salon_id)
+      .eq("starts_at", slot.starts_at)
+      .in("status", ["pending", "confirmed"])
+      .limit(1);
+    dupQuery = user ? dupQuery.eq("user_id", user.id) : dupQuery.eq("guest_phone", guest_phone!);
+    const { data: dup } = await dupQuery;
+    if (dup?.length) {
+      return NextResponse.json(
+        { message: "Du hast diesen Termin bereits gebucht.", code: "DUPLICATE_BOOKING" },
+        { status: 409 },
+      );
+    }
+  }
+
   // 4. Create booking. The guest INSERT works ONLY because `db` is the service-role client
   //    (bypasses RLS); the logged-in INSERT uses the RLS client and passes bookings_insert_auth.
   const { data: booking, error: bookingError } = await db

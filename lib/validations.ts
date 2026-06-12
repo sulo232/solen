@@ -1031,6 +1031,7 @@ export const waitlistSchema = z.object({
   service_id: z.string().uuid().optional(),
   preferred_date: z.string().max(20).optional(),
   preferred_time_range: z.string().max(50).optional(),
+  staff_member_id: z.string().uuid().nullable().optional(),
 });
 
 export const quartierSubscribeSchema = z.object({

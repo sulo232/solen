@@ -1050,6 +1050,8 @@
       "salonLabel": "Salon",
       "serviceLabel": "Prestation",
       "dateLabel": "Date",
+      "staffLabel": "Styliste",
+      "staffAny": "Sans préférence",
       "preferredTime": "Créneau préféré",
       "time_any": "Peu importe",
       "time_morning": "Matin",

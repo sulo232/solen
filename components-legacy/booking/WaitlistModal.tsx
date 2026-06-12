@@ -5,12 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import type { SelectedService } from '@/lib/booking-state';
+import type { StaffMember } from '@/lib/types';
 
 interface WaitlistModalProps {
   salonId: string;
   salonName: string;
   service: SelectedService | null;
   preferredDate: Date;
+  /** Chosen stylist from the booking flow; null = Keine Präferenz. */
+  staff?: StaffMember | null;
   onClose: () => void;
 }
 
@@ -25,6 +28,7 @@ export default function WaitlistModal({
   salonName,
   service,
   preferredDate,
+  staff = null,
   onClose,
 }: WaitlistModalProps) {
   const t = useTranslations('booking.waitlist');
@@ -67,6 +71,7 @@ export default function WaitlistModal({
           service_id: service?.id,
           preferred_date: ymd(preferredDate),
           preferred_time_range: timeRange,
+          staff_member_id: staff?.id ?? null,
         }),
       });
       if (!res.ok) throw new Error('waitlist_failed');
@@ -137,6 +142,10 @@ export default function WaitlistModal({
               <div className="flex justify-between py-0.5 text-[13px]">
                 <span className="text-s-ink-2">{t('dateLabel')}</span>
                 <span className="font-semibold text-s-ink">{dateLabel}</span>
+              </div>
+              <div className="flex justify-between py-0.5 text-[13px]">
+                <span className="text-s-ink-2">{t('staffLabel')}</span>
+                <span className="font-semibold text-s-ink">{staff?.name ?? t('staffAny')}</span>
               </div>
             </div>
 

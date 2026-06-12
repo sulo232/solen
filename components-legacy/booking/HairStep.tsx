@@ -141,13 +141,13 @@ export default function HairStep({
       {/* Card 1 — hair facts */}
       <div className="mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         {prefilled && (
-          <div className="mb-4 flex items-center gap-2.5 rounded-[12px] bg-s-accent-pale px-3 py-2.5 text-[13px] text-s-ink-2">
+          <div className="mb-4 flex items-center gap-2.5 rounded-[12px] bg-s-bg-sunken px-3 py-2.5 text-[13px] text-s-ink-2">
             <span>
               {t.rich("hairFromProfile", {
                 b: (chunks) => <span className="font-semibold text-s-ink">{chunks}</span>,
               })}
             </span>
-            <Check size={14} className="ml-auto shrink-0 text-s-ink" aria-hidden />
+            <Check size={14} className="ml-auto shrink-0 text-s-success" aria-hidden />
           </div>
         )}
         <PillGroup label={t("hairTypeLabel")} opts={HAIR_OPTS.filter((o) => o.value !== "unknown")} value={hairType} onSelect={setHairType} />
