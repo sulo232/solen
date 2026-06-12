@@ -18,6 +18,7 @@ export default function HideInBooking({
   showOnAuth = false,
   hideOnFeed = false,
   hideOnDashboard = false,
+  hideOnAccount = false,
   coverSalonDetail = false,
 }: {
   children: ReactNode;
@@ -29,6 +30,9 @@ export default function HideInBooking({
       chrome (DashboardLayout topbar + icon rail); the marketing Footer + cookie banner
       stacking in overlapped content + intercepted taps on mobile. Opt-in, footer only. */
   hideOnDashboard?: boolean;
+  /** Also drop on the customer account section (/[locale]/profile + /account...).
+      Modern account screens (Uber/Fresha) carry no marketing footer; opt-in, footer only. */
+  hideOnAccount?: boolean;
   /** Also hide on the salon detail PDP (/[locale]/salon/[slug]). The PDP is a
    *  self-contained hero with its own back arrow (Fresha pattern); opt the
    *  global Header + Breadcrumb out so the page leads with the hero. */
@@ -40,6 +44,9 @@ export default function HideInBooking({
   if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;
 
   if (hideOnDashboard && /\/dashboard(\/|$)/.test(pathname)) return null;
+
+  // Customer account section — no marketing footer below the account content.
+  if (hideOnAccount && /\/(profile|account)(\/|$)/.test(pathname)) return null;
 
   // V3-D414: board detail + saved (/discover/board/[id], /discover/saved, /discover/saved/[id]) are focused views
   // with their own back button. Drop the marketing chrome (city bar, header, breadcrumb, footer) so there aren't
