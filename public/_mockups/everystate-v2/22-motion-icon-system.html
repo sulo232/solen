@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22 — ONE motion language + icon fixes (live animations)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  body{padding-bottom:80px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px;width:300px}
+  .card h4{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;margin:0 0 4px}
+  .card p.d{font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0 0 16px}
+  .stage{background:var(--sunken);border-radius:14px;padding:18px;min-height:120px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+
+  /* 1 — skeleton shimmer (THE loading language) */
+  .sk{position:relative;overflow:hidden;background:#E9E9EB;border-radius:10px}
+  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+    animation:shim 1.4s infinite}
+  @keyframes shim{100%{transform:translateX(100%)}}
+  .spin{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:999px;animation:rot 0.8s linear infinite;margin:24px auto}
+  @keyframes rot{100%{transform:rotate(360deg)}}
+
+  /* 2 — X collapse press (0.94 icon tier) */
+  .xbtn{width:44px;height:44px;border-radius:999px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;margin:0 auto;animation:xpress 2.2s cubic-bezier(.34,1.56,.64,1) infinite}
+  @keyframes xpress{0%,100%{transform:scale(1)}12%{transform:scale(.94)}24%{transform:scale(1)}}
+
+  /* 3 — press tiers */
+  .tier-cta{height:46px;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;animation:p97 2.4s ease infinite}
+  .tier-row{height:54px;border-radius:14px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;padding:0 16px;font-size:14px;animation:p98 2.4s .3s ease infinite}
+  .tier-icon{width:40px;height:40px;border-radius:999px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;animation:p94 2.4s .6s ease infinite}
+  @keyframes p97{0%,100%{transform:scale(1)}10%{transform:scale(.97)}20%{transform:scale(1)}}
+  @keyframes p98{0%,100%{transform:scale(1)}10%{transform:scale(.98)}20%{transform:scale(1)}}
+  @keyframes p94{0%,100%{transform:scale(1)}10%{transform:scale(.94)}20%{transform:scale(1)}}
+
+  /* 4 — cart count bump */
+  .cartpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:11px 18px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13.5px;margin:0 auto}
+  .cartn{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:#fff;color:var(--ink);font-size:12px;font-weight:700;animation:bump 2.6s cubic-bezier(.34,1.56,.64,1) infinite}
+  @keyframes bump{0%,100%{transform:scale(1)}8%{transform:scale(1.45)}18%{transform:scale(1)}}
+
+  /* 5 — star rating pop */
+  .stars{display:flex;gap:8px;justify-content:center}
+  .stars .lucide{width:26px;height:26px;color:#FFC32B;fill:#FFC32B;opacity:0;transform:scale(.3);animation:starpop .5s cubic-bezier(.34,1.56,.64,1) forwards}
+  .stars .lucide:nth-child(1){animation-delay:.2s}.stars .lucide:nth-child(2){animation-delay:.35s}
+  .stars .lucide:nth-child(3){animation-delay:.5s}.stars .lucide:nth-child(4){animation-delay:.65s}
+  .stars .lucide:nth-child(5){animation-delay:.8s}
+  @keyframes starpop{60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
+  .starwrap{animation:starreset 3.4s infinite}
+
+  /* 6 — live pulse dot */
+  .live{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;margin:0 auto}
+  .dotwrap{position:relative;width:8px;height:8px}
+  .dot{position:absolute;inset:0;border-radius:999px;background:#16A34A}
+  .dot.ping{animation:ping 1.6s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes ping{75%,100%{transform:scale(2.4);opacity:0}}
+
+  /* 7 — stagger rise-in */
+  .riselist .r{height:46px;border-radius:12px;background:#fff;border:1px solid var(--border);opacity:0;transform:translateY(12px);animation:rise .55s cubic-bezier(.16,1,.3,1) forwards}
+  .riselist .r:nth-child(1){animation-delay:.15s}.riselist .r:nth-child(2){animation-delay:.27s}.riselist .r:nth-child(3){animation-delay:.39s}
+  @keyframes rise{100%{opacity:1;transform:none}}
+  .riseloop{animation:none}
+
+  /* 8 — SuccessMark (tip-sent) */
+  .smk{position:relative;width:64px;height:64px;margin:0 auto}
+  .smk .ring{position:absolute;inset:0;border-radius:999px;background:rgba(22,163,74,.25);animation:ringp 2.8s ease-out infinite}
+  .smk .disc{position:absolute;inset:0;border-radius:999px;background:#16A34A;display:grid;place-items:center;animation:discp 2.8s cubic-bezier(.34,1.56,.64,1) infinite}
+  .smk .lucide{width:30px;height:30px;color:#fff;stroke-width:3}
+  @keyframes discp{0%{transform:scale(0)}14%{transform:scale(1.12)}22%,100%{transform:scale(1)}}
+  @keyframes ringp{0%{transform:scale(.6);opacity:1}40%,100%{transform:scale(1.7);opacity:0}}
+
+  table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;border-radius:14px;overflow:hidden}
+  th,td{border-bottom:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--sunken);font-family:'Inter Tight',sans-serif;font-size:12px}
+  td code{font-size:11px;background:var(--sunken);padding:1px 5px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<div class="note"><b>22 — ONE motion language + icon normalization (owner ask 2026-06-12: "same animation in similar places, everywhere").</b>
+<br><b>Exists-check:</b> motion canon EXISTS (MOTION.md easings + 3-tier press + SuccessMark + LoadingStates.md skeleton grammar + .salon-card-stagger/.celebrate-rise utilities in globals.css; Skeleton primitive in registry). This sheet proposes NO new system — it ENFORCES the existing one where the audits found divergence: 24 divergent + 8 missing loading states, 83/90 X buttons without press feedback (fix = Sheet.tsx + Modal.tsx primitives, cascades app-wide), 27 scale-tier violations, 10 cute-moment gaps, 4 glyph splits + 8 hand-drawn SVGs + ~18 icon color drifts. 🪦 REMOVED checked: /entdecken NO-TOUCH (zero changes there); "imperceptible 500ms fade" rejected 2026-06-09 — all entrances below are the PERCEPTIBLE variant. Full evidence: _audits/MOTION_CONSISTENCY_AUDIT.md + _audits/ICON_CONSISTENCY_AUDIT.md.</div>
+
+<div class="lbl">THE MOTION LANGUAGE — live, loop forever (all from existing canon)</div>
+<div class="row">
+  <div class="card">
+    <h4>1 · Loading = skeleton shimmer, never spinners</h4>
+    <p class="d">19 pages show a centered spinner (right). The ONE language: content-shaped shimmer (left) on every list/page load. Spinner survives only INSIDE buttons (submitting).</p>
+    <div class="stage">
+      <div class="sk" style="height:14px;width:60%"></div>
+      <div class="sk" style="height:14px;width:85%"></div>
+      <div class="sk" style="height:44px;border-radius:14px"></div>
+    </div>
+    <div class="stage" style="margin-top:10px"><div class="spin"></div><p style="text-align:center;font-size:11px;color:var(--ink-3);margin:0">today, on 19 pages — dies</p></div>
+  </div>
+
+  <div class="card">
+    <h4>2 · The X collapse — everywhere</h4>
+    <p class="d">83 of 90 close buttons have zero feedback. Fix = 2 lines in the Sheet + Modal primitives (icon tier scale .94, spring) → cascades to every sheet, modal, banner, chip.</p>
+    <div class="stage"><div class="xbtn"><i data-lucide="x" style="width:20px;height:20px"></i></div></div>
+  </div>
+
+  <div class="card">
+    <h4>3 · Press tiers (already locked, 27 violators)</h4>
+    <p class="d">CTA/card .97 · row .98 · icon .94 — the existing convention, just enforced on the 27 outliers (scale-90/95/985/99 strays).</p>
+    <div class="stage">
+      <div class="tier-cta">Weiter · .97</div>
+      <div class="tier-row">List row · .98</div>
+      <div style="display:flex;justify-content:center"><div class="tier-icon"><i data-lucide="heart" style="width:18px;height:18px"></i></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>4 · Cart count bump</h4>
+    <p class="d">Adding a service updates the number with zero motion today. The count pops (spring 1.45×) on every add — booking cart pill + "N ausgewählt".</p>
+    <div class="stage" style="align-items:center"><div class="cartpill"><i data-lucide="shopping-cart" style="width:15px;height:15px"></i>Auswahl <span class="cartn">2</span></div></div>
+  </div>
+
+  <div class="card">
+    <h4>5 · Star rating pop</h4>
+    <p class="d">Queue review stars currently just appear. Each tap pops the star in with the spring curve (and fills left-to-right on load).</p>
+    <div class="stage starwrap"><div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div></div>
+  </div>
+
+  <div class="card">
+    <h4>6 · Live dots pulse</h4>
+    <p class="d">The queue tracker pings; StatusPill "Geöffnet" + WalkInBand "Sofort frei" don't. Same ping on every LIVE state (real data only — no fabrication).</p>
+    <div class="stage" style="align-items:center"><span class="live"><span class="dotwrap"><span class="dot ping"></span><span class="dot"></span></span>Geöffnet · bis 18:00</span></div>
+  </div>
+
+  <div class="card">
+    <h4>7 · Stagger rise-in on list loads</h4>
+    <p class="d">.salon-card-stagger exists but only 3 of ~9 lists use it. First-load only, perceptible (12px + clear stagger — the subtle version was rejected).</p>
+    <div class="stage riselist"><div class="r"></div><div class="r"></div><div class="r"></div></div>
+    <p class="d" style="margin:8px 0 0;font-size:11px;color:var(--ink-3)">reload the page to replay</p>
+  </div>
+
+  <div class="card">
+    <h4>8 · SuccessMark on every peak</h4>
+    <p class="d">Tip-sent shows a static pale check today (also breaks the focal-green rule). The existing SuccessMark spring (disc pop + ring pulse) goes on ALL peaks.</p>
+    <div class="stage"><div class="smk"><span class="ring"></span><span class="disc"><i data-lucide="check"></i></span></div></div>
+  </div>
+</div>
+
+<div class="lbl" style="margin-top:34px">ICON FIXES — mechanical, to the locked standard (top of 25+, full table in _audits/ICON_CONSISTENCY_AUDIT.md)</div>
+<table>
+  <tr><th>What</th><th>Where</th><th>Fix</th></tr>
+  <tr><td>Hand-drawn Search/Pin/Calendar SVGs</td><td>homepage Hero ×3 + SearchBar ×3</td><td>real Lucide (banned-SVG rule)</td></tr>
+  <tr><td>Hand-drawn stars</td><td>Avatar badge, TestimonialCarousel, FeaturedSalonCarousel</td><td>RatingStars primitive / <code>fill-s-star</code></td></tr>
+  <tr><td>ChevronLeft used as back</td><td>~10 sites (lookup, resend-link, queue, walk-in-pay, refund views…)</td><td>ArrowLeft / BackButton primitive</td></tr>
+  <tr><td>Stale heart pink <code>#FF4A6B</code></td><td>legacy SalonCard + FeaturedSalonCarousel</td><td><code>#FF3366</code> (canon)</td></tr>
+  <tr><td>Hex star fills <code>#FFC32B</code></td><td>walk-in-pay, SalonReviews, ServicesSheet, Staff sheets (6×)</td><td><code>fill-s-star</code> token</td></tr>
+  <tr><td>Blue icons that should be ink</td><td>HeroAboveFold rows, GuidedSearch/HairStep selection checks, search-row icons (~8)</td><td>ink per blue v3</td></tr>
+  <tr><td>CheckCircle/AlertTriangle one-offs</td><td>vouchers, ErrorFallback</td><td>bare Check / AlertCircle</td></tr>
+</table>
+
+<div class="lbl" style="margin-top:26px">4 PICKS ONLY YOU CAN MAKE (same-context values currently split)</div>
+<table>
+  <tr><th>#</th><th>Question</th><th>Options in the wild</th><th>My pick</th></tr>
+  <tr><td>1</td><td>Hero icon-button stroke</td><td>2.1 / 2.2 / 2.25</td><td><b>2.1</b> (the approved salon-hero pair)</td></tr>
+  <tr><td>2</td><td>Sheet-close X size</td><td>16/18/20/22/24</td><td><b>20</b> inside 44px hit-area</td></tr>
+  <tr><td>3</td><td>Empty-star color</td><td>4 different greys</td><td><b>s-border #E4E4E7</b></td></tr>
+  <tr><td>4</td><td>Meta icon size</td><td>§13.7 says 14, code converged on 12-13</td><td><b>13</b> (update §13.7 to match reality)</td></tr>
+</table>
+
+<script>lucide.createIcons();
+// replay star pop + rise-in on a loop for the demo
+setInterval(() => {
+  document.querySelectorAll('.stars .lucide, .riselist .r').forEach(el => {
+    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  });
+}, 4200);
+</script>
+</body>
+</html>
