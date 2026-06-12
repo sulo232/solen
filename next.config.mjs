@@ -15,11 +15,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // W10 IA flip (2026-06-12): /fuer-salons is the canonical B2B route.
-      { source: '/:locale(de|en|fr|it)/partner', destination: '/:locale/fuer-salons', permanent: true },
-      { source: '/partner', destination: '/de/fuer-salons', permanent: true },
-      { source: '/:locale(de|en|fr|it)/business', destination: '/:locale/fuer-salons', permanent: true },
-      { source: '/business', destination: '/de/fuer-salons', permanent: true },
+      // OWNER 2026-06-12: /partner IS the canonical B2B route (owner consolidated it
+      // personally; do not rename — see _design-system/REMOVED.md). Aliases 301 here.
+      { source: '/:locale(de|en|fr|it)/fuer-salons', destination: '/:locale/partner', permanent: true },
+      { source: '/fuer-salons', destination: '/de/partner', permanent: true },
+      { source: '/:locale(de|en|fr|it)/business', destination: '/:locale/partner', permanent: true },
+      { source: '/business', destination: '/de/partner', permanent: true },
       {
         source: "/:locale/coiffeur",
         has: [{ type: "query", key: "quartier" }],

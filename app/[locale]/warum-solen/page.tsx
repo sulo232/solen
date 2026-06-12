@@ -424,7 +424,7 @@ export default function WarumSolenPage() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href={`/${locale}/fuer-salons`}
+                href={`/${locale}/partner`}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-btn border border-s-border text-[15px] font-medium tracking-[-0.005em] text-s-ink hover:border-s-ink transition-colors"
               >
                 {t("ctaSalonBtn")}

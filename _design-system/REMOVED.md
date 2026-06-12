@@ -22,3 +22,4 @@ scripts/exists.mjs — list every spelling someone might search.
 - dog grooming pivot | the dog-grooming pivot | killed 2026-05-16 | memory project_pivot_shelved
 - fuer-salons fusion categories-comparison-badges | "pull categories grid / comparison chart / trust badges INTO /fuer-salons" | the page ALREADY HAS all three (it was /partner all along, renamed 2026-06-12); W10 items 1-3 were based on a stale two-page premise | this file, 2026-06-12
 - discovery entdecken redesign | ANY change to /entdecken page or home discovery section | 🔒 NO-TOUCH, permanent owner lock | memory project_video_audit_ds_upgrade
+- fuer-salons business b2b-rename canonical-b2b | renaming /partner to /fuer-salons or /business (any B2B route rename) | owner 2026-06-12: /partner IS canonical, owner consolidated it personally; W10 items 5/6 void; aliases 301 to /partner (2026-06-12) | next.config.mjs redirects

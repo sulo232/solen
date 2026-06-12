@@ -21,7 +21,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://solen.ch/${locale}/fuer-salons`,
+      url: `https://solen.ch/${locale}/partner`,
       siteName: "solen.ch",
       locale: locale === "de" ? "de_CH" : locale === "fr" ? "fr_CH" : locale === "it" ? "it_CH" : "en",
       type: "website",
@@ -32,12 +32,12 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `https://solen.ch/${locale}/fuer-salons`,
+      canonical: `https://solen.ch/${locale}/partner`,
       languages: {
-        de: "https://solen.ch/de/fuer-salons",
-        en: "https://solen.ch/en/fuer-salons",
-        fr: "https://solen.ch/fr/fuer-salons",
-        it: "https://solen.ch/it/fuer-salons",
+        de: "https://solen.ch/de/partner",
+        en: "https://solen.ch/en/partner",
+        fr: "https://solen.ch/fr/partner",
+        it: "https://solen.ch/it/partner",
       },
     },
   };
