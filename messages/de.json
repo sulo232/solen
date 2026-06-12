@@ -1,5 +1,8 @@
 {
   "profileHub": {
+    "nextAppointment": "Nächster Termin",
+    "sectionActivity": "Aktivität",
+    "viewDetails": "Details ansehen",
     "settingsTitle": "Einstellungen",
     "back": "Zurück",
     "phone": "Telefon",

@@ -1,0 +1,193 @@
+<!doctype html>
+<!--
+  Konto (account hub) redesign mockup — 2026-06-12
+  Owner: current /profile "doesn't match our design system + looks 2016".
+  Exists-check: `npm run exists "upcoming appointment"` → 0 matches (the next-appointment
+    hero resurfaces existing bookings data, not a new feature). BookingCard already exists
+    (components-legacy/booking/BookingCard.tsx) — the hero MIRRORS it (date chip + green
+    status pill + price + CTA footer), it is not a new card primitive.
+  Grounded in: real /profile structure + real test data (Test Kunde, Cuts & Culture next
+    appt) + exact LOCKFILE tokens (s-ink #0A0A0A, sunken #F4F4F5, border #E4E4E7, success
+    #16A34A, heart #FF3366, accent #276EF1; Inter Tight + Inter; radius-16; elevation-1).
+  English copy per the mockups-in-English rule. 1:1 IA with the German page.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Konto redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --disabled:#C5C8C4;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --accent:#276EF1; --success:#16A34A; --success-bg:#E8F5E9;
+    --heart:#FF3366; --star:#FFC32B;
+    --radius:16px;
+    --elev1:0 1px 3px rgba(50,47,44,.05), 0 1px 2px rgba(50,47,44,.04);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:var(--sunken); color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.45;
+  }
+  .h{font-family:"Inter Tight",system-ui,sans-serif}
+  .shell{max-width:432px;margin:0 auto;min-height:100vh;background:var(--sunken);position:relative}
+
+  /* ── top bar (the global header, already shipped) ── */
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+    padding:14px 18px;background:rgba(255,255,255,.82);backdrop-filter:blur(14px) saturate(1.6);
+    -webkit-backdrop-filter:blur(14px) saturate(1.6)}
+  .tile{width:40px;height:40px;border-radius:13px;border:1px solid var(--border);background:#fff;
+    display:grid;place-items:center;color:var(--ink);flex:0 0 auto}
+  .bar .title{font-family:"Inter Tight",sans-serif;font-size:18px;font-weight:700;letter-spacing:-.01em}
+  .bar .spacer{flex:1}
+  .bar svg{width:22px;height:22px;stroke-width:2.2}
+
+  main{padding:22px 18px 40px}
+
+  /* ── identity (no card — sits on the sunken bg, Uber-style) ── */
+  .id{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .ava{width:62px;height:62px;border-radius:9999px;background:#E9E9EC;display:grid;place-items:center;
+    font-family:"Inter Tight",sans-serif;font-weight:700;font-size:23px;color:var(--ink2);flex:0 0 auto;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+  .id .name{font-family:"Inter Tight",sans-serif;font-size:21px;font-weight:600;letter-spacing:-.015em}
+  .id .sub{font-size:13.5px;color:var(--ink2);margin-top:2px}
+
+  /* ── eyebrow section label ── */
+  .eyebrow{font-size:13px;font-weight:500;color:var(--ink2);margin:0 2px 9px;}
+  .sec{margin-top:30px}
+
+  /* ── card ── */
+  .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--elev1);overflow:hidden}
+
+  /* ── HERO: next appointment (mirrors the real BookingCard) ── */
+  .hero{display:block;padding:15px;color:var(--ink);text-decoration:none}
+  .hero .top{display:flex;gap:14px}
+  .chip{width:56px;flex:0 0 auto;border-radius:12px;background:var(--sunken);padding:9px 0;text-align:center;line-height:1.05}
+  .chip .d{font-size:10.5px;font-weight:600;letter-spacing:.06em;color:var(--ink2);text-transform:uppercase}
+  .chip .n{font-family:"Inter Tight",sans-serif;font-size:21px;font-weight:700;color:var(--ink);margin:1px 0}
+  .chip .m{font-size:11.5px;color:var(--ink2)}
+  .hero .salon{font-family:"Inter Tight",sans-serif;font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .hero .svc{font-size:14px;color:var(--ink2);margin-top:2px}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:var(--success-bg);color:var(--success);
+    font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:9999px;white-space:nowrap}
+  .pill svg{width:13px;height:13px;stroke-width:2.6}
+  .meta{display:flex;gap:16px;margin-top:11px;font-size:13px;color:var(--ink2)}
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .meta svg{width:14px;height:14px;stroke-width:2}
+  .hero .foot{display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+  .hero .price{font-size:13.5px;color:var(--ink2)}
+  .hero .price b{color:var(--ink);font-weight:600}
+  .hero .go{display:inline-flex;align-items:center;gap:3px;font-size:14px;font-weight:600;color:var(--ink)}
+  .hero .go svg{width:16px;height:16px;stroke-width:2.4}
+
+  /* ── list rows ── */
+  .row{display:flex;align-items:center;gap:14px;padding:14px 15px;color:var(--ink);text-decoration:none}
+  .row+.row{border-top:1px solid var(--border)}
+  .row .ic{width:22px;height:22px;flex:0 0 auto;color:var(--ink)}
+  .row .ic svg{width:22px;height:22px;stroke-width:1.9}
+  .row .lbl{flex:1;font-size:15px;font-weight:500;letter-spacing:-.005em}
+  .row .val{font-size:14px;color:var(--ink2)}
+  .row .chev{width:18px;height:18px;color:var(--disabled)}
+  .row .chev svg{width:18px;height:18px;stroke-width:2.2}
+  .row .ic.heart{color:var(--heart)}
+
+  /* ── sign out ── */
+  .signout{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+    margin-top:30px;padding:14px;background:none;border:0;cursor:pointer;
+    font-family:"Inter",sans-serif;font-size:14.5px;font-weight:500;color:var(--ink2)}
+  .signout svg{width:18px;height:18px;stroke-width:2}
+
+  .stamp{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);font-size:11px;color:var(--ink2);
+    background:rgba(255,255,255,.85);border:1px solid var(--border);border-radius:9999px;padding:5px 12px;
+    backdrop-filter:blur(8px)}
+  @media(min-width:520px){.shell{margin-top:18px;margin-bottom:18px;min-height:0;border-radius:26px;
+    overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.14)} body{padding:0 14px}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- global header (shipped: Konto beside back) -->
+  <div class="bar">
+    <div class="tile"><i data-lucide="arrow-left"></i></div>
+    <div class="title">Account</div>
+    <div class="spacer"></div>
+    <div class="tile"><i data-lucide="bell"></i></div>
+    <div class="tile"><i data-lucide="menu"></i></div>
+  </div>
+
+  <main>
+    <!-- identity -->
+    <div class="id">
+      <div class="ava">T</div>
+      <div>
+        <div class="name">Test Kunde</div>
+        <div class="sub">kunde@solen.ch · Member since 2026</div>
+      </div>
+    </div>
+
+    <!-- HERO: next appointment -->
+    <p class="eyebrow">Next appointment</p>
+    <a class="card hero" href="#">
+      <div class="top">
+        <div class="chip"><div class="d">Sat</div><div class="n">13</div><div class="m">Jun</div></div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+            <div style="min-width:0">
+              <div class="salon">Cuts &amp; Culture</div>
+              <div class="svc">Men's cut · 45 min</div>
+            </div>
+            <span class="pill"><i data-lucide="check"></i>Confirmed</span>
+          </div>
+          <div class="meta">
+            <span><i data-lucide="clock"></i>09:00</span>
+            <span><i data-lucide="map-pin"></i>Elsässerstrasse 10, Basel</span>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span class="price">Total <b>CHF 45</b></span>
+        <span class="go">View details<i data-lucide="chevron-right"></i></span>
+      </div>
+    </a>
+
+    <!-- Activity -->
+    <div class="sec">
+      <p class="eyebrow">Activity</p>
+      <div class="card">
+        <a class="row" href="#"><span class="ic"><i data-lucide="calendar"></i></span><span class="lbl">Appointments</span><span class="val">2 upcoming</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic heart"><i data-lucide="heart"></i></span><span class="lbl">Favorites</span><span class="val">0</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="award"></i></span><span class="lbl">Loyalty</span><span class="val">0 stamps</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="gift"></i></span><span class="lbl">Wallet</span><span class="val">Gift cards</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+      </div>
+    </div>
+
+    <!-- More -->
+    <div class="sec">
+      <p class="eyebrow">More</p>
+      <div class="card">
+        <a class="row" href="#"><span class="ic"><i data-lucide="scissors"></i></span><span class="lbl">Hair profile</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="sparkles"></i></span><span class="lbl">Looks</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="ticket"></i></span><span class="lbl">Vouchers</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="clipboard-list"></i></span><span class="lbl">Forms</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="user-plus"></i></span><span class="lbl">Invite friends</span><span class="val">CHF 10</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="sliders-horizontal"></i></span><span class="lbl">Settings</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+        <a class="row" href="#"><span class="ic"><i data-lucide="help-circle"></i></span><span class="lbl">Help</span><span class="chev"><i data-lucide="chevron-right"></i></span></a>
+      </div>
+    </div>
+
+    <!-- sign out -->
+    <button class="signout"><i data-lucide="log-out"></i>Sign out</button>
+  </main>
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>

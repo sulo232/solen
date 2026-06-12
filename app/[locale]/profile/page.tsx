@@ -1,9 +1,10 @@
-// /profile — customer account hub (V3-D348, 2026-05-30).
-// Ground-up rebuild replacing the legacy `components-legacy/ProfilePage` monolith.
-// Variant C (user pick): identity+stat header card → 2×2 action tiles → "More" list
-// → sign-out. Pure server component — tiles/rows are <Link>s, sign-out is a form POST
-// to /api/auth/logout, so no client JS. Locked B&W tokens, A13 one-ink-anchor per item.
-// Structure source: public/solen-profile-variants.html (variant C). Aesthetic: LOCKFILE.
+// /profile — customer account hub. Redesign 2026-06-12 (owner-approved mockup
+// public/_mockups/konto-redesign.html): the V3-D348 "2×2 grey-disc tile grid +
+// divided-stat strip" read dated ("looks 2016"). New shape: quiet identity header →
+// next-appointment HERO (mirrors the on-system BookingCard, resurfaces existing
+// bookings data) → calm grouped lists (Aktivität / Mehr) with real icons + sparse
+// semantic color → quiet sign-out. One rich hero + composure, whisper elevation.
+// Still a server component (rows are <Link>s, sign-out is a form POST) — no client JS.
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { formatCurrency } from "@/lib/format-currency";
 import {
   Calendar,
   Scissors,
   Ticket,
-  Package,
   ClipboardList,
   Heart,
   Award,
@@ -26,6 +27,8 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  Clock,
+  MapPin,
   type LucideIcon,
 } from "lucide-react";
 
@@ -50,9 +53,27 @@ async function countOf(build: () => PromiseLike<{ count: number | null; error: u
   }
 }
 
+// Joined shapes from the next-booking query. Supabase types to-one joins loosely
+// (object | array); normalize() below handles both.
+type JoinedSalon = { slug?: string | null; name?: string | null; address?: string | null };
+type JoinedService = { name_de?: string | null; name_en?: string | null; name_fr?: string | null; name_it?: string | null; duration_minutes?: number | null };
+type NextBooking = {
+  starts_at: string;
+  ends_at: string | null;
+  price_paid: number | null;
+  salon: JoinedSalon | JoinedSalon[] | null;
+  service: JoinedService | JoinedService[] | null;
+};
+
+function one<T>(v: T | T[] | null | undefined): T | null {
+  if (!v) return null;
+  return Array.isArray(v) ? (v[0] ?? null) : v;
+}
+
 export default async function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "profileHub" });
+  const tb = await getTranslations({ locale, namespace: "bookingCard" });
 
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -64,15 +85,27 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   const userId = user.id;
   const nowIso = new Date().toISOString();
 
-  const [profileRes, totalBookings, upcomingBookings, favCount, stampCount] = await Promise.all([
+  const [profileRes, totalBookings, upcomingBookings, favCount, stampCount, nextBookingRes] = await Promise.all([
     supabase.from("profiles").select("display_name, avatar_url, created_at").eq("id", userId).maybeSingle(),
     countOf(() => supabase.from("bookings").select("id", { count: "exact", head: true }).eq("user_id", userId), "bookings"),
     countOf(() => supabase.from("bookings").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("starts_at", nowIso).neq("status", "cancelled"), "upcoming"),
     countOf(() => supabase.from("favorites").select("salon_id", { count: "exact", head: true }).eq("user_id", userId), "favorites"),
     countOf(() => supabase.from("loyalty_stamps").select("id", { count: "exact", head: true }).eq("customer_id", userId), "stamps"),
+    // The hero: the single next confirmed booking (mirrors /api/bookings/user?tab=upcoming).
+    supabase
+      .from("bookings")
+      // services has only name_de/name_en in this DB (schema drift) — fr/it fall back, same as BookingCard.
+      .select("starts_at, ends_at, price_paid, salon:salons(slug, name, address), service:services(name_de, name_en, duration_minutes)")
+      .eq("user_id", userId)
+      .eq("status", "confirmed")
+      .gte("starts_at", nowIso)
+      .order("starts_at", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   if (profileRes.error) console.error("[ProfileHub] profile fetch error:", profileRes.error.message);
+  if (nextBookingRes.error) console.error("[ProfileHub] next booking fetch error:", nextBookingRes.error.message);
   const profile = profileRes.data;
 
   const displayName = profile?.display_name?.trim() || user.email?.split("@")[0] || t("title");
@@ -82,38 +115,99 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
 
   const p = (path: string) => `/${locale}${path}`;
 
+  // ── next-appointment hero data (server-formatted; pin Europe/Zurich so the UTC
+  //    server doesn't render the wrong time — same trap as the slot bugs) ──
+  const nb = (nextBookingRes.data as NextBooking | null) ?? null;
+  const salon = one(nb?.salon);
+  const service = one(nb?.service);
+  const localeCode = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
+  let hero: null | { dow: string; day: string; mon: string; time: string; salonName: string; serviceLine: string; address: string | null; price: number | null } = null;
+  if (nb && salon) {
+    const zone = { timeZone: "Europe/Zurich" } as const;
+    const sd = new Date(nb.starts_at);
+    const dur = nb.ends_at ? Math.round((new Date(nb.ends_at).getTime() - sd.getTime()) / 60000) : (service?.duration_minutes ?? 0);
+    const svcName = (service?.[`name_${locale}` as keyof JoinedService] as string) || service?.name_de || service?.name_en || "";
+    hero = {
+      dow: sd.toLocaleDateString(localeCode, { weekday: "short", ...zone }),
+      day: sd.toLocaleDateString(localeCode, { day: "2-digit", ...zone }),
+      mon: sd.toLocaleDateString(localeCode, { month: "short", ...zone }),
+      time: sd.toLocaleTimeString(localeCode, { hour: "2-digit", minute: "2-digit", hour12: false, ...zone }),
+      salonName: salon.name || "",
+      serviceLine: svcName + (dur ? ` · ${dur} ${tb("minutes")}` : ""),
+      address: salon.address || null,
+      price: nb.price_paid,
+    };
+  }
+
   return (
     <main className="min-h-screen bg-s-bg-sunken">
       <div className="max-w-md mx-auto px-5 pt-6 pb-16">
-        {/* "Konto" now sits beside the global back tile (Header deepPageTitle); the
-            top gear was a 3rd path to Settings (also the "More" row + the menu). */}
-        {/* Identity + stats card */}
-        <section className="rounded-card bg-white shadow-card p-[18px]">
-          <div className="flex items-center gap-[14px]">
-            <Avatar src={avatarSrc} name={displayName} size={52} />
-            <div className="min-w-0">
-              <p className="text-[18px] font-semibold tracking-[-0.015em] text-s-ink truncate">{displayName}</p>
-              {subtitle ? <p className="text-[13px] text-s-ink-2 truncate mt-0.5">{subtitle}</p> : null}
-            </div>
-          </div>
-          <div className="flex mt-4 border-t border-s-border pt-[14px]">
-            <Stat num={totalBookings} cap={t("statBookings")} />
-            <Stat num={favCount} cap={t("statFavorites")} divider />
-            <Stat num={stampCount} cap={t("statStamps")} divider />
-          </div>
-        </section>
+        {/* "Konto" sits beside the global back tile (Header deepPageTitle). */}
 
-        {/* Action tiles */}
-        <div className="grid grid-cols-2 gap-[10px] mt-4">
-          <Tile href={p("/profile/bookings")} icon={Calendar} label={t("tileAppointments")} meta={t("upcomingCount", { count: upcomingBookings })} />
-          <Tile href={p("/profile/favorites")} icon={Heart} label={t("tileFavorites")} meta={t("savedCount", { count: favCount })} />
-          <Tile href={p("/profile/stamps")} icon={Award} label={t("tileLoyalty")} meta={t("stampsCount", { count: stampCount })} />
-          <Tile href={p("/profile/gift-cards")} icon={Gift} label={t("tileWallet")} meta={t("walletDesc")} />
+        {/* Identity — on the sunken bg, no card (Uber-style) */}
+        <div className="flex items-center gap-3.5 mb-6">
+          <Avatar src={avatarSrc} name={displayName} size={60} />
+          <div className="min-w-0">
+            <p className="font-heading text-[21px] font-semibold tracking-[-0.015em] text-s-ink truncate">{displayName}</p>
+            {subtitle ? <p className="text-[13.5px] text-s-ink-2 truncate mt-0.5">{subtitle}</p> : null}
+          </div>
         </div>
 
+        {/* HERO — next appointment (mirrors BookingCard; only when one exists) */}
+        {hero ? (
+          <section className="mb-2">
+            <p className="text-[13px] font-medium text-s-ink-2 mb-2.5 px-0.5">{t("nextAppointment")}</p>
+            <Link href={p("/profile/bookings")} className="block rounded-card border border-s-border bg-white p-4 shadow-elevation-1 transition-[transform,box-shadow] duration-200 ease-glide hover:-translate-y-[2px] hover:shadow-elevation-2 active:scale-[0.98]">
+              <div className="flex items-start gap-3">
+                <div className="flex-none w-[52px] rounded-[12px] bg-s-bg-sunken py-2 text-center">
+                  <div className="text-[12px] font-bold uppercase tracking-[0.06em] text-s-ink-2">{hero.dow}</div>
+                  <div className="font-heading text-[22px] font-bold leading-[1.05] text-s-ink">{hero.day}</div>
+                  <div className="text-[12px] text-s-ink-2">{hero.mon}</div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{hero.salonName}</h3>
+                  <p className="mt-0.5 truncate text-[14px] text-s-ink">{hero.serviceLine}</p>
+                  {hero.address ? (
+                    <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
+                      <MapPin size={13} className="flex-none text-s-ink-3" aria-hidden />
+                      <span className="truncate">{hero.address}</span>
+                    </p>
+                  ) : null}
+                  <p className="mt-1 flex items-center gap-1.5 text-[13px] text-s-ink-2">
+                    <Clock size={13} className="flex-none text-s-ink-3" aria-hidden />
+                    {hero.time}
+                  </p>
+                </div>
+                <div className="flex-none rounded-pill bg-s-success/10 px-2.5 py-1 text-[12px] font-semibold text-s-success">
+                  {tb("status.confirmed")}
+                </div>
+              </div>
+              <div className="mt-3 flex items-center justify-between border-t border-s-border pt-3">
+                <div className="text-[15px] font-semibold text-s-ink">
+                  <span className="mr-1.5 text-[12px] font-normal text-s-ink-2">{tb("total")}</span>
+                  {hero.price != null ? formatCurrency(hero.price) : ""}
+                </div>
+                <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-s-ink">
+                  {t("viewDetails")}
+                  <ChevronRight size={16} strokeWidth={2.4} aria-hidden />
+                </span>
+              </div>
+            </Link>
+          </section>
+        ) : null}
+
+        {/* Activity */}
+        <h2 className="text-[13px] font-medium text-s-ink-2 mt-8 mb-2.5 px-0.5">{t("sectionActivity")}</h2>
+        <section className="rounded-card bg-white shadow-elevation-1 overflow-hidden">
+          <Row href={p("/profile/bookings")} icon={Calendar} label={t("tileAppointments")} meta={t("upcomingCount", { count: upcomingBookings })} />
+          <Row href={p("/profile/favorites")} icon={Heart} iconClass="text-[#FF3366]" label={t("tileFavorites")} meta={String(favCount)} />
+          <Row href={p("/profile/stamps")} icon={Award} label={t("tileLoyalty")} meta={t("stampsCount", { count: stampCount })} />
+          <Row href={p("/profile/gift-cards")} icon={Gift} label={t("tileWallet")} meta={t("walletDesc")} />
+        </section>
+
         {/* More */}
-        <h2 className="text-[13px] font-medium text-s-ink-2 mt-[22px] mb-2 px-0.5">{t("sectionMore")}</h2>
-        <section className="rounded-card bg-white shadow-card overflow-hidden">
+        <h2 className="text-[13px] font-medium text-s-ink-2 mt-8 mb-2.5 px-0.5">{t("sectionMore")}</h2>
+        <section className="rounded-card bg-white shadow-elevation-1 overflow-hidden">
           <Row href={p("/profile/haarprofil")} icon={Scissors} label={t("haarprofil")} />
           <Row href={p("/profile/looks")} icon={Sparkles} label={t("looks")} />
           <Row href={p("/profile/vouchers")} icon={Ticket} label={t("vouchers")} />
@@ -123,13 +217,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           <Row href={p("/help")} icon={HelpCircle} label={t("help")} />
         </section>
 
-        {/* Sign out — form POST so it works without client JS */}
-        <form action="/api/auth/logout" method="post" className="mt-[22px]">
+        {/* Sign out — quiet tertiary; form POST so it works without client JS */}
+        <form action="/api/auth/logout" method="post" className="mt-7">
           <button
             type="submit"
-            className="w-full h-[46px] rounded-btn bg-white shadow-card text-s-ink text-[15px] font-medium flex items-center justify-center gap-2 hover:shadow-elevation-2 transition-shadow duration-200"
+            className="w-full flex items-center justify-center gap-2 py-3.5 text-[14.5px] font-medium text-s-ink-2 hover:text-s-ink transition-colors duration-200"
           >
-            <LogOut size={17} className="text-s-ink-2" aria-hidden />
+            <LogOut size={18} className="text-s-ink-3" aria-hidden />
             {t("signOut")}
           </button>
         </form>
@@ -142,7 +236,7 @@ function Avatar({ src, name, size }: { src: string | null; name: string; size: n
   const initials = name.trim().charAt(0).toUpperCase() || "·";
   return (
     <div
-      className="relative shrink-0 rounded-full bg-s-bg-sunken grid place-items-center overflow-hidden text-s-ink-2 font-semibold"
+      className="relative shrink-0 rounded-full bg-s-bg-sunken grid place-items-center overflow-hidden text-s-ink-2 font-semibold ring-1 ring-black/[0.04]"
       style={{ width: size, height: size, fontSize: Math.round(size * 0.34) }}
     >
       <span aria-hidden>{initials}</span>
@@ -154,40 +248,14 @@ function Avatar({ src, name, size }: { src: string | null; name: string; size: n
   );
 }
 
-function Stat({ num, cap, divider }: { num: number; cap: string; divider?: boolean }) {
-  return (
-    <div className={`flex-1 text-center ${divider ? "border-l border-s-border" : ""}`}>
-      <div className="text-[17px] font-semibold text-s-ink tabular-nums">{num}</div>
-      <div className="text-[12px] text-s-ink-2 mt-0.5">{cap}</div>
-    </div>
-  );
-}
-
-function Tile({ href, icon: Icon, label, meta }: { href: string; icon: LucideIcon; label: string; meta: string }) {
+function Row({ href, icon: Icon, label, meta, iconClass }: { href: string; icon: LucideIcon; label: string; meta?: string; iconClass?: string }) {
   return (
     <Link
       href={href}
-      className="block rounded-card bg-white shadow-card p-[15px] hover:shadow-elevation-2 transition-shadow duration-200"
+      className="flex items-center gap-3.5 px-[15px] py-[14px] border-b border-s-border last:border-b-0 hover:bg-s-bg-sunken transition-colors duration-200"
     >
-      <div className="w-[34px] h-[34px] rounded-full bg-s-bg-sunken grid place-items-center text-s-ink">
-        <Icon size={17} aria-hidden />
-      </div>
-      <div className="text-[14px] font-medium text-s-ink mt-3">{label}</div>
-      <div className="text-[12px] text-s-ink-2 mt-0.5">{meta}</div>
-    </Link>
-  );
-}
-
-function Row({ href, icon: Icon, label, meta }: { href: string; icon: LucideIcon; label: string; meta?: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-[14px] px-[14px] py-[13px] border-b border-s-border last:border-b-0 hover:bg-s-bg-sunken transition-colors duration-200"
-    >
-      <div className="w-9 h-9 rounded-full bg-s-bg-sunken grid place-items-center text-s-ink shrink-0">
-        <Icon size={18} aria-hidden />
-      </div>
-      <span className="flex-1 text-[15px] font-medium text-s-ink">{label}</span>
+      <Icon size={22} strokeWidth={1.9} className={iconClass ?? "text-s-ink"} aria-hidden />
+      <span className="flex-1 text-[15px] font-medium text-s-ink tracking-[-0.005em]">{label}</span>
       {meta ? <span className="text-[14px] text-s-ink-2">{meta}</span> : null}
       <ChevronRight size={18} className="text-s-ink-disabled" aria-hidden />
     </Link>
