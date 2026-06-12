@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -140,6 +141,12 @@ export default function BookingWizard({ services, staffList, salon, staffService
         : STEPS[0];
 
   const currentIndex = STEPS.indexOf(normalizedStep);
+
+  // Owner 2026-06-12: changing step kept the previous scroll position ("scrolled
+  // down... go to the next one, it still scrolled down"). Each step starts at top.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [normalizedStep]);
 
   const selectedStaff =
     formData.selectedStaffId && formData.selectedStaffId !== 'any'

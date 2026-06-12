@@ -6,6 +6,21 @@ import { getServerEnv } from "@/lib/env";
 
 // Cron: Generate availability_slots from staff_schedules. Nightly.
 // Bridges staff_schedules → availability_slots for the next 30 days.
+
+// staff_schedules times are SWISS WALL-CLOCK. The cron runs on UTC servers, so a
+// naive setHours() stored 09:00 CH as 09:00 UTC (= 11:00 CH) — every slot 2h late,
+// and any booking attempt before 11:00 local 409'd "Slot not available" because the
+// UI sends the correct Zurich instant. Resolve wall-clock → UTC via the zone offset
+// at that moment (DST-safe).
+function zurichWallClockToUtc(dateStr: string, hours: number, minutes: number): Date {
+  const guess = new Date(`${dateStr}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00Z`);
+  // Zone offset at that instant, independent of the PROCESS timezone: render the
+  // same instant in UTC and in Zurich, parse both the same way, diff them.
+  const asUtc = new Date(guess.toLocaleString("en-US", { timeZone: "UTC" }));
+  const asZurich = new Date(guess.toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
+  const offsetMs = asZurich.getTime() - asUtc.getTime();
+  return new Date(guess.getTime() - offsetMs);
+}
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
@@ -42,6 +57,13 @@ export async function GET(req: NextRequest) {
         closureDates.add(d.toISOString().split("T")[0]);
       }
     }
+
+    // All salon services — fallback list for staff with no explicit mappings.
+    const { data: salonServices } = await admin
+      .from("services")
+      .select("id")
+      .eq("salon_id", salon.id);
+    const salonServiceIds = (salonServices ?? []).map((s) => s.id);
 
     // Get staff members
     const { data: staffMembers } = await admin
@@ -111,15 +133,12 @@ export async function GET(req: NextRequest) {
           if (weekNum % 2 !== (schedule.alternate_week_parity ?? 0)) continue;
         }
 
-        // Generate time slots
+        // Generate time slots (schedule times are Zurich wall-clock, see helper above)
         const [startH, startM] = schedule.start_time.split(":").map(Number);
         const [endH, endM] = schedule.end_time.split(":").map(Number);
 
-        let slotStart = new Date(d);
-        slotStart.setHours(startH, startM, 0, 0);
-
-        const dayEnd = new Date(d);
-        dayEnd.setHours(endH, endM, 0, 0);
+        let slotStart = zurichWallClockToUtc(dateStr, startH, startM);
+        const dayEnd = zurichWallClockToUtc(dateStr, endH, endM);
 
         // Get breaks for this day
         const dayBreaks = (breaks ?? []).filter((b) => b.day_of_week === dayOfWeek);
@@ -131,33 +150,44 @@ export async function GET(req: NextRequest) {
           const overlapsBreak = dayBreaks.some((b) => {
             const [bsH, bsM] = b.start_time.split(":").map(Number);
             const [beH, beM] = b.end_time.split(":").map(Number);
-            const breakStart = new Date(d);
-            breakStart.setHours(bsH, bsM, 0, 0);
-            const breakEnd = new Date(d);
-            breakEnd.setHours(beH, beM, 0, 0);
+            const breakStart = zurichWallClockToUtc(dateStr, bsH, bsM);
+            const breakEnd = zurichWallClockToUtc(dateStr, beH, beM);
             return slotStart < breakEnd && slotEnd > breakStart;
           });
 
           if (!overlapsBreak) {
-            // Check if slot already exists
-            const { data: existing } = await admin
+            // One row PER mapped service (the consumer booking API resolves by
+            // salon+service+starts_at; first-service-only rows 409'd every other
+            // service). Matches the seed shape: N service rows per time.
+            // service_id is NOT NULL; staff with no mappings can do ALL salon
+            // services (same convention as the booking staff filter).
+            const serviceIds: string[] = staffServices?.length
+              ? staffServices.map((s) => s.service_id)
+              : salonServiceIds;
+            if (!serviceIds.length) { slotStart = slotEnd; continue; }
+
+            // Existing rows for this staff+time (any service) in one query.
+            const { data: existingRows } = await admin
               .from("availability_slots")
-              .select("id")
+              .select("service_id")
               .eq("salon_id", salon.id)
               .eq("staff_member_id", staff.id)
-              .eq("starts_at", slotStart.toISOString())
-              .single();
+              .eq("starts_at", slotStart.toISOString());
+            const existingSvc = new Set((existingRows ?? []).map((r) => r.service_id));
 
-            if (!existing) {
-              await admin.from("availability_slots").insert({
-                salon_id: salon.id,
-                staff_member_id: staff.id,
-                service_id: staffServices?.[0]?.service_id ?? null,
-                starts_at: slotStart.toISOString(),
-                ends_at: slotEnd.toISOString(),
-                status: "available",
-              });
-              totalGenerated++;
+            const missing = serviceIds.filter((id) => !existingSvc.has(id));
+            if (missing.length) {
+              await admin.from("availability_slots").insert(
+                missing.map((service_id) => ({
+                  salon_id: salon.id,
+                  staff_member_id: staff.id,
+                  service_id,
+                  starts_at: slotStart.toISOString(),
+                  ends_at: slotEnd.toISOString(),
+                  status: "available",
+                })),
+              );
+              totalGenerated += missing.length;
             }
           }
 

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Wallet, ShieldCheck, AlertCircle, Scissors, Calendar, Star } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
+import { toast } from '@/app/[locale]/_components/primitives/Toast';
 import { Avatar } from '@/app/[locale]/_components/primitives';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -60,6 +61,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const { formData, goToStep } = useBooking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Owner 2026-06-12: errors surface as the standard top toast, not a block
+  // buried at the bottom of the page. State is kept for CTA gating logic.
+  const showError = (m: string) => { setError(m); toast.error(m); };
   // Phase D: paymentMethod is now DERIVED from the salon's payment_mode (computed below), not a
   // free customer choice — at_salon books in person (no charge), deposit/prepay pay online.
   // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. It lifts a
@@ -129,11 +133,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
   const handleConfirm = async () => {
     if (!paymentMethod) {
-      setError(t('payment.selectPaymentMethod'));
+      showError(t('payment.selectPaymentMethod'));
       return;
     }
     if (!formData.selectedDate || !formData.selectedTime || formData.services.length === 0) {
-      setError(tp('fillRequiredFields'));
+      showError(tp('fillRequiredFields'));
       return;
     }
     // SP-1: a logged-out guest must supply contact info before booking. Force-validate the form on
@@ -142,7 +146,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
     if (!isLoggedIn) {
       resolvedGuest = guestFormRef.current?.validate() ?? null;
       if (!resolvedGuest) {
-        setError(tg('fillRequired'));
+        showError(tg('fillRequired'));
         return;
       }
     }
@@ -231,7 +235,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       setPhase('pay');
     } catch (err) {
       console.error('[PayConfirmStep] Booking failed:', err);
-      setError(err instanceof Error ? err.message : t('payment.unknownError'));
+      showError(err instanceof Error ? err.message : t('payment.unknownError'));
       // Allow another attempt — the booking either wasn't created or its PI step failed.
       chargeRef.current = false;
     } finally {
@@ -428,13 +432,6 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         )}
       </div>
 
-      {/* Error */}
-      {error && (
-        <div role="alert" className="flex items-start gap-2 px-3 py-2.5 rounded-[10px] bg-s-error-bg">
-          <AlertCircle size={14} className="shrink-0 mt-[1px] text-s-error" aria-hidden />
-          <p className="font-body text-[12px] leading-[1.4] text-s-error">{error}</p>
-        </div>
-      )}
 
       {/* (e) Sticky bottom CTA. Online → "Weiter zur Zahlung" (next is the card form);
           in-person → "Buchen" (commits immediately). */}
