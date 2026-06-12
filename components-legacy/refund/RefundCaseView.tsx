@@ -31,7 +31,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  ChevronLeft,
+  ArrowLeft,
   Check,
   X,
   Clock,
@@ -274,7 +274,7 @@ function Frame({
           aria-label={t("back")}
           className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
         >
-          <ChevronLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
         </Link>
         <div className="font-heading text-[16px] font-semibold tracking-[-0.01em]">
           {isGuest ? t("caseTitleGuest") : t("caseTitle")}
@@ -328,23 +328,6 @@ function statusMeta(status: DisputeStatus): StatusMeta {
   }
 }
 
-/** Big bold X — viewBox 0 0 24 24, stroke-width 3, round caps, 30px, s-error. */
-function HeroXIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={3}
-      strokeLinecap="round"
-      className="h-[30px] w-[30px] text-s-error"
-      aria-hidden
-    >
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
-  );
-}
-
 function StatusHero({
   t,
   c,
@@ -369,7 +352,7 @@ function StatusHero({
     <div className="px-2 pb-1 pt-2 text-center">
       <div className={cn("mx-auto mb-3 flex h-[56px] w-[56px] items-center justify-center rounded-pill", circleCls)}>
         {meta.tone === "rejected" ? (
-          <HeroXIcon />
+          <X size={30} strokeWidth={3} className="text-s-error" aria-hidden />
         ) : meta.tone === "refunded" ? (
           <Check size={30} strokeWidth={2.4} className="text-s-success" aria-hidden />
         ) : meta.tone === "muted" ? (

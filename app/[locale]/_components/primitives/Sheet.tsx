@@ -257,12 +257,13 @@ export function SheetHeader({
             "flex items-center justify-center shrink-0",
             "w-11 h-11 -m-2.5 rounded-md",
             "text-s-ink-2 hover:text-s-ink",
-            "transition-colors duration-150 ease-snap",
+            // X collapse (motion sheet 22, owner 2026-06-12): icon-tier press, cascades app-wide
+            "transition-[color,transform] duration-150 ease-snap active:scale-[0.94]",
             "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             "cursor-pointer",
           )}
         >
-          <X className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
+          <X className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
         </button>
       )}
     </header>

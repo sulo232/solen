@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "@/components-legacy/ui/Spinner";
 import {
-  ChevronLeft,
+  ArrowLeft,
   X,
   ArrowRight,
   Check,
@@ -579,7 +579,7 @@ function Shell({
             aria-label={t("back")}
             className="flex h-9 w-9 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
           >
-            <ChevronLeft size={18} strokeWidth={2.2} aria-hidden />
+            <ArrowLeft size={18} strokeWidth={2.2} aria-hidden />
           </button>
         )}
         {title && (
@@ -593,7 +593,7 @@ function Shell({
             aria-label={t("close")}
             className="flex h-9 w-9 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
           >
-            <X size={16} strokeWidth={2.2} aria-hidden />
+            <X size={20} strokeWidth={2.2} aria-hidden />
           </button>
         )}
       </header>

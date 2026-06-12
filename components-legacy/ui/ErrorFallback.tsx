@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { AlertCircle, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -20,7 +20,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         className="max-w-md w-full text-center bg-white rounded-[12px] shadow-warm-md p-8"
       >
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-error-bg flex items-center justify-center">
-          <AlertTriangle size={28} className="text-s-error" />
+          <AlertCircle size={28} className="text-s-error" />
         </div>
         <h2 className="font-heading text-lg text-s-ink mb-2">
           {t("title")}

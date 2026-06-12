@@ -91,7 +91,7 @@ export default function FilterBottomSheet({
             className="p-2 rounded-pill hover:bg-s-ink/5 text-s-ink-2"
             aria-label={t('close')}
           >
-            <X size={18} aria-hidden />
+            <X size={20} aria-hidden />
           </button>
         </div>
 

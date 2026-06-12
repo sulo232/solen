@@ -98,7 +98,7 @@ export default function HeroAboveFold() {
         >
           {/* Field 1: Was */}
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
-            <Search size={18} className="text-s-accent shrink-0" aria-hidden />
+            <Search size={18} className="text-s-ink shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
               <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Was
@@ -110,7 +110,7 @@ export default function HeroAboveFold() {
           </div>
           {/* Field 2: Wo */}
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-border min-h-[56px]">
-            <MapPin size={18} className="text-s-accent shrink-0" aria-hidden />
+            <MapPin size={18} className="text-s-ink shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
               <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wo
@@ -122,7 +122,7 @@ export default function HeroAboveFold() {
           </div>
           {/* Field 3: Wann */}
           <div className="flex items-center gap-3 px-4 py-3.5 min-h-[56px]">
-            <Calendar size={18} className="text-s-accent shrink-0" aria-hidden />
+            <Calendar size={18} className="text-s-ink shrink-0" aria-hidden />
             <div className="flex-1 min-w-0">
               <span className="block font-body text-[12px] font-bold uppercase tracking-[.18em] text-s-accent">
                 Wann

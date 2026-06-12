@@ -145,7 +145,7 @@ export default function HairStep({
                 b: (chunks) => <span className="font-semibold text-s-ink">{chunks}</span>,
               })}
             </span>
-            <Check size={14} className="ml-auto shrink-0 text-s-accent" aria-hidden />
+            <Check size={14} className="ml-auto shrink-0 text-s-ink" aria-hidden />
           </div>
         )}
         <PillGroup label={t("hairTypeLabel")} opts={HAIR_OPTS.filter((o) => o.value !== "unknown")} value={hairType} onSelect={setHairType} />

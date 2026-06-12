@@ -163,7 +163,7 @@ export function HeartButton({
           // re-derived inline) — 80% white + 4px backdrop blur + 1px white border.
           style={bare ? { height: size, width: size } : { ...FROST_GLASS, height: size, width: size }}
           className={cn(
-            "grid place-items-center rounded-full",
+            "relative grid place-items-center rounded-full",
             "transition-transform duration-200 ease-glide",
             "group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]",
           )}
@@ -183,6 +183,13 @@ export function HeartButton({
             className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
             aria-hidden
           />
+          {/* Idea 2 (motion sheet 22): 6-particle burst on save — keyed so it replays */}
+          {isSaved && popKey > 0 && (
+            <span key={`burst-${popKey}`} aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
+              <span className="heart-burst" /><span className="heart-burst" /><span className="heart-burst" />
+              <span className="heart-burst" /><span className="heart-burst" /><span className="heart-burst" />
+            </span>
+          )}
         </span>
       </button>
       {/* Screen-reader live region for save toggle announcement */}

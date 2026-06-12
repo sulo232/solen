@@ -18,6 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
+  ArrowLeft,
   ChevronLeft,
   Send,
   Mail,
@@ -164,7 +165,7 @@ export default function ResendAccessLinkPage() {
           aria-label={t("back")}
           className="flex h-[34px] w-[34px] items-center justify-center rounded-pill border border-s-border bg-white text-s-ink transition-colors duration-150 ease-snap hover:bg-s-bg-sunken"
         >
-          <ChevronLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
         </Link>
         <span className="font-display text-[15px] font-semibold tracking-[-0.01em]">
           {t("appBarTitle")}

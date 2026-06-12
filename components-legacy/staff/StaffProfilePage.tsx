@@ -399,7 +399,7 @@ export default function StaffProfilePage({
         <div className="mb-6 flex items-baseline gap-2.5">
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map((i) => (
-              <Star key={i} size={18} fill={i < Math.floor(staff.average_rating) ? "#FFC32B" : "#E7E5E4"} stroke="none" />
+              <Star key={i} size={18} stroke="none" className={i < Math.floor(staff.average_rating) ? "fill-s-star" : "fill-s-border"} />
             ))}
           </div>
           <span className="font-body text-[18px] font-semibold tabular-nums text-s-ink">{staff.average_rating.toFixed(1)}</span>

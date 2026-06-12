@@ -65,7 +65,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
                 aria-label={t('cancel')}
                 className="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-s-bg-sunken"
               >
-                <X size={22} className="text-s-ink" />
+                <X size={20} className="text-s-ink" />
               </button>
             </div>
 

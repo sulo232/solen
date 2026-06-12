@@ -50,3 +50,31 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 ## Session mockups (reference, then delete)
 
 `solen-depth-calibration.html`, `solen-type-system.html`, `solen-motion-booking.html`, `solen-salon-*.html`, plus the `_d-*.png` / `_m-*.png` / `_sp-*.png` captures. All throwaway , listed under Cleanup above.
+
+## Motion sheet 22 — THE LOCKED MICRO-MOMENT VOCABULARY (owner-approved 2026-06-12)
+
+**Every future build uses these. Not optional, not per-surface taste.** Utilities live in
+globals.css (motion sheet 22 block); all reduced-motion safe. The rule per situation:
+
+| Situation | The ONE pattern | Utility / wiring |
+|---|---|---|
+| Anything loading | skeleton SHIMMER, content-shaped (LoadingStates.md) — spinners only INSIDE buttons | `.sk`-style shimmer per grammar |
+| Any close/X | press-collapse, icon tier | inherited from Sheet/Modal primitives (`active:scale-[0.94]`), X size 20 in 44px hit area |
+| Any press | CTA/card 0.97 · row 0.98 · icon 0.94 | `active:scale-[…]` 3-tier |
+| Count/badge changes | spring bump | `key={count}` + `.animate-count-bump` |
+| Money value changes | roll/odometer tick | `key={value}` + `.animate-value-roll` |
+| Choice reveals a set (slots, options) | cascade in | container `.slot-cascade`, re-mount with key |
+| Live position/number updates | departure-board flip | `key={n}` + `.animate-num-flip` |
+| Live status dot (REAL state only) | ping | `animate-ping` twin dot (StatusPill pattern) |
+| Saving/favoriting | pop + 6-particle burst | HeartButton pattern (`.heart-burst` ×6, keyed) |
+| Adding to a cart | fly-dot to the cart anchor | `.cart-fly-dot` + `[data-cart-anchor]` (ServicesStaffStep pattern) |
+| Success peak | SuccessMark + `.celebrate-rise` staggers | never a static check |
+| List first-load | stagger rise-in | `.salon-card-stagger` |
+| People/avatars first in view | wave hello once | `.team-wave` + IntersectionObserver (SalonTeam pattern) |
+| Empty-state icon | breathe | `.animate-breathe` |
+| Toasts | tilt-settle enter | Toast primitive owns it |
+| Earned moment without a client event (e.g. stamp) | DO NOT fake on load | wire `.animate-stamp-slam` only behind a real "just earned" signal |
+
+**Icon canon (same date, owner picks):** Lucide ONLY · back = ArrowLeft (never ChevronLeft) ·
+share = Share · check = bare Check · error = AlertCircle · hero/frosted icon-buttons stroke 2.1 ·
+sheet-header X = 20 · empty star = s-border · meta icons = 13 · stars `fill-s-star`, hearts #FF3366.

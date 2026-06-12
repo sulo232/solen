@@ -210,10 +210,10 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
               transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
             >
-              {/* Q26 + SOLEN_UI #5b: heart save state uses literal #FF4A6B love-red, NOT brand coral */}
+              {/* Heart save state uses --heart-active #FF3366 (HeartButton canon, V3-D103) */}
               <Heart
                 className="w-[18px] h-[18px] transition-colors duration-200"
-                style={isFavorited ? { fill: "#FF4A6B", color: "#FF4A6B" } : { fill: "transparent" }}
+                style={isFavorited ? { fill: "#FF3366", color: "#FF3366" } : { fill: "transparent" }}
                 strokeWidth={2}
               />
             </motion.div>
@@ -231,9 +231,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {/* Q43 + SOLEN_UI #5b: amber star (NOT coral); tabular-nums on rating + count */}
         {showRating && (
           <div className="flex items-center gap-1">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" aria-hidden="true">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
+            <Star size={14} stroke="none" className="fill-s-star" aria-hidden />
             <span className="font-body font-semibold text-[14px] text-s-ink tabular-nums">
               {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>

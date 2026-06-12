@@ -207,7 +207,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
             }`}
           >
             {copied
-              ? <Check size={15} className="text-[#16A34A]" />
+              ? <Check size={15} className="text-s-success" />
               : <Copy size={15} className="text-s-ink/40" />}
           </button>
         </div>

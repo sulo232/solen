@@ -189,7 +189,7 @@ export function SalonServicesSheet({
             onClick={onClose}
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-colors hover:bg-s-bg-sunken"
           >
-            <ArrowLeft size={18} strokeWidth={2.25} className="text-s-ink" />
+            <ArrowLeft size={18} strokeWidth={2.1} className="text-s-ink" />
           </button>
           <h2 className="font-body text-[16px] font-semibold tracking-tight text-s-ink md:text-[18px]">
             Services
@@ -202,7 +202,7 @@ export function SalonServicesSheet({
           onClick={onClose}
           className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-colors hover:bg-s-bg-sunken"
         >
-          <X size={18} strokeWidth={2.25} className="text-s-ink" />
+          <X size={20} strokeWidth={2.1} className="text-s-ink" />
         </button>
       </header>
 
@@ -410,12 +410,12 @@ function CartCard({
                 <Star
                   key={i}
                   size={12}
-                  fill={
-                    salon.average_rating !== null && i < Math.floor(salon.average_rating)
-                      ? "#FFC32B"
-                      : "#E7E5E4"
-                  }
                   stroke="none"
+                  className={
+                    salon.average_rating !== null && i < Math.floor(salon.average_rating)
+                      ? "fill-s-star"
+                      : "fill-s-border"
+                  }
                 />
               ))}
             </div>

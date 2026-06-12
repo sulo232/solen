@@ -4,13 +4,16 @@ import * as React from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
+  Calendar,
   Footprints,
   Hand,
   Leaf,
+  MapPin,
   Moon,
   Navigation,
   Palette,
   Scissors,
+  Search,
   Sparkles,
   Sun,
   Sunrise,
@@ -286,7 +289,7 @@ export function SearchBar() {
           )}
         >
           <CollapsedRow
-            icon={<IconSearch />}
+            icon={<Search size={18} strokeWidth={2} />}
             ariaLabel="Service suchen"
             value={service || "Service"}
             isPlaceholder={!service}
@@ -294,14 +297,14 @@ export function SearchBar() {
             onClick={() => setOverlayOpen(true)}
           />
           <CollapsedRow
-            icon={<IconPin />}
+            icon={<MapPin size={18} strokeWidth={2} />}
             ariaLabel="Standort wählen"
             value={stadt || "Stadt"}
             isPlaceholder={!stadt}
             onClick={() => setOverlayOpen(true)}
           />
           <CollapsedRow
-            icon={<IconCalendar />}
+            icon={<Calendar size={18} strokeWidth={2} />}
             ariaLabel="Zeit wählen"
             value={zeit || "Zeit"}
             isPlaceholder={!zeit}
@@ -692,28 +695,3 @@ function SegmentTab({
   );
 }
 
-// --- Icons ---
-function IconSearch() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-      <circle cx={11} cy={11} r={7} />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-function IconPin() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-      <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z" />
-      <circle cx={12} cy={10} r={3} />
-    </svg>
-  );
-}
-function IconCalendar() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-      <rect x={3} y={4} width={18} height={18} rx={2} />
-      <path d="M16 2v4M8 2v4M3 10h18" />
-    </svg>
-  );
-}

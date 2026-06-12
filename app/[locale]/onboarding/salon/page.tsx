@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
+import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
@@ -709,7 +709,7 @@ export default function SalonOnboardingPage() {
               onClick={goPrev}
               className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
-              <ChevronLeft size={16} /> {t("nav.back")}
+              <ArrowLeft size={16} /> {t("nav.back")}
             </button>
           )}
           {step < TOTAL_STEPS ? (

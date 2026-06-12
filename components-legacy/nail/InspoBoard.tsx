@@ -111,7 +111,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5">
           <h3 className="font-heading text-s-ink">{t("board_title")}</h3>
           <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 hover:bg-s-ink/5:bg-white/5 rounded-pill transition-colors duration-150">
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 

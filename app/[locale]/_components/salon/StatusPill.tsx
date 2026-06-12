@@ -94,7 +94,11 @@ export function StatusPill({
       {Icon ? (
         <Icon size={iconSize} strokeWidth={2} aria-hidden className="shrink-0" />
       ) : showDot ? (
-        <span aria-hidden className={dotVariants({ tone, size })} />
+        // live ping on OPEN (motion sheet 22) — real state, mirrors the queue tracker's dot
+        <span aria-hidden className="relative inline-grid place-items-center">
+          {isOpen && <span className={cn(dotVariants({ tone, size }), "absolute animate-ping opacity-60")} />}
+          <span className={dotVariants({ tone, size })} />
+        </span>
       ) : null}
       <span>{label}</span>
     </span>

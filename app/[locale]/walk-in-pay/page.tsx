@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
+import { Star, MapPin, Lock, Check, AlertTriangle, ArrowLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
 
@@ -355,7 +355,7 @@ export default function WalkInPayPage() {
             aria-label={l.back}
             className="grid h-10 w-10 place-items-center rounded-xl bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 active:scale-[0.94]"
           >
-            <ChevronLeft size={22} strokeWidth={2.2} />
+            <ArrowLeft size={22} strokeWidth={2.2} />
           </button>
         </div>
       )}
@@ -427,7 +427,7 @@ export default function WalkInPayPage() {
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px]">
                     {booking.salon_rating != null && booking.salon_rating > 0 && (
                       <span className="flex items-center gap-1.5">
-                        <Star size={13} fill="#FFC32B" stroke="none" aria-hidden />
+                        <Star size={13} stroke="none" className="fill-s-star" aria-hidden />
                         <span className="font-heading font-semibold tabular-nums text-s-ink">{booking.salon_rating.toFixed(1)}</span>
                         {booking.salon_review_count != null && (
                           canOpenSalon ? (
@@ -473,7 +473,7 @@ export default function WalkInPayPage() {
                       {booking.barber_role && <span className="truncate">{booking.barber_role}</span>}
                       {booking.barber_rating != null && booking.barber_rating > 0 && (
                         <span className="flex items-center gap-1">
-                          <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
+                          <Star size={12} stroke="none" className="fill-s-star" aria-hidden />
                           <span className="font-semibold tabular-nums text-s-ink">{booking.barber_rating.toFixed(1)}</span>
                           {booking.barber_review_count != null && (
                             canOpenBarber ? (

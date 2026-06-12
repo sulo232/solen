@@ -8,6 +8,7 @@
 // field never remounts.
 
 import { useEffect, useState } from "react";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import Image from "next/image";
 import { Check, AlertCircle, CreditCard, Star } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -165,14 +166,15 @@ export default function TipFlow({
   if (done) {
     return (
       <div className="flex flex-col items-center px-6 py-12 text-center">
-        <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-s-success-bg">
-          <Check size={30} className="text-s-success" />
+        {/* SuccessMark on the tip peak (motion sheet 22) — replaces the static pale check */}
+        <div className="mb-4">
+          <SuccessMark size={64} />
         </div>
-        <p className="mb-1.5 font-heading text-[13px] font-semibold text-s-success">
+        <p className="celebrate-rise mb-1.5 font-heading text-[13px] font-semibold text-s-success" style={{ animationDelay: "0.46s" }}>
           {chf(amount)} {l.sent}
         </p>
-        <h1 className="font-heading text-[20px] font-semibold text-s-ink">{l.thanks}</h1>
-        <p className="mt-1.5 max-w-[15rem] text-[13px] text-s-ink-2">{recipientName} {l.sub}</p>
+        <h1 className="celebrate-rise font-heading text-[20px] font-semibold text-s-ink" style={{ animationDelay: "0.56s" }}>{l.thanks}</h1>
+        <p className="celebrate-rise mt-1.5 max-w-[15rem] text-[13px] text-s-ink-2" style={{ animationDelay: "0.66s" }}>{recipientName} {l.sub}</p>
       </div>
     );
   }

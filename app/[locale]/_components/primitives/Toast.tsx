@@ -319,11 +319,12 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
       style={{
         // Inline styles give the most reliable transition (no CSS-class-purge risk).
         opacity: state === "open" ? 1 : 0,
-        transform: state === "open" ? "translateY(0)" : "translateY(-20px)",
+        // idea 10 (motion 22): tilt-settle — enters with a 2deg tilt and springs straight
+        transform: state === "open" ? "translateY(0) rotate(0deg)" : "translateY(-20px) rotate(2deg)",
         transition:
           state === "exiting"
             ? "opacity 150ms cubic-bezier(0.16, 1, 0.3, 1)"
-            : "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+            : "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         willChange: "transform, opacity",
       }}
       className={cn(

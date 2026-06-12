@@ -59,7 +59,7 @@ export default function TipSheet({ open, onClose, ...tipProps }: TipSheetProps) 
                 aria-label="Schliessen"
                 className="absolute right-3 top-2.5 grid h-8 w-8 place-items-center rounded-full text-s-ink-3 transition active:scale-90"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">

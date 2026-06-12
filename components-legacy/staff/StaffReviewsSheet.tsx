@@ -95,7 +95,7 @@ export default function StaffReviewsSheet({
         <div className="pt-6">
           <div className="flex items-center gap-1">
             {[0, 1, 2, 3, 4].map((i) => (
-              <Star key={i} size={26} fill={i < Math.round(averageRating) ? "#FFC32B" : "#E7E5E4"} stroke="none" />
+              <Star key={i} size={26} stroke="none" className={i < Math.round(averageRating) ? "fill-s-star" : "fill-s-border"} />
             ))}
           </div>
           <p className="mt-2.5 font-body text-[17px] text-s-ink">

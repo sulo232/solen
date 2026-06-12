@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import {
   Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
-  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket, TicketX, HelpCircle, Send, X,
+  Star, MapPin, ChevronRight, ArrowLeft, ArrowRight, Navigation, Ticket, TicketX, HelpCircle, Send, X,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
@@ -348,7 +348,7 @@ export default function QueueTrackingPage() {
           aria-label={l.home}
           className="absolute left-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
         >
-          <ChevronLeft size={20} />
+          <ArrowLeft size={20} />
         </Link>
         {/* top-right help — same frosted-circle treatment as the back button */}
         {data.salonSlug && (
@@ -394,7 +394,7 @@ export default function QueueTrackingPage() {
           <p className="mt-[5px] text-[14px] text-s-ink-2">{l.goToChair}</p>
         ) : (
           <p className="mt-[5px] text-[14px] text-s-ink-2">
-            <span className="font-heading font-bold text-s-ink tabular-nums">{data.aheadCount}</span> {l.aheadLine}
+            <span key={data.aheadCount} className="animate-num-flip font-heading font-bold text-s-ink tabular-nums">{data.aheadCount}</span> {l.aheadLine}
           </p>
         )}
 

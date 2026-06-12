@@ -1,4 +1,5 @@
 import { SearchBar } from "./SearchBar";
+import { Calendar, MapPin, Search } from "lucide-react";
 // V3-D139 (2026-05-25): HeroHeadline removed per "Fix 1 + Fix 2" spec —
 // rotating slogans (incl. unapproved "Auch broke? Dw, wir haben Coupons." +
 // "Check it out →" CTA) replaced with the locked static H1 + sub-line below.
@@ -244,12 +245,7 @@ function _DeprecatedSearchBar() {
     >
       {/* Service — active by default to telegraph affordance */}
       <SearchRow
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-            <circle cx={11} cy={11} r={7} />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
-        }
+        icon={<Search size={18} strokeWidth={2} />}
         label="Service suchen"
         value="Service"
         isPlaceholder
@@ -258,24 +254,14 @@ function _DeprecatedSearchBar() {
       />
 
       <SearchRow
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-            <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z" />
-            <circle cx={12} cy={10} r={3} />
-          </svg>
-        }
+        icon={<MapPin size={18} strokeWidth={2} />}
         label="Standort wählen"
         value="Stadt"
         isPlaceholder
       />
 
       <SearchRow
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-            <rect x={3} y={4} width={18} height={18} rx={2} />
-            <path d="M16 2v4M8 2v4M3 10h18" />
-          </svg>
-        }
+        icon={<Calendar size={18} strokeWidth={2} />}
         label="Zeit wählen"
         value="Zeit"
         isPlaceholder

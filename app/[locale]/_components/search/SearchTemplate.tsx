@@ -41,8 +41,8 @@ import { useTranslations } from "next-intl";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
+  ArrowLeft,
   ChevronDown,
-  ChevronLeft,
   X,
   Map as MapIcon,
   List as ListIcon,
@@ -1424,7 +1424,7 @@ export default function SearchTemplate({
                 aria-label={t("backToList")}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-s-border bg-white text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)] transition-transform active:scale-95"
               >
-                <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+                <ArrowLeft size={20} strokeWidth={2} aria-hidden />
               </button>
               <Link
                 href={`/${locale}`}

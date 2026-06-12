@@ -138,6 +138,23 @@ export default function ServicesStaffStep({
     }
   };
 
+  // idea 1 (motion 22): a dot flies from the tapped + into the cart bar.
+  const flyToCart = (e: React.MouseEvent) => {
+    const target = document.querySelector('[data-cart-anchor]');
+    if (!target) return;
+    const t = target.getBoundingClientRect();
+    const dot = document.createElement('span');
+    dot.className = 'cart-fly-dot';
+    dot.style.left = `${e.clientX - 6}px`;
+    dot.style.top = `${e.clientY - 6}px`;
+    document.body.appendChild(dot);
+    requestAnimationFrame(() => {
+      dot.style.transform = `translate(${t.left + 40 - e.clientX}px, ${t.top + t.height / 2 - e.clientY}px) scale(0.35)`;
+      dot.style.opacity = '0';
+    });
+    window.setTimeout(() => dot.remove(), 560);
+  };
+
   const handleContinue = async () => {
     if (formData.services.length === 0) {
       setError(t('selectAtLeastOne'));
@@ -379,11 +396,14 @@ export default function ServicesStaffStep({
                   return (
                     <button
                       key={service.id}
-                      onClick={() =>
-                        hasAddons || hasOptions
-                          ? setSheetServiceId(service.id)
-                          : handleSelectService(service)
-                      }
+                      onClick={(e) => {
+                        if (hasAddons || hasOptions) {
+                          setSheetServiceId(service.id);
+                        } else {
+                          if (!inCart) flyToCart(e);
+                          handleSelectService(service);
+                        }
+                      }}
                       className={`w-full border-t border-s-border px-5 py-[18px] text-left transition-colors duration-200 first:border-t-0 ${
                         inCart ? 'bg-s-bg-sunken/60' : 'hover:bg-s-bg-sunken/40'
                       }`}
@@ -436,7 +456,7 @@ export default function ServicesStaffStep({
             // Ink-filled (modern), no outline. Micro: lifts the arrow on hover, presses on tap.
             className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-s-ink text-white text-[13px] font-heading font-semibold shadow-[0_8px_24px_-8px_rgba(10,10,10,0.45)] transition-transform duration-200 ease-glide active:scale-[0.97]"
           >
-            {formData.services.length} {t('selected')}
+            <span key={formData.services.length} className="animate-count-bump inline-block">{formData.services.length}</span> {t('selected')}
             <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
           </button>
         </div>
@@ -445,9 +465,10 @@ export default function ServicesStaffStep({
       {/* Bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div>
-            <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none">
-              {formatCurrency(formData.totalPrice, locale)}
+          <div data-cart-anchor>
+            <p className="font-body font-extrabold text-xl text-s-ink tabular-nums leading-none overflow-hidden">
+              {/* idea 3 (motion 22): price rolls on change — key re-mounts the value */}
+              <span key={formData.totalPrice} className="animate-value-roll">{formatCurrency(formData.totalPrice, locale)}</span>
             </p>
             <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5">
               <ShoppingCart size={13} aria-hidden />

@@ -87,8 +87,8 @@ export function SalonReviews({
             <Star
               key={i}
               size={20}
-              fill={average !== null && i < Math.floor(average) ? "#FFC32B" : "#E7E5E4"}
               stroke="none"
+              className={average !== null && i < Math.floor(average) ? "fill-s-star" : "fill-s-border"}
             />
           ))}
         </div>

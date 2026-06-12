@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft } from "lucide-react";
+import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export interface Step {
@@ -141,7 +141,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             disabled={currentStep === 0}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink-2 hover:text-s-ink transition-colors disabled:opacity-0 disabled:pointer-events-none"
           >
-            <ChevronLeft size={16} />
+            <ArrowLeft size={16} />
             {t("setup.back")}
           </button>
 

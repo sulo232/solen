@@ -311,7 +311,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {/* Cross-category suggestion */}
           {suggestedCategory && suggestedCategory !== category && (
             <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-border">
-              <Search size={14} className="text-s-accent shrink-0" />
+              <Search size={14} className="text-s-ink-2 shrink-0" />
               <span className="text-xs text-s-ink-2 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>

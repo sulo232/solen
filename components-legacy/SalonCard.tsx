@@ -186,7 +186,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
                 transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
               >
-                {/* Q26 + SOLEN_UI #5b: heart save state uses literal #FF4A6B love-red, NOT brand coral */}
+                {/* Heart save state uses --heart-active #FF3366 (HeartButton canon, V3-D103) */}
                 <Heart
                   className={`w-[26px] h-[26px] transition-colors duration-200 ${
                     isFavorited ? "" : "fill-transparent stroke-white hover:fill-white/20"
@@ -194,7 +194,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                   strokeWidth={2}
                   style={{
                     filter: "drop-shadow(0 1px 2px rgba(26,18,9,0.45))",
-                    ...(isFavorited ? { fill: "#FF4A6B", color: "#FF4A6B" } : {}),
+                    ...(isFavorited ? { fill: "#FF3366", color: "#FF3366" } : {}),
                   }}
                 />
               </motion.div>

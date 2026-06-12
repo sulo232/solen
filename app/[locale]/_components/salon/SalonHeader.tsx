@@ -143,7 +143,7 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
             }}
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95"
           >
-            <Share size={18} strokeWidth={2.25} className="text-s-ink" aria-hidden />
+            <Share size={18} strokeWidth={2.1} className="text-s-ink" aria-hidden />
           </button>
           <HeartButton
             salonId={salon.id}

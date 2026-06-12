@@ -145,7 +145,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
             className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150"
             aria-label={t("close")}
           >
-            <X size={18} className="text-s-ink-2" />
+            <X size={20} className="text-s-ink-2" />
           </button>
         </div>
 

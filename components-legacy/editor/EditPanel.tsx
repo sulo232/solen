@@ -224,7 +224,7 @@ export default function EditPanel({
             Edit Panel
           </h3>
           <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken transition-colors">
-            <X size={16} className="text-s-ink-2" />
+            <X size={20} className="text-s-ink-2" />
           </button>
         </div>
 

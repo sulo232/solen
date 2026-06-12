@@ -471,7 +471,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                     className="flex items-center justify-center rounded-full hover:bg-s-bg-sunken transition-colors"
                     style={{ width: 44, height: 44 }}
                   >
-                    <X size={24} style={{ color: "s-ink/60" }} aria-hidden="true" />
+                    <X size={20} className="text-s-ink-2" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -671,7 +671,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     {t("steps.was.skipSub" as Parameters<typeof t>[0])}
                                   </p>
                                 </div>
-                                {!category && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
+                                {!category && <Check size={16} className="text-s-ink shrink-0" aria-hidden="true" />}
                               </button>
 
                               {CATEGORY_LIST.map((cat) => {
@@ -778,7 +778,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               <div className="flex-1 font-body text-[14px] text-s-ink-2 italic">
                                 {t("steps.service.skip")}
                               </div>
-                              {service === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
+                              {service === null && <Check size={16} className="text-s-ink shrink-0" aria-hidden="true" />}
                             </button>
                             {services.map((svc) => {
                               const label = getLocalizedLabel(svc, locale);
@@ -795,7 +795,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 >
                                   <div className="flex-1 font-body font-medium text-[14px] text-s-ink">{label}</div>
                                   {service === svc.key && (
-                                    <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />
+                                    <Check size={16} className="text-s-ink shrink-0" aria-hidden="true" />
                                   )}
                                 </button>
                               );
@@ -849,7 +849,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <span className="text-[12px] font-body text-s-ink/40">
                             {t("steps.where.allSub" as Parameters<typeof t>[0])}
                           </span>
-                          {city === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
+                          {city === null && <Check size={16} className="text-s-ink shrink-0" aria-hidden="true" />}
                         </button>
 
                         {/* City cards */}

@@ -513,7 +513,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
         <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
           {labels.availableTimes}
         </div>
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className="slot-cascade grid grid-cols-4 gap-1.5">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
@@ -559,7 +559,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
           <div className="font-body font-semibold text-[12.5px] text-s-ink-3 mb-2">
             {group.label}
           </div>
-          <div className="grid grid-cols-4 gap-1.5">
+          <div className="slot-cascade grid grid-cols-4 gap-1.5">
             {group.slots.map((slot) => (
               <button
                 key={slot.time}

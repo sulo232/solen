@@ -87,7 +87,7 @@ export default function EmptyStateDiscovery({
 
       {/* Hint row */}
       <div className="mt-3.5 flex shrink-0 items-center gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-3">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white">
+        <span className="animate-breathe grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white">
           {/* Heart hint keeps the universal saved color #FF3366 (V3-D103); others ink */}
           <HintIcon
             size={18}

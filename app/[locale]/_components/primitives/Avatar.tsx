@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -82,9 +83,7 @@ export function Avatar({ src, name, size = "md", badge, className }: AvatarProps
       )}
       {badge && (
         <span className="absolute -bottom-1 left-1/2 inline-flex -translate-x-1/2 items-center gap-[2px] whitespace-nowrap rounded-full border border-s-border bg-white px-1.5 py-px text-[12px] font-bold leading-none shadow-elevation-1">
-          <svg viewBox="0 0 24 24" fill="#FFC32B" aria-hidden style={{ width: 9, height: 9 }}>
-            <path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z" />
-          </svg>
+          <Star size={9} stroke="none" aria-hidden className="fill-s-star" />
           {badge.rating.toFixed(1)}
         </span>
       )}

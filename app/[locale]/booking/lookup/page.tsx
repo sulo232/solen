@@ -28,7 +28,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  ChevronLeft,
+  ArrowLeft,
   X,
   Send,
   Lock,
@@ -260,7 +260,7 @@ function AppBar({
         {closeMode ? (
           <X size={19} strokeWidth={2.1} aria-hidden />
         ) : (
-          <ChevronLeft size={19} strokeWidth={2.1} aria-hidden />
+          <ArrowLeft size={19} strokeWidth={2.1} aria-hidden />
         )}
       </Link>
       <span className="flex items-center gap-[7px] font-display text-[15px] font-bold tracking-[-0.02em]">

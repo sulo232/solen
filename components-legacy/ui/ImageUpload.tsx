@@ -258,7 +258,7 @@ export default function ImageUpload({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-s-error-bg">
-                  <AlertCircle size={16} className="text-red-400" />
+                  <AlertCircle size={16} className="text-s-error" />
                 </div>
               )}
 

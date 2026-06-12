@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
-  ChevronLeft,
+  ArrowLeft,
   ChevronRight,
   X,
   Search,
@@ -387,7 +387,7 @@ export function SearchOverlay({
                 aria-label={t("back")}
                 className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
               >
-                <ChevronLeft size={18} strokeWidth={2} aria-hidden />
+                <ArrowLeft size={18} strokeWidth={2} aria-hidden />
               </button>
             ) : null}
             <h2 className="font-heading text-[19px] font-extrabold tracking-[-0.02em] text-s-ink">
@@ -708,7 +708,7 @@ function ServiceSearch({
             "transition-colors",
           )}
         >
-          <Search size={17} strokeWidth={2} className="shrink-0 text-s-accent" aria-hidden />
+          <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
           <input
             type="text"
             autoFocus

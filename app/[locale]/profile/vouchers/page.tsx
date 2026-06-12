@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Gift, ChevronRight, AlertCircle, CheckCircle, Clock, X } from "lucide-react";
+import { Gift, ChevronRight, AlertCircle, Check, Clock, X } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -221,7 +221,7 @@ function VoucherCard({
     statusColor = "border-s-warning/20 bg-s-warning/5";
     statusLabel = daysUntilExpiry ? `${daysUntilExpiry} Tage` : "Gültig";
   } else if (status === "used") {
-    statusIcon = <CheckCircle className="w-4 h-4" />;
+    statusIcon = <Check className="w-4 h-4" />;
     statusColor = "border-s-success/20 bg-s-success/5";
     statusLabel = "Verwendet";
   } else {
@@ -265,7 +265,7 @@ function VoucherCard({
             {statusIcon && (
               <>
                 {status === "active" && <Clock className="w-3 h-3 text-s-warning" />}
-                {status === "used" && <CheckCircle className="w-3 h-3 text-s-success" />}
+                {status === "used" && <Check className="w-3 h-3 text-s-success" />}
                 {status === "expired" && <X className="w-3 h-3 text-s-ink/40" />}
               </>
             )}

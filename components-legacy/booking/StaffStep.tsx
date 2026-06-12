@@ -61,7 +61,7 @@ export default function StaffStep({
 
   return (
     <div className="pb-32">
-      <ul className="flex flex-col gap-3 pt-1">
+      <ul className="salon-card-stagger flex flex-col gap-3 pt-1">
         {/* Keine Präferenz */}
         <li>
           <div
