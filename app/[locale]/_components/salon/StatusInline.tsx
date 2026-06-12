@@ -38,7 +38,7 @@ export function StatusInline({
   const sizeCls = size === "sm" ? "text-[13px]" : size === "lg" ? "text-[16px]" : "text-[15px]";
   return (
     <span className={cn("font-body inline-flex items-baseline gap-1.5", sizeCls)}>
-      <span className={cn("font-semibold", isOpen ? "text-s-success" : "text-s-closed")}>
+      <span className={cn("font-semibold", isOpen ? "text-s-open" : "text-s-closed")}>
         {head}
       </span>
       {tail && <span className="text-s-ink-2 font-normal">{tail}</span>}

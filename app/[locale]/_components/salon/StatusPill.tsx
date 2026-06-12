@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  *
  * Layer: 3 (semantic UI) — color carries the meaning per V3-D197 + universal-
  * color convention (§1):
- *   - Open  → `text-s-success` green (universal "go/open")
+ *   - Open  → `text-s-open` green (Fresha-calm #1F8900, owner 2026-06-12)
  *   - Closed → `text-s-closed` red (universal "stop/closed", per user 2026-05-30)
  *
  * The dot mirrors the text color and is purely decorative (`aria-hidden`).
@@ -50,7 +50,7 @@ const pillVariants = cva(
   {
     variants: {
       tone: {
-        open:   "text-s-success",
+        open:   "text-s-open",
         closed: "text-s-closed",
       },
       size: {
@@ -67,7 +67,7 @@ const dotVariants = cva(
   {
     variants: {
       tone: {
-        open:   "bg-s-success",
+        open:   "bg-s-open",
         closed: "bg-s-closed",
       },
       size: {

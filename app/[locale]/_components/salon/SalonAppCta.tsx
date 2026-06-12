@@ -10,7 +10,8 @@ import { formatQuartier } from "@/lib/basel-neighborhoods";
  * SalonAppCta — V2-D53.3 polish (2026-05-11).
  *
  * Bottom-of-page block matching Fresha pattern:
- *   "Treat yourself anytime, anywhere" h2
+ *   "Gönn dir ein Verwöhnprogramm, wo und wann du willst" h2 (Fresha PDP copy,
+ *   owner 2026-06-12: the old "Verwöhne dich jederzeit, überall" read as noise)
  *   + chip-link row (Andere Salons in Zürich, Andere Salons in [quartier])
  *   + repeated Book CTA
  *
@@ -47,7 +48,7 @@ export function SalonAppCta({
       {/* V3-D202 (A22): font-body → font-display + Scale B.
           V3-D335 (T3): tracking -0.03em → -0.01em (canonical Section H2 per §2.5). */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.01em] text-s-ink">
-        Verwöhne dich jederzeit, überall
+        Gönn dir ein Verwöhnprogramm, wo und wann du willst
       </h2>
 
       <div className="mt-5 flex flex-wrap gap-2">

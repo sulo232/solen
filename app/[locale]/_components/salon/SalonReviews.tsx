@@ -70,8 +70,6 @@ export function SalonReviews({
 
   const all = reviews.length > 0 ? reviews : fetched ?? [];
   const visible = expanded ? all : all.slice(0, 6);
-  const dist = [5, 4, 3, 2, 1].map((s) => all.filter((r) => r.rating === s).length);
-  const distMax = all.length || 1;
 
   return (
     <section id="section-reviews" className="rounded-2xl bg-white shadow-float p-5 md:p-7">
@@ -80,47 +78,30 @@ export function SalonReviews({
         Bewertungen
       </h2>
 
-      {/* Summary row */}
-      <div className="mt-4 flex items-baseline gap-2.5">
-        <div className="flex items-center gap-0.5">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Star
-              key={i}
-              size={20}
-              stroke="none"
-              className={average !== null && i < Math.floor(average) ? "fill-s-star" : "fill-s-border"}
-            />
-          ))}
-        </div>
-        <span className="font-body text-[18px] font-semibold tracking-tight text-s-ink md:text-[20px]">
+      {/* Summary — Fresha PDP capture (pdp-bottom, 2026-06-12): big star row, then
+          "4,9 (3'249)" with the COUNT in accent (review counts are THE blue case,
+          LOCKFILE §1.5 v3). No histogram on Fresha mobile — dropped per owner. */}
+      <div className="mt-4 flex items-center gap-1.5">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <Star
+            key={i}
+            size={28}
+            stroke="none"
+            className={average !== null && i < Math.round(average) ? "fill-s-star" : "fill-s-border"}
+          />
+        ))}
+      </div>
+      <div className="mt-2.5 flex items-baseline gap-1.5">
+        <span className="font-body text-[18px] font-bold tracking-tight text-s-ink">
           {average?.toFixed(1) ?? "—"}
         </span>
-        <span className="font-body text-[13px] text-s-ink-3">
+        <span className="font-body text-[16px] font-medium text-s-accent">
           ({count.toLocaleString("de-CH")})
         </span>
       </div>
 
-      {/* Rating distribution bars (per IMG_5392 ref) — computed from the real ratings. */}
-      {all.length > 0 && (
-        <div className="mt-5 space-y-1.5">
-          {[5, 4, 3, 2, 1].map((star, i) => {
-            const pct = (dist[i] / distMax) * 100;
-            return (
-              <div key={star} className="flex items-center gap-2.5">
-                <span className="w-3 text-right font-body text-[12px] tabular-nums text-s-ink-3">
-                  {star}
-                </span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
-                  <div className="h-full rounded-full bg-s-ink" style={{ width: `${pct}%` }} />
-                </div>
-                <span className="w-7 text-right font-body text-[12px] tabular-nums text-s-ink-3">
-                  {dist[i]}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <div className="mt-5 border-t border-s-border" />
+
 
       {all.length === 0 ? (
         // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
@@ -135,7 +116,7 @@ export function SalonReviews({
         )
       ) : (
         <>
-          <div className="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 md:gap-y-8">
+          <div className="mt-6 flex flex-col gap-7">
             {visible.map((r) => (
               <ReviewCard key={r.id} review={r} />
             ))}
@@ -168,32 +149,29 @@ function ReviewCard({ review }: { review: Review }) {
 
   return (
     <article>
-      {displayName ? (
-        <div className="flex items-center gap-2.5">
-          <Avatar src={review.profiles?.avatar_url} name={displayName} size={40} />
-          <div className="min-w-0 flex-1">
-            <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
-              {displayName}
-            </div>
-            <div className="font-body text-[12px] text-s-ink-3">
-              {formatReviewDate(review.created_at)}
-            </div>
+      {/* Fresha row anatomy (pdp-bottom capture): avatar disc + NAME 16/600 with
+          the grey date stacked under, star row below, text below. Anonymous reviews
+          show "Anonym" (the established label on /reviews). */}
+      <div className="flex items-center gap-3.5">
+        <Avatar src={review.profiles?.avatar_url} name={displayName ?? "Anonym"} size={56} />
+        <div className="min-w-0 flex-1">
+          <div className="font-body truncate text-[16px] font-semibold text-s-ink">
+            {displayName ?? "Anonym"}
+          </div>
+          <div className="font-body mt-0.5 text-[14px] text-s-ink-3">
+            {formatReviewDate(review.created_at)}
           </div>
         </div>
-      ) : (
-        <div className="font-body text-[12px] font-medium text-s-ink-3">
-          Verifizierte Buchung {formatReviewDate(review.created_at)}
-        </div>
-      )}
+      </div>
 
       {/* Stars */}
-      <RatingStars value={review.rating} mode="five" size="md" className="mt-2.5" />
+      <RatingStars value={review.rating} mode="five" size="md" className="mt-3" />
 
       {text && (
         <>
           <p
             className={cn(
-              "font-body mt-2.5 text-[14px] leading-relaxed text-s-ink-2",
+              "font-body mt-2.5 text-[15px] leading-relaxed text-s-ink-2",
               !showFull && "line-clamp-3"
             )}
           >

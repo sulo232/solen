@@ -90,7 +90,7 @@ export function SalonVenuesNearby({
         </h2>
         <div className="mt-5 flex gap-4 overflow-hidden">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-[200px] w-[220px] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
+            <div key={i} className="h-[190px] w-[46vw] max-w-[200px] shrink-0 animate-pulse rounded-2xl bg-s-bg-sunken" />
           ))}
         </div>
       </section>
@@ -137,7 +137,7 @@ export function SalonVenuesNearby({
           <Link
             key={s.id}
             href={`/${locale}/salon/${s.slug}`}
-            className="font-body group flex w-[220px] shrink-0 flex-col snap-start md:w-[260px]"
+            className="font-body group flex w-[46vw] max-w-[200px] shrink-0 flex-col snap-start md:w-[260px] md:max-w-none"
           >
             <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-s-bg-sunken">
               {s.cover_photo_url && (
@@ -150,23 +150,22 @@ export function SalonVenuesNearby({
                 />
               )}
             </div>
-            <div className="mt-3">
-              <div className="truncate text-[14px] font-medium text-s-ink md:text-[15px]">
+            {/* Fresha card meta (pdp-bottom capture): name 600, sentence-case grey
+                type line, rating line. No uppercase tags. */}
+            <div className="mt-2.5">
+              <div className="truncate text-[15px] font-semibold text-s-ink">
                 {s.name}
               </div>
-              <div className="mt-1 text-[12px] text-s-ink-3">
-                {s.average_rating != null ? (
-                  <RatingStars value={s.average_rating} count={s.review_count} size="sm" />
-                ) : (
-                  "—"
-                )}
-              </div>
               {s.categories?.[0] && (
-                /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */
-                <div className="mt-1 text-[12px] uppercase tracking-[0.08em] text-s-ink-3">
+                <div className="mt-0.5 text-[13px] text-s-ink-3">
                   {capitalize(s.categories[0])}
                 </div>
               )}
+              <div className="mt-1 text-[13px] text-s-ink-3">
+                {s.average_rating != null ? (
+                  <RatingStars value={s.average_rating} count={s.review_count} size="sm" />
+                ) : null}
+              </div>
             </div>
           </Link>
         ))}

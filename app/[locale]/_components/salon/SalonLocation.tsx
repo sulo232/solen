@@ -59,9 +59,9 @@ export function SalonLocation({ salon }: { salon: SalonDetail }) {
           href={directionsHref}
           target="_blank"
           rel="noreferrer noopener"
-          className="group inline-flex items-center gap-1 font-medium text-s-ink transition-opacity hover:opacity-70"
+          className="group inline-flex items-center gap-1 font-medium text-s-accent transition-opacity hover:opacity-80"
         >
-          <Navigation size={13} className="text-s-ink-2 transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
+          <Navigation size={13} className="text-s-accent transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
           In Maps öffnen
         </a>
       </div>

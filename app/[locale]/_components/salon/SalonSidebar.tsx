@@ -188,8 +188,8 @@ export function SalonSidebar({
             href={directionsHref}
             target="_blank"
             rel="noreferrer noopener"
-            // 2026-05-30: links → saturated blue (s-accent), no underline.
-            className="font-medium text-s-ink transition-opacity hover:opacity-80"
+            // Owner 2026-06-12: map/directions links are BLUE (Fresha uses accent here).
+            className="font-medium text-s-accent transition-opacity hover:opacity-80"
           >
             Route
           </a>

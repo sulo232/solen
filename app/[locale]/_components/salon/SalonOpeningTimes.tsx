@@ -46,7 +46,7 @@ export function SalonOpeningTimes({
                 <span
                   className={cn(
                     "h-2 w-2 shrink-0 rounded-full",
-                    isOpen ? "bg-s-success" : "bg-s-ink-3/40"
+                    isOpen ? "bg-s-open" : "bg-s-ink-3/40"
                   )}
                   aria-hidden
                 />
