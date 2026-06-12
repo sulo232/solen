@@ -32,6 +32,8 @@ export function SalonReviews({
   count,
   reviews,
   salonId,
+  salonSlug,
+  locale,
 }: {
   average: number | null;
   count: number;
@@ -39,6 +41,10 @@ export function SalonReviews({
   /** When the parent passes no review bodies (the salon fetch returns only the
    *  aggregate count), the card self-fetches them client-side. reviews are public-read. */
   salonId?: string;
+  /** With slug+locale, "Alle ansehen" navigates to the full reviews view (Fresha
+   *  reviews-portfolio-tap capture) instead of expanding inline. */
+  salonSlug?: string;
+  locale?: string;
 }) {
   const [expanded, setExpanded] = React.useState(false);
   const [fetched, setFetched] = React.useState<Review[] | null>(null);
@@ -51,13 +57,13 @@ export function SalonReviews({
         const supabase = createBrowserSupabaseClient();
         const { data, error } = await supabase
           .from("reviews")
-          .select("id, rating, comment, created_at")
+          .select("id, rating, comment, created_at, profiles(display_name, avatar_url)")
           .eq("salon_id", salonId)
           .eq("is_hidden", false)
           .order("created_at", { ascending: false })
           .limit(50);
         if (error) throw error;
-        if (!cancelled) setFetched((data ?? []) as Review[]);
+        if (!cancelled) setFetched((data ?? []) as unknown as Review[]);
       } catch (err) {
         console.error("[SalonReviews] review fetch failed:", err);
         if (!cancelled) setFetched([]);
@@ -135,13 +141,22 @@ export function SalonReviews({
           )}
           {rows.length > 6 && !expanded && (
             <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setExpanded(true)}
-                className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
-              >
-                Alle ansehen
-              </button>
+              {salonSlug && locale ? (
+                <a
+                  href={`/${locale}/salon/${salonSlug}/reviews`}
+                  className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
+                >
+                  Alle ansehen
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(true)}
+                  className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
+                >
+                  Alle ansehen
+                </button>
+              )}
             </div>
           )}
         </>

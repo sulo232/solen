@@ -46,7 +46,10 @@ export async function GET(
     // come back. Restore the join only when the staff_portfolio_images table
     // is added (migration 032 was referenced in old session notes but never landed).
     supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    supabase
+    // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,
+    // which nulled every reviewer name for logged-out visitors. The server exposes
+    // ONLY display_name + avatar_url through this select — no broader profile access.
+    createAdminSupabaseClient()
       .from("reviews")
       .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")
       .eq("salon_id", salon.id)

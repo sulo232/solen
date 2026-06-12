@@ -277,6 +277,8 @@ export function SalonDetailV3() {
               count={salon.review_count}
               reviews={salon.reviews}
               salonId={salon.id}
+              salonSlug={salon.slug}
+              locale={locale}
             />
 
             <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={() => openGallery()} />
