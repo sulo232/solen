@@ -2,134 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>21 Backend-run frontends — signup, B2B fusion, walk-in wait, category hero</title>
+<title>21 v2 — /fuer-salons per Fresha for-business bones + dedicated signup page</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
   .phone{width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;background:#fff;border-radius:34px;box-shadow:0 24px 60px rgba(0,0,0,.16);position:relative}
   .pbody{flex:1;overflow-y:auto}
-  .sec{padding:28px 20px}
-  .h2{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.015em;line-height:1.2}
-  .sub{font-size:14px;color:var(--ink-2);line-height:1.55;margin-top:8px}
-  .field{margin-top:14px}
-  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
-  .field input{width:100%;height:48px;border:none;background:var(--sunken);border-radius:12px;padding:0 14px;font-size:15px;font-family:Inter,sans-serif}
-  .cta{display:flex;align-items:center;justify-content:center;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;margin-top:18px}
-  .fine{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.5}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-  .cat{position:relative;height:110px;border-radius:14px;overflow:hidden;background:var(--sunken)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+  .logo{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em}
+  .regbtn{background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13.5px}
+  .hero{padding:26px 20px 0;text-align:center}
+  .hero h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:34px;line-height:1.08;letter-spacing:-.025em}
+  .hero p{font-size:15px;color:var(--ink-2);line-height:1.55;margin-top:12px}
+  .cta{display:flex;align-items:center;justify-content:center;height:52px;border-radius:999px;background:var(--ink);color:#fff;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:15px;margin-top:20px}
+  .ghost{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:999px;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;color:var(--ink);margin-top:8px}
+  .shot{margin:22px 12px 0;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 18px 44px rgba(10,10,10,.14)}
+  .shot img{width:100%;display:block}
+  .trust{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:16px 20px 26px}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:500;background:#fff}
+  .badge .lucide{width:14px;height:14px}
+  .sech{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;line-height:1.15;padding:0 20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 20px 0}
+  .cat{position:relative;height:130px;border-radius:14px;overflow:hidden;background:var(--sunken)}
   .cat img{width:100%;height:100%;object-fit:cover}
-  .cat b{position:absolute;left:10px;bottom:8px;color:#fff;font-family:'Inter Tight',sans-serif;font-size:14px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
-  .cmp{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:16px}
+  .cat b{position:absolute;left:10px;bottom:8px;color:#fff;font-family:'Inter Tight',sans-serif;font-size:14px;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+  .pillars{background:var(--sunken);margin-top:30px;padding:30px 20px 8px}
+  .pillar{margin-bottom:26px}
+  .pillar h3{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
+  .pillar p{font-size:14.5px;color:var(--ink-2);line-height:1.6;margin-top:8px}
+  .cmp{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:18px 20px 28px;background:#fff}
   .cmp .row{display:grid;grid-template-columns:1.4fr 1fr 1fr;font-size:13px;padding:12px 14px;border-top:1px solid var(--border);align-items:center}
   .cmp .row:first-child{border-top:none;background:var(--sunken);font-weight:600}
   .cmp .yes{color:#16A34A;font-weight:600}
   .cmp .sol{font-weight:700}
-  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:500;background:#fff}
-  .badge .lucide{width:14px;height:14px}
-  .waitcard{background:#fff;border:1px solid var(--border);border-radius:20px;padding:18px;margin:16px 20px 0;box-shadow:0 1px 3px rgba(10,10,10,.04)}
-  .waitrow{display:flex;align-items:center;gap:14px}
-  .waitnum{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:34px;letter-spacing:-.02em}
-  .waitlbl{font-size:13px;color:var(--ink-2);line-height:1.4}
-  .hero{position:relative;height:46%;flex:none}
-  .hero img{width:100%;height:100%;object-fit:cover}
-  .hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.45))}
-  .hero .inner{position:absolute;left:20px;right:20px;bottom:22px;color:#fff}
-  .hero h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:32px;letter-spacing:-.02em;line-height:1.1}
-  .hero p{font-size:14px;opacity:.92;margin-top:6px}
-  .searchcard{background:#fff;border-radius:16px;margin:-34px 20px 0;position:relative;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.16)}
-  .searchcard .in{display:flex;align-items:center;gap:10px;background:var(--sunken);border-radius:12px;height:46px;padding:0 12px;font-size:14px;color:var(--ink-2)}
+  /* signup page */
+  .auth{padding:46px 24px 0;text-align:center}
+  .auth h1{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
+  .auth p{font-size:14.5px;color:var(--ink-2);margin-top:8px;line-height:1.5}
+  .auth input{width:100%;height:52px;border:1.5px solid var(--border);background:#fff;border-radius:14px;padding:0 16px;font-size:15px;font-family:Inter,sans-serif;margin-top:22px}
+  .chips{display:flex;gap:8px;margin-top:10px;overflow-x:auto}
+  .chip{flex:none;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;background:#fff;color:var(--ink-2)}
+  .or{display:flex;align-items:center;gap:10px;color:var(--ink-3);font-size:11px;letter-spacing:.08em;margin:22px 0 0}
+  .or:before,.or:after{content:"";flex:1;height:1px;background:var(--border)}
+  .soc{display:flex;align-items:center;justify-content:center;gap:10px;height:50px;border:1px solid var(--border);border-radius:999px;font-family:Inter,sans-serif;font-weight:600;font-size:14.5px;margin-top:10px;background:#fff}
+  .switch{margin-top:30px;font-size:14px}
+  .switch b{display:block;font-family:Inter,sans-serif;font-weight:600}
+  .switch a{color:var(--blue);font-weight:600;font-size:13.5px}
 </style>
 </head>
 <body>
 
-<div class="note"><b>21 — Frontends for the backend-only run (2026-06-12).</b> Backend shipped tonight: /fuer-salons canonical + 301s + link sweep + sitemap; signup backend verified existing (auth signup → email confirm → onboarding → salon create + RLS); spacing audit + photo spike docs. These frames are the SKIPPED frontend, for approval before any build. All copy is placeholder-English; production copy comes from the existing partner.* / walkin.* i18n namespaces.</div>
+<div class="note"><b>21 v2 — /fuer-salons per the CAPTURED Fresha for-business bones</b> (public/_pixel-refs/fresha/for-business/, mobile, 2026-06-12) <b>+ Solen skin.</b> Fresha's structure: (1) hero = claim + CTA + real product screenshot + trust row, (2) category photo grid, (3) three pillars on a tinted band (Verwalten/Wachstum/Auszahlung) + the money pitch, (4) signup is NOT embedded — every CTA links to a dedicated minimal email-first auth page. Solen deltas only: B&W chrome (no purple), OUR REAL dashboard screenshot (not a comp), honest trust badges (no fabricated Capterra scores), 1% comparison from the existing PLComparison content, CTAs → the EXISTING /auth/register salon path. v1's frames C (walk-in wait duplicate — killed, queue tracker + PDP panel already own it) and D (category landings already exist — deferred to W11 with before/after) are removed.</div>
 
-<div class="lbl">A — /fuer-salons V2: REAL signup section (replaces the lead-capture form; posts to the EXISTING /api/auth/signup → email confirm → /onboarding/salon)</div>
+<div class="lbl">A — /fuer-salons hero (Fresha bones: claim → CTA → product shot → trust row)</div>
 <div class="phone">
   <div class="pbody">
-    <div class="sec">
-      <div class="h2">Start on Solen — free</div>
-      <p class="sub">Create your salon account. Confirm your email, set up your salon, take bookings. No fixed costs — commission only.</p>
-      <div class="field"><label>Salon name</label><input placeholder="Atelier Haarwerk"></div>
-      <div class="field"><label>Email</label><input placeholder="you@yoursalon.ch"></div>
-      <div class="field"><label>Password</label><input type="password" placeholder="min. 8 characters, 1 uppercase, 1 digit"></div>
-      <div class="cta">Create account</div>
-      <p class="fine">We'll send a confirmation link. After confirming you land in the 3-step salon setup. Already on Solen? <span style="color:var(--blue);font-weight:600">Log in</span></p>
+    <div class="topbar"><span class="logo">Solen</span><span class="regbtn">Registrieren</span></div>
+    <div class="hero">
+      <h1>The booking platform for Swiss salons</h1>
+      <p>Bookings, walk-in queue, payments and your team — one tool, no fixed costs.</p>
+      <div class="cta">Get started free</div>
+      <div class="ghost"><i data-lucide="play" style="width:15px;height:15px"></i>See how it works</div>
+    </div>
+    <div class="shot"><img src="asset-dashboard-shot.png" alt="real Solen dashboard"></div>
+    <div class="trust">
+      <span class="badge"><i data-lucide="shield-check"></i>Swiss hosting</span>
+      <span class="badge"><i data-lucide="lock"></i>Stripe payments</span>
+      <span class="badge"><i data-lucide="file-check"></i>No contract</span>
     </div>
   </div>
 </div>
 
-<div class="lbl">B — /fuer-salons V2: fusion sections (category grid + competitor comparison + trust badges, pulled from the old /partner blocks)</div>
+<div class="lbl">B — categories grid + pillars + 1% comparison (Fresha sections 2-3, Solen content)</div>
 <div class="phone">
   <div class="pbody">
-    <div class="sec">
-      <div class="h2">Built for every studio</div>
-      <div class="grid2">
-        <div class="cat"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=60"><b>Coiffeur</b></div>
-        <div class="cat"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&q=60"><b>Barbershop</b></div>
-        <div class="cat"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=60"><b>Nails</b></div>
-        <div class="cat"><img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=400&q=60"><b>Spa & Massage</b></div>
-      </div>
-      <div class="h2" style="margin-top:34px;font-size:20px">Why salons switch</div>
-      <div class="cmp">
-        <div class="row"><span></span><span class="sol">Solen</span><span>Others</span></div>
-        <div class="row"><span>Commission</span><span class="sol">1%</span><span>2–5%</span></div>
-        <div class="row"><span>Fixed monthly fee</span><span class="yes">CHF 0</span><span>CHF 99+</span></div>
-        <div class="row"><span>Walk-in queue</span><span class="yes">✓</span><span>—</span></div>
-        <div class="row"><span>Payout</span><span class="yes">Direct (Stripe)</span><span>Varies</span></div>
-      </div>
-      <div class="badges">
-        <span class="badge"><i data-lucide="shield-check"></i>Swiss hosting</span>
-        <span class="badge"><i data-lucide="lock"></i>Stripe payments</span>
-        <span class="badge"><i data-lucide="file-check"></i>No contract</span>
-        <span class="badge"><i data-lucide="message-circle"></i>Support in DE/FR/IT</span>
-      </div>
+    <div class="topbar"><span class="logo">Solen</span><span class="regbtn">Registrieren</span></div>
+    <h2 class="sech">Built for every studio</h2>
+    <div class="grid2">
+      <div class="cat"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=60"><b>Coiffeur</b></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&q=60"><b>Barbershop</b></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=60"><b>Nails</b></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=400&q=60"><b>Spa & Massage</b></div>
+    </div>
+    <div class="pillars">
+      <div class="pillar"><h3>Manage</h3><p>Bookings, calendar, customers, team and payouts — analysed with clear reports.</p></div>
+      <div class="pillar"><h3>Grow</h3><p>Get found on the marketplace, fill empty chairs with the walk-in queue and deals.</p></div>
+      <div class="pillar"><h3>Get paid</h3><p>Direct payouts via Stripe. Prepayments cut no-shows.</p></div>
+    </div>
+    <h2 class="sech" style="margin-top:28px">Why salons switch</h2>
+    <div class="cmp">
+      <div class="row"><span></span><span class="sol">Solen</span><span>Others</span></div>
+      <div class="row"><span>Commission</span><span class="sol">1%</span><span>2–5%</span></div>
+      <div class="row"><span>Monthly fee</span><span class="yes">CHF 0</span><span>CHF 99+</span></div>
+      <div class="row"><span>Walk-in queue</span><span class="yes">✓</span><span>—</span></div>
     </div>
   </div>
 </div>
 
-<div class="lbl">C — /walk-in-pay: live wait-time card (data already served by /api/walkin/queue/status — display only)</div>
+<div class="lbl">C — dedicated signup page (Fresha partner-auth bones; restyles the EXISTING /auth/register salon path, email-first)</div>
 <div class="phone">
-  <div class="pbody" style="background:#F4F4F5">
-    <div class="sec" style="padding-bottom:0">
-      <div class="h2" style="font-size:22px">Join the queue</div>
-    </div>
-    <div class="waitcard">
-      <div class="waitrow">
-        <div>
-          <div class="waitnum">~25 min</div>
-          <div class="waitlbl">current wait · 3 ahead of you · 2 chairs active</div>
-        </div>
-      </div>
-      <div style="height:6px;border-radius:999px;background:var(--sunken);margin-top:14px;overflow:hidden"><div style="width:38%;height:100%;background:var(--ink);border-radius:999px"></div></div>
-      <p class="waitlbl" style="margin-top:8px">Live estimate from the salon's actual pace — updates as the queue moves.</p>
-    </div>
-    <div class="sec">
-      <div style="background:#fff;border:1px solid var(--border);border-radius:20px;height:200px;display:grid;place-items:center;color:var(--ink-3);font-size:13px">existing pay form (unchanged)</div>
-      <div class="cta">Pay & get your number</div>
-    </div>
-  </div>
-</div>
-
-<div class="lbl">D — Category landing hero (Pattern 2, one template × 6 categories; photo = the W11-prep gate)</div>
-<div class="phone">
-  <div class="hero">
-    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=70">
-    <div class="ov"></div>
-    <div class="inner">
-      <h1>Coiffeur in Basel</h1>
-      <p>Compare, book, done — 40+ salons.</p>
-    </div>
-  </div>
-  <div class="searchcard">
-    <div class="in"><i data-lucide="search" style="width:16px;height:16px"></i>Cut, balayage, blow-dry …</div>
-  </div>
   <div class="pbody">
-    <div class="sec">
-      <div style="height:120px;border:1px dashed var(--border);border-radius:16px;display:grid;place-items:center;color:var(--ink-3);font-size:13px">existing landing content below (unchanged)</div>
+    <div class="auth">
+      <h1>Solen für Salons</h1>
+      <p>Create an account or log in to manage your salon.</p>
+      <input placeholder="Enter your email address">
+      <div class="chips"><span class="chip">@gmail.com</span><span class="chip">@bluewin.ch</span><span class="chip">@gmx.ch</span></div>
+      <div class="cta">Continue</div>
+      <div class="or">OR</div>
+      <div class="soc"><i data-lucide="chrome" style="width:16px;height:16px"></i>Continue with Google</div>
+      <div class="soc"><i data-lucide="apple" style="width:16px;height:16px"></i>Continue with Apple</div>
+      <div class="switch">
+        <b>Looking to book an appointment?</b>
+        <a>Go to Solen for customers</a>
+      </div>
     </div>
   </div>
 </div>
