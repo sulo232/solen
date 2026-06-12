@@ -60,10 +60,17 @@ export async function POST(req: NextRequest) {
   // (council landmine #3). Block it; the shop must finish Stripe Connect onboarding
   // first (or run the free pay-at-counter mode instead).
   if (!salon.stripe_account_id) {
-    return NextResponse.json(
-      { error: "This shop hasn't finished connecting payouts yet. Pay at the counter or try again later.", code: "payouts_not_connected" },
-      { status: 409 },
-    );
+    // DEV-ONLY fallback (2026-06-12): seed salons have no Connect account and the
+    // platform's test Stripe has Connect not yet enabled — allow a PLATFORM charge
+    // so the walk-in flow is testable locally. Production keeps the hard block
+    // (money must route to the salon with the commission split, council landmine #3).
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        { error: "This shop hasn't finished connecting payouts yet. Pay at the counter or try again later.", code: "payouts_not_connected" },
+        { status: 409 },
+      );
+    }
+    console.warn("[walkin/pay-intent] DEV fallback: platform charge, no Connect account for salon", salon_id);
   }
 
   // Server-trusted price — from the service row, NEVER the client.

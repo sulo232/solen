@@ -98,10 +98,16 @@ export async function POST(req: NextRequest) {
   // is normally webhook-coupled to charges_enabled, but guard explicitly — never charge for
   // money we can't route.)
   if (!salon.stripe_account_id) {
-    return NextResponse.json(
-      { error: "Dieser Salon hat die Online-Zahlung noch nicht abgeschlossen. Bitte vor Ort bezahlen.", code: "NOT_CONNECTED" },
-      { status: 409 },
-    );
+    // DEV-ONLY fallback (2026-06-12, mirrors walkin/pay-intent): platform charge so
+    // online pay is testable on seed salons locally; production keeps the hard block
+    // (the transfer_data block below is already conditional on stripe_account_id).
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        { error: "Dieser Salon hat die Online-Zahlung noch nicht abgeschlossen. Bitte vor Ort bezahlen.", code: "NOT_CONNECTED" },
+        { status: 409 },
+      );
+    }
+    console.warn("[booking-pay-intent] DEV fallback: platform charge, no Connect account");
   }
 
   // 3. Server-trusted price — from the service row, NEVER the client.
