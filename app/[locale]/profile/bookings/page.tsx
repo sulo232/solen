@@ -21,8 +21,6 @@ export default async function BookingsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'bookingsList' });
-  const tNav = await getTranslations({ locale, namespace: 'navigation' });
 
   // Auth check
   const supabase = await createServerSupabaseClient();
@@ -35,18 +33,8 @@ export default async function BookingsPage({
 
   return (
     <div className="min-h-screen bg-[--base]">
-      {/* Header */}
-      <div className="sticky top-0 z-40 bg-[--raised] border-b border-s-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="font-heading text-2xl font-semibold text-s-ink">
-              {tNav('bookings')}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+      {/* Title moved beside the global back tile (Header deepPageTitle); the old
+          stacked sticky sub-bar doubled the chrome under the sticky site header. */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <BookingsList userId={user.id} />
       </div>

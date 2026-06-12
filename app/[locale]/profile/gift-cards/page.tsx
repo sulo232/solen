@@ -59,14 +59,7 @@ export default function MyGiftCardsPage() {
   return (
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
-        {/* Header — V3-D285: fix corrupted dark-mode hover + swap retired s-coral icon → ink */}
-        <div className="flex items-center gap-3 mb-8">
-          <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
-            <Gift size={20} className="text-s-ink" />
-            Meine Geschenkkarten
-          </h1>
-        </div>
-
+        {/* Title now sits beside the global back tile (Header deepPageTitle). */}
         {/* List */}
         {cards.length === 0 ? (
           <div className="bg-white rounded-[12px] border border-s-border p-8 text-center text-s-ink/40">

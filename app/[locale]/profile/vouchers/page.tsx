@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Gift, ChevronRight, AlertCircle, Check, Clock, X } from "lucide-react";
+import { Gift, AlertCircle, Check, Clock, X } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -100,24 +100,14 @@ export default function VouchersPage() {
 
   return (
     <div className="min-h-screen bg-s-bg-surface py-8 px-4">
-      {/* Breadcrumb — V3-D290: hover color s-coral → s-ink */}
-      <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
-        <Link href={`/${locale}/profile`} className="hover:text-s-ink transition-colors">
-          Profil
-        </Link>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink-2">Meine Gutscheine</span>
-      </div>
-
+      {/* Title + back live in the global header (deepPageTitle); the old
+          "Profil › Meine Gutscheine" breadcrumb duplicated both, so it's gone. */}
       <div className="max-w-lg mx-auto space-y-6">
         {/* Hero card — V3-D290: retired s-coral gradient/border → neutral sunken wash + s-border (Layer 1 chrome) */}
         <div className="bg-s-bg-sunken rounded-[12px] border border-s-border p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto mb-3 border border-s-border">
             <Gift className="w-7 h-7 text-s-ink" />
           </div>
-          <h1 className="font-heading text-xl text-s-ink mb-1">
-            Meine Gutscheine
-          </h1>
           <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
             {data?.total ?? 0} {(data?.total ?? 0) === 1 ? "Gutschein" : "Gutscheine"} insgesamt
           </p>

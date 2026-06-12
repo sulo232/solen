@@ -370,3 +370,18 @@ Booking mockup 04 draws time slots as 12px-radius rectangles; the shared DateTim
 primitive renders 999px pills (both booking + search use it). Changing the primitive
 would also restyle search (owner-approved as-is). Which shape is canonical for slots?
 Until answered: pills stay (primitive untouched), mockup 04 diverges on this one detail.
+
+## Q-2026-06-12-deep-page-title-pattern + i18n debt
+PATTERN (owner 2026-06-12 "you didn't apply it everywhere"): deep profile sub-pages
+show their title in the GLOBAL Header beside the back tile (`deepPageTitle` map in
+Header.tsx), and each page's own body `<h1>` is removed — title appears once, in the
+bar, mirroring the booking Zahlung/Bestätigen step header. Rolled out to all live
+profile pages (settings/bookings/gift-cards/haarprofil/vouchers/intake-forms/referral
++ the original favorites/stamps/looks). Redundant breadcrumbs (vouchers, referral) were
+removed in the same pass (the back tile replaces them). NEW profile sub-page → add a
+TITLES entry in Header.tsx AND omit a body h1 (don't reintroduce the stacked title).
+DEBT: the 10 chip labels are HARDCODED German on purpose — the span renders on the
+global header for EVERY route, so a missing i18n key there would throw and white-screen
+the whole app. fr/it/en currently see German chips. Fix later as ONE guarded pass (a
+`pageTitles` namespace with a literal fallback), not piecemeal. Non-profile deep pages
+(e.g. /notifications, /help) are NOT yet covered — extend the same way if owner wants.

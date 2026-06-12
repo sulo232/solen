@@ -382,11 +382,29 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
   // page h1 below the header read unbalanced). Same slot idea as the V3-D410
   // discover-title; route-gated so every other page is untouched.
+  // Owner 2026-06-12: roll it out to EVERY deep profile page (was only
+  // favorites/stamps/looks) — "you didn't apply it everywhere". Each page's own
+  // body <h1> is removed in the same change, so the title shows once, in the bar.
+  // Labels mirror the hub rows the owner taps to get here (chip == the tile that
+  // navigated in); intake-forms is shortened to "Formulare" so the long
+  // "Konsultationsformulare" can't overflow the mobile bar. Hardcoded de on
+  // purpose: this span renders on the global header for every route, and a missing
+  // i18n key here would throw and white-screen the app — i18n is tracked separately.
   const deepPageTitle = React.useMemo(() => {
     if (!pathname) return null;
-    if (/\/profile\/favorites\/?$/.test(pathname)) return "Favoriten";
-    if (/\/profile\/stamps\/?$/.test(pathname)) return "Stempel";
-    if (/\/profile\/looks\/?$/.test(pathname)) return "Looks";
+    const TITLES: [RegExp, string][] = [
+      [/\/profile\/bookings\/?$/, "Termine"],
+      [/\/profile\/favorites\/?$/, "Favoriten"],
+      [/\/profile\/stamps\/?$/, "Stempel"],
+      [/\/profile\/looks\/?$/, "Looks"],
+      [/\/profile\/gift-cards\/?$/, "Geschenkkarten"],
+      [/\/profile\/haarprofil\/?$/, "Haarprofil"],
+      [/\/profile\/vouchers\/?$/, "Gutscheine"],
+      [/\/profile\/intake-forms\/?$/, "Formulare"],
+      [/\/profile\/referral\/?$/, "Freunde einladen"],
+      [/\/profile\/settings\/?$/, "Einstellungen"],
+    ];
+    for (const [re, label] of TITLES) if (re.test(pathname)) return label;
     return null;
   }, [pathname]);
 

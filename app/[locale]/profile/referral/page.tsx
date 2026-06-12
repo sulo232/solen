@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { Copy, Check, Users, Gift, Share2, ChevronRight } from "lucide-react";
+import { Copy, Check, Users, Gift, Share2 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -65,20 +65,15 @@ export default function ReferralPage() {
 
   return (
     <div className="min-h-screen bg-s-bg-surface py-8 px-4">
-      {/* Breadcrumb */}
-      <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
-        <Link href={`/${locale}/profile`} className="hover:text-s-ink transition-colors">Profil</Link>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink-2">Freunde einladen</span>
-      </div>
-
+      {/* Title + back live in the global header (deepPageTitle); the old
+          "Profil › Freunde einladen" breadcrumb duplicated both, so it's gone. */}
       <div className="max-w-lg mx-auto space-y-4">
         {/* Hero card */}
         <div className="bg-gradient-to-br from-s-ink/10 to-s-ink/5 rounded-[12px] border border-s-border p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-s-ink/15 flex items-center justify-center mx-auto mb-3">
             <Gift className="w-7 h-7 text-s-ink-3" />
           </div>
-          <h1 className="font-heading text-xl text-s-ink mb-1">Freunde einladen</h1>
+          {/* Title sits beside the global back tile (Header deepPageTitle). */}
           <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
             Teile deinen Code und erhalte CHF 10 Guthaben, dein Freund bekommt auch CHF 10!
           </p>

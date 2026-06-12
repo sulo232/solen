@@ -20,7 +20,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "profileHub" });
 
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -59,10 +58,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
   return (
     <main className="min-h-screen bg-white">
       <div className="max-w-md mx-auto px-5 pt-6 pb-20">
-        <div className="flex items-center gap-2 mb-6">
-          <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-s-ink">{t("settingsTitle")}</h1>
-        </div>
-
+        {/* Title now lives beside the global back tile (Header deepPageTitle). */}
         <div className="space-y-7">
           <BeautyProfileForm initial={beautyInitial} customerPreferences={beautyPrefs} />
 
