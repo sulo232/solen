@@ -1,11 +1,12 @@
 'use client';
 
-import Link from 'next/link';
+import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight, ShoppingCart, Users } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
 import { Avatar } from '@/app/[locale]/_components/primitives';
+import StaffProfilePage from '@/components-legacy/staff/StaffProfilePage';
 import type { StaffMember } from '@/lib/types';
 
 interface StaffService {
@@ -35,6 +36,10 @@ export default function StaffStep({
   const tSel = useTranslations('booking.serviceSelection') as any;
   const locale = useLocale();
   const { formData, updateFormData, goToStep } = useBooking();
+  // Profil ansehen opens the profile IN SELECTION MODE (sheet + "Auswählen" CTA,
+  // the existing onSelect contract) instead of navigating away to the page with
+  // its "Jetzt buchen" CTA (owner 2026-06-12: mid-booking it's a CHOICE).
+  const [viewStaffId, setViewStaffId] = React.useState<string | null>(null);
 
   const selectedIds = formData.services.map((s) => s.id);
 
@@ -110,13 +115,13 @@ export default function StaffStep({
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-body text-[16px] font-semibold text-s-ink">{st.name}</span>
                   {sub && <span className="mt-0.5 block truncate font-body text-[13.5px] text-s-ink-2">{sub}</span>}
-                  <Link
-                    href={`/${locale}/salon/${salonSlug}/staff/${st.id}`}
-                    onClick={(e) => e.stopPropagation()}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setViewStaffId(st.id); }}
                     className="mt-1 inline-block font-body text-[13.5px] font-semibold text-s-accent transition-opacity hover:opacity-80"
                   >
                     {t('viewProfile')}
-                  </Link>
+                  </button>
                 </span>
                 <span className={pickBtnCls(active)}>{t('choose')}</span>
               </div>
@@ -124,6 +129,18 @@ export default function StaffStep({
           );
         })}
       </ul>
+
+      {/* Staff profile in selection mode — full-screen sheet over the step */}
+      {viewStaffId && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+          <StaffProfilePage
+            staffId={viewStaffId}
+            salonSlug={salonSlug}
+            onClose={() => setViewStaffId(null)}
+            onSelect={(id) => { pick(id); setViewStaffId(null); }}
+          />
+        </div>
+      )}
 
       {/* Bottom bar — same anatomy as the services step */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-s-border bg-white">

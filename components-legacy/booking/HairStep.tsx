@@ -113,27 +113,23 @@ export default function HairStep({
 
   const advance = () => goToStep("pay-confirm");
 
-  const handleNext = async () => {
+  const handleNext = () => {
     // The note rides on THIS booking (bookings.customer_note), not the profile.
     updateFormData({ customerNote: note.trim() || null });
+    // Best-effort profile save, fire-and-forget: awaiting it blocked the step
+    // transition for a full roundtrip (owner 2026-06-12: "the notes takes us
+    // too long"). The booking itself never depends on this PATCH.
     if (loggedIn && (hairType || hairLength || hairThickness || beard)) {
-      setSaving(true);
-      try {
-        await fetch("/api/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...(hairType ? { hair_type: hairType } : {}),
-            ...(hairLength ? { hair_length: hairLength } : {}),
-            ...(hairThickness ? { hair_thickness: hairThickness } : {}),
-            ...(beard ? { hair_beard: beard } : {}),
-          }),
-        });
-      } catch (err) {
-        console.error("[HairStep] profile save failed:", err);
-      } finally {
-        setSaving(false);
-      }
+      fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...(hairType ? { hair_type: hairType } : {}),
+          ...(hairLength ? { hair_length: hairLength } : {}),
+          ...(hairThickness ? { hair_thickness: hairThickness } : {}),
+          ...(beard ? { hair_beard: beard } : {}),
+        }),
+      }).catch((err) => console.error("[HairStep] profile save failed:", err));
     }
     advance();
   };
