@@ -5122,14 +5122,6 @@
     "cta": "Scopri ora",
     "redirect": "Reindirizzamento in {seconds} secondi…"
   },
-  "savedPage": {
-    "title": "Salvati",
-    "emptyTitle": "Niente salvato ancora",
-    "emptyMessage": "Tocca il cuore di un salone per salvarlo qui.",
-    "discoverCta": "Scopri saloni →",
-    "errorTitle": "Errore di caricamento",
-    "errorMessage": "Riprova più tardi."
-  },
   "termine": {
     "title": "I miei appuntamenti",
     "upcoming": "Prossimi",

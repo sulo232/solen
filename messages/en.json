@@ -1062,7 +1062,7 @@
       "dateLabel": "Date",
       "staffLabel": "Stylist",
       "staffAny": "No preference",
-        "quietLink": "No time that works? Join the waitlist",
+      "quietLink": "No time that works? Join the waitlist",
       "preferredTime": "Preferred time",
       "time_any": "Any time",
       "time_morning": "Morning",
@@ -5140,14 +5140,6 @@
     "codeLabel": "Your invitation code",
     "cta": "Discover now",
     "redirect": "Redirecting in {seconds} seconds…"
-  },
-  "savedPage": {
-    "title": "Saved",
-    "emptyTitle": "Nothing saved yet",
-    "emptyMessage": "Tap the heart on a salon to save it here.",
-    "discoverCta": "Discover salons →",
-    "errorTitle": "Couldn't load saved salons",
-    "errorMessage": "Please try again later."
   },
   "termine": {
     "title": "My Appointments",

@@ -5133,14 +5133,6 @@
     "cta": "Découvrir maintenant",
     "redirect": "Redirection dans {seconds} secondes…"
   },
-  "savedPage": {
-    "title": "Enregistrés",
-    "emptyTitle": "Rien d'enregistré pour l'instant",
-    "emptyMessage": "Appuyez sur le cœur d'un salon pour l'enregistrer ici.",
-    "discoverCta": "Découvrir des salons →",
-    "errorTitle": "Erreur de chargement",
-    "errorMessage": "Veuillez réessayer plus tard."
-  },
   "termine": {
     "title": "Mes rendez-vous",
     "upcoming": "Prochains",

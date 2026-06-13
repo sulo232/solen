@@ -87,7 +87,15 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Fehler beim Senden");
+        // Don't surface the raw English Supabase string in the German UI; localize
+        // the common rate-limit case + a German generic fallback.
+        const raw = String(data.message || "").toLowerCase();
+        const rateLimited = res.status === 429 || /rate limit|too many|after \d+ second|security purposes/.test(raw);
+        toast.error(
+          rateLimited
+            ? "Zu viele Anfragen. Bitte warte einen Moment und versuche es erneut."
+            : "Fehler beim Senden. Bitte versuche es erneut."
+        );
       } else {
         setResetSent(true);
       }

@@ -5151,14 +5151,6 @@
     "cta": "Jetzt entdecken",
     "redirect": "Weiterleitung in {seconds} Sekunden…"
   },
-  "savedPage": {
-    "title": "Gespeichert",
-    "emptyTitle": "Noch nichts gespeichert",
-    "emptyMessage": "Tippe auf das Herz bei einem Salon, um ihn hier zu speichern.",
-    "discoverCta": "Salons entdecken →",
-    "errorTitle": "Fehler beim Laden",
-    "errorMessage": "Bitte versuche es später erneut."
-  },
   "termine": {
     "title": "Meine Termine",
     "upcoming": "Nächste Termine",

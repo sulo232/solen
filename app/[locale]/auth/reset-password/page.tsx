@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { Lock, Eye, EyeOff, Check } from "lucide-react";
+import { Lock, Eye, EyeOff, Check, AlertCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
@@ -22,6 +22,9 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
+  // Invalid/expired/missing recovery link — render an actionable error instead of
+  // spinning on "Link wird überprüft…" forever (the dead-card bug from the FE sweep).
+  const [linkError, setLinkError] = useState(false);
 
   // Exchange the code from the URL for a session
   useEffect(() => {
@@ -31,15 +34,17 @@ export default function ResetPasswordPage() {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (cancelled) return;
         if (error) {
-          toast.error("Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.");
+          setLinkError(true);
         } else {
           setSessionReady(true);
         }
       });
     } else {
-      // If no code, check if already authenticated (e.g. hash-based flow)
+      // No code: only valid if a recovery session already exists (hash-based flow).
       supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!cancelled && session) setSessionReady(true);
+        if (cancelled) return;
+        if (session) setSessionReady(true);
+        else setLinkError(true);
       });
     }
     return () => { cancelled = true; };
@@ -119,7 +124,22 @@ export default function ResetPasswordPage() {
             </p>
           </div>
 
-          {!sessionReady ? (
+          {linkError ? (
+            <div className="flex flex-col items-center gap-3 py-4 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[14px] bg-s-error-bg">
+                <AlertCircle size={22} className="text-s-error" />
+              </div>
+              <p className="font-heading text-base text-s-ink">Link ungültig oder abgelaufen</p>
+              <p className="text-xs font-body text-s-ink-2">
+                Dieser Wiederherstellungs-Link funktioniert nicht mehr. Fordere unten einen neuen an.
+              </p>
+              <Link
+                href={`/${locale}/auth/login`}
+                className="mt-1 w-full rounded-pill bg-s-ink py-3 text-center text-xs font-heading uppercase tracking-[.04em] text-white transition-transform active:scale-[0.97]">
+                Neuen Link anfordern
+              </Link>
+            </div>
+          ) : !sessionReady ? (
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="md" />
               <p className="text-xs font-body text-s-ink-2">Link wird überprüft…</p>

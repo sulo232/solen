@@ -23,7 +23,12 @@ export async function GET(req: NextRequest) {
     .order("sort_order", { ascending: true });
 
   if (category) query = query.eq("category", category);
-  if (q && q.length <= 100) query = query.ilike("title", `%${q}%`);
+  if (q && q.length <= 100) {
+    // Search title AND body (was title-only, so "buchen" missed body matches). Strip
+    // PostgREST .or() delimiters (commas, parens) from user input so q can't break out.
+    const safe = q.replace(/[,()]/g, " ");
+    query = query.or(`title.ilike.%${safe}%,content.ilike.%${safe}%`);
+  }
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
