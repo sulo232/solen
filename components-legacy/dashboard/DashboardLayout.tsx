@@ -59,7 +59,7 @@ const OWNER_NAV_GROUPS = [
       { key: "overview",  href: "/dashboard",          icon: Home },
       { key: "bookings",  href: "/dashboard/bookings", icon: Calendar },
       { key: "calendar",  href: "/dashboard/calendar", icon: Clock },
-      { key: "messages",  href: "/dashboard/messages", icon: MessageCircle },
+      // messaging turned off for now (owner 2026-06-13) — nav entry removed
     ],
   },
   {
@@ -117,7 +117,7 @@ const RAIL_NAV = [
   { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true, group: "Betrieb" },
   { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog",         group: "Verkauf & Kunden" },
   { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen",    group: "Verkauf & Kunden" },
-  { key: "messages",  href: "/dashboard/messages",  icon: MessageCircle, label: "Nachrichten",   group: "Betrieb" },
+  // messaging turned off for now (owner 2026-06-13) — nav entry removed
   { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing",     group: "Business" },
   { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe",        group: "Verkauf & Kunden" },
   { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team",            group: "Business" },
@@ -285,9 +285,7 @@ export default function DashboardLayout({
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
                 className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                 <Icon size={20} strokeWidth={1.9} />
-                {key === "messages" && unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-s-error ring-2 ring-white" aria-hidden />
-                )}
+                {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                 <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
               </Link>
             );
@@ -378,9 +376,7 @@ export default function DashboardLayout({
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
                                 <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
                                 <span className="flex-1">{label}</span>
-                                {href === "/dashboard/messages" && unreadCount > 0 && (
-                                  <span className="ml-auto text-[12px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
-                                )}
+                                {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                               </Link>
                             );
                           })}

@@ -37,7 +37,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
     { label: t("nav.overview"), icon: Home, href: `/${locale}/dashboard`, category: "Navigation" },
     { label: t("nav.bookings"), icon: Calendar, href: `/${locale}/dashboard/bookings`, category: "Navigation" },
     { label: t("nav.calendar"), icon: Clock, href: `/${locale}/dashboard/calendar`, category: "Navigation" },
-    { label: t("nav.messages"), icon: MessageCircle, href: `/${locale}/dashboard/messages`, category: "Navigation" },
+    // messaging turned off for now (owner 2026-06-13)
     { label: t("nav.team"), icon: Users, href: `/${locale}/dashboard/staff`, category: "Navigation" },
     { label: t("nav.clients"), icon: UserCheck, href: `/${locale}/dashboard/clients`, category: "Navigation" },
     { label: t("nav.services"), icon: Scissors, href: `/${locale}/dashboard/services`, category: "Navigation" },
@@ -51,7 +51,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
     { label: t("nav.verification"), icon: ShieldCheck, href: `/${locale}/dashboard/verification`, category: "Navigation" },
     { label: t("cmd.newAppointment"), icon: Plus, href: `/${locale}/dashboard/calendar`, category: t("cmd.actions"), shortcut: "N" },
     { label: t("cmd.editServices"), icon: Scissors, href: `/${locale}/dashboard/services`, category: t("cmd.actions") },
-    { label: t("cmd.viewMessages"), icon: MessageCircle, href: `/${locale}/dashboard/messages`, category: t("cmd.actions"), shortcut: "M" },
+    // messaging turned off for now (owner 2026-06-13)
     { label: t("cmd.openAnalytics"), icon: BarChart, href: `/${locale}/dashboard/analytics`, category: t("cmd.actions"), shortcut: "A" },
     { label: t("cmd.manageStaff"), icon: Users, href: `/${locale}/dashboard/staff`, category: t("cmd.actions") },
   ];

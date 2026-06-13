@@ -98,8 +98,12 @@ export async function POST(
   // Atomically increment unread counter for the recipient
   await supabase.rpc("increment_unread", { conv_id: id, is_customer_sender: isCustomer });
 
-  // Email notification to recipient (fire-and-forget, best-effort)
-  try {
+  // Email notification to recipient (fire-and-forget, best-effort).
+  // Messaging turned off for now (owner 2026-06-13) — suppress new-message emails
+  // (the customer inbox redirects to /profile and the salon nav entry is hidden).
+  // Flip MESSAGING_EMAILS_ENABLED back to true to re-enable.
+  const MESSAGING_EMAILS_ENABLED = false;
+  if (MESSAGING_EMAILS_ENABLED) try {
     const admin = createAdminSupabaseClient();
     if (isCustomer) {
       // Sender = customer → notify salon owner
