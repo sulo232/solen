@@ -13,6 +13,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { Heart } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { toast } from "./Toast";
 
@@ -48,7 +49,14 @@ export default function WelcomeToast() {
     supabase.auth
       .getSession()
       .then(({ data }) => {
-        if (data.session) toast.success(message);
+        // Warm "welcome back" treatment: a heart glyph in a cinnamon (burnt-amber)
+        // circle badge instead of the clinical green check. Tone stays `success`
+        // (polite aria-live + dismiss timing); only the icon + badge tint change.
+        if (data.session)
+          toast.success(message, {
+            icon: Heart,
+            iconClassName: "bg-s-urgency-bg text-s-urgency",
+          });
       })
       .catch((err) => console.error("[WelcomeToast] session check failed:", err));
   }, [message]);

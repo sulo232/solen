@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import SalonCard from "@/components-legacy/SalonCard";
 import { SkeletonCard } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
-import { MapPin, Scissors } from "lucide-react";
+import { MapPin, Scissors, Heart } from "lucide-react";
 import { getCityName, type CitySlug } from "@/lib/cities";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
 import Link from "next/link";
@@ -88,6 +88,8 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
         .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
         .then(() => {
           toast.success(tToast("savedToFavorites"), {
+            icon: Heart,
+            iconClassName: "bg-s-love-soft text-[#FF3366]",
             action: { label: tToast("view"), onClick: () => { window.location.href = `/${locale}/profile/favorites`; } },
           });
         })

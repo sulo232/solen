@@ -108,10 +108,13 @@ export function HeartButton({
           setIsSaved(json.saved);
         }
         // Mobile-first confirmation: only on SAVE (not un-save). Whole toast is
-        // tappable -> opens favorites. Green-check badge (success tone).
+        // tappable -> opens favorites. Pink-heart badge — mirrors the heart the
+        // user just tapped (#FF3366 save color) instead of a generic green check.
         if (next && finalSaved) {
           const locale = pathname?.split("/")[1] || "de";
           toast.success(t("savedToFavorites"), {
+            icon: Heart,
+            iconClassName: "bg-s-love-soft text-[#FF3366]",
             action: {
               label: t("view"),
               onClick: () => {

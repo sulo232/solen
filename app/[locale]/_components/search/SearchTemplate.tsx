@@ -887,6 +887,8 @@ export default function SearchTemplate({
         .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
         .then(() => {
           toast.success(tToast("savedToFavorites"), {
+            icon: Heart,
+            iconClassName: "bg-s-love-soft text-[#FF3366]",
             action: { label: tToast("view"), onClick: () => { window.location.href = `/${locale}/profile/favorites`; } },
           });
         })
