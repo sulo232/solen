@@ -155,9 +155,9 @@ export const generateRoadmapSchema = z.object({
 // ─── Discovery ──────────────────────────────────────────────────────────────
 
 export const discoveryFeedSchema = z.object({
-  // V3-D391: added lashes/brows (Wimpern/Augenbrauen) so those category tabs stop 400-ing; beard/makeup/waxing kept
+  // V3-D391: added lashes/brows (Wimpern/Augenbrauen) so those category tabs stop 400-ing; beard kept (makeup/waxing removed 2026-06-13)
   // for back-compat (no tab, harmless).
-  category: z.enum(["all", "hair", "beard", "nails", "lashes", "brows", "makeup", "waxing"]).default("all"),
+  category: z.enum(["all", "hair", "beard", "nails", "lashes", "brows"]).default("all"),
   gender: z.enum(["all", "female", "male", "unisex"]).default("all"),
   texture: z.string().optional(),
   style: z.string().optional(),
@@ -168,7 +168,7 @@ export const discoveryFeedSchema = z.object({
 });
 
 export const discoveryPostSchema = z.object({
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
+  category: z.enum(["hair", "beard", "nails"]),
   gender: z.enum(["female", "male", "unisex"]),
   media_type: z.enum(["photo", "video"]),
   tiktok_url: z.string().url().optional(),
@@ -248,7 +248,7 @@ export const discoverySaveSchema = z.object({
 
 export const discoverySearchStockSchema = z.object({
   query: z.string().min(1).max(100),
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  category: z.enum(["hair", "beard", "nails"]).optional(),
   source: z.enum(["unsplash", "pexels", "pixabay", "all"]).default("all"),
   page: z.coerce.number().int().min(1).default(1),
 });
@@ -256,7 +256,7 @@ export const discoverySearchStockSchema = z.object({
 export const discoveryStagingSchema = z.object({
   ids: z.array(z.string().uuid()).min(1).max(50),
   action: z.enum(["approve", "reject"]),
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  category: z.enum(["hair", "beard", "nails"]).optional(),
   gender: z.enum(["female", "male", "unisex"]).optional(),
   style_name: z.string().max(100).optional(),
   tags: z.array(z.string().max(30)).max(10).optional(),
@@ -265,7 +265,7 @@ export const discoveryStagingSchema = z.object({
 
 export const discoveryTikTokImportSchema = z.object({
   urls: z.array(z.string().url()).min(1).max(20),
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  category: z.enum(["hair", "beard", "nails"]).optional(),
 });
 
 // ─── Megabuild Schemas ──────────────────────────────────────────────────────
@@ -636,7 +636,7 @@ export const flagReviewSchema = z.object({
 
 export const adminDiscoveryItemSchema = z.object({
   id: z.string().uuid().optional(),
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
+  category: z.enum(["hair", "beard", "nails"]),
   gender: z.enum(["female", "male", "unisex"]).optional(),
   content_type: z.enum(["inspo", "tutorial", "before_after"]).optional(),
   image_url: z.string().url().optional(),
@@ -654,14 +654,14 @@ export const adminDiscoveryModerationSchema = z.object({
 });
 
 export const adminDiscoveryBulkImportSchema = z.object({
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
+  category: z.enum(["hair", "beard", "nails"]),
 });
 
 export const adminDiscoverySmartImportSchema = z.object({
   description: z.string().min(1).max(500),
   source: z.enum(["unsplash", "pexels", "pixabay", "all"]).default("all"),
   count: z.number().int().min(1).max(50).default(10),
-  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  category: z.enum(["hair", "beard", "nails"]).optional(),
   limit: z.number().int().min(1).max(50).optional(),
 });
 

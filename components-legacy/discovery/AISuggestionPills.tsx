@@ -52,27 +52,12 @@ const SUGGESTIONS: Record<string, { label: string }[]> = {
     { label: "Mullet" },
     { label: "Line-Up" },
   ],
-  makeup: [
-    { label: "Braut-Makeup" },
-    { label: "Contouring" },
-    { label: "Wimpern" },
-    { label: "Augenbrauen" },
-    { label: "Smokey Eyes" },
-    { label: "Natural Glow" },
-  ],
   spa: [
     { label: "Facial" },
     { label: "Massage" },
     { label: "Peeling" },
     { label: "Hot Stone" },
     { label: "Anti-Aging" },
-  ],
-  waxing: [
-    { label: "Brazilian" },
-    { label: "Beine" },
-    { label: "Gesicht" },
-    { label: "Achseln" },
-    { label: "Sugaring" },
   ],
 };
 

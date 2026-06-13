@@ -411,7 +411,7 @@ export interface ApiSuccess<T = void> {
 // Discovery Types
 // ---------------------------------------------------------------------------
 
-export type DiscoveryCategory = "hair" | "beard" | "nails" | "lashes" | "brows" | "makeup" | "waxing";
+export type DiscoveryCategory = "hair" | "beard" | "nails" | "lashes" | "brows";
 export type DiscoveryContentType = "curated" | "tiktok" | "salon" | "user";
 export type DiscoveryMediaType = "photo" | "tiktok" | "video";
 export type DiscoveryStatus = "staging" | "published" | "flagged" | "archived";

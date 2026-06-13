@@ -10,8 +10,6 @@ const QUERIES_BY_CATEGORY: Record<string, string[]> = {
   hair: ["curly hair women", "short hair men", "balayage", "fade haircut", "braids hairstyle", "french bob"],
   beard: ["beard styles men", "goatee", "full beard"],
   nails: ["nail art", "coffin nails", "french manicure", "gel nails design"],
-  makeup: ["makeup look", "smokey eye", "natural makeup", "bridal makeup"],
-  waxing: ["waxing spa", "smooth skin care"],
 };
 
 export async function POST(req: NextRequest) {

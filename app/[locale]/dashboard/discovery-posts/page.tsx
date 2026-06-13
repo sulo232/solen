@@ -8,7 +8,7 @@ import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import ToSCheckbox from "@/components-legacy/discovery/ToSCheckbox";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender } from "@/lib/types";
 
-const CATEGORY_KEYS = ["hair", "beard", "nails", "makeup", "waxing"] as const satisfies readonly DiscoveryCategory[];
+const CATEGORY_KEYS = ["hair", "beard", "nails"] as const satisfies readonly DiscoveryCategory[];
 type FormCategory = (typeof CATEGORY_KEYS)[number];
 
 const GENDER_KEYS = ["female", "male", "unisex"] as const satisfies readonly DiscoveryGender[];
@@ -22,8 +22,6 @@ export default function DiscoveryPostsPage() {
     hair: t("categoryHair"),
     beard: t("categoryBeard"),
     nails: t("categoryNails"),
-    makeup: t("categoryMakeup"),
-    waxing: t("categoryWaxing"),
   };
 
   const genderLabels: Record<FormGender, string> = {

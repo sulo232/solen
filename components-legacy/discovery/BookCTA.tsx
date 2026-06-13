@@ -14,8 +14,6 @@ const CATEGORY_ROUTES: Record<string, string> = {
   hair: "coiffeur",
   beard: "barbershop",
   nails: "nails",
-  makeup: "makeup",
-  waxing: "waxing",
 };
 
 // Default price ranges when AI doesn't provide them
@@ -23,8 +21,6 @@ const DEFAULT_PRICES: Record<string, { min: number; max: number }> = {
   hair: { min: 45, max: 120 },
   beard: { min: 25, max: 55 },
   nails: { min: 35, max: 90 },
-  makeup: { min: 60, max: 150 },
-  waxing: { min: 20, max: 80 },
 };
 
 const CTA_LABELS: Record<string, string> = {

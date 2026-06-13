@@ -28,7 +28,7 @@ Analyze the provided image and return a JSON object with the following structure
 
 {
   "style_name": "A creative, specific, recognizable name for this hairstyle. Not generic like 'Short Haircut' — more like 'Textured French Crop with Low Skin Fade' or 'Layered Wolf Cut with Curtain Bangs and Face-Framing Highlights'. The name should be descriptive enough that a stylist immediately pictures the cut.",
-  "category": "hair | beard | nails | makeup | waxing | spa",
+  "category": "hair | beard | nails | spa",
   "gender": "male | female | unisex",
   "sub_style": "The broader style family (e.g., fade, bob, pixie, locs, braids, buzz, shag, layers, undercut, pompadour, afro, twist-out, blowout, balayage, taper)",
   "image_analysis": {

@@ -17,7 +17,7 @@ interface StockPhoto {
 
 type Tab = "tiktok" | "smart" | "category";
 
-const CATEGORIES = ["hair", "beard", "nails", "makeup", "waxing"] as const;
+const CATEGORIES = ["hair", "beard", "nails"] as const;
 
 export default function DiscoveryAdmin() {
   const t = useTranslations("discovery.admin") as any;

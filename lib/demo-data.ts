@@ -92,11 +92,5 @@ export const DEMO_DISCOVER_ITEMS: DemoDiscoverItem[] = [
     label: "Spa", title: "Hot Stone Massage", category: "spa", author_name: "[TEST] Serenity Spa",
     caption: "Entspannung pur 🪨", tags: ["spa", "massage"],
   },
-  {
-    id: "dd-5", media_type: "photo",
-    image_url: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
-    label: "Makeup", title: "Bridal Glam", category: "makeup", author_name: "[TEST] Glam Studio",
-    caption: "Bridal Makeup Look 👰", tags: ["makeup", "bridal"],
-  },
 ];
 

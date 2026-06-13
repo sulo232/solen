@@ -18,7 +18,7 @@ const L: Record<string, {
   uploadPhoto: string; categoryLabel: string; genderLabel: string;
   styleNamePh: string; descPh: string; tagsPh: string; post: string;
   tosError: string; networkError: string;
-  hair: string; beard: string; nails: string; makeup: string; waxing: string;
+  hair: string; beard: string; nails: string;
   women: string; men: string; unisex: string;
 }> = {
   de: {
@@ -26,7 +26,7 @@ const L: Record<string, {
     uploadPhoto: "Foto hochladen", categoryLabel: "Kategorie", genderLabel: "Geschlecht",
     styleNamePh: "Stilname (optional)", descPh: "Beschreibung (optional)", tagsPh: "Tags (Komma-getrennt)", post: "Veröffentlichen",
     tosError: "Bitte akzeptiere die Nutzungsbedingungen", networkError: "Netzwerkfehler",
-    hair: "Haar", beard: "Bart", nails: "Nägel", makeup: "Make-up", waxing: "Waxing",
+    hair: "Haar", beard: "Bart", nails: "Nägel",
     women: "Frauen", men: "Männer", unisex: "Unisex",
   },
   en: {
@@ -34,7 +34,7 @@ const L: Record<string, {
     uploadPhoto: "Upload photo", categoryLabel: "Category", genderLabel: "Gender",
     styleNamePh: "Style name (optional)", descPh: "Description (optional)", tagsPh: "Tags (comma-separated)", post: "Post",
     tosError: "Please accept the Terms of Service", networkError: "Network error",
-    hair: "Hair", beard: "Beard", nails: "Nails", makeup: "Makeup", waxing: "Waxing",
+    hair: "Hair", beard: "Beard", nails: "Nails",
     women: "Women", men: "Men", unisex: "Unisex",
   },
   fr: {
@@ -42,7 +42,7 @@ const L: Record<string, {
     uploadPhoto: "Télécharger une photo", categoryLabel: "Catégorie", genderLabel: "Genre",
     styleNamePh: "Nom du style (optionnel)", descPh: "Description (optionnel)", tagsPh: "Tags (séparés par des virgules)", post: "Publier",
     tosError: "Veuillez accepter les conditions d'utilisation", networkError: "Erreur réseau",
-    hair: "Cheveux", beard: "Barbe", nails: "Ongles", makeup: "Maquillage", waxing: "Épilation",
+    hair: "Cheveux", beard: "Barbe", nails: "Ongles",
     women: "Femmes", men: "Hommes", unisex: "Unisexe",
   },
   it: {
@@ -50,7 +50,7 @@ const L: Record<string, {
     uploadPhoto: "Carica foto", categoryLabel: "Categoria", genderLabel: "Genere",
     styleNamePh: "Nome dello stile (opzionale)", descPh: "Descrizione (opzionale)", tagsPh: "Tag (separati da virgole)", post: "Pubblica",
     tosError: "Accetta i termini di servizio", networkError: "Errore di rete",
-    hair: "Capelli", beard: "Barba", nails: "Unghie", makeup: "Trucco", waxing: "Ceretta",
+    hair: "Capelli", beard: "Barba", nails: "Unghie",
     women: "Donne", men: "Uomini", unisex: "Unisex",
   },
 };
@@ -76,8 +76,6 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
     { key: "hair", label: t.hair },
     { key: "beard", label: t.beard },
     { key: "nails", label: t.nails },
-    { key: "makeup", label: t.makeup },
-    { key: "waxing", label: t.waxing },
   ];
 
   const GENDERS: { key: DiscoveryGender; label: string }[] = [

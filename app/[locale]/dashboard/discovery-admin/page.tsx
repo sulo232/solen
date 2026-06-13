@@ -17,7 +17,7 @@ import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from "@d
 import { CSS } from "@dnd-kit/utilities";
 import type { DiscoveryStagingItem, DiscoveryItem, DiscoveryCategory } from "@/lib/types";
 
-const CATEGORIES: DiscoveryCategory[] = ["hair", "beard", "nails", "makeup", "waxing"];
+const CATEGORIES: DiscoveryCategory[] = ["hair", "beard", "nails"];
 const TABS = ["Stock Import", "TikTok Import", "Manual Upload", "Staging", "Published", "Flagged"] as const;
 type Tab = (typeof TABS)[number];
 
