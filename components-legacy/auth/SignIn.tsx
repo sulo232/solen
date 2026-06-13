@@ -83,7 +83,14 @@ export default function SignIn() {
         password,
       });
       if (error) {
-        toast.error(error.message || "Anmeldung fehlgeschlagen");
+        // Friendly, localized copy instead of leaking the raw Supabase string.
+        const m = (error.message || "").toLowerCase();
+        toast.error(
+          /invalid login credentials/.test(m) ? "E-Mail oder Passwort stimmt nicht"
+          : /email not confirmed/.test(m) ? "Bitte bestätige zuerst deine E-Mail"
+          : /rate|too many|after \d+ second|security purposes/.test(m) ? "Zu viele Versuche. Bitte warte einen Moment."
+          : "Anmeldung fehlgeschlagen"
+        );
         setLoading(false);
       } else if (data.session) {
         markWelcome(); // greet on the destination after the full-page nav

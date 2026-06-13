@@ -10,6 +10,7 @@ import { MapPin, Scissors } from "lucide-react";
 import { getCityName, type CitySlug } from "@/lib/cities";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
 import Link from "next/link";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 const CATEGORIES: SalonCategory[] = [
   "coiffeur",
@@ -28,6 +29,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
   const t = useTranslations("home.featured") as any;
   const tCityPage = useTranslations("cityPage");
   const tNav = useTranslations("navigation");
+  const tToast = useTranslations("toasts");
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<SalonCategory | null>(initialCategory || null);
@@ -61,22 +63,40 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
   }, []);
 
   const handleFavoriteToggle = useCallback((salonId: string) => {
+    const wasSaved = favoriteIds.has(salonId);
+    // Optimistic flip.
     setFavoriteIds((prev) => {
       const next = new Set(prev);
-      if (next.has(salonId)) {
-        next.delete(salonId);
-        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch((err) => console.error("[CityPage] failed to remove favorite:", err));
-      } else {
-        next.add(salonId);
-        fetch("/api/profile/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ salon_id: salonId }),
-        }).catch((err) => console.error("[CityPage] failed to add favorite:", err));
-      }
+      if (wasSaved) next.delete(salonId); else next.add(salonId);
       return next;
     });
-  }, []);
+    if (wasSaved) {
+      fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .catch((err) => {
+          console.error("[CityPage] failed to remove favorite:", err);
+          setFavoriteIds((p) => new Set(p).add(salonId)); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => handleFavoriteToggle(salonId) } });
+        });
+    } else {
+      fetch("/api/profile/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId }),
+      })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .then(() => {
+          toast.success(tToast("savedToFavorites"), {
+            action: { label: tToast("view"), onClick: () => { window.location.href = `/${locale}/profile/favorites`; } },
+          });
+        })
+        .catch((err) => {
+          console.error("[CityPage] failed to add favorite:", err);
+          setFavoriteIds((p) => { const n = new Set(p); n.delete(salonId); return n; }); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => handleFavoriteToggle(salonId) } });
+        });
+    }
+  }, [favoriteIds, locale, tToast]);
 
   return (
     <main className="min-h-screen bg-white">
