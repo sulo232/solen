@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import SalonCard from "@/components-legacy/SalonCard";
+import FavoritesList from "@/app/[locale]/_components/profile/FavoritesList";
 import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
 
 export default async function ProfileFavoritesPage({
@@ -68,11 +68,9 @@ export default async function ProfileFavoritesPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
-      {/* Title lives in the global header beside the back tile (owner, 2026-06-11) */}
-      {salons.length > 0 && (
-        <p className="font-body text-[13px] text-s-ink-2">{salons.length} {salons.length === 1 ? "Salon" : "Salons"}</p>
-      )}
-
+      {/* Title lives in the global header beside the back tile (owner, 2026-06-11).
+          Count + grid + remove-favorite (tap heart → optimistic drop + Undo toast)
+          are owned by the FavoritesList client wrapper. */}
       {salons.length === 0 ? (
         <div className="mt-2">
           <EmptyStateDiscovery
@@ -91,11 +89,7 @@ export default async function ProfileFavoritesPage({
           />
         </div>
       ) : (
-        <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {salons.map((s) => (
-            <SalonCard key={s.id} salon={s as any} locale={locale} isFavorited />
-          ))}
-        </section>
+        <FavoritesList salons={salons} locale={locale} />
       )}
     </main>
   );

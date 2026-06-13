@@ -5,7 +5,10 @@
     "welcomeBack": "Welcome back",
     "saveFailed": "Couldn't save",
     "retry": "Retry",
-    "cancelFailed": "Couldn't cancel your spot"
+    "cancelFailed": "Couldn't cancel your spot",
+    "removedFromFavorites": "Removed from favorites",
+    "undo": "Undo",
+    "removeFailed": "Couldn't remove"
   },
   "profileHub": {
     "nextAppointment": "Next appointment",

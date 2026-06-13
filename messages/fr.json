@@ -5,7 +5,10 @@
     "welcomeBack": "Bon retour",
     "saveFailed": "Échec de l'enregistrement",
     "retry": "Réessayer",
-    "cancelFailed": "Impossible d'annuler ta place"
+    "cancelFailed": "Impossible d'annuler ta place",
+    "removedFromFavorites": "Retiré des favoris",
+    "undo": "Annuler",
+    "removeFailed": "Impossible de retirer"
   },
   "profileHub": {
     "nextAppointment": "Prochain rendez-vous",

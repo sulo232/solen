@@ -5,7 +5,10 @@
     "welcomeBack": "Willkommen zurück",
     "saveFailed": "Konnte nicht gespeichert werden",
     "retry": "Erneut",
-    "cancelFailed": "Konnte deinen Platz nicht stornieren"
+    "cancelFailed": "Konnte deinen Platz nicht stornieren",
+    "removedFromFavorites": "Aus Favoriten entfernt",
+    "undo": "Rückgängig",
+    "removeFailed": "Konnte nicht entfernt werden"
   },
   "profileHub": {
     "nextAppointment": "Nächster Termin",

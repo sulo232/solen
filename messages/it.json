@@ -5,7 +5,10 @@
     "welcomeBack": "Bentornato",
     "saveFailed": "Impossibile salvare",
     "retry": "Riprova",
-    "cancelFailed": "Impossibile annullare il tuo posto"
+    "cancelFailed": "Impossibile annullare il tuo posto",
+    "removedFromFavorites": "Rimosso dai preferiti",
+    "undo": "Annulla",
+    "removeFailed": "Impossibile rimuovere"
   },
   "profileHub": {
     "nextAppointment": "Prossimo appuntamento",
