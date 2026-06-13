@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   // Use RPC for atomic toggle
   const { data: result, error: rpcError } = await supabase.rpc("toggle_discovery_like", {
     p_item_id: data.item_id,
+    p_user_id: user.id,
   });
 
   if (rpcError) {

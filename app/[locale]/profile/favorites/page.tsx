@@ -70,7 +70,7 @@ export default async function ProfileFavoritesPage({
     <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
       {/* Title lives in the global header beside the back tile (owner, 2026-06-11) */}
       {salons.length > 0 && (
-        <p className="font-body text-[13px] text-s-ink-2">{salons.length} Salons</p>
+        <p className="font-body text-[13px] text-s-ink-2">{salons.length} {salons.length === 1 ? "Salon" : "Salons"}</p>
       )}
 
       {salons.length === 0 ? (
