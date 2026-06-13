@@ -1167,6 +1167,26 @@ export interface ActiveFilter {
   label: string;       // For the removable chip display
 }
 
+/**
+ * A discounted appointment slot surfaced on the /angebote (Angebote) page.
+ *
+ * The feature was renamed last-minute -> Angebote (owner, 2026-06-13); the
+ * internal name + API route (/api/slots/last-minute) stay for continuity.
+ * Self-contained on purpose — only the fields /angebote + LastMinuteCard read,
+ * so it no longer rides the AvailabilitySlot/Salon/Service type chain.
+ */
+export interface LastMinuteSlot {
+  id: string;
+  starts_at: string;
+  original_price: number;
+  discounted_price: number;
+  price_override?: number;
+  discount_percent?: number;
+  category?: string;
+  service: { name_de: string; name_en: string };
+  salon: { slug: string; name: string };
+}
+
 export interface FilterBarProps {
   pills: FilterPill[];
   activeFilters: ActiveFilter[];

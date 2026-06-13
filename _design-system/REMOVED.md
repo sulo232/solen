@@ -5,7 +5,8 @@ project's #1 recurring failure (it has happened after nearly every context compr
 item: `keywords | what | why/when | record`. Keywords are fuzzy-matched (separators ignored) by
 scripts/exists.mjs — list every spelling someone might search.
 
-- last-minute lastminute angebote-page | standalone last-minute pages + APIs + homepage strip | owner removed 2026-06-11; survives ONLY as the search Angebote filter + Settings>Angebote tab + coupons | memory project_lastminute_packages_removed
+- last-minute homepage-strip lastminute-home | the homepage Last-Minute strip + the old /last-minute route NAME | owner removed the home strip 2026-06-11; the standalone page was REVIVED + renamed -> /angebote 2026-06-13 (see next line). /last-minute now 307-redirects to /angebote | memory project_lastminute_packages_removed
+- (REVIVED 2026-06-13) angebote offers-page | the standalone offers page at /angebote (formerly /last-minute) | owner "cant u rename it to angebote" 2026-06-13: do NOT delete, keep as the Angebote (offers) page. Internal name + /api/slots/last-minute kept for continuity; user-facing copy + route are "Angebote". This LINE OVERRIDES the 2026-06-11 page-removal for the standalone page | app/[locale]/angebote + components-legacy/LastMinuteCard
 - pakete packages package-manager | the entire packages feature (pages, APIs, PackageManager, redeem banner) | owner removed 2026-06-11; DB tables legacy-only; NEVER rebuild | memory project_lastminute_packages_removed
 - walk-in-pay status stepper queue-number wait-time-on-pay | any status/number/stepper/wait-time UI on /walk-in-pay | payment-only page; queue/[token] is THE single tracker, PDP panel shows wait pre-join; dedup 068a4e5ca, re-proposal killed again 2026-06-12 | memory project_walkin_single_tracker
 - walk-in QR qr-code | QR codes anywhere in walk-in | name is enough; QR ok for stamps only | memory project_walkin_single_tracker
