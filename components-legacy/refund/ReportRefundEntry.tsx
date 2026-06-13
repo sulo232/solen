@@ -215,7 +215,8 @@ export default function ReportRefundEntry({
         return;
       }
       const data = await res.json().catch(() => ({}));
-      setSubmitError(data?.error || t("genericError"));
+      console.error("[ReportRefundEntry] submit error:", data?.error);
+      setSubmitError(t("genericError")); // friendly, not the raw server string
     } catch (err) {
       console.error("[ReportRefundEntry] submit failed:", err);
       setSubmitError(t("toastSendError"));
