@@ -75,8 +75,6 @@ export const CAT_PATHS: Record<string, React.ReactNode> = {
   barbershop: (<><rect x="4" y="4" width="16" height="6" rx="2" /><path d="M12 10v5M9 18h6" /></>),
   nails: (<path d="M9 21V8a3 3 0 0 1 6 0v13M9 21h6M8 8c0-2 1-5 4-5s4 3 4 5" />),
   spa: (<path d="M11 20A7 7 0 0 1 4 13c0-6 5-9 16-9 0 8-3 14-9 16zM4 20c2-5 6-8 11-9" />),
-  makeup: (<><path d="M14 4 20 10 11 19l-5 1 1-5z" /><path d="m12 6 6 6" /></>),
-  waxing: (<path d="M4 8c4-3 12-3 16 0M4 13c4-3 12-3 16 0M4 18c4-3 12-3 16 0" />),
 };
 
 export function CatIcon({ name }: { name: string }) {

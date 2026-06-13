@@ -98,20 +98,6 @@ const TEMPLATES: TestSalonTemplate[] = [
       { name_de: "Körperpeeling", name_en: "Body Scrub", duration_minutes: 45, price: 75 },
     ],
   },
-  {
-    baseName: "Glam Studio",
-    category: "makeup",
-    quartier: { basel: "Bachletten", zuerich: "Kreis 6", bern: "Breitenrain" },
-    cover_photo_url: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
-    min_price: 50, average_rating: 4.6, review_count: 33,
-    description_de: "Professionelles Makeup-Studio für Special Occasions, Bridal und Everyday Looks.",
-    services: [
-      { name_de: "Alltagsmakeup", name_en: "Everyday Makeup", duration_minutes: 45, price: 55 },
-      { name_de: "Bridal Makeup", name_en: "Bridal Makeup", duration_minutes: 90, price: 180 },
-      { name_de: "Abend-Makeup", name_en: "Evening Makeup", duration_minutes: 60, price: 85 },
-      { name_de: "Permanent Makeup Konsultation", name_en: "PMU Consultation", duration_minutes: 30, price: 50 },
-    ],
-  },
 ];
 
 const CITY_DATA: Record<string, { name: string; lat: number; lng: number }> = {

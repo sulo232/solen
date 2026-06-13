@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"
 
 export const metadata: Metadata = {
   title: "solen.ch — Salons in Basel",
-  description: "Finde und buche die besten Salons in Basel. Coiffeur, Barbershop, Nails, Spa, Makeup und mehr.",
+  description: "Finde und buche die besten Salons in Basel. Coiffeur, Barbershop, Nails, Spa und mehr.",
 };
 
 // V3-D73 (2026-05-18) — Premium production polish per advanced-UI/UX doc audit.

@@ -58,7 +58,7 @@ export default function MobileCategoriesRow({
   const picked = prefs?.categories ?? [];
 
   // Picked category-tiles lead (in pick order), then the rest in original order.
-  // Picks without a tile (makeup/waxing) drop out via the find()/filter.
+  // Picks without a matching tile drop out via the find()/filter.
   const pickedTiles = picked
     .map((slug) => CATEGORIES.find((c) => c.slug === slug))
     .filter((c): c is Category => Boolean(c));

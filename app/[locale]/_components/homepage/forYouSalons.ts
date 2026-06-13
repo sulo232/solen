@@ -1,7 +1,7 @@
 // forYouSalons (V3-D348) — demo salon data for the "Weil du X magst" curation
 // rows. Mirrors how the rest of the homepage works (Nearby.tsx is also static
 // demo data; real geo/DB queries are a later phase). Keyed by the four
-// SalonCard-supported categories — makeup/waxing picks gracefully get no row
+// SalonCard-supported categories — unsupported picks gracefully get no row
 // since SalonCard has no colorway/label for them.
 
 export type ForYouCategory = "coiffeur" | "barbershop" | "nails" | "spa";

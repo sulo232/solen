@@ -14,7 +14,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
  *   - Category pages (/de/coiffeur, /de/barbershop, /de/nails, /de/spa) when rebuilt in F.1.E
  *
  * Query params:
- *   cat   (required) — one of: coiffeur, barbershop, nails, spa, makeup, waxing
+ *   cat   (required) — one of: coiffeur, barbershop, nails, spa
  *   city  (optional) — city slug (e.g. "basel"); filters by `salons.city_id` via `cities.slug`
  *   limit (optional) — default 6, max 24
  *

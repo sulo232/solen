@@ -17,7 +17,7 @@ const FAKE_ADDRESSES = [
   "Steinentorstrasse 7, 4051 Basel", "Barfüssergasse 3, 4051 Basel",
 ];
 const CATEGORIES_OPTIONS = [
-  ["hair"], ["nail"], ["barbershop"], ["spa"], ["makeup"], ["waxing"],
+  ["hair"], ["nail"], ["barbershop"], ["spa"],
   ["hair", "nail"], ["barbershop", "hair"],
 ];
 const SERVICES_TEMPLATES: { name_de: string; name_en: string; category: string; duration_minutes: number; price: number }[] = [
@@ -30,9 +30,6 @@ const SERVICES_TEMPLATES: { name_de: string; name_en: string; category: string; 
   { name_de: "Hot Towel Rasur", name_en: "Hot Towel Shave", category: "barbershop", duration_minutes: 30, price: 4000 },
   { name_de: "Rückenmassage", name_en: "Back Massage", category: "spa", duration_minutes: 60, price: 9000 },
   { name_de: "Gesichtsbehandlung", name_en: "Facial Treatment", category: "spa", duration_minutes: 45, price: 8500 },
-  { name_de: "Braut Makeup", name_en: "Bridal Makeup", category: "makeup", duration_minutes: 90, price: 15000 },
-  { name_de: "Brazilian Wax", name_en: "Brazilian Wax", category: "waxing", duration_minutes: 30, price: 5500 },
-  { name_de: "Ganzkörper-Waxing", name_en: "Full Body Wax", category: "waxing", duration_minutes: 90, price: 13000 },
 ];
 const STAFF_TEMPLATES = [
   { name: "Lukas M.", specialties: ["Herrenhaarschnitt", "Fade Cut"] },

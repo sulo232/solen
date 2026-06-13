@@ -21,7 +21,7 @@ const HOURS = Array.from({ length: 25 }, (_, i) => i + 8); // 08:00–20:00 (24 
 const DAYS_LABEL = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
 // Service category → left border color
-// V3-D347: vibrant service palette (LOCKFILE §12 calendar set), makeup removed.
+// V3-D347: vibrant service palette (LOCKFILE §12 calendar set).
 const SERVICE_CATEGORY_COLORS: Record<string, string> = {
   hair: "border-l-4 border-l-s-cal-hair",
   nails: "border-l-4 border-l-s-cal-nails",
@@ -585,7 +585,7 @@ export default function CalendarPage() {
 
   // Mobile agenda block fill by service category (approved skin: pastel, no bars / no last-minute).
   const CAT_AGENDA_BG: Record<string, string> = {
-    coiffeur: "bg-[#EAEFFE]", barbershop: "bg-[#FFEDD5]", nails: "bg-[#F3E8FF]", spa: "bg-[#E8F5E9]", makeup: "bg-[#FCE7F3]", waxing: "bg-[#FEF3E2]",
+    coiffeur: "bg-[#EAEFFE]", barbershop: "bg-[#FFEDD5]", nails: "bg-[#F3E8FF]", spa: "bg-[#E8F5E9]",
   };
 
   // H2 render decision (shared by mobile + every desktop view):

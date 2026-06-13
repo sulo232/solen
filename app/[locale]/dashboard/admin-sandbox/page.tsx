@@ -34,8 +34,6 @@ const FEATURE_LINKS = [
   { labelKey: "linkBarber", href: "/dashboard/barber-ops" },
   { labelKey: "linkNail", href: "/dashboard/nail-admin" },
   { labelKey: "linkSpa", href: "/dashboard/spa-admin" },
-  { labelKey: "linkMakeup", href: "/dashboard/makeup-admin" },
-  { labelKey: "linkWaxing", href: "/dashboard/waxing-admin" },
   { labelKey: "linkCoiffeur", href: "/dashboard/coiffeur-crm" },
   { labelKey: "linkPublicPage", href: "/salon/{slug}" },
 ] as const;
@@ -287,7 +285,7 @@ export default function AdminSandboxPage() {
             {t("categoryLabel")}
           </p>
           <div className="flex flex-wrap gap-2">
-            {["hair", "nail", "barbershop", "spa", "makeup", "waxing"].map((cat) => (
+            {["hair", "nail", "barbershop", "spa"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setNewCategory(cat)}

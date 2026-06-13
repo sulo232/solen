@@ -30,7 +30,7 @@ interface CategoryTile {
 }
 
 // Category keys + locked colors per reference categories grid (`:813-820`).
-// Order matches reference exactly: Coiffeur → Barber → Nails → Spa → Makeup → Waxing.
+// Order matches reference exactly: Coiffeur → Barber → Nails → Spa.
 const TILES: CategoryTile[] = [
   { key: "coiffeur",   name: "COIFFEUR", countLabel: (n) => `${n} Salons`,    bg: "#D4870A" },
   { key: "barber",     name: "BARBER",   countLabel: (n) => `${n} Shops`,     bg: "#4A1E3C" },

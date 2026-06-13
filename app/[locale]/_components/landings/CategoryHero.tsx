@@ -6,7 +6,7 @@ import { CATEGORY_PHOTOS, type Category } from "@/lib/category-photos";
  * CategoryHero — V3-D340 (W11, 2026-05-28)
  *
  * Editorial split-hero for the 6 category landing routes:
- *   /coiffeur · /barbershop · /nails · /spa · /makeup · /waxing
+ *   /coiffeur · /barbershop · /nails · /spa
  *
  * Pattern: LOCKFILE §11 Pattern 1 ("Split-hero" — Text LEFT, photo RIGHT, no overlay).
  *

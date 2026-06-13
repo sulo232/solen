@@ -36,9 +36,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   nails:      "#E8624A",
   spa:        "#7BA688",
   massage:    "#7BA688",
-  makeup:     "#C9A96E",
   beauty:     "#C9A96E",
-  waxing:     "#6BA3C8",
   brows:      "#6BA3C8",
 };
 

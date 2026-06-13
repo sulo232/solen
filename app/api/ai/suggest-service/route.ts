@@ -33,8 +33,6 @@ export async function POST(req: NextRequest) {
       barbershop: "Haarschnitt + Bart-Trim",
       nails: "Gel-Maniküre",
       spa: "Klassische Ganzkörpermassage",
-      makeup: "Event Make-up",
-      waxing: "Ganzbein-Waxing",
     };
     return NextResponse.json({ suggestion: fallbacks[validated.category] || "Beratung + Behandlung" });
   }

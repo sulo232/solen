@@ -61,12 +61,6 @@ const ROWS: CatRow[] = [
     iconColor: "#142F4A",   // navy
   },
   {
-    href: "/de/makeup",
-    label: "Beauty & Make-up",
-    Icon: Sparkles,
-    iconColor: "#E58840",   // orange
-  },
-  {
     href: "/de/barbershop",
     label: "Barbershop & Bart",
     Icon: Scissors,
