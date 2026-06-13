@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { formatQuartier } from "@/lib/basel-neighborhoods";
 import { formatPrice } from "@/lib/format";
 import type { SalonCard } from "@/lib/types";
@@ -19,6 +20,7 @@ interface FeaturedSalonCarouselProps {
 
 export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHref }: FeaturedSalonCarouselProps) {
   const t = useTranslations("home") as any;
+  const tToast = useTranslations("toasts");
 
   const salonsWithPhotos = salons.filter(
     (s) => !!s.cover_photo_url || (s.gallery_urls && s.gallery_urls.length > 0)
@@ -40,21 +42,38 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
   }, []);
 
   const handleFavoriteToggle = (salonId: string) => {
+    const wasSaved = favoriteIds.has(salonId);
     setFavoriteIds((prev) => {
       const next = new Set(prev);
-      if (next.has(salonId)) {
-        next.delete(salonId);
-        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(console.error);
-      } else {
-        next.add(salonId);
-        fetch("/api/profile/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ salon_id: salonId }),
-        }).catch(console.error);
-      }
+      if (wasSaved) next.delete(salonId); else next.add(salonId);
       return next;
     });
+    if (wasSaved) {
+      fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .catch((err) => {
+          console.error("[FeaturedSalonCarousel] remove favorite failed:", err);
+          setFavoriteIds((p) => new Set(p).add(salonId)); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => handleFavoriteToggle(salonId) } });
+        });
+    } else {
+      fetch("/api/profile/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId }),
+      })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .then(() => {
+          toast.success(tToast("savedToFavorites"), {
+            action: { label: tToast("view"), onClick: () => { window.location.href = `/${locale}/profile/favorites`; } },
+          });
+        })
+        .catch((err) => {
+          console.error("[FeaturedSalonCarousel] add favorite failed:", err);
+          setFavoriteIds((p) => { const n = new Set(p); n.delete(salonId); return n; }); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => handleFavoriteToggle(salonId) } });
+        });
+    }
   };
 
   const scrollRef = useRef<HTMLDivElement>(null);

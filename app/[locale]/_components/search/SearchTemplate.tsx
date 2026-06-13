@@ -38,6 +38,7 @@ import * as React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
@@ -388,6 +389,7 @@ export default function SearchTemplate({
   // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
   const tChrome = useTranslations("ui.searchChrome");
   const tFilter = useTranslations("ui.filterSheet");
+  const tToast = useTranslations("toasts");
   // V3-D451: previously-hardcoded German chrome strings (sort labels, filter pills,
   // amenity facets, section titles, counts, empty/error states, map-sheet copy) now
   // resolve via next-intl. Keys live under the `searchUi` namespace.
@@ -861,28 +863,39 @@ export default function SearchTemplate({
 
   // ── Favorite toggle ───────────────────────────────────────────────────────
   const toggleFavorite = React.useCallback((salonId: string) => {
+    const wasSaved = favoriteIds.has(salonId);
     setFavoriteIds((prev) => {
       const next = new Set(prev);
-      if (next.has(salonId)) {
-        next.delete(salonId);
-        fetch(`/api/profile/favorites?salon_id=${salonId}`, {
-          method: "DELETE",
-        }).catch((err) =>
-          console.error("[SearchTemplate] favorite remove failed:", err),
-        );
-      } else {
-        next.add(salonId);
-        fetch("/api/profile/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ salon_id: salonId }),
-        }).catch((err) =>
-          console.error("[SearchTemplate] favorite add failed:", err),
-        );
-      }
+      if (wasSaved) next.delete(salonId); else next.add(salonId);
       return next;
     });
-  }, []);
+    if (wasSaved) {
+      fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .catch((err) => {
+          console.error("[SearchTemplate] favorite remove failed:", err);
+          setFavoriteIds((p) => new Set(p).add(salonId)); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => toggleFavorite(salonId) } });
+        });
+    } else {
+      fetch("/api/profile/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId }),
+      })
+        .then((r) => { if (!r.ok) throw new Error(`${r.status}`); })
+        .then(() => {
+          toast.success(tToast("savedToFavorites"), {
+            action: { label: tToast("view"), onClick: () => { window.location.href = `/${locale}/profile/favorites`; } },
+          });
+        })
+        .catch((err) => {
+          console.error("[SearchTemplate] favorite add failed:", err);
+          setFavoriteIds((p) => { const n = new Set(p); n.delete(salonId); return n; }); // revert
+          toast.error(tToast("saveFailed"), { action: { label: tToast("retry"), onClick: () => toggleFavorite(salonId) } });
+        });
+    }
+  }, [favoriteIds, locale, tToast]);
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (

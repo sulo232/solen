@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen toast — real page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA; --border:rgba(10,10,10,.10); --blue:#276EF1;
+         --green:#16A34A; --green-bg:#DCFCE7; --red:#DC2626; --red-bg:#FEE2E2; }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#ECECEE;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
+       padding:18px 14px 44px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+  h1{font-family:'Inter Tight';font-size:18px;font-weight:600;margin:0 0 3px;letter-spacing:-.02em}
+  .sub{font-size:12.5px;color:var(--ink2);margin:0 0 16px;text-align:center;max-width:340px;line-height:1.5}
+  .panel{width:100%;max-width:390px}
+  .lbl{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin:0 0 7px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chips button{font:inherit;font-size:12.5px;font-weight:500;padding:8px 13px;border:1px solid var(--border);background:#fff;border-radius:999px;cursor:pointer;color:var(--ink2)}
+  .chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .phone{position:relative;width:100%;max-width:390px;height:500px;background:#fff;border:1px solid var(--border);
+         border-radius:26px;overflow:hidden;box-shadow:0 18px 50px rgba(10,10,10,.16);margin-top:12px}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+  .layer{position:absolute;left:12px;right:12px;bottom:22px;z-index:20;pointer-events:none}
+  .toast{pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);
+         border-radius:16px;padding:13px 15px;box-shadow:0 12px 34px rgba(10,10,10,.16);opacity:0;
+         transition:transform .36s cubic-bezier(.34,1.56,.64,1),opacity .22s;transform:translateY(30px)}
+  .ic{flex-shrink:0;width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+  .ic svg{width:15px;height:15px}
+  .toast .body{flex:1;min-width:0}
+  .toast .tt{font-size:14.5px;font-weight:600;line-height:1.3;color:var(--ink)}
+  .toast .ts{font-size:12.5px;color:var(--ink2);margin:2px 0 0;line-height:1.35}
+  .toast .act{font-size:14px;font-weight:600;color:var(--blue);white-space:nowrap;align-self:center}
+  .hint{font-size:12px;color:var(--ink3);text-align:center;margin:13px 0 0;line-height:1.5}
+</style>
+</head>
+<body>
+  <h1>Solen toast on the real homepage</h1>
+  <p class="sub">Light pill, a meaning icon (like the Chime check), one action in blue. Tap an event.</p>
+
+  <div class="panel">
+    <p class="lbl">Event</p>
+    <div class="chips" id="events">
+      <button data-e="saved" class="on">Saved</button>
+      <button data-e="booked">Booking done</button>
+      <button data-e="report">Report sent</button>
+      <button data-e="error">Login error</button>
+      <button data-e="welcome">Logged in</button>
+    </div>
+
+    <div class="phone">
+      <iframe src="/en" title="Real Solen homepage"></iframe>
+      <div class="layer" id="layer"></div>
+    </div>
+    <p class="hint">Toast sits at the bottom, on the real page. Tap it to “open”.</p>
+  </div>
+
+<script>
+  var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var BANG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>';
+  var E={
+    saved:  {ok:1, tt:'Saved to favorites', act:'View'},
+    booked: {ok:1, tt:'Booking confirmed', ts:'Studio Eleven, Sat 14:00', act:'Details'},
+    report: {ok:1, tt:'Report received', ts:'We’ll review it within 24 hours.'},
+    error:  {ok:0, tt:'Couldn’t log in', ts:'Email or password is incorrect.'},
+    welcome:{ok:1, tt:'Welcome back, Sulo'}
+  };
+  var ev='saved', layer=document.getElementById('layer');
+  function render(){
+    var d=E[ev]; layer.innerHTML='';
+    var el=document.createElement('div'); el.className='toast';
+    var icBg = d.ok? 'var(--green-bg)':'var(--red-bg)', icFg = d.ok? 'var(--green)':'var(--red)';
+    var act = d.act? '<span class="act">'+d.act+'</span>':'';
+    var ts = d.ts? '<p class="ts">'+d.ts+'</p>':'';
+    el.innerHTML='<span class="ic" style="background:'+icBg+';color:'+icFg+'">'+(d.ok?CHECK:BANG)+'</span>'+
+                 '<div class="body"><p class="tt">'+d.tt+'</p>'+ts+'</div>'+act;
+    el.addEventListener('click',function(){ if(d.act){el.querySelector('.body').innerHTML='<p class="tt">Opening…</p>'; var a=el.querySelector('.act'); if(a)a.remove();} el.style.opacity='0';el.style.transform='translateY(30px)'; });
+    layer.appendChild(el);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){el.style.opacity='1';el.style.transform='translateY(0)';});});
+  }
+  document.querySelectorAll('#events button').forEach(function(b){b.addEventListener('click',function(){ev=b.dataset.e;document.querySelectorAll('#events button').forEach(function(x){x.classList.toggle('on',x.dataset.e===ev);});render();});});
+
+  var fr=document.querySelector('iframe');
+  function killBanner(){ try{ var d=fr.contentDocument; if(!d)return; var b=[].slice.call(d.querySelectorAll('button,a')).find(function(x){return /nur notwendige|essential|ablehnen|decline/i.test(x.textContent||'');}); if(b)b.click(); }catch(e){} }
+  fr.addEventListener('load',function(){ var n=0,iv=setInterval(function(){ killBanner(); if(++n>8) clearInterval(iv); },400); });
+  window.addEventListener('load',function(){ setTimeout(render, 700); });
+</script>
+</body>
+</html>
