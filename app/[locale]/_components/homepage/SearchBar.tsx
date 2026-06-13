@@ -139,6 +139,15 @@ export function SearchBar() {
   // (never re-triggered from the resting rows) so nothing that referenced it
   // breaks; `overlayOpen` drives the real search surface.
   const [overlayOpen, setOverlayOpen] = React.useState(false);
+  // Which field the user tapped on the resting hero. Passed to SearchOverlay as
+  // `initialFocus` so each row opens its OWN picker — tapping "Stadt" lands on
+  // the city picker, not the service search (owner 2026-06-13). The CTA defaults
+  // to "service" (ready-to-type).
+  const [overlayFocus, setOverlayFocus] = React.useState<Segment>("service");
+  const openOverlay = (seg: Segment) => {
+    setOverlayFocus(seg);
+    setOverlayOpen(true);
+  };
   const [service, setService] = React.useState("");
   const [stadt, setStadt] = React.useState("");
   // V2-D49: zeit splits into structured (date + period) + derived display string.
@@ -294,25 +303,25 @@ export function SearchBar() {
             value={service || "Service"}
             isPlaceholder={!service}
             isFirst
-            onClick={() => setOverlayOpen(true)}
+            onClick={() => openOverlay("service")}
           />
           <CollapsedRow
             icon={<MapPin size={18} strokeWidth={2} />}
             ariaLabel="Standort wählen"
             value={stadt || "Stadt"}
             isPlaceholder={!stadt}
-            onClick={() => setOverlayOpen(true)}
+            onClick={() => openOverlay("stadt")}
           />
           <CollapsedRow
             icon={<Calendar size={18} strokeWidth={2} />}
             ariaLabel="Zeit wählen"
             value={zeit || "Zeit"}
             isPlaceholder={!zeit}
-            onClick={() => setOverlayOpen(true)}
+            onClick={() => openOverlay("zeit")}
           />
           <button
             type="button"
-            onClick={() => setOverlayOpen(true)}
+            onClick={() => openOverlay("service")}
             // V3-D111 (2026-05-23): swapped bg-black → bg-s-ink so the
             // hero CTA matches the top banner exactly (both #054F31 Fruitful
             // green-900). User flagged that the CTA read darker than the banner
@@ -603,6 +612,7 @@ export function SearchBar() {
         locale={locale}
         initialService={service}
         initialCity={stadt}
+        initialFocus={overlayFocus}
       />
     </>
   );

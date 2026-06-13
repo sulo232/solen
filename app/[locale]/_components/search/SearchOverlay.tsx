@@ -122,6 +122,10 @@ export interface SearchOverlayProps {
   /** Optional seed values (e.g. the sticky bar passes the active city). */
   initialService?: string;
   initialCity?: string;
+  /** Which focused picker to open into. The hero rows pass the tapped field
+   *  (Service / Stadt / Zeit) so tapping "City" lands on the city picker, not
+   *  the service search. Defaults to "service" (Fresha-style ready-to-type). */
+  initialFocus?: Segment;
 }
 
 export function SearchOverlay({
@@ -130,6 +134,7 @@ export function SearchOverlay({
   locale,
   initialService = "",
   initialCity = "",
+  initialFocus = "service",
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -221,11 +226,12 @@ export function SearchOverlay({
     if (open) {
       setService(initialService);
       setStadt(initialCity);
-      // Open straight into the Service drill (autofocused input) — Fresha's
-      // search opens ready-to-type; the 3-field composer was a dead extra tap
-      // (owner 2026-06-12: "it can't automatically type"). Stadt/Zeit stay
-      // reachable: the drill's back returns to the composer.
-      setSegment("service");
+      // Open into the picker for the field the user tapped (Service / Stadt /
+      // Zeit). Defaults to "service" (Fresha-style ready-to-type) for the CTA +
+      // Service row; the City row passes "stadt" so it opens the city picker
+      // instead of the service search, and Zeit opens the date picker (owner
+      // 2026-06-13). Other pickers stay reachable via the drill's back button.
+      setSegment(initialFocus);
     }
     // Intentionally only on open toggle — typed state is reset on close below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
