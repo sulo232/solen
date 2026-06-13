@@ -44,6 +44,38 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ items, total: items.length });
 }
 
+// V3-D462: the POST handler was missing — city/category "save" POSTs here and
+// silently 405'd (heart filled, nothing persisted). Mirrors DELETE's auth +
+// rate-limit; insert tolerates an already-saved row so re-saving is a no-op.
+export async function POST(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let salonId: string | null = null;
+  try {
+    const body = await req.json();
+    salonId = typeof body?.salon_id === "string" ? body.salon_id : null;
+  } catch {
+    salonId = null;
+  }
+  if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+
+  const { error } = await supabase
+    .from("favorites")
+    .insert({ user_id: user.id, salon_id: salonId });
+
+  // Already favorited -> treat as success (idempotent), surface other errors.
+  if (error && !/duplicate|unique|already exists/i.test(error.message)) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json({ success: true, saved: true });
+}
+
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();

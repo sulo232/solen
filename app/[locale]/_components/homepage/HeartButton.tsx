@@ -107,14 +107,11 @@ export function HeartButton({
         if (typeof json.saved === "boolean" && json.saved !== next) {
           setIsSaved(json.saved);
         }
-        // Mobile-first confirmation: only on SAVE (not un-save). Tapping the toast
-        // (or its "Ansehen" affordance) opens the user's favorites. Pink Heart icon
-        // echoes the heart they just tapped (#FF3366 — the live heart fill).
+        // Mobile-first confirmation: only on SAVE (not un-save). Whole toast is
+        // tappable -> opens favorites. Green-check badge (success tone).
         if (next && finalSaved) {
           const locale = pathname?.split("/")[1] || "de";
-          toast.show(t("savedToFavorites"), {
-            icon: Heart,
-            iconClassName: "fill-[#FF3366] text-[#FF3366]",
+          toast.success(t("savedToFavorites"), {
             action: {
               label: t("view"),
               onClick: () => {
@@ -128,6 +125,10 @@ export function HeartButton({
         // Revert the optimistic flip so the UI reflects reality.
         setIsSaved(!next);
         setAnnouncement(`${salonName} konnte nicht gespeichert werden`);
+        // Surface the failure (was silent) with a retry.
+        toast.error(t("saveFailed"), {
+          action: { label: t("retry"), onClick: () => void persist(next) },
+        });
       } finally {
         inFlight.current = false;
       }

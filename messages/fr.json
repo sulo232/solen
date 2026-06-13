@@ -2,7 +2,9 @@
   "toasts": {
     "savedToFavorites": "Ajouté aux favoris",
     "view": "Voir",
-    "welcomeBack": "Bon retour"
+    "welcomeBack": "Bon retour",
+    "saveFailed": "Échec de l'enregistrement",
+    "retry": "Réessayer"
   },
   "profileHub": {
     "nextAppointment": "Prochain rendez-vous",

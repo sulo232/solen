@@ -6,8 +6,7 @@
 // (signal-as-bg, sanctioned per §10 update) instead of all-ink with a dot.
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { cva } from "class-variance-authority";
-import { CheckCircle2, AlertCircle, AlertTriangle, Info, ChevronRight, type LucideIcon } from "lucide-react";
+import { Check, X, AlertTriangle, Info, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -91,8 +90,8 @@ const DEFAULT_DURATION = 4000;
 
 // V3-D196: icon per tone. Universal recognition pattern (Apple/iOS/sonner/etc).
 const toneIcon: Record<Exclude<ToastTone, "default">, LucideIcon> = {
-  success: CheckCircle2,
-  error: AlertCircle,
+  success: Check,
+  error: X,
   warning: AlertTriangle,
   info: Info,
 };
@@ -191,38 +190,26 @@ export const toast = {
 // (V3-D196) read as Material-2014, too deep for the Uber/Revolut refined vibe.
 // Now: pastel `.bg` token + ink text + colored icon. Universal recognition via
 // icon shape + bg tint, not screamy saturated solid.
-const toastItemVariants = cva(
-  cn(
-    "pointer-events-auto",
-    "flex items-start gap-3",
-    "rounded-[14px]",
-    "shadow-elevation-3",
-    "px-4 py-3",
-    "w-full md:max-w-[420px] md:min-w-[280px]",
-    "border", // hairline border picks up bg-derived tone via per-variant class
-  ),
-  {
-    variants: {
-      tone: {
-        // Default toast is still ink (catch-all / generic) — chrome-grade
-        default: "bg-s-ink text-white border-transparent",
-        // Pastel tints + ink text + bordered. Refined modern fintech pattern.
-        success: "bg-s-success-bg text-s-ink border-s-success/15",
-        error:   "bg-s-error-bg text-s-ink border-s-error/15",
-        warning: "bg-s-warning-bg text-s-ink border-s-warning/20",
-        info:    "bg-s-accent-pale text-s-ink border-s-accent/15",
-      },
-    },
-    defaultVariants: { tone: "default" },
-  },
+// V3-D462 (2026-06-13): owner-locked to the Chime/Google-Photos recipe — a CLEAN
+// LIGHT pill (white, hairline, soft shadow), a colored CIRCLE BADGE icon (tint
+// circle + saturated glyph), ink text, one blue action (no underline, no chevron),
+// docked at the BOTTOM. Replaces the pastel-whole-pill tints (read too heavy).
+const TOAST_PILL = cn(
+  "pointer-events-auto",
+  "flex items-center gap-3",
+  "rounded-[16px]",
+  "shadow-elevation-3",
+  "px-4 py-3",
+  "w-full md:max-w-[420px] md:min-w-[280px]",
+  "bg-white border border-s-border text-s-ink",
 );
 
-// V3-D198: icon color per tone (saturated tokens — they're the "look here" signal).
-const toneIconColor: Record<Exclude<ToastTone, "default">, string> = {
-  success: "text-s-success",
-  error: "text-s-error",
-  warning: "text-s-warning",
-  info: "text-s-accent",
+// Circle-badge per tone: tint bg + saturated glyph (the "look here" signal).
+const toneBadge: Record<Exclude<ToastTone, "default">, { bg: string; fg: string }> = {
+  success: { bg: "bg-s-success-bg", fg: "text-s-success" },
+  error:   { bg: "bg-s-error-bg",   fg: "text-s-error" },
+  warning: { bg: "bg-s-warning-bg", fg: "text-s-warning" },
+  info:    { bg: "bg-s-accent-pale", fg: "text-s-accent" },
 };
 
 export function Toaster() {
@@ -245,11 +232,12 @@ export function Toaster() {
       aria-label="Benachrichtigungen"
       className={cn(
         "fixed z-toast pointer-events-none",
-        // Top-of-viewport, safe-area aware. Center on mobile, slight right-bias on desktop.
-        "top-[max(1rem,calc(env(safe-area-inset-top)+1rem))]",
+        // V3-D462: docked at the BOTTOM (thumb reach for the tappable action),
+        // safe-area aware. Center on mobile, right-bias on desktop.
+        "bottom-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]",
         "left-4 right-4",
-        "flex flex-col gap-2 items-center",
-        "md:top-6 md:left-auto md:right-6 md:items-end",
+        "flex flex-col-reverse gap-2 items-center",
+        "md:bottom-6 md:left-auto md:right-6 md:items-end",
         "md:max-w-[420px]",
       )}
     >
@@ -332,8 +320,8 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
       style={{
         // Inline styles give the most reliable transition (no CSS-class-purge risk).
         opacity: state === "open" ? 1 : 0,
-        // idea 10 (motion 22): tilt-settle — enters with a 2deg tilt and springs straight
-        transform: state === "open" ? "translateY(0) rotate(0deg)" : "translateY(-20px) rotate(2deg)",
+        // V3-D462: slide up from below (bottom-docked), spring-settle.
+        transform: state === "open" ? "translateY(0)" : "translateY(20px)",
         transition:
           state === "exiting"
             ? "opacity 150ms cubic-bezier(0.16, 1, 0.3, 1)"
@@ -341,54 +329,34 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
         willChange: "transform, opacity",
       }}
       className={cn(
-        toastItemVariants({ tone: t.tone }),
+        TOAST_PILL,
         "cursor-pointer select-none",
-        // V3-D198: pastel toasts (success/error/warning/info) all use ink-tone focus ring.
-        // Only `default` (ink bg) needs white ring.
-        t.tone === "default"
-          ? "focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          : "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
       )}
     >
-      {/* V3-D198: lucide icon — saturated tone color provides the "look here" signal
-          while text/bg stay refined. A custom `icon` (e.g. a pink Heart on a saved
-          toast) overrides the tone icon and works on any tone, default included. */}
-      {(() => {
-        const CustomIcon = t.icon;
-        if (CustomIcon) {
-          return (
-            <CustomIcon
-              size={20}
-              strokeWidth={2.25}
-              aria-hidden
-              className={cn("mt-[1px] flex-shrink-0", t.iconClassName)}
-            />
-          );
-        }
-        if (t.tone === "default") return null;
-        const ToneIcon = toneIcon[t.tone];
+      {/* V3-D462: circle-badge — tint circle + saturated glyph (Chime-style). */}
+      {t.tone !== "default" && (() => {
+        const tone = t.tone as Exclude<ToastTone, "default">;
+        const Glyph = t.icon ?? toneIcon[tone];
+        const badge = toneBadge[tone];
         return (
-          <ToneIcon
-            size={20}
-            strokeWidth={2.25}
+          <span
             aria-hidden
-            className={cn("mt-[1px] flex-shrink-0", toneIconColor[t.tone])}
-          />
+            className={cn(
+              "flex-shrink-0 grid place-items-center rounded-full w-[26px] h-[26px]",
+              t.iconClassName ?? cn(badge.bg, badge.fg),
+            )}
+          >
+            <Glyph size={15} strokeWidth={3} aria-hidden />
+          </span>
         );
       })()}
       <div className="flex-1 min-w-0">
-        {/* V3-D198: title + description always ink on pastel; white on ink default. */}
-        <div className={cn(
-          "font-body font-medium text-[14px] leading-[1.35]",
-          t.tone === "default" ? "text-white" : "text-s-ink",
-        )}>
+        <div className="font-body font-semibold text-[14px] leading-[1.35] text-s-ink">
           {t.title}
         </div>
         {t.description && (
-          <div className={cn(
-            "mt-0.5 font-body font-normal text-[13px] leading-[1.4]",
-            t.tone === "default" ? "text-white/70" : "text-s-ink-2",
-          )}>
+          <div className="mt-0.5 font-body font-normal text-[13px] leading-[1.4] text-s-ink-2">
             {t.description}
           </div>
         )}
@@ -398,34 +366,13 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
           type="button"
           onClick={handleActionClick}
           className={cn(
-            "flex-shrink-0 self-center inline-flex items-center gap-0.5",
-            "font-body font-semibold text-[13px]",
-            t.tone === "default" ? "text-white" : "text-s-ink",
-            "bg-transparent border-0 cursor-pointer",
-            "pl-1 pr-0.5 py-0.5 rounded-sm",
-            t.tone === "default"
-              ? "focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-              : "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-            "transition-[text-decoration-color] duration-150",
+            "flex-shrink-0 self-center whitespace-nowrap",
+            "font-body font-semibold text-[14px] text-s-accent",
+            "bg-transparent border-0 cursor-pointer px-1 py-0.5 rounded-sm",
+            "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
           )}
         >
-          {/* label underlined; chevron is the "tap to open" affordance (not underlined) */}
-          <span
-            className={cn(
-              "underline underline-offset-[3px]",
-              t.tone === "default"
-                ? "decoration-white/60 hover:decoration-white"
-                : "decoration-s-ink/40 hover:decoration-s-ink",
-            )}
-          >
-            {t.action.label}
-          </span>
-          <ChevronRight
-            size={15}
-            strokeWidth={2.5}
-            aria-hidden
-            className={t.tone === "default" ? "text-white/70" : "text-s-ink-2"}
-          />
+          {t.action.label}
         </button>
       )}
     </li>
