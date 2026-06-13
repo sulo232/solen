@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
 interface QueueStatus {
@@ -56,6 +57,7 @@ export default function QueueTrackingPage() {
   const locale = useLocale();
   const router = useRouter();
   const l = COPY[locale] ?? COPY.de;
+  const tt = useTranslations("toasts");
 
   const [data, setData] = useState<QueueStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -144,9 +146,11 @@ export default function QueueTrackingPage() {
       } else {
         const j = await res.json().catch(() => null);
         console.error("[queue-track] cancel failed:", j?.error);
+        toast.error(tt("cancelFailed"), { action: { label: tt("retry"), onClick: () => { void handleCancel(); } } });
       }
     } catch (e) {
       console.error("[queue-track] cancel error:", e);
+      toast.error(tt("cancelFailed"), { action: { label: tt("retry"), onClick: () => { void handleCancel(); } } });
     } finally {
       setCancelling(false);
     }

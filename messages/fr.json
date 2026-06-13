@@ -4,7 +4,8 @@
     "view": "Voir",
     "welcomeBack": "Bon retour",
     "saveFailed": "Échec de l'enregistrement",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "cancelFailed": "Impossible d'annuler ta place"
   },
   "profileHub": {
     "nextAppointment": "Prochain rendez-vous",

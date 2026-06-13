@@ -4,7 +4,8 @@
     "view": "View",
     "welcomeBack": "Welcome back",
     "saveFailed": "Couldn't save",
-    "retry": "Retry"
+    "retry": "Retry",
+    "cancelFailed": "Couldn't cancel your spot"
   },
   "profileHub": {
     "nextAppointment": "Next appointment",

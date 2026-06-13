@@ -4,7 +4,8 @@
     "view": "Vedi",
     "welcomeBack": "Bentornato",
     "saveFailed": "Impossibile salvare",
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "cancelFailed": "Impossibile annullare il tuo posto"
   },
   "profileHub": {
     "nextAppointment": "Prossimo appuntamento",

@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Star, MapPin, Lock, Check, AlertTriangle, ArrowLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 interface BookingData {
   id: string;
@@ -280,6 +281,8 @@ export default function WalkInPayPage() {
       if (!res.ok) {
         console.error("[walk-in-pay] confirm failed:", data?.error);
         setPayError(l.confirmFailed);
+        // Charge may have gone through — sticky toast so the reference isn't lost.
+        toast.error(l.confirmFailed, { duration: Infinity });
         return;
       }
       setBooking((prev) => prev ? {
@@ -295,6 +298,7 @@ export default function WalkInPayPage() {
     } catch (e) {
       console.error("[walk-in-pay] confirm error:", e);
       setPayError(l.confirmFailed);
+      toast.error(l.confirmFailed, { duration: Infinity });
     } finally {
       setPaying(false);
     }

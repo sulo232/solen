@@ -4,7 +4,8 @@
     "view": "Ansehen",
     "welcomeBack": "Willkommen zurück",
     "saveFailed": "Konnte nicht gespeichert werden",
-    "retry": "Erneut"
+    "retry": "Erneut",
+    "cancelFailed": "Konnte deinen Platz nicht stornieren"
   },
   "profileHub": {
     "nextAppointment": "Nächster Termin",
