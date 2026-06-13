@@ -35,8 +35,9 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
     fetch("/api/profile/favorites")
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
-        const favs = data?.favorites ?? [];
-        setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+        // API returns { items: salon[], total } — items keyed by `id`.
+        const items = data?.items ?? [];
+        setFavoriteIds(new Set(items.map((s: { id: string }) => s.id)));
       })
       .catch((err) => console.error("[FeaturedSalonCarousel] failed fetching favorites:", err));
   }, []);

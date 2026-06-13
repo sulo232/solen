@@ -239,8 +239,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       });
 
       if (!bookingRes.ok) {
-        const errorData = await bookingRes.json();
-        throw new Error(errorData.message || t('payment.bookingFailed'));
+        const errorData = await bookingRes.json().catch(() => null);
+        console.error('[PayConfirmStep] create booking failed:', errorData?.message);
+        // Friendly localized copy, not the raw server string.
+        throw new Error(t('payment.bookingFailed'));
       }
 
       const booking = await bookingRes.json();
@@ -274,7 +276,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       const piData = await piRes.json().catch(() => null);
       if (!piRes.ok || !piData?.client_secret) {
         console.error('[PayConfirmStep] booking-pay-intent failed:', piData?.error ?? piRes.status);
-        throw new Error(piData?.error || t('payment.bookingFailed'));
+        throw new Error(t('payment.bookingFailed'));
       }
 
       setConfirmationPath(path);

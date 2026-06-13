@@ -701,9 +701,10 @@ export default function SearchTemplate({
     fetch("/api/profile/favorites")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        const favs = data?.favorites ?? [];
+        // API returns { items: salon[], total } — items keyed by `id`.
+        const items = data?.items ?? [];
         setFavoriteIds(
-          new Set((favs as { salon_id: string }[]).map((f) => f.salon_id)),
+          new Set((items as { id: string }[]).map((s) => s.id)),
         );
       })
       .catch((err) =>
