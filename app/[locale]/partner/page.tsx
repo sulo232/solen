@@ -55,7 +55,9 @@ export default function PartnerPage() {
             <p className="text-lg font-body font-normal text-s-ink-2 max-w-lg mb-8">
               {t("hero_subtitle")}
             </p>
-            <PartnerSignupForm />
+            <div id="contact" className="scroll-mt-24">
+              <PartnerSignupForm />
+            </div>
             <p className="text-[12px] md:text-[12px] font-body font-bold uppercase tracking-[0.16em] text-s-ink-2 mt-3">
               {t("hero_subtext")}
             </p>

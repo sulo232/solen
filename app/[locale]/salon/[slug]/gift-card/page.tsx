@@ -86,7 +86,7 @@ export default function GiftCardPage() {
 
   // Step 1 — create the gift card (inactive) + a PaymentIntent. Does NOT mark success.
   const handlePurchase = async () => {
-    if (amount < 500 || !recipientName.trim() || !recipientEmail.trim()) return;
+    if (amount < 1000 || !recipientName.trim() || !recipientEmail.trim()) return;
     setPaying(true);
     setError(null);
     try {
@@ -208,7 +208,7 @@ export default function GiftCardPage() {
             {useCustom && (
               <div className="relative mt-2">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink-2">CHF</span>
-                <input type="number" min="5" step="5" value={customAmount}
+                <input type="number" min="10" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
                   className="w-full !pl-12 pr-3 py-2.5 rounded-[12px] border border-transparent bg-s-bg-sunken text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
               </div>
@@ -244,7 +244,7 @@ export default function GiftCardPage() {
           {error && <p className="text-xs text-s-error">{error}</p>}
 
           {/* Primary CTA — V3-D252 (W3): coral → ink per LOCKFILE §0 rule 2 (primary CTAs stay bg-s-ink) */}
-          <button onClick={handlePurchase} disabled={paying || amount < 500 || !recipientName.trim() || !recipientEmail.trim()}
+          <button onClick={handlePurchase} disabled={paying || amount < 1000 || !recipientName.trim() || !recipientEmail.trim()}
             className="w-full py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Send size={14} />}
             Weiter zur Zahlung {formatCurrency(amount / 100)}
