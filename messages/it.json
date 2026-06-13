@@ -1,4 +1,9 @@
 {
+  "toasts": {
+    "savedToFavorites": "Aggiunto ai preferiti",
+    "view": "Vedi",
+    "welcomeBack": "Bentornato"
+  },
   "profileHub": {
     "nextAppointment": "Prossimo appuntamento",
     "sectionActivity": "Attività",

@@ -168,3 +168,10 @@ export const pressAnimation = {
 export const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Toast in/out (top-anchored): slide down + fade + subtle scale. Motion-22 toast. */
+export const toastVariants = {
+  hidden: { opacity: 0, y: -12, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: EASE_SOLEN } },
+  exit: { opacity: 0, y: -8, scale: 0.96, transition: { duration: 0.15, ease: EASE_SOLEN } },
+};

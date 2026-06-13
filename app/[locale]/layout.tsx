@@ -9,6 +9,7 @@ import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 // from anywhere (module-level singleton, no provider needed). The `<Toaster />`
 // portal below is the only mount required.
 import { Toaster } from "./_components/primitives/Toast";
+import WelcomeToast from "./_components/primitives/WelcomeToast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
 import HideInBooking from "./_components/layout/HideInBooking";
@@ -126,6 +127,8 @@ export default async function LocaleLayout({
         {/* V3-D195: primitives Toaster portal — the single mount for the
             toast.success()/toast.error() module-singleton API. */}
         <Toaster />
+        {/* Fires the one-shot "Willkommen zurück" toast after a login full-page nav. */}
+        <WelcomeToast />
         {/* Mockup 10 offline, as a connectivity banner (see OfflineBanner.md) */}
         <OfflineBanner />
       </PostHogProvider>

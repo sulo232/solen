@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 /**
  * SalonCard heart toggle — V3 (LIVE_TRUTH §16.3.3).
@@ -50,6 +52,7 @@ export function HeartButton({
   bare?: boolean;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("toasts");
   const [isSaved, setIsSaved] = React.useState(initialSaved);
   const [announcement, setAnnouncement] = React.useState("");
   // V2-D43 (Emil polish): spring-feel pop animation on save toggle.
@@ -100,8 +103,25 @@ export function HeartButton({
         const json: { saved?: boolean } = await res.json();
         // Reconcile with the server's authoritative state (handles the rare
         // case where optimistic + server disagree, e.g. a stale initialSaved).
+        const finalSaved = typeof json.saved === "boolean" ? json.saved : next;
         if (typeof json.saved === "boolean" && json.saved !== next) {
           setIsSaved(json.saved);
+        }
+        // Mobile-first confirmation: only on SAVE (not un-save). Tapping the toast
+        // (or its "Ansehen" affordance) opens the user's favorites. Pink Heart icon
+        // echoes the heart they just tapped (#FF3366 — the live heart fill).
+        if (next && finalSaved) {
+          const locale = pathname?.split("/")[1] || "de";
+          toast.show(t("savedToFavorites"), {
+            icon: Heart,
+            iconClassName: "fill-[#FF3366] text-[#FF3366]",
+            action: {
+              label: t("view"),
+              onClick: () => {
+                window.location.href = `/${locale}/profile/favorites`;
+              },
+            },
+          });
         }
       } catch (err) {
         console.error("[HeartButton] favorite toggle failed:", err);
@@ -112,7 +132,7 @@ export function HeartButton({
         inFlight.current = false;
       }
     },
-    [salonId, pathname, salonName],
+    [salonId, pathname, salonName, t],
   );
 
   const toggle = (e: React.MouseEvent | React.KeyboardEvent) => {

@@ -7,7 +7,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { cva } from "class-variance-authority";
-import { CheckCircle2, AlertCircle, AlertTriangle, Info, type LucideIcon } from "lucide-react";
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -58,7 +58,9 @@ export interface ToastAction {
 }
 
 export interface ToastOptions {
-  /** Optional structured action button. Renders as small underlined ink text. */
+  /** Optional action. When set, the WHOLE toast becomes tappable (mobile-first):
+   *  tapping anywhere fires onClick + dismisses, and a chevron renders as the
+   *  "tap to open" affordance. The label also shows as small underlined text. */
   action?: ToastAction;
   /** Optional rich description below the title. */
   description?: React.ReactNode;
@@ -66,6 +68,11 @@ export interface ToastOptions {
   duration?: number;
   /** Override aria-live. Default `polite` for default/info/success/warning, `assertive` for error. */
   ariaLive?: "polite" | "assertive";
+  /** Override the leading icon (else the tone icon, or none for `default`).
+   *  Use for semantic moments like a saved-heart (pass `Heart`). */
+  icon?: LucideIcon;
+  /** className for the custom `icon` (color it, e.g. "fill-[#FF3366] text-[#FF3366]"). */
+  iconClassName?: string;
 }
 
 interface InternalToast extends ToastOptions {
@@ -130,6 +137,8 @@ class ToastStore {
       action: options.action,
       description: options.description,
       ariaLive: options.ariaLive,
+      icon: options.icon,
+      iconClassName: options.iconClassName,
     };
 
     // Stack: keep newest at the TOP, drop oldest when over MAX_VISIBLE.
@@ -300,10 +309,14 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
     t.ariaLive ?? (t.tone === "error" ? "assertive" : "polite");
   const role = t.tone === "error" ? "alert" : "status";
 
+  // Mobile-first: if the toast has an action, tapping ANYWHERE on it fires the
+  // action (then dismisses). Without an action, tapping just dismisses.
   const handleClick = () => {
+    t.action?.onClick();
     setState("exiting");
   };
 
+  // The label button stops propagation so the row handler doesn't double-fire.
   const handleActionClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     t.action?.onClick();
@@ -338,11 +351,24 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
       )}
     >
       {/* V3-D198: lucide icon — saturated tone color provides the "look here" signal
-          while text/bg stay refined. */}
-      {t.tone !== "default" && (() => {
-        const Icon = toneIcon[t.tone];
+          while text/bg stay refined. A custom `icon` (e.g. a pink Heart on a saved
+          toast) overrides the tone icon and works on any tone, default included. */}
+      {(() => {
+        const CustomIcon = t.icon;
+        if (CustomIcon) {
+          return (
+            <CustomIcon
+              size={20}
+              strokeWidth={2.25}
+              aria-hidden
+              className={cn("mt-[1px] flex-shrink-0", t.iconClassName)}
+            />
+          );
+        }
+        if (t.tone === "default") return null;
+        const ToneIcon = toneIcon[t.tone];
         return (
-          <Icon
+          <ToneIcon
             size={20}
             strokeWidth={2.25}
             aria-hidden
@@ -372,22 +398,34 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
           type="button"
           onClick={handleActionClick}
           className={cn(
-            "flex-shrink-0 self-start",
+            "flex-shrink-0 self-center inline-flex items-center gap-0.5",
             "font-body font-semibold text-[13px]",
-            "underline underline-offset-[3px]",
-            // Default (ink bg) → white text + white underline. Pastel → ink text + ink underline.
-            t.tone === "default"
-              ? "text-white decoration-white/60 hover:decoration-white"
-              : "text-s-ink decoration-s-ink/40 hover:decoration-s-ink",
+            t.tone === "default" ? "text-white" : "text-s-ink",
             "bg-transparent border-0 cursor-pointer",
-            "px-1 py-0.5 rounded-sm",
+            "pl-1 pr-0.5 py-0.5 rounded-sm",
             t.tone === "default"
               ? "focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
               : "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             "transition-[text-decoration-color] duration-150",
           )}
         >
-          {t.action.label}
+          {/* label underlined; chevron is the "tap to open" affordance (not underlined) */}
+          <span
+            className={cn(
+              "underline underline-offset-[3px]",
+              t.tone === "default"
+                ? "decoration-white/60 hover:decoration-white"
+                : "decoration-s-ink/40 hover:decoration-s-ink",
+            )}
+          >
+            {t.action.label}
+          </span>
+          <ChevronRight
+            size={15}
+            strokeWidth={2.5}
+            aria-hidden
+            className={t.tone === "default" ? "text-white/70" : "text-s-ink-2"}
+          />
         </button>
       )}
     </li>

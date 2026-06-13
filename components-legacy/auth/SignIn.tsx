@@ -7,6 +7,23 @@ import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { WELCOME_FLAG } from "@/app/[locale]/_components/primitives/WelcomeToast";
+
+/** Mark a successful login so WelcomeToast greets on the destination page. */
+function markWelcome() {
+  try {
+    window.sessionStorage.setItem(WELCOME_FLAG, "1");
+  } catch {
+    /* private mode / blocked storage — skip the greeting, not the login */
+  }
+}
+function clearWelcome() {
+  try {
+    window.sessionStorage.removeItem(WELCOME_FLAG);
+  } catch {
+    /* best-effort */
+  }
+}
 
 export default function SignIn() {
   const t = useTranslations("auth") as any;
@@ -36,21 +53,23 @@ export default function SignIn() {
 
   const handleGoogle = async () => {
     setLoading(true);
+    markWelcome(); // survives the OAuth round-trip; WelcomeToast guards on a real session
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
-    if (error) toast.error(error.message);
+    if (error) { clearWelcome(); toast.error(error.message); }
     setLoading(false);
   };
 
   const handleApple = async () => {
     setLoading(true);
+    markWelcome(); // survives the OAuth round-trip; WelcomeToast guards on a real session
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "apple",
       options: { redirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
-    if (error) toast.error(error.message);
+    if (error) { clearWelcome(); toast.error(error.message); }
     setLoading(false);
   };
 
@@ -67,6 +86,7 @@ export default function SignIn() {
         toast.error(error.message || "Anmeldung fehlgeschlagen");
         setLoading(false);
       } else if (data.session) {
+        markWelcome(); // greet on the destination after the full-page nav
         // Full page navigation to ensure middleware runs and session cookies propagate
         window.location.href = redirect;
       }
