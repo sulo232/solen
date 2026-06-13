@@ -280,6 +280,25 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Date filter: narrow to salons with >=1 available slot on the chosen day.
+    // Mirrors the period / instant_bookable pattern (resolve ids → query.in BEFORE
+    // .range so count + pagination stay correct). Skipped when a period is set —
+    // the period block above already restricts to that day's time window.
+    // Owner 2026-06-13: picking a date should actually NARROW results, not just
+    // annotate "next available" (the post-query block below still computes labels
+    // for any non-date / multi-day views).
+    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && !(period && PERIOD_HOURS[period])) {
+      const { data: dayRows } = await supabase
+        .from("availability_slots")
+        .select("salon_id")
+        .eq("status", "available")
+        .gte("starts_at", `${date}T00:00:00`)
+        .lt("starts_at", `${date}T23:59:59`);
+      const dayIds = [...new Set((dayRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (dayIds.length > 0) query = query.in("id", dayIds);
+      else return NextResponse.json({ items: [], total: 0, page, limit });
+    }
+
     let distanceMap: Record<string, number> | null = null;
     let orderedIds: string[] | null = null;
 
