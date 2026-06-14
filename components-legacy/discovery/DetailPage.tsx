@@ -47,6 +47,15 @@ const MAINTENANCE: Record<string, Record<string, string>> = {
   it: { low: "Basso", medium: "Medio", high: "Alto" },
 };
 
+// Face shapes are a fixed enum, so they're translated in the UI (not stored per-locale) — full multi-lang support
+// without a per-locale column (owner 2026-06-14: "full support everything"). Unknown values fall back to capitalized.
+const FACE_SHAPES: Record<string, Record<string, string>> = {
+  de: { oval: "Oval", round: "Rund", square: "Eckig", heart: "Herzförmig", diamond: "Rautenförmig", long: "Lang", oblong: "Länglich" },
+  en: { oval: "Oval", round: "Round", square: "Square", heart: "Heart", diamond: "Diamond", long: "Long", oblong: "Oblong" },
+  fr: { oval: "Ovale", round: "Rond", square: "Carré", heart: "Cœur", diamond: "Losange", long: "Allongé", oblong: "Oblong" },
+  it: { oval: "Ovale", round: "Tondo", square: "Quadrato", heart: "Cuore", diamond: "Romboidale", long: "Lungo", oblong: "Oblungo" },
+};
+
 function localized(item: DiscoveryItem, prefix: string, locale: string): string | null {
   const key = `${prefix}_${locale}` as keyof DiscoveryItem;
   return (item[key] as string | null) ?? null;
@@ -112,7 +121,10 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     null;
 
   const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
-  const faceShapes = (item.face_shapes ?? []).join(", ");
+  const faceMap = FACE_SHAPES[locale] ?? FACE_SHAPES.en;
+  const faceShapes = (item.face_shapes ?? [])
+    .map((f) => faceMap[f.toLowerCase()] ?? f.charAt(0).toUpperCase() + f.slice(1))
+    .join(", ");
   const products = (item.products_needed ?? []).join(", ");
   const hasDetails = !!(maintenanceLabel || faceShapes || products || item.cut_guide);
 
