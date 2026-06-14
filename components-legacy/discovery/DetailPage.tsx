@@ -87,6 +87,9 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  // The real video aspect ratio, probed from the thumbnail (the embed iframe is cross-origin so we can't read its
+  // dimensions). Used to shape the video frame per-look so the embed fills cleanly instead of a one-size guess.
+  const [videoAspect, setVideoAspect] = useState<string | null>(null);
   const handleSave = (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
     setSaveItemId(id);
@@ -119,6 +122,18 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
     null;
 
+  // Aspect-detection: load the thumbnail off-screen to read the real video ratio, then shape the frame to it.
+  useEffect(() => {
+    if (!videoId || !heroSrc) return;
+    let alive = true;
+    const probe = new window.Image();
+    probe.onload = () => {
+      if (alive && probe.naturalWidth && probe.naturalHeight) setVideoAspect(`${probe.naturalWidth} / ${probe.naturalHeight}`);
+    };
+    probe.src = heroSrc;
+    return () => { alive = false; };
+  }, [videoId, heroSrc]);
+
   const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
   const faceMap = FACE_SHAPES[locale] ?? FACE_SHAPES.en;
   const faceShapes = (item.face_shapes ?? [])
@@ -139,17 +154,22 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero — for TikTok looks the embed renders + autoplays on open (owner 2026-06-14: "auto plays when u open
-           it", no tap, no big-image→small-embed jump). The "TikTok" pill jumps into the app. Photos = static image.
-           NOTE: the cookie wall + white gaps + small player are INSIDE TikTok's cross-origin iframe — not fixable. ─── */}
-      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: videoId ? "9 / 16" : aspect }}>
+      {/* ─── Hero — TikTok looks autoplay the embed on open. Variation E (owner 2026-06-14): the frame is shaped to the
+           DETECTED video aspect (videoAspect, probed from the thumbnail) and the iframe is over-scaled + clipped so the
+           video fills and TikTok's white edge-margins get cropped. The cookie wall is still TikTok's. Photos = image. ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: videoId ? (videoAspect ?? "9 / 16") : aspect }}>
         {videoId ? (
-          <iframe
-            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
-            className="absolute inset-0 h-full w-full border-0"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-            title={item.style_name || "TikTok"}
-          />
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Over-scaled + BOTTOM-anchored: trims the side white-margins + TikTok's top logo, but never the bottom
+                (where the cookie-wall dismiss buttons + the player controls live, so the video stays dismissable). */}
+            <iframe
+              src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
+              className="absolute bottom-0 left-1/2 border-0"
+              style={{ width: "110%", height: "110%", transform: "translateX(-50%)" }}
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              title={item.style_name || "TikTok"}
+            />
+          </div>
         ) : heroSrc ? (
           <Image
             src={heroSrc}

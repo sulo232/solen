@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · TikTok video — envelope variations</title>
+<!--
+  Exists-check: the look-detail hero ALREADY renders the TikTok video via components-legacy/discovery/DetailPage.tsx
+  (currently the full-bleed autoplay embed/v2 iframe, commit 8ed71a76a). History: at 24c7d958e (2026-05-04) the hero
+  was a THUMBNAIL + play-overlay that opened TikTok in a new tab — code comment "avoids GDPR cookie wall" (the "good
+  envelope" the owner remembers). NEW here: a side-by-side of every realistic way to frame the video so the owner
+  picks ONE instead of one-at-a-time iteration. Real video (id 7588240469901987094). English labels.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --blue:#276EF1; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:28px 20px 80px;}
+  .head{max-width:1200px; margin:0 auto 22px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.55; max-width:860px;}
+  .grid{display:flex; gap:26px; justify-content:center; flex-wrap:wrap; align-items:flex-start; max-width:1320px; margin:0 auto;}
+  .v{width:300px;}
+  .cap{margin:0 2px 10px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:7px;}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:15.5px; margin:0 0 3px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12px; color:var(--ink-2); line-height:1.45;}
+  .cap .good{color:#16A34A; font-weight:600;} .cap .bad{color:#B91C1C; font-weight:600;}
+
+  .frame{width:300px; height:533px; border-radius:26px; overflow:hidden; position:relative; background:#0c0c0c;
+    border:1px solid #d6d6db; box-shadow:0 20px 40px -22px rgba(10,10,10,.30);}
+  .frame img.thumb{width:100%; height:100%; object-fit:cover; display:block;}
+  iframe{border:0; width:100%; height:100%; display:block;}
+
+  .frost{background:rgba(255,255,255,.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.6); box-shadow:0 1px 4px rgba(0,0,0,.14);}
+  .top{position:absolute; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; z-index:4;}
+  .ic{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;color:var(--ink);}
+  .ic svg{width:17px;height:17px;}
+  .playorb{position:absolute; inset:0; display:grid; place-items:center; z-index:3; text-decoration:none; border:0; background:transparent; cursor:pointer;}
+  .playorb .o{width:56px;height:56px;border-radius:999px;display:grid;place-items:center;}
+  .playorb .o svg{width:23px;height:23px;color:var(--ink); margin-left:2px;}
+  .pill{position:absolute; left:14px; bottom:16px; z-index:4; border-radius:999px; padding:7px 13px; font-size:12px; font-weight:600; color:var(--ink); text-decoration:none;}
+
+  .cardwrap{position:absolute; inset:0; background:var(--sunken); display:flex; flex-direction:column; padding:12px;}
+  .cardwrap .h{display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--ink); padding:2px 4px 9px;}
+  .cardwrap .h svg{width:15px;height:15px;}
+  .cardwrap .embedbox{flex:1; border-radius:14px; overflow:hidden; background:#0c0c0c;}
+
+  .zoom{position:absolute; inset:0; overflow:hidden;}
+  .zoom iframe{position:absolute; top:50%; left:50%; width:150%; height:128%; transform:translate(-50%,-50%);}
+
+  .ctabar{position:absolute; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px; background:linear-gradient(to top, rgba(10,10,10,.78), transparent); color:#fff; font-size:13.5px; font-weight:600;}
+  .ctabar svg{width:16px;height:16px;}
+  .scrim{position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.12), transparent 30%, transparent 70%, rgba(0,0,0,.35)); z-index:1;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>TikTok video — pick the envelope</h1>
+    <p>Same real look, six ways to frame the video. The cookie wall + TikTok's logo/follow/music chrome only appear inside the <b>live-embed</b> ones (B, C, E) — they're TikTok's, I can't remove them. The thumbnail ones (A, D, F) are fully clean but the video plays in the TikTok app, not in our page. Tell me the letter.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+<script>
+const TH = "/api/discovery/thumb/c0b9fba3-29ca-4262-a7e3-f281f8f97640";
+const VID = "7588240469901987094";
+const EMBED = `https://www.tiktok.com/embed/v2/${VID}?autoplay=1&muted=1`;
+const APP = `https://www.tiktok.com/@ebthatbarber/video/${VID}`;
+const backHeart = `<div class="top"><div class="ic frost"><i data-lucide="arrow-left"></i></div><div class="ic frost"><i data-lucide="heart"></i></div></div>`;
+
+function reveal(btn){
+  const frame = btn.closest('.frame');
+  const ifr = document.createElement('iframe');
+  ifr.src = EMBED; ifr.setAttribute('allow','autoplay; encrypted-media');
+  frame.appendChild(ifr);
+  btn.remove();
+}
+
+const V = [
+  { tag:"A · the old one", h:"Thumbnail + play → opens TikTok", note:"<span class='good'>Clean.</span> No cookie wall, no chrome. Tap plays in the TikTok app (leaves the page). This is the 2-months-ago envelope.",
+    body:`<img class="thumb" src="${TH}"><div class="scrim"></div>${backHeart}<a class="playorb" href="${APP}" target="_blank"><span class="o frost"><i data-lucide="play"></i></span></a><a class="pill frost" href="${APP}" target="_blank">TikTok</a>` },
+
+  { tag:"B · current", h:"Full-bleed live embed (autoplay)", note:"In-web play. <span class='bad'>TikTok's cookie wall + logo/follow chrome sit on it</span> — unfixable.",
+    body:`<iframe src="${EMBED}" allow="autoplay; encrypted-media"></iframe>${backHeart}` },
+
+  { tag:"C · contained", h:"Embed as a card", note:"Same live embed, inset in a rounded card on grey — TikTok's chrome reads as an intentional 'embedded post' (tweet-style) instead of broken full-bleed. Cookie wall still shows.",
+    body:`<div class="cardwrap"><div class="h"><i data-lucide="music"></i> TikTok · @ebthatbarber</div><div class="embedbox"><iframe src="${EMBED}" allow="autoplay; encrypted-media"></iframe></div></div>` },
+
+  { tag:"D · hybrid", h:"Thumbnail → tap reveals embed", note:"<span class='good'>Clean by default.</span> Tap the play orb and the in-web embed loads in place (cookie wall only then). Clean first impression, in-web play on demand.",
+    body:`<img class="thumb" src="${TH}"><div class="scrim"></div>${backHeart}<button class="playorb" onclick="reveal(this)"><span class="o frost"><i data-lucide="play"></i></span></button>` },
+
+  { tag:"E · zoomed", h:"Cropped embed (fill the video)", note:"Live embed scaled up + clipped to crop TikTok's side margins + some chrome, so the video fills more. <span class='bad'>Fragile</span> — TikTok's layout/cookie wall shifts, so the crop isn't reliable.",
+    body:`<div class="zoom"><iframe src="${EMBED}" allow="autoplay; encrypted-media"></iframe></div>${backHeart}` },
+
+  { tag:"F · clean CTA", h:"Thumbnail + bottom bar", note:"<span class='good'>Clean.</span> Static image, one clear 'Watch on TikTok' bar. Plays in the app. Most premium / least busy.",
+    body:`<img class="thumb" src="${TH}"><div class="scrim"></div>${backHeart}<a href="${APP}" target="_blank" style="text-decoration:none"><div class="ctabar"><i data-lucide="play"></i> Watch on TikTok</div></a>` },
+];
+
+document.getElementById("grid").insertAdjacentHTML("beforeend", V.map(v => `
+  <div class="v">
+    <div class="cap"><span class="tag">${v.tag}</span><h2>${v.h}</h2><p>${v.note}</p></div>
+    <div class="frame">${v.body}</div>
+  </div>`).join(""));
+lucide.createIcons();
+</script>
+</body>
+</html>
