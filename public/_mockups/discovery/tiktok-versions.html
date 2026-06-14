@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · every TikTok video structure (from the commits)</title>
+<!--
+  Exists-check: the look-detail hero ALREADY renders the TikTok video (components-legacy/discovery/DetailPage.tsx,
+  currently in-web embed/v2). These are NOT invented variations — each is the ACTUAL structure pulled from a real
+  commit: V1 = 15cb7a9e7^ (embed/v2?lang, no autoplay), V2 = a6cd082dc (thumbnail+overlay→opens TikTok), V3 =
+  08a400910 feed VideoCard (thumb behind + iframe on top + fallback), V4 = 8ed71a76a (autoplay 9/16), V5 = df5b2c41e
+  (bottom-crop), V6 = 797cb05dc (aspect-fill, current). Real video 7588240469901987094. Owner picks the real one.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --blue:#276EF1; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:28px 20px 80px;}
+  .head{max-width:1200px; margin:0 auto 22px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:23px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13px; line-height:1.5; max-width:880px;}
+  .grid{display:flex; gap:24px; justify-content:center; flex-wrap:wrap; align-items:flex-start; max-width:1340px; margin:0 auto;}
+  .v{width:300px;}
+  .cap{margin:0 2px 10px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:7px;}
+  .cap .commit{font-family:monospace; font-size:10.5px; color:var(--ink-3);}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:15px; margin:3px 0 3px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12px; color:var(--ink-2); line-height:1.45;}
+  .cap .inweb{color:#16A34A; font-weight:600;} .cap .opens{color:#B91C1C; font-weight:600;}
+
+  .frame{width:300px; height:533px; overflow:hidden; position:relative; background:#0c0c0c; border:1px solid #d6d6db; box-shadow:0 18px 36px -22px rgba(10,10,10,.30);}
+  .r16{border-radius:16px;}
+  .frame img.thumb{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+  /* V2 overlay */
+  .ov{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(10,10,10,.30); text-decoration:none;}
+  .ov .orb{width:56px;height:56px;border-radius:999px;background:rgba(255,255,255,.20);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.30);display:grid;place-items:center;}
+  .ov .orb svg{width:22px;height:22px;color:#fff;margin-left:2px;}
+  .ov .lbl{display:flex;align-items:center;gap:6px;color:#fff;font-size:12px;font-weight:600;background:rgba(10,10,10,.5);backdrop-filter:blur(4px);padding:6px 12px;border-radius:999px;}
+  .ov .lbl svg{width:12px;height:12px;}
+  /* V5 crop */
+  .crop iframe{width:110%;height:110%;inset:auto;bottom:0;left:50%;transform:translateX(-50%);}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Every TikTok video structure we ever had (pulled from the commits)</h1>
+    <p>Same real video, each frame is the EXACT structure from a real commit (commit hash on each). <span class="inweb">Green = plays in-web (never opens TikTok)</span>. <span class="opens">Red = opens TikTok</span>. The live-embed ones show TikTok's cookie wall because it's inside their iframe. Note V1: no-autoplay, so the cookie wall only appears when you tap, not on load. Tell me the letter.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+
+<script>
+const TH = "/api/discovery/thumb/c0b9fba3-29ca-4262-a7e3-f281f8f97640";
+const VID = "7588240469901987094";
+const APP = "https://www.tiktok.com/@ebthatbarber/video/"+VID;
+const EM_AUTO = `https://www.tiktok.com/embed/v2/${VID}?autoplay=1&muted=1`;
+const EM_LANG = `https://www.tiktok.com/embed/v2/${VID}?lang=de`;
+
+const V = [
+  { tag:"V1 · original", commit:"15cb7a9e7^ · pre Mar-28", web:1, h:"embed iframe, ?lang, NO autoplay",
+    note:"The first version. Loads TikTok's player showing the frame + a play button; the cookie wall only appears WHEN YOU TAP, not on load. rounded-16, 9/16.",
+    body:`<div class="frame r16"><iframe src="${EM_LANG}" allow="encrypted-media"></iframe></div>` },
+
+  { tag:"V3 · feed card", commit:"08a400910", web:1, h:"thumbnail behind + autoplay iframe on top",
+    note:"The feed structure: thumbnail is the always-visible background, the autoplay-muted iframe sits on top, 5s fallback to thumbnail if it fails to load.",
+    body:`<div class="frame"><img class="thumb" src="${TH}"><iframe src="${EM_AUTO}" allow="autoplay; encrypted-media"></iframe></div>` },
+
+  { tag:"V4 · my v1", commit:"8ed71a76a", web:1, h:"autoplay iframe, fixed 9/16, fills",
+    note:"Plain autoplay embed in a fixed 9/16 frame, iframe fills inset-0.",
+    body:`<div class="frame"><iframe src="${EM_AUTO}" allow="autoplay; encrypted-media"></iframe></div>` },
+
+  { tag:"V5 · my crop", commit:"df5b2c41e", web:1, h:"over-scaled 110%, bottom-anchored",
+    note:"Aspect-detected frame, iframe scaled to 110% + bottom-anchored to crop side margins + top logo (the 'too far' one).",
+    body:`<div class="frame crop"><iframe src="${EM_AUTO}" allow="autoplay; encrypted-media"></iframe></div>` },
+
+  { tag:"V6 · current", commit:"797cb05dc", web:1, h:"aspect-fill iframe, no crop",
+    note:"What's live now: frame shaped to the real video ratio, iframe fills it, no crop, autoplay.",
+    body:`<div class="frame"><iframe src="${EM_AUTO}" allow="autoplay; encrypted-media"></iframe></div>` },
+
+  { tag:"V2 · opens app", commit:"a6cd082dc · Mar-28→", web:0, h:"thumbnail + play → opens TikTok",
+    note:"You BANNED this. Shown only for completeness — it's the clean-looking one, but it leaves the site to play.",
+    body:`<div class="frame r16"><img class="thumb" src="${TH}"><a class="ov" href="${APP}" target="_blank"><div class="orb"><i data-lucide="play"></i></div><span class="lbl"><i data-lucide="external-link"></i> Auf TikTok ansehen</span></a></div>` },
+];
+
+document.getElementById("grid").insertAdjacentHTML("beforeend", V.map(v => `
+  <div class="v">
+    <div class="cap"><span class="tag">${v.tag}</span> <span class="commit">${v.commit}</span><h2>${v.h}</h2>
+      <p><span class="${v.web?'inweb':'opens'}">${v.web?'plays in-web':'opens TikTok'}</span> · ${v.note}</p></div>
+    ${v.body}
+  </div>`).join(""));
+lucide.createIcons();
+</script>
+</body>
+</html>
