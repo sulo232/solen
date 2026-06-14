@@ -83,7 +83,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [aspect, setAspect] = useState("9 / 16");
   const [descOpen, setDescOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [playing, setPlaying] = useState(false);
 
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
@@ -140,12 +139,13 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero — static frame by default; tap plays the TikTok video INLINE in-web. The "TikTok" pill is the
-           separate jump-into-the-app button (owner 2026-06-14: "play in web, the tiktok button jumps into tiktok"). ─── */}
-      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: aspect }}>
-        {playing && videoId ? (
+      {/* ─── Hero — for TikTok looks the embed renders + autoplays on open (owner 2026-06-14: "auto plays when u open
+           it", no tap, no big-image→small-embed jump). The "TikTok" pill jumps into the app. Photos = static image.
+           NOTE: the cookie wall + white gaps + small player are INSIDE TikTok's cross-origin iframe — not fixable. ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: videoId ? "9 / 16" : aspect }}>
+        {videoId ? (
           <iframe
-            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1`}
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
             className="absolute inset-0 h-full w-full border-0"
             allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
             title={item.style_name || "TikTok"}
@@ -167,26 +167,26 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
         )}
 
-        {/* Tap-to-play — plays the video INLINE in-web (TikTok embed). Degrades to opening the app only when we have
-            no embeddable id. Hidden once playing; z-[3] keeps it below the controls + source pill. */}
-        {!playing && isVideo && (item.tiktok_url || videoId) && (
-          <button
-            type="button"
-            onClick={() => { if (videoId) setPlaying(true); else if (item.tiktok_url) window.open(item.tiktok_url, "_blank", "noopener"); }}
+        {/* Photos with no embeddable video still get a tap-to-open-app affordance. */}
+        {!videoId && isVideo && item.tiktok_url && (
+          <a
+            href={item.tiktok_url}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={t.play}
             className="absolute inset-0 z-[3] grid place-items-center"
           >
-            <span style={FROST_GLASS} className="grid h-[52px] w-[52px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+            <span style={FROST_GLASS} className="grid h-[52px] w-[52px] place-items-center rounded-full">
               <Play size={22} className="ml-0.5 text-s-ink" fill="currentColor" />
             </span>
-          </button>
+          </a>
         )}
 
-        {/* Top controls — frosted back (left) + heart (right). While playing, back stops the video first. */}
+        {/* Top controls — frosted back (left) + heart (right). */}
         <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
           <button
             type="button"
-            onClick={() => (playing ? setPlaying(false) : router.back())}
+            onClick={() => router.back()}
             aria-label={t.back}
             style={FROST_GLASS}
             className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
