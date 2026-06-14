@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · Look detail</title>
+<!--
+  Exists-check: /discover/[id] look-detail ALREADY renders via components-legacy/discovery/DetailPage.tsx (npm run exists detail).
+  REMOVED hit: "discovery entdecken redesign" NO-TOUCH lock , lifted by owner 2026-06-13. NEW: refined detail-page direction.
+  v4 (owner feedback): description is a dropdown (matches the Details dropdown , two consistent expanders); Book + Add-to-booking
+  lowered contrast (tonal, not solid black); date has a calendar icon + no middot; Copy is an icon, not text; icons sized off the
+  SVG (Lucide bug fixed). Real salons + real prices. Video = TikTok embed for TikTok content; native player only for owned video.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7;
+    --sunken:#F4F4F5; --bg:#FFFFFF; --blue:#276EF1; --star:#FFC32B; --r-card:16px;
+  }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  /* Lucide swaps <i data-lucide> for <svg>, so icon size MUST target svg (not i), else it renders at the 24px default. */
+  .phone svg{width:18px; height:18px;}
+  .status .ic svg{width:16px; height:16px;}
+  .hero .mute .iconbtn svg{width:16px; height:16px;}
+  .cred .d svg{width:13px; height:13px;}
+  .script .l svg{width:15px; height:15px;}
+  .card .ph .hb svg{width:15px; height:15px;}
+  .more-toggle svg{width:15px; height:15px;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:30px 20px 80px;}
+  .head{max-width:760px; margin:0 auto 20px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:23px; letter-spacing:-.02em; margin:0 0 5px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13px; line-height:1.5;}
+  .wrap{display:flex; justify-content:center;}
+
+  .phone{width:412px; background:var(--bg); border-radius:44px; overflow:hidden;
+    border:1px solid #d6d6db; box-shadow:0 34px 66px -26px rgba(10,10,10,.30), 0 8px 18px -10px rgba(10,10,10,.16);}
+  .screen{height:840px; overflow-y:auto; overflow-x:hidden; position:relative; background:#0c0c0c;}
+  .screen::-webkit-scrollbar{width:0;}
+  .status{height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 28px; position:absolute; top:0; left:0; right:0; z-index:30; color:var(--ink);}
+  .status .t{font-weight:600; font-size:15px; letter-spacing:-.01em;}
+  .status .ic{display:flex; gap:7px;}
+  /* our chrome gets its OWN top bar (not overlaid on TikTok's creator header / logo) */
+  .appbar{display:flex; align-items:center; justify-content:space-between; padding:56px 16px 12px; background:#fff;}
+  .appbar .ic{width:38px; height:38px; border-radius:999px; border:1px solid var(--line); display:grid; place-items:center; color:var(--ink); cursor:pointer;}
+
+  .frost{background:rgba(255,255,255,.72); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid rgba(10,10,10,.05);}
+  .iconbtn{width:34px; height:34px; border-radius:999px; display:grid; place-items:center; cursor:pointer; color:var(--ink);}
+
+  .hero{position:relative; width:100%; aspect-ratio:9/16; background:#0c0c0c; overflow:hidden;}
+  .hero img{width:100%; height:100%; object-fit:cover; display:block; animation:fadeIn .6s ease both;}
+  .hero .ttplayer{width:100%; height:100%; border:0; display:block; background:#0c0c0c;}
+  .hero .top{position:absolute; top:60px; left:18px; right:18px; display:flex; justify-content:space-between; align-items:flex-start; z-index:10;}
+  .hero .src{position:absolute; left:18px; bottom:42px; z-index:10; color:var(--ink); font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:999px; text-decoration:none;}
+  .hero .mute{position:absolute; right:18px; bottom:42px; z-index:10;}
+  .hero .mute .iconbtn{width:32px; height:32px;}
+
+  .sheet{position:relative; z-index:5; margin-top:0; background:var(--bg); border-radius:28px 28px 0 0;
+    box-shadow:0 -10px 28px -16px rgba(0,0,0,.22); padding:24px 18px 34px;}
+  @keyframes riseIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0} to{opacity:1}}
+  .sheet > *{animation:riseIn .5s cubic-bezier(.22,.61,.36,1) both;}
+  .sheet > *:nth-child(1){animation-delay:.04s}
+  .sheet > *:nth-child(2){animation-delay:.09s}
+  .sheet > *:nth-child(3){animation-delay:.14s}
+  .sheet > *:nth-child(4){animation-delay:.19s}
+  .sheet > *:nth-child(5){animation-delay:.24s}
+  .sheet > *:nth-child(6){animation-delay:.30s}
+  .sheet > *:nth-child(7){animation-delay:.36s}
+
+  .cred{display:flex; align-items:center; gap:8px; margin-bottom:9px;}
+  .cred a{font-size:13px; color:var(--blue); font-weight:500; text-decoration:none;}
+  .cred .d{display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--ink-3);}
+  h1.look{font-family:'Inter Tight'; font-weight:700; font-size:25px; line-height:1.16; letter-spacing:-.022em; margin:0;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+  .tag{font-size:12px; color:var(--ink-2); background:var(--sunken); border-radius:999px; padding:4px 11px;}
+
+  .descwrap{margin-top:18px;}
+  .desc{font-size:14.5px; line-height:1.62; color:var(--ink-2); margin:0; transition:none;}
+  .desc.clamp{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .more-toggle{margin-top:8px; display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-weight:500; font-size:13.5px; cursor:pointer; background:none; border:0; padding:0; font-family:inherit;}
+  .more-toggle svg{transition:transform .2s ease;}
+  .more-toggle.open svg{transform:rotate(180deg);}
+
+  .script{margin-top:24px; background:var(--sunken); border-radius:var(--r-card); padding:16px;}
+  .script .l{display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-.01em;}
+  .script p{margin:0; font-size:13.5px; line-height:1.58; color:var(--ink-2);}
+  .script .acts{margin-top:14px; display:flex; gap:9px; align-items:stretch;}
+  /* lower-contrast tonal buttons (no solid black) */
+  .btn{display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:10px 18px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:'Inter';}
+  .btn-tonal{background:var(--sunken); color:var(--ink); border:1px solid var(--line);}
+  .btn-icon{display:inline-grid; place-items:center; width:42px; border-radius:999px; background:#fff; border:1px solid var(--line); cursor:pointer; color:var(--ink);}
+  .btn-icon svg{width:17px; height:17px;}
+
+  .sec{margin-top:30px;}
+  .sec .hd{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .sec .hd h3{font-family:'Inter Tight'; font-weight:600; font-size:17px; letter-spacing:-.01em; margin:0;}
+  .sec .hd .lk{font-size:13px; color:var(--blue); font-weight:600; cursor:pointer;}
+
+  .salon{display:flex; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line); cursor:pointer;}
+  .salon:first-of-type{border-top:0;}
+  .salon .av{width:40px; height:40px; border-radius:12px; background:var(--sunken); display:grid; place-items:center; flex:0 0 auto;
+    font-family:'Inter Tight'; font-weight:700; font-size:14px; color:var(--ink-2); letter-spacing:-.02em;}
+  .salon .mid{flex:1; min-width:0;}
+  .salon .mid .nm{font-size:14.5px; font-weight:600; letter-spacing:-.01em;}
+  .salon .mid .rt{display:inline-flex; align-items:center; gap:4px; font-size:12.5px; color:var(--ink-2); font-weight:500; margin-top:3px;}
+  .salon .mid .rt svg{width:13px!important; height:13px!important; color:var(--star)!important; fill:var(--star)!important;}
+  .salon .rt2{display:flex; align-items:center; gap:12px;}
+  .salon .rt2 .pr{font-size:14.5px; font-weight:700; letter-spacing:-.01em; font-family:'Inter Tight';}
+  .salon .rt2 .bk{background:var(--sunken); color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Inter';}
+
+  .grid{column-count:2; column-gap:9px; margin-top:10px;}
+  .card{break-inside:avoid; margin-bottom:9px;}
+  .card .ph{position:relative; border-radius:var(--r-card); overflow:hidden; background:#161616;}
+  .card .ph img{width:100%; display:block;}
+  .card .ph .hb{position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:999px; background:rgba(255,255,255,.92); display:grid; place-items:center;}
+  .card .ph .hb svg{color:var(--ink);}
+  .card .nm{font-size:12.5px; font-weight:500; color:var(--ink); margin:8px 2px 1px; line-height:1.32; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .card .cr{font-size:11.5px; color:var(--ink-3); margin:0 2px; display:flex; align-items:center; gap:5px;}
+  .card .cr .pr{color:var(--ink-2); font-weight:500;}
+
+  .details{margin-top:28px; border-top:1px solid var(--line);}
+  .details .row{display:flex; align-items:center; justify-content:space-between; padding:16px 2px; cursor:pointer;}
+  .details .row .t{font-family:'Inter Tight'; font-weight:600; font-size:15px; letter-spacing:-.01em;}
+  .details .row svg{color:var(--ink-3); transition:transform .2s ease;}
+  .details.open .row svg{transform:rotate(180deg);}
+  .details .panel{display:none;}
+  .details.open .panel{display:block;}
+  .details .panel .kv{display:flex; gap:14px; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px;}
+  .details .panel .kv .k{width:108px; flex:0 0 auto; color:var(--ink-3);}
+  .details .panel .kv .v{color:var(--ink); flex:1;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discovery · Look detail · TikTok plays inline</h1>
+    <p>Overlay fixed: our back + save now sit in their own white bar ABOVE the player, instead of colliding with TikTok's creator header and logo. The player below is still TikTok's official embed, so it plays inline, but the cookie prompt + their chrome inside the player stay (their iframe, can't restyle).</p>
+  </div>
+
+  <div class="wrap"><div class="phone"><div class="screen" id="screen"></div></div></div>
+
+<script>
+const LOOK = {
+  id:"c0b9fba3-29ca-4262-a7e3-f281f8f97640",
+  title:"Textured Crop Fade with Shaved Line Design",
+  handle:"ebthatbarber", date:"22 Mar",
+  desc:"A modern textured crop with a precise mid taper fade and a sharp shaved line. Top kept 6-8 cm, point-cut for messy volume styled forward; sides fade from 0 mm skin up to about 1.5 cm.",
+  tags:["taper fade","textured crop"],
+  script:"I'd like a textured crop with a mid taper fade. Sides and nape to 0 mm, faded cleanly up to about 1.5 cm, with a sharp shaved line separating the top. Keep the top 6-8 cm and point-cut it for a messy, voluminous finish.",
+  upkeep:"Medium · trim every 3-4 weeks",
+  faces:"Oval, round, square, heart, diamond",
+  products:"Matte styling clay, sea salt spray, texturizing powder",
+};
+const SALONS=[
+  {name:"Cuts & Culture", ini:"CC", rating:"4.81", price:45},
+  {name:"Atelier Haarwerk", ini:"AH", rating:"4.56", price:55},
+  {name:"Salon Lumière", ini:"SL", rating:"4.40", price:50},
+];
+const SIM=[
+  {id:"46d2da15-2184-4c57-a4f9-52b0efed853a",nm:"Textured French Crop with Low Drop Fade",cr:"neno.blends",pr:55},
+  {id:"0ea9d957-c536-44a5-bbfd-fc86ffd3e717",nm:"Textured Crop with Low Taper Fade",cr:"luis",pr:55},
+  {id:"3d012df8-e478-42e1-b76c-141e9ef75553",nm:"Textured Flow with Low Taper",cr:"Cutzbydamon",pr:null},
+  {id:"c52bc8b3-b467-4848-8628-3b5d68ca33a0",nm:"Modern Textured Scissor Crop",cr:"HglBlendzz",pr:null},
+];
+const T=id=>`/api/discovery/thumb/${id}`;
+
+const html = `
+  <div class="status">
+    <div class="t">9:41</div>
+    <div class="ic"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div>
+  </div>
+  <div class="appbar">
+    <div class="ic"><i data-lucide="arrow-left"></i></div>
+    <div class="ic"><i data-lucide="heart"></i></div>
+  </div>
+  <div class="hero">
+    <iframe class="ttplayer" src="https://www.tiktok.com/player/v1/7588240469901987094?rel=0&description=0&music_info=0" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <div class="sheet">
+    <div class="cred">
+      <a href="#">@${LOOK.handle}</a>
+      <span class="d"><i data-lucide="calendar-days"></i> ${LOOK.date}</span>
+    </div>
+    <h1 class="look">${LOOK.title}</h1>
+    <div class="tags">${LOOK.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+
+    <div class="descwrap">
+      <p class="desc clamp">${LOOK.desc}</p>
+      <button class="more-toggle" data-toggle="desc"><span>Read more</span><i data-lucide="chevron-down"></i></button>
+    </div>
+
+    <div class="script">
+      <div class="l"><i data-lucide="scissors"></i> Tell your stylist</div>
+      <p>${LOOK.script}</p>
+      <div class="acts">
+        <button class="btn btn-tonal">Add to booking</button>
+        <button class="btn-icon" aria-label="Copy"><i data-lucide="copy"></i></button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="hd"><h3>Book this look</h3><span class="lk">See all</span></div>
+      ${SALONS.map(s=>`
+        <div class="salon">
+          <div class="av">${s.ini}</div>
+          <div class="mid">
+            <div class="nm">${s.name}</div>
+            <div class="rt"><i data-lucide="star"></i>${s.rating}</div>
+          </div>
+          <div class="rt2"><span class="pr">CHF ${s.price}</span><button class="bk">Book</button></div>
+        </div>`).join("")}
+    </div>
+
+    <div class="sec">
+      <div class="hd"><h3>More like this</h3><span class="lk">See all</span></div>
+      <div class="grid">${SIM.map(s=>`
+        <div class="card"><div class="ph">
+          <img src="${T(s.id)}" alt="" onerror="this.style.aspectRatio='3/4'">
+          <div class="hb"><i data-lucide="heart"></i></div>
+        </div>
+        <div class="nm">${s.nm}</div>
+        <div class="cr">@${s.cr}${s.pr?`<span>·</span><span class="pr">from CHF ${s.pr}</span>`:''}</div>
+        </div>`).join("")}</div>
+    </div>
+
+    <div class="details">
+      <div class="row"><span class="t">Details</span><i data-lucide="chevron-down"></i></div>
+      <div class="panel">
+        <div class="kv"><div class="k">Upkeep</div><div class="v">${LOOK.upkeep}</div></div>
+        <div class="kv"><div class="k">Face shapes</div><div class="v">${LOOK.faces}</div></div>
+        <div class="kv"><div class="k">Products</div><div class="v">${LOOK.products}</div></div>
+        <div class="kv"><div class="k">Cut guide</div><div class="v">Full technical steps for your barber.</div></div>
+      </div>
+    </div>
+  </div>
+`;
+document.getElementById("screen").insertAdjacentHTML("beforeend", html);
+lucide.createIcons();
+
+// two dropdowns: description + details
+document.querySelector('[data-toggle="desc"]').addEventListener('click', (e)=>{
+  const btn=e.currentTarget, p=document.querySelector('.desc');
+  p.classList.toggle('clamp'); btn.classList.toggle('open');
+  btn.querySelector('span').textContent = p.classList.contains('clamp') ? 'Read more' : 'Read less';
+});
+document.querySelector('.details .row').addEventListener('click', ()=>{
+  document.querySelector('.details').classList.toggle('open');
+});
+</script>
+</body>
+</html>

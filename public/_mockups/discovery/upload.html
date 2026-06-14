@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · Add a look (upload)</title>
+<!--
+  Exists-check: discovery upload is broken today (audit) , user POST dead, salon-portfolio pipeline MISSING. Upload primitives ImageUpload/ImageUploader/InspoUploader/FormulaPhotoUpload exist to reuse (npm run exists upload).
+  REMOVED hit: none. NEW: the add-a-look UI for the two audiences , A user posts a look; B salon pushes portfolio photos into discovery (tied to the salon = bookable, the strategic missing pipeline). English, copy-economy, real images as stand-ins.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --bg:#FFFFFF; --blue:#276EF1; --green:#16A34A; --r-card:16px; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  .phone svg{width:18px; height:18px;}
+  .status .ic svg{width:16px;height:16px;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:30px 20px 70px;}
+  .head{max-width:1000px; margin:0 auto 24px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.55; max-width:720px;}
+  .stage{display:flex; gap:40px; justify-content:center; align-items:flex-start; flex-wrap:wrap;}
+  .col{width:392px;}
+  .cap{margin:0 2px 14px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:8px;}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:17px; margin:0 0 4px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+
+  .phone{width:392px; background:#fff; border-radius:42px; overflow:hidden; border:1px solid #d6d6db;
+    box-shadow:0 30px 60px -26px rgba(10,10,10,.30), 0 8px 18px -10px rgba(10,10,10,.16);}
+  .screen{position:relative; height:780px; overflow:hidden; background:#fff;}
+  .scroll{position:absolute; inset:0 0 76px 0; overflow-y:auto;} .scroll::-webkit-scrollbar{width:0;}
+  .status{height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 22px 0 26px; color:var(--ink);}
+  .status .t{font-weight:600; font-size:15px;} .status .ic{display:flex; gap:7px;}
+  .navbar{display:flex; align-items:center; gap:12px; padding:0 16px 14px;}
+  .navbar .x{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--ink);cursor:pointer;}
+  .navbar h1{font-family:'Inter Tight'; font-weight:700; font-size:18px; letter-spacing:-.01em; margin:0; flex:1;}
+  .navbar .ct{font-size:13px; color:var(--ink-3); font-weight:500;}
+
+  .pad{padding:0 18px;}
+  .preview{position:relative; width:100%; aspect-ratio:4/5; border-radius:var(--r-card); overflow:hidden; background:#161616; margin-bottom:18px;}
+  .preview img{width:100%;height:100%;object-fit:cover;display:block;}
+  .preview .chg{position:absolute; right:10px; bottom:10px; display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-radius:999px; padding:7px 13px; font-size:12.5px; font-weight:600; color:var(--ink);}
+  .preview .chg svg{width:14px;height:14px;}
+
+  .fld{margin-bottom:18px;}
+  .fld .l{font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px; letter-spacing:-.01em;}
+  .input{width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:14px; font-size:14.5px; color:var(--ink); font-family:inherit; background:#fff;}
+  .input.ph{color:var(--ink-3);}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{font-size:13px; font-weight:500; padding:8px 14px; border-radius:999px; background:var(--sunken); color:var(--ink); cursor:pointer; border:1px solid transparent;}
+  .chip.on{background:#fff; border-color:var(--ink); color:var(--ink); font-weight:600;}
+
+  .note{display:flex; align-items:center; gap:11px; background:var(--sunken); border-radius:var(--r-card); padding:13px 14px; margin-bottom:16px;}
+  .note .ic{width:38px;height:38px;border-radius:11px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto;color:var(--ink);}
+  .note .ic svg{width:18px;height:18px;}
+  .note .t{font-size:13px; line-height:1.45; color:var(--ink-2);}
+  .note .t b{color:var(--ink); font-weight:600;}
+
+  .gal{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:0 18px 18px;}
+  .gph{position:relative; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#161616; cursor:pointer;}
+  .gph img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gph .ck{position:absolute; top:6px; right:6px; width:22px;height:22px;border-radius:999px;border:1.5px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.3); display:grid;place-items:center;}
+  .gph.sel .ck{background:var(--ink); border-color:var(--ink);}
+  .gph.sel .ck svg{width:13px;height:13px;color:#fff;}
+  .gph:not(.sel) .ck{background:rgba(255,255,255,.25);}
+  .gph:not(.sel) .ck svg{display:none;}
+  .gph.sel::after{content:""; position:absolute; inset:0; border:2px solid var(--ink); border-radius:12px;}
+
+  .cta{position:absolute; left:0; right:0; bottom:0; padding:12px 18px 16px; background:rgba(255,255,255,.94); backdrop-filter:blur(12px); border-top:1px solid var(--line);}
+  .cta .btn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--ink); color:#fff; border:0; border-radius:999px; padding:14px; font-family:'Inter Tight'; font-weight:600; font-size:15px; cursor:pointer;}
+  .cta .btn svg{width:17px;height:17px;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discovery · Add a look</h1>
+    <p>How looks actually get in , the part that's broken today. Left: a person posts a look (photo + style + category). Right: the missing one , a salon pushes its own work straight into discovery, where it links back to the salon so clients can book it.</p>
+  </div>
+
+  <div class="stage">
+    <div class="col">
+      <div class="cap"><span class="tag">A · Anyone posts</span><h2>Add a look</h2><p>Pick a photo, name the style, tag a category. Posts to discovery.</p></div>
+      <div class="phone"><div class="screen" id="postScreen"></div></div>
+    </div>
+    <div class="col">
+      <div class="cap"><span class="tag">B · Salon portfolio</span><h2>Push your work into discovery</h2><p>The missing pipeline: a salon selects from its gallery; each look links back to the salon = bookable.</p></div>
+      <div class="phone"><div class="screen" id="salonScreen"></div></div>
+    </div>
+  </div>
+
+<script>
+const T=id=>`/api/discovery/thumb/${id}`;
+const GAL=["c0b9fba3-29ca-4262-a7e3-f281f8f97640","46d2da15-2184-4c57-a4f9-52b0efed853a","0ea9d957-c536-44a5-bbfd-fc86ffd3e717","c52bc8b3-b467-4848-8628-3b5d68ca33a0","3d012df8-e478-42e1-b76c-141e9ef75553","7b4b32f6-409f-4d72-bf3b-fce8c6c1b699","ac75cb12-1deb-4f06-9546-bfe1d044d5cf","59b33979-5dd8-4845-8636-972a378b8358","d4778f74-e56c-44a9-91d6-97a2fbf007de"];
+const SEL=[0,2,3]; // selected indices
+function statusBar(){return `<div class="status"><div class="t">9:41</div><div class="ic"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div></div>`;}
+
+// A , user posts a look
+document.getElementById("postScreen").insertAdjacentHTML("beforeend", `
+  <div class="scroll">
+    ${statusBar()}
+    <div class="navbar"><div class="x"><i data-lucide="x"></i></div><h1>Add a look</h1></div>
+    <div class="pad">
+      <div class="preview">
+        <img src="${T('c0b9fba3-29ca-4262-a7e3-f281f8f97640')}" alt="">
+        <span class="chg"><i data-lucide="image"></i> Change</span>
+      </div>
+      <div class="fld"><div class="l">Style name</div><input class="input" value="Textured crop fade"></div>
+      <div class="fld"><div class="l">Category</div>
+        <div class="chips"><span class="chip">Hair</span><span class="chip on">Barber</span><span class="chip">Nails</span><span class="chip">Lashes</span><span class="chip">Brows</span></div>
+      </div>
+      <div class="fld"><div class="l">Tags <span style="color:var(--ink-3);font-weight:400">(optional)</span></div><input class="input ph" value="taper fade, short sides, sharp line"></div>
+    </div>
+  </div>
+  <div class="cta"><button class="btn">Post look</button></div>
+`);
+
+// B , salon pushes portfolio
+document.getElementById("salonScreen").insertAdjacentHTML("beforeend", `
+  <div class="scroll">
+    ${statusBar()}
+    <div class="navbar"><div class="x"><i data-lucide="x"></i></div><h1>Add to discovery</h1><span class="ct">3 selected</span></div>
+    <div class="pad">
+      <div class="note"><div class="ic"><i data-lucide="store"></i></div><div class="t">Linked to <b>Cuts &amp; Culture</b>, so clients can book the look from your page.</div></div>
+    </div>
+    <div class="gal">${GAL.map((id,i)=>`
+      <div class="gph ${SEL.includes(i)?'sel':''}"><img src="${T(id)}" alt=""><div class="ck"><i data-lucide="check"></i></div></div>`).join("")}</div>
+  </div>
+  <div class="cta"><button class="btn"><i data-lucide="plus"></i> Add 3 to discovery</button></div>
+`);
+
+lucide.createIcons();
+</script>
+</body>
+</html>

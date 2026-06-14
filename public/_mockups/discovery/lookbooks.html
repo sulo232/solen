@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · Lookbooks (saved)</title>
+<!--
+  Exists-check: /discover/saved + /discover/saved/[id] ALREADY render (the saved boards list + a board's items); SaveToBoardSheet + discovery_collections exist (npm run exists saved).
+  REMOVED hit: /account/saved (a DIFFERENT "saved salons" page, orphaned) , N/A. NEW: the saved surface redesigned as "Lookbooks" (owner rename from "board"),
+  consistent with the feed save sheet + card grammar. English, copy-economy, real look images. Lookbook names = illustrative.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --bg:#FFFFFF; --blue:#276EF1; --r-card:16px; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  .phone svg{width:18px; height:18px;}
+  .status .ic svg{width:16px;height:16px;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:30px 20px 70px;}
+  .head{max-width:1000px; margin:0 auto 24px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.55; max-width:720px;}
+  .stage{display:flex; gap:40px; justify-content:center; align-items:flex-start; flex-wrap:wrap;}
+  .col{width:392px;}
+  .cap{margin:0 2px 14px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:8px;}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:17px; margin:0 0 4px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+
+  .phone{width:392px; background:#fff; border-radius:42px; overflow:hidden; border:1px solid #d6d6db;
+    box-shadow:0 30px 60px -26px rgba(10,10,10,.30), 0 8px 18px -10px rgba(10,10,10,.16);}
+  .screen{position:relative; height:780px; overflow-y:auto; background:#fff;} .screen::-webkit-scrollbar{width:0;}
+  .status{height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 22px 0 26px; color:var(--ink);}
+  .status .t{font-weight:600; font-size:15px;} .status .ic{display:flex; gap:7px;}
+  .navbar{display:flex; align-items:center; gap:6px; padding:2px 14px 14px;}
+  .navbar .bk{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;color:var(--ink);cursor:pointer;}
+  .navbar h1{font-family:'Inter Tight'; font-weight:800; font-size:23px; letter-spacing:-.02em; margin:0; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .navbar .opt{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink);}
+
+  /* lookbooks grid */
+  .lbgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 18px 24px;}
+  .lb{cursor:pointer; animation:rise .5s cubic-bezier(.22,.61,.36,1) both;}
+  .lb .cov{width:100%; aspect-ratio:1; border-radius:var(--r-card); overflow:hidden; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px; background:#161616;}
+  .lb .cov img{width:100%;height:100%;object-fit:cover;display:block;}
+  .lb .nm{font-size:14.5px; font-weight:600; letter-spacing:-.01em; margin:9px 2px 0;}
+  .lb.new .cov{display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; background:var(--sunken); border:1.5px dashed var(--line); color:var(--ink-2);}
+  .lb.new .cov svg{width:26px;height:26px;}
+  .lb.new .cov span{font-size:13px; font-weight:600;}
+  @keyframes rise{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
+
+  /* opened lookbook , masonry */
+  .feed{column-count:2; column-gap:7px; padding:0 7px 24px;}
+  .cardw{break-inside:avoid; margin-bottom:7px;}
+  .ph{position:relative; border-radius:var(--r-card); overflow:hidden; background:#161616;}
+  .ph img{width:100%; display:block;}
+  .ph .tg{position:absolute; left:8px; bottom:8px; max-width:80%; font-size:11.5px; font-weight:500; color:var(--ink); background:rgba(255,255,255,.92); padding:3px 9px; border-radius:999px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .meta{font-size:12px; color:var(--ink-3); margin:7px 3px 1px;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discovery · Lookbooks</h1>
+    <p>The saved surface, renamed from "board" to <b>Lookbook</b>. Left: your lookbooks as cover collages. Right: one opened, the looks you saved into it. Same card grammar as the feed, so it all feels like one product.</p>
+  </div>
+
+  <div class="stage">
+    <div class="col">
+      <div class="cap"><span class="tag">A · Saved</span><h2>Your lookbooks</h2><p>Cover collages of what's inside. "New lookbook" to start one.</p></div>
+      <div class="phone"><div class="screen" id="listScreen"></div></div>
+    </div>
+    <div class="col">
+      <div class="cap"><span class="tag">B · Opened</span><h2>Looks inside a lookbook</h2><p>Tap a lookbook, its saved looks in the masonry. Edit from the top-right.</p></div>
+      <div class="phone"><div class="screen" id="openScreen"></div></div>
+    </div>
+  </div>
+
+<script>
+const LOOKBOOKS=[
+  {name:"Fades & crops", covers:["c0b9fba3-29ca-4262-a7e3-f281f8f97640","46d2da15-2184-4c57-a4f9-52b0efed853a","0ea9d957-c536-44a5-bbfd-fc86ffd3e717","c52bc8b3-b467-4848-8628-3b5d68ca33a0"]},
+  {name:"Wolf cuts", covers:["ac75cb12-1deb-4f06-9546-bfe1d044d5cf","59b33979-5dd8-4845-8636-972a378b8358","ba53349f-f19b-46af-97d6-d2c2e0a4392c","d4778f74-e56c-44a9-91d6-97a2fbf007de"]},
+  {name:"Color ideas", covers:["0cb54bc2-7127-4b65-a256-bb8684a3f648","65afc1af-59d7-40fb-85a3-86220d616d6e","13a233cd-b202-46ac-a90a-a7194a3fda5f","ac75cb12-1deb-4f06-9546-bfe1d044d5cf"]},
+];
+const INSIDE=[
+  {id:"c0b9fba3-29ca-4262-a7e3-f281f8f97640",tg:"Taper fade",cr:"ebthatbarber"},
+  {id:"46d2da15-2184-4c57-a4f9-52b0efed853a",tg:"French crop",cr:"neno.blends"},
+  {id:"0ea9d957-c536-44a5-bbfd-fc86ffd3e717",tg:"Low taper",cr:"luis"},
+  {id:"c52bc8b3-b467-4848-8628-3b5d68ca33a0",tg:"Scissor crop",cr:"HglBlendzz"},
+  {id:"3d012df8-e478-42e1-b76c-141e9ef75553",tg:"Textured flow",cr:"Cutzbydamon"},
+  {id:"7b4b32f6-409f-4d72-bf3b-fce8c6c1b699",tg:"Spiky crop",cr:"Zach"},
+];
+const T=id=>`/api/discovery/thumb/${id}`;
+function statusBar(){return `<div class="status"><div class="t">9:41</div><div class="ic"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div></div>`;}
+
+// A , lookbooks list
+const list = `${statusBar()}
+  <div class="navbar"><div class="bk"><i data-lucide="chevron-left"></i></div><h1>Lookbooks</h1></div>
+  <div class="lbgrid">
+    <div class="lb new"><div class="cov"><i data-lucide="plus"></i><span>New lookbook</span></div></div>
+    ${LOOKBOOKS.map((b,i)=>`<div class="lb" style="animation-delay:${(i*0.05).toFixed(2)}s">
+      <div class="cov">${b.covers.map(c=>`<img src="${T(c)}" alt="">`).join("")}</div>
+      <div class="nm">${b.name}</div></div>`).join("")}
+  </div>`;
+document.getElementById("listScreen").insertAdjacentHTML("beforeend", list);
+
+// B , opened lookbook
+const open = `${statusBar()}
+  <div class="navbar"><div class="bk"><i data-lucide="chevron-left"></i></div><h1>Fades & crops</h1><div class="opt"><i data-lucide="pencil"></i></div></div>
+  <div class="feed">${INSIDE.map(s=>`
+    <div class="cardw"><div class="ph">
+      <img src="${T(s.id)}" alt="" onerror="this.style.aspectRatio='3/4'">
+      <div class="tg">${s.tg}</div>
+    </div><div class="meta">@${s.cr}</div></div>`).join("")}</div>`;
+document.getElementById("openScreen").insertAdjacentHTML("beforeend", open);
+
+lucide.createIcons();
+</script>
+</body>
+</html>

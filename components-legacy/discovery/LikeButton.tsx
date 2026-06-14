@@ -14,6 +14,15 @@ interface LikeButtonProps {
   onAuthPrompt?: () => void;
   /** "overlay" (default) = frosted-glass circle for on-image cards. "bare" = plain heart for light-bg toolbars. */
   variant?: "overlay" | "bare";
+  /**
+   * Save mode (V3-D414, feed-save gesture): when provided, the heart OPENS the lookbook picker (calls onSave with
+   * the itemId) instead of toggling a like. The feed uses this so a tile's heart reaches the Save-to-lookbook sheet
+   * (the gap the audit flagged: the sheet existed but no tile could open it). The `/api/discovery/like` path is
+   * untouched for callers that don't pass onSave (e.g. the detail-page action bar).
+   */
+  onSave?: (itemId: string) => void;
+  /** Save mode only: controlled "is this look in a lookbook" fill — owned by the page (real session saves, no fetch). */
+  saved?: boolean;
 }
 
 // V3-D380 (2026-05-30): canonical heart (matches HeartButton): #FF3366 fill saved, ink stroke unsaved.
@@ -26,17 +35,29 @@ export default function LikeButton({
   onAuthRequired,
   onAuthPrompt,
   variant = "overlay",
+  onSave,
+  saved = false,
 }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [popKey, setPopKey] = useState(0);
   const [, startTransition] = useTransition();
   const authCallback = onAuthRequired ?? onAuthPrompt;
+  // Save mode is opt-in per-caller: the feed passes onSave, so its hearts open the picker; everyone else likes.
+  const saveMode = !!onSave;
+  const filled = saveMode ? saved : liked;
 
-  const toggle = (e: React.MouseEvent | React.KeyboardEvent) => {
+  const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
       authCallback?.();
+      return;
+    }
+    // Save mode: hand the itemId to the page, which opens the lookbook picker for it. No optimistic fill here —
+    // the heart fills only once the page reports a real save (via the `saved` prop), so we never claim a save
+    // the user didn't complete (they can still cancel the sheet).
+    if (saveMode) {
+      onSave!(itemId);
       return;
     }
     const wasLiked = liked;
@@ -60,12 +81,14 @@ export default function LikeButton({
 
   const heart = (size: number, strokeWidth: number) => (
     <Heart
-      key={popKey}
+      // Re-mount on the meaningful transition so the pop animation runs once: in save mode that's saved→true,
+      // in like mode it's each fresh like (popKey).
+      key={saveMode ? String(saved) : popKey}
       size={size}
       strokeWidth={strokeWidth}
-      fill={liked ? "#FF3366" : "none"}
-      stroke={liked ? "none" : "var(--color-heading)"}
-      className={liked && popKey > 0 ? "animate-heart-pop" : undefined}
+      fill={filled ? "#FF3366" : "none"}
+      stroke={filled ? "none" : "var(--color-heading)"}
+      className={(saveMode ? saved : liked && popKey > 0) ? "animate-heart-pop" : undefined}
       aria-hidden
     />
   );
@@ -73,9 +96,9 @@ export default function LikeButton({
   return (
     <button
       type="button"
-      onClick={toggle}
-      aria-label={liked ? "Gespeichert" : "Speichern"}
-      aria-pressed={liked}
+      onClick={handleClick}
+      aria-label={filled ? "Gespeichert" : "Speichern"}
+      aria-pressed={filled}
       className="group grid h-11 w-11 place-items-center bg-transparent p-0 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-s-ink"
     >
       {variant === "bare" ? (
