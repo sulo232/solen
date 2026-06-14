@@ -351,11 +351,11 @@ function DiscoverPageContent() {
               }}
               onReset={resetFilters}
             />
-            {/* V3-D414 (Phase 2): Saved (Gespeichert) entry point — opens the user's saved boards. */}
+            {/* V3-D414 (Phase 2): Kollektionen entry point — opens the user's saved collections. */}
             <button
               type="button"
               onClick={() => router.push(`/${locale}/discover/saved`)}
-              aria-label="Gespeichert"
+              aria-label="Kollektionen"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
               <Bookmark size={18} />

@@ -57,16 +57,16 @@ export default function SavedCollectionPage() {
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="truncate font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">{collection?.name ?? "Sammlung"}</h1>
+        <h1 className="truncate font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">{collection?.name ?? "Kollektion"}</h1>
       </div>
 
       <div className="mx-auto max-w-7xl px-4">
         {loading ? (
           <div className="pt-2"><DiscoveryGridSkeleton /></div>
         ) : error ? (
-          <p className="py-20 text-center text-[15px] text-s-ink-2">Sammlung nicht gefunden.</p>
+          <p className="py-20 text-center text-[15px] text-s-ink-2">Kollektion nicht gefunden.</p>
         ) : items.length === 0 ? (
-          <p className="py-20 text-center text-[15px] text-s-ink-2">Noch keine Looks in dieser Sammlung.</p>
+          <p className="py-20 text-center text-[15px] text-s-ink-2">Noch keine Looks in dieser Kollektion.</p>
         ) : (
           <div className="-mx-4 px-1.5">
             <MasonryGrid
