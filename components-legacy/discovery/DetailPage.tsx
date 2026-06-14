@@ -87,6 +87,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const [videoAspect, setVideoAspect] = useState<string | null>(null);
   const handleSave = (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
     setSaveItemId(id);
@@ -111,6 +112,22 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const description = localized(item, "description", locale) ?? item.description ?? item.alt_text ?? null;
   const script = localized(item, "salon_script", locale) ?? item.salon_script_de ?? item.salon_script ?? null;
   const heroSaved = savedIds.has(item.id);
+  // In-web TikTok embed (owner: never open TikTok — play in our page). videoId from the stored oEmbed html.
+  const videoId =
+    item.tiktok_embed_html?.match(/data-video-id="(\d+)"/)?.[1] ??
+    item.tiktok_embed_html?.match(/\/video\/(\d+)/)?.[1] ??
+    item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
+    null;
+  // Shape the frame to the real video ratio (probed from the thumbnail; the iframe is cross-origin) so the embed
+  // fills cleanly instead of a one-size 9/16 guess.
+  useEffect(() => {
+    if (!videoId || !heroSrc) return;
+    let alive = true;
+    const probe = new window.Image();
+    probe.onload = () => { if (alive && probe.naturalWidth && probe.naturalHeight) setVideoAspect(`${probe.naturalWidth} / ${probe.naturalHeight}`); };
+    probe.src = heroSrc;
+    return () => { alive = false; };
+  }, [videoId, heroSrc]);
 
   const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
   const faceMap = FACE_SHAPES[locale] ?? FACE_SHAPES.en;
@@ -132,12 +149,19 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero — THUMBNAIL + play → opens TikTok. This is the envelope every version used all year (the in-web
-           embed/v2 iframe, tried 2026-06-14, was reverted: TikTok's cookie wall + creator/hashtag chrome + white
-           margins are inside their cross-origin iframe and can't be removed; the team had deliberately avoided it,
-           comment "avoids GDPR cookie wall"). object-cover fills the frame cleanly — no gaps, no chrome. ─── */}
-      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: aspect }}>
-        {heroSrc ? (
+      {/* ─── Hero — IN-WEB TikTok embed, autoplays on open, NEVER opens TikTok (owner, hard rule). Frame shaped to the
+           detected video ratio so the embed fills; iframe fills the frame (no crop, so it isn't pushed "too far").
+           TikTok's cookie wall + creator/hashtag chrome live INSIDE their cross-origin iframe and can't be removed —
+           that's the unavoidable price of playing their video in-page (no raw file is available). Photos = image. ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: videoId ? (videoAspect ?? "9 / 16") : aspect }}>
+        {videoId ? (
+          <iframe
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
+            className="absolute inset-0 h-full w-full border-0"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            title={item.style_name || "TikTok"}
+          />
+        ) : heroSrc ? (
           <Image
             src={heroSrc}
             alt={item.alt_text || item.style_name || ""}
@@ -152,21 +176,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           />
         ) : (
           <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
-        )}
-
-        {/* Video → centered play button opens the original on TikTok (clean, no embed). */}
-        {isVideo && item.tiktok_url && (
-          <a
-            href={item.tiktok_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t.play}
-            className="absolute inset-0 z-[3] grid place-items-center"
-          >
-            <span style={FROST_GLASS} className="grid h-[60px] w-[60px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
-              <Play size={26} className="ml-0.5 text-s-ink" fill="currentColor" />
-            </span>
-          </a>
         )}
 
         {/* Top controls — frosted back (left) + heart (right). */}
