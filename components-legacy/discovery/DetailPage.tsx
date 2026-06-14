@@ -110,7 +110,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : item.image_url || item.tiktok_thumbnail_url;
   const creator = formatCreator(item.author_name);
   const description = localized(item, "description", locale) ?? item.description ?? item.alt_text ?? null;
-  const script = localized(item, "salon_script", locale) ?? item.salon_script ?? null;
+  const script = localized(item, "salon_script", locale) ?? item.salon_script_de ?? item.salon_script ?? null;
   const heroSaved = savedIds.has(item.id);
   // The numeric TikTok video id (for the inline embed player). tiktok_url is a short vm.tiktok.com link with no id,
   // but the stored oEmbed html carries data-video-id="…". Null → no inline player (degrade to opening the app).
@@ -125,7 +125,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const faceShapes = (item.face_shapes ?? [])
     .map((f) => faceMap[f.toLowerCase()] ?? f.charAt(0).toUpperCase() + f.slice(1))
     .join(", ");
-  const products = (item.products_needed ?? []).join(", ");
+  const localizedProducts = (item[`products_${locale}` as keyof DiscoveryItem] as string[] | null) ?? null;
+  const products = (localizedProducts && localizedProducts.length ? localizedProducts : item.products_needed ?? []).join(", ");
   const hasDetails = !!(maintenanceLabel || faceShapes || products || item.cut_guide);
 
   // The AI cut-instruction (salon_script) no longer shows as a card; it auto-fills the booking note when the user
