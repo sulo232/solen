@@ -102,7 +102,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [similarLoading, setSimilarLoading] = useState(true);
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/discovery/similar?item_id=${item.id}&limit=8`)
+    fetch(`/api/discovery/similar?item_id=${item.id}&limit=4`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled) setSimilar(Array.isArray(d?.items) ? d.items : []); })
       .catch((err) => console.error("[DetailPage] similar load failed:", err))
