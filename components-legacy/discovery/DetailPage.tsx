@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Heart, CalendarDays, Scissors, Copy, Check, Star, ChevronDown } from "lucide-react";
+import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import MasonryGrid from "./MasonryGrid";
 import ItemCard from "./ItemCard";
@@ -34,10 +34,10 @@ interface DetailPageProps {
 
 // Chrome labels. Body copy (description, script) comes already-localized off the item fields.
 const L: Record<string, Record<string, string>> = {
-  de: { back: "Zurück", more: "Mehr lesen", less: "Weniger", tellStylist: "Was dem Friseur sagen", copy: "Kopieren", save: "Speichern", saved: "Gespeichert", book: "Buchen", bookThis: "Diesen Look buchen", moreLikeThis: "Ähnliche Looks", seeAll: "Alle ansehen", details: "Details", upkeep: "Pflege", faces: "Gesichtsformen", products: "Produkte", cutGuide: "Schnittanleitung", noMedia: "Kein Medium" },
-  en: { back: "Back", more: "Read more", less: "Read less", tellStylist: "Tell your stylist", copy: "Copy", save: "Save", saved: "Saved", book: "Book", bookThis: "Book this look", moreLikeThis: "More like this", seeAll: "See all", details: "Details", upkeep: "Upkeep", faces: "Face shapes", products: "Products", cutGuide: "Cut guide", noMedia: "No media" },
-  fr: { back: "Retour", more: "Lire plus", less: "Réduire", tellStylist: "À dire au coiffeur", copy: "Copier", save: "Enregistrer", saved: "Enregistré", book: "Réserver", bookThis: "Réserver ce look", moreLikeThis: "Looks similaires", seeAll: "Tout voir", details: "Détails", upkeep: "Entretien", faces: "Formes de visage", products: "Produits", cutGuide: "Guide de coupe", noMedia: "Aucun média" },
-  it: { back: "Indietro", more: "Leggi altro", less: "Riduci", tellStylist: "Cosa dire al parrucchiere", copy: "Copia", save: "Salva", saved: "Salvato", book: "Prenota", bookThis: "Prenota questo look", moreLikeThis: "Look simili", seeAll: "Vedi tutti", details: "Dettagli", upkeep: "Manutenzione", faces: "Forme del viso", products: "Prodotti", cutGuide: "Guida al taglio", noMedia: "Nessun media" },
+  de: { back: "Zurück", play: "Auf TikTok abspielen", more: "Mehr lesen", less: "Weniger", save: "Speichern", saved: "Gespeichert", book: "Buchen", bookThis: "Diesen Look buchen", moreLikeThis: "Ähnliche Looks", seeAll: "Alle ansehen", details: "Details", upkeep: "Pflege", faces: "Gesichtsformen", products: "Produkte", cutGuide: "Schnittanleitung", noMedia: "Kein Medium" },
+  en: { back: "Back", play: "Play on TikTok", more: "Read more", less: "Read less", save: "Save", saved: "Saved", book: "Book", bookThis: "Book this look", moreLikeThis: "More like this", seeAll: "See all", details: "Details", upkeep: "Upkeep", faces: "Face shapes", products: "Products", cutGuide: "Cut guide", noMedia: "No media" },
+  fr: { back: "Retour", play: "Lire sur TikTok", more: "Lire plus", less: "Réduire", save: "Enregistrer", saved: "Enregistré", book: "Réserver", bookThis: "Réserver ce look", moreLikeThis: "Looks similaires", seeAll: "Tout voir", details: "Détails", upkeep: "Entretien", faces: "Formes de visage", products: "Produits", cutGuide: "Guide de coupe", noMedia: "Aucun média" },
+  it: { back: "Indietro", play: "Riproduci su TikTok", more: "Leggi altro", less: "Riduci", save: "Salva", saved: "Salvato", book: "Prenota", bookThis: "Prenota questo look", moreLikeThis: "Look simili", seeAll: "Vedi tutti", details: "Dettagli", upkeep: "Manutenzione", faces: "Forme del viso", products: "Prodotti", cutGuide: "Guida al taglio", noMedia: "Nessun media" },
 };
 
 const MAINTENANCE: Record<string, Record<string, string>> = {
@@ -74,7 +74,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [aspect, setAspect] = useState("9 / 16");
   const [descOpen, setDescOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
@@ -109,16 +108,11 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const products = (item.products_needed ?? []).join(", ");
   const hasDetails = !!(maintenanceLabel || faceShapes || products || item.cut_guide);
 
-  const handleCopy = async () => {
-    if (!script) return;
-    try {
-      await navigator.clipboard.writeText(script);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("[DetailPage] copy failed:", err);
-    }
-  };
+  // The AI cut-instruction (salon_script) no longer shows as a card; it auto-fills the booking note when the user
+  // books a salon from this look (owner 2026-06-14: "how you want the staff to cut your hair auto transfers to the
+  // booking note section"). Passed via ?note= and seeded into the booking wizard's customerNote.
+  const bookHref = (slug: string) =>
+    `/${locale}/salon/${slug}/booking${script ? `?note=${encodeURIComponent(script)}` : ""}`;
 
   const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
   const moreLikeThisHref = `/${locale}/discover?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
@@ -142,6 +136,23 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           />
         ) : (
           <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
+        )}
+
+        {/* Tap-to-play — the whole hero opens the TikTok video (static hero, no inline embed per the lock). A modest
+            centered play button makes it read as a video; before, only the tiny pill was tappable, so the hero felt
+            like a dead photo (owner 2026-06-14: "i cant play it"). z-[3] keeps it below the controls + source pill. */}
+        {isVideo && item.tiktok_url && (
+          <a
+            href={item.tiktok_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t.play}
+            className="absolute inset-0 z-[3] grid place-items-center"
+          >
+            <span style={FROST_GLASS} className="grid h-[52px] w-[52px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+              <Play size={22} className="ml-0.5 text-s-ink" fill="currentColor" />
+            </span>
+          </a>
         )}
 
         {/* Top controls — frosted back (left) + heart (right) */}
@@ -233,26 +244,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           </div>
         )}
 
-        {/* "Tell your stylist" script — copy icon only */}
-        {script && (
-          <div className="mt-6 rounded-card bg-s-bg-sunken p-4">
-            <div className="mb-2.5 flex items-center gap-2 text-[14px] font-semibold tracking-[-0.01em] text-s-ink">
-              <Scissors size={15} /> {t.tellStylist}
-            </div>
-            <p className="m-0 text-[13.5px] leading-[1.58] text-s-ink-2">{script}</p>
-            <div className="mt-3.5 flex">
-              <button
-                type="button"
-                onClick={handleCopy}
-                aria-label={t.copy}
-                className="grid h-[42px] w-[42px] place-items-center rounded-full border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-95"
-              >
-                {copied ? <Check size={17} className="text-s-success" /> : <Copy size={17} />}
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Book this look — soft, honest salon list */}
         {salons.length > 0 && (
           <section className="mt-[30px]">
@@ -261,7 +252,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               {salons.map((s) => (
                 <Link
                   key={s.id}
-                  href={`/${locale}/salon/${s.slug}`}
+                  href={bookHref(s.slug)}
                   className="flex items-center gap-3 border-t border-s-border py-3 first:border-t-0"
                 >
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-s-bg-sunken font-heading text-[14px] font-bold tracking-[-0.02em] text-s-ink-2">{initials(s.name)}</span>

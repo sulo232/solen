@@ -182,16 +182,18 @@ export default function HairStep({
           <label htmlFor="booking-note" className="text-[13px] font-semibold text-s-ink">
             {t("hairNoteLabel")}
           </label>
+          {/* 500 (was 140): the note doubles as the discovery "how to cut it" instruction, which is auto-filled
+              when booking a look (the AI cut-script runs ~400 chars), so the one-liner cap would truncate it. */}
           <textarea
             id="booking-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            maxLength={140}
-            rows={3}
+            maxLength={500}
+            rows={note.length > 140 ? 5 : 3}
             placeholder={t("hairNotePlaceholder")}
             className="mt-2 w-full"
           />
-          <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-3">{note.length}/140</p>
+          <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-3">{note.length}/500</p>
         </div>
       </div>
 

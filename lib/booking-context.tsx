@@ -59,6 +59,7 @@ export function BookingProvider({
   initialService,
   initialServices,
   initialStart,
+  initialNote,
 }: {
   children: ReactNode;
   salonId: string;
@@ -66,6 +67,8 @@ export function BookingProvider({
   initialService?: SelectedService;
   initialServices?: SelectedService[];
   initialStart?: string;
+  /** ?note=… — the discovery cut-instruction auto-fills the booking note (HairStep reads formData.customerNote). */
+  initialNote?: string;
 }) {
   const [state, dispatch] = useReducer(bookingReducer, initialState, (base) => {
     let fd = base.formData;
@@ -98,6 +101,11 @@ export function BookingProvider({
         const mm = String(d.getMinutes()).padStart(2, "0");
         fd = { ...fd, selectedDate: d, selectedTime: `${hh}:${mm}` };
       }
+    }
+    // Discovery "book this look": the cut-instruction arrives as ?note= and seeds the booking note, so the user
+    // reaches the hair step with "how to cut it" already written (owner 2026-06-14).
+    if (initialNote && initialNote.trim()) {
+      fd = { ...fd, customerNote: initialNote.trim() };
     }
     return fd === base.formData ? base : { ...base, formData: fd };
   });
