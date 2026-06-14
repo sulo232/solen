@@ -136,14 +136,20 @@ export default function RefundCaseView({
     setSubmitting(true);
     setActionError(null);
     try {
+      // Fold the selected reason into the note so it persists: the escalate API stores
+      // only `note` -> customer_response, so the reason chip was previously dropped. (2026-06-14 audit.)
+      const reasonLabel = escReason ? t(REASON_KEYS[escReason].t) : null;
+      const composedNote =
+        [reasonLabel, escNote.trim() || null].filter(Boolean).join(": ") || undefined;
       const res = await fetch(`/api/bookings/${bookingId}/escalate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ note: escNote.trim() || undefined }),
+        body: JSON.stringify({ note: composedNote }),
       });
       if (res.ok) {
         setEscalating(false);
         setEscNote("");
+        setEscReason(null);
         setLoading(true);
         await load();
         return;
@@ -918,9 +924,11 @@ function ActionInner({
     return (
       <>
         <ShieldNote text={t("escUpheldRecourse")} />
-        <button type="button" disabled className={cn(secondaryBtn, "opacity-60")}>
+        {/* 2026-06-14 audit: was a disabled-forever button (zero recourse on a lost
+            appeal). Now links to the help center so the user can actually reach support. */}
+        <Link href={`/${locale}/help`} className={secondaryBtn}>
           {t("contactSupport")}
-        </button>
+        </Link>
         <p className="mt-2 text-center text-[12px] text-s-ink-2">{t("footClosedNoAction")}</p>
       </>
     );

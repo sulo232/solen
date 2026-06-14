@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
 import CancelBookingSheet from './CancelBookingSheet';
@@ -18,6 +18,7 @@ interface BookingsListProps {
 export default function BookingsList({ userId }: BookingsListProps) {
   const t = useTranslations('bookingsList');
   const tUi = useTranslations('bookingsListUi');
+  const locale = useLocale();
   const [tab, setTab] = useState<BookingTab>('upcoming');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,12 +78,19 @@ export default function BookingsList({ userId }: BookingsListProps) {
     }
   };
 
-  // Reschedule needs a new slot picked on the salon calendar; this list view has no
-  // picker and the booking payload carries no salon slug to route there. The reschedule
-  // API (POST /api/bookings/<id>/reschedule) requires concrete new_starts_at/new_ends_at.
-  // Surface the next step instead of silently no-op'ing.
+  // Reschedule needs a new slot picked on the salon calendar; this list has no picker.
+  // The booking carries salon.slug, so route to the salon page where the user picks a
+  // new time (true in-place reschedule via POST /api/bookings/<id>/reschedule is a
+  // separate flow). Routing to the PDP — not straight into /booking — avoids silently
+  // creating a SECOND paid booking while the original still stands. Fallback to the hint
+  // only when the slug is somehow missing. (2026-06-14 audit: was a no-op hint toast.)
   const handleReschedule = (booking: Booking) => {
-    toast.info(t('rescheduleHint'));
+    const slug = booking.salon?.slug;
+    if (slug) {
+      window.location.href = `/${locale}/salon/${slug}`;
+    } else {
+      toast.info(t('rescheduleHint'));
+    }
   };
 
   // Rebook: reuse the express-rebook API (works from the booking id) to find the next

@@ -60,6 +60,7 @@ function GiftCardPaymentForm({ onSuccess, onError }: { onSuccess: () => void; on
 export default function GiftCardPage() {
   const params = useParams()!;
   const slug = params.slug as string;
+  const locale = (params.locale as string) || "de";
   const [salon, setSalon] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedAmount, setSelectedAmount] = useState(5000);
@@ -101,6 +102,13 @@ export default function GiftCardPage() {
           message: message.trim() || null,
         }),
       });
+      // Logged-out users can fill the whole form; the purchase API 401s. Send them to
+      // login (returning here after) instead of surfacing a raw English "Unauthorized"
+      // inside the German UI with no path forward. (2026-06-14 audit.)
+      if (res.status === 401) {
+        window.location.href = `/${locale}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Fehler");
       if (!data.clientSecret) throw new Error(data.error ?? "Zahlung konnte nicht gestartet werden");

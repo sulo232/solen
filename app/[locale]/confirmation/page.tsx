@@ -111,9 +111,10 @@ export default async function ConfirmationPage({
   // Guest access link: the REAL guest-lookup route (?code=&t=) that exchanges the raw token
   // once for an httpOnly cookie. Only build it when we carry both the reference_code and the
   // raw token from the booking POST handoff.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.solen.ch";
   const accessLink =
     isGuest && booking.reference_code && access_token
-      ? `https://www.solen.ch/${locale}/booking/lookup?code=${encodeURIComponent(
+      ? `${siteUrl}/${locale}/booking/lookup?code=${encodeURIComponent(
           booking.reference_code,
         )}&t=${encodeURIComponent(access_token)}`
       : null;

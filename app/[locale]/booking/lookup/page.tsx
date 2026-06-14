@@ -627,11 +627,10 @@ function OpenedView({
             {t("reportOrRefund")}
           </button>
         )}
-        {bookingId && (
-          <Link href={`/${locale}/bookings/${bookingId}`} className={ghostBtn}>
-            {t("viewReceipt")}
-          </Link>
-        )}
+        {/* "View receipt" removed (2026-06-14 audit): it linked to /bookings/[id],
+            which has no page (serves the home shell), and /profile/bookings is
+            auth-gated so it's wrong for a guest lookup. The booking details already
+            render above. Revive only with a real guest-accessible receipt route. */}
       </div>
     </main>
   );
