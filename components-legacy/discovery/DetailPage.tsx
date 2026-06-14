@@ -88,13 +88,10 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [videoAspect, setVideoAspect] = useState<string | null>(null);
-  // TEMP comparison switcher (owner 2026-06-14): ?v=1..6 renders each historical TikTok-video structure LIVE in the
-  // real page so the owner can see them full-size. Default 6 = current. Remove once a version is chosen.
-  const [heroVersion, setHeroVersion] = useState("6");
-  useEffect(() => {
-    const v = new URLSearchParams(window.location.search).get("v");
-    if (v) setHeroVersion(v);
-  }, []);
+  // The cover IMAGE is the look (from TikTok — allowed via oEmbed; clean, no cookie wall, never opens TikTok). The
+  // video plays INLINE in our page only when the user taps play (never opens TikTok; TikTok's cookie wall only
+  // appears on that intentional tap, never on load).
+  const [playing, setPlaying] = useState(false);
   const handleSave = (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
     setSaveItemId(id);
@@ -154,14 +151,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
   const moreLikeThisHref = `/${locale}/discover?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
 
-  // ── TEMP hero version switch (?v=1..6): each branch is the EXACT structure from a real commit, for the owner to
-  //    compare live in the page. Default 6 = current. (V2 opens TikTok — shown only for completeness.) ──
-  const langSrc = videoId ? `https://www.tiktok.com/embed/v2/${videoId}?lang=${locale}` : "";
-  const autoSrc = videoId ? `https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1` : "";
-  const allowAll = "autoplay; encrypted-media; fullscreen; picture-in-picture";
-  const heroRounded = heroVersion === "1" || heroVersion === "2" ? "rounded-[16px]" : "";
-  const heroAspectRatio = !videoId ? aspect : heroVersion === "5" || heroVersion === "6" ? (videoAspect ?? "9 / 16") : "9 / 16";
-  const thumbEl = heroSrc ? (
+  const heroAspectRatio = videoId ? (videoAspect ?? "9 / 16") : aspect;
+  const thumbEl: ReactNode = heroSrc ? (
     <Image
       src={heroSrc}
       alt={item.alt_text || item.style_name || ""}
@@ -171,43 +162,39 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
       className="object-cover animate-in fade-in duration-500"
       onLoad={(e) => { const img = e.currentTarget; if (img.naturalWidth && img.naturalHeight) setAspect(`${img.naturalWidth} / ${img.naturalHeight}`); }}
     />
-  ) : null;
-  let heroInner: ReactNode;
-  if (!videoId) {
-    heroInner = thumbEl ?? <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>;
-  } else if (heroVersion === "2") {
-    // V2 (a6cd082dc) — thumbnail + overlay → opens TikTok
-    heroInner = (
-      <>
-        {thumbEl}
-        <a href={item.tiktok_url ?? "#"} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-[2] flex flex-col items-center justify-center gap-3 bg-s-ink/30">
-          <span className="grid h-14 w-14 place-items-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"><Play size={22} className="ml-1 text-white" fill="white" /></span>
-          <span className="rounded-pill bg-s-ink/50 px-3 py-1.5 text-xs font-heading text-white backdrop-blur-sm">Auf TikTok ansehen</span>
-        </a>
-      </>
-    );
-  } else if (heroVersion === "3") {
-    // V3 (08a400910) — thumbnail behind + autoplay iframe on top
-    heroInner = (<>{thumbEl}<iframe src={autoSrc} className="absolute inset-0 h-full w-full border-0" allow={allowAll} title={item.style_name || "TikTok"} /></>);
-  } else if (heroVersion === "5") {
-    // V5 (df5b2c41e) — over-scaled, bottom-anchored crop
-    heroInner = <iframe src={autoSrc} className="absolute bottom-0 left-1/2 border-0" style={{ width: "110%", height: "110%", transform: "translateX(-50%)" }} allow={allowAll} title={item.style_name || "TikTok"} />;
-  } else if (heroVersion === "1") {
-    // V1 (15cb7a9e7^) — embed/v2 ?lang, no autoplay
-    heroInner = <iframe src={langSrc} className="absolute inset-0 h-full w-full border-0" allow="encrypted-media; fullscreen" title={item.style_name || "TikTok"} />;
-  } else {
-    // V4 (8ed71a76a, fixed 9/16) + V6 (current, detected aspect) — autoplay iframe fills
-    heroInner = <iframe src={autoSrc} className="absolute inset-0 h-full w-full border-0" allow={allowAll} title={item.style_name || "TikTok"} />;
-  }
+  ) : (
+    <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
+  );
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero — IN-WEB TikTok embed, autoplays on open, NEVER opens TikTok (owner, hard rule). Frame shaped to the
-           detected video ratio so the embed fills; iframe fills the frame (no crop, so it isn't pushed "too far").
-           TikTok's cookie wall + creator/hashtag chrome live INSIDE their cross-origin iframe and can't be removed —
-           that's the unavoidable price of playing their video in-page (no raw file is available). Photos = image. ─── */}
-      <div className={`relative w-full overflow-hidden bg-s-ink ${heroRounded}`} style={{ aspectRatio: heroAspectRatio }}>
-        {heroInner}
+      {/* ─── Hero — the cover IMAGE is the look (clean: no cookie wall, never opens TikTok). Tapping play loads the
+           TikTok embed INLINE in our page (in-web; TikTok's cookie wall only appears on that intentional tap). ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: heroAspectRatio }}>
+        {playing && videoId ? (
+          <iframe
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
+            className="absolute inset-0 h-full w-full border-0"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            title={item.style_name || "TikTok"}
+          />
+        ) : (
+          thumbEl
+        )}
+
+        {/* Tap to play the video INLINE (in-web — never opens TikTok). Shown on the cover image, before playing. */}
+        {!playing && videoId && (
+          <button
+            type="button"
+            onClick={() => setPlaying(true)}
+            aria-label={t.play}
+            className="absolute inset-0 z-[3] grid place-items-center"
+          >
+            <span style={FROST_GLASS} className="grid h-[64px] w-[64px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+              <Play size={28} className="ml-0.5 text-s-ink" fill="currentColor" />
+            </span>
+          </button>
+        )}
 
         {/* Top controls — frosted back (left) + heart (right). */}
         <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
@@ -238,19 +225,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           </button>
         </div>
 
-        {/* TikTok pill — jumps INTO the TikTok app/site (separate from the in-web play; also the creator link-back).
-            Stays up while playing so it doubles as the fallback if the embed is blocked. */}
-        {isVideo && item.tiktok_url && (
-          <a
-            href={item.tiktok_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={FROST_GLASS}
-            className="absolute left-[18px] bottom-[42px] z-10 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold text-s-ink no-underline"
-          >
-            TikTok
-          </a>
-        )}
       </div>
 
       {/* ─── Sheet (pulled over the hero, App-Store style) ─── */}
