@@ -74,6 +74,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [aspect, setAspect] = useState("9 / 16");
   const [descOpen, setDescOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
@@ -102,6 +103,13 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const description = localized(item, "description", locale) ?? item.description ?? item.alt_text ?? null;
   const script = localized(item, "salon_script", locale) ?? item.salon_script ?? null;
   const heroSaved = savedIds.has(item.id);
+  // The numeric TikTok video id (for the inline embed player). tiktok_url is a short vm.tiktok.com link with no id,
+  // but the stored oEmbed html carries data-video-id="…". Null → no inline player (degrade to opening the app).
+  const videoId =
+    item.tiktok_embed_html?.match(/data-video-id="(\d+)"/)?.[1] ??
+    item.tiktok_embed_html?.match(/\/video\/(\d+)/)?.[1] ??
+    item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
+    null;
 
   const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
   const faceShapes = (item.face_shapes ?? []).join(", ");
@@ -119,9 +127,17 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero (static full frame; TikTok opens in a new tab) ─── */}
+      {/* ─── Hero — static frame by default; tap plays the TikTok video INLINE in-web. The "TikTok" pill is the
+           separate jump-into-the-app button (owner 2026-06-14: "play in web, the tiktok button jumps into tiktok"). ─── */}
       <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: aspect }}>
-        {heroSrc ? (
+        {playing && videoId ? (
+          <iframe
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1`}
+            className="absolute inset-0 h-full w-full border-0"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            title={item.style_name || "TikTok"}
+          />
+        ) : heroSrc ? (
           <Image
             src={heroSrc}
             alt={item.alt_text || item.style_name || ""}
@@ -138,28 +154,26 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
         )}
 
-        {/* Tap-to-play — the whole hero opens the TikTok video (static hero, no inline embed per the lock). A modest
-            centered play button makes it read as a video; before, only the tiny pill was tappable, so the hero felt
-            like a dead photo (owner 2026-06-14: "i cant play it"). z-[3] keeps it below the controls + source pill. */}
-        {isVideo && item.tiktok_url && (
-          <a
-            href={item.tiktok_url}
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Tap-to-play — plays the video INLINE in-web (TikTok embed). Degrades to opening the app only when we have
+            no embeddable id. Hidden once playing; z-[3] keeps it below the controls + source pill. */}
+        {!playing && isVideo && (item.tiktok_url || videoId) && (
+          <button
+            type="button"
+            onClick={() => { if (videoId) setPlaying(true); else if (item.tiktok_url) window.open(item.tiktok_url, "_blank", "noopener"); }}
             aria-label={t.play}
             className="absolute inset-0 z-[3] grid place-items-center"
           >
             <span style={FROST_GLASS} className="grid h-[52px] w-[52px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
               <Play size={22} className="ml-0.5 text-s-ink" fill="currentColor" />
             </span>
-          </a>
+          </button>
         )}
 
-        {/* Top controls — frosted back (left) + heart (right) */}
+        {/* Top controls — frosted back (left) + heart (right). While playing, back stops the video first. */}
         <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => (playing ? setPlaying(false) : router.back())}
             aria-label={t.back}
             style={FROST_GLASS}
             className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
@@ -184,7 +198,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           </button>
         </div>
 
-        {/* TikTok source pill — opens the original video (referential link-back, no inline embed) */}
+        {/* TikTok pill — jumps INTO the TikTok app/site (separate from the in-web play; also the creator link-back).
+            Stays up while playing so it doubles as the fallback if the embed is blocked. */}
         {isVideo && item.tiktok_url && (
           <a
             href={item.tiktok_url}
