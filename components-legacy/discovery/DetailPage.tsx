@@ -87,9 +87,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
   const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
-  // The real video aspect ratio, probed from the thumbnail (the embed iframe is cross-origin so we can't read its
-  // dimensions). Used to shape the video frame per-look so the embed fills cleanly instead of a one-size guess.
-  const [videoAspect, setVideoAspect] = useState<string | null>(null);
   const handleSave = (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
     setSaveItemId(id);
@@ -114,25 +111,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const description = localized(item, "description", locale) ?? item.description ?? item.alt_text ?? null;
   const script = localized(item, "salon_script", locale) ?? item.salon_script_de ?? item.salon_script ?? null;
   const heroSaved = savedIds.has(item.id);
-  // The numeric TikTok video id (for the inline embed player). tiktok_url is a short vm.tiktok.com link with no id,
-  // but the stored oEmbed html carries data-video-id="…". Null → no inline player (degrade to opening the app).
-  const videoId =
-    item.tiktok_embed_html?.match(/data-video-id="(\d+)"/)?.[1] ??
-    item.tiktok_embed_html?.match(/\/video\/(\d+)/)?.[1] ??
-    item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
-    null;
-
-  // Aspect-detection: load the thumbnail off-screen to read the real video ratio, then shape the frame to it.
-  useEffect(() => {
-    if (!videoId || !heroSrc) return;
-    let alive = true;
-    const probe = new window.Image();
-    probe.onload = () => {
-      if (alive && probe.naturalWidth && probe.naturalHeight) setVideoAspect(`${probe.naturalWidth} / ${probe.naturalHeight}`);
-    };
-    probe.src = heroSrc;
-    return () => { alive = false; };
-  }, [videoId, heroSrc]);
 
   const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
   const faceMap = FACE_SHAPES[locale] ?? FACE_SHAPES.en;
@@ -154,23 +132,12 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
   return (
     <div className="mx-auto max-w-[480px] bg-white">
-      {/* ─── Hero — TikTok looks autoplay the embed on open. Variation E (owner 2026-06-14): the frame is shaped to the
-           DETECTED video aspect (videoAspect, probed from the thumbnail) and the iframe is over-scaled + clipped so the
-           video fills and TikTok's white edge-margins get cropped. The cookie wall is still TikTok's. Photos = image. ─── */}
-      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: videoId ? (videoAspect ?? "9 / 16") : aspect }}>
-        {videoId ? (
-          <div className="absolute inset-0 overflow-hidden">
-            {/* Over-scaled + BOTTOM-anchored: trims the side white-margins + TikTok's top logo, but never the bottom
-                (where the cookie-wall dismiss buttons + the player controls live, so the video stays dismissable). */}
-            <iframe
-              src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
-              className="absolute bottom-0 left-1/2 border-0"
-              style={{ width: "110%", height: "110%", transform: "translateX(-50%)" }}
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              title={item.style_name || "TikTok"}
-            />
-          </div>
-        ) : heroSrc ? (
+      {/* ─── Hero — THUMBNAIL + play → opens TikTok. This is the envelope every version used all year (the in-web
+           embed/v2 iframe, tried 2026-06-14, was reverted: TikTok's cookie wall + creator/hashtag chrome + white
+           margins are inside their cross-origin iframe and can't be removed; the team had deliberately avoided it,
+           comment "avoids GDPR cookie wall"). object-cover fills the frame cleanly — no gaps, no chrome. ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: aspect }}>
+        {heroSrc ? (
           <Image
             src={heroSrc}
             alt={item.alt_text || item.style_name || ""}
@@ -187,8 +154,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
         )}
 
-        {/* Photos with no embeddable video still get a tap-to-open-app affordance. */}
-        {!videoId && isVideo && item.tiktok_url && (
+        {/* Video → centered play button opens the original on TikTok (clean, no embed). */}
+        {isVideo && item.tiktok_url && (
           <a
             href={item.tiktok_url}
             target="_blank"
@@ -196,8 +163,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             aria-label={t.play}
             className="absolute inset-0 z-[3] grid place-items-center"
           >
-            <span style={FROST_GLASS} className="grid h-[52px] w-[52px] place-items-center rounded-full">
-              <Play size={22} className="ml-0.5 text-s-ink" fill="currentColor" />
+            <span style={FROST_GLASS} className="grid h-[60px] w-[60px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+              <Play size={26} className="ml-0.5 text-s-ink" fill="currentColor" />
             </span>
           </a>
         )}
