@@ -3244,7 +3244,10 @@
       "reason": "Reason",
       "approve": "Approve",
       "remove": "Remove"
-    }
+    },
+    "errorTitle": "Couldn’t load looks",
+    "errorMessage": "Check your connection and try again.",
+    "errorRetry": "Try again"
   },
   "discovery_tos": {
     "title": "Terms of Service — Discovery",

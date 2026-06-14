@@ -3254,7 +3254,10 @@
       "reason": "Grund",
       "approve": "Genehmigen",
       "remove": "Entfernen"
-    }
+    },
+    "errorTitle": "Konnte nicht laden",
+    "errorMessage": "Prüfe deine Verbindung und versuche es erneut.",
+    "errorRetry": "Erneut versuchen"
   },
   "discovery_tos": {
     "title": "Nutzungsbedingungen — Discovery",

@@ -3218,7 +3218,10 @@
       "reason": "Motivo",
       "approve": "Approva",
       "remove": "Rimuovi"
-    }
+    },
+    "errorTitle": "Caricamento non riuscito",
+    "errorMessage": "Controlla la connessione e riprova.",
+    "errorRetry": "Riprova"
   },
   "discovery_tos": {
     "title": "Termini di servizio — Discovery",
