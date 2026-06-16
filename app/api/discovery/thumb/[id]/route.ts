@@ -49,6 +49,16 @@ const TTL_MS = 60 * 60 * 1000; // 1h matches Cache-Control max-age
 const oembedCache = new Map<string, { thumbnailUrl: string; expiresAt: number }>();
 const imageCache = new Map<string, { bytes: ArrayBuffer; contentType: string; expiresAt: number }>();
 
+// DURABLE TIER (2026-06-16): a persistent own-copy of each thumbnail, so we
+// stop depending on TikTok's CDN staying reachable. TikTok signs thumbnail
+// URLs with a ~6-month expiry AND videos get deleted / embedding disabled
+// (oEmbed then 400s) — either way the refresh path dies and the card goes
+// gray. We persist the bytes to Storage the first time we fetch them; from
+// then on we serve our own copy forever. Reuses the existing public
+// `discovery-images` bucket under a dedicated prefix.
+const STORAGE_BUCKET = "discovery-images";
+const STORAGE_PREFIX = "tiktok-cache";
+
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
@@ -72,8 +82,30 @@ export async function GET(_req: NextRequest, ctx: RouteContext) {
     });
   }
 
-  // 1) Resolve item → tiktok_url
   const admin = createAdminSupabaseClient();
+  const storagePath = `${STORAGE_PREFIX}/${id}.jpg`;
+
+  // STORAGE TIER: if we've persisted this thumbnail before, serve our own
+  // copy and skip the DB + oEmbed + TikTok CDN entirely. This is what keeps
+  // the card alive after the TikTok URL expires or the video is deleted.
+  {
+    const { data: blob } = await admin.storage.from(STORAGE_BUCKET).download(storagePath);
+    if (blob) {
+      const bytes = await blob.arrayBuffer();
+      const contentType = blob.type || "image/jpeg";
+      imageCache.set(id, { bytes, contentType, expiresAt: now + TTL_MS });
+      return new NextResponse(bytes, {
+        status: 200,
+        headers: {
+          "Content-Type": contentType,
+          "Cache-Control": CACHE_HEADER,
+          "X-Cache": "STORAGE",
+        },
+      });
+    }
+  }
+
+  // 1) Resolve item → tiktok_url (Storage miss — fetch fresh, then persist)
   const { data: item, error: dbErr } = await admin
     .from("discovery_items")
     .select("tiktok_url")
@@ -128,6 +160,16 @@ export async function GET(_req: NextRequest, ctx: RouteContext) {
     }
     const bytes = await imgRes.arrayBuffer();
     const contentType = imgRes.headers.get("content-type") || "image/jpeg";
+
+    // Persist our own copy so this thumbnail survives TikTok expiry/deletion.
+    // Awaited (not fire-and-forget): on Fluid Compute post-response work can be
+    // frozen, so we let the one-time write finish before serving. A failed
+    // persist is logged but never blocks the image — we still return the bytes.
+    const { error: persistErr } = await admin.storage
+      .from(STORAGE_BUCKET)
+      .upload(storagePath, bytes, { contentType, upsert: true });
+    if (persistErr) console.error("[thumb proxy] storage persist failed:", persistErr.message);
+
     imageCache.set(id, {
       bytes,
       contentType,
