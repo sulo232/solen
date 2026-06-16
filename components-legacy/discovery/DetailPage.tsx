@@ -1,228 +1,389 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, ExternalLink, Play } from "lucide-react";
+import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
-import SourceBadge from "./SourceBadge";
-import LikeButton from "./LikeButton";
+import MasonryGrid from "./MasonryGrid";
+import ItemCard from "./ItemCard";
+import VideoCard from "./VideoCard";
+import SaveToBoardSheet from "./SaveToBoardSheet";
+import DiscoveryGridSkeleton from "./DiscoveryGridSkeleton";
 import { formatCreator } from "./format";
-import DescriptionCard from "./DescriptionCard";
-import SalonScript from "./SalonScript";
-import ProductRecommendations from "./ProductRecommendations";
-import BookCTA from "./BookCTA";
-import ShareButton from "./ShareButton";
-import CommentSection from "./CommentSection";
-import SimilarStyles from "./SimilarStyles";
-import RelatedTikToks from "./RelatedTikToks";
-import PickStylistFlow from "./PickStylistFlow";
+import { FROST_GLASS } from "@/lib/frost-glass";
+
+/** Salon offering this style's category — the soft, honest "book this look" list (real salons, real ratings/prices). */
+export interface SalonLite {
+  id: string;
+  name: string;
+  slug: string;
+  rating: number | null;
+  priceFrom: number | null;
+}
 
 interface DetailPageProps {
   item: DiscoveryItem;
   locale: string;
   isAuthenticated: boolean;
+  salons: SalonLite[];
+  salonTotal: number;
+  categoryRoute: string;
 }
 
+// Chrome labels. Body copy (description, script) comes already-localized off the item fields.
+const L: Record<string, Record<string, string>> = {
+  de: { back: "Zurück", play: "Auf TikTok abspielen", more: "Mehr lesen", less: "Weniger", save: "Speichern", saved: "Gespeichert", book: "Buchen", bookThis: "Diesen Look buchen", moreLikeThis: "Ähnliche Looks", seeAll: "Alle ansehen", details: "Details", upkeep: "Pflege", faces: "Gesichtsformen", products: "Produkte", cutGuide: "Schnittanleitung", noMedia: "Kein Medium" },
+  en: { back: "Back", play: "Play on TikTok", more: "Read more", less: "Read less", save: "Save", saved: "Saved", book: "Book", bookThis: "Book this look", moreLikeThis: "More like this", seeAll: "See all", details: "Details", upkeep: "Upkeep", faces: "Face shapes", products: "Products", cutGuide: "Cut guide", noMedia: "No media" },
+  fr: { back: "Retour", play: "Lire sur TikTok", more: "Lire plus", less: "Réduire", save: "Enregistrer", saved: "Enregistré", book: "Réserver", bookThis: "Réserver ce look", moreLikeThis: "Looks similaires", seeAll: "Tout voir", details: "Détails", upkeep: "Entretien", faces: "Formes de visage", products: "Produits", cutGuide: "Guide de coupe", noMedia: "Aucun média" },
+  it: { back: "Indietro", play: "Riproduci su TikTok", more: "Leggi altro", less: "Riduci", save: "Salva", saved: "Salvato", book: "Prenota", bookThis: "Prenota questo look", moreLikeThis: "Look simili", seeAll: "Vedi tutti", details: "Dettagli", upkeep: "Manutenzione", faces: "Forme del viso", products: "Prodotti", cutGuide: "Guida al taglio", noMedia: "Nessun media" },
+};
+
+const MAINTENANCE: Record<string, Record<string, string>> = {
+  de: { low: "Niedrig", medium: "Mittel", high: "Hoch" },
+  en: { low: "Low", medium: "Medium", high: "High" },
+  fr: { low: "Faible", medium: "Moyen", high: "Élevé" },
+  it: { low: "Basso", medium: "Medio", high: "Alto" },
+};
+
+// Face shapes are a fixed enum, so they're translated in the UI (not stored per-locale) — full multi-lang support
+// without a per-locale column (owner 2026-06-14: "full support everything"). Unknown values fall back to capitalized.
+const FACE_SHAPES: Record<string, Record<string, string>> = {
+  de: { oval: "Oval", round: "Rund", square: "Eckig", heart: "Herzförmig", diamond: "Rautenförmig", long: "Lang", oblong: "Länglich" },
+  en: { oval: "Oval", round: "Round", square: "Square", heart: "Heart", diamond: "Diamond", long: "Long", oblong: "Oblong" },
+  fr: { oval: "Ovale", round: "Rond", square: "Carré", heart: "Cœur", diamond: "Losange", long: "Allongé", oblong: "Oblong" },
+  it: { oval: "Ovale", round: "Tondo", square: "Quadrato", heart: "Cuore", diamond: "Romboidale", long: "Lungo", oblong: "Oblungo" },
+};
+
+function localized(item: DiscoveryItem, prefix: string, locale: string): string | null {
+  const key = `${prefix}_${locale}` as keyof DiscoveryItem;
+  return (item[key] as string | null) ?? null;
+}
 
 function formatDate(dateStr: string, locale: string): string {
   try {
-    return new Date(dateStr).toLocaleDateString(locale === "de" ? "de-CH" : locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return new Date(dateStr).toLocaleDateString(locale === "de" ? "de-CH" : locale, { day: "numeric", month: "short" });
   } catch {
     return "";
   }
 }
 
-const DL: Record<string, { back: string; cutGuide: string; noMedia: string }> = {
-  de: { back: "Zurück", cutGuide: "Technische Schnittanleitung", noMedia: "Kein Medium" },
-  en: { back: "Back", cutGuide: "Technical cut guide", noMedia: "No media" },
-  fr: { back: "Retour", cutGuide: "Guide de coupe technique", noMedia: "Aucun média" },
-  it: { back: "Indietro", cutGuide: "Guida tecnica al taglio", noMedia: "Nessun media" },
-};
+// Two-letter monogram for the salon avatar ("Cuts & Culture" -> "CC").
+function initials(name: string): string {
+  const words = name.trim().split(/\s+/).filter((w) => /[a-zA-Z0-9]/.test(w[0] ?? ""));
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
 
-export default function DetailPage({ item, locale, isAuthenticated }: DetailPageProps) {
-  // V3-D390: heart-only save concept (SaveButton removed); hero routes through the refresh proxy.
-  const [showCutGuide, setShowCutGuide] = useState(false);
-  const dt = DL[locale] ?? DL.en;
-  // Consider it a video if media_type is tiktok OR if tiktok data exists
+export default function DetailPage({ item, locale, isAuthenticated, salons, salonTotal, categoryRoute }: DetailPageProps) {
+  const router = useRouter();
+  const t = L[locale] ?? L.en;
+
+  const [aspect, setAspect] = useState("9 / 16");
+  const [descOpen, setDescOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
+  const [saveItemId, setSaveItemId] = useState<string | null>(null);
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const [videoAspect, setVideoAspect] = useState<string | null>(null);
+  // The cover IMAGE is the look (from TikTok — allowed via oEmbed; clean, no cookie wall, never opens TikTok). The
+  // video plays INLINE in our page only when the user taps play (never opens TikTok; TikTok's cookie wall only
+  // appears on that intentional tap, never on load).
+  const [playing, setPlaying] = useState(false);
+  const handleSave = (id: string) => {
+    if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
+    setSaveItemId(id);
+  };
+
+  // "More like this" — fetched client-side (below the fold; shimmer while loading).
+  const [similar, setSimilar] = useState<DiscoveryItem[]>([]);
+  const [similarLoading, setSimilarLoading] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/discovery/similar?item_id=${item.id}&limit=4`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled) setSimilar(Array.isArray(d?.items) ? d.items : []); })
+      .catch((err) => console.error("[DetailPage] similar load failed:", err))
+      .finally(() => { if (!cancelled) setSimilarLoading(false); });
+    return () => { cancelled = true; };
+  }, [item.id]);
+
   const isVideo = item.media_type === "tiktok" || !!item.tiktok_url || !!item.tiktok_embed_html;
-  const displayImage = item.image_url || item.tiktok_thumbnail_url;
-  // V3-D390: TikTok thumbnails expire → route the hero through the /api/discovery/thumb refresh proxy (same as the
-  // feed cards) so the detail hero isn't a blank grey box.
-  const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : displayImage;
+  const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : item.image_url || item.tiktok_thumbnail_url;
   const creator = formatCreator(item.author_name);
+  const description = localized(item, "description", locale) ?? item.description ?? item.alt_text ?? null;
+  const script = localized(item, "salon_script", locale) ?? item.salon_script_de ?? item.salon_script ?? null;
+  const heroSaved = savedIds.has(item.id);
+  // In-web TikTok embed (owner: never open TikTok — play in our page). videoId from the stored oEmbed html.
+  const videoId =
+    item.tiktok_embed_html?.match(/data-video-id="(\d+)"/)?.[1] ??
+    item.tiktok_embed_html?.match(/\/video\/(\d+)/)?.[1] ??
+    item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
+    null;
+  // Shape the frame to the real video ratio (probed from the thumbnail; the iframe is cross-origin) so the embed
+  // fills cleanly instead of a one-size 9/16 guess.
+  useEffect(() => {
+    if (!videoId || !heroSrc) return;
+    let alive = true;
+    const probe = new window.Image();
+    probe.onload = () => { if (alive && probe.naturalWidth && probe.naturalHeight) setVideoAspect(`${probe.naturalWidth} / ${probe.naturalHeight}`); };
+    probe.src = heroSrc;
+    return () => { alive = false; };
+  }, [videoId, heroSrc]);
+
+  const maintenanceLabel = item.maintenance ? (MAINTENANCE[locale] ?? MAINTENANCE.en)[item.maintenance] ?? null : null;
+  const faceMap = FACE_SHAPES[locale] ?? FACE_SHAPES.en;
+  const faceShapes = (item.face_shapes ?? [])
+    .map((f) => faceMap[f.toLowerCase()] ?? f.charAt(0).toUpperCase() + f.slice(1))
+    .join(", ");
+  const localizedProducts = (item[`products_${locale}` as keyof DiscoveryItem] as string[] | null) ?? null;
+  const products = (localizedProducts && localizedProducts.length ? localizedProducts : item.products_needed ?? []).join(", ");
+  const hasDetails = !!(maintenanceLabel || faceShapes || products || item.cut_guide);
+
+  // The AI cut-instruction (salon_script) no longer shows as a card; it auto-fills the booking note when the user
+  // books a salon from this look (owner 2026-06-14: "how you want the staff to cut your hair auto transfers to the
+  // booking note section"). Passed via ?note= and seeded into the booking wizard's customerNote.
+  const bookHref = (slug: string) =>
+    `/${locale}/salon/${slug}/booking${script ? `?note=${encodeURIComponent(script)}` : ""}`;
+
+  const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
+  const moreLikeThisHref = `/${locale}/discover?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
+
+  const heroAspectRatio = videoId ? (videoAspect ?? "9 / 16") : aspect;
+  const thumbEl: ReactNode = heroSrc ? (
+    <Image
+      src={heroSrc}
+      alt={item.alt_text || item.style_name || ""}
+      fill
+      priority
+      sizes="(max-width: 480px) 100vw, 480px"
+      className="object-cover animate-in fade-in duration-500"
+      onLoad={(e) => { const img = e.currentTarget; if (img.naturalWidth && img.naturalHeight) setAspect(`${img.naturalWidth} / ${img.naturalHeight}`); }}
+    />
+  ) : (
+    <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
+  );
 
   return (
-    <div className="max-w-5xl mx-auto pb-24">
-      {/* V3-D346 Pass-2 (2026-05-29): own back button removed — global Breadcrumb already
-          provides a mobile back button + the desktop trail (was a duplicate "Zurück" on mobile). */}
-      {/* V3-D346 (Move 3): 2-column on desktop — sticky hero left, content right; single column on mobile. */}
-      <div className="md:grid md:grid-cols-2 md:gap-8 md:items-start">
-      {/* ═══ Left column: Hero Media (sticky on desktop) ═══ */}
-      <div className="md:sticky md:top-20">
-      {/* ═══ Section 1: Hero Media ═══ */}
-      {/* V3-D390: was a framer-motion entrance that stranded the hero at opacity:0 on mount (invisible even though the
-          image loaded). Plain div — always visible. */}
-      <div className="relative rounded-[16px] overflow-hidden bg-s-ink">
-        {isVideo && heroSrc ? (
-          <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
-            <Image
-              src={heroSrc}
-              alt={item.alt_text || item.style_name || "TikTok"}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 480px"
-              priority
-            />
-            {/* TikTok play overlay — opens in new tab instead of embedding (avoids GDPR cookie wall) */}
-            {item.tiktok_url && (
-              <a
-                href={item.tiktok_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-s-ink/30 hover:bg-s-ink/40 transition-colors duration-150"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                  <Play size={22} className="text-white ml-1" fill="white" />
-                </div>
-                <span className="flex items-center gap-1.5 text-white text-xs font-heading bg-s-ink/50 backdrop-blur-sm px-3 py-1.5 rounded-pill">
-                  <ExternalLink size={12} />
-                  Auf TikTok ansehen
-                </span>
-              </a>
-            )}
-          </div>
-        ) : heroSrc ? (
-          <div className="relative aspect-[3/4] max-h-[70vh]">
-            <Image
-              src={heroSrc}
-              alt={item.alt_text || item.style_name || "Discovery item"}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 480px"
-              priority
-            />
-          </div>
+    <div className="mx-auto max-w-[480px] bg-white">
+      {/* ─── Hero — the cover IMAGE is the look (clean: no cookie wall, never opens TikTok). Tapping play loads the
+           TikTok embed INLINE in our page (in-web; TikTok's cookie wall only appears on that intentional tap). ─── */}
+      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: heroAspectRatio }}>
+        {playing && videoId ? (
+          <iframe
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
+            className="absolute inset-0 h-full w-full border-0"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            title={item.style_name || "TikTok"}
+          />
         ) : (
-          <div className="aspect-[3/4] flex items-center justify-center text-s-ink/20">
-            {dt.noMedia}
-          </div>
+          thumbEl
         )}
-      </div>
-      </div>{/* /left column */}
 
-      {/* ═══ Right column: all detail content ═══ */}
-      <div className="min-w-0">
-
-      {/* Source + Author + Date */}
-      <div className="flex items-center gap-2 mt-3 px-1">
-        <SourceBadge contentType={
-          (item.tiktok_url || item.tiktok_embed_html || item.media_type === "tiktok")
-            ? "tiktok"
-            : item.content_type
-        } />
-        {/* V3-D390: same junk-handle filter as the feed cards (formatCreator) — a scraped "@☆" reads as broken. */}
-        {creator && (
-          <span className="text-xs text-s-ink-2">
-            {item.author_url ? (
-              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-ink transition-colors">@{creator}</a>
-            ) : `@${creator}`}
-          </span>
+        {/* Tap to play the video INLINE (in-web — never opens TikTok). Shown on the cover image, before playing. */}
+        {!playing && videoId && (
+          <button
+            type="button"
+            onClick={() => setPlaying(true)}
+            aria-label={t.play}
+            className="absolute inset-0 z-[3] grid place-items-center"
+          >
+            <span style={FROST_GLASS} className="grid h-[64px] w-[64px] place-items-center rounded-full transition-transform duration-150 active:scale-95">
+              <Play size={28} className="ml-0.5 text-s-ink" fill="currentColor" />
+            </span>
+          </button>
         )}
-        <span className="text-xs text-s-ink/30">{formatDate(item.created_at, locale)}</span>
-      </div>
 
-      {/* ═══ Section 2: Actions Bar ═══ */}
-      <div className="flex items-center justify-between mt-3 px-1">
-        <div className="flex items-center gap-4">
-          {/* V3-D390: heart only (no bookmark — Solen has a single save concept). Bare variant for the light toolbar. */}
-          <LikeButton itemId={item.id} initialLiked={false} isAuthenticated={isAuthenticated} variant="bare" />
+        {/* Top controls — frosted back (left) + heart (right). */}
+        <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            aria-label={t.back}
+            style={FROST_GLASS}
+            className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSave(item.id)}
+            aria-label={heroSaved ? t.saved : t.save}
+            aria-pressed={heroSaved}
+            style={FROST_GLASS}
+            className="grid h-9 w-9 place-items-center rounded-full transition-transform duration-150 active:scale-95"
+          >
+            <Heart
+              key={String(heroSaved)}
+              size={18}
+              fill={heroSaved ? "#FF3366" : "none"}
+              stroke={heroSaved ? "none" : "var(--color-heading)"}
+              className={heroSaved ? "animate-heart-pop" : "text-s-ink"}
+            />
+          </button>
         </div>
-        <ShareButton item={item} />
+
       </div>
 
-      {/* ═══ Section 3: Title + Tags ═══ */}
-      <div className="mt-4 px-1">
+      {/* ─── Sheet (pulled over the hero, App-Store style) ─── */}
+      <div className="relative z-[5] -mt-[26px] rounded-t-[28px] bg-white px-[18px] pt-6 pb-9 shadow-[0_-10px_28px_-16px_rgba(0,0,0,0.22)] animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+        {/* Creator + date */}
+        <div className="flex items-center gap-2">
+          {creator && (
+            item.author_url ? (
+              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="text-[13px] font-medium text-s-accent no-underline hover:underline">@{creator}</a>
+            ) : (
+              <span className="text-[13px] font-medium text-s-accent">@{creator}</span>
+            )
+          )}
+          <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-3">
+            <CalendarDays size={13} /> {formatDate(item.created_at, locale)}
+          </span>
+        </div>
+
+        {/* Title */}
         {item.style_name && (
-          <h1 className="text-xl font-heading font-semibold tracking-[-0.01em] text-s-ink">{item.style_name}</h1>
+          <h1 className="mt-2.5 font-heading text-[25px] font-bold leading-[1.16] tracking-[-0.022em] text-s-ink">{item.style_name}</h1>
         )}
-        {item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {/* V3-D390: cap to 6 — the raw 14-tag cloud read cluttered. */}
+
+        {/* Tags */}
+        {item.tags?.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
             {item.tags.slice(0, 6).map((tag) => (
-              <span key={tag} className="text-[12px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink-2">
-                #{tag}
-              </span>
+              <span key={tag} className="rounded-full bg-s-bg-sunken px-2.5 py-1 text-[12px] text-s-ink-2">{tag}</span>
             ))}
           </div>
         )}
-      </div>
 
-      {/* ═══ Section 4: AI Description ═══ */}
-      <DescriptionCard item={item} locale={locale} />
+        {/* Description — clamps to 2 lines + "Mehr lesen" */}
+        {description && (
+          <div className="mt-[18px]">
+            <p className={`m-0 text-[14.5px] leading-[1.62] text-s-ink-2 ${descOpen ? "" : "line-clamp-2"}`}>{description}</p>
+            <button
+              type="button"
+              onClick={() => setDescOpen((o) => !o)}
+              className="mt-2 inline-flex items-center gap-1 text-[13.5px] font-medium text-s-accent"
+            >
+              {descOpen ? t.less : t.more}
+              <ChevronDown size={15} className={`transition-transform duration-200 ${descOpen ? "rotate-180" : ""}`} />
+            </button>
+          </div>
+        )}
 
-      {/* ═══ Section 5: Salon Script ═══ */}
-      <div className="mt-4 px-1">
-        <SalonScript item={item} locale={locale} />
-      </div>
-
-      {/* ═══ Section 6: Product Recommendations ═══ */}
-      <ProductRecommendations products={item.products_needed ?? []} locale={locale} />
-
-      {/* ═══ Section 7: Booking CTA ═══ */}
-      <BookCTA item={item} locale={locale} />
-
-      {/* Pick a stylist (for salon-linked items) */}
-      {item.owner_salon_id && (
-        <div className="mt-4 px-1">
-          <PickStylistFlow
-            salonId={item.owner_salon_id}
-            salonSlug={item.owner_salon_id}
-            locale={locale}
-            onSelect={(staffId) => {
-              const route = item.category === "beard" ? "barbershop" : item.category === "nails" ? "nails" : "coiffeur";
-              window.location.href = `/${locale}/${route}?staff=${staffId ?? ""}`;
-            }}
-          />
-        </div>
-      )}
-
-      {/* ═══ Section 8: Similar Styles ═══ */}
-      <SimilarStyles itemId={item.id} category={item.category} tags={item.tags} isAuthenticated={isAuthenticated} />
-
-      {/* ═══ Section 9: Related TikToks ═══ */}
-      <RelatedTikToks itemId={item.id} isCurrentTikTok={item.media_type === "tiktok"} />
-
-      {/* ═══ Section 10: Technical Cut Guide (collapsible) ═══ */}
-      {item.cut_guide && (
-        <div className="mt-6 px-1">
-          <button
-            onClick={() => setShowCutGuide(!showCutGuide)}
-            className="flex items-center gap-1.5 text-xs text-s-ink/40 hover:text-s-ink transition-colors"
-          >
-            <ChevronDown size={14} className={`transition-transform ${showCutGuide ? "rotate-180" : ""}`} />
-            {dt.cutGuide}
-          </button>
-          {showCutGuide && (
-            <div className="mt-2 p-4 rounded-[16px] bg-s-bg-surface border border-s-ink/5">
-              <p className="text-xs text-s-ink-2 font-mono leading-relaxed whitespace-pre-line">
-                {item.cut_guide}
-              </p>
+        {/* Book this look — soft, honest salon list */}
+        {salons.length > 0 && (
+          <section className="mt-[30px]">
+            <h2 className="mb-1.5 font-heading text-[17px] font-semibold tracking-[-0.01em] text-s-ink">{t.bookThis}</h2>
+            <div>
+              {salons.map((s) => (
+                <Link
+                  key={s.id}
+                  href={bookHref(s.slug)}
+                  className="flex items-center gap-3 border-t border-s-border py-3 first:border-t-0"
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-s-bg-sunken font-heading text-[14px] font-bold tracking-[-0.02em] text-s-ink-2">{initials(s.name)}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">{s.name}</span>
+                    {s.rating != null && (
+                      <span className="mt-0.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-s-ink-2">
+                        <Star size={13} className="text-s-star" fill="currentColor" /> {s.rating.toFixed(2)}
+                      </span>
+                    )}
+                  </span>
+                  <span className="flex items-center gap-3">
+                    {s.priceFrom != null && <span className="font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">ab CHF {s.priceFrom}</span>}
+                    <span className="rounded-full border border-s-border bg-s-bg-sunken px-4 py-2 text-[13px] font-semibold text-s-ink">{t.book}</span>
+                  </span>
+                </Link>
+              ))}
             </div>
-          )}
-        </div>
-      )}
+            {salonTotal > salons.length && (
+              <Link
+                href={seeAllSalonsHref}
+                className="mt-3.5 block w-full rounded-full border border-s-border bg-white py-3 text-center text-[14.5px] font-semibold text-s-ink"
+              >
+                {t.seeAll} {salonTotal} Salons
+              </Link>
+            )}
+          </section>
+        )}
 
-      {/* ═══ Section 11: Comments ═══ */}
-      <div className="mt-6 px-1">
-        <CommentSection itemId={item.id} isAuthenticated={isAuthenticated} />
+        {/* More like this — feed-card grammar (one product), save-enabled hearts */}
+        {(similarLoading || similar.length > 0) && (
+          <section className="mt-[30px]">
+            <div className="mb-1.5 flex items-center justify-between">
+              <h2 className="font-heading text-[17px] font-semibold tracking-[-0.01em] text-s-ink">{t.moreLikeThis}</h2>
+              {similar.length > 0 && (
+                <Link href={moreLikeThisHref} className="text-[13px] font-semibold text-s-accent">{t.seeAll}</Link>
+              )}
+            </div>
+            {similarLoading ? (
+              <DiscoveryGridSkeleton />
+            ) : (
+              <div className="-mx-[18px] px-1.5">
+                <MasonryGrid
+                  items={similar}
+                  renderItem={(s) =>
+                    s.media_type === "tiktok" ? (
+                      <VideoCard item={s} onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+                    ) : (
+                      <ItemCard item={s} onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+                    )
+                  }
+                />
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Details — dropdown */}
+        {hasDetails && (
+          <div className="mt-7 border-t border-s-border">
+            <button
+              type="button"
+              onClick={() => setDetailsOpen((o) => !o)}
+              aria-expanded={detailsOpen}
+              className="flex w-full items-center justify-between px-0.5 py-4"
+            >
+              <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
+              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
+            </button>
+            {detailsOpen && (
+              <div className="pb-2">
+                {maintenanceLabel && <DetailRow k={t.upkeep} v={maintenanceLabel} />}
+                {faceShapes && <DetailRow k={t.faces} v={faceShapes} />}
+                {products && <DetailRow k={t.products} v={products} />}
+                {item.cut_guide && (
+                  <div className="border-t border-s-border py-2.5">
+                    <p className="mb-1.5 text-[13.5px] text-s-ink-3">{t.cutGuide}</p>
+                    <p className="m-0 whitespace-pre-line font-mono text-[12.5px] leading-relaxed text-s-ink-2">{item.cut_guide}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      </div>{/* /right column */}
-      </div>{/* /grid */}
+
+      {/* Save-to-Kollektion picker — opened by the hero heart + the "more like this" hearts. */}
+      <SaveToBoardSheet
+        itemId={saveItemId ?? ""}
+        open={!!saveItemId}
+        onClose={() => setSaveItemId(null)}
+        onSaved={() => { if (saveItemId) setSavedIds((prev) => new Set(prev).add(saveItemId)); }}
+      />
+    </div>
+  );
+}
+
+function DetailRow({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex gap-3.5 border-t border-s-border py-2.5 text-[13.5px]">
+      <span className="w-[108px] shrink-0 text-s-ink-3">{k}</span>
+      <span className="flex-1 text-s-ink">{v}</span>
     </div>
   );
 }

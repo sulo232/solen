@@ -8,7 +8,7 @@ import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string }>;
+  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string; note?: string }>;
 }
 
 export async function generateMetadata({
@@ -27,7 +27,7 @@ export default async function BookingSalonPage({
   searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
-  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam } = await searchParams;
+  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam, note: noteParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -169,7 +169,7 @@ export default async function BookingSalonPage({
   const salonAny = salon as unknown as { phone: string | null; cover_photo_url: string | null; average_rating: number | null; review_count: number | null; address: string | null };
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam}>
+    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam}>
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}

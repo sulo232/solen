@@ -73,6 +73,9 @@ export const discoveryPostLimiter = new Ratelimit({ redis, limiter: Ratelimit.sl
 export const discoveryCommentLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "1 m"), analytics: true, prefix: "rl:disc:comment" });
 export const discoveryLikeLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(30, "1 m"), analytics: true, prefix: "rl:disc:like" });
 export const discoveryAdminLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "1 m"), analytics: true, prefix: "rl:disc:admin" });
+// On-demand AI vision is triggered by a PUBLIC look-detail page view. Tight per-IP cap so a scraper can't fan out
+// across unanalyzed items and run up the Gemini bill (each call is ~a few cents + several seconds).
+export const discoveryAiLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(4, "10 m"), analytics: true, prefix: "rl:disc:ai" });
 
 // Guest booking-access surface (SP-2, §10b.12) — dedicated + TIGHT, NOT generalLimiter.
 // This is the enumeration / token-brute-force surface. Keyed by IP (guests have no userId).
@@ -116,6 +119,21 @@ export async function applyRateLimit(
     console.error("[ratelimit] Redis error, skipping rate limit:", err);
   }
   return null;
+}
+
+/**
+ * Boolean rate-limit check for contexts that can't return a NextResponse (server components, background work).
+ * Returns true (allowed) when Redis is unconfigured or errors — fail-open, like applyRateLimit.
+ */
+export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<boolean> {
+  if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) return true;
+  try {
+    const { success } = await limiter.limit(key);
+    return success;
+  } catch (err) {
+    console.error("[ratelimit] Redis error, allowing through:", err);
+    return true;
+  }
 }
 
 export function getClientIp(req: NextRequest): string {

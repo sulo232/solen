@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
-import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
+import { analyzeDiscoveryImage, analyzeDiscoveryTikTok, translateDiscoveryI18n } from "@/lib/ai-vision";
 import { validateBody, adminDiscoveryBackfillSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
 
@@ -42,6 +42,42 @@ export async function POST(req: NextRequest) {
   }
 
   const admin = createAdminSupabaseClient();
+
+  // --- mode=i18n: translate existing looks' cut-script (de) + products (en) into all 4 langs (no re-analysis). One
+  //     cheap Gemini translate call per look; idempotent (only items missing salon_script_en). ---
+  if (req.nextUrl.searchParams.get("mode") === "i18n") {
+    const { data: rows } = await admin
+      .from("discovery_items")
+      .select("id, salon_script_de, products_needed")
+      .eq("is_active", true)
+      .is("salon_script_en", null)
+      .limit(50);
+    if (!rows || rows.length === 0) return NextResponse.json({ message: "No items need i18n backfill", processed: 0 });
+    let processed = 0;
+    let errs = 0;
+    const out: { id: string; status: string }[] = [];
+    for (const it of rows) {
+      const tr = await translateDiscoveryI18n(it.salon_script_de, it.products_needed as string[] | null);
+      if (!tr) { out.push({ id: it.id, status: "translate_null" }); errs++; continue; }
+      const { error: upErr } = await admin
+        .from("discovery_items")
+        .update({
+          salon_script_de: tr.script.de || it.salon_script_de,
+          salon_script_en: tr.script.en || null,
+          salon_script_fr: tr.script.fr || null,
+          salon_script_it: tr.script.it || null,
+          products_de: tr.products.de.length ? tr.products.de : null,
+          products_en: tr.products.en.length ? tr.products.en : (it.products_needed ?? null),
+          products_fr: tr.products.fr.length ? tr.products.fr : null,
+          products_it: tr.products.it.length ? tr.products.it : null,
+        })
+        .eq("id", it.id);
+      if (upErr) { out.push({ id: it.id, status: `db_error: ${upErr.message}` }); errs++; }
+      else { out.push({ id: it.id, status: "i18n_done" }); processed++; }
+    }
+    return NextResponse.json({ message: `i18n backfill: ${processed} done, ${errs} errors`, processed, errors: errs, results: out });
+  }
+
   const body = await req.json().catch(() => ({}));
   const { data: validated, error: validationError } = validateBody(adminDiscoveryBackfillSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });

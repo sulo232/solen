@@ -459,9 +459,14 @@ export interface DiscoveryItem {
   maintenance: string | null;
   face_shapes: string[];
   products_needed: string[];
+  products_de?: string[] | null;
+  products_en?: string[] | null;
+  products_fr?: string[] | null;
+  products_it?: string[] | null;
   hair_type_match: string[];
   salon_script: string | null;
   salon_script_de: string | null;
+  salon_script_en?: string | null;
   salon_script_fr: string | null;
   salon_script_it: string | null;
   cut_guide: string | null;

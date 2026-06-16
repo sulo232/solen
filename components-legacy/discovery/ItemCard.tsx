@@ -14,6 +14,12 @@ interface ItemCardProps {
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
   isExpanded?: boolean;
+  /** When set, the heart opens the Save-to-lookbook sheet for this item instead of toggling a like. */
+  onSave?: (itemId: string) => void;
+  /** Controlled "saved to a lookbook" fill for the heart (session saves tracked by the page). */
+  saved?: boolean;
+  /** False hides the heart for items that can't be saved (e.g. the frontend-only salon PROOF mocks, no DB row). */
+  canSave?: boolean;
 }
 
 // V3-D387 (2026-05-30): CSS-columns masonry card. The image fills a container whose aspect-ratio is the photo's
@@ -25,6 +31,9 @@ export default memo(function ItemCard({
   onClick,
   isAuthenticated = false,
   onAuthRequired,
+  onSave,
+  saved = false,
+  canSave = true,
 }: ItemCardProps) {
   const [aspect, setAspect] = useState("9 / 16");
   const isTikTok =
@@ -67,15 +76,19 @@ export default memo(function ItemCard({
           </div>
         )}
 
-        {/* Canonical heart — top-right */}
-        <div className="absolute right-1 top-1" onClick={(e) => e.stopPropagation()}>
-          <LikeButton
-            itemId={item.id}
-            initialLiked={false}
-            isAuthenticated={isAuthenticated}
-            onAuthRequired={onAuthRequired}
-          />
-        </div>
+        {/* Canonical heart — top-right (hidden for non-saveable items, e.g. salon PROOF mocks). */}
+        {canSave && (
+          <div className="absolute right-1 top-1" onClick={(e) => e.stopPropagation()}>
+            <LikeButton
+              itemId={item.id}
+              initialLiked={false}
+              isAuthenticated={isAuthenticated}
+              onAuthRequired={onAuthRequired}
+              onSave={onSave}
+              saved={saved}
+            />
+          </div>
+        )}
 
         {/* Haircut-type chip — bottom-left on the photo */}
         {styleTag && (

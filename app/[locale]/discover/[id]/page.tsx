@@ -1,9 +1,11 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import type { DiscoveryItem } from "@/lib/types";
-import DetailPage from "@/components-legacy/discovery/DetailPage";
+import DetailPage, { type SalonLite } from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
+import { discoveryAiLimiter, checkRateLimit } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 
 interface PageProps {
@@ -29,6 +31,16 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
 
   const imageUrl = item.image_url || item.tiktok_thumbnail_url;
   if (!imageUrl || !getServerEnv().GEMINI_API_KEY) return item;
+
+  // ABUSE GUARD: this fires a paid, multi-second Gemini call from a PUBLIC page view. Cap it per-IP so a scraper
+  // can't fan out across unanalyzed items and run up the bill. Over the cap → render the item as-is (no analysis),
+  // never error. (Admin import paths have their own auth + rate limits.)
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || hdrs.get("x-real-ip") || "unknown";
+  if (!(await checkRateLimit(discoveryAiLimiter, `ai:${ip}`))) {
+    console.warn("[discover/[id]] on-demand AI rate-limited, serving item as-is for ip:", ip);
+    return item;
+  }
 
   try {
     const isTikTok = !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
@@ -118,9 +130,52 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   const { data: { session } } = await supabase.auth.getSession();
   const isAuthenticated = !!session?.user;
 
+  // "Book this look" — the soft, honest salon list (owner call: real look→salon matching deferred). Salons that
+  // offer a service in this look's category, ranked by rating; price is the cheapest such service ("ab CHF X").
+  // IMPORTANT: discovery uses its own taxonomy ("hair"/"beard"/"nails") but the services table uses the marketplace
+  // taxonomy ("coiffeur"/"barbershop"/"nails"/"spa"). Map across, else the join silently returns 0 salons (the bug
+  // the audit flagged in the old salons-for-style stub: every look is "hair", no service has category "hair").
+  const CATEGORY_ROUTES: Record<string, string> = { hair: "coiffeur", beard: "barbershop", nails: "nails" };
+  const categoryRoute = CATEGORY_ROUTES[item.category] ?? "coiffeur";
+  const serviceCategory = categoryRoute; // route slug == services.category in this marketplace
+  let salons: SalonLite[] = [];
+  let salonTotal = 0;
+  try {
+    const { data: salonRows } = await supabase
+      .from("salons")
+      .select("id, name, slug, average_rating, services!inner(price, category, is_active)")
+      .eq("is_active", true)
+      .eq("services.is_active", true)
+      .eq("services.category", serviceCategory)
+      .order("average_rating", { ascending: false })
+      .limit(60);
+    const rows = salonRows ?? [];
+    salonTotal = rows.length;
+    salons = rows.slice(0, 3).map((s: Record<string, unknown>) => {
+      const services = (s.services as { price: number | null }[]) ?? [];
+      const prices = services.map((x) => x.price).filter((p): p is number => typeof p === "number" && p > 0);
+      return {
+        id: s.id as string,
+        name: s.name as string,
+        slug: s.slug as string,
+        rating: (s.average_rating as number | null) ?? null,
+        priceFrom: prices.length ? Math.min(...prices) : null,
+      };
+    });
+  } catch (err) {
+    console.error("[discover/[id]] book-this-look salons failed:", err);
+  }
+
   return (
-    <main className="min-h-screen bg-white px-4 pt-6 pb-20">
-      <DetailPage item={item} locale={locale} isAuthenticated={isAuthenticated} />
+    <main className="min-h-screen bg-white pb-12">
+      <DetailPage
+        item={item}
+        locale={locale}
+        isAuthenticated={isAuthenticated}
+        salons={salons}
+        salonTotal={salonTotal}
+        categoryRoute={categoryRoute}
+      />
     </main>
   );
 }

@@ -53,6 +53,11 @@ export default function HideInBooking({
   // doubled back/cancel controls stacked above them. The feed (/discover) is unaffected and keeps its header.
   if (/\/discover\/(board|saved)(\/|$)/.test(pathname)) return null;
 
+  // The look-detail page (/discover/<uuid>) is a focused PDP-style view: a full-bleed hero with its own frosted
+  // back + heart over the photo. Drop the global chrome so the hero leads and the back isn't doubled. Matched by the
+  // uuid shape so the feed (/discover) and the board/saved subroutes above are untouched. (Discovery detail rebuild.)
+  if (/\/discover\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/.test(pathname)) return null;
+
   // Booking flow, individual staff pages, onboarding, and the walk-in pay flow are
   // self-contained — always drop the marketing chrome. The guest self-service
   // recovery routes (/booking/lookup, /booking/resend-link) carry their own app bar

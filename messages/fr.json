@@ -3242,7 +3242,10 @@
       "reason": "Raison",
       "approve": "Approuver",
       "remove": "Supprimer"
-    }
+    },
+    "errorTitle": "Échec du chargement",
+    "errorMessage": "Vérifie ta connexion et réessaie.",
+    "errorRetry": "Réessayer"
   },
   "discovery_tos": {
     "title": "Conditions d'utilisation — Discovery",

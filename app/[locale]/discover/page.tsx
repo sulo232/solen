@@ -21,6 +21,7 @@ import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
+import SaveToBoardSheet from "@/components-legacy/discovery/SaveToBoardSheet";
 import { ArrowLeft, ChevronDown, Bookmark, Check } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -85,6 +86,11 @@ function DiscoverPageContent() {
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // Save-to-lookbook gesture (feed-save mockup): tapping a tile's heart opens the picker for THAT item.
+  // `savedIds` fills the heart for looks the user saved THIS session (a real action just taken, never fabricated).
+  const [saveItemId, setSaveItemId] = useState<string | null>(null);
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
   // Profile setup
   const [showProfileSetup, setShowProfileSetup] = useState(false);
@@ -214,6 +220,11 @@ function DiscoverPageContent() {
     router.push(`/${locale}/discover/${item.id}`);
   };
 
+  // Heart tapped while signed in → open the lookbook picker for that look.
+  const handleSave = (itemId: string) => setSaveItemId(itemId);
+  // Heart tapped while signed out → send to login (saving requires an account).
+  const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
+
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
   const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
 
@@ -340,11 +351,11 @@ function DiscoverPageContent() {
               }}
               onReset={resetFilters}
             />
-            {/* V3-D414 (Phase 2): Saved (Gespeichert) entry point — opens the user's saved boards. */}
+            {/* V3-D414 (Phase 2): Kollektionen entry point — opens the user's saved collections. */}
             <button
               type="button"
               onClick={() => router.push(`/${locale}/discover/saved`)}
-              aria-label="Gespeichert"
+              aria-label="Kollektionen"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
               <Bookmark size={18} />
@@ -487,12 +498,20 @@ function DiscoverPageContent() {
                     item={item}
                     onClick={() => handleItemClick(item)}
                     isAuthenticated={isAuthenticated}
+                    onAuthRequired={handleAuthRequired}
+                    onSave={handleSave}
+                    saved={savedIds.has(item.id)}
+                    canSave={!item.id.startsWith("proof-")}
                   />
                 ) : (
                   <ItemCard
                     item={item}
                     onClick={() => handleItemClick(item)}
                     isAuthenticated={isAuthenticated}
+                    onAuthRequired={handleAuthRequired}
+                    onSave={handleSave}
+                    saved={savedIds.has(item.id)}
+                    canSave={!item.id.startsWith("proof-")}
                   />
                 )
               }
@@ -511,6 +530,16 @@ function DiscoverPageContent() {
           </div>
         )}
       </div>
+
+      {/* Save-to-lookbook picker — one instance, opened by any tile's heart (feed-save gesture). */}
+      <SaveToBoardSheet
+        itemId={saveItemId ?? ""}
+        open={!!saveItemId}
+        onClose={() => setSaveItemId(null)}
+        onSaved={() => {
+          if (saveItemId) setSavedIds((prev) => new Set(prev).add(saveItemId));
+        }}
+      />
 
       {/* Floating post button */}
       <PostFromDiscover isAuthenticated={isAuthenticated} />

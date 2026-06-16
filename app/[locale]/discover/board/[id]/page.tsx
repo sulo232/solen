@@ -87,9 +87,9 @@ export default function BoardDetailPage() {
         {loading ? (
           <div className="pt-3"><DiscoveryGridSkeleton /></div>
         ) : error ? (
-          <p className="py-16 text-center text-[15px] text-s-ink-2">Sammlung nicht gefunden.</p>
+          <p className="py-16 text-center text-[15px] text-s-ink-2">Kollektion nicht gefunden.</p>
         ) : items.length === 0 ? (
-          <p className="py-16 text-center text-[15px] text-s-ink-2">Noch keine Looks in dieser Sammlung.</p>
+          <p className="py-16 text-center text-[15px] text-s-ink-2">Noch keine Looks in dieser Kollektion.</p>
         ) : (
           <div className="-mx-4 px-1.5">
             <MasonryGrid
