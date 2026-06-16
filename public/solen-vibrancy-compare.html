@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen vibrancy fix — A + B + C compare</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Open Sauce One', Inter, sans-serif;
+    background: #1A120A;
+    color: #FFFFFF;
+    line-height: 1.55;
+  }
+  .page-title {
+    text-align: center;
+    padding: 28px 20px 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+  }
+  .page-sub {
+    text-align: center;
+    padding: 0 20px 24px;
+    font-size: 13px;
+    color: #C5BAB0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .panel {
+    position: relative;
+    width: 100%;
+    height: 720px;
+    overflow: hidden;
+    margin: 0 0 6px;
+    background: #FFFFFF;
+  }
+
+  .panel .label {
+    position: absolute;
+    top: 16px; left: 16px;
+    z-index: 30;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(26, 18, 9, 0.88);
+    color: white;
+  }
+  .panel .label.pick { background: #1A8F5C; }
+
+  /* Atmosphere blobs — POSITIONED inside each panel */
+  .panel .atmosphere {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    isolation: isolate;
+  }
+  .panel .atmosphere > div {
+    position: absolute;
+    mix-blend-mode: normal;
+  }
+
+  /* ===== CURRENT (panel 1) — pale cat-bgs + FeedZone glass + saturate 1.05 + blur 140 ===== */
+  .panel.current .atmosphere > div { filter: blur(140px) saturate(1.05); }
+  .panel.current .b1 { top: -10%; right: -12%; width: 60%; height: 65%; background: #FFE8D8; border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: 0.80; }
+  .panel.current .b2 { top: -5%;  left:  -15%; width: 55%; height: 55%; background: #D4DDC8; border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.70; }
+  .panel.current .b3 { top: 40%;  right: 5%;   width: 55%; height: 45%; background: #A8E0BF; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.55; }
+  .panel.current .b4 { bottom: -8%; left: -10%; width: 60%; height: 50%; background: #F0A98C; border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: 0.42; }
+  .panel.current .b5 { bottom: -5%; right: 10%; width: 50%; height: 40%; background: #FFE8D8; border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: 0.55; }
+  /* FeedZone glass — covers the bottom 70% of the panel */
+  .panel.current .feed-zone {
+    position: absolute;
+    inset: 30% 0 0 0;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(22px) saturate(1.6);
+    -webkit-backdrop-filter: blur(22px) saturate(1.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.50);
+    border-radius: 40px 40px 0 0;
+    z-index: 1;
+  }
+
+  /* ===== PROPOSED (panel 2) — deep cat-text colors + NO FeedZone glass + saturate 1.6 + blur 100 ===== */
+  .panel.proposed .atmosphere > div { filter: blur(100px) saturate(1.6); }
+  /* Deep variants at LOW alpha — deep color at low alpha reads richer than pale at high alpha */
+  .panel.proposed .b1 { top: -10%; right: -12%; width: 55%; height: 60%; background: #E0703D; border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: 0.32; }   /* terracotta — Coiffeur deep */
+  .panel.proposed .b2 { top: -5%;  left:  -15%; width: 50%; height: 50%; background: #0F6F44; border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.28; }   /* emerald-mid — Spa */
+  .panel.proposed .b3 { top: 35%;  right: 0%;   width: 55%; height: 50%; background: #A04A22; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.30; }   /* terra-deep — Nails */
+  .panel.proposed .b4 { bottom: -8%; left: -10%; width: 60%; height: 55%; background: #1A8F5C; border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: 0.32; }   /* brand emerald */
+  .panel.proposed .b5 { bottom: -5%; right: 5%;  width: 50%; height: 45%; background: #E0703D; border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: 0.25; }   /* terracotta echo */
+  /* NO FEED ZONE GLASS — the section just sits directly on the atmosphere */
+
+  /* ===== Shared mock-page content (header + section + cards) ===== */
+  .mock-header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid rgba(26, 18, 9, 0.06);
+  }
+  .mock-header .logo {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-size: 18px;
+    color: #2A1F18;
+    display: inline-flex; align-items: baseline; gap: 2px;
+  }
+  .mock-header .logo::after { content: '•'; color: #E0703D; }
+  .mock-header .nav {
+    display: flex; gap: 18px;
+    font-size: 13px; color: #5C4A3A; font-weight: 500;
+  }
+  .mock-header .cta {
+    background: #1A8F5C;
+    color: white;
+    padding: 7px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mock-feed {
+    position: relative;
+    z-index: 10;
+    padding: 28px 24px 0;
+  }
+  .mock-h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: #2A1F18;
+    margin-bottom: 14px;
+  }
+  .mock-cards {
+    display: flex; gap: 12px;
+  }
+  .mock-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(26, 18, 9, 0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    width: 170px;
+    box-shadow: 0 4px 14px rgba(26, 18, 9, 0.05);
+    flex-shrink: 0;
+  }
+  .mock-card-photo {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #E8DDC9, #D4F2E0);
+    position: relative;
+  }
+  .mock-card-photo.b { background: linear-gradient(135deg, #FFE8D8, #F0A98C); }
+  .mock-card-photo.c { background: linear-gradient(135deg, #D4DDC8, #A8E0BF); }
+  .mock-card-pill {
+    position: absolute;
+    top: 8px; left: 8px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: rgba(224, 112, 61, 0.85);
+    color: white;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+  }
+  .mock-card-pill.green { background: rgba(26, 143, 92, 0.78); }
+  .mock-card-body { padding: 10px 12px; font-size: 12px; }
+  .mock-card-body .nm { font-weight: 600; color: #2A1F18; }
+  .mock-card-body .ad { color: #8A7A68; font-size: 11px; margin-top: 2px; }
+
+  .footer-note {
+    max-width: 800px;
+    margin: 30px auto 60px;
+    padding: 0 24px;
+    text-align: center;
+    font-size: 11px;
+    color: #C5BAB0;
+    line-height: 1.7;
+  }
+  .footer-note strong { color: #FFFFFF; }
+  .footer-note code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Vibrancy fix — A + B + C compare</h1>
+<p class="page-sub">Same content + same header on both panels. Only difference: atmosphere palette + saturate value + presence of FeedZone glass.</p>
+
+<!-- ====== PANEL 1: CURRENT ====== -->
+<div class="panel current">
+  <span class="label">Panel 1 · current state</span>
+  <div class="atmosphere">
+    <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div><div class="b5"></div>
+  </div>
+  <div class="feed-zone"></div>
+  <div class="mock-header">
+    <span class="logo">Solen</span>
+    <div class="nav"><span>Coiffeur</span><span>Barbershop</span><span>Nails</span><span>Entdecken</span></div>
+    <span class="cta">Anmelden</span>
+  </div>
+  <div class="mock-feed">
+    <h2 class="mock-h2">Zuletzt angesehen →</h2>
+    <div class="mock-cards">
+      <div class="mock-card">
+        <div class="mock-card-photo"><span class="mock-card-pill green">Heute frei</span></div>
+        <div class="mock-card-body"><div class="nm">Atelier Coiffure</div><div class="ad">Basel · 14:30 · CHF 80</div></div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-photo b"><span class="mock-card-pill">−20%</span></div>
+        <div class="mock-card-body"><div class="nm">Salon Maria</div><div class="ad">Basel · 15:30 · CHF 64</div></div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-photo c"></div>
+        <div class="mock-card-body"><div class="nm">Nail Loft</div><div class="ad">Basel · 17:00 · CHF 45</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PANEL 2: PROPOSED ====== -->
+<div class="panel proposed">
+  <span class="label pick">Panel 2 · A + B + C applied (RECOMMEND)</span>
+  <div class="atmosphere">
+    <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div><div class="b5"></div>
+  </div>
+  <!-- NO feed-zone div — that's the whole point of fix A -->
+  <div class="mock-header">
+    <span class="logo">Solen</span>
+    <div class="nav"><span>Coiffeur</span><span>Barbershop</span><span>Nails</span><span>Entdecken</span></div>
+    <span class="cta">Anmelden</span>
+  </div>
+  <div class="mock-feed">
+    <h2 class="mock-h2">Zuletzt angesehen →</h2>
+    <div class="mock-cards">
+      <div class="mock-card">
+        <div class="mock-card-photo"><span class="mock-card-pill green">Heute frei</span></div>
+        <div class="mock-card-body"><div class="nm">Atelier Coiffure</div><div class="ad">Basel · 14:30 · CHF 80</div></div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-photo b"><span class="mock-card-pill">−20%</span></div>
+        <div class="mock-card-body"><div class="nm">Salon Maria</div><div class="ad">Basel · 15:30 · CHF 64</div></div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-photo c"></div>
+        <div class="mock-card-body"><div class="nm">Nail Loft</div><div class="ad">Basel · 17:00 · CHF 45</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="footer-note">
+  <strong>Panel 1 (current)</strong> — pale cat-bg blobs (peach <code>#FFE8D8</code>, sage <code>#D4DDC8</code>, emerald-pale <code>#A8E0BF</code>, soft-terra <code>#F0A98C</code>) at opacity 0.42–0.80, blur 140px, saturate 1.05, sitting under a <code>bg-white/45 + blur 22px</code> FeedZone glass panel. Result: washed.
+  <br><br>
+  <strong>Panel 2 (proposed A + B + C)</strong> — deep cat-text variants (terracotta <code>#E0703D</code>, terra-deep <code>#A04A22</code>, emerald-mid <code>#0F6F44</code>, brand emerald <code>#1A8F5C</code>) at LOW alpha 0.25–0.32, blur 100px (tighter), saturate 1.6. <strong>No FeedZone glass</strong> — section sits directly on atmosphere. Result: deep, painterly, richer chroma — but cards still pop because they're solid white.
+</p>
+
+</body>
+</html>

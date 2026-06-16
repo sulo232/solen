@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — blue text fix variants (Section C)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: #F5F5F4;
+    color: #0A0A0A;
+    line-height: 1.5;
+    font-family: 'Geist', system-ui, sans-serif;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .page-h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .page-lede {
+    margin: 0 0 32px 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6B6B6B;
+    max-width: 820px;
+  }
+  .section-title {
+    margin: 32px 0 12px 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 1280px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+  .variant {
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .variant-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid #E7E5E4;
+    background: #FAFAFA;
+  }
+  .variant-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 2px;
+  }
+  .variant-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .variant-spec {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6B6B6B;
+    line-height: 1.4;
+  }
+  .specimen {
+    padding: 18px;
+  }
+  .specimen + .specimen { border-top: 1px solid #F5F5F4; }
+  .specimen-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6B6B6B;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  /* Accent-pale background — the contrast battleground */
+  .pale-bg { background: #EAEFFE; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; }
+
+  /* Sizes used in actual Solen offenders */
+  .text-9 { font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .text-11 { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .text-12 { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .text-13 { font-size: 13px; font-weight: 500; }
+  .text-14 { font-size: 14px; font-weight: 500; }
+  .text-16 { font-size: 16px; font-weight: 600; }
+
+  /* Color variants */
+  .v-current .accent-text { color: #276EF1; }
+  .v-current .accent-icon { color: #276EF1; }
+  .v-deep .accent-text { color: #185CE0; }
+  .v-deep .accent-icon { color: #185CE0; }
+  .v-navy .accent-text { color: #003366; }
+  .v-navy .accent-icon { color: #003366; }
+  .v-ink .accent-text { color: #0A0A0A; }
+  .v-ink .accent-icon { color: #276EF1; }
+
+  /* Pill demo */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 99px;
+  }
+  .pill-pale { background: #EAEFFE; }
+  .pill-icon { width: 12px; height: 12px; }
+
+  /* Avatar circle demo (warum-solen pattern) */
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 99px;
+    background: #EAEFFE;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Time label pill (partner pattern at 9px) */
+  .time-pill {
+    display: inline-block;
+    background: #EAEFFE;
+    padding: 4px 10px;
+    border-radius: 99px;
+  }
+
+  /* Button (gift-card "Eigener Betrag" pattern) */
+  .btn-pale {
+    display: inline-block;
+    background: #EAEFFE;
+    border: 1px solid rgba(39,110,241,0.2);
+    padding: 8px 14px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Link sample */
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .verdict {
+    margin-top: 32px;
+    padding: 24px 28px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+  }
+  .verdict h2 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .verdict p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .verdict strong { font-weight: 600; }
+  .verdict .hex {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    vertical-align: -3px;
+    margin-right: 4px;
+    border: 1px solid #E7E5E4;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="page-h1">Blue text fix — 4 variants on accent-pale (Section C)</h1>
+  <p class="page-lede">You said the blue text "looks weird." Audit showed: <code>text-s-accent</code> (#276EF1 royal) at 11-13px on <code>bg-s-accent-pale</code> (#EAEFFE) has 195-pt RGB delta = vibration/hollow. Uber uses navy ~#003366 for small accent text — much calmer. Below: same 5 Solen offender patterns rendered in 4 color choices. Pick A/B/C/D.</p>
+
+  <div class="section-title">5 real Solen contexts (use these to compare)</div>
+
+  <div class="grid">
+
+    <!-- VARIANT A: CURRENT -->
+    <div class="variant v-current">
+      <div class="variant-head">
+        <div class="variant-label">A · Current</div>
+        <div class="variant-name">Royal #276EF1</div>
+        <div class="variant-spec">What's shipping. Bright, vibrates at small sizes.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">9px time pill (/partner)</div>
+        <span class="time-pill"><span class="accent-text text-9">~60 SEK</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px avatar (/warum-solen)</div>
+        <span class="avatar"><span class="accent-text">S</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">11px button (/gift-card)</div>
+        <span class="btn-pale accent-text">Eigener Betrag</span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px skill pill (StaffProfile)</div>
+        <span class="pill pill-pale">
+          <svg class="pill-icon accent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span class="accent-text" style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">Coloration</span>
+        </span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">14px in-body link</div>
+        <p style="font-size:14px;color:#0A0A0A;margin:0">
+          Erfahre mehr über <a href="#" class="link accent-text">unsere Partner-Salons</a> in deiner Stadt.
+        </p>
+      </div>
+    </div>
+
+    <!-- VARIANT B: DEEP -->
+    <div class="variant v-deep">
+      <div class="variant-head">
+        <div class="variant-label">B</div>
+        <div class="variant-name">Deep #185CE0</div>
+        <div class="variant-spec">Same hue as current, just darker. Calmer at small sizes, still recognizably "Solen blue."</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">9px time pill (/partner)</div>
+        <span class="time-pill"><span class="accent-text text-9">~60 SEK</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px avatar (/warum-solen)</div>
+        <span class="avatar"><span class="accent-text">S</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">11px button (/gift-card)</div>
+        <span class="btn-pale accent-text">Eigener Betrag</span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px skill pill (StaffProfile)</div>
+        <span class="pill pill-pale">
+          <svg class="pill-icon accent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span class="accent-text" style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">Coloration</span>
+        </span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">14px in-body link</div>
+        <p style="font-size:14px;color:#0A0A0A;margin:0">
+          Erfahre mehr über <a href="#" class="link accent-text">unsere Partner-Salons</a> in deiner Stadt.
+        </p>
+      </div>
+    </div>
+
+    <!-- VARIANT C: NAVY (Uber-style) -->
+    <div class="variant v-navy">
+      <div class="variant-head">
+        <div class="variant-label">C · Uber-style</div>
+        <div class="variant-name">Navy #003366</div>
+        <div class="variant-spec">Closest to Uber's small-accent-text treatment. Most refined, most institutional. Loses some "Solen royal" identity.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">9px time pill (/partner)</div>
+        <span class="time-pill"><span class="accent-text text-9">~60 SEK</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px avatar (/warum-solen)</div>
+        <span class="avatar"><span class="accent-text">S</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">11px button (/gift-card)</div>
+        <span class="btn-pale accent-text">Eigener Betrag</span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px skill pill (StaffProfile)</div>
+        <span class="pill pill-pale">
+          <svg class="pill-icon accent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span class="accent-text" style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">Coloration</span>
+        </span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">14px in-body link</div>
+        <p style="font-size:14px;color:#0A0A0A;margin:0">
+          Erfahre mehr über <a href="#" class="link accent-text">unsere Partner-Salons</a> in deiner Stadt.
+        </p>
+      </div>
+    </div>
+
+    <!-- VARIANT D: INK + ACCENT ICON -->
+    <div class="variant v-ink">
+      <div class="variant-head">
+        <div class="variant-label">D · Hybrid</div>
+        <div class="variant-name">Ink text + blue icon</div>
+        <div class="variant-spec">Most minimal. Text is plain ink (#0A0A0A); blue used only for the icon. Linear/Notion-style refinement. Most flexibility, but loses some "blue moment" warmth.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">9px time pill (/partner)</div>
+        <span class="time-pill"><span class="accent-text text-9">~60 SEK</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px avatar (/warum-solen)</div>
+        <span class="avatar"><span class="accent-text">S</span></span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">11px button (/gift-card)</div>
+        <span class="btn-pale accent-text">Eigener Betrag</span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">12px skill pill (StaffProfile)</div>
+        <span class="pill pill-pale">
+          <svg class="pill-icon accent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span class="accent-text" style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">Coloration</span>
+        </span>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">14px in-body link</div>
+        <p style="font-size:14px;color:#0A0A0A;margin:0">
+          Erfahre mehr über <a href="#" class="link accent-text">unsere Partner-Salons</a> in deiner Stadt.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>My recommendation: B (Deep #185CE0)</h2>
+    <p><strong>Why:</strong> keeps the "Solen blue" identity (same hue family) but moves the lightness from 60% → 49% — closes the RGB gap with the pale background, kills the vibration. Already exists in the LOCKFILE as <code>s-accent.deep</code> (originally just for hover states) so zero new tokens.</p>
+    <p><strong>Why not C (Navy):</strong> Uber's #003366 is so dark it stops feeling like "accent" and starts feeling like ink. Solen's hue language is royal-blue-as-spotlight, not navy-as-default-text. Navy is closer to Bloomberg/Capital-One — different identity.</p>
+    <p><strong>Why not D (Ink + icon):</strong> elegant but the accent footprint shrinks too much. You'd lose the blue moment on links, badges, eyebrows — those become just "another text run." Linear can pull this off because their accent is literal sparkles + headers; Solen uses blue as the only chromatic break in a B&W system, so killing the text-color use removes one of the two surfaces where you SEE the accent.</p>
+
+    <h3 style="font-size:14px;font-weight:600;margin:20px 0 8px 0">If you pick B — what gets swept</h3>
+    <ul style="font-size:13px;color:#6B6B6B;line-height:1.6;padding-left:20px;margin:0">
+      <li>~12-18 callsites where <code>text-s-accent</code> appears at sizes 9-13px on a pale bg</li>
+      <li>Add a semantic class <code>text-s-accent-text</code> = <code>#185CE0</code> (deep variant alias for body-size text)</li>
+      <li>Keep <code>text-s-accent</code> (#276EF1) for icons + large headings (where geometry breathes)</li>
+      <li>Update LOCKFILE §1 with the split-role rule</li>
+    </ul>
+
+    <p style="margin-top: 16px; font-size: 13px;"><strong>Pick A/B/C/D + I sweep + we move to Section D.</strong></p>
+  </div>
+
+</div>
+</body>
+</html>

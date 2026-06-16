@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen cards — Airbnb-style adaptation</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #FAF3E6;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --brand-mid: #0F6F44;
+    --accent: #E0703D;
+    --love: #FF4A6B;
+    --star: #F3A864;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 56px 0 120px;
+  }
+  .section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .page-title {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .page-sub {
+    font-size: 14px;
+    color: var(--ink-2);
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-family: 'Open Sauce One', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .section-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .demo-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 56px;
+  }
+
+  /* ── AIRBNB-STYLE CARD ─────────────────────────────────────── */
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* Photo block */
+  .card-photo {
+    position: relative;
+    aspect-ratio: 6 / 5;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #E0DBD0;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card:hover .card-photo {
+    transform: translateY(-2px);
+  }
+  .card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Top-left badge — TRUE frosted glass (translucent + heavy blur + edge highlight) */
+  .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  .badge.dark {
+    background: rgba(26, 18, 9, 0.55);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .badge.emerald {
+    background: rgba(26, 143, 92, 0.55);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: white;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  /* Top-right heart — frosted-glass CIRCLE wrapping the SVG */
+  .heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  .heart svg {
+    width: 18px;
+    height: 18px;
+  }
+  .heart.saved svg path { fill: var(--love); stroke: none; }
+  .heart:not(.saved) svg path { fill: none; stroke: var(--ink); stroke-width: 2.25; }
+
+  /* Body below photo */
+  .card-body {
+    padding: 12px 4px 0 4px;
+  }
+  .card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .card-title {
+    font-family: 'Open Sauce One', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .card-rating {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .card-rating .star {
+    color: var(--star);
+    font-size: 13px;
+  }
+  .card-meta {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+  .card-price {
+    font-size: 14px;
+    color: var(--ink);
+    margin-top: 4px;
+  }
+  .card-price strong {
+    font-weight: 700;
+  }
+
+  /* ── CURRENT SOLEN CARD (for comparison) ─────────────────────────── */
+  .current-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(31,23,9,0.04);
+  }
+  .current-photo {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .current-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .current-pill {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(212, 242, 224, 0.94);
+    backdrop-filter: blur(8px);
+    color: var(--brand-mid);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .current-body {
+    padding: 10px 14px 14px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+  }
+  .current-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .current-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .current-rating {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .current-rating .star { color: var(--star); }
+  .current-meta {
+    font-size: 11px;
+    color: var(--ink-2);
+    margin-top: 3px;
+  }
+  .current-meta .price {
+    font-weight: 700;
+    color: var(--brand);
+  }
+
+  .footer-note {
+    max-width: 1280px;
+    margin: 56px auto 0;
+    padding: 0 24px;
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+  .footer-note code {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11px;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<section class="section">
+  <h1 class="page-title">Salon cards — Airbnb-style</h1>
+  <p class="page-sub">Same Solen content + V2-D60 palette, restructured per the Airbnb card pattern from your screenshot.</p>
+
+  <!-- ROW A: NEW Airbnb-style cards -->
+  <div class="section-meta">● Variant A · Airbnb structure + Solen palette (my pick)</div>
+  <h2 class="section-title">Coiffeur-Salons</h2>
+  <div class="demo-row">
+
+    <a class="card" href="#">
+      <div class="card-photo">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=480&fit=crop&q=80" alt="">
+        <span class="badge">Heute frei</span>
+        <button class="heart saved" aria-label="Gespeichert">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Salon Maria</div>
+          <div class="card-rating"><span class="star">★</span>4.8</div>
+        </div>
+        <p class="card-meta">Damen-Schnitt · Basel</p>
+        <p class="card-price">ab <strong>CHF 80</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=480&fit=crop&q=80" alt="">
+        <span class="badge">Heute frei</span>
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Atelier Coiffure</div>
+          <div class="card-rating"><span class="star">★</span>4.9</div>
+        </div>
+        <p class="card-meta">Balayage · Basel</p>
+        <p class="card-price">ab <strong>CHF 120</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo">
+        <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=480&fit=crop&q=80" alt="">
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Lina Hair Studio</div>
+          <div class="card-rating"><span class="star">★</span>4.7</div>
+        </div>
+        <p class="card-meta">Föhnen & Styling · Basel</p>
+        <p class="card-price">ab <strong>CHF 75</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo">
+        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=480&fit=crop&q=80" alt="">
+        <span class="badge dark">Top-Pick</span>
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Coiffeur Bahnhof</div>
+          <div class="card-rating"><span class="star">★</span>4.6</div>
+        </div>
+        <p class="card-meta">Herren-Schnitt · Basel</p>
+        <p class="card-price">ab <strong>CHF 65</strong></p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ROW C: Current 4:3 photo + bare text below (no white info-row chrome) -->
+  <div class="section-meta">● Variant C · Current 1:1 square photo + bare text below (hybrid — kept real live aspect, stripped white-glass info-row)</div>
+  <h2 class="section-title">Coiffeur-Salons</h2>
+  <div class="demo-row" style="margin-bottom: 32px;">
+
+    <a class="card" href="#">
+      <div class="card-photo" style="aspect-ratio: 1/1;">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="">
+        <span class="badge" style="bottom: 10px; top: auto; background: rgba(212,242,224,0.94); color: var(--brand-mid); text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; padding: 4px 10px;">Heute frei</span>
+        <button class="heart saved" aria-label="Gespeichert">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Salon Maria</div>
+          <div class="card-rating"><span class="star">★</span>4.8</div>
+        </div>
+        <p class="card-meta">Damen-Schnitt · <strong style="color: var(--brand); font-weight: 700;">ab CHF 80</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo" style="aspect-ratio: 1/1;">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" alt="">
+        <span class="badge" style="bottom: 10px; top: auto; background: rgba(212,242,224,0.94); color: var(--brand-mid); text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; padding: 4px 10px;">Heute frei</span>
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Atelier Coiffure</div>
+          <div class="card-rating"><span class="star">★</span>4.9</div>
+        </div>
+        <p class="card-meta">Balayage · <strong style="color: var(--brand); font-weight: 700;">ab CHF 120</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo" style="aspect-ratio: 1/1;">
+        <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" alt="">
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Lina Hair Studio</div>
+          <div class="card-rating"><span class="star">★</span>4.7</div>
+        </div>
+        <p class="card-meta">Föhnen & Styling · <strong style="color: var(--brand); font-weight: 700;">ab CHF 75</strong></p>
+      </div>
+    </a>
+
+    <a class="card" href="#">
+      <div class="card-photo" style="aspect-ratio: 1/1;">
+        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" alt="">
+        <span class="badge dark" style="bottom: 10px; top: auto;">Top-Pick</span>
+        <button class="heart" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">Coiffeur Bahnhof</div>
+          <div class="card-rating"><span class="star">★</span>4.6</div>
+        </div>
+        <p class="card-meta">Herren-Schnitt · <strong style="color: var(--brand); font-weight: 700;">ab CHF 65</strong></p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ROW B: CURRENT (for comparison) -->
+  <div class="section-meta">● Variant B · Current Solen card (reference — for compare)</div>
+  <h2 class="section-title">Coiffeur-Salons</h2>
+  <div class="demo-row">
+
+    <div class="current-card">
+      <div class="current-photo">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" alt="">
+        <span class="current-pill">Heute frei</span>
+        <button class="heart saved" style="top:8px; right:8px; width:24px; height:24px;" aria-label="Gespeichert">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="current-body">
+        <div class="current-line"><div class="current-name">Salon Maria</div><div class="current-rating"><span class="star">★</span> 4.8</div></div>
+        <div class="current-meta">Damen-Schnitt · <span class="price">ab CHF 80</span></div>
+      </div>
+    </div>
+
+    <div class="current-card">
+      <div class="current-photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" alt="">
+        <span class="current-pill">Heute frei</span>
+        <button class="heart" style="top:8px; right:8px; width:24px; height:24px;" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="current-body">
+        <div class="current-line"><div class="current-name">Atelier Coiffure</div><div class="current-rating"><span class="star">★</span> 4.9</div></div>
+        <div class="current-meta">Balayage · <span class="price">ab CHF 120</span></div>
+      </div>
+    </div>
+
+    <div class="current-card">
+      <div class="current-photo">
+        <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=450&fit=crop&q=80" alt="">
+        <button class="heart" style="top:8px; right:8px; width:24px; height:24px;" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="current-body">
+        <div class="current-line"><div class="current-name">Lina Hair Studio</div><div class="current-rating"><span class="star">★</span> 4.7</div></div>
+        <div class="current-meta">Föhnen & Styling · <span class="price">ab CHF 75</span></div>
+      </div>
+    </div>
+
+    <div class="current-card">
+      <div class="current-photo">
+        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=450&fit=crop&q=80" alt="">
+        <button class="heart" style="top:8px; right:8px; width:24px; height:24px;" aria-label="Speichern">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </button>
+      </div>
+      <div class="current-body">
+        <div class="current-line"><div class="current-name">Coiffeur Bahnhof</div><div class="current-rating"><span class="star">★</span> 4.6</div></div>
+        <div class="current-meta">Herren-Schnitt · <span class="price">ab CHF 65</span></div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<p class="footer-note">
+<strong>Variant A changes vs current:</strong> photo aspect 4:3 → 5:4 (more square, more "feature-photo" feel) · text moves OUTSIDE the card chrome (no white-glass info row glued to photo — text floats below in section's substrate) · title separates from rating into its own row · meta line split: "Service · City" + "ab CHF XX" stacked · "Heute frei" badge moves from bottom-left to top-left + restyled as white-glass pill (matches Airbnb's "Guest favorite" treatment) · Top-Pick badge available as a dark variant alongside ·  heart sits naked over photo with drop-shadow (no white circle background — matches Airbnb saved-state).
+<br><br>
+<strong>What stays Solen:</strong> emerald `<code>#1A8F5C</code>` for "Top-Pick" badge variant, amber `<code>#F3A864</code>` stars (not Airbnb black stars), love-red `<code>#FF4A6B</code>` heart fill (not Airbnb black heart), Peace Sans + Open Sauce typography. Pure structure adoption, not pure visual cloning.
+</p>
+
+</body>
+</html>

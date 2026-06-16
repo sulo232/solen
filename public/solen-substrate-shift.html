@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Substrate shift (V2-D68 proposal)</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/peace-sans" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-sauce-one" />
+  <style>
+    /* V2-D68 PROPOSAL — V3.1 substrate shift */
+    :root {
+      /* NEW substrate — subtle warm off-white (replaces #FAF3E6 cream V2-D60) */
+      --s-bg-base: #F8F7F2;
+      --s-bg-surface: #FFFFFF;
+      /* V3 brand palette UNCHANGED */
+      --s-brand: #1A8F5C;
+      --s-brand-mid: #0F6F44;
+      --s-brand-deep: #084B2D;
+      --s-brand-subtle: #D4F2E0;
+      --s-accent: #E0703D;
+      --s-accent-deep: #A04A22;
+      --s-ink: #2A1F18;
+      --s-ink-2: #5C4938;
+      --s-ink-3: #8A7660;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--s-bg-base);
+    }
+    body {
+      font-family: 'Open Sauce One', system-ui, -apple-system, sans-serif;
+      color: var(--s-ink);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ===== HERO ZONE ===== */
+    .hero {
+      position: relative;
+      padding: 100px 20px 48px;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    /* Single localized glow orb — replaces page-wide atmosphere blobs.
+       Emerald-tinted, soft, sits behind h1 only. Reads as "light source"
+       not "background gradient". */
+    .hero-glow {
+      position: absolute;
+      top: 25%;
+      left: -10%;
+      width: 360px;
+      height: 360px;
+      background: var(--s-brand);
+      border-radius: 50%;
+      opacity: 0.18;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      top: 40%;
+      right: -20%;
+      width: 320px;
+      height: 320px;
+      background: var(--s-accent);
+      border-radius: 50%;
+      opacity: 0.14;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .greeting {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--s-ink-2);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Peace Sans', Impact, Haettenschweiler, sans-serif;
+      font-size: clamp(36px, 6vw, 60px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--s-ink);
+      margin-bottom: 40px;
+    }
+    h1 .accent { color: var(--s-accent); }
+
+    /* SearchBar mock — same V3 spec */
+    .searchbar {
+      background: white;
+      border: 1px solid rgba(26, 18, 9, 0.06);
+      border-radius: 24px;
+      padding: 8px;
+      box-shadow: 0 4px 16px rgba(26, 18, 9, 0.04);
+    }
+    .searchrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(26, 18, 9, 0.05);
+      cursor: pointer;
+    }
+    .searchrow:last-of-type { border-bottom: 0; }
+    .searchrow svg { width: 18px; height: 18px; color: var(--s-ink-3); flex-shrink: 0; }
+    .searchrow .label { font-size: 15px; color: var(--s-ink-3); flex: 1; }
+    .searchbtn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background: var(--s-brand);
+      color: white;
+      border: 0;
+      border-radius: 16px;
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ===== SECTION ZONE ===== */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 32px 20px 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+    }
+    .section-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(26, 18, 9, 0.06);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .section-link svg { width: 16px; height: 16px; color: var(--s-ink); }
+
+    /* Cards on the new off-white substrate */
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 157px);
+      gap: 12px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #FFE8D8;
+      /* V2-D68 NEW: 1px hairline border to give cards edge definition on
+         the lower-contrast off-white substrate. Cards on cream had ~5%
+         lightness delta, cards on off-white have ~2% — hairline compensates. */
+      box-shadow:
+        0 0 0 1px rgba(26, 18, 9, 0.06),
+        0 1px 2px rgba(26, 18, 9, 0.04),
+        0 4px 10px rgba(26, 18, 9, 0.05);
+    }
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .text {
+      margin-top: 10px;
+      padding: 0 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .text h3 {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 13px;
+      color: var(--s-ink-3);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .row3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.35;
+    }
+    .row3 .left { flex: 1; }
+    .row3 .left b { font-weight: 600; color: var(--s-ink); }
+    .row3 .right {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      color: var(--s-ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+    .badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 4px 10px;
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 8px;
+      background: rgba(74, 222, 128, 0.32);
+      border: 1px solid rgba(74, 222, 128, 0.50);
+      color: #14532D;
+    }
+    .heart {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .heart svg { width: 14px; height: 14px; color: var(--s-ink-2); }
+
+    /* Spec callout */
+    .spec {
+      margin: 24px 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(26, 18, 9, 0.06);
+      border-radius: 14px;
+      font-size: 12px;
+      color: var(--s-ink-2);
+      line-height: 1.5;
+    }
+    .spec h4 {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--s-ink);
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .spec ul { padding-left: 18px; margin-top: 4px; }
+    .spec li { margin-bottom: 4px; }
+    .spec b { color: var(--s-accent-deep); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-inner">
+    <p class="greeting">Hallo, Sulo</p>
+    <h1>Schöner aussehen,<br>schneller <span class="accent">buchen</span>.</h1>
+    <div class="searchbar">
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="label">Service</span>
+      </div>
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="label">Stadt</span>
+      </div>
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="label">Zeit</span>
+      </div>
+      <button class="searchbtn">Solen durchsuchen</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Zuletzt angesehen</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge">Heute frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Atelier Coiffure</h3>
+        <div class="meta">Spalenberg 23 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>14:30</b> · CHF 80</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Studio Nord</h3>
+        <div class="meta">Klybeckstrasse 12 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>15:00</b> · CHF 50</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Last-Minute heute</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge">Heute frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Nail Loft</h3>
+        <div class="meta">Aeschenplatz 15 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>17:00</b> · CHF 45</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Rhein Spa</h3>
+        <div class="meta">Steinenvorstadt 22 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="spec">
+  <h4>What changes</h4>
+  <ul>
+    <li><b>Substrate:</b> cream <code>#FAF3E6</code> → subtle off-white <code>#F8F7F2</code></li>
+    <li><b>Atmosphere:</b> page-wide 14-blob wash → 2 localized glow orbs behind hero only (emerald + terracotta, low-opacity blur)</li>
+    <li><b>Cards:</b> + 1px hairline border for edge definition on lower-contrast substrate</li>
+    <li><b>Unchanged:</b> brand emerald + terracotta accent + 4 categories + Peace Sans + Open Sauce One + bare-text cards (V2-D67-fu13) + V2-D49j color role rule</li>
+    <li><b>Result:</b> high-contrast Gen Z aesthetic. Colors live as accents (CTAs, hero glow, category tags), not as a page-wide wash.</li>
+  </ul>
+</div>
+
+</body>
+</html>

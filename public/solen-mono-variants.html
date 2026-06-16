@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — font-mono variants (Q-W7-B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 48px 24px;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    background: #F5F5F4;
+    color: #0A0A0A;
+    line-height: 1.4;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #E7E5E4;
+  }
+  .header h1 {
+    margin: 0 0 8px 0;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .header p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #6B6B6B;
+    max-width: 720px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .variant {
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .variant-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 4px;
+  }
+  .variant-name {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .variant-note {
+    font-size: 13px;
+    font-weight: 300;
+    color: #6B6B6B;
+    margin-bottom: 24px;
+    line-height: 1.4;
+  }
+  .specimen {
+    background: #F5F5F4;
+    border-radius: 12px;
+    padding: 20px 16px;
+    margin-bottom: 16px;
+  }
+  .specimen-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6B6B6B;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .gift-code-display {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #0A0A0A;
+  }
+  .voucher-code-inline {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0A0A0A;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #E7E5E4;
+  }
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .receipt-row .label { color: #6B6B6B; font-weight: 300; }
+  .receipt-row .value { color: #0A0A0A; font-weight: 600; }
+  .receipt-num { font-size: 13px; }
+  /* Variant-specific font families */
+  .v-system .gift-code-display,
+  .v-system .voucher-code-inline,
+  .v-system .receipt-num,
+  .v-system .currency { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace; }
+  .v-jetbrains .gift-code-display,
+  .v-jetbrains .voucher-code-inline,
+  .v-jetbrains .receipt-num,
+  .v-jetbrains .currency { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .v-plex .gift-code-display,
+  .v-plex .voucher-code-inline,
+  .v-plex .receipt-num,
+  .v-plex .currency { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+  .verdict {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+  }
+  .verdict h2 {
+    margin: 0 0 12px 0;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .verdict p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #0A0A0A;
+    line-height: 1.55;
+  }
+  .verdict strong { font-weight: 600; }
+  .verdict ul { margin: 8px 0 0 0; padding-left: 20px; font-size: 13px; color: #6B6B6B; font-weight: 300; }
+  .verdict li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>font-mono token decision (Q-W7-B)</h1>
+    <p>Solen currently renders gift codes / voucher codes / receipt amounts with <code>font-mono</code>, which falls back to the OS default mono. Should we lock in a specific mono family? Below: same 3 surfaces in each candidate, mobile-pixel-realistic.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- VARIANT A: System mono (current) -->
+    <div class="variant v-system">
+      <div class="variant-label">A · Recommended</div>
+      <div class="variant-name">System mono</div>
+      <div class="variant-note">Current behavior. Renders SF Mono on Mac/iOS, Segoe UI Mono on Windows, Roboto Mono on Android. No font load, zero bytes added.</div>
+
+      <div class="specimen">
+        <div class="specimen-label">Gift code</div>
+        <div class="gift-code-display">ABCD-1234-XYZ9</div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Voucher in body run</div>
+        <div style="font-size: 14px; font-weight: 300; color: #6B6B6B;">
+          Dein Gutschein-Code: <span class="voucher-code-inline">SOLEN-50</span>
+        </div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Receipt</div>
+        <div class="receipt-row"><span class="label">Buchung</span><span class="value receipt-num">CHF&nbsp;85.00</span></div>
+        <div class="receipt-row"><span class="label">Trinkgeld</span><span class="value receipt-num">CHF&nbsp;10.00</span></div>
+        <div class="receipt-row"><span class="label">Total</span><span class="value receipt-num">CHF&nbsp;95.00</span></div>
+      </div>
+    </div>
+
+    <!-- VARIANT B: JetBrains Mono -->
+    <div class="variant v-jetbrains">
+      <div class="variant-label">B</div>
+      <div class="variant-name">JetBrains Mono</div>
+      <div class="variant-note">Free, open-source. Slightly geometric, very legible 0/O/I/l contrast (anti-ambiguity for codes). Adds ~40 KB / weight loaded.</div>
+
+      <div class="specimen">
+        <div class="specimen-label">Gift code</div>
+        <div class="gift-code-display">ABCD-1234-XYZ9</div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Voucher in body run</div>
+        <div style="font-size: 14px; font-weight: 300; color: #6B6B6B;">
+          Dein Gutschein-Code: <span class="voucher-code-inline">SOLEN-50</span>
+        </div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Receipt</div>
+        <div class="receipt-row"><span class="label">Buchung</span><span class="value receipt-num">CHF&nbsp;85.00</span></div>
+        <div class="receipt-row"><span class="label">Trinkgeld</span><span class="value receipt-num">CHF&nbsp;10.00</span></div>
+        <div class="receipt-row"><span class="label">Total</span><span class="value receipt-num">CHF&nbsp;95.00</span></div>
+      </div>
+    </div>
+
+    <!-- VARIANT C: IBM Plex Mono -->
+    <div class="variant v-plex">
+      <div class="variant-label">C</div>
+      <div class="variant-name">IBM Plex Mono</div>
+      <div class="variant-note">Free, open-source. Slightly humanist, warmer than JetBrains. Pairs well with Inter Tight (similar designer attitude). Adds ~40 KB / weight loaded.</div>
+
+      <div class="specimen">
+        <div class="specimen-label">Gift code</div>
+        <div class="gift-code-display">ABCD-1234-XYZ9</div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Voucher in body run</div>
+        <div style="font-size: 14px; font-weight: 300; color: #6B6B6B;">
+          Dein Gutschein-Code: <span class="voucher-code-inline">SOLEN-50</span>
+        </div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-label">Receipt</div>
+        <div class="receipt-row"><span class="label">Buchung</span><span class="value receipt-num">CHF&nbsp;85.00</span></div>
+        <div class="receipt-row"><span class="label">Trinkgeld</span><span class="value receipt-num">CHF&nbsp;10.00</span></div>
+        <div class="receipt-row"><span class="label">Total</span><span class="value receipt-num">CHF&nbsp;95.00</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>My recommendation: A (keep system mono)</h2>
+    <p>The mono is used in 3 places total: gift codes (`/salon/[slug]/gift-card`), voucher code display (`/vouchers/buy`), and a few `/account/messages` code snippets. <strong>Low-stakes, low-visibility surface.</strong> Adding a custom mono font adds 40 KB / weight + a font-loading flicker on first paint — for a payoff most users will never consciously notice.</p>
+    <p>System mono on iOS (SF Mono) is already excellent for code rendering. The Swiss CHF amount with the system mono looks crisp + native. Locking a custom mono is a P3 polish that probably doesn't earn its cost.</p>
+    <p><strong>Pick B (JetBrains)</strong> if codes are about to become MORE visible (e.g. you add a coupon-code billboard, ticket-stub UI, or anywhere the code IS the hero). The 0/O legibility is genuinely better.</p>
+    <p><strong>Pick C (IBM Plex)</strong> if you want subtle brand tie to Inter Tight's humanist feel — Plex Mono has the same attitude. Better matched typographically but less utilitarian.</p>
+    <ul>
+      <li>Cost of A: 0 KB, 0 flicker, 0 LOCKFILE entry — system fallback.</li>
+      <li>Cost of B/C: ~40 KB additional weight, 1 LOCKFILE entry (`font-mono` family lock), 1 layout.tsx font import.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

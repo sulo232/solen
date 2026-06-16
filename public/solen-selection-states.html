@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Auswahl-Zustände</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --disabled:#C5C8C4;
+    --accent:#185CE0; --accent-pale:#EAEFFE; --sunken:#F5F5F4; --star:#FFC32B; --white:#fff;
+    --line:rgba(10,10,10,.10); --line2:rgba(10,10,10,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Geist',system-ui,sans-serif;background:#ECECEA;color:var(--ink);padding:30px 20px 80px;-webkit-font-smoothing:antialiased}
+  h1{font-size:23px;font-weight:800;letter-spacing:-.01em;margin:0 0 4px}
+  .lead{color:var(--ink2);font-size:14px;line-height:1.55;max-width:820px;margin:0 0 6px}
+  .lead b{color:var(--ink)}
+  h2{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:34px 0 14px;border-top:1px solid var(--line);padding-top:18px}
+  .grid{display:flex;gap:18px;flex-wrap:wrap;align-items:stretch}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:18px;width:340px;max-width:100%}
+  .panel .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-bottom:12px}
+  .tag.rec{background:var(--accent-pale);color:var(--accent)}
+  .tag.out{background:#FCE9E9;color:#B42318}
+  .tag.sys{background:var(--sunken);color:var(--ink2)}
+  .tag.blk{background:var(--ink);color:#fff}
+  .tag.blu{background:var(--accent);color:#fff}
+  .ptitle{font-weight:700;font-size:15px;margin:0 0 12px}
+  .lab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin:14px 0 7px}
+  .lab:first-of-type{margin-top:0}
+
+  /* service card */
+  .card{border:2px solid var(--line);border-radius:14px;padding:13px 14px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+  .card .n{font-weight:600;font-size:14px}
+  .card .m{color:var(--ink2);font-size:12px;margin-top:2px}
+  .card .p{font-weight:700;font-size:14px;margin-top:6px}
+  .card.sel-blk{border-color:var(--ink)}
+  .card.sel-blu{border-color:var(--accent)}
+
+  /* toggle circle */
+  .tog{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto;font-size:19px;line-height:1;border:1.5px solid var(--line2);color:var(--ink2);background:#fff}
+  .tog.hov{border-color:var(--ink);color:var(--ink)}
+  .tog.blk{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tog.blu{background:var(--accent);border-color:var(--accent);color:#fff}
+  .tog.dis{background:var(--sunken);border-color:transparent;color:var(--disabled)}
+  .tog.sm{width:28px;height:28px;font-size:15px}
+
+  /* states strip */
+  .strip{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+  .st{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .st span{font-size:10px;color:var(--ink3);letter-spacing:.03em}
+
+  /* staff avatar */
+  .av{width:54px;height:54px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-weight:600;color:var(--ink2);font-size:18px}
+  .avwrap{display:inline-grid;place-items:center;padding:3px;border-radius:999px;border:2px solid transparent}
+  .avwrap.sel-blk{border-color:var(--ink)}
+  .avwrap.sel-blu{border-color:var(--accent)}
+  .staffrow{display:flex;gap:16px;align-items:center}
+  .staffrow .st span{margin-top:2px}
+
+  /* chip */
+  .chip{display:inline-flex;align-items:center;padding:7px 15px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid var(--line2);background:#fff;color:var(--ink)}
+  .chip.act-blk{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip.act-blu{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .note{font-size:12px;color:var(--ink2);line-height:1.5;margin-top:6px}
+</style>
+</head>
+<body>
+  <h1>Auswahl-Zustände — eine Sprache</h1>
+  <p class="lead">„Ausgewählt / aktiv = <b>Schwarz</b>" ist im System schon gesetzt: die <b>TabPill</b> (Filter-Chips, locked) und das <b>PDP-Service-Sheet</b> (locked) wählen beide in Schwarz. Der Buchungs-Wizard, den ich gebaut habe, nutzt <b>Blau</b> — das ist die Inkonsistenz. Unten: was heute existiert, dann zwei saubere Optionen. Such dir eine aus, ich ziehe sie überall durch (Karten, Add-ons, Stylisten, Chips, Sheet).</p>
+
+  <h2>Heute im System</h2>
+  <div class="grid">
+    <div class="panel">
+      <span class="tag sys">locked · schon schwarz</span>
+      <div class="ptitle">Chips + PDP-Sheet</div>
+      <div class="lab">Filter-Chip (TabPill) aktiv</div>
+      <div class="chips"><span class="chip act-blk">Coiffeur</span><span class="chip">Farbe</span><span class="chip">Styling</span></div>
+      <div class="lab">PDP-Service-Karte ausgewählt</div>
+      <div class="card sel-blk"><div><div class="n">Waschen / Föhnen</div><div class="m">30 Min</div><div class="p">CHF 28</div></div><div class="tog blk">✓</div></div>
+      <p class="note">Schwarzer Rahmen + schwarz gefüllter ✓. Das ist der gesperrte Standard.</p>
+    </div>
+    <div class="panel">
+      <span class="tag out">Ausreisser</span>
+      <div class="ptitle">Buchungs-Wizard (mein Build)</div>
+      <div class="lab">Service-Karte ausgewählt</div>
+      <div class="card sel-blu"><div><div class="n">Balayage</div><div class="m">180 Min</div><div class="p">CHF 220</div></div><div class="tog blu">✓</div></div>
+      <div class="lab">Add-on im Sheet</div>
+      <div class="card sel-blu" style="border-width:1px"><div><div class="n">Olaplex Intensivpflege</div><div class="m">+ CHF 75</div></div><div class="tog blu sm">✓</div></div>
+      <p class="note">Blauer Rahmen + blau gefüllter ✓ — weicht von Chips &amp; PDP-Sheet ab.</p>
+    </div>
+  </div>
+
+  <h2>Vorschlag — eine durchgängige Sprache</h2>
+  <div class="grid">
+    <!-- BLACK -->
+    <div class="panel">
+      <span class="tag blk">A · Schwarz · empfohlen</span>
+      <div class="ptitle">Auswahl = Ink (B&amp;W-System)</div>
+
+      <div class="lab">Service-Karte</div>
+      <div class="card"><div><div class="n">Damen-Haarschnitt</div><div class="m">60 Min</div><div class="p">CHF 75</div></div><div class="tog">+</div></div>
+      <div class="card sel-blk"><div><div class="n">Balayage</div><div class="m">180 Min</div><div class="p">CHF 220</div></div><div class="tog blk">✓</div></div>
+
+      <div class="lab">Toggle-Zustände</div>
+      <div class="strip">
+        <div class="st"><div class="tog">+</div><span>Standard</span></div>
+        <div class="st"><div class="tog hov">+</div><span>Hover</span></div>
+        <div class="st"><div class="tog blk">✓</div><span>Gewählt</span></div>
+        <div class="st"><div class="tog dis">+</div><span>Inaktiv</span></div>
+      </div>
+
+      <div class="lab">Stylist (Ring)</div>
+      <div class="staffrow">
+        <div class="st"><div class="avwrap"><div class="av">E</div></div><span>Standard</span></div>
+        <div class="st"><div class="avwrap sel-blk"><div class="av">L</div></div><span>Gewählt</span></div>
+      </div>
+
+      <div class="lab">Chip</div>
+      <div class="chips"><span class="chip act-blk">Aktiv</span><span class="chip">Inaktiv</span></div>
+      <p class="note">Konsistent mit Chips + PDP-Sheet. Blau bleibt für kleine Akzente frei (B&amp;W §1.5).</p>
+    </div>
+
+    <!-- BLUE -->
+    <div class="panel">
+      <span class="tag blu">B · Blau</span>
+      <div class="ptitle">Auswahl = s-accent #185CE0</div>
+
+      <div class="lab">Service-Karte</div>
+      <div class="card"><div><div class="n">Damen-Haarschnitt</div><div class="m">60 Min</div><div class="p">CHF 75</div></div><div class="tog">+</div></div>
+      <div class="card sel-blu"><div><div class="n">Balayage</div><div class="m">180 Min</div><div class="p">CHF 220</div></div><div class="tog blu">✓</div></div>
+
+      <div class="lab">Toggle-Zustände</div>
+      <div class="strip">
+        <div class="st"><div class="tog">+</div><span>Standard</span></div>
+        <div class="st"><div class="tog hov">+</div><span>Hover</span></div>
+        <div class="st"><div class="tog blu">✓</div><span>Gewählt</span></div>
+        <div class="st"><div class="tog dis">+</div><span>Inaktiv</span></div>
+      </div>
+
+      <div class="lab">Stylist (Ring)</div>
+      <div class="staffrow">
+        <div class="st"><div class="avwrap"><div class="av">E</div></div><span>Standard</span></div>
+        <div class="st"><div class="avwrap sel-blu"><div class="av">L</div></div><span>Gewählt</span></div>
+      </div>
+
+      <div class="lab">Chip</div>
+      <div class="chips"><span class="chip act-blu">Aktiv</span><span class="chip">Inaktiv</span></div>
+      <p class="note">Wäre dein ursprünglicher Wunsch — bedingt aber, dass auch Chips + PDP-Sheet auf Blau umgestellt werden (sonst bleibt der Bruch).</p>
+    </div>
+  </div>
+</body>
+</html>

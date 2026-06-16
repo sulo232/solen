@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — page-bg variants (Section B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: #1a1a1a;
+    color: #FFFFFF;
+    line-height: 1.5;
+    font-family: 'Geist', system-ui, sans-serif;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .page-h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+  }
+  .page-lede {
+    margin: 0 0 32px 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    max-width: 720px;
+  }
+  .section-title {
+    margin: 32px 0 12px 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+  .variant {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .variant-head {
+    padding: 14px 18px;
+    background: #FAFAFA;
+    color: #0A0A0A;
+    border-bottom: 1px solid #E7E5E4;
+  }
+  .variant-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 2px;
+  }
+  .variant-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .variant-spec {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6B6B6B;
+    line-height: 1.4;
+  }
+
+  /* Phone frame to simulate Solen mobile render */
+  .phone {
+    width: 100%;
+    aspect-ratio: 375 / 760;
+    color: #0A0A0A;
+    position: relative;
+    overflow: hidden;
+  }
+  /* === Variant backgrounds === */
+  .phone.bg-sunken { background: #F5F5F4; }
+  .phone.bg-white  { background: #FFFFFF; }
+  .phone.bg-hybrid {
+    background: linear-gradient(180deg, #FFFFFF 0% 38%, #F5F5F4 38% 100%);
+  }
+
+  /* === Solen chrome simulation === */
+  .header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: inherit; /* inherit from phone bg variant */
+    position: relative;
+    z-index: 2;
+  }
+  .header .brand { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; }
+  .header-icons { display: flex; gap: 8px; }
+  .icon-circle {
+    width: 30px; height: 30px;
+    border-radius: 99px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  .hero-content {
+    padding: 22px 24px 0;
+  }
+  .hero-h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 8px 0;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: #6B6B6B;
+    margin: 0 0 20px 0;
+  }
+
+  /* Search card — the contrast battleground */
+  .search-card {
+    margin: 0 16px;
+    background: white;
+    border-radius: 16px;
+    padding: 14px;
+  }
+  /* Variant A: natural separation from grey bg → NO shadow + NO border needed */
+  .phone.bg-sunken .search-card { /* white card on grey — no border needed */ }
+  /* Variant B: pure white bg → need hairline border to differentiate */
+  .phone.bg-white .search-card  { border: 1px solid #E7E5E4; }
+  /* Variant C: hybrid — hero zone is white, but search card sits at boundary */
+  .phone.bg-hybrid .search-card { border: 1px solid #E7E5E4; }
+
+  .search-row {
+    height: 36px;
+    background: white;
+    border: 1px solid #D3D3D3;
+    border-radius: 9999px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6B6B6B;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .search-cta {
+    height: 44px;
+    background: #0A0A0A;
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  /* Feed below search card */
+  .feed {
+    padding: 28px 16px 16px;
+    background: inherit;
+  }
+  .phone.bg-hybrid .feed {
+    /* In hybrid, feed sits in the bottom 62% which is grey */
+    background: transparent; /* the grey is from the body gradient */
+  }
+  .feed-h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px 0;
+  }
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .tile {
+    aspect-ratio: 1.15/1;
+    background: #F3F3F3;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: #0A0A0A;
+    font-weight: 500;
+  }
+  .phone.bg-white .tile { background: #F5F5F4; }
+  .phone.bg-sunken .tile { background: white; }
+
+  .verdict {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: white;
+    color: #0A0A0A;
+    border-radius: 16px;
+  }
+  .verdict h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .verdict h3 {
+    margin: 18px 0 6px 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .verdict p { margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; }
+  .verdict strong { font-weight: 600; }
+  .verdict ul { font-size: 13px; padding-left: 20px; margin: 8px 0 0 0; color: #6B6B6B; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="page-h1">Page bg variants (Section B)</h1>
+  <p class="page-lede">Council said "switch to pure white to match Fresha exactly." But changing global bg cascades everywhere. Here's the same Solen mobile hero rendered in 3 page-bg treatments. Background is intentionally dark to make the white panels pop for comparison.</p>
+
+  <div class="section-title">Phone (375×760) — same content, different page bg</div>
+  <div class="grid">
+
+    <!-- A: Current grey -->
+    <div class="variant">
+      <div class="variant-head">
+        <div class="variant-label">A · Current</div>
+        <div class="variant-name">#F5F5F4 sunken grey</div>
+        <div class="variant-spec">White search card has natural separation from page bg. No card border needed. Current ship state.</div>
+      </div>
+      <div class="phone bg-sunken">
+        <div class="header">
+          <div class="brand">Solen</div>
+          <div class="header-icons"><div class="icon-circle">🔔</div><div class="icon-circle">☰</div></div>
+        </div>
+        <div class="hero-content">
+          <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+          <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+        </div>
+        <div class="search-card">
+          <div class="search-row">🔍 Service</div>
+          <div class="search-row">📍 Stadt</div>
+          <div class="search-row">📅 Zeit</div>
+          <div class="search-cta">Termine finden</div>
+        </div>
+        <div class="feed">
+          <h2 class="feed-h2">Für dich</h2>
+          <div class="tile-grid">
+            <div class="tile">Coiffeur</div>
+            <div class="tile">Barber</div>
+            <div class="tile">Nails</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Pure white (Fresha) -->
+    <div class="variant">
+      <div class="variant-head">
+        <div class="variant-label">B · Fresha-exact</div>
+        <div class="variant-name">#FFFFFF pure white</div>
+        <div class="variant-spec">Matches Fresha. Search card needs `border: 1px solid #E7E5E4` to differentiate. Tile bg flips from white → grey for inverse contrast.</div>
+      </div>
+      <div class="phone bg-white">
+        <div class="header">
+          <div class="brand">Solen</div>
+          <div class="header-icons"><div class="icon-circle">🔔</div><div class="icon-circle">☰</div></div>
+        </div>
+        <div class="hero-content">
+          <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+          <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+        </div>
+        <div class="search-card">
+          <div class="search-row">🔍 Service</div>
+          <div class="search-row">📍 Stadt</div>
+          <div class="search-row">📅 Zeit</div>
+          <div class="search-cta">Termine finden</div>
+        </div>
+        <div class="feed">
+          <h2 class="feed-h2">Für dich</h2>
+          <div class="tile-grid">
+            <div class="tile">Coiffeur</div>
+            <div class="tile">Barber</div>
+            <div class="tile">Nails</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C: Hybrid editorial -->
+    <div class="variant">
+      <div class="variant-head">
+        <div class="variant-label">C · Hybrid editorial</div>
+        <div class="variant-name">White hero zone + grey feed</div>
+        <div class="variant-spec">Hero floats in a white "cover zone" above the grey feed. Visual zone separation. Card still gets a hairline border in the white zone.</div>
+      </div>
+      <div class="phone bg-hybrid">
+        <div class="header">
+          <div class="brand">Solen</div>
+          <div class="header-icons"><div class="icon-circle">🔔</div><div class="icon-circle">☰</div></div>
+        </div>
+        <div class="hero-content">
+          <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+          <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+        </div>
+        <div class="search-card">
+          <div class="search-row">🔍 Service</div>
+          <div class="search-row">📍 Stadt</div>
+          <div class="search-row">📅 Zeit</div>
+          <div class="search-cta">Termine finden</div>
+        </div>
+        <div class="feed">
+          <h2 class="feed-h2">Für dich</h2>
+          <div class="tile-grid">
+            <div class="tile">Coiffeur</div>
+            <div class="tile">Barber</div>
+            <div class="tile">Nails</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>My recommendation: A (keep current grey)</h2>
+    <p><strong>Why:</strong> the grey bg gives the white search card natural separation without ANY shadow OR border. Adds visual depth + cards float effortlessly. Fresha goes pure white because they use a busy product (lots of imagery), not minimal chrome — they need calm. Solen is already minimal (mostly chrome + text), so the grey is the friend that gives subtle layering.</p>
+    <p>The council pushed for B (pure white = Fresha-exact) but that was BEFORE we knew you wanted Uber imagery integration (separate research in flight). If Solen gets richer imagery, pure white starts winning because images become the "depth" — bg can be flat.</p>
+    <h3>Pick A if</h3>
+    <ul>
+      <li>Solen stays minimal-chrome heavy (most surfaces are text + form)</li>
+      <li>You want zero card-border-management work site-wide</li>
+      <li>The "calm grey" backdrop is part of Solen's brand voice</li>
+    </ul>
+    <h3>Pick B if</h3>
+    <ul>
+      <li>You commit to integrating Uber-style imagery (then pure white is the right canvas)</li>
+      <li>You want exact Fresha-match (council Q4 follow-up)</li>
+      <li>You accept the cost: every card surface needs an explicit border/shadow rule globally</li>
+    </ul>
+    <h3>Pick C if</h3>
+    <ul>
+      <li>You want the editorial "magazine cover hero" feel without committing the whole site to pure white</li>
+      <li>You're OK with the hard horizontal line at the white/grey boundary (could be a feature or a bug visually)</li>
+    </ul>
+
+    <p style="margin-top:16px;font-size:13px;"><strong>Pick A / B / C + I sweep + we look at the Uber imagery research when it lands.</strong></p>
+  </div>
+
+</div>
+</body>
+</html>

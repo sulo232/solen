@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Nachzahlung bestätigen (Kund:innen-Mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink40:rgba(10,10,10,.4); --ink50:rgba(10,10,10,.5);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --warning:#F1AE27; --warning-bg:#FDF6E7; --warning-text:#906309;
+    --orange:#EA580C; --orange-bg:#FFEDD5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;padding:24px 0}
+  .fh{font-family:'Inter Tight',sans-serif}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .phone{width:390px;background:var(--white);min-height:780px;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative}
+  .nav{height:52px;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--border)}
+  .nav .back{width:36px;height:36px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink)}
+  .nav .back svg{width:18px;height:18px}
+  .nav .t{font-family:'Inter Tight';font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .body{padding:20px 16px 132px}
+
+  .hero{display:flex;gap:12px;align-items:center;margin-bottom:20px}
+  .hero .ava{width:44px;height:44px;border-radius:12px;background:var(--sunken);color:var(--ink);display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:15px;flex-shrink:0}
+  .hero .hn{font-family:'Inter Tight';font-weight:600;font-size:15px;letter-spacing:-.01em}
+  .hero .hs{font-size:12.5px;color:var(--ink2);margin-top:2px}
+
+  /* difference — focal amber band */
+  .diff{background:var(--orange-bg);border-radius:16px;padding:18px;text-align:center;margin-bottom:14px}
+  .diff .dk{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);font-weight:600}
+  .diff .dv{font-family:'Inter Tight';font-weight:700;font-size:38px;color:var(--orange);letter-spacing:-.02em;margin-top:4px;line-height:1}
+
+  .breakdown{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;font-size:14px}
+  .row+.row{border-top:1px solid var(--border)}
+  .row .rl{color:var(--ink2)}
+  .row .rv{font-family:'Inter Tight';font-weight:600;font-variant-numeric:tabular-nums}
+  .row.total{background:var(--sunken)}
+  .row.total .rl{color:var(--ink);font-weight:600;font-family:'Inter Tight'}
+
+  .block{border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:6px}
+  .block .k{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink40);font-weight:600;margin-bottom:4px}
+  .block .v{font-size:13.5px;color:rgba(10,10,10,.72);line-height:1.45}
+
+  .cta-bar{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 18px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0));border-top:1px solid var(--border)}
+  .charge-note{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ink50);margin-bottom:12px}
+  .charge-note svg{width:16px;height:16px;flex-shrink:0;color:var(--ink40)}
+  .charge-note b{color:var(--ink);font-weight:600}
+  .btn-primary{width:100%;height:50px;border-radius:999px;background:var(--orange);color:#fff;font-family:'Inter Tight';font-weight:600;font-size:15px;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+  .btn-secondary{width:100%;height:46px;border-radius:999px;background:transparent;color:var(--ink2);font-family:'Inter Tight';font-weight:600;font-size:14px;border:1px solid var(--border);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="nav">
+    <div class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <div class="t">Nachzahlung bestätigen</div>
+  </div>
+
+  <div class="body">
+    <div class="hero">
+      <div class="ava">AC</div>
+      <div>
+        <div class="hn">Atelier Coiffure Zürich</div>
+        <div class="hs">bittet um eine Nachzahlung · SOL-7K2QX</div>
+      </div>
+    </div>
+
+    <div class="diff">
+      <div class="dk">Nachzahlung</div>
+      <div class="dv num">+ CHF 17.00</div>
+    </div>
+
+    <div class="breakdown">
+      <div class="row"><span class="rl">Bereits bezahlt</span><span class="rv num">CHF 45.00</span></div>
+      <div class="row"><span class="rl">Nachzahlung</span><span class="rv num">+ CHF 17.00</span></div>
+      <div class="row total"><span class="rl">Neuer Gesamtbetrag</span><span class="rv num">CHF 62.00</span></div>
+    </div>
+
+    <div class="block">
+      <div class="k">Begründung des Salons</div>
+      <div class="v">"Zusätzliche Tiefenpflege-Behandlung auf Wunsch während des Termins hinzugefügt."</div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <div class="charge-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      <span>Mit Bestätigung wird deine Karte <b>•••• 4242</b> mit <b>CHF 17.00</b> belastet.</span>
+    </div>
+    <button class="btn-primary">CHF 17.00 bezahlen</button>
+    <button class="btn-secondary">Ablehnen</button>
+  </div>
+</div>
+</body>
+</html>

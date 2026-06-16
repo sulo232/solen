@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Card - v3 Recipient Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #E8E8EA;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 64px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 390px;
+    background: #FFFFFF;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.12),
+      0 24px 80px -16px rgba(0,0,0,.28),
+      0 8px 24px -8px rgba(0,0,0,.18);
+    position: relative;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: transparent;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 0;
+    z-index: 20;
+  }
+  .status-bar .time {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+  }
+  .status-bar .icons {
+    display: flex; gap: 5px; align-items: center;
+  }
+  .status-bar .icons svg {
+    width: 16px; height: 16px;
+    fill: white; stroke: none;
+  }
+
+  /* Scrollable content */
+  .screen {
+    height: 844px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    height: 280px;
+    flex-shrink: 0;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,.35) 0%,
+      rgba(0,0,0,.1) 40%,
+      rgba(0,0,0,.55) 80%,
+      rgba(0,0,0,.75) 100%
+    );
+  }
+
+  /* Frosted back button */
+  .hero-back {
+    position: absolute;
+    top: 56px;
+    left: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.3);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .hero-back i { color: white; width: 18px; height: 18px; }
+
+  /* Hero salon info */
+  .hero-salon {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+  }
+  .hero-salon .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 20px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+  .hero-salon .badge i { color: #FFC32B; width: 13px; height: 13px; }
+  .hero-salon .badge span {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #fff;
+    letter-spacing: .3px;
+  }
+  .hero-salon h1 {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: -.4px;
+  }
+  .hero-salon .location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .hero-salon .location i { color: rgba(255,255,255,.75); width: 14px; height: 14px; }
+  .hero-salon .location span {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,.8);
+    font-weight: 400;
+  }
+
+  /* Warm gift ribbon strip */
+  .gift-ribbon {
+    background: #FFF1E6;
+    border-bottom: 1px solid #FDDCB5;
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .gift-ribbon .icon-wrap {
+    width: 36px; height: 36px;
+    background: #C2410C;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .gift-ribbon .icon-wrap i { color: #fff; width: 18px; height: 18px; }
+  .gift-ribbon .text h2 {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #7C2D12;
+    letter-spacing: -.1px;
+    line-height: 1.2;
+  }
+  .gift-ribbon .text p {
+    font-size: 12px;
+    color: #9A3412;
+    margin-top: 1px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* Form body */
+  .form-body {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #0A0A0A;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Amount chips */
+  .amount-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .chip {
+    border: 1.5px solid #E0E0E0;
+    border-radius: 10px;
+    padding: 11px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s ease;
+    background: #fff;
+  }
+  .chip span {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #5A5A5A;
+    display: block;
+    line-height: 1;
+  }
+  .chip small {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: #8A8A8A;
+    font-weight: 500;
+    margin-top: 2px;
+    display: block;
+  }
+  .chip.selected {
+    border-color: #0A0A0A;
+    background: #0A0A0A;
+  }
+  .chip.selected span { color: #fff; }
+  .chip.selected small { color: rgba(255,255,255,.6); }
+
+  /* Custom amount */
+  .custom-amount-wrap {
+    position: relative;
+    margin-top: 2px;
+  }
+  .custom-amount-wrap .currency {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #8A8A8A;
+  }
+  .custom-amount-wrap input {
+    width: 100%;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 10px;
+    padding: 13px 16px 13px 38px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #0A0A0A;
+    background: #F4F4F5;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .custom-amount-wrap input::placeholder { color: #C0C0C0; font-weight: 400; }
+  .custom-amount-wrap input:focus { border-color: #0A0A0A; background: #fff; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: #F0F0F0;
+    margin: 0 -20px;
+  }
+
+  /* Form fields */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .field {
+    position: relative;
+  }
+  .field label {
+    display: block;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #8A8A8A;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    border: 1.5px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #0A0A0A;
+    background: #F4F4F5;
+    outline: none;
+    transition: all .15s;
+    resize: none;
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #B0B0B0; }
+  .field input:focus, .field textarea:focus {
+    border-color: #0A0A0A;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(10,10,10,.06);
+  }
+  .field textarea { min-height: 80px; line-height: 1.5; }
+
+  /* Delivery row */
+  .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F4F4F5;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid #E8E8E8;
+  }
+  .delivery-row i { color: #276EF1; width: 16px; height: 16px; flex-shrink: 0; }
+  .delivery-row span {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #5A5A5A;
+    font-weight: 400;
+  }
+  .delivery-row a {
+    font-size: 13px;
+    color: #276EF1;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: auto;
+  }
+
+  /* Preview divider */
+  .preview-divider {
+    background: #F4F4F5;
+    margin: 0 -20px;
+    padding: 16px 20px 0;
+    border-top: 1px solid #EBEBEB;
+  }
+  .preview-divider-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .preview-divider-label i { color: #C2410C; width: 15px; height: 15px; }
+  .preview-divider-label span {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #7C2D12;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  /* Gift email preview card */
+  .gift-email-preview {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px -4px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.06);
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  /* Email preview: mini chrome */
+  .email-chrome {
+    background: #F9F9F9;
+    border-bottom: 1px solid #ECECEC;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .email-chrome .dots {
+    display: flex; gap: 4px;
+  }
+  .email-chrome .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+  }
+  .email-chrome .dot:nth-child(1) { background: #FF5F57; }
+  .email-chrome .dot:nth-child(2) { background: #FFBD2E; }
+  .email-chrome .dot:nth-child(3) { background: #28CA41; }
+  .email-chrome .from {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: #8A8A8A;
+    flex: 1;
+    text-align: center;
+    font-weight: 400;
+  }
+
+  /* Email body */
+  .email-body {
+    padding: 24px 20px 28px;
+  }
+
+  /* Salon brand header in email */
+  .email-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .email-brand .salon-avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: #0A0A0A;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .email-brand .salon-avatar span {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: -.5px;
+  }
+  .email-brand .salon-name {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0A0A0A;
+    letter-spacing: -.2px;
+  }
+  .email-brand .salon-sub {
+    font-size: 11px;
+    color: #8A8A8A;
+    margin-top: 1px;
+  }
+  .email-brand .solen-badge {
+    margin-left: auto;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    color: #276EF1;
+    background: #EEF3FE;
+    border-radius: 6px;
+    padding: 3px 7px;
+    letter-spacing: .2px;
+  }
+
+  /* Gift amount visual */
+  .gift-visual {
+    background: linear-gradient(135deg, #1A1A1A 0%, #3A3A3A 50%, #1A1A1A 100%);
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gift-visual::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(194,65,12,.25);
+    filter: blur(50px);
+  }
+  .gift-visual::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,195,43,.15);
+    filter: blur(40px);
+  }
+  .gift-visual .top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .gift-visual .gift-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,.55);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+  }
+  .gift-visual .gift-icon i {
+    width: 22px; height: 22px;
+    color: rgba(255,255,255,.35);
+  }
+  .gift-visual .amount-display {
+    position: relative; z-index: 1;
+    margin-bottom: 4px;
+  }
+  .gift-visual .amount-display .chf {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: rgba(255,255,255,.6);
+    letter-spacing: 0;
+    vertical-align: super;
+    line-height: 1;
+  }
+  .gift-visual .amount-display .number {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    color: #fff;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .gift-visual .gift-for {
+    position: relative; z-index: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(255,255,255,.5);
+    font-weight: 400;
+    margin-top: 6px;
+  }
+  .gift-visual .gift-for strong {
+    color: rgba(255,255,255,.85);
+    font-weight: 600;
+  }
+  .gift-visual .valid-note {
+    position: relative; z-index: 1;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .gift-visual .valid-note span {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: rgba(255,255,255,.35);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .gift-visual .valid-note .logo {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: rgba(255,255,255,.5);
+    letter-spacing: -.4px;
+  }
+
+  /* Personal message in email */
+  .email-message {
+    background: #FFF8F5;
+    border-left: 3px solid #C2410C;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+  }
+  .email-message .from-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: #9A3412;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 5px;
+  }
+  .email-message .message-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #5A5A5A;
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  /* Redeem CTA in email */
+  .email-redeem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .email-redeem .redeem-btn {
+    width: 100%;
+    background: #0A0A0A;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -.1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity .15s;
+  }
+  .email-redeem .redeem-btn i { width: 16px; height: 16px; }
+  .email-redeem .fine-print {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #B0B0B0;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Bottom padding area */
+  .bottom-section {
+    background: #F4F4F5;
+    padding: 0 20px 20px;
+  }
+
+  /* Main CTA */
+  .main-cta-wrap {
+    background: #fff;
+    border-top: 1px solid #EBEBEB;
+    padding: 16px 20px;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+  .main-cta {
+    width: 100%;
+    background: #0A0A0A;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 17px 20px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -.2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all .15s;
+    box-shadow: 0 4px 18px -4px rgba(0,0,0,.25);
+  }
+  .main-cta i { width: 17px; height: 17px; }
+  .main-cta:hover { opacity: .88; }
+  .cta-sub {
+    text-align: center;
+    margin-top: 9px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #8A8A8A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .cta-sub i { width: 12px; height: 12px; color: #16A34A; }
+
+  /* Micro section spacer label */
+  .section-block { }
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/></svg>
+    </div>
+  </div>
+
+  <!-- Scrollable screen -->
+  <div class="screen">
+
+    <!-- Hero -->
+    <div class="hero">
+      <img
+        src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+        alt="Old Town Barbers"
+      >
+      <div class="hero-overlay"></div>
+
+      <!-- Back -->
+      <div class="hero-back">
+        <i data-lucide="arrow-left"></i>
+      </div>
+
+      <!-- Salon info overlay -->
+      <div class="hero-salon">
+        <div class="badge">
+          <i data-lucide="star"></i>
+          <span>4.8 · 312 reviews</span>
+        </div>
+        <h1>Old Town Barbers</h1>
+        <div class="location">
+          <i data-lucide="map-pin"></i>
+          <span>Grossbasel, Basel</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gift ribbon -->
+    <div class="gift-ribbon">
+      <div class="icon-wrap">
+        <i data-lucide="gift"></i>
+      </div>
+      <div class="text">
+        <h2>Send a gift card</h2>
+        <p>They book any service, you cover it.</p>
+      </div>
+    </div>
+
+    <!-- Form body -->
+    <div class="form-body">
+
+      <!-- Amount -->
+      <div class="section-block">
+        <div class="section-label">Amount</div>
+        <div class="amount-grid">
+          <div class="chip" data-amount="25" onclick="selectAmount(25, this)">
+            <span>CHF 25</span>
+          </div>
+          <div class="chip selected" data-amount="50" onclick="selectAmount(50, this)">
+            <span>CHF 50</span>
+          </div>
+          <div class="chip" data-amount="100" onclick="selectAmount(100, this)">
+            <span>CHF 100</span>
+          </div>
+          <div class="chip" data-amount="200" onclick="selectAmount(200, this)">
+            <span>CHF 200</span>
+          </div>
+        </div>
+        <div class="custom-amount-wrap">
+          <span class="currency">CHF</span>
+          <input type="number" placeholder="Custom amount" id="customAmount" oninput="onCustomAmount(this.value)">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Recipient -->
+      <div class="section-block">
+        <div class="section-label">Recipient</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" placeholder="e.g. Marco Rossi" id="recipientName" oninput="updatePreview()" value="Marco Rossi">
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" placeholder="marco@example.com" id="recipientEmail" oninput="updatePreview()" value="marco@example.com">
+          </div>
+          <div class="field">
+            <label>Personal message (optional)</label>
+            <textarea
+              id="personalMessage"
+              placeholder="Write a short note for them..."
+              oninput="updatePreview()"
+            >Happy birthday! Treat yourself to a great haircut at Old Town Barbers. You deserve it.</textarea>
+          </div>
+          <div class="delivery-row">
+            <i data-lucide="mail"></i>
+            <span>Delivered instantly by email</span>
+            <a href="#">Change</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Preview section -->
+    <div class="preview-divider">
+      <div class="preview-divider-label">
+        <i data-lucide="eye"></i>
+        <span>What Marco will receive</span>
+      </div>
+
+      <!-- Gift email mock -->
+      <div class="gift-email-preview">
+        <div class="email-chrome">
+          <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="from">From: Old Town Barbers via Solen</div>
+        </div>
+        <div class="email-body">
+
+          <!-- Brand header -->
+          <div class="email-brand">
+            <div class="salon-avatar"><span>OT</span></div>
+            <div>
+              <div class="salon-name">Old Town Barbers</div>
+              <div class="salon-sub">Grossbasel, Basel</div>
+            </div>
+            <div class="solen-badge">Solen</div>
+          </div>
+
+          <!-- Gift card visual -->
+          <div class="gift-visual">
+            <div class="top-row">
+              <div class="gift-label">Gift Card</div>
+              <div class="gift-icon"><i data-lucide="gift"></i></div>
+            </div>
+            <div class="amount-display">
+              <span class="chf">CHF</span>
+              <span class="number" id="previewAmount">50</span>
+            </div>
+            <div class="gift-for">
+              For <strong id="previewName">Marco Rossi</strong>
+            </div>
+            <div class="valid-note">
+              <span>Valid 2 years</span>
+              <span class="logo">Solen</span>
+            </div>
+          </div>
+
+          <!-- Personal message -->
+          <div class="email-message">
+            <div class="from-label">A note for you</div>
+            <div class="message-text" id="previewMessage">Happy birthday! Treat yourself to a great haircut at Old Town Barbers. You deserve it.</div>
+          </div>
+
+          <!-- Redeem CTA -->
+          <div class="email-redeem">
+            <button class="redeem-btn">
+              <i data-lucide="calendar-check"></i>
+              Book a service
+            </button>
+            <div class="fine-print">No account needed. Gift card applied at checkout.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer for bottom section -->
+    <div class="bottom-section" style="height: 24px;"></div>
+
+    <!-- Sticky CTA -->
+    <div class="main-cta-wrap">
+      <button class="main-cta" id="mainCta">
+        <i data-lucide="gift"></i>
+        <span>Buy gift card &middot; CHF <span id="ctaAmount">50</span></span>
+      </button>
+      <div class="cta-sub">
+        <i data-lucide="shield-check"></i>
+        Secure payment via Stripe
+      </div>
+    </div>
+
+  </div><!-- /screen -->
+</div><!-- /phone -->
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  let selectedAmount = 50;
+
+  function selectAmount(val, el) {
+    selectedAmount = val;
+    // Clear all chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    // Clear custom
+    document.getElementById('customAmount').value = '';
+    updateCtaAmount();
+    updatePreviewAmount();
+  }
+
+  function onCustomAmount(val) {
+    const n = parseInt(val, 10);
+    if (!isNaN(n) && n > 0) {
+      selectedAmount = n;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    } else {
+      selectedAmount = 50;
+    }
+    updateCtaAmount();
+    updatePreviewAmount();
+  }
+
+  function updateCtaAmount() {
+    document.getElementById('ctaAmount').textContent = selectedAmount;
+  }
+
+  function updatePreviewAmount() {
+    document.getElementById('previewAmount').textContent = selectedAmount;
+  }
+
+  function updatePreview() {
+    const name = document.getElementById('recipientName').value || 'them';
+    const msg = document.getElementById('personalMessage').value || '';
+
+    document.getElementById('previewName').textContent = name;
+    document.getElementById('previewMessage').textContent = msg || 'No personal message added.';
+
+    // Update preview section label
+    const label = document.querySelector('.preview-divider-label span');
+    label.textContent = `What ${name.split(' ')[0] || 'they'} will receive`;
+  }
+
+  // Init
+  updatePreview();
+</script>
+
+</body>
+</html>

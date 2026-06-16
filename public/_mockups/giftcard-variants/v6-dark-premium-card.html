@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Card — v6 Dark Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F4F4F5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 80px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Phone frame */
+    .phone {
+      width: 390px;
+      background: #FFFFFF;
+      border-radius: 48px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,.06),
+        0 24px 64px -16px rgba(0,0,0,.22);
+      position: relative;
+    }
+
+    /* Status bar */
+    .status-bar {
+      background: transparent;
+      padding: 14px 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+    }
+    .status-bar .time {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.3px;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-icons svg {
+      width: 16px; height: 16px;
+      stroke: #FFFFFF;
+    }
+
+    /* Hero photo */
+    .hero {
+      width: 100%;
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.38) 0%,
+        rgba(0,0,0,.1) 45%,
+        rgba(0,0,0,.5) 100%
+      );
+    }
+
+    /* Frosted nav controls over hero */
+    .nav-row {
+      position: absolute;
+      top: 52px;
+      left: 0; right: 0;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .frost-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .frost-btn i { color: #FFFFFF; }
+
+    /* Salon meta inside hero */
+    .hero-meta {
+      position: absolute;
+      bottom: 18px;
+      left: 20px; right: 20px;
+      z-index: 10;
+    }
+    .hero-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+      margin-bottom: 4px;
+    }
+    .hero-salon-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.1;
+    }
+    .hero-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 5px;
+    }
+    .hero-rating .star-icon { color: #FFC32B; font-size: 13px; }
+    .hero-rating .rating-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .hero-rating .rating-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+    }
+
+    /* Scrollable content below hero */
+    .content {
+      padding: 0 20px 40px;
+    }
+
+    /* ===========================
+       PREMIUM GIFT CARD OBJECT
+       =========================== */
+    .giftcard-wrap {
+      margin: 0 -4px;
+      padding: 20px 4px 24px;
+    }
+
+    .giftcard {
+      width: 100%;
+      aspect-ratio: 1.618 / 1;   /* golden ratio = premium card feel */
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #111111 0%, #1C1C1C 40%, #0A0A0A 100%);
+      box-shadow:
+        0 24px 60px -12px rgba(0,0,0,.42),
+        0 0 0 1px rgba(255,255,255,.07) inset;
+    }
+
+    /* Subtle noise texture via pseudo */
+    .giftcard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 70% 55% at 28% 30%, rgba(255,195,43,.08) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 50% at 80% 75%, rgba(255,195,43,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Decorative circle accent */
+    .giftcard-circle-1 {
+      position: absolute;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,195,43,.14);
+      top: -28px; right: -28px;
+    }
+    .giftcard-circle-2 {
+      position: absolute;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,195,43,.09);
+      top: 14px; right: 14px;
+    }
+
+    .giftcard-inner {
+      position: relative;
+      z-index: 2;
+      padding: 22px 24px 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .giftcard-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .giftcard-brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .giftcard-brand-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(255,195,43,.15);
+      border: 1px solid rgba(255,195,43,.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .giftcard-brand-icon i { color: #FFC32B; width: 14px; height: 14px; }
+    .giftcard-brand-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.82);
+      letter-spacing: 0.02em;
+    }
+
+    .giftcard-type-pill {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 3px 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255,255,255,.55);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .giftcard-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .giftcard-amount-group {}
+    .giftcard-amount-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,.42);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .giftcard-amount {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      font-variant-numeric: tabular-nums;
+    }
+    .giftcard-amount .currency {
+      font-size: 20px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+      letter-spacing: 0;
+      margin-right: 2px;
+      vertical-align: super;
+      font-variant-numeric: normal;
+    }
+
+    .giftcard-salon-name-embossed {
+      text-align: right;
+    }
+    .giftcard-salon-embossed-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,.3);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .giftcard-salon-embossed-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+      letter-spacing: 0.01em;
+    }
+
+    /* Gold star accent line on card */
+    .giftcard-star-line {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #FFC32B 35%, rgba(255,195,43,.5) 65%, transparent 100%);
+      border-radius: 0 0 16px 16px;
+    }
+
+    /* Section separator */
+    .section-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #0A0A0A;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* Amount chips */
+    .amount-chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .chip {
+      padding: 10px 4px;
+      border-radius: 10px;
+      background: #F4F4F5;
+      border: 2px solid transparent;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .chip.active {
+      background: #FFFFFF;
+      border-color: #0A0A0A;
+    }
+    .chip-amount {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0A0A0A;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-currency {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8A8A8A;
+    }
+
+    /* Custom amount row */
+    .custom-row {
+      display: flex;
+      align-items: center;
+      background: #F4F4F5;
+      border-radius: 10px;
+      padding: 12px 14px;
+      gap: 8px;
+      margin-bottom: 20px;
+      border: 2px solid transparent;
+    }
+    .custom-row .custom-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #8A8A8A;
+      flex: 1;
+    }
+    .custom-row .custom-prefix {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5A5A5A;
+    }
+    .custom-row input {
+      border: none;
+      background: transparent;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0A0A0A;
+      width: 70px;
+      text-align: right;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .custom-row input::placeholder { color: #C0C0C0; font-weight: 500; }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5A5A5A;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .form-input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: #F4F4F5;
+      border: 2px solid transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #0A0A0A;
+      outline: none;
+      transition: border-color .15s ease;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: #B0B0B0; }
+    .form-input:focus { border-color: #0A0A0A; background: #FFFFFF; }
+
+    .form-textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: #F4F4F5;
+      border: 2px solid transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #0A0A0A;
+      outline: none;
+      resize: none;
+      min-height: 88px;
+      transition: border-color .15s ease;
+      -webkit-appearance: none;
+    }
+    .form-textarea::placeholder { color: #B0B0B0; }
+    .form-textarea:focus { border-color: #0A0A0A; background: #FFFFFF; }
+
+    /* Delivery row */
+    .delivery-row {
+      display: flex;
+      align-items: center;
+      background: #F4F4F5;
+      border-radius: 10px;
+      padding: 12px 14px;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .delivery-icon-wrap {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(194,65,12,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .delivery-icon-wrap i { color: #C2410C; width: 15px; height: 15px; }
+    .delivery-text { flex: 1; }
+    .delivery-text .dt {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #0A0A0A;
+    }
+    .delivery-text .dd {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #8A8A8A;
+      margin-top: 1px;
+    }
+    .delivery-change {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #276EF1;
+      cursor: pointer;
+    }
+
+    /* Recipient preview row */
+    .recipient-preview {
+      background: #F4F4F5;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .recipient-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #C2410C 0%, #EA580C 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .recipient-avatar span {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .recipient-info { flex: 1; min-width: 0; }
+    .recipient-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0A0A0A;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .recipient-email {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      color: #8A8A8A;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .recipient-edit {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px solid #E4E4E4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .recipient-edit i { color: #5A5A5A; width: 14px; height: 14px; }
+
+    /* What they'll receive banner */
+    .receive-banner {
+      background: linear-gradient(135deg, #FFF1E6 0%, #FFF7F0 100%);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(194,65,12,.12);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .receive-icon-wrap {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: rgba(194,65,12,.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .receive-icon-wrap i { color: #C2410C; width: 16px; height: 16px; }
+    .receive-text .rt {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #7C2D12;
+    }
+    .receive-text .rd {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      color: #C2410C;
+      margin-top: 3px;
+      line-height: 1.45;
+    }
+
+    /* CTA */
+    .cta-btn {
+      width: 100%;
+      padding: 17px;
+      border-radius: 14px;
+      background: #0A0A0A;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .cta-btn:active { transform: scale(.98); opacity: .9; }
+    .cta-btn i { color: #FFFFFF; width: 17px; height: 17px; }
+    .cta-btn .cta-text {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+    .cta-btn .cta-amount {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: rgba(255,255,255,.65);
+      font-variant-numeric: tabular-nums;
+      margin-left: 2px;
+    }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 12px;
+    }
+    .security-note i { color: #8A8A8A; width: 12px; height: 12px; }
+    .security-note span {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #8A8A8A;
+    }
+
+    /* Thin divider */
+    .divider {
+      height: 1px;
+      background: #F0F0F0;
+      margin: 0 0 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M1 6s4.5-4 11-4 11 4 11 4"/><path d="M5 10s3-2.5 7-2.5 7 2.5 7 2.5"/><path d="M9 14s1.5-1 3-1 3 1 3 1"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 10v4"/></svg>
+    </div>
+  </div>
+
+  <!-- Hero photo -->
+  <div class="hero">
+    <img
+      src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+      alt="Old Town Barbers"
+    />
+    <div class="hero-gradient"></div>
+
+    <!-- Frosted nav -->
+    <div class="nav-row">
+      <div class="frost-btn">
+        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="frost-btn">
+          <i data-lucide="share" style="width:16px;height:16px;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Salon meta -->
+    <div class="hero-meta">
+      <div class="hero-eyebrow">Gift Card</div>
+      <div class="hero-salon-name">Old Town Barbers</div>
+      <div class="hero-rating">
+        <i data-lucide="star" style="width:14px;height:14px;fill:#FFC32B;stroke:#FFC32B;"></i>
+        <span class="rating-val">4.8</span>
+        <span class="rating-meta">Basel, Grossbasel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable content -->
+  <div class="content">
+
+    <!-- Premium gift card visual object -->
+    <div class="giftcard-wrap">
+      <div class="giftcard">
+        <div class="giftcard-circle-1"></div>
+        <div class="giftcard-circle-2"></div>
+        <div class="giftcard-inner">
+          <div class="giftcard-top">
+            <div class="giftcard-brand">
+              <div class="giftcard-brand-icon">
+                <i data-lucide="gift"></i>
+              </div>
+              <span class="giftcard-brand-name">Solen Gift Card</span>
+            </div>
+            <div class="giftcard-type-pill">Digital</div>
+          </div>
+          <div class="giftcard-bottom">
+            <div class="giftcard-amount-group">
+              <div class="giftcard-amount-label">Value</div>
+              <div class="giftcard-amount" id="card-amount">
+                <span class="currency">CHF</span><span id="card-number">100</span>
+              </div>
+            </div>
+            <div class="giftcard-salon-name-embossed">
+              <div class="giftcard-salon-embossed-label">Redeemable at</div>
+              <div class="giftcard-salon-embossed-name">Old Town Barbers</div>
+            </div>
+          </div>
+        </div>
+        <div class="giftcard-star-line"></div>
+      </div>
+    </div>
+
+    <!-- Amount selection -->
+    <div class="section-label">Choose amount</div>
+    <div class="amount-chips">
+      <div class="chip" data-amount="25" onclick="selectAmount(25, this)">
+        <div class="chip-currency">CHF</div>
+        <div class="chip-amount">25</div>
+      </div>
+      <div class="chip" data-amount="50" onclick="selectAmount(50, this)">
+        <div class="chip-currency">CHF</div>
+        <div class="chip-amount">50</div>
+      </div>
+      <div class="chip active" data-amount="100" onclick="selectAmount(100, this)">
+        <div class="chip-currency">CHF</div>
+        <div class="chip-amount">100</div>
+      </div>
+      <div class="chip" data-amount="200" onclick="selectAmount(200, this)">
+        <div class="chip-currency">CHF</div>
+        <div class="chip-amount">200</div>
+      </div>
+    </div>
+    <div class="custom-row">
+      <span class="custom-label">Custom amount</span>
+      <span class="custom-prefix">CHF</span>
+      <input type="number" placeholder="—" min="10" max="1000" oninput="onCustomAmount(this)" id="custom-input" />
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Recipient section -->
+    <div class="section-label" style="margin-top:0;">Recipient</div>
+
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" placeholder="e.g. Sophie Meier" value="Sophie Meier" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" placeholder="e.g. sophie@mail.com" value="sophie@mail.com" />
+    </div>
+
+    <!-- Recipient preview card -->
+    <div class="recipient-preview">
+      <div class="recipient-avatar"><span>S</span></div>
+      <div class="recipient-info">
+        <div class="recipient-name">Sophie Meier</div>
+        <div class="recipient-email">sophie@mail.com</div>
+      </div>
+      <div class="recipient-edit">
+        <i data-lucide="pencil"></i>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Personal message <span style="color:#C0C0C0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+      <textarea class="form-textarea" placeholder="Write a personal note to go with the gift…">Happy birthday, Sophie! Treat yourself to something you love.</textarea>
+    </div>
+
+    <!-- Delivery -->
+    <div class="delivery-row">
+      <div class="delivery-icon-wrap">
+        <i data-lucide="mail"></i>
+      </div>
+      <div class="delivery-text">
+        <div class="dt">Delivered by email</div>
+        <div class="dd">Sent instantly after purchase</div>
+      </div>
+      <span class="delivery-change">Change</span>
+    </div>
+
+    <!-- What they'll receive -->
+    <div class="receive-banner">
+      <div class="receive-icon-wrap">
+        <i data-lucide="sparkles"></i>
+      </div>
+      <div class="receive-text">
+        <div class="rt">Sophie receives a beautiful gift card</div>
+        <div class="rd">A digital card with a unique code, redeemable for any service at Old Town Barbers.</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="cta-btn" id="cta-btn">
+      <i data-lucide="gift"></i>
+      <span class="cta-text">Buy gift card</span>
+      <span class="cta-amount" id="cta-amount">· CHF 100</span>
+    </button>
+    <div class="security-note">
+      <i data-lucide="lock"></i>
+      <span>Secure payment via Stripe</span>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /phone -->
+
+<script>
+  // Init Lucide icons
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+  });
+
+  let selectedAmount = 100;
+
+  function selectAmount(amount, el) {
+    // Deactivate all chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('custom-input').value = '';
+    selectedAmount = amount;
+    updateAmountDisplay(amount);
+  }
+
+  function onCustomAmount(input) {
+    const val = parseInt(input.value);
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    if (val && val > 0) {
+      selectedAmount = val;
+      updateAmountDisplay(val);
+    }
+  }
+
+  function updateAmountDisplay(amount) {
+    document.getElementById('card-number').textContent = amount;
+    document.getElementById('cta-amount').textContent = '· CHF ' + amount;
+  }
+</script>
+
+</body>
+</html>

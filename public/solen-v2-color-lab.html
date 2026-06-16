@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — color lab · 8 brand color candidates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 32px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 40px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1.doc-h em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 700px; margin-inline: auto;
+  }
+  .toc {
+    margin-top: 24px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+  }
+  .toc a {
+    font-size: 11px; font-weight: 600; color: #1A1209;
+    background: #fff; border: 1px solid rgba(26,18,9,.06);
+    padding: 6px 12px; border-radius: 99px;
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--brand-fallback, #E8742A); }
+
+  /* CANDIDATE ROW */
+  .row {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(26,18,9,.03), 0 8px 24px rgba(0,0,0,.04);
+    scroll-margin-top: 24px;
+  }
+  .row.locked { border: 2px solid var(--brand); }
+
+  .row-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .row-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: #1A1209;
+  }
+  .row-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #fff;
+    padding: 4px 10px; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    background: var(--brand);
+  }
+  .row-tag.locked-tag { background: #E8742A; }
+  .row-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: #7A6957;
+    margin-bottom: 18px;
+  }
+  .row-meta strong { color: #1A1209; font-weight: 500; }
+  .row-meta .sw {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  /* SURFACES grid */
+  .surfaces {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 1000px) { .surfaces { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .surfaces { grid-template-columns: 1fr; } }
+  .surface {
+    background: #FBF8F3;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-height: 130px;
+  }
+  .surface-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px; color: #7A6957;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* HERO */
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(0,0,0,.06);
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px var(--brand-pulse);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .hero-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 26px;
+    line-height: 1.05; letter-spacing: -0.025em;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .italic-accent {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic;
+    color: var(--brand);
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--brand-grad);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px var(--brand-glow);
+  }
+
+  /* SALON CARD */
+  .salon-card {
+    display: flex; gap: 10px;
+  }
+  .salon-photo {
+    width: 72px; height: 72px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+  }
+  .salon-badge {
+    position: absolute; top: 6px; left: 6px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 6px; border-radius: 99px;
+  }
+  .badge-dot {
+    width: 4px; height: 4px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 2px var(--brand-pulse);
+  }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em; color: #1A1209;
+    line-height: 1.1;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .salon-row1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 6px;
+  }
+  .salon-rating {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500; font-size: 10px;
+    color: #1A1209; flex-shrink: 0;
+  }
+  .salon-row2 {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 10px; color: #7A6957;
+    margin-top: 3px;
+  }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* SECTION HEADER */
+  .sec-h {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .sec-h h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: -0.025em; line-height: 1;
+    color: #1A1209;
+  }
+  .alle {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600; font-size: 12px;
+    color: #1A1209; flex-shrink: 0;
+  }
+
+  /* B2B CARD */
+  .b2b {
+    position: relative;
+    background: var(--b2b-bg);
+    border: 1px solid var(--brand-border-subtle);
+    border-radius: 12px;
+    padding: 14px 16px;
+    overflow: hidden;
+    height: 100%;
+  }
+  .b2b::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-blob); filter: blur(36px);
+    border-radius: 999px;
+  }
+  .b2b > * { position: relative; }
+  .b2b-eye {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--brand-text);
+    margin-bottom: 6px;
+  }
+  .b2b-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 17px;
+    line-height: 1.05; letter-spacing: -0.025em;
+    color: #1A1209;
+    margin-bottom: 4px;
+  }
+  .b2b-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; color: #56463E;
+    margin-bottom: 10px;
+  }
+  .b2b-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #1A1209; color: #fff;
+    padding: 7px 12px; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 11px;
+  }
+
+  /* swatch column */
+  .swatch-col {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .sw-row {
+    display: flex; align-items: center; gap: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: #56463E;
+  }
+  .sw-row .sw-block {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .sw-row strong { color: #1A1209; font-weight: 500; }
+
+  /* ASK */
+  .ask {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+
+  /* ============================================
+     PER-CANDIDATE BRAND VARIABLES
+     ============================================ */
+
+  /* 1. terracotta orange (CURRENT v2 LOCK) */
+  .c1 {
+    --brand: #E8742A; --brand-text: #8A3C0F; --brand-deep: #5C2308;
+    --brand-grad: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    --brand-pulse: rgba(232,116,42,.18);
+    --brand-glow: rgba(232,116,42,.32);
+    --brand-border-subtle: rgba(232,116,42,.12);
+    --brand-blob: rgba(232,116,42,.5);
+    --b2b-bg: linear-gradient(160deg, #FFE4D2 0%, #FBC9A8 100%);
+  }
+
+  /* 2. forest green (V1 RETIRED) */
+  .c2 {
+    --brand: #1B4D1B; --brand-text: #0F2D0F; --brand-deep: #081608;
+    --brand-grad: linear-gradient(180deg, #2C6B2C 0%, #1B4D1B 100%);
+    --brand-pulse: rgba(27,77,27,.18);
+    --brand-glow: rgba(27,77,27,.32);
+    --brand-border-subtle: rgba(27,77,27,.12);
+    --brand-blob: rgba(27,77,27,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(27,77,27,.06) 0%, rgba(27,77,27,.14) 100%);
+  }
+
+  /* 3. burgundy / wine */
+  .c3 {
+    --brand: #8B2D3F; --brand-text: #5C1E29; --brand-deep: #2E0F15;
+    --brand-grad: linear-gradient(180deg, #A33A4F 0%, #8B2D3F 100%);
+    --brand-pulse: rgba(139,45,63,.18);
+    --brand-glow: rgba(139,45,63,.32);
+    --brand-border-subtle: rgba(139,45,63,.12);
+    --brand-blob: rgba(139,45,63,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(139,45,63,.06) 0%, rgba(139,45,63,.14) 100%);
+  }
+
+  /* 4. coral red */
+  .c4 {
+    --brand: #E14B5C; --brand-text: #7C2A35; --brand-deep: #4A171F;
+    --brand-grad: linear-gradient(180deg, #ED6271 0%, #E14B5C 100%);
+    --brand-pulse: rgba(225,75,92,.18);
+    --brand-glow: rgba(225,75,92,.32);
+    --brand-border-subtle: rgba(225,75,92,.12);
+    --brand-blob: rgba(225,75,92,.5);
+    --b2b-bg: linear-gradient(160deg, rgba(225,75,92,.08) 0%, rgba(225,75,92,.18) 100%);
+  }
+
+  /* 5. mustard / golden */
+  .c5 {
+    --brand: #C9821A; --brand-text: #6E440D; --brand-deep: #4A2C08;
+    --brand-grad: linear-gradient(180deg, #D9942F 0%, #C9821A 100%);
+    --brand-pulse: rgba(201,130,26,.18);
+    --brand-glow: rgba(201,130,26,.32);
+    --brand-border-subtle: rgba(201,130,26,.12);
+    --brand-blob: rgba(201,130,26,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(201,130,26,.08) 0%, rgba(201,130,26,.18) 100%);
+  }
+
+  /* 6. camel / brown */
+  .c6 {
+    --brand: #A66E3D; --brand-text: #5C3D22; --brand-deep: #3A2614;
+    --brand-grad: linear-gradient(180deg, #B98050 0%, #A66E3D 100%);
+    --brand-pulse: rgba(166,110,61,.18);
+    --brand-glow: rgba(166,110,61,.32);
+    --brand-border-subtle: rgba(166,110,61,.12);
+    --brand-blob: rgba(166,110,61,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(166,110,61,.08) 0%, rgba(166,110,61,.18) 100%);
+  }
+
+  /* 7. aubergine / warm purple */
+  .c7 {
+    --brand: #5D2E47; --brand-text: #3F1E2F; --brand-deep: #1F0F18;
+    --brand-grad: linear-gradient(180deg, #75395A 0%, #5D2E47 100%);
+    --brand-pulse: rgba(93,46,71,.18);
+    --brand-glow: rgba(93,46,71,.32);
+    --brand-border-subtle: rgba(93,46,71,.12);
+    --brand-blob: rgba(93,46,71,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(93,46,71,.06) 0%, rgba(93,46,71,.16) 100%);
+  }
+
+  /* 8. olive sage / earth green */
+  .c8 {
+    --brand: #6B7F4C; --brand-text: #3F4A2C; --brand-deep: #1F2516;
+    --brand-grad: linear-gradient(180deg, #7C9258 0%, #6B7F4C 100%);
+    --brand-pulse: rgba(107,127,76,.18);
+    --brand-glow: rgba(107,127,76,.32);
+    --brand-border-subtle: rgba(107,127,76,.12);
+    --brand-blob: rgba(107,127,76,.4);
+    --b2b-bg: linear-gradient(160deg, rgba(107,127,76,.08) 0%, rgba(107,127,76,.18) 100%);
+  }
+
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">COLOR LAB · 8 BRAND COLOR CANDIDATES · v2 fonts locked</div>
+    <h1 class="doc-h">Pick your <em>brand color</em>.</h1>
+    <p class="sub">v2 fonts (Bricolage + Inter Tight + Instrument Serif italic + JetBrains Mono) locked. Cream substrate <strong>#FBF8F3</strong> + warm-ink scale locked. Only the brand accent varies. Each row shows: hero greeting · salon card · section header · b2b card. Pick by number.</p>
+    <nav class="toc">
+      <a href="#c1">1 · terracotta (locked)</a>
+      <a href="#c2">2 · forest green</a>
+      <a href="#c3">3 · burgundy</a>
+      <a href="#c4">4 · coral red</a>
+      <a href="#c5">5 · mustard</a>
+      <a href="#c6">6 · camel</a>
+      <a href="#c7">7 · aubergine</a>
+      <a href="#c8">8 · olive sage</a>
+    </nav>
+  </header>
+
+  <!-- CANDIDATE ROW TEMPLATE — repeated for each color -->
+  <!-- 1. TERRACOTTA (LOCKED) -->
+  <article class="row c1 locked" id="c1">
+    <div class="row-head">
+      <h2 class="row-name">1 · Terracotta orange</h2>
+      <span class="row-tag locked-tag">v2 LOCKED · CURRENT</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#E8742A;"></span><strong>brand:</strong> #E8742A · <span class="sw" style="background:#8A3C0F;"></span><strong>brand-text:</strong> #8A3C0F · <span class="sw" style="background:#FFE4D2;border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> #FFE4D2</p>
+    <div class="surfaces">
+      <div class="surface">
+        <span class="surface-tag">hero greeting + CTA</span>
+        <span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span>
+        <h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3>
+        <button class="cta">Solen durchsuchen →</button>
+      </div>
+      <div class="surface">
+        <span class="surface-tag">salon card</span>
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+            <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="surface">
+        <span class="surface-tag">section header</span>
+        <div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div>
+      </div>
+      <div class="surface">
+        <div class="b2b">
+          <div class="b2b-eye">FÜR SALONS</div>
+          <div class="b2b-h">Solen für dein Studio.</div>
+          <p class="b2b-sub">Mehr Termine, weniger Anrufe.</p>
+          <button class="b2b-cta">Mehr erfahren →</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 2. FOREST GREEN -->
+  <article class="row c2" id="c2">
+    <div class="row-head">
+      <h2 class="row-name">2 · Forest green</h2>
+      <span class="row-tag" style="background:#1B4D1B;">V1 RETIRED · NATURAL</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#1B4D1B;"></span><strong>brand:</strong> #1B4D1B · <span class="sw" style="background:#0F2D0F;"></span><strong>brand-text:</strong> #0F2D0F · <span class="sw" style="background:rgba(27,77,27,.1);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> green tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 3. BURGUNDY -->
+  <article class="row c3" id="c3">
+    <div class="row-head">
+      <h2 class="row-name">3 · Burgundy / wine</h2>
+      <span class="row-tag">SOPHISTICATED · DARK</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#8B2D3F;"></span><strong>brand:</strong> #8B2D3F · <span class="sw" style="background:#5C1E29;"></span><strong>brand-text:</strong> #5C1E29 · <span class="sw" style="background:rgba(139,45,63,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> wine tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 4. CORAL RED -->
+  <article class="row c4" id="c4">
+    <div class="row-head">
+      <h2 class="row-name">4 · Coral red</h2>
+      <span class="row-tag">WARM · DECISIVE</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#E14B5C;"></span><strong>brand:</strong> #E14B5C · <span class="sw" style="background:#7C2A35;"></span><strong>brand-text:</strong> #7C2A35 · <span class="sw" style="background:rgba(225,75,92,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> coral tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 5. MUSTARD -->
+  <article class="row c5" id="c5">
+    <div class="row-head">
+      <h2 class="row-name">5 · Mustard / golden</h2>
+      <span class="row-tag">EDITORIAL · WARM</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#C9821A;"></span><strong>brand:</strong> #C9821A · <span class="sw" style="background:#6E440D;"></span><strong>brand-text:</strong> #6E440D · <span class="sw" style="background:rgba(201,130,26,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> golden tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 6. CAMEL -->
+  <article class="row c6" id="c6">
+    <div class="row-head">
+      <h2 class="row-name">6 · Camel / earth brown</h2>
+      <span class="row-tag">EARTHY · GROUNDED</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#A66E3D;"></span><strong>brand:</strong> #A66E3D · <span class="sw" style="background:#5C3D22;"></span><strong>brand-text:</strong> #5C3D22 · <span class="sw" style="background:rgba(166,110,61,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> brown tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 7. AUBERGINE -->
+  <article class="row c7" id="c7">
+    <div class="row-head">
+      <h2 class="row-name">7 · Aubergine / warm purple</h2>
+      <span class="row-tag">REFINED · MOODY</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#5D2E47;"></span><strong>brand:</strong> #5D2E47 · <span class="sw" style="background:#3F1E2F;"></span><strong>brand-text:</strong> #3F1E2F · <span class="sw" style="background:rgba(93,46,71,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> aubergine tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <!-- 8. OLIVE SAGE -->
+  <article class="row c8" id="c8">
+    <div class="row-head">
+      <h2 class="row-name">8 · Olive sage / earth green</h2>
+      <span class="row-tag">CALM · NATURAL</span>
+    </div>
+    <p class="row-meta"><span class="sw" style="background:#6B7F4C;"></span><strong>brand:</strong> #6B7F4C · <span class="sw" style="background:#3F4A2C;"></span><strong>brand-text:</strong> #3F4A2C · <span class="sw" style="background:rgba(107,127,76,.12);border:1px solid rgba(0,0,0,.1);"></span><strong>subtle:</strong> olive tint</p>
+    <div class="surfaces">
+      <div class="surface"><span class="surface-tag">hero greeting + CTA</span><span class="pill"><span class="pulse-dot"></span>47 Salons in Basel</span><h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3><button class="cta">Solen durchsuchen →</button></div>
+      <div class="surface"><span class="surface-tag">salon card</span><div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div></div>
+      <div class="surface"><span class="surface-tag">section header</span><div class="sec-h"><h3>Coiffeur in Basel</h3><span class="alle">Alle →</span></div></div>
+      <div class="surface"><div class="b2b"><div class="b2b-eye">FÜR SALONS</div><div class="b2b-h">Solen für dein Studio.</div><p class="b2b-sub">Mehr Termine, weniger Anrufe.</p><button class="b2b-cta">Mehr erfahren →</button></div></div>
+    </div>
+  </article>
+
+  <div class="ask">
+    <strong>Pick by number 1–8.</strong> If none feel right, name a vibe in 1-2 words ("rusty", "deep", "soft", "luxurious", "earthy", "vibrant") and I'll add 2-3 more rows. Or describe a specific hex you've seen elsewhere.<br><br>
+    Note: every option above is a <strong>warm tone</strong> (no cool greys/blues — that's locked per §3). Each comes with a body-safe <code>brand-text</code> shade for AA contrast on cream substrate.
+  </div>
+
+</div>
+</body>
+</html>

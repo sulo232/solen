@@ -283,11 +283,12 @@ export function SalonDetailV3() {
 
             <SalonPortfolio urls={salon.gallery_urls ?? []} onOpen={() => openGallery()} />
 
-            {/* Mobile + tablet Buy card — sidebar (which has the same row)
-                only renders at lg breakpoint, so show this here below it. */}
-            <div className="lg:hidden">
+            {/* Mobile + tablet Buy card (gift card) HIDDEN from customers
+                (owner, 2026-06-14) in favour of a Solen-wide loyalty card.
+                Restore by un-commenting + flipping SalonSidebar.hasGiftCards. */}
+            {/* <div className="lg:hidden">
               <SalonBuy locale={locale} slug={slug} salonName={salon.name} />
-            </div>
+            </div> */}
 
             <SalonAbout salon={salon} locale={locale} />
 

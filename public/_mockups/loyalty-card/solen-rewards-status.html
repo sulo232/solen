@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Status: rank model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --sunken:#F4F4F5; --accent:#276EF1; --accent-deep:#1E54B7; --accent-pale:#EAEFFE;
+    --ok:#16A34A; --ok-bg:#E7F6EC; --star:#FFC32B; --star-bg:#FEF6E0; --pink:#FF3366; --pink-bg:#FFE9EE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DEDEE2; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:34px 18px 60px;}
+  .lede{max-width:760px; margin:0 auto 24px;}
+  .lede h1{font-family:"Inter Tight"; font-size:22px; font-weight:700; letter-spacing:-.02em;}
+  .lede p{font-size:13.5px; color:#46464B; margin-top:6px; line-height:1.55;}
+  .stage{display:flex; justify-content:center;}
+
+  .phone{width:390px; background:#fff; border-radius:42px; overflow:hidden; box-shadow:0 36px 76px -28px rgba(0,0,0,.5); position:relative;}
+  .status{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600;}
+  .status .dots{display:flex; gap:5px; align-items:center;}
+  .bar{display:flex; align-items:center; justify-content:space-between; padding:6px 16px 12px;}
+  .bar .lft{display:flex; align-items:center; gap:12px;}
+  .icirc{width:38px; height:38px; border-radius:50%; background:var(--sunken); display:grid; place-items:center; color:var(--ink); flex-shrink:0;}
+  .bar h2{font-family:"Inter Tight"; font-size:18px; font-weight:600; letter-spacing:-.01em;}
+  .hist{display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--accent); font-weight:500;}
+  .scroll{max-height:766px; overflow-y:auto;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* HERO status card */
+  .card{position:relative; overflow:hidden; margin:6px 16px 0; border:1px solid var(--line); border-radius:20px; background:#fff;
+    box-shadow:0 10px 26px -16px rgba(20,22,30,.28), 0 1px 2px rgba(0,0,0,.04); padding:18px 18px 16px;}
+  .card .motif{position:absolute; right:-14px; bottom:-40px; font-family:"Inter Tight"; font-weight:700; font-size:150px; line-height:1; color:var(--accent); opacity:.05; pointer-events:none;}
+  .card .crow{display:flex; align-items:center; justify-content:space-between; position:relative;}
+  .wm{font-family:"Inter Tight"; font-weight:700; font-size:16px; letter-spacing:-.02em; color:var(--ink); display:inline-flex; align-items:flex-start; gap:1px;}
+  .wm sup{color:var(--accent); font-size:11px; font-weight:800; line-height:1; margin-top:1px;}
+  .eyebrow{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink3); font-weight:600; margin-top:14px; position:relative;}
+  .tiername{display:flex; align-items:center; gap:8px; margin-top:3px; position:relative;}
+  .tiername .n{font-family:"Inter Tight"; font-weight:700; font-size:34px; line-height:1; letter-spacing:-.02em; color:var(--ink);}
+  .tiername .ic{color:var(--star);}
+
+  /* tier ladder */
+  .ladder{position:relative; margin-top:20px;}
+  .lline{position:absolute; left:26px; right:26px; top:7px; height:10px; background:var(--sunken); border-radius:9px; z-index:0;}
+  .lline .lprog{height:100%; width:0; background:linear-gradient(90deg,var(--ink),var(--accent)); border-radius:9px; animation:grow 1.05s cubic-bezier(.22,.61,.36,1) .5s both;}
+  .lrow{display:flex; align-items:flex-start; justify-content:space-between; position:relative; z-index:1;}
+  .node{display:flex; flex-direction:column; align-items:center; gap:6px; flex:0 0 auto;}
+  .dot{width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:var(--sunken); color:var(--ink3);}
+  .node.done .dot{background:var(--ink); color:#fff;}
+  .node.now .dot{background:var(--accent); color:#fff; box-shadow:0 0 0 4px var(--accent-pale); animation:breathe 2.6s ease-in-out infinite;}
+  .node .lab{font-size:10.5px; font-weight:600; color:var(--ink3);}
+  .node.now .lab{color:var(--accent-deep);}
+  .node.done .lab{color:var(--ink);}
+
+  .nextrow{display:flex; align-items:baseline; justify-content:space-between; margin-top:18px; position:relative;}
+  .nextrow .l{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .nextrow .r{font-size:12.5px; color:var(--ink3); font-variant-numeric:tabular-nums;}
+  .track{height:8px; border-radius:99px; background:var(--sunken); overflow:hidden; margin-top:9px; position:relative;}
+  .fill{height:100%; width:67%; border-radius:99px; background:var(--ink);}
+  .valid{font-size:11.5px; color:var(--ink3); margin-top:9px; position:relative; display:flex; align-items:center; gap:5px;}
+
+  /* animations (CSS-driven, run on load) */
+  @keyframes rise{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes grow{from{width:0;} to{width:67%;}}
+  @keyframes breathe{0%,100%{box-shadow:0 0 0 4px var(--accent-pale);} 50%{box-shadow:0 0 0 8px rgba(39,110,241,.10);}}
+  .rev{opacity:0; animation:rise .55s cubic-bezier(.22,.61,.36,1) both;}
+  .card.rev{animation-delay:.04s;}
+  .h.rev{animation-delay:.12s;}
+  .rows .perk:nth-child(1){animation-delay:.18s;}
+  .rows .perk:nth-child(2){animation-delay:.26s;}
+  .rows .perk:nth-child(3){animation-delay:.34s;}
+  .rows .perk:nth-child(4){animation-delay:.42s;}
+  .rows .perk:nth-child(5){animation-delay:.50s;}
+  .how.rev{animation-delay:.56s;}
+  .cta-wrap.rev{animation-delay:.62s;}
+  @media (prefers-reduced-motion: reduce){ .rev{opacity:1; animation:none;} .lline .lprog{animation:none; width:67%;} .node.now .dot{animation:none;} }
+
+  section{padding:18px 18px 0;}
+  .h{font-family:"Inter Tight"; font-size:15px; font-weight:600; letter-spacing:-.01em; margin-bottom:11px;}
+  .rows{display:flex; flex-direction:column; gap:9px;}
+  .perk{display:flex; align-items:center; gap:12px; background:var(--sunken); border-radius:14px; padding:12px 13px;}
+  .perk.lock{background:#fff; border:1px dashed var(--line);}
+  .chip{width:36px; height:36px; border-radius:11px; display:grid; place-items:center; flex-shrink:0;}
+  .chip.blue{background:var(--accent-pale); color:var(--accent);}
+  .chip.green{background:var(--ok-bg); color:var(--ok);}
+  .chip.star{background:var(--star-bg); color:var(--star);}
+  .chip.pink{background:var(--pink-bg); color:var(--pink);}
+  .chip.mut{background:var(--sunken); color:var(--ink3);}
+  .perk .tx{flex:1; min-width:0;}
+  .perk .tt{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .perk.lock .tt{color:var(--ink2);}
+  .perk .sb{font-size:11.5px; color:var(--ink2); margin-top:1px;}
+  .state{flex-shrink:0; display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600;}
+  .state.on{color:var(--ok);}
+  .state.off{color:var(--ink3);}
+
+  .how{margin:18px 16px 0; background:var(--sunken); border-radius:16px; padding:15px 16px;}
+  .how .h{margin-bottom:7px;}
+  .how p{font-size:12.5px; line-height:1.5; color:var(--ink2);}
+  .how p b{color:var(--ink); font-weight:600;}
+  .cta-wrap{padding:16px;}
+  .cta{width:100%; height:52px; border:0; border-radius:14px; background:var(--ink); color:#fff; font-family:"Inter Tight"; font-weight:700; font-size:15.5px; letter-spacing:-.01em; display:flex; align-items:center; justify-content:center; gap:8px;}
+</style>
+</head>
+<body>
+  <div class="lede">
+    <h1>Solen Status: the rank model (no points)</h1>
+    <p>Reworked from the points version you liked, same layout, GO-style rank instead. You earn a tier by completed visits, and the reward is priority + status (early access to slots, walk-in queue priority, perks), not points or discounts. Numbers illustrative.</p>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:16px"></i><i data-lucide="wifi" style="width:16px"></i><i data-lucide="battery-full" style="width:18px"></i></span></div>
+      <div class="bar">
+        <div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:19px"></i></div><h2>Rewards</h2></div>
+        <a class="hist"><i data-lucide="history" style="width:15px"></i> History</a>
+      </div>
+
+      <div class="scroll">
+        <!-- HERO status card -->
+        <div class="card rev">
+          <div class="motif">+</div>
+          <div class="crow">
+            <span class="wm">solen<sup>+</sup></span>
+          </div>
+          <div class="eyebrow">Your status</div>
+          <div class="tiername"><span class="n">Gold</span><span class="ic"><i data-lucide="award" style="width:24px"></i></span></div>
+
+          <!-- tier ladder -->
+          <div class="ladder">
+            <div class="lline"><div class="lprog"></div></div>
+            <div class="lrow">
+              <div class="node done"><span class="dot"><i data-lucide="check" style="width:14px"></i></span><span class="lab">Base</span></div>
+              <div class="node now"><span class="dot"><i data-lucide="award" style="width:14px"></i></span><span class="lab">Gold</span></div>
+              <div class="node"><span class="dot"><i data-lucide="crown" style="width:14px"></i></span><span class="lab">Platinum</span></div>
+            </div>
+          </div>
+
+          <div class="nextrow"><span class="l">2 visits to Platinum</span><span class="r">4 of 6 visits</span></div>
+          <div class="valid"><i data-lucide="clock" style="width:13px"></i> Gold valid through 30 Sep, based on your last 6 months.</div>
+        </div>
+
+        <!-- Your perks -->
+        <section>
+          <div class="h rev">Your perks</div>
+          <div class="rows">
+            <div class="perk rev"><div class="chip blue"><i data-lucide="calendar-clock" style="width:18px"></i></div><div class="tx"><div class="tt">Early access to prime-time slots</div><div class="sb">Book 24 hours before everyone</div></div><span class="state on"><i data-lucide="check" style="width:13px"></i> Active</span></div>
+            <div class="perk rev"><div class="chip green"><i data-lucide="zap" style="width:18px"></i></div><div class="tx"><div class="tt">Early last-minute deals</div><div class="sb">See cancellations first</div></div><span class="state on"><i data-lucide="check" style="width:13px"></i> Active</span></div>
+            <div class="perk rev"><div class="chip pink"><i data-lucide="gift" style="width:18px"></i></div><div class="tx"><div class="tt">Birthday-week priority</div><div class="sb">Get seen in your birthday week</div></div><span class="state on"><i data-lucide="check" style="width:13px"></i> Active</span></div>
+            <div class="perk lock rev"><div class="chip mut"><i data-lucide="users" style="width:18px"></i></div><div class="tx"><div class="tt">Priority walk-in queue</div><div class="sb">Jump ahead at busy salons</div></div><span class="state off"><i data-lucide="lock" style="width:12px"></i> Platinum</span></div>
+            <div class="perk lock rev"><div class="chip mut"><i data-lucide="calendar-clock" style="width:18px"></i></div><div class="tx"><div class="tt">48-hour early access</div><div class="sb">Even earlier slot access</div></div><span class="state off"><i data-lucide="lock" style="width:12px"></i> Platinum</span></div>
+          </div>
+        </section>
+
+        <!-- How it works -->
+        <div class="how rev">
+          <div class="h">How status works</div>
+          <p>Your status is based on <b>completed visits in the last 6 months</b> at any Solen salon. <b>3 visits</b> reach Gold, <b>6 visits</b> reach Platinum. No points to track, just keep booking.</p>
+        </div>
+
+        <div class="cta-wrap rev"><button class="cta"><i data-lucide="search" style="width:16px"></i> Book to keep your status</button></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    try { lucide.createIcons(); } catch (e) {}
+    // tap the phone to replay the animations
+    const phone = document.querySelector('.phone');
+    if (phone) phone.addEventListener('click', () => {
+      document.querySelectorAll('.rev, .lline .lprog').forEach((el) => {
+        el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Card · Old Town Barbers — Solen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #EBEBEC;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 64px;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 390px;
+    background: #F4F4F5;
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.08),
+      0 32px 80px -16px rgba(0,0,0,.28),
+      0 8px 24px -4px rgba(0,0,0,.12);
+    position: relative;
+  }
+
+  /* Status bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    z-index: 30;
+    pointer-events: none;
+  }
+  .status-time {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: -0.2px;
+  }
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-icons svg {
+    width: 16px;
+    height: 16px;
+    fill: #fff;
+    color: #fff;
+  }
+
+  /* Scrollable content inside phone */
+  .phone-scroll {
+    height: 844px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .phone-scroll::-webkit-scrollbar { display: none; }
+
+  /* Hero photo */
+  .hero {
+    position: relative;
+    height: 260px;
+    flex-shrink: 0;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,.45) 0%,
+      rgba(0,0,0,.05) 50%,
+      rgba(0,0,0,.55) 100%
+    );
+  }
+
+  /* Frosted nav bar over photo */
+  .nav-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 52px 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+  }
+  .nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .nav-btn i { color: #fff; width: 18px; height: 18px; }
+
+  /* Hero bottom badge */
+  .hero-salon-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    z-index: 10;
+  }
+  .salon-info h2 {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+  }
+  .salon-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .salon-meta i { color: rgba(255,255,255,.75); width: 13px; height: 13px; }
+  .salon-meta span {
+    font-size: 12.5px;
+    color: rgba(255,255,255,.85);
+    font-weight: 500;
+  }
+  .salon-rating {
+    background: rgba(255,255,255,.18);
+    backdrop-filter: blur(10px) saturate(1.4);
+    -webkit-backdrop-filter: blur(10px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .salon-rating i { color: #FFC32B; width: 13px; height: 13px; }
+  .salon-rating span {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+  }
+
+  /* Page body */
+  .page-body {
+    background: #F4F4F5;
+    padding: 0 0 32px;
+  }
+
+  /* Editorial headline */
+  .editorial-headline {
+    padding: 20px 16px 0;
+  }
+  .editorial-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .editorial-eyebrow i { color: #C2410C; width: 14px; height: 14px; }
+  .editorial-eyebrow span {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #C2410C;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .headline-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #0A0A0A;
+    letter-spacing: -0.7px;
+    line-height: 1.12;
+  }
+  .headline-sub {
+    font-size: 14px;
+    color: #5A5A5A;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* Visual gift card object */
+  .gift-card-visual {
+    margin: 20px 16px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #7C2D12 0%, #C2410C 40%, #EA580C 65%, #FCD34D 100%);
+    padding: 22px 22px 20px;
+    position: relative;
+    box-shadow: 0 12px 40px -8px rgba(194,65,12,.45), 0 4px 12px -2px rgba(0,0,0,.15);
+  }
+  .gc-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: .07;
+    background-image:
+      radial-gradient(circle at 20% 20%, #fff 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, #fff 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, #fff 0.5px, transparent 0.5px);
+    background-size: 28px 28px, 32px 32px, 18px 18px;
+  }
+  .gc-shimmer {
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .gc-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+  .gc-logo {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -0.4px;
+    opacity: .95;
+  }
+  .gc-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.25);
+  }
+  .gc-icon-wrap i { color: #fff; width: 18px; height: 18px; }
+  .gc-amount {
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .gc-amount-label {
+    font-size: 11px;
+    color: rgba(255,255,255,.7);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+  .gc-amount-value {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    color: #fff;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .gc-amount-value span { font-size: 24px; opacity: .75; font-weight: 600; vertical-align: super; font-size: 18px; margin-right: 2px; }
+  .gc-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .gc-recipient-line {
+    font-size: 12px;
+    color: rgba(255,255,255,.75);
+    font-weight: 500;
+  }
+  .gc-recipient-name {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 1px;
+  }
+  .gc-edit-btn {
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 20px;
+    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .gc-edit-btn i { color: #fff; width: 12px; height: 12px; }
+  .gc-edit-btn span { font-size: 12px; color: #fff; font-weight: 600; }
+
+  /* Section card */
+  .section-card {
+    background: #fff;
+    border-radius: 16px;
+    margin: 12px 16px 0;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px -4px rgba(0,0,0,.06);
+  }
+  .section-header {
+    padding: 16px 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #0A0A0A;
+    letter-spacing: -0.2px;
+  }
+
+  /* Amount chips */
+  .amount-chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 12px 16px 16px;
+  }
+  .amount-chip {
+    border-radius: 10px;
+    padding: 10px 4px;
+    text-align: center;
+    cursor: pointer;
+    border: 1.5px solid #E5E5E5;
+    background: #F9F9F9;
+    transition: all 0.15s;
+  }
+  .amount-chip.selected {
+    border-color: #C2410C;
+    background: #FFF1E6;
+  }
+  .amount-chip-value {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #0A0A0A;
+    letter-spacing: -0.3px;
+  }
+  .amount-chip.selected .amount-chip-value { color: #C2410C; }
+  .amount-chip-label {
+    font-size: 10px;
+    color: #8A8A8A;
+    margin-top: 1px;
+  }
+  .amount-chip.selected .amount-chip-label { color: #C2410C; opacity: .7; }
+
+  .divider {
+    height: 1px;
+    background: #F0F0F0;
+    margin: 0 16px;
+  }
+
+  /* Custom amount */
+  .custom-amount-row {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .custom-amount-row i { color: #8A8A8A; width: 16px; height: 16px; flex-shrink: 0; }
+  .custom-amount-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #0A0A0A;
+    background: transparent;
+  }
+  .custom-amount-input::placeholder { color: #8A8A8A; }
+
+  /* Form fields */
+  .form-field {
+    padding: 14px 16px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-field:last-child { border-bottom: none; }
+  .form-field-icon { color: #8A8A8A; width: 16px; height: 16px; flex-shrink: 0; }
+  .form-field-content { flex: 1; }
+  .form-field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8A8A8A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .form-field-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #0A0A0A;
+  }
+  .form-field-input {
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #0A0A0A;
+    width: 100%;
+    background: transparent;
+  }
+  .form-field-input::placeholder { color: #8A8A8A; }
+  .form-field-chevron { color: #C0C0C0; width: 14px; height: 14px; }
+
+  /* Message textarea */
+  .message-field {
+    padding: 14px 16px;
+  }
+  .message-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .message-label i { color: #8A8A8A; width: 15px; height: 15px; }
+  .message-label span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8A8A8A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .message-textarea {
+    width: 100%;
+    min-height: 72px;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #0A0A0A;
+    resize: none;
+    outline: none;
+    background: #F9F9F9;
+    line-height: 1.5;
+  }
+  .message-textarea:focus { border-color: #C2410C; background: #fff; }
+
+  /* Preview banner */
+  .preview-banner {
+    margin: 12px 16px 0;
+    background: #FFF1E6;
+    border: 1.5px solid rgba(194,65,12,.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .preview-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(194,65,12,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .preview-icon-wrap i { color: #C2410C; width: 20px; height: 20px; }
+  .preview-text-block { flex: 1; }
+  .preview-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #0A0A0A;
+    letter-spacing: -0.2px;
+  }
+  .preview-sub {
+    font-size: 12px;
+    color: #5A5A5A;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .preview-check { color: #16A34A; width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Delivery row */
+  .delivery-row {
+    margin: 12px 16px 0;
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .delivery-icon { color: #276EF1; width: 18px; height: 18px; flex-shrink: 0; }
+  .delivery-text { flex: 1; }
+  .delivery-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #0A0A0A;
+  }
+  .delivery-sub {
+    font-size: 12px;
+    color: #5A5A5A;
+    margin-top: 1px;
+  }
+  .delivery-check { color: #16A34A; width: 16px; height: 16px; }
+
+  /* CTA */
+  .cta-area {
+    padding: 20px 16px 8px;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(to top, #F4F4F5 80%, transparent);
+    padding-top: 24px;
+  }
+  .cta-btn {
+    width: 100%;
+    background: #0A0A0A;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 17px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    box-shadow: 0 4px 20px -4px rgba(0,0,0,.4);
+    transition: transform 0.1s;
+  }
+  .cta-btn:active { transform: scale(.98); }
+  .cta-btn i { width: 18px; height: 18px; }
+  .cta-sub {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #8A8A8A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .cta-sub i { width: 13px; height: 13px; }
+
+  /* Spacing */
+  .spacer { height: 8px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 6l5 5 6-6 6 6 5-5"/></svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v4"/></svg>
+    </div>
+  </div>
+
+  <div class="phone-scroll">
+    <!-- Hero -->
+    <div class="hero">
+      <img
+        src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+        alt="Old Town Barbers"
+        loading="eager"
+      />
+      <div class="hero-gradient"></div>
+
+      <!-- Nav -->
+      <div class="nav-bar">
+        <div class="nav-btn">
+          <i data-lucide="arrow-left"></i>
+        </div>
+        <div class="nav-btn">
+          <i data-lucide="share"></i>
+        </div>
+      </div>
+
+      <!-- Salon badge -->
+      <div class="hero-salon-badge">
+        <div class="salon-info">
+          <h2>Old Town Barbers</h2>
+          <div class="salon-meta">
+            <i data-lucide="map-pin"></i>
+            <span>Grossbasel, Basel</span>
+          </div>
+        </div>
+        <div class="salon-rating">
+          <i data-lucide="star"></i>
+          <span>4.8</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page body -->
+    <div class="page-body">
+
+      <!-- Editorial headline -->
+      <div class="editorial-headline">
+        <div class="editorial-eyebrow">
+          <i data-lucide="gift"></i>
+          <span>Gift Card</span>
+        </div>
+        <div class="headline-text">Give the gift of a great cut.</div>
+        <div class="headline-sub">Delivered instantly by email. Never expires.</div>
+      </div>
+
+      <!-- Visual gift card -->
+      <div class="gift-card-visual" style="margin: 16px 16px 0;">
+        <div class="gc-pattern"></div>
+        <div class="gc-shimmer"></div>
+
+        <div class="gc-top">
+          <div class="gc-logo">solen</div>
+          <div class="gc-icon-wrap">
+            <i data-lucide="gift"></i>
+          </div>
+        </div>
+
+        <div class="gc-amount">
+          <div class="gc-amount-label">Gift card value</div>
+          <div class="gc-amount-value"><span>CHF</span><span id="card-amount">100</span></div>
+        </div>
+
+        <div class="gc-bottom">
+          <div>
+            <div class="gc-recipient-line">For</div>
+            <div class="gc-recipient-name" id="card-recipient">Lena</div>
+          </div>
+          <div class="gc-edit-btn">
+            <i data-lucide="pencil"></i>
+            <span>Edit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipient preview -->
+      <div class="preview-banner">
+        <div class="preview-icon-wrap">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div class="preview-text-block">
+          <div class="preview-title">Lena will receive a CHF 100 gift card</div>
+          <div class="preview-sub">at Old Town Barbers, sent to lena@mail.com</div>
+        </div>
+        <i data-lucide="check-circle" class="preview-check"></i>
+      </div>
+
+      <!-- Amount section -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Choose amount</div>
+        </div>
+        <div class="amount-chips">
+          <div class="amount-chip" onclick="selectAmount(25, this)">
+            <div class="amount-chip-value">25</div>
+            <div class="amount-chip-label">CHF</div>
+          </div>
+          <div class="amount-chip" onclick="selectAmount(50, this)">
+            <div class="amount-chip-value">50</div>
+            <div class="amount-chip-label">CHF</div>
+          </div>
+          <div class="amount-chip selected" onclick="selectAmount(100, this)">
+            <div class="amount-chip-value">100</div>
+            <div class="amount-chip-label">CHF</div>
+          </div>
+          <div class="amount-chip" onclick="selectAmount(200, this)">
+            <div class="amount-chip-value">200</div>
+            <div class="amount-chip-label">CHF</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="custom-amount-row">
+          <i data-lucide="edit-3"></i>
+          <input class="custom-amount-input" type="number" placeholder="Custom amount (CHF)" oninput="customAmount(this.value)" />
+        </div>
+      </div>
+
+      <!-- Recipient section -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Recipient</div>
+        </div>
+        <div class="form-field">
+          <i data-lucide="user" class="form-field-icon"></i>
+          <div class="form-field-content">
+            <div class="form-field-label">Name</div>
+            <input
+              class="form-field-input"
+              type="text"
+              value="Lena"
+              placeholder="Recipient name"
+              oninput="document.getElementById('card-recipient').textContent = this.value || 'Recipient'"
+            />
+          </div>
+        </div>
+        <div class="form-field">
+          <i data-lucide="mail" class="form-field-icon"></i>
+          <div class="form-field-content">
+            <div class="form-field-label">Email</div>
+            <input class="form-field-input" type="email" value="lena@mail.com" placeholder="recipient@email.com" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal message section -->
+      <div class="section-card">
+        <div class="message-field">
+          <div class="message-label">
+            <i data-lucide="message-circle"></i>
+            <span>Personal message (optional)</span>
+          </div>
+          <textarea class="message-textarea" placeholder="Add a personal note to make it extra special...">Enjoy a treat on me! You deserve it.</textarea>
+        </div>
+      </div>
+
+      <!-- Delivery method -->
+      <div class="delivery-row">
+        <i data-lucide="send" class="delivery-icon"></i>
+        <div class="delivery-text">
+          <div class="delivery-title">Email delivery</div>
+          <div class="delivery-sub">Delivered instantly after payment</div>
+        </div>
+        <i data-lucide="check-circle-2" class="delivery-check"></i>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-area">
+        <button class="cta-btn">
+          <i data-lucide="gift"></i>
+          <span id="cta-label">Buy gift card &middot; CHF 100</span>
+        </button>
+        <div class="cta-sub">
+          <i data-lucide="shield-check"></i>
+          Secure payment via Stripe. No expiry.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  let selectedAmount = 100;
+
+  function selectAmount(amount, el) {
+    selectedAmount = amount;
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('card-amount').textContent = amount;
+    document.getElementById('cta-label').textContent = 'Buy gift card · CHF ' + amount;
+    // clear custom input
+    document.querySelector('.custom-amount-input').value = '';
+  }
+
+  function customAmount(val) {
+    if (!val) return;
+    const n = parseInt(val);
+    if (!n || n < 1) return;
+    selectedAmount = n;
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('card-amount').textContent = n;
+    document.getElementById('cta-label').textContent = 'Buy gift card · CHF ' + n;
+  }
+</script>
+</body>
+</html>

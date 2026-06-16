@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gift Card v7 – Immersive Photo · Old Town Barbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #0A0A0A;
+    --ink-2:      #5A5A5A;
+    --ink-3:      #8A8A8A;
+    --bg-white:   #FFFFFF;
+    --bg-sunken:  #F4F4F5;
+    --bg-page:    #EBEBEC;
+    --accent:     #276EF1;
+    --amber-bg:   #FFF1E6;
+    --amber:      #C2410C;
+    --star:       #FFC32B;
+    --pink:       #FF3366;
+    --green:      #16A34A;
+    --border:     rgba(0,0,0,.09);
+    --shadow-float: 0 18px 44px -12px rgba(0,0,0,.13);
+    --shadow-card:  0 4px 18px -4px rgba(0,0,0,.09);
+    --r-card:     16px;
+    --r-btn:      50px;
+    --r-chip:     50px;
+  }
+
+  body {
+    background: var(--bg-page);
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 48px;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--bg-white);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px -12px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.06);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    height: 48px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    pointer-events: none;
+  }
+  .status-time {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+    text-shadow: 0 1px 6px rgba(0,0,0,.4);
+    letter-spacing: -0.3px;
+  }
+  .status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .status-icons svg { filter: drop-shadow(0 1px 4px rgba(0,0,0,.4)); }
+
+  /* Hero photo */
+  .hero {
+    position: relative;
+    height: 310px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,.18) 0%,
+      rgba(0,0,0,.05) 35%,
+      rgba(0,0,0,.0)  55%,
+      rgba(0,0,0,.55) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Back button (frost over photo) */
+  .back-btn {
+    position: absolute;
+    top: 58px;
+    left: 18px;
+    z-index: 20;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  }
+  .back-btn i { color: white; }
+
+  /* Hero bottom */
+  .hero-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 20;
+    padding: 0 20px 20px;
+  }
+
+  .salon-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .salon-label-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.3px;
+    text-shadow: 0 1px 6px rgba(0,0,0,.4);
+  }
+  .salon-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+  }
+  .salon-meta-text {
+    font-size: 12.5px;
+    color: rgba(255,255,255,.85);
+    font-weight: 500;
+    text-shadow: 0 1px 4px rgba(0,0,0,.3);
+  }
+  .star-chip {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(0,0,0,.28);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 50px;
+    padding: 3px 8px;
+  }
+  .star-chip span {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: white;
+  }
+
+  /* Gift card visual (frost over photo) */
+  .gift-card-visual {
+    background: rgba(255,255,255,.18);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,.32);
+    border-radius: 18px;
+    padding: 18px 20px 16px;
+    box-shadow: 0 8px 32px -8px rgba(0,0,0,.28);
+    position: relative;
+    overflow: hidden;
+  }
+  .gift-card-visual::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -20px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,193,43,.30) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .gc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .gc-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,.70);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .gc-amount {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+    line-height: 1.0;
+    text-shadow: 0 1px 6px rgba(0,0,0,.18);
+  }
+  .gc-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,.18);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.22);
+  }
+  .gc-icon i { color: rgba(255,255,255,.90); }
+  .gc-recipient {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid rgba(255,255,255,.15);
+    padding-top: 10px;
+  }
+  .gc-recipient-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    border: 1.5px solid rgba(255,255,255,.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+  .gc-recipient-info { flex: 1; }
+  .gc-to-label {
+    font-size: 10.5px;
+    color: rgba(255,255,255,.60);
+    font-weight: 500;
+  }
+  .gc-to-name {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.2px;
+  }
+
+  /* Scroll body */
+  .body {
+    flex: 1;
+    padding: 0 16px 32px;
+    overflow-y: auto;
+  }
+
+  .section-heading {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    margin-bottom: 10px;
+  }
+  .section { margin-top: 22px; }
+
+  /* Amount chips */
+  .amount-chips {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .chip {
+    height: 48px;
+    border-radius: var(--r-chip);
+    border: 1.5px solid var(--border);
+    background: var(--bg-white);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.3px;
+    transition: all .15s ease;
+    outline: none;
+  }
+  .chip.active {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+    box-shadow: 0 4px 12px -4px rgba(10,10,10,.32);
+  }
+  .chip:not(.active):hover { border-color: var(--ink); }
+
+  .custom-amount-row { margin-top: 8px; }
+  .custom-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: var(--r-chip);
+    border: 1.5px dashed rgba(0,0,0,.14);
+    background: var(--bg-sunken);
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: border-color .15s, color .15s;
+  }
+  .custom-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+
+  /* Form fields */
+  .field-group { display: flex; flex-direction: column; gap: 8px; }
+  .field-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    letter-spacing: 0.1px;
+    margin-bottom: 0px;
+  }
+  .field-input {
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: var(--bg-sunken);
+    padding: 0 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s, background .15s;
+  }
+  .field-input:focus { border-color: var(--accent); background: white; }
+  .field-input::placeholder { color: var(--ink-3); }
+  .field-textarea {
+    width: 100%;
+    min-height: 80px;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: var(--bg-sunken);
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    resize: none;
+    transition: border-color .15s, background .15s;
+  }
+  .field-textarea:focus { border-color: var(--accent); background: white; }
+  .field-textarea::placeholder { color: var(--ink-3); }
+  .field-row { display: flex; flex-direction: column; gap: 6px; }
+
+  /* Delivery pill */
+  .delivery-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--amber-bg);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 6px;
+  }
+  .delivery-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #FED7AA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .delivery-text { flex: 1; }
+  .delivery-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: -0.2px;
+  }
+  .delivery-sub {
+    font-size: 11.5px;
+    color: #92400E;
+    margin-top: 1px;
+    line-height: 1.4;
+  }
+
+  /* Preview card */
+  .preview-card {
+    background: var(--bg-sunken);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-top: 4px;
+  }
+  .preview-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .preview-body { flex: 1; }
+  .preview-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    margin-bottom: 3px;
+  }
+  .preview-text {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  /* CTA */
+  .cta-wrap {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cta-primary {
+    width: 100%;
+    height: 54px;
+    border-radius: var(--r-btn);
+    background: var(--ink);
+    color: white;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px -4px rgba(10,10,10,.30);
+    transition: opacity .15s, transform .1s;
+  }
+  .cta-primary:hover { opacity: .9; }
+  .cta-primary:active { transform: scale(0.985); }
+  .cta-amount {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+  }
+
+  .cta-sub {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+
+  .safe-bottom { height: 32px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0" y="7" width="3" height="5" rx="1" fill="white"/>
+        <rect x="4.5" y="5" width="3" height="7" rx="1" fill="white"/>
+        <rect x="9" y="3" width="3" height="9" rx="1" fill="white"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 9.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" fill="white"/>
+        <path d="M4.3 7.2C5.4 6.1 6.6 5.5 8 5.5s2.6.6 3.7 1.7" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M1.5 4.5C3.3 2.7 5.5 1.7 8 1.7s4.7 1 6.5 2.8" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity=".35"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4.5v3c.8-.4 1.2-1 1.2-1.5s-.4-1.1-1.2-1.5z" fill="white" fill-opacity=".45"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- HERO PHOTO -->
+  <div class="hero">
+    <img
+      src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=85"
+      alt="Old Town Barbers Basel"
+    />
+
+    <!-- Back button (frost, over photo) -->
+    <button class="back-btn" aria-label="Back">
+      <i data-lucide="chevron-left" style="width:20px;height:20px;stroke-width:2.2;"></i>
+    </button>
+
+    <!-- Bottom of hero -->
+    <div class="hero-bottom">
+
+      <!-- Salon info -->
+      <div class="salon-label">
+        <div>
+          <div class="salon-label-text">Old Town Barbers</div>
+          <div class="salon-meta">
+            <div class="star-chip">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none">
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+              </svg>
+              <span>4.8</span>
+            </div>
+            <span class="salon-meta-text">Grossbasel, Basel</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gift card visual (frosted glass over photo) -->
+      <div class="gift-card-visual">
+        <div class="gc-header">
+          <div>
+            <div class="gc-label">Gift Card · Old Town Barbers</div>
+            <div class="gc-amount" id="gc-amount-display">CHF 50</div>
+          </div>
+          <div class="gc-icon">
+            <i data-lucide="gift" style="width:18px;height:18px;stroke-width:2;"></i>
+          </div>
+        </div>
+        <div class="gc-recipient">
+          <div class="gc-recipient-avatar" id="gc-avatar">S</div>
+          <div class="gc-recipient-info">
+            <div class="gc-to-label">For</div>
+            <div class="gc-to-name" id="gc-name-display">Sara Keller</div>
+          </div>
+          <i data-lucide="sparkles" style="width:14px;height:14px;color:rgba(255,193,43,.80);stroke-width:2;"></i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- Amount -->
+    <div class="section">
+      <div class="section-heading">Choose an amount</div>
+      <div class="amount-chips">
+        <button class="chip" onclick="selectAmount(this, 25)">25</button>
+        <button class="chip active" onclick="selectAmount(this, 50)">50</button>
+        <button class="chip" onclick="selectAmount(this, 100)">100</button>
+        <button class="chip" onclick="selectAmount(this, 200)">200</button>
+      </div>
+      <div class="custom-amount-row">
+        <button class="custom-btn">
+          <i data-lucide="pencil" style="width:13px;height:13px;stroke-width:2;"></i>
+          Custom amount
+        </button>
+      </div>
+    </div>
+
+    <!-- Recipient -->
+    <div class="section">
+      <div class="section-heading">Recipient</div>
+      <div class="field-group">
+        <div class="field-row">
+          <label class="field-label">Name</label>
+          <input class="field-input" type="text" placeholder="Sara Keller" value="Sara Keller"
+            oninput="updateRecipient(this.value)" />
+        </div>
+        <div class="field-row">
+          <label class="field-label">Email</label>
+          <input class="field-input" type="email" placeholder="sara@example.com" value="sara@example.com" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal message -->
+    <div class="section">
+      <div class="section-heading">Personal message</div>
+      <textarea class="field-textarea" placeholder="Happy birthday! Enjoy a treat at Old Town Barbers...">Happy birthday! Treat yourself to something special. You deserve it.</textarea>
+    </div>
+
+    <!-- Delivery -->
+    <div class="section" style="margin-top:18px;">
+      <div class="delivery-pill">
+        <div class="delivery-icon">
+          <i data-lucide="mail" style="width:16px;height:16px;color:#C2410C;stroke-width:2;"></i>
+        </div>
+        <div class="delivery-text">
+          <div class="delivery-title">Delivered by email</div>
+          <div class="delivery-sub">Sara receives a beautiful gift card with a unique redemption code.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="section" style="margin-top:18px;">
+      <div class="section-heading">What Sara receives</div>
+      <div class="preview-card">
+        <img
+          class="preview-thumb"
+          src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=120&q=80"
+          alt="salon thumbnail"
+        />
+        <div class="preview-body">
+          <div class="preview-title" id="preview-amount-label">CHF 50 gift card</div>
+          <div class="preview-text">Redeemable for any service at Old Town Barbers. Valid 36 months from purchase.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <button class="cta-primary" id="cta-btn">
+        <i data-lucide="send" style="width:16px;height:16px;stroke-width:2.2;"></i>
+        <span>Buy gift card</span>
+        <span style="opacity:.55;font-weight:500;margin:0 1px;">·</span>
+        <span class="cta-amount" id="cta-amount-label">CHF 50</span>
+      </button>
+      <div class="cta-sub">
+        <i data-lucide="shield-check" style="width:13px;height:13px;stroke-width:2;"></i>
+        Secure payment via Stripe
+      </div>
+    </div>
+
+  </div>
+
+  <div class="safe-bottom"></div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  let selectedAmt = 50;
+
+  function selectAmount(el, amt) {
+    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    selectedAmt = amt;
+    var amtStr = 'CHF ' + amt;
+    document.getElementById('gc-amount-display').textContent = amtStr;
+    document.getElementById('cta-amount-label').textContent = amtStr;
+    document.getElementById('preview-amount-label').textContent = amtStr + ' gift card';
+  }
+
+  function updateRecipient(name) {
+    var display = name.trim() || 'Recipient';
+    document.getElementById('gc-name-display').textContent = display;
+    document.getElementById('gc-avatar').textContent = display.charAt(0).toUpperCase();
+  }
+</script>
+</body>
+</html>

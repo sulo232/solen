@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Dashboard mobil · alle 13 Owner-Seiten (approved skin)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── base language: copied verbatim from the APPROVED overview (solen-dashboard-mobile.html) ── */
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --ink40:rgba(10,10,10,.4);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --accent-bg:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9; --error:#DC2626; --star:#FFC32B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:30px 24px 56px}
+  h1.t{font-family:'Inter Tight';font-weight:700;font-size:21px;letter-spacing:-.02em;margin-bottom:4px}
+  .lede{font-size:13px;color:rgba(10,10,10,.55);margin-bottom:24px;max-width:920px;line-height:1.5}
+  .rail{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .col{display:flex;flex-direction:column}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:12.5px;color:var(--ink2);margin:0 0 9px 2px}
+  .cap span{color:var(--ink3);font-weight:500}
+  .num{font-variant-numeric:tabular-nums;font-family:'Inter Tight'}
+
+  .phone{width:390px;background:var(--white);border-radius:30px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.17);position:relative}
+  .av{border-radius:999px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;color:#fff;flex-shrink:0}
+
+  .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .topbar .ic{width:21px;height:21px;color:var(--ink)}
+  .topbar .ic.muted{color:var(--ink40);width:18px;height:18px}
+  .brand{font-family:'Inter Tight';font-weight:700;font-size:16px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bell{position:relative;display:grid;place-items:center}
+  .bell .pip{position:absolute;top:-1px;right:-1px;width:7px;height:7px;border-radius:9px;background:var(--error);border:1.5px solid #fff}
+
+  .body{padding:18px 16px 24px}
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .head h2{font-family:'Inter Tight';font-weight:700;font-size:27px;letter-spacing:-.02em;line-height:1}
+  .head .sub{font-size:12.5px;color:var(--ink2);margin-top:5px}
+  .addbtn{display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:#fff;font-family:'Inter Tight';font-weight:600;font-size:13px;border-radius:999px;padding:9px 14px;white-space:nowrap;flex-shrink:0}
+  .addbtn .ic{width:15px;height:15px;stroke-width:2.4}
+  .addbtn.out{background:#fff;color:var(--ink);border:1px solid var(--border)}
+
+  .sec{margin-bottom:20px}
+  .sec:last-child{margin-bottom:0}
+  .sechead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+  .sechead h3{font-family:'Inter Tight';font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .sechead a{font-size:12.5px;font-weight:600;color:var(--accent)}
+  .card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white)}
+
+  .trow{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .trow:last-child{border-bottom:0}
+  .trow .time{font-family:'Inter Tight';font-weight:700;font-size:13.5px;width:46px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .trow .mid{flex:1;min-width:0}
+  .trow .nm{font-family:'Inter Tight';font-weight:600;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .trow .sv{font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .tright{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+  .tright .pr{font-family:'Inter Tight';font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums}
+  .pill{font-size:11px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap;flex-shrink:0}
+  .pill.ok{background:var(--success-bg);color:var(--success)}
+  .pill.wait{background:#FEF3E2;color:#9A6500}
+  .pill.err{background:#FCEBEB;color:var(--error)}
+  .pill.neu{background:var(--accent-bg);color:var(--accent)}
+  .creason{font-size:12px;color:var(--ink2);padding:0 14px 11px 71px;margin-top:-4px}
+  .nbadge{font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--accent-bg);color:var(--accent)}
+
+  .lrow{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--border)}
+  .lrow:last-child{border-bottom:0}
+  .lrow .rk{font-family:'Inter Tight';font-weight:700;font-size:13px;color:var(--ink3);width:16px;flex-shrink:0}
+  .lrow .nm{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrow .meta{font-size:12.5px;color:var(--ink2);flex-shrink:0}
+
+  .pills{display:flex;gap:7px;overflow-x:auto;margin:0 0 16px;padding-bottom:2px;scrollbar-width:none}
+  .pills::-webkit-scrollbar{display:none}
+  .pf{flex-shrink:0;font-size:12.5px;font-weight:600;border:1px solid var(--border);border-radius:999px;padding:7px 13px;color:var(--ink2);white-space:nowrap;background:#fff}
+  .pf.on{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bg)}
+  .pf .ct{opacity:.5;margin-left:3px} .pf.on .ct{opacity:.7}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter Tight';font-weight:600;border-radius:12px;border:1px solid transparent;white-space:nowrap}
+  .btn .ic{width:15px;height:15px;stroke-width:2.4}
+  .btn.ink{background:var(--ink);color:#fff} .btn.out{background:#fff;border-color:var(--border);color:var(--ink)}
+  .btn.md{font-size:13.5px;padding:10px 14px} .btn.sm{font-size:12.5px;padding:8px 12px}
+  .btn.danger{background:#fff;border-color:#F3C0C0;color:var(--error)}
+  .btn.gd{background:var(--success);color:#fff}
+
+  .icbtn{width:38px;height:38px;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+  .icbtn .ic{width:19px;height:19px}
+  .grip{color:var(--ink3);flex-shrink:0;display:grid;place-items:center}
+  .grip .ic{width:18px;height:18px}
+
+  .search{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:14px;padding:11px 13px;color:var(--ink3);margin-bottom:14px}
+  .search .ic{width:17px;height:17px} .search span{font-size:13.5px}
+
+  .sw{width:38px;height:23px;border-radius:999px;background:var(--border);position:relative;flex-shrink:0}
+  .sw::after{content:"";position:absolute;top:2.5px;left:2.5px;width:18px;height:18px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+  .sw.on{background:var(--accent)} .sw.on::after{left:17px}
+
+  /* calendar */
+  .calhead{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .calhead .navb{width:34px;height:34px;display:grid;place-items:center;color:var(--ink)}
+  .calhead .navb .ic{width:18px;height:18px}
+  .calhead .date{flex:1;font-family:'Inter Tight';font-weight:700;font-size:17px}
+  .calhead .today{font-size:12px;font-weight:600;color:var(--accent)}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;gap:2px;margin-bottom:14px}
+  .seg button{flex:1;font-family:'Inter Tight';font-weight:600;font-size:12.5px;padding:7px;border-radius:999px;color:var(--ink2);border:0;background:transparent}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.09)}
+  .agrow{display:flex;gap:11px;align-items:stretch;margin-bottom:8px}
+  .agrow:last-child{margin-bottom:0}
+  .agtime{font-family:'Inter Tight';font-weight:600;font-size:12px;color:var(--ink3);width:38px;flex-shrink:0;padding-top:11px;font-variant-numeric:tabular-nums}
+  .agchip{flex:1;border-radius:12px;padding:10px 12px;min-height:44px;display:flex;align-items:center}
+  .agchip .lab{font-family:'Inter Tight';font-weight:600;font-size:13.5px}
+  .agchip .det{font-size:12px;color:var(--ink2);margin-top:1px}
+  .ag-cut{background:#EAEFFE} .ag-color{background:#FCE7F3} .ag-beard{background:#FFEDD5}
+  .ag-free{background:var(--success-bg)} .ag-free .lab{color:var(--success)}
+  .ag-blocked{background:var(--sunken)} .ag-blocked .lab{color:var(--ink3);font-weight:500}
+  .calbar{display:flex;gap:8px;margin-top:14px}
+  .calbar .btn.ink{flex:1}
+
+  /* chat */
+  .cright{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+  .cright .tm{font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+  .unread{min-width:18px;height:18px;border-radius:999px;background:var(--ink);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+  .chathdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .chathdr .nm{font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .chatw{display:flex;flex-direction:column;gap:8px;padding:14px;min-height:230px;background:#fff}
+  .bub{max-width:78%;padding:9px 12px;border-radius:14px;font-size:13px;line-height:1.4}
+  .bub.them{background:var(--sunken);color:var(--ink);align-self:flex-start;border-bottom-left-radius:5px}
+  .bub.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .chatin{display:flex;align-items:center;gap:9px;padding:11px 14px;border-top:1px solid var(--border)}
+  .chatin .box{flex:1;border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:13px;color:var(--ink3)}
+  .chatin .send{width:38px;height:38px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;flex-shrink:0}
+  .chatin .send .ic{width:17px;height:17px}
+
+  /* clients */
+  .clrow{display:flex;flex-direction:column;gap:8px;padding:13px 14px;border-bottom:1px solid var(--border)}
+  .clrow:last-child{border-bottom:0}
+  .clhead{display:flex;align-items:center;gap:11px}
+  .clhead .nm{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .clmeta{font-size:12.5px;color:var(--ink2);display:flex;gap:6px;flex-wrap:wrap}
+  .clmeta b{font-family:'Inter Tight';font-weight:600;color:var(--ink)}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;background:var(--sunken);color:var(--ink2)}
+
+  /* services */
+  .tmpl{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:14px;padding:11px 14px;font-size:13px;color:var(--ink2);font-weight:500;margin-bottom:14px}
+  .tmpl .ic{width:16px;height:16px}
+  .svrow{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .svrow:last-child{border-bottom:0}
+  .svrow .mid{flex:1;min-width:0}
+  .svrow .nm{font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .sven{font-size:12px;color:var(--ink3);margin-top:1px}
+  .svm2{display:flex;align-items:center;gap:7px;margin-top:5px}
+  .svchip{font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;background:var(--sunken);color:var(--ink2)}
+  .svprice{font-size:12.5px;color:var(--ink2)} .svprice b{font-family:'Inter Tight';font-weight:600;color:var(--ink)}
+
+  /* settings */
+  .setgrp{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin:18px 2px 8px}
+  .setgrp:first-child{margin-top:0}
+  .setrow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+  .setrow:last-child{border-bottom:0}
+  .setrow .ic{width:19px;height:19px;color:var(--ink);flex-shrink:0}
+  .setrow .lab{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .setrow .ch{width:18px;height:18px;color:var(--ink3);flex-shrink:0}
+
+  .note{font-size:11.5px;color:var(--ink40);margin-top:11px;line-height:1.5;max-width:360px}
+  .note b{color:var(--ink2);font-weight:600}
+
+  /* ════════ comprehensive build — per-page additions (same white / 16px language) ════════ */
+
+  /* review-rail group headers */
+  .grp{width:100%;font-family:'Inter Tight';font-weight:700;font-size:16px;color:var(--ink);margin:18px 0 4px;padding-top:18px;border-top:1px solid #D6D4D1}
+  .grp:first-of-type{border-top:0;padding-top:0;margin-top:0}
+  .grp span{font-weight:500;color:var(--ink3);font-size:12.5px;margin-left:9px}
+
+  /* stat tiles 2-up */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+  .tile{border:1px solid var(--border);border-radius:16px;padding:13px 14px;background:#fff}
+  .tile .tl{font-size:11.5px;color:var(--ink2);font-weight:500;display:flex;align-items:center;gap:5px}
+  .tile .tl .ic{width:14px;height:14px;color:var(--ink3)}
+  .tile .tv{font-family:'Inter Tight';font-weight:700;font-size:22px;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px}
+  .tile .tv .star{width:17px;height:17px;color:var(--star);fill:var(--star)}
+  .tile .td{font-size:11.5px;font-weight:600;margin-top:4px;display:flex;align-items:center;gap:2px}
+  .tile .td.up{color:var(--success)} .tile .td.dn{color:var(--error)}
+  .tile .td .ic{width:12px;height:12px}
+
+  /* mini chart card */
+  .chartcard{border:1px solid var(--border);border-radius:16px;padding:15px 16px;background:#fff;margin-bottom:18px}
+  .ch-h{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:13px}
+  .ch-t{font-family:'Inter Tight';font-weight:700;font-size:14.5px}
+  .ch-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+  .ch-v{font-family:'Inter Tight';font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+  .bars{display:flex;align-items:flex-end;gap:7px;height:84px}
+  .bars .b{flex:1;background:var(--accent-bg);border-radius:5px 5px 0 0}
+  .bars .b.hi{background:var(--accent)}
+  .bx{display:flex;gap:7px;margin-top:7px}
+  .bx span{flex:1;font-size:9.5px;color:var(--ink3);text-align:center}
+  .legend{display:flex;gap:14px;margin-top:12px}
+  .legend span{font-size:11px;color:var(--ink2);display:flex;align-items:center;gap:5px}
+  .legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+  /* activity feed */
+  .afrow{display:flex;gap:11px;padding:11px 14px;border-bottom:1px solid var(--border);align-items:flex-start}
+  .afrow:last-child{border-bottom:0}
+  .afi{width:30px;height:30px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;flex-shrink:0}
+  .afi .ic{width:15px;height:15px;color:var(--ink2)}
+  .aft{flex:1;font-size:12.5px;color:var(--ink);line-height:1.4}
+  .aft b{font-weight:600;font-family:'Inter Tight'}
+  .afm{font-size:11px;color:var(--ink3);flex-shrink:0;white-space:nowrap}
+
+  /* date strip (calendar week) */
+  .dstrip{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+  .dstrip::-webkit-scrollbar{display:none}
+  .dcell{flex-shrink:0;width:46px;border:1px solid var(--border);border-radius:13px;padding:8px 0 7px;text-align:center;background:#fff}
+  .dcell.on{background:var(--ink);border-color:var(--ink)}
+  .dcell .dw{font-size:10px;color:var(--ink3);font-weight:600} .dcell.on .dw{color:rgba(255,255,255,.6)}
+  .dcell .dd{font-family:'Inter Tight';font-weight:700;font-size:16px;margin-top:2px} .dcell.on .dd{color:#fff}
+  .dcell .dot2{width:5px;height:5px;border-radius:9px;background:var(--accent);margin:4px auto 0} .dcell.on .dot2{background:#fff}
+  .dcell .dot0{height:5px;margin-top:4px}
+
+  /* mini month */
+  .month{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .mh{font-size:10px;color:var(--ink3);text-align:center;font-weight:600;padding-bottom:4px}
+  .mcell{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Inter Tight';font-weight:600;font-size:12.5px;color:var(--ink);background:var(--sunken);gap:3px}
+  .mcell.out{color:var(--ink3);background:transparent}
+  .mcell.today{background:var(--ink);color:#fff}
+  .mdots{display:flex;gap:2px;height:4px}
+  .mdots i{width:4px;height:4px;border-radius:9px;background:var(--accent)}
+  .mcell.today .mdots i{background:#fff}
+
+  /* queue cards */
+  .qcard{border:1px solid var(--border);border-radius:16px;padding:12px 13px;background:#fff;margin-bottom:9px;display:flex;align-items:center;gap:12px}
+  .qcard .qn{font-family:'Inter Tight';font-weight:700;font-size:18px;width:24px;text-align:center;color:var(--ink3);flex-shrink:0;font-variant-numeric:tabular-nums}
+  .qcard.chair{border-color:#BBE3C6;background:var(--success-bg)}
+  .qcard.chair .qn{color:var(--success)}
+  .qmid{flex:1;min-width:0}
+  .qmid .nm{font-family:'Inter Tight';font-weight:600;font-size:15px;display:flex;align-items:center;gap:7px}
+  .qmid .qm{font-size:12px;color:var(--ink2);margin-top:2px}
+  .qact{display:flex;gap:7px;flex-shrink:0}
+  .qbtn{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sunken);color:var(--ink)}
+  .qbtn.go{background:var(--ink);color:#fff} .qbtn.gd{background:var(--success);color:#fff}
+  .qbtn .ic{width:17px;height:17px}
+  .sdot{width:8px;height:8px;border-radius:9px;flex-shrink:0}
+  .sdot.g{background:var(--success)} .sdot.a{background:#E0A21A}
+
+  /* express tiles 2-up */
+  .extiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:2px}
+  .extile{border:1px solid var(--border);border-radius:14px;padding:13px;background:#fff}
+  .extile .ic{width:19px;height:19px;color:var(--ink);margin-bottom:9px}
+  .extile .nm{font-family:'Inter Tight';font-weight:600;font-size:13.5px}
+  .extile .ex-m{font-size:11.5px;color:var(--ink2);margin-top:3px}
+
+  /* ranked card (analytics leaderboard table → cards) */
+  .rcard{border:1px solid var(--border);border-radius:16px;padding:13px 14px;background:#fff;margin-bottom:9px}
+  .rhead{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .rhead .rnk{font-family:'Inter Tight';font-weight:700;font-size:15px;width:20px;text-align:center;flex-shrink:0}
+  .rhead .medal{width:18px;height:18px;flex-shrink:0}
+  .rhead .nm{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .rmetrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+  .rm .rl{font-size:10px;color:var(--ink3)}
+  .rm .rv{font-family:'Inter Tight';font-weight:700;font-size:14.5px;margin-top:2px;font-variant-numeric:tabular-nums}
+
+  /* case card (refunds) */
+  .ccard{border:1px solid var(--border);border-radius:16px;padding:15px;background:#fff;margin-bottom:12px}
+  .ccard.open{box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 26px rgba(0,0,0,.07)}
+  .ch1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .ch1 .nm{font-family:'Inter Tight';font-weight:700;font-size:15px}
+  .ch1 .mt{font-size:11.5px;color:var(--ink3);margin-top:3px}
+  .money{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0}
+  .mbox{border:1px solid var(--border);border-radius:11px;padding:9px 11px}
+  .mbox .ml{font-size:10.5px;color:var(--ink3)}
+  .mbox .mv{font-family:'Inter Tight';font-weight:700;font-size:15px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .mbox.req .mv{color:var(--error)}
+  .quote{font-size:12.5px;color:var(--ink2);line-height:1.5;border-left:2px solid var(--border);padding-left:11px;margin-bottom:13px}
+  .field{border:1px solid var(--border);border-radius:12px;padding:11px 12px;font-size:12.5px;color:var(--ink3);margin-bottom:10px}
+  .actcol{display:flex;flex-direction:column;gap:8px}
+  .actcol .btn{width:100%;padding:12px}
+  .actsplit{display:flex;gap:8px} .actsplit .inp{flex:1} .actsplit .btn{padding:12px 14px}
+  .resln{font-size:12.5px;color:var(--success);font-weight:600;display:flex;align-items:center;gap:6px}
+  .resln .ic{width:15px;height:15px}
+
+  /* upcharge form */
+  .formrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .inp{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#fff}
+  .inp .il{font-size:10.5px;color:var(--ink3)}
+  .inp .iv{font-family:'Inter Tight';font-weight:700;font-size:16px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .inp.ro{background:var(--sunken)}
+  .focalchip{background:#FFEDD5;border-radius:12px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .focalchip .fl{font-size:12px;color:#9A6500;font-weight:600}
+  .focalchip .fv{font-family:'Inter Tight';font-weight:700;font-size:18px;color:#EA580C}
+  .capnote{font-size:11px;color:var(--ink3);margin-bottom:13px}
+  .selrow{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:14px}
+  .selrow .sl2{font-family:'Inter Tight';font-weight:600;font-size:14px}
+  .selrow .ic{width:18px;height:18px;color:var(--ink3)}
+
+  /* bottom-sheet representation */
+  .sheet{border-top:1px solid var(--border);border-radius:18px 18px 0 0;background:#fff;padding:6px 16px 18px;box-shadow:0 -10px 30px rgba(0,0,0,.09)}
+  .grab{width:38px;height:4px;border-radius:9px;background:var(--border);margin:8px auto 14px}
+  .sh-t{font-family:'Inter Tight';font-weight:700;font-size:16px;margin-bottom:12px}
+  .pickrow{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+  .pickrow:last-child{border-bottom:0}
+  .pickrow .mid{flex:1;min-width:0}
+  .pickrow .nm{font-family:'Inter Tight';font-weight:600;font-size:14px}
+  .pickrow .pm{font-size:11.5px;color:var(--ink2);margin-top:1px}
+  .pickrow .pr{font-family:'Inter Tight';font-weight:700;font-size:13.5px;flex-shrink:0}
+
+  /* staff card */
+  .stcard{border:1px solid var(--border);border-radius:16px;padding:13px 14px;background:#fff;margin-bottom:9px;display:flex;align-items:center;gap:12px}
+  .stmid{flex:1;min-width:0}
+  .stmid .nm{font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .stmid .sp{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+  .stmeta{font-size:11.5px;color:var(--ink2);margin-top:5px}
+  .stmeta b{font-family:'Inter Tight';font-weight:600;color:var(--ink)}
+
+  /* marketing sample (package cards) */
+  .pkg{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+  .pkg:last-child{border-bottom:0}
+  .pkg .pm{flex:1;min-width:0}
+  .pkg .pt{font-family:'Inter Tight';font-weight:600;font-size:14.5px}
+  .pkg .pd{font-size:12px;color:var(--ink2);margin-top:2px}
+  .pkg .pp{font-family:'Inter Tight';font-weight:700;font-size:14px;flex-shrink:0}
+
+  /* settings panel body */
+  .backrow{display:flex;align-items:center;gap:5px;font-size:13.5px;color:var(--ink2);font-weight:600;margin-bottom:14px}
+  .backrow .ic{width:17px;height:17px}
+  .srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+  .srow:last-child{border-bottom:0}
+  .srow .sl{font-size:13.5px;color:var(--ink)}
+  .srow .sv2{font-size:13px;color:var(--ink2);font-family:'Inter Tight';font-weight:600}
+  .optcard{border:1px solid var(--border);border-radius:13px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+  .optcard.sel{border-color:var(--accent);background:var(--accent-bg)}
+  .optcard .rad{width:18px;height:18px;border-radius:999px;border:2px solid var(--border);flex-shrink:0;margin-top:1px}
+  .optcard.sel .rad{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 42%,#fff 46%)}
+  .optcard .ot{font-family:'Inter Tight';font-weight:600;font-size:13.5px}
+  .optcard .od{font-size:11.5px;color:var(--ink2);margin-top:2px}
+
+  /* sub tabs (client detail) */
+  .subtabs{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+  .subtabs::-webkit-scrollbar{display:none}
+  .st{flex-shrink:0;font-size:12.5px;font-weight:600;border-radius:999px;padding:7px 13px;white-space:nowrap;background:var(--sunken);color:var(--ink2)}
+  .st.on{background:var(--ink);color:#fff}
+  .dethead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .dethead .nm{font-family:'Inter Tight';font-weight:700;font-size:17px}
+  .dethead .dm{font-size:12px;color:var(--ink2);margin-top:1px}
+  .acard{border:1px solid var(--border);border-radius:13px;padding:12px 13px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .acard .am{font-size:12px;color:var(--ink2);margin-top:2px}
+</style>
+</head>
+<body>
+  <h1 class="t">Dashboard mobil — alle 13 Owner-Seiten (im freigegebenen Skin)</h1>
+  <p class="lede">Jede Seite des Owner-Dashboards (PC-Rail-Set), für Mobile neu gebaut: gleiche Features wie die PC-Version, aber touch-first (Karten statt Tabellen, Scroll-Pills, Bottom-Sheets, 44px-Tap-Targets). Skin = freigegebene Übersicht: weisse Seite, 16px-Karten mit Haarlinien, runde farbige Avatare, ink-Primary, blaue Aktiv-States, semantische Pills, blanke lucide-Icons, Salonname statt „Solen". English annotations under each phone explain what desktop feature is preserved + how it is adapted for touch.</p>
+
+  <div class="rail">
+
+    <!-- ════════════════ BETRIEB ════════════════ -->
+    <div class="grp">Betrieb <span>Übersicht · Kalender · Warteschlange · Nachrichten</span></div>
+
+    <!-- 1 · ÜBERSICHT -->
+    <div class="col">
+      <p class="cap">1 · Übersicht <span>· Home</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><div class="eyebrow">Dienstag, 3. Juni</div><h2>Übersicht</h2></div><span class="addbtn"><i class="ic" data-lucide="plus"></i>Termin</span></div>
+          <div class="tiles">
+            <div class="tile"><div class="tl"><i class="ic" data-lucide="banknote"></i>Umsatz</div><div class="tv">CHF 1'240</div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>12%</div></div>
+            <div class="tile"><div class="tl"><i class="ic" data-lucide="calendar"></i>Termine</div><div class="tv">8</div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>2</div></div>
+            <div class="tile"><div class="tl"><i class="ic" data-lucide="user-plus"></i>Neue Kund:innen</div><div class="tv">3</div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>1</div></div>
+            <div class="tile"><div class="tl"><i class="ic" data-lucide="star"></i>Bewertung</div><div class="tv">4,8 <i class="star" data-lucide="star"></i></div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>0,1</div></div>
+          </div>
+          <div class="chartcard">
+            <div class="ch-h"><div><div class="ch-t">Umsatz</div><div class="ch-sub">Letzte 7 Tage</div></div><div class="ch-v">CHF 6'420</div></div>
+            <div class="bars"><span class="b" style="height:42%"></span><span class="b" style="height:60%"></span><span class="b" style="height:38%"></span><span class="b" style="height:74%"></span><span class="b" style="height:55%"></span><span class="b hi" style="height:92%"></span><span class="b" style="height:48%"></span></div>
+            <div class="bx"><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span><span>Mo</span><span>Di</span></div>
+            <div class="legend"><span><i style="background:var(--accent)"></i>Umsatz</span><span><i style="background:var(--accent-bg)"></i>Vorwoche</span></div>
+          </div>
+          <div class="sec">
+            <div class="sechead"><h3>Heute</h3><a>Alle ansehen</a></div>
+            <div class="card">
+              <div class="trow"><span class="time">09:30</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="mid"><div class="nm">Lena Meier</div><div class="sv">Damenschnitt · Marco</div></span><span class="tright"><span class="pr">CHF 75</span><span class="pill ok">Bestätigt</span></span></div>
+              <div class="trow"><span class="time">11:00</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#F0A868,#C0524A)">TB</span><span class="mid"><div class="nm">Tom Brunner</div><div class="sv">Herrenschnitt · Luca</div></span><span class="tright"><span class="pr">CHF 45</span><span class="pill ok">Bestätigt</span></span></div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sechead"><h3>Aktivität</h3></div>
+            <div class="card">
+              <div class="afrow"><span class="afi"><i class="ic" data-lucide="calendar-plus"></i></span><span class="aft"><b>Lena Meier</b> hat einen Termin gebucht</span><span class="afm">vor 12 Min</span></div>
+              <div class="afrow"><span class="afi"><i class="ic" data-lucide="star"></i></span><span class="aft"><b>Sara K.</b> hat 5★ bewertet</span><span class="afm">vor 1 Std</span></div>
+              <div class="afrow"><span class="afi"><i class="ic" data-lucide="message-circle"></i></span><span class="aft">Neue Nachricht von <b>Marco R.</b></span><span class="afm">vor 2 Std</span></div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sechead"><h3>Top Services</h3><a>Alle ansehen</a></div>
+            <div class="card">
+              <div class="lrow"><span class="rk">1</span><span class="nm">Herrenschnitt</span><span class="meta">48× gebucht</span></div>
+              <div class="lrow"><span class="rk">2</span><span class="nm">Coloration</span><span class="meta">31× gebucht</span></div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sechead"><h3>Top Mitarbeiter</h3><a>Alle ansehen</a></div>
+            <div class="card">
+              <div class="lrow"><span class="av" style="width:30px;height:30px;font-size:11px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">MR</span><span class="nm">Marco Rossi</span><span class="meta"><b class="num">CHF 3'200</b> · 42 Term.</span></div>
+              <div class="lrow"><span class="av" style="width:30px;height:30px;font-size:11px;background:linear-gradient(140deg,#16A34A,#0E7A37)">LB</span><span class="nm">Luca Bianchi</span><span class="meta"><b class="num">CHF 2'150</b> · 28 Term.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved from PC:</b> KPIs, Heute, Top Services, Top Mitarbeiter. <b>Recovered (was desktop-only):</b> the revenue trend (PC charts were <code>hidden lg:grid</code>) becomes a compact bar mini-chart; the <b>Activity feed</b> (was <code>hidden lg:block</code>, absent on mobile) returns as a card. KPIs stay 2-up. „+ Termin" is <b>ink</b>, not the blue DashButton.</p>
+    </div>
+
+    <!-- 2 · KALENDER -->
+    <div class="col">
+      <p class="cap">2 · Kalender <span>· Tag + Woche-Strip</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="calhead"><span class="navb"><i class="ic" data-lucide="chevron-left"></i></span><span class="date">Dienstag, 3. Juni</span><span class="today">Heute</span><span class="navb"><i class="ic" data-lucide="chevron-right"></i></span></div>
+          <div class="seg"><button class="on">Tag</button><button>Woche</button><button>Monat</button></div>
+          <div class="dstrip">
+            <div class="dcell"><div class="dw">MO</div><div class="dd">2</div><div class="dot2"></div></div>
+            <div class="dcell on"><div class="dw">DI</div><div class="dd">3</div><div class="dot2"></div></div>
+            <div class="dcell"><div class="dw">MI</div><div class="dd">4</div><div class="dot0"></div></div>
+            <div class="dcell"><div class="dw">DO</div><div class="dd">5</div><div class="dot2"></div></div>
+            <div class="dcell"><div class="dw">FR</div><div class="dd">6</div><div class="dot2"></div></div>
+            <div class="dcell"><div class="dw">SA</div><div class="dd">7</div><div class="dot2"></div></div>
+            <div class="dcell"><div class="dw">SO</div><div class="dd">8</div><div class="dot0"></div></div>
+          </div>
+          <div class="card" style="padding:12px">
+            <div class="agrow"><span class="agtime">09:00</span><span class="agchip ag-cut"><span><span class="lab">Lena Meier</span><div class="det">Damenschnitt · Marco</div></span></span></div>
+            <div class="agrow"><span class="agtime">10:00</span><span class="agchip ag-free"><span class="lab">Frei</span></span></div>
+            <div class="agrow"><span class="agtime">11:00</span><span class="agchip ag-color"><span><span class="lab">Sara Keller</span><div class="det">Coloration · Marco</div></span></span></div>
+            <div class="agrow"><span class="agtime">12:00</span><span class="agchip ag-blocked"><span class="lab">Blockiert · Pause</span></span></div>
+            <div class="agrow"><span class="agtime">14:00</span><span class="agchip ag-beard"><span><span class="lab">Tom Brunner</span><div class="det">Bart · Luca</div></span></span></div>
+          </div>
+          <div class="calbar"><span class="btn md ink"><i class="ic" data-lucide="plus"></i>Slot</span><span class="btn md out">Walk-in</span><span class="btn md out">Plan</span></div>
+        </div>
+      </div>
+      <p class="note"><b>Recovered (was missing on mobile):</b> PC has Tag/Woche/Monat + drag-drop on <code>min-w-600px</code> grids — mobile only had the day agenda. <b>Woche</b> = scrollable day-strip (dots = booked-count; tap a day → its agenda). Day agenda kept (approved skin). Reschedule = long-press → bottom-sheet (existing SlotDetailModal), so drag never fights scroll. See next phone for Monat.</p>
+    </div>
+
+    <!-- 2b · KALENDER MONAT -->
+    <div class="col">
+      <p class="cap">2 · Kalender <span>· Monat</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="calhead"><span class="navb"><i class="ic" data-lucide="chevron-left"></i></span><span class="date">Juni 2026</span><span class="today">Heute</span><span class="navb"><i class="ic" data-lucide="chevron-right"></i></span></div>
+          <div class="seg"><button>Tag</button><button>Woche</button><button class="on">Monat</button></div>
+          <div class="card" style="padding:13px">
+            <div class="month">
+              <div class="mh">M</div><div class="mh">D</div><div class="mh">M</div><div class="mh">D</div><div class="mh">F</div><div class="mh">S</div><div class="mh">S</div>
+              <div class="mcell out">26</div><div class="mcell out">27</div><div class="mcell out">28</div><div class="mcell out">29</div><div class="mcell out">30</div><div class="mcell out">31</div><div class="mcell">1</div>
+              <div class="mcell">2<div class="mdots"><i></i><i></i></div></div><div class="mcell today">3<div class="mdots"><i></i><i></i><i></i></div></div><div class="mcell">4</div><div class="mcell">5<div class="mdots"><i></i></div></div><div class="mcell">6<div class="mdots"><i></i><i></i></div></div><div class="mcell">7<div class="mdots"><i></i></div></div><div class="mcell">8</div>
+              <div class="mcell">9<div class="mdots"><i></i></div></div><div class="mcell">10<div class="mdots"><i></i><i></i></div></div><div class="mcell">11</div><div class="mcell">12<div class="mdots"><i></i></div></div><div class="mcell">13<div class="mdots"><i></i><i></i></div></div><div class="mcell">14</div><div class="mcell">15</div>
+              <div class="mcell">16<div class="mdots"><i></i></div></div><div class="mcell">17</div><div class="mcell">18<div class="mdots"><i></i></div></div><div class="mcell">19</div><div class="mcell">20<div class="mdots"><i></i><i></i></div></div><div class="mcell">21</div><div class="mcell">22</div>
+            </div>
+          </div>
+          <div class="calbar"><span class="btn md ink"><i class="ic" data-lucide="plus"></i>Slot</span><span class="btn md out">Walk-in</span><span class="btn md out">Plan</span></div>
+        </div>
+      </div>
+      <p class="note"><b>Monat</b> ports almost directly: tap-friendly dot grid (dots = slots that day, today = ink). Tap a day → drops into its agenda. No horizontal scroll, no tiny cells. Replaces PC's <code>grid-cols-7 min-h-80px</code> month grid.</p>
+    </div>
+
+    <!-- 3 · WARTESCHLANGE -->
+    <div class="col">
+      <p class="cap">3 · Warteschlange <span>· Queue (barbershop)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><div class="eyebrow">Barber</div><h2>Warteschlange</h2></div></div>
+          <div class="pills"><span class="pf on">Queue</span><span class="pf">Analytics</span><span class="pf">Blueprints</span><span class="pf">Rangliste</span></div>
+          <div class="sechead" style="margin-bottom:9px"><h3>In Bearbeitung &amp; wartend</h3><span style="font-size:12px;color:var(--ink2);font-weight:600">2 wartend</span></div>
+          <div class="qcard chair">
+            <span class="qn"><i data-lucide="scissors" style="width:18px;height:18px"></i></span>
+            <span class="qmid"><span class="nm">Jonas W. <span class="sdot g"></span></span><span class="qm">Im Stuhl · Marco · seit 8 Min</span></span>
+            <span class="qact"><span class="qbtn gd"><i class="ic" data-lucide="check"></i></span><span class="qbtn"><i class="ic" data-lucide="user-x"></i></span></span>
+          </div>
+          <div class="qcard">
+            <span class="qn">1</span>
+            <span class="qmid"><span class="nm">David M. <span class="sdot a"></span></span><span class="qm">→ egal · ⌀ 15 Min Wartezeit</span></span>
+            <span class="qact"><span class="qbtn go"><i class="ic" data-lucide="play"></i></span><span class="qbtn"><i class="ic" data-lucide="x"></i></span></span>
+          </div>
+          <div class="qcard">
+            <span class="qn">2</span>
+            <span class="qmid"><span class="nm">Laufkundschaft <span class="sdot a"></span></span><span class="qm">→ Luca · ⌀ 30 Min Wartezeit</span></span>
+            <span class="qact"><span class="qbtn go"><i class="ic" data-lucide="play"></i></span><span class="qbtn"><i class="ic" data-lucide="x"></i></span></span>
+          </div>
+          <div class="sechead" style="margin:18px 0 9px"><h3>Express · Laufkundschaft</h3></div>
+          <div class="extiles">
+            <div class="extile"><i class="ic" data-lucide="scissors"></i><div class="nm">Herrenschnitt</div><div class="ex-m">30 Min · CHF 45</div></div>
+            <div class="extile"><i class="ic" data-lucide="scissors"></i><div class="nm">Bart trimmen</div><div class="ex-m">15 Min · CHF 25</div></div>
+            <div class="extile"><i class="ic" data-lucide="scissors"></i><div class="nm">Fade</div><div class="ex-m">40 Min · CHF 55</div></div>
+            <div class="extile"><i class="ic" data-lucide="scissors"></i><div class="nm">Lineup</div><div class="ex-m">15 Min · CHF 20</div></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Reskinned coral→white/16px</b> (was the old skin). Live queue = stacked cards (was a cramped <code>lg:grid-cols-2</code>); actions are <b>36px</b> tap-buttons (Start / Fertig / No-show), not 14px icons. In-chair = green card. Express menu = 2-up tap tiles → creates a walk-in. Realtime kept. Analytics tab = 2-up tiles + sparklines; Rangliste tab = ranked cards (see Berichte).</p>
+    </div>
+
+    <!-- 4 · NACHRICHTEN (list) -->
+    <div class="col">
+      <p class="cap">4 · Nachrichten <span>· Liste</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Nachrichten</h2></div>
+          <div class="card">
+            <div class="trow"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="mid"><div class="nm">Lena Meier <span class="nbadge">Neu</span></div><div class="sv">Super, bis morgen um 9:30 dann</div></span><span class="cright"><span class="tm">09:12</span><span class="unread">2</span></span></div>
+            <div class="trow"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#F0A868,#C0524A)">TB</span><span class="mid"><div class="nm">Tom Brunner</div><div class="sv">Kann ich auf 10:30 verschieben?</div></span><span class="cright"><span class="tm">08:40</span><span class="unread">1</span></span></div>
+            <div class="trow"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#16A34A,#0E7A37)">SK</span><span class="mid"><div class="nm">Sara Keller</div><div class="sv">Danke dir, hat super geklappt</div></span><span class="cright"><span class="tm">Gestern</span></span></div>
+            <div class="trow"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#8B5CF6,#6D28D9)">MR</span><span class="mid"><div class="nm">Marco Rossi</div><div class="sv">Habt ihr Samstag noch was frei?</div></span><span class="cright"><span class="tm">Mo</span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Already mobile-shaped</b> (PC has a <code>lg:hidden</code> single-pane). List in one card, same rows + avatars as Übersicht; ink unread badge. Tap → thread (next phone).</p>
+    </div>
+
+    <!-- 4b · NACHRICHTEN (thread) -->
+    <div class="col">
+      <p class="cap">4 · Nachrichten <span>· Thread</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body" style="padding-bottom:0">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Nachrichten</div>
+        </div>
+        <div class="chathdr"><span class="av" style="width:36px;height:36px;font-size:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="nm">Lena Meier</span></div>
+        <div class="chatw">
+          <div class="bub them">Hallo! Ist morgen 9:30 noch frei für einen Damenschnitt?</div>
+          <div class="bub me">Ja klar, 9:30 passt. Bei Marco?</div>
+          <div class="bub them">Perfekt, ja gerne bei Marco 🙏</div>
+          <div class="bub me">Top, ist gebucht. Bis morgen!</div>
+          <div class="bub them">Super, bis morgen um 9:30 dann</div>
+        </div>
+        <div class="chatin"><span class="btn sm out" style="padding:8px 10px"><i class="ic" data-lucide="zap" style="width:14px;height:14px"></i></span><span class="box">Nachricht…</span><span class="send"><i class="ic" data-lucide="arrow-up"></i></span></div>
+      </div>
+      <p class="note">Full-screen thread with back-row (true push-nav for back-gesture). Quick-replies move from an absolute popover (clipped on narrow) to the <i class="ic" data-lucide="zap" style="width:11px;height:11px;display:inline"></i> chip → bottom-sheet of canned replies.</p>
+    </div>
+
+    <!-- ════════════════ VERKAUF & KUNDEN ════════════════ -->
+    <div class="grp">Verkauf &amp; Kunden <span>Katalog · Kund:innen · Verkäufe</span></div>
+
+    <!-- 5 · KATALOG -->
+    <div class="col">
+      <p class="cap">5 · Katalog <span>· Services</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Services</h2><span class="addbtn"><i class="ic" data-lucide="plus"></i>Hinzufügen</span></div>
+          <div class="search"><i class="ic" data-lucide="search"></i><span>Service suchen…</span></div>
+          <div class="pills"><span class="pf on">Alle</span><span class="pf">Barber</span><span class="pf">Coiffeur</span><span class="pf">Inaktiv</span></div>
+          <div class="tmpl"><span>Vorlagen anzeigen</span><i class="ic" data-lucide="chevron-down"></i></div>
+          <div class="card">
+            <div class="svrow"><span class="grip"><i class="ic" data-lucide="grip-vertical"></i></span><span class="mid"><div class="nm">Herrenschnitt</div><div class="sven">Men's haircut</div><div class="svm2"><span class="svchip">Barber</span><span class="svprice">30 Min · <b>CHF 45</b></span></div></span><span class="sw on"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span></div>
+            <div class="svrow"><span class="grip"><i class="ic" data-lucide="grip-vertical"></i></span><span class="mid"><div class="nm">Bart trimmen</div><div class="sven">Beard trim</div><div class="svm2"><span class="svchip">Barber</span><span class="svprice">15 Min · <b>CHF 25</b></span></div></span><span class="sw on"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span></div>
+            <div class="svrow"><span class="grip"><i class="ic" data-lucide="grip-vertical"></i></span><span class="mid"><div class="nm">Damenschnitt &amp; Föhnen</div><div class="sven">Women's cut &amp; blow-dry</div><div class="svm2"><span class="svchip">Coiffeur</span><span class="svprice">60 Min · <b>CHF 75</b></span></div></span><span class="sw on"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span></div>
+            <div class="svrow"><span class="grip"><i class="ic" data-lucide="grip-vertical"></i></span><span class="mid"><div class="nm">Coloration</div><div class="sven">Full color</div><div class="svm2"><span class="svchip">Coiffeur</span><span class="svprice">90 Min · <b>CHF 120</b></span></div></span><span class="sw"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> list, active-toggle, edit, drag-reorder (grip bumped to 24px), template quick-add, CSV import, add. <b>New (PC has none):</b> search + category/Inaktiv filter pills. Edit / CSV / template open as bottom-sheets; the ServiceModal's 3-up number grid stacks to 1-up.</p>
+    </div>
+
+    <!-- 6 · KUND:INNEN (list) -->
+    <div class="col">
+      <p class="cap">6 · Kund:innen <span>· Liste</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><h2>Kunden</h2><div class="sub">Kundenkartei &amp; CRM</div></div></div>
+          <div class="search"><i class="ic" data-lucide="search"></i><span>Name suchen…</span></div>
+          <div class="pills"><span class="pf on">Alle <span class="ct">248</span></span><span class="pf">VIP <span class="ct">12</span></span><span class="pf">Gefährdet <span class="ct">5</span></span><span class="pf">Neu <span class="ct">18</span></span><span class="pf">Regulär <span class="ct">213</span></span></div>
+          <div class="card">
+            <div class="clrow">
+              <div class="clhead"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="nm">Lena Meier</span><span class="pill wait">VIP</span></div>
+              <div class="clmeta"><span><b>24</b> Termine</span><span>· Letzter 28.05</span><span>· <b>CHF 1'840</b></span></div>
+              <div class="tags"><span class="tag">Stammkundin</span><span class="tag">Coloration</span></div>
+            </div>
+            <div class="clrow">
+              <div class="clhead"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#F0A868,#C0524A)">TB</span><span class="nm">Tom Brunner</span><span class="pill neu">Neu</span></div>
+              <div class="clmeta"><span><b>1</b> Termin</span><span>· Letzter 03.06</span><span>· <b>CHF 45</b></span></div>
+            </div>
+            <div class="clrow">
+              <div class="clhead"><span class="av" style="width:40px;height:40px;font-size:13px;background:linear-gradient(140deg,#9A9A9A,#6B6B6B)">SK</span><span class="nm">Sara Keller</span><span class="pill err">Gefährdet</span></div>
+              <div class="clmeta"><span><b>8</b> Termine</span><span>· Letzter 12.02</span><span>· <b>CHF 960</b></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Already on-skin.</b> Search + segment filter pills (with counts), card rows w/ segment pill + Umsatz + tags. Tap → CRM detail (next phone).</p>
+    </div>
+
+    <!-- 6b · KUND:INNEN (detail) -->
+    <div class="col">
+      <p class="cap">6 · Kund:innen <span>· CRM-Detail</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Zurück</div>
+          <div class="dethead"><span class="av" style="width:48px;height:48px;font-size:16px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><div><div class="nm">Lena Meier</div><div class="dm">24 Termine · seit Jan 2024</div></div></div>
+          <div class="tags" style="margin-bottom:14px"><span class="tag">Stammkundin</span><span class="tag">Coloration</span><span class="tag">VIP</span></div>
+          <div class="subtabs"><span class="st on">Termine</span><span class="st">Formeln</span><span class="st">Fotos</span><span class="st">Notizen</span><span class="st">Tags</span><span class="st">Fragebogen</span></div>
+          <div class="acard"><div><div class="nm" style="font-family:'Inter Tight';font-weight:600;font-size:14px">Coloration</div><div class="am">28.05.2026 · 11:00 · Marco</div></div><span class="tright"><span class="pr num" style="font-family:'Inter Tight';font-weight:600;font-size:13.5px">CHF 120</span><span class="pill ok">Abgeschl.</span></span></div>
+          <div class="acard"><div><div class="nm" style="font-family:'Inter Tight';font-weight:600;font-size:14px">Damenschnitt</div><div class="am">14.04.2026 · 09:30 · Marco</div></div><span class="tright"><span class="pr num" style="font-family:'Inter Tight';font-weight:600;font-size:13.5px">CHF 75</span><span class="pill ok">Abgeschl.</span></span></div>
+          <div class="acard"><div><div class="nm" style="font-family:'Inter Tight';font-weight:600;font-size:14px">Coloration</div><div class="am">02.02.2026 · 14:00 · Marco</div></div><span class="tright"><span class="pr num" style="font-family:'Inter Tight';font-weight:600;font-size:13.5px">CHF 120</span><span class="pill ok">Abgeschl.</span></span></div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> all 6 CRM tabs (Termine / Formeln / Fotos / Notizen / Tags / Fragebogen), add-note, add-tag. <b>Fixed:</b> detail header now uses the <b>gradient avatar</b> (PC had a flat grey circle). Tag-colour picker → bottom-sheet swatches (was a clunky native <code>&lt;select&gt;</code>). Tabs scroll, 40px tap height.</p>
+    </div>
+
+    <!-- 7 · VERKÄUFE / TERMINE (list) -->
+    <div class="col">
+      <p class="cap">7 · Verkäufe / Termine <span>· Liste</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Termine</h2></div>
+          <div class="pills"><span class="pf on">Alle</span><span class="pf">Bestätigt</span><span class="pf">Abgeschlossen</span><span class="pf">Storniert</span><span class="pf">Nicht erschienen</span></div>
+          <div class="card">
+            <div class="trow"><span class="time">09:30</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="mid"><div class="nm">Lena Meier <span class="nbadge">Neu</span></div><div class="sv">Damenschnitt &amp; Föhnen · Marco</div></span><span class="tright"><span class="pr">CHF 75</span><span class="pill ok">Bestätigt</span></span></div>
+            <div class="trow"><span class="time">10:15</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#F0A868,#C0524A)">TB</span><span class="mid"><div class="nm">Tom Brunner</div><div class="sv">Herrenschnitt · Luca</div></span><span class="tright"><span class="pr">CHF 45</span><span class="pill wait">Ausstehend</span></span></div>
+            <div class="trow"><span class="time">11:00</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#9A9A9A,#6B6B6B)">SK</span><span class="mid"><div class="nm">Sara Keller</div><div class="sv">Coloration · Marco</div></span><span class="tright"><span class="pr">CHF 120</span><span class="pill err">Storniert</span></span></div>
+            <div class="creason">Grund: Krankheit</div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Already shipped.</b> Time · avatar · name (+Neu) · service·staff · price · status pill. Tap a row → action sheet (next phone).</p>
+    </div>
+
+    <!-- 7b · TERMINE action sheet -->
+    <div class="col">
+      <p class="cap">7 · Verkäufe / Termine <span>· Aktion-Sheet</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body" style="opacity:.45">
+          <div class="head"><h2>Termine</h2></div>
+          <div class="card">
+            <div class="trow"><span class="time">09:30</span><span class="av" style="width:34px;height:34px;font-size:12px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><span class="mid"><div class="nm">Lena Meier</div><div class="sv">Damenschnitt · Marco</div></span><span class="tright"><span class="pr">CHF 75</span><span class="pill ok">Bestätigt</span></span></div>
+          </div>
+        </div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px"><span class="av" style="width:38px;height:38px;font-size:13px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">LM</span><div><div style="font-family:'Inter Tight';font-weight:700;font-size:15px">Lena Meier · 09:30</div><div style="font-size:12px;color:var(--ink2)">Damenschnitt &amp; Föhnen · Marco · CHF 75</div></div></div>
+          <div class="actcol">
+            <span class="btn md gd"><i class="ic" data-lucide="check"></i>Abschliessen</span>
+            <span class="btn md out"><i class="ic" data-lucide="user-x"></i>Nicht erschienen</span>
+            <span class="btn md danger"><i class="ic" data-lucide="x"></i>Stornieren</span>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Fixed density:</b> the three 16px quick-action icons crammed at the row edge → a <b>bottom-sheet</b> with 44px Abschliessen / Nicht erschienen / Stornieren. The cancel-reason modal also becomes a sheet.</p>
+    </div>
+
+    <!-- ════════════════ BUSINESS ════════════════ -->
+    <div class="grp">Business <span>Marketing · Team · Berichte</span></div>
+
+    <!-- 8 · MARKETING -->
+    <div class="col">
+      <p class="cap">8 · Marketing <span>· Tabs + Pakete</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><h2>Marketing</h2><div class="sub">Pakete, Aktionen &amp; Empfehlungen</div></div></div>
+          <div class="pills"><span class="pf on">Pakete</span><span class="pf">Geschenkkarten</span><span class="pf">Empfehlungen</span><span class="pf">Aktionen</span><span class="pf">Last-Minute</span></div>
+          <div class="sechead"><h3>Pakete</h3><span class="addbtn"><i class="ic" data-lucide="plus"></i>Neu</span></div>
+          <div class="card">
+            <div class="pkg"><span class="pm"><div class="pt">5er Herrenschnitt</div><div class="pd">5 × Herrenschnitt · gültig 12 Mt.</div></span><span class="pp">CHF 200</span></div>
+            <div class="pkg"><span class="pm"><div class="pt">Coloration-Abo</div><div class="pd">3 × Coloration · gültig 6 Mt.</div></span><span class="pp">CHF 320</span></div>
+            <div class="pkg"><span class="pm"><div class="pt">Bart-Pflege</div><div class="pd">8 × Bart trimmen · gültig 12 Mt.</div></span><span class="pp">CHF 160</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> all 5 manager tabs (Pakete / Geschenkkarten / Empfehlungen / Aktionen / Last-Minute). <b>Reskinned:</b> active pill coral→light-blue. Shell was already scroll-pill safe; each manager body becomes a card-stack (Pakete shown). Create/edit → bottom-sheet.</p>
+    </div>
+
+    <!-- 9 · TEAM -->
+    <div class="col">
+      <p class="cap">9 · Team <span>· Mitarbeiter</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Team</h2><div style="display:flex;gap:7px"><span class="addbtn out"><i class="ic" data-lucide="mail"></i>Einladen</span><span class="addbtn"><i class="ic" data-lucide="plus"></i></span></div></div>
+          <div class="setgrp" style="margin-top:0">Ausstehende Einladungen</div>
+          <div class="card" style="margin-bottom:16px;border-color:#FCE4C4;background:#FFFBF4">
+            <div class="trow" style="border-color:#FCE4C4"><span class="av" style="width:36px;height:36px;font-size:12px;background:linear-gradient(140deg,#F0A868,#C0524A)">NB</span><span class="mid"><div class="nm">Nina Berger</div><div class="sv">nina.berger@email.ch</div></span><span class="pill wait">Ausstehend</span></div>
+          </div>
+          <div class="pills"><span class="pf on">Alle</span><span class="pf">Aktiv</span><span class="pf">Inaktiv</span></div>
+          <div class="stcard">
+            <span class="av" style="width:44px;height:44px;font-size:15px;background:linear-gradient(140deg,#276EF1,#1B4DCB)">MR</span>
+            <span class="stmid"><div class="nm">Marco Rossi</div><div class="sp"><span class="tag">Coloration</span><span class="tag">Schnitt</span></div><div class="stmeta">Provision <b>40%</b> · <b>8</b> Services</div></span>
+            <span class="sw on"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span>
+          </div>
+          <div class="stcard">
+            <span class="av" style="width:44px;height:44px;font-size:15px;background:linear-gradient(140deg,#16A34A,#0E7A37)">LB</span>
+            <span class="stmid"><div class="nm">Luca Bianchi</div><div class="sp"><span class="tag">Barber</span><span class="tag">Fade</span></div><div class="stmeta">Provision <b>35%</b> · <b>5</b> Services</div></span>
+            <span class="sw on"></span><span class="icbtn"><i class="ic" data-lucide="pencil"></i></span>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> staff cards, invite, pending invites, active-toggle, edit/delete, modal (services/permissions/commission). <b>Fixed:</b> <b>gradient avatars</b> (PC used flat grey initials); commission% + service-count surfaced on the card (were modal-only); Aktiv/Inaktiv filter added. StaffModal → bottom-sheet.</p>
+    </div>
+
+    <!-- 10 · BERICHTE (overview tab) -->
+    <div class="col">
+      <p class="cap">10 · Berichte <span>· Statistiken</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><h2>Berichte</h2><div class="sub">Detaillierte Auswertung</div></div><span class="addbtn out"><i class="ic" data-lucide="calendar"></i>30 Tage</span></div>
+          <div class="pills"><span class="pf on">Übersicht</span><span class="pf">Termine</span><span class="pf">Kunden</span><span class="pf">Services</span><span class="pf">Team</span></div>
+          <div class="tiles">
+            <div class="tile"><div class="tl">Stornierungsrate</div><div class="tv">4%</div><div class="td up"><i class="ic" data-lucide="arrow-down-right"></i>1%</div></div>
+            <div class="tile"><div class="tl">Bewertung</div><div class="tv">4,8 <i class="star" data-lucide="star"></i></div></div>
+            <div class="tile"><div class="tl">Neue Kunden</div><div class="tv">18</div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>5</div></div>
+            <div class="tile"><div class="tl">Retention</div><div class="tv">62%</div><div class="td up"><i class="ic" data-lucide="arrow-up-right"></i>4%</div></div>
+          </div>
+          <div class="chartcard">
+            <div class="ch-h"><div><div class="ch-t">Umsatz</div><div class="ch-sub">Wochen · vs. Vorperiode</div></div><div class="ch-v">CHF 24'800</div></div>
+            <div class="bars"><span class="b" style="height:50%"></span><span class="b" style="height:66%"></span><span class="b" style="height:58%"></span><span class="b hi" style="height:88%"></span></div>
+            <div class="bx"><span>KW19</span><span>KW20</span><span>KW21</span><span>KW22</span></div>
+            <div class="legend"><span><i style="background:var(--accent)"></i>Umsatz</span><span><i style="background:var(--accent-bg)"></i>Vorperiode</span></div>
+          </div>
+          <div class="sec">
+            <div class="sechead"><h3>Top Services</h3></div>
+            <div class="card">
+              <div class="lrow"><span class="rk">1</span><span class="nm">Herrenschnitt</span><span class="meta">48× · CHF 2'160</span></div>
+              <div class="lrow"><span class="rk">2</span><span class="nm">Coloration</span><span class="meta">31× · CHF 3'720</span></div>
+              <div class="lrow"><span class="rk">3</span><span class="nm">Damenschnitt</span><span class="meta">27× · CHF 2'025</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> date-range, 5 tabs, KPIs, charts, top-services. <b>Fixed density:</b> KPIs 2-up; charts full-width single-column (fewer ticks); date-range = bottom-sheet (PC's right-anchored popover overflowed). <b>Reskinned</b> coral + dark-green chart hex → ink/light-blue. Team tab's 8-col leaderboard table → ranked cards (next phone).</p>
+    </div>
+
+    <!-- 10b · BERICHTE (team / leaderboard) -->
+    <div class="col">
+      <p class="cap">10 · Berichte <span>· Team-Rangliste (Tabelle → Karten)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><div><h2>Berichte</h2><div class="sub">Detaillierte Auswertung</div></div><span class="addbtn out"><i class="ic" data-lucide="calendar"></i>30 Tage</span></div>
+          <div class="pills"><span class="pf">Übersicht</span><span class="pf">Termine</span><span class="pf">Kunden</span><span class="pf">Services</span><span class="pf on">Team</span></div>
+          <div class="rcard">
+            <div class="rhead"><i class="medal" data-lucide="trophy" style="color:var(--star)"></i><span class="nm">Marco Rossi</span><span class="pill ok">Top</span></div>
+            <div class="rmetrics">
+              <div class="rm"><div class="rl">Termine</div><div class="rv">42</div></div>
+              <div class="rm"><div class="rl">Umsatz</div><div class="rv">CHF 3'200</div></div>
+              <div class="rm"><div class="rl">Retention</div><div class="rv">68%</div></div>
+              <div class="rm"><div class="rl">⌀ Trinkgeld</div><div class="rv">CHF 6</div></div>
+              <div class="rm"><div class="rl">Walk-in %</div><div class="rv">54%</div></div>
+              <div class="rm"><div class="rl">Auslastung</div><div class="rv">82%</div></div>
+            </div>
+          </div>
+          <div class="rcard">
+            <div class="rhead"><span class="rnk">2</span><span class="nm">Luca Bianchi</span></div>
+            <div class="rmetrics">
+              <div class="rm"><div class="rl">Termine</div><div class="rv">28</div></div>
+              <div class="rm"><div class="rl">Umsatz</div><div class="rv">CHF 2'150</div></div>
+              <div class="rm"><div class="rl">Retention</div><div class="rv">61%</div></div>
+              <div class="rm"><div class="rl">⌀ Trinkgeld</div><div class="rv">CHF 4</div></div>
+              <div class="rm"><div class="rl">Walk-in %</div><div class="rv">71%</div></div>
+              <div class="rm"><div class="rl">Auslastung</div><div class="rv">74%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>The table→card transform.</b> PC's Barber-Leaderboard is an 8-column <code>&lt;table&gt;</code> with <code>whitespace-nowrap</code> numerics → unusable on 390px. Each barber becomes a card: rank/medal + name as header, the 6 metrics as a 3-up tile grid. View/anonymize/period toggles → a „⋯" sheet.</p>
+    </div>
+
+    <!-- ════════════════ ABRECHNUNG ════════════════ -->
+    <div class="grp">Abrechnung <span>Rückerstattungen · Mehrbelastung</span></div>
+
+    <!-- 11 · RÜCKERSTATTUNGEN -->
+    <div class="col">
+      <p class="cap">11 · Rückerstattungen <span>· Prüf-Queue</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Rückerstattungen</h2></div>
+          <div class="pills"><span class="pf on">Offen <span class="ct">2</span></span><span class="pf">Eskaliert</span><span class="pf">Erledigt</span><span class="pf">Alle</span></div>
+          <div class="ccard open">
+            <div class="ch1"><div><div class="nm">Sara Keller</div><div class="mt">Coloration · 28.05 · #A3F9K2</div></div><span class="pill wait">Offen</span></div>
+            <div class="money">
+              <div class="mbox"><div class="ml">Bezahlt</div><div class="mv">CHF 120</div></div>
+              <div class="mbox req"><div class="ml">Erstattung verlangt</div><div class="mv">CHF 120</div></div>
+            </div>
+            <div class="quote">„Das Ergebnis entsprach nicht der Beratung, die Farbe ist deutlich dunkler als besprochen."</div>
+            <div class="field">Begründung… (Pflicht, min. 10 Zeichen)</div>
+            <div class="actcol">
+              <span class="btn md gd"><i class="ic" data-lucide="check"></i>Voll erstatten</span>
+              <div class="actsplit"><span class="inp" style="display:flex;align-items:center;justify-content:center;font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink3)">CHF 60</span><span class="btn md out">Teilweise</span></div>
+              <span class="btn md danger"><i class="ic" data-lucide="x"></i>Ablehnen</span>
+            </div>
+          </div>
+          <div class="ccard">
+            <div class="ch1"><div><div class="nm">Tom Brunner</div><div class="mt">Herrenschnitt · 24.05 · #B8X2L9</div></div><span class="pill ok">Erstattet</span></div>
+            <div class="resln"><i class="ic" data-lucide="check-circle"></i>Voll erstattet · CHF 45</div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> filter pills, case cards, full / partial / reject, two-tap arm-to-confirm. <b>Fixed:</b> PC's action cluster (3 buttons + amount input on one wrapping row) → full-width stacked controls at 44px. <code>alert()</code> → toast. Cards were already correct.</p>
+    </div>
+
+    <!-- 12 · MEHRBELASTUNG -->
+    <div class="col">
+      <p class="cap">12 · Mehrbelastung <span>· Upcharge</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Mehrbelastung</h2></div>
+          <div class="selrow"><span class="sl2">Tom Brunner · Herrenschnitt</span><i class="ic" data-lucide="chevron-down"></i></div>
+          <div class="formrow">
+            <div class="inp ro"><div class="il">Original</div><div class="iv">CHF 45</div></div>
+            <div class="inp"><div class="il">Neuer Betrag</div><div class="iv">CHF 60</div></div>
+          </div>
+          <div class="focalchip"><span class="fl">Differenz</span><span class="fv">+ CHF 15</span></div>
+          <div class="capnote">max. CHF 22.50 (50% des bezahlten Betrags)</div>
+          <div class="field">Grund für die Mehrbelastung… (Pflicht)</div>
+          <span class="btn md ink" style="width:100%;padding:13px;margin-bottom:20px"><i class="ic" data-lucide="send"></i>Anfrage senden</span>
+          <div class="sechead"><h3>Gesendet</h3></div>
+          <div class="card">
+            <div class="trow"><span class="mid"><div class="nm">Lena Meier</div><div class="sv">#A3F9K2 · 02.06</div></span><span class="tright"><span class="pr" style="color:#EA580C">+ CHF 20</span><span class="pill ok">Bezahlt</span></span></div>
+            <div class="trow"><span class="mid"><div class="nm">Marco R.</div><div class="sv">#C2L8M1 · 01.06</div></span><span class="tright"><span class="pr" style="color:#EA580C">+ CHF 12</span><span class="pill wait">Offen</span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Preserved:</b> booking picker, original/new price, live difference + 50% cap guard, reason, sent-requests list. <b>Fixed:</b> the long native <code>&lt;select&gt;</code> (name·service·date·price truncates) → a tap-row opening a bottom-sheet picker (booking cards). Difference = focal amber chip. <code>alert()</code> → toast.</p>
+    </div>
+
+    <!-- ════════════════ MEHR ════════════════ -->
+    <div class="grp">Mehr <span>Einstellungen</span></div>
+
+    <!-- 13 · EINSTELLUNGEN (index) -->
+    <div class="col">
+      <p class="cap">13 · Einstellungen <span>· Index</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="head"><h2>Einstellungen</h2></div>
+          <div class="setgrp">Profil &amp; Auftritt</div>
+          <div class="card">
+            <div class="setrow"><i class="ic" data-lucide="store"></i><span class="lab">Profil &amp; Öffnungszeiten</span><i class="ch" data-lucide="chevron-right"></i></div>
+            <div class="setrow"><i class="ic" data-lucide="shield-check"></i><span class="lab">Verifizierung</span><span class="pill wait">Ausstehend</span><i class="ch" data-lucide="chevron-right"></i></div>
+          </div>
+          <div class="setgrp">Buchungen</div>
+          <div class="card">
+            <div class="setrow"><i class="ic" data-lucide="calendar-check"></i><span class="lab">Terminvergabe</span><i class="ch" data-lucide="chevron-right"></i></div>
+            <div class="setrow"><i class="ic" data-lucide="x-circle"></i><span class="lab">Stornierung</span><i class="ch" data-lucide="chevron-right"></i></div>
+            <div class="setrow"><i class="ic" data-lucide="moon"></i><span class="lab">Nebenzeiten</span><i class="ch" data-lucide="chevron-right"></i></div>
+          </div>
+          <div class="setgrp">Angebote</div>
+          <div class="card">
+            <div class="setrow"><i class="ic" data-lucide="zap"></i><span class="lab">Last-Minute</span><i class="ch" data-lucide="chevron-right"></i></div>
+          </div>
+          <div class="setgrp">Finanzen</div>
+          <div class="card">
+            <div class="setrow"><i class="ic" data-lucide="credit-card"></i><span class="lab">Zahlungen</span><span class="pill ok">Verbunden</span><i class="ch" data-lucide="chevron-right"></i></div>
+            <div class="setrow"><i class="ic" data-lucide="percent"></i><span class="lab">Provision</span><i class="ch" data-lucide="chevron-right"></i></div>
+            <div class="setrow"><i class="ic" data-lucide="receipt"></i><span class="lab">MWST</span><i class="ch" data-lucide="chevron-right"></i></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Index shipped.</b> Grouped tappable rows + live status pills (Verifizierung / Zahlungen). <b>Fixed parity bug:</b> <b>Last-Minute</b> is added (it was unreachable on mobile — omitted from the index). Tapping a row → panel body (next phone).</p>
+    </div>
+
+    <!-- 13b · EINSTELLUNGEN (panel body) -->
+    <div class="col">
+      <p class="cap">13 · Einstellungen <span>· Panel (Zahlungen)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span><i class="ic muted" data-lucide="search"></i><span class="bell"><i class="ic" data-lucide="bell"></i><span class="pip"></span></span></div>
+        <div class="body">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Einstellungen</div>
+          <div class="head" style="margin-bottom:14px"><h2 style="font-size:22px">Zahlungen</h2></div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="trow"><span class="afi" style="background:var(--success-bg)"><i class="ic" data-lucide="check" style="color:var(--success)"></i></span><span class="mid"><div class="nm">Stripe verbunden</div><div class="sv">Auszahlungen aktiv</div></span><span class="pill ok">Verbunden</span></div>
+          </div>
+          <div class="setgrp" style="margin-top:0">Zahlungsmodus</div>
+          <div class="optcard"><span class="rad"></span><div><div class="ot">Vor Ort</div><div class="od">Kunde zahlt im Salon</div></div></div>
+          <div class="optcard sel"><span class="rad"></span><div><div class="ot">Anzahlung</div><div class="od">20% bei Buchung, Rest vor Ort</div></div></div>
+          <div class="optcard"><span class="rad"></span><div><div class="ot">Vorkasse</div><div class="od">Voller Betrag bei Buchung</div></div></div>
+          <div class="card" style="margin-top:6px">
+            <div class="srow"><span class="sl">Anzahlung</span><span class="sv2">20%</span></div>
+            <div class="srow"><span class="sl">Kostenlose Stornierung bis</span><span class="sv2">24 Std</span></div>
+          </div>
+          <span class="btn md ink" style="width:100%;padding:13px;margin-top:16px">Speichern</span>
+        </div>
+      </div>
+      <p class="note"><b>The real fix.</b> PC's 13 panel BODIES were raw desktop forms (multi-col grids, sliders) dropped into a card. Each becomes mobile-native: option-cards for radio sets, hairline value-rows, full-width ink Save. Shown: Zahlungen. (Profil's dead „Salondetails" inputs flagged for removal.)</p>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

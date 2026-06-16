@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solen V3 palette — locked V2-D15-3 · 2026-05-07</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #FFFFFF;
+      --sunken: #FAF7F3;
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --ink-disabled: #C4B8A6;
+      --hairline: rgba(26, 18, 9, 0.06);
+      --brand: #043338;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --brand-mid: #0A6873;
+    }
+
+    html, body {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .display {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 56px 48px 80px; }
+
+    .doc-head { margin-bottom: 56px; padding-bottom: 24px; border-bottom: 1px solid var(--hairline); }
+    .doc-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); margin-bottom: 16px; }
+    .doc-title { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(40px, 5vw, 72px); line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .doc-lede { font-size: 17px; max-width: 64ch; color: var(--ink-2); line-height: 1.5; }
+
+    .section { margin-bottom: 80px; }
+    .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; }
+    .section-title { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -0.02em; margin-bottom: 8px; }
+    .section-deck { font-size: 16px; color: var(--ink-2); max-width: 64ch; margin-bottom: 32px; line-height: 1.5; }
+
+    /* Foundation grid */
+    .foundation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media (max-width: 700px) { .foundation-grid { grid-template-columns: 1fr; } }
+    .swatch { border-radius: 18px; padding: 32px; min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+    .swatch.bordered { border: 1px solid var(--hairline); }
+    .swatch-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+    .swatch-hex { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .swatch-use { font-size: 13px; opacity: 0.78; line-height: 1.4; }
+
+    /* Brand block */
+    .brand-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; align-items: stretch; }
+    @media (max-width: 700px) { .brand-row { grid-template-columns: 1fr; } }
+    .brand-primary { background: var(--brand); color: var(--brand-pale); border-radius: 18px; padding: 36px; min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; }
+    .brand-primary-h { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; opacity: 0.7; }
+    .brand-primary-hex { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: 56px; letter-spacing: -0.02em; line-height: 1; }
+    .brand-primary-use { font-size: 14px; opacity: 0.85; line-height: 1.5; }
+
+    /* Category panels — locked V3 picks Z/G/A/I */
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .cat-grid { grid-template-columns: 1fr; } }
+    .cat-panel { border-radius: 22px; padding: 40px 36px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .cat-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.78; margin-bottom: 20px; }
+    .cat-h { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(36px, 4vw, 52px); line-height: 0.96; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .cat-deck { font-size: 16px; line-height: 1.45; opacity: 0.92; margin-bottom: 24px; max-width: 38ch; }
+    .cat-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; letter-spacing: 0.02em; opacity: 0.78; font-variant-numeric: tabular-nums; }
+    .cat-cta { margin-top: 20px; align-self: flex-start; padding: 12px 22px; background: var(--brand); color: #FFFFFF; border: none; border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+    .cat-panel.coiffeur   { background: #FFF1DD; color: #B5345A; }
+    .cat-panel.barbershop { background: #D8D6CB; color: #000000; }
+    .cat-panel.nails      { background: #CAE8FF; color: #B50051; }
+    .cat-panel.spa        { background: #193120; color: #948565; }
+
+    /* Atmosphere wash demo */
+    .wash-demo { position: relative; border-radius: 22px; padding: 80px 48px; min-height: 400px; overflow: hidden; isolation: isolate; border: 1px solid var(--hairline); }
+    .wash-demo::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
+        radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
+        linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+      z-index: 0; pointer-events: none;
+    }
+    .wash-demo > * { position: relative; z-index: 1; }
+    .wash-h { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(48px, 6vw, 88px); line-height: 0.96; letter-spacing: -0.02em; max-width: 14ch; margin-bottom: 24px; }
+    .wash-h em { font-style: normal; color: var(--brand); }
+    .wash-deck { font-size: 18px; color: var(--ink-2); max-width: 52ch; line-height: 1.45; }
+
+    /* Soft cat tile pastels */
+    .soft-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 800px) { .soft-grid { grid-template-columns: repeat(2, 1fr); } }
+    .soft-tile { padding: 28px 24px; border-radius: 22px; min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; color: #000; }
+    .soft-tile h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.005em; }
+    .soft-tile-hex { font-size: 12px; opacity: 0.6; font-variant-numeric: tabular-nums; }
+    .soft-1 { background: #FFF1DD; }
+    .soft-2 { background: #D8D6CB; }
+    .soft-3 { background: #CAE8FF; }
+    .soft-4 { background: #C2F0F1; }
+
+    /* Pill rule demo */
+    .pill-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+    .pill { padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .pill-brand { background: var(--brand); color: #FFFFFF; }
+    .pill-cream { background: #FFF1DD; color: #000; }
+    .pill-bone  { background: #D8D6CB; color: #000; }
+    .pill-ice   { background: #CAE8FF; color: #000; }
+    .pill-teal  { background: #C2F0F1; color: #000; }
+
+    /* Type comparison — Cooper vs Avant Garde */
+    .type-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 800px) { .type-compare { grid-template-columns: 1fr; } }
+    .type-card { border: 1px solid var(--hairline); border-radius: 22px; padding: 36px 32px; background: #FAFAF8; }
+    .type-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+    .type-card-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+    .type-card-meta { font-size: 11px; color: var(--ink-2); }
+    .type-display { font-size: 64px; line-height: 0.96; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .type-display em { font-style: normal; color: var(--brand); }
+    .type-section { font-size: 32px; line-height: 1.05; letter-spacing: -0.018em; margin-bottom: 16px; font-weight: 600; }
+    .type-body { font-size: 16px; line-height: 1.5; color: var(--ink-2); margin-bottom: 16px; }
+    .type-meta { font-size: 12px; color: var(--ink-3); }
+
+    .cooper { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; }
+    .avant { font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', sans-serif; }
+
+    /* Footer summary */
+    .summary { background: var(--brand); color: var(--brand-pale); border-radius: 22px; padding: 48px 40px; margin-top: 48px; }
+    .summary h2 { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: 36px; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .summary p { font-size: 15px; line-height: 1.6; opacity: 0.92; max-width: 56ch; margin-bottom: 12px; }
+    .summary ul { padding-left: 20px; }
+    .summary li { font-size: 14px; line-height: 1.6; opacity: 0.88; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header class="doc-head">
+      <div class="doc-eyebrow">Solen V3 palette · LOCKED V2-D15-3 · 2026-05-07</div>
+      <h1 class="doc-title">Locked.</h1>
+      <p class="doc-lede">Brand teal `#043338`. 4 categories Z/G/A/I (Coiffeur cream+cherry / Barbershop bone+black / Nails pale ice blue+magenta / Spa & Wellness forest+sandy beige). Cooper BT (display) + ITC Avant Garde Gothic Std (body). White substrate. Yuh-density discipline. Republik monochrome-per-panel. Pill rule white-or-black. Atmosphere wash navy-framed. All Yuh hex purged. Foundation: 24 authorized hexes.</p>
+    </header>
+
+    <!-- ============ §1 FOUNDATION ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§1 Foundation</div>
+      <h2 class="section-title">Substrate &amp; ink</h2>
+      <p class="section-deck">White substrate is permanent. Ink scale is warm-near-black `#1A1209`, NOT pure black.</p>
+
+      <div class="foundation-grid">
+        <div class="swatch bordered" style="background: #FFFFFF; color: #1A1209;">
+          <div class="swatch-name">Substrate</div>
+          <div>
+            <div class="swatch-hex">#FFFFFF</div>
+            <div class="swatch-use">Body bg, every page. ~70-80% of every screen.</div>
+          </div>
+        </div>
+        <div class="swatch" style="background: #1A1209; color: #FFFFFF;">
+          <div class="swatch-name">Ink-1 (primary)</div>
+          <div>
+            <div class="swatch-hex">#1A1209</div>
+            <div class="swatch-use">Body, headlines. Ink-2 secondary `#56463E`. Ink-3 tertiary `#7A6957`. Ink-disabled `#C4B8A6`.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ §2 BRAND ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§2 Brand · Yuh-density usage</div>
+      <h2 class="section-title">One color, used 60–100× per page</h2>
+      <p class="section-deck">Dark teal `#043338` (Republik panel #4 — user-flagged dark teal screenshot). Used as logo, active nav, links, list bullets, ONE word per hero h1, CTA pills (white text), status text, Solen Pro feature card. Never as hero substrate.</p>
+
+      <div class="brand-row">
+        <div class="brand-primary">
+          <div class="brand-primary-h">Brand · Primary</div>
+          <div>
+            <div class="brand-primary-hex">#043338</div>
+            <div class="brand-primary-use">Logo · active nav · CTA pills (white text) · inline links · "Heute frei" status · hero accent word · stat circles · Solen Pro panel.</div>
+          </div>
+        </div>
+        <div class="swatch bordered" style="background: #C2F0F1; color: #043338;">
+          <div class="swatch-name">Brand · Pale</div>
+          <div>
+            <div class="swatch-hex" style="font-size: 22px;">#C2F0F1</div>
+            <div class="swatch-use">Text on dark-teal panels (Republik exact pair). Atmosphere.</div>
+          </div>
+        </div>
+        <div class="swatch bordered" style="background: #E1F4F4; color: #043338;">
+          <div class="swatch-name">Brand · Subtle</div>
+          <div>
+            <div class="swatch-hex" style="font-size: 22px;">#E1F4F4</div>
+            <div class="swatch-use">Pill bgs. Hint chips. Soft brand-tinted.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ §3 CATEGORIES (V3 LOCKED) ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§3 Locked categories · V2-D15-3</div>
+      <h2 class="section-title">4 categories. Wellness merged. Makeup retired.</h2>
+      <p class="section-deck">Each panel uses one combo from the 31-combo library. Republik monochrome rule: ALL text inside the panel uses the same combo text color. Brand-teal CTA pill inside = the connective tissue across all 4 categories.</p>
+
+      <div class="cat-grid">
+        <div class="cat-panel coiffeur">
+          <div>
+            <div class="cat-tag">Coiffeur · Combo Z · 248 Salons</div>
+            <div class="cat-h">Schnitt für deinen Look.</div>
+            <div class="cat-deck">Cream `#FFF1DD` + cherry `#B5345A`. Soft warm hair-salon feeling.</div>
+          </div>
+          <div>
+            <div class="cat-meta">
+              <span>bg #FFF1DD</span>
+              <span>text #B5345A</span>
+              <span>5.24 : 1 AA</span>
+            </div>
+            <button class="cat-cta">Coiffeur finden →</button>
+          </div>
+        </div>
+
+        <div class="cat-panel barbershop">
+          <div>
+            <div class="cat-tag">Barbershop · Combo G · 72 Salons</div>
+            <div class="cat-h">Bart und Schnitt für Männer.</div>
+            <div class="cat-deck">Bone `#D8D6CB` + black. Republik panel #7 — Strassberg colorway. Quiet, classic, masculine.</div>
+          </div>
+          <div>
+            <div class="cat-meta">
+              <span>bg #D8D6CB</span>
+              <span>text #000000</span>
+              <span>14.40 : 1 AAA</span>
+            </div>
+            <button class="cat-cta">Barbershop finden →</button>
+          </div>
+        </div>
+
+        <div class="cat-panel nails">
+          <div>
+            <div class="cat-tag">Nails · Combo A · 134 Studios</div>
+            <div class="cat-h">Nägel, perfekt gemacht.</div>
+            <div class="cat-deck">Pale ice blue `#CAE8FF` + magenta `#B50051`. Republik panel #1 — Zumthor colorway. Bright pop.</div>
+          </div>
+          <div>
+            <div class="cat-meta">
+              <span>bg #CAE8FF</span>
+              <span>text #B50051</span>
+              <span>5.35 : 1 AA</span>
+            </div>
+            <button class="cat-cta">Studios finden →</button>
+          </div>
+        </div>
+
+        <div class="cat-panel spa">
+          <div>
+            <div class="cat-tag">Spa &amp; Wellness · Combo I · 56 Häuser</div>
+            <div class="cat-h">Entspannung, ganz nah.</div>
+            <div class="cat-deck">Forest green `#193120` + sandy beige `#948565`. Republik panel #9 — Westjordanland colorway (the screenshot you flagged). Earthy, calm, natural.</div>
+          </div>
+          <div>
+            <div class="cat-meta">
+              <span>bg #193120</span>
+              <span>text #948565</span>
+              <span>3.86 : 1 AA-l</span>
+            </div>
+            <button class="cat-cta">Spa finden →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ §4 ATMOSPHERIC WASH ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§4 Atmosphere · hero only</div>
+      <h2 class="section-title">Cyan core + navy framing</h2>
+      <p class="section-deck">Pale ice blue + pale teal core, royal blue navy at the corners, deep navy horizon bleed. CSS gradient stops only — never flat fills. Locked recipe in LIVE_TRUTH §5g.</p>
+
+      <div class="wash-demo">
+        <div class="wash-h">Schöner aussehen, schneller <em>buchen</em>.</div>
+        <div class="wash-deck">Cooper BT 900 at clamp(48-88px), warm-ink body. ONE word in brand teal. Pale ice blue + pale teal + navy framing.</div>
+      </div>
+    </section>
+
+    <!-- ============ §5 SOFT CAT TILES ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§5 Soft cat tiles · discovery UI only</div>
+      <h2 class="section-title">Same color as the panel bg</h2>
+      <p class="section-deck">For the small cat-strip below the hero. Three of four are already pale (cream, bone, pale ice blue) — same color as the saturated panel bg. Spa uses pale teal `#C2F0F1` (lightened forest). Black text per pill rule.</p>
+
+      <div class="soft-grid">
+        <div class="soft-tile soft-1"><h3>Coiffeur</h3><div class="soft-tile-hex">#FFF1DD</div></div>
+        <div class="soft-tile soft-2"><h3>Barbershop</h3><div class="soft-tile-hex">#D8D6CB</div></div>
+        <div class="soft-tile soft-3"><h3>Nails</h3><div class="soft-tile-hex">#CAE8FF</div></div>
+        <div class="soft-tile soft-4"><h3>Spa &amp; Wellness</h3><div class="soft-tile-hex">#C2F0F1</div></div>
+      </div>
+    </section>
+
+    <!-- ============ §6 PILL RULE ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§6 Pill rule (LIVE_TRUTH §5a)</div>
+      <h2 class="section-title">White or black, never tinted</h2>
+      <p class="section-deck">Every pill — CTAs, tags, chips, badges, numbered circles — uses #FFFFFF on dark or #000000 on light. Inline accents (links, status) keep brand teal.</p>
+
+      <div class="pill-row">
+        <span class="pill pill-brand">Termin buchen</span>
+        <span class="pill pill-cream">Coiffeur</span>
+        <span class="pill pill-bone">Barbershop</span>
+        <span class="pill pill-ice">Nails</span>
+        <span class="pill pill-teal">Spa &amp; Wellness</span>
+      </div>
+    </section>
+
+    <!-- ============ §7 TYPOGRAPHY ============ -->
+    <section class="section">
+      <div class="section-eyebrow">§7 Typography · Cooper BT + Avant Garde Gothic</div>
+      <h2 class="section-title">Two faces. By role, not mood.</h2>
+      <p class="section-deck">Cooper BT for hero h1 + logo + feature h2 + category panel h1 (the brand-mark moments). Avant Garde Gothic for body + UI + section h2s + everything else. Free fallbacks: Sansita 900 + League Spartan.</p>
+
+      <div class="type-compare">
+        <div class="type-card">
+          <div class="type-card-header">
+            <div class="type-card-name">Display · Cooper BT (Sansita 900 fallback)</div>
+            <div class="type-card-meta">Hero h1 / logo / feature h2 / cat panel h1 ONLY</div>
+          </div>
+          <div class="type-display cooper">Schöner <em>buchen</em>.</div>
+          <div class="type-section cooper">In Basel diese Woche</div>
+          <div class="type-body cooper">Cooper at body sizes loses character — display only. (See §5.1)</div>
+          <div class="type-meta cooper">CHF 65 · 45 Min · Heute 14:30</div>
+        </div>
+
+        <div class="type-card">
+          <div class="type-card-header">
+            <div class="type-card-name">Body / UI · ITC Avant Garde Gothic Std (League Spartan fallback)</div>
+            <div class="type-card-meta">Everything except brand-mark moments</div>
+          </div>
+          <div class="type-display avant" style="font-weight: 600;">Schöner <em>buchen</em>.</div>
+          <div class="type-section avant">In Basel diese Woche</div>
+          <div class="type-body avant">Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer — die besten Beauty-Adressen der Schweiz, alle in einer App.</div>
+          <div class="type-meta avant">CHF 65 · 45 Min · Heute 14:30</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="summary">
+      <h2>V3 locked.</h2>
+      <p><strong>Foundations:</strong></p>
+      <ul>
+        <li>Brand teal #043338 + pale teal #C2F0F1 + brand subtle #E1F4F4</li>
+        <li>4 categories: Coiffeur Z, Barbershop G, Nails A, Spa &amp; Wellness I</li>
+        <li>Cooper BT (display) + Avant Garde Gothic (body), free fallbacks Sansita 900 + League Spartan</li>
+        <li>White substrate + Yuh-density discipline + Republik monochrome panels</li>
+        <li>Pill rule white-or-black; atmosphere wash navy-framed; semantic colors stay semantic</li>
+        <li>No Yuh hex, no V1/V2 retired hexes, 24 authorized hexes total</li>
+      </ul>
+      <p style="margin-top: 16px;"><strong>Source of truth:</strong> _tasks/SOLEN_LIVE_TRUTH.md §1 / §2 / §5 / §5a / §5g / §5h / §5i. Decision log: V2-D15-3 in _tasks/V2_REBUILD_LOG.md.</p>
+    </div>
+
+  </div>
+</body>
+</html>

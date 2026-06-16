@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Font comparison: current vs Duolingo / Revolut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- All fonts loaded together so the comparison is fair.
+     - Bricolage Grotesque + Hanken Grotesk → CURRENT Solen system (real prod fonts)
+     - Fredoka + Nunito → Duolingo-equivalent (Feather Bold + DIN Next Rounded)
+     - Manrope → Revolut-equivalent (Aeonik) -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --s-ink:    #1A1408;
+    --s-ink-2:  #4A4A4A;
+    --s-ink-3:  #888888;
+    --s-bg:     #FFFFFF;
+    --s-bg-sub: #F5F5F4;
+    --s-brand:  #16A34A;
+    --s-star:   #FFC32B;
+    --s-border: rgba(0,0,0,0.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #F4F4F6; color: var(--s-ink); }
+  /* Page chrome itself is neutral Hanken so it doesn't bias any column. */
+  body { font-family: "Hanken Grotesk", system-ui, sans-serif; }
+
+  .page-header { text-align: center; padding: 32px 16px 16px; max-width: 800px; margin: 0 auto; }
+  .page-header h1 { font-size: 24px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.015em; }
+  .page-header p { font-size: 14px; color: var(--s-ink-2); margin: 0; line-height: 1.5; }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 24px 20px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1080px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .col {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+  }
+  .col-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--s-border);
+    background: var(--s-bg-sub);
+    text-align: center;
+  }
+  .col-head .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--s-ink-2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .col-head .title { font-size: 15px; font-weight: 700; color: var(--s-ink); letter-spacing: -0.01em; }
+  .col-head .meta { font-size: 11px; color: var(--s-ink-3); margin-top: 2px; line-height: 1.4; }
+
+  .col-body {
+    padding: 28px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ─── Per-column font binding (2-font system per column where applicable) ─── */
+  /* CURRENT Solen: Bricolage Grotesque (display) + Hanken Grotesk (body) */
+  .col--current .font-display { font-family: "Bricolage Grotesque", system-ui, sans-serif; }
+  .col--current .font-body    { font-family: "Hanken Grotesk", system-ui, sans-serif; }
+
+  /* DUOLINGO equivalent: Fredoka (display, ≈ Feather Bold) + Nunito (body, ≈ DIN Next Rounded) */
+  .col--duo .font-display { font-family: "Fredoka", system-ui, sans-serif; }
+  .col--duo .font-body    { font-family: "Nunito", system-ui, sans-serif; }
+
+  /* REVOLUT equivalent: Manrope (everything, ≈ Aeonik — single-family system) */
+  .col--rev .font-display { font-family: "Manrope", system-ui, sans-serif; }
+  .col--rev .font-body    { font-family: "Manrope", system-ui, sans-serif; }
+
+  /* Sample blocks — same structure in every column */
+  .sample-logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .sample-logo .dot { color: var(--s-brand); }
+
+  .sample-h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--s-ink);
+    margin: 0;
+  }
+  .sample-h2-arrow { color: var(--s-ink); margin-left: 6px; }
+
+  .sample-h1 {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--s-ink);
+    margin: 0;
+  }
+  .sample-sub {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--s-ink-2);
+    margin: 6px 0 0;
+    line-height: 1.4;
+  }
+
+  .sample-cta {
+    display: inline-block;
+    background: var(--s-brand);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+
+  /* Salon card mini */
+  .sample-card {
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--s-bg-sub);
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .sample-card .photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFE8D8, #E0703D);
+    flex-shrink: 0;
+  }
+  .sample-card .name { font-size: 15px; font-weight: 700; color: var(--s-ink); margin: 0 0 2px; letter-spacing: -0.01em; }
+  .sample-card .meta { font-size: 12px; color: var(--s-ink-2); margin: 0; }
+  .sample-card .rating { font-size: 13px; font-weight: 700; color: var(--s-ink); display: flex; align-items: center; gap: 3px; margin-top: 4px; }
+  .sample-card .rating .star { color: var(--s-star); }
+
+  /* Body paragraph */
+  .sample-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--s-ink-2);
+    margin: 0;
+  }
+
+  /* Section divider in each column */
+  .row-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--s-ink-3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .row { display: flex; flex-direction: column; }
+
+  /* Pangram — full-alphabet sample to feel ALL letterforms */
+  .pangram {
+    font-size: 13px;
+    color: var(--s-ink-2);
+    line-height: 1.5;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>Solen typography — current vs Duolingo-vibe vs Revolut-vibe</h1>
+  <p>
+    Same Solen content in 3 typographic systems. Reference fonts <strong>Feather Bold</strong> (Duolingo, proprietary)
+    and <strong>Aeonik</strong> (Revolut, paid license) approximated with free Google Fonts equivalents:
+    <strong>Fredoka</strong> ≈ Feather, <strong>Nunito</strong> ≈ DIN Next Rounded, <strong>Manrope</strong> ≈ Aeonik.
+  </p>
+</header>
+
+<main class="compare-grid">
+
+  <!-- ═══ COLUMN 1 — Solen ACTUAL fonts ═══ -->
+  <section class="col col--current">
+    <div class="col-head">
+      <div class="tag">Column 1 · Solen today</div>
+      <div class="title">Bricolage Grotesque + Hanken Grotesk</div>
+      <div class="meta">Display: playful geometric · Body: clean workhorse</div>
+    </div>
+    <div class="col-body">
+      <div class="row">
+        <div class="row-label">Logo</div>
+        <div class="sample-logo font-display">Solen<span class="dot">●</span></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Section heading</div>
+        <h2 class="sample-h2 font-display">Top auf Solen<span class="sample-h2-arrow">→</span></h2>
+      </div>
+      <div class="row">
+        <div class="row-label">Hero</div>
+        <h1 class="sample-h1 font-display">Termin in 30 Sekunden.</h1>
+        <p class="sample-sub font-body">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+      </div>
+      <div class="row">
+        <div class="row-label">Primary CTA</div>
+        <div><a class="sample-cta font-body" href="#">Solen durchsuchen</a></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Salon card</div>
+        <div class="sample-card font-body">
+          <div class="photo"></div>
+          <div>
+            <p class="name">Atelier Coiffure</p>
+            <p class="meta">Coiffeur · Basel</p>
+            <div class="rating"><span class="star">★</span> 4.9 · 693</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">Body / Pangram</div>
+        <p class="sample-body font-body">Mit Solen findest du in 30 Sekunden den nächsten Termin bei deinem Lieblings-Coiffeur. Buche direkt, ohne Anruf.</p>
+        <p class="pangram font-body" style="margin-top:8px;">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COLUMN 2 — Duolingo-style ═══ -->
+  <section class="col col--duo">
+    <div class="col-head">
+      <div class="tag">Column 2 · Duolingo vibe</div>
+      <div class="title">Fredoka + Nunito</div>
+      <div class="meta">≈ Feather Bold + DIN Next Rounded · Rounded, playful, warm</div>
+    </div>
+    <div class="col-body">
+      <div class="row">
+        <div class="row-label">Logo</div>
+        <div class="sample-logo font-display">Solen<span class="dot">●</span></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Section heading</div>
+        <h2 class="sample-h2 font-display">Top auf Solen<span class="sample-h2-arrow">→</span></h2>
+      </div>
+      <div class="row">
+        <div class="row-label">Hero</div>
+        <h1 class="sample-h1 font-display">Termin in 30 Sekunden.</h1>
+        <p class="sample-sub font-body">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+      </div>
+      <div class="row">
+        <div class="row-label">Primary CTA</div>
+        <div><a class="sample-cta font-body" href="#">Solen durchsuchen</a></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Salon card</div>
+        <div class="sample-card font-body">
+          <div class="photo"></div>
+          <div>
+            <p class="name">Atelier Coiffure</p>
+            <p class="meta">Coiffeur · Basel</p>
+            <div class="rating"><span class="star">★</span> 4.9 · 693</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">Body / Pangram</div>
+        <p class="sample-body font-body">Mit Solen findest du in 30 Sekunden den nächsten Termin bei deinem Lieblings-Coiffeur. Buche direkt, ohne Anruf.</p>
+        <p class="pangram font-body" style="margin-top:8px;">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COLUMN 3 — Revolut-style ═══ -->
+  <section class="col col--rev">
+    <div class="col-head">
+      <div class="tag">Column 3 · Revolut vibe</div>
+      <div class="title">Manrope (single-family)</div>
+      <div class="meta">≈ Aeonik · Neo-grotesque, geometric, polished, fintech-modern</div>
+    </div>
+    <div class="col-body">
+      <div class="row">
+        <div class="row-label">Logo</div>
+        <div class="sample-logo font-display">Solen<span class="dot">●</span></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Section heading</div>
+        <h2 class="sample-h2 font-display">Top auf Solen<span class="sample-h2-arrow">→</span></h2>
+      </div>
+      <div class="row">
+        <div class="row-label">Hero</div>
+        <h1 class="sample-h1 font-display">Termin in 30 Sekunden.</h1>
+        <p class="sample-sub font-body">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+      </div>
+      <div class="row">
+        <div class="row-label">Primary CTA</div>
+        <div><a class="sample-cta font-body" href="#">Solen durchsuchen</a></div>
+      </div>
+      <div class="row">
+        <div class="row-label">Salon card</div>
+        <div class="sample-card font-body">
+          <div class="photo"></div>
+          <div>
+            <p class="name">Atelier Coiffure</p>
+            <p class="meta">Coiffeur · Basel</p>
+            <div class="rating"><span class="star">★</span> 4.9 · 693</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">Body / Pangram</div>
+        <p class="sample-body font-body">Mit Solen findest du in 30 Sekunden den nächsten Termin bei deinem Lieblings-Coiffeur. Buche direkt, ohne Anruf.</p>
+        <p class="pangram font-body" style="margin-top:8px;">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="text-align: center; padding: 24px; color: var(--s-ink-2); font-size: 12px; max-width: 800px; margin: 0 auto;">
+  <p style="margin: 0 0 8px;"><strong>Personality at a glance</strong></p>
+  <ul style="text-align: left; display: inline-block; margin: 0 0 16px; padding-left: 20px;">
+    <li><strong>Current (Bricolage + Hanken):</strong> playful display headlines + clean body. Solen-distinct, warm-but-modern. Already in production.</li>
+    <li><strong>Duolingo-vibe (Fredoka + Nunito):</strong> very rounded + friendly. Risk: feels app-game-y, could undercut the "Swiss premium booking" positioning.</li>
+    <li><strong>Revolut-vibe (Manrope):</strong> confident, premium, fintech-style. Risk: cold/corporate, less "beauty &amp; wellness" warmth.</li>
+  </ul>
+  <p style="margin: 0;">Tell me which direction you like and I'll port it. Production: if you want EXACT Feather Bold or Aeonik later, both need commercial licensing — these free equivalents are 80-90% of the visual feel.</p>
+</footer>
+
+</body>
+</html>

@@ -16,6 +16,7 @@ on:
     - cron: '0 9 * * *'
     - cron: '0 10 * * *'
     - cron: '0 11 * * *'
+    - cron: '0 4 1 * *'
   workflow_dispatch:
 
 jobs:
@@ -142,4 +143,15 @@ jobs:
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/rebooking-nudge
+          secret: ${{ secrets.CRON_SECRET }}
+
+  monthly-1st-04-utc:
+    if: github.event.schedule == '0 4 1 * *'
+    name: Monthly (1st) 04:00 UTC · loyalty-recompute (Solen Status ranks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/loyalty-recompute
           secret: ${{ secrets.CRON_SECRET }}

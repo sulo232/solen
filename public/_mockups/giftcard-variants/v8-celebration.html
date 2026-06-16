@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Card · v8 Celebration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F4F4F5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 32px 16px 64px;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Phone frame ── */
+    .phone {
+      width: 390px;
+      background: #FFFFFF;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px -16px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.06);
+      position: relative;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      height: 44px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px 0;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+    }
+    .status-time {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .status-icons svg {
+      width: 16px;
+      height: 16px;
+      fill: #fff;
+    }
+
+    /* ── Hero photo ── */
+    .hero {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(10,10,10,.45) 0%,
+        rgba(10,10,10,.15) 40%,
+        rgba(10,10,10,.72) 100%
+      );
+    }
+
+    /* confetti dots accent */
+    .confetti-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .confetti-dot {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .55;
+    }
+
+    /* back button */
+    .btn-back {
+      position: absolute;
+      top: 52px;
+      left: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,.30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .btn-back i { color: #fff; width: 18px; height: 18px; }
+
+    /* share button */
+    .btn-share {
+      position: absolute;
+      top: 52px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,.30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .btn-share i { color: #fff; width: 18px; height: 18px; }
+
+    /* hero salon info overlay */
+    .hero-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px 18px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.26);
+      border-radius: 20px;
+      padding: 4px 10px;
+      margin-bottom: 8px;
+    }
+    .hero-badge i { color: #FFC32B; width: 13px; height: 13px; }
+    .hero-badge span {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .hero-salon-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.4px;
+      line-height: 1.15;
+    }
+    .hero-salon-loc {
+      margin-top: 3px;
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+      font-weight: 400;
+    }
+
+    /* ── Scrollable body ── */
+    .body {
+      background: #F4F4F5;
+      padding: 0 0 100px;
+    }
+
+    /* ── Gift card visual object ── */
+    .giftcard-section {
+      padding: 0 16px;
+      margin-top: -24px;
+      position: relative;
+      z-index: 5;
+    }
+    .giftcard-object {
+      background: linear-gradient(135deg, #1A1A1A 0%, #2E2E2E 50%, #0A0A0A 100%);
+      border-radius: 18px;
+      padding: 22px 22px 20px;
+      box-shadow: 0 18px 44px -12px rgba(0,0,0,.38), 0 6px 18px -6px rgba(0,0,0,.24);
+      position: relative;
+      overflow: hidden;
+      min-height: 148px;
+    }
+    /* subtle warm shimmer on the card */
+    .giftcard-object::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(194,65,12,.30) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .giftcard-object::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -30px;
+      width: 200px; height: 160px;
+      background: radial-gradient(circle, rgba(255,195,43,.12) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .giftcard-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .giftcard-brand {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .giftcard-icon-wrap {
+      width: 36px;
+      height: 36px;
+      background: rgba(194,65,12,.22);
+      border: 1px solid rgba(194,65,12,.40);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .giftcard-icon-wrap i { color: #F97316; width: 18px; height: 18px; }
+
+    .giftcard-amount {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .giftcard-amount .currency {
+      font-size: 20px;
+      font-weight: 600;
+      vertical-align: super;
+      margin-right: 2px;
+      opacity: .8;
+    }
+    .giftcard-tagline {
+      font-size: 12px;
+      color: rgba(255,255,255,.50);
+      font-weight: 400;
+      margin-bottom: 18px;
+    }
+
+    .giftcard-to-from {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .giftcard-recipient-block {}
+    .giftcard-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,.38);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 2px;
+    }
+    .giftcard-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,.88);
+    }
+    .giftcard-valid {
+      text-align: right;
+    }
+    .giftcard-valid-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,.38);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 2px;
+    }
+    .giftcard-valid-date {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,.55);
+    }
+
+    /* edit nudge */
+    .giftcard-edit-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      margin-top: 12px;
+    }
+    .giftcard-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background: white;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5A5A5A;
+      cursor: pointer;
+      border: 1px solid #E5E5E5;
+    }
+    .giftcard-edit-btn i { width: 12px; height: 12px; color: #8A8A8A; }
+
+    /* ── Section containers ── */
+    .section {
+      margin: 16px 16px 0;
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 2px 8px -2px rgba(0,0,0,.06);
+    }
+    .section-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0A0A0A;
+      margin-bottom: 14px;
+      letter-spacing: -0.1px;
+    }
+
+    /* ── Amount chips ── */
+    .amount-chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .chip {
+      padding: 11px 4px;
+      border-radius: 50px;
+      border: 1.5px solid #E5E5E5;
+      background: #F4F4F5;
+      text-align: center;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #5A5A5A;
+      cursor: pointer;
+      transition: all .15s ease;
+      letter-spacing: -0.2px;
+    }
+    .chip.active {
+      background: #0A0A0A;
+      border-color: #0A0A0A;
+      color: #fff;
+      box-shadow: 0 4px 12px -4px rgba(10,10,10,.4);
+    }
+    .chip .chip-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(255,255,255,.55);
+      margin-top: 1px;
+      display: block;
+    }
+    .chip:not(.active) .chip-sub {
+      color: #8A8A8A;
+    }
+
+    /* custom amount input */
+    .custom-input-wrap {
+      position: relative;
+      margin-top: 0;
+    }
+    .custom-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8A8A8A;
+      margin-bottom: 6px;
+    }
+    .custom-input {
+      width: 100%;
+      height: 46px;
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 0 14px 0 38px;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #0A0A0A;
+      background: #F4F4F5;
+      outline: none;
+    }
+    .custom-input::placeholder { color: #C0C0C0; font-weight: 400; }
+    .custom-input-prefix {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #8A8A8A;
+    }
+
+    /* ── Recipient section ── */
+    .recipient-field {
+      margin-bottom: 12px;
+    }
+    .recipient-field:last-child { margin-bottom: 0; }
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8A8A8A;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      height: 46px;
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 0 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #0A0A0A;
+      background: #F4F4F5;
+      outline: none;
+    }
+    .field-input.filled {
+      background: #fff;
+      border-color: #D0D0D0;
+    }
+    .field-input::placeholder { color: #C0C0C0; }
+
+    .field-textarea {
+      width: 100%;
+      min-height: 82px;
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #5A5A5A;
+      background: #F4F4F5;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+    }
+    .field-textarea.filled {
+      background: #fff;
+      border-color: #D0D0D0;
+      color: #0A0A0A;
+    }
+
+    /* ── Delivery row ── */
+    .delivery-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      background: #F4F4F5;
+      border-radius: 12px;
+      margin-top: 0;
+    }
+    .delivery-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #FFF1E6;
+      border: 1px solid #FDE8D4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .delivery-icon-wrap i { color: #C2410C; width: 17px; height: 17px; }
+    .delivery-text-wrap {}
+    .delivery-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0A0A0A;
+    }
+    .delivery-sub {
+      font-size: 12px;
+      color: #8A8A8A;
+      margin-top: 1px;
+    }
+
+    /* ── What they'll receive ── */
+    .receive-section {
+      margin: 16px 16px 0;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px -2px rgba(0,0,0,.06);
+    }
+    .receive-header {
+      padding: 16px 16px 12px;
+    }
+    .receive-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0A0A0A;
+      margin-bottom: 12px;
+    }
+    .receive-items {
+      padding: 0 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .receive-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .receive-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .receive-item-icon.amber { background: #FFF1E6; }
+    .receive-item-icon.amber i { color: #C2410C; width: 15px; height: 15px; }
+    .receive-item-icon.green { background: #F0FDF4; }
+    .receive-item-icon.green i { color: #16A34A; width: 15px; height: 15px; }
+    .receive-item-icon.ink { background: #F4F4F5; }
+    .receive-item-icon.ink i { color: #5A5A5A; width: 15px; height: 15px; }
+    .receive-item-text {
+      font-size: 13px;
+      color: #5A5A5A;
+      line-height: 1.4;
+    }
+    .receive-item-text strong {
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    /* ── CTA bar ── */
+    .cta-bar {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 16px 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 35%);
+      z-index: 10;
+    }
+    .cta-btn {
+      width: 100%;
+      height: 56px;
+      background: #0A0A0A;
+      border-radius: 16px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px -8px rgba(10,10,10,.5);
+    }
+    .cta-btn-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .cta-btn i { color: #fff; width: 18px; height: 18px; }
+
+    /* ── Ribbon accent ── */
+    .ribbon-accent {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px 0;
+      margin: 0 16px;
+    }
+    .ribbon-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #E5E5E5);
+    }
+    .ribbon-line.right {
+      background: linear-gradient(90deg, #E5E5E5, transparent);
+    }
+    .ribbon-text {
+      font-size: 11px;
+      color: #C0C0C0;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <!-- signal bars -->
+      <svg viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="6" width="3" height="6" rx="1"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1"/>
+        <rect x="9" y="2" width="3" height="10" rx="1"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <!-- wifi -->
+      <svg viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
+        <path d="M5.2 6.8a4 4 0 015.6 0" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M2.4 4a7.6 7.6 0 0111.2 0" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M0 1.4a11 11 0 0116 0" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <!-- battery -->
+      <svg viewBox="0 0 25 12" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="1" width="21" height="10" rx="3" fill="none" stroke="#fff" stroke-width="1.2"/>
+        <rect x="1.5" y="2.5" width="16" height="7" rx="1.8"/>
+        <path d="M22.5 4.5v3a1.5 1.5 0 000-3z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <img
+      src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+      alt="Old Town Barbers"
+    />
+    <div class="hero-overlay"></div>
+
+    <!-- confetti dots -->
+    <div class="confetti-layer">
+      <div class="confetti-dot" style="width:6px;height:6px;background:#FFC32B;top:28%;left:18%;"></div>
+      <div class="confetti-dot" style="width:4px;height:4px;background:#F97316;top:38%;left:72%;"></div>
+      <div class="confetti-dot" style="width:5px;height:5px;background:#FF3366;top:55%;right:20%;"></div>
+      <div class="confetti-dot" style="width:3px;height:3px;background:#FFC32B;top:20%;left:50%;"></div>
+      <div class="confetti-dot" style="width:7px;height:7px;background:rgba(194,65,12,.5);top:65%;left:12%;"></div>
+      <div class="confetti-dot" style="width:4px;height:4px;background:#FFC32B;top:15%;right:30%;"></div>
+      <div class="confetti-dot" style="width:5px;height:5px;background:rgba(255,51,102,.4);top:44%;left:36%;"></div>
+    </div>
+
+    <!-- Nav controls -->
+    <div class="btn-back">
+      <i data-lucide="arrow-left"></i>
+    </div>
+    <div class="btn-share">
+      <i data-lucide="share-2"></i>
+    </div>
+
+    <!-- Salon info -->
+    <div class="hero-info">
+      <div class="hero-badge">
+        <i data-lucide="star"></i>
+        <span>4.8 · 312 reviews</span>
+      </div>
+      <div class="hero-salon-name">Old Town Barbers</div>
+      <div class="hero-salon-loc">Grossbasel, Basel</div>
+    </div>
+  </div>
+
+  <!-- Scrollable body -->
+  <div class="body">
+
+    <!-- Gift card visual object -->
+    <div class="giftcard-section">
+      <div class="giftcard-object">
+        <div class="giftcard-top">
+          <div class="giftcard-brand">Solen Gift Card</div>
+          <div class="giftcard-icon-wrap">
+            <i data-lucide="gift"></i>
+          </div>
+        </div>
+
+        <div class="giftcard-amount">
+          <span class="currency">CHF</span><span id="card-amount">50</span>
+        </div>
+        <div class="giftcard-tagline">For an unforgettable experience</div>
+
+        <div class="giftcard-to-from">
+          <div class="giftcard-recipient-block">
+            <div class="giftcard-label">To</div>
+            <div class="giftcard-name" id="card-to">Emma Müller</div>
+          </div>
+          <div class="giftcard-valid">
+            <div class="giftcard-valid-label">Valid until</div>
+            <div class="giftcard-valid-date">June 2027</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit nudge -->
+      <div class="giftcard-edit-row">
+        <div class="giftcard-edit-btn">
+          <i data-lucide="pencil"></i>
+          Edit card message
+        </div>
+      </div>
+    </div>
+
+    <!-- Amount picker -->
+    <div class="section">
+      <div class="section-label">Choose amount</div>
+      <div class="amount-chips">
+        <div class="chip" onclick="selectAmount(this, 25)">
+          CHF 25
+          <span class="chip-sub">Starter</span>
+        </div>
+        <div class="chip active" onclick="selectAmount(this, 50)">
+          CHF 50
+          <span class="chip-sub">Popular</span>
+        </div>
+        <div class="chip" onclick="selectAmount(this, 100)">
+          CHF 100
+          <span class="chip-sub">Premium</span>
+        </div>
+        <div class="chip" onclick="selectAmount(this, 200)">
+          CHF 200
+          <span class="chip-sub">Luxury</span>
+        </div>
+      </div>
+      <div class="custom-input-wrap">
+        <div class="custom-label">Or enter a custom amount</div>
+        <div style="position:relative;">
+          <span class="custom-input-prefix">CHF</span>
+          <input class="custom-input" type="number" placeholder="e.g. 75" oninput="customAmount(this)" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipient -->
+    <div class="section">
+      <div class="section-label">Recipient details</div>
+
+      <div class="recipient-field">
+        <div class="field-label">Name</div>
+        <input class="field-input filled" type="text" value="Emma Müller"
+          oninput="updateTo(this.value)" />
+      </div>
+
+      <div class="recipient-field">
+        <div class="field-label">Email</div>
+        <input class="field-input filled" type="email" value="emma@example.ch" />
+      </div>
+
+      <div class="recipient-field">
+        <div class="field-label">Personal message (optional)</div>
+        <textarea class="field-textarea filled" rows="3">Happy birthday! Treat yourself to something special. You deserve it.</textarea>
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="section" style="padding:14px 14px;">
+      <div class="delivery-row">
+        <div class="delivery-icon-wrap">
+          <i data-lucide="mail"></i>
+        </div>
+        <div class="delivery-text-wrap">
+          <div class="delivery-title">Delivered by email</div>
+          <div class="delivery-sub">Instant delivery to emma@example.ch</div>
+        </div>
+        <i data-lucide="check-circle-2" style="color:#16A34A;width:20px;height:20px;flex-shrink:0;margin-left:auto;"></i>
+      </div>
+    </div>
+
+    <!-- What they receive -->
+    <div class="receive-section">
+      <div class="receive-header">
+        <div class="receive-title">What Emma will receive</div>
+      </div>
+      <div class="receive-items">
+        <div class="receive-item">
+          <div class="receive-item-icon amber">
+            <i data-lucide="gift"></i>
+          </div>
+          <div class="receive-item-text">
+            A beautiful <strong>digital gift card</strong> for CHF 50 — bookable at any time
+          </div>
+        </div>
+        <div class="receive-item">
+          <div class="receive-item-icon green">
+            <i data-lucide="calendar-check"></i>
+          </div>
+          <div class="receive-item-text">
+            <strong>Instant email</strong> with a one-tap booking link for Old Town Barbers
+          </div>
+        </div>
+        <div class="receive-item">
+          <div class="receive-item-icon ink">
+            <i data-lucide="clock-3"></i>
+          </div>
+          <div class="receive-item-text">
+            Valid for <strong>12 months</strong> — no rush, no pressure
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ribbon -->
+    <div class="ribbon-accent" style="margin-top:20px;">
+      <div class="ribbon-line"></div>
+      <span class="ribbon-text">Secure payment via Stripe</span>
+      <div class="ribbon-line right"></div>
+    </div>
+
+    <!-- Spacer for sticky CTA -->
+    <div style="height:72px;"></div>
+  </div>
+
+  <!-- Sticky CTA -->
+  <div class="cta-bar">
+    <button class="cta-btn">
+      <i data-lucide="gift"></i>
+      <span class="cta-btn-label" id="cta-label">Buy gift card · CHF 50</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // init Lucide icons
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+  });
+
+  let selectedAmount = 50;
+
+  function selectAmount(el, amount) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelector('.custom-input').value = '';
+    selectedAmount = amount;
+    updateCard();
+  }
+
+  function customAmount(el) {
+    const v = parseInt(el.value, 10);
+    if (v > 0) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      selectedAmount = v;
+      updateCard();
+    }
+  }
+
+  function updateTo(val) {
+    const el = document.getElementById('card-to');
+    if (el) el.textContent = val || 'Recipient';
+    // update CTA label context
+    updateCard();
+  }
+
+  function updateCard() {
+    const amountEl = document.getElementById('card-amount');
+    const ctaEl = document.getElementById('cta-label');
+    if (amountEl) amountEl.textContent = selectedAmount;
+    if (ctaEl) ctaEl.textContent = 'Buy gift card · CHF ' + selectedAmount;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Card depth v2 (bare text locked)</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-sauce-one" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/peace-sans" />
+  <style>
+    /* V3 tokens — Earthen Wellness Light (V2-D60 Vibrancy Tune) */
+    :root {
+      --s-bg-base: #FAF3E6;
+      --s-bg-surface: #FFFFFF;
+      --s-brand: #1A8F5C;
+      --s-brand-mid: #0F6F44;
+      --s-brand-deep: #084B2D;
+      --s-brand-subtle: #D4F2E0;
+      --s-accent: #E0703D;
+      --s-accent-deep: #A04A22;
+      --s-ink: #2A1F18;
+      --s-ink-2: #5C4938;
+      --s-ink-3: #8A7660;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--s-bg-base); }
+    body {
+      font-family: 'Open Sauce One', system-ui, -apple-system, sans-serif;
+      color: var(--s-ink);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* V3 atmosphere wash — V2-D67-fu12 mobile recipe (6 blobs, blur 50px, sat 1.3) */
+    .atm {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      height: 100%;
+    }
+    .atm-blob {
+      position: absolute;
+      filter: blur(50px) saturate(1.3);
+      mix-blend-mode: normal;
+    }
+    .b1 { top: -5vh;  right: -12%; width: 60%; height: 55vh; background: var(--s-accent); border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: .32; }
+    .b2 { top: 5vh;   left: -15%;  width: 55%; height: 50vh; background: var(--s-brand-mid); border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: .28; }
+    .b3 { top: 80vh;  right: 10%;  width: 55%; height: 50vh; background: var(--s-brand); border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: .30; }
+    .b4 { top: 130vh; left: -8%;   width: 55%; height: 45vh; background: var(--s-accent-deep); border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: .22; }
+    .b5 { top: 180vh; right: -15%; width: 60%; height: 55vh; background: var(--s-accent); border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: .34; }
+    .b6 { top: 230vh; left: 10%;   width: 55%; height: 45vh; background: var(--s-accent-deep); border-radius: 58% 42% 48% 52% / 42% 58% 42% 58%; opacity: .26; }
+
+    /* Page chrome */
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 32px 16px 48px;
+      max-width: 390px;
+      margin: 0 auto;
+    }
+    .pageH {
+      font-family: 'Peace Sans', Impact, sans-serif;
+      font-size: 26px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--s-ink);
+    }
+    .intro {
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.45;
+      margin-bottom: 32px;
+    }
+    .intro b { color: var(--s-accent-deep); }
+
+    .variation {
+      margin-bottom: 40px;
+    }
+    .variation-label {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+    .variation-letter {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--s-brand-mid);
+      background: var(--s-brand-subtle);
+      padding: 3px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .variation-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--s-ink);
+    }
+    .variation-desc {
+      font-size: 12px;
+      color: var(--s-ink-3);
+      line-height: 1.4;
+      margin: 0 4px 14px;
+    }
+
+    /* FeedZone — different per variation */
+    .feedZone {
+      position: relative;
+      padding: 14px 12px 16px;
+      border-radius: 22px 22px 0 0;
+    }
+
+    /* The cards row */
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 157px);
+      gap: 12px;
+      justify-content: start;
+    }
+
+    /* ============ Card structure (PRODUCTION exact) ============ */
+    /* Width 157px (real prod at 390vw: (390-44)/2.2 ≈ 157px) */
+    .card {
+      width: 157px;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #FFE8D8; /* fallback cat bg */
+    }
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .text {
+      margin-top: 10px;
+      padding: 0 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .text h3 {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta {
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 13px;
+      color: var(--s-ink-3);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .row3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.35;
+    }
+    .row3 .left {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .row3 .left b {
+      font-weight: 600;
+      color: var(--s-ink);
+    }
+    .row3 .right {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      color: var(--s-ink);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+
+    /* Heart placeholder */
+    .heart {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .heart svg { width: 14px; height: 14px; }
+
+    /* Badge placeholder (green Heute frei) */
+    .badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 4px 10px;
+      font-family: 'Open Sauce One', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+      background: rgba(74, 222, 128, 0.32);
+      border: 1px solid rgba(74, 222, 128, 0.50);
+      color: #14532D;
+    }
+
+    /* ============ VARIATIONS — only PHOTO + FEEDZONE change ============ */
+    /* Bare text below photo is permanent (V2-D67-fu13). Text class unchanged across A/B/C/D. */
+
+    /* A · Baseline (current production) */
+    .variation-a .photo {
+      box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05);
+    }
+    .variation-a .feedZone { /* no bg, current FeedZone state */ }
+
+    /* B · Photo shadow STRONG (no FeedZone change) */
+    .variation-b .photo {
+      box-shadow:
+        0 2px 6px rgba(26,18,9,0.10),
+        0 12px 28px rgba(26,18,9,0.10),
+        0 24px 48px rgba(26,18,9,0.06);
+    }
+    .variation-b .feedZone { /* no bg */ }
+
+    /* C · FeedZone subtle white tint (current shadow on photo) */
+    .variation-c .photo {
+      box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05);
+    }
+    .variation-c .feedZone {
+      background: rgba(255, 255, 255, 0.30);
+      backdrop-filter: blur(20px) saturate(1.1);
+      -webkit-backdrop-filter: blur(20px) saturate(1.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 -8px 24px rgba(26,18,9,0.04);
+    }
+
+    /* D · BOTH — strong photo shadow + FeedZone tint */
+    .variation-d .photo {
+      box-shadow:
+        0 2px 6px rgba(26,18,9,0.10),
+        0 12px 28px rgba(26,18,9,0.10),
+        0 24px 48px rgba(26,18,9,0.06);
+    }
+    .variation-d .feedZone {
+      background: rgba(255, 255, 255, 0.30);
+      backdrop-filter: blur(20px) saturate(1.1);
+      -webkit-backdrop-filter: blur(20px) saturate(1.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 -8px 24px rgba(26,18,9,0.04);
+    }
+
+    /* Footer recommendation */
+    footer {
+      margin-top: 24px;
+      padding: 16px 12px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 14px;
+      font-size: 12px;
+      color: var(--s-ink-2);
+      line-height: 1.5;
+    }
+    footer h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--s-ink);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    footer p { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<div class="atm" aria-hidden="true">
+  <div class="atm-blob b1"></div>
+  <div class="atm-blob b2"></div>
+  <div class="atm-blob b3"></div>
+  <div class="atm-blob b4"></div>
+  <div class="atm-blob b5"></div>
+  <div class="atm-blob b6"></div>
+</div>
+
+<main>
+  <h1 class="pageH">Card depth — bare text locked</h1>
+  <p class="intro">
+    Constraint: text under photo stays <b>bare</b> (no pill, no wrapper, no surface).
+    Depth can only come from <b>photo shadow</b> and <b>section panel (FeedZone)</b>.
+    Same photos / badges / 157px width across all 4 — only depth treatment changes.
+  </p>
+
+  <!-- ==================== A · Baseline ==================== -->
+  <section class="variation variation-a">
+    <div class="variation-label">
+      <span class="variation-letter">A</span>
+      <span class="variation-title">Baseline (current production)</span>
+    </div>
+    <p class="variation-desc">
+      Photo shadow: very subtle. FeedZone: transparent. Atmosphere hits card directly.
+    </p>
+    <div class="feedZone">
+      <div class="row">
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="badge">Heute frei</div>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Atelier Coiffure</h3>
+            <div class="meta">Spalenberg 23 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>14:30</b> · CHF 80</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+            </div>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Studio Nord</h3>
+            <div class="meta">Klybeckstrasse 12 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>15:00</b> · CHF 50</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== B · Photo shadow STRONG ==================== -->
+  <section class="variation variation-b">
+    <div class="variation-label">
+      <span class="variation-letter">B</span>
+      <span class="variation-title">Photo shadow STRONG (no FeedZone change)</span>
+    </div>
+    <p class="variation-desc">
+      Photo gets a beefy 3-layer drop shadow. Each card lifts independently. Atmosphere still visible behind text.
+    </p>
+    <div class="feedZone">
+      <div class="row">
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="badge">Heute frei</div>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Nail Loft</h3>
+            <div class="meta">Aeschenplatz 15 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>17:00</b> · CHF 45</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+            </div>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Rhein Spa</h3>
+            <div class="meta">Steinenvorstadt 22 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== C · FeedZone tint (no photo change) ==================== -->
+  <section class="variation variation-c">
+    <div class="variation-label">
+      <span class="variation-letter">C</span>
+      <span class="variation-title">FeedZone tint (current photo shadow, push atmosphere back)</span>
+    </div>
+    <p class="variation-desc">
+      Photo shadow unchanged. Section panel gets a soft white-frosted tint that pushes atmosphere behind cards.
+    </p>
+    <div class="feedZone">
+      <div class="row">
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="badge">Heute frei</div>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Atelier Coiffure</h3>
+            <div class="meta">Spalenberg 23 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>14:30</b> · CHF 80</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+            </div>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Studio Nord</h3>
+            <div class="meta">Klybeckstrasse 12 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>15:00</b> · CHF 50</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== D · BOTH ==================== -->
+  <section class="variation variation-d">
+    <div class="variation-label">
+      <span class="variation-letter">D</span>
+      <span class="variation-title">BOTH (strong photo shadow + FeedZone tint)</span>
+    </div>
+    <p class="variation-desc">
+      Maximum depth. Each card lifts hard AND the section panel separates them from the atmosphere wash.
+    </p>
+    <div class="feedZone">
+      <div class="row">
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="badge">Heute frei</div>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Nail Loft</h3>
+            <div class="meta">Aeschenplatz 15 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>17:00</b> · CHF 45</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+            </div>
+          </div>
+        </a>
+        <a class="card" href="#">
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80" alt="" />
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          </div>
+          <div class="text">
+            <h3>Rhein Spa</h3>
+            <div class="meta">Steinenvorstadt 22 · Basel</div>
+            <div class="row3">
+              <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+              <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h4>My recommendation</h4>
+    <p>
+      <b>B (photo shadow strong)</b> alone might be enough — cards lift hard, atmosphere still reads through the gaps,
+      no surface added anywhere. Most conservative depth boost.
+    </p>
+    <p>
+      <b>D (both)</b> is the bigger swing — if B feels not enough on your phone, the FeedZone tint adds a soft
+      buffer between cards and atmosphere wash without touching text.
+    </p>
+    <p>
+      <b>C (FeedZone tint only)</b> is the lightest touch — reuses the V2-D55-retired "white-glass FeedZone"
+      pattern but at much lower opacity. Might re-introduce the "glass everywhere" feel that V2-D65 dropped.
+    </p>
+  </footer>
+</main>
+
+</body>
+</html>

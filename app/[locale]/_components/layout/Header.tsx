@@ -393,6 +393,7 @@ export default function Header({ locale }: { locale: string }) {
   const deepPageTitle = React.useMemo(() => {
     if (!pathname) return null;
     const TITLES: [RegExp, string][] = [
+      [/\/rewards\/?$/, "Treueprogramm"],
       [/\/profile\/bookings\/?$/, "Termine"],
       [/\/profile\/favorites\/?$/, "Favoriten"],
       [/\/profile\/stamps\/?$/, "Stempel"],

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · current vs future-state (all-white + accents)</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0F0F10; color: #fff; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 820px; margin: 0 auto; padding: 36px 28px 96px; }
+  .page-head { padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.10); margin-bottom: 24px; }
+  .page-head h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -0.025em; }
+  .page-head .sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  /* Variant block */
+  .variant { margin: 0 0 56px; border-radius: 22px; overflow: hidden; background: #fff; color: #1A1C19; box-shadow: 0 18px 50px rgba(0,0,0,0.4); }
+  .variant-label { padding: 16px 22px; background: #0A0A0B; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .variant-name { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .variant-vibe { font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.55); }
+  .palette { display: flex; gap: 5px; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.10); }
+
+  /* Mini homepage */
+  .banner { background: #1A1C19; color: #fff; padding: 10px 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; }
+  .banner .pill { background: #fff; color: #1A1C19; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 14px 22px; border-bottom: 1px solid #ECEFF4; }
+  .header .logo { font-family: ui-serif, serif; font-size: 19px; font-weight: 700; display: inline-flex; align-items: baseline; gap: 3px; }
+  .header .logo-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .header .nav { font-size: 12px; color: #5F635D; }
+
+  .hero { padding: 36px 22px 32px; text-align: center; }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.0; margin: 0 0 10px; }
+  .hero p { font-size: 13px; color: #5F635D; margin: 0 0 18px; }
+  .hero .cta { display: inline-block; padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; background: #E58840; color: #fff; }
+
+  /* Section */
+  .section { padding: 22px; }
+  .section.large-spacing { padding: 38px 22px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .section-head .eyebrow { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5F635D; display: inline-flex; align-items: center; gap: 5px; }
+  .eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+  .section-head h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.015em; display: inline-flex; align-items: center; gap: 10px; }
+  .arrow-btn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; }
+  .hex { font-family: ui-monospace, monospace; font-size: 10px; color: #8A8F88; margin-top: 4px; }
+
+  .cards { display: flex; gap: 10px; overflow: hidden; margin-top: 10px; }
+  .card-item { flex: 0 0 180px; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .card-item .img { aspect-ratio: 4/3; background: linear-gradient(135deg, #E8DCC4, #C8BFA4); position: relative; }
+  .card-item .heart-icon { position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background: rgba(255,255,255,0.85); border-radius: 50%; display: grid; place-items: center; font-size: 10px; }
+  .card-item .body { padding: 9px 11px; }
+  .card-item .name { font-size: 12px; font-weight: 700; }
+  .card-item .meta { font-size: 10px; color: #5F635D; }
+
+  .anchor { padding: 32px 22px; color: #fff; background: #1A6B73; }
+  .anchor h2 { margin: 0 0 6px; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .anchor p { margin: 0 0 14px; font-size: 12px; color: rgba(255,255,255,0.75); }
+  .anchor .cta { display: inline-block; padding: 9px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E58840; color: #fff; }
+
+  /* Hairline divider for FUTURE variant */
+  .divider { border-bottom: 1px solid #ECEFF4; }
+
+  /* ── CURRENT variant — sections have tints ── */
+  .v-current .section-1 { background: #F5F2EE; } /* warm ivory tint */
+  .v-current .section-2 { background: #E0EEEC; } /* sea-glass tint */
+  .v-current .section-3 { background: #fff; }
+  .v-current .arrow-btn { background: rgba(26,107,115,0.10); color: #1A6B73; }
+  .v-current .logo-dot { background: #E58840; } /* orange dot — current */
+  .v-current .eyebrow-dot { background: #5F635D; } /* neutral dot */
+  .v-current .card-item .heart-icon { color: #1A1C19; }
+
+  /* ── FUTURE variant — no tints, amplified accents ── */
+  .v-future .section-1,
+  .v-future .section-2,
+  .v-future .section-3 { background: #fff; }
+  .v-future .arrow-btn { background: rgba(26,107,115,0.10); color: #1A6B73; }
+  .v-future .logo-dot { background: #1A6B73; }  /* TEAL dot — new */
+  .v-future .eyebrow-dot { background: #1A6B73; }  /* TEAL eyebrow dots */
+  .v-future .card-item .heart-icon { color: #1A6B73; }  /* TEAL heart outline */
+  .v-future .section { padding-top: 32px; padding-bottom: 32px; }  /* MORE BREATH */
+  .v-future .divider { border-bottom: 1px solid #ECEFF4; }
+
+  /* Annotation chips on FUTURE variant */
+  .chip {
+    display: inline-block; font-family: ui-monospace, monospace;
+    font-size: 9px; padding: 2px 6px; border-radius: 4px;
+    background: rgba(26,107,115,0.15); color: #1A6B73;
+    font-weight: 700; margin-left: 6px;
+  }
+  .chip-warm { background: rgba(229,136,64,0.15); color: #BC6F34; }
+
+  /* Verdict block */
+  .verdict { margin-top: 32px; padding: 22px 26px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; }
+  .verdict h2 { margin: 0 0 10px; font-size: 16px; color: #fff; font-weight: 700; }
+  .verdict ul { margin: 8px 0 0; padding-left: 18px; }
+  .verdict li { margin-bottom: 4px; }
+  .verdict strong { color: #fff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-head">
+    <h1>Future state preview — drop section tints, lean on accents</h1>
+    <div class="sub">A = current (white + tints + accents) · B = future (white-only + amplified accents) · scroll to compare</div>
+  </div>
+
+  <!-- ═══════════════ A — CURRENT ═══════════════ -->
+  <div class="variant v-current">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">A · CURRENT — white + warm ivory + sea-glass + accents</div>
+        <div class="variant-vibe">3 substrate colors carrying section rhythm</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#F5F2EE"></span>
+        <span class="swatch" style="background:#E0EEEC"></span>
+        <span class="swatch" style="background:#E58840"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+      </div>
+    </div>
+
+    <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+    <div class="header"><span class="logo">Solen<span class="logo-dot"></span></span><span class="nav">Services · Über uns</span></div>
+    <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta">Solen durchsuchen</span></div>
+
+    <div class="section section-3">
+      <div class="section-head"><h2>Top auf Solen <span class="arrow-btn">↗</span></h2></div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-1">
+      <div class="section-head"><h2>In der Nähe <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #F5F2EE warm ivory tint</div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Salon Maria</div><div class="meta">200m · Heute frei</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Atelier Coiffure</div><div class="meta">450m · 14:30</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-2">
+      <div class="section-head"><h2>Lass dich verwöhnen <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #E0EEEC sea-glass tint</div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-1">
+      <div class="section-head"><h2>Coiffeur-Salons <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #F5F2EE warm ivory tint (repeat)</div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Salon Maria</div><div class="meta">Damen · ab 80</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Lina Hair</div><div class="meta">Styling · ab 60</div></div></div>
+      </div>
+    </div>
+
+    <div class="anchor">
+      <h2>Solen für<br/>dein Geschäft.</h2>
+      <p>Mehr Buchungen, weniger Aufwand.</p>
+      <span class="cta">Werde Solen-Partner →</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ B — FUTURE ═══════════════ -->
+  <div class="variant v-future">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">B · FUTURE — all-white + amplified accents</div>
+        <div class="variant-vibe">1 substrate · brand accents do section rhythm work</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#E58840"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+      </div>
+    </div>
+
+    <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+    <div class="header"><span class="logo">Solen<span class="logo-dot"></span></span><span class="nav">Services · Über uns</span></div>
+    <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta">Solen durchsuchen</span></div>
+
+    <div class="section section-3 divider">
+      <div class="section-head"><h2><span class="eyebrow" style="margin-right:8px"><span class="eyebrow-dot"></span></span>Top auf Solen <span class="arrow-btn">↗</span></h2></div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-1 divider">
+      <div class="section-head"><h2><span class="eyebrow"><span class="eyebrow-dot"></span></span>In der Nähe <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #FFFFFF white <span class="chip">teal dot</span> <span class="chip">teal arrow</span> <span class="chip">+ hairline divider</span></div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Salon Maria</div><div class="meta">200m · Heute frei</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Atelier Coiffure</div><div class="meta">450m · 14:30</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-2 divider">
+      <div class="section-head"><h2><span class="eyebrow"><span class="eyebrow-dot"></span></span>Lass dich verwöhnen <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #FFFFFF white <span class="chip">no sea-glass anymore</span></div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div>
+      </div>
+    </div>
+
+    <div class="section section-1 divider">
+      <div class="section-head"><h2><span class="eyebrow"><span class="eyebrow-dot"></span></span>Coiffeur-Salons <span class="arrow-btn">↗</span></h2></div>
+      <div class="hex">substrate: #FFFFFF white <span class="chip">no warm ivory anymore</span></div>
+      <div class="cards">
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Salon Maria</div><div class="meta">Damen · ab 80</div></div></div>
+        <div class="card-item"><div class="img"><span class="heart-icon">♡</span></div><div class="body"><div class="name">Lina Hair</div><div class="meta">Styling · ab 60</div></div></div>
+      </div>
+    </div>
+
+    <div class="anchor">
+      <h2>Solen für<br/>dein Geschäft.</h2>
+      <p>Mehr Buchungen, weniger Aufwand.</p>
+      <span class="cta">Werde Solen-Partner →</span>
+    </div>
+  </div>
+
+  <!-- ─── Verdict ─── -->
+  <div class="verdict">
+    <h2>What changes in B vs A</h2>
+    <ul>
+      <li><strong>Section bgs:</strong> 3 colors (white / warm ivory / sea-glass) → 1 color (white only)</li>
+      <li><strong>Section dividers:</strong> color change → thin 1px hairline + bigger vertical breath</li>
+      <li><strong>Logo dot:</strong> orange → teal (2-color brand identity in 1 mark)</li>
+      <li><strong>Eyebrow dots:</strong> grey/none → teal — present on every section header</li>
+      <li><strong>Heart outline:</strong> ink → teal — present on every salon card</li>
+      <li><strong>Arrow buttons:</strong> teal (unchanged from current — already shipped)</li>
+      <li><strong>BentoBusiness anchor:</strong> teal (unchanged — still the big dark moment)</li>
+      <li><strong>Orange CTAs:</strong> unchanged — still the 10% click signal</li>
+    </ul>
+    <p style="margin-top: 14px; color: rgba(255,255,255,0.65); font-size: 12px; line-height: 1.55;">
+      <strong>Trade:</strong> B is more confident + premium (Aesop pattern) but riskier — needs strong typography rhythm + good content variety to differentiate sections without color help. A is safer + more visually segmented but has the "color-tint divider" feel you're trying to escape. Try B for a few minutes; if it feels too austere, we have the data to tune mid-state (keep ONE tint, ditch the others, or use ultra-pale 99% white-leaning tints that read almost-white but give micro-rhythm).
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -5913,5 +5913,32 @@
     "unreadDot": "Ungelesen",
     "emptyTitle": "Keine Benachrichtigungen",
     "emptyBody": "Updates zu deinen Buchungen, Erstattungen und Bewertungen erscheinen hier."
+  },
+  "rewards": {
+    "yourStatus": "Dein Status",
+    "tier_base": "Base",
+    "tier_gold": "Gold",
+    "tier_platinum": "Platinum",
+    "toNext": "Noch {n} Besuche bis {tier}",
+    "topTier": "Höchste Stufe erreicht",
+    "ofVisits": "{n} von {total} Besuchen",
+    "visitsCount": "{n} Besuche",
+    "windowNote": "Basierend auf deinen Besuchen im letzten Jahr.",
+    "perksTitle": "Deine Vorteile",
+    "active": "Aktiv",
+    "perk_birthday_t": "Geburtstags-Priorität",
+    "perk_birthday_s": "In deiner Geburtstagswoche bevorzugt",
+    "howTitle": "So funktioniert dein Status",
+    "howBody": "Dein Status richtet sich nach deinen abgeschlossenen Besuchen im letzten Jahr in jedem Solen-Salon. {gold} Besuche erreichen Gold, {platinum} Platinum. Buchst du eine Weile nicht, sinkt dein Status langsam , immer nur eine Stufe.",
+    "cta": "Buchen und Status sichern",
+    "validThrough": "Gültig bis {date}. Buche, um deinen Status zu behalten.",
+    "perk_angebote_t": "Früher Zugang zu Angeboten",
+    "perk_angebote_s": "Neue Angebote 24 Std. vor allen sehen",
+    "perk_memberDeals_t": "Exklusive Member-Angebote",
+    "perk_memberDeals_s": "Deals nur für Mitglieder",
+    "perk_slots_t": "Früher Zugang zu Top-Terminen",
+    "perk_slots_s": "Beliebte Termine zuerst buchen",
+    "perk_angebote48_t": "48 Stunden früher",
+    "perk_angebote48_s": "Noch früher an Angebote und Termine"
   }
 }

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Walk-in Pay — redesign directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#5F5F5F; --ink-3:#6B6B6B;
+    --surface:#F5F5F4; --line:rgba(10,10,10,.08); --line-soft:rgba(10,10,10,.06);
+    --accent:#185CE0; --accent-pale:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9;
+    --el2:0 4px 12px rgba(40,37,34,.08), 0 2px 4px rgba(40,37,34,.04);
+    --el3:0 12px 40px rgba(40,37,34,.14), 0 4px 12px rgba(40,37,34,.06);
+    --head:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#E9E9E7;font-family:var(--body);color:var(--ink);padding:40px 24px 80px}
+  .page-h{max-width:1240px;margin:0 auto 8px}
+  .page-h h1{font-family:var(--head);font-weight:700;font-size:26px;letter-spacing:-.02em}
+  .page-h p{color:#55524e;font-size:14px;margin-top:6px;max-width:680px;line-height:1.5}
+  .rail{max-width:1240px;margin:36px auto 0;display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;justify-content:center}
+  .col{width:380px}
+  .cap{margin:0 4px 14px}
+  .cap .k{font-family:var(--head);font-weight:700;font-size:15px;letter-spacing:-.01em}
+  .cap .ref{display:inline-block;font-family:var(--head);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-pale);padding:3px 8px;border-radius:99px;margin-left:8px;vertical-align:middle}
+  .cap p{color:#55524e;font-size:12.5px;line-height:1.5;margin-top:7px}
+
+  /* iPhone frame */
+  .phone{width:380px;height:760px;background:#fff;border-radius:44px;box-shadow:var(--el3);padding:12px;position:relative}
+  .scr{position:absolute;inset:12px;border-radius:34px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:108px;height:26px;background:#0A0A0A;border-radius:99px;z-index:9}
+  .sb{display:flex;justify-content:space-between;align-items:center;padding:14px 26px 6px;font-family:var(--head);font-weight:600;font-size:13px}
+  .sb .dots{display:flex;gap:5px;align-items:center}
+  .body{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+  .ey{font-family:var(--head);font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+  .muted{color:var(--ink-2)}
+  .hair{height:1px;background:var(--line);border:0}
+  svg{display:block}
+
+  /* shared CTA */
+  .cta{margin:auto 18px 18px;height:54px;border-radius:99px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:9px;font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:.01em;box-shadow:var(--el2)}
+  .cta .amt{font-weight:700}
+  .secure{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--ink-2);font-size:12px;font-weight:500}
+
+  /* ---------- V1 sheet ---------- */
+  .v1 .body{padding:0 22px}
+  .grab{width:38px;height:5px;border-radius:99px;background:var(--line);margin:8px auto 18px}
+  .v1 .merch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;margin-top:6px}
+  .v1 .ava{width:60px;height:60px;border-radius:18px;object-fit:cover;box-shadow:var(--el2)}
+  .v1 .merch .nm{font-family:var(--head);font-weight:700;font-size:18px;letter-spacing:-.01em}
+  .hero{text-align:center;margin:26px 0 22px}
+  .hero .amt{font-family:var(--head);font-weight:800;font-size:46px;letter-spacing:-.03em;line-height:1;color:var(--accent)}
+  .hero .amt .cur{font-size:20px;font-weight:600;color:var(--accent);opacity:.5;vertical-align:baseline;margin-right:3px}
+  .sum{background:var(--surface);border-radius:16px;padding:6px 18px}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:15px 0}
+  .row+.row{border-top:1px solid var(--line-soft)}
+  .row .l{color:var(--ink-2);font-size:13.5px;font-weight:500}
+  .row .v{font-family:var(--head);font-weight:600;font-size:14px}
+
+  /* ---------- V2 review ---------- */
+  .v2 .body{padding:0}
+  .v2 .top{display:flex;align-items:center;gap:14px;padding:6px 20px 16px}
+  .v2 .top h2{font-family:var(--head);font-weight:700;font-size:21px;letter-spacing:-.02em}
+  .ico-btn{width:34px;height:34px;border-radius:99px;background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .v2 .salon{display:flex;gap:13px;padding:4px 20px 18px}
+  .v2 .salon img{width:58px;height:58px;border-radius:14px;object-fit:cover}
+  .v2 .salon .nm{font-family:var(--head);font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .v2 .salon .meta{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-2);margin-top:3px}
+  .v2 .salon .addr{font-size:12px;color:var(--ink-3);margin-top:4px}
+  .v2 .seg{padding:16px 20px}
+  .irow{display:flex;align-items:center;gap:13px;padding:9px 0}
+  .irow .ic{width:34px;height:34px;border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .irow .pr{font-family:var(--head);font-weight:600;font-size:14px}
+  .irow .sc{font-size:12px;color:var(--ink-3);margin-top:1px}
+  .v2 .line{display:flex;justify-content:space-between;align-items:center;padding:7px 20px;font-size:13.5px}
+  .v2 .line .l{color:var(--ink-2)}
+  .v2 .line .v{font-family:var(--head);font-weight:600}
+  .v2 .total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 20px}
+  .v2 .total .l{font-family:var(--head);font-weight:700;font-size:16px}
+  .v2 .total .v{font-family:var(--head);font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--accent)}
+  .barbar{border-top:1px solid var(--line);padding:14px 18px 16px;margin-top:auto}
+
+  /* ---------- V3 minimal ---------- */
+  .v3 .body{padding:0 24px}
+  .v3 h2{font-family:var(--head);font-weight:700;font-size:25px;letter-spacing:-.025em;margin:14px 0 4px}
+  .v3 .sub{color:var(--ink-2);font-size:13.5px;margin-bottom:24px}
+  .v3 .big{display:flex;align-items:center;gap:15px;padding:15px 0}
+  .v3 .big+.big{border-top:1px solid var(--line-soft)}
+  .v3 .big .ic{width:44px;height:44px;border-radius:13px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .v3 .big .pr{font-family:var(--head);font-weight:600;font-size:15.5px;letter-spacing:-.01em}
+  .v3 .big .sc{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+  .v3 .big .right{margin-left:auto;font-family:var(--head);font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .v3 .note{display:flex;gap:10px;background:var(--surface);border-radius:14px;padding:13px 14px;margin-top:22px}
+  .v3 .note p{font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+</style>
+</head>
+<body>
+  <div class="page-h">
+    <h1>Walk-in Pay — 3 redesign directions</h1>
+    <p>Mobile (QR-scanned) payment screen, booking state. Grounded in Mobbin references (Alan, Fresha, Airbnb, TaskRabbit) for structure + the locked Solen B&amp;W aesthetic for treatment. Ink chrome, royal-blue accent only on the amount, black pill CTA, generous rhythm, real elevation. Pick one and I'll build it into the React page.</p>
+  </div>
+
+  <div class="rail">
+
+    <!-- V1 -->
+    <div class="col">
+      <div class="cap"><span class="k">A · Payment sheet</span><span class="ref">Stripe / Apple Pay</span>
+        <p>Amount-led. Merchant up top, the price is the hero, compact summary below. Feels like a checkout sheet — fastest to read "what am I paying + to whom".</p>
+      </div>
+      <div class="phone"><div class="notch"></div><div class="scr v1">
+        <div class="sb"><span>9:41</span><span class="dots">●●● 5G ▮</span></div>
+        <div class="body">
+          <div class="grab"></div>
+          <div class="merch">
+            <img class="ava" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=200&q=80" alt="">
+            <div><div class="nm">Barbier Studio Zürich</div><div class="ey" style="margin-top:5px">Walk-in</div></div>
+          </div>
+          <div class="hero">
+            <div class="ey" style="margin-bottom:8px">Betrag</div>
+            <div class="amt"><span class="cur">CHF </span>45.00</div>
+          </div>
+          <div class="sum">
+            <div class="row"><span class="l">Service</span><span class="v">Herrenschnitt &amp; Bart</span></div>
+            <div class="row"><span class="l">Zeit</span><span class="v">Heute, 13:00</span></div>
+          </div>
+          <div class="cta">Bezahlen<span class="amt">· CHF 45.00</span></div>
+          <div class="secure" style="margin:-6px 0 16px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Sichere Zahlung über Stripe
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- V2 -->
+    <div class="col">
+      <div class="cap"><span class="k">B · Review &amp; confirm</span><span class="ref">Fresha</span>
+        <p>The Fresha structure (our structure source-of-truth): salon identity header with rating, icon summary rows, itemized line + bold Total, sticky pay bar. Most "trustworthy / detailed".</p>
+      </div>
+      <div class="phone"><div class="notch"></div><div class="scr v2">
+        <div class="sb"><span>9:41</span><span class="dots">●●● 5G ▮</span></div>
+        <div class="body">
+          <div class="top">
+            <div class="ico-btn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+            <h2>Bestätigen &amp; zahlen</h2>
+          </div>
+          <div class="salon">
+            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=200&q=80" alt="">
+            <div>
+              <div class="nm">Barbier Studio Zürich</div>
+              <div class="meta">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#0A0A0A"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.3 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6z"/></svg>
+                <b style="color:var(--ink);font-family:var(--head)">4.9</b> (128) · Niederdorf
+              </div>
+              <div class="addr">Niederdorfstrasse 21, 8001 Zürich</div>
+            </div>
+          </div>
+          <hr class="hair"/>
+          <div class="seg">
+            <div class="irow">
+              <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+              <div><div class="pr">Heute, 13:00</div><div class="sc">Sofort verfügbar · Walk-in</div></div>
+            </div>
+            <div class="irow">
+              <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14.5 14.5L20 20"/></svg></div>
+              <div><div class="pr">Herrenschnitt &amp; Bart</div><div class="sc">ca. 45 Min</div></div>
+            </div>
+          </div>
+          <hr class="hair"/>
+          <div class="line" style="padding-top:14px"><span class="l">Herrenschnitt &amp; Bart</span><span class="v">CHF 45.00</span></div>
+          <div class="total"><span class="l">Gesamt</span><span class="v">CHF 45.00</span></div>
+          <div class="barbar">
+            <div class="cta" style="margin:0 0 11px">Jetzt bezahlen<span class="amt">· CHF 45.00</span></div>
+            <div class="secure">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Sichere Zahlung über Stripe
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- V3 -->
+    <div class="col">
+      <div class="cap"><span class="k">C · Minimal</span><span class="ref">Alan</span>
+        <p>Calmest. Big title, three generous icon rows (salon / time / amount), a reassurance note, amount-in-CTA. Least dense — leans premium-quiet.</p>
+      </div>
+      <div class="phone"><div class="notch"></div><div class="scr v3">
+        <div class="sb"><span>9:41</span><span class="dots">●●● 5G ▮</span></div>
+        <div class="body">
+          <div class="ico-btn" style="margin:6px 0 10px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <h2>Walk-in bezahlen</h2>
+          <div class="sub">Bestätige deine Zahlung, um den Termin abzuschliessen.</div>
+          <div class="big">
+            <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5"/></svg></div>
+            <div><div class="pr">Barbier Studio Zürich</div><div class="sc">Herrenschnitt &amp; Bart</div></div>
+          </div>
+          <div class="big">
+            <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div><div class="pr">Heute, 13:00</div><div class="sc">Sofort verfügbar</div></div>
+          </div>
+          <div class="big">
+            <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></div>
+            <div><div class="pr">Betrag</div><div class="sc">inkl. MwSt</div></div>
+            <div class="right" style="color:var(--accent)">CHF 45.00</div>
+          </div>
+          <div class="note">
+            <svg width="15" height="15" style="flex-shrink:0;margin-top:1px" viewBox="0 0 24 24" fill="none" stroke="#5F5F5F" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <p>Sichere Zahlung über Stripe. Du wirst erst nach Bestätigung belastet.</p>
+          </div>
+          <div class="cta">Bezahlen<span class="amt">· CHF 45.00</span></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</body>
+</html>

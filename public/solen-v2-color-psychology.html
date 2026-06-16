@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — Earthen Wellness palette mockup</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       EARTHEN WELLNESS PALETTE — color-psychology rationale per token
+       ═══════════════════════════════════════════════════════════════════
+       --moss        #2D3F33   primary brand · grounded, trustworthy, natural.
+                               Warmer than dark-teal — feels like a forest
+                               canopy, not a hospital corridor. Carries the
+                               "serious booking platform" cue without coldness.
+
+       --terracotta  #C97A57   heartbeat · warmth, intimacy, beauty industry.
+                               Used for CTAs, highlight words, energy
+                               moments. Earthen instead of pop-coral, so it
+                               doesn't scream — it invites.
+
+       --cream       #F5EBDD   page bg · open, low-stress, soft.
+                               Replaces "white + cold teal wash" with a
+                               warm neutral that lowers reading anxiety.
+                               Studies show off-white reduces eye-strain
+                               vs pure white during prolonged browse.
+
+       --sage        #A8B89A   accent · calm, wellness, natural premium.
+                               Aesop / Necessaire / Glossier-Beyond use
+                               sage as their "we're good for you" cue.
+                               Whispered in the bg, never loud.
+
+       --ink         #2A1F18   text · warm charcoal, never pure black.
+                               Pure #000 fights with warm bg; warm ink
+                               reads soft and aligned. Same readability,
+                               less aggressive.
+
+       --bone        #E8DDC9   alternate surface · for cards on cream.
+                               Differentiates without contrast pop.
+
+       --terra-soft  #E8B89B   light terracotta tint · for badges/pills
+                               that need warmth without saturation.
+       ═══════════════════════════════════════════════════════════════════ */
+    :root {
+      --moss:        #2D3F33;
+      --moss-mid:    #3F5847;
+      --moss-pale:   #C8D4C9;
+      --terracotta:  #C97A57;
+      --terra-soft:  #E8B89B;
+      --terra-deep:  #8E4A2D;
+      --cream:       #F5EBDD;
+      --cream-warm:  #FAF2E5;
+      --bone:        #E8DDC9;
+      --sage:        #A8B89A;
+      --sage-pale:   #D4DDC8;
+      --ink:         #2A1F18;
+      --ink-2:       #5C4A3A;
+      --ink-3:       #8A7A68;
+      --ease-glide:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--cream); }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 0 100px;
+      background:
+        /* Atmosphere wash in earthen tones — no teal/ice-blue */
+        radial-gradient(ellipse 75% 55% at 80% 12%, rgba(232, 184, 155, 0.40) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 22%, rgba(212, 221, 200, 0.45) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 48%, rgba(201, 122, 87, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 72%, rgba(168, 184, 154, 0.30) 0%, transparent 65%),
+        var(--cream);
+    }
+
+    /* ═══ Color-psychology header strip ═══ */
+    .legend {
+      max-width: 1280px; margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+    .legend h1 {
+      font-family: "Peace Sans", Impact, sans-serif;
+      font-size: 28px; font-weight: 900;
+      color: var(--ink);
+    }
+    .legend .sub {
+      font-size: 14px; color: var(--ink-2);
+      margin-top: 6px; max-width: 720px; line-height: 1.55;
+    }
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .swatch {
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid rgba(42, 31, 24, 0.06);
+    }
+    .swatch .chip {
+      width: 100%; height: 64px;
+      border-radius: 8px; margin-bottom: 12px;
+    }
+    .swatch .name { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .swatch .hex  { font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+    .swatch .why  { font-size: 11.5px; color: var(--ink-2); line-height: 1.5; margin-top: 8px; }
+
+    /* ═══ Phone frame ═══ */
+    .phone-wrap {
+      max-width: 420px; margin: 56px auto 0;
+      border-radius: 32px; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(42, 31, 24, 0.12);
+      background: var(--cream);
+      position: relative;
+      isolation: isolate;
+    }
+
+    /* Atmosphere blobs in earthen palette only */
+    .blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .blobs > div { position: absolute; filter: blur(60px); mix-blend-mode: multiply; }
+    .blob-1 { top: -10%; left: -20%; width: 70%; height: 50%; background: var(--moss-pale); border-radius: 60% 40% 50% 50%; opacity: 0.55; }
+    .blob-2 { top: 5%; right: -25%; width: 70%; height: 45%; background: var(--terra-soft); border-radius: 50% 60% 40% 60%; opacity: 0.50; }
+    .blob-3 { top: 35%; left: -10%; width: 80%; height: 30%; background: var(--bone); border-radius: 60% 40% 50% 60%; opacity: 0.55; }
+    .blob-4 { bottom: -8%; left: -25%; width: 80%; height: 40%; background: var(--sage-pale); border-radius: 50%; opacity: 0.45; }
+
+    .phone-wrap > .nav,
+    .phone-wrap > .hero,
+    .phone-wrap > .feed {
+      position: relative; z-index: 1;
+    }
+
+    /* ═══ Navbar ═══ */
+    .nav {
+      padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(245, 235, 221, 0.65); backdrop-filter: blur(12px);
+    }
+    .logo { font-family: "Peace Sans", Impact, sans-serif; font-size: 22px; font-weight: 900; color: var(--ink); }
+    .logo .dot { display: inline-block; width: 6px; height: 6px; background: var(--terracotta); border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+    .menu { font-size: 22px; color: var(--ink); }
+
+    /* ═══ Hero ═══ */
+    .hero { padding: 36px 22px 24px; }
+    .eyebrow {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em;
+      color: var(--ink-3);
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    }
+    .eyebrow::before {
+      content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--terracotta);
+    }
+    .hero h1 {
+      font-family: "Peace Sans", Impact, sans-serif;
+      font-weight: 900; font-size: 28px; line-height: 1.15; color: var(--ink);
+    }
+    .hero h1 .accent { color: var(--terracotta); }
+    .lede { margin-top: 14px; font-size: 14px; color: var(--ink-2); line-height: 1.55; max-width: 320px; }
+
+    /* Search card */
+    .search-card {
+      margin: 24px 22px 0;
+      background: #fff; border-radius: 16px; padding: 6px;
+      box-shadow: 0 4px 12px rgba(42, 31, 24, 0.08);
+      border: 1px solid rgba(42, 31, 24, 0.04);
+    }
+    .search-row {
+      padding: 11px 16px; border-bottom: 1px solid rgba(42, 31, 24, 0.05);
+      display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-3);
+    }
+    .search-row:last-of-type { border-bottom: 0; }
+    .search-row .sep { width: 1px; height: 14px; background: rgba(42, 31, 24, 0.15); }
+    .submit {
+      margin-top: 6px; width: 100%;
+      background: var(--moss); color: #fff; border: 0;
+      padding: 14px; border-radius: 999px;
+      font-size: 14px; font-weight: 700;
+    }
+
+    /* ═══ Feed (frosted-glass rising panel) ═══ */
+    .feed {
+      margin-top: 32px;
+      border-radius: 28px 28px 0 0;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(16px) saturate(1.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 -12px 32px rgba(42, 31, 24, 0.06);
+      padding: 16px 14px 32px;
+    }
+    .h2 {
+      font-family: "Open Sauce One", sans-serif; font-weight: 900;
+      font-size: 22px; line-height: 1.0; color: var(--ink); margin-bottom: 12px;
+    }
+    .h2 .link {
+      float: right; font-size: 12px; font-weight: 600;
+      color: var(--terra-deep); line-height: 24px;
+    }
+    .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0; }
+    .card { flex: 0 0 130px; cursor: pointer; }
+    .card .photo {
+      aspect-ratio: 1; border-radius: 14px; position: relative;
+      box-shadow: 0 1px 2px rgba(42, 31, 24, 0.04), 0 4px 10px rgba(42, 31, 24, 0.05);
+      display: grid; place-items: center;
+      font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px;
+    }
+    .card .heart {
+      position: absolute; top: 8px; right: 8px;
+      font-size: 16px; color: rgba(42, 31, 24, 0.5);
+    }
+    .card .pill {
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 12px; padding: 7px 10px;
+      box-shadow: 0 1px 3px rgba(42, 31, 24, 0.04);
+      font-size: 11px; line-height: 1.3;
+    }
+    .card .pill .name { font-weight: 700; font-size: 13px; color: var(--ink); }
+    .card .pill .meta { color: var(--ink-2); margin-top: 2px; }
+
+    /* Card category palettes — earthen versions of V3 cat colorways */
+    .cat-coiffeur { background: var(--cream-warm); }
+    .cat-coiffeur .letter { color: var(--terracotta); }
+    .cat-barber { background: var(--bone); }
+    .cat-barber .letter { color: var(--ink); }
+    .cat-nails { background: var(--sage-pale); }
+    .cat-nails .letter { color: var(--terra-deep); }
+    .cat-spa { background: var(--moss); }
+    .cat-spa .letter { color: var(--cream); }
+
+    /* ═══ Salon-register CTA panel ═══ */
+    .panel {
+      margin: 32px 14px 0;
+      background: var(--moss);
+      border-radius: 24px;
+      padding: 32px 24px;
+      color: #fff;
+      box-shadow: 0 16px 40px rgba(42, 31, 24, 0.16);
+    }
+    .panel .eb {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em;
+      color: var(--terra-soft); margin-bottom: 12px; display: inline-block;
+    }
+    .panel h2 {
+      font-family: "Peace Sans", Impact, sans-serif; font-weight: 900;
+      font-size: 26px; line-height: 1.1;
+    }
+    .panel h2 .accent { color: var(--terra-soft); }
+    .panel p { margin-top: 12px; font-size: 13px; line-height: 1.55; color: rgba(255, 255, 255, 0.7); }
+    .panel .cta {
+      margin-top: 20px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; color: #fff;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
+      padding-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Color-psychology legend ═══ -->
+  <div class="legend">
+    <h1>Solen — Earthen Wellness palette</h1>
+    <p class="sub">
+      Warm earth tones replace the V3 dark-teal + ice-blue. Psychologically, the palette balances
+      <b>warmth</b> (beauty industry alignment) with <b>groundedness</b> (trust required for booking).
+      Color choices below are justified individually, not picked for aesthetics alone.
+    </p>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip" style="background: #2D3F33;"></div>
+        <div class="name">Moss</div>
+        <div class="hex">#2D3F33</div>
+        <div class="why">Primary brand. Replaces dark-teal. Forest canopy, not hospital corridor — serious without being cold.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #C97A57;"></div>
+        <div class="name">Terracotta</div>
+        <div class="hex">#C97A57</div>
+        <div class="why">Heartbeat. Warmth + beauty-industry alignment without screaming. Used on CTAs + accent words.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #F5EBDD;"></div>
+        <div class="name">Cream</div>
+        <div class="hex">#F5EBDD</div>
+        <div class="why">Page bg. Lower eye-strain than pure white during browsing. Open, low-stress.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #A8B89A;"></div>
+        <div class="name">Sage</div>
+        <div class="hex">#A8B89A</div>
+        <div class="why">Wellness accent. Whispered "natural / good for you" cue. Aesop / Necessaire territory.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #E8DDC9;"></div>
+        <div class="name">Bone</div>
+        <div class="hex">#E8DDC9</div>
+        <div class="why">Alternate surface. Differentiates cards on cream without harsh contrast.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #2A1F18;"></div>
+        <div class="name">Ink (warm)</div>
+        <div class="hex">#2A1F18</div>
+        <div class="why">Text. Warm charcoal — pure black fights with the warm bg. Same readability, softer feel.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Phone mockup ═══ -->
+  <div class="phone-wrap">
+    <div class="blobs">
+      <div class="blob-1"></div><div class="blob-2"></div><div class="blob-3"></div><div class="blob-4"></div>
+    </div>
+
+    <div class="nav">
+      <span class="logo">Solen<span class="dot"></span></span>
+      <span class="menu">☰</span>
+    </div>
+
+    <div class="hero">
+      <span class="eyebrow">Beauty in der Schweiz</span>
+      <h1>Schöner aussehen,<br /><span class="accent">schneller buchen.</span></h1>
+      <p class="lede">Über 1'200 Salons in Basel, Zürich und Bern. Sofort online buchen, instant bestätigt.</p>
+    </div>
+
+    <div class="search-card">
+      <div class="search-row">⌕<span class="sep"></span>Service</div>
+      <div class="search-row">⌖<span class="sep"></span>Stadt</div>
+      <div class="search-row">▦<span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+
+    <div class="feed">
+      <div class="h2">Zuletzt angesehen <span class="link">Im Profil →</span></div>
+      <div class="cards">
+        <div class="card">
+          <div class="photo cat-coiffeur"><span class="heart">♡</span><span class="letter">A</span></div>
+          <div class="pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30 · ★ 4.9</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-barber"><span class="heart">♡</span><span class="letter">S</span></div>
+          <div class="pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min · ★ 4.7</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-nails"><span class="heart">♡</span><span class="letter">N</span></div>
+          <div class="pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30 · ★ 4.8</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-spa"><span class="heart">♡</span><span class="letter">R</span></div>
+          <div class="pill"><div class="name">Rhein Spa</div><div class="meta">Mo. 09:00 · ★ 5.0</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <span class="eb">Für Salons</span>
+        <h2>Werde<br /><span class="accent">Solen-Partner.</span></h2>
+        <p>Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir.</p>
+        <span class="cta">Salon registrieren →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare-against-current note -->
+  <div class="legend" style="margin-top: 56px;">
+    <h1 style="font-size: 18px;">Why this beats V3 dark-teal</h1>
+    <p class="sub">
+      • <b>Less category-stereotype</b>: dark-teal-on-pale-blue is what every booking app does (Booksy, Fresha tendencies). Earth + sage + terracotta is distinctive in DACH market.<br />
+      • <b>Psychologically warmer</b>: terracotta CTA reads as "treat yourself" — V3 dark-teal reads as "checkout button on a banking app".<br />
+      • <b>Wellness-aligned</b>: sage + cream + moss is the visual language of premium-natural beauty (Aesop, Tata Harper, Necessaire). Solen positions as "the trusted way to find beauty" — palette delivers that emotionally.<br />
+      • <b>Gender-neutral</b>: warm earth doesn't lean masculine (deep navy) or feminine (millennial pink). Coiffeur, barber, nails, spa — all fit comfortably.<br />
+      • <b>Photo-friendly</b>: salon photos (which will replace the placeholder letters in production) photograph richer against cream/bone than against pale teal.<br />
+      • <b>Same brand discipline</b>: 5 tokens + 2 tints. Same "1 saturated accent ≤10%" rule (terracotta is the accent), same dot-cue, same Peace Sans + Open Sauce One typography.
+    </p>
+  </div>
+
+</body>
+</html>

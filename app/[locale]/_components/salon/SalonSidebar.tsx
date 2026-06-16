@@ -90,7 +90,9 @@ export function SalonSidebar({
   }, []);
 
   // V3-D230: conditional buy rows; packages feature removed entirely (owner, 2026-06-11).
-  const hasGiftCards = true; // universal Solen feature
+  // Gift cards HIDDEN from customers (owner, 2026-06-14) in favour of a Solen-wide
+  // loyalty card. Flip back to true to restore the "Geschenkgutschein kaufen" row.
+  const hasGiftCards = false;
 
   return (
     /* V3-D230 (2026-05-27): box-shadow DROPPED to match real Fresha capture

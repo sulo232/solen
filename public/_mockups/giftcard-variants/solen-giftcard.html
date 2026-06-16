@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Gift Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --bg:#EDEDEF; --sunken:#F4F4F5; --accent:#276EF1; --star:#FFC32B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#C9CACE; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; display:flex; justify-content:center; padding:24px 0;}
+  .phone{width:390px; background:#fff; border-radius:42px; overflow:hidden; box-shadow:0 40px 90px -30px rgba(0,0,0,.5); position:relative;}
+  .status{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600;}
+  .status .dots{display:flex; gap:5px; align-items:center;}
+  /* top bar */
+  .bar{display:flex; align-items:center; gap:12px; padding:6px 16px 14px;}
+  .icirc{width:38px; height:38px; border-radius:50%; background:var(--sunken); display:grid; place-items:center; color:var(--ink); flex-shrink:0;}
+  .bar h1{font-family:"Inter Tight"; font-size:18px; font-weight:600; letter-spacing:-.01em;}
+  .scroll{max-height:746px; overflow-y:auto;}
+  .scroll::-webkit-scrollbar{display:none;}
+  /* hero: a real, physical light card (council direction — material, not a coloured fill) */
+  .hero{padding:20px 20px 22px; background:#F1F1F3; display:flex; justify-content:center;}
+  .card{position:relative; width:300px; aspect-ratio:1.6/1; border-radius:16px; overflow:hidden;
+    background:#FCFCFB; border:1px solid #EAEAEC;
+    box-shadow:0 24px 44px -18px rgba(42,48,64,.32), 0 2px 5px rgba(0,0,0,.05), inset 0 1px 0 #fff;
+    transform:rotate(-2.2deg);
+    padding:17px 18px 15px; display:flex; flex-direction:column; justify-content:space-between;}
+  .card .grain{position:absolute; inset:0; pointer-events:none; opacity:.6; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
+  .card .foil{position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg,#1E54B7,#276EF1 30%,#AEC9FF 52%,#276EF1 74%,#1E54B7);}
+  .card .top{display:flex; align-items:flex-start; justify-content:space-between; position:relative;}
+  .word{font-family:"Inter Tight"; font-weight:700; font-size:20px; letter-spacing:-.02em; color:#14161B; text-shadow:0 1px 0 rgba(255,255,255,.95);}
+  .swiss{width:20px; height:20px; border-radius:6px; background:#276EF1; color:#fff; font-weight:800; font-size:15px; line-height:20px; text-align:center; box-shadow:0 1px 2px rgba(39,110,241,.45);}
+  .card .amt{position:relative;}
+  .card .amt .lab{font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:#A2A2A6; font-weight:600; margin-bottom:2px;}
+  .card .amt .val{font-family:"Inter Tight"; font-weight:700; font-size:40px; letter-spacing:-.025em; color:#0A0A0A; font-variant-numeric:tabular-nums; line-height:1;}
+  .card .foot{display:flex; align-items:center; justify-content:space-between; position:relative; font-size:11px; color:#7C7C80;}
+  .card .foot .any{display:flex; align-items:center; gap:5px;}
+  .card .foot .any i{color:#276EF1;}
+  /* value line */
+  .trust{display:flex; gap:10px; padding:2px 20px 4px;}
+  .trust .t{flex:1; background:var(--sunken); border-radius:13px; padding:10px 12px; display:flex; gap:9px; align-items:flex-start;}
+  .trust .t i{color:var(--ink); margin-top:1px;}
+  .trust .t p{font-size:11.5px; line-height:1.35; color:var(--ink2);}
+  .trust .t b{display:block; color:var(--ink); font-weight:600; font-size:12px;}
+  /* sections */
+  section{padding:18px 20px 0;}
+  .h{font-family:"Inter Tight"; font-size:15px; font-weight:600; margin-bottom:11px; letter-spacing:-.01em;}
+  .chips{display:grid; grid-template-columns:repeat(4,1fr); gap:9px;}
+  .chip{border:1.5px solid var(--line); background:#fff; border-radius:14px; padding:13px 0; text-align:center; font-family:"Inter Tight"; font-weight:600; font-size:15px; cursor:pointer; transition:all .14s; font-variant-numeric:tabular-nums;}
+  .chip small{display:block; font-family:"Inter"; font-size:9.5px; font-weight:600; color:var(--ink3); letter-spacing:.08em;}
+  .chip.sel{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .chip.sel small{color:rgba(255,255,255,.6);}
+  .field{margin-top:10px;}
+  .field label{display:block; font-size:12px; color:var(--ink2); margin:0 0 5px 2px; font-weight:500;}
+  .inp{width:100%; height:50px; border:1.5px solid var(--line); border-radius:14px; padding:0 15px; font-size:15px; font-family:"Inter"; background:#fff; color:var(--ink);}
+  .inp::placeholder{color:#B6B6BA;}
+  textarea.inp{height:78px; padding:13px 15px; resize:none; line-height:1.4;}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+  /* how it works */
+  .how{margin:18px 20px 0; background:var(--sunken); border-radius:16px; padding:15px 16px;}
+  .how .h{margin-bottom:12px;}
+  .step{display:flex; gap:11px; align-items:flex-start; padding:6px 0;}
+  .step .n{width:24px; height:24px; border-radius:50%; background:#fff; display:grid; place-items:center; flex-shrink:0; box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .step .n i{width:14px; height:14px; color:var(--ink);}
+  .step p{font-size:12.5px; line-height:1.4; color:var(--ink2);}
+  .step p b{color:var(--ink); font-weight:600;}
+  /* sticky cta */
+  .cta-wrap{position:sticky; bottom:0; background:linear-gradient(180deg,rgba(255,255,255,0),#fff 28%); padding:18px 20px calc(18px + env(safe-area-inset-bottom));}
+  .cta{width:100%; height:54px; border:0; border-radius:15px; background:var(--ink); color:#fff; font-family:"Inter Tight"; font-weight:700; font-size:16px; letter-spacing:-.01em; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .12s;}
+  .cta:active{transform:scale(.985);}
+  .fineprint{text-align:center; font-size:11px; color:var(--ink3); margin-top:9px;}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:16px"></i><i data-lucide="wifi" style="width:16px"></i><i data-lucide="battery-full" style="width:18px"></i></span></div>
+
+    <div class="bar">
+      <div class="icirc"><i data-lucide="arrow-left" style="width:19px"></i></div>
+      <h1>Gift card</h1>
+    </div>
+
+    <div class="scroll">
+      <!-- HERO: the Solen gift card object -->
+      <div class="hero">
+        <div class="card">
+          <div class="grain"></div>
+          <div class="foil"></div>
+          <div class="top">
+            <div class="word">solen</div>
+            <div class="swiss">+</div>
+          </div>
+          <div class="amt">
+            <div class="lab">Gift card</div>
+            <div class="val" id="cardAmt">CHF 100</div>
+          </div>
+          <div class="foot">
+            <div class="any"><i data-lucide="check" style="width:13px"></i> Use at any salon</div>
+            <div>Valid 3 years</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- trust row -->
+      <div class="trust">
+        <div class="t"><i data-lucide="store" style="width:17px"></i><p><b>Any salon</b>Coiffeur, nails, spa, barber</p></div>
+        <div class="t"><i data-lucide="mail" style="width:17px"></i><p><b>Sent by email</b>Instantly or on a date</p></div>
+      </div>
+
+      <!-- amount -->
+      <section>
+        <div class="h">Choose an amount</div>
+        <div class="chips" id="chips">
+          <div class="chip" data-v="25">25<small>CHF</small></div>
+          <div class="chip sel" data-v="100">100<small>CHF</small></div>
+          <div class="chip" data-v="150">150<small>CHF</small></div>
+          <div class="chip" data-v="200">200<small>CHF</small></div>
+        </div>
+        <div class="field"><input class="inp" inputmode="numeric" placeholder="Other amount (CHF 10 – 1000)" id="other" /></div>
+      </section>
+
+      <!-- recipient -->
+      <section>
+        <div class="h">Who's it for?</div>
+        <input class="inp" placeholder="Recipient's name" />
+        <div class="field"><input class="inp" type="email" placeholder="Recipient's email" /></div>
+      </section>
+
+      <!-- message -->
+      <section>
+        <div class="h">Add a message</div>
+        <textarea class="inp" placeholder="Happy birthday! Treat yourself to something nice."></textarea>
+      </section>
+
+      <!-- how it works -->
+      <div class="how">
+        <div class="h">How it works</div>
+        <div class="step"><span class="n"><i data-lucide="gift"></i></span><p><b>You buy it</b>, we email the gift card to them (now or on a chosen date).</p></div>
+        <div class="step"><span class="n"><i data-lucide="search"></i></span><p>They <b>pick any Solen salon</b> and book.</p></div>
+        <div class="step"><span class="n"><i data-lucide="check"></i></span><p>The balance is <b>applied at checkout</b>. No card needed at the salon.</p></div>
+      </div>
+
+      <!-- cta -->
+      <div class="cta-wrap">
+        <button class="cta"><i data-lucide="lock" style="width:16px"></i> Buy gift card · <span id="ctaAmt">CHF 100</span></button>
+        <p class="fineprint">Secure payment · Refundable within 14 days if unused</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    const chips = document.getElementById('chips');
+    const other = document.getElementById('other');
+    const cardAmt = document.getElementById('cardAmt');
+    const ctaAmt = document.getElementById('ctaAmt');
+    function setAmt(v){ const t = 'CHF ' + v; cardAmt.textContent = t; ctaAmt.textContent = t; }
+    chips.addEventListener('click', (e) => {
+      const c = e.target.closest('.chip'); if(!c) return;
+      [...chips.children].forEach(x => x.classList.remove('sel'));
+      c.classList.add('sel'); other.value = ''; setAmt(c.dataset.v);
+    });
+    other.addEventListener('input', () => {
+      const n = parseInt(other.value || '0', 10);
+      if(n > 0){ [...chips.children].forEach(x => x.classList.remove('sel')); setAmt(n); }
+    });
+  </script>
+</body>
+</html>

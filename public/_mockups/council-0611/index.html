@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Council round 2026-06-11 — staff profile + booking step 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EFEFF1;font-family:Inter,sans-serif;color:#0A0A0A;padding:20px 14px 60px}
+  h1{font-family:'Inter Tight',sans-serif;font-size:20px;letter-spacing:-.01em;margin:6px 2px 4px}
+  p.note{font-size:13px;line-height:1.55;color:#555;margin:0 2px 18px;max-width:720px}
+  h2{font-family:'Inter Tight',sans-serif;font-size:16px;margin:30px 2px 12px}
+  .row{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
+  .cell{flex:none;width:300px}
+  .cell img{width:100%;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.14);display:block}
+  .lbl{font-size:12.5px;font-weight:600;margin:0 2px 8px;display:flex;align-items:center;gap:6px}
+  .lbl .tag{font-size:10.5px;font-weight:700;letter-spacing:.04em;background:#0A0A0A;color:#fff;border-radius:999px;padding:2px 8px}
+  .lbl .tag.rec{background:#16A34A}
+  .lbl .tag.before{background:#999}
+  .cap{font-size:12px;color:#666;line-height:1.5;margin:8px 2px 0}
+</style>
+</head>
+<body>
+<h1>Staff profile + booking step 1 — council round, all variants</h1>
+<p class="note">All frames are the REAL pages (old-town-barbers / atelier-haarwerk) modified in-browser, 390×844. Council (Opus + Grok) verdicts: staff availability should be next bookable SLOTS, not a weekly schedule (Fresha shows no availability on employee profiles at all); booking step 1's clutter = the stepper + too many surface tiers.</p>
+
+<h2>A — Staff profile · Verfügbarkeit</h2>
+<div class="row">
+  <div class="cell">
+    <p class="lbl"><span class="tag before">BEFORE</span> current (rejected)</p>
+    <img src="A0-staff-before.png" alt="">
+    <p class="cap">Green box + 7-day schedule rows.</p>
+  </div>
+  <div class="cell">
+    <p class="lbl"><span class="tag rec">A1 · COUNCIL PICK</span> slot chips</p>
+    <img src="A1-staff-slotchips.png" alt="">
+    <p class="cap">3 next bookable slots as flat chips → tap books Luca at that time. "Alle Zeiten ansehen" → date picker. No green box, no schedule.</p>
+  </div>
+  <div class="cell">
+    <p class="lbl"><span class="tag">A2</span> section removed (pure Fresha)</p>
+    <img src="A2-staff-noavail.png" alt="">
+    <p class="cap">No availability on the profile at all — it lives in the booking date picker, exactly like Fresha.</p>
+  </div>
+</div>
+
+<h2>B — Booking step 1 · Service wählen</h2>
+<div class="row">
+  <div class="cell">
+    <p class="lbl"><span class="tag before">BEFORE</span> current (rejected)</p>
+    <img src="B0-booking-before.png" alt="">
+    <p class="cap">Stepper + grey body + staff strip + categories.</p>
+  </div>
+  <div class="cell">
+    <p class="lbl"><span class="tag rec">B1 · COUNCIL PICK</span> no stepper, white, collapsed stylist</p>
+    <img src="B1-booking-council.png" alt="">
+    <p class="cap">Stepper removed on step 1 only (stays on Zeit/Haare/Bezahlen). White body. Stylist = one row → opens picker sheet. Progress "Schritt 1 von 3" in the bottom bar.</p>
+  </div>
+  <div class="cell">
+    <p class="lbl"><span class="tag">B1b</span> B1 scrolled</p>
+    <img src="B1b-booking-council-scrolled.png" alt="">
+    <p class="cap">Pill bar sticks white with hairline; grouped cards unchanged.</p>
+  </div>
+  <div class="cell">
+    <p class="lbl"><span class="tag">B2</span> minimal — keep stepper, white body only</p>
+    <img src="B2-booking-minimal.png" alt="">
+    <p class="cap">Everything stays (stepper, staff faces, title), only the grey patchwork goes white. One-line change.</p>
+  </div>
+</div>
+</body>
+</html>

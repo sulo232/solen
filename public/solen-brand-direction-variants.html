@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — brand direction (blue+butter vs terracotta vs walnut), no emerald</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* shared neutral tokens — substrate locked at #FAF8F2 per V3-D93 */
+  :root {
+    --bg-page: #FAF8F2;
+    --bg-card: #FFFFFF;
+    --ink: #1A1C19;
+    --ink-2: #6B7068;
+    --ink-3: #5F635D;
+    --border: #E8E6E0;
+  }
+
+  /* per-variant brand tokens */
+  .vA {
+    --brand: #2A4DC7;          /* warm-blue (current #1638C4 nudged warmer) */
+    --brand-deep: #1B358F;
+    --accent: #F0BE32;         /* butter yellow (current #FFC32B softened) */
+    --accent-deep: #C99320;
+    --hl: var(--brand);        /* highlight word color */
+    --dot: var(--accent);      /* logo dot color */
+    --cta-bg: var(--brand);
+    --cta-text: #FFFFFF;
+  }
+  .vB {
+    --brand: #D87352;          /* terracotta (current s-accent, promoted to action) */
+    --brand-deep: #A04A22;
+    --accent: #8B5A3C;         /* warm umber as secondary */
+    --accent-deep: #5D3A24;
+    --hl: var(--brand);
+    --dot: var(--brand);
+    --cta-bg: var(--brand);
+    --cta-text: #FFFFFF;
+  }
+  .vC {
+    --brand: #4A352A;          /* walnut brown */
+    --brand-deep: #2E1F17;
+    --accent: #D87352;         /* terracotta as secondary accent */
+    --accent-deep: #A04A22;
+    --hl: var(--brand);
+    --dot: var(--accent);
+    --cta-bg: var(--brand);
+    --cta-text: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: #DAD6CE;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 28px 20px 60px; }
+
+  .doc-header {
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    text-align: center;
+  }
+  .doc-header h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    margin-bottom: 6px;
+    font-weight: 800;
+  }
+  .doc-header p {
+    font-size: 13px;
+    color: #5A5248;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.45;
+  }
+  .doc-header strong { color: var(--ink); }
+
+  .grid {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (min-width: 1100px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .col-label {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5A5248;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .col-label strong { color: var(--ink); }
+  .swatch-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.5);
+  }
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .page {
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.14);
+    height: 760px;
+    overflow-y: auto;
+    background: var(--bg-page);
+  }
+
+  /* promo banner — uses brand color per variant */
+  .promo {
+    background: var(--brand);
+    color: white;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .promo .cta {
+    background: white;
+    color: var(--ink);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .promo .cta svg { width: 10px; height: 10px; }
+
+  /* header */
+  .hdr {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .logo .dot { color: var(--dot); }
+  .hdr-actions { display: flex; gap: 10px; }
+  .hdr-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(31, 26, 18, 0.06);
+    display: grid;
+    place-items: center;
+    color: var(--ink);
+  }
+  .hdr-icon svg { width: 17px; height: 17px; }
+
+  /* hero */
+  .hero {
+    padding: 12px 18px 22px;
+  }
+  .hero h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 36px;
+    line-height: 1.04;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .hero h1 em {
+    color: var(--hl);
+    font-style: normal;
+  }
+  .hero .sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* searchbar */
+  .sbar {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(31, 26, 18, 0.06);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+  }
+  .sbar-row {
+    border: 1px solid #D3D3D3;
+    border-radius: 999px;
+    height: 44px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .sbar-row svg { width: 15px; height: 15px; color: var(--ink); flex-shrink: 0; }
+  .sbar-submit {
+    height: 44px;
+    background: var(--cta-bg);
+    color: var(--cta-text);
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* section */
+  .sect {
+    padding: 22px 18px 8px;
+  }
+  .sect-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .sect h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 19px;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    font-weight: 800;
+  }
+  .sect .see-all {
+    font-size: 12px;
+    color: var(--brand);
+    font-weight: 700;
+  }
+  .scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    flex: 0 0 158px;
+    overflow: hidden;
+  }
+  .card-photo {
+    aspect-ratio: 4/3;
+    width: 100%;
+    background: linear-gradient(135deg, #D9C8B5, #A89580);
+  }
+  .card-photo.p2 { background: linear-gradient(135deg, #C8B5A4, #8E7B66); }
+  .card-photo.p3 { background: linear-gradient(135deg, #DCC7A8, #B59E78); }
+  .card-photo.p4 { background: linear-gradient(135deg, #E5D3BD, #C2A580); }
+  .card-photo.p5 { background: linear-gradient(135deg, #D2BDA5, #A38872); }
+  .card-photo.p6 { background: linear-gradient(135deg, #E8D8C0, #B89A75); }
+  .card-body {
+    padding: 10px 12px 12px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-meta .star { color: var(--accent); }
+
+  /* "Heute frei" badge (uses brand color) */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-card);
+    color: var(--brand);
+    border: 1px solid var(--brand);
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  /* verdict */
+  .verdict {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+    padding: 12px 14px;
+    background: white;
+    border-radius: 10px;
+    border-left: 3px solid var(--brand);
+  }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+  .verdict em { font-style: italic; color: var(--ink-2); }
+
+  /* notes block at bottom */
+  .notes {
+    max-width: 1400px;
+    margin: 36px auto 0;
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  }
+  .notes h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .notes ul {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  .notes li {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+    padding-left: 18px;
+    position: relative;
+  }
+  .notes li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #5A5248;
+  }
+</style>
+</head>
+<body>
+
+  <div class="doc-header">
+    <h1>Brand direction — no emerald</h1>
+    <p>Same content + same warm substrate <strong>#FAF8F2</strong> + same Bricolage Grotesque / Hanken Grotesk. Only the brand palette changes (CTA + accent + logo dot + highlight word).</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- ─────────────────────────────────────────────
+         A — ROYAL BLUE + BUTTER (current, refined)
+    ───────────────────────────────────────────────── -->
+    <div class="col vA">
+      <div class="col-label">
+        <strong>A — Blue + butter</strong>
+        <span class="swatch-pair"><span class="swatch" style="background:#2A4DC7"></span>#2A4DC7</span>
+        <span class="swatch-pair"><span class="swatch" style="background:#F0BE32"></span>#F0BE32</span>
+      </div>
+      <div class="page">
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Behandlung oder Salon</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Ort</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Datum & Uhrzeit</span>
+            </div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Zuletzt angesehen</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"></div><div class="card-body"><span class="badge">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Coiffeur</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Refined version of what you have now.</strong> Blue nudged warmer (#1638C4 → #2A4DC7) so it doesn't fight the warm substrate. Yellow softened (#FFC32B → #F0BE32) so it reads as butter, not warning. Premium-finance lane — Klarna / Revolut / Stripe territory. Trust-and-utility brand, less differentiated in beauty vertical but works. <em>Safest pick.</em>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────
+         B — TERRACOTTA-LED
+    ───────────────────────────────────────────────── -->
+    <div class="col vB">
+      <div class="col-label">
+        <strong>B — Terracotta</strong>
+        <span class="swatch-pair"><span class="swatch" style="background:#D87352"></span>#D87352</span>
+        <span class="swatch-pair"><span class="swatch" style="background:#8B5A3C"></span>#8B5A3C</span>
+      </div>
+      <div class="page">
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Behandlung oder Salon</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Ort</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Datum & Uhrzeit</span>
+            </div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Zuletzt angesehen</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"></div><div class="card-body"><span class="badge">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Coiffeur</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Warmth-led brand.</strong> Terracotta becomes the action color (currently your accent #E0703D, here #D87352 from V2-D70 logo dot). Warm umber as secondary. Logo dot, CTA, highlight word, badge all in the same warm family — single-hue identity, cohesive and memorable. <em>The "wellness modern app" lane (Glossier / Hims / Headspace) — owns the beauty vertical instead of competing in the booking-utility lane.</em>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────
+         C — WALNUT / AESOP
+    ───────────────────────────────────────────────── -->
+    <div class="col vC">
+      <div class="col-label">
+        <strong>C — Walnut</strong>
+        <span class="swatch-pair"><span class="swatch" style="background:#4A352A"></span>#4A352A</span>
+        <span class="swatch-pair"><span class="swatch" style="background:#D87352"></span>#D87352</span>
+      </div>
+      <div class="page">
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Behandlung oder Salon</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Ort</span>
+            </div>
+            <div class="sbar-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Datum & Uhrzeit</span>
+            </div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Zuletzt angesehen</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"></div><div class="card-body"><span class="badge">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">
+            <h2>Coiffeur</h2>
+            <span class="see-all">Alle</span>
+          </div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Heritage / Aesop lane.</strong> Deep walnut brown CTA (#4A352A) feels artisanal + premium, terracotta as accent for warmth. Logo dot in terracotta keeps brand recognition. This is the "luxury beauty heritage" feel — Aesop, Le Labo, Diptyque territory. <em>Risk: brown CTAs may not pop against warm salon photos as decisively as B or A. If brown competes with photo tones, the click target fades.</em>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="notes">
+    <h3>Honest pushback / pick logic</h3>
+    <ul>
+      <li><strong>A (blue + butter)</strong> — Safest, but you said the V2-D70 blue+yellow doesn't feel right. Refining doesn't change the lane (premium-finance), just polishes it. Pick this if "modern app booking utility" feel is the right lane.</li>
+      <li><strong>B (terracotta-led)</strong> — <strong>My pick.</strong> Single-hue warm identity. Owns the wellness vertical. Terracotta is already YOUR brand color (s-accent in current tokens, logo dot in earlier era) — just promoted from accent to action. Memorable, cohesive, beauty-vertical native.</li>
+      <li><strong>C (walnut)</strong> — Distinctive but risky. Brown CTAs against warm salon photos = lower click contrast. Better as ACCENT in a brand than as the primary action color. Pick this if "luxury heritage" is the lane and you're willing to test contrast carefully.</li>
+      <li><strong>What stayed locked across all three:</strong> substrate #FAF8F2 (your B pick from substrate-variants), white cards, Bricolage Grotesque + Hanken Grotesk fonts, no atmosphere wash, NO emerald per your direction.</li>
+      <li><strong>Where I'd push back further:</strong> the German promo banner copy "Sofort verfügbar — 320 Buchungen heute" is generic across all three. Brand differentiation matters more in COPY than in palette, eventually. Don't let palette do all the lifting.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

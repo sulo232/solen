@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · teal replaces orange (single-primary)</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0F0F10; color: #fff; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 820px; margin: 0 auto; padding: 36px 28px 96px; }
+  .page-head { padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.10); margin-bottom: 24px; }
+  .page-head h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -0.025em; }
+  .page-head .sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  .reco {
+    background: linear-gradient(135deg, rgba(26,107,115,0.25), rgba(13,75,82,0.20));
+    border: 1px solid rgba(26,107,115,0.40);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+    font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.55;
+  }
+  .reco h2 { margin: 0 0 6px; font-size: 14px; color: #fff; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .reco strong { color: #88E3D8; }
+  .reco .warn { color: #FFB347; }
+
+  /* Variant block */
+  .variant { margin: 0 0 40px; border-radius: 22px; overflow: hidden; background: #fff; color: #1A1C19; box-shadow: 0 18px 50px rgba(0,0,0,0.4); }
+  .variant-label { padding: 16px 22px; background: #0A0A0B; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .variant-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .variant-vibe { font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+  .palette { display: flex; gap: 5px; }
+  .swatch { width: 22px; height: 22px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.10); }
+
+  /* Mini homepage */
+  .mini > * { padding: 14px 22px; }
+  .banner { background: #1A1C19; color: #fff; padding: 10px 22px !important; display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 600; }
+  .banner .pill { background: #fff; color: #1A1C19; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .header { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 14px 22px !important; border-bottom: 1px solid #ECEFF4; }
+  .header .logo { font-family: ui-serif, serif; font-size: 19px; font-weight: 700; display: inline-flex; align-items: baseline; gap: 3px; color: #1A1C19; }
+  .header .logo-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: #1A6B73; }
+  .header .nav { font-size: 12px; color: #5F635D; }
+  .header .nav-cta { padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #1A6B73; color: #fff; }
+
+  .hero { text-align: center; padding: 36px 22px 32px !important; color: #1A1C19; }
+  .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.0; margin: 0 0 10px; }
+  .hero p { font-size: 13px; color: #5F635D; margin: 0 0 18px; }
+  .hero .cta { display: inline-block; padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; background: #1A6B73; color: #fff; }
+
+  .section { padding: 22px !important; background: #fff; color: #1A1C19; }
+  .section h2 { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.015em; display: inline-flex; align-items: center; gap: 10px; }
+  .arrow-btn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; background: rgba(26,107,115,0.12); color: #1A6B73; }
+  .hex { font-family: ui-monospace, monospace; font-size: 10px; color: #8A8F88; margin-top: 4px; }
+  .cards { display: flex; gap: 10px; overflow: hidden; margin-top: 10px; }
+  .card-item { flex: 0 0 180px; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .card-item .img { aspect-ratio: 4/3; background: linear-gradient(135deg, #E8DCC4, #C8BFA4); }
+  .card-item .body { padding: 9px 11px; }
+  .card-item .name { font-size: 12px; font-weight: 700; }
+  .card-item .meta { font-size: 10px; color: #5F635D; }
+
+  .anchor { padding: 26px 22px !important; color: #fff; }
+  .anchor h2 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+  .anchor p { margin: 0 0 12px; font-size: 12px; color: rgba(255,255,255,0.75); }
+  .anchor .cta { display: inline-block; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #fff; color: #1A1C19; }
+  .anchor .hex { color: rgba(255,255,255,0.50); }
+
+  /* CategoryPromos miniature — warm illustrations are still warm! */
+  .cat-promo { aspect-ratio: 2/1; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(135deg, #C76F4F 0%, #8B4A2F 100%); margin-top: 10px; }
+  .cat-promo .overlay { position: absolute; inset: 0; padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; color: #fff;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.55)); }
+  .cat-promo h3 { margin: 0 0 6px; font-size: 14px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+  .cat-promo .small-pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; background: #fff; color: #1A1C19; align-self: flex-start; }
+
+  /* Variant A — anchor = DEEPER TEAL */
+  .v-deep-anchor .anchor { background: #073238; }
+
+  /* Variant B — anchor = INK contrast */
+  .v-ink-anchor .anchor { background: #1A1C19; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-head">
+    <h1>Teal replaces orange — single-primary brand</h1>
+    <div class="sub">Orange is GONE from the brand · teal #1A6B73 is now the only CTA color · 2 anchor options to compare</div>
+  </div>
+
+  <div class="reco">
+    <h2>The trade</h2>
+    <strong>What you gain:</strong> a single coherent cool brand (less competing temperatures), teal becomes unmistakably "the Solen color," brand reads as wellness/spa/clinical-trust, easier to be consistent across the app.<br><br>
+    <span class="warn">What you lose:</span> the warm energy orange brought, the visual harmony with the warm fakejolart illustrations (the brick walls + golden tungsten in CategoryPromos will now sit AGAINST a fully cool brand frame), and the punch — teal CTAs at 10% are less attention-grabbing than orange CTAs at 10% because teal is closer in lightness to the surrounding white substrate.<br><br>
+    <strong>Honest pick:</strong> <strong>A (deeper-teal anchor)</strong> if you want full-teal commitment. <strong>B (ink anchor)</strong> if you want one cool primary + the BentoBusiness section visibly different from everything else.
+  </div>
+
+  <!-- ═══════════════ A — DEEPER TEAL ANCHOR ═══════════════ -->
+  <div class="variant v-deep-anchor">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">A · TEAL EVERYTHING — anchor goes deeper teal #073238</div>
+        <div class="variant-vibe">single-color brand · cool spa wellness register · BentoBusiness shifts darker but stays in family</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+        <span class="swatch" style="background:#073238"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+      <div class="header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="nav">Services · Über uns</span>
+        <span class="nav-cta">Anmelden</span>
+      </div>
+      <div class="hero">
+        <h1>Cmon, book it<br/>already.</h1>
+        <p>Beauty &amp; Wellness in der Schweiz.</p>
+        <span class="cta">Solen durchsuchen</span>
+      </div>
+      <div class="section">
+        <h2>In der Nähe <span class="arrow-btn">↗</span></h2>
+        <div class="cards">
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Stöber nach Kategorie <span class="arrow-btn">↗</span></h2>
+        <div class="hex">⚠ warm CategoryPromos illustrations now sit against fully cool brand → temperature clash</div>
+        <div class="cat-promo"><div class="overlay"><h3>Schneiden, färben, stylen</h3><span class="small-pill">Coiffeur entdecken</span></div></div>
+      </div>
+      <div class="anchor">
+        <h2>Solen für dein Geschäft.</h2>
+        <p>Mehr Buchungen, weniger Aufwand.</p>
+        <span class="cta">Werde Solen-Partner →</span>
+        <div class="hex" style="margin-top:8px;">anchor: #073238 (deeper teal — same family, just darker)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ B — INK ANCHOR ═══════════════ -->
+  <div class="variant v-ink-anchor">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">B · TEAL CTA + INK ANCHOR — anchor goes black for contrast</div>
+        <div class="variant-vibe">single teal CTA + dark ink anchor moment · stronger BentoBusiness "we mean business" punch</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+        <span class="swatch" style="background:#1A1C19"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+      <div class="header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="nav">Services · Über uns</span>
+        <span class="nav-cta">Anmelden</span>
+      </div>
+      <div class="hero">
+        <h1>Cmon, book it<br/>already.</h1>
+        <p>Beauty &amp; Wellness in der Schweiz.</p>
+        <span class="cta">Solen durchsuchen</span>
+      </div>
+      <div class="section">
+        <h2>In der Nähe <span class="arrow-btn">↗</span></h2>
+        <div class="cards">
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Stöber nach Kategorie <span class="arrow-btn">↗</span></h2>
+        <div class="hex">⚠ same warm-vs-cool tension on illustrations</div>
+        <div class="cat-promo"><div class="overlay"><h3>Schneiden, färben, stylen</h3><span class="small-pill">Coiffeur entdecken</span></div></div>
+      </div>
+      <div class="anchor">
+        <h2>Solen für dein Geschäft.</h2>
+        <p>Mehr Buchungen, weniger Aufwand.</p>
+        <span class="cta">Werde Solen-Partner →</span>
+        <div class="hex" style="margin-top:8px;">anchor: #1A1C19 (ink — strong cool→neutral contrast at end)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reco" style="background: rgba(255,179,71,0.10); border-color: rgba(255,179,71,0.30); margin-top: 0;">
+    <h2 style="color:#FFB347;">One thing to think about</h2>
+    The fakejolart CategoryPromos illustrations were generated WARM — exposed brick walls, golden tungsten light, peach skin tones. With orange gone from the brand, those illustrations no longer "echo" anything in the system. They'll read as a contained warm island inside an otherwise cool brand. <br><br>
+    Two ways to handle that: <strong>(1)</strong> live with the contained warmth — the illustrations stay as "imagery zone" while the rest of the chrome is cool, OR <strong>(2)</strong> regenerate the illustrations cooler (teal-leaning lighting, mint walls, cooler skin tones) so the whole system reads coherent. (1) is free, (2) is another ~3 hours of prompt iteration.
+  </div>
+
+</div>
+</body>
+</html>

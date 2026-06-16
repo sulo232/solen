@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen gift card — 8 rich directions</title>
+<style>
+  :root { --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#8A8A8A; --bg:#F4F4F5; --line:#E6E6E7; --accent:#276EF1; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter","SF Pro Text",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  header { padding:28px 20px 8px; max-width:1180px; margin:0 auto; }
+  h1 { font-family:"Inter Tight",sans-serif; font-weight:700; letter-spacing:-.02em; font-size:26px; margin:0 0 4px; }
+  .sub { color:var(--ink2); font-size:14px; margin:0 0 4px; }
+  .note { color:var(--ink3); font-size:12.5px; margin:0; }
+  .grid { max-width:1180px; margin:0 auto; padding:16px 20px 48px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    box-shadow:0 10px 30px -16px rgba(0,0,0,.12); display:flex; flex-direction:column; }
+  .head { padding:12px 14px; display:flex; align-items:baseline; justify-content:space-between; gap:8px; border-bottom:1px solid var(--line); }
+  .name { font-family:"Inter Tight",sans-serif; font-weight:600; font-size:14.5px; }
+  .open { font-size:12.5px; color:var(--accent); text-decoration:none; font-weight:600; white-space:nowrap; }
+  .desc { padding:8px 14px 12px; color:var(--ink2); font-size:12.5px; line-height:1.5; }
+  .frame { position:relative; height:440px; background:var(--bg); border-top:1px solid var(--line); overflow:hidden; }
+  .frame iframe { width:390px; height:846px; border:0; transform:scale(.62); transform-origin:top left; pointer-events:none; }
+  a.tap { position:absolute; inset:0; z-index:2; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Gift card — 8 rich directions</h1>
+    <p class="sub">Richer takes on the gift-card screen (Old Town Barbers). Tap a tile to open the full mobile mockup.</p>
+    <p class="note">Grounded in the real page's content (salon, amount, recipient, message, pay) + Solen tokens. English. Thumbnails are live, scaled iframes.</p>
+  </header>
+  <main class="grid">
+
+    <div class="card"><div class="head"><span class="name">1 · Hero photo + card</span><a class="open" href="v1-hero-photo-card.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Salon photo banner, then a live gift-card object (amount updates as you pick) above the form.</div>
+      <div class="frame"><a class="tap" href="v1-hero-photo-card.html" target="_blank" rel="noopener" aria-label="Open 1"></a><iframe src="v1-hero-photo-card.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">2 · Editorial warm</span><a class="open" href="v2-editorial-warm.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Cinnamon/amber theme, "Give the gift of a great cut", recipient preview line.</div>
+      <div class="frame"><a class="tap" href="v2-editorial-warm.html" target="_blank" rel="noopener" aria-label="Open 2"></a><iframe src="v2-editorial-warm.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">3 · Recipient preview</span><a class="open" href="v3-recipient-preview.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Live "what they'll receive" gift-email preview below the form (card + message + redeem).</div>
+      <div class="frame"><a class="tap" href="v3-recipient-preview.html" target="_blank" rel="noopener" aria-label="Open 3"></a><iframe src="v3-recipient-preview.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">4 · Denomination cards</span><a class="open" href="v4-denomination-cards.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Amounts rendered as mini branded gift-card denominations; selected = ink ring.</div>
+      <div class="frame"><a class="tap" href="v4-denomination-cards.html" target="_blank" rel="noopener" aria-label="Open 4"></a><iframe src="v4-denomination-cards.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">5 · Apple minimal-rich</span><a class="open" href="v5-apple-minimal-rich.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Clean + spacious, but rich via a real photo + one elegant gift-card object.</div>
+      <div class="frame"><a class="tap" href="v5-apple-minimal-rich.html" target="_blank" rel="noopener" aria-label="Open 5"></a><iframe src="v5-apple-minimal-rich.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">6 · Dark premium card</span><a class="open" href="v6-dark-premium-card.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Light page, a luxury dark gift-card with a gold star accent as the hero object.</div>
+      <div class="frame"><a class="tap" href="v6-dark-premium-card.html" target="_blank" rel="noopener" aria-label="Open 6"></a><iframe src="v6-dark-premium-card.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">7 · Immersive photo</span><a class="open" href="v7-immersive-photo.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Full-bleed salon photo; gift-card + chips on frosted glass over it.</div>
+      <div class="frame"><a class="tap" href="v7-immersive-photo.html" target="_blank" rel="noopener" aria-label="Open 7"></a><iframe src="v7-immersive-photo.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+    <div class="card"><div class="head"><span class="name">8 · Celebration</span><a class="open" href="v8-celebration.html" target="_blank" rel="noopener">Open ↗</a></div>
+      <div class="desc">Gift-box / bow motif, a "to / from" line, festive but premium.</div>
+      <div class="frame"><a class="tap" href="v8-celebration.html" target="_blank" rel="noopener" aria-label="Open 8"></a><iframe src="v8-celebration.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div></div>
+
+  </main>
+</body>
+</html>

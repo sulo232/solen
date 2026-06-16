@@ -5902,5 +5902,32 @@
     "unreadDot": "Unread",
     "emptyTitle": "No notifications",
     "emptyBody": "Updates about your bookings, refunds and reviews show up here."
+  },
+  "rewards": {
+    "yourStatus": "Your status",
+    "tier_base": "Base",
+    "tier_gold": "Gold",
+    "tier_platinum": "Platinum",
+    "toNext": "{n} visits to {tier}",
+    "topTier": "You're at the top tier",
+    "ofVisits": "{n} of {total} visits",
+    "visitsCount": "{n} visits",
+    "windowNote": "Based on your visits over the last year.",
+    "perksTitle": "Your perks",
+    "active": "Active",
+    "perk_birthday_t": "Birthday-week priority",
+    "perk_birthday_s": "Get seen in your birthday week",
+    "howTitle": "How status works",
+    "howBody": "Your status is based on completed visits over the last year at any Solen salon. {gold} visits reach Gold, {platinum} reach Platinum. If you stop booking it eases down slowly, one tier at a time.",
+    "cta": "Book to keep your status",
+    "validThrough": "Valid through {date}. Book to keep your status.",
+    "perk_angebote_t": "Early access to Angebote",
+    "perk_angebote_s": "See new offers 24h before everyone",
+    "perk_memberDeals_t": "Members-only deals",
+    "perk_memberDeals_s": "Offers reserved for members",
+    "perk_slots_t": "Early access to prime-time slots",
+    "perk_slots_s": "Book popular times first",
+    "perk_angebote48_t": "48-hour head start",
+    "perk_angebote48_s": "Even earlier access to offers and slots"
   }
 }

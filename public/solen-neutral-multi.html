@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — neutral multi-color · 2 palettes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hanken: "Hanken Grotesk", system-ui, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: #1A1A1A; background: #EDEDF0; }
+  body { padding: 32px 24px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 36px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .pageHead p { font-size: 14px; line-height: 1.55; color: #4B4B4B; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; align-items: start; max-width: 1100px; margin: 0 auto; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; max-width: 480px; } }
+
+  .col { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .colHead { padding: 4px 4px 14px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: #F2F2F2; color: #4B4B4B; margin-bottom: 8px; }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .colHead .lead { font-size: 12px; line-height: 1.5; color: #4B4B4B; }
+  .colHead .brand-spec { font-size: 11px; font-family: monospace; color: #8A8A8A; margin-top: 6px; }
+
+  .swatchRow { display: flex; gap: 4px; margin-top: 10px; flex-wrap: wrap; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+
+  .phone { width: 100%; border: 1px solid #E5E5E5; border-radius: 14px; overflow: hidden; position: relative; max-height: 1200px; overflow-y: auto; }
+  .phone::-webkit-scrollbar { width: 4px; }
+  .phone::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+  .sec { padding: 24px 18px; }
+
+  .banner { position: relative; width: 100%; color: white; }
+  .bannerInner { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px 22px; }
+  .bannerText { font-size: 11px; font-weight: 600; }
+  .bannerPill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 11px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 12px; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  .topNav { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+  .logo { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .menuBtn { width: 32px; height: 32px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; }
+  .menuBtn span { display: block; width: 12px; height: 1.4px; position: relative; }
+  .menuBtn span::before, .menuBtn span::after { content: ""; position: absolute; left: 0; width: 12px; height: 1.4px; }
+  .menuBtn span::before { top: -4px; }
+  .menuBtn span::after { top: 4px; }
+
+  .heroTitle { font-family: var(--display); font-size: 30px; line-height: 0.96; letter-spacing: -0.025em; margin-bottom: 14px; }
+  .heroTitle .brand { display: block; }
+  .heroTitle .next { display: block; }
+  .heroSub { font-size: 13px; line-height: 1.5; margin-bottom: 16px; }
+
+  .searchCard { border-radius: 14px; padding: 12px; }
+  .searchRow { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 9999px; font-size: 12px; }
+  .searchRow + .searchRow { margin-top: 6px; }
+  .searchBtn { width: 100%; padding: 11px; border: 0; border-radius: 9999px; font-family: var(--hanken); font-size: 12px; font-weight: 600; margin-top: 8px; cursor: pointer; }
+
+  .secTitle { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .secTitleText { font-family: var(--display); font-size: 15px; font-weight: 700; }
+  .secChip { width: 22px; height: 22px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
+
+  .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cards3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .card { border-radius: 10px; padding: 8px; }
+  .cardImg { aspect-ratio: 1 / 1; border-radius: 6px; background: linear-gradient(135deg, #DCDCDC, #EFEFEF); margin-bottom: 6px; }
+  .cardTitle { font-size: 10px; font-weight: 600; line-height: 1.2; margin-bottom: 1px; }
+  .cardMeta { font-size: 9px; }
+
+  .pillRow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 11px; padding: 6px 12px; border-radius: 9999px; font-weight: 500; }
+
+  .trustGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .trustItem .num { font-family: var(--display); font-size: 22px; font-weight: 700; }
+  .trustItem .label { font-size: 11px; margin-top: 2px; }
+
+  .quote { font-family: var(--display); font-size: 17px; line-height: 1.3; letter-spacing: -0.01em; }
+  .quoteAuth { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+  .quoteAvatar { width: 32px; height: 32px; border-radius: 9999px; }
+  .quoteName { font-size: 11px; font-weight: 600; }
+  .quoteRole { font-size: 10px; }
+
+  .ctaBig { font-family: var(--display); font-size: 22px; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .ctaSub { font-size: 12px; line-height: 1.5; margin-bottom: 14px; }
+  .ctaBtn { display: inline-block; padding: 11px 22px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none; }
+
+  .foot { padding: 18px; text-align: center; font-size: 10px; }
+
+  .swatchLabel { font-size: 9px; font-family: monospace; margin-top: 8px; opacity: 0.55; }
+
+  .colNotes { padding: 14px 4px 0; font-size: 11.5px; line-height: 1.55; color: #4B4B4B; }
+  .colNotes b { color: #1A1A1A; }
+  .pro { color: #1E7A4A; font-weight: 600; }
+  .con { color: #B33D2C; font-weight: 600; }
+
+  /* ============================================ */
+  /* P1 — ALL-WARM MULTI (Hims-spectrum, no cool)  */
+  /* ============================================ */
+  .p1-banner { background: #1F1A14; }
+  .p1-banner-pill { background: #FAF1E0; color: #1F1A14; }
+  .p1-topnav { background: #FAF1E0; }
+  .p1-logo { color: #1F1A14; }
+  .p1-menubtn { background: transparent; border: 1px solid #D6C9A8; }
+  .p1-menubtn span, .p1-menubtn span::before, .p1-menubtn span::after { background: #1F1A14; }
+
+  .p1-hero { background: #FAF1E0; }
+  .p1-hero .brand { color: #C58E73; font-weight: 700; }
+  .p1-hero .next { color: #1F1A14; }
+  .p1-hero .heroSub { color: #66594A; }
+
+  .p1-search-sec { background: #FFFFFF; border-top: 1px solid #E6DAB8; }
+  .p1-search-card { background: #FFFFFF; border: 1px solid #E0D4B0; }
+  .p1-search-row { background: white; border: 1px solid #E6DAB8; color: #8C7E64; }
+  .p1-search-btn { background: #1F1A14; color: #FAF1E0; }
+
+  .p1-recent-sec { background: #E8E4C7; }
+  .p1-recent-card { background: #FAF1E0; border: 1px solid #DCD0A8; }
+  .p1-recent-card .cardTitle { color: #1F1A14; }
+  .p1-recent-card .cardMeta { color: #8C7E64; }
+
+  .p1-popular-sec { background: #FAF1E0; }
+  .p1-pill { background: white; border: 1px solid #E0D4B0; color: #1F1A14; }
+
+  .p1-near-sec { background: #FFFFFF; border-top: 1px solid #E6DAB8; }
+
+  .p1-quote-sec { background: #EBD5C2; }
+  .p1-quote { color: #2D2218; }
+  .p1-quote-name { color: #2D2218; }
+  .p1-quote-role { color: #76624D; }
+  .p1-quote-avatar { background: linear-gradient(135deg, #B89876, #D7B894); }
+
+  .p1-trust-sec { background: #1F1A14; color: #FAF1E0; }
+  .p1-trust-sec .secTitleText { color: #FAF1E0; }
+  .p1-trust-label { color: rgba(250,241,224,0.65); }
+
+  .p1-cta-sec { background: #C58E73; color: #FAF1E0; }
+  .p1-cta-btn { background: #1F1A14; color: #FAF1E0; }
+
+  .p1-foot { background: #FAF1E0; color: #8C7E64; }
+
+  /* ============================================ */
+  /* P2 — MIXED-EARTH MULTI (cream + sage + clay + stone, more variety) */
+  /* ============================================ */
+  .p2-banner { background: #2A2C24; }
+  .p2-banner-pill { background: #F5EFE2; color: #2A2C24; }
+  .p2-topnav { background: #F5EFE2; }
+  .p2-logo { color: #2A2C24; }
+  .p2-menubtn { background: transparent; border: 1px solid #C5C3B0; }
+  .p2-menubtn span, .p2-menubtn span::before, .p2-menubtn span::after { background: #2A2C24; }
+
+  .p2-hero { background: #F5EFE2; }
+  .p2-hero .brand { color: #7C8158; font-weight: 700; }
+  .p2-hero .next { color: #2A2C24; }
+  .p2-hero .heroSub { color: #5C5E50; }
+
+  .p2-search-sec { background: #FFFFFF; border-top: 1px solid #E5E2D2; }
+  .p2-search-card { background: #FFFFFF; border: 1px solid #DDD9C5; }
+  .p2-search-row { background: white; border: 1px solid #E5E2D2; color: #80806B; }
+  .p2-search-btn { background: #2A2C24; color: #F5EFE2; }
+
+  .p2-recent-sec { background: #E8E7D0; }
+  .p2-recent-card { background: #F5EFE2; border: 1px solid #D4D0B8; }
+  .p2-recent-card .cardTitle { color: #2A2C24; }
+  .p2-recent-card .cardMeta { color: #80806B; }
+
+  .p2-popular-sec { background: #EFE0D0; }
+  .p2-pill { background: white; border: 1px solid #DDC8B0; color: #2A2C24; }
+
+  .p2-near-sec { background: #FFFFFF; border-top: 1px solid #E5E2D2; }
+
+  .p2-quote-sec { background: #D6CFB5; }
+  .p2-quote { color: #2A2C24; }
+  .p2-quote-name { color: #2A2C24; }
+  .p2-quote-role { color: #5C5E50; }
+  .p2-quote-avatar { background: linear-gradient(135deg, #A8A582, #D6CFB5); }
+
+  .p2-trust-sec { background: #2A2C24; color: #F5EFE2; }
+  .p2-trust-sec .secTitleText { color: #F5EFE2; }
+  .p2-trust-label { color: rgba(245,239,226,0.65); }
+
+  .p2-cta-sec { background: #C58966; color: #F5EFE2; }
+  .p2-cta-btn { background: #2A2C24; color: #F5EFE2; }
+
+  .p2-foot { background: #F5EFE2; color: #80806B; }
+
+  .recommend { max-width: 920px; margin: 56px auto 0; background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .recommend h2 { font-family: var(--display); font-size: 22px; margin: 8px 0 12px; letter-spacing: -0.01em; }
+  .recommend p { font-size: 13.5px; line-height: 1.6; color: #4B4B4B; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>Neutral · multi-color (not monochrome)</h1>
+  <p>Multiple distinct colors per page — like Hims's 9-color palette — but desaturated so no single one screams "BRAND." Each section gets its own muted color. Brand accent is a small desaturated warm tone (terracotta or olive), not a loud chromatic identity.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================================ -->
+  <!-- P1 · All-warm multi (Hims-spectrum, zero cool)                -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge" style="background:#FAF1E0; color:#1F1A14;">P1 · All-warm spectrum</span>
+      <h2>Cream + butter + clay + sand + ink + terracotta</h2>
+      <p class="lead">Hims's full warm palette, no cool tones, no monochrome. Brand accent = terracotta. 6 distinct section colors do the rhythm.</p>
+      <p class="brand-spec">accent: <b>#C58E73</b> · ink: #1F1A14 · sections: 6 distinct</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#FAF1E0" title="cream"></span>
+        <span class="swatch" style="background:#FFFFFF" title="white"></span>
+        <span class="swatch" style="background:#E8E4C7" title="butter"></span>
+        <span class="swatch" style="background:#EBD5C2" title="sand"></span>
+        <span class="swatch" style="background:#C58E73" title="terracotta"></span>
+        <span class="swatch" style="background:#1F1A14" title="warm ink"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner p1-banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill p1-banner-pill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#FAF1E0"></div>
+      </div>
+      <div class="topNav p1-topnav">
+        <div class="logo p1-logo">Solen</div>
+        <button class="menuBtn p1-menubtn"><span></span></button>
+      </div>
+      <div class="sec p1-hero">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg #FAF1E0 · "Schöner" accent #C58E73 (terracotta)</div>
+      </div>
+      <div class="sec p1-search-sec">
+        <div class="searchCard p1-search-card">
+          <div class="searchRow p1-search-row">○ Service</div>
+          <div class="searchRow p1-search-row">○ Stadt</div>
+          <div class="searchRow p1-search-row">○ Zeit</div>
+          <button class="searchBtn p1-search-btn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF — search clarity</div>
+      </div>
+      <div class="sec p1-recent-sec">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip" style="background:#FAF1E0; border:1px solid #DCD0A8;">→</span></div>
+        <div class="cards2">
+          <div class="card p1-recent-card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card p1-recent-card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel">bg #E8E4C7 — pale butter</div>
+      </div>
+      <div class="sec p1-popular-sec">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill p1-pill">Haare</span><span class="pill p1-pill">Nägel</span><span class="pill p1-pill">Massage</span><span class="pill p1-pill">Beauty</span><span class="pill p1-pill">Wellness</span><span class="pill p1-pill">Spa</span>
+        </div>
+        <div class="swatchLabel">bg #FAF1E0 — back to cream</div>
+      </div>
+      <div class="sec p1-near-sec">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card p1-recent-card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card p1-recent-card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card p1-recent-card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF — listings</div>
+      </div>
+      <div class="sec p1-quote-sec">
+        <p class="quote p1-quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar p1-quote-avatar"></div>
+          <div><div class="quoteName p1-quote-name">Lea Müller</div><div class="quoteRole p1-quote-role">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel">bg #EBD5C2 — sand</div>
+      </div>
+      <div class="sec p1-trust-sec">
+        <div class="secTitle"><span class="secTitleText">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label p1-trust-label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label p1-trust-label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label p1-trust-label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label p1-trust-label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="color:rgba(250,241,224,0.4);">bg #1F1A14 — warm ink</div>
+      </div>
+      <div class="sec p1-cta-sec">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub" style="opacity:.9;">iOS &amp; Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn p1-cta-btn">App laden</a>
+        <div class="swatchLabel" style="color:rgba(250,241,224,0.5);">bg #C58E73 — terracotta brand moment</div>
+      </div>
+      <div class="foot p1-foot">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>Vibe:</b> Hims/Aesop hybrid. Editorial warmth. Multiple colors do rhythm — cream → butter → sand → terracotta. No section feels the same as the prior. No cool anywhere.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> exactly the multi-color Hims pattern translated to no-cool; terracotta CTA is memorable without being loud; very wellness/beauty-fitting; rhythm without monochrome</p>
+      <p><b class="con">CON:</b> all-warm risks looking dated/"natural-cosmetics-blog"; brand accent (terracotta) is similar enough to the cream tones that it doesn't pop hard</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- P2 · Mixed-earth multi (warm dominant, sage + clay for variety) -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge" style="background:#E8E7D0; color:#2A2C24;">P2 · Mixed-earth (my pick)</span>
+      <h2>Cream + sage + clay + stone + ink + terracotta</h2>
+      <p class="lead">Same multi-color pattern but adds <b>sage/olive</b> for the "your stuff" section and clay/pink for categories. More variety, still all desaturated. Brand accent stays warm.</p>
+      <p class="brand-spec">accent: <b>#7C8158</b> (olive) + <b>#C58966</b> (clay CTA) · ink: #2A2C24 · sections: 7 distinct</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#F5EFE2" title="cream"></span>
+        <span class="swatch" style="background:#FFFFFF"></span>
+        <span class="swatch" style="background:#E8E7D0" title="pale moss"></span>
+        <span class="swatch" style="background:#EFE0D0" title="dust clay"></span>
+        <span class="swatch" style="background:#D6CFB5" title="taupe"></span>
+        <span class="swatch" style="background:#7C8158" title="olive"></span>
+        <span class="swatch" style="background:#C58966" title="clay"></span>
+        <span class="swatch" style="background:#2A2C24" title="charcoal"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner p2-banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill p2-banner-pill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#F5EFE2"></div>
+      </div>
+      <div class="topNav p2-topnav">
+        <div class="logo p2-logo">Solen</div>
+        <button class="menuBtn p2-menubtn"><span></span></button>
+      </div>
+      <div class="sec p2-hero">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg #F5EFE2 · "Schöner" accent #7C8158 (olive)</div>
+      </div>
+      <div class="sec p2-search-sec">
+        <div class="searchCard p2-search-card">
+          <div class="searchRow p2-search-row">○ Service</div>
+          <div class="searchRow p2-search-row">○ Stadt</div>
+          <div class="searchRow p2-search-row">○ Zeit</div>
+          <button class="searchBtn p2-search-btn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF — search</div>
+      </div>
+      <div class="sec p2-recent-sec">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip" style="background:#F5EFE2; border:1px solid #D4D0B8;">→</span></div>
+        <div class="cards2">
+          <div class="card p2-recent-card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card p2-recent-card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel">bg #E8E7D0 — pale moss (your stuff)</div>
+      </div>
+      <div class="sec p2-popular-sec">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill p2-pill">Haare</span><span class="pill p2-pill">Nägel</span><span class="pill p2-pill">Massage</span><span class="pill p2-pill">Beauty</span><span class="pill p2-pill">Wellness</span><span class="pill p2-pill">Spa</span>
+        </div>
+        <div class="swatchLabel">bg #EFE0D0 — dust clay (browse)</div>
+      </div>
+      <div class="sec p2-near-sec">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card p2-recent-card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card p2-recent-card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card p2-recent-card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF — listings</div>
+      </div>
+      <div class="sec p2-quote-sec">
+        <p class="quote p2-quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar p2-quote-avatar"></div>
+          <div><div class="quoteName p2-quote-name">Lea Müller</div><div class="quoteRole p2-quote-role">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel">bg #D6CFB5 — taupe (testimonial)</div>
+      </div>
+      <div class="sec p2-trust-sec">
+        <div class="secTitle"><span class="secTitleText">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label p2-trust-label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label p2-trust-label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label p2-trust-label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label p2-trust-label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="color:rgba(245,239,226,0.4);">bg #2A2C24 — charcoal trust</div>
+      </div>
+      <div class="sec p2-cta-sec">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub" style="opacity:.9;">iOS &amp; Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn p2-cta-btn">App laden</a>
+        <div class="swatchLabel" style="color:rgba(245,239,226,0.5);">bg #C58966 — clay CTA</div>
+      </div>
+      <div class="foot p2-foot">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>Vibe:</b> like an editorial spread or a high-end deli — multiple muted tones working together. Pale moss + cream + clay coexist without anyone dominating.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> max variety without loudness; sage/moss breaks the all-warm monotone subtly; multiple "brand" accent options (olive for type, clay for CTAs) avoid putting all weight on one color; ages well</p>
+      <p><b class="con">CON:</b> 7 colors is more discipline (each section needs a rule); olive accent on cream hero might read too quiet — could need slight saturation bump</p>
+    </div>
+  </section>
+
+</div>
+
+<section class="recommend">
+  <span class="badge" style="background:#E8E7D0; color:#2A2C24;">Recommendation</span>
+  <h2>P2 (Mixed-earth). Multi-color, all desaturated, sage adds the variety pure-warm misses.</h2>
+  <p>You called my monochrome attempt "monochrome based" — fair. This is the correction. Both P1 and P2 have <b>6+ distinct section colors</b>, each muted, none chromatically loud. The difference: P1 is all-warm (cream/butter/sand/terracotta), P2 mixes warm + sage/olive for more variety without losing the neutral vibe.</p>
+  <p style="background:#F8F8F8; padding:12px 14px; border-radius:8px; margin-top:10px;"><b style="color:#1A1A1A;">First-principles why P2 over P1:</b> all-warm palettes (P1) get monotonous fast because every color has the same temperature. Adding ONE different-family color (sage/moss) breaks the monotone the way Hims breaks theirs with the occasional dark navy. P2's sage isn't "cool" — it's neutral-leaning — but it's distinct enough from cream/clay that it adds rhythm. This is how editorial palettes work (think Loro Piana, Bottega Veneta, Aesop store interiors).</p>
+  <p style="margin-top:14px; padding:10px 14px; background:#FBF8F0; border-radius:8px; border-left:3px solid #C58966;"><b style="color:#5A4310;">Implementation tradeoff:</b> P2 needs 7 section bg tokens vs P1's 6 — more discipline but more visual interest. Worth it. If you want to dial sage SOFTER (less green), I can desaturate it further toward #E8E5D5 (true stone, no green undertone). Tell me one thing about P2 that feels off and I'll adjust before re-skinning production.</p>
+</section>
+
+</body>
+</html>

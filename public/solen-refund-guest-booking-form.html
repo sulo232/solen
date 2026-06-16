@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Guest booking form (logged-out flow)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     SOLEN DESIGN TOKENS  (LOCKFILE §1 + CANON §1, 2026-06-01)
+     Aesthetic = Uber via LOCKFILE. Structure = Fresha booking flow.
+     ============================================================ */
+  :root {
+    /* Chrome (Layer 1) */
+    --s-ink: #0A0A0A;
+    --s-ink-2: #6B6B6B;
+    --s-ink-3: #6B6B6B;
+    --s-ink-disabled: #C5C8C4;
+    --s-border: #E7E5E4;
+    --s-bg-base: #FFFFFF;
+    --s-bg-surface: #FFFFFF;
+    --s-bg-sunken: #F5F5F4;
+    --white: #FFFFFF;
+
+    /* Brand accent (Layer 2) — functional only: focus / input (CANON §1) */
+    --s-accent: #276EF1;
+    --s-accent-deep: #185CE0;
+    --s-accent-pale: #EAEFFE;
+
+    /* Semantic (Layer 3) */
+    --s-success: #16A34A;
+    --s-success-bg: #E8F5E9;
+    --s-error: #D32F2F;
+    --s-error-bg: #FFEBEE;
+    --s-warning: #F59E0B;
+    --s-warning-bg: #FFF3E0;
+    --s-star: #FFC32B;
+
+    /* Radius (LOCKFILE §3) */
+    --r-card: 16px;
+    --r-card-lg: 20px;
+    --r-input: 16px;
+    --r-btn: 99px;
+    --r-pill: 9999px;
+
+    /* Shadow (LOCKFILE §3) */
+    --elev-1: 0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03);
+    --elev-2: 0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04);
+
+    /* Easing (LOCKFILE §4) */
+    --snap: cubic-bezier(0.4, 0, 0.2, 1);
+    --glide: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --font-display: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+  body {
+    font-family: var(--font-body);
+    background: #ECECEA;
+    color: var(--s-ink);
+    line-height: 1.55;
+    padding: 40px 20px 80px;
+  }
+
+  /* ---------- Page scaffold (mockup chrome, not product) ---------- */
+  .mock-head {
+    max-width: 1180px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .mock-head h1 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--s-ink);
+  }
+  .mock-head p {
+    font-size: 14px;
+    color: var(--s-ink-2);
+    margin-top: 8px;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mock-head .axis {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mock-head .axis span {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 5px 11px;
+    border-radius: var(--r-pill);
+    background: var(--s-bg-sunken);
+    color: var(--s-ink-2);
+    border: 1px solid var(--s-border);
+  }
+
+  .stage {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .view-block { display: flex; flex-direction: column; align-items: center; }
+  .view-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--s-ink-3);
+    margin-bottom: 14px;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--s-bg-base);
+    border-radius: 44px;
+    border: 11px solid #1c1c1e;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 150px; height: 28px;
+    background: #1c1c1e;
+    border-radius: 0 0 18px 18px;
+    z-index: 60;
+  }
+
+  /* ---------- Product header (LOCKFILE §7: sticky top, hairline) ---------- */
+  .app-header {
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 28px 16px 0; /* 28px = clear the device notch safe-area */
+    height: 84px;
+    border-bottom: 1px solid var(--s-border);
+    background: var(--s-bg-base);
+    position: relative;
+    z-index: 50;
+  }
+  .app-header .back {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-pill);
+    background: var(--s-bg-sunken);
+    border: none;
+    cursor: pointer;
+    color: var(--s-ink);
+  }
+  .app-header .htitle {
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-right: 36px; /* balance the back button */
+  }
+
+  /* ---------- Stepper (Fresha booking flow IA) ---------- */
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 16px 20px 4px;
+    flex-shrink: 0;
+  }
+  .stepper .step {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .stepper .dot {
+    width: 22px; height: 22px;
+    border-radius: var(--r-pill);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    font-family: var(--font-body);
+    flex-shrink: 0;
+  }
+  .stepper .dot.done { background: var(--s-ink); color: var(--white); }
+  .stepper .dot.current { background: var(--s-ink); color: var(--white); }
+  .stepper .dot.todo { background: var(--s-bg-sunken); color: var(--s-ink-3); border: 1px solid var(--s-border); }
+  .stepper .slabel {
+    font-size: 12px;
+    color: var(--s-ink-3);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .stepper .step.is-current .slabel { color: var(--s-ink); }
+  .stepper .bar {
+    flex: 1;
+    height: 1px;
+    background: var(--s-border);
+    margin: 0 8px;
+    min-width: 8px;
+  }
+  .stepper .bar.done { background: var(--s-ink); }
+
+  /* ---------- Scroll body ---------- */
+  .scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 20px 20px;
+  }
+  .scroll::-webkit-scrollbar { width: 0; }
+
+  .h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--s-ink);
+    margin: 12px 0 4px;
+  }
+  .lead {
+    font-size: 14px;
+    color: var(--s-ink-2);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Order summary card (Swiss salon data) ---------- */
+  .summary {
+    border: 1px solid var(--s-border);
+    border-radius: var(--r-card);
+    background: var(--s-bg-surface);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .summary .salon-row {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    align-items: center;
+  }
+  .summary .salon-photo {
+    width: 52px; height: 52px;
+    border-radius: var(--r-card);
+    flex-shrink: 0;
+    background:
+      radial-gradient(120% 120% at 20% 10%, #d9d4cc 0%, #b8b1a6 55%, #8f877a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .summary .salon-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, transparent 38%, rgba(255,255,255,.18) 40%, transparent 42%),
+      linear-gradient(40deg, rgba(0,0,0,.06), transparent 60%);
+  }
+  .summary .salon-meta { min-width: 0; flex: 1; }
+  .summary .salon-name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--s-ink);
+    letter-spacing: -0.01em;
+  }
+  .summary .salon-sub {
+    font-size: 13px;
+    color: var(--s-ink-2);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .summary .salon-sub .star { color: var(--s-star); }
+  .summary .sep { color: var(--s-ink-3); }
+
+  .summary .divider { height: 1px; background: var(--s-border); }
+
+  .summary .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .summary .line + .line { padding-top: 0; }
+  .summary .line .lname {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--s-ink);
+  }
+  .summary .line .lsub {
+    font-size: 13px;
+    color: var(--s-ink-2);
+    margin-top: 2px;
+  }
+  .summary .line .lprice {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--s-ink);
+    white-space: nowrap;
+  }
+  .summary .when {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--s-ink);
+    font-weight: 500;
+  }
+  .summary .when svg { color: var(--s-ink-2); flex-shrink: 0; }
+  .summary .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background: var(--s-bg-sunken);
+  }
+  .summary .total-row .tlabel { font-size: 14px; font-weight: 600; color: var(--s-ink); }
+  .summary .total-row .tval {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--s-ink);
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Account toggle (guest vs login) ---------- */
+  .auth-switch {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .auth-switch button {
+    flex: 1;
+    padding: 11px 10px;
+    border-radius: var(--r-input);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s var(--snap), border-color .15s var(--snap);
+    background: var(--s-bg-surface);
+    border: 1px solid var(--s-border);
+    color: var(--s-ink-2);
+  }
+  .auth-switch button.active {
+    border-color: var(--s-ink);
+    color: var(--s-ink);
+    background: var(--s-bg-surface);
+    box-shadow: inset 0 0 0 1px var(--s-ink);
+  }
+
+  /* ---------- The guest form ---------- */
+  .form-card { margin-bottom: 4px; }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--s-ink);
+    margin-bottom: 7px;
+  }
+  .field label .opt {
+    font-weight: 400;
+    color: var(--s-ink-3);
+    font-size: 12px;
+  }
+  .field label svg { color: var(--s-ink-2); }
+
+  .input-wrap { position: relative; }
+  .field input {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: var(--r-input);
+    border: 1px solid var(--s-border);
+    background: var(--s-bg-surface);
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--s-ink);
+    transition: border-color .15s var(--snap), box-shadow .15s var(--snap);
+    -webkit-appearance: none;
+  }
+  .field input::placeholder { color: #B4B0AB; }
+  .field input:focus {
+    outline: none;
+    border-color: var(--s-accent);
+    box-shadow: 0 0 0 2px var(--s-accent-pale);
+  }
+  /* Error state (CANON: s-error, not accent) */
+  .field.has-error input {
+    border-color: var(--s-error);
+  }
+  .field.has-error input:focus {
+    box-shadow: 0 0 0 2px var(--s-error-bg);
+  }
+  .field .err {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    color: var(--s-error);
+    margin-top: 6px;
+  }
+  .field.has-error .err { display: flex; }
+  .field .hint {
+    font-size: 12px;
+    color: var(--s-ink-3);
+    margin-top: 6px;
+  }
+
+  /* Phone field with country prefix */
+  .phone-field { display: flex; gap: 8px; }
+  .phone-field .cc {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 13px;
+    border-radius: var(--r-input);
+    border: 1px solid var(--s-border);
+    background: var(--s-bg-sunken);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--s-ink);
+  }
+  .phone-field .cc .flag {
+    width: 18px; height: 13px; border-radius: 2px;
+    background: linear-gradient(#D52B1E 0 100%);
+    position: relative;
+    display: inline-block;
+  }
+  .phone-field .cc .flag::before,
+  .phone-field .cc .flag::after {
+    content: ""; position: absolute; background: #fff;
+  }
+  .phone-field .cc .flag::before { width: 5px; height: 11px; left: 50%; top: 1px; transform: translateX(-50%); }
+  .phone-field .cc .flag::after  { width: 11px; height: 5px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  .phone-field input { flex: 1; }
+
+  /* ---------- Prepay / policy disclosure (D11/D12, review-first) ---------- */
+  .policy {
+    border: 1px solid var(--s-border);
+    border-radius: var(--r-card);
+    background: var(--s-bg-surface);
+    padding: 14px;
+    margin: 4px 0 16px;
+  }
+  .policy .prow {
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+  }
+  .policy .prow + .prow { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--s-border); }
+  .policy .picon {
+    width: 30px; height: 30px;
+    border-radius: var(--r-pill);
+    background: var(--s-bg-sunken);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--s-ink);
+  }
+  .policy .ptext .pt {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--s-ink);
+  }
+  .policy .ptext .ps {
+    font-size: 12.5px;
+    color: var(--s-ink-2);
+    line-height: 1.45;
+    margin-top: 1px;
+  }
+  .policy .ptext .ps a { color: var(--s-ink); font-weight: 500; }
+
+  /* ---------- Consent ---------- */
+  .consent {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 4px 0 18px;
+    cursor: pointer;
+  }
+  .consent .box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--s-ink);
+    flex-shrink: 0;
+    margin-top: 1px;
+    background: var(--s-ink);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white);
+  }
+  .consent .ctext {
+    font-size: 12.5px;
+    color: var(--s-ink-2);
+    line-height: 1.5;
+  }
+  .consent .ctext a { color: var(--s-ink); font-weight: 500; }
+
+  /* ---------- Sticky pay bar ---------- */
+  .paybar {
+    flex-shrink: 0;
+    border-top: 1px solid var(--s-border);
+    background: var(--s-bg-base);
+    padding: 12px 20px 22px;
+  }
+  .paybar .pb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 11px;
+  }
+  .paybar .pb-row .pb-label { font-size: 12px; color: var(--s-ink-3); }
+  .paybar .pb-row .pb-amount {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--s-ink);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    border-radius: var(--r-btn);
+    background: var(--s-ink);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--elev-2);
+    transition: transform .15s var(--snap), filter .15s var(--snap);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-primary:active { transform: scale(0.985); }
+  .btn-primary svg { opacity: .85; }
+
+  /* ---------- DESKTOP VIEW ---------- */
+  .desktop {
+    width: 720px;
+    max-width: 100%;
+    background: var(--s-bg-base);
+    border-radius: var(--r-card-lg);
+    border: 1px solid var(--s-border);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.16);
+    overflow: hidden;
+  }
+  .desktop .d-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--s-border);
+    gap: 12px;
+  }
+  .desktop .d-header .logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--s-ink);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .desktop .d-header .logo .dotmark {
+    width: 7px; height: 7px; border-radius: var(--r-pill);
+    background: var(--s-ink);
+    display: inline-block;
+  }
+  .desktop .d-header .d-step {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .desktop .d-header .d-step .step { display: flex; align-items: center; gap: 7px; }
+  .desktop .d-header .d-step .dot {
+    width: 22px; height: 22px; border-radius: var(--r-pill);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+  }
+  .desktop .d-header .d-step .dot.done,
+  .desktop .d-header .d-step .dot.current { background: var(--s-ink); color: var(--white); }
+  .desktop .d-header .d-step .dot.todo { background: var(--s-bg-sunken); color: var(--s-ink-3); border: 1px solid var(--s-border); }
+  .desktop .d-header .d-step .slabel { font-size: 12px; color: var(--s-ink-3); font-weight: 500; }
+  .desktop .d-header .d-step .step.is-current .slabel { color: var(--s-ink); }
+  .desktop .d-header .d-step .bar { width: 26px; height: 1px; background: var(--s-border); margin: 0 9px; }
+  .desktop .d-header .d-step .bar.done { background: var(--s-ink); }
+
+  .desktop .d-body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 36px;
+    padding: 32px;
+  }
+  .desktop .d-left { min-width: 0; }
+  .desktop .d-right { min-width: 0; }
+  .desktop .d-right-sticky {
+    position: sticky;
+    top: 24px;
+  }
+  .desktop .h2 { margin-top: 0; }
+  .desktop .lead { margin-bottom: 22px; }
+  .desktop .paybar {
+    border: none;
+    border-top: 1px solid var(--s-border);
+    padding: 18px 0 0;
+    margin-top: 22px;
+  }
+  .desktop .summary { margin-bottom: 14px; }
+
+  .micro-note {
+    font-size: 12px;
+    color: var(--s-ink-3);
+    text-align: center;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .micro-note svg { vertical-align: -2px; margin-right: 3px; }
+
+  .annotation {
+    max-width: 1180px;
+    margin: 44px auto 0;
+    padding: 22px 24px;
+    background: var(--s-bg-base);
+    border: 1px solid var(--s-border);
+    border-radius: var(--r-card);
+    font-size: 13px;
+    color: var(--s-ink-2);
+    line-height: 1.7;
+  }
+  .annotation h3 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--s-ink);
+    margin-bottom: 10px;
+  }
+  .annotation b { color: var(--s-ink); font-weight: 600; }
+  .annotation ul { margin: 8px 0 0 18px; }
+  .annotation li { margin-bottom: 5px; }
+  .annotation code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--s-bg-sunken);
+    padding: 1px 5px;
+    border-radius: 5px;
+    color: var(--s-ink);
+  }
+
+  @media (max-width: 800px) {
+    .desktop { display: none; }
+    body { padding: 24px 12px 60px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="mock-head">
+    <h1>Guest booking form — logged-out flow</h1>
+    <p>Where the name / phone / email form slots into the booking flow when there's no session. Structure follows the Fresha booking wizard (service → time → professional → <b>review &amp; confirm</b>); aesthetic follows the Solen design system.</p>
+    <div class="axis">
+      <span>Step 4 · Review &amp; confirm</span>
+      <span>Guest checkout</span>
+      <span>Full prepay (D11)</span>
+    </div>
+  </div>
+
+  <div class="stage">
+
+    <!-- ============================== MOBILE ============================== -->
+    <div class="view-block">
+      <div class="view-label">Mobile · 375px</div>
+      <div class="phone">
+        <div class="notch"></div>
+
+        <!-- Header -->
+        <div class="app-header">
+          <button class="back" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="htitle">Review &amp; confirm</div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper">
+          <div class="step"><span class="dot done">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </span></div>
+          <div class="bar done"></div>
+          <div class="step"><span class="dot done">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </span></div>
+          <div class="bar done"></div>
+          <div class="step"><span class="dot done">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </span></div>
+          <div class="bar done"></div>
+          <div class="step is-current"><span class="dot current">4</span><span class="slabel">Your details</span></div>
+        </div>
+
+        <!-- Scroll body -->
+        <div class="scroll">
+          <h2 class="h2">Almost done</h2>
+          <p class="lead">Add your details so the salon knows who's coming. No account needed.</p>
+
+          <!-- Order summary -->
+          <div class="summary">
+            <div class="salon-row">
+              <div class="salon-photo"></div>
+              <div class="salon-meta">
+                <div class="salon-name">Maison Lumière</div>
+                <div class="salon-sub">
+                  <span class="star">★</span> 4.9
+                  <span class="sep">·</span> Rämistrasse 12, Zürich
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="line">
+              <div>
+                <div class="lname">Women's cut &amp; blow-dry</div>
+                <div class="lsub">with Lena · 1 hr 15 min</div>
+              </div>
+              <div class="lprice">CHF 95</div>
+            </div>
+            <div class="line">
+              <div>
+                <div class="lname">Gloss treatment</div>
+                <div class="lsub">with Lena · 30 min</div>
+              </div>
+              <div class="lprice">CHF 45</div>
+            </div>
+            <div class="divider"></div>
+            <div class="when">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Thu 12 June · 14:30
+            </div>
+            <div class="total-row">
+              <span class="tlabel">Total</span>
+              <span class="tval">CHF 140</span>
+            </div>
+          </div>
+
+          <!-- Auth switch: guest is active -->
+          <div class="auth-switch">
+            <button class="active">Continue as guest</button>
+            <button>Log in</button>
+          </div>
+
+          <!-- Guest form -->
+          <div class="form-card">
+            <!-- Name (required, has-error demo) -->
+            <div class="field has-error">
+              <label for="m-name">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Full name
+              </label>
+              <div class="input-wrap">
+                <input id="m-name" type="text" placeholder="e.g. Sophie Müller" value="S" />
+              </div>
+              <div class="err">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Please enter your full name.
+              </div>
+            </div>
+
+            <!-- Phone (required, +41) -->
+            <div class="field">
+              <label for="m-phone">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Mobile number
+              </label>
+              <div class="phone-field">
+                <span class="cc"><span class="flag"></span> +41</span>
+                <div class="input-wrap" style="flex:1">
+                  <input id="m-phone" type="tel" inputmode="numeric" placeholder="79 123 45 67" />
+                </div>
+              </div>
+              <div class="hint">We'll text your confirmation and booking number here.</div>
+            </div>
+
+            <!-- Email (optional) -->
+            <div class="field">
+              <label for="m-email">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+                Email <span class="opt">· optional</span>
+              </label>
+              <div class="input-wrap">
+                <input id="m-email" type="email" inputmode="email" placeholder="sophie@example.ch" />
+              </div>
+              <div class="hint">Add it to also get your receipt and access link by email.</div>
+            </div>
+          </div>
+
+          <!-- Prepay + policy disclosure -->
+          <div class="policy">
+            <div class="prow">
+              <span class="picon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+              </span>
+              <div class="ptext">
+                <div class="pt">Pay CHF 140 now to confirm</div>
+                <div class="ps">Your card is securely saved. Refunds are reviewed by the salon. <a href="#">Cancellation policy</a></div>
+              </div>
+            </div>
+            <div class="prow">
+              <span class="picon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </span>
+              <div class="ptext">
+                <div class="pt">Free cancellation until Wed 11 June, 14:30</div>
+                <div class="ps">Cancel within 24 hrs and 50% may be charged, per the salon's policy.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consent -->
+          <label class="consent">
+            <span class="box">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </span>
+            <span class="ctext">I agree to the <a href="#">Terms</a> and the salon's cancellation policy, and accept the <a href="#">Privacy Policy</a>.</span>
+          </label>
+        </div>
+
+        <!-- Sticky pay bar -->
+        <div class="paybar">
+          <div class="pb-row">
+            <span class="pb-label">Total · pay now</span>
+            <span class="pb-amount">CHF 140</span>
+          </div>
+          <button class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Pay &amp; confirm booking
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================== DESKTOP ============================== -->
+    <div class="view-block">
+      <div class="view-label">Desktop · two-column</div>
+      <div class="desktop">
+        <!-- Header w/ inline stepper -->
+        <div class="d-header">
+          <div class="logo"><span class="dotmark"></span> solen</div>
+          <div class="d-step">
+            <div class="step"><span class="dot done">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </span><span class="slabel">Service</span></div>
+            <div class="bar done"></div>
+            <div class="step"><span class="dot done">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </span><span class="slabel">Time</span></div>
+            <div class="bar done"></div>
+            <div class="step"><span class="dot done">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </span><span class="slabel">Professional</span></div>
+            <div class="bar done"></div>
+            <div class="step is-current"><span class="dot current">4</span><span class="slabel">Your details</span></div>
+          </div>
+        </div>
+
+        <div class="d-body">
+          <!-- LEFT: form -->
+          <div class="d-left">
+            <h2 class="h2">Almost done</h2>
+            <p class="lead">Add your details so the salon knows who's coming. No account needed — you'll get a booking number to manage it.</p>
+
+            <!-- Auth switch -->
+            <div class="auth-switch">
+              <button class="active">Continue as guest</button>
+              <button>Log in</button>
+            </div>
+
+            <div class="form-card">
+              <div class="field">
+                <label for="d-name">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Full name
+                </label>
+                <div class="input-wrap">
+                  <input id="d-name" type="text" placeholder="e.g. Sophie Müller" value="Sophie Müller" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="d-phone">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  Mobile number
+                </label>
+                <div class="phone-field">
+                  <span class="cc"><span class="flag"></span> +41</span>
+                  <div class="input-wrap" style="flex:1">
+                    <input id="d-phone" type="tel" inputmode="numeric" placeholder="79 123 45 67" value="79 412 88 03" />
+                  </div>
+                </div>
+                <div class="hint">We'll text your confirmation and booking number here.</div>
+              </div>
+
+              <div class="field">
+                <label for="d-email">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+                  Email <span class="opt">· optional</span>
+                </label>
+                <div class="input-wrap">
+                  <input id="d-email" type="email" inputmode="email" placeholder="sophie@example.ch" value="sophie.mueller@example.ch" />
+                </div>
+                <div class="hint">Add it to also get your receipt and access link by email.</div>
+              </div>
+            </div>
+
+            <!-- Consent -->
+            <label class="consent">
+              <span class="box">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </span>
+              <span class="ctext">I agree to the <a href="#">Terms</a> and the salon's cancellation policy, and accept the <a href="#">Privacy Policy</a>.</span>
+            </label>
+          </div>
+
+          <!-- RIGHT: summary + pay -->
+          <div class="d-right">
+            <div class="d-right-sticky">
+              <div class="summary">
+                <div class="salon-row">
+                  <div class="salon-photo"></div>
+                  <div class="salon-meta">
+                    <div class="salon-name">Maison Lumière</div>
+                    <div class="salon-sub">
+                      <span class="star">★</span> 4.9 <span class="sep">·</span> Zürich
+                    </div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="line">
+                  <div>
+                    <div class="lname">Women's cut &amp; blow-dry</div>
+                    <div class="lsub">with Lena · 1 hr 15 min</div>
+                  </div>
+                  <div class="lprice">CHF 95</div>
+                </div>
+                <div class="line">
+                  <div>
+                    <div class="lname">Gloss treatment</div>
+                    <div class="lsub">with Lena · 30 min</div>
+                  </div>
+                  <div class="lprice">CHF 45</div>
+                </div>
+                <div class="divider"></div>
+                <div class="when">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                  Thu 12 June · 14:30
+                </div>
+                <div class="total-row">
+                  <span class="tlabel">Total</span>
+                  <span class="tval">CHF 140</span>
+                </div>
+              </div>
+
+              <!-- Policy -->
+              <div class="policy">
+                <div class="prow">
+                  <span class="picon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                  </span>
+                  <div class="ptext">
+                    <div class="pt">Pay now to confirm</div>
+                    <div class="ps">Card securely saved. Refunds reviewed by the salon. <a href="#">Policy</a></div>
+                  </div>
+                </div>
+                <div class="prow">
+                  <span class="picon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  </span>
+                  <div class="ptext">
+                    <div class="pt">Free cancellation until 11 June</div>
+                    <div class="ps">Cancel within 24 hrs and 50% may apply.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="paybar">
+                <div class="pb-row">
+                  <span class="pb-label">Total · pay now</span>
+                  <span class="pb-amount">CHF 140</span>
+                </div>
+                <button class="btn-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Pay &amp; confirm booking
+                </button>
+              </div>
+
+              <p class="micro-note">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--s-ink-3)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Secured by Stripe · your card details never touch Solen's servers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================== ANNOTATION ============================== -->
+  <div class="annotation">
+    <h3>Design notes (internal — not product copy)</h3>
+    <ul>
+      <li><b>Where it slots in.</b> The guest form is the logged-out variant of booking <b>Step 4 — Review &amp; confirm</b> (Fresha flow: service → time → professional → review). A logged-in user skips straight to the saved-details summary; a logged-out user sees the <code>Continue as guest</code> / <code>Log in</code> switch and the three fields.</li>
+      <li><b>Fields mirror the existing orphaned <code>GuestBookingForm.tsx</code>:</b> full name (required, min 2 chars), mobile number (required, <code>+41</code> prefix locked, <code>^\+41[0-9]{9}$</code>), email (optional, only validated if filled). The <code>+41</code> country chip replaces a typed prefix so the regex can't be broken by spacing.</li>
+      <li><b>Aesthetic = LOCKFILE / CANON.</b> Inputs at <code>rounded-input</code> 16px on hairline <code>s-border</code>; focus = <code>s-accent #276EF1</code> border + <code>s-accent-pale</code> glow (the only place blue appears, per §1.5 functional-only). Error state uses <code>s-error #D32F2F</code> — the old component wrongly used <code>text-s-accent</code> for errors; corrected here. Labels are sentence-case 13px <code>s-ink</code>, not the old 9px uppercase tracking-.18em.</li>
+      <li><b>Primary CTA stays ink</b> (<code>bg-s-ink</code>, §0.2). Sentence case, 15px / 500. Never accent-blue.</li>
+      <li><b>Prepay + review-first disclosure (D11 / D12 / §11).</b> Full prepay at booking with the card saved off-session; refunds are <b>reviewed by the salon</b> (no auto-refund). Cancellation/no-show fee is the policy-automated lane, disclosed and accepted here at booking via the consent checkbox.</li>
+      <li><b>Order number hook.</b> Phone hint ("we'll text your booking number") sets up the <code>reference_code</code> shown on the confirmation screen (separate mockup). Email is the optional second channel for the access link.</li>
+      <li><b>Sample data is realistic Swiss:</b> Maison Lumière, Zürich; women's cut + gloss with stylist Lena; CHF pricing; <code>+41</code> mobile format.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

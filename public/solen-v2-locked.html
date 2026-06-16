@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V2 — Locked tokens, components, and /basel/coiffeur reference</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECE6DC;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+  }
+  body { padding: 32px 16px 80px; }
+
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  .doc-head {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 0 16px;
+  }
+  .doc-eye {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 10px;
+  }
+  .doc-h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: #1A1209;
+  }
+  .doc-h1 em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-style: italic;
+    color: #E8742A;
+  }
+  .doc-sub {
+    font-size: 14px;
+    color: #56463E;
+    margin-top: 12px;
+    max-width: 620px;
+    margin-inline: auto;
+  }
+
+  /* layout: phone left, annotation right */
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  }
+
+  /* phone column - sticky on desktop */
+  .phone-col {
+    position: sticky;
+    top: 24px;
+  }
+  @media (max-width: 1100px) {
+    .phone-col { position: static; }
+  }
+
+  .phone {
+    background: #1A1209;
+    border-radius: 38px;
+    padding: 8px;
+    box-shadow:
+      0 1px 1px rgba(232,116,42,.04),
+      0 8px 20px rgba(232,116,42,.06),
+      0 32px 48px rgba(26,18,9,.12);
+    position: relative;
+    max-height: calc(100vh - 48px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 1100px) {
+    .phone { max-height: none; }
+  }
+
+  .phone-screen {
+    background: #FBF8F3;
+    border-radius: 30px;
+    overflow: hidden;
+    overflow-y: scroll;
+    position: relative;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(232,116,42,.3) transparent;
+  }
+  .phone-screen::-webkit-scrollbar { width: 4px; }
+  .phone-screen::-webkit-scrollbar-track { background: transparent; }
+  .phone-screen::-webkit-scrollbar-thumb { background: rgba(232,116,42,.3); border-radius: 99px; }
+
+  .phone-notch {
+    position: sticky;
+    top: 0;
+    margin: 14px auto -28px;
+    width: 100px;
+    height: 28px;
+    background: #1A1209;
+    border-radius: 99px;
+    z-index: 100;
+  }
+  .phone-status {
+    position: sticky;
+    top: 0;
+    height: 44px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1209;
+    background: #FBF8F3;
+    z-index: 50;
+    font-family: "SF Pro Text", -apple-system, sans-serif;
+  }
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-icons svg { width: 14px; height: 14px; }
+
+  /* page content */
+  .page {
+    background: #FBF8F3;
+    position: relative;
+  }
+
+  /* sticky header */
+  .ph-hdr {
+    position: sticky;
+    top: 44px;
+    height: 48px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251,248,243,.92);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid rgba(26,18,9,.04);
+    box-shadow: 0 1px 0 rgba(26,18,9,.04), 0 4px 12px rgba(26,18,9,.04);
+    z-index: 30;
+  }
+  .ph-back {
+    width: 32px; height: 32px;
+    background: linear-gradient(180deg, #fff, #FDFAF5);
+    border: none;
+    border-radius: 99px;
+    display: flex; align-items: center; justify-content: center;
+    color: #1A1209;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.85),
+      0 1px 1px rgba(26,18,9,.04),
+      0 2px 4px rgba(232,116,42,.06);
+    cursor: pointer;
+  }
+  .ph-back svg { width: 12px; height: 12px; stroke-width: 2; }
+  .spacer { flex: 1; }
+  .city-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 11px;
+    background: linear-gradient(180deg, #fff, #FDFAF5);
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1A1209;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.85),
+      0 1px 1px rgba(26,18,9,.04),
+      0 2px 4px rgba(232,116,42,.06);
+  }
+  .city-mini svg { width: 9px; height: 9px; color: #7A6957; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1A1209;
+    cursor: pointer;
+    position: relative;
+  }
+  .icon-btn svg { width: 18px; height: 18px; stroke-width: 1.8; }
+  .icon-btn .dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 7px; height: 7px;
+    background: #E8742A;
+    border-radius: 99px;
+    border: 1.5px solid #FBF8F3;
+  }
+  .av-mini {
+    width: 30px; height: 30px;
+    background: #1A1209;
+    color: #fff;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid rgba(26,18,9,.06);
+  }
+
+  /* breadcrumbs */
+  .ph-crumbs {
+    padding: 14px 16px 0;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #7A6957;
+    align-items: center;
+    background: #FBF8F3;
+  }
+  .ph-crumbs a { color: #7A6957; cursor: pointer; }
+  .ph-crumbs strong { color: #1A1209; font-weight: 600; }
+  .ph-crumbs .sep { color: rgba(26,18,9,.22); margin: 0 1px; }
+
+  /* title block */
+  .ph-title {
+    padding: 6px 16px 0;
+    background: #FBF8F3;
+  }
+  .ph-h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.028em;
+    line-height: 1;
+    margin-bottom: 5px;
+    color: #1A1209;
+  }
+  .ph-sub {
+    font-size: 12px;
+    color: #7A6957;
+    line-height: 1.4;
+  }
+  .ph-sub strong { color: #1A1209; font-weight: 600; }
+  .ph-sub .pulse {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: #16A34A;
+    border-radius: 99px;
+    margin-right: 4px;
+    vertical-align: middle;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* filter pills */
+  .ph-filters {
+    padding: 14px 16px 16px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: #FBF8F3;
+  }
+  .ph-filters::-webkit-scrollbar { display: none; }
+  .fp {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 13px;
+    background: linear-gradient(180deg, #fff, #FDFAF5);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1A1209;
+    border: none;
+    cursor: pointer;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.85),
+      0 1px 1px rgba(26,18,9,.04),
+      0 2px 4px rgba(232,116,42,.06);
+  }
+  .fp.active {
+    background: #1A1209;
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.18),
+      0 1px 2px rgba(0,0,0,.12);
+  }
+  .fp svg { width: 10px; height: 10px; color: #7A6957; }
+  .fp.active svg { color: rgba(255,255,255,.85); }
+
+  /* grid */
+  .ph-grid {
+    padding: 4px 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .salon-card { cursor: pointer; }
+  .salon-photo {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 1px rgba(26,18,9,.04),
+      0 2px 6px rgba(232,116,42,.06);
+    background-color: #ECE2D2;
+  }
+  .salon-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.12) 0%, transparent 30%, transparent 80%, rgba(26,18,9,.06) 100%);
+    pointer-events: none;
+  }
+  .salon-photo.p1 { background-image: url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p2 { background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p3 { background-image: url('https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p4 { background-image: url('https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p5 { background-image: url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p6 { background-image: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p7 { background-image: url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p8 { background-image: url('https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p9 { background-image: url('https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+  .salon-photo.p10 { background-image: url('https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80'); background-size: cover; background-position: center; }
+
+  .salon-badge {
+    position: absolute;
+    top: 8px; left: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    color: #1A1209;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 99px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    z-index: 2;
+  }
+  .salon-badge::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 99px;
+    background: #16A34A;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.2);
+    animation: pulse 1.6s infinite;
+  }
+  .[salon-badge.orange](http://salon-badge.orange)::before {
+    background: #E8742A;
+    box-shadow: 0 0 0 3px rgba(232,116,42,.2);
+  }
+  .salon-heart {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 30px; height: 30px;
+    border-radius: 99px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .salon-heart svg {
+    width: 14px; height: 14px;
+    stroke: #1A1209;
+    stroke-width: 2;
+    fill: none;
+  }
+  .salon-heart.saved svg { fill: #FF4A6B; stroke: #FF4A6B; }
+
+  .salon-row1 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .salon-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    color: #1A1209;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+  .salon-rating {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #1A1209;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .salon-rating svg {
+    width: 10px; height: 10px;
+    fill: #F3A864;
+    stroke: none;
+  }
+  .salon-row2 {
+    font-size: 11px;
+    color: #7A6957;
+    margin-top: 3px;
+    line-height: 1.3;
+    min-height: 1.3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* end of list */
+  .end-of-list {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 24px 0 12px;
+    font-size: 11px;
+    color: #7A6957;
+    font-style: italic;
+  }
+  .end-of-list::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 2px;
+    background: rgba(26,18,9,.12);
+    border-radius: 99px;
+    margin: 0 auto 12px;
+  }
+
+  /* cross-link footer */
+  .crosslink {
+    padding: 36px 18px 32px;
+    background: linear-gradient(180deg, #FBF8F3 0%, #F5EFE6 100%);
+    border-top: 1px solid rgba(26,18,9,.06);
+  }
+  .crosslink-block { margin-bottom: 28px; }
+  .crosslink-block:last-child { margin-bottom: 0; }
+  .crosslink-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 12px;
+    color: #1A1209;
+  }
+  .crosslink-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    font-size: 12px;
+    color: #7A6957;
+    line-height: 1.7;
+    align-items: baseline;
+  }
+  .crosslink-row a {
+    color: #56463E;
+    padding: 0 10px;
+    border-right: 1px solid rgba(26,18,9,.14);
+    text-decoration: none;
+    transition: color 150ms;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .crosslink-row a:first-child { padding-left: 0; }
+  .crosslink-row a:last-child { border-right: none; padding-right: 0; }
+  .crosslink-row a:hover { color: #E8742A; }
+  .crosslink-row a strong { color: #1A1209; font-weight: 600; }
+
+  /* main footer stub */
+  .footer-main {
+    background: linear-gradient(180deg, #1A1209 0%, #0F0805 100%);
+    color: rgba(255,255,255,.7);
+    padding: 28px 18px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    margin-bottom: 24px;
+  }
+  .footer-col h4 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #E8742A;
+    margin-bottom: 8px;
+  }
+  .footer-col ul { list-style: none; padding: 0; margin: 0; }
+  .footer-col li { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,.55); }
+  .footer-bottom {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.025em;
+    color: #fff;
+  }
+  .footer-logo em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    color: #E8742A;
+    font-weight: 400;
+  }
+  .footer-tagline {
+    font-size: 10px;
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    font-style: italic;
+  }
+  .footer-langs {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 4px;
+    border-radius: 99px;
+    margin-top: 4px;
+  }
+  .footer-langs button {
+    padding: 5px 11px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,.55);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 99px;
+    cursor: pointer;
+  }
+  .footer-langs button.active {
+    background: rgba(255,255,255,.95);
+    color: #1A1209;
+  }
+  .footer-copyright {
+    font-size: 9px;
+    color: rgba(255,255,255,.35);
+    margin-top: 8px;
+  }
+
+  /* right column - section annotations */
+  .ann-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .ann-section {
+    background: #FBF8F3;
+    border-radius: 18px;
+    padding: 22px 24px;
+    border: 1px solid rgba(232,116,42,.12);
+    box-shadow:
+      0 1px 1px rgba(232,116,42,.04),
+      0 4px 12px rgba(232,116,42,.04),
+      0 16px 32px rgba(26,18,9,.04);
+  }
+  .ann-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    background: #1A1209;
+    color: #E8742A;
+    padding: 4px 10px;
+    border-radius: 99px;
+    margin-bottom: 10px;
+  }
+  .ann-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+    color: #1A1209;
+  }
+  .ann-h em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    color: #E8742A;
+  }
+  .ann-vibe {
+    font-size: 12px;
+    color: #56463E;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .ann-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ann-list li {
+    font-size: 11.5px;
+    color: #56463E;
+    line-height: 1.55;
+    padding: 5px 0 5px 20px;
+    position: relative;
+    border-top: 1px dashed rgba(26,18,9,.08);
+  }
+  .ann-list li:first-child { border-top: none; padding-top: 2px; }
+  .ann-list li::before {
+    content: "→";
+    position: absolute;
+    left: 4px;
+    color: #E8742A;
+    font-weight: 700;
+  }
+  .ann-list li strong {
+    color: #1A1209;
+    font-weight: 600;
+  }
+  .ann-list li code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: rgba(232,116,42,.1);
+    color: #8A3C0F;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* hero recap card */
+  .recap {
+    background: linear-gradient(135deg, #FFE4D2 0%, #FBC9A8 100%);
+    border-radius: 22px;
+    padding: 28px 30px;
+    color: #1A1209;
+    border: 1px solid rgba(232,116,42,.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.6),
+      0 16px 32px rgba(232,116,42,.18);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .recap::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -60px;
+    width: 240px; height: 240px;
+    background: rgba(232,116,42,.4);
+    filter: blur(40px);
+  }
+  .recap > * { position: relative; z-index: 2; }
+  .recap-eye {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 8px;
+  }
+  .recap-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 6px;
+  }
+  .recap-h em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .recap-sub {
+    font-size: 13px;
+    color: #56463E;
+    line-height: 1.5;
+  }
+
+  /* scroll hint */
+  .scroll-hint {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 11px;
+    color: rgba(255,255,255,.55);
+    font-style: italic;
+  }
+
+
+  /* ============================================
+     TOKENS PREVIEW STYLES (added 2026-05-05)
+     ============================================ */
+  .tokens-preview {
+    max-width: 1200px;
+    margin: 0 auto 56px;
+    padding: 0 16px;
+  }
+  .tp-h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    color: #1A1209;
+    margin: 36px 0 14px;
+    line-height: 1.05;
+  }
+  .tp-section-sub {
+    font-size: 13px;
+    color: #56463E;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .tp-rule {
+    font-size: 12px;
+    color: #7A6957;
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+  .tp-rule code { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #1A1209; }
+
+  .tp-grid { display: grid; gap: 18px; }
+  .tp-grid-pal { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .tp-group {
+    background: #FFFFFF;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 6px 16px rgba(232,116,42,.06);
+  }
+  .tp-group-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .tp-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  .tp-sw { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; }
+  .tp-meta { font-size: 12px; color: #56463E; line-height: 1.4; }
+  .tp-meta strong { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #1A1209; }
+  .tp-meta code { font-family: "JetBrains Mono", monospace; font-size: 11px; background: rgba(232,116,42,.08); padding: 1px 5px; border-radius: 4px; color: #8A3C0F; }
+
+  .tp-type {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .tp-type-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 6px 16px rgba(232,116,42,.06);
+  }
+  .tp-type-eye {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 10px;
+  }
+  .tp-display {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .tp-italic {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-style: italic;
+    color: #E8742A;
+  }
+  .tp-body {
+    font-family: "Inter Tight", system-ui;
+    font-weight: 400;
+    font-size: 14px;
+    color: #1A1209;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .tp-eye-sample {
+    font-family: "Inter Tight", system-ui;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 10px;
+  }
+  .tp-mono {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+    font-size: 16px;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .tp-type-meta {
+    font-size: 11px;
+    color: #7A6957;
+    line-height: 1.5;
+    border-top: 1px solid rgba(26,18,9,.06);
+    padding-top: 8px;
+  }
+
+  .tp-depth {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .tp-depth-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 16px;
+    min-height: 110px;
+  }
+  .tp-depth-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1209;
+    margin-bottom: 8px;
+  }
+  .tp-depth-p {
+    font-size: 11px;
+    color: #56463E;
+    line-height: 1.5;
+  }
+  .tp-depth-p code { font-family: "JetBrains Mono", monospace; font-size: 10px; }
+
+  /* component samples */
+  .tp-comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+    margin-bottom: 36px;
+  }
+  .tp-comp-wide { grid-column: 1 / -1; }
+  .tp-comp {
+    background: #FFFFFF;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 6px 16px rgba(232,116,42,.06);
+  }
+  .tp-comp-tag {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 10px;
+  }
+  .tp-comp-frame {
+    background: #FBF8F3;
+    border-radius: 10px;
+    padding: 16px;
+    min-height: 80px;
+  }
+
+  /* ---- header sample ---- */
+  .cm-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    background: rgba(251,248,243,.96);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    height: 56px;
+  }
+  .cm-logo { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.03em; color: #1A1209; }
+  .cm-citypill {
+    font-family: "Inter Tight", system-ui; font-size: 13px; font-weight: 600;
+    background: linear-gradient(180deg,#fff,#FDFAF5);
+    padding: 7px 14px;
+    border-radius: 99px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8),0 1px 1px rgba(26,18,9,.04),0 2px 6px rgba(232,116,42,.06);
+    color: #1A1209;
+    cursor: pointer;
+  }
+  .cm-chev { font-size: 11px; color: #56463E; margin-left: 4px; }
+  .cm-spacer { flex: 1; }
+  .cm-iconbtn {
+    position: relative;
+    width: 36px; height: 36px;
+    background: linear-gradient(180deg,#fff,#FDFAF5);
+    border: 0; border-radius: 99px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8),0 1px 1px rgba(26,18,9,.04),0 2px 6px rgba(232,116,42,.06);
+    color: #1A1209;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .cm-belldot { position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; background: #E8742A; border: 1px solid #FBF8F3; border-radius: 99px; }
+  .cm-avatar {
+    width: 32px; height: 32px;
+    background: #1A1209; color: #fff;
+    border-radius: 99px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 14px;
+  }
+
+  /* ---- counter pill / greeting / search ---- */
+  .cm-counterpill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(232,116,42,.12);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-family: "Inter Tight", system-ui; font-size: 12px; font-weight: 600; color: #1A1209; letter-spacing: -0.005em;
+    margin-bottom: 12px;
+  }
+  .cm-pulse {
+    width: 6px; height: 6px; background: #E8742A;
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px rgba(232,116,42,.18);
+    animation: cm-pulse 1.6s infinite;
+  }
+  @keyframes cm-pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .cm-greeting {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 32px; letter-spacing: -0.03em; line-height: 1.05;
+    color: #1A1209;
+    margin-bottom: 16px;
+  }
+  .cm-search {
+    background: linear-gradient(180deg,#fff 0%,#FDFAF5 100%);
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8),0 1px 2px rgba(26,18,9,.04),0 8px 24px rgba(232,116,42,.06);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .cm-srow {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    height: 56px;
+    border-bottom: 1px solid rgba(26,18,9,.06);
+  }
+  .cm-srow:last-child { border-bottom: 0; }
+  .cm-slabel { font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 9px; letter-spacing: 0.18em; color: #8A3C0F; }
+  .cm-sval { font-family: "Inter Tight", system-ui; font-size: 14px; font-weight: 400; color: #7A6957; }
+  .cm-svalfilled { font-weight: 600; color: #1A1209; }
+  .cm-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg,#F0834D 0%,#E8742A 100%);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 99px;
+    border: 0;
+    font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3),0 4px 12px rgba(232,116,42,.32);
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .cm-arrow { display: inline-block; transition: transform 200ms cubic-bezier(.4,0,.2,1); }
+  .cm-cta:hover .cm-arrow, .cm-b2b-cta:hover .cm-arrow { transform: translateX(2px); }
+  .cm-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cm-chip {
+    font-family: "Inter Tight", system-ui; font-weight: 600; font-size: 12px;
+    background: linear-gradient(180deg,#fff,#FDFAF5);
+    border: 1px solid rgba(26,18,9,.06);
+    color: #1A1209;
+    padding: 8px 14px;
+    border-radius: 99px;
+    cursor: pointer;
+  }
+  .cm-chip-active { background: #1A1209; color: #fff; border-color: #1A1209; }
+
+  /* ---- salon card ---- */
+  .cm-card { width: 200px; }
+  .cm-photo {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 8px 24px rgba(232,116,42,.06),0 16px 40px rgba(26,18,9,.04);
+  }
+  .cm-badge {
+    position: absolute; top: 8px; left: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(12px) saturate(1.4);
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 99px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .cm-bdot { width: 5px; height: 5px; border-radius: 99px; }
+  .cm-heart {
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(12px) saturate(1.4);
+    border: 0; border-radius: 99px;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    cursor: pointer;
+  }
+  .cm-card-meta { padding: 0 2px; }
+  .cm-row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .cm-name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -0.01em; color: #1A1209; line-height: 1.1; }
+  .cm-rating {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 11px; color: #1A1209; flex-shrink: 0;
+  }
+  .cm-row2 { font-family: "Inter Tight", system-ui; font-size: 11px; line-height: 1.3; color: #7A6957; margin-top: 2px; }
+  .cm-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* ---- city tile ---- */
+  .cm-tile {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    padding: 14px;
+    overflow: hidden;
+    color: #fff;
+    display: flex; flex-direction: column; justify-content: space-between;
+    max-width: 220px;
+  }
+  .cm-tile::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .cm-aktuell {
+    position: absolute; top: 10px; left: 10px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(8px) saturate(1.4);
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 9px; letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border-radius: 99px;
+    z-index: 3;
+  }
+  .cm-pin { z-index: 2; position: relative; }
+  .cm-tile-foot { z-index: 2; position: relative; }
+  .cm-tile-name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.025em; line-height: 1; }
+  .cm-tile-meta { font-family: "Inter Tight", system-ui; font-weight: 500; font-size: 11px; color: rgba(255,255,255,.85); margin-top: 2px; }
+
+  /* ---- b2b card ---- */
+  .cm-b2b {
+    position: relative;
+    background: linear-gradient(160deg,#FFE4D2 0%,#FBC9A8 100%);
+    border: 1px solid rgba(232,116,42,.12);
+    border-radius: 20px;
+    padding: 22px 24px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(232,116,42,.1),0 16px 32px rgba(232,116,42,.18);
+  }
+  .cm-b2b-blob1 { position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; background: rgba(232,116,42,.5); filter: blur(40px); border-radius: 999px; z-index: 0; }
+  .cm-b2b-blob2 { position: absolute; bottom: -80px; left: -40px; width: 220px; height: 220px; background: rgba(255,255,255,.5); filter: blur(40px); border-radius: 999px; z-index: 0; }
+  .cm-b2b-content { position: relative; z-index: 2; }
+  .cm-b2b-eye { font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #8A3C0F; margin-bottom: 8px; }
+  .cm-b2b-h { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.025em; line-height: 1.05; color: #1A1209; margin-bottom: 4px; }
+  .cm-b2b-sub { font-family: "Inter Tight", system-ui; font-size: 13px; line-height: 1.45; color: #56463E; margin-bottom: 16px; }
+  .cm-b2b-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .cm-b2b-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #1A1209; color: #fff;
+    padding: 11px 18px;
+    border: 0; border-radius: 99px;
+    font-family: "Inter Tight", system-ui; font-weight: 700; font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.1);
+    cursor: pointer;
+  }
+  .cm-b2b-link {
+    font-family: "Inter Tight", system-ui; font-weight: 500; font-size: 12px;
+    color: #8A3C0F;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ---- footer ---- */
+  .cm-footer {
+    position: relative;
+    background: linear-gradient(180deg,#1A1209 0%,#0F0805 100%);
+    color: rgba(255,255,255,.78);
+    padding: 36px 24px 20px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .cm-footer-glow { position: absolute; top: -100px; right: -100px; width: 320px; height: 320px; background: radial-gradient(circle,rgba(232,116,42,.18),transparent 70%); filter: blur(40px); pointer-events: none; }
+  .cm-footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; position: relative; }
+  .cm-footer-mark { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; color: #fff; letter-spacing: -0.03em; }
+  .cm-footer-tag { font-family: "Inter Tight", system-ui; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,.6); max-width: 280px; margin-bottom: 14px; position: relative; }
+  .cm-lang { display: inline-flex; gap: 0; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); padding: 4px; border-radius: 99px; margin-bottom: 28px; position: relative; }
+  .cm-lang-btn { font-family: "Inter Tight", system-ui; font-weight: 600; font-size: 11px; padding: 5px 11px; border-radius: 99px; border: 0; background: transparent; color: rgba(255,255,255,.55); cursor: pointer; }
+  .cm-lang-active { background: rgba(255,255,255,.95); color: #1A1209; }
+  .cm-footer-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; margin-bottom: 28px; position: relative; }
+  .cm-footer-col { display: flex; flex-direction: column; }
+  .cm-footer-h { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 12px; color: #fff; margin-bottom: 10px; letter-spacing: -0.005em; }
+  .cm-footer-col a { font-family: "Inter Tight", system-ui; font-weight: 400; font-size: 12px; color: rgba(255,255,255,.6); padding: 4px 0; line-height: 1.5; cursor: pointer; }
+  .cm-footer-bot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.08); font-family: "Inter Tight", system-ui; font-size: 11px; color: rgba(255,255,255,.45); position: relative; }
+  .cm-flag { display: inline-flex; align-items: center; gap: 6px; }
+  .cm-swiss { display: inline-block; width: 11px; height: 11px; background: #E8742A; }
+
+</style>
+
+</head>
+<body>
+
+<div class="doc">
+
+  <header class="doc-head">
+    <div class="doc-eye">SOLEN V2 · LOCKED 2026-05-05</div>
+    <h1 class="doc-h1">v2 design system — <em>locked &amp; live</em></h1>
+    <p class="doc-sub">Tokens, type, components, and the full <strong>/basel/coiffeur</strong> reference rendered top to bottom. Every value matches <code>_tasks/SOLEN_LIVE_TRUTH.md</code>. If anything here disagrees with the spec doc, fix the spec doc first.</p>
+  </header>
+
+
+  <!-- ============================================
+       TOKENS PREVIEW · palette + type + depth + components
+       Added 2026-05-05 to satisfy V2-D08 "full mirror" requirement
+       ============================================ -->
+  <section class="tokens-preview">
+
+    <h2 class="tp-h2">§1–§4 · Palette</h2>
+
+    <div class="tp-grid tp-grid-pal">
+      <!-- §1 brand -->
+      <div class="tp-group">
+        <div class="tp-group-h">§1 Brand · one accent, never decorates</div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#E8742A;"></div>
+          <div class="tp-meta"><strong>#E8742A</strong> Brand primary · <code>s-brand.DEFAULT</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:linear-gradient(180deg,#F0834D 0%,#E8742A 100%);"></div>
+          <div class="tp-meta"><strong>#F0834D → #E8742A</strong> Brand hover gradient (filled CTAs)</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#FFE4D2;"></div>
+          <div class="tp-meta"><strong>#FFE4D2</strong> Brand subtle bg · <code>s-brand.subtle</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#8A3C0F;"></div>
+          <div class="tp-meta"><strong>#8A3C0F</strong> Brand text deep (small text on cream) · 6.84:1 AA</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#5C2308;"></div>
+          <div class="tp-meta"><strong>#5C2308</strong> Brand text mid (warmer cream gradients)</div>
+        </div>
+      </div>
+
+      <!-- §2 semantic -->
+      <div class="tp-group">
+        <div class="tp-group-h">§2 Semantic · distinct from brand, survives any pivot</div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#FF4A6B;"></div>
+          <div class="tp-meta"><strong>#FF4A6B</strong> Love-red · hearts only, never brand</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#16A34A;"></div>
+          <div class="tp-meta"><strong>#16A34A</strong> Status success / Heute frei / Jetzt offen</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#F59E0B;"></div>
+          <div class="tp-meta"><strong>#F59E0B</strong> Status warning / fast voll</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#D32F2F;"></div>
+          <div class="tp-meta"><strong>#D32F2F</strong> Status error</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#DC2626;"></div>
+          <div class="tp-meta"><strong>#DC2626</strong> Closed-state red</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#F3A864;"></div>
+          <div class="tp-meta"><strong>#F3A864</strong> Star/rating amber · stars only, NOT a 2nd brand</div>
+        </div>
+      </div>
+
+      <!-- §3 warm-ink -->
+      <div class="tp-group">
+        <div class="tp-group-h">§3 Warm-ink scale · cool greys banned</div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#1A1209;"></div>
+          <div class="tp-meta"><strong>#1A1209</strong> Ink-1 · primary text · <code>text-s-ink</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#56463E;"></div>
+          <div class="tp-meta"><strong>#56463E</strong> Ink-2 · secondary text · <code>text-s-ink-2</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#7A6957;"></div>
+          <div class="tp-meta"><strong>#7A6957</strong> Ink-3 · tertiary / meta · <code>text-s-ink-3</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#C4B8A6;"></div>
+          <div class="tp-meta"><strong>#C4B8A6</strong> Ink-disabled · <code>text-s-ink-disabled</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#FBF8F3;border:1px solid rgba(26,18,9,.12);"></div>
+          <div class="tp-meta"><strong>#FBF8F3</strong> Page substrate (warm cream) · <code>bg-s-bg</code></div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#FAF7F3;border:1px solid rgba(26,18,9,.12);"></div>
+          <div class="tp-meta"><strong>#FAF7F3</strong> Sunken (deeper cream) · search bar inactive</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#FFFFFF;border:1px solid rgba(26,18,9,.12);"></div>
+          <div class="tp-meta"><strong>#FFFFFF</strong> Card surface · always white</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#E8DFD2;"></div>
+          <div class="tp-meta"><strong>#E8DFD2</strong> Border (warm hairline, stronger) · <code>border-s-border</code></div>
+        </div>
+      </div>
+
+      <!-- §4 categories -->
+      <div class="tp-group">
+        <div class="tp-group-h">§4 Per-category · decorative tagging only</div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#B5588A;"></div>
+          <div class="tp-meta"><strong>#B5588A</strong> Coiffeur · rose</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#E8A957;"></div>
+          <div class="tp-meta"><strong>#E8A957</strong> Barber · sunny</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#C77A5C;"></div>
+          <div class="tp-meta"><strong>#C77A5C</strong> Nails · warm clay</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#88B89E;"></div>
+          <div class="tp-meta"><strong>#88B89E</strong> Spa · fresh sage</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#D66547;"></div>
+          <div class="tp-meta"><strong>#D66547</strong> Makeup · coral-orange</div>
+        </div>
+        <div class="tp-row">
+          <div class="tp-sw" style="background:#9B7BB8;"></div>
+          <div class="tp-meta"><strong>#9B7BB8</strong> Wellness · soft plum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tp-rule">Anti-patterns ⊘ pure black <code>#000</code> · cool greys (<code>#9E958C</code>, <code>slate-500</code>) · pure-black shadows · brand-orange for body text on cream (fails AA — use <code>#8A3C0F</code>).</div>
+
+    <h2 class="tp-h2">§5 · Typography</h2>
+
+    <div class="tp-type">
+      <div class="tp-type-card">
+        <div class="tp-type-eye">DISPLAY · Bricolage Grotesque 700</div>
+        <div class="tp-display" style="font-size:44px;">Guten Morgen, <em class="tp-italic">Sulo</em></div>
+        <div class="tp-type-meta">Hero h1 · clamp(28px,6vw,44px) · line-height 1 · letter-spacing -0.03em · ink-1</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">SECTION · Bricolage Grotesque 700</div>
+        <div class="tp-display" style="font-size:26px;">Coiffeur in Basel</div>
+        <div class="tp-type-meta">h2 · 22-28px · line-height 1.05 · letter-spacing -0.025em</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">CARD TITLE · Bricolage Grotesque 700</div>
+        <div class="tp-display" style="font-size:16px;">Salon Crémant</div>
+        <div class="tp-type-meta">h3 · 15-16px · line-height 1.2 · letter-spacing -0.02em</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">BODY · Inter Tight 400</div>
+        <div class="tp-body">Buche Coiffeur Termine in Basel online — 23 Salons, ab CHF 65. Heute frei: 8.</div>
+        <div class="tp-type-meta">13-14px · line-height 1.5 · letter-spacing 0</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">META · Inter Tight 400</div>
+        <div class="tp-body" style="font-size:11px;color:#7A6957;">Heute frei ab 14:30 · ab CHF 85</div>
+        <div class="tp-type-meta">11-12px · ink-3 · line-height 1.45</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">EYEBROW · Inter Tight 700 uppercase</div>
+        <div class="tp-eye-sample">FÜR SALONS</div>
+        <div class="tp-type-meta">9-10px · letter-spacing 0.18-0.22em · brand-text deep <code>#8A3C0F</code></div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">PRICES · JetBrains Mono 500</div>
+        <div class="tp-mono">CHF 1'247 · ⭐ 4.9</div>
+        <div class="tp-type-meta">Tabular nums · prices, ratings, counts, IDs · Swiss apostrophe thousands</div>
+      </div>
+      <div class="tp-type-card">
+        <div class="tp-type-eye">ACCENT · Instrument Serif 400 italic</div>
+        <div class="tp-display" style="font-size:32px;">Hi Lisa, was brauchst du <em class="tp-italic">heute</em>?</div>
+        <div class="tp-type-meta">Single accent words inside headlines · max 1 per heading</div>
+      </div>
+    </div>
+
+    <div class="tp-rule">Anti-pattern ⊘ Anton, Bebas Neue, Plus Jakarta, Outfit, Figtree, Phosphor (font), all-caps display, italic everywhere, bold-on-body emphasis.</div>
+
+    <h2 class="tp-h2">§5b · Depth · 5 levels, lift not weight</h2>
+
+    <div class="tp-depth">
+      <div class="tp-depth-card" style="box-shadow:none;">
+        <div class="tp-depth-h">L0 · Base substrate</div>
+        <div class="tp-depth-p">Page bg, no shadow. Flat cream <code>#FBF8F3</code>.</div>
+      </div>
+      <div class="tp-depth-card" style="box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 1px rgba(26,18,9,.04),0 2px 6px rgba(232,116,42,.06);">
+        <div class="tp-depth-h">L1 · Raised</div>
+        <div class="tp-depth-p">Header icon buttons, chips, small interactive elements.</div>
+      </div>
+      <div class="tp-depth-card" style="box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 6px 16px rgba(232,116,42,.08);">
+        <div class="tp-depth-h">L2 · Surface</div>
+        <div class="tp-depth-p">Search bar, secondary cards.</div>
+      </div>
+      <div class="tp-depth-card" style="box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(26,18,9,.03),0 8px 24px rgba(232,116,42,.06),0 16px 40px rgba(26,18,9,.04);">
+        <div class="tp-depth-h">L3 · Elevated</div>
+        <div class="tp-depth-p">Salon cards, b2b card, modals.</div>
+      </div>
+      <div class="tp-depth-card" style="background:rgba(255,255,255,.6);backdrop-filter:blur(12px) saturate(1.4);box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.08);">
+        <div class="tp-depth-h">L4 · Overlay</div>
+        <div class="tp-depth-p">Glassy badges, heart buttons, dropdowns. <code>backdrop-filter</code>.</div>
+      </div>
+      <div class="tp-depth-card" style="box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 2px 6px rgba(232,116,42,.28);">
+        <div class="tp-depth-h">L5 · Accent glow</div>
+        <div class="tp-depth-p">Live pills + active brand-CTAs only. Toned, never aggressive.</div>
+      </div>
+    </div>
+
+    <h2 class="tp-h2">§5c · Personality · 4 named easings</h2>
+
+    <div class="tp-grid tp-grid-pal">
+      <div class="tp-group"><div class="tp-group-h">--ease-snap · 200ms · "I clicked"</div><div class="tp-meta">cubic-bezier(.4, 0, .2, 1) · UI default — buttons, hovers, tab switches, chip toggles</div></div>
+      <div class="tp-group"><div class="tp-group-h">--ease-spring · 400ms · "yay!"</div><div class="tp-meta">cubic-bezier(.34, 1.56, .64, 1) · heart save, badge appear, "+1" pop. Slight overshoot.</div></div>
+      <div class="tp-group"><div class="tp-group-h">--ease-glide · 600ms · "we're moving"</div><div class="tp-meta">cubic-bezier(.16, 1, .3, 1) · sheet open, modal in, route transitions</div></div>
+      <div class="tp-group"><div class="tp-group-h">--ease-thud · 150ms · "done"</div><div class="tp-meta">cubic-bezier(.7, 0, .84, 0) · press states, toast dismiss, confirm tap</div></div>
+    </div>
+
+    <h2 class="tp-h2">§12 · §16 · §20 · §21 · Locked components</h2>
+
+    <div class="tp-comp-grid">
+
+      <!-- header -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§12 Header (mobile, 56px)</div>
+        <div class="tp-comp-frame">
+          <div class="cm-header">
+            <div class="cm-logo">solen</div>
+            <div class="cm-citypill">Basel <span class="cm-chev">▾</span></div>
+            <div class="cm-spacer"></div>
+            <button class="cm-iconbtn" aria-label="Benachrichtigungen">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+              <span class="cm-belldot"></span>
+            </button>
+            <div class="cm-avatar">S</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- counter pill + greeting + search -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§13 Hero · counter pill + greeting + 3-row stacked search</div>
+        <div class="tp-comp-frame">
+          <div class="cm-counterpill"><span class="cm-pulse"></span>47 Salons in Basel haben heute frei</div>
+          <div class="cm-greeting">Guten Morgen, <em class="tp-italic">Sulo</em>.</div>
+          <div class="cm-search">
+            <div class="cm-srow"><span class="cm-slabel">WAS</span><span class="cm-sval">Service oder Salon</span></div>
+            <div class="cm-srow"><span class="cm-slabel">WO</span><span class="cm-sval cm-svalfilled">Basel · Kleinbasel</span></div>
+            <div class="cm-srow"><span class="cm-slabel">WANN</span><span class="cm-sval">Wann passt's?</span></div>
+          </div>
+          <button class="cm-cta">Solen durchsuchen <span class="cm-arrow">→</span></button>
+          <div class="cm-chips">
+            <span class="cm-chip cm-chip-active">Heute</span>
+            <span class="cm-chip">Last-Minute</span>
+            <span class="cm-chip">In der Nähe</span>
+            <span class="cm-chip">Mehr Filter →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- salon card availability -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§16 Salon card · availability variant (mobile, 160px)</div>
+        <div class="tp-comp-frame">
+          <article class="cm-card">
+            <div class="cm-photo" style="background:linear-gradient(180deg,rgba(255,255,255,.18) 0%,transparent 35%,transparent 70%,rgba(232,116,42,.08) 100%),radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.25),transparent 60%),#B5588A;">
+              <span class="cm-badge cm-badge-now"><span class="cm-bdot" style="background:#E8742A;box-shadow:0 0 0 3px rgba(232,116,42,.2);"></span>Sofort frei</span>
+              <button class="cm-heart" aria-label="Speichern"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1209" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            </div>
+            <div class="cm-card-meta">
+              <div class="cm-row1"><span class="cm-name">Salon Crémant</span><span class="cm-rating"><svg width="10" height="10" viewBox="0 0 24 24" fill="#F3A864"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg> 4.9</span></div>
+              <div class="cm-row2">In <strong>25 Min</strong> frei</div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- salon card service -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§16 Salon card · service variant (used on category pages)</div>
+        <div class="tp-comp-frame">
+          <article class="cm-card">
+            <div class="cm-photo" style="background:linear-gradient(180deg,rgba(255,255,255,.18) 0%,transparent 35%,transparent 70%,rgba(232,116,42,.08) 100%),radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.25),transparent 60%),#88B89E;">
+              <span class="cm-badge"><span class="cm-bdot" style="background:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,.2);"></span>Heute frei</span>
+              <button class="cm-heart" aria-label="Speichern"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FF4A6B" stroke="#FF4A6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            </div>
+            <div class="cm-card-meta">
+              <div class="cm-row1"><span class="cm-name">Pure Wellness</span><span class="cm-rating"><svg width="10" height="10" viewBox="0 0 24 24" fill="#F3A864"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg> 4.7</span></div>
+              <div class="cm-row2">Massage · ab CHF <strong>120</strong></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- city tile -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§19 City tile · Basel (current city)</div>
+        <div class="tp-comp-frame">
+          <div class="cm-tile" style="background:linear-gradient(160deg,#E8742A 0%,#C25E1A 100%);">
+            <span class="cm-aktuell"><span class="cm-bdot" style="background:#E8742A;"></span>Aktuell</span>
+            <svg class="cm-pin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div class="cm-tile-foot">
+              <div class="cm-tile-name">Basel</div>
+              <div class="cm-tile-meta">47 Salons</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- b2b card -->
+      <div class="tp-comp">
+        <div class="tp-comp-tag">§20 B2B promo card · peach gradient</div>
+        <div class="tp-comp-frame">
+          <div class="cm-b2b">
+            <div class="cm-b2b-blob1"></div>
+            <div class="cm-b2b-blob2"></div>
+            <div class="cm-b2b-content">
+              <div class="cm-b2b-eye">FÜR SALONS</div>
+              <div class="cm-b2b-h">Solen für dein Studio.<br>Mehr Termine, weniger Anrufe.</div>
+              <div class="cm-b2b-sub">Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.</div>
+              <div class="cm-b2b-actions">
+                <button class="cm-b2b-cta">Mehr erfahren <span class="cm-arrow">→</span></button>
+                <a class="cm-b2b-link" href="#">Schon Partner?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div class="tp-comp tp-comp-wide">
+        <div class="tp-comp-tag">§21 Footer · dark register w sprout glyph + lang switcher</div>
+        <div class="tp-comp-frame">
+          <div class="cm-footer">
+            <div class="cm-footer-glow"></div>
+            <div class="cm-footer-brand">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8742A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M5 12c0-3 3-4 7-4 0 4-3 7-7 7-1 0-2-1-2-2 0-.5 .8-1 2-1z"/><path d="M19 12c0-3-3-4-7-4 0 4 3 7 7 7 1 0 2-1 2-2 0-.5-.8-1-2-1z"/></svg>
+              <span class="cm-footer-mark">solen</span>
+            </div>
+            <p class="cm-footer-tag">Die Schweizer Salon-Plattform.<br>Buche Beauty + Wellness in Basel, Zürich, Bern.</p>
+            <div class="cm-lang">
+              <button class="cm-lang-btn cm-lang-active">DE</button>
+              <button class="cm-lang-btn">EN</button>
+              <button class="cm-lang-btn">FR</button>
+              <button class="cm-lang-btn">IT</button>
+            </div>
+            <div class="cm-footer-cols">
+              <div class="cm-footer-col"><div class="cm-footer-h">Solen</div><a>Über uns</a><a>Karriere</a><a>Kontakt</a></div>
+              <div class="cm-footer-col"><div class="cm-footer-h">Entdecken</div><a>Coiffeur</a><a>Barber</a><a>Heute frei</a></div>
+              <div class="cm-footer-col"><div class="cm-footer-h">Für Salons</div><a>Werde Partner</a><a>Pricing</a></div>
+              <div class="cm-footer-col"><div class="cm-footer-h">Rechtliches</div><a>AGB</a><a>Datenschutz</a><a>Impressum</a></div>
+            </div>
+            <div class="cm-footer-bot">
+              <span>© 2026 Solen GmbH</span>
+              <span class="cm-flag"><span class="cm-swiss"></span> Made in Basel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="tp-h2">§25 · /basel/coiffeur — full reference</h2>
+    <p class="tp-section-sub">The locked category-page mockup, top to bottom. Phone scrolls; right column annotates each section.</p>
+
+  </section>
+
+  <div class="layout">
+
+<!-- ============================================
+     LEFT COLUMN — PHONE
+     ============================================ -->
+<div class="phone-col">
+  <div class="phone">
+    <div class="phone-screen">
+      <div class="phone-notch"></div>
+      <div class="phone-status">
+        <span>9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v5H2zM6 13h2v9H6zM10 9h2v13h-2zM14 5h2v17h-2zM18 1h2v21h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 8a13.66 13.66 0 0 0-18 0L1.35 6.39A15.77 15.77 0 0 1 22.61 6.39zM5.07 10.5l1.65 1.62a8.18 8.18 0 0 1 10.57 0l1.65-1.62A10.58 10.58 0 0 0 5.07 10.5z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px;"><path d="M17 4H7a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4zm0 14H7a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/><rect x="6" y="9" width="9" height="6" rx="1"/></svg>
+        </div>
+      </div>
+
+      <div class="page">
+
+        <!-- HEADER -->
+        <div class="ph-hdr">
+          <button class="ph-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div class="spacer"></div>
+          <span class="city-mini">Basel <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <div class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="dot"></span>
+          </div>
+          <div class="av-mini">S</div>
+        </div>
+
+        <!-- BREADCRUMBS -->
+        <nav class="ph-crumbs"><a>solen</a><span class="sep">/</span><a>Basel</a><span class="sep">/</span><strong>Coiffeur</strong></nav>
+
+        <!-- TITLE BLOCK -->
+        <div class="ph-title">
+          <h1 class="ph-h1">Coiffeur in Basel</h1>
+          <p class="ph-sub"><span class="pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+        </div>
+
+        <!-- FILTER PILLS -->
+        <div class="ph-filters">
+          <button class="fp active">Alle</button>
+          <button class="fp">Heute frei</button>
+          <button class="fp">Sortieren <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button class="fp">Filter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg></button>
+        </div>
+
+        <!-- GRID -->
+        <div class="ph-grid">
+          <div class="salon-card">
+            <div class="salon-photo p1"><span class="salon-badge">Heute frei</span><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Salon Crémant</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.9</div></div>
+            <div class="salon-row2">Schnitt + Föhnen · <strong>ab CHF 85</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p2"><span class="salon-badge orange">Sofort frei</span><button class="salon-heart saved"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Klipp Tisi</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.8</div></div>
+            <div class="salon-row2">Schnitt Damen · <strong>ab CHF 65</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p3"><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Studio Mona</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.7</div></div>
+            <div class="salon-row2">Coloration · <strong>ab CHF 95</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p4"><span class="salon-badge">Heute frei</span><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Hairlich</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.6</div></div>
+            <div class="salon-row2">Highlights · <strong>ab CHF 120</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p5"><span class="salon-badge">Heute frei</span><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Beauty Loft</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>5.0</div></div>
+            <div class="salon-row2">Schnitt · <strong>ab CHF 75</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p6"><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Glow Studio</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.9</div></div>
+            <div class="salon-row2">Schnitt + Bart · <strong>ab CHF 90</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p7"><span class="salon-badge">Heute frei</span><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Mode Hair</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.8</div></div>
+            <div class="salon-row2">Schnitt · <strong>ab CHF 70</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p8"><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Salon X</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.5</div></div>
+            <div class="salon-row2">Coloration · <strong>ab CHF 110</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p9"><span class="salon-badge orange">Sofort frei</span><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Hair Atelier</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.7</div></div>
+            <div class="salon-row2">Schnitt + Föhnen · <strong>ab CHF 95</strong></div>
+          </div>
+          <div class="salon-card">
+            <div class="salon-photo p10"><button class="salon-heart"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button></div>
+            <div class="salon-row1"><div class="salon-name">Klipp Tisi · Aeschen</div><div class="salon-rating"><svg viewBox="0 0 24 24"><path d="M12 2 L15 8.5 L22 9.5 L17 14 L18.5 21 L12 17.5 L5.5 21 L7 14 L2 9.5 L9 8.5 Z"/></svg>4.6</div></div>
+            <div class="salon-row2">Schnitt Herren · <strong>ab CHF 55</strong></div>
+          </div>
+
+          <!-- end of list -->
+          <div class="end-of-list">Du hast alle 23 Salons gesehen</div>
+        </div>
+
+        <!-- CROSS-LINK FOOTER -->
+        <div class="crosslink">
+          <div class="crosslink-block">
+            <div class="crosslink-h">Andere Kategorien in Basel</div>
+            <div class="crosslink-row">
+              <a><strong>Barber</strong></a>
+              <a><strong>Nails</strong></a>
+              <a><strong>Spa</strong></a>
+              <a><strong>Makeup</strong></a>
+              <a><strong>Wellness</strong></a>
+            </div>
+          </div>
+          <div class="crosslink-block">
+            <div class="crosslink-h">Coiffeur in anderen Städten</div>
+            <div class="crosslink-row">
+              <a>Coiffeur in <strong>Zürich</strong></a>
+              <a>Coiffeur in <strong>Bern</strong></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN FOOTER -->
+        <div class="footer-main">
+          <div class="footer-grid">
+            <div class="footer-col">
+              <h4>Solen</h4>
+              <ul>
+                <li>Über uns</li>
+                <li>Karriere</li>
+                <li>Presse</li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Salons</h4>
+              <ul>
+                <li>Für Salons</li>
+                <li>Anmelden</li>
+                <li>Preise</li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Hilfe</h4>
+              <ul>
+                <li>Hilfe-Center</li>
+                <li>Kontakt</li>
+                <li>FAQ</li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Rechtliches</h4>
+              <ul>
+                <li>AGB</li>
+                <li>Datenschutz</li>
+                <li>Impressum</li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <div class="footer-logo">solen<em>.ch</em></div>
+            <div class="footer-tagline">Die Schweizer Salon-Plattform</div>
+            <div class="footer-langs">
+              <button class="active">DE</button>
+              <button>EN</button>
+              <button>FR</button>
+              <button>IT</button>
+            </div>
+            <div class="footer-copyright">© 2026 Solen AG · Made in Basel</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <p class="scroll-hint">↑ scroll the phone to see whole page flow</p>
+</div>
+
+<!-- ============================================
+     RIGHT COLUMN — ANNOTATIONS
+     ============================================ -->
+<div class="ann-col">
+
+  <!-- recap card -->
+  <div class="recap">
+    <div class="recap-eye">FULL CATEGORY PAGE · /BASEL/COIFFEUR</div>
+    <h2 class="recap-h">Everything <em>locked</em> in §25</h2>
+    <p class="recap-sub">Spec lives in SOLEN_LIVE_[TRUTH.md](http://TRUTH.md) §25.1–§25.16. Annotations on the right map to those sections.</p>
+  </div>
+
+  <!-- §25.2 + §25.3 header + breadcrumbs -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.2 · §25.3 · HEADER + CRUMBS</span>
+    <h3 class="ann-h">Sticky header w glass blur</h3>
+    <p class="ann-vibe">Header sticks always (per §12). Below it: breadcrumbs `solen / Basel / Coiffeur` give SEO + nav hierarchy. Bell icon shows brand-orange dot when notifications exist.</p>
+    <ul class="ann-list">
+      <li>Header reuses <strong>§12</strong> minimal pattern w city pill</li>
+      <li>Back arrow → <code>history.back()</code> w fallback to <code>/[city]</code></li>
+      <li>Crumbs rendered as <code>&lt;nav aria-label="breadcrumb"&gt;</code> + JSON-LD <code>BreadcrumbList</code> in <code>&lt;head&gt;</code></li>
+      <li>Crumb separator <code>/</code> at <strong>22% opacity</strong> ink-1, 1px margin</li>
+      <li>Current item (Coiffeur) is <code>&lt;span aria-current="page"&gt;</code> not a link</li>
+    </ul>
+  </div>
+
+  <!-- §25.4 title -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.4 · TITLE BLOCK</span>
+    <h3 class="ann-h">h1 + sub w pulse dot</h3>
+    <p class="ann-vibe">Bricolage Grotesque 700 28px h1. Sub-text shows real-time count w green pulse dot. When filters active: dot disappears, sub becomes "[N] Salons · gefiltert".</p>
+    <ul class="ann-list">
+      <li>h1 size <code>clamp(24px, 5vw, 32px)</code>, line-height 1, letter-spacing -0.028em</li>
+      <li>Pulse dot is 5px green <code>#16A34A</code>, 1.6s infinite per <strong>§5c.7</strong></li>
+      <li>Count refetches every 60s OR on visibility change (real-time)</li>
+      <li>Plural handled: <strong>1 Salon</strong> (singular) vs <strong>23 Salons</strong> (plural)</li>
+      <li>Zero results: shows "0 Salons · gefiltert · <em>Filter zurücksetzen</em>" inline link in brand-orange</li>
+    </ul>
+  </div>
+
+  <!-- §25.5 filter pills -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.5 · FILTER PILLS</span>
+    <h3 class="ann-h">4 pills · scrollable</h3>
+    <p class="ann-vibe">Default state: <strong>Alle</strong> active, <strong>Heute frei</strong> quick toggle, <strong>Sortieren ▾</strong> opens sheet, <strong>Filter</strong> opens 3-cat sheet. When filters active: count badge appears on Filter pill (e.g. "Filter (3)").</p>
+    <ul class="ann-list">
+      <li>Pills are <code>linear-gradient(180deg, #fff, #FDFAF5)</code> w peach shadow</li>
+      <li>Active state: ink-1 bg, white text, inset highlight</li>
+      <li>Inter Tight 600 12px, padding 8×13px, radius pill</li>
+      <li>Tap target ≥44px even tho visual is smaller (per <strong>§11</strong>)</li>
+      <li>Scrolls horizontally on overflow, scrollbar hidden</li>
+    </ul>
+  </div>
+
+  <!-- §25.6 sortieren -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.6 · SORTIEREN SHEET</span>
+    <h3 class="ann-h">Bottom sheet w 5 radio options</h3>
+    <p class="ann-vibe">Tap "Sortieren ▾" → bottom sheet w dimmed backdrop, swipe-down to dismiss. 5 options total.</p>
+    <ul class="ann-list">
+      <li><strong>Empfohlen</strong> (default) — server smart-mix algorithm</li>
+      <li><strong>Beste Bewertung</strong> — rating descending</li>
+      <li><strong>Heute am frühesten frei</strong> — earliest slot today</li>
+      <li><strong>Preis · niedrig zuerst</strong> — lowest "ab CHF X" first</li>
+      <li><strong>Nähe</strong> — distance ascending (requires geo)</li>
+      <li>Radio circles: 18×18px, 2px ink-1 .25 border, brand-orange when selected</li>
+      <li>Sheet z-index <code>var(--z-modal)</code> per <strong>§8</strong> — uses React portal</li>
+    </ul>
+  </div>
+
+  <!-- §25.7 filter sheet -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.7 · FILTER SHEET</span>
+    <h3 class="ann-h">3 categories · live count CTA</h3>
+    <p class="ann-vibe">Tap "Filter" → bottom sheet w 3 categories: <strong>Verfügbarkeit</strong>, <strong>Service-Typ</strong>, <strong>Preisspanne</strong>. Live-counted CTA at bottom updates w each toggle.</p>
+    <ul class="ann-list">
+      <li><strong>Verfügbarkeit</strong>: pill multi-select — Heute frei / Sofort frei / Diese Woche / Wochenende / Abends nach 18:00</li>
+      <li><strong>Service-Typ</strong> (varies by category): Coiffeur = Damen / Herren / Kinder / Schnitt / Föhnen / Coloration / Highlights</li>
+      <li><strong>Preisspanne</strong>: dual-thumb slider CHF 0–500</li>
+      <li>CTA copy: "Alle 23 Salons anzeigen" → "14 Salons anzeigen →" (live, 200ms debounce)</li>
+      <li>Zero matches: CTA disabled "Keine Treffer", ink-3 bg</li>
+      <li>Top-right "Zurücksetzen" link clears all filters but doesn't dismiss</li>
+      <li>Swipe down dismisses w/o applying (cancel)</li>
+    </ul>
+  </div>
+
+  <!-- §25.8 grid -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.8 · GRID</span>
+    <h3 class="ann-h">Infinite scroll · 2/3/4 cols</h3>
+    <p class="ann-vibe">Mobile 2 cols, tablet 3, desktop 4. Loads 12 cards initial, fetches next 12 within 400px of bottom. Skeleton shimmer L→R during fetch.</p>
+    <ul class="ann-list">
+      <li>Cards use <strong>service variant</strong> per <strong>§16.5</strong> — line 2 = "Schnitt + Föhnen · ab CHF 85"</li>
+      <li>Photo aspect 1:1, 14px radius, peach soft shadow</li>
+      <li>Badge top-left: "Heute frei" (green dot) or "Sofort frei" (orange dot)</li>
+      <li>Heart top-right: outline → filled love-red on save (logged-in)</li>
+      <li>Logged-out heart tap → login modal w return-to-card</li>
+      <li>Photo fallback: category-color tile w salon initials (per <strong>§16.7b</strong>)</li>
+      <li>End of list: separator + italic "Du hast alle 23 Salons gesehen"</li>
+    </ul>
+  </div>
+
+  <!-- §25.9 empty states -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.9 · EMPTY STATES</span>
+    <h3 class="ann-h">3 conditions · 3 responses</h3>
+    <p class="ann-vibe">Each empty state respects user intent + offers a path forward. Never dead-ends.</p>
+    <ul class="ann-list">
+      <li><strong>Zero filter matches</strong>: 88×88px peach circle illustration → "Keine Salons mit diesen Filtern" → "Filter zurücksetzen" CTA → cross-city secondary link</li>
+      <li><strong>Category coming soon</strong> (e.g. /bern/makeup): "Makeup kommt bald nach Bern" → email waitlist CTA → cross-city secondary</li>
+      <li><strong>API error</strong>: inline retry first, escalates to full empty state after 5 retries</li>
+    </ul>
+  </div>
+
+  <!-- §25.10 sticky -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.10 · STICKY SCROLL</span>
+    <h3 class="ann-h">Pills sticky after h1 scrolls out</h3>
+    <p class="ann-vibe">When scrollY ≥ 120px, filter pills row becomes <code>position: sticky; top: 48px</code> w glass blur bg. User can refine mid-scroll without scrolling back up.</p>
+    <ul class="ann-list">
+      <li>Header z-index <code>var(--z-sticky)</code></li>
+      <li>Sticky pills z-index one below header</li>
+      <li>Both gain <code>backdrop-filter: blur(12px) saturate(1.4)</code></li>
+      <li>Transition 200ms <code>var(--ease-snap)</code></li>
+      <li>Crumbs + h1 + sub scroll naturally (NOT sticky)</li>
+    </ul>
+  </div>
+
+  <!-- §25.11 cross-link -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.11 · CROSS-LINK FOOTER</span>
+    <h3 class="ann-h">2 SEO link blocks</h3>
+    <p class="ann-vibe">Lives between end-of-grid and main footer. Pure internal-link surface — google rewards link density. Auto-scales w new cities/categories.</p>
+    <ul class="ann-list">
+      <li><strong>Block 1</strong>: "Andere Kategorien in [City]" — 5 sibling categories</li>
+      <li><strong>Block 2</strong>: "[Category] in anderen Städten" — same category in other v1 cities</li>
+      <li>Each link → <code>/[city]/[category]</code></li>
+      <li>Hover state: brand-orange <code>#E8742A</code></li>
+      <li>Container bg <code>linear-gradient(180deg, #FBF8F3 0%, #F5EFE6 100%)</code></li>
+      <li>Wraps as new categories/cities are added</li>
+    </ul>
+  </div>
+
+  <!-- §25.12 SEO -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.12 · META + SEO</span>
+    <h3 class="ann-h">Server-side dynamic meta + JSON-LD</h3>
+    <p class="ann-vibe">Every value generated server-side from city + category data. Numbers in meta description trigger google rich results.</p>
+    <ul class="ann-list">
+      <li><code>&lt;title&gt;</code>: "Coiffeur Salons in Basel buchen — Solen" (60 char max)</li>
+      <li><code>&lt;meta description&gt;</code>: includes count + min price + today-free count</li>
+      <li>JSON-LD <strong>BreadcrumbList</strong> + <strong>ItemList of HairSalon</strong></li>
+      <li>hreflang: DE (default no prefix) / EN / FR / IT</li>
+      <li>og:image dynamically gen 1200×630 per page</li>
+      <li>canonical even when filtered (filters don't get own SEO weight)</li>
+    </ul>
+  </div>
+
+  <!-- §25.13 url params -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.13 · URL PARAMS</span>
+    <h3 class="ann-h">Filter persistence via query strings</h3>
+    <p class="ann-vibe">Filters sync to URL for shareability + back-button. Use <code>router.replace()</code> so filter changes don't pollute history.</p>
+    <ul class="ann-list">
+      <li><code>?heute=1</code> — Heute frei toggle</li>
+      <li><code>?service=damen,coloration</code> — multi-select comma-separated</li>
+      <li><code>?preis=50-200</code> — price range</li>
+      <li><code>?sort=rating</code> — non-default sort</li>
+      <li>Combined: <code>/basel/coiffeur?heute=1&service=damen&sort=slot</code></li>
+      <li>Invalid params silently ignored</li>
+    </ul>
+  </div>
+
+  <!-- §25.16 do nots -->
+  <div class="ann-section">
+    <span class="ann-tag">§25.16 · DO NOT</span>
+    <h3 class="ann-h">Things v1 explicitly skips</h3>
+    <p class="ann-vibe">Common mistakes to avoid. Each one was considered and explicitly deferred or rejected.</p>
+    <ul class="ann-list">
+      <li>NO map view in v1 — defer to <code>?view=map</code> in v2</li>
+      <li>NO Bewertung/Distanz/Sprachen filters in v1</li>
+      <li>NO "Featured" promoted salons mixed into grid (no paid ranking v1)</li>
+      <li>NO pre-loading all salons — infinite scroll only</li>
+      <li>NO auto-detect Heute frei from time of day — explicit user action</li>
+      <li>NO save filter selections across sessions — URL-scoped only</li>
+      <li>NO different sort options for logged-in vs out — show all 5 always</li>
+    </ul>
+  </div>
+
+</div>
+  </div>
+
+</div>
+
+</body>
+</html>

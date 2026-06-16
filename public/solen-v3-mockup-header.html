@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen header — F refinement</title>
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/peace-sans" />
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-sauce-one" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" />
+<style>
+  :root {
+    --s-brand: #1F5C42;
+    --s-brand-mid: #0F3D26;
+    --s-brand-deep: #0A2917;
+    --s-accent: #C97A57;
+    --s-bg-base: #F5EBDD;
+    --s-ink-bar: #1F1714;
+    --s-ink-text: #1B1B1B;
+    --s-ink-2: #4A3F36;
+    --s-ink-3: #786558;
+    --s-border: #E6D9C5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--s-bg-base);
+    font-family: "Open Sauce One", "Inter", -apple-system, system-ui, sans-serif;
+    color: var(--s-ink-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Intro */
+  .intro {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 80px 48px 24px;
+  }
+  .intro h1 {
+    font-family: "Peace Sans", "Inter", sans-serif;
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--s-ink-text);
+    margin-bottom: 18px;
+  }
+  .intro h1 .heartbeat { color: var(--s-accent); }
+  .intro p {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--s-ink-2);
+    max-width: 78ch;
+  }
+  .intro p code {
+    background: rgba(31, 23, 20, 0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 14px;
+    color: var(--s-ink-text);
+  }
+  .intro p strong { font-weight: 700; color: var(--s-ink-text); }
+
+  /* F-locked tag */
+  .locked-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--s-brand);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .locked-tag::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--s-accent);
+  }
+
+  /* Variation card */
+  .variation {
+    max-width: 1440px;
+    margin: 0 auto 48px;
+    padding: 0 48px;
+  }
+  .variation-label {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .variation-letter {
+    font-family: "Anton", "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 0.8;
+    color: var(--s-brand);
+    letter-spacing: 0.01em;
+    text-transform: lowercase;
+  }
+  .variation-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--s-ink-text);
+    flex-shrink: 0;
+  }
+  .variation-summary {
+    font-size: 14px;
+    color: var(--s-ink-3);
+    margin-left: auto;
+    max-width: 60ch;
+    text-align: right;
+    line-height: 1.45;
+  }
+
+  .variation-preview {
+    background: var(--s-bg-base);
+    border: 1px solid var(--s-border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 32px rgba(31, 23, 20, 0.08);
+  }
+  .variation-preview.reference {
+    opacity: 0.85;
+    border-style: dashed;
+    box-shadow: none;
+  }
+
+  .variation-caption {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--s-ink-3);
+    line-height: 1.55;
+    max-width: 80ch;
+  }
+  .variation-caption code {
+    background: rgba(31, 23, 20, 0.06);
+    padding: 0 5px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 12px;
+    color: var(--s-ink-text);
+  }
+  .variation-caption strong { color: var(--s-ink-text); font-weight: 700; }
+
+  /* Header bones */
+  .hd {
+    background: var(--s-ink-bar);
+    height: 94px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .hd .inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  .hd .spacer { flex: 1; }
+
+  .wm {
+    color: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: baseline;
+    line-height: 1;
+    flex-shrink: 0;
+    font-family: "Anton", "Inter", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-transform: lowercase;
+  }
+  .wm.peace {
+    font-family: "Peace Sans", "Inter", sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .wm-32 { font-size: 32px; }
+  .wm-36 { font-size: 36px; }
+  .wm-40 { font-size: 40px; }
+  .wm-peace-24 { font-size: 24px; }
+  .wm .dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    background: var(--s-accent);
+    border-radius: 50%;
+    margin-left: 4px;
+    transform: translateY(-2px);
+  }
+  .wm-32 .dot { width: 8px; height: 8px; margin-left: 3px; }
+  .wm-40 .dot { width: 10px; height: 10px; margin-left: 5px; }
+  .wm-peace-24 .dot { width: 8px; height: 8px; margin-left: 3px; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-shrink: 0;
+  }
+  .nav a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: opacity 200ms ease-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .nav a:hover { opacity: 0.7; }
+  .nav a.dd::after {
+    content: "";
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255,255,255,0.65);
+    margin-top: 2px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .pill-search {
+    background: rgba(255,255,255,0.95);
+    color: var(--s-ink-text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px 9px 14px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    height: 38px;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .pill-search svg { width: 14px; height: 14px; stroke: var(--s-ink-2); }
+  .icon-help {
+    width: 38px; height: 38px;
+    border-radius: 999px;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.85);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.18);
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .pill-login-gradient {
+    background: linear-gradient(135deg, #2A7B58 0%, #1F5C42 50%, #0F3D26 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    white-space: nowrap;
+    height: 38px;
+    display: inline-flex; align-items: center;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .pill-login-emerald {
+    background: var(--s-brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    white-space: nowrap;
+    height: 38px;
+    display: inline-flex; align-items: center;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+
+  /* Sub-nav */
+  .subnav {
+    background: var(--s-ink-bar);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    height: 34px;
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.7);
+  }
+  .subnav .inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .subnav a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+    padding: 9px 0;
+    font-family: "Open Sauce One", "Inter", sans-serif;
+  }
+  .subnav a.active { color: #fff; font-weight: 600; }
+  .subnav a.active::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--s-accent);
+  }
+
+  /* Below */
+  .below {
+    height: 96px;
+    background: var(--s-bg-base);
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+  }
+  .below .marker {
+    font-family: "Peace Sans", "Inter", sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--s-ink-text);
+  }
+  .below .marker .heartbeat { color: var(--s-accent); }
+
+  /* Pick prompt */
+  .pick {
+    max-width: 900px;
+    margin: 64px auto 96px;
+    padding: 40px 48px;
+    background: var(--s-ink-bar);
+    color: #fff;
+    border-radius: 24px;
+    text-align: center;
+  }
+  .pick h2 {
+    font-family: "Peace Sans", "Inter", sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+  .pick h2 .heartbeat { color: var(--s-accent); }
+  .pick p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.75);
+    max-width: 64ch;
+    margin: 0 auto;
+  }
+  .pick strong { color: #fff; font-weight: 700; }
+  .pick code {
+    background: rgba(255,255,255,0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 13px;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<section class="intro">
+  <span class="locked-tag">F locked</span>
+  <h1>Solen header — F <span class="heartbeat">refinement</span></h1>
+  <p>F is the direction: <strong>Anton lowercase wordmark</strong> + V3 terracotta dot + sub-nav strip above (Salons / Coiffeure / Stilist:innen) + 4-cat nav with ▾ on Coiffeur and Nails + 3-item right cluster (search + ? + Anmelden) + emerald gradient pill. Two questions left: <strong>wordmark size</strong> (32 / 36 / 40px) and <strong>dot or no dot</strong>. Each variation below holds everything else constant.</p>
+</section>
+
+<!-- Reference: current state -->
+<article class="variation">
+  <header class="variation-label">
+    <span class="variation-letter" style="color:var(--s-ink-3); font-size:36px">ref</span>
+    <span class="variation-title">Current Header.tsx (for size comparison)</span>
+    <span class="variation-summary">Peace Sans 24px "Solen" + dot. Showing here so the F variants below have a calibration anchor.</span>
+  </header>
+  <div class="variation-preview reference">
+    <header class="hd">
+      <div class="inner">
+        <a href="#" class="wm peace wm-peace-24">Solen<span class="dot"></span></a>
+        <nav class="nav">
+          <a href="#">Coiffeur</a><a href="#">Barbershop</a><a href="#">Nails</a><a href="#">Entdecken</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="right">
+          <a href="#" class="pill-login-emerald">Anmelden</a>
+        </div>
+      </div>
+    </header>
+    <div class="below"><span class="marker">Schöner aussehen,<span class="heartbeat"> buchen</span>.</span></div>
+  </div>
+</article>
+
+<!-- ────────── F1 · 32px wordmark + dot ────────── -->
+<article class="variation">
+  <header class="variation-label">
+    <span class="variation-letter">F1</span>
+    <span class="variation-title">32px Anton + V3 dot — restrained</span>
+    <span class="variation-summary">Smaller end. Wordmark still clearly heavier than Peace Sans, but doesn't dominate the bar. Best if you want Fluz feel without Fluz volume.</span>
+  </header>
+  <div class="variation-preview">
+    <div class="subnav">
+      <div class="inner">
+        <a href="#" class="active">Salons</a>
+        <a href="#">Coiffeure</a>
+        <a href="#">Stilist:innen</a>
+      </div>
+    </div>
+    <header class="hd">
+      <div class="inner">
+        <a href="#" class="wm wm-32">solen<span class="dot"></span></a>
+        <nav class="nav">
+          <a href="#" class="dd">Coiffeur</a><a href="#">Barbershop</a><a href="#" class="dd">Nails</a><a href="#">Entdecken</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="right">
+          <span class="pill-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Suchen
+          </span>
+          <span class="icon-help">?</span>
+          <a href="#" class="pill-login-gradient">Anmelden</a>
+        </div>
+      </div>
+    </header>
+    <div class="below"><span class="marker">Schöner aussehen,<span class="heartbeat"> buchen</span>.</span></div>
+  </div>
+  <p class="variation-caption"><strong>Wordmark:</strong> <code>32px</code> Anton lowercase + 8px terracotta dot. <strong>Reads:</strong> Fluz-category typography but quieter on the left. Good if you want the chrome density to dominate, not the wordmark.</p>
+</article>
+
+<!-- ────────── F2 · 36px wordmark + dot (baseline F) ────────── -->
+<article class="variation">
+  <header class="variation-label">
+    <span class="variation-letter">F2</span>
+    <span class="variation-title">36px Anton + V3 dot — baseline F</span>
+    <span class="variation-summary">The size from the round-2 mockup you picked. Balanced wordmark presence vs chrome density.</span>
+  </header>
+  <div class="variation-preview">
+    <div class="subnav">
+      <div class="inner">
+        <a href="#" class="active">Salons</a>
+        <a href="#">Coiffeure</a>
+        <a href="#">Stilist:innen</a>
+      </div>
+    </div>
+    <header class="hd">
+      <div class="inner">
+        <a href="#" class="wm wm-36">solen<span class="dot"></span></a>
+        <nav class="nav">
+          <a href="#" class="dd">Coiffeur</a><a href="#">Barbershop</a><a href="#" class="dd">Nails</a><a href="#">Entdecken</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="right">
+          <span class="pill-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Suchen
+          </span>
+          <span class="icon-help">?</span>
+          <a href="#" class="pill-login-gradient">Anmelden</a>
+        </div>
+      </div>
+    </header>
+    <div class="below"><span class="marker">Schöner aussehen,<span class="heartbeat"> buchen</span>.</span></div>
+  </div>
+  <p class="variation-caption"><strong>Wordmark:</strong> <code>36px</code> Anton lowercase + 9px terracotta dot. <strong>Reads:</strong> closest to actual Fluz "fluz" visual weight. Balanced — wordmark and chrome carry equal visual weight. The middle option.</p>
+</article>
+
+<!-- ────────── F3 · 40px wordmark + dot ────────── -->
+<article class="variation">
+  <header class="variation-label">
+    <span class="variation-letter">F3</span>
+    <span class="variation-title">40px Anton + V3 dot — bigger brand</span>
+    <span class="variation-summary">Larger wordmark — assertive brand presence on the left. Wordmark slightly dominates the chrome. Risk: feels heavy at smaller viewports.</span>
+  </header>
+  <div class="variation-preview">
+    <div class="subnav">
+      <div class="inner">
+        <a href="#" class="active">Salons</a>
+        <a href="#">Coiffeure</a>
+        <a href="#">Stilist:innen</a>
+      </div>
+    </div>
+    <header class="hd">
+      <div class="inner">
+        <a href="#" class="wm wm-40">solen<span class="dot"></span></a>
+        <nav class="nav">
+          <a href="#" class="dd">Coiffeur</a><a href="#">Barbershop</a><a href="#" class="dd">Nails</a><a href="#">Entdecken</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="right">
+          <span class="pill-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Suchen
+          </span>
+          <span class="icon-help">?</span>
+          <a href="#" class="pill-login-gradient">Anmelden</a>
+        </div>
+      </div>
+    </header>
+    <div class="below"><span class="marker">Schöner aussehen,<span class="heartbeat"> buchen</span>.</span></div>
+  </div>
+  <p class="variation-caption"><strong>Wordmark:</strong> <code>40px</code> Anton lowercase + 10px terracotta dot. <strong>Reads:</strong> wordmark dominates the bar — Solen feels confident, brand-forward. Trade-off: takes visual space from the nav, may need to widen the bar at smaller viewports.</p>
+</article>
+
+<!-- ────────── F4 · 36px wordmark NO dot (Fluz-cleaner) ────────── -->
+<article class="variation">
+  <header class="variation-label">
+    <span class="variation-letter">F4</span>
+    <span class="variation-title">36px Anton — NO dot — purest Fluz</span>
+    <span class="variation-summary">Same as F2 but drops the V3 terracotta dot. Pure "solen" wordmark, no accent. Most like Fluz visually. Loses Solen's signature dot.</span>
+  </header>
+  <div class="variation-preview">
+    <div class="subnav">
+      <div class="inner">
+        <a href="#" class="active">Salons</a>
+        <a href="#">Coiffeure</a>
+        <a href="#">Stilist:innen</a>
+      </div>
+    </div>
+    <header class="hd">
+      <div class="inner">
+        <a href="#" class="wm wm-36">solen</a>
+        <nav class="nav">
+          <a href="#" class="dd">Coiffeur</a><a href="#">Barbershop</a><a href="#" class="dd">Nails</a><a href="#">Entdecken</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="right">
+          <span class="pill-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Suchen
+          </span>
+          <span class="icon-help">?</span>
+          <a href="#" class="pill-login-gradient">Anmelden</a>
+        </div>
+      </div>
+    </header>
+    <div class="below"><span class="marker">Schöner aussehen,<span class="heartbeat"> buchen</span>.</span></div>
+  </div>
+  <p class="variation-caption"><strong>Vs F2:</strong> drops the terracotta dot. Pure lowercase "solen" — no accent, no signature mark. <strong>Reads:</strong> purest Fluz-clone. <strong>Trade-off:</strong> loses the V3 terracotta-dot-on-logo signature (which appears in <code>SOLEN_LIVE_TRUTH §1</code> and on all V3 mockups). If Solen drops the dot from the logo, the heartbeat-on-h1 terracotta highlights still carry the brand color elsewhere — so it's not a total brand loss, but it IS a brand mark change.</p>
+</article>
+
+<div class="pick">
+  <h2>Pick a <span class="heartbeat">size</span></h2>
+  <p>Tell me <strong>F1 · F2 · F3 · F4</strong> — or describe a tweak (<code>"F2 but smaller dot"</code>, <code>"F3 with no chevrons"</code>). Once locked I port to <code>Header.tsx</code> in one clean edit.</p>
+</div>
+
+</body>
+</html>

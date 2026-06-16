@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solen V3 — All 31 colorway combos · locked V2-D15-3 · 2026-05-07</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #FFFFFF;
+      --ink: #1A1209;
+      --ink-soft: rgba(26, 18, 9, 0.62);
+      --hairline: rgba(26, 18, 9, 0.06);
+      --brand: #043338;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --brand-mid: #0A6873;
+    }
+
+    html, body {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .display {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-weight: 900;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 56px 48px 80px;
+    }
+
+    .doc-head {
+      margin-bottom: 56px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .doc-eyebrow {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: 16px;
+    }
+    .doc-title {
+      font-size: clamp(36px, 4.6vw, 60px);
+      font-weight: 600;
+      line-height: 1.0;
+      letter-spacing: -0.018em;
+      margin-bottom: 14px;
+    }
+    .doc-lede {
+      font-size: 17px;
+      max-width: 64ch;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    /* ============ COMBO GRID ============ */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+      margin-bottom: 64px;
+    }
+
+    .combo {
+      position: relative;
+      border-radius: 22px;
+      padding: 28px 28px 24px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .combo-letter {
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      opacity: 0.5;
+      font-feature-settings: "ss01";
+    }
+
+    .combo-badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .combo-badge.dark {
+      background: rgba(0, 0, 0, 0.10);
+      border-color: rgba(0, 0, 0, 0.18);
+    }
+
+    .combo-headline {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 0.96;
+      letter-spacing: -0.018em;
+      margin-bottom: 6px;
+    }
+
+    .combo-sub {
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0.78;
+      letter-spacing: 0.02em;
+    }
+
+    .combo-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid currentColor;
+      opacity: 1;
+    }
+
+    .combo-hex {
+      font-size: 11px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      opacity: 0.75;
+      line-height: 1.4;
+    }
+
+    .combo-contrast {
+      font-size: 11px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+      white-space: nowrap;
+    }
+
+    /* ============ EACH COMBO ============ */
+    .combo.A { background: #CAE8FF; color: #B50051; }   /* Pale ice blue + Magenta · 5.35 AA */
+    .combo.B { background: #005898; color: #FF8A8A; }   /* Royal blue + Warm pink · 3.25 AA-large */
+    .combo.C { background: #C6C6C6; color: #020202; }   /* Light grey + Near-black · 12.15 AAA */
+    .combo.D { background: #043338; color: #C2F0F1; }   /* Dark teal + Pale teal · 11.09 AAA · BRAND */
+    .combo.E { background: #F090B8; color: #031E48; }   /* Hot pink + Deep navy · 7.32 AAA */
+    .combo.F { background: #CC3733; color: #FFFFFF; }   /* Tomato red + White · 5.05 AA */
+    .combo.G { background: #D8D6CB; color: #000000; }   /* Bone + Black · 14.40 AAA */
+    .combo.H { background: #432747; color: #FFFFFF; }   /* Aubergine + White · 12.96 AAA */
+    .combo.I { background: #193120; color: #948565; }   /* Forest green + Sandy beige · 3.86 AA-large */
+    .combo.J { background: #B1AFAF; color: #0B033D; }   /* Cool grey + Deep navy · 8.79 AAA */
+    .combo.K { background: #343F4F; color: #FFEB8F; }   /* Steel slate + Butter yellow · 8.90 AAA */
+    .combo.L { background: #090909; color: #FBF8F8; }   /* Near-black + Near-white · 18.85 AAA */
+    .combo.M { background: #928393; color: #10255E; }   /* Mauve + Deep navy · 4.07 AA-large */
+    .combo.N { background: #665A61; color: #FFA18B; }   /* Dusty plum + Coral · 3.35 AA-large */
+    .combo.O { background: #CD5557; color: #FDF9F9; }   /* Coral red + Off-white · 3.99 AA-large */
+    .combo.P { background: #F0F49B; color: #0606B0; }   /* Acid yellow + Royal blue · 10.91 AAA */
+    .combo.Q { background: #2E2E77; color: #FAF9F9; }   /* Royal navy + Off-white · 11.27 AAA */
+    .combo.R { background: #E07365; color: #0F0F0F; }   /* Salmon + Near-black · 6.22 AA */
+    .combo.S { background: #94355C; color: #F8F6F6; }   /* Wine + Off-white · 6.67 AA */
+
+    /* ============ BEYOND REPUBLIK · 12 fresh combos ============ */
+    .combo.T  { background: #A8B89A; color: #5C1F2C; }   /* Sage + Burgundy */
+    .combo.U  { background: #D97757; color: #3D1A1F; }   /* Burnt orange + Dark burgundy */
+    .combo.V  { background: #A8D5BA; color: #4A1F3D; }   /* Mint + Plum */
+    .combo.W  { background: #D4A017; color: #15233D; }   /* Mustard + Deep navy */
+    .combo.X  { background: #0E5240; color: #B7E4C7; }   /* Emerald + Mint */
+    .combo.Y  { background: #7BC4DB; color: #3E1F4A; }   /* Sky cyan + Plum */
+    .combo.Z  { background: #FFF1DD; color: #B5345A; }   /* Cream + Cherry */
+    .combo.AA { background: #F8F1E1; color: #A8651D; }   /* Ivory + Amber */
+    .combo.BB { background: #5A7894; color: #F5E6C8; }   /* Slate blue + Cream */
+    .combo.CC { background: #C8B4D8; color: #3D1F4A; }   /* Lavender + Plum */
+    .combo.DD { background: #2A2730; color: #C8B4D8; }   /* Charcoal + Lavender */
+    .combo.EE { background: #FFCBA4; color: #1A2E5C; }   /* Peach + Deep navy */
+
+    .grid-section-h {
+      grid-column: 1 / -1;
+      padding: 32px 0 8px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      color: var(--ink);
+      border-top: 1px solid var(--hairline);
+      margin-top: 16px;
+    }
+    .grid-section-h span { font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-left: 8px; letter-spacing: normal; }
+
+    /* ============ REFERENCE TABLE ============ */
+    .table-section {
+      margin-top: 72px;
+      padding-top: 32px;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .table-h {
+      font-size: clamp(24px, 2.6vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      margin-bottom: 6px;
+    }
+
+    .table-sub {
+      font-size: 15px;
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--hairline);
+      vertical-align: middle;
+    }
+    th {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: #FAFAF8;
+    }
+    td.letter {
+      font-weight: 700;
+      font-size: 16px;
+      width: 56px;
+    }
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid var(--hairline);
+    }
+    .currently {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .empty { color: var(--ink-soft); }
+
+    /* ============ INSTRUCTION CARD ============ */
+    .instruction {
+      margin-top: 56px;
+      padding: 40px 36px;
+      background: var(--brand);
+      color: #C2F0F1;
+      border-radius: 22px;
+    }
+    .instruction h2 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      margin-bottom: 12px;
+    }
+    .instruction p {
+      font-size: 15px;
+      line-height: 1.6;
+      opacity: 0.92;
+      max-width: 60ch;
+      margin-bottom: 8px;
+    }
+    .instruction code {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(194, 240, 241, 0.18);
+      border-radius: 6px;
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      margin: 4px 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header class="doc-head">
+      <div class="doc-eyebrow">Solen V3 · 31 colorway combos · 2026-05-07</div>
+      <h1 class="doc-title">Pick a colorway for each category.</h1>
+      <p class="doc-lede"><strong>V3 LOCKED V2-D15-3 (2026-05-07):</strong> 4 categories assigned — D=Brand, Z=Coiffeur, G=Barbershop, A=Nails, I=Spa &amp; Wellness. Makeup retired. <br><br>Full reference: 31 combos labeled A–EE. <strong>A–S</strong> are Republik-extracted (19 panels from their homepage). <strong>T–EE</strong> are 12 fresh pairs covering hue gaps — sage, burnt orange, mint, mustard, emerald, sky cyan, cream/cherry, ivory/amber, slate blue, lavender, charcoal, peach — all following the same monochrome-per-panel discipline (≥3 : 1 contrast). The 26 unassigned combos are reserved for future use (5th category post-launch, themed feature pages, or Solen Pro variant identity).</p>
+    </header>
+
+    <!-- ============ THE 31-COMBO GRID (A–S Republik · T–EE fresh) ============ -->
+    <div class="grid">
+
+      <div class="combo A">
+        <span class="combo-badge dark">Nails</span>
+        <div>
+          <div class="combo-letter">A</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #CAE8FF<br>txt #B50051</div>
+            <div class="combo-contrast">5.35 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo B">
+        <div>
+          <div class="combo-letter">B</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #005898<br>txt #FF8A8A</div>
+            <div class="combo-contrast">3.25 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo C">
+        <div>
+          <div class="combo-letter">C</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #C6C6C6<br>txt #020202</div>
+            <div class="combo-contrast">12.15 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo D">
+        <span class="combo-badge">Brand</span>
+        <div>
+          <div class="combo-letter">D</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #043338<br>txt #C2F0F1</div>
+            <div class="combo-contrast">11.09 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo E">
+        <div>
+          <div class="combo-letter">E</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #F090B8<br>txt #031E48</div>
+            <div class="combo-contrast">7.32 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo F">
+        <div>
+          <div class="combo-letter">F</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #CC3733<br>txt #FFFFFF</div>
+            <div class="combo-contrast">5.05 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo G">
+        <span class="combo-badge dark">Barbershop</span>
+        <div>
+          <div class="combo-letter">G</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #D8D6CB<br>txt #000000</div>
+            <div class="combo-contrast">14.40 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo H">
+        <div>
+          <div class="combo-letter">H</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #432747<br>txt #FFFFFF</div>
+            <div class="combo-contrast">12.96 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo I">
+        <span class="combo-badge">Spa</span>
+        <div>
+          <div class="combo-letter">I</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #193120<br>txt #948565</div>
+            <div class="combo-contrast">3.86 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo J">
+        <div>
+          <div class="combo-letter">J</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #B1AFAF<br>txt #0B033D</div>
+            <div class="combo-contrast">8.79 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo K">
+        <div>
+          <div class="combo-letter">K</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #343F4F<br>txt #FFEB8F</div>
+            <div class="combo-contrast">8.90 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo L">
+        <div>
+          <div class="combo-letter">L</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #090909<br>txt #FBF8F8</div>
+            <div class="combo-contrast">18.85 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo M">
+        <div>
+          <div class="combo-letter">M</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #928393<br>txt #10255E</div>
+            <div class="combo-contrast">4.07 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo N">
+        <div>
+          <div class="combo-letter">N</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #665A61<br>txt #FFA18B</div>
+            <div class="combo-contrast">3.35 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo O">
+        <div>
+          <div class="combo-letter">O</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #CD5557<br>txt #FDF9F9</div>
+            <div class="combo-contrast">3.99 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo P">
+        <div>
+          <div class="combo-letter">P</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #F0F49B<br>txt #0606B0</div>
+            <div class="combo-contrast">10.91 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo Q">
+        <div>
+          <div class="combo-letter">Q</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #2E2E77<br>txt #FAF9F9</div>
+            <div class="combo-contrast">11.27 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo R">
+        <div>
+          <div class="combo-letter">R</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #E07365<br>txt #0F0F0F</div>
+            <div class="combo-contrast">6.22 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo S">
+        <div>
+          <div class="combo-letter">S</div>
+        </div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #94355C<br>txt #F8F6F6</div>
+            <div class="combo-contrast">6.67 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-section-h">— Beyond Republik · 12 fresh combos<span>same monochrome-per-panel discipline, new hues</span></div>
+
+      <div class="combo T">
+        <div><div class="combo-letter">T</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #A8B89A<br>txt #5C1F2C</div>
+            <div class="combo-contrast">5.92 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo U">
+        <div><div class="combo-letter">U</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #D97757<br>txt #3D1A1F</div>
+            <div class="combo-contrast">4.92 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo V">
+        <div><div class="combo-letter">V</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #A8D5BA<br>txt #4A1F3D</div>
+            <div class="combo-contrast">8.29 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo W">
+        <div><div class="combo-letter">W</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #D4A017<br>txt #15233D</div>
+            <div class="combo-contrast">6.60 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo X">
+        <div><div class="combo-letter">X</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #0E5240<br>txt #B7E4C7</div>
+            <div class="combo-contrast">6.49 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo Y">
+        <div><div class="combo-letter">Y</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #7BC4DB<br>txt #3E1F4A</div>
+            <div class="combo-contrast">7.18 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo Z">
+        <span class="combo-badge dark">Coiffeur</span>
+        <div><div class="combo-letter">Z</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #FFF1DD<br>txt #B5345A</div>
+            <div class="combo-contrast">5.24 : 1<br>AA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo AA">
+        <div><div class="combo-letter">AA</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #F8F1E1<br>txt #A8651D</div>
+            <div class="combo-contrast">4.11 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo BB">
+        <div><div class="combo-letter">BB</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #5A7894<br>txt #F5E6C8</div>
+            <div class="combo-contrast">3.74 : 1<br>AA-large</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo CC">
+        <div><div class="combo-letter">CC</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #C8B4D8<br>txt #3D1F4A</div>
+            <div class="combo-contrast">7.35 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo DD">
+        <div><div class="combo-letter">DD</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #2A2730<br>txt #C8B4D8</div>
+            <div class="combo-contrast">7.67 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo EE">
+        <div><div class="combo-letter">EE</div></div>
+        <div>
+          <div class="combo-headline">Schöner<br>aussehen.</div>
+          <div class="combo-sub">Beauty in der Schweiz</div>
+          <div class="combo-foot">
+            <div class="combo-hex">bg #FFCBA4<br>txt #1A2E5C</div>
+            <div class="combo-contrast">9.02 : 1<br>AAA</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ REFERENCE TABLE ============ -->
+    <section class="table-section">
+      <h2 class="table-h">Reference list — all 31 combos (A–S Republik + T–EE fresh)</h2>
+      <p class="table-sub">Same data, but linear. If a combo is "currently" assigned, swap it by telling me a new letter.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Combo</th>
+            <th>Name</th>
+            <th>Bg hex</th>
+            <th>Text hex</th>
+            <th>Contrast</th>
+            <th>Currently</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="letter">A</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#CAE8FF"></span>Pale ice blue + magenta</div></td><td>#CAE8FF</td><td>#B50051</td><td>5.35 : 1 AA</td><td><span class="currently">Nails</span></td></tr>
+          <tr><td class="letter">B</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#005898"></span>Royal blue + warm pink</div></td><td>#005898</td><td>#FF8A8A</td><td>3.25 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">C</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#C6C6C6"></span>Light grey + near-black</div></td><td>#C6C6C6</td><td>#020202</td><td>12.15 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">D</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#043338"></span>Dark teal + pale teal</div></td><td>#043338</td><td>#C2F0F1</td><td>11.09 : 1 AAA</td><td><span class="currently">Brand</span></td></tr>
+          <tr><td class="letter">E</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#F090B8"></span>Hot pink + deep navy</div></td><td>#F090B8</td><td>#031E48</td><td>7.32 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">F</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#CC3733"></span>Tomato red + white</div></td><td>#CC3733</td><td>#FFFFFF</td><td>5.05 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">G</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#D8D6CB"></span>Bone + black</div></td><td>#D8D6CB</td><td>#000000</td><td>14.40 : 1 AAA</td><td><span class="currently">Barbershop</span></td></tr>
+          <tr><td class="letter">H</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#432747"></span>Aubergine + white</div></td><td>#432747</td><td>#FFFFFF</td><td>12.96 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">I</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#193120"></span>Forest green + sandy beige</div></td><td>#193120</td><td>#948565</td><td>3.86 : 1 AA-large</td><td><span class="currently">Spa &amp; Wellness</span></td></tr>
+          <tr><td class="letter">J</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#B1AFAF"></span>Cool grey + deep navy</div></td><td>#B1AFAF</td><td>#0B033D</td><td>8.79 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">K</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#343F4F"></span>Steel slate + butter yellow</div></td><td>#343F4F</td><td>#FFEB8F</td><td>8.90 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">L</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#090909"></span>Near-black + near-white</div></td><td>#090909</td><td>#FBF8F8</td><td>18.85 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">M</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#928393"></span>Mauve + deep navy</div></td><td>#928393</td><td>#10255E</td><td>4.07 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">N</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#665A61"></span>Dusty plum + coral</div></td><td>#665A61</td><td>#FFA18B</td><td>3.35 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">O</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#CD5557"></span>Coral red + off-white</div></td><td>#CD5557</td><td>#FDF9F9</td><td>3.99 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">P</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#F0F49B"></span>Acid yellow + royal blue</div></td><td>#F0F49B</td><td>#0606B0</td><td>10.91 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">Q</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#2E2E77"></span>Royal navy + off-white</div></td><td>#2E2E77</td><td>#FAF9F9</td><td>11.27 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">R</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#E07365"></span>Salmon + near-black</div></td><td>#E07365</td><td>#0F0F0F</td><td>6.22 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">S</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#94355C"></span>Wine + off-white</div></td><td>#94355C</td><td>#F8F6F6</td><td>6.67 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td colspan="6" style="background: #FAFAF8; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); padding: 14px 16px;">— Beyond Republik · 12 fresh combos</td></tr>
+          <tr><td class="letter">T</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#A8B89A"></span>Sage + burgundy</div></td><td>#A8B89A</td><td>#5C1F2C</td><td>5.92 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">U</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#D97757"></span>Burnt orange + dark burgundy</div></td><td>#D97757</td><td>#3D1A1F</td><td>4.92 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">V</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#A8D5BA"></span>Mint + plum</div></td><td>#A8D5BA</td><td>#4A1F3D</td><td>8.29 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">W</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#D4A017"></span>Mustard + deep navy</div></td><td>#D4A017</td><td>#15233D</td><td>6.60 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">X</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#0E5240"></span>Emerald + mint</div></td><td>#0E5240</td><td>#B7E4C7</td><td>6.49 : 1 AA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">Y</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#7BC4DB"></span>Sky cyan + plum</div></td><td>#7BC4DB</td><td>#3E1F4A</td><td>7.18 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">Z</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#FFF1DD"></span>Cream + cherry</div></td><td>#FFF1DD</td><td>#B5345A</td><td>5.24 : 1 AA</td><td><span class="currently">Coiffeur</span></td></tr>
+          <tr><td class="letter">AA</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#F8F1E1"></span>Ivory + amber</div></td><td>#F8F1E1</td><td>#A8651D</td><td>4.11 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">BB</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#5A7894"></span>Slate blue + cream</div></td><td>#5A7894</td><td>#F5E6C8</td><td>3.74 : 1 AA-large</td><td class="empty">—</td></tr>
+          <tr><td class="letter">CC</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#C8B4D8"></span>Lavender + plum</div></td><td>#C8B4D8</td><td>#3D1F4A</td><td>7.35 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">DD</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#2A2730"></span>Charcoal + lavender</div></td><td>#2A2730</td><td>#C8B4D8</td><td>7.67 : 1 AAA</td><td class="empty">—</td></tr>
+          <tr><td class="letter">EE</td><td><div class="swatch-row"><span class="swatch-dot" style="background:#FFCBA4"></span>Peach + deep navy</div></td><td>#FFCBA4</td><td>#1A2E5C</td><td>9.02 : 1 AAA</td><td class="empty">—</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ V3 LOCKED ASSIGNMENTS ============ -->
+    <div class="instruction">
+      <h2>V3 locked assignments (V2-D15-3 · 2026-05-07)</h2>
+      <p>Final picks for the 4 v1 categories:</p>
+      <p>
+        <code>D = Brand</code>
+        <code>Z = Coiffeur</code>
+        <code>G = Barbershop</code>
+        <code>A = Nails</code>
+        <code>I = Spa &amp; Wellness</code>
+      </p>
+      <p style="margin-top: 16px;">~~Makeup retired~~ Wellness merged into Spa. Waxing deferred post-launch. The 26 unassigned combos are reserved for: future 5th category, themed feature pages, or Solen Pro variant identity. Decision log: V2-D15-3 in <code>_tasks/V2_REBUILD_LOG.md</code>.</p>
+    </div>
+
+  </div>
+</body>
+</html>

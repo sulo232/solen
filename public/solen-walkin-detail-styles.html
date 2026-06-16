@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Walk-in — with price + details</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5F5F5F; --ink3:#8E8E8C; --line:rgba(10,10,10,.08);
+    --success:#16A34A; --success-bg:rgba(22,163,74,.11);
+    --accent:#185CE0; --error:#C0392B; --tile:#F4F4F2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#D9D9D7;color:var(--ink);padding:40px 22px 90px}
+  .wrap{max-width:980px;margin:0 auto}
+  .intro{max-width:780px;margin:0 auto 30px;text-align:center}
+  .intro h1{font-weight:800;font-size:24px;letter-spacing:-.025em}
+  .intro p{color:#4f4d49;font-size:14px;margin-top:8px;line-height:1.6}
+  .intro .fold{color:var(--error);font-weight:700}
+
+  .rowx{display:flex;gap:48px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+  .col{width:374px}
+  .lab{text-align:center;margin-bottom:16px}
+  .lab .n{font-weight:800;font-size:16px}
+  .lab .d{font-size:12.5px;color:#5b5955;margin-top:7px;line-height:1.5}
+
+  /* phone — auto height so we can see what spills past the fold */
+  .phone{width:374px;border-radius:34px;padding:12px;background:#111}
+  .scr{width:100%;border-radius:24px;overflow:hidden;background:#fff;position:relative;display:flex;flex-direction:column;min-height:760px}
+  .nav{display:flex;justify-content:space-between;padding:16px 16px 4px}
+  .navbtn{width:36px;height:36px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 5px 14px rgba(26,18,9,.08)}
+  .navbtn svg{width:19px;height:19px}
+  .body{flex:1;display:flex;flex-direction:column;padding:4px 18px 16px}
+  /* fold line at one screen height (760 screen - nav already counted) */
+  .fold{position:absolute;left:0;right:0;height:0;border-top:2px dashed rgba(192,57,43,.5);z-index:5;pointer-events:none}
+  .fold::after{content:"one screen ends here";position:absolute;right:10px;top:4px;font-size:10px;font-weight:700;color:var(--error);letter-spacing:.02em}
+
+  /* hero */
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+  .hero{text-align:center;padding-top:4px}
+  .hero .num{font-weight:800;letter-spacing:-.035em;line-height:.9;margin-top:3px}
+  .rot{font-size:15px;font-weight:600;color:var(--ink2);margin-top:11px}
+  .pillwrap{display:flex;justify-content:center;margin-top:15px}
+  .pill{display:inline-flex;gap:10px;align-items:center;background:var(--success-bg);color:var(--success);font-weight:700;font-size:13.5px;padding:7px 16px;border-radius:99px}
+  .pill .m{font-weight:600;opacity:.82}
+  .step{margin-top:20px}
+  .step .track{display:flex;align-items:center}
+  .dot{width:12px;height:12px;border-radius:99px;background:rgba(10,10,10,.13);flex:0 0 auto}
+  .dot.done{background:var(--success)}
+  .dot.now{background:var(--success);box-shadow:0 0 0 6px rgba(22,163,74,.15)}
+  .seg{height:3px;flex:1;border-radius:99px;background:rgba(10,10,10,.10)}
+  .seg.done{background:var(--success)}
+  .step .labs{display:flex;justify-content:space-between;margin-top:9px;font-size:10.5px;font-weight:600;color:var(--ink3)}
+  .step .labs .on{color:var(--ink)}
+
+  /* bento */
+  .bento{margin-top:20px;display:flex;flex-direction:column;gap:11px}
+  .tile{background:var(--tile);border-radius:20px}
+  .twoup{display:flex;gap:11px}
+  .twoup>.tile{flex:1}
+
+  .t-qr{padding:15px 18px;display:flex;align-items:center;gap:16px}
+  .t-qr .box{background:#fff;border-radius:11px;padding:6px;flex:0 0 auto}
+  .t-qr .qr{display:block;width:78px;height:78px}
+  .t-qr .scan{font-weight:700;font-size:14px}
+
+  .t-paid{padding:15px 18px;display:flex;align-items:center;justify-content:space-between}
+  .t-paid .amt{font-weight:800;font-size:23px;letter-spacing:-.02em}
+  .t-paid .meth{font-size:12px;color:var(--ink2);margin-top:2px}
+
+  .t-who{padding:14px 16px;display:flex;align-items:center;gap:13px}
+  .t-who img{width:46px;height:46px;border-radius:99px;object-fit:cover;flex:0 0 auto}
+  .t-who .nm{font-size:15px;font-weight:700;line-height:1.15}
+  .t-who .sv{font-size:12.5px;color:var(--ink2);margin-top:2px}
+
+  .t-salon{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .t-salon .nm{font-size:14.5px;font-weight:700;line-height:1.2}
+  .t-salon .ad{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .t-salon .route{display:flex;align-items:center;gap:6px;flex:0 0 auto;color:var(--accent);font-weight:700;font-size:13px}
+  .t-salon .route svg{width:16px;height:16px}
+
+  .cancel{display:block;width:100%;text-align:center;background:none;border:0;color:var(--error);font-family:inherit;font-weight:700;font-size:14.5px;padding:8px 0 2px;cursor:pointer;margin-top:14px}
+  .pol{font-size:12px;color:var(--ink3);text-align:center;margin-top:4px}
+  .spacer{flex:1;min-height:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>Now with price + details — same live hero</h1>
+    <p>Price comes back as a <b>"Paid" bento tile</b>; salon + barber get their own tiles. <b>1</b> packs everything to fit one screen (no scroll); <b>2</b> is taller and richer (number + status + QR stay above the fold, the rest scrolls). Reply 1 or 2.</p>
+  </div>
+
+  <div class="rowx">
+
+    <!-- ============ 1 — FITS, NO SCROLL ============ -->
+    <div class="col">
+      <div class="lab">
+        <div class="n">1 — Fits one screen</div>
+        <div class="d">Tighter hero + a 2-up row (Paid + Barber) so price and details fit with no scroll. QR and salon stay full-width.</div>
+      </div>
+      <div class="phone"><div class="scr">
+        <div class="nav">
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        </div>
+        <div class="body">
+          <div class="hero">
+            <div class="eyebrow">Your number</div>
+            <div class="num" style="font-size:60px">A47</div>
+            <div class="rot">We'll ping you when you're close</div>
+            <div class="pillwrap"><span class="pill">3 ahead <span class="m">~12 min</span></span></div>
+            <div class="step">
+              <div class="track"><span class="dot done"></span><span class="seg done"></span><span class="dot now"></span><span class="seg"></span><span class="dot"></span><span class="seg"></span><span class="dot"></span></div>
+              <div class="labs"><span>Paid</span><span class="on">Waiting</span><span>Next</span><span>Chair</span></div>
+            </div>
+          </div>
+          <div class="bento">
+            <div class="tile t-qr">
+              <div class="box"><svg class="qr" viewBox="0 0 21 21" shape-rendering="crispEdges"><rect width="21" height="21" fill="#fff"/><g fill="#0A0A0A"><path d="M0 0h7v7h-7zM1 1h5v5h-5zM2 2h3v3h-3z" fill-rule="evenodd"/><path d="M14 0h7v7h-7zM15 1h5v5h-5zM16 2h3v3h-3z" fill-rule="evenodd"/><path d="M0 14h7v7h-7zM1 15h5v5h-5zM2 16h3v3h-3z" fill-rule="evenodd"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="1" height="1"/><rect x="9" y="9" width="2" height="2"/><rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="9" y="13" width="1" height="2"/><rect x="11" y="14" width="2" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="16" y="14" width="2" height="2"/><rect x="19" y="13" width="1" height="1"/><rect x="9" y="17" width="2" height="1"/><rect x="12" y="18" width="1" height="2"/><rect x="14" y="17" width="3" height="1"/><rect x="18" y="18" width="1" height="2"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/></g></svg></div>
+              <div class="scan">Show this code at the salon</div>
+            </div>
+            <div class="twoup">
+              <div class="tile t-paid" style="flex-direction:column;align-items:flex-start;justify-content:center">
+                <div class="eyebrow">Paid</div>
+                <div class="amt" style="margin-top:4px">CHF 45.00</div>
+                <div class="meth">Visa ending 42</div>
+              </div>
+              <div class="tile t-who" style="flex-direction:column;align-items:flex-start;gap:8px">
+                <div class="eyebrow">Your barber</div>
+                <div style="display:flex;align-items:center;gap:11px">
+                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="" />
+                  <div><div class="nm">Marco</div><div class="sv">Cut &amp; beard</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tile t-salon">
+              <div>
+                <div class="nm">Barbier Studio Zürich</div>
+                <div class="ad">Niederdorfstrasse 21</div>
+              </div>
+              <div class="route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 20l-5.4 2.3a.5.5 0 0 1-.7-.5V5l6-2.5m0 17.5l6 2.5m-6-2.5V2.5m6 17.5l5.4-2.3a.5.5 0 0 0 .3-.5V2.7a.5.5 0 0 0-.7-.5L15 5m0 15V5"/></svg>Route</div>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <div class="pol">Free cancellation until you're called</div>
+          <button class="cancel">Cancel walk-in</button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ============ 2 — RICHER, SCROLLS ============ -->
+    <div class="col">
+      <div class="lab">
+        <div class="n">2 — Richer, scrolls a little</div>
+        <div class="d">Full-size hero, every detail full-width with room: Paid (+ method + time), barber, salon with address. Number + status + QR stay above the fold; the rest scrolls.</div>
+      </div>
+      <div class="phone"><div class="scr">
+        <div class="nav">
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        </div>
+        <div class="body">
+          <div class="hero">
+            <div class="eyebrow">Your number</div>
+            <div class="num" style="font-size:72px">A47</div>
+            <div class="rot">We'll ping you when you're close</div>
+            <div class="pillwrap"><span class="pill">3 ahead <span class="m">~12 min</span></span></div>
+            <div class="step">
+              <div class="track"><span class="dot done"></span><span class="seg done"></span><span class="dot now"></span><span class="seg"></span><span class="dot"></span><span class="seg"></span><span class="dot"></span></div>
+              <div class="labs"><span>Paid</span><span class="on">Waiting</span><span>Next</span><span>Chair</span></div>
+            </div>
+          </div>
+          <div class="bento">
+            <div class="tile t-qr">
+              <div class="box"><svg class="qr" viewBox="0 0 21 21" shape-rendering="crispEdges"><rect width="21" height="21" fill="#fff"/><g fill="#0A0A0A"><path d="M0 0h7v7h-7zM1 1h5v5h-5zM2 2h3v3h-3z" fill-rule="evenodd"/><path d="M14 0h7v7h-7zM15 1h5v5h-5zM16 2h3v3h-3z" fill-rule="evenodd"/><path d="M0 14h7v7h-7zM1 15h5v5h-5zM2 16h3v3h-3z" fill-rule="evenodd"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="1" height="1"/><rect x="9" y="9" width="2" height="2"/><rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="9" y="13" width="1" height="2"/><rect x="11" y="14" width="2" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="16" y="14" width="2" height="2"/><rect x="19" y="13" width="1" height="1"/><rect x="9" y="17" width="2" height="1"/><rect x="12" y="18" width="1" height="2"/><rect x="14" y="17" width="3" height="1"/><rect x="18" y="18" width="1" height="2"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/></g></svg></div>
+              <div class="scan">Show this code at the salon</div>
+            </div>
+            <div class="tile t-paid">
+              <div>
+                <div class="eyebrow">Paid</div>
+                <div class="meth" style="margin-top:3px">Visa ending 42, today 14:32</div>
+              </div>
+              <div class="amt">CHF 45.00</div>
+            </div>
+            <div class="tile t-who">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="" />
+              <div>
+                <div class="eyebrow" style="margin-bottom:2px">Your barber</div>
+                <div class="nm">Marco Bianchi</div>
+                <div class="sv">Men's cut &amp; beard, 45 min</div>
+              </div>
+            </div>
+            <div class="tile t-salon">
+              <div>
+                <div class="eyebrow" style="margin-bottom:3px">Salon</div>
+                <div class="nm">Barbier Studio Zürich</div>
+                <div class="ad">Niederdorfstrasse 21, 8001 Zürich</div>
+              </div>
+              <div class="route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 20l-5.4 2.3a.5.5 0 0 1-.7-.5V5l6-2.5m0 17.5l6 2.5m-6-2.5V2.5m6 17.5l5.4-2.3a.5.5 0 0 0 .3-.5V2.7a.5.5 0 0 0-.7-.5L15 5m0 15V5"/></svg>Route</div>
+            </div>
+          </div>
+          <div class="pol" style="margin-top:18px">Free cancellation until you're called</div>
+          <button class="cancel">Cancel walk-in</button>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

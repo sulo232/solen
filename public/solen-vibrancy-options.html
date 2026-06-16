@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen Vibrancy — palette tune options</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    line-height: 1.55;
+    background: #2A1F18;
+  }
+  body {
+    padding: 32px 0 80px;
+  }
+  .page-title {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: white;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .page-sub {
+    color: #C4B8A6;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 13px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 24px;
+  }
+
+  /* Three demos stacked */
+  .demo {
+    margin: 0 auto 32px;
+    max-width: 1280px;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 2px solid;
+  }
+  .demo-label {
+    padding: 14px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .demo-label .swatches {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .demo-label .sw {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .demo-label .hex {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    margin-left: 4px;
+  }
+
+  /* PER-DEMO PALETTE VARS */
+  .demo.a {
+    border-color: #B5588A;
+  }
+  .demo.a .demo-label { background: #B5588A; }
+  .demo.a .stage {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #F5EBDD;
+    --card: #FAF2E5;
+    --rule: #E8DDC9;
+    --brand: #1F5C42;
+    --brand-mid: #0F3D26;
+    --accent: #C97A57;
+    --star: #F3A864;
+  }
+
+  .demo.b {
+    border-color: #1A8F5C;
+  }
+  .demo.b .demo-label { background: #1A8F5C; }
+  .demo.b .stage {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #FAF3E6;
+    --card: #FFFFFF;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --brand-mid: #0F6F44;
+    --accent: #E0703D;
+    --star: #F3A864;
+  }
+
+  .demo.c {
+    border-color: #0F6F44;
+  }
+  .demo.c .demo-label { background: #0F6F44; }
+  .demo.c .stage {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #FFFAF1;
+    --card: #FFFFFF;
+    --rule: #F0E5D6;
+    --brand: #0F6F44;
+    --brand-mid: #084B2D;
+    --accent: #D9633A;
+    --star: #F3A864;
+  }
+
+  .stage {
+    background: var(--bg);
+    padding: 32px 24px;
+  }
+
+  .section-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto 16px;
+  }
+  .section-title-row h2 {
+    font-family: 'Open Sauce One', sans-serif;
+    font-weight: 900;
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .section-title-row .link {
+    color: var(--brand);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* Reviews mini */
+  .reviews-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .review-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 18px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+  }
+  .stars {
+    color: var(--star);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .review-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: auto;
+    padding-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .review-footer {
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 8px;
+  }
+  .avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--rule);
+    color: var(--brand);
+    font-family: 'Peace Sans', sans-serif;
+    font-weight: 800;
+    font-size: 10px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .who { font-size: 11px; font-weight: 700; color: var(--ink); }
+  .meta { font-size: 9px; color: var(--ink-3); }
+  .salon-link { font-size: 10px; color: var(--brand); font-weight: 700; margin-top: 2px; }
+
+  /* Business mini */
+  .biz-panel {
+    background: var(--card);
+    border: 1.5px solid var(--brand);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 1200px;
+    margin: 32px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 28px;
+    align-items: center;
+  }
+  @media (max-width: 968px) {
+    .biz-panel { grid-template-columns: 1fr; }
+    .biz-mockup { display: none; }
+  }
+  .biz-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .biz-eyebrow::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .biz-h1 {
+    font-family: 'Peace Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(26px, 3.5vw, 44px);
+    line-height: 1.0;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .biz-h1 .hl { color: var(--accent); }
+  .biz-lede {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin-bottom: 18px;
+    max-width: 440px;
+  }
+  .biz-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 16px;
+  }
+  .biz-trust {
+    font-family: 'Peace Sans', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .biz-trust .stars-sm { color: var(--star); font-size: 11px; letter-spacing: 0.06em; }
+  .biz-trust-meta {
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 3px;
+  }
+
+  .biz-mockup {
+    aspect-ratio: 1.2/1;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--brand) 12%, white) 0%, color-mix(in srgb, var(--accent) 5%, white) 100%);
+    border-radius: 16px;
+    padding: 14px;
+    position: relative;
+  }
+  .biz-dashboard {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    height: 100%;
+    border: 1px solid #EEE;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .biz-toolbar {
+    display: flex;
+    gap: 4px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #F0F0F0;
+    align-items: center;
+  }
+  .biz-toolbar-logo { font-family: 'Peace Sans', sans-serif; font-weight: 800; font-size: 9px; color: var(--ink); display: inline-flex; align-items: baseline; }
+  .biz-toolbar-logo::after { content: ''; display: inline-block; width: 3px; height: 3px; background: var(--accent); border-radius: 50%; margin-left: 1px; }
+  .biz-chip { padding: 3px 7px; border-radius: 4px; font-size: 7px; font-weight: 700; }
+  .biz-chip.active { background: var(--brand); color: white; }
+  .biz-chip.idle { background: #F2F0EB; color: var(--ink-2); }
+  .biz-grid { display: grid; grid-template-columns: 30px repeat(5, 1fr); gap: 2px; flex: 1; }
+  .biz-time { font-size: 6px; color: var(--ink-3); padding: 3px 0; }
+  .biz-day { background: #FAFAF8; border-radius: 3px; padding: 3px 2px; font-size: 5px; }
+  .biz-day-h { font-weight: 700; color: var(--ink-2); text-align: center; margin-bottom: 2px; font-size: 6px; }
+  .biz-block { padding: 1px 2px; border-radius: 2px; margin-bottom: 1px; line-height: 1.1; }
+
+  .footer-note {
+    color: #C4B8A6;
+    text-align: center;
+    max-width: 800px;
+    margin: 30px auto;
+    font-size: 12px;
+    padding: 0 24px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Vibrancy tune — pick one</h1>
+<p class="page-sub">Same components (Bewertungen carousel + Solen für dein Geschäft) rendered with 3 palette tunings. All keep the V3 emerald + terracotta + cream STRUCTURE — only saturation and substrate brightness change.</p>
+
+<!-- A: CURRENT (reference) -->
+<div class="demo a">
+  <div class="demo-label">
+    <span>● A · Current V3 Earthen Wellness Light (reference — what you're seeing now)</span>
+    <span class="swatches">
+      <span class="sw" style="background:#F5EBDD"></span><span class="hex">F5EBDD</span>
+      <span class="sw" style="background:#1F5C42"></span><span class="hex">1F5C42</span>
+      <span class="sw" style="background:#C97A57"></span><span class="hex">C97A57</span>
+    </span>
+  </div>
+  <div class="stage">
+    <div class="section-title-row">
+      <h2>Bewertungen</h2>
+      <a class="link" href="#">Alle Bewertungen →</a>
+    </div>
+    <div class="reviews-row">
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Termin in 30 Sekunden, keine Anrufe. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser."</p><div class="review-footer"><div class="avatar">LK</div><div><div class="who">Lara K.</div><div class="meta">Basel · vor 2 Wochen</div><div class="salon-link">🏪 Salon Maria ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Last-Minute heute zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Heute-frei-Anzeige ist Gold wert."</p><div class="review-footer"><div class="avatar">MH</div><div><div class="who">Marc H.</div><div class="meta">Basel · vor 5 Tagen</div><div class="salon-link">🏪 Bohème ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Look auf Entdecken gespeichert, direkt gebucht. Die Stylistin hatte das Foto schon offen als ich ankam. Magic."</p><div class="review-footer"><div class="avatar">SR</div><div><div class="who">Sara R.</div><div class="meta">Zürich · vor 1 Woche</div><div class="salon-link">🏪 Nail Lab ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in zwei Minuten."</p><div class="review-footer"><div class="avatar">AM</div><div><div class="who">Anna M.</div><div class="meta">Bern · vor 3 Tagen</div><div class="salon-link">🏪 Rhein Spa ›</div></div></div></div>
+    </div>
+    <div class="biz-panel">
+      <div>
+        <div class="biz-eyebrow">Für Salons</div>
+        <div class="biz-h1">Solen für<br><span class="hl">dein Geschäft.</span></div>
+        <p class="biz-lede">Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir.</p>
+        <a class="biz-cta" href="#">Mehr erfahren →</a>
+        <div class="biz-trust">Bewertet 4.9 / 5 <span class="stars-sm">★★★★★</span></div>
+        <div class="biz-trust-meta">Über 1'200 Salons</div>
+      </div>
+      <div class="biz-mockup">
+        <div class="biz-dashboard">
+          <div class="biz-toolbar"><span class="biz-toolbar-logo">solen</span><span class="biz-chip active">Heute</span><span class="biz-chip idle">Woche</span></div>
+          <div class="biz-grid">
+            <div class="biz-time">9</div><div class="biz-day"><div class="biz-day-h">Di</div><div class="biz-block" style="background:#DEF2D5">Lara K</div><div class="biz-block" style="background:#FAF2E5">Marc H</div></div><div class="biz-day"><div class="biz-day-h">Mi</div><div class="biz-block" style="background:#FCEFC4">Sara R</div></div><div class="biz-day"><div class="biz-day-h">Do</div><div class="biz-block" style="background:#E8DDC9">Eva S</div></div><div class="biz-day"><div class="biz-day-h">Fr</div><div class="biz-block" style="background:#DEF2D5">David K</div></div><div class="biz-day"><div class="biz-day-h">Sa</div><div class="biz-block" style="background:#E8DDC9">Anna M</div></div>
+            <div class="biz-time">11</div><div class="biz-day"></div><div class="biz-day"><div class="biz-block" style="background:#DEF2D5">Tobias W</div></div><div class="biz-day"><div class="biz-block" style="background:#FAF2E5">Niklas B</div></div><div class="biz-day"><div class="biz-block" style="background:#FCEFC4">Lena F</div></div><div class="biz-day"><div class="biz-block" style="background:#DEF2D5">Mira L</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B: PUNCHED EMERALD (recommended) -->
+<div class="demo b">
+  <div class="demo-label">
+    <span>● B · Punched-up — brighter emerald + warmer terracotta + lighter cream + WHITE cards (my pick)</span>
+    <span class="swatches">
+      <span class="sw" style="background:#FAF3E6"></span><span class="hex">FAF3E6</span>
+      <span class="sw" style="background:#1A8F5C"></span><span class="hex">1A8F5C</span>
+      <span class="sw" style="background:#E0703D"></span><span class="hex">E0703D</span>
+    </span>
+  </div>
+  <div class="stage">
+    <div class="section-title-row">
+      <h2>Bewertungen</h2>
+      <a class="link" href="#">Alle Bewertungen →</a>
+    </div>
+    <div class="reviews-row">
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Termin in 30 Sekunden, keine Anrufe. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser."</p><div class="review-footer"><div class="avatar">LK</div><div><div class="who">Lara K.</div><div class="meta">Basel · vor 2 Wochen</div><div class="salon-link">🏪 Salon Maria ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Last-Minute heute zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Heute-frei-Anzeige ist Gold wert."</p><div class="review-footer"><div class="avatar">MH</div><div><div class="who">Marc H.</div><div class="meta">Basel · vor 5 Tagen</div><div class="salon-link">🏪 Bohème ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Look auf Entdecken gespeichert, direkt gebucht. Die Stylistin hatte das Foto schon offen als ich ankam. Magic."</p><div class="review-footer"><div class="avatar">SR</div><div><div class="who">Sara R.</div><div class="meta">Zürich · vor 1 Woche</div><div class="salon-link">🏪 Nail Lab ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in zwei Minuten."</p><div class="review-footer"><div class="avatar">AM</div><div><div class="who">Anna M.</div><div class="meta">Bern · vor 3 Tagen</div><div class="salon-link">🏪 Rhein Spa ›</div></div></div></div>
+    </div>
+    <div class="biz-panel">
+      <div>
+        <div class="biz-eyebrow">Für Salons</div>
+        <div class="biz-h1">Solen für<br><span class="hl">dein Geschäft.</span></div>
+        <p class="biz-lede">Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir.</p>
+        <a class="biz-cta" href="#">Mehr erfahren →</a>
+        <div class="biz-trust">Bewertet 4.9 / 5 <span class="stars-sm">★★★★★</span></div>
+        <div class="biz-trust-meta">Über 1'200 Salons</div>
+      </div>
+      <div class="biz-mockup">
+        <div class="biz-dashboard">
+          <div class="biz-toolbar"><span class="biz-toolbar-logo">solen</span><span class="biz-chip active">Heute</span><span class="biz-chip idle">Woche</span></div>
+          <div class="biz-grid">
+            <div class="biz-time">9</div><div class="biz-day"><div class="biz-day-h">Di</div><div class="biz-block" style="background:#D4F2E0">Lara K</div><div class="biz-block" style="background:#FFE8D8">Marc H</div></div><div class="biz-day"><div class="biz-day-h">Mi</div><div class="biz-block" style="background:#FFF1C2">Sara R</div></div><div class="biz-day"><div class="biz-day-h">Do</div><div class="biz-block" style="background:#E8DDC9">Eva S</div></div><div class="biz-day"><div class="biz-day-h">Fr</div><div class="biz-block" style="background:#D4F2E0">David K</div></div><div class="biz-day"><div class="biz-day-h">Sa</div><div class="biz-block" style="background:#E8DDC9">Anna M</div></div>
+            <div class="biz-time">11</div><div class="biz-day"></div><div class="biz-day"><div class="biz-block" style="background:#D4F2E0">Tobias W</div></div><div class="biz-day"><div class="biz-block" style="background:#FFE8D8">Niklas B</div></div><div class="biz-day"><div class="biz-block" style="background:#FFF1C2">Lena F</div></div><div class="biz-day"><div class="biz-block" style="background:#D4F2E0">Mira L</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- C: NEAR-WHITE substrate (Yuh / Stripe level discipline) -->
+<div class="demo c">
+  <div class="demo-label">
+    <span>● C · Near-white substrate — keeps emerald + terracotta but ditches cream wash entirely</span>
+    <span class="swatches">
+      <span class="sw" style="background:#FFFAF1"></span><span class="hex">FFFAF1</span>
+      <span class="sw" style="background:#0F6F44"></span><span class="hex">0F6F44</span>
+      <span class="sw" style="background:#D9633A"></span><span class="hex">D9633A</span>
+    </span>
+  </div>
+  <div class="stage">
+    <div class="section-title-row">
+      <h2>Bewertungen</h2>
+      <a class="link" href="#">Alle Bewertungen →</a>
+    </div>
+    <div class="reviews-row">
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Termin in 30 Sekunden, keine Anrufe. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser."</p><div class="review-footer"><div class="avatar">LK</div><div><div class="who">Lara K.</div><div class="meta">Basel · vor 2 Wochen</div><div class="salon-link">🏪 Salon Maria ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Last-Minute heute zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Heute-frei-Anzeige ist Gold wert."</p><div class="review-footer"><div class="avatar">MH</div><div><div class="who">Marc H.</div><div class="meta">Basel · vor 5 Tagen</div><div class="salon-link">🏪 Bohème ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Look auf Entdecken gespeichert, direkt gebucht. Die Stylistin hatte das Foto schon offen als ich ankam. Magic."</p><div class="review-footer"><div class="avatar">SR</div><div><div class="who">Sara R.</div><div class="meta">Zürich · vor 1 Woche</div><div class="salon-link">🏪 Nail Lab ›</div></div></div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in zwei Minuten."</p><div class="review-footer"><div class="avatar">AM</div><div><div class="who">Anna M.</div><div class="meta">Bern · vor 3 Tagen</div><div class="salon-link">🏪 Rhein Spa ›</div></div></div></div>
+    </div>
+    <div class="biz-panel">
+      <div>
+        <div class="biz-eyebrow">Für Salons</div>
+        <div class="biz-h1">Solen für<br><span class="hl">dein Geschäft.</span></div>
+        <p class="biz-lede">Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir.</p>
+        <a class="biz-cta" href="#">Mehr erfahren →</a>
+        <div class="biz-trust">Bewertet 4.9 / 5 <span class="stars-sm">★★★★★</span></div>
+        <div class="biz-trust-meta">Über 1'200 Salons</div>
+      </div>
+      <div class="biz-mockup">
+        <div class="biz-dashboard">
+          <div class="biz-toolbar"><span class="biz-toolbar-logo">solen</span><span class="biz-chip active">Heute</span><span class="biz-chip idle">Woche</span></div>
+          <div class="biz-grid">
+            <div class="biz-time">9</div><div class="biz-day"><div class="biz-day-h">Di</div><div class="biz-block" style="background:#D9EBDD">Lara K</div><div class="biz-block" style="background:#FFE6DA">Marc H</div></div><div class="biz-day"><div class="biz-day-h">Mi</div><div class="biz-block" style="background:#FFF1C2">Sara R</div></div><div class="biz-day"><div class="biz-day-h">Do</div><div class="biz-block" style="background:#F0E5D6">Eva S</div></div><div class="biz-day"><div class="biz-day-h">Fr</div><div class="biz-block" style="background:#D9EBDD">David K</div></div><div class="biz-day"><div class="biz-day-h">Sa</div><div class="biz-block" style="background:#F0E5D6">Anna M</div></div>
+            <div class="biz-time">11</div><div class="biz-day"></div><div class="biz-day"><div class="biz-block" style="background:#D9EBDD">Tobias W</div></div><div class="biz-day"><div class="biz-block" style="background:#FFE6DA">Niklas B</div></div><div class="biz-day"><div class="biz-block" style="background:#FFF1C2">Lena F</div></div><div class="biz-day"><div class="biz-block" style="background:#D9EBDD">Mira L</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="footer-note">All 3 keep your V3 palette structure (emerald action + terracotta accent + warm substrate). Only saturation + substrate brightness change. <strong>No new colors added.</strong> Pick A (status quo), B (punched-up emerald + warmer terracotta + WHITE cards on light-cream — recommended), or C (near-white substrate, more disciplined Stripe-feel).</p>
+
+</body>
+</html>

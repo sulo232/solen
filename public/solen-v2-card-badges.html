@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen V3 — §16 card badges · A/B comparison · 2026-05-09</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --white: #FFFFFF; --sunken: #FAF7F3;
+    --ink: #1A1209; --ink-2: #56463E; --ink-3: #7A6957;
+    --hairline: rgba(26,18,9,.06); --hairline-10: rgba(26,18,9,.10);
+    --brand: #043338; --brand-pale: #C2F0F1; --brand-subtle: #E1F4F4; --brand-mid: #0A6873;
+    --love: #FF4A6B; --success: #16A34A; --star: #F3A864;
+    --solen-favorit: #F2C144;
+    --cat-coiffeur: #FFF1DD; --cat-coiffeur-text: #B5345A;
+    --cat-barber: #D8D6CB;    --cat-barber-text: #000000;
+    --cat-nails: #CAE8FF;     --cat-nails-text: #B50051;
+    --cat-spa: #193120;       --cat-spa-text: #948565;
+    --display: 'Cooper BT','Cooper Black Std','Sansita',Georgia,serif;
+    --body: 'ITC Avant Garde Gothic Std','League Spartan',system-ui,sans-serif;
+  }
+  html, body {
+    font-family: var(--body); color: var(--ink); background: var(--white);
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 56px 32px 100px; }
+  .doc { max-width: 1240px; margin: 0 auto; }
+
+  .head { margin-bottom: 48px; }
+  .head-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .head-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-weight: 700; font-size: 13px; letter-spacing: .18em;
+    text-transform: uppercase; font-variant-numeric: tabular-nums;
+  }
+  .head-eyebrow { display: inline-flex; align-items: center; gap: 8px; }
+  .head-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand);
+  }
+  .head-meta { color: var(--ink-3); }
+  .head h1 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 56px; line-height: .95; letter-spacing: -.02em;
+    color: var(--ink);
+    display: inline-flex; align-items: baseline;
+  }
+  .head h1::after {
+    content: ''; display: inline-block;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--brand);
+    margin-left: 5px; margin-bottom: 5px;
+  }
+  .head .sub {
+    font-size: 16px; color: var(--ink-2);
+    margin-top: 16px; max-width: 800px; line-height: 1.55;
+  }
+
+  /* ========== SECTION ========== */
+  .sec { margin-top: 48px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px; gap: 16px;
+    font-size: 13px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+  .sec-eyebrow::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+  .sec-meta { color: var(--ink-3); }
+  .sec h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1; letter-spacing: -.02em;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .sec .deck { color: var(--ink-2); font-size: 16px; max-width: 720px; margin-bottom: 24px; }
+
+  /* ========== OPTION CARDS ========== */
+  .opt {
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 28px;
+  }
+  .opt.is-current {
+    background: rgba(245,158,11,.04);
+    border-color: rgba(245,158,11,.40);
+    border-style: dashed;
+  }
+  .opt.is-recommended {
+    background: rgba(22,163,74,.04);
+    border-color: rgba(22,163,74,.40);
+  }
+  .opt-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase;
+  }
+  .opt-tag .letter {
+    font-family: var(--display); font-weight: 900;
+    font-size: 24px; line-height: 1;
+    color: var(--brand);
+  }
+  .opt.is-current .opt-tag-status { color: #B45309; }
+  .opt.is-recommended .opt-tag-status { color: var(--success); }
+  .opt h3 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 22px; line-height: 1.1;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .opt p {
+    color: var(--ink-2); font-size: 14px; max-width: 640px;
+    line-height: 1.55; margin-bottom: 18px;
+  }
+  .opt-cards {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  /* ========== SALON CARD (matches §16 spec) ========== */
+  .card {
+    flex: 0 0 180px;
+    cursor: pointer;
+    text-decoration: none; color: inherit;
+  }
+  .card-photo {
+    aspect-ratio: 1/1; border-radius: 14px;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-photo .initial {
+    font-family: var(--display); font-weight: 900;
+    font-size: 38px; line-height: 1;
+  }
+  .card.cat-coiffeur .card-photo { background: var(--cat-coiffeur); }
+  .card.cat-coiffeur .card-photo .initial { color: var(--cat-coiffeur-text); }
+  .card.cat-barber .card-photo { background: var(--cat-barber); }
+  .card.cat-barber .card-photo .initial { color: var(--cat-barber-text); }
+  .card.cat-nails .card-photo { background: var(--cat-nails); }
+  .card.cat-nails .card-photo .initial { color: var(--cat-nails-text); }
+  .card.cat-spa .card-photo { background: var(--cat-spa); }
+  .card.cat-spa .card-photo .initial { color: var(--cat-spa-text); }
+
+  .card-info { margin-top: 8px; }
+  .card-row-1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 8px;
+  }
+  .card-name {
+    font-weight: 700; font-size: 14px; line-height: 1.1;
+    color: var(--ink);
+    flex: 1; min-width: 0; letter-spacing: -.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-rating {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-weight: 600; font-size: 11px;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .card-rating::before { content: '★'; color: var(--star); font-size: 10px; }
+  .card-row-2 {
+    margin-top: 4px;
+    font-size: 11px; line-height: 1.3;
+    color: var(--ink-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-row-2 strong { font-weight: 600; color: var(--ink); }
+
+  /* Heart top-right — NO circle bg, gray stroke when unsaved, soft shadow when saved */
+  .heart {
+    position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px;
+    background: transparent;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255, 255, 255, 0.85);   /* warm gray default — much less contrast */
+    cursor: pointer;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));   /* lighter shadow */
+  }
+  .heart svg { width: 24px; height: 24px; }
+  .heart.is-saved { color: var(--love); }
+  .heart.is-saved svg { filter: drop-shadow(0 1px 2px rgba(255, 74, 107, 0.20)); }   /* much lighter */
+  /* Override stroke color for unsaved hearts on light backgrounds */
+  .card:not(.cat-spa) .heart:not(.is-saved) { color: var(--ink-3); }   /* warm gray on light photos */
+
+  /* ============================================ */
+  /* OPTION A — V3 §16 CURRENT (availability top-left) */
+  /* ============================================ */
+  .badge-avail-top-left {
+    position: absolute; top: 8px; left: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
+    padding: 4px 9px; border-radius: 999px;
+    font-weight: 700; font-size: 10px; line-height: 1.2;
+    color: var(--ink); letter-spacing: .01em;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .badge-avail-top-left .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 3px rgba(4,51,56,.20);
+  }
+  .badge-avail-top-left.is-heute .dot {
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(22,163,74,.20);
+  }
+
+  /* ============================================ */
+  /* OPTION B (REVISED) — light glassmorphic + shape differentiation */
+  /* CURATION = rounded rectangle (8px) — "stamp/label" feel */
+  /* AVAILABILITY = pill (999px) — "live status" feel */
+  /* ============================================ */
+
+  /* Curation badge (top-left) — ROUNDED RECTANGLE, light glass */
+  .badge-curation {
+    position: absolute; top: 8px; left: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(14px) saturate(1);
+    -webkit-backdrop-filter: blur(14px) saturate(1);
+    padding: 5px 10px;
+    border-radius: 8px;     /* rounded rectangle, NOT pill */
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    font-weight: 700; font-size: 10px; line-height: 1.2;
+    color: var(--ink); letter-spacing: .02em;
+    box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06);
+  }
+  /* Solen Favorit: yellow-tinted glass + DEEP YELLOW text (same philosophy as green pill) */
+  .badge-curation.is-favorit {
+    background: rgba(242, 193, 68, 0.22);   /* same 0.22 alpha as green pill */
+    border-color: rgba(242, 193, 68, 0.32);
+    color: #8B5E0F;                         /* deep amber/mustard text — yellow's "deeper hue" */
+  }
+  /* Top bewertet / Beliebt / Neu — white glass, label text differentiates */
+
+  /* Availability pill (bottom-left) — FULL PILL, color-tinted glass conveys state */
+  /* Default = available today/now (GREEN tint) — color alone says "free" */
+  .pill-avail-bottom {
+    position: absolute; bottom: 8px; left: 8px;
+    display: inline-flex; align-items: center;
+    background: rgba(22, 163, 74, 0.22);   /* green-tinted glass = "free/available" */
+    backdrop-filter: blur(14px) saturate(1);
+    -webkit-backdrop-filter: blur(14px) saturate(1);
+    padding: 5px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(22, 163, 74, 0.32);
+    font-weight: 700; font-size: 10px; line-height: 1.2;
+    color: #0E7A38;         /* deeper green text for contrast on light green glass */
+    letter-spacing: .02em;
+    box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06);
+  }
+  /* Variant: this-week (less urgent) — brand-teal tinted glass */
+  .pill-avail-bottom.is-later {
+    background: rgba(4, 51, 56, 0.14);
+    border-color: rgba(4, 51, 56, 0.22);
+    color: var(--brand);
+  }
+  /* Variant: pause / closed — neutral ink-2 tint */
+  .pill-avail-bottom.is-pause {
+    background: rgba(122, 105, 87, 0.18);   /* ink-3 tint */
+    border-color: rgba(122, 105, 87, 0.25);
+    color: var(--ink-2);
+  }
+
+  /* ============================================ */
+  /* CURATION BADGE INDIVIDUAL SHOWCASE */
+  /* ============================================ */
+  .badge-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .badge-card {
+    background: var(--white);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+  .badge-card .swatch {
+    background: var(--cat-coiffeur);
+    height: 90px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .badge-card .swatch.bg-barber  { background: var(--cat-barber); }
+  .badge-card .swatch.bg-nails   { background: var(--cat-nails); }
+  .badge-card .swatch.bg-spa     { background: var(--cat-spa); }
+  .badge-card .swatch .badge-curation { left: 12px; top: 12px; }
+  .badge-card h4 {
+    font-family: var(--body); font-weight: 700;
+    font-size: 14px; color: var(--ink);
+    margin-top: 14px; letter-spacing: -.01em;
+  }
+  .badge-card .desc {
+    font-size: 12px; color: var(--ink-3);
+    margin-top: 4px; line-height: 1.4;
+  }
+  .badge-card .priority {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  /* ============================================ */
+  /* Anti-pattern strip */
+  /* ============================================ */
+  .anti {
+    background: rgba(211,47,47,0.04);
+    border: 1px dashed rgba(211,47,47,0.40);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .anti-h {
+    display: inline-block;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: #D32F2F; margin-bottom: 8px;
+  }
+
+  .foot {
+    margin-top: 64px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-size: 12px; color: var(--ink-3);
+    letter-spacing: .14em; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="head">
+    <div class="head-rule"></div>
+    <div class="head-meta-row">
+      <span class="head-eyebrow">Decision 1 · §16 card badges</span>
+      <span class="head-meta">2026-05-09 · A/B</span>
+    </div>
+    <h1>Card badges</h1>
+    <p class="sub">
+      Pre-V3 spec (Q10 from 2026-04-22 + Q26 from 2026-05-01) locks <strong>4 curation badges</strong> + a separate
+      live availability pill on a different corner. V3 §16 currently has only the availability badge top-left.
+      <strong>Pick A (V3 current — single-badge), B (full Q10+Q26 spec — two-badge layout), or modify.</strong>
+    </p>
+  </header>
+
+  <!-- ============== OPTION A ============== -->
+  <div class="opt is-current">
+    <div class="opt-tag">
+      <span class="letter">A</span>
+      <span class="opt-tag-status">CURRENT V3 §16</span>
+    </div>
+    <h3>Single badge (availability only, top-left)</h3>
+    <p>
+      Top-left = availability w pulsing dot (Sofort frei brand-teal · Heute frei green · or no badge).
+      No curation/quality signal. Top-right = heart. Cards rely on rating number + name only for trust.
+    </p>
+    <div class="opt-cards">
+      <a class="card cat-coiffeur">
+        <div class="card-photo">
+          <span class="initial">M</span>
+          <span class="badge-avail-top-left"><span class="dot"></span>Sofort frei</span>
+          <button class="heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Salon Maria</span><span class="card-rating">4.8</span></div>
+          <div class="card-row-2">In <strong>15 Min</strong> frei</div>
+        </div>
+      </a>
+      <a class="card cat-barber">
+        <div class="card-photo">
+          <span class="initial">B</span>
+          <span class="badge-avail-top-left is-heute"><span class="dot"></span>Heute frei</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Bohème Barber</span><span class="card-rating">4.9</span></div>
+          <div class="card-row-2">Skin Fade · ab <strong>CHF 45</strong></div>
+        </div>
+      </a>
+      <a class="card cat-nails">
+        <div class="card-photo">
+          <span class="initial">N</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">4.7</span></div>
+          <div class="card-row-2">Maniküre · ab <strong>CHF 38</strong></div>
+        </div>
+      </a>
+      <a class="card cat-spa">
+        <div class="card-photo">
+          <span class="initial">S</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Spa Rheinufer</span><span class="card-rating">4.8</span></div>
+          <div class="card-row-2">Hammam · ab <strong>CHF 95</strong></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============== OPTION B ============== -->
+  <div class="opt is-recommended">
+    <div class="opt-tag">
+      <span class="letter">B</span>
+      <span class="opt-tag-status">FULL Q10 + Q26 SPEC (RECOMMENDED)</span>
+    </div>
+    <h3>Two badges — color-coded glass · no dots · floating heart</h3>
+    <p>
+      <strong>Curation badge (top-left) — rounded rectangle</strong>: light glassmorphic. Solen Favorit
+      gets yellow-tinted glass (color = meaning, no dot needed). Top bewertet / Beliebt / Neu = white glass.
+      <br>
+      <strong>Availability pill (bottom-left) — full pill</strong>: <strong>color carries the state</strong>.
+      Green-tinted glass = available today/now ("In 15 Min" / "Heute 16:00"). Brand-teal-tinted glass = this-week.
+      Ink-tinted glass = pause/closed. <strong>No dot needed</strong> — pill color IS the signal.
+      <br>
+      <strong>Heart (top-right)</strong>: just the SVG with drop-shadow for legibility. No circle bg.
+      Smaller silhouette, more space for the photo to breathe. White on dark photos, ink on light.
+    </p>
+    <div class="opt-cards">
+      <a class="card cat-coiffeur">
+        <div class="card-photo">
+          <span class="initial">M</span>
+          <span class="badge-curation is-favorit">Solen Favorit</span>
+          <button class="heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          <span class="pill-avail-bottom">In 15 Min</span>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Salon Maria</span><span class="card-rating">4.9</span></div>
+          <div class="card-row-2">Damen-Schnitt · ab <strong>CHF 80</strong></div>
+        </div>
+      </a>
+      <a class="card cat-barber">
+        <div class="card-photo">
+          <span class="initial">B</span>
+          <span class="badge-curation is-top">Top bewertet</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          <span class="pill-avail-bottom">3 Slots heute</span>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Bohème Barber</span><span class="card-rating">4.9</span></div>
+          <div class="card-row-2">Skin Fade · ab <strong>CHF 45</strong></div>
+        </div>
+      </a>
+      <a class="card cat-nails">
+        <div class="card-photo">
+          <span class="initial">N</span>
+          <span class="badge-curation is-beliebt">Beliebt</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          <span class="pill-avail-bottom">Heute 16:00</span>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">4.7</span></div>
+          <div class="card-row-2">Maniküre · ab <strong>CHF 38</strong></div>
+        </div>
+      </a>
+      <a class="card cat-spa">
+        <div class="card-photo">
+          <span class="initial">L</span>
+          <span class="badge-curation is-neu">Neu</span>
+          <button class="heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+        </div>
+        <div class="card-info">
+          <div class="card-row-1"><span class="card-name">Lina Hair Studio</span><span class="card-rating">4.6</span></div>
+          <div class="card-row-2">Föhnen · ab <strong>CHF 75</strong></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============== CURATION BADGE DETAIL ============== -->
+  <section class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow">Curation badges · the 4 variants</span>
+      <span class="sec-meta">Q10 priority order</span>
+    </div>
+    <h2>The 4 curation badges</h2>
+    <p class="deck">
+      Backend auto-assigns via <code style="background:var(--sunken);padding:1px 6px;border-radius:4px;font-size:13px;font-family:'JetBrains Mono',monospace;">/api/admin/badges/auto-assign</code>.
+      Priority: Solen Favorit > Top bewertet > Beliebt > Neu. Only one badge shows per card.
+    </p>
+
+    <div class="badge-grid">
+      <div class="badge-card">
+        <div class="swatch">
+          <span class="badge-curation is-favorit">Solen Favorit</span>
+        </div>
+        <h4>Solen Favorit</h4>
+        <div class="desc">Yellow #F2C144 bg, ink-1 text. Algorithmic curation: rating × volume × reply rate × recency × response time. The "we vouch for this one" stamp.</div>
+        <div class="priority">Priority 1 (highest)</div>
+      </div>
+      <div class="badge-card">
+        <div class="swatch bg-barber">
+          <span class="badge-curation is-top">Top bewertet</span>
+        </div>
+        <h4>Top bewertet</h4>
+        <div class="desc">White bg, ink-1 text. Pure rating-only signal. Threshold: ≥4.7 stars + ≥50 reviews.</div>
+        <div class="priority">Priority 2</div>
+      </div>
+      <div class="badge-card">
+        <div class="swatch bg-nails">
+          <span class="badge-curation is-beliebt">Beliebt</span>
+        </div>
+        <h4>Beliebt</h4>
+        <div class="desc">White bg, ink-1 text. Popularity signal. Threshold: top 10% bookings in city + category in trailing 30d.</div>
+        <div class="priority">Priority 3</div>
+      </div>
+      <div class="badge-card">
+        <div class="swatch bg-spa">
+          <span class="badge-curation is-neu">Neu</span>
+        </div>
+        <h4>Neu</h4>
+        <div class="desc">White bg, ink-1 text. New salon signal. Shown for 60d after onboarding.</div>
+        <div class="priority">Priority 4 (lowest)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ANTI-PATTERNS ============== -->
+  <section class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow">Anti-patterns</span>
+      <span class="sec-meta">Q10 + Q26 ban list</span>
+    </div>
+    <h2>Anti-patterns (banned)</h2>
+
+    <div class="anti">
+      <div class="anti-h">Banned</div>
+      <ul style="padding-left: 20px;">
+        <li>Multiple curation badges on one card (only highest-priority shows)</li>
+        <li>Solen Exclusive badge — apparently only in BACKEND_NEEDS_UI.md, NOT in Q10's locked priority order. <strong>User decision needed:</strong> include as 5th badge or drop?</li>
+        <li>Curation badge top-right (it's reserved for heart)</li>
+        <li>Availability pill top-left (it's reserved for curation per Q26)</li>
+        <li>Color variants on availability pill (Q26: single consistent style — V3 makes this brand-teal)</li>
+        <li>Showing Neu badge on salons older than 60 days</li>
+        <li>Showing Top bewertet on salons w &lt;50 reviews (low-confidence)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== USER DECISION ============== -->
+  <section class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow">User decision</span>
+      <span class="sec-meta">awaiting pick</span>
+    </div>
+    <h2>Pick A or B (or modify)</h2>
+    <p class="deck">
+      <strong>A</strong> = ship as-is, single availability badge top-left, no curation system. Simpler. Fewer dev hours. Less trust signal on cards.<br>
+      <strong>B</strong> = full Q10+Q26 spec, curation top-left + availability bottom-left, 4 curation variants. More work (need <code style="background:var(--sunken);padding:1px 6px;border-radius:4px;font-size:13px;">/api/admin/badges/auto-assign</code> wired + thresholds defined). Significantly stronger trust + discovery signal.<br>
+      <strong>Hybrid possibilities:</strong> "B but only Solen Favorit + Top bewertet, drop Beliebt + Neu" — fewer thresholds to define. Or "A for v1, defer curation badges to v1.1."
+    </p>
+  </section>
+
+  <footer class="foot">
+    <span>Solen V3 · §16 card badges A/B</span>
+    <span>2026-05-09 · awaiting pick</span>
+  </footer>
+
+</div>
+</body>
+</html>

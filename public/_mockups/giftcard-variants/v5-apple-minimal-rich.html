@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Card — Old Town Barbers · Solen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F4F4F5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 64px;
+      font-family: 'Inter', sans-serif;
+      color: #0A0A0A;
+    }
+
+    /* ── Phone frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: #FFFFFF;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,.28), 0 0 0 1px rgba(0,0,0,.07);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px 0;
+      height: 44px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+    }
+    .status-bar .time {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #FFFFFF;
+      letter-spacing: -.3px;
+    }
+    .status-bar .icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-bar .icons svg {
+      fill: #FFFFFF;
+      color: #FFFFFF;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ── Hero photo ── */
+    .hero {
+      position: relative;
+      height: 260px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.18) 0%,
+        rgba(0,0,0,.02) 40%,
+        rgba(0,0,0,.0) 60%,
+        rgba(255,255,255,.0) 75%,
+        rgba(255,255,255,1) 100%
+      );
+    }
+
+    /* Back + title nav over photo */
+    .hero-nav {
+      position: absolute;
+      top: 44px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      padding: 12px 18px;
+      gap: 10px;
+    }
+    .frost-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .frost-btn i { color: #FFFFFF; width: 18px; height: 18px; }
+
+    /* ── Scroll body ── */
+    .body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 40px;
+      margin-top: -28px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ── Salon chip row ── */
+    .salon-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .salon-name {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -.4px;
+      color: #0A0A0A;
+      line-height: 1.2;
+    }
+    .rating-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #92400E;
+      flex-shrink: 0;
+    }
+    .rating-chip i { width: 11px; height: 11px; color: #FFC32B; fill: #FFC32B; }
+    .salon-meta {
+      font-size: 13px;
+      color: #8A8A8A;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .salon-meta i { width: 13px; height: 13px; color: #8A8A8A; }
+
+    /* ── Gift card visual ── */
+    .giftcard-visual {
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      height: 188px;
+      margin-bottom: 24px;
+      box-shadow: 0 18px 44px -12px rgba(0,0,0,.18);
+    }
+    .giftcard-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0A0A0A 100%);
+    }
+    /* Subtle texture overlay */
+    .giftcard-texture {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(193,65,12,.12) 0%, transparent 45%);
+    }
+    .giftcard-logo-row {
+      position: absolute;
+      top: 20px;
+      left: 22px;
+      right: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .giftcard-logo {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: #FFFFFF;
+      letter-spacing: -.3px;
+    }
+    .giftcard-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .giftcard-icon i { color: #FFFFFF; width: 16px; height: 16px; }
+
+    .giftcard-amount-area {
+      position: absolute;
+      bottom: 22px;
+      left: 22px;
+      right: 22px;
+    }
+    .giftcard-amount-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,.5);
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .giftcard-amount-value {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 800;
+      font-size: 38px;
+      color: #FFFFFF;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      transition: all .2s;
+    }
+    .giftcard-sub {
+      position: absolute;
+      bottom: 26px;
+      right: 22px;
+      text-align: right;
+    }
+    .giftcard-salon {
+      font-size: 11px;
+      color: rgba(255,255,255,.55);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+    /* warm accent line at bottom */
+    .giftcard-accent-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #C2410C 0%, #EA580C 50%, #FFC32B 100%);
+      border-radius: 0 0 18px 18px;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #0A0A0A;
+      margin-bottom: 10px;
+      letter-spacing: -.2px;
+    }
+
+    /* ── Amount chips ── */
+    .amount-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .amount-chip {
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      background: #FFFFFF;
+    }
+    .amount-chip:hover {
+      border-color: #0A0A0A;
+    }
+    .amount-chip.selected {
+      border-color: #0A0A0A;
+      background: #0A0A0A;
+    }
+    .amount-chip .chip-value {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -.4px;
+      color: #0A0A0A;
+      transition: color .15s;
+    }
+    .amount-chip.selected .chip-value {
+      color: #FFFFFF;
+    }
+    .amount-chip .chip-sub {
+      font-size: 11px;
+      color: #8A8A8A;
+      margin-top: 2px;
+      transition: color .15s;
+    }
+    .amount-chip.selected .chip-sub {
+      color: rgba(255,255,255,.55);
+    }
+
+    /* Custom amount input */
+    .custom-input-wrap {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .custom-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #8A8A8A;
+      pointer-events: none;
+    }
+    .custom-input {
+      width: 100%;
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 14px 14px 14px 36px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #0A0A0A;
+      background: #F4F4F5;
+      outline: none;
+      transition: border-color .15s, background .15s;
+    }
+    .custom-input:focus {
+      border-color: #0A0A0A;
+      background: #FFFFFF;
+    }
+    .custom-input::placeholder { color: #C0C0C0; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: #F0F0F0; margin: 4px 0 20px; }
+
+    /* ── Form field ── */
+    .field {
+      margin-bottom: 12px;
+    }
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #5A5A5A;
+      letter-spacing: .2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .field-input {
+      width: 100%;
+      border: 1.5px solid #E5E5E5;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #0A0A0A;
+      background: #FFFFFF;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .field-input:focus { border-color: #0A0A0A; }
+    .field-input::placeholder { color: #C0C0C0; }
+    textarea.field-input {
+      resize: none;
+      height: 84px;
+      line-height: 1.5;
+    }
+
+    /* ── Delivery info row ── */
+    .delivery-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFF7ED;
+      border: 1px solid #FDBA74;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 24px;
+    }
+    .delivery-icon-wrap {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #FFEDD5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .delivery-icon-wrap i { width: 16px; height: 16px; color: #C2410C; }
+    .delivery-text strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: #7C2D12;
+      display: block;
+    }
+    .delivery-text span {
+      font-size: 12px;
+      color: #9A3412;
+    }
+
+    /* ── What they receive ── */
+    .receive-card {
+      background: #F4F4F5;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .receive-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .receive-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .receive-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .receive-text .rt-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0A0A0A;
+      margin-bottom: 3px;
+    }
+    .receive-text .rt-desc {
+      font-size: 12px;
+      color: #5A5A5A;
+      line-height: 1.5;
+    }
+    .receive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #DCFCE7;
+      border: 1px solid #86EFAC;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #16A34A;
+      margin-top: 5px;
+    }
+    .receive-badge i { width: 11px; height: 11px; color: #16A34A; }
+
+    /* ── CTA button ── */
+    .cta-wrap {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, #FFFFFF 80%, rgba(255,255,255,0) 100%);
+      padding: 16px 0 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .cta-btn {
+      width: 100%;
+      background: #0A0A0A;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      padding: 17px 20px;
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -.2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .15s, transform .1s;
+      box-shadow: 0 4px 16px -4px rgba(0,0,0,.3);
+    }
+    .cta-btn:active { transform: scale(.98); background: #1a1a1a; }
+    .cta-btn i { width: 18px; height: 18px; }
+    .cta-amount {
+      opacity: .7;
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    /* ── Terms note ── */
+    .terms-note {
+      text-align: center;
+      font-size: 11px;
+      color: #8A8A8A;
+      margin-top: 10px;
+      padding-bottom: 4px;
+      line-height: 1.5;
+    }
+    .terms-note a { color: #276EF1; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <!-- Signal bars -->
+      <svg viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="7" width="3" height="5" rx=".5"/>
+        <rect x="4.5" y="4.5" width="3" height="7.5" rx=".5"/>
+        <rect x="9" y="2" width="3" height="10" rx=".5"/>
+        <rect x="13.5" y="0" width="3" height="12" rx=".5"/>
+      </svg>
+      <!-- WiFi -->
+      <svg viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm0-3.5a6 6 0 0 1 4.24 1.76l-1.42 1.42A4 4 0 0 0 8 7.96a4 4 0 0 0-2.82 1.18L3.76 7.72A6 6 0 0 1 8 5.96zm0-4A10 10 0 0 1 15.07 4.5l-1.42 1.42A8 8 0 0 0 8 3.96 8 8 0 0 0 .93 5.9L-.49 4.46A10 10 0 0 1 8 1.96z" fill-rule="evenodd"/>
+      </svg>
+      <!-- Battery -->
+      <svg viewBox="0 0 25 12" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="1" width="21" height="10" rx="2.5" stroke="#FFF" stroke-width="1" fill="none"/>
+        <rect x="1.5" y="2.5" width="16" height="7" rx="1.5" fill="#FFF"/>
+        <path d="M22.5 4.5v3a1.5 1.5 0 0 0 0-3z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hero photo -->
+  <div class="hero">
+    <img
+      src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+      alt="Old Town Barbers barbershop"
+    />
+    <div class="hero-overlay"></div>
+    <div class="hero-nav">
+      <div class="frost-btn">
+        <i data-lucide="arrow-left"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable body -->
+  <div class="body">
+
+    <!-- Salon identity -->
+    <div class="salon-row">
+      <h1 class="salon-name">Old Town Barbers</h1>
+      <div class="rating-chip">
+        <i data-lucide="star"></i>
+        4.8
+      </div>
+    </div>
+    <div class="salon-meta">
+      <i data-lucide="map-pin"></i>
+      Grossbasel, Basel
+    </div>
+
+    <!-- Gift card visual -->
+    <div class="giftcard-visual" id="gc-visual">
+      <div class="giftcard-bg"></div>
+      <div class="giftcard-texture"></div>
+      <div class="giftcard-logo-row">
+        <span class="giftcard-logo">solen</span>
+        <div class="giftcard-icon">
+          <i data-lucide="gift"></i>
+        </div>
+      </div>
+      <div class="giftcard-amount-area">
+        <div class="giftcard-amount-label">Gift card value</div>
+        <div class="giftcard-amount-value" id="gc-amount">CHF 50</div>
+      </div>
+      <div class="giftcard-sub">
+        <div class="giftcard-salon">Old Town Barbers<br>Basel</div>
+      </div>
+      <div class="giftcard-accent-line"></div>
+    </div>
+
+    <!-- Amount section -->
+    <div class="section-label">Choose amount</div>
+    <div class="amount-grid">
+      <div class="amount-chip" data-value="25" onclick="selectAmount(this)">
+        <div class="chip-value">CHF 25</div>
+        <div class="chip-sub">Starter</div>
+      </div>
+      <div class="amount-chip selected" data-value="50" onclick="selectAmount(this)">
+        <div class="chip-value">CHF 50</div>
+        <div class="chip-sub">Most popular</div>
+      </div>
+      <div class="amount-chip" data-value="100" onclick="selectAmount(this)">
+        <div class="chip-value">CHF 100</div>
+        <div class="chip-sub">Premium</div>
+      </div>
+      <div class="amount-chip" data-value="200" onclick="selectAmount(this)">
+        <div class="chip-value">CHF 200</div>
+        <div class="chip-sub">Luxury</div>
+      </div>
+    </div>
+    <div class="custom-input-wrap">
+      <span class="custom-prefix">CHF</span>
+      <input
+        class="custom-input"
+        type="number"
+        placeholder="Custom amount"
+        id="custom-amt"
+        min="10"
+        max="2000"
+        oninput="handleCustom(this)"
+      />
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Recipient -->
+    <div class="section-label">Recipient</div>
+    <div class="field">
+      <div class="field-label">Name</div>
+      <input class="field-input" type="text" placeholder="Full name" />
+    </div>
+    <div class="field">
+      <div class="field-label">Email</div>
+      <input class="field-input" type="email" placeholder="Email address" />
+    </div>
+    <div class="field" style="margin-bottom:16px">
+      <div class="field-label">Personal message (optional)</div>
+      <textarea class="field-input" placeholder="Add a warm note for the recipient..."></textarea>
+    </div>
+
+    <!-- Delivery info -->
+    <div class="delivery-row">
+      <div class="delivery-icon-wrap">
+        <i data-lucide="mail"></i>
+      </div>
+      <div class="delivery-text">
+        <strong>Delivered by email, instantly</strong>
+        <span>Recipient gets a beautiful email with the gift card code</span>
+      </div>
+    </div>
+
+    <!-- What they'll receive -->
+    <div class="section-label">What they'll receive</div>
+    <div class="receive-card">
+      <div class="receive-thumb">
+        <img
+          src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=120&q=70"
+          alt="Old Town Barbers"
+        />
+      </div>
+      <div class="receive-text">
+        <div class="rt-title">Old Town Barbers gift card</div>
+        <div class="rt-desc">Redeemable for any service at this salon. Valid 24 months from purchase.</div>
+        <div class="receive-badge">
+          <i data-lucide="check-circle"></i>
+          No expiry surprises
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <button class="cta-btn" onclick="return false;">
+        <i data-lucide="gift"></i>
+        Buy gift card
+        <span class="cta-amount" id="cta-amount">· CHF 50</span>
+      </button>
+      <div class="terms-note">
+        By purchasing you agree to our <a href="#">gift card terms</a>. Non-refundable.
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /phone -->
+
+<script>
+  // init Lucide
+  lucide.createIcons();
+
+  let selectedValue = 50;
+
+  function selectAmount(chip) {
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    document.getElementById('custom-amt').value = '';
+    selectedValue = parseInt(chip.dataset.value, 10);
+    updateDisplay();
+  }
+
+  function handleCustom(input) {
+    const v = parseInt(input.value, 10);
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+    if (!isNaN(v) && v >= 10) {
+      selectedValue = v;
+      updateDisplay();
+    } else {
+      selectedValue = 0;
+      document.getElementById('gc-amount').textContent = 'CHF —';
+      document.getElementById('cta-amount').textContent = '· CHF —';
+    }
+  }
+
+  function updateDisplay() {
+    document.getElementById('gc-amount').textContent = 'CHF ' + selectedValue;
+    document.getElementById('cta-amount').textContent = '· CHF ' + selectedValue;
+  }
+</script>
+</body>
+</html>

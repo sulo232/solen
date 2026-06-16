@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · CategoryPromos bento variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --brand-soft: #E8EDFA;
+    --accent: #FFC32B;
+    --accent-soft: #FFF4D3;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F1F1F2;
+    --grey-150: #E8E8EA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--accent); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+
+  /* Section shell — mimic the real Solen section */
+  .section {
+    padding: 28px 20px 32px;
+    background: var(--white);
+  }
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .section-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+  .section-h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* Tile shared */
+  .tile {
+    background: var(--grey-50);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .tile-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--white);
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  .tile-icon-wrap svg { width: 22px; height: 22px; color: var(--ink); }
+  .tile-name {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .tile-count {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+
+  /* Hero tile (variant B + C) */
+  .tile-hero {
+    background:
+      radial-gradient(ellipse 80% 60% at 80% 20%, rgba(255,195,43,0.18) 0%, transparent 60%),
+      linear-gradient(135deg, #1638C4 0%, #2E50D5 100%);
+    color: var(--white);
+    border: none;
+  }
+  .tile-hero .tile-icon-wrap { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+  .tile-hero .tile-icon-wrap svg { color: var(--white); }
+  .tile-hero .tile-name { color: var(--white); font-size: 24px; }
+  .tile-hero .tile-count { color: rgba(255,255,255,0.7); }
+  .tile-hero-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+
+  /* Variant A — equal 2×2 */
+  .bento-a {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .bento-a .tile { aspect-ratio: 1; }
+
+  /* Variant B — 1 hero (full-width) + 3 small (3-col) */
+  .bento-b {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .bento-b .tile-hero {
+    grid-column: 1 / -1;
+    aspect-ratio: 2.2/1;
+    min-height: 160px;
+  }
+  .bento-b .tile { aspect-ratio: 1; min-height: 110px; padding: 12px; }
+  .bento-b .tile .tile-name { font-size: 15px; }
+  .bento-b .tile .tile-icon-wrap { width: 32px; height: 32px; }
+  .bento-b .tile .tile-icon-wrap svg { width: 18px; height: 18px; }
+
+  /* Variant C — 3-tier (1 dominant tall + 2 medium + 1 small) */
+  .bento-c {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+  }
+  .bento-c .tile-dominant {
+    grid-row: 1 / 4;
+    min-height: 320px;
+  }
+  .bento-c .tile-medium { min-height: 100px; }
+  .bento-c .tile-small { min-height: 100px; }
+
+  /* CTA chip (yellow accent — 10% rule) */
+  .cta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 20px;
+    margin-top: 8px;
+  }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1 class="page-title">CategoryPromos — bento variants</h1>
+  <p class="page-sub">App-style bento grids, <b>not editorial</b>. Same content, same brand tokens. Only layout / hierarchy changes between A / B / C. Pick a letter — I port the winner into the React component.</p>
+
+  <!-- ─── A · Equal 2×2 ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>A</span>Equal 2×2 bento</div>
+    <div class="variant-meta">
+      Layout = <b>2 × 2 grid</b>, all tiles same size · square aspect<br/>
+      Hierarchy = <b>flat</b> — every category equal-weight<br/>
+      Vibe = quiet, scannable, Apple Health stat cards
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Kategorien</div>
+      <h2 class="section-h2">Wähle deine Behandlung</h2>
+      <p class="section-sub">Vier Bereiche, alle gleich nah.</p>
+
+      <div class="bento-a">
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L8 22M16 2L16 22M3 10L21 10M3 14L21 14"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Coiffeur</div>
+            <div class="tile-count">142 Salons</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6c0 3.3 2.7 6 6 6s6-2.7 6-6V2M9 2v3M15 2v3M12 14v8"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Barbershop</div>
+            <div class="tile-count">58 Salons</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 8 8 8 12s0 8 4 10c4-2 4-6 4-10s0-10-4-10z"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Nails</div>
+            <div class="tile-count">94 Salons</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Spa &amp; Wellness</div>
+            <div class="tile-count">76 Salons</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── B · Hero + 3 ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>B</span>Hero + 3 small</div>
+    <div class="variant-meta">
+      Layout = <b>1 full-width featured tile + 3-col row below</b><br/>
+      Hierarchy = <b>strong</b> — one cat featured (rotates weekly / by season)<br/>
+      Vibe = product spotlight, Apple Store category nav
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Kategorien</div>
+      <h2 class="section-h2">Diese Woche im Fokus</h2>
+      <p class="section-sub">Coiffeur-Saison startet — restliche Bereiche im schnellen Zugriff.</p>
+
+      <div class="bento-b">
+        <a href="#" class="tile tile-hero">
+          <div class="tile-hero-badge">Im Fokus</div>
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L8 22M16 2L16 22M3 10L21 10M3 14L21 14"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Coiffeur</div>
+            <div class="tile-count">142 Salons · neuer Style?</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6c0 3.3 2.7 6 6 6s6-2.7 6-6V2"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Barber</div>
+            <div class="tile-count">58</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 8 8 8 12s0 8 4 10c4-2 4-6 4-10s0-10-4-10z"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Nails</div>
+            <div class="tile-count">94</div>
+          </div>
+        </a>
+        <a href="#" class="tile">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M4.93 19.07l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Spa</div>
+            <div class="tile-count">76</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── C · 3-tier ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>C</span>3-tier (dominant + medium + small)</div>
+    <div class="variant-meta">
+      Layout = <b>1 vertical dominant tile + 3 stacked smaller tiles</b><br/>
+      Hierarchy = <b>strong + rhythmic</b> — one tall hero, three short<br/>
+      Vibe = Apple News, magazine-app cover; richest layout
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Kategorien</div>
+      <h2 class="section-h2">Wähle deinen Bereich</h2>
+      <p class="section-sub">Vom täglichen Schnitt bis zum Wellness-Tag.</p>
+
+      <div class="bento-c">
+        <a href="#" class="tile tile-hero tile-dominant">
+          <div class="tile-hero-badge">Beliebt</div>
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L8 22M16 2L16 22M3 10L21 10M3 14L21 14"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Coiffeur</div>
+            <div class="tile-count">142 Salons in deiner Nähe</div>
+            <span class="cta-chip">Jetzt buchen →</span>
+          </div>
+        </a>
+        <a href="#" class="tile tile-medium">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6c0 3.3 2.7 6 6 6s6-2.7 6-6V2"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Barbershop</div>
+            <div class="tile-count">58 Salons</div>
+          </div>
+        </a>
+        <a href="#" class="tile tile-medium">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 8 8 8 12s0 8 4 10c4-2 4-6 4-10s0-10-4-10z"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Nails</div>
+            <div class="tile-count">94 Salons</div>
+          </div>
+        </a>
+        <a href="#" class="tile tile-small">
+          <div class="tile-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M4.93 19.07l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div class="tile-name">Spa &amp; Wellness</div>
+            <div class="tile-count">76 Salons</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>A</b> = simplest, lowest visual weight. <b>B</b> = clearest hierarchy (one featured cat).<br/>
+    <b>C</b> = strongest editorial-app feel without being magazine-editorial.<br/>
+    My pick: <b>C</b> — most rhythm against the rows above/below.
+  </footer>
+</body>
+</html>

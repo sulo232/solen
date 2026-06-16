@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#8a8a8a; --border:#E7E5E4; --sunken:#F5F5F4; --accent:#185CE0; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#f0efed;padding:20px 14px 40px;color:var(--ink)}
+  .lede{font-family:'Inter Tight';max-width:460px;margin:0 auto 18px}
+  .lede h1{font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .lede p{font-size:13px;color:var(--ink2);margin-top:4px}
+
+  .card{max-width:460px;margin:0 auto 16px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px 18px 20px;overflow:hidden}
+  .card.rec{border:1.5px solid var(--ink)}
+  .badge{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+  .badge .n{font-family:'Inter Tight';font-size:14px;font-weight:700}
+  .badge .pair{font-family:'Inter Tight';font-size:12px;color:var(--ink2)}
+  .badge .tag{font-size:9.5px;font-weight:700;letter-spacing:.05em;background:var(--ink);color:#fff;border-radius:5px;padding:2px 6px;margin-left:auto}
+
+  /* the replicated service section — fonts driven by per-card vars */
+  .sec{--head:'Inter Tight';--body:'Hanken Grotesk'}
+  .sec.s1{--head:'Inter Tight';--body:'Hanken Grotesk'}
+  .sec.s2{--head:'Inter Tight';--body:'Inter'}
+  .sec.s3{--head:'Inter Tight';--body:'Plus Jakarta Sans'}
+  .sec.s4{--head:'Fraunces';--body:'Inter'}
+
+  .nav{display:flex;gap:18px;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:16px;overflow:hidden}
+  .nav span{font-family:var(--body);font-size:14px;font-weight:500;color:var(--ink3);white-space:nowrap}
+  .nav span.act{color:var(--ink);font-weight:700;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:-11px}
+  .secttl{font-family:var(--head);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:13px}
+  .sec.s4 .secttl{font-weight:600}
+
+  .pills{display:flex;gap:8px;margin-bottom:16px;overflow:hidden}
+  .pill{font-family:var(--body);flex:none;height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--border);background:#fff;color:var(--ink);font-size:13px;font-weight:500;display:inline-flex;align-items:center}
+  .pill.sel{background:var(--sunken);font-weight:600}
+
+  .row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:10px}
+  .row .nm{font-family:var(--body);font-size:15px;font-weight:500;color:var(--ink)}
+  .row .du{font-family:var(--body);font-size:13px;color:var(--ink3);margin-top:4px}
+  .row .pr{font-family:var(--body);font-size:14px;color:var(--ink2);margin-top:11px}
+  .row .bk{font-family:var(--body);flex:none;border:1px solid var(--ink);border-radius:99px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="lede"><h1>Same section, four type pairings</h1><p>Identical layout — only the fonts change. Headings vs body called out per card.</p></div>
+
+  <!-- generate 4 cards -->
+  <div class="card rec">
+    <div class="badge"><span class="n">1 · Clean Swiss</span><span class="pair">Inter Tight + Inter</span><span class="tag">MY PICK</span></div>
+    <div class="sec s2">
+      <div class="nav"><span>Fotos</span><span>Über uns</span><span class="act">Services</span><span>Team</span><span>Bewertung</span></div>
+      <div class="secttl">Services</div>
+      <div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span><span class="pill">Styling</span></div>
+      <div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+      <div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="badge"><span class="n">2 · Current</span><span class="pair">Inter Tight + Hanken Grotesk</span></div>
+    <div class="sec s1">
+      <div class="nav"><span>Fotos</span><span>Über uns</span><span class="act">Services</span><span>Team</span><span>Bewertung</span></div>
+      <div class="secttl">Services</div>
+      <div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span><span class="pill">Styling</span></div>
+      <div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+      <div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="badge"><span class="n">3 · Warm geometric</span><span class="pair">Inter Tight + Plus Jakarta Sans</span></div>
+    <div class="sec s3">
+      <div class="nav"><span>Fotos</span><span>Über uns</span><span class="act">Services</span><span>Team</span><span>Bewertung</span></div>
+      <div class="secttl">Services</div>
+      <div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span><span class="pill">Styling</span></div>
+      <div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+      <div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="badge"><span class="n">4 · Editorial</span><span class="pair">Fraunces (serif headings) + Inter</span></div>
+    <div class="sec s4">
+      <div class="nav"><span>Fotos</span><span>Über uns</span><span class="act">Services</span><span>Team</span><span>Bewertung</span></div>
+      <div class="secttl">Services</div>
+      <div class="pills"><span class="pill sel">Alle</span><span class="pill">Schnitt</span><span class="pill">Farbe</span><span class="pill">Styling</span></div>
+      <div class="row"><div><div class="nm">Damen-Haarschnitt</div><div class="du">1 Std.</div><div class="pr">ab 85 CHF</div></div><div class="bk">Buchen</div></div>
+      <div class="row"><div><div class="nm">Hochsteckfrisur</div><div class="du">1 Std.</div><div class="pr">ab 95 CHF</div></div><div class="bk">Buchen</div></div>
+    </div>
+  </div>
+
+</body>
+</html>

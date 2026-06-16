@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Service-Auswahl — Varianten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --disabled:#C5C8C4;
+    --accent:#185CE0; --accent-pale:#EAEFFE; --sunken:#F5F5F4; --star:#FFC32B; --white:#fff;
+    --line:rgba(10,10,10,.08); --line2:rgba(10,10,10,.16);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:'Geist',system-ui,-apple-system,sans-serif;background:#E9E9E7;color:var(--ink);padding:30px 18px 90px;-webkit-font-smoothing:antialiased}
+  h1{font-size:22px;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.55;margin:0 0 26px;max-width:780px}
+  .row{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+  .col{width:390px;max-width:100%}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-bottom:10px}
+  .tag.rec{background:var(--accent-pale);color:var(--accent)}
+  .tag.cur{background:#EDEBE7;color:var(--ink2)}
+  .tag.mid{background:#FFF1DC;color:#9A6300}
+  .cap{font-weight:700;font-size:16px;margin:0 0 3px}
+  .capd{color:var(--ink2);font-size:13px;line-height:1.55;margin:0 0 14px;min-height:56px}
+  .frame{background:var(--white);border-radius:30px;box-shadow:0 14px 44px -14px rgba(0,0,0,.24);overflow:hidden;border:1px solid var(--line)}
+  .scr{height:680px;overflow-y:auto;position:relative}
+  .scr::-webkit-scrollbar{width:0}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--white);z-index:5}
+  .topbar .t{font-weight:700;font-size:16px}
+  .icbtn{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:var(--sunken);color:var(--ink);font-size:17px;border:none}
+  .pad{padding:14px 16px}
+  .seclabel{font-weight:700;font-size:17px;margin:4px 0 10px}
+
+  /* compact service card */
+  .svc{border:1.5px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;background:var(--white);transition:border-color .2s}
+  .svc.open{border-color:var(--accent)}
+  .svc h4{margin:0;font-weight:600;font-size:15px}
+  .svc .meta{color:var(--ink2);font-size:12px;margin-top:3px}
+  .svc .desc{color:var(--ink2);font-size:13px;line-height:1.5;margin-top:6px}
+  .svc .foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px}
+  .price{font-weight:700;font-size:15px}
+  .price .from{color:var(--ink2);font-weight:500;font-size:13px}
+  .circ{width:34px;height:34px;border-radius:999px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--ink2);font-size:20px;background:var(--white);cursor:pointer;flex:0 0 auto;transition:.18s}
+  .circ.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* option rows */
+  .grp{margin-top:6px}
+  .grplab{font-weight:700;font-size:14px;padding:0 0 1px}
+  .grpsub{color:var(--ink2);font-size:12.5px;padding:0 0 6px}
+  .opt{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+  .opt .txt{flex:1;min-width:0}
+  .opt .on{font-weight:600;font-size:14px}
+  .opt .om{color:var(--ink2);font-size:12px;margin-top:2px}
+  .opt .op{font-weight:600;font-size:13.5px;margin-top:5px}
+  .radio{width:22px;height:22px;border-radius:999px;border:2px solid var(--line2);flex:0 0 auto;margin-top:2px;transition:.15s}
+  .radio.sel{border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--accent),inset 0 0 0 6px #fff}
+  .mini{width:28px;height:28px;border-radius:999px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--ink2);font-size:16px;background:var(--white);flex:0 0 auto;margin-top:2px;cursor:pointer;transition:.15s}
+  .mini.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* sheet bottom bar */
+  .bar{position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px}
+  .bar .tot{font-weight:800;font-size:18px;line-height:1}
+  .bar .totm{color:var(--ink2);font-size:12px;margin-top:4px}
+  .cta{background:var(--ink);color:#fff;border:none;border-radius:14px;padding:13px 26px;font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;transition:.15s}
+  .cta:disabled{background:var(--disabled);cursor:default}
+
+  /* bento (variant B) */
+  .bento{border:2px solid var(--accent);border-radius:16px;overflow:hidden;margin-bottom:12px}
+  .bento .head{padding:16px;cursor:pointer}
+  .spine{border-left:2px solid rgba(24,92,224,.25);padding-left:14px;margin-left:2px}
+  .addrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;cursor:pointer}
+  .addrow .on{font-weight:600;font-size:13px}
+  .addrow .om{color:var(--ink2);font-size:12px;margin-top:1px}
+  .subt{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--line);background:rgba(10,10,10,.025)}
+  .subt .l{color:var(--ink2);font-weight:600;font-size:12.5px}
+  .subt .v{font-weight:700;font-size:15px}
+  .hint{color:var(--ink3);font-size:12px;text-align:center;padding:8px 0 2px}
+</style>
+</head>
+<body>
+  <h1>Service-Auswahl — 3 Varianten</h1>
+  <p class="sub">Gleiche Daten (Waschen / Föhnen · CHF). Tippe Optionen &amp; Add-ons an — der Preis rechnet live mit. Solen-Tokens &amp; Geist, schwarze Primär-CTA. <b>Variante A</b> = Freshas echtes Muster (Sheet). <b>B</b> = aktuell gebaute Bento. <b>C</b> = Mittelweg (Karte klappt inline auf).</p>
+
+  <div class="row">
+
+    <!-- ============ A: FRESHA SHEET ============ -->
+    <div class="col" data-variant="A">
+      <span class="tag rec">Empfohlen</span>
+      <div class="cap">A · Detail-Sheet (Fresha)</div>
+      <div class="capd">Kompakte Karte zeigt „ab CHF 28". Tippen öffnet ein Vollbild-Sheet: Pflicht-Option (Haarlänge) + optionale Add-ons + „Hinzufügen". Skaliert bei vielen Optionen. Pflicht-Optionen brauchen ein neues Schema.</div>
+      <div class="frame">
+        <div class="scr">
+          <div class="topbar"><span class="icbtn">‹</span><span class="t">Services wählen</span><span class="icbtn">✕</span></div>
+          <div class="pad">
+            <div class="seclabel">Coiffeur</div>
+            <div class="svc">
+              <h4>Waschen / Föhnen</h4>
+              <div class="meta">30–45 Min</div>
+              <div class="desc">Waschen und Föhnen inklusive individueller Beratung.</div>
+              <div class="foot"><span class="price"><span class="from">ab </span>CHF 28</span><span class="circ">+</span></div>
+            </div>
+            <div class="hint">↑ Karte · ↓ Sheet das sich beim Tippen öffnet</div>
+          </div>
+
+          <!-- the opened sheet (shown inline for the mockup) -->
+          <div style="border-top:10px solid #E9E9E7">
+            <div class="topbar"><span></span><span class="icbtn">✕</span></div>
+            <div style="padding:2px 18px 0"><div style="font-size:22px;font-weight:800;letter-spacing:-.01em">Waschen / Föhnen</div>
+            <div style="color:var(--ink2);font-size:14px;margin:6px 0 4px">Waschen und Föhnen inklusive individueller Beratung.</div></div>
+            <div class="pad">
+              <div class="grp">
+                <div class="grplab">Wähle eine Option</div>
+                <div class="grpsub">Erforderlich</div>
+                <div class="opt" data-radio><div class="radio sel"></div><div class="txt"><div class="on">Kurzes Haar</div><div class="om">30 Min · bis zum Ohrläppchen</div><div class="op" data-price="28">CHF 28</div></div></div>
+                <div class="opt" data-radio><div class="radio"></div><div class="txt"><div class="on">Mittleres Haar</div><div class="om">30 Min · bis zur Schulter</div><div class="op" data-price="30">CHF 30</div></div></div>
+                <div class="opt" data-radio><div class="radio"></div><div class="txt"><div class="on">Langes Haar</div><div class="om">45 Min · ab Schulter</div><div class="op" data-price="34">CHF 34</div></div></div>
+              </div>
+              <div class="grp" style="margin-top:18px">
+                <div class="grplab">Intensivpflege dazu?</div>
+                <div class="grpsub">Optional</div>
+                <div class="opt" data-add data-price="20"><div class="txt"><div class="on">Mangala Intensivpflege</div><div class="om">15 Min · pflegt &amp; glättet</div><div class="op">+ CHF 20</div></div><div class="mini">+</div></div>
+              </div>
+              <div class="grp" style="margin-top:18px">
+                <div class="grplab">Conditioner dazu?</div>
+                <div class="grpsub">Optional</div>
+                <div class="opt" data-add data-price="5"><div class="txt"><div class="on">Conditioner (Spülung)</div><div class="om">bessere Kämmbarkeit</div><div class="op">+ CHF 5</div></div><div class="mini">+</div></div>
+              </div>
+            </div>
+            <div class="bar"><div><div class="tot">CHF <span data-total>28</span></div><div class="totm">30–45 Min</div></div><button class="cta">Hinzufügen</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ B: INLINE BENTO (current) ============ -->
+    <div class="col" data-variant="B">
+      <span class="tag cur">Aktuell gebaut</span>
+      <div class="cap">B · Inline-Bento</div>
+      <div class="capd">Karte klappt an Ort &amp; Stelle auf: Add-ons an einer Linie + Live-Zwischensumme. Sofortiges Feedback ohne Tap-Wechsel. Kein Platz für Pflicht-Optionen (nur Add-ons).</div>
+      <div class="frame">
+        <div class="scr">
+          <div class="topbar"><span class="icbtn">‹</span><span class="t">Auswahl</span><span class="icbtn">✕</span></div>
+          <div class="pad">
+            <div class="seclabel">Coiffeur</div>
+            <div class="bento">
+              <div class="head">
+                <h4 style="margin:0;font-weight:600;font-size:15px">Waschen / Föhnen</h4>
+                <div class="meta" style="color:var(--ink2);font-size:12px;margin-top:3px">30 Min</div>
+                <div class="desc" style="color:var(--ink2);font-size:13px;line-height:1.5;margin-top:6px">Waschen und Föhnen inklusive individueller Beratung.</div>
+                <div class="foot"><span class="price">CHF 28</span><span class="circ sel">✓</span></div>
+              </div>
+              <div style="padding:0 16px 4px">
+                <div style="font-weight:600;font-size:12.5px;color:var(--ink2);margin-bottom:2px">Dazu passend</div>
+                <div class="spine">
+                  <div class="addrow" data-add data-price="20"><div class="txt"><div class="on">Mangala Intensivpflege</div><div class="om">+ CHF 20 · 15 Min</div></div><div class="mini">+</div></div>
+                  <div class="addrow" data-add data-price="5"><div class="txt"><div class="on">Conditioner (Spülung)</div><div class="om">+ CHF 5</div></div><div class="mini">+</div></div>
+                </div>
+              </div>
+              <div class="subt"><span class="l">Zwischensumme</span><span class="v">CHF <span data-total>28</span></span></div>
+            </div>
+            <div class="svc"><h4>Waschen / Schneiden / Föhnen</h4><div class="meta">45 Min</div><div class="foot"><span class="price">CHF 56</span><span class="circ">+</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ C: HYBRID ACCORDION ============ -->
+    <div class="col" data-variant="C">
+      <span class="tag mid">Mittelweg</span>
+      <div class="cap">C · Inline-Aufklapp (Optionen + Add-ons)</div>
+      <div class="capd">Kompakte Karte, klappt aber inline auf — mit Pflicht-Option (Haarlänge) UND Add-ons, ohne Vollbild-Sheet. Kein Tap-Wechsel, trägt aber Optionen. Braucht ebenfalls Options-Schema.</div>
+      <div class="frame">
+        <div class="scr">
+          <div class="topbar"><span class="icbtn">‹</span><span class="t">Auswahl</span><span class="icbtn">✕</span></div>
+          <div class="pad">
+            <div class="seclabel">Coiffeur</div>
+            <div class="bento">
+              <div class="head">
+                <h4 style="margin:0;font-weight:600;font-size:15px">Waschen / Föhnen</h4>
+                <div class="meta" style="color:var(--ink2);font-size:12px;margin-top:3px">30–45 Min</div>
+                <div class="foot"><span class="price"><span class="from">ab </span>CHF 28</span><span class="circ sel">✓</span></div>
+              </div>
+              <div style="padding:2px 16px 4px">
+                <div class="grplab" style="font-size:12.5px">Wähle eine Option · <span style="color:var(--ink2);font-weight:500">Erforderlich</span></div>
+                <div class="spine" style="margin-top:6px">
+                  <div class="opt" data-radio style="padding:9px 0"><div class="radio sel"></div><div class="txt"><div class="on">Kurzes Haar</div><div class="om">30 Min · <span data-price="28">CHF 28</span></div></div></div>
+                  <div class="opt" data-radio style="padding:9px 0"><div class="radio"></div><div class="txt"><div class="on">Mittleres Haar</div><div class="om">30 Min · <span data-price="30">CHF 30</span></div></div></div>
+                  <div class="opt" data-radio style="padding:9px 0"><div class="radio"></div><div class="txt"><div class="on">Langes Haar</div><div class="om">45 Min · <span data-price="34">CHF 34</span></div></div></div>
+                </div>
+                <div class="grplab" style="font-size:12.5px;margin-top:12px">Dazu passend</div>
+                <div class="spine" style="margin-top:6px">
+                  <div class="addrow" data-add data-price="20"><div class="txt"><div class="on">Mangala Intensivpflege</div><div class="om">+ CHF 20 · 15 Min</div></div><div class="mini">+</div></div>
+                </div>
+              </div>
+              <div class="subt"><span class="l">Zwischensumme</span><span class="v">CHF <span data-total>28</span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  document.querySelectorAll('[data-variant]').forEach(function(col){
+    var base = 0; // base = selected required option (or fixed price)
+    var addons = 0;
+    var radios = col.querySelectorAll('[data-radio]');
+    function recompute(){
+      var totalEl = col.querySelector('[data-total]');
+      if(totalEl) totalEl.textContent = base + addons;
+    }
+    // init base from selected radio or the bento's fixed 28
+    var selRadio = col.querySelector('[data-radio] .radio.sel');
+    if(selRadio){ var p = selRadio.closest('[data-radio]').querySelector('[data-price]'); base = p ? +p.getAttribute('data-price') : 28; }
+    else { base = 28; }
+    recompute();
+
+    radios.forEach(function(r){
+      r.addEventListener('click', function(){
+        radios.forEach(function(x){ x.querySelector('.radio').classList.remove('sel'); });
+        r.querySelector('.radio').classList.add('sel');
+        var p = r.querySelector('[data-price]');
+        base = p ? +p.getAttribute('data-price') : base;
+        recompute();
+      });
+    });
+    col.querySelectorAll('[data-add]').forEach(function(a){
+      a.addEventListener('click', function(){
+        var btn = a.querySelector('.mini') || a.querySelector('.circ');
+        var price = +a.getAttribute('data-price');
+        if(btn.classList.toggle('sel')){ btn.textContent='✓'; addons += price; }
+        else { btn.textContent='+'; addons -= price; }
+        recompute();
+      });
+    });
+  });
+</script>
+</body>
+</html>

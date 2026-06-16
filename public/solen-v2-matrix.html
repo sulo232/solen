@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — palette × fonts · 2×2 matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  /* ============== HEADER ============== */
+  header { text-align: center; margin-bottom: 32px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 40px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1.doc-h em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 700px; margin-inline: auto;
+  }
+  .legend {
+    margin-top: 20px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    font-size: 11px; font-family: "JetBrains Mono", monospace;
+  }
+  .legend span {
+    background: #fff; border: 1px solid rgba(26,18,9,.06);
+    padding: 6px 10px; border-radius: 99px; color: #1A1209;
+  }
+  .legend strong { color: #1A1209; font-weight: 600; }
+
+  /* ============== MATRIX GRID ============== */
+  .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 900px) {
+    .matrix { grid-template-columns: 1fr; }
+  }
+
+  /* per-cell theme */
+  .cell {
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.6),
+      0 1px 2px rgba(26,18,9,.03),
+      0 8px 24px rgba(0,0,0,.06);
+  }
+  /* GREEN palette cells use V1 substrate (white) */
+  .cell.green {
+    background: #FFFFFF;
+    border: 1px solid rgba(26,18,9,.06);
+  }
+  /* ORANGE palette cells use v2 substrate (cream) */
+  .cell.orange {
+    background: #FBF8F3;
+    border: 1px solid rgba(232,116,42,.12);
+  }
+
+  /* tags */
+  .tag-row {
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .palette-tag, .font-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .palette-tag.green-tag { background: #1B4D1B; color: #fff; }
+  .palette-tag.orange-tag { background: #E8742A; color: #fff; }
+  .font-tag { background: #1A1209; color: rgba(255,255,255,.85); }
+
+  .cell-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: #1A1209;
+    margin-bottom: 4px;
+  }
+  .cell-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; color: #7A6957;
+    margin-bottom: 18px;
+  }
+  .cell-meta strong { color: #1A1209; font-weight: 500; }
+
+  /* ============== FONT MIXINS ============== */
+  /* v2 fonts */
+  .v2font .display { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; letter-spacing: -0.025em; }
+  .v2font .body { font-family: "Inter Tight", sans-serif; }
+  .v2font .italic { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; }
+  .v2font .mono { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+  /* V1 fonts */
+  .v1font .display { font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 0.005em; text-transform: uppercase; }
+  .v1font .body { font-family: "Figtree", sans-serif; }
+  .v1font .italic { font-family: "Figtree", sans-serif; font-weight: 500; font-style: italic; text-transform: none; }
+  .v1font .mono { font-family: "Figtree", sans-serif; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ============== PALETTE MIXINS ============== */
+  .green-pal {
+    --brand: #1B4D1B;
+    --brand-text: #1B4D1B;
+    --brand-deep: #0F2D0F;
+    --brand-subtle: rgba(27,77,27,.10);
+    --brand-grad: linear-gradient(180deg, #2C6B2C 0%, #1B4D1B 100%);
+    --pulse-rgb: 27, 77, 27;
+    --bg-substrate: #FFFFFF;
+    --b2b-bg: linear-gradient(160deg, rgba(27,77,27,.06) 0%, rgba(243,168,100,.10) 100%);
+    --b2b-border: rgba(27,77,27,.12);
+    --b2b-blob: rgba(27,77,27,.4);
+  }
+  .orange-pal {
+    --brand: #E8742A;
+    --brand-text: #8A3C0F;
+    --brand-deep: #5C2308;
+    --brand-subtle: #FFE4D2;
+    --brand-grad: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    --pulse-rgb: 232, 116, 42;
+    --bg-substrate: #FBF8F3;
+    --b2b-bg: linear-gradient(160deg, #FFE4D2 0%, #FBC9A8 100%);
+    --b2b-border: rgba(232,116,42,.12);
+    --b2b-blob: rgba(232,116,42,.5);
+  }
+
+  /* ============== SURFACES ============== */
+  .surfaces {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  /* HERO */
+  .hero {
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--bg-substrate);
+    border: 1px solid rgba(26,18,9,.04);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid var(--b2b-border);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 11px; font-weight: 600;
+    color: #1A1209;
+    margin-bottom: 12px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px rgba(var(--pulse-rgb), .18);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .hero-h {
+    font-size: 30px; line-height: 1.05; color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .v1font .hero-h { font-size: 34px; }
+  .italic-accent { color: var(--brand); }
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--brand-grad);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 99px;
+    font-weight: 700; font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(var(--pulse-rgb), .32);
+  }
+
+  /* SALON CARD */
+  .salon-card {
+    background: var(--bg-substrate);
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex; gap: 12px;
+  }
+  .salon-photo {
+    width: 84px; height: 84px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+  }
+  .salon-badge {
+    position: absolute; top: 6px; left: 6px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 7px; border-radius: 99px;
+  }
+  .badge-dot {
+    width: 4px; height: 4px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 2px rgba(var(--pulse-rgb), .2);
+  }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-row1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 6px;
+  }
+  .salon-name {
+    color: #1A1209;
+    line-height: 1.1;
+    font-size: 16px;
+    flex: 1; min-width: 0;
+  }
+  .v1font .salon-name { font-size: 18px; }
+  .salon-rating {
+    font-size: 11px; color: #1A1209; flex-shrink: 0;
+  }
+  .salon-row2 {
+    font-size: 11px; color: #7A6957;
+    margin-top: 4px;
+  }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* SECTION HEADER */
+  .sec-h-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    background: var(--bg-substrate);
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .sec-h {
+    font-size: 22px; line-height: 1; color: #1A1209;
+  }
+  .v1font .sec-h { font-size: 24px; }
+  .alle {
+    font-size: 12px; font-weight: 600; color: #1A1209;
+  }
+
+  /* B2B CARD */
+  .b2b {
+    position: relative;
+    background: var(--b2b-bg);
+    border: 1px solid var(--b2b-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    overflow: hidden;
+  }
+  .b2b::before {
+    content: "";
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 180px; height: 180px;
+    background: var(--b2b-blob); filter: blur(40px);
+    border-radius: 999px;
+  }
+  .b2b > * { position: relative; }
+  .b2b-eye {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--brand-text);
+    margin-bottom: 6px;
+  }
+  .b2b-h {
+    color: #1A1209;
+    line-height: 1.05;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .v1font .b2b-h { font-size: 20px; }
+  .b2b-sub {
+    font-size: 12px; color: #56463E; line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .b2b-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #1A1209; color: #fff;
+    padding: 8px 14px; border-radius: 99px;
+    font-weight: 700; font-size: 12px;
+  }
+
+  /* LOGIN FORM mini */
+  .login-card {
+    background: var(--bg-substrate);
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .login-h {
+    color: #1A1209;
+    line-height: 1.1;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .v1font .login-h { font-size: 24px; }
+  .login-sub {
+    font-size: 12px; color: #56463E;
+    margin-bottom: 14px;
+  }
+  .form-label {
+    display: block;
+    font-weight: 600; font-size: 11px;
+    color: #1A1209;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    display: block; width: 100%;
+    height: 44px; padding: 10px 12px;
+    border: 1px solid rgba(26,18,9,.10);
+    border-radius: 10px;
+    background: #fff;
+    font-weight: 400; font-size: 13px;
+    color: #1A1209;
+    margin-bottom: 12px;
+  }
+  .form-cta {
+    display: block; width: 100%;
+    padding: 11px 18px;
+    background: var(--brand-grad);
+    color: #fff;
+    border: 0; border-radius: 99px;
+    font-weight: 700; font-size: 13px;
+  }
+
+  /* ASK */
+  .ask {
+    margin-top: 24px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+  .ask code {
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    background: rgba(232,116,42,.1); color: #5C2308;
+    padding: 1px 5px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">2 × 2 MATRIX · PALETTE × FONTS</div>
+    <h1 class="doc-h">Pick your <em>brand</em>.</h1>
+    <p class="sub">4 honest combinations. Same 5 surfaces (hero · salon card · section header · b2b card · login form) in each cell. Decide on TWO axes: green vs orange palette · V1 vs v2 fonts.</p>
+    <div class="legend">
+      <span><strong>A</strong> green + V1 fonts (the OG you remember)</span>
+      <span><strong>B</strong> green + v2 fonts (modernized green)</span>
+      <span><strong>C</strong> orange + V1 fonts (current palette retro fonts)</span>
+      <span><strong>D</strong> orange + v2 fonts (currently locked v2)</span>
+    </div>
+  </header>
+
+  <!-- ROW 1 — GREEN -->
+  <div class="matrix">
+
+    <!-- A: green + V1 fonts -->
+    <article class="cell green green-pal v1font">
+      <div class="tag-row">
+        <span class="palette-tag green-tag">A · GREEN PALETTE</span>
+        <span class="font-tag">V1 FONTS</span>
+      </div>
+      <h2 class="cell-title">Forest green + Anton + Figtree</h2>
+      <p class="cell-meta"><strong>brand:</strong> #1B4D1B · <strong>display:</strong> Anton · <strong>body:</strong> Figtree · <strong>substrate:</strong> #FFFFFF (white)</p>
+
+      <div class="surfaces">
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="display hero-h">Guten Morgen, <em class="italic italic-accent">Sulo</em>.</h3>
+          <button class="cta body">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge body"><span class="badge-dot"></span>Sofort frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="display salon-name">Salon Crémant</span><span class="mono salon-rating">⭐ 4.9</span></div>
+            <div class="body salon-row2">In <strong>25 Min</strong> · ab CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="sec-h-row">
+          <h4 class="display sec-h">Coiffeur in Basel</h4>
+          <span class="body alle">Alle →</span>
+        </div>
+        <div class="b2b">
+          <div class="body b2b-eye">Für Salons</div>
+          <div class="display b2b-h">Solen für dein Studio.</div>
+          <p class="body b2b-sub">Mehr Termine, weniger Anrufe.</p>
+          <button class="body b2b-cta">Mehr erfahren →</button>
+        </div>
+        <div class="login-card">
+          <h5 class="display login-h">Willkommen zurück</h5>
+          <p class="body login-sub">Melde dich an.</p>
+          <label class="body form-label">E-Mail</label>
+          <input class="body form-input" value="lisa@solen.ch">
+          <button class="body form-cta">Anmelden →</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- B: green + v2 fonts -->
+    <article class="cell green green-pal v2font">
+      <div class="tag-row">
+        <span class="palette-tag green-tag">B · GREEN PALETTE</span>
+        <span class="font-tag">V2 FONTS</span>
+      </div>
+      <h2 class="cell-title">Forest green + Bricolage + Inter Tight</h2>
+      <p class="cell-meta"><strong>brand:</strong> #1B4D1B · <strong>display:</strong> Bricolage Grotesque · <strong>body:</strong> Inter Tight · <strong>substrate:</strong> #FFFFFF (white)</p>
+
+      <div class="surfaces">
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="display hero-h">Guten Morgen, <em class="italic italic-accent">Sulo</em>.</h3>
+          <button class="cta body">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge body"><span class="badge-dot"></span>Sofort frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="display salon-name">Salon Crémant</span><span class="mono salon-rating">⭐ 4.9</span></div>
+            <div class="body salon-row2">In <strong>25 Min</strong> · ab CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="sec-h-row">
+          <h4 class="display sec-h">Coiffeur in Basel</h4>
+          <span class="body alle">Alle →</span>
+        </div>
+        <div class="b2b">
+          <div class="body b2b-eye">FÜR SALONS</div>
+          <div class="display b2b-h">Solen für dein Studio.</div>
+          <p class="body b2b-sub">Mehr Termine, weniger Anrufe.</p>
+          <button class="body b2b-cta">Mehr erfahren →</button>
+        </div>
+        <div class="login-card">
+          <h5 class="display login-h">Willkommen zurück</h5>
+          <p class="body login-sub">Melde dich an.</p>
+          <label class="body form-label">E-Mail</label>
+          <input class="body form-input" value="lisa@solen.ch">
+          <button class="body form-cta">Anmelden →</button>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ROW 2 — ORANGE -->
+  <div class="matrix">
+
+    <!-- C: orange + V1 fonts -->
+    <article class="cell orange orange-pal v1font">
+      <div class="tag-row">
+        <span class="palette-tag orange-tag">C · ORANGE PALETTE</span>
+        <span class="font-tag">V1 FONTS</span>
+      </div>
+      <h2 class="cell-title">Terracotta orange + Anton + Figtree</h2>
+      <p class="cell-meta"><strong>brand:</strong> #E8742A · <strong>display:</strong> Anton · <strong>body:</strong> Figtree · <strong>substrate:</strong> #FBF8F3 (cream)</p>
+
+      <div class="surfaces">
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="display hero-h">Guten Morgen, <em class="italic italic-accent">Sulo</em>.</h3>
+          <button class="cta body">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge body"><span class="badge-dot"></span>Sofort frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="display salon-name">Salon Crémant</span><span class="mono salon-rating">⭐ 4.9</span></div>
+            <div class="body salon-row2">In <strong>25 Min</strong> · ab CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="sec-h-row">
+          <h4 class="display sec-h">Coiffeur in Basel</h4>
+          <span class="body alle">Alle →</span>
+        </div>
+        <div class="b2b">
+          <div class="body b2b-eye">Für Salons</div>
+          <div class="display b2b-h">Solen für dein Studio.</div>
+          <p class="body b2b-sub">Mehr Termine, weniger Anrufe.</p>
+          <button class="body b2b-cta">Mehr erfahren →</button>
+        </div>
+        <div class="login-card">
+          <h5 class="display login-h">Willkommen zurück</h5>
+          <p class="body login-sub">Melde dich an.</p>
+          <label class="body form-label">E-Mail</label>
+          <input class="body form-input" value="lisa@solen.ch">
+          <button class="body form-cta">Anmelden →</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- D: orange + v2 fonts (current locked) -->
+    <article class="cell orange orange-pal v2font" style="border-width:2px;">
+      <div class="tag-row">
+        <span class="palette-tag orange-tag">D · ORANGE PALETTE</span>
+        <span class="font-tag">V2 FONTS · LOCKED</span>
+      </div>
+      <h2 class="cell-title">Terracotta orange + Bricolage + Inter Tight</h2>
+      <p class="cell-meta"><strong>brand:</strong> #E8742A · <strong>display:</strong> Bricolage Grotesque · <strong>body:</strong> Inter Tight · <strong>substrate:</strong> #FBF8F3 (cream) <strong style="color:#E8742A;margin-left:6px;">CURRENT v2 LOCK</strong></p>
+
+      <div class="surfaces">
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="display hero-h">Guten Morgen, <em class="italic italic-accent">Sulo</em>.</h3>
+          <button class="cta body">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge body"><span class="badge-dot"></span>Sofort frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="display salon-name">Salon Crémant</span><span class="mono salon-rating">⭐ 4.9</span></div>
+            <div class="body salon-row2">In <strong>25 Min</strong> · ab CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="sec-h-row">
+          <h4 class="display sec-h">Coiffeur in Basel</h4>
+          <span class="body alle">Alle →</span>
+        </div>
+        <div class="b2b">
+          <div class="body b2b-eye">FÜR SALONS</div>
+          <div class="display b2b-h">Solen für dein Studio.</div>
+          <p class="body b2b-sub">Mehr Termine, weniger Anrufe.</p>
+          <button class="body b2b-cta">Mehr erfahren →</button>
+        </div>
+        <div class="login-card">
+          <h5 class="display login-h">Willkommen zurück</h5>
+          <p class="body login-sub">Melde dich an.</p>
+          <label class="body form-label">E-Mail</label>
+          <input class="body form-input" value="lisa@solen.ch">
+          <button class="body form-cta">Anmelden →</button>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="ask">
+    <strong>Pick by letter — A, B, C, or D.</strong> Or describe what you'd actually pick element by element ("D's palette but A's display font" etc) and I'll render it as cell E.<br><br>
+    Real cost reminder: switching now is ~30-60 min of edits. Switching after Phase 0 implementation = much more. Phase 0 is paused until this locks. Don't drag — pick the one that feels right when you eyeball the salon card + login form on each cell.
+  </div>
+
+</div>
+</body>
+</html>

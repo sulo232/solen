@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen CTA + hierarchy: current vs Uber-aligned</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0A0A0A;
+    --ink-2:      #1A1A1A;
+    --ink-3:      #525252;
+    --ink-4:      #737373;
+    --line:       #E7E5E4;
+    --bg:         #F5F5F4;
+    --bg-card:    #FFFFFF;
+    --accent:     #185CE0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; }
+  body { padding: 24px 16px 80px; max-width: 900px; margin: 0 auto; }
+
+  /* Doc layout */
+  h1.doc-h1 { font-family: 'Inter Tight', system-ui, sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px; }
+  p.doc-p { font-size: 14px; color: var(--ink-3); line-height: 1.55; margin-bottom: 28px; }
+  h2.doc-h2 { font-family: 'Inter Tight', system-ui, sans-serif; font-size: 20px; font-weight: 700; margin: 36px 0 6px; letter-spacing: -0.015em; }
+  p.doc-sub { font-size: 13px; color: var(--ink-4); margin-bottom: 16px; }
+
+  /* Variant card */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 32px 24px 28px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .card .label {
+    position: absolute;
+    top: 10px; left: 14px;
+    font-family: 'Geist', sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+  .card .verdict {
+    position: absolute;
+    top: 10px; right: 14px;
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .card .stack { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  /* Variant A — current (cheap-feeling) */
+  .vA .eyebrow { font-family: 'Geist'; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--accent); }
+  .vA h1.h { font-family: 'Inter Tight'; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .vA .sub { font-size: 14px; color: var(--ink-3); line-height: 1.45; }
+  .vA .cta {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Geist';
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 600;
+    border: 0; cursor: pointer;
+    box-shadow: 0 2px 4px rgba(10,10,10,0.16), 0 6px 20px rgba(10,10,10,0.12);
+  }
+
+  /* Variant B — Uber pattern (sentence-case, body size, regular weight) */
+  .vB .eyebrow { display: none; }
+  .vB h1.h { font-family: 'Inter Tight'; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .vB .sub { font-size: 14px; color: var(--ink-3); line-height: 1.45; }
+  .vB .cta {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Geist';
+    font-size: 15px;
+    text-transform: none;
+    letter-spacing: -0.005em;
+    font-weight: 500;
+    border: 0; cursor: pointer;
+  }
+
+  /* Variant C — Hybrid (kept Solen eyebrow as ONE accent moment, but normalize CTA to body) */
+  .vC .eyebrow { font-family: 'Geist'; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-4); }
+  .vC h1.h { font-family: 'Inter Tight'; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .vC .sub { font-size: 14px; color: var(--ink-3); line-height: 1.45; }
+  .vC .cta {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Geist';
+    font-size: 15px;
+    text-transform: none;
+    letter-spacing: -0.005em;
+    font-weight: 500;
+    border: 0; cursor: pointer;
+  }
+
+  /* Hierarchy comparison table */
+  .hier-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 8px; }
+  table.hier { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.hier th { text-align: left; font-weight: 600; padding: 8px 4px; border-bottom: 1px solid var(--line); color: var(--ink-2); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  table.hier td { padding: 9px 4px; vertical-align: top; border-bottom: 1px solid #F5F5F4; color: var(--ink-3); }
+  table.hier td:first-child { font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+  table.hier .v { color: var(--ink); }
+  table.hier .bad { color: #D32F2F; }
+  table.hier .good { color: #16A34A; }
+  table.hier tr:last-child td { border-bottom: 0; }
+
+  .summary { margin-top: 32px; padding: 18px 20px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 14px; }
+  .summary p { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+  .summary strong { color: var(--ink); font-weight: 600; }
+
+  .pick { margin-top: 8px; padding: 14px 18px; background: var(--ink); color: #fff; border-radius: 12px; font-size: 13px; }
+  .pick b { font-weight: 600; }
+  .pick .arrow { display: inline-block; transform: translateY(1px); margin: 0 6px; }
+</style>
+</head>
+<body>
+
+<h1 class="doc-h1">CTA + hierarchy: current vs Uber-aligned</h1>
+<p class="doc-p">
+  The "JETZT ENTDECKEN" CTA on <code>/warum-solen</code> reads cheap because Solen uses
+  <strong>uppercase + small (12px) + tracked + Geist Sans</strong> on PRIMARY actions — a 2018-era SaaS template trope.
+  Uber abandoned this years ago. They use <strong>sentence case + body size + medium weight</strong> for CTAs.
+  The data: 19 instances of the same uppercase-12px-black-pill pattern across the codebase, 20 distinct
+  letter-spacing values in use, 733 uppercase usages total.
+</p>
+
+<h2 class="doc-h2">A — current ("cheap" pattern)</h2>
+<p class="doc-sub">What ships now on <code>/warum-solen</code> + ~19 other primary CTAs across the codebase.</p>
+<div class="card vA">
+  <span class="label">A · current</span>
+  <span class="verdict">cheap-feeling</span>
+  <div class="stack">
+    <span class="eyebrow">Solen für alle</span>
+    <h1 class="h">Beauty &amp; Wellness, neu gedacht.</h1>
+    <p class="sub">Nicht nur buchen — sondern erleben. Solen verbindet Salons mit Menschen, die mehr wollen als nur einen Termin.</p>
+    <button class="cta">JETZT ENTDECKEN ▾</button>
+  </div>
+</div>
+
+<h2 class="doc-h2">B — Uber pattern (recommended)</h2>
+<p class="doc-sub">Drop the eyebrow + uppercase CTA. Sentence-case body-size button. Matches Uber's drive / about / business pages.</p>
+<div class="card vB">
+  <span class="label">B · Uber pattern</span>
+  <span class="verdict">recommended</span>
+  <div class="stack">
+    <h1 class="h">Beauty &amp; Wellness, neu gedacht.</h1>
+    <p class="sub">Nicht nur buchen — sondern erleben. Solen verbindet Salons mit Menschen, die mehr wollen als nur einen Termin.</p>
+    <button class="cta">Jetzt entdecken</button>
+  </div>
+</div>
+
+<h2 class="doc-h2">C — hybrid (keep eyebrow as one accent, normalize CTA)</h2>
+<p class="doc-sub">Eyebrow stays for "magazine cover" feel — but desaturated to ink-4 grey (not accent blue, per feedback-blue research). CTA matches B.</p>
+<div class="card vC">
+  <span class="label">C · hybrid</span>
+  <span class="verdict">middle ground</span>
+  <div class="stack">
+    <span class="eyebrow">Solen für alle</span>
+    <h1 class="h">Beauty &amp; Wellness, neu gedacht.</h1>
+    <p class="sub">Nicht nur buchen — sondern erleben. Solen verbindet Salons mit Menschen, die mehr wollen als nur einen Termin.</p>
+    <button class="cta">Jetzt entdecken</button>
+  </div>
+</div>
+
+<h2 class="doc-h2">Hierarchy comparison</h2>
+<p class="doc-sub">Layer-by-layer side-by-side. Solen rows marked bad are where the type-pattern is the 2018 trope.</p>
+<div class="hier-card">
+  <table class="hier">
+    <thead>
+      <tr><th>Element</th><th>Solen (current)</th><th>Uber</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Primary CTA</td><td class="bad">12px UPPERCASE tracked, Geist 600</td><td class="good">15-16px sentence case, regular 400-500</td></tr>
+      <tr><td>Hero H1</td><td class="v">30-64px clamp, sentence case, bold 700</td><td class="v">38-72px sentence case, bold 700</td></tr>
+      <tr><td>Hero sub</td><td class="v">16-22px sentence case, regular 400</td><td class="v">18-22px sentence case, regular 400</td></tr>
+      <tr><td>Eyebrows</td><td class="bad">9-12px UPPERCASE tracked, accent blue, ~3-5/page</td><td class="good">Almost never. Straight from section gap to H2</td></tr>
+      <tr><td>Section H2</td><td class="v">18-20px sentence case, semibold 600</td><td class="v">22-28px sentence case, bold 700</td></tr>
+      <tr><td>Pills / badges</td><td class="bad">11-12px UPPERCASE tracked</td><td class="good">12-14px sentence case, no tracking</td></tr>
+      <tr><td>Status labels</td><td class="bad">9-12px UPPERCASE tracked .14-.22em</td><td class="good">12-14px sentence case OR icon-only</td></tr>
+      <tr><td>Distinct tracking values</td><td class="bad">20 different values in active use</td><td class="good">2-3 (default, slight neg for headings, slight pos for one-line caps)</td></tr>
+      <tr><td>Total uppercase usages</td><td class="bad">733 across rebuilt routes</td><td class="good">~5-10 per surface (legal footer, brand strip)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="summary">
+  <p><strong>Diagnosis:</strong> the "cheap" feel is not the FONT — Geist Sans is fine. It's the PATTERN: uppercase + small + tracked + heavyweight, applied to primary actions. That combo screams "Webflow template" because it was the 2018-2020 default for SaaS landing pages. Uber, Stripe (recent rebrand), Linear, Vercel — all dropped it. They use sentence case + size + weight + color as hierarchy, not uppercase tracking.</p>
+  <p style="margin-top: 10px;"><strong>Why we have it:</strong> Inter Tight era (pre-V3-D317) used uppercase as a "heading-feel at small size" trick. V3-D317 swapped to Geist single-family but kept the pattern. Geist was designed for code labels + UI chips — at uppercase + small + tracked it reads as a TAG, not an ACTION. That's the dissonance.</p>
+</div>
+
+<div class="pick">
+  <b>Recommend B</b><span class="arrow">→</span>full Uber alignment. Drop uppercase on primary CTAs everywhere. Keep uppercase only on small labels where the role IS "this is a tag/category/status" (e.g. SalonCard status pill, footer legal). Reduce the 20 tracking values to 2.
+</div>
+
+</body>
+</html>

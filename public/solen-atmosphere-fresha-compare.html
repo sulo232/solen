@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen atmosphere — Fresha comparison</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Open Sauce One', Inter, sans-serif;
+    background: #2A1F18;
+    color: #FFFFFF;
+    line-height: 1.55;
+  }
+  .header-title {
+    text-align: center;
+    padding: 24px 20px 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+  }
+  .header-sub {
+    text-align: center;
+    padding: 0 20px 20px;
+    font-size: 13px;
+    color: #C5BAB0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .panel {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    overflow: hidden;
+    margin: 0 0 4px;
+  }
+  .panel .label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 10;
+    background: rgba(42, 31, 24, 0.88);
+    color: #FFFFFF;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .panel .label.pick {
+    background: #1A8F5C;
+  }
+
+  /* Panel 1 — current live */
+  .panel.current { background: #FAF3E6; }
+  .panel.current .blobs > div {
+    position: absolute;
+    filter: blur(80px);
+    mix-blend-mode: multiply;
+  }
+  .panel.current .b1 { top: -10%; left: -20%; width: 70%; height: 50%; background: #A8CFB8; border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: 0.32; }
+  .panel.current .b2 { top: 5%; right: -25%; width: 70%; height: 45%; background: #E8B89B; border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.28; }
+  .panel.current .b3 { top: 35%; left: -10%; width: 80%; height: 30%; background: #E8DDC9; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.30; }
+  .panel.current .b4 { top: 28%; right: -20%; width: 65%; height: 35%; background: #F2D77B; border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: 0.18; }
+  .panel.current .b5 { bottom: -8%; left: -25%; width: 80%; height: 40%; background: #D4DDC8; border-radius: 50% 50% 50% 50% / 50% 60% 40% 50%; opacity: 0.28; }
+  .panel.current .b6 { bottom: -12%; right: -15%; width: 70%; height: 35%; background: #E8B89B; border-radius: 60% 40% 50% 60% / 40% 60% 50% 60%; opacity: 0.24; }
+  .panel.current .b7 { top: 55%; left: 20%; width: 75%; height: 30%; background: #A8CFB8; border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: 0.22; }
+
+  /* Panel 2 — Fresha-style distinct zones */
+  .panel.proposed { background: #FAF3E6; }
+  .panel.proposed .blobs > div {
+    position: absolute;
+    filter: blur(120px) saturate(1.05);
+    mix-blend-mode: normal;
+  }
+  .panel.proposed .b1 { top: -15%; right: -10%; width: 65%; height: 60%; background: #FFE8D8; border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: 0.85; }
+  .panel.proposed .b2 { top: -5%; left: -15%; width: 55%; height: 55%; background: #D4DDC8; border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.75; }
+  .panel.proposed .b3 { top: 35%; right: 5%; width: 55%; height: 45%; background: #A8E0BF; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.55; }
+  .panel.proposed .b4 { bottom: -10%; left: -10%; width: 60%; height: 50%; background: #F0A98C; border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: 0.40; }
+  .panel.proposed .b5 { bottom: -5%; right: 10%; width: 50%; height: 40%; background: #FFE8D8; border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: 0.55; }
+
+  /* Panel 3 — body radial-gradient + 2 accent blobs */
+  .panel.gradient {
+    background:
+      radial-gradient(ellipse at top right, #FFE8D8 0%, transparent 55%),
+      radial-gradient(ellipse at bottom left, #D4DDC8 0%, transparent 60%),
+      #FAF3E6;
+  }
+  .panel.gradient .blobs > div {
+    position: absolute;
+    filter: blur(140px) saturate(1.1);
+    mix-blend-mode: normal;
+  }
+  .panel.gradient .b1 { top: 25%; right: 12%; width: 50%; height: 45%; background: #A8E0BF; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.55; }
+  .panel.gradient .b2 { bottom: -5%; left: 22%; width: 45%; height: 40%; background: #F0A98C; border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.42; }
+
+  /* Faux content inside each panel */
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 50px 24px 30px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .fake-logo {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-size: 22px;
+    color: #2A1F18;
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .fake-logo::after {
+    content: '•';
+    color: #E0703D;
+  }
+  .fake-search {
+    background: #FFFFFF;
+    border: 1px solid rgba(42,31,24,0.08);
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 13px;
+    color: #8A7A68;
+    margin-bottom: 20px;
+    max-width: 480px;
+    box-shadow: 0 6px 20px rgba(42,31,24,0.06);
+  }
+  .fake-h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #2A1F18;
+    margin-bottom: 18px;
+    max-width: 480px;
+  }
+  .fake-h1 .accent { color: #E0703D; }
+  .fake-cards { display: flex; gap: 12px; }
+  .fake-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(42,31,24,0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    flex: 1;
+    max-width: 160px;
+    box-shadow: 0 4px 16px rgba(42,31,24,0.04);
+  }
+  .fake-card-photo { width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #E8DDC9, #D4F2E0); }
+  .fake-card-photo.b { background: linear-gradient(135deg, #FFE8D8, #F0A98C); }
+  .fake-card-photo.c { background: linear-gradient(135deg, #D4DDC8, #A8E0BF); }
+  .fake-card-body { padding: 10px 12px; font-size: 12px; color: #2A1F18; }
+  .fake-card-body .nm { font-weight: 600; }
+  .fake-card-body .ad { color: #8A7A68; font-size: 11px; margin-top: 2px; }
+
+  .footer-note {
+    max-width: 760px;
+    margin: 28px auto 60px;
+    padding: 0 24px;
+    text-align: center;
+    font-size: 11px;
+    color: #C5BAB0;
+    line-height: 1.7;
+  }
+  .footer-note code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; font-family: inherit; }
+  .footer-note strong { color: #FFF; }
+</style>
+</head>
+<body>
+
+<h1 class="header-title">Background atmosphere — Fresha comparison</h1>
+<p class="header-sub">Same V3 palette in every panel. Same faux content. Only the bg recipe changes. Goal: kill the "blank cream" feel.</p>
+
+<!-- Panel 1: Current live -->
+<div class="panel current">
+  <span class="label">Panel 1 · current live</span>
+  <div class="blobs">
+    <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div><div class="b5"></div><div class="b6"></div><div class="b7"></div>
+  </div>
+  <div class="content">
+    <div class="fake-logo">Solen</div>
+    <div class="fake-search">Wann, wo, was suchst du?</div>
+    <h2 class="fake-h1">Schöner aussehen, schneller <span class="accent">buchen</span>.</h2>
+    <div class="fake-cards">
+      <div class="fake-card"><div class="fake-card-photo"></div><div class="fake-card-body"><div class="nm">Atelier Coiffure</div><div class="ad">Aeschenvorstadt · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo b"></div><div class="fake-card-body"><div class="nm">Studio Nord</div><div class="ad">Klybeckstrasse · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo c"></div><div class="fake-card-body"><div class="nm">Nail Loft</div><div class="ad">Spalenberg · Basel</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel 2: Fresha-style multi-zone -->
+<div class="panel proposed">
+  <span class="label pick">Panel 2 · fresha-style zones (RECOMMEND)</span>
+  <div class="blobs">
+    <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div><div class="b5"></div>
+  </div>
+  <div class="content">
+    <div class="fake-logo">Solen</div>
+    <div class="fake-search">Wann, wo, was suchst du?</div>
+    <h2 class="fake-h1">Schöner aussehen, schneller <span class="accent">buchen</span>.</h2>
+    <div class="fake-cards">
+      <div class="fake-card"><div class="fake-card-photo"></div><div class="fake-card-body"><div class="nm">Atelier Coiffure</div><div class="ad">Aeschenvorstadt · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo b"></div><div class="fake-card-body"><div class="nm">Studio Nord</div><div class="ad">Klybeckstrasse · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo c"></div><div class="fake-card-body"><div class="nm">Nail Loft</div><div class="ad">Spalenberg · Basel</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel 3: Gradient body + accent blobs -->
+<div class="panel gradient">
+  <span class="label">Panel 3 · radial gradient bg + 2 accent blobs</span>
+  <div class="blobs">
+    <div class="b1"></div><div class="b2"></div>
+  </div>
+  <div class="content">
+    <div class="fake-logo">Solen</div>
+    <div class="fake-search">Wann, wo, was suchst du?</div>
+    <h2 class="fake-h1">Schöner aussehen, schneller <span class="accent">buchen</span>.</h2>
+    <div class="fake-cards">
+      <div class="fake-card"><div class="fake-card-photo"></div><div class="fake-card-body"><div class="nm">Atelier Coiffure</div><div class="ad">Aeschenvorstadt · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo b"></div><div class="fake-card-body"><div class="nm">Studio Nord</div><div class="ad">Klybeckstrasse · Basel</div></div></div>
+      <div class="fake-card"><div class="fake-card-photo c"></div><div class="fake-card-body"><div class="nm">Nail Loft</div><div class="ad">Spalenberg · Basel</div></div></div>
+    </div>
+  </div>
+</div>
+
+<p class="footer-note">
+  <strong>Panel 1</strong> — what's live now: 7 blobs, <code>multiply</code> blend (darkens against cream → muddy), earth-tone hues, opacity 0.18-0.32.<br>
+  <strong>Panel 2</strong> — 5 distinct V3 hue zones (peach, sage-pale, emerald-pale, soft-terra, cream), <code>normal</code> blend (colors stay true), opacity 0.40-0.85, blur 120px.<br>
+  <strong>Panel 3</strong> — body radial-gradient (top-right peach + bottom-left sage) layered with 2 accent blobs. Most Fresha-like — strongest light-source feel.<br><br>
+  Pick a panel and I'll wire <code>AtmosphereBlobs.tsx</code> + (panel 3 only) body bg in <code>globals.css</code>.
+</p>
+
+</body>
+</html>

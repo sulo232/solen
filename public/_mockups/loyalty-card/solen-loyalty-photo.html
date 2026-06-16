@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Rewards: Solen-wide loyalty card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --sunken:#F4F4F5; --accent:#276EF1; --ok:#16A34A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DEDEE2; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:34px 18px 60px;}
+  .lede{max-width:1180px; margin:0 auto 26px;}
+  .lede h1{font-family:"Inter Tight"; font-size:23px; font-weight:700; letter-spacing:-.02em;}
+  .lede p{font-size:14px; color:#46464B; margin-top:7px; line-height:1.55; max-width:780px;}
+  .lede .meta{font-size:12.5px; color:#76767C; margin-top:10px; max-width:780px;}
+  .grid{display:flex; flex-wrap:wrap; gap:26px; justify-content:center; align-items:flex-start; max-width:1700px; margin:0 auto;}
+  .col{width:360px;}
+  .tag{display:flex; align-items:center; gap:8px; margin:0 4px 10px;}
+  .tag .lt{font-family:"Inter Tight"; font-weight:700; font-size:15px;}
+  .tag .ds{font-size:12.5px; color:#5A5A5F;}
+  .pill{font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:7px; background:var(--ink); color:#fff;}
+  .pill.soft{background:#E7EDFB; color:#1E54B7;}
+
+  .phone{width:360px; background:#fff; border-radius:40px; overflow:hidden; box-shadow:0 34px 70px -28px rgba(0,0,0,.5); position:relative;}
+  .status{height:42px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; font-size:12.5px; font-weight:600;}
+  .status .dots{display:flex; gap:5px; align-items:center;}
+  .bar{display:flex; align-items:center; gap:11px; padding:4px 15px 12px;}
+  .icirc{width:36px; height:36px; border-radius:50%; background:var(--sunken); display:grid; place-items:center; color:var(--ink); flex-shrink:0;}
+  .bar h2{font-family:"Inter Tight"; font-size:17px; font-weight:600; letter-spacing:-.01em;}
+
+  /* HERO = the generated card photo, edge to edge */
+  .hero{width:100%; aspect-ratio:4/3; overflow:hidden;}
+  .hero img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  /* progress to next reward */
+  .prog{padding:16px 18px 2px;}
+  .prog .top{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px;}
+  .prog .pts{font-family:"Inter Tight"; font-weight:700; font-size:20px; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+  .prog .nxt{font-size:11.5px; color:var(--ink2);}
+  .track{height:8px; border-radius:99px; background:var(--sunken); overflow:hidden;}
+  .fill{height:100%; width:83%; border-radius:99px; background:var(--ink);}
+  .prog .cap{font-size:11px; color:var(--ink3); margin-top:7px;}
+
+  section{padding:16px 18px 0;}
+  .h{font-family:"Inter Tight"; font-size:14.5px; font-weight:600; margin-bottom:10px; letter-spacing:-.01em;}
+  .earn{display:flex; flex-direction:column; gap:9px;}
+  .row{display:flex; align-items:center; gap:11px; background:var(--sunken); border-radius:14px; padding:11px 13px;}
+  .row .ic{width:34px; height:34px; border-radius:10px; background:#fff; display:grid; place-items:center; color:var(--ink); flex-shrink:0;}
+  .row .tx{flex:1; min-width:0;}
+  .row .tt{font-size:13px; font-weight:600; color:var(--ink);}
+  .row .sb{font-size:11.5px; color:var(--ink2); margin-top:1px;}
+  .row .pp{font-family:"Inter Tight"; font-weight:700; font-size:13px; color:var(--accent); font-variant-numeric:tabular-nums;}
+
+  .cta-wrap{padding:18px;}
+  .cta{width:100%; height:52px; border:0; border-radius:14px; background:var(--ink); color:#fff; font-family:"Inter Tight"; font-weight:700; font-size:15.5px; letter-spacing:-.01em; display:flex; align-items:center; justify-content:center; gap:8px;}
+  .note{font-size:11.5px; color:#76767C; margin:10px 6px 0; line-height:1.45;}
+</style>
+</head>
+<body>
+  <div class="lede">
+    <h1>Solen Rewards: the Solen-wide loyalty card</h1>
+    <p>One Solen card, earn points at every salon (not per-salon). Generated card photography, same approach you liked, three directions. Pick the card and I build the full screen + the points backend around it.</p>
+    <p class="meta">Points, tiers and earn rates shown here are illustrative placeholders to judge the look. The real numbers (how you earn, what points redeem for) are a separate decision once the card is picked. In the live screen the card art stays fixed and the live balance shows in the UI.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- L1 -->
+    <div class="col">
+      <div class="tag"><span class="lt">L1 Ivory member</span><span class="pill">Recommended</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Rewards</h2></div>
+        <div class="hero"><img src="gen/l1-ivory-member.png" alt="Solen rewards card, ivory" /></div>
+        <div class="prog">
+          <div class="top"><div class="pts">1,240 points</div><div class="nxt">Next reward at 1,500</div></div>
+          <div class="track"><div class="fill"></div></div>
+          <div class="cap">260 points to a free add-on service.</div>
+        </div>
+        <section>
+          <div class="h">Ways to earn</div>
+          <div class="earn">
+            <div class="row"><div class="ic"><i data-lucide="calendar-check" style="width:17px"></i></div><div class="tx"><div class="tt">Book an appointment</div><div class="sb">Any Solen salon</div></div><div class="pp">+1 / CHF</div></div>
+            <div class="row"><div class="ic"><i data-lucide="star" style="width:17px"></i></div><div class="tx"><div class="tt">Leave a review</div><div class="sb">After your visit</div></div><div class="pp">+50</div></div>
+            <div class="row"><div class="ic"><i data-lucide="user-plus" style="width:17px"></i></div><div class="tx"><div class="tt">Refer a friend</div><div class="sb">When they book</div></div><div class="pp">+200</div></div>
+          </div>
+        </section>
+        <div class="cta-wrap"><button class="cta"><i data-lucide="gift" style="width:16px"></i> See rewards</button></div>
+      </div>
+      <p class="note">Warm ivory cardstock, blue foil edge, debossed wordmark. The proven premium look from the card you didn't reject, now as a member card. Warm, on-brand, safe.</p>
+    </div>
+
+    <!-- L3 -->
+    <div class="col">
+      <div class="tag"><span class="lt">L3 Prestige pearl</span><span class="pill soft">Most rewards-like</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Rewards</h2></div>
+        <div class="hero"><img src="gen/l3-prestige-pearl.png" alt="Solen rewards card, pearl prestige" /></div>
+        <div class="prog">
+          <div class="top"><div class="pts">1,240 points</div><div class="nxt">Next reward at 1,500</div></div>
+          <div class="track"><div class="fill"></div></div>
+          <div class="cap">260 points to a free add-on service.</div>
+        </div>
+        <section>
+          <div class="h">Ways to earn</div>
+          <div class="earn">
+            <div class="row"><div class="ic"><i data-lucide="calendar-check" style="width:17px"></i></div><div class="tx"><div class="tt">Book an appointment</div><div class="sb">Any Solen salon</div></div><div class="pp">+1 / CHF</div></div>
+            <div class="row"><div class="ic"><i data-lucide="star" style="width:17px"></i></div><div class="tx"><div class="tt">Leave a review</div><div class="sb">After your visit</div></div><div class="pp">+50</div></div>
+            <div class="row"><div class="ic"><i data-lucide="user-plus" style="width:17px"></i></div><div class="tx"><div class="tt">Refer a friend</div><div class="sb">When they book</div></div><div class="pp">+200</div></div>
+          </div>
+        </section>
+        <div class="cta-wrap"><button class="cta"><i data-lucide="gift" style="width:16px"></i> See rewards</button></div>
+      </div>
+      <p class="note">Pearl-white card with a subtle guilloche sheen, blue foil plus. Reads like an earned status object (Amex / airline tier). Most "rewards" of the three. Risk: cooler tone, watch it does not feel grey to you.</p>
+    </div>
+
+    <!-- L2 -->
+    <div class="col">
+      <div class="tag"><span class="lt">L2 Warm rewards</span><span class="ds">Most colourful</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Rewards</h2></div>
+        <div class="hero"><img src="gen/l2-warm-rewards.png" alt="Solen rewards card, warm" /></div>
+        <div class="prog">
+          <div class="top"><div class="pts">1,240 points</div><div class="nxt">Next reward at 1,500</div></div>
+          <div class="track"><div class="fill"></div></div>
+          <div class="cap">260 points to a free add-on service.</div>
+        </div>
+        <section>
+          <div class="h">Ways to earn</div>
+          <div class="earn">
+            <div class="row"><div class="ic"><i data-lucide="calendar-check" style="width:17px"></i></div><div class="tx"><div class="tt">Book an appointment</div><div class="sb">Any Solen salon</div></div><div class="pp">+1 / CHF</div></div>
+            <div class="row"><div class="ic"><i data-lucide="star" style="width:17px"></i></div><div class="tx"><div class="tt">Leave a review</div><div class="sb">After your visit</div></div><div class="pp">+50</div></div>
+            <div class="row"><div class="ic"><i data-lucide="user-plus" style="width:17px"></i></div><div class="tx"><div class="tt">Refer a friend</div><div class="sb">When they book</div></div><div class="pp">+200</div></div>
+          </div>
+        </section>
+        <div class="cta-wrap"><button class="cta"><i data-lucide="gift" style="width:16px"></i> See rewards</button></div>
+      </div>
+      <p class="note">Off-white card on a warm peach and blush backdrop, vivid blue plus. Warmest and most colourful, leans beauty-spa. Kills the monochrome read hardest.</p>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

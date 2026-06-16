@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen - Empty-state standardization (v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!-- Lucide icons (matches the real app's icon set) -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --ink3:#9B9B9B;
+    --blue:#276EF1;
+    --green:#15803D;
+    --border:#E5E5E5;
+    --white:#fff;
+    --sunken:#F4F4F5;        /* cool light grey - replaces the retired warm cream */
+    --error:#DC2626;
+    --star:#FFC32B;
+    --radius-card:16px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#EDEDF0;color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{padding:40px 20px 64px;}
+
+  .page-head{max-width:1180px;margin:0 auto 8px;}
+  .page-head h1{font-family:"Inter Tight",sans-serif;font-weight:800;font-size:28px;letter-spacing:-0.02em;}
+  .page-head p{color:var(--ink2);font-size:14px;line-height:1.6;margin-top:8px;max-width:780px;}
+
+  .grid{max-width:1180px;margin:32px auto 0;display:flex;flex-direction:column;gap:48px;}
+
+  /* one row = one surface (before + after) */
+  .surface-title{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.01em;margin-bottom:4px;}
+  .surface-sub{color:var(--ink2);font-size:13px;line-height:1.55;max-width:780px;margin-bottom:20px;}
+  .pair{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;}
+  .col{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .col-label{display:inline-flex;align-items:center;gap:8px;font-family:"Inter Tight",sans-serif;font-weight:700;font-size:12px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink2);}
+  .col-label .dot{width:7px;height:7px;border-radius:99px;}
+  .dot-before{background:var(--ink3);}
+  .dot-after{background:var(--green);}
+
+  /* phone frame */
+  .phone{width:390px;background:var(--white);border:1px solid var(--border);border-radius:38px;padding:10px;box-shadow:0 24px 60px -28px rgba(10,10,10,.32),0 6px 18px -10px rgba(10,10,10,.10);}
+  .screen{width:100%;height:660px;border-radius:30px;overflow:hidden;background:var(--white);position:relative;}
+
+  /* status bar */
+  .statusbar{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:var(--ink);}
+  .statusbar .right{display:flex;gap:6px;align-items:center;}
+
+  /* app header - saved */
+  .app-head{display:flex;align-items:center;gap:12px;padding:14px 16px 12px;}
+  .iconbtn{width:40px;height:40px;border-radius:99px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink);background:var(--white);flex:none;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease;}
+  .iconbtn:hover{color:var(--blue);border-color:var(--blue);}      /* blue = interactive */
+  .iconbtn:active{transform:scale(.94);}
+  .h1{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);}
+
+  /* light queue header (NO dark surface - v2) */
+  .qhead{padding:16px 18px 0;}
+  .qhead .back{display:inline-flex;align-items:center;gap:6px;font-family:"Inter",sans-serif;font-size:13px;font-weight:600;color:var(--blue);margin-bottom:12px;cursor:pointer;}
+  .qhead .back:hover{text-decoration:underline;}
+  .qhead h1{font-family:"Inter Tight",sans-serif;font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-0.02em;color:var(--ink);}
+  .qhead .today{font-family:"Inter",sans-serif;font-size:13px;color:var(--ink2);margin-top:6px;}
+  .live-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;border:1px solid var(--border);background:var(--white);margin-top:14px;}
+  .live-badge .ld{width:8px;height:8px;border-radius:99px;background:var(--green);box-shadow:0 0 0 0 rgba(21,128,61,.45);animation:livepulse 2s ease-out infinite;}
+  .live-badge span{font-family:"Inter Tight",sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:700;color:var(--ink2);}
+  @keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(21,128,61,.45);}70%{box-shadow:0 0 0 7px rgba(21,128,61,0);}100%{box-shadow:0 0 0 0 rgba(21,128,61,0);}}
+
+  /* panel header (live queue) */
+  .qpanel-head{display:flex;align-items:baseline;justify-content:space-between;margin:20px 18px 12px;}
+  .qpanel-head .ph-title{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink);}
+  .qpanel-head .ph-count{font-size:12px;color:var(--ink2);}
+
+  /* the LIGHT card the queue empty-state lives inside (v2 - no dark surface) */
+  .qcard{margin:0 18px;border:1px solid var(--border);background:var(--sunken);border-radius:16px;min-height:300px;display:flex;align-items:center;justify-content:center;padding:24px;}
+
+  /* ===== EmptyState primitive - ONE consistent light recipe ===== */
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;}
+  .empty .tile-wrap{position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+  .empty .halo{position:absolute;inset:-16px;border-radius:99px;background:rgba(10,10,10,.04);filter:blur(18px);}
+  .empty .tile{position:relative;width:72px;height:72px;border-radius:99px;display:flex;align-items:center;justify-content:center;background:var(--sunken);border:1px solid var(--border);}
+  .empty .tile .icon{color:var(--ink3);}                            /* calm ink-3 chrome icon */
+  .empty h3{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.01em;color:var(--ink);margin-bottom:6px;}
+  .empty p.msg{font-family:"Inter",sans-serif;font-size:14px;line-height:1.55;color:var(--ink2);max-width:280px;}
+  .empty .cta{margin-top:22px;}
+
+  /* tile sitting on a grey card needs a white fill to stay crisp */
+  .qcard .empty .tile{background:var(--white);}
+  .qcard .empty .halo{background:rgba(10,10,10,.05);}
+
+  /* ink CTA - the SINGLE strong commit anchor per screen */
+  .ink-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;min-width:184px;padding:0 22px;border-radius:99px;background:var(--ink);color:#fff;font-family:"Inter Tight",sans-serif;font-weight:700;font-size:14px;letter-spacing:0;border:none;cursor:pointer;transition:transform .14s ease,box-shadow .18s ease;}
+  .ink-cta:hover{box-shadow:0 8px 20px -8px rgba(10,10,10,.45);}
+  .ink-cta:active{transform:scale(.97);}
+
+  /* blue link - secondary, all OTHER interactivity leans blue */
+  .blue-link{display:inline-flex;align-items:center;gap:6px;font-family:"Inter",sans-serif;font-weight:600;font-size:14px;color:var(--blue);cursor:pointer;text-decoration:none;}
+  .blue-link:hover{text-decoration:underline;}
+
+  /* BEFORE - saved hand-rolled (bare icon, no tile) */
+  .saved-before{display:flex;flex-direction:column;align-items:center;gap:8px;padding:96px 24px;text-align:center;}
+  .saved-before .b-icon{color:var(--ink3);}
+  .saved-before .b-title{font-family:"Inter Tight",sans-serif;font-weight:600;font-size:16px;color:var(--ink);}
+  .saved-before .b-msg{max-width:280px;font-size:14px;line-height:1.55;color:var(--ink2);}
+  .flag{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 10px;border-radius:8px;background:rgba(39,110,241,.10);color:var(--blue);font-size:12px;font-weight:600;}
+
+  /* BEFORE - queue lone text line (now on a light card) */
+  .qcard .lone-line{font-family:"Inter Tight",sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);text-align:center;}
+
+  /* annotation callouts under each phone */
+  .callout{max-width:360px;font-size:12px;line-height:1.5;color:var(--ink2);text-align:left;border-left:2px solid var(--border);padding-left:12px;}
+  .callout strong{color:var(--ink);font-weight:700;}
+  .callout.good{border-left-color:var(--green);}
+  .callout.bad{border-left-color:var(--ink3);}
+
+  .whatchanged{max-width:1180px;margin:56px auto 0;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px 28px;}
+  .whatchanged h2{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+  .whatchanged p{font-size:14px;line-height:1.65;color:var(--ink2);}
+  .whatchanged p + p{margin-top:10px;}
+  .whatchanged code{font-family:ui-monospace,monospace;background:var(--sunken);padding:1px 6px;border-radius:6px;font-size:13px;color:var(--ink);}
+
+  .legend{max-width:1180px;margin:18px auto 0;display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ink2);}
+  .legend span{display:inline-flex;align-items:center;gap:8px;}
+  .legend i{width:14px;height:14px;border-radius:4px;display:inline-block;}
+
+  /* ===== MOTION: on-load fade-up so the owner FEELS the entrance ===== */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .empty{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) forwards;}
+  /* gentle stagger across the empty-state's children */
+  .empty .tile-wrap{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .06s forwards;}
+  .empty h3{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .12s forwards;}
+  .empty p.msg{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .18s forwards;}
+  .empty .cta{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .24s forwards;}
+  /* loop the AFTER columns so the motion replays and stays visible */
+  .col.replay .empty{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) forwards, replayLoop 4.5s ease-in-out infinite;}
+  @keyframes replayLoop{0%,82%{opacity:1;transform:translateY(0);}90%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;}
+    .empty,.empty *{opacity:1 !important;transform:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Empty states - one primitive, three surfaces</h1>
+  <p>Saved, the Live-Queue display, and any generic empty page each invent their own treatment today. This standardizes all three on one v2 anatomy: a cool-grey soft circle, a calm ink-3 icon, an Inter Tight title, one muted line, and a single ink CTA (or a blue link for the lighter path). The live queue is now a LIGHT surface, consistent with the rest of the app. Watch the entrance fade-up replay on each AFTER frame.</p>
+</div>
+
+<div class="legend">
+  <span><i style="background:var(--ink3)"></i> Before - current, ad-hoc</span>
+  <span><i style="background:var(--green)"></i> After - standardized primitive</span>
+  <span><i style="background:var(--sunken);border:1px solid var(--border)"></i> Cool-grey tile (#F4F4F5)</span>
+  <span><i style="background:var(--ink)"></i> Ink CTA</span>
+  <span><i style="background:var(--blue)"></i> Blue = interactive</span>
+</div>
+
+<div class="grid">
+
+  <!-- ===================== SURFACE 1 - SAVED ===================== -->
+  <section class="surface">
+    <div class="surface-title">1 · Saved (Discover) - <code>/discover/saved</code></div>
+    <div class="surface-sub">Hand-rolled today: a bare bookmark icon with no soft circle, and a message that tells users to "tap the bookmark on a Look" - a control that does not exist on Look cards. Restyled to the shared v2 primitive with a blue "Explore looks" link as the way forward.</div>
+    <div class="pair">
+
+      <!-- BEFORE -->
+      <div class="col">
+        <span class="col-label"><span class="dot dot-before"></span>Before</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div class="app-head">
+              <div class="iconbtn"><i data-l="arrow-left" data-s="18"></i></div>
+              <div class="h1">Saved</div>
+            </div>
+            <div class="saved-before">
+              <i class="b-icon" data-l="bookmark" data-s="28"></i>
+              <div class="b-title">Nothing saved yet</div>
+              <div class="b-msg">Tap the bookmark on a Look to save it to a collection.</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout bad"><strong>Bare icon</strong>, no tile. Copy points at a bookmark control that doesn't exist on Look cards. No way forward.</div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="col replay">
+        <span class="col-label"><span class="dot dot-after"></span>After</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div class="app-head">
+              <div class="iconbtn"><i data-l="arrow-left" data-s="18"></i></div>
+              <div class="h1">Saved</div>
+            </div>
+            <div class="empty">
+              <div class="tile-wrap">
+                <div class="halo"></div>
+                <div class="tile"><i class="icon" data-l="bookmark" data-s="32" data-sw="1.5"></i></div>
+              </div>
+              <h3>Nothing saved yet</h3>
+              <p class="msg">Your saved looks will show up here.</p>
+              <div class="cta"><a class="blue-link">Explore looks <i data-l="arrow-right" data-s="16"></i></a></div>
+            </div>
+          </div>
+        </div>
+        <div class="callout good">Soft <strong>#F4F4F5</strong> circle + calm ink-3 icon, Inter Tight title, honest copy, and a <strong>blue</strong> "Explore looks" link → <code>/discover</code>.
+        <span class="flag"><i data-l="flag" data-s="13"></i> "Your saved looks will show up here." - only invented string, flag for approval</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SURFACE 2 - LIVE QUEUE (LIGHT, v2) ===================== -->
+  <section class="surface">
+    <div class="surface-title">2 · Live Queue (dashboard) - <code>/dashboard/queue-display</code> · light surface</div>
+    <div class="surface-sub">The empty queue was a lone muted text line in a dark panel - it read as broken, and the dark surface fought the rest of the app. v2 drops the dark surface entirely: same light anatomy as everywhere else, with the one ink "Add walk-in" CTA as the commit anchor.</div>
+    <div class="pair">
+
+      <!-- BEFORE -->
+      <div class="col">
+        <span class="col-label"><span class="dot dot-before"></span>Before</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div class="qhead">
+              <span class="back"><i data-l="arrow-left" data-s="15"></i> Dashboard</span>
+              <h1>Live Queue</h1>
+              <div class="today">Monday, 9 June</div>
+              <div class="live-badge"><span class="ld"></span><span>Live</span></div>
+            </div>
+            <div class="qpanel-head"><span class="ph-title">Live Queue</span><span class="ph-count">0 waiting</span></div>
+            <div class="qcard">
+              <div class="lone-line">No customers in the queue</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout bad">A single muted line, centered in a big empty card. No icon, no hierarchy, no next step - looks like it failed to load.</div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="col replay">
+        <span class="col-label"><span class="dot dot-after"></span>After</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div class="qhead">
+              <span class="back"><i data-l="arrow-left" data-s="15"></i> Dashboard</span>
+              <h1>Live Queue</h1>
+              <div class="today">Monday, 9 June</div>
+              <div class="live-badge"><span class="ld"></span><span>Live</span></div>
+            </div>
+            <div class="qpanel-head"><span class="ph-title">Live Queue</span><span class="ph-count">0 waiting</span></div>
+            <div class="qcard">
+              <div class="empty">
+                <div class="tile-wrap">
+                  <div class="halo"></div>
+                  <div class="tile"><i class="icon" data-l="scissors" data-s="32" data-sw="1.5"></i></div>
+                </div>
+                <h3>No customers in the queue</h3>
+                <p class="msg">Add a walk-in to start the queue.</p>
+                <div class="cta"><button class="ink-cta"><i data-l="plus" data-s="17"></i> Add walk-in</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout good">Same anatomy, now <strong>light/white</strong> - consistent with the app. White tile on the grey card, ink-3 Scissors icon, ink "Add walk-in" CTA as the single commit anchor. No more dark surface.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SURFACE 3 - GENERIC / PRIMITIVE ===================== -->
+  <section class="surface">
+    <div class="surface-title">3 · The primitive itself - <code>EmptyState.tsx</code> · the canonical reference</div>
+    <div class="surface-sub">Before: the tile + halo were hardcoded to the retired green and the icon was blue, with no clear hierarchy. After: cool-grey circle + ink-3 icon + Inter Tight title + one muted line + the appropriate action - the exact pattern the two surfaces above adopt.</div>
+    <div class="pair">
+
+      <!-- BEFORE (drifted primitive) -->
+      <div class="col">
+        <span class="col-label"><span class="dot dot-before"></span>Before - ad-hoc</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div style="height:540px;display:flex;align-items:center;justify-content:center;">
+              <div class="saved-before" style="padding:0 24px;">
+                <i class="b-icon" data-l="inbox" data-s="30"></i>
+                <div class="b-title">Nothing here yet</div>
+                <div class="b-msg">Items you add will appear in this list.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout bad">Bare icon, no soft circle, no consistent action. Every page that copies this carries the inconsistency forward.</div>
+      </div>
+
+      <!-- AFTER (corrected primitive) -->
+      <div class="col replay">
+        <span class="col-label"><span class="dot dot-after"></span>After - the v2 primitive</span>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span class="right"><span data-l="signal"></span><span data-l="wifi"></span><span data-l="battery-full"></span></span></div>
+            <div style="height:540px;display:flex;align-items:center;justify-content:center;">
+              <div class="empty" style="padding:0 24px;">
+                <div class="tile-wrap">
+                  <div class="halo"></div>
+                  <div class="tile"><i class="icon" data-l="inbox" data-s="32" data-sw="1.5"></i></div>
+                </div>
+                <h3>Nothing here yet</h3>
+                <p class="msg">Items you add will appear in this list.</p>
+                <div class="cta"><button class="ink-cta">Get started</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout good">Cool-grey <strong>#F4F4F5</strong> circle, soft ink/4% halo, calm <strong>ink-3</strong> icon at 32 / 1.5 stroke, Inter Tight title, one ink CTA. Same shape, v2 tokens - the reference all empty pages copy.</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div class="whatchanged">
+  <h2>What changed - v2</h2>
+  <p>All three empty states now share <strong>one anatomy</strong> (cool-grey soft circle → calm ink-3 icon → Inter Tight title → one muted line → ink CTA or blue link), instead of three ad-hoc treatments. The retired warm cream and the old green/blue tile are gone - surfaces are white-first with a single cool grey <strong>#F4F4F5</strong>.</p>
+  <p>The <strong>Live Queue</strong> is the biggest shift: the dark display is dropped entirely for a light surface that matches the rest of the app, so an empty queue reads as intentional rather than broken. <strong>Blue</strong> now carries interactivity (back link, header icon-buttons, the "Explore looks" link), while each screen keeps exactly one <strong>ink</strong> commit button ("Add walk-in" / "Get started"). An on-load <strong>fade-up with a gentle stagger</strong> plays on entrance and loops on each AFTER frame so the motion is visible.</p>
+</div>
+
+<script>
+  // Render Lucide icons honoring per-element size + stroke-width.
+  document.querySelectorAll('[data-l]').forEach((el)=>{
+    const name = el.getAttribute('data-l');
+    const size = el.getAttribute('data-s') || '18';
+    const sw   = el.getAttribute('data-sw') || '2';
+    const svg = lucide.createElement(lucide.icons[
+      name.split('-').map((p)=> p.charAt(0).toUpperCase()+p.slice(1)).join('')
+    ] || lucide.icons.Circle);
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('stroke-width', sw);
+    if(el.className) svg.setAttribute('class', el.className);
+    el.replaceWith(svg);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen · City landing (v2): Before / After</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* v2 tokens */
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9B9B9B;
+    --blue:#276EF1; --green:#15803D; --error:#DC2626; --star:#FFC32B;
+    --border:#E5E5E5; --white:#fff; --fill:#F4F4F5; /* cool light grey, used sparingly */
+    --heart:#FF3366;
+    --r-card:16px; --r-pill:999px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Inter",system-ui,sans-serif;
+    background:#EDEDF0;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    padding:40px 20px 64px;
+  }
+  .page-head{max-width:880px;margin:0 auto 32px;text-align:center;}
+  .page-head h1{font-family:"Inter Tight";font-weight:700;font-size:26px;letter-spacing:-0.02em;}
+  .page-head p{font-family:"Inter";font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.5;}
+  .page-head code{font-family:"Inter Tight";font-weight:600;color:var(--ink);}
+
+  .stage{
+    display:flex;flex-wrap:wrap;gap:48px;justify-content:center;align-items:flex-start;
+    max-width:920px;margin:0 auto;
+  }
+  .col{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .tag{
+    font-family:"Inter Tight";font-weight:700;font-size:12px;
+    letter-spacing:0.14em;text-transform:uppercase;text-align:center;
+  }
+  .tag.before{color:var(--ink3);}
+  .tag.after{color:var(--ink);}
+  .tag .sub{display:block;font-family:"Inter";font-weight:500;font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink2);margin-top:4px;}
+
+  /* ── Phone frame ── */
+  .phone{
+    width:390px;height:760px;background:var(--white);
+    border-radius:42px;border:1px solid #DADADE;
+    box-shadow:0 24px 60px rgba(0,0,0,.16),0 2px 8px rgba(0,0,0,.06);
+    padding:10px;position:relative;
+  }
+  .screen{
+    width:100%;height:100%;border-radius:33px;overflow:hidden;
+    position:relative;background:var(--white);
+    display:flex;flex-direction:column;
+  }
+  .notch{
+    position:absolute;top:10px;left:50%;transform:translateX(-50%);
+    width:120px;height:26px;background:var(--ink);border-radius:0 0 16px 16px;z-index:40;
+  }
+  .scroll{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+  /* ── Shared atoms ── */
+  .card-photo{width:100%;background:var(--fill);position:relative;overflow:hidden;display:grid;place-items:center;}
+  .mono{font-family:"Inter Tight";font-weight:700;color:var(--ink3);line-height:1;}
+  .heart{
+    position:absolute;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);
+    display:grid;place-items:center;backdrop-filter:blur(4px);box-shadow:0 1px 4px rgba(0,0,0,.12);
+    transition:transform .18s ease;
+  }
+  .name{font-family:"Inter Tight";font-weight:600;letter-spacing:-0.015em;color:var(--ink);}
+  .meta{font-family:"Inter";color:var(--ink2);}
+  .star{color:var(--star);}
+  .price b{font-weight:600;color:var(--ink);}
+  .from{color:var(--ink2);font-weight:400;}
+
+  /* ════════ BEFORE (legacy CityPage) ════════ */
+  .b-screen{background:var(--white);}
+  .b-statusbar{height:44px;}
+  .b-header{padding:34px 16px 18px;}
+  .b-eyebrow{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .b-eyebrow svg{color:var(--ink2);}
+  .b-eyebrow span{font-family:"Inter";font-weight:700;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink2);}
+  .b-h1{font-family:"Inter Tight";font-weight:600;font-size:34px;letter-spacing:-0.03em;line-height:1;color:var(--ink);}
+  .b-sub{font-family:"Inter";font-size:14px;color:var(--ink2);margin-top:8px;}
+
+  .b-chips{display:flex;gap:8px;padding:0 16px 18px;overflow:hidden;}
+  .b-chip{
+    flex-shrink:0;display:flex;align-items:center;height:36px;padding:0 16px;border-radius:var(--r-pill);
+    font-family:"Inter Tight";font-weight:500;font-size:13px;text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap;
+  }
+  .b-chip.active{background:var(--ink);color:#fff;}
+  .b-chip.idle{background:#fff;border:1px solid var(--border);color:var(--ink2);}
+
+  .b-grid{padding:0 16px 24px;display:flex;flex-direction:column;gap:16px;}
+  .b-card .card-photo{height:150px;border-radius:var(--r-card);}
+  .b-card .card-photo .mono{font-size:54px;}
+  .b-card .heart{top:10px;right:10px;}
+  .b-cbody{padding-top:10px;}
+  .b-row1{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .b-card .name{font-size:15px;}
+  .b-card .rate{font-family:"Inter";font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:3px;}
+  .b-card .meta{font-size:12px;margin-top:3px;display:flex;align-items:center;gap:4px;}
+  .b-card .price{font-family:"Inter";font-size:13px;margin-top:5px;}
+
+  /* ════════ AFTER (SearchTemplate, city-scoped) — v2 ════════ */
+  .a-screen{background:var(--white);}
+  .a-statusbar{height:44px;background:var(--white);}
+  .a-searchband{padding:6px 16px 4px;background:var(--white);}
+  /* search pill: white with a blue interactive cue (blue search glyph + blue focus ring on hover) */
+  .a-pill{
+    display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--border);
+    border-radius:var(--r-pill);padding:9px 12px;cursor:pointer;
+    transition:border-color .18s ease, box-shadow .18s ease;
+  }
+  .a-pill:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(39,110,241,.14);}
+  .a-pill .s-ic{flex-shrink:0;color:var(--blue);}
+  .a-pill .txt{flex:1;min-width:0;}
+  .a-pill .l1{font-family:"Inter";font-weight:500;font-size:14px;color:var(--ink);line-height:1.2;}
+  .a-pill .l2{font-family:"Inter";font-size:12.5px;color:var(--ink2);line-height:1.3;margin-top:1px;}
+  /* map button in the pill is interactive → blue */
+  .a-pill .mapbtn{flex-shrink:0;width:36px;height:36px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--blue);transition:background .18s ease;}
+  .a-pill .mapbtn:hover{background:rgba(39,110,241,.08);}
+
+  .a-filters{display:flex;align-items:center;gap:8px;padding:14px 16px 0;}
+  /* filter icon button — interactive → blue glyph */
+  .a-fcircle{flex-shrink:0;width:36px;height:36px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;color:var(--blue);cursor:pointer;transition:background .18s ease;}
+  .a-fcircle:hover{background:rgba(39,110,241,.08);}
+  .a-chiprow{display:flex;gap:8px;overflow:hidden;flex:1;}
+  .a-fchip{
+    flex-shrink:0;display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 12px 0 14px;border-radius:var(--r-pill);
+    border:1px solid var(--border);background:#fff;color:var(--ink);cursor:pointer;
+    font-family:"Inter";font-weight:500;font-size:13.5px;white-space:nowrap;line-height:1;
+    transition:border-color .18s ease, color .18s ease, background .18s ease;
+  }
+  .a-fchip svg{color:var(--ink2);transition:color .18s ease;}
+  .a-fchip:hover{border-color:var(--blue);color:var(--blue);}
+  .a-fchip:hover svg{color:var(--blue);}
+  /* selected chip = blue: blue tint fill + blue border + blue text */
+  .a-fchip.on{border-color:var(--blue);color:var(--blue);font-weight:600;background:rgba(39,110,241,.08);}
+  .a-fchip.on svg{color:var(--blue);}
+
+  .a-countrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 16px 12px;}
+  .a-count{font-family:"Inter Tight";font-weight:600;font-size:17px;letter-spacing:-0.01em;color:var(--ink);}
+  /* sort is an interactive control → blue label + blue chevron */
+  .a-sort{display:inline-flex;align-items:center;gap:5px;font-family:"Inter";font-weight:600;font-size:13.5px;color:var(--blue);background:#fff;border:1px solid var(--border);border-radius:var(--r-pill);padding:7px 11px;cursor:pointer;transition:border-color .18s ease, background .18s ease;}
+  .a-sort:hover{border-color:var(--blue);background:rgba(39,110,241,.08);}
+  .a-sort svg{color:var(--blue);}
+
+  .a-list{padding:0 16px 20px;display:flex;flex-direction:column;gap:22px;}
+  .a-card{cursor:pointer;transition:transform .2s ease;}
+  .a-card .card-photo{aspect-ratio:3/2;border-radius:22px;box-shadow:0 6px 18px rgba(0,0,0,.08);transition:box-shadow .2s ease;}
+  .a-card:hover{transform:translateY(-4px);}
+  .a-card:hover .card-photo{box-shadow:0 12px 28px rgba(0,0,0,.14);}
+  .a-card:hover .heart{transform:scale(1.08);}
+  .a-card .card-photo .mono{font-size:64px;}
+  .a-card .heart{top:11px;right:11px;}
+  .a-row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:12px;}
+  /* salon name is a tappable link → blue, underline on hover */
+  .a-card .name{font-size:18px;letter-spacing:-0.015em;color:var(--blue);text-decoration:none;}
+  .a-card:hover .name{text-decoration:underline;text-underline-offset:3px;}
+  .a-card .rate{font-family:"Inter";font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:3px;}
+  .a-row2{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:6px;}
+  .a-card .addr{font-family:"Inter";font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .a-card .price{font-family:"Inter";font-size:13px;}
+  .a-slot{display:inline-flex;align-items:center;gap:5px;font-family:"Inter";font-weight:500;font-size:12px;color:var(--ink);margin-top:8px;}
+  .a-slot svg{color:var(--ink2);}
+
+  /* load-more is the single primary commit anchor → stays INK fill */
+  .a-loadmore{margin:6px 16px 16px;height:48px;border-radius:14px;background:var(--ink);color:#fff;font-family:"Inter Tight";font-weight:600;font-size:14.5px;display:grid;place-items:center;cursor:pointer;transition:transform .12s ease;}
+  .a-loadmore:active{transform:scale(.98);}
+
+  /* floating Map FAB — secondary interactive, leans blue */
+  .a-fab{
+    position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;
+    display:inline-flex;align-items:center;gap:7px;height:44px;padding:0 20px;border-radius:999px;
+    background:var(--blue);color:#fff;font-family:"Inter Tight";font-weight:600;font-size:14px;
+    box-shadow:0 8px 22px rgba(39,110,241,.36);cursor:pointer;transition:transform .12s ease;
+  }
+  .a-fab:active{transform:translateX(-50%) scale(.96);}
+
+  /* ── photo gradients (placeholder, not fabricated salon photos) ── */
+  .g1{background:linear-gradient(135deg,#E9E2DA,#D8CFC6);}
+  .g2{background:linear-gradient(135deg,#E4E7EA,#D2D7DC);}
+
+  .changed{
+    max-width:760px;margin:44px auto 0;background:var(--white);border:1px solid var(--border);
+    border-radius:var(--r-card);padding:18px 20px;
+  }
+  .changed h2{font-family:"Inter Tight";font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;}
+  .changed p{font-family:"Inter";font-size:14px;line-height:1.55;color:var(--ink);}
+  .changed b{font-weight:600;}
+
+  /* ════════ MOTION — visible on load ════════ */
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .anim{opacity:0;animation:rise .5s cubic-bezier(.22,.61,.36,1) forwards;}
+  /* staggered entrance across the AFTER screen */
+  .a-searchband{animation:rise .5s cubic-bezier(.22,.61,.36,1) .05s both;}
+  .a-filters{animation:rise .5s cubic-bezier(.22,.61,.36,1) .14s both;}
+  .a-countrow{animation:rise .5s cubic-bezier(.22,.61,.36,1) .22s both;}
+  .a-card.s1{animation:rise .55s cubic-bezier(.22,.61,.36,1) .32s both;}
+  .a-card.s2{animation:rise .55s cubic-bezier(.22,.61,.36,1) .44s both;}
+  .a-loadmore{animation:rise .55s cubic-bezier(.22,.61,.36,1) .56s both;}
+  .a-fab{animation:rise .55s cubic-bezier(.22,.61,.36,1) .66s both;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>City landing: /[locale]/[city] · v2</h1>
+  <p>Replace the legacy hand-rolled CityPage with the unified SearchTemplate scoped to the city (the same pattern /coiffeur already uses, via the existing <code>cityFilter</code> prop). Example city: Basel. Restyled to the v2 language: white-first surfaces, blue for everything tappable, one ink commit anchor.</p>
+</div>
+
+<div class="stage">
+
+  <!-- ════════════════ BEFORE ════════════════ -->
+  <div class="col">
+    <div class="tag before">Before
+      <span class="sub">legacy CityPage · no search, no filters, no map</span>
+    </div>
+    <div class="phone">
+      <div class="screen b-screen">
+        <div class="notch"></div>
+        <div class="scroll">
+          <div class="b-statusbar"></div>
+
+          <!-- City header: MapPin eyebrow + big h1 + subtitle -->
+          <div class="b-header">
+            <div class="b-eyebrow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Basel</span>
+            </div>
+            <div class="b-h1">Salons in Basel</div>
+            <div class="b-sub">Find and book the best salons near you.</div>
+          </div>
+
+          <!-- Category-NAVIGATION chips (full page reloads, not filters) -->
+          <div class="b-chips">
+            <div class="b-chip active">All categories</div>
+            <div class="b-chip idle">Coiffeur</div>
+            <div class="b-chip idle">Barber</div>
+            <div class="b-chip idle">Nails</div>
+            <div class="b-chip idle">Spa</div>
+          </div>
+
+          <!-- Old homepage SalonCard, 1-col grid -->
+          <div class="b-grid">
+            <div class="b-card">
+              <div class="card-photo g1"><span class="mono">A</span>
+                <div class="heart"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+              </div>
+              <div class="b-cbody">
+                <div class="b-row1">
+                  <div class="name">Atelier Spalen</div>
+                  <div class="rate"><span class="star">★</span> 4.8</div>
+                </div>
+                <div class="meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Spalenvorstadt, Basel</div>
+                <div class="price"><span class="from">from</span> <b>45 CHF</b></div>
+              </div>
+            </div>
+
+            <div class="b-card">
+              <div class="card-photo g2"><span class="mono">B</span>
+                <div class="heart"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+              </div>
+              <div class="b-cbody">
+                <div class="b-row1">
+                  <div class="name">Barbier am Rhein</div>
+                  <div class="rate"><span class="star">★</span> 4.9</div>
+                </div>
+                <div class="meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Kleinbasel, Basel</div>
+                <div class="price"><span class="from">from</span> <b>38 CHF</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ AFTER ════════════════ -->
+  <div class="col">
+    <div class="tag after">After
+      <span class="sub">unified SearchTemplate · cityFilter=&quot;basel&quot; · v2</span>
+    </div>
+    <div class="phone">
+      <div class="screen a-screen">
+        <div class="notch"></div>
+        <div class="scroll">
+          <div class="a-statusbar"></div>
+
+          <!-- Sticky search pill: white, blue interactive cue (blue glyph + blue focus ring on hover) -->
+          <div class="a-searchband">
+            <div class="a-pill">
+              <svg class="s-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <div class="txt">
+                <div class="l1">Search</div>
+                <div class="l2">Basel</div>
+              </div>
+              <div class="mapbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 4-6 2v16l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v16M15 6v16"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Filter circle + horizontally-scrolling filter chips (blue interactive, selected = blue) -->
+          <div class="a-filters">
+            <div class="a-fcircle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="#fff"/><circle cx="15" cy="12" r="2" fill="#fff"/><circle cx="8" cy="18" r="2" fill="#fff"/></svg></div>
+            <div class="a-chiprow">
+              <div class="a-fchip on">Open now</div>
+              <div class="a-fchip">Price <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+              <div class="a-fchip">Rating <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+              <div class="a-fchip">For who <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+              <div class="a-fchip">Amenities</div>
+            </div>
+          </div>
+
+          <!-- Count row (carries the city) + Sort control (interactive → blue) -->
+          <div class="a-countrow">
+            <div class="a-count">12 salons in Basel</div>
+            <div class="a-sort">Most popular <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+          </div>
+
+          <!-- SalonResultCard, "card" variant: photo, blue tappable name + rating, address, price, next-slot -->
+          <div class="a-list">
+            <div class="a-card s1">
+              <div class="card-photo g1"><span class="mono">A</span>
+                <div class="heart"><svg width="15" height="15" viewBox="0 0 24 24" fill="#FF3366" stroke="#FF3366" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+              </div>
+              <div class="a-row1">
+                <a class="name">Atelier Spalen</a>
+                <div class="rate"><span class="star">★</span> 4.8 (98)</div>
+              </div>
+              <div class="a-row2">
+                <div class="addr">Spalenvorstadt 22, Basel</div>
+                <div class="price"><span class="from">from</span> <b>45 CHF</b></div>
+              </div>
+              <div class="a-slot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> today 15:30</div>
+            </div>
+
+            <div class="a-card s2">
+              <div class="card-photo g2"><span class="mono">B</span>
+                <div class="heart"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+              </div>
+              <div class="a-row1">
+                <a class="name">Barbier am Rhein</a>
+                <div class="rate"><span class="star">★</span> 4.9 (124)</div>
+              </div>
+              <div class="a-row2">
+                <div class="addr">Klybeckstrasse 8, Basel</div>
+                <div class="price"><span class="from">from</span> <b>38 CHF</b></div>
+              </div>
+              <div class="a-slot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> tomorrow 09:00</div>
+            </div>
+          </div>
+
+          <!-- ink load-more = the single primary commit anchor -->
+          <div class="a-loadmore">6 more salons</div>
+
+          <!-- floating Map FAB (secondary interactive → blue) -->
+          <div class="a-fab"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="m9 4-6 2v16l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v16M15 6v16"/></svg> Map</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="changed">
+  <h2>What changed · v2</h2>
+  <p><b>Structure (unchanged):</b> the same unified SearchTemplate every discovery route uses, scoped to the city. The page keeps its search pill, filter chips, sort control, booking-intent result cards, load-more, and map. The city identity still lives in the search pill and the count row ("12 salons in Basel").</p>
+  <p style="margin-top:10px;"><b>v2 restyle:</b> dropped the warm cream page base for a clean white surface. <b>Blue is now interactivity</b> — the search glyph, map button, filter icon, every filter chip (selected = blue tint + blue border + blue text), the sort control, the salon names (now tappable links that underline on hover), and the Map FAB all lean blue. The single primary commit anchor (Load more) stays <b>ink</b>. Cards fade up in a staggered entrance on load and lift on hover.</p>
+</div>
+
+</body>
+</html>

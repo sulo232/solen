@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solen · Search-list card (Fresha structure, Solen skin)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0A0A0A;--ink2:#3a3a3a;--grey:#6B6B6B;--line:rgba(10,10,10,.10);--bg:#FAFAF9;--gold:#FFC32B;--accent:#185CE0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#E9E7E2;color:var(--ink);padding:24px 16px 48px;-webkit-font-smoothing:antialiased}
+    h1{font-family:'Inter Tight';font-size:20px;font-weight:700;text-align:center}
+    .lede{font-family:'Inter Tight';font-size:13px;color:#555;text-align:center;margin:6px auto 22px;max-width:620px;line-height:1.5}
+    .frame{width:392px;margin:0 auto;background:var(--bg);border-radius:34px;overflow:hidden;box-shadow:0 16px 44px rgba(0,0,0,.2);border:1px solid rgba(0,0,0,.08)}
+    /* header + search + chips */
+    .site{height:50px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+    .wm{font-family:'Inter Tight';font-weight:700;font-size:18px;letter-spacing:-.02em}.wm em{color:var(--accent);font-style:normal}
+    .av{width:28px;height:28px;border-radius:999px;background:#0A0A0A}
+    .bar{padding:11px 14px 9px;background:#fff;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+    .search{background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(10,10,10,.05)}
+    .search .q{font-family:'Inter Tight';font-weight:600;font-size:14px}.search .sub{font-size:11px;color:var(--grey)}
+    .chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+    .chip{flex:none;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-family:'Inter Tight';font-weight:600;font-size:12px;display:flex;gap:5px}.chip .c{color:var(--grey);font-size:9px}
+    .count{padding:12px 16px 4px;font-size:12px;color:var(--ink2);font-weight:500}.count b{font-weight:700}
+    .list{padding:8px 14px 16px;display:flex;flex-direction:column;gap:14px}
+    /* venue card */
+    .card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .photo{position:relative;height:170px;background:#ddd center/cover}
+    .heart{position:absolute;top:11px;right:11px;width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+    .dots{position:absolute;bottom:9px;left:0;right:0;display:flex;gap:4px;justify-content:center}
+    .dots i{width:5px;height:5px;border-radius:99px;background:rgba(255,255,255,.55)}.dots i.on{background:#fff;width:15px;border-radius:99px}
+    .body{padding:13px 15px 15px}
+    .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+    .name{font-family:'Inter Tight';font-weight:600;font-size:17px;letter-spacing:-.01em}
+    .rate{font-family:'Inter Tight';font-weight:600;font-size:14px;flex:none;display:flex;align-items:center;gap:3px}
+    .meta{font-size:13px;color:var(--grey);margin-top:3px}
+    .rule{height:1px;background:var(--line);margin:13px 0}
+    /* service row */
+    .svc{display:flex;flex-direction:column;gap:9px}
+    .svc + .svc{margin-top:15px}
+    .svchead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+    .svcname{font-family:'Hanken Grotesk';font-weight:600;font-size:15px}
+    .svcdur{font-size:13px;color:var(--grey);margin-top:1px}
+    .svcprice{font-family:'Inter Tight';font-weight:600;font-size:14px;flex:none;white-space:nowrap}
+    .slots{display:flex;gap:7px;align-items:center}
+    .slot{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 12px}
+    .slot.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .more{width:38px;height:34px;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grey);font-weight:700}
+    .allsvc{margin-top:15px;font-family:'Inter Tight';font-weight:600;font-size:14px;color:var(--accent)}
+  </style>
+</head>
+<body>
+  <h1>Search / list card — Fresha structure, Solen skin</h1>
+  <p class="lede">Rich venue card: photo + name + gold rating + meta, then <b>service rows</b> (name · duration · price) with <b>bookable time-slot pills</b> (tap a time → straight into booking), and an "Alle Services ansehen" link. This is the list-first card (mobile + the desktop split's left column).</p>
+
+  <div class="frame">
+    <div class="site"><div class="wm">solen<em>.</em></div><div class="av"></div></div>
+    <div class="bar">
+      <div class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#0A0A0A" stroke-width="2"/><path d="m20 20-3-3" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round"/></svg><div><div class="q">Coiffeur &amp; Styling</div><div class="sub">Basel · Heute</div></div></div>
+      <div class="chips"><div class="chip">Sortieren <span class="c">▾</span></div><div class="chip">Preis <span class="c">▾</span></div><div class="chip">Heute offen</div><div class="chip">Bewertung <span class="c">▾</span></div></div>
+    </div>
+    <div class="count"><b>48</b> Salons in Basel</div>
+
+    <div class="list">
+      <!-- card 1 -->
+      <div class="card">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaaa50e?w=700&q=80')"><div class="heart"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 7 3.5C19 15.5 12 20 12 20Z" stroke="#0A0A0A" stroke-width="1.7"/></svg></div><div class="dots"><i class="on"></i><i></i><i></i><i></i></div></div>
+        <div class="body">
+          <div class="head"><div class="name">Atelier Haarwerk</div><div class="rate"><span style="color:var(--gold)">★</span> 4.9</div></div>
+          <div class="meta">Steinenvorstadt 12, Basel · Coiffeur · 128 Bewertungen</div>
+          <div class="rule"></div>
+          <div class="svc">
+            <div class="svchead"><div><div class="svcname">Damenschnitt &amp; Föhnen</div><div class="svcdur">1 Std.</div></div><div class="svcprice">ab 65 CHF</div></div>
+            <div class="slots"><span class="slot pri">14:30</span><span class="slot">15:00</span><span class="slot">16:15</span><span class="more">⋯</span></div>
+          </div>
+          <div class="svc">
+            <div class="svchead"><div><div class="svcname">Herrenschnitt</div><div class="svcdur">30 Min.</div></div><div class="svcprice">ab 45 CHF</div></div>
+            <div class="slots"><span class="slot">13:45</span><span class="slot">14:15</span><span class="slot">17:30</span><span class="more">⋯</span></div>
+          </div>
+          <div class="allsvc">Alle 12 Services ansehen →</div>
+        </div>
+      </div>
+
+      <!-- card 2 -->
+      <div class="card">
+        <div class="photo" style="height:150px;background-image:url('https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=700&q=80')"><div class="heart"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 7 3.5C19 15.5 12 20 12 20Z" stroke="#0A0A0A" stroke-width="1.7"/></svg></div><div class="dots"><i class="on"></i><i></i><i></i></div></div>
+        <div class="body">
+          <div class="head"><div class="name">Nail Studio Bliss</div><div class="rate"><span style="color:var(--gold)">★</span> 5.0</div></div>
+          <div class="meta">Gerbergasse 4, Basel · Nails · 86 Bewertungen</div>
+          <div class="rule"></div>
+          <div class="svc">
+            <div class="svchead"><div><div class="svcname">Maniküre</div><div class="svcdur">45 Min.</div></div><div class="svcprice">ab 55 CHF</div></div>
+            <div class="slots"><span class="slot pri">15:30</span><span class="slot">16:00</span><span class="slot">18:00</span><span class="more">⋯</span></div>
+          </div>
+          <div class="allsvc">Alle 8 Services ansehen →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

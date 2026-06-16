@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen Dashboard — Mehrbelastung anfordern (faithful mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink50:rgba(10,10,10,.5); --ink40:rgba(10,10,10,.4); --ink5:rgba(10,10,10,.05);
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --accent-pale:#EAEFFE; --urgency:#9A3412; --urgency-bg:#FFF1E6; --pop:#C03001;
+    --success:#16A34A; --success-bg:#E8F5E9; --warning:#F1AE27; --warning-bg:#FDF6E7; --warning-text:#906309;
+    --error:#DC2626; --error-bg:#FEE2E2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--sunken);-webkit-font-smoothing:antialiased}
+  .fh{font-family:'Inter Tight',sans-serif}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .app{min-height:100vh;display:flex}
+
+  /* ── Desktop icon rail (exact: w-64px white border-r, w-10 rounded-xl tiles, active accent-bright) ── */
+  .rail{width:64px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;align-items:center;padding:12px 0;position:sticky;top:0;height:100vh}
+  .rail .logo{width:36px;height:36px;display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:20px;letter-spacing:-.04em;color:var(--ink);margin-bottom:8px}
+  .rail nav{flex:1;display:flex;flex-direction:column;gap:4px;align-items:center;width:100%}
+  .tile{position:relative;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink2);cursor:pointer}
+  .tile:hover{background:var(--sunken);color:var(--ink)}
+  .tile.active{background:var(--accent);color:var(--white)}
+  .tile svg{width:20px;height:20px}
+  .tile .tip{position:absolute;left:52px;top:50%;transform:translateY(-50%);white-space:nowrap;background:var(--ink);color:#fff;font-size:11.5px;font-weight:500;padding:4px 8px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:50}
+  .tile:hover .tip{opacity:1}
+  .dot-badge{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:999px;background:var(--error);box-shadow:0 0 0 2px #fff}
+  .rail .back{margin-top:auto;color:var(--ink2);font-size:17px}
+  .rail .avatar{width:34px;height:34px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600;margin-top:6px}
+
+  /* ── Content (flex-1 p-6, max-w-4xl) ── */
+  .content{flex:1;padding:24px;overflow:auto}
+  .wrap{max-width:896px;margin:0 auto}
+  .head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .head svg{width:24px;height:24px;color:var(--ink)}
+  .head h1{font-size:26px;font-weight:600;letter-spacing:-.015em}
+  .lead{color:var(--ink50);font-size:13px;margin:0 0 18px 36px}
+
+  /* section heading for the sent-requests list */
+  .sec-k{font-family:'Inter Tight';font-weight:600;font-size:15px;letter-spacing:-.01em;margin:26px 0 14px}
+  .sec-k .c{font-family:'Inter';font-weight:500;font-size:12px;color:var(--ink40);margin-left:6px}
+
+  .stack{display:flex;flex-direction:column;gap:16px}
+
+  /* ── Case card (exact: rounded-2xl border bg-white p-5) ── */
+  .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+  /* primary focus: the card that needs action is elevated + the rest stay flat */
+  .card.primary{padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(10,10,10,.07);border-color:#dcd9d6}
+  .crow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+  .crow .name{font-family:'Inter Tight';font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .crow .meta{font-size:12px;color:var(--ink2);margin-top:3px}
+
+  /* DashStatusPill (exact: pale bg + saturated text + 7px dot) */
+  .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600}
+  .pill .d{width:7px;height:7px;border-radius:999px}
+  .pill.warn{background:var(--warning-bg);color:var(--warning-text)} .pill.warn .d{background:var(--warning)}
+  .pill.rev{background:var(--sunken);color:var(--ink2)} .pill.rev .d{background:var(--accent)}
+  .pill.esc{background:var(--urgency-bg);color:var(--pop)} .pill.esc .d{background:var(--pop);position:relative} .pill.esc .d::after{content:"";position:absolute;inset:-1px;border-radius:999px;background:var(--pop);opacity:.5;animation:ping 2.6s cubic-bezier(0,0,.2,1) infinite} @media(prefers-reduced-motion:reduce){.pill.esc .d::after{display:none}} @keyframes ping{75%,100%{transform:scale(2.4);opacity:0}}
+  .pill.ok{background:var(--success-bg);color:var(--success)} .pill.ok .d{background:var(--success)}
+  .pill.err{background:var(--error-bg);color:var(--error)} .pill.err .d{background:var(--error)}
+
+  .amts{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;margin-bottom:14px}
+  .amts .k{font-size:10.5px;color:var(--ink40);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .amts .v{font-family:'Inter Tight';font-weight:600;font-size:20px;margin-top:4px;letter-spacing:-.015em}
+  /* the decision number (requested) is the focal amount; paid recedes to ink-2 */
+  .amts .req{background:var(--accent-pale);border:1px solid rgba(39,110,241,.20);border-radius:12px;padding:10px 14px}.amts .req .v{color:var(--accent)}
+  .amts .paid{background:var(--sunken);border-radius:12px;padding:10px 14px}.amts .paid .v{color:var(--ink2);font-weight:500;font-size:14px}
+  .blk{margin-bottom:12px}
+  .blk .k{font-size:10.5px;color:var(--ink40);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .blk .v{font-size:14px;color:rgba(10,10,10,.7);font-weight:500}
+  .quote{font-size:14px;color:rgba(10,10,10,.7);line-height:1.45}
+
+  /* charged-line on an approved request (success readout, not a CTA) */
+  .charged{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--success);margin-top:4px}
+  .charged svg{width:14px;height:14px}
+
+  /* ── Request form (primary card body) — built from the card's own k/v vocabulary ── */
+  .booking{display:flex;align-items:center;gap:12px;padding:12px;background:var(--sunken);border-radius:12px;margin-bottom:16px}
+  .booking .ava{width:38px;height:38px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Inter Tight';font-weight:600;font-size:14px;flex-shrink:0}
+  .booking .bn{font-family:'Inter Tight';font-weight:600;font-size:14.5px;letter-spacing:-.01em}
+  .booking .bm{font-size:12px;color:var(--ink2);margin-top:2px}
+  .booking .chg{margin-left:auto;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap}
+
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+  .field .k{font-size:10.5px;color:var(--ink40);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .orig{font-family:'Inter Tight';font-weight:500;font-size:14px;color:var(--ink2);height:42px;display:flex;align-items:center}
+  .inp{position:relative}
+  .inp .pre{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:500;color:var(--ink2);pointer-events:none}
+  .inp input{width:100%;height:42px;padding:0 12px 0 44px;border:1px solid var(--border);border-radius:10px;font-family:'Inter Tight';font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink);background:#fff}
+  .inp input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,110,241,.12)}
+  select{width:100%;height:42px;padding:0 36px 0 12px;border:1px solid var(--border);border-radius:10px;font-family:'Inter';font-weight:500;font-size:13.5px;color:var(--ink);background:#fff
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+    -webkit-appearance:none;appearance:none;cursor:pointer}
+  select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,110,241,.12)}
+  textarea{width:100%;min-height:64px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-family:'Inter';font-size:13.5px;color:var(--ink);background:#fff;resize:vertical;line-height:1.45}
+  textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,110,241,.12)}
+  textarea::placeholder{color:var(--ink40)}
+
+  /* computed difference + cap note (the focal readout of the form) */
+  .diff{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--warning-bg);border-radius:12px;margin-bottom:6px}
+  .diff .dk{font-size:10.5px;color:var(--warning-text);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .diff .dv{font-family:'Inter Tight';font-weight:700;font-size:22px;color:var(--warning-text);letter-spacing:-.015em}
+  .cap{font-size:11.5px;color:var(--ink40);margin-bottom:14px}
+
+  /* action bar (exact: mt-4 pt-3 border-t, rounded-btn buttons) */
+  .acts{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;border-radius:10px;font-size:12.5px;font-weight:600;padding:0 14px;cursor:pointer;border:1px solid transparent}
+  .btn.ink{background:var(--accent);color:#fff} .btn.sec{background:var(--white);color:var(--ink);border-color:var(--border)}
+  .btn.ghost{background:transparent;color:var(--ink2);border-color:var(--border)}
+  .btn.rej{background:transparent;color:var(--error);border-color:rgba(220,38,38,.4)}
+  .btn svg{width:14px;height:14px}
+  .warnote{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--warning-text);margin-top:10px}
+  .warnote svg{width:14px;height:14px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Desktop icon rail — the real 11-item RAIL_NAV (lucide icons + German tooltips) -->
+  <aside class="rail">
+    <div class="logo">S</div>
+    <nav>
+      <div class="tile" title="Übersicht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span class="tip">Übersicht</span></div>
+      <div class="tile" title="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="tip">Kalender</span></div>
+      <div class="tile" title="Katalog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg><span class="tip">Katalog</span></div>
+      <div class="tile" title="Kund:innen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="tip">Kund:innen</span></div>
+      <div class="tile" title="Nachrichten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="dot-badge"></span><span class="tip">Nachrichten</span></div>
+      <div class="tile" title="Marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><span class="tip">Marketing</span></div>
+      <div class="tile active" title="Verkäufe &amp; Rückerstattungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span class="tip">Verkäufe &amp; Rückerstattungen</span></div>
+      <div class="tile" title="Team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg><span class="tip">Team</span></div>
+      <div class="tile" title="Berichte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg><span class="tip">Berichte</span></div>
+      <div class="tile" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="tip">Einstellungen</span></div>
+    </nav>
+    <div class="tile back" title="Zur Website">←<span class="tip">Zur Website</span></div>
+    <div class="avatar">A</div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="wrap">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <h1 class="fh">Mehrbelastung anfordern</h1>
+      </div>
+      <p class="lead">Fordere nach einer abgeschlossenen Buchung einen höheren Betrag an. Die Kundin muss zustimmen.</p>
+
+      <!-- REQUEST FORM — the primary, elevated card -->
+      <div class="card primary">
+        <div class="crow">
+          <div>
+            <p class="name">Neue Mehrbelastung</p>
+            <p class="meta">Wähle eine abgeschlossene Buchung und gib den neuen Gesamtbetrag an.</p>
+          </div>
+        </div>
+
+        <!-- selected completed booking -->
+        <div class="booking">
+          <div class="ava">LH</div>
+          <div>
+            <p class="bn">Lena Hofer</p>
+            <p class="bm">Damen-Haarschnitt · 30.05.2026 · SOL-7K2QX</p>
+          </div>
+          <span class="chg">Ändern</span>
+        </div>
+
+        <!-- original (recede) + new total input -->
+        <div class="frow">
+          <div class="field">
+            <p class="k">Originalpreis</p>
+            <p class="orig num">CHF 45.00</p>
+          </div>
+          <div class="field">
+            <p class="k">Neuer Gesamtbetrag</p>
+            <div class="inp"><span class="pre">CHF</span><input class="num" value="62.00" aria-label="Neuer Gesamtbetrag CHF"></div>
+          </div>
+        </div>
+
+        <!-- computed difference (focal) + cap note -->
+        <div class="diff">
+          <span class="dk">Differenz an Kundin</span>
+          <span class="dv num">+ CHF 17.00</span>
+        </div>
+        <p class="cap">Max. +50% vom Originalpreis (CHF 67.50).</p>
+
+        <!-- reason + note -->
+        <div class="field" style="margin-bottom:14px">
+          <p class="k">Grund</p>
+          <select aria-label="Grund">
+            <option>Haarlänge</option>
+            <option>Material &amp; Produkte</option>
+            <option>Zeitüberschreitung</option>
+            <option>Zusätzliche Behandlung</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="field">
+          <p class="k">Notiz an Kundin</p>
+          <textarea placeholder="Kurze Erklärung, z. B. „Zusätzliche Strähnen wegen langem Haar.“"></textarea>
+        </div>
+
+        <div class="acts">
+          <button class="btn ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Anfrage senden</button>
+          <button class="btn ghost">Abbrechen</button>
+        </div>
+        <div class="warnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Die Kundin muss zustimmen. Ohne Antwort verfällt die Anfrage nach 48 h.</div>
+      </div>
+
+      <!-- SENT REQUESTS -->
+      <h2 class="sec-k fh">Gesendete Anfragen <span class="c">3</span></h2>
+
+      <div class="stack">
+
+        <!-- waiting on customer -->
+        <div class="card">
+          <div class="crow">
+            <div>
+              <p class="name">Nina Vogt</p>
+              <p class="meta">Balayage · Buchung: 31.05.2026 · SOL-3M9PL</p>
+            </div>
+            <span class="pill warn"><span class="d"></span>WARTET AUF KUNDIN</span>
+          </div>
+          <div class="amts">
+            <div class="paid"><p class="k">Originalpreis</p><p class="v num">CHF 120.00</p></div>
+            <div class="req"><p class="k">Angeforderter Betrag</p><p class="v num">CHF 155.00</p></div>
+          </div>
+          <div class="blk"><p class="k">Grund</p><p class="v">Material &amp; Produkte · zusätzliche Strähnen</p></div>
+        </div>
+
+        <!-- approved -->
+        <div class="card">
+          <div class="crow">
+            <div>
+              <p class="name">Marco Brun</p>
+              <p class="meta">Herren-Haarschnitt &amp; Bart · Buchung: 29.05.2026 · SOL-Q1F8T</p>
+            </div>
+            <span class="pill ok"><span class="d"></span>GENEHMIGT</span>
+          </div>
+          <div class="amts">
+            <div class="paid"><p class="k">Originalpreis</p><p class="v num">CHF 55.00</p></div>
+            <div class="req">
+              <p class="k">Angeforderter Betrag</p><p class="v num">CHF 72.00</p>
+              <span class="charged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Differenz belastet: CHF 17.00</span>
+            </div>
+          </div>
+          <div class="blk"><p class="k">Grund</p><p class="v">Zeitüberschreitung</p></div>
+        </div>
+
+        <!-- expired / voided -->
+        <div class="card">
+          <div class="crow">
+            <div>
+              <p class="name">Sofia Keller</p>
+              <p class="meta">Coloration · Buchung: 27.05.2026 · SOL-8H4RD</p>
+            </div>
+            <span class="pill esc"><span class="d"></span>VERFALLEN</span>
+          </div>
+          <div class="amts">
+            <div class="paid"><p class="k">Originalpreis</p><p class="v num">CHF 90.00</p></div>
+            <div class="req"><p class="k">Angeforderter Betrag</p><p class="v num">CHF 110.00</p></div>
+          </div>
+          <div class="blk"><p class="k">Grund</p><p class="v">Zusätzliche Behandlung · keine Antwort nach 48 h</p></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

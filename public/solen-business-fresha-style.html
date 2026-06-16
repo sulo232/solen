@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen für Salons — Fresha-for-Business style</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #F5EBDD;
+    --bg-card: #FAF2E5;
+    --rule: #E8DDC9;
+    --brand: #1F5C42;
+    --brand-mid: #0F3D26;
+    --brand-pale: #A8CFB8;
+    --accent: #C97A57;
+    --star: #F3A864;
+    --butter: #F2D77B;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 80px 0;
+  }
+  .section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .business-promo {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    align-items: center;
+    min-height: 540px;
+  }
+  @media (max-width: 968px) {
+    .business-promo {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      min-height: auto;
+    }
+  }
+
+  /* LEFT — Copy block */
+  .left {
+    display: flex;
+    flex-direction: column;
+    max-width: 560px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .h1 {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .h1 .hl { color: var(--accent); }
+  .lede {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin-bottom: 32px;
+    max-width: 480px;
+  }
+  .cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--brand);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(31, 92, 66, 0.25);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cta:hover {
+    background: var(--brand-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(31, 92, 66, 0.32);
+  }
+
+  .trust {
+    margin-top: 40px;
+  }
+  .trust-rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .trust-rating-label {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .trust-rating-stars {
+    color: var(--star);
+    font-size: 16px;
+    letter-spacing: 0.06em;
+  }
+  .trust-meta {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  /* RIGHT — Product UI mockup */
+  .right {
+    position: relative;
+    aspect-ratio: 1.2 / 1;
+    width: 100%;
+  }
+  .ui-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #DEF0E4 0%, #F5F0E4 100%);
+    border-radius: 28px;
+    overflow: hidden;
+  }
+  .dashboard-card {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    right: 80px;
+    bottom: 80px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E0E5DD;
+    box-shadow: 0 12px 40px rgba(31, 23, 9, 0.10);
+    overflow: hidden;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .dashboard-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F0EDE8;
+  }
+  .toolbar-logo {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-right: 18px;
+  }
+  .toolbar-logo::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .toolbar-chip {
+    background: #F2F0EB;
+    color: var(--ink-2);
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .toolbar-chip.today { background: var(--brand); color: white; }
+  .toolbar-spacer { flex: 1; }
+  .toolbar-time {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: 50px repeat(5, 1fr);
+    gap: 4px;
+    flex: 1;
+  }
+  .time-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 12px;
+  }
+  .time-slot {
+    font-size: 9px;
+    color: var(--ink-3);
+    height: 28px;
+    display: flex;
+    align-items: flex-start;
+  }
+  .day-col {
+    background: #FAFAF8;
+    border-radius: 6px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+  }
+  .day-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--ink-2);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .booking-block {
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 8.5px;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .booking-block .b-name { font-weight: 700; color: var(--ink); display: block; }
+  .booking-block .b-svc { color: var(--ink-2); font-size: 8px; }
+  .b-emerald { background: #DEF2D5; }
+  .b-cream { background: #FAF2E5; }
+  .b-bone { background: #E8DDC9; }
+  .b-sage { background: #D4DDC8; }
+  .b-butter { background: #FCEFC4; }
+
+  .floating-card {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    width: 200px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 16px 48px rgba(31, 23, 9, 0.15);
+    overflow: hidden;
+  }
+  .float-photo {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #D4DDC8 0%, #A8CFB8 100%);
+    position: relative;
+  }
+  .float-photo::after {
+    content: '✂';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    color: rgba(31, 92, 66, 0.4);
+  }
+  .float-body { padding: 12px; }
+  .float-name {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .float-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--ink-2);
+  }
+  .float-rating .stars-mini {
+    color: var(--star);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
+  .float-meta {
+    font-size: 9px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .float-status {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    background: var(--brand);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .footer-note {
+    max-width: 1280px;
+    margin: 60px auto 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    padding: 0 24px;
+  }
+  .footer-note code {
+    background: var(--bg-card);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11px;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<section class="section">
+  <div class="business-promo">
+
+    <!-- LEFT: copy + CTA + trust -->
+    <div class="left">
+      <span class="eyebrow">Für Salons</span>
+      <h2 class="h1">Solen für<br><span class="hl">dein Geschäft.</span></h2>
+      <p class="lede">
+        Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir — automatisiert, transparent, fair. Schweizer Salon-Plattform Nr. 1 in Basel.
+      </p>
+      <a class="cta" href="#">
+        Mehr erfahren
+        <span style="font-size: 16px;">→</span>
+      </a>
+
+      <div class="trust">
+        <div class="trust-rating">
+          <span class="trust-rating-label">Bewertet 4.9 / 5</span>
+          <span class="trust-rating-stars" aria-hidden="true">★★★★★</span>
+        </div>
+        <p class="trust-meta">Über 1'200 Salons buchen schon mit Solen</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: product UI mockup (Solen Dashboard preview + floating salon card) -->
+    <div class="right">
+      <div class="ui-stage">
+
+        <!-- Backdrop dashboard -->
+        <div class="dashboard-card">
+          <div class="dashboard-toolbar">
+            <div class="toolbar-logo">solen</div>
+            <div class="toolbar-chip today">Heute</div>
+            <div class="toolbar-chip">Mitarbeiter</div>
+            <div class="toolbar-chip">Woche</div>
+            <div class="toolbar-spacer"></div>
+            <div class="toolbar-time">Di 14. Mai · 2026</div>
+          </div>
+          <div class="calendar-grid">
+            <div class="time-col">
+              <div class="time-slot">9:00</div>
+              <div class="time-slot">10:00</div>
+              <div class="time-slot">11:00</div>
+              <div class="time-slot">12:00</div>
+              <div class="time-slot">13:00</div>
+              <div class="time-slot">14:00</div>
+            </div>
+            <div class="day-col">
+              <div class="day-label">Di</div>
+              <div class="booking-block b-emerald"><span class="b-name">Lara K.</span><span class="b-svc">Schnitt + Föhn</span></div>
+              <div class="booking-block b-cream"><span class="b-name">Marc H.</span><span class="b-svc">Fade</span></div>
+              <div class="booking-block b-sage"><span class="b-name">Anna M.</span><span class="b-svc">Coloration</span></div>
+            </div>
+            <div class="day-col">
+              <div class="day-label">Mi</div>
+              <div class="booking-block b-butter"><span class="b-name">Sara R.</span><span class="b-svc">Gel-Maniküre</span></div>
+              <div class="booking-block b-emerald"><span class="b-name">Tobias W.</span><span class="b-svc">Bart-Trim</span></div>
+            </div>
+            <div class="day-col">
+              <div class="day-label">Do</div>
+              <div class="booking-block b-bone"><span class="b-name">Eva S.</span><span class="b-svc">Hochsteck</span></div>
+              <div class="booking-block b-cream"><span class="b-name">Niklas B.</span><span class="b-svc">Schnitt</span></div>
+              <div class="booking-block b-sage"><span class="b-name">Sophie L.</span><span class="b-svc">Spa</span></div>
+            </div>
+            <div class="day-col">
+              <div class="day-label">Fr</div>
+              <div class="booking-block b-emerald"><span class="b-name">David K.</span><span class="b-svc">Pflege</span></div>
+              <div class="booking-block b-butter"><span class="b-name">Lena F.</span><span class="b-svc">Balayage</span></div>
+            </div>
+            <div class="day-col">
+              <div class="day-label">Sa</div>
+              <div class="booking-block b-bone"><span class="b-name">Anna M.</span><span class="b-svc">Schnitt</span></div>
+              <div class="booking-block b-emerald"><span class="b-name">Mira L.</span><span class="b-svc">Nail-Art</span></div>
+              <div class="booking-block b-cream"><span class="b-name">Tim O.</span><span class="b-svc">Fade</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating salon preview card (mobile-app feel) -->
+        <div class="floating-card">
+          <div class="float-photo"></div>
+          <div class="float-body">
+            <div class="float-name">Salon Maria</div>
+            <div class="float-rating">
+              <span class="stars-mini">★★★★★</span>
+              <span>5.0 · 247 Bewertungen</span>
+            </div>
+            <div class="float-meta">2.0 km · Kleinbasel</div>
+            <span class="float-status">Sofort buchbar</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<p class="footer-note">Solen tokens (Peace Sans Display + Open Sauce body, emerald `#1F5C42` CTA, terracotta `#C97A57` highlight word, amber stars, cream substrate) applied to Fresha-for-Business layout. Replaces image-left + bullets-right in current <code>WhySolen.tsx</code> with copy-left + product-mockup-right.</p>
+
+</body>
+</html>

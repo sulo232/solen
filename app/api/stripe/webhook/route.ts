@@ -166,14 +166,29 @@ export async function POST(req: NextRequest) {
         // Record commission payout for Stripe-processed bookings
         const grossAmount = (pi.amount ?? 0) / 100; // Rappen → CHF
         if (grossAmount > 0 && pi.metadata?.salon_id) {
-          // Fetch configurable commission rate from platform_settings
-          const { data: commissionSetting } = await admin
-            .from("platform_settings")
-            .select("value")
-            .eq("key", "commission")
-            .single();
-          const commissionPercent = commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
-          const commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
+          // Commission = the ACTUAL application_fee on the PI, NOT a re-derived rate.
+          // booking-pay-intent may have REDUCED application_fee_amount to fund a Solen
+          // Plus member discount (LOYALTY_STRUCTURE.md §12.1); re-deriving rate×gross
+          // here would over-report Solen's commission + under-report the salon's net on
+          // every member booking, and disagree with bookings.platform_fee (written above
+          // from the same pi.application_fee_amount). Mirrors the off-session branch
+          // below. Falls back to the platform rate ONLY on the dev no-Connect
+          // platform-charge path, where the PI carries no application_fee.
+          let commissionAmount: number;
+          let commissionPercent: number;
+          if (pi.application_fee_amount != null) {
+            commissionAmount = Math.round(pi.application_fee_amount) / 100; // Rappen → CHF (real, reduced)
+            commissionPercent =
+              grossAmount > 0 ? Math.round((commissionAmount / grossAmount) * 100 * 100) / 100 : 0;
+          } else {
+            const { data: commissionSetting } = await admin
+              .from("platform_settings")
+              .select("value")
+              .eq("key", "commission")
+              .single();
+            commissionPercent = commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+            commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
+          }
           const netAmount = Math.round((grossAmount - commissionAmount) * 100) / 100;
 
           // Upsert on the unique stripe_payment_intent_id index so a webhook

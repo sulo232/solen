@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen type scale — current vs Uber-aligned</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: #F5F5F4;
+    color: #0A0A0A;
+    line-height: 1.4;
+    font-family: 'Geist', system-ui, sans-serif;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .page-h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .page-lede {
+    margin: 0 0 28px 0;
+    font-size: 14px;
+    color: #6B6B6B;
+    max-width: 720px;
+  }
+  .section-title {
+    margin: 24px 0 12px 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+  }
+  .frames {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .frames { grid-template-columns: 1fr; } }
+  .frame-card {
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .frame-head {
+    padding: 12px 18px;
+    border-bottom: 1px solid #E7E5E4;
+    background: #FAFAFA;
+  }
+  .frame-label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6B6B6B; }
+  .frame-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; margin-top: 2px; }
+  .frame-spec { font-size: 11px; color: #6B6B6B; margin-top: 4px; font-family: ui-monospace, monospace; }
+
+  .phone {
+    width: 100%;
+    min-height: 600px;
+    background: white;
+    padding: 28px 22px;
+  }
+
+  /* ───────────────────── VARIANT A — CURRENT ───────────────────── */
+  .v-current .hero-h1 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 12px 0;
+  }
+  .v-current .sub {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6B6B6B;
+    margin: 0;
+  }
+  .v-current .page-h2 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin: 28px 0 8px 0;
+  }
+  .v-current .section-h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 24px 0 8px 0;
+  }
+  .v-current .subsection-h3 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin: 18px 0 4px 0;
+  }
+  .v-current .body { font-size: 14px; font-weight: 400; color: #6B6B6B; margin: 0; line-height: 1.5; }
+
+  /* ───────────────────── VARIANT B — UBER-ALIGNED ───────────────────── */
+  .v-uber .hero-h1 {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px 0;
+  }
+  .v-uber .sub {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6B6B6B;
+    margin: 0;
+  }
+  .v-uber .page-h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 28px 0 8px 0;
+  }
+  .v-uber .section-h2 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 24px 0 8px 0;
+  }
+  .v-uber .subsection-h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin: 18px 0 4px 0;
+  }
+  .v-uber .body { font-size: 14px; font-weight: 400; color: #6B6B6B; margin: 0; line-height: 1.5; }
+
+  /* ───────────────────── VARIANT C — HYBRID (Uber sections, keep Solen H1) ───────────────────── */
+  .v-hybrid .hero-h1 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 12px 0;
+  }
+  .v-hybrid .sub {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6B6B6B;
+    margin: 0;
+  }
+  .v-hybrid .page-h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 28px 0 8px 0;
+  }
+  .v-hybrid .section-h2 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 24px 0 8px 0;
+  }
+  .v-hybrid .subsection-h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin: 18px 0 4px 0;
+  }
+  .v-hybrid .body { font-size: 14px; font-weight: 400; color: #6B6B6B; margin: 0; line-height: 1.5; }
+
+  .specimen-divider {
+    height: 1px;
+    background: #E7E5E4;
+    margin: 24px 0 0 0;
+  }
+  .role-tag {
+    display: inline-block;
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    color: #9CA3AF;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .verdict {
+    margin-top: 32px;
+    padding: 24px 28px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+  }
+  .verdict h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .verdict p { margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; }
+  .verdict strong { font-weight: 600; }
+  .verdict ul { margin: 8px 0 0 0; padding-left: 20px; font-size: 13px; color: #6B6B6B; }
+  .verdict li { margin-bottom: 4px; }
+  .verdict table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  .verdict th, .verdict td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #E7E5E4; }
+  .verdict th { background: #F5F5F4; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="page-h1">Solen type scale — current vs Uber-aligned</h1>
+  <p class="page-lede">Same 5 text roles (Hero H1, Sub, Page H2, Section H2, Subsection H3) rendered in three scales. Same Geist font, same German copy. Only size + weight change. Look at the three phones side by side and pick which "feel" you want.</p>
+
+  <div class="frames">
+
+    <!-- ─── A · Current ─── -->
+    <div class="frame-card v-current">
+      <div class="frame-head">
+        <div class="frame-label">A · current</div>
+        <div class="frame-name">Solen LOCKFILE today</div>
+        <div class="frame-spec">H1 32 / pgH2 32-800 / secH2 22 / h3 18-700</div>
+      </div>
+      <div class="phone">
+        <div class="role-tag">Hero H1</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Page H2 (/business hero)</div>
+        <h2 class="page-h2">Solen für dein Geschäft.</h2>
+        <p class="body">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Section H2 (Für dich / Services)</div>
+        <h2 class="section-h2">Für dich</h2>
+        <p class="body">Coiffeur · Barber · Nails · Spa · Makeup · Waxing</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Subsection H3 (card title)</div>
+        <h3 class="subsection-h3">Atelier Haarwerk</h3>
+        <p class="body">★ 4.8 · ab 85 CHF · Geöffnet bis 18:00</p>
+      </div>
+    </div>
+
+    <!-- ─── B · Uber-aligned ─── -->
+    <div class="frame-card v-uber">
+      <div class="frame-head">
+        <div class="frame-label">B · uber-aligned</div>
+        <div class="frame-name">Match Uber.com scale</div>
+        <div class="frame-spec">H1 26 / pgH2 22 / secH2 18 / h3 16, all 600</div>
+      </div>
+      <div class="phone">
+        <div class="role-tag">Hero H1</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Page H2 (/business hero)</div>
+        <h2 class="page-h2">Solen für dein Geschäft.</h2>
+        <p class="body">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Section H2 (Für dich / Services)</div>
+        <h2 class="section-h2">Für dich</h2>
+        <p class="body">Coiffeur · Barber · Nails · Spa · Makeup · Waxing</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Subsection H3 (card title)</div>
+        <h3 class="subsection-h3">Atelier Haarwerk</h3>
+        <p class="body">★ 4.8 · ab 85 CHF · Geöffnet bis 18:00</p>
+      </div>
+    </div>
+
+    <!-- ─── C · Hybrid ─── -->
+    <div class="frame-card v-hybrid">
+      <div class="frame-head">
+        <div class="frame-label">C · hybrid · recommended</div>
+        <div class="frame-name">Uber sections, Solen H1</div>
+        <div class="frame-spec">H1 32 (kept) / pgH2 22 / secH2 18 / h3 16, all 600</div>
+      </div>
+      <div class="phone">
+        <div class="role-tag">Hero H1</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Page H2 (/business hero)</div>
+        <h2 class="page-h2">Solen für dein Geschäft.</h2>
+        <p class="body">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Section H2 (Für dich / Services)</div>
+        <h2 class="section-h2">Für dich</h2>
+        <p class="body">Coiffeur · Barber · Nails · Spa · Makeup · Waxing</p>
+
+        <div class="specimen-divider"></div>
+        <div class="role-tag" style="margin-top: 20px;">Subsection H3 (card title)</div>
+        <h3 class="subsection-h3">Atelier Haarwerk</h3>
+        <p class="body">★ 4.8 · ab 85 CHF · Geöffnet bis 18:00</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>Decision needed: A, B, or C</h2>
+    <p><strong>A · Current</strong> — what's on the site right now. Hero stays bold/strong (32). Page H2 huge (32/800). Section H2 mid (22). Subsection H3 chunky (18/700). Read: <em>"every section wants attention"</em>.</p>
+    <p><strong>B · Uber-aligned</strong> — match Uber's scale exactly. Hero shrinks 32→26. Page H2 collapses 32→22 (huge drop). Section H2 trims 22→18. Subsection 18→16. All weights 600. Read: <em>"every section is calm; nothing shouts; the page is a quiet readable list"</em>.</p>
+    <p><strong>C · Hybrid</strong> ← my pick — keeps the Hero H1 at 32 (we just tuned this today and you liked it), but tightens everything else to Uber's restrained scale. Read: <em>"Hero is the one place that shows off; everything below it stays measured."</em></p>
+
+    <h3 style="margin-top: 20px;">Comparison table</h3>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>A · current</th><th>B · uber</th><th>C · hybrid</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hero H1</td><td>32 / 600</td><td>26 / 600</td><td>32 / 600 ← kept</td></tr>
+        <tr><td>Page H2</td><td>32 / 800</td><td>22 / 600</td><td>22 / 600</td></tr>
+        <tr><td>Section H2</td><td>22 / 600</td><td>18 / 600</td><td>18 / 600</td></tr>
+        <tr><td>Subsection H3</td><td>18 / 700</td><td>16 / 600</td><td>16 / 600</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: 16px;"><strong>What changes in the codebase</strong> if you pick B or C:</p>
+    <ul>
+      <li>LOCKFILE §2 typography table — 5 rows updated</li>
+      <li>Hero.tsx — H1 size (B only) — already at 32 for C</li>
+      <li>SalonHeader.tsx — Salon-PDP H1 (always reduced)</li>
+      <li>/business + /partner / /warum-solen page.tsx — Page H2 size</li>
+      <li>Every "Section H2" class — homepage Für dich, salon PDP section headers, etc. ~12 files</li>
+      <li>Every "Subsection H3" — Bento cards, /business feature cards, tile labels. ~8 files</li>
+      <li>Mechanical sweep, ~30 min</li>
+    </ul>
+
+    <p style="margin-top: 16px;"><strong>Pick A, B, or C and I'll execute.</strong></p>
+  </div>
+
+</div>
+</body>
+</html>

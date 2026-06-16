@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — color hierarchy · 3 options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand:       #E58840;
+    --navy:        #142F4A;
+    --cream:       #E9DFC8;
+    --yellow:      #F0C25A;
+    --ink:         #1A1A1A;
+    --ink-2:       #4B4B4B;
+    --ink-3:       #8A8A8A;
+    --border-soft: rgba(0,0,0,0.06);
+    --hanken: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--ink); background: #ECE9E1; -webkit-font-smoothing: antialiased; }
+  body { padding: 32px 16px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 32px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 28px; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .pageHead p { font-size: 13px; line-height: 1.55; color: var(--ink-2); max-width: 64ch; margin: 0 auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; max-width: 1380px; margin: 0 auto; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+  .col { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .colHead { padding: 4px 4px 14px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; background: #F4F2ED; color: var(--ink-2); margin-bottom: 8px; }
+  .badge.rec { background: var(--brand); color: white; }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .colHead .sub { font-size: 11px; color: var(--ink-3); }
+
+  .phone { width: 100%; border-radius: 24px; overflow: hidden; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); }
+
+  /* ---- Reusable phone parts ---- */
+  .pBanner { position: relative; width: 100%; }
+  .pBanner-inner { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px 20px; }
+  .pBanner-text { font-size: 11px; font-weight: 600; }
+  .pBanner-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .pBanner-scoop { position: absolute; inset: auto 0 0 0; height: 12px; background: white; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  .pHeader { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 4px; background: white; }
+  .pLogo { font-family: var(--display); font-size: 20px; font-weight: 800; letter-spacing: -0.015em; color: var(--ink); }
+  .pLogo .dot { color: var(--brand); }
+
+  .pHero { padding: 18px 18px 14px; background: white; }
+  .pHero-title { font-family: var(--display); font-size: 28px; line-height: 0.96; letter-spacing: -0.025em; font-weight: 700; }
+  .pHero-accent { color: var(--brand); display: block; }
+  .pHero-rest { display: block; color: var(--ink); }
+  .pHero-sub { font-size: 12px; color: var(--ink-2); margin-top: 8px; line-height: 1.45; }
+
+  .pSearch { padding: 4px 18px 18px; background: white; }
+  .pSearch-card { background: white; border-radius: 12px; padding: 8px; border: 1px solid var(--border-soft); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+  .pSearch-row { padding: 9px 12px; font-size: 11px; color: var(--ink-3); border: 1px solid var(--border-soft); border-radius: 999px; }
+  .pSearch-row + .pSearch-row { margin-top: 4px; }
+  .pSearch-btn { width: 100%; padding: 11px; border: 0; border-radius: 999px; font-family: var(--hanken); font-size: 12px; font-weight: 700; margin-top: 6px; }
+
+  /* List preview */
+  .pList { padding: 14px 18px 18px; background: white; }
+  .pList-title { font-family: var(--display); font-size: 15px; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .pList-row { display: flex; gap: 8px; overflow-x: hidden; }
+  .pCard { flex-shrink: 0; width: 130px; border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; }
+  .pCard-img { aspect-ratio: 1; background: linear-gradient(135deg, #CCC, #EAEAEA); }
+  .pCard-body { padding: 6px 8px 8px; }
+  .pCard-name { font-size: 10px; font-weight: 700; }
+  .pCard-meta { font-size: 9px; color: var(--ink-3); margin-top: 1px; }
+
+  /* Section spacer (white between bands) */
+  .pSpacer { background: white; padding: 12px 18px; }
+  .pSpacer-text { font-family: var(--display); font-size: 13px; font-weight: 700; }
+
+  /* Featured warm section (option C only) */
+  .pFeat { padding: 18px; background: var(--cream); }
+  .pFeat-label { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brand); margin-bottom: 6px; }
+  .pFeat-title { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -0.015em; color: var(--navy); }
+
+  /* B2B / trust band */
+  .pTrust { padding: 22px 18px; }
+  .pTrust-title { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -0.015em; color: white; margin-bottom: 14px; }
+  .pTrust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pTrust-item .n { font-family: var(--display); font-size: 22px; font-weight: 700; color: white; line-height: 1; }
+  .pTrust-item .l { font-size: 9.5px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+  .pTrust-card { background: white; border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .pTrust-card-h { font-size: 11px; font-weight: 700; color: var(--ink); }
+  .pTrust-card-b { font-size: 9px; color: var(--ink-3); margin-top: 2px; }
+
+  /* CTA outline button used in story zone */
+  .pOutBtn { display: inline-flex; align-items: center; gap: 5px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid currentColor; font-size: 11px; font-weight: 700; }
+
+  /* Notes */
+  .notes { padding: 14px 4px 0; font-size: 11.5px; line-height: 1.55; color: var(--ink-2); }
+  .notes b { color: var(--ink); }
+  .pro { color: #1E7A4A; font-weight: 700; }
+  .con { color: #B33D2C; font-weight: 700; }
+  .palette { display: flex; gap: 4px; margin-top: 8px; }
+  .palette .sw { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+  .pal-label { font-size: 10px; font-weight: 700; color: var(--ink-3); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>Color hierarchy — 3 options</h1>
+  <p>Same Solen homepage shape. Only the COLOR HIERARCHY differs — what's brand, what's action, what's the dark trust band. Goal: pick the assignment where each color has ONE job + navy regains its scarcity.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================== -->
+  <!-- A · Orange brand + Ink actions + Navy trust    -->
+  <!-- ============================================== -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge rec">A · Recommended (Fresha pattern)</span>
+      <h2>Orange brand · Ink actions · Navy trust</h2>
+      <p class="sub">Each color = one job. Most disciplined.</p>
+      <div class="palette">
+        <span class="sw" style="background:#E58840"></span>
+        <span class="sw" style="background:#1A1A1A"></span>
+        <span class="sw" style="background:#142F4A"></span>
+        <span class="sw" style="background:#FFFFFF"></span>
+      </div>
+      <p class="pal-label">orange · ink · navy · white</p>
+    </header>
+    <div class="phone">
+      <div class="pBanner" style="background:#E58840; color:white;">
+        <div class="pBanner-inner">
+          <span class="pBanner-text">Sofort verfügbar · 320 Buchungen heute</span>
+          <span class="pBanner-pill" style="background:white; color:#1A1A1A;">Salons finden →</span>
+        </div>
+        <div class="pBanner-scoop"></div>
+      </div>
+      <div class="pHeader"><div class="pLogo">Solen<span class="dot">.</span></div></div>
+      <div class="pHero">
+        <h1 class="pHero-title">
+          <span class="pHero-accent">Schöner</span>
+          <span class="pHero-rest">aussehen.</span>
+        </h1>
+        <p class="pHero-sub">Über 1'200 verifizierte Salons. Sofort buchbar.</p>
+      </div>
+      <div class="pSearch">
+        <div class="pSearch-card">
+          <div class="pSearch-row">Service</div>
+          <div class="pSearch-row">Stadt</div>
+          <button class="pSearch-btn" style="background:#1A1A1A; color:white;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="pList">
+        <div class="pList-title">In der Nähe</div>
+        <div class="pList-row">
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Le Studio</div><div class="pCard-meta">★ 4.9 · Basel</div></div></div>
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Aura Beauty</div><div class="pCard-meta">★ 4.8 · Basel</div></div></div>
+        </div>
+      </div>
+      <div class="pSpacer">
+        <p style="font-size:11px; color:var(--ink-3);">More feed sections...</p>
+        <a class="pOutBtn" style="margin-top:8px; color:#1A1A1A;">Book Solen Now →</a>
+      </div>
+      <div class="pTrust" style="background:#142F4A;">
+        <h3 class="pTrust-title">Solen für dein Geschäft.</h3>
+        <div class="pTrust-card"><div class="pTrust-card-h">Sofortige Bestätigung</div><div class="pTrust-card-b">23 Sek. Ø</div></div>
+        <div class="pTrust-card"><div class="pTrust-card-h">Voller Kalender</div><div class="pTrust-card-b">Auto-fill</div></div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Why this works:</b> the trust band is the ONLY navy on the page. It hits like a chord change in a song. Orange owns "this is Solen." Ink owns "do this." Three clear jobs.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> max scarcity for navy = B2B section actually lands; brand orange visible at top-of-fold (most-seen real estate); proven pattern (Fresha, Booksy, Treatwell)</p>
+      <p><b class="con">CON:</b> orange banner can feel "loud" first impression (mitigated by the warm/hospitality category — fits)</p>
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- B · Navy brand + Orange actions                 -->
+  <!-- ============================================== -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">B · Inverted</span>
+      <h2>Navy brand · Orange actions · Black trust</h2>
+      <p class="sub">Reverse the roles. Orange becomes the rare "click here" pop.</p>
+      <div class="palette">
+        <span class="sw" style="background:#142F4A"></span>
+        <span class="sw" style="background:#E58840"></span>
+        <span class="sw" style="background:#0F0E0C"></span>
+        <span class="sw" style="background:#FFFFFF"></span>
+      </div>
+      <p class="pal-label">navy · orange · black · white</p>
+    </header>
+    <div class="phone">
+      <div class="pBanner" style="background:#142F4A; color:white;">
+        <div class="pBanner-inner">
+          <span class="pBanner-text">Sofort verfügbar · 320 Buchungen heute</span>
+          <span class="pBanner-pill" style="background:#E58840; color:white;">Salons finden →</span>
+        </div>
+        <div class="pBanner-scoop"></div>
+      </div>
+      <div class="pHeader"><div class="pLogo">Solen<span class="dot">.</span></div></div>
+      <div class="pHero">
+        <h1 class="pHero-title">
+          <span class="pHero-accent">Schöner</span>
+          <span class="pHero-rest">aussehen.</span>
+        </h1>
+        <p class="pHero-sub">Über 1'200 verifizierte Salons. Sofort buchbar.</p>
+      </div>
+      <div class="pSearch">
+        <div class="pSearch-card">
+          <div class="pSearch-row">Service</div>
+          <div class="pSearch-row">Stadt</div>
+          <button class="pSearch-btn" style="background:#E58840; color:white;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="pList">
+        <div class="pList-title">In der Nähe</div>
+        <div class="pList-row">
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Le Studio</div><div class="pCard-meta">★ 4.9 · Basel</div></div></div>
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Aura Beauty</div><div class="pCard-meta">★ 4.8 · Basel</div></div></div>
+        </div>
+      </div>
+      <div class="pSpacer">
+        <p style="font-size:11px; color:var(--ink-3);">More feed sections...</p>
+        <a class="pOutBtn" style="margin-top:8px; color:#E58840;">Book Solen Now →</a>
+      </div>
+      <div class="pTrust" style="background:#0F0E0C;">
+        <h3 class="pTrust-title">Solen für dein Geschäft.</h3>
+        <div class="pTrust-card"><div class="pTrust-card-h">Sofortige Bestätigung</div><div class="pTrust-card-b">23 Sek. Ø</div></div>
+        <div class="pTrust-card"><div class="pTrust-card-h">Voller Kalender</div><div class="pTrust-card-b">Auto-fill</div></div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Why this works:</b> orange becomes the "actionable" color. Every orange element on the page = "you can click this." Banner navy = the brand's grounded identity.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> banner stays calm (your concern about too-loud orange first impression solved); orange becomes signal-rich (rare = meaningful); trust band uses pure black not navy = navy keeps top-of-page exclusivity</p>
+      <p><b class="con">CON:</b> wellness brands rarely lead with navy (feels more fintech / law firm); orange CTAs in a dense feed start to look like "buy now"-spam if not balanced</p>
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- C · Layered — Orange + Cream + Navy             -->
+  <!-- ============================================== -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">C · Layered warmth</span>
+      <h2>Orange brand · Cream warm break · Ink action · Navy trust</h2>
+      <p class="sub">Uses palette swatch 5 (cream) for ONE warm break = more rhythm.</p>
+      <div class="palette">
+        <span class="sw" style="background:#E58840"></span>
+        <span class="sw" style="background:#E9DFC8"></span>
+        <span class="sw" style="background:#1A1A1A"></span>
+        <span class="sw" style="background:#142F4A"></span>
+      </div>
+      <p class="pal-label">orange · cream · ink · navy</p>
+    </header>
+    <div class="phone">
+      <div class="pBanner" style="background:#E58840; color:white;">
+        <div class="pBanner-inner">
+          <span class="pBanner-text">Sofort verfügbar · 320 Buchungen heute</span>
+          <span class="pBanner-pill" style="background:white; color:#1A1A1A;">Salons finden →</span>
+        </div>
+        <div class="pBanner-scoop"></div>
+      </div>
+      <div class="pHeader"><div class="pLogo">Solen<span class="dot">.</span></div></div>
+      <div class="pHero">
+        <h1 class="pHero-title">
+          <span class="pHero-accent">Schöner</span>
+          <span class="pHero-rest">aussehen.</span>
+        </h1>
+        <p class="pHero-sub">Über 1'200 verifizierte Salons. Sofort buchbar.</p>
+      </div>
+      <div class="pSearch">
+        <div class="pSearch-card">
+          <div class="pSearch-row">Service</div>
+          <div class="pSearch-row">Stadt</div>
+          <button class="pSearch-btn" style="background:#1A1A1A; color:white;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="pList">
+        <div class="pList-title">In der Nähe</div>
+        <div class="pList-row">
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Le Studio</div><div class="pCard-meta">★ 4.9 · Basel</div></div></div>
+          <div class="pCard"><div class="pCard-img"></div><div class="pCard-body"><div class="pCard-name">Aura Beauty</div><div class="pCard-meta">★ 4.8 · Basel</div></div></div>
+        </div>
+      </div>
+      <!-- The cream warmth section -->
+      <div class="pFeat">
+        <div class="pFeat-label">Journal · Folge 03</div>
+        <h3 class="pFeat-title">Wie Schweizer Spitzensalons ihre Auslastung verdoppeln.</h3>
+      </div>
+      <div class="pSpacer">
+        <p style="font-size:11px; color:var(--ink-3);">More feed sections...</p>
+        <a class="pOutBtn" style="margin-top:8px; color:#1A1A1A;">Book Solen Now →</a>
+      </div>
+      <div class="pTrust" style="background:#142F4A;">
+        <h3 class="pTrust-title">Solen für dein Geschäft.</h3>
+        <div class="pTrust-card"><div class="pTrust-card-h">Sofortige Bestätigung</div><div class="pTrust-card-b">23 Sek. Ø</div></div>
+        <div class="pTrust-card"><div class="pTrust-card-h">Voller Kalender</div><div class="pTrust-card-b">Auto-fill</div></div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Why this works:</b> A + a single cream "editorial / warmth" section breaks the white-monotony. Navy still gets scarcity. Orange still owns brand. Cream is your 4th color tier — used once = means "feature / story."</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> uses palette swatch 5 (cream) which is currently dormant; adds editorial warmth (right for wellness category); 3 distinct color "moments" = better scroll rhythm than A's 2</p>
+      <p><b class="con">CON:</b> 4 colors to coordinate; cream section content must EARN its dedicated bg (you need a "Journal / Story" section that actually exists, not just decorative)</p>
+    </div>
+  </section>
+
+</div>
+
+<aside style="max-width: 920px; margin: 32px auto 0; background: white; border-radius: 16px; padding: 22px 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05);">
+  <p style="font-family: var(--display); font-size: 15px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 10px;">My pick: <span style="color:var(--brand);">Option A</span></p>
+  <p style="font-size: 12.5px; line-height: 1.5; color: var(--ink-2);">
+    A is the most disciplined version of what you already have. Each of the 4 colors does ONE job. Navy is exclusive to BentoBusiness (where it belongs), so it actually reads as "trust band" when you scroll there. Orange owns the banner = brand presence. Ink owns the CTAs = action contrast.
+  </p>
+  <p style="font-size: 12.5px; line-height: 1.5; color: var(--ink-2); margin-top: 10px;">
+    <b>B is a strong alternative if</b> you want orange to mean "click this" instead of "this is Solen." Wellness platforms rarely choose this — but if Solen wants to position more "Swiss precision tool" than "Swiss self-care," B could work.
+  </p>
+  <p style="font-size: 12.5px; line-height: 1.5; color: var(--ink-2); margin-top: 10px;">
+    <b>C is A+1 layer</b> (cream-bg editorial section). Useful ONLY if you have actual editorial / story content that justifies its own surface. If the cream section would be empty decoration, skip it — go A.
+  </p>
+  <p style="font-size: 11.5px; line-height: 1.5; color: var(--ink-3); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-soft);">
+    Honest pushback per rule #3 — if I'm wrong, A risks feeling "Hims/Fresha cloned." If you want Solen to be distinctly NOT-like-them, B or C give more singular identity. A is the safe expert pick. B is the contrarian pick. C is the editorial pick.
+  </p>
+</aside>
+
+</body>
+</html>

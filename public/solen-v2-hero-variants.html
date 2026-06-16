@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen Hero — 3 variants</title>
+
+  <!-- Same font loading as the live app -->
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: #1A1209;
+      min-height: 100vh;
+      padding-bottom: 80px;
+      /* Atmosphere wash matching live site */
+      background:
+        radial-gradient(circle at 15% 20%, rgba(193, 240, 241, 0.65) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(255, 233, 217, 0.50) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(193, 240, 241, 0.45) 0%, transparent 60%),
+        #FFFFFF;
+    }
+    .panel {
+      max-width: 420px;          /* Phone-width column */
+      margin: 0 auto;
+      padding: 64px 20px 40px;
+      border-bottom: 1px dashed rgba(4, 51, 56, 0.18);
+    }
+    .label {
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #043338;
+      background: #fff;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(4, 51, 56, 0.18);
+      margin-bottom: 24px;
+    }
+    .label small {
+      display: block;
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: none;
+      color: rgba(26, 18, 9, 0.6);
+      margin-top: 2px;
+    }
+    .eyebrow {
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(26, 18, 9, 0.55);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      display: block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #043338;
+    }
+    .h1-peace {
+      font-family: "Peace Sans", Impact, "Arial Narrow Bold", sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      color: #1A1209;
+    }
+    .h1-sans {
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      color: #1A1209;
+    }
+    .brand { color: #043338; }
+
+    /* ── Variant A: smaller font ──────────────────────────── */
+    .v-small h1 {
+      font-size: clamp(28px, 5vw, 64px);
+      line-height: 1.2;
+    }
+
+    /* ── Variant B: shorter copy + subtitle ─────────────────── */
+    .v-short h1 {
+      font-size: clamp(40px, 7vw, 96px);
+      line-height: 1.05;
+    }
+    .v-short .subtitle {
+      margin-top: 14px;
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-size: clamp(15px, 2.2vw, 19px);
+      font-weight: 500;
+      line-height: 1.4;
+      color: rgba(26, 18, 9, 0.7);
+      max-width: 360px;
+    }
+
+    /* ── Variant C: sans h1 ────────────────────────────────── */
+    .v-sans h1 {
+      font-size: clamp(36px, 6vw, 80px);
+      line-height: 1.05;
+    }
+
+    /* ── Reference (current live state) ────────────────────── */
+    .v-current h1 {
+      font-size: clamp(40px, 7vw, 96px);
+      line-height: 1.6;
+    }
+
+    /* Search card stub ───────────────────────────────────── */
+    .search-card {
+      margin-top: 28px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 4px 12px rgba(4, 51, 56, 0.08);
+      padding: 16px 14px 18px;
+    }
+    .search-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 4px;
+      border-bottom: 1px solid rgba(4, 51, 56, 0.08);
+      font-size: 16px;
+      color: rgba(26, 18, 9, 0.55);
+    }
+    .search-row:last-of-type { border-bottom: 0; }
+    .search-row .icon { width: 20px; height: 20px; opacity: 0.5; }
+    .search-row .sep { width: 1px; height: 16px; background: rgba(4, 51, 56, 0.18); }
+    .submit {
+      margin-top: 10px;
+      width: 100%;
+      background: #043338;
+      color: #fff;
+      border: 0;
+      padding: 18px;
+      border-radius: 999px;
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .toc {
+      max-width: 420px;
+      margin: 32px auto 0;
+      padding: 16px 20px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(26, 18, 9, 0.7);
+    }
+    .toc strong { color: #1A1209; }
+  </style>
+</head>
+<body>
+
+  <div class="toc">
+    <strong>3 hero variants — pick what reads best.</strong><br />
+    Each panel mimics the live site's mobile width. Scroll through and tell me <strong>A · B · C · or current</strong>.
+  </div>
+
+  <!-- ─── Current (reference) ──────────────────────────────────── -->
+  <section class="panel v-current">
+    <span class="label">CURRENT (LIVE) <small>Peace Sans · clamp(40,7vw,96) · leading 1.6</small></span>
+    <span class="eyebrow">Beauty in der Schweiz</span>
+    <h1 class="h1-peace">Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+    <div class="search-card">
+      <div class="search-row"><span class="icon">⌕</span><span class="sep"></span>Service</div>
+      <div class="search-row"><span class="icon">⌖</span><span class="sep"></span>Stadt</div>
+      <div class="search-row"><span class="icon">▦</span><span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+  <!-- ─── Variant A: smaller font ──────────────────────────────── -->
+  <section class="panel v-small">
+    <span class="label">A · SMALLER FONT <small>Peace Sans · clamp(28,5vw,64) · leading 1.2</small></span>
+    <span class="eyebrow">Beauty in der Schweiz</span>
+    <h1 class="h1-peace">Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+    <div class="search-card">
+      <div class="search-row"><span class="icon">⌕</span><span class="sep"></span>Service</div>
+      <div class="search-row"><span class="icon">⌖</span><span class="sep"></span>Stadt</div>
+      <div class="search-row"><span class="icon">▦</span><span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+  <!-- ─── Variant B: shorter copy + subtitle ───────────────────── -->
+  <section class="panel v-short">
+    <span class="label">B · SHORTER COPY <small>Peace Sans · 2-line h1 + subtitle · leading 1.05</small></span>
+    <span class="eyebrow">Beauty in der Schweiz</span>
+    <h1 class="h1-peace">Schneller<br /><span class="brand">buchen</span>.</h1>
+    <p class="subtitle">Schöner aussehen — bei den besten Salons der Schweiz.</p>
+    <div class="search-card">
+      <div class="search-row"><span class="icon">⌕</span><span class="sep"></span>Service</div>
+      <div class="search-row"><span class="icon">⌖</span><span class="sep"></span>Stadt</div>
+      <div class="search-row"><span class="icon">▦</span><span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+  <!-- ─── Variant C: sans h1 (Open Sauce One 900) ─────────────── -->
+  <section class="panel v-sans">
+    <span class="label">C · SANS H1 <small>Open Sauce One 900 · clamp(36,6vw,80) · leading 1.05</small></span>
+    <span class="eyebrow">Beauty in der Schweiz</span>
+    <h1 class="h1-sans">Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+    <div class="search-card">
+      <div class="search-row"><span class="icon">⌕</span><span class="sep"></span>Service</div>
+      <div class="search-row"><span class="icon">⌖</span><span class="sep"></span>Stadt</div>
+      <div class="search-row"><span class="icon">▦</span><span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+</body>
+</html>

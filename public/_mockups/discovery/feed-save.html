@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · Feed + Save to lookbook</title>
+<!--
+  Exists-check: the feed (masonry of look cards) ALREADY renders via app/[locale]/discover/page.tsx + components-legacy/discovery/{MasonryGrid,ItemCard,VideoCard}.tsx;
+  SaveToBoardSheet.tsx + /discover/saved ALSO exist (npm run exists save). REMOVED hit: /account/saved (different "saved salons" page, orphaned dup) , N/A here.
+  NEW: the save-to-board GESTURE reachable FROM a feed tile (audit said the sheet exists but a tile can't open it) + the refined card consistent with the detail-page kit.
+  Real look images (live thumbs), English, copy-economy applied. Board names = illustrative picker UI, no fabricated counts.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --bg:#FFFFFF; --blue:#276EF1; --r-card:16px; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  .phone svg{width:18px; height:18px;}
+  .status .ic svg{width:16px;height:16px;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:30px 20px 70px;}
+  .head{max-width:1000px; margin:0 auto 24px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.55; max-width:720px;}
+  .stage{display:flex; gap:40px; justify-content:center; align-items:flex-start; flex-wrap:wrap;}
+  .col{width:392px;}
+  .cap{margin:0 2px 14px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:8px;}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:17px; margin:0 0 4px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+
+  .phone{width:392px; background:#fff; border-radius:42px; overflow:hidden; border:1px solid #d6d6db;
+    box-shadow:0 30px 60px -26px rgba(10,10,10,.30), 0 8px 18px -10px rgba(10,10,10,.16);}
+  .screen{position:relative; height:780px; overflow:hidden; background:#fff;}
+  .scroll{position:absolute; inset:0; overflow-y:auto;} .scroll::-webkit-scrollbar{width:0;}
+  .status{height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 28px; color:var(--ink);}
+  .status .t{font-weight:600; font-size:15px;} .status .ic{display:flex; gap:7px;}
+  .appbar{display:flex; align-items:center; justify-content:space-between; padding:2px 18px 12px;}
+  .appbar h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0;}
+  .appbar .r{display:flex; gap:10px;}
+  .appbar .ic{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink);}
+  .searchbar{display:flex; align-items:center; gap:8px; margin:0 18px 12px; padding:11px 14px; background:var(--sunken); border-radius:999px; color:var(--ink-3); font-size:14px;}
+  .searchbar svg{width:17px;height:17px;}
+  .chips{display:flex; gap:8px; overflow-x:auto; padding:0 18px 14px; }
+  .chips::-webkit-scrollbar{height:0;}
+  .chip{flex:0 0 auto; font-size:12.5px; font-weight:500; padding:8px 14px; border-radius:999px; background:var(--sunken); color:var(--ink); white-space:nowrap;}
+  .chip.on{background:var(--ink); color:#fff;}
+
+  .feed{column-count:2; column-gap:7px; padding:0 7px 24px;}
+  .cardw{break-inside:avoid; margin-bottom:7px; animation:rise .5s cubic-bezier(.22,.61,.36,1) both;}
+  .ph{position:relative; border-radius:var(--r-card); overflow:hidden; background:#161616;}
+  .ph img{width:100%; display:block;}
+  .ph .save{position:absolute; top:8px; right:8px; width:32px; height:32px; border-radius:999px; background:rgba(255,255,255,.92); display:grid; place-items:center; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.18);}
+  .ph .save svg{width:16px;height:16px;color:var(--ink);}
+  .ph .play{position:absolute; left:8px; top:8px; width:26px;height:26px;border-radius:999px;background:rgba(255,255,255,.85);display:grid;place-items:center;}
+  .ph .play svg{width:13px;height:13px;color:var(--ink);}
+  .ph .tg{position:absolute; left:8px; bottom:8px; max-width:80%; font-size:11.5px; font-weight:500; color:var(--ink); background:rgba(255,255,255,.92); padding:3px 9px; border-radius:999px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .meta{display:flex; align-items:center; gap:6px; margin:7px 3px 1px; font-size:12px; color:var(--ink-3);}
+  .meta .pr{color:var(--ink-2); font-weight:500;}
+
+  @keyframes rise{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
+  @keyframes up{from{transform:translateY(100%)} to{transform:translateY(0)}}
+
+  /* save-to-board sheet */
+  .scrim{position:absolute; inset:0; background:rgba(10,10,10,.42); z-index:30; animation:fade .25s ease both;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{position:absolute; left:0; right:0; bottom:0; z-index:40; background:#fff; border-radius:28px 28px 0 0; padding:10px 18px 26px; animation:up .34s cubic-bezier(.22,.61,.36,1) both; box-shadow:0 -12px 30px -14px rgba(0,0,0,.25);}
+  .grab{width:38px; height:5px; border-radius:999px; background:var(--line); margin:2px auto 14px;}
+  .sheet h3{font-family:'Inter Tight'; font-weight:700; font-size:18px; letter-spacing:-.01em; margin:0 0 14px; text-align:center;}
+  .newrow{display:flex; align-items:center; gap:12px; padding:10px 0 16px; cursor:pointer;}
+  .newrow .pl{width:52px;height:52px;border-radius:13px;background:var(--sunken);display:grid;place-items:center;color:var(--ink);}
+  .newrow .pl svg{width:22px;height:22px;}
+  .newrow .t{font-size:15px; font-weight:600; letter-spacing:-.01em;}
+  .brow{display:flex; align-items:center; gap:12px; padding:9px 0; cursor:pointer; border-top:1px solid var(--line);}
+  .brow .cov{width:52px;height:52px;border-radius:13px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:#161616;flex:0 0 auto;}
+  .brow .cov img{width:100%;height:100%;object-fit:cover;display:block;}
+  .brow .t{flex:1; font-size:15px; font-weight:600; letter-spacing:-.01em;}
+  .brow .ck{width:24px;height:24px;border-radius:999px;border:1.5px solid var(--line);display:grid;place-items:center;flex:0 0 auto;}
+  .brow.sel .ck{background:var(--ink);border-color:var(--ink);}
+  .brow.sel .ck svg{width:14px;height:14px;color:#fff;}
+  .brow:not(.sel) .ck svg{display:none;}
+  .toast{position:absolute; left:16px; right:16px; bottom:18px; z-index:50; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:11px 16px; box-shadow:0 10px 30px -10px rgba(0,0,0,.25); animation:up .3s cubic-bezier(.22,.61,.36,1) both;}
+  .toast .dot{width:22px;height:22px;border-radius:999px;background:#16A34A;display:grid;place-items:center;flex:0 0 auto;}
+  .toast .dot svg{width:14px;height:14px;color:#fff;}
+  .toast .t{flex:1; font-size:13.5px; font-weight:500;}
+  .toast .a{font-size:13.5px; font-weight:600; color:var(--blue);}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discovery · Feed + Save to lookbook</h1>
+    <p>The feed cards stay as they are (already the clean reference grammar). The new bit is the missing Pinterest gesture: tapping save on any tile opens the <b>Save to lookbook</b> sheet right there. No trip to a separate page. Lookbooks shown are example picker UI.</p>
+  </div>
+
+  <div class="stage">
+    <div class="col">
+      <div class="cap"><span class="tag">A · The feed</span><h2>Tap save on any tile</h2><p>Masonry of looks. The heart on each card is the save affordance; today it just toggles a like, it should open the lookbook picker.</p></div>
+      <div class="phone"><div class="screen" id="feedScreen"></div></div>
+    </div>
+    <div class="col">
+      <div class="cap"><span class="tag">B · Save to lookbook</span><h2>Pick a lookbook (or make one)</h2><p>Sheet slides up over the feed. Choose a board, create a new one, done. Then a confirming toast. Drag-grabber to dismiss.</p></div>
+      <div class="phone"><div class="screen" id="saveScreen"></div></div>
+    </div>
+  </div>
+
+<script>
+const FEED=[
+  {id:"65afc1af-59d7-40fb-85a3-86220d616d6e",tg:"Butterfly shag",cr:"rissa",pr:90},
+  {id:"c0b9fba3-29ca-4262-a7e3-f281f8f97640",tg:"Taper fade",cr:"ebthatbarber",pr:null,v:1},
+  {id:"59b33979-5dd8-4845-8636-972a378b8358",tg:"Wolf cut",cr:"Zoe O’Day",pr:85},
+  {id:"46d2da15-2184-4c57-a4f9-52b0efed853a",tg:"French crop",cr:"neno.blends",pr:55,v:1},
+  {id:"d4778f74-e56c-44a9-91d6-97a2fbf007de",tg:"Shag",cr:"koirine",pr:75},
+  {id:"ac75cb12-1deb-4f06-9546-bfe1d044d5cf",tg:"Wolf cut",cr:"punpun",pr:180},
+  {id:"0ea9d957-c536-44a5-bbfd-fc86ffd3e717",tg:"Low taper",cr:"luis",pr:55,v:1},
+  {id:"13a233cd-b202-46ac-a90a-a7194a3fda5f",tg:"Butterfly cut",cr:"Nana",pr:80},
+  {id:"c52bc8b3-b467-4848-8628-3b5d68ca33a0",tg:"Scissor crop",cr:"HglBlendzz",pr:null,v:1},
+  {id:"0cb54bc2-7127-4b65-a256-bb8684a3f648",tg:"Hime cut",cr:"nathalie ayotte",pr:80},
+];
+const BOARDS=[
+  {name:"Fades & crops", sel:true, covers:["c0b9fba3-29ca-4262-a7e3-f281f8f97640","46d2da15-2184-4c57-a4f9-52b0efed853a","0ea9d957-c536-44a5-bbfd-fc86ffd3e717","c52bc8b3-b467-4848-8628-3b5d68ca33a0"]},
+  {name:"Wolf cuts", covers:["ac75cb12-1deb-4f06-9546-bfe1d044d5cf","59b33979-5dd8-4845-8636-972a378b8358","d4778f74-e56c-44a9-91d6-97a2fbf007de","65afc1af-59d7-40fb-85a3-86220d616d6e"]},
+  {name:"Color ideas", covers:["0cb54bc2-7127-4b65-a256-bb8684a3f648","13a233cd-b202-46ac-a90a-a7194a3fda5f","ac75cb12-1deb-4f06-9546-bfe1d044d5cf","59b33979-5dd8-4845-8636-972a378b8358"]},
+];
+const T=id=>`/api/discovery/thumb/${id}`;
+
+function statusBar(){return `<div class="status"><div class="t">9:41</div><div class="ic"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div></div>`;}
+function feedChrome(){
+  return `${statusBar()}
+    <div class="appbar"><h1>Discover</h1><div class="r"><div class="ic"><i data-lucide="sliders-horizontal"></i></div><div class="ic"><i data-lucide="bookmark"></i></div></div></div>
+    <div class="searchbar"><i data-lucide="search"></i> Search styles</div>
+    <div class="chips"><span class="chip on">All</span><span class="chip">Fade</span><span class="chip">Wolf cut</span><span class="chip">Shag</span><span class="chip">Crop</span></div>`;
+}
+function feedGrid(stagger){
+  return `<div class="feed">${FEED.map((f,i)=>`
+    <div class="cardw" style="animation-delay:${stagger?(i*0.04).toFixed(2):0}s">
+      <div class="ph">
+        <img src="${T(f.id)}" alt="" onerror="this.style.aspectRatio='3/4'">
+        <div class="save"><i data-lucide="heart"></i></div>
+        ${f.v?`<div class="play"><i data-lucide="play"></i></div>`:``}
+        <div class="tg">${f.tg}</div>
+      </div>
+      <div class="meta">@${f.cr}${f.pr?`<span>·</span><span class="pr">from CHF ${f.pr}</span>`:``}</div>
+    </div>`).join("")}</div>`;
+}
+
+// A: the feed
+document.getElementById("feedScreen").insertAdjacentHTML("beforeend", `<div class="scroll">${feedChrome()}${feedGrid(true)}</div>`);
+
+// B: feed (dimmed) + save sheet + toast
+const sheet = `
+  <div class="scrim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>Save to lookbook</h3>
+    <div class="newrow"><div class="pl"><i data-lucide="plus"></i></div><div class="t">New lookbook</div></div>
+    ${BOARDS.map(b=>`
+      <div class="brow ${b.sel?'sel':''}">
+        <div class="cov">${b.covers.map(c=>`<img src="${T(c)}" alt="">`).join("")}</div>
+        <div class="t">${b.name}</div>
+        <div class="ck"><i data-lucide="check"></i></div>
+      </div>`).join("")}
+  </div>`;
+document.getElementById("saveScreen").insertAdjacentHTML("beforeend", `<div class="scroll" style="overflow:hidden">${feedChrome()}${feedGrid(false)}</div>${sheet}`);
+
+lucide.createIcons();
+</script>
+</body>
+</html>

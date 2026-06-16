@@ -5895,5 +5895,32 @@
     "unreadDot": "Non lue",
     "emptyTitle": "Aucune notification",
     "emptyBody": "Les mises à jour de vos réservations, remboursements et avis apparaissent ici."
+  },
+  "rewards": {
+    "yourStatus": "Votre statut",
+    "tier_base": "Base",
+    "tier_gold": "Gold",
+    "tier_platinum": "Platinum",
+    "toNext": "{n} visites jusqu'à {tier}",
+    "topTier": "Vous êtes au niveau maximal",
+    "ofVisits": "{n} sur {total} visites",
+    "visitsCount": "{n} visites",
+    "windowNote": "Basé sur vos visites de l'année écoulée.",
+    "perksTitle": "Vos avantages",
+    "active": "Actif",
+    "perk_birthday_t": "Priorité semaine d'anniversaire",
+    "perk_birthday_s": "Soyez vu pendant votre semaine d'anniversaire",
+    "howTitle": "Comment fonctionne le statut",
+    "howBody": "Votre statut dépend de vos visites terminées de l'année écoulée dans n'importe quel salon Solen. {gold} visites pour Gold, {platinum} pour Platinum. Si vous ne réservez plus, il baisse lentement, un niveau à la fois.",
+    "cta": "Réservez pour garder votre statut",
+    "validThrough": "Valable jusqu'au {date}. Réservez pour garder votre statut.",
+    "perk_angebote_t": "Accès anticipé aux Angebote",
+    "perk_angebote_s": "Voyez les offres 24 h avant tout le monde",
+    "perk_memberDeals_t": "Offres réservées aux membres",
+    "perk_memberDeals_s": "Des offres rien que pour les membres",
+    "perk_slots_t": "Accès anticipé aux créneaux prisés",
+    "perk_slots_s": "Réservez les meilleurs horaires en premier",
+    "perk_angebote48_t": "48 heures d'avance",
+    "perk_angebote48_s": "Accès encore plus tôt aux offres et créneaux"
   }
 }

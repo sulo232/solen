@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Entdecken — Size balance audit (before/after)</title>
+<style>
+  /* ——— V3 tokens (subset, mirrored from tailwind.config.js) ——— */
+  :root {
+    --s-brand:        #1F5C42;
+    --s-brand-pale:   #A8CFB8;
+    --s-brand-subtle: #D4EBD9;
+    --s-brand-mid:    #0F3D26;
+    --s-brand-deep:   #0A2917;
+    --s-accent:       #C97A57;
+    --s-ink:          #1A1209;
+    --s-ink-2:        #4A3F35;
+    --s-ink-3:        #6B6055;
+    --s-bg-base:      #F5EBDD;
+    --s-bg-sunken:    #F8F0E2;
+    --gold-pill:      #C99B6A;
+    --love:           #FF4A6B;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--s-bg-base);
+    color: var(--s-ink);
+    padding: 32px 24px 64px;
+    line-height: 1.4;
+  }
+
+  .doc-title {
+    font-weight: 900; font-size: 32px; letter-spacing: -0.02em; margin: 0 0 4px;
+  }
+  .doc-deck { color: var(--s-ink-2); margin: 0 0 32px; max-width: 720px; }
+  .legend {
+    display: inline-flex; gap: 16px; padding: 12px 16px;
+    background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px;
+    margin-bottom: 32px; font-size: 13px;
+  }
+  .legend strong { font-weight: 700; }
+
+  .group-title {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.01em;
+    margin: 40px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ——— Panels ——— */
+  .panel-grid-mobile {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+    align-items: start;
+  }
+  .panel-grid-desktop {
+    display: grid; grid-template-columns: 1fr; gap: 24px;
+  }
+  @media (min-width: 1100px) {
+    .panel-grid-desktop { grid-template-columns: repeat(2, 1fr); }
+  }
+  .panel {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .panel-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .panel-label.before { background: rgba(0,0,0,0.06); color: var(--s-ink-2); }
+  .panel-label.after  { background: var(--s-brand-subtle); color: var(--s-brand-mid); }
+
+  /* ——— Phone frame ——— */
+  .phone {
+    width: 100%; max-width: 350px; margin: 0 auto;
+    background: linear-gradient(135deg, #E8DDC9 0%, #D4EBD9 100%);
+    padding: 16px 12px;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .phone-section-title {
+    font-weight: 900; font-size: 22px; letter-spacing: -0.02em;
+    line-height: 1.05; margin: 0 0 12px;
+  }
+  .phone-section-meta {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .phone-section-link {
+    color: var(--s-brand); font-size: 13px; font-weight: 600;
+  }
+  .scroll-row {
+    display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px;
+    margin: 0 -12px; padding-left: 12px; padding-right: 12px;
+    scrollbar-width: none;
+  }
+  .scroll-row::-webkit-scrollbar { display: none; }
+
+  /* ——— Card base ——— */
+  .card {
+    flex-shrink: 0;
+    aspect-ratio: 9/16;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-bg {
+    position: absolute; inset: 0;
+  }
+  .card-bg::after {
+    /* legibility gradient */
+    content: ''; position: absolute; inset-inline: 0; bottom: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ——— Card BEFORE (mobile) ——— */
+  .card.mobile-before {
+    width: calc(44vw); max-width: 165px;
+    border-radius: 16px;
+  }
+  .card.mobile-before .source-pill {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(201,155,106,0.85); backdrop-filter: blur(6px);
+    color: white; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .card.mobile-before .icon-pill {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    padding: 4px 8px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .card.mobile-before .icon-pill svg { width: 14px; height: 14px; color: white; }
+  .card.mobile-before .play-btn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: grid; place-items: center;
+  }
+  .card.mobile-before .play-btn svg { width: 16px; height: 16px; color: white; margin-left: 2px; }
+  .card.mobile-before .name-pill {
+    position: absolute; bottom: 8px; left: 8px; right: 8px;
+  }
+  .card.mobile-before .name-pill > span {
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    color: white; font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 999px;
+    display: inline-block; max-width: 80%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ——— Card AFTER (mobile) ——— */
+  .card.mobile-after {
+    width: calc(44vw); max-width: 165px;
+    border-radius: 18px;
+  }
+  .card.mobile-after .source-pill {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(201,155,106,0.85); backdrop-filter: blur(6px);
+    color: white; font-size: 10px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .card.mobile-after .icon-pill {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    padding: 4px 8px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .card.mobile-after .icon-pill svg { width: 14px; height: 14px; color: white; }
+  .card.mobile-after .play-btn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: grid; place-items: center;
+  }
+  .card.mobile-after .play-btn svg { width: 18px; height: 18px; color: white; margin-left: 2px; }
+  .card.mobile-after .name-pill {
+    position: absolute; bottom: 8px; left: 8px; right: 8px;
+  }
+  .card.mobile-after .name-pill > span {
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    color: white; font-size: 11px; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px;
+    display: inline-block; max-width: 82%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ——— Desktop frame ——— */
+  .desktop-shell {
+    background: linear-gradient(135deg, #E8DDC9 0%, #D4EBD9 100%);
+    padding: 28px 24px;
+    border-radius: 16px;
+  }
+  .desktop-section-title {
+    font-weight: 900; font-size: 32px; letter-spacing: -0.02em;
+    line-height: 1; margin: 0 0 16px;
+  }
+  .desktop-section-meta {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .desktop-section-link {
+    color: var(--s-brand); font-size: 14px; font-weight: 600;
+  }
+  .scroll-row.desktop {
+    margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+  }
+
+  /* ——— Card BEFORE (desktop, max-w 200) ——— */
+  .card.desktop-before {
+    width: 200px;
+    border-radius: 16px;
+  }
+  .card.desktop-before .source-pill {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(201,155,106,0.85); backdrop-filter: blur(6px);
+    color: white; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .card.desktop-before .icon-pill {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    padding: 4px 8px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .card.desktop-before .icon-pill svg { width: 14px; height: 14px; color: white; }
+  .card.desktop-before .play-btn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: grid; place-items: center;
+  }
+  .card.desktop-before .play-btn svg { width: 16px; height: 16px; color: white; margin-left: 2px; }
+  .card.desktop-before .name-pill {
+    position: absolute; bottom: 8px; left: 8px; right: 8px;
+  }
+  .card.desktop-before .name-pill > span {
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    color: white; font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 999px;
+    display: inline-block; max-width: 80%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ——— Card AFTER (desktop, max-w 240) ——— */
+  .card.desktop-after {
+    width: 240px;
+    border-radius: 18px;
+  }
+  .card.desktop-after .source-pill {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(201,155,106,0.85); backdrop-filter: blur(6px);
+    color: white; font-size: 11px; font-weight: 600;
+    padding: 5px 11px; border-radius: 999px;
+  }
+  .card.desktop-after .icon-pill {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    padding: 5px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .card.desktop-after .icon-pill svg { width: 16px; height: 16px; color: white; }
+  .card.desktop-after .play-btn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: grid; place-items: center;
+  }
+  .card.desktop-after .play-btn svg { width: 20px; height: 20px; color: white; margin-left: 2px; }
+  .card.desktop-after .name-pill {
+    position: absolute; bottom: 10px; left: 10px; right: 10px;
+  }
+  .card.desktop-after .name-pill > span {
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    color: white; font-size: 12px; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px;
+    display: inline-block; max-width: 82%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ——— Center-zoom (active card highlight) ——— */
+  .card.zoom-active { transform: scale(1.03); opacity: 1; transition: transform 250ms; }
+  .card.zoom-side   { transform: scale(0.95); opacity: 0.8; transition: transform 250ms; }
+
+  /* ——— Annotations ——— */
+  .anno-list {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: rgba(31,92,66,0.06);
+    border-left: 3px solid var(--s-brand);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .anno-list h4 {
+    margin: 0 0 4px; font-size: 12px; font-weight: 800;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--s-brand-mid);
+  }
+  .anno-list ul { margin: 0; padding-left: 18px; }
+  .anno-list code {
+    font-family: ui-monospace, monospace; font-size: 12px;
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px;
+  }
+  .delta { color: var(--s-brand); font-weight: 700; }
+
+  /* ——— Gradients reused from real component ——— */
+  .grad-1 { background: linear-gradient(135deg, #D9C9A8 0%, #6B4F37 100%); }
+  .grad-2 { background: linear-gradient(160deg, #E8B89B 0%, #8B5530 100%); }
+  .grad-3 { background: linear-gradient(135deg, #D4DDC8 0%, #4A6B4F 100%); }
+  .grad-4 { background: linear-gradient(135deg, #E8DDC9 0%, #8E4A2D 100%); }
+
+  /* ——— Side-by-side comparison strip ——— */
+  .compare-strip {
+    display: flex; gap: 32px; align-items: flex-end;
+    margin: 24px 0;
+    padding: 24px;
+    background: linear-gradient(135deg, #E8DDC9 0%, #D4EBD9 100%);
+    border-radius: 16px;
+    overflow-x: auto;
+  }
+  .compare-strip > div {
+    text-align: center; flex-shrink: 0;
+  }
+  .compare-label {
+    display: block; margin-top: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--s-ink-2);
+  }
+
+</style>
+</head>
+<body>
+
+<h1 class="doc-title">Entdecken — Size balance audit</h1>
+<p class="doc-deck">
+  Card structure unchanged. Sizes tuned so each element's weight is proportional to the card it sits in — same way a face's eyes/mouth scale with head size, not absolute pixels. Mostly a desktop fix; mobile gets a 36→44px play button (tap-target floor) and slight pill padding.
+</p>
+
+<span class="legend">
+  <span><strong>BEFORE</strong> = current shipped state</span>
+  <span>·</span>
+  <span><strong>AFTER</strong> = proposed changes</span>
+  <span>·</span>
+  <span style="color:var(--s-brand);font-weight:700">green = changed</span>
+</span>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MOBILE                                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<h2 class="group-title">Mobile · 375 px viewport</h2>
+
+<div class="panel-grid-mobile">
+  <!-- BEFORE -->
+  <div class="panel">
+    <span class="panel-label before">Before</span>
+    <div class="phone">
+      <div class="phone-section-meta">
+        <h3 class="phone-section-title">Finde deine<br>Inspiration.</h3>
+        <a class="phone-section-link" href="#">Alle entdecken →</a>
+      </div>
+      <div class="scroll-row">
+        <div class="card mobile-before zoom-active">
+          <div class="card-bg grad-1"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Voluminous Layers</span></div>
+        </div>
+        <div class="card mobile-before zoom-side">
+          <div class="card-bg grad-2"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Cool Hair for Life</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="anno-list">
+      <h4>Issues at this size</h4>
+      <ul>
+        <li>Play button <code>36×36</code> → <span style="color:#a04">below 44px tap-target floor</span></li>
+        <li>Card radius <code>rounded-[16px]</code> → 2px tighter than the rest of the homepage cards (which use 18)</li>
+        <li>Pills sit fine; just a little padding-tight</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel">
+    <span class="panel-label after">After</span>
+    <div class="phone">
+      <div class="phone-section-meta">
+        <h3 class="phone-section-title">Finde deine<br>Inspiration.</h3>
+        <a class="phone-section-link" href="#">Alle entdecken →</a>
+      </div>
+      <div class="scroll-row">
+        <div class="card mobile-after zoom-active">
+          <div class="card-bg grad-1"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Voluminous Layers</span></div>
+        </div>
+        <div class="card mobile-after zoom-side">
+          <div class="card-bg grad-2"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Cool Hair for Life</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="anno-list">
+      <h4>What changed</h4>
+      <ul>
+        <li>Play button <code>36 → <span class="delta">44</span></code> · icon <code>16 → <span class="delta">18</span></code> — meets tap-target floor + reads as confident "watch this"</li>
+        <li>Card radius <code>16 → <span class="delta">18</span></code> — matches V3 SalonCard radius across homepage</li>
+        <li>Source pill padding <code>3×8 → <span class="delta">4×10</span></code> · style-name pill <code>4×10 → <span class="delta">6×12</span></code> — slight breathing, no text-size change</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  DESKTOP                                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<h2 class="group-title">Desktop · ≥768 px viewport</h2>
+
+<div class="panel-grid-desktop">
+  <!-- BEFORE -->
+  <div class="panel">
+    <span class="panel-label before">Before</span>
+    <div class="desktop-shell">
+      <div class="desktop-section-meta">
+        <h3 class="desktop-section-title">Finde deine Inspiration.</h3>
+        <a class="desktop-section-link" href="#">Alle entdecken →</a>
+      </div>
+      <div class="scroll-row desktop">
+        <div class="card desktop-before zoom-side">
+          <div class="card-bg grad-3"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Voluminous Layers</span></div>
+        </div>
+        <div class="card desktop-before zoom-active">
+          <div class="card-bg grad-1"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Cool Hair for Life</span></div>
+        </div>
+        <div class="card desktop-before zoom-side">
+          <div class="card-bg grad-4"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Layered Butterfly</span></div>
+        </div>
+        <div class="card desktop-before zoom-side">
+          <div class="card-bg grad-2"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Curtain Bangs</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="anno-list">
+      <h4>Imbalance at this scale</h4>
+      <ul>
+        <li>Cards capped at <code>200px</code> → look orphaned in the 1280px container, like phones lying on a desk</li>
+        <li>Pills/icons stayed at mobile size → tiny relative to card; reads "scaled-down phone" not "desktop"</li>
+        <li>Play button <code>36×36</code> → barely visible at this scale, doesn't communicate "watch"</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel">
+    <span class="panel-label after">After</span>
+    <div class="desktop-shell">
+      <div class="desktop-section-meta">
+        <h3 class="desktop-section-title">Finde deine Inspiration.</h3>
+        <a class="desktop-section-link" href="#">Alle entdecken →</a>
+      </div>
+      <div class="scroll-row desktop" style="gap:20px">
+        <div class="card desktop-after zoom-side">
+          <div class="card-bg grad-3"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Voluminous Layers</span></div>
+        </div>
+        <div class="card desktop-after zoom-active">
+          <div class="card-bg grad-1"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Cool Hair for Life</span></div>
+        </div>
+        <div class="card desktop-after zoom-side">
+          <div class="card-bg grad-4"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Layered Butterfly</span></div>
+        </div>
+        <div class="card desktop-after zoom-side">
+          <div class="card-bg grad-2"></div>
+          <span class="source-pill">Hair · TikTok</span>
+          <div class="icon-pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="play-btn">
+            <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="name-pill"><span>Curtain Bangs</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="anno-list">
+      <h4>What changed</h4>
+      <ul>
+        <li>Card width <code>200 → <span class="delta">240</span></code> · gap <code>16 → <span class="delta">20</span></code> — cards have presence in the container, breathing rhythm matches the rest of the homepage rows</li>
+        <li>Play button <code>36 → <span class="delta">48</span></code> · icon <code>16 → <span class="delta">20</span></code> — proportional to bigger card, reads as a confident "watch" affordance</li>
+        <li>Source pill <code>10 → <span class="delta">11</span> px</code> · padding bumped — escapes "tooltip-tier" feel</li>
+        <li>Heart + bookmark icons <code>14 → <span class="delta">16</span></code> — pills sit right on the bigger card</li>
+        <li>Style-name pill <code>11 → <span class="delta">12</span> px</code> + padding bump — name reads at glance, not by squint</li>
+        <li>Card radius <code>16 → <span class="delta">18</span></code> — matches V3 SalonCard everywhere else</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  Side-by-side play button (the "human balance" demo)  -->
+<!-- ═══════════════════════════════════════════════ -->
+<h2 class="group-title">Why this looks more "human-balanced"</h2>
+<p style="max-width:720px;color:var(--s-ink-2)">
+  In figure drawing, the head is the unit and everything else (limbs, torso, features) scales to it. Cards work the same: card width is the unit, every overlay should scale with it. Below, the same single card at three sizes — 200 (current desktop), 240 (proposed desktop), 165 (mobile-after). Notice how the proposed pair feels visually consistent because the play button + pills scale-with-card; the current desktop looks like a shrunken phone.
+</p>
+
+<div class="compare-strip">
+  <div>
+    <div class="card desktop-before" style="opacity:1;transform:none">
+      <div class="card-bg grad-1"></div>
+      <span class="source-pill">Hair · TikTok</span>
+      <div class="icon-pill">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="play-btn">
+        <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+      </div>
+      <div class="name-pill"><span>Voluminous Layers</span></div>
+    </div>
+    <span class="compare-label">200 px · current desktop</span>
+  </div>
+  <div>
+    <div class="card desktop-after" style="opacity:1;transform:none">
+      <div class="card-bg grad-1"></div>
+      <span class="source-pill">Hair · TikTok</span>
+      <div class="icon-pill">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="play-btn">
+        <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+      </div>
+      <div class="name-pill"><span>Voluminous Layers</span></div>
+    </div>
+    <span class="compare-label">240 px · proposed desktop</span>
+  </div>
+  <div>
+    <div class="card mobile-after" style="opacity:1;transform:none;width:165px">
+      <div class="card-bg grad-1"></div>
+      <span class="source-pill">Hair · TikTok</span>
+      <div class="icon-pill">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="play-btn">
+        <svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+      </div>
+      <div class="name-pill"><span>Voluminous Layers</span></div>
+    </div>
+    <span class="compare-label">165 px · proposed mobile</span>
+  </div>
+</div>
+
+<p style="margin-top:24px;color:var(--s-ink-3);font-size:13px;max-width:720px">
+  Total touch: ~10 className changes in <code>app/[locale]/_components/homepage/Entdecken.tsx</code>. No new files, no token edits, no behavior changes. Sign off → I ship.
+</p>
+
+</body>
+</html>

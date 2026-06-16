@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen V3 — rising panel separator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sansita:wght@900&display=swap');
+    @import url('https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std');
+
+    :root {
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --brand: #043338;
+      --brand-mid: #0A6873;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --display: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif;
+      --body: 'ITC Avant Garde Gothic Std', 'Avant Garde', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; }
+    body {
+      font-family: var(--body);
+      color: var(--ink);
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      /* V2-D41 saturated atmosphere wash — STRONGER in hero zone, fades out
+         past the rising panel. We achieve this by anchoring the strong
+         radials at the top half of the viewport. */
+      background:
+        radial-gradient(ellipse 75% 55% at 80% 12%, rgba(202, 232, 255, 0.65) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 22%, rgba(194, 240, 241, 0.58) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 60%, rgba(0, 88, 152, 0.18) 0%, transparent 60%);
+    }
+
+    /* ════════════════ Header (V3 minimal) ════════════════ */
+    .nav {
+      position: relative;
+      z-index: 10;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 28px;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .nav-logo::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--brand);
+      margin-left: 2px;
+      transform: translateY(-2px);
+    }
+    .nav-burger {
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      background: transparent;
+      border: 0;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    /* ════════════════ Hero (V3 — kept) ════════════════ */
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      position: relative;
+      text-align: center;
+    }
+    .eyebrow {
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    .hero-h1 {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(40px, 8vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--brand);
+    }
+
+    .search-bar {
+      max-width: 540px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 4px 12px rgba(50,47,44,0.04);
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+    .search-row + .search-row { border-top: 1px solid rgba(0,0,0,0.05); }
+    .search-row.is-active { background: rgba(4, 51, 56, 0.05); }
+    .search-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      color: var(--ink-2);
+      margin-right: 12px;
+      padding-right: 12px;
+      border-right: 1px solid rgba(0,0,0,0.10);
+    }
+    .search-icon svg { width: 18px; height: 18px; }
+    .search-value {
+      font-family: var(--body);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--ink-3);
+      padding-left: 4px;
+    }
+    .search-submit {
+      width: 100%;
+      background: var(--brand);
+      color: white;
+      border: 0;
+      border-radius: 999px;
+      padding: 16px;
+      font-family: var(--body);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    /* ════════════════ ✨ THE NEW BIT ✨ — rising panel separator ════════════════
+       After the hero, the rest of the page sits inside this rising panel.
+       Rounded TOP corners only + soft upward shadow + slightly different bg
+       creates the "we're entering a new zone" visual cue.
+
+       The panel bg is white at low alpha so the atmosphere wash STILL bleeds
+       through softly — but the rounded-top boundary is unmistakable. */
+    .feed-zone {
+      position: relative;
+      z-index: 5;
+      margin-top: -24px;  /* small overlap with hero — emphasizes the "rising" */
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -12px 32px rgba(4, 51, 56, 0.06);
+      padding: 32px 0 80px;
+    }
+    @media (min-width: 768px) {
+      .feed-zone {
+        margin-top: -32px;
+        border-radius: 40px 40px 0 0;
+        box-shadow: 0 -16px 40px rgba(4, 51, 56, 0.08);
+        padding: 48px 0 120px;
+      }
+    }
+
+    /* ════════════════ Section frame (V2-D41 lock kept) ════════════════ */
+    .section-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 4px;
+    }
+    .section-meta {
+      padding: 0 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .section-meta-eyebrow {
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-meta-eyebrow::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    .section-meta-info { color: var(--ink-2); }
+
+    /* Inside the rising panel, sections still use glass frames but with
+       slightly different alpha so they distinguish from the panel bg.
+       Panel is white/85 → frame becomes white/40 over white/85 = subtle
+       depth shift. */
+    .section-frame {
+      background: rgba(255, 255, 255, 0.30);
+      backdrop-filter: blur(12px) saturate(1.15);
+      border: 1px solid rgba(4, 51, 56, 0.06);
+      border-radius: 20px;
+      padding: 16px 12px;
+      overflow: hidden;
+    }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .section-link {
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      background: var(--brand);
+      padding: 8px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .scroll-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 4px 0;
+    }
+    .scroll-row::-webkit-scrollbar { display: none; }
+    .card {
+      flex: 0 0 150px;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(26, 18, 9, 0.04), 0 4px 10px rgba(26, 18, 9, 0.05);
+      display: grid;
+      place-items: center;
+    }
+    .card-initial {
+      font-family: var(--display);
+      font-size: 40px;
+      font-weight: 900;
+    }
+    .card-pill {
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(14px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 1px 3px rgba(26, 18, 9, 0.04);
+    }
+    .card-row1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .card-name {
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-rating {
+      font-family: var(--body);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+    .card-row2 {
+      font-family: var(--body);
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--ink-2);
+      margin-top: 2px;
+    }
+    .card-row2 .price {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* Header label */
+    .opt-label {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .opt-label .desc {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-2);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="opt-label">
+    <span>Rising-panel separator</span>
+    <span class="desc">hero zone (wash) → rounded-top white-ish panel → feed sections inside it</span>
+  </div>
+
+  <!-- Header -->
+  <nav class="nav">
+    <span class="nav-logo">Solen</span>
+    <button class="nav-burger" aria-label="Menü öffnen">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Hero — V3 unchanged -->
+  <section class="hero">
+    <span class="eyebrow">Beauty in der Schweiz</span>
+    <h1 class="hero-h1">
+      Schöner aussehen, schneller <em>buchen</em>.
+    </h1>
+    <div class="search-bar">
+      <div class="search-row is-active">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+        </span>
+        <span class="search-value">Service</span>
+      </div>
+      <div class="search-row">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </span>
+        <span class="search-value">Stadt</span>
+      </div>
+      <div class="search-row">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+        </span>
+        <span class="search-value">Zeit</span>
+      </div>
+      <button class="search-submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+  <!-- ✨ THE NEW BIT: rising-panel feed zone ✨ -->
+  <div class="feed-zone">
+
+    <div class="section-wrap">
+      <div class="section-meta">
+        <span class="section-meta-eyebrow">Heute · letzte Slots</span>
+        <span class="section-meta-info">6 Salons · bis zu −25%</span>
+      </div>
+      <section class="section-frame">
+        <div class="section-title-row">
+          <h2 class="section-title">Last-Minute heute</h2>
+          <a href="#" class="section-link">Alle →</a>
+        </div>
+        <div class="scroll-row">
+          <div class="card">
+            <div class="card-photo" style="background: #FFF1DD;"><span class="card-initial" style="color: #B5345A;">S</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Salon Maria</span><span class="card-rating">★ 4.8</span></div>
+              <div class="card-row2">Heute <strong>14:30</strong> · <span class="price">ab CHF 64</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-photo" style="background: #CAE8FF;"><span class="card-initial" style="color: #B5345A;">N</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">★ 4.7</span></div>
+              <div class="card-row2">Heute <strong>16:00</strong> · <span class="price">ab CHF 38</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-photo" style="background: #D8D6CB;"><span class="card-initial" style="color: #1A1209;">B</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Bohème</span><span class="card-rating">★ 4.9</span></div>
+              <div class="card-row2">Heute <strong>17:30</strong> · <span class="price">ab CHF 32</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-photo" style="background: #193120;"><span class="card-initial" style="color: #D9C9A8;">S</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Spa Rheinufer</span><span class="card-rating">★ 4.8</span></div>
+              <div class="card-row2">Heute <strong>18:00</strong> · <span class="price">ab CHF 95</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Second section to show the rhythm continues inside the panel -->
+    <div class="section-wrap">
+      <div class="section-meta">
+        <span class="section-meta-eyebrow">Coiffeur · ganze Schweiz</span>
+        <span class="section-meta-info">142 Salons</span>
+      </div>
+      <section class="section-frame">
+        <div class="section-title-row">
+          <h2 class="section-title">Coiffeur-Salons</h2>
+          <a href="#" class="section-link">Alle Coiffeurs →</a>
+        </div>
+        <div class="scroll-row">
+          <div class="card">
+            <div class="card-photo" style="background: #FFF1DD;"><span class="card-initial" style="color: #B5345A;">M</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Salon Maria</span><span class="card-rating">★ 4.8</span></div>
+              <div class="card-row2">Damen-Schnitt · <span class="price">ab CHF 80</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-photo" style="background: #FFF1DD;"><span class="card-initial" style="color: #B5345A;">A</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Atelier Coiffure</span><span class="card-rating">★ 4.9</span></div>
+              <div class="card-row2">Balayage · <span class="price">ab CHF 120</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-photo" style="background: #FFF1DD;"><span class="card-initial" style="color: #B5345A;">L</span></div>
+            <div class="card-pill">
+              <div class="card-row1"><span class="card-name">Lina Hair</span><span class="card-rating">★ 4.7</span></div>
+              <div class="card-row2">Föhnen · <span class="price">ab CHF 75</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <div style="max-width: 1280px; margin: 16px auto 64px; padding: 24px; font-family: var(--body); font-size: 12px; color: var(--ink-2); line-height: 1.6;">
+    <strong style="color: var(--ink); font-weight: 700;">What changed (just one thing):</strong><br/><br/>
+    A "feed-zone" panel wraps everything BELOW the hero. The panel:<br/>
+    • Rounded TOP corners only — `28px` mobile / `40px` desktop<br/>
+    • Subtle white-ish glass tint (white/85 + blur 8) so wash still shows through softly<br/>
+    • Soft upward shadow `0 -12px 32px rgba(4, 51, 56, 0.06)` — emphasizes the "rising" effect<br/>
+    • `margin-top: -24px / -32px` slightly overlaps the hero's bottom — makes the panel feel like it's coming up from below<br/><br/>
+    Hero zone above: heavy atmosphere wash visible.<br/>
+    Feed zone below: same wash but muted by the panel's white tint, so feed sections sit on a calmer surface.<br/><br/>
+    Section frames inside the feed zone got a SLIGHTLY different glass alpha (white/30 instead of white/40) so they read as sections-on-panel, not floating-on-wash.<br/><br/>
+    Everything else V3 stays untouched.
+  </div>
+
+</body>
+</html>

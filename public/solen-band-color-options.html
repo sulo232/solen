@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — "your stuff" band · 3 color options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand:       #E58840;
+    --brand-pale:  #F7DBC6;
+    --brand-mid:   #BC6F34;
+    --navy:        #142F4A;
+    --cream:       #E9DFC8;
+    --ink:         #1A1A1A;
+    --ink-2:       #4B4B4B;
+    --ink-3:       #8A8A8A;
+    --border-soft: rgba(0,0,0,0.06);
+    --hanken: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--ink); background: #E8E5DE; -webkit-font-smoothing: antialiased; }
+  body { padding: 32px 16px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 32px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 28px; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .pageHead p { font-size: 13px; line-height: 1.55; color: var(--ink-2); max-width: 60ch; margin: 0 auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; max-width: 1380px; margin: 0 auto; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+  .col { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .colHead { padding: 4px 4px 14px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; background: #F4F2ED; color: var(--ink-2); margin-bottom: 8px; }
+  .badge.rec { background: var(--brand-pale); color: var(--ink); }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .colHead .hex { font-family: ui-monospace, "SF Mono", monospace; font-size: 11px; color: var(--ink-3); }
+
+  .phone { width: 100%; border-radius: 24px; overflow: hidden; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); }
+
+  /* Mini Hero (compressed) */
+  .heroSec { padding: 20px 18px 14px; background: white; }
+  .heroEyebrow { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+  .heroTitle { font-family: var(--display); font-size: 26px; line-height: 0.96; letter-spacing: -0.028em; font-weight: 700; margin-bottom: 14px; }
+  .heroTitle .accent { color: var(--brand); display: block; }
+
+  /* HeroDuo cards (compressed) */
+  .duoSec { padding: 4px 18px 18px; background: white; }
+  .duoGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .duoCard { position: relative; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden; }
+  .duoCard .mark { position: absolute; right: -6px; bottom: -6px; font-family: var(--display); font-weight: 900; font-size: 110px; line-height: 1; letter-spacing: -0.05em; opacity: 0.88; }
+  .duoCard h3 { position: relative; z-index: 2; padding: 12px 12px 0; font-family: var(--display); font-size: 13px; font-weight: 800; line-height: 1.08; letter-spacing: -0.015em; white-space: pre-line; }
+  .duoCard .pill { position: absolute; bottom: 10px; left: 10px; z-index: 2; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-family: var(--hanken); font-size: 9.5px; font-weight: 700; }
+  .duoCard.dark { background: var(--navy); }
+  .duoCard.dark .mark, .duoCard.dark h3 { color: var(--cream); }
+  .duoCard.dark .pill { background: var(--brand); color: white; }
+  .duoCard.cream { background: var(--cream); }
+  .duoCard.cream .mark, .duoCard.cream h3 { color: var(--brand); }
+  .duoCard.cream h3 { color: var(--navy); }
+  .duoCard.cream .pill { background: var(--ink); color: white; }
+
+  /* THE BAND — your stuff zone (color varies per column) */
+  .band { padding-top: 18px; border-top-left-radius: 24px; border-top-right-radius: 24px; }
+  .bandSec { padding: 18px 18px 16px; }
+  .bandSec + .bandSec { padding-top: 4px; }
+  .bandTitle { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .row { display: flex; gap: 8px; overflow-x: auto; }
+  .smCard { flex-shrink: 0; width: 110px; background: white; border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; }
+  .smImg { aspect-ratio: 1; background-size: cover; background-position: center; background-color: #BBB; }
+  .smBody { padding: 6px 8px 8px; }
+  .smName { font-size: 10px; font-weight: 700; }
+  .smMeta { font-size: 8.5px; color: var(--ink-3); margin-top: 1px; }
+
+  /* Artist portrait (compressed) */
+  .artistTile { display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; padding: 14px 18px 18px; }
+  .artistImg { aspect-ratio: 4/5; border-radius: 14px; background-size: cover; background-position: center; background-color: #888; }
+  .artistName { font-family: var(--display); font-size: 13px; font-weight: 800; letter-spacing: -0.01em; }
+  .artistDesc { font-size: 10px; color: var(--ink-2); margin-top: 4px; line-height: 1.4; }
+
+  /* Nearby section below band (white substrate again) */
+  .nearSec { background: white; padding: 18px 18px 24px; }
+  .nearTitle { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .nearItem { display: flex; gap: 10px; padding: 8px 0; }
+  .nearItem + .nearItem { border-top: 1px solid var(--border-soft); }
+  .nearImg { width: 56px; height: 56px; border-radius: 10px; background-size: cover; background-position: center; background-color: #888; flex-shrink: 0; }
+  .nearBody { flex: 1; padding-top: 2px; }
+  .nearName { font-size: 11px; font-weight: 700; }
+  .nearAddr { font-size: 9px; color: var(--ink-3); margin-top: 1px; }
+
+  /* Notes below the phone */
+  .notes { padding: 14px 4px 0; font-size: 11.5px; line-height: 1.55; color: var(--ink-2); }
+  .notes b { color: var(--ink); }
+  .notes .pro { color: #1E7A4A; font-weight: 700; }
+  .notes .con { color: #B33D2C; font-weight: 700; }
+
+  /* Side legend */
+  .legend { max-width: 920px; margin: 32px auto 0; background: white; border-radius: 16px; padding: 20px 22px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .legend h3 { font-family: var(--display); font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+  .legend p { font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+  .swatch { text-align: center; }
+  .swatch .chip { aspect-ratio: 4/3; border-radius: 8px; border: 1px solid var(--border-soft); margin-bottom: 6px; }
+  .swatch .lbl { font-size: 10px; font-weight: 700; }
+  .swatch .hexL { font-family: ui-monospace, "SF Mono", monospace; font-size: 9.5px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>"Your stuff" band — 3 color options</h1>
+  <p>Same content in all 3 columns. The band wraps RecentlyViewed + Artist des Monats as ONE continuous zone (no white gap between them). Only the band's bg color differs. Hero + HeroDuo above and Nearby below stay white for reference.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================= -->
+  <!-- COLUMN A — Brand-pale #F7DBC6 (my pick)        -->
+  <!-- ============================================= -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge rec">A · brand-pale · my pick</span>
+      <h2>Soft peach</h2>
+      <div class="hex">#F7DBC6 · existing token</div>
+    </header>
+    <div class="phone">
+      <div class="heroSec">
+        <div class="heroEyebrow">Beauty &amp; Wellness · Schweiz</div>
+        <h1 class="heroTitle"><span class="accent">Schöner</span>aussehen.</h1>
+      </div>
+      <div class="duoSec">
+        <div class="duoGrid">
+          <div class="duoCard dark"><h3>Heute noch frei.</h3><span class="mark">H</span><span class="pill">Slots heute →</span></div>
+          <div class="duoCard cream"><h3>Top bewertet.</h3><span class="mark">T</span><span class="pill">4.8★ Salons →</span></div>
+        </div>
+      </div>
+      <!-- THE BAND — brand-pale -->
+      <div class="band" style="background:#F7DBC6;">
+        <div class="bandSec">
+          <h2 class="bandTitle">Zuletzt angesehen</h2>
+          <div class="row">
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/a1/200/200');"></div><div class="smBody"><div class="smName">Atelier Coiffure</div><div class="smMeta">Basel · 4.9</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/a2/200/200');"></div><div class="smBody"><div class="smName">Studio Nord</div><div class="smMeta">Basel · 4.7</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/a3/200/200');"></div><div class="smBody"><div class="smName">Nail Loft</div><div class="smMeta">Basel · 4.8</div></div></div>
+          </div>
+        </div>
+        <div class="bandSec">
+          <h2 class="bandTitle">Artist des Monats</h2>
+          <div class="artistTile">
+            <div class="artistImg" style="background-image:url('https://picsum.photos/seed/artistA/200/250');"></div>
+            <div><div class="artistName">Anna Keller</div><div class="artistDesc">Coiffeur · Atelier Coiffure, Luzern</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="nearSec">
+        <h2 class="nearTitle">In deiner Nähe</h2>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/n1/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Le Studio</div><div class="nearAddr">Limmatquai 12 · 5 Min</div></div>
+        </div>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/n2/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Aura Beauty</div><div class="nearAddr">Rämistr. 34 · 8 Min</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Vibe:</b> warm peach band, brand-coherent. Clearly off-white but still feels "soft surface" not "bold color."</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> existing token (no new value); same hue family as the orange brand; reads as "brand-tinted surface" not "random cream"; cream editorial section later stays distinct</p>
+      <p><b class="con">CON:</b> some users may want even more contrast — see B</p>
+    </div>
+  </section>
+
+  <!-- ============================================= -->
+  <!-- COLUMN B — Cream #E9DFC8                       -->
+  <!-- ============================================= -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">B · cream</span>
+      <h2>Beige / sand</h2>
+      <div class="hex">#E9DFC8 · existing s-cream token</div>
+    </header>
+    <div class="phone">
+      <div class="heroSec">
+        <div class="heroEyebrow">Beauty &amp; Wellness · Schweiz</div>
+        <h1 class="heroTitle"><span class="accent">Schöner</span>aussehen.</h1>
+      </div>
+      <div class="duoSec">
+        <div class="duoGrid">
+          <div class="duoCard dark"><h3>Heute noch frei.</h3><span class="mark">H</span><span class="pill">Slots heute →</span></div>
+          <div class="duoCard cream"><h3>Top bewertet.</h3><span class="mark">T</span><span class="pill">4.8★ Salons →</span></div>
+        </div>
+      </div>
+      <div class="band" style="background:#E9DFC8;">
+        <div class="bandSec">
+          <h2 class="bandTitle">Zuletzt angesehen</h2>
+          <div class="row">
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/b1/200/200');"></div><div class="smBody"><div class="smName">Atelier Coiffure</div><div class="smMeta">Basel · 4.9</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/b2/200/200');"></div><div class="smBody"><div class="smName">Studio Nord</div><div class="smMeta">Basel · 4.7</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/b3/200/200');"></div><div class="smBody"><div class="smName">Nail Loft</div><div class="smMeta">Basel · 4.8</div></div></div>
+          </div>
+        </div>
+        <div class="bandSec">
+          <h2 class="bandTitle">Artist des Monats</h2>
+          <div class="artistTile">
+            <div class="artistImg" style="background-image:url('https://picsum.photos/seed/artistB/200/250');"></div>
+            <div><div class="artistName">Anna Keller</div><div class="artistDesc">Coiffeur · Atelier Coiffure, Luzern</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="nearSec">
+        <h2 class="nearTitle">In deiner Nähe</h2>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/nb1/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Le Studio</div><div class="nearAddr">Limmatquai 12 · 5 Min</div></div>
+        </div>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/nb2/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Aura Beauty</div><div class="nearAddr">Rämistr. 34 · 8 Min</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Vibe:</b> beige/sand. Most distinct from white. Reads "earthy / editorial."</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> max visibility against white; existing token; warm character without being orangey</p>
+      <p><b class="con">CON:</b> this is the SAME color as the editorial section bg (cream `#E9DFC8`) — two cream zones on same page = muddy; loses the "this is a brand-tinted surface" signal (cream isn't visually tied to orange)</p>
+    </div>
+  </section>
+
+  <!-- ============================================= -->
+  <!-- COLUMN C — Mid-peach #F2E0C9 (custom)          -->
+  <!-- ============================================= -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">C · mid-peach</span>
+      <h2>Quiet middle</h2>
+      <div class="hex">#F2E0C9 · new custom</div>
+    </header>
+    <div class="phone">
+      <div class="heroSec">
+        <div class="heroEyebrow">Beauty &amp; Wellness · Schweiz</div>
+        <h1 class="heroTitle"><span class="accent">Schöner</span>aussehen.</h1>
+      </div>
+      <div class="duoSec">
+        <div class="duoGrid">
+          <div class="duoCard dark"><h3>Heute noch frei.</h3><span class="mark">H</span><span class="pill">Slots heute →</span></div>
+          <div class="duoCard cream"><h3>Top bewertet.</h3><span class="mark">T</span><span class="pill">4.8★ Salons →</span></div>
+        </div>
+      </div>
+      <div class="band" style="background:#F2E0C9;">
+        <div class="bandSec">
+          <h2 class="bandTitle">Zuletzt angesehen</h2>
+          <div class="row">
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/c1/200/200');"></div><div class="smBody"><div class="smName">Atelier Coiffure</div><div class="smMeta">Basel · 4.9</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/c2/200/200');"></div><div class="smBody"><div class="smName">Studio Nord</div><div class="smMeta">Basel · 4.7</div></div></div>
+            <div class="smCard"><div class="smImg" style="background-image:url('https://picsum.photos/seed/c3/200/200');"></div><div class="smBody"><div class="smName">Nail Loft</div><div class="smMeta">Basel · 4.8</div></div></div>
+          </div>
+        </div>
+        <div class="bandSec">
+          <h2 class="bandTitle">Artist des Monats</h2>
+          <div class="artistTile">
+            <div class="artistImg" style="background-image:url('https://picsum.photos/seed/artistC/200/250');"></div>
+            <div><div class="artistName">Anna Keller</div><div class="artistDesc">Coiffeur · Atelier Coiffure, Luzern</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="nearSec">
+        <h2 class="nearTitle">In deiner Nähe</h2>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/nc1/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Le Studio</div><div class="nearAddr">Limmatquai 12 · 5 Min</div></div>
+        </div>
+        <div class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/nc2/200/200');"></div>
+          <div class="nearBody"><div class="nearName">Aura Beauty</div><div class="nearAddr">Rämistr. 34 · 8 Min</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <p><b>Vibe:</b> between A and B. More earthy than peach, more peach than cream.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> goldilocks middle ground; distinct from cream editorial; warmer than pale peach</p>
+      <p><b class="con">CON:</b> new hex, not currently in tokens (needs adding to tailwind config); less "brand-coherent" than A since it's not in the hue ladder</p>
+    </div>
+  </section>
+
+</div>
+
+<aside class="legend">
+  <h3>Swatch comparison</h3>
+  <div class="swatches">
+    <div class="swatch">
+      <div class="chip" style="background:#FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);"></div>
+      <div class="lbl">White</div>
+      <div class="hexL">#FFFFFF</div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#F7DBC6;"></div>
+      <div class="lbl">A · brand-pale</div>
+      <div class="hexL">#F7DBC6</div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#F2E0C9;"></div>
+      <div class="lbl">C · mid-peach</div>
+      <div class="hexL">#F2E0C9</div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#E9DFC8;"></div>
+      <div class="lbl">B · cream</div>
+      <div class="hexL">#E9DFC8</div>
+    </div>
+  </div>
+  <p style="margin-top:14px;"><b style="color:var(--ink);">Current state (for reference):</b> <code style="font-family:ui-monospace; font-size:11px; background:#FDF6F0; padding:2px 6px; border-radius:3px;">#FDF6F0</code> — too close to white. All 3 options below are clearly different.</p>
+  <p style="margin-top:10px;"><b style="color:var(--ink);">The gap fix</b> is the same in all 3 columns: RecentlyViewed + Artist des Monats wrapped in ONE outer div instead of each having its own. Result: a single continuous band instead of two same-colored bands with white sliver between.</p>
+</aside>
+
+</body>
+</html>

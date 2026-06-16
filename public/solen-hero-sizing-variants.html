@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · hero sizing variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --accent: #FFC32B;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+  }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--accent); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    border-bottom: 1px solid #E0E0E2;
+    font-family: "Hanken Grotesk", system-ui, monospace;
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+
+  /* ─── Hero shell (shared) ─── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--white);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    height: 700px;
+    background:
+      radial-gradient(ellipse 90% 50% at 78% 8%, rgba(22,56,196,0.38) 0%, transparent 62%),
+      radial-gradient(ellipse 100% 55% at 14% 14%, rgba(22,56,196,0.22) 0%, transparent 64%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    padding: 0 22px;
+  }
+  .hero-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: baseline;
+  }
+  .logo-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 3px;
+    transform: translateY(-1.5px);
+  }
+  .hamburger {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.06);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .hamburger svg { width: 18px; height: 18px; color: var(--ink); }
+  h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  h1 .accent { color: var(--brand); }
+  .searchbar {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .searchbar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .searchbar-row:nth-of-type(3) { border-bottom: none; }
+  .searchbar-row svg { width: 16px; height: 16px; color: var(--ink-2); flex-shrink: 0; }
+  .searchbar-row span { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .searchbar-cta {
+    margin-top: 8px;
+    background: var(--brand);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    width: 100%;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+  }
+
+  /* First section preview below hero (to show below-fold gap) */
+  .section-preview {
+    position: relative;
+    z-index: 2;
+    background: var(--white);
+    padding: 36px 22px 28px;
+    border-top: 1px solid rgba(0,0,0,0.04);
+  }
+  .section-preview h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+
+  /* ─── A · Current sizing ─── */
+  .hero--a { padding-top: 100px; padding-bottom: 36px; }
+  .hero--a h1 {
+    font-size: 40px;       /* current min of clamp(40, 8.5vw, 60) */
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin-top: 24px;
+    margin-bottom: 40px;   /* current mb-10 */
+  }
+
+  /* ─── B · Tightened sizing ─── */
+  .hero--b { padding-top: 96px; padding-bottom: 32px; }
+  .hero--b h1 {
+    font-size: 46px;       /* tightened: bigger h1, closer to ref apps */
+    line-height: 1.02;
+    letter-spacing: -0.038em; /* slightly tighter for the larger size */
+    margin-top: 20px;
+    margin-bottom: 28px;   /* tightened: mb-7 */
+  }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Hero sizing — A current vs B tightened</h1>
+  <p class="page-sub">Same content, same gradient, same SearchBar. Only the h1 size + h1↔SearchBar gap + hero padding change. Compare the visual weight + breathing room.</p>
+
+  <!-- ─── A · Current sizing ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>A</span>Current sizing</div>
+    <div class="variant-meta">
+      h1 = <b>40px</b> · line-height 1.02 · tracking -0.035em<br/>
+      h1 ↔ SearchBar gap = <b>40px</b><br/>
+      Hero top padding = <b>100px</b> · bottom = <b>36px</b>
+    </div>
+    <div class="hero hero--a">
+      <div class="hero-inner">
+        <div class="hero-header">
+          <span class="logo">Solen<span class="logo-dot"></span></span>
+          <span class="hamburger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+          </span>
+        </div>
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+        <div class="searchbar">
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+          <button class="searchbar-cta">Solen durchsuchen</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-preview">
+      <h2>Artist des Monats</h2>
+    </div>
+  </section>
+
+  <!-- ─── B · Tightened sizing ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>B</span>Tightened sizing</div>
+    <div class="variant-meta">
+      h1 = <b>46px</b> · line-height 1.02 · tracking -0.038em<br/>
+      h1 ↔ SearchBar gap = <b>28px</b><br/>
+      Hero top padding = <b>96px</b> · bottom = <b>32px</b>
+    </div>
+    <div class="hero hero--b">
+      <div class="hero-inner">
+        <div class="hero-header">
+          <span class="logo">Solen<span class="logo-dot"></span></span>
+          <span class="hamburger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+          </span>
+        </div>
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+        <div class="searchbar">
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+          <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+          <button class="searchbar-cta">Solen durchsuchen</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-preview">
+      <h2>Artist des Monats</h2>
+    </div>
+  </section>
+
+  <footer>
+    A = where we are now. B = bigger h1, tighter gap to SearchBar, slightly tighter bottom padding.<br/>
+    Pick a lane — I'll wire whichever wins into Hero.tsx (2-line change).
+  </footer>
+</body>
+</html>

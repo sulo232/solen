@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — green-blue calibration pairs (Section D)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: #F5F5F4;
+    color: #0A0A0A;
+    line-height: 1.5;
+    font-family: 'Geist', system-ui, sans-serif;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .page-h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .page-lede {
+    margin: 0 0 32px 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6B6B6B;
+    max-width: 820px;
+  }
+  .section-title {
+    margin: 32px 0 12px 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+  }
+
+  .pair-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 800px) { .pair-grid { grid-template-columns: 1fr; } }
+
+  .pair {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #E7E5E4;
+  }
+  .pair-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid #E7E5E4;
+    background: #FAFAFA;
+  }
+  .pair-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 2px;
+  }
+  .pair-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .pair-spec {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6B6B6B;
+    line-height: 1.4;
+  }
+  .swatches {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .swatch {
+    flex: 1;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  .specimen-grid {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .specimen {
+    border: 1px solid #E7E5E4;
+    border-radius: 12px;
+    padding: 14px;
+    background: white;
+  }
+  .specimen-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 10px;
+  }
+
+  /* Status pill (open/closed) */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 99px;
+    display: inline-block;
+  }
+
+  /* Link inline */
+  .link-text {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+  }
+
+  /* Success vs accent badges */
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* Eyebrow + dot */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 99px;
+  }
+
+  /* Per-pair color rules */
+  /* Pair 1 — Current */
+  .pair-1 .green-bg { background: #16A34A; color: white; }
+  .pair-1 .green-soft { background: #E8F5E9; color: #16A34A; }
+  .pair-1 .blue-text { color: #276EF1; }
+  .pair-1 .blue-soft { background: #EAEFFE; color: #276EF1; }
+  .pair-1 .blue-dot, .pair-1 .green-dot { /* set inline */ }
+
+  /* Pair 2 — Match muted */
+  .pair-2 .green-bg { background: #047857; color: white; }
+  .pair-2 .green-soft { background: #D1FAE5; color: #047857; }
+  .pair-2 .blue-text { color: #185CE0; }
+  .pair-2 .blue-soft { background: #DBEAFE; color: #185CE0; }
+
+  /* Pair 3 — Match bright */
+  .pair-3 .green-bg { background: #10B981; color: white; }
+  .pair-3 .green-soft { background: #D1FAE5; color: #10B981; }
+  .pair-3 .blue-text { color: #2563EB; }
+  .pair-3 .blue-soft { background: #DBEAFE; color: #2563EB; }
+
+  /* Pair 4 — Saturation-only (keep green, darken blue) */
+  .pair-4 .green-bg { background: #16A34A; color: white; }
+  .pair-4 .green-soft { background: #E8F5E9; color: #16A34A; }
+  .pair-4 .blue-text { color: #185CE0; }
+  .pair-4 .blue-soft { background: #DBEAFE; color: #185CE0; }
+
+  /* Pair 5 — Teal pivot (cool both ends) */
+  .pair-5 .green-bg { background: #0D9488; color: white; }
+  .pair-5 .green-soft { background: #CCFBF1; color: #0D9488; }
+  .pair-5 .blue-text { color: #1E40AF; }
+  .pair-5 .blue-soft { background: #DBEAFE; color: #1E40AF; }
+
+  /* Pair 6 — Emerald + Solen royal (calmer green only) */
+  .pair-6 .green-bg { background: #059669; color: white; }
+  .pair-6 .green-soft { background: #D1FAE5; color: #059669; }
+  .pair-6 .blue-text { color: #276EF1; }
+  .pair-6 .blue-soft { background: #EAEFFE; color: #276EF1; }
+
+  .verdict {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+  }
+  .verdict h2 { margin: 0 0 12px 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .verdict p { margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; }
+  .verdict strong { font-weight: 600; }
+  .verdict h3 { margin: 18px 0 6px 0; font-size: 14px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="page-h1">Green-blue calibration pairs (Section D)</h1>
+  <p class="page-lede">You said the green doesn't match the blue's vibrancy. Current pair: green <code>#16A34A</code> (HSL 142,75%,36%) + blue <code>#276EF1</code> (HSL 217,89%,55%). Lightness gap = 19 points, saturation gap = 14 points → green feels darker + duller than blue. Below: 6 pairs where I try to fix the imbalance. Each rendered in 4 real Solen contexts (Status pill, link text, eyebrow + dot, badges). Pick a number.</p>
+
+  <div class="section-title">6 calibrated pairs</div>
+
+  <div class="pair-grid">
+
+    <!-- Pair 1: Current -->
+    <div class="pair pair-1">
+      <div class="pair-head">
+        <div class="pair-label">1 · Current</div>
+        <div class="pair-name">Forest #16A34A + Royal #276EF1</div>
+        <div class="pair-spec">Today's pair. Green is dark+muted vs bright royal blue — feels visually unequal.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#16A34A;color:white">#16A34A</div>
+          <div class="swatch" style="background:#276EF1;color:white">#276EF1</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#16A34A"></span> <span style="color:#16A34A">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#276EF1"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#276EF1"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pair 2 — Match muted -->
+    <div class="pair pair-2">
+      <div class="pair-head">
+        <div class="pair-label">2 · Match muted</div>
+        <div class="pair-name">Deep emerald #047857 + Deep royal #185CE0</div>
+        <div class="pair-spec">Both moved to darker, calmer end. Pair reads as professional/Stripe-like.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#047857;color:white">#047857</div>
+          <div class="swatch" style="background:#185CE0;color:white">#185CE0</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#047857"></span> <span style="color:#047857">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#185CE0"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#185CE0"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pair 3 — Match bright -->
+    <div class="pair pair-3">
+      <div class="pair-head">
+        <div class="pair-label">3 · Match bright</div>
+        <div class="pair-name">Bright emerald #10B981 + Bright royal #2563EB</div>
+        <div class="pair-spec">Both bumped to brighter end. Pair reads as energetic/SaaS-trial.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#10B981;color:white">#10B981</div>
+          <div class="swatch" style="background:#2563EB;color:white">#2563EB</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#10B981"></span> <span style="color:#10B981">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#2563EB"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#2563EB"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pair 4 — Saturation only -->
+    <div class="pair pair-4">
+      <div class="pair-head">
+        <div class="pair-label">4 · Saturation-only</div>
+        <div class="pair-name">Keep #16A34A green + Darken blue #185CE0</div>
+        <div class="pair-spec">Only change is the blue (already in LOCKFILE as s-accent.deep). Cheapest fix.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#16A34A;color:white">#16A34A</div>
+          <div class="swatch" style="background:#185CE0;color:white">#185CE0</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#16A34A"></span> <span style="color:#16A34A">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#185CE0"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#185CE0"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pair 5 — Teal pivot -->
+    <div class="pair pair-5">
+      <div class="pair-head">
+        <div class="pair-label">5 · Cool both ends</div>
+        <div class="pair-name">Teal #0D9488 + Indigo #1E40AF</div>
+        <div class="pair-spec">Shifts green toward teal (cooler) + blue toward indigo. Pair reads as tech/Linear-like.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#0D9488;color:white">#0D9488</div>
+          <div class="swatch" style="background:#1E40AF;color:white">#1E40AF</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#0D9488"></span> <span style="color:#0D9488">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#1E40AF"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#1E40AF"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pair 6 — Emerald + Solen royal -->
+    <div class="pair pair-6">
+      <div class="pair-head">
+        <div class="pair-label">6 · Emerald + Solen royal</div>
+        <div class="pair-name">Emerald #059669 + Royal #276EF1 (unchanged)</div>
+        <div class="pair-spec">Only the green changes. Slightly cleaner emerald hue (less yellow-shifted than #16A34A). Keeps royal blue.</div>
+        <div class="swatches">
+          <div class="swatch" style="background:#059669;color:white">#059669</div>
+          <div class="swatch" style="background:#276EF1;color:white">#276EF1</div>
+        </div>
+      </div>
+      <div class="specimen-grid">
+        <div class="specimen">
+          <div class="specimen-label">Status pill</div>
+          <div class="status-row"><span class="status-dot" style="background:#059669"></span> <span style="color:#059669">Geöffnet</span> · <span style="color:#6B6B6B">bis 18:00</span></div>
+          <div class="status-row" style="margin-top:8px"><span class="status-dot" style="background:#D32F2F"></span> <span style="color:#D32F2F">Geschlossen</span></div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Link text</div>
+          <p style="margin:0;font-size:14px">Lies <a href="#" class="link-text blue-text">unsere Bewertungen</a> oder <a href="#" class="link-text blue-text">finde einen Salon</a> in deiner Stadt.</p>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Eyebrow + dot</div>
+          <div class="eyebrow blue-text"><span class="eyebrow-dot" style="background:#276EF1"></span>Marktplatz</div>
+          <div class="eyebrow blue-text" style="margin-top:8px"><span class="eyebrow-dot" style="background:#276EF1"></span>So funktioniert's</div>
+        </div>
+        <div class="specimen">
+          <div class="specimen-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge green-soft">✓ Aktiv</span>
+            <span class="badge blue-soft">★ Neu</span>
+            <span class="badge" style="background:#FFEBEE;color:#D32F2F">! Fehler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>My recommendation: 2 (Match muted)</h2>
+    <p><strong>Why:</strong> deep emerald #047857 + deep royal #185CE0 have similar L (35% / 49%) and similar S (95% / 84%) → finally feel like a matched pair. Pair reads as Stripe / Notion / Vercel — professional + balanced. Solves both your "green doesn't match blue vibrancy" complaint AND the blue-text-vibrating complaint at once (since you'd also use #185CE0 for accent text per Section C).</p>
+    <h3>Quick scan</h3>
+    <p>If you want <strong>vibrant + energetic</strong> → 3 (Match bright). Risk: small text harder to read.</p>
+    <p>If you want <strong>cheapest fix (touch blue only)</strong> → 4 (Saturation-only). Just darkens blue, green stays. Single-line tailwind config change.</p>
+    <p>If you want <strong>tech-cool brand voice</strong> → 5 (Teal + Indigo). Bigger identity shift, less "salon warmth."</p>
+    <p>If you want <strong>green-touch only (keep blue)</strong> → 6 (Emerald + Royal). Minimal sweep, single token change.</p>
+    <p style="margin-top:16px"><strong>Pick 1-6 + I update tokens + LOCKFILE + sweep affected files.</strong></p>
+  </div>
+
+</div>
+</body>
+</html>

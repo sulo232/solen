@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V3 — Font visual check (2026-05-09 morning)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Current locked fonts -->
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/cooper-black-std">
+<!-- Alternative body fonts (comparison) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #043338;
+    --brand-mid: #0A6873;
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #FFFFFF;
+    --sunken: #FAF7F3;
+    --border: rgba(26,18,9,.06);
+    --r-lg: 12px; --r-2xl: 16px; --r-pill: 99px;
+
+    --display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+    --body-current: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+
+    --body-inter:  'Inter', system-ui, sans-serif;
+    --body-manrope: 'Manrope', system-ui, sans-serif;
+    --body-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --body-dmsans: 'DM Sans', system-ui, sans-serif;
+    --body-outfit: 'Outfit', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--body-current);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+  }
+  body { padding: 56px 20px 100px; }
+  .doc { max-width: 1300px; margin: 0 auto; }
+
+  /* ========== PAGE HEAD ========== */
+  .page-head { margin-bottom: 56px; }
+  .page-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .page-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .page-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+  .page-meta { color: var(--ink-3); }
+  .page-h1 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 64px; line-height: 0.95;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .page-sub {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 16px; color: var(--ink-2);
+    margin-top: 18px; max-width: 760px;
+    line-height: 1.55;
+  }
+
+  /* ========== STATUS BANNER ========== */
+  .status {
+    margin-top: 24px;
+    padding: 14px 18px;
+    background: rgba(245,158,11,0.08);
+    border-left: 4px solid #F59E0B;
+    border-radius: 6px;
+    font-family: var(--body-current);
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .status strong { color: var(--ink); font-weight: 700; }
+  .status code {
+    background: var(--bg); padding: 1px 6px;
+    border-radius: 4px; font-size: 12px;
+    border: 1px solid var(--border);
+  }
+
+  /* ========== COMPARISON GRID ========== */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 56px;
+  }
+  @media (min-width: 1100px) {
+    .compare-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .col {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 32px 28px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .col.is-current {
+    background: rgba(245,158,11,0.04);
+    border: 1px dashed rgba(245,158,11,0.40);
+  }
+  .col.is-current::before {
+    content: 'CURRENT';
+    display: inline-block;
+    font-family: var(--body-current);
+    font-weight: 700; font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: #F59E0B;
+    margin-bottom: -16px;
+  }
+
+  .col-tag {
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .col-tag-sub {
+    font-family: var(--body-current); font-weight: 500;
+    font-size: 12px; color: var(--ink-3);
+    margin-top: -16px; margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  /* === SAMPLE BLOCKS === */
+  .sample {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .sample:first-child { border-top: none; padding-top: 0; }
+  .sample-label {
+    font-weight: 700; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== CURRENT (small, what user sees now) ========== */
+  .small-eyebrow {
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .small-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .small-body {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 14px; line-height: 1.5; color: var(--ink-2);
+    margin-bottom: 12px;
+  }
+  .small-helper {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 11px; line-height: 1.4; color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .small-label {
+    display: inline-block;
+    font-family: var(--body-current); font-weight: 600;
+    font-size: 12px; line-height: 1.3; color: var(--ink);
+  }
+  .small-btn {
+    font-family: var(--body-current); font-weight: 600;
+    font-size: 14px;
+    padding: 12px 20px;
+    background: var(--brand); color: #fff;
+    border: none; border-radius: var(--r-pill);
+    cursor: pointer;
+  }
+  .small-tag {
+    display: inline-block;
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* ========== BIGGER (proposed +2-3px) ========== */
+  .big-eyebrow {
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 13px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .big-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .big-body {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 16px; line-height: 1.6; color: var(--ink-2);
+    margin-bottom: 12px;
+  }
+  .big-helper {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 13px; line-height: 1.5; color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .big-label {
+    display: inline-block;
+    font-family: var(--body-current); font-weight: 600;
+    font-size: 14px; line-height: 1.3; color: var(--ink);
+  }
+  .big-btn {
+    font-family: var(--body-current); font-weight: 600;
+    font-size: 15px;
+    padding: 14px 22px;
+    background: var(--brand); color: #fff;
+    border: none; border-radius: var(--r-pill);
+    cursor: pointer;
+  }
+  .big-tag {
+    display: inline-block;
+    font-family: var(--body-current); font-weight: 700;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* ========== ALTERNATIVE BODY FONTS ========== */
+  .alt-block {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+  .alt-block:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+  .alt-name {
+    font-family: var(--display); font-weight: 900;
+    font-size: 22px; line-height: 1;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .alt-charact {
+    font-family: var(--body-current); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  .alt-body {
+    font-weight: 400; font-size: 16px;
+    line-height: 1.6; color: var(--ink-2);
+    margin-bottom: 10px;
+  }
+  .alt-label {
+    display: inline-block;
+    font-weight: 600; font-size: 14px;
+    line-height: 1.3; color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .alt-btn {
+    font-weight: 600; font-size: 15px;
+    padding: 12px 20px;
+    background: var(--brand); color: #fff;
+    border: none; border-radius: var(--r-pill);
+    cursor: pointer;
+  }
+
+  .font-inter   { font-family: var(--body-inter); }
+  .font-manrope { font-family: var(--body-manrope); }
+  .font-jakarta { font-family: var(--body-jakarta); }
+  .font-dmsans  { font-family: var(--body-dmsans); }
+  .font-outfit  { font-family: var(--body-outfit); }
+
+  /* ========== FOOTNOTE ========== */
+  .foot {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-family: var(--body-current);
+    font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sec { margin-top: 56px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .sec-intro {
+    font-family: var(--body-current); font-weight: 400;
+    font-size: 15px; line-height: 1.55;
+    color: var(--ink-2); max-width: 720px;
+    margin-bottom: 28px;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="page-head">
+    <div class="page-rule"></div>
+    <div class="page-meta-row">
+      <span class="page-eyebrow">
+        <span class="page-eyebrow-dot"></span>
+        Solen V3 · Font check
+      </span>
+      <span class="page-meta">2026-05-09 · morning</span>
+    </div>
+    <h1 class="page-h1">Fonts — what's loading + alternatives</h1>
+    <p class="page-sub">
+      You said the body fonts feel small. Two things to look at: <strong>(1)</strong> same fonts at bigger sizes
+      (left side) — does the size bump alone fix it? <strong>(2)</strong> 5 alternative body fonts at the bigger
+      sizes — do any of them feel better than ITC Avant Garde Gothic?
+    </p>
+    <div class="status">
+      <strong>Heads-up:</strong> Cooper BT from <code>cdnfonts.com</code> is currently returning HTTP 500 (broken CDN).
+      Your headings are silently falling back to <strong>Sansita 900</strong> (also chunky slab via Google Fonts —
+      visually very similar to Cooper, you may not notice). The body font (Avant Garde Gothic) loads correctly.
+    </div>
+  </header>
+
+  <!-- ========== ROW 1: SIZE COMPARISON ========== -->
+  <section class="sec">
+    <div class="sec-rule"></div>
+    <h2 class="sec-h2">Issue 1 — size</h2>
+    <p class="sec-intro">
+      Same fonts you have right now (Cooper / Sansita display + Avant Garde Gothic body), shown at the spec sizes
+      you have now (left) vs the proposed +2-3px bump (right). Look at the helper text and the eyebrow row above the title.
+    </p>
+
+    <div class="compare-grid">
+      <!-- CURRENT SMALL -->
+      <div class="col is-current">
+        <div class="col-tag" style="margin-top: 18px;">A · current spec sizes</div>
+        <div class="col-tag-sub">eyebrow 11px · body 14px · helper 11px · label 12px · button 14px · card-tag 9px</div>
+
+        <div class="sample">
+          <div class="sample-label">section header</div>
+          <div class="small-eyebrow"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brand);margin-right:8px;"></span>Buchung · 14:30</div>
+          <div class="small-h2">Termin bestätigen</div>
+          <div class="small-body">Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.</div>
+        </div>
+
+        <div class="sample">
+          <div class="sample-label">form field</div>
+          <div class="small-label">E-Mail-Adresse</div>
+          <div style="height:46px;border:1px solid rgba(26,18,9,.10);border-radius:12px;padding:11px 14px;font-family:var(--body-current);font-size:14px;color:var(--ink);margin-top:6px;">lara@example.ch</div>
+          <div class="small-helper" style="margin-top:6px;">Wir senden dir eine Bestätigung.</div>
+        </div>
+
+        <div class="sample">
+          <div class="sample-label">card / button</div>
+          <div class="small-tag">State 01 · default</div>
+          <div style="margin-top:14px;"><button class="small-btn">Bestätigen</button></div>
+        </div>
+      </div>
+
+      <!-- BIGGER -->
+      <div class="col">
+        <div class="col-tag">B · bigger sizes (+2-3px across)</div>
+        <div class="col-tag-sub">eyebrow 13px · body 16px · helper 13px · label 14px · button 15px · card-tag 11px</div>
+
+        <div class="sample">
+          <div class="sample-label">section header</div>
+          <div class="big-eyebrow"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brand);margin-right:8px;"></span>Buchung · 14:30</div>
+          <div class="big-h2">Termin bestätigen</div>
+          <div class="big-body">Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.</div>
+        </div>
+
+        <div class="sample">
+          <div class="sample-label">form field</div>
+          <div class="big-label">E-Mail-Adresse</div>
+          <div style="height:54px;border:1px solid rgba(26,18,9,.10);border-radius:12px;padding:14px 16px;font-family:var(--body-current);font-size:16px;color:var(--ink);margin-top:6px;">lara@example.ch</div>
+          <div class="big-helper" style="margin-top:6px;">Wir senden dir eine Bestätigung.</div>
+        </div>
+
+        <div class="sample">
+          <div class="sample-label">card / button</div>
+          <div class="big-tag">State 01 · default</div>
+          <div style="margin-top:14px;"><button class="big-btn">Bestätigen</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ROW 2: ALTERNATIVE BODY FONTS ========== -->
+  <section class="sec">
+    <div class="sec-rule"></div>
+    <h2 class="sec-h2">Issue 2 — body font</h2>
+    <p class="sec-intro">
+      If size alone doesn't fix it, the body font itself might be the problem. <strong>ITC Avant Garde Gothic Std</strong>
+      is a geometric grotesque — clean and a bit cold. Below: 5 alternatives all at the bigger sizes (16px body / 14px label).
+      All free Google Fonts, all reliable to load. <strong>Headings stay Cooper / Sansita</strong> — only body changes.
+    </p>
+
+    <div class="compare-grid" style="grid-template-columns: 1fr;">
+      <div class="col">
+        <div class="alt-block">
+          <div class="alt-name">CURRENT · ITC Avant Garde Gothic Std</div>
+          <div class="alt-charact">Geometric grotesque · clean · slightly cold · 60s-90s tech vibe</div>
+          <div class="alt-body" style="font-family: var(--body-current);">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn" style="font-family: var(--body-current);">Bestätigen</button>
+        </div>
+
+        <div class="alt-block">
+          <div class="alt-name font-inter">ALT 1 · Inter</div>
+          <div class="alt-charact">Modern humanist sans · the default of the 2020s · neutral, very legible at small sizes</div>
+          <div class="alt-body font-inter">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn font-inter">Bestätigen</button>
+        </div>
+
+        <div class="alt-block">
+          <div class="alt-name font-manrope">ALT 2 · Manrope</div>
+          <div class="alt-charact">Rounded geometric · friendly + warm · used by lifestyle / wellness brands</div>
+          <div class="alt-body font-manrope">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn font-manrope">Bestätigen</button>
+        </div>
+
+        <div class="alt-block">
+          <div class="alt-name font-jakarta">ALT 3 · Plus Jakarta Sans</div>
+          <div class="alt-charact">Slightly humanist · friendly + neutral · used by Linear, Pitch, modern SaaS</div>
+          <div class="alt-body font-jakarta">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn font-jakarta">Bestätigen</button>
+        </div>
+
+        <div class="alt-block">
+          <div class="alt-name font-dmsans">ALT 4 · DM Sans</div>
+          <div class="alt-charact">Slightly geometric · low-contrast · bookish · pairs well with chunky display fonts like Cooper</div>
+          <div class="alt-body font-dmsans">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn font-dmsans">Bestätigen</button>
+        </div>
+
+        <div class="alt-block">
+          <div class="alt-name font-outfit">ALT 5 · Outfit</div>
+          <div class="alt-charact">Sleek geometric · slightly more elegant than Inter · used by fashion / beauty</div>
+          <div class="alt-body font-outfit">
+            Du buchst Damen-Schnitt &amp; Föhnen bei Salon Maria am Donnerstag, 16. Mai um 14:30. Die Bestätigung wird per E-Mail gesendet.
+            <br/><span style="color:var(--ink); font-weight:600; font-size:14px;">Mindestens 8 Zeichen, mit einer Zahl.</span>
+          </div>
+          <button class="alt-btn font-outfit">Bestätigen</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot" style="display: flex; justify-content: space-between;">
+    <span>Solen V3 · Font visual check</span>
+    <span>2026-05-09 · GM check-in</span>
+  </footer>
+
+</div>
+</body>
+</html>

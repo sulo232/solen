@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — color-only mockup (production structure + new color tokens)</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /*
+    COLOR-ONLY DIFF (2026-05-22):
+    Production homepage structure is the SOURCE OF TRUTH. No layout changes,
+    no aspect-ratio changes, no section additions/removals, no h1 wording changes.
+    ONLY color tokens are swapped per _tasks/SOLEN_BRAND_OVERVIEW.md.
+
+    What changed (just colors):
+    - s-brand:    #1638C4 royal blue   → #133EEB cobalt 85% sat
+    - Logo dot:   yellow #FFC32B       → cobalt #133EEB
+    - Star icon:  yellow #FFC32B       → ink #1A1A1A
+    - s-ink:      warm #1A1209         → neutral #1A1A1A
+    - s-ink-2:    warm #56463E         → neutral #6B6B6B
+    - s-ink-3:    warm #7A6957         → neutral #9CA3AF
+    - Substrate:  pure white #FFFFFF   → cool #FAFAFA
+    - Sunken:     warm                 → cool #F4F4F5
+    - Card/elevated: stays #FFFFFF
+    - Available:  → #00A86B with 10% bg tint
+    - Urgency:    existing red → #E5392C
+    - Heart-active: → #FF3366
+    - Border:     warm bone → neutral rgba(0,0,0,0.08)
+
+    What was NOT touched (structure):
+    - Top promo banner (kept, cobalt bg)
+    - Hero (centered h1 with "Schöner" highlight)
+    - SearchBar (3 stacked pill rows + dark submit)
+    - Card aspect ratio (matches production 4/3)
+    - Horizontal scroll for related-items rows
+    - Section header layout (h2 left + "Alle" arrow right)
+  */
+
+  :root {
+    /* New spec values */
+    --ink-primary:    #1A1A1A;
+    --ink-secondary:  #6B6B6B;
+    --ink-muted:      #9CA3AF;
+    --border-adaptive: rgba(0, 0, 0, 0.08);
+
+    --substrate: #FAFAFA;
+    --sunken:    #F4F4F5;
+    --elevated:  #FFFFFF;
+
+    --brand:       #133EEB;
+    --brand-press: #0F35C2;
+
+    --star:           #1A1A1A;     /* swapped from yellow */
+    --heart-active:   #FF3366;
+    --available:      #00A86B;
+    --available-bg:   rgba(0, 168, 107, 0.10);
+    --urgency:        #E5392C;
+
+    /* Pill radius (existing production convention preserved) */
+    --radius-pill: 9999px;
+    --radius-md:   14px;
+    --radius-xs:   10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--substrate);
+    color: var(--ink-primary);
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { min-height: 100dvh; }
+
+  /* ────────── TOP PROMO BANNER — production kept, cobalt bg ────────── */
+  .promo-banner {
+    background: var(--brand);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .promo-banner .cta {
+    background: white;
+    color: var(--ink-primary);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .promo-banner .cta svg { width: 10px; height: 10px; }
+
+  /* ────────── HEADER — production structure preserved ────────── */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(250, 250, 250, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-adaptive);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink-primary);
+    display: inline-flex;
+    align-items: baseline;
+  }
+  /* COLOR SWAP: logo dot yellow → cobalt */
+  .logo::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--brand);
+    display: inline-block;
+    margin-left: 2px;
+  }
+  .hdr-actions { display: flex; gap: 10px; }
+  .hdr-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.04);
+    display: grid;
+    place-items: center;
+    color: var(--ink-primary);
+    border: none;
+    cursor: pointer;
+  }
+  .hdr-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+
+  /* ────────── HERO — production centered layout preserved ────────── */
+  .hero {
+    padding: 60px 20px 40px;
+    text-align: left;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .hero-h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    line-height: 1.04;
+    letter-spacing: -0.022em;
+    color: var(--ink-primary);
+    margin-bottom: 16px;
+  }
+  /* Production keeps "Schöner" highlight — color swapped to cobalt */
+  .hero-h1 em {
+    color: var(--brand);
+    font-style: normal;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--ink-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    max-width: 480px;
+  }
+
+  /* ────────── SEARCH BAR — production stacked pill layout preserved ────────── */
+  .sbar {
+    background: var(--elevated);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+    max-width: 480px;
+  }
+  .sbar-row {
+    border: 1px solid #D3D3D3;
+    border-radius: var(--radius-pill);
+    height: 46px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-secondary);
+  }
+  .sbar-row svg {
+    width: 15px;
+    height: 15px;
+    color: var(--ink-primary);
+    flex-shrink: 0;
+  }
+  /* Submit button: production is BLACK (ink-primary), keeping that structure.
+     Spec proposed cobalt — that's a separate decision not landed yet. */
+  .sbar-submit {
+    height: 46px;
+    background: var(--ink-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-pill);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+    cursor: pointer;
+  }
+
+  /* ────────── SECTION HEADER — production layout (h2 + Alle arrow) ────────── */
+  .sect {
+    padding: 32px 20px 8px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .sect-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .sect h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.018em;
+    color: var(--ink-primary);
+  }
+  .sect-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.04);
+    display: grid;
+    place-items: center;
+    color: var(--ink-primary);
+    text-decoration: none;
+  }
+  .sect-arrow svg { width: 16px; height: 16px; stroke-width: 2; }
+
+  /* ────────── CARDS — production horizontal scroll preserved ────────── */
+  .scroll-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .scroll-row::-webkit-scrollbar { display: none; }
+
+  .card {
+    flex: 0 0 240px;
+    background: var(--elevated);
+    border: 1px solid var(--border-adaptive);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  /* Production aspect ratio preserved — 4:3 */
+  .card-photo {
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .card-photo.p1 { background-image: url("https://picsum.photos/seed/solen-prod-A/480/360"); }
+  .card-photo.p2 { background-image: url("https://picsum.photos/seed/solen-prod-B/480/360"); }
+  .card-photo.p3 { background-image: url("https://picsum.photos/seed/solen-prod-C/480/360"); }
+  .card-photo.p4 { background-image: url("https://picsum.photos/seed/solen-prod-D/480/360"); }
+
+  .card-heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .card-heart svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--ink-primary);
+    fill: none;
+    stroke-width: 2;
+  }
+  .card-heart.saved svg {
+    stroke: var(--heart-active);
+    fill: var(--heart-active);
+  }
+
+  /* Production has avatar bottom-left on cards */
+  .card-avatar {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--ink-primary);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid white;
+  }
+
+  .card-body {
+    padding: 10px 12px 12px;
+  }
+  .card-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink-primary);
+    margin-bottom: 2px;
+    letter-spacing: -0.014em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-address {
+    font-size: 12px;
+    color: var(--ink-secondary);
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-secondary);
+  }
+  .card-price-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-primary);
+    font-weight: 600;
+  }
+  .card-price {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+  /* COLOR SWAP: star yellow → ink */
+  .card-rating { display: inline-flex; align-items: center; gap: 3px; }
+  .card-rating svg {
+    width: 12px;
+    height: 12px;
+    fill: var(--star);    /* was yellow #FFC32B, now ink #1A1A1A */
+    stroke: var(--star);
+  }
+
+  /* Comparison stamp at very bottom */
+  .stamp {
+    max-width: 1280px;
+    margin: 32px auto 32px;
+    padding: 16px 20px;
+    background: var(--elevated);
+    border: 1px solid var(--border-adaptive);
+    border-radius: 14px;
+    font-size: 12px;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+  }
+  .stamp strong { color: var(--ink-primary); }
+  .stamp code {
+    background: var(--sunken);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .hero { padding: 40px 20px 32px; }
+    .hero-h1 { font-size: 36px; }
+    .card { flex: 0 0 200px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Production promo banner kept (just bg color from royal blue → cobalt) -->
+  <div class="promo-banner">
+    <span>Sofort verfügbar — 320 Buchungen heute</span>
+    <a class="cta" href="#">
+      Salons finden
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="#">solen</a>
+      <div class="hdr-actions">
+        <button class="hdr-icon" aria-label="Einstellungen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+        <button class="hdr-icon" aria-label="Menü">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Production hero — centered h1 with "Schöner" highlight, structure UNCHANGED -->
+  <section class="hero">
+    <h1 class="hero-h1"><em>Schöner</em><br>aussehen,<br>schneller buchen.</h1>
+    <p class="hero-sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+    <!-- Production searchbar — 3 stacked pill rows + dark submit -->
+    <div class="sbar">
+      <div class="sbar-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Service</span>
+      </div>
+      <div class="sbar-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Stadt</span>
+      </div>
+      <div class="sbar-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Zeit</span>
+      </div>
+      <button class="sbar-submit">Solen durchsuchen</button>
+    </div>
+  </section>
+
+  <!-- Production section — "Zuletzt angesehen" + Alle arrow + horizontal scroll -->
+  <section class="sect">
+    <div class="sect-head">
+      <h2>Zuletzt angesehen</h2>
+      <a class="sect-arrow" href="#" aria-label="Alle anzeigen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="scroll-row">
+      <article class="card">
+        <div class="card-photo p1">
+          <button class="card-heart" aria-label="Speichern">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <div class="card-avatar">N</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Atelier Lumière</div>
+          <div class="card-address">Steinenvorstadt 12, Basel</div>
+          <div class="card-meta">
+            <span>Heute · 14:30</span>
+            <div class="card-price-rating">
+              <span class="card-price">CHF&nbsp;89</span>
+              <span class="card-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                4.9
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo p2">
+          <button class="card-heart saved" aria-label="Aus Favoriten entfernen">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Studio Nord</div>
+          <div class="card-address">Klybeckstrasse 47, Basel</div>
+          <div class="card-meta">
+            <span>Heute · 16:00</span>
+            <div class="card-price-rating">
+              <span class="card-price">CHF&nbsp;72</span>
+              <span class="card-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                4.8
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo p3">
+          <button class="card-heart" aria-label="Speichern">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Maison Marbre</div>
+          <div class="card-address">Marktgasse 31, Bern</div>
+          <div class="card-meta">
+            <span>Morgen · 09:00</span>
+            <div class="card-price-rating">
+              <span class="card-price">CHF&nbsp;120</span>
+              <span class="card-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                4.7
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo p4">
+          <button class="card-heart" aria-label="Speichern">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Cut & Co</div>
+          <div class="card-address">Rue du Rhône 8, Genf</div>
+          <div class="card-meta">
+            <span>Heute · 18:15</span>
+            <div class="card-price-rating">
+              <span class="card-price">CHF&nbsp;65</span>
+              <span class="card-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                4.9
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="stamp">
+    <strong>What changed (colors only — production structure preserved):</strong><br>
+    <code>s-brand</code> royal blue #1638C4 → cobalt #133EEB &nbsp;·&nbsp;
+    Logo dot yellow → cobalt &nbsp;·&nbsp;
+    Star yellow → ink #1A1A1A &nbsp;·&nbsp;
+    Ink scale warm → neutral #1A1A1A / #6B6B6B / #9CA3AF &nbsp;·&nbsp;
+    Substrate pure white → cool #FAFAFA &nbsp;·&nbsp;
+    Sunken → #F4F4F5 &nbsp;·&nbsp;
+    Available green #00A86B &nbsp;·&nbsp;
+    Urgency red #E5392C &nbsp;·&nbsp;
+    Heart-active #FF3366<br><br>
+    <strong>What was NOT touched (structural — would need explicit approval):</strong><br>
+    Promo banner kept · Centered hero kept · "Schöner" highlight kept (just color swapped to cobalt) · SearchBar 3-pill stacked layout kept · Dark "Solen durchsuchen" submit kept · Card 4:3 aspect ratio kept · Horizontal scroll row kept · Card body layout (title / address / meta) kept · Section header "h2 + Alle arrow" kept
+  </div>
+
+</body>
+</html>

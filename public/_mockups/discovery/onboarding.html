@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery · Onboarding (personalize feed)</title>
+<!--
+  Exists-check: discovery profile setup ALREADY exists (components-legacy/discovery/ProfileSetupModal + InlinePrefsPanel; profiles.disc_gender/disc_hair_texture/disc_hair_length/disc_face_shape) , a first-visit personalizer, separate from /onboarding (general/salon).
+  REMOVED hit: makeup/waxing categories , correctly excluded here. NEW: a light 2-step "personalize your feed" (gender bias → hair texture), skippable, not a funnel. English, copy-economy, real images.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#A1A1AA; --line:#E4E4E7; --sunken:#F4F4F5; --bg:#FFFFFF; --blue:#276EF1; --r-card:16px; }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  .phone svg{width:18px; height:18px;}
+  .status .ic svg{width:16px;height:16px;}
+  body{margin:0; background:#E9E9EC; color:var(--ink); font-family:'Inter',system-ui,sans-serif; padding:30px 20px 70px;}
+  .head{max-width:1000px; margin:0 auto 24px;}
+  .head h1{font-family:'Inter Tight'; font-weight:800; font-size:24px; letter-spacing:-.02em; margin:0 0 6px;}
+  .head p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.55; max-width:720px;}
+  .stage{display:flex; gap:40px; justify-content:center; align-items:flex-start; flex-wrap:wrap;}
+  .col{width:392px;}
+  .cap{margin:0 2px 14px;}
+  .cap .tag{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:4px 11px; margin-bottom:8px;}
+  .cap h2{font-family:'Inter Tight'; font-weight:700; font-size:17px; margin:0 0 4px; letter-spacing:-.01em;}
+  .cap p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+
+  .phone{width:392px; background:#fff; border-radius:42px; overflow:hidden; border:1px solid #d6d6db;
+    box-shadow:0 30px 60px -26px rgba(10,10,10,.30), 0 8px 18px -10px rgba(10,10,10,.16);}
+  .screen{position:relative; height:780px; overflow:hidden; background:#fff;}
+  .status{height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 22px 0 26px; color:var(--ink);}
+  .status .t{font-weight:600; font-size:15px;} .status .ic{display:flex; gap:7px;}
+  .topnav{display:flex; align-items:center; justify-content:space-between; padding:0 18px 8px; min-height:38px;}
+  .topnav .bk{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;color:var(--ink);cursor:pointer;}
+  .topnav .skip{font-size:14px; font-weight:600; color:var(--ink-3); cursor:pointer;}
+  .dots{display:flex; gap:6px; padding:0 20px 22px;}
+  .dots i{height:5px; border-radius:999px; background:var(--line); flex:1;}
+  .dots i.on{background:var(--ink);}
+
+  .body{padding:0 22px;}
+  .ttl{font-family:'Inter Tight'; font-weight:700; font-size:26px; line-height:1.14; letter-spacing:-.022em; margin:0 0 8px;}
+  .sub{font-size:14.5px; color:var(--ink-2); line-height:1.5; margin:0 0 24px;}
+
+  .gcards{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
+  .gc{position:relative; aspect-ratio:3/4; border-radius:var(--r-card); overflow:hidden; cursor:pointer; background:#161616;}
+  .gc.wide{grid-column:1 / -1; aspect-ratio:auto; height:108px;}
+  .gc img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gc.split{display:grid; grid-template-columns:1fr 1fr; gap:2px;}
+  .gc .sc{position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6) 100%);}
+  .gc .lb{position:absolute; left:12px; bottom:11px; z-index:2; color:#fff; font-family:'Inter Tight'; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .gc .ck{position:absolute; top:9px; right:9px; z-index:2; width:24px;height:24px;border-radius:999px;border:1.5px solid #fff;display:grid;place-items:center;}
+  .gc.sel .ck{background:#fff;} .gc.sel .ck svg{width:14px;height:14px;color:var(--ink);}
+  .gc:not(.sel) .ck svg{display:none;}
+  .gc.sel::after{content:"";position:absolute;inset:0;border:3px solid var(--ink);border-radius:var(--r-card);z-index:1;}
+
+  .txchips{display:flex; flex-wrap:wrap; gap:10px;}
+  .tx{font-size:15px; font-weight:500; padding:13px 20px; border-radius:999px; background:var(--sunken); color:var(--ink); cursor:pointer; border:1.5px solid transparent;}
+  .tx.on{background:#fff; border-color:var(--ink); font-weight:600;}
+
+  .cta{position:absolute; left:0; right:0; bottom:0; padding:12px 22px 18px; background:#fff;}
+  .cta .btn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--ink); color:#fff; border:0; border-radius:999px; padding:15px; font-family:'Inter Tight'; font-weight:600; font-size:15px; cursor:pointer;}
+  .cta .btn svg{width:17px;height:17px;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discovery · Onboarding</h1>
+    <p>The one-time "personalize your feed", two quick taps, fully skippable (it's a gallery, not a funnel). Sets the gender bias + hair texture so the feed leads with looks that fit. No makeup/waxing (those categories are gone).</p>
+  </div>
+
+  <div class="stage">
+    <div class="col">
+      <div class="cap"><span class="tag">Step 1</span><h2>Who you're styling</h2><p>Biases the feed, doesn't filter it. Skippable.</p></div>
+      <div class="phone"><div class="screen" id="s1"></div></div>
+    </div>
+    <div class="col">
+      <div class="cap"><span class="tag">Step 2</span><h2>Hair texture</h2><p>One tap, then straight into the feed.</p></div>
+      <div class="phone"><div class="screen" id="s2"></div></div>
+    </div>
+  </div>
+
+<script>
+const T=id=>`/api/discovery/thumb/${id}`;
+function statusBar(){return `<div class="status"><div class="t">9:41</div><div class="ic"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div></div>`;}
+
+// step 1 , gender
+document.getElementById("s1").insertAdjacentHTML("beforeend", `
+  ${statusBar()}
+  <div class="topnav"><div></div><div class="skip">Skip</div></div>
+  <div class="dots"><i class="on"></i><i></i></div>
+  <div class="body">
+    <h1 class="ttl">Personalize your feed</h1>
+    <p class="sub">Two quick taps so it leads with looks for you. Change it anytime.</p>
+    <div class="gcards">
+      <div class="gc sel"><img src="${T('c0b9fba3-29ca-4262-a7e3-f281f8f97640')}" alt=""><div class="sc"></div><div class="ck"><i data-lucide="check"></i></div><div class="lb">Men</div></div>
+      <div class="gc"><img src="${T('59b33979-5dd8-4845-8636-972a378b8358')}" alt=""><div class="sc"></div><div class="ck"><i data-lucide="check"></i></div><div class="lb">Women</div></div>
+      <div class="gc wide split"><img src="${T('46d2da15-2184-4c57-a4f9-52b0efed853a')}" alt=""><img src="${T('65afc1af-59d7-40fb-85a3-86220d616d6e')}" alt=""><div class="sc"></div><div class="ck"><i data-lucide="check"></i></div><div class="lb">Everyone</div></div>
+    </div>
+  </div>
+  <div class="cta"><button class="btn">Next</button></div>
+`);
+
+// step 2 , texture
+document.getElementById("s2").insertAdjacentHTML("beforeend", `
+  ${statusBar()}
+  <div class="topnav"><div class="bk"><i data-lucide="chevron-left"></i></div><div class="skip">Skip</div></div>
+  <div class="dots"><i class="on"></i><i class="on"></i></div>
+  <div class="body">
+    <h1 class="ttl">Your hair texture</h1>
+    <p class="sub">So cuts and styles match what your hair actually does.</p>
+    <div class="txchips">
+      <span class="tx">Straight</span>
+      <span class="tx on">Wavy</span>
+      <span class="tx">Curly</span>
+      <span class="tx">Coily</span>
+      <span class="tx">Protective</span>
+      <span class="tx">Bald</span>
+    </div>
+  </div>
+  <div class="cta"><button class="btn"><i data-lucide="sparkles"></i> See my feed</button></div>
+`);
+
+lucide.createIcons();
+</script>
+</body>
+</html>

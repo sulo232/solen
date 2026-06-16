@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen V3 — A + B + C combined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sansita:wght@900&display=swap');
+    @import url('https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std');
+
+    :root {
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --brand: #043338;
+      --brand-mid: #0A6873;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --love: #FF4A6B;
+      --display: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif;
+      --body: 'ITC Avant Garde Gothic Std', 'Avant Garde', system-ui, sans-serif;
+      --cat-coiffeur-bg: #FFF1DD;
+      --cat-coiffeur-ink: #B5345A;
+      --cat-barber-bg: #D8D6CB;
+      --cat-barber-ink: #1A1209;
+      --cat-nails-bg: #CAE8FF;
+      --cat-nails-ink: #B5345A;
+      --cat-spa-bg: #193120;
+      --cat-spa-ink: #D9C9A8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #fff; }
+    body {
+      font-family: var(--body);
+      color: var(--ink);
+      position: relative;
+      overflow-x: hidden;
+      /* C-1: 2× more saturated atmosphere wash */
+      background:
+        radial-gradient(ellipse 75% 55% at 80% 12%, rgba(202, 232, 255, 0.65) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 22%, rgba(194, 240, 241, 0.58) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 60%, rgba(0, 88, 152, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 80%, rgba(194, 240, 241, 0.50) 0%, transparent 65%);
+      background-attachment: fixed;
+    }
+
+    .opt-label {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .opt-label .badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .opt-label .desc {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--ink-2);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* Outer page wrapper — gives breathing room around section containers */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 16px;
+    }
+
+    /* SECTION CONTAINER — glassmorphic. Light-alpha white tint + backdrop
+       blur so the body's atmosphere wash (pale teal / ice blue gradients)
+       visibly bleeds THROUGH the container surface. Border at 1px white-50
+       defines the edge against the wash. Result: each section reads as a
+       discrete glass card floating over the colored page, NOT a solid
+       gray block that hides the wash. */
+    .section-container {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 32px;
+      padding: 32px 24px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    @media (min-width: 768px) {
+      .section-container {
+        padding: 48px 40px;
+        border-radius: 40px;
+        margin-bottom: 24px;
+      }
+    }
+
+    /* C-3 section divider removed — the section-container wrapper does the
+       visual sectioning now. Top hairline rule was newspaper-y; the rounded
+       container is product-y. */
+    .sec-eyebrow-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: titleEntry 600ms cubic-bezier(0.22, 1, 0.36, 1) 50ms forwards;
+    }
+    /* C-2: Eyebrow uses brand-teal */
+    .sec-eyebrow {
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-eyebrow::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    .sec-meta { color: var(--ink-2); }
+    .sec-h2-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: titleEntry 600ms cubic-bezier(0.22, 1, 0.36, 1) 100ms forwards;
+    }
+    .sec-h2 {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    /* C-4: Brand-teal accent on key word */
+    .sec-h2 .accent { color: var(--brand); }
+    /* C-7: Section "see more" link is filled brand-teal pill */
+    .sec-link {
+      background: var(--brand);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+    .sec-link:hover { background: var(--brand-mid); }
+
+    /* Cards */
+    .scroll-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 8px 0;
+    }
+    .scroll-row::-webkit-scrollbar { display: none; }
+
+    .card {
+      /* Mobile: 160px → 2 full + bit of 3rd in 375px viewport
+         Desktop (≥768px): 200px for fuller scale */
+      flex: 0 0 160px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      /* B-3: Card entry animation — fade up + stagger */
+      opacity: 0;
+      transform: translateY(24px);
+      animation: cardEntry 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @media (min-width: 768px) {
+      .card { flex: 0 0 200px; }
+    }
+    .card:nth-child(1) { animation-delay: 200ms; }
+    .card:nth-child(2) { animation-delay: 280ms; }
+    .card:nth-child(3) { animation-delay: 360ms; }
+    .card:nth-child(4) { animation-delay: 440ms; }
+    .card:nth-child(5) { animation-delay: 520ms; }
+    @keyframes cardEntry {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      /* B-1: Layered shadow base — kept subtle so it doesn't compete
+         with the frosted-pill underneath. */
+      box-shadow:
+        0 1px 2px rgba(26, 18, 9, 0.04),
+        0 4px 10px rgba(26, 18, 9, 0.05);
+      transition:
+        transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* A: Real photo — img fills the photo box */
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* B-2: Hover — softer lift, lighter shadow. Earlier 24×48 0.10 shadow
+       spilled down onto the frosted text pill, creating a "double surface"
+       look that read weird. Now: smaller lift (-3px), softer scale, shadow
+       confined under the photo only. */
+    .card:hover .card-photo {
+      transform: translateY(-3px) scale(1.015);
+      box-shadow:
+        0 1px 2px rgba(26, 18, 9, 0.05),
+        0 6px 14px rgba(26, 18, 9, 0.06),
+        0 12px 24px rgba(26, 18, 9, 0.05);
+    }
+    /* C-5 category-color halos REMOVED 2026-05-09 per user feedback —
+       they read as static-shadow bugs rather than intentional decoration.
+       All cards now use the same layered B-style shadow at rest. */
+
+    /* Card text — frosted-glass pill SEPARATED from the photo. Sits below
+       the photo with a small gap. White-alpha bg + backdrop blur so the
+       glass section container behind it shows through. Reads as a "name
+       tag" floating below the photo. */
+    .card-text {
+      margin-top: 10px;
+      padding: 10px 14px 11px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(14px) saturate(1.2);
+      -webkit-backdrop-filter: blur(14px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 1px 3px rgba(26, 18, 9, 0.04);
+    }
+    .card-row1 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-name {
+      font-family: var(--body);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-rating {
+      font-family: var(--body);
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--ink);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .card-rating::before {
+      content: '★';
+      color: #F3A864;
+      font-size: 10px;
+    }
+    .card-row2 {
+      font-family: var(--body);
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--ink-2);
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+    /* C-6: Brand-teal price accent */
+    .price-accent {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* Heart */
+    .heart {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      color: #FFF;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+    }
+    .heart svg { width: 100%; height: 100%; stroke: rgba(255, 255, 255, 0.9); }
+    .heart.saved {
+      color: var(--love);
+      filter: drop-shadow(0 1px 3px rgba(255, 74, 107, 0.35));
+      /* B-4: Breathing animation on saved heart */
+      animation: heartBreathe 2.4s ease-in-out infinite;
+    }
+    .heart.saved svg {
+      fill: rgba(255, 74, 107, 0.65);
+      stroke: var(--love);
+    }
+    @keyframes heartBreathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.08); }
+    }
+
+    /* Discount pill (Last-Minute) */
+    .discount {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.32);
+      backdrop-filter: blur(14px) saturate(1);
+      -webkit-backdrop-filter: blur(14px) saturate(1);
+      color: #7A4A14;
+      font-family: var(--body);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.02em;
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    /* Title entry animation */
+    @keyframes titleEntry {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="opt-label">
+    <span class="badge">∑</span>
+    <span>A + B + C combined</span>
+    <span class="desc">photos · shadows + hover + entry stagger · saturated wash · brand-teal everywhere · cat halos · frosted text · pill links</span>
+  </div>
+
+  <div class="page-wrap">
+  <section class="section-container">
+    <div class="sec-eyebrow-row">
+      <span class="sec-eyebrow">Heute · letzte Slots</span>
+      <span class="sec-meta">6 Salons · bis zu −25%</span>
+    </div>
+    <div class="sec-h2-row">
+      <h2 class="sec-h2">Last-Minute <span class="accent">heute</span></h2>
+      <a href="#" class="sec-link">Alle →</a>
+    </div>
+
+    <div class="scroll-row">
+      <div class="card card-coiffeur">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop" alt="Salon Maria" loading="lazy" />
+          <span class="discount">−20%</span>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Salon Maria</span><span class="card-rating">4.8</span></div>
+          <div class="card-row2">Heute <strong>14:30</strong> · <span class="price-accent">ab CHF 64</span></div>
+        </div>
+      </div>
+
+      <div class="card card-nails">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop" alt="Nails &amp; Co." loading="lazy" />
+          <span class="discount">−15%</span>
+          <div class="heart saved"><svg viewBox="0 0 24 24" fill="rgba(255, 74, 107, 0.65)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">4.7</span></div>
+          <div class="card-row2">Heute <strong>16:00</strong> · <span class="price-accent">ab CHF 38</span></div>
+        </div>
+      </div>
+
+      <div class="card card-barber">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop" alt="Bohème" loading="lazy" />
+          <span class="discount">−25%</span>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Bohème</span><span class="card-rating">4.9</span></div>
+          <div class="card-row2">Heute <strong>17:30</strong> · <span class="price-accent">ab CHF 32</span></div>
+        </div>
+      </div>
+
+      <div class="card card-spa">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop" alt="Spa Rheinufer" loading="lazy" />
+          <span class="discount">−10%</span>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Spa Rheinufer</span><span class="card-rating">4.8</span></div>
+          <div class="card-row2">Heute <strong>18:00</strong> · <span class="price-accent">ab CHF 95</span></div>
+        </div>
+      </div>
+
+      <div class="card card-coiffeur">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1522335789203-aaa2cc7c1bdd?w=400&h=400&fit=crop" alt="Atelier Coiffure" loading="lazy" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Atelier Coiffure</span><span class="card-rating">4.9</span></div>
+          <div class="card-row2">Heute <strong>15:30</strong> · <span class="price-accent">ab CHF 88</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Second section to demonstrate section-to-section visual rhythm -->
+  <section class="section-container">
+    <div class="sec-eyebrow-row">
+      <span class="sec-eyebrow">Coiffeur · ganze Schweiz</span>
+      <span class="sec-meta">142 Salons</span>
+    </div>
+    <div class="sec-h2-row">
+      <h2 class="sec-h2">Coiffeur-<span class="accent">Salons</span></h2>
+      <a href="#" class="sec-link">Alle →</a>
+    </div>
+
+    <div class="scroll-row">
+      <div class="card">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop" alt="Atelier Coiffure" loading="lazy" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Atelier Coiffure</span><span class="card-rating">4.9</span></div>
+          <div class="card-row2">Balayage · <span class="price-accent">ab CHF 120</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=400&h=400&fit=crop" alt="Lina Hair" loading="lazy" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Lina Hair Studio</span><span class="card-rating">4.7</span></div>
+          <div class="card-row2">Föhnen · <span class="price-accent">ab CHF 75</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop" alt="Coiffeur Bahnhof" loading="lazy" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Coiffeur Bahnhof</span><span class="card-rating">4.6</span></div>
+          <div class="card-row2">Herrenschnitt · <span class="price-accent">ab CHF 65</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=400&fit=crop" alt="Haar Atelier" loading="lazy" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+        </div>
+        <div class="card-text">
+          <div class="card-row1"><span class="card-name">Haar Atelier</span><span class="card-rating">4.85</span></div>
+          <div class="card-row2">Color &amp; Cut · <span class="price-accent">ab CHF 145</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+</body>
+</html>

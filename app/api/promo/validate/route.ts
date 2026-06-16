@@ -5,6 +5,8 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, validatePromoSchema } from "@/lib/validations";
+import { getCurrentTier, tierAtLeast } from "@/lib/loyalty/perks";
+import type { Tier } from "@/lib/loyalty/status";
 
 export async function POST(req: NextRequest) {
   // 1. Feature flag
@@ -66,6 +68,25 @@ export async function POST(req: NextRequest) {
   // Salon-specific code check
   if (promo.salon_id && data.salon_id && promo.salon_id !== data.salon_id) {
     return NextResponse.json({ valid: false, message: "Dieser Code gilt nicht für diesen Salon" });
+  }
+
+  // Members-only deal gate (Solen Plus, LOYALTY_STRUCTURE.md §12.4). A promo flagged
+  // min_tier requires the user's LIVE tier (current_user_tier on-read, server-derived —
+  // the client never sends a tier). NOTE: promo discounts are not yet applied to the
+  // booking Stripe charge (booking-pay-intent ignores promos), so this validate endpoint
+  // is the only value-granting surface today; if a promo→charge path is ever added, the
+  // same gate MUST be enforced there too.
+  if (promo.min_tier === "gold" || promo.min_tier === "platinum") {
+    const tier = await getCurrentTier(supabase, user.id);
+    if (!tierAtLeast(tier, promo.min_tier as Tier)) {
+      return NextResponse.json({
+        valid: false,
+        message:
+          promo.min_tier === "platinum"
+            ? "Dieser Code gilt nur für Solen Plus Platinum-Mitglieder"
+            : "Dieser Code gilt nur für Solen Plus Mitglieder",
+      });
+    }
   }
 
   // 8. Calculate discount

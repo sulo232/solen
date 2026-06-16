@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Rewards: improved</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --sunken:#F4F4F5; --accent:#276EF1; --accent-deep:#1E54B7; --accent-pale:#EAEFFE;
+    --ok:#16A34A; --ok-bg:#E7F6EC; --star:#FFC32B; --star-bg:#FEF6E0; --pink:#FF3366; --pink-bg:#FFE9EE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DEDEE2; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:34px 18px 60px;}
+  .lede{max-width:760px; margin:0 auto 24px;}
+  .lede h1{font-family:"Inter Tight"; font-size:22px; font-weight:700; letter-spacing:-.02em;}
+  .lede p{font-size:13.5px; color:#46464B; margin-top:6px; line-height:1.55;}
+  .stage{display:flex; justify-content:center;}
+
+  .phone{width:390px; background:#fff; border-radius:42px; overflow:hidden; box-shadow:0 36px 76px -28px rgba(0,0,0,.5); position:relative;}
+  .status{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600;}
+  .status .dots{display:flex; gap:5px; align-items:center;}
+  .bar{display:flex; align-items:center; justify-content:space-between; padding:6px 16px 12px;}
+  .bar .lft{display:flex; align-items:center; gap:12px;}
+  .icirc{width:38px; height:38px; border-radius:50%; background:var(--sunken); display:grid; place-items:center; color:var(--ink); flex-shrink:0;}
+  .bar h2{font-family:"Inter Tight"; font-size:18px; font-weight:600; letter-spacing:-.01em;}
+  .hist{display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--accent); font-weight:500;}
+  .scroll{max-height:760px; overflow-y:auto;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* HERO points card */
+  .card{position:relative; overflow:hidden; margin:6px 16px 0; border:1px solid var(--line); border-radius:20px; background:#fff;
+    box-shadow:0 10px 26px -16px rgba(20,22,30,.28), 0 1px 2px rgba(0,0,0,.04); padding:18px 18px 16px;}
+  .card .motif{position:absolute; right:-14px; bottom:-34px; font-family:"Inter Tight"; font-weight:700; font-size:150px; line-height:1; color:var(--accent); opacity:.05; pointer-events:none;}
+  .card .crow{display:flex; align-items:center; justify-content:space-between; position:relative;}
+  .wm{font-family:"Inter Tight"; font-weight:700; font-size:16px; letter-spacing:-.02em; color:var(--ink); display:inline-flex; align-items:flex-start; gap:1px;}
+  .wm sup{color:var(--accent); font-size:11px; font-weight:800; line-height:1; margin-top:1px;}
+  .tier{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--accent-deep); background:var(--accent-pale); padding:4px 9px; border-radius:99px;}
+  .balance{margin-top:14px; display:flex; align-items:baseline; gap:7px; position:relative;}
+  .balance .n{font-family:"Inter Tight"; font-weight:700; font-size:42px; line-height:1; letter-spacing:-.03em; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .balance .u{font-size:14px; color:var(--ink2); font-weight:500;}
+  .track{height:9px; border-radius:99px; background:var(--sunken); overflow:hidden; margin-top:14px; position:relative;}
+  .fill{height:100%; width:83%; border-radius:99px; background:var(--ink);}
+  .cap{display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:12px; position:relative;}
+  .cap .l{color:var(--ink2);}
+  .cap .r{color:var(--ink3); font-variant-numeric:tabular-nums;}
+
+  /* tier ladder strip */
+  .ladder{position:relative; margin-top:16px; padding-top:14px; border-top:1px solid var(--line);}
+  .ladder .lrow{display:flex; align-items:center; justify-content:space-between;}
+  .node{display:flex; flex-direction:column; align-items:center; gap:5px; flex:0 0 auto; z-index:1;}
+  .dot{width:22px; height:22px; border-radius:50%; display:grid; place-items:center; background:var(--sunken); color:var(--ink3);}
+  .node.done .dot{background:var(--ink); color:#fff;}
+  .node.now .dot{background:var(--accent); color:#fff; box-shadow:0 0 0 4px var(--accent-pale);}
+  .node .lab{font-size:10.5px; font-weight:600; color:var(--ink3);}
+  .node.now .lab{color:var(--accent-deep);}
+  .node.done .lab{color:var(--ink);}
+  .lline{position:absolute; left:30px; right:30px; top:25px; height:3px; background:var(--sunken); border-radius:9px; z-index:0;}
+  .lline .lprog{height:100%; width:54%; background:linear-gradient(90deg,var(--ink),var(--accent)); border-radius:9px;}
+  .lcap{margin-top:11px; font-size:12px; color:var(--ink2);}
+  .lcap b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums;}
+
+  section{padding:18px 18px 0;}
+  .shead{display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;}
+  .h{font-family:"Inter Tight"; font-size:15px; font-weight:600; letter-spacing:-.01em;}
+  .seeall{font-size:12.5px; color:var(--accent); font-weight:500; display:inline-flex; align-items:center; gap:2px;}
+  .rows{display:flex; flex-direction:column; gap:9px;}
+  .row{display:flex; align-items:center; gap:12px; background:var(--sunken); border-radius:14px; padding:12px 13px;}
+  .chip{width:36px; height:36px; border-radius:11px; display:grid; place-items:center; flex-shrink:0;}
+  .chip.blue{background:var(--accent-pale); color:var(--accent);}
+  .chip.star{background:var(--star-bg); color:var(--star);}
+  .chip.pink{background:var(--pink-bg); color:var(--pink);}
+  .chip.green{background:var(--ok-bg); color:var(--ok);}
+  .row .tx{flex:1; min-width:0;}
+  .row .tt{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .row .sb{font-size:11.5px; color:var(--ink2); margin-top:1px;}
+  .row .pp{font-family:"Inter Tight"; font-weight:700; font-size:14px; color:var(--ink); font-variant-numeric:tabular-nums; flex-shrink:0;}
+
+  /* reward tiles with per-reward progress */
+  .rw{border:1px solid var(--line); border-radius:16px; padding:13px; background:#fff;}
+  .rw .top{display:flex; align-items:center; gap:12px;}
+  .rw .tx{flex:1; min-width:0;}
+  .rw .tt{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .rw .sb{font-size:12px; color:var(--ink2); margin-top:2px; font-variant-numeric:tabular-nums;}
+  .btn{height:34px; padding:0 15px; border-radius:10px; border:0; background:var(--ink); color:#fff; font-family:"Inter Tight"; font-weight:700; font-size:12.5px; cursor:pointer; flex-shrink:0;}
+  .mini{height:6px; border-radius:99px; background:var(--sunken); overflow:hidden; margin-top:11px;}
+  .mini .mf{height:100%; border-radius:99px; background:var(--ink);}
+  .togo{display:flex; align-items:center; gap:5px; font-size:11px; color:var(--ink3); margin-top:7px;}
+
+  .foot{padding:18px;}
+  .foot p{font-size:11px; color:var(--ink3); text-align:center; line-height:1.5;}
+</style>
+</head>
+<body>
+  <div class="lede">
+    <h1>Solen Rewards: improved</h1>
+    <p>Same normal-UI direction you liked, elevated. New: a tier ladder in the hero (Bronze / Silver / Gold, a second reason to earn, already in your Treueprogramm stub), per-reward progress bars so every locked reward shows how close you are, and a History link. Numbers are illustrative.</p>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:16px"></i><i data-lucide="wifi" style="width:16px"></i><i data-lucide="battery-full" style="width:18px"></i></span></div>
+      <div class="bar">
+        <div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:19px"></i></div><h2>Rewards</h2></div>
+        <a class="hist"><i data-lucide="history" style="width:15px"></i> History</a>
+      </div>
+
+      <div class="scroll">
+        <!-- HERO points card -->
+        <div class="card">
+          <div class="motif">+</div>
+          <div class="crow">
+            <span class="wm">solen<sup>+</sup></span>
+            <span class="tier"><i data-lucide="award" style="width:13px"></i> Silver</span>
+          </div>
+          <div class="balance"><span class="n">1,240</span><span class="u">points</span></div>
+          <div class="track"><div class="fill"></div></div>
+          <div class="cap"><span class="l">260 points until a free add-on</span><span class="r">1,500</span></div>
+
+          <!-- tier ladder -->
+          <div class="ladder">
+            <div class="lline"><div class="lprog"></div></div>
+            <div class="lrow">
+              <div class="node done"><span class="dot"><i data-lucide="check" style="width:13px"></i></span><span class="lab">Bronze</span></div>
+              <div class="node now"><span class="dot"><i data-lucide="award" style="width:13px"></i></span><span class="lab">Silver</span></div>
+              <div class="node"><span class="dot"><i data-lucide="crown" style="width:13px"></i></span><span class="lab">Gold</span></div>
+            </div>
+            <div class="lcap"><b>760 points</b> to Gold, unlock faster earning + a birthday gift.</div>
+          </div>
+        </div>
+
+        <!-- Ways to earn -->
+        <section>
+          <div class="shead"><div class="h">Ways to earn</div></div>
+          <div class="rows">
+            <div class="row"><div class="chip blue"><i data-lucide="calendar-check" style="width:18px"></i></div><div class="tx"><div class="tt">Book an appointment</div><div class="sb">At any Solen salon</div></div><div class="pp">+1 / CHF</div></div>
+            <div class="row"><div class="chip star"><i data-lucide="star" style="width:18px"></i></div><div class="tx"><div class="tt">Leave a review</div><div class="sb">After your visit</div></div><div class="pp">+50</div></div>
+            <div class="row"><div class="chip pink"><i data-lucide="user-plus" style="width:18px"></i></div><div class="tx"><div class="tt">Refer a friend</div><div class="sb">When they book their first visit</div></div><div class="pp">+200</div></div>
+          </div>
+        </section>
+
+        <!-- Redeemable rewards with per-reward progress -->
+        <section>
+          <div class="shead"><div class="h">Rewards</div><a class="seeall">See all <i data-lucide="chevron-right" style="width:14px"></i></a></div>
+          <div class="rows">
+            <div class="rw">
+              <div class="top">
+                <div class="chip green"><i data-lucide="badge-percent" style="width:18px"></i></div>
+                <div class="tx"><div class="tt">CHF 10 off your next visit</div><div class="sb">1,000 points</div></div>
+                <button class="btn">Redeem</button>
+              </div>
+            </div>
+            <div class="rw">
+              <div class="top">
+                <div class="chip blue"><i data-lucide="plus" style="width:18px"></i></div>
+                <div class="tx"><div class="tt">Free add-on service</div><div class="sb">1,500 points</div></div>
+              </div>
+              <div class="mini"><div class="mf" style="width:83%"></div></div>
+              <div class="togo"><i data-lucide="lock" style="width:12px"></i> 260 points to go</div>
+            </div>
+            <div class="rw">
+              <div class="top">
+                <div class="chip star"><i data-lucide="crown" style="width:18px"></i></div>
+                <div class="tx"><div class="tt">Free service up to CHF 60</div><div class="sb">3,000 points</div></div>
+              </div>
+              <div class="mini"><div class="mf" style="width:41%"></div></div>
+              <div class="togo"><i data-lucide="lock" style="width:12px"></i> 1,760 points to go</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="foot"><p>Points never expire while your account is active.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

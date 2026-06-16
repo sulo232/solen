@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V3 — §F.2 modal primitive · all states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/cooper-black-std">
+<style>
+  :root {
+    --brand: #043338;
+    --brand-mid: #0A6873;
+    --brand-pale: #C2F0F1;
+    --brand-subtle: #E1F4F4;
+
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --ink-disabled: #C4B8A6;
+
+    --bg: #FFFFFF;
+    --sunken: #FAF7F3;
+    --active-tint: #FFF4E8;
+
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --error: #D32F2F;
+
+    --border: rgba(26,18,9,.06);
+    --border-10: rgba(26,18,9,.10);
+
+    --r-sm: 6px; --r-md: 10px; --r-lg: 12px; --r-2xl: 16px;
+    --r-pill: 99px;
+
+    --ease-snap: cubic-bezier(.4, 0, .2, 1);
+    --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    --display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+    --body: 'ITC Avant Garde Gothic Std', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+
+    --backdrop-dim: rgba(26,18,9,0.40);
+
+    --elevation-3: 0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--body); font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 56px 20px 100px; }
+  .doc { max-width: 1180px; margin: 0 auto; }
+
+  /* ========== PAGE HEAD (editorial section-break) ========== */
+  .page-head { margin-bottom: 56px; }
+  .page-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .page-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .page-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+  .page-meta { color: var(--ink-3); }
+  .page-h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 64px; line-height: 0.95;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .page-sub {
+    font-family: var(--body);
+    font-weight: 400; font-size: 15px; color: var(--ink-2);
+    margin-top: 18px; max-width: 720px;
+  }
+
+  /* ========== SECTION-BREAK (per V2-D15-4) ========== */
+  .sec { margin-top: 72px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .sec-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+  .sec-meta { color: var(--ink-3); }
+  .sec-h2 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .sec-intro {
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    line-height: 1.55; color: var(--ink-2);
+    max-width: 720px; margin-bottom: 32px;
+  }
+
+  /* ========== STAGE (faux-page bg behind modal demos) ========== */
+  .stage {
+    position: relative;
+    min-height: 480px;
+    background:
+      linear-gradient(135deg, var(--sunken) 0%, var(--bg) 50%, var(--sunken) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .stage-bg {
+    position: absolute; inset: 0;
+    padding: 24px;
+    pointer-events: none;
+  }
+  .stage-bg-text {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .stage-bg-line {
+    height: 8px; background: var(--ink); opacity: 0.06;
+    border-radius: 4px; margin-bottom: 6px;
+  }
+  .stage-bg-line.short { width: 60%; }
+  .stage-bg-line.tiny  { width: 30%; }
+  .stage-backdrop {
+    position: absolute; inset: 0;
+    background: var(--backdrop-dim);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+
+  /* ========== MODAL SURFACE ========== */
+  .modal {
+    background: var(--bg);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--elevation-3);
+    width: 100%;
+    max-height: calc(100vh - 32px);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .modal.size-sm { max-width: 360px; }
+  .modal.size-md { max-width: 480px; }
+  .modal.size-lg { max-width: 640px; }
+
+  /* ========== MODAL HEADER ========== */
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .modal.size-lg .modal-header { padding: 24px 28px; }
+  .modal-header-stack { display: flex; flex-direction: column; gap: 4px; }
+  .modal-eyebrow {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .modal-title {
+    font-family: var(--body);
+    font-weight: 600; font-size: 18px;
+    line-height: 1.3; color: var(--ink);
+  }
+  .modal-close {
+    display: flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px;
+    margin: -10px; /* hit area extension via negative margin */
+    background: transparent; border: none;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: color 150ms var(--ease-snap);
+    border-radius: var(--r-md);
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-close:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* ========== MODAL BODY ========== */
+  .modal-body {
+    padding: 16px 24px 20px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    line-height: 1.5; color: var(--ink);
+  }
+  .modal.size-lg .modal-body { padding: 16px 28px 24px; }
+  .modal-body p + p { margin-top: 12px; }
+  .modal-body p { color: var(--ink-2); }
+
+  /* ========== MODAL FOOTER ========== */
+  .modal-footer {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .modal.size-lg .modal-footer { padding: 20px 28px; }
+  .modal-footer.has-destructive { justify-content: space-between; }
+
+  /* ========== BUTTONS (V2-D15-4 flat pills) ========== */
+  .btn {
+    font-family: var(--body);
+    font-weight: 600; font-size: 14px;
+    padding: 12px 20px;
+    border-radius: var(--r-pill);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap), color 150ms var(--ease-snap);
+  }
+  .btn-primary {
+    background: var(--brand);
+    color: #FFFFFF;
+    border-color: var(--brand);
+  }
+  .btn-primary:hover { background: var(--brand-mid); border-color: var(--brand-mid); }
+  .btn-primary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .btn-secondary {
+    background: var(--bg);
+    color: var(--ink);
+    border-color: var(--border-10);
+  }
+  .btn-secondary:hover { background: var(--sunken); }
+  .btn-secondary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .btn-destructive {
+    background: transparent;
+    color: var(--ink-3);
+    border: none;
+    padding: 12px 0;
+    font-weight: 500;
+  }
+  .btn-destructive:hover { color: var(--error); }
+
+  /* ========== INFO ROW (anatomy callouts) ========== */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  @media (min-width: 720px) {
+    .anatomy-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .anatomy-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    font-family: var(--body);
+    font-size: 12px; color: var(--ink-2);
+  }
+  .anatomy-row strong { color: var(--ink); font-weight: 600; }
+  .anatomy-row code {
+    background: var(--sunken); padding: 1px 5px;
+    border-radius: 4px; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ========== USE-CASE GRID ========== */
+  .grid {
+    display: grid; gap: 18px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  }
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 22px;
+  }
+  .card-tag {
+    display: inline-block;
+    font-family: var(--body);
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  .card-tag .num { color: var(--brand); font-variant-numeric: tabular-nums; }
+
+  /* ========== STATE TIMELINE ========== */
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 720px) {
+    .timeline { grid-template-columns: repeat(4, 1fr); }
+  }
+  .tl-step {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px;
+  }
+  .tl-state {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 8px;
+  }
+  .tl-name {
+    font-family: var(--body);
+    font-weight: 600; font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .tl-desc {
+    font-family: var(--body);
+    font-weight: 400; font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .tl-vis {
+    background: var(--sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    height: 56px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .tl-vis-modal {
+    width: 70%; height: 36px;
+    background: var(--bg);
+    border-radius: var(--r-md);
+    box-shadow: var(--elevation-3);
+  }
+  .tl-vis.opening .tl-vis-modal { transform: scale(0.95); opacity: 0.6; }
+  .tl-vis.dismissing .tl-vis-modal { transform: scale(0.95); opacity: 0.4; }
+  .tl-vis.opening::after,
+  .tl-vis.dismissing::after,
+  .tl-vis.open::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--backdrop-dim);
+    pointer-events: none;
+  }
+  .tl-vis.opening::after { opacity: 0.5; }
+  .tl-vis.dismissing::after { opacity: 0.6; }
+  .tl-vis.closed { background: var(--sunken); }
+  .tl-vis.closed::before {
+    content: 'closed'; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--body); font-size: 11px;
+    color: var(--ink-3); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.16em;
+  }
+
+  /* ========== ANTI-PATTERN STRIP ========== */
+  .anti-grid {
+    display: grid; gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .anti-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .anti-card {
+    background: rgba(211,47,47,0.04);
+    border: 1px dashed rgba(211,47,47,0.40);
+    border-radius: var(--r-lg);
+    padding: 18px;
+  }
+  .anti-tag {
+    display: inline-block;
+    font-family: var(--body);
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--error);
+    margin-bottom: 10px;
+  }
+  .anti-title {
+    font-family: var(--body);
+    font-weight: 600; font-size: 14px;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .anti-desc {
+    font-family: var(--body);
+    font-size: 12px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  /* ========== TOC ========== */
+  .toc {
+    margin-top: 28px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .toc a {
+    font-family: var(--body);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: var(--r-pill);
+    text-decoration: none;
+    transition: color 150ms var(--ease-snap), border-color 150ms var(--ease-snap);
+  }
+  .toc a:hover { color: var(--brand); border-color: rgba(4,51,56,.20); }
+
+  /* ========== FOOT ========== */
+  .foot {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-family: var(--body);
+    font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .icon-svg { display: block; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <!-- ============================== PAGE HEAD ============================== -->
+  <header class="page-head">
+    <div class="page-rule"></div>
+    <div class="page-meta-row">
+      <span class="page-eyebrow">
+        <span class="page-eyebrow-dot"></span>
+        Solen V3 · Phase 0 · §F.2
+      </span>
+      <span class="page-meta">2026-05-08 · overnight</span>
+    </div>
+    <h1 class="page-h1">Modal primitive</h1>
+    <p class="page-sub">
+      Centered overlay for confirmations, login flows, focused single-task interactions, and content
+      that must steal user attention until resolved. Distinct from sheet (§F.3) — modals work
+      identically on mobile and desktop. They never auto-dismiss and never stack.
+    </p>
+
+    <nav class="toc">
+      <a href="#anatomy">Anatomy</a>
+      <a href="#sizes">Sizes</a>
+      <a href="#use-cases">Use cases</a>
+      <a href="#header">Header variants</a>
+      <a href="#footer">Footer variants</a>
+      <a href="#states">State matrix</a>
+      <a href="#anti">Anti-patterns</a>
+    </nav>
+  </header>
+
+  <!-- ============================== ANATOMY ============================== -->
+  <section id="anatomy" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anatomy</span>
+      <span class="sec-meta">§F.2.0 · backdrop + surface</span>
+    </div>
+    <h2 class="sec-h2">Anatomy</h2>
+    <p class="sec-intro">
+      Backdrop dims (warm-ink rgba(26,18,9,.40), never pure black) + blurs (4px, tasteful). Surface
+      centered, white #FFFFFF, radius 16px, elevation-3 warm-tinted shadow. Header /
+      Body / Footer always in that vertical order; footer sticky at bottom when body scrolls.
+    </p>
+
+    <div class="stage">
+      <!-- Faux page content behind backdrop -->
+      <div class="stage-bg">
+        <div class="stage-bg-text">Page content (dimmed)</div>
+        <div class="stage-bg-line"></div>
+        <div class="stage-bg-line short"></div>
+        <div class="stage-bg-line"></div>
+        <div class="stage-bg-line tiny"></div>
+        <div class="stage-bg-line"></div>
+        <div class="stage-bg-line short"></div>
+      </div>
+      <!-- Backdrop + modal -->
+      <div class="stage-backdrop">
+        <div class="modal size-md">
+          <div class="modal-header">
+            <div class="modal-header-stack">
+              <div class="modal-eyebrow">Buchung</div>
+              <h3 class="modal-title">Termin bestätigen</h3>
+            </div>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Du buchst <strong>Damen-Schnitt &amp; Föhnen</strong> bei Salon Maria am <strong>Donnerstag, 16. Mai um 14:30</strong>.</p>
+            <p>Die Bestätigung wird per E-Mail an lara@example.ch gesendet.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Abbrechen</button>
+            <button type="button" class="btn btn-primary">Bestätigen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anatomy-grid">
+      <div class="anatomy-row"><span><strong>Backdrop:</strong> <code>rgba(26,18,9,0.40)</code> + <code>backdrop-filter: blur(4px)</code></span></div>
+      <div class="anatomy-row"><span><strong>Surface:</strong> white, radius 16px, <code>elevation-3</code> shadow</span></div>
+      <div class="anatomy-row"><span><strong>Header:</strong> 20/24px padding, border-bottom 1px <code>ink/.06</code></span></div>
+      <div class="anatomy-row"><span><strong>Body:</strong> 0/24/20 padding, overflow-y auto when content exceeds</span></div>
+      <div class="anatomy-row"><span><strong>Footer:</strong> sticky bottom, 16/24 padding, border-top 1px <code>ink/.06</code></span></div>
+      <div class="anatomy-row"><span><strong>Title:</strong> Avant Garde 600 18px ink-1 line-height 1.3</span></div>
+      <div class="anatomy-row"><span><strong>Close X:</strong> Lucide x 24px ink-2, hit area 44×44 via negative margin</span></div>
+      <div class="anatomy-row"><span><strong>Width:</strong> <code>min(max-width, 100vw - 32px)</code> — 16px margin each side on mobile</span></div>
+    </div>
+  </section>
+
+  <!-- ============================== SIZES ============================== -->
+  <section id="sizes" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Sizes</span>
+      <span class="sec-meta">§F.2.0a · sm / md / lg</span>
+    </div>
+    <h2 class="sec-h2">Sizes</h2>
+    <p class="sec-intro">
+      Three sizes, fixed mapping. <strong>md is default</strong>. sm for confirm dialogs, lg
+      for report-content + complex forms. XL or full-screen modals are banned — use a page
+      route or §F.3 sheet instead.
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-tag">size <span class="num">sm</span> · 360px · confirm dialog</div>
+        <div class="modal size-sm" style="margin: 0 auto;">
+          <div class="modal-header">
+            <h3 class="modal-title">Konto wirklich löschen?</h3>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Diese Aktion kann nicht rückgängig gemacht werden. Alle Buchungen und Favoriten werden gelöscht.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Abbrechen</button>
+            <button type="button" class="btn btn-primary" style="background:var(--error);border-color:var(--error);">Löschen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">size <span class="num">md</span> · 480px · login</div>
+        <div class="modal size-md" style="margin: 0 auto;">
+          <div class="modal-header">
+            <div class="modal-header-stack">
+              <div class="modal-eyebrow">Anmelden</div>
+              <h3 class="modal-title">Willkommen zurück</h3>
+            </div>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Melde dich mit deiner E-Mail-Adresse an, um deine Buchung abzuschliessen.</p>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:18px;">
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="font-family:var(--body);font-weight:600;font-size:12px;color:var(--ink);">E-Mail-Adresse</label>
+                <input type="email" placeholder="lara@example.ch" style="height:56px;padding:12px 16px;border:1px solid var(--border-10);border-radius:12px;font-family:var(--body);font-size:14px;color:var(--ink);" />
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="font-family:var(--body);font-weight:600;font-size:12px;color:var(--ink);">Passwort</label>
+                <input type="password" placeholder="••••••••" style="height:56px;padding:12px 16px;border:1px solid var(--border-10);border-radius:12px;font-family:var(--body);font-size:14px;color:var(--ink);" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Abbrechen</button>
+            <button type="button" class="btn btn-primary">Anmelden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;">
+      <div class="card">
+        <div class="card-tag">size <span class="num">lg</span> · 640px · report content</div>
+        <div class="modal size-lg" style="margin: 0 auto;">
+          <div class="modal-header">
+            <div class="modal-header-stack">
+              <div class="modal-eyebrow">Inhalt melden</div>
+              <h3 class="modal-title">Was ist mit diesem Look?</h3>
+            </div>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Wähle einen Grund. Wir prüfen alle Meldungen innerhalb von 24 Stunden.</p>
+            <div style="display:flex;flex-direction:column;border:1px solid var(--border);border-radius:12px;margin-top:18px;padding:0 16px;">
+              <label style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(26,18,9,.05);font-family:var(--body);font-size:14px;color:var(--ink);">
+                <span style="width:18px;height:18px;border:2px solid var(--brand);border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="width:8px;height:8px;background:var(--brand);border-radius:50%;"></span></span>
+                <span style="font-weight:600;">Belästigung oder Hassrede</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(26,18,9,.05);font-family:var(--body);font-size:14px;color:var(--ink);">
+                <span style="width:18px;height:18px;border:2px solid rgba(26,18,9,.25);border-radius:50%;"></span>
+                <span>Spam oder irreführende Inhalte</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(26,18,9,.05);font-family:var(--body);font-size:14px;color:var(--ink);">
+                <span style="width:18px;height:18px;border:2px solid rgba(26,18,9,.25);border-radius:50%;"></span>
+                <span>Falsche Information über einen Salon</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:12px;padding:14px 0;font-family:var(--body);font-size:14px;color:var(--ink);">
+                <span style="width:18px;height:18px;border:2px solid rgba(26,18,9,.25);border-radius:50%;"></span>
+                <span>Anderer Grund</span>
+              </label>
+            </div>
+            <textarea placeholder="Optionale Details (mind. 20 Zeichen)" style="width:100%;min-height:88px;margin-top:18px;padding:12px 16px;border:1px solid var(--border-10);border-radius:12px;font-family:var(--body);font-size:14px;color:var(--ink);resize:vertical;"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Abbrechen</button>
+            <button type="button" class="btn btn-primary">Meldung senden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== USE CASES ============================== -->
+  <section id="use-cases" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Use cases</span>
+      <span class="sec-meta">§F.2 · 4 patterns</span>
+    </div>
+    <h2 class="sec-h2">Use cases</h2>
+    <p class="sec-intro">
+      Four canonical Solen modal patterns. Each composes the same primitive — only the body content
+      and footer button arrangement differ.
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-tag">Confirmation · destructive</div>
+        <div class="modal size-sm" style="margin: 0 auto;">
+          <div class="modal-header">
+            <h3 class="modal-title">Buchung stornieren?</h3>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Die Stornierung ist gemäss Salon-Richtlinie kostenfrei bis 24h vor dem Termin.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Behalten</button>
+            <button type="button" class="btn btn-primary" style="background:var(--error);border-color:var(--error);">Stornieren</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Share · with utility chips</div>
+        <div class="modal size-md" style="margin: 0 auto;">
+          <div class="modal-header">
+            <h3 class="modal-title">Salon teilen</h3>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Salon Maria · Kleinbasel</p>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+              <button type="button" style="font-family:var(--body);font-size:12px;font-weight:500;padding:8px 14px;border:1px solid var(--border-10);border-radius:99px;background:var(--bg);color:var(--ink);cursor:pointer;">Link kopieren</button>
+              <button type="button" style="font-family:var(--body);font-size:12px;font-weight:500;padding:8px 14px;border:1px solid var(--border-10);border-radius:99px;background:var(--bg);color:var(--ink);cursor:pointer;">WhatsApp</button>
+              <button type="button" style="font-family:var(--body);font-size:12px;font-weight:500;padding:8px 14px;border:1px solid var(--border-10);border-radius:99px;background:var(--bg);color:var(--ink);cursor:pointer;">Nachricht</button>
+              <button type="button" style="font-family:var(--body);font-size:12px;font-weight:500;padding:8px 14px;border:1px solid var(--border-10);border-radius:99px;background:var(--bg);color:var(--ink);cursor:pointer;">E-Mail</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:18px;">
+      <div class="card">
+        <div class="card-tag">Edit single field</div>
+        <div class="modal size-md" style="margin: 0 auto;">
+          <div class="modal-header">
+            <h3 class="modal-title">E-Mail-Adresse ändern</h3>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <label style="font-family:var(--body);font-weight:600;font-size:12px;color:var(--ink);">Neue E-Mail-Adresse</label>
+              <input type="email" placeholder="neue@example.ch" style="height:56px;padding:12px 16px;border:1px solid var(--border-10);border-radius:12px;font-family:var(--body);font-size:14px;color:var(--ink);" />
+              <p style="font-family:var(--body);font-size:11px;color:var(--ink-3);">Wir senden eine Bestätigung an die neue Adresse.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Abbrechen</button>
+            <button type="button" class="btn btn-primary">Speichern</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Sign out · with destructive tertiary</div>
+        <div class="modal size-sm" style="margin: 0 auto;">
+          <div class="modal-header">
+            <h3 class="modal-title">Abmelden?</h3>
+            <button type="button" class="modal-close" aria-label="Schließen">
+              <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Deine Buchungen und Favoriten bleiben erhalten.</p>
+          </div>
+          <div class="modal-footer has-destructive">
+            <button type="button" class="btn btn-destructive">Konto löschen</button>
+            <div style="display:flex;gap:12px;">
+              <button type="button" class="btn btn-secondary">Bleiben</button>
+              <button type="button" class="btn btn-primary">Abmelden</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== STATE MATRIX ============================== -->
+  <section id="states" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>State matrix</span>
+      <span class="sec-meta">§F.2.0b · 4 phases</span>
+    </div>
+    <h2 class="sec-h2">State matrix</h2>
+    <p class="sec-intro">
+      Modals don't bounce or spring — they're functional confirmations, not playful reveals.
+      Both entry and exit use <code style="font-family:'JetBrains Mono',monospace;">ease-snap</code> (cubic-bezier(.4,0,.2,1)).
+      Reduced-motion: collapse to opacity-only, 100ms duration.
+    </p>
+
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-vis closed"></div>
+        <div class="tl-state">01 · closed</div>
+        <div class="tl-name">Not rendered</div>
+        <div class="tl-desc">No DOM nodes. Trigger element retains focus.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis opening"><div class="tl-vis-modal"></div></div>
+        <div class="tl-state">02 · opening</div>
+        <div class="tl-name">Backdrop fades 0→1, modal scales 0.95→1</div>
+        <div class="tl-desc">200ms backdrop · 250ms modal · ease-snap. Body scroll locked.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis open"><div class="tl-vis-modal"></div></div>
+        <div class="tl-state">03 · open</div>
+        <div class="tl-name">Static · interactive</div>
+        <div class="tl-desc">Backdrop at 0.40 dim, modal at scale 1. Focus trapped within.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis dismissing"><div class="tl-vis-modal"></div></div>
+        <div class="tl-state">04 · dismissing</div>
+        <div class="tl-name">Modal scales 1→0.95, fades to 0</div>
+        <div class="tl-desc">150ms · ease-snap. Then unmount + restore focus to trigger.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ANTI-PATTERNS ============================== -->
+  <section id="anti" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anti-patterns</span>
+      <span class="sec-meta">§F.2.10 · banned</span>
+    </div>
+    <h2 class="sec-h2">Anti-patterns</h2>
+    <p class="sec-intro">
+      What Solen modals <strong>do not</strong> do. Each ban exists because the pattern fights
+      either accessibility, the §F.2 single-task focus principle, or the V2-D15-4 motion discipline.
+    </p>
+
+    <div class="anti-grid">
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Nested modals (modal-on-modal)</div>
+        <div class="anti-desc">Open ONE modal at a time. For "discard unsaved changes?" flows, swap the SAME modal's body content. Stacking creates dismissal-order ambiguity and breaks focus traps.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Auto-dismiss timeouts</div>
+        <div class="anti-desc">Modals never auto-close. User dismisses explicitly via X / Escape / backdrop click. Auto-dismiss = §F.4 toast — different primitive, different semantics.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Pure black backdrop</div>
+        <div class="anti-desc">Per §4 anti-pattern: never <code style="font-family:'JetBrains Mono',monospace;">rgba(0,0,0,X)</code>. Always warm-ink tint <code style="font-family:'JetBrains Mono',monospace;">rgba(26,18,9,0.40)</code> + 4px blur.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Hidden close button until hover</div>
+        <div class="anti-desc">Per §11 hit-target baseline: close X always visible. Hover-revealed dismissal fails on touch + violates discoverability.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Modals as marketing prompts</div>
+        <div class="anti-desc">Modals interrupt and demand action. Reserve for must-resolve interactions. Use §F.4 toasts for non-actionable info, pages for marketing content.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Disable escape + backdrop-click + hide close X</div>
+        <div class="anti-desc">User must always have AT LEAST ONE explicit way to exit. Trapping users in a modal violates §11 + §24b.1 keyboard-nav baselines.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Auto-morph to bottom sheet on mobile</div>
+        <div class="anti-desc">Sheets are §F.3, distinct primitive. Confirmation modals stay centered everywhere — sheet semantics (swipe down, snap heights) don't fit confirmation UX.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Italic anywhere in modal</div>
+        <div class="anti-desc">Per V2-D15: italic banned across all UI. Title, body, button labels — all upright Avant Garde Gothic.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== FOOT ============================== -->
+  <footer class="foot">
+    <span>Solen V3 · Phase 0 · §F.2 modal primitive</span>
+    <span>2026-05-08 · V2-D18</span>
+  </footer>
+
+</div>
+</body>
+</html>

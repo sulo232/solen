@@ -201,8 +201,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         <section className="rounded-card bg-white shadow-elevation-1 overflow-hidden">
           <Row href={p("/profile/bookings")} icon={Calendar} label={t("tileAppointments")} meta={t("upcomingCount", { count: upcomingBookings })} />
           <Row href={p("/profile/favorites")} icon={Heart} iconClass="text-[#FF3366]" label={t("tileFavorites")} meta={String(favCount)} />
-          <Row href={p("/profile/stamps")} icon={Award} label={t("tileLoyalty")} meta={t("stampsCount", { count: stampCount })} />
-          <Row href={p("/profile/gift-cards")} icon={Gift} label={t("tileWallet")} meta={t("walletDesc")} />
+          {/* Loyalty now points to the Solen-wide Status (rank) page; /profile/stamps is legacy. */}
+          <Row href={p("/rewards")} icon={Award} label={t("tileLoyalty")} />
+          {/* Gift-card wallet HIDDEN from customers (owner, 2026-06-14) in favour of a Solen-wide loyalty card. */}
         </section>
 
         {/* More */}
@@ -210,7 +211,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         <section className="rounded-card bg-white shadow-elevation-1 overflow-hidden">
           <Row href={p("/profile/haarprofil")} icon={Scissors} label={t("haarprofil")} />
           <Row href={p("/profile/looks")} icon={Sparkles} label={t("looks")} />
-          <Row href={p("/profile/vouchers")} icon={Ticket} label={t("vouchers")} />
+          {/* Vouchers (gift cards) HIDDEN from customers (owner, 2026-06-14) in favour of a Solen-wide loyalty card. */}
           <Row href={p("/profile/intake-forms")} icon={ClipboardList} label={t("intakeForms")} />
           <Row href={p("/profile/referral")} icon={UserPlus} label={t("refer")} meta={t("referReward")} />
           <Row href={p("/profile/settings")} icon={SlidersHorizontal} label={t("settings")} />

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Card — v4 Denomination Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #F4F4F5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 16px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .phone-frame {
+    width: 390px;
+    min-height: 844px;
+    background: #FFFFFF;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px -16px rgba(0,0,0,.22), 0 8px 24px -8px rgba(0,0,0,.12);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+    padding: 14px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+  }
+  .status-bar .time {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #FFFFFF;
+  }
+  .status-bar .icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .status-bar .icons svg {
+    color: #FFFFFF;
+  }
+
+  /* Hero photo header */
+  .hero {
+    position: relative;
+    height: 210px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      rgba(0,0,0,.45) 0%,
+      rgba(0,0,0,.15) 55%,
+      rgba(0,0,0,.65) 100%
+    );
+  }
+
+  /* Frosted back button */
+  .hero-back {
+    position: absolute;
+    top: 52px;
+    left: 16px;
+    z-index: 10;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .hero-back i { color: #fff; width: 18px; height: 18px; }
+
+  /* Salon info overlay at hero bottom */
+  .hero-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px 14px;
+    z-index: 10;
+  }
+  .hero-info .salon-name {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    color: #FFFFFF;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .hero-info .salon-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .salon-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .salon-rating i { color: #FFC32B; width: 13px; height: 13px; }
+  .salon-rating span {
+    font-size: 13px;
+    color: rgba(255,255,255,0.95);
+    font-weight: 600;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .salon-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+  .salon-loc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.82);
+    font-weight: 400;
+  }
+
+  /* Gift banner pill */
+  .gift-banner {
+    margin: 16px 16px 0;
+    background: #FFF1E6;
+    border-radius: 14px;
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-shrink: 0;
+  }
+  .gift-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #C2410C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .gift-icon-wrap i { color: #fff; width: 20px; height: 20px; }
+  .gift-banner-text .label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0A0A0A;
+    line-height: 1.2;
+  }
+  .gift-banner-text .sub {
+    font-size: 12px;
+    color: #7C4B2A;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Scrollable content */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: #8A8A8A;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  /* Denomination cards grid */
+  .denom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .denom-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+    background: #F4F4F5;
+    aspect-ratio: 1.6/1;
+    min-height: 98px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 13px 11px;
+  }
+
+  .denom-card:active { transform: scale(0.97); }
+
+  /* Each card gets a subtle gradient accent strip */
+  .denom-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #C2410C 0%, #EA580C 50%, #FCA070 100%);
+    opacity: 0.7;
+    transition: opacity 0.18s ease;
+  }
+
+  .denom-card.selected {
+    border-color: #0A0A0A;
+    background: #FFFFFF;
+    box-shadow: 0 6px 22px -6px rgba(0,0,0,.14);
+  }
+  .denom-card.selected::before { opacity: 1; }
+
+  .denom-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .denom-logo {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #5A5A5A;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .denom-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #D0D0D0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+  }
+  .denom-card.selected .denom-check {
+    background: #0A0A0A;
+    border-color: #0A0A0A;
+  }
+  .denom-check i {
+    color: #fff;
+    width: 11px;
+    height: 11px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .denom-card.selected .denom-check i { opacity: 1; }
+
+  .denom-amount {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    color: #0A0A0A;
+    line-height: 1;
+    margin-top: 6px;
+  }
+  .denom-currency {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5A5A5A;
+    margin-bottom: 2px;
+    display: block;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  /* Custom amount row */
+  .custom-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F4F4F5;
+    border-radius: 14px;
+    padding: 13px 14px;
+    border: 2px solid transparent;
+    transition: border-color 0.18s ease;
+    cursor: pointer;
+  }
+  .custom-row.active {
+    border-color: #0A0A0A;
+    background: #FFFFFF;
+  }
+  .custom-row i { color: #8A8A8A; width: 18px; height: 18px; flex-shrink: 0; }
+  .custom-row input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #0A0A0A;
+    outline: none;
+    min-width: 0;
+  }
+  .custom-row input::placeholder { color: #8A8A8A; font-weight: 400; font-family: 'Inter', sans-serif; }
+  .custom-row .chf-prefix {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: #8A8A8A;
+  }
+
+  /* Visual gift card preview */
+  .giftcard-preview {
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    height: 140px;
+    background: linear-gradient(135deg, #0A0A0A 0%, #2A1A10 50%, #1A0A06 100%);
+    box-shadow: 0 12px 32px -8px rgba(0,0,0,.28);
+  }
+  .giftcard-preview::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(194,65,12,.45) 0%, transparent 70%);
+  }
+  .giftcard-preview::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: 20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(234,88,12,.25) 0%, transparent 70%);
+  }
+  .giftcard-inner {
+    position: absolute;
+    inset: 0;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .giftcard-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .giftcard-brand {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+  .giftcard-brand .dot { color: #C2410C; }
+  .giftcard-gift-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .giftcard-gift-icon i { color: #FCA070; width: 16px; height: 16px; }
+  .giftcard-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .giftcard-for {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 3px;
+  }
+  .giftcard-recipient {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+  }
+  .giftcard-value {
+    text-align: right;
+  }
+  .giftcard-value .chf-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 1px;
+  }
+  .giftcard-value .amount {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: #FFFFFF;
+    line-height: 1;
+  }
+  .giftcard-shine {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Form fields */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .field-wrap {
+    background: #F4F4F5;
+    border-radius: 14px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  .field-wrap:focus-within {
+    border-color: #0A0A0A;
+    background: #FFFFFF;
+  }
+  .field-wrap i { color: #8A8A8A; width: 17px; height: 17px; flex-shrink: 0; }
+  .field-wrap input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #0A0A0A;
+    outline: none;
+    min-width: 0;
+  }
+  .field-wrap input::placeholder { color: #8A8A8A; }
+
+  .textarea-wrap {
+    background: #F4F4F5;
+    border-radius: 14px;
+    padding: 13px 14px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.15s ease;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .textarea-wrap:focus-within {
+    border-color: #0A0A0A;
+    background: #FFFFFF;
+  }
+  .textarea-wrap i { color: #8A8A8A; width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; }
+  .textarea-wrap textarea {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #0A0A0A;
+    outline: none;
+    resize: none;
+    min-height: 72px;
+    line-height: 1.5;
+  }
+  .textarea-wrap textarea::placeholder { color: #8A8A8A; }
+  .char-count {
+    font-size: 12px;
+    color: #8A8A8A;
+    text-align: right;
+    margin-top: -6px;
+  }
+
+  /* Delivery chip */
+  .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    background: #F4F4F5;
+    border-radius: 14px;
+  }
+  .delivery-row i { color: #5A5A5A; width: 17px; height: 17px; }
+  .delivery-text {
+    flex: 1;
+  }
+  .delivery-text .d-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0A0A0A;
+  }
+  .delivery-text .d-sub {
+    font-size: 12px;
+    color: #8A8A8A;
+    margin-top: 1px;
+  }
+  .delivery-badge {
+    background: #16A34A;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Inter Tight', sans-serif;
+    border-radius: 100px;
+    padding: 3px 9px;
+  }
+
+  /* CTA */
+  .cta-wrap {
+    padding: 0 16px 32px;
+    flex-shrink: 0;
+  }
+  .cta-btn {
+    width: 100%;
+    height: 56px;
+    background: #0A0A0A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: -0.01em;
+    transition: opacity 0.15s ease, transform 0.12s ease;
+    box-shadow: 0 4px 16px -4px rgba(0,0,0,.35);
+  }
+  .cta-btn:active { opacity: 0.88; transform: scale(0.99); }
+  .cta-btn i { width: 18px; height: 18px; }
+
+  .fine-print {
+    font-size: 12px;
+    color: #8A8A8A;
+    text-align: center;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  .fine-print a { color: #276EF1; text-decoration: none; }
+
+  /* Section divider */
+  .section-block { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0" y="3" width="3" height="9" rx="1" fill="white" opacity="0.4"/>
+        <rect x="4.5" y="2" width="3" height="10" rx="1" fill="white" opacity="0.6"/>
+        <rect x="9" y="0" width="3" height="12" rx="1" fill="white" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 2.4C10.5 2.4 12.7 3.5 14.2 5.2L15.6 3.8C13.7 1.7 11 0.4 8 0.4C5 0.4 2.3 1.7 0.4 3.8L1.8 5.2C3.3 3.5 5.5 2.4 8 2.4Z" fill="white"/>
+        <path d="M8 5.6C9.7 5.6 11.2 6.3 12.3 7.4L13.7 6C12.2 4.5 10.2 3.6 8 3.6C5.8 3.6 3.8 4.5 2.3 6L3.7 7.4C4.8 6.3 6.3 5.6 8 5.6Z" fill="white"/>
+        <circle cx="8" cy="10" r="2" fill="white"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="white" fill-opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hero photo -->
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80" alt="Old Town Barbers" />
+    <button class="hero-back" aria-label="Back">
+      <i data-lucide="arrow-left"></i>
+    </button>
+    <div class="hero-info">
+      <div class="salon-name">Old Town Barbers</div>
+      <div class="salon-meta">
+        <div class="salon-rating">
+          <i data-lucide="star" style="fill:#FFC32B"></i>
+          <span>4.8</span>
+        </div>
+        <div class="salon-dot"></div>
+        <span class="salon-loc">Grossbasel, Basel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gift banner -->
+  <div class="gift-banner">
+    <div class="gift-icon-wrap">
+      <i data-lucide="gift"></i>
+    </div>
+    <div class="gift-banner-text">
+      <div class="label">Give the gift of grooming</div>
+      <div class="sub">Redeemable for any service. Valid 12 months.</div>
+    </div>
+  </div>
+
+  <!-- Scrollable content -->
+  <div class="content">
+
+    <!-- Amount picker -->
+    <div class="section-block">
+      <div class="section-label">Choose amount</div>
+      <div class="denom-grid">
+
+        <div class="denom-card" data-amount="25" onclick="selectAmount(25, this)">
+          <div class="denom-card-top">
+            <span class="denom-logo">Solen</span>
+            <div class="denom-check"><i data-lucide="check"></i></div>
+          </div>
+          <div>
+            <span class="denom-currency">CHF</span>
+            <div class="denom-amount">25</div>
+          </div>
+        </div>
+
+        <div class="denom-card selected" data-amount="50" onclick="selectAmount(50, this)">
+          <div class="denom-card-top">
+            <span class="denom-logo">Solen</span>
+            <div class="denom-check"><i data-lucide="check"></i></div>
+          </div>
+          <div>
+            <span class="denom-currency">CHF</span>
+            <div class="denom-amount">50</div>
+          </div>
+        </div>
+
+        <div class="denom-card" data-amount="100" onclick="selectAmount(100, this)">
+          <div class="denom-card-top">
+            <span class="denom-logo">Solen</span>
+            <div class="denom-check"><i data-lucide="check"></i></div>
+          </div>
+          <div>
+            <span class="denom-currency">CHF</span>
+            <div class="denom-amount">100</div>
+          </div>
+        </div>
+
+        <div class="denom-card" data-amount="200" onclick="selectAmount(200, this)">
+          <div class="denom-card-top">
+            <span class="denom-logo">Solen</span>
+            <div class="denom-check"><i data-lucide="check"></i></div>
+          </div>
+          <div>
+            <span class="denom-currency">CHF</span>
+            <div class="denom-amount">200</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Custom amount -->
+      <div class="custom-row" style="margin-top:10px;" id="custom-row">
+        <i data-lucide="pen-line"></i>
+        <span class="chf-prefix">CHF</span>
+        <input
+          type="number"
+          placeholder="Custom amount"
+          min="10"
+          max="1000"
+          id="custom-input"
+          oninput="onCustomAmount(this.value)"
+          onfocus="activateCustom()"
+        />
+      </div>
+    </div>
+
+    <!-- Live gift card preview -->
+    <div class="giftcard-preview">
+      <div class="giftcard-shine"></div>
+      <div class="giftcard-inner">
+        <div class="giftcard-top">
+          <div class="giftcard-brand">solen<span class="dot">.</span></div>
+          <div class="giftcard-gift-icon"><i data-lucide="gift"></i></div>
+        </div>
+        <div class="giftcard-bottom">
+          <div>
+            <div class="giftcard-for">Gift card for</div>
+            <div class="giftcard-recipient" id="preview-name">Sarah</div>
+          </div>
+          <div class="giftcard-value">
+            <span class="chf-label">CHF</span>
+            <span class="amount" id="preview-amount">50</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipient details -->
+    <div class="section-block">
+      <div class="section-label">Recipient</div>
+      <div class="field-group">
+        <div class="field-wrap">
+          <i data-lucide="user"></i>
+          <input type="text" placeholder="Recipient name" id="recipient-name" oninput="updatePreviewName(this.value)" value="Sarah" />
+        </div>
+        <div class="field-wrap">
+          <i data-lucide="mail"></i>
+          <input type="email" placeholder="Recipient email" />
+        </div>
+        <div class="textarea-wrap">
+          <i data-lucide="message-circle"></i>
+          <textarea placeholder="Personal message (optional)" id="msg-area" oninput="updateCharCount(this)">Enjoy a treat on me!</textarea>
+        </div>
+        <div class="char-count" id="char-count">19 / 160</div>
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="section-block">
+      <div class="section-label">Delivery</div>
+      <div class="delivery-row">
+        <i data-lucide="send"></i>
+        <div class="delivery-text">
+          <div class="d-label">Email delivery</div>
+          <div class="d-sub">Sent instantly to recipient's inbox</div>
+        </div>
+        <div class="delivery-badge">Free</div>
+      </div>
+    </div>
+
+    <!-- Spacer for CTA -->
+    <div style="height:4px;"></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn" id="cta-btn">
+      <i data-lucide="gift"></i>
+      <span id="cta-text">Buy gift card · CHF 50</span>
+    </button>
+    <div class="fine-print">
+      Secure payment via Stripe. By purchasing you accept our
+      <a href="#">gift card terms</a>.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  let selectedAmount = 50;
+
+  function selectAmount(amount, el) {
+    // Deselect all cards
+    document.querySelectorAll('.denom-card').forEach(c => c.classList.remove('selected'));
+    // Deselect custom
+    document.getElementById('custom-row').classList.remove('active');
+    document.getElementById('custom-input').value = '';
+
+    if (el) el.classList.add('selected');
+    selectedAmount = amount;
+    updateCTA();
+    updatePreviewAmount(amount);
+
+    // Re-init icons for newly toggled check
+    lucide.createIcons();
+  }
+
+  function activateCustom() {
+    document.querySelectorAll('.denom-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('custom-row').classList.add('active');
+    lucide.createIcons();
+  }
+
+  function onCustomAmount(val) {
+    const n = parseInt(val, 10);
+    if (n > 0) {
+      selectedAmount = n;
+      updateCTA();
+      updatePreviewAmount(n);
+    }
+  }
+
+  function updateCTA() {
+    document.getElementById('cta-text').textContent = `Buy gift card · CHF ${selectedAmount}`;
+  }
+
+  function updatePreviewAmount(val) {
+    document.getElementById('preview-amount').textContent = val;
+  }
+
+  function updatePreviewName(val) {
+    const el = document.getElementById('preview-name');
+    el.textContent = val || 'You';
+  }
+
+  function updateCharCount(textarea) {
+    const len = textarea.value.length;
+    document.getElementById('char-count').textContent = `${len} / 160`;
+  }
+</script>
+</body>
+</html>

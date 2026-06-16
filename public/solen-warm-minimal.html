@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Warm Minimal (Aurex/Fresha lane)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* === V2-D69 PROPOSAL — exact hex codes from user brief === */
+    :root {
+      /* Base */
+      --app-bg: #F9F8F6;          /* warm pearl / alabaster */
+      --surface: #FFFFFF;         /* pure white for cards */
+
+      /* Typography */
+      --ink-1: #1A1C19;           /* primary text — dark rich charcoal (not pure black) */
+      --ink-2: #6B7068;           /* secondary text — medium cool grey */
+
+      /* Brand accents */
+      --brand-green: #3B7A57;     /* primary CTA (matches Solen logo) */
+      --terracotta: #D87352;      /* accent — discount badges, dots */
+      --success-bg: #E5F2EA;      /* pale mint for "Heute frei" bg */
+
+      /* Top hero gradient */
+      --hero-peach: #FFF0E6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--app-bg); }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--ink-1);
+      min-height: 100vh;
+      padding-bottom: 48px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== HERO with subtle peach radial gradient ===== */
+    .hero {
+      position: relative;
+      padding: 40px 20px 32px;
+      overflow: hidden;
+    }
+    /* Soft peach radial — "Fresha touch" */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: -10%;
+      right: -10%;
+      height: 540px;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse 60% 50% at 60% 30%, var(--hero-peach) 0%, transparent 70%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .greeting {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-2);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(40px, 8.5vw, 60px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--ink-1);
+      margin-bottom: 36px;
+    }
+    h1 .accent { color: var(--terracotta); }
+
+    /* ===== FLOATING WHITE SEARCH CARD ===== */
+    /* Single card, all 3 inputs inside, soft diffused drop shadow lifting it */
+    .searchbar {
+      background: var(--surface);
+      border: 1px solid rgba(26, 28, 25, 0.04);
+      border-radius: 24px;
+      padding: 8px;
+      box-shadow:
+        0 1px 2px rgba(26, 28, 25, 0.03),
+        0 8px 24px rgba(26, 28, 25, 0.05),
+        0 24px 48px -12px rgba(26, 28, 25, 0.08);
+    }
+    .searchrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 18px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .searchrow:hover { background: rgba(26, 28, 25, 0.025); }
+    .searchrow + .searchrow {
+      position: relative;
+    }
+    .searchrow + .searchrow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50px;
+      right: 18px;
+      height: 1px;
+      background: rgba(26, 28, 25, 0.06);
+    }
+    .searchrow svg {
+      width: 20px; height: 20px;
+      color: var(--ink-2);
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+    .searchrow .label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-2);
+      flex: 1;
+      letter-spacing: -0.005em;
+    }
+
+    .searchbtn {
+      width: 100%;
+      padding: 18px;
+      margin-top: 6px;
+      background: var(--brand-green);
+      color: white;
+      border: 0;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .searchbtn:hover { opacity: 0.94; }
+    .searchbtn:active { transform: translateY(1px); }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 36px 20px 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--ink-1);
+    }
+    .section-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(26, 28, 25, 0.04);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .section-link:hover { background: rgba(26, 28, 25, 0.08); }
+    .section-link svg { width: 16px; height: 16px; color: var(--ink-1); stroke-width: 2.4; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 162px);
+      gap: 14px;
+      padding-bottom: 8px;
+    }
+
+    /* ===== CARDS (Aurex-style: white surface, soft shadow, more rounded) ===== */
+    .card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 22px;
+      background: #F0EBE5;
+      /* Soft wide drop shadow lifting it from the bg */
+      box-shadow:
+        0 1px 2px rgba(26, 28, 25, 0.04),
+        0 6px 18px rgba(26, 28, 25, 0.06),
+        0 18px 36px -12px rgba(26, 28, 25, 0.08);
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .text { margin-top: 12px; padding: 0 4px; display: flex; flex-direction: column; gap: 3px; }
+    .text h3 {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .meta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      line-height: 1.35;
+      letter-spacing: -0.005em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+    .row3 .left { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row3 .left b { font-weight: 700; color: var(--ink-1); }
+    .row3 .right {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 700;
+      color: var(--ink-1);
+      font-variant-numeric: tabular-nums;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+
+    /* ===== GLASSMORPHIC OVERLAYS (heart + badges) ===== */
+    .heart {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 32px; height: 32px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px) saturate(1.2);
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      display: grid; place-items: center;
+    }
+    .heart svg { width: 16px; height: 16px; color: var(--ink-1); stroke-width: 2.2; }
+
+    /* "Heute frei" badge — pale mint bg + brand green text */
+    .badge-free {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 5px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      background: var(--success-bg);
+      color: var(--brand-green);
+      letter-spacing: -0.005em;
+    }
+
+    /* "-20%" badge — terracotta accent */
+    .badge-discount {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 5px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      background: var(--terracotta);
+      color: white;
+      letter-spacing: 0;
+    }
+
+    /* "15 Min" glass badge — bottom-left */
+    .badge-time {
+      position: absolute;
+      bottom: 10px; left: 10px;
+      padding: 5px 11px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px) saturate(1.2);
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: var(--ink-1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-time::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--brand-green);
+    }
+
+    /* ===== STYLISTS (Lass dich verwöhnen) — replace letter placeholders with photos ===== */
+    .stylists-row {
+      display: flex;
+      gap: 18px;
+      padding: 4px 4px 8px;
+      overflow-x: auto;
+    }
+    .stylist-card {
+      flex-shrink: 0;
+      width: 116px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+    }
+    .stylist-photo {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow:
+        0 1px 2px rgba(26, 28, 25, 0.04),
+        0 6px 16px rgba(26, 28, 25, 0.08),
+        0 16px 32px -10px rgba(26, 28, 25, 0.10);
+    }
+    .stylist-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .stylist-photo .rating-pill {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 30%);
+      padding: 4px 10px;
+      background: var(--surface);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-1);
+      box-shadow: 0 2px 6px rgba(26, 28, 25, 0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .stylist-photo .rating-pill svg { width: 10px; height: 10px; fill: #F3A864; }
+    .stylist-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-1);
+      letter-spacing: -0.01em;
+      margin-top: 10px;
+    }
+    .stylist-meta {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-2);
+      margin-top: 2px;
+    }
+
+    /* ===== DISCOVERY CARD (Inspiration) — full image + dark overlay ===== */
+    .discover-row {
+      display: grid;
+      grid-template-columns: repeat(2, 162px);
+      gap: 14px;
+    }
+    .discover-card {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      width: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(26, 28, 25, 0.04),
+        0 6px 18px rgba(26, 28, 25, 0.08),
+        0 18px 36px -12px rgba(26, 28, 25, 0.10);
+    }
+    .discover-card img { width: 100%; height: 100%; object-fit: cover; }
+    .discover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        transparent 30%,
+        rgba(26, 28, 25, 0.25) 55%,
+        rgba(26, 28, 25, 0.85) 100%);
+    }
+    .discover-title {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    .discover-source {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 4px;
+    }
+
+    /* Spec callout */
+    .spec {
+      margin: 32px 20px 0;
+      padding: 16px 18px;
+      background: var(--surface);
+      border-radius: 18px;
+      box-shadow:
+        0 1px 2px rgba(26, 28, 25, 0.04),
+        0 6px 18px rgba(26, 28, 25, 0.06);
+      font-size: 12px;
+      color: var(--ink-2);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .spec h4 {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ink-1);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .spec p { margin-bottom: 6px; }
+    .spec b { color: var(--brand-green); font-weight: 700; }
+    .spec code {
+      font-family: ui-monospace, SF Mono, monospace;
+      font-size: 11px;
+      color: var(--terracotta);
+      background: rgba(216, 115, 82, 0.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="greeting">Hallo, Sulo</p>
+    <h1>Schöner aussehen,<br>schneller <span class="accent">buchen</span>.</h1>
+
+    <div class="searchbar">
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="label">Service</span>
+      </div>
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="label">Stadt</span>
+      </div>
+      <div class="searchrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="label">Zeit</span>
+      </div>
+      <button class="searchbtn">Solen durchsuchen</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Zuletzt angesehen</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-free">Heute frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Atelier Coiffure</h3>
+        <div class="meta">Spalenberg 23 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>14:30</b> · CHF 80</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-time">15 Min frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Studio Nord</h3>
+        <div class="meta">Klybeckstrasse 12 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>15:00</b> · CHF 50</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Last-Minute heute</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-discount">-20%</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Nail Loft</h3>
+        <div class="meta">Aeschenplatz 15 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>17:00</b> · CHF 45</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-discount">-15%</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Rhein Spa</h3>
+        <div class="meta">Steinenvorstadt 22 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Lass dich verwöhnen</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="stylists-row">
+    <a class="stylist-card" href="#">
+      <div class="stylist-photo">
+        <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=240&h=240&fit=crop&q=80" alt="Elena Rossi" />
+        <div class="rating-pill">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          4.9
+        </div>
+      </div>
+      <div class="stylist-name">Elena Rossi</div>
+      <div class="stylist-meta">Coiffeur · Basel</div>
+    </a>
+    <a class="stylist-card" href="#">
+      <div class="stylist-photo">
+        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=240&h=240&fit=crop&q=80" alt="Marcus Chen" />
+        <div class="rating-pill">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          5.0
+        </div>
+      </div>
+      <div class="stylist-name">Marcus Chen</div>
+      <div class="stylist-meta">Barbershop · Zürich</div>
+    </a>
+    <a class="stylist-card" href="#">
+      <div class="stylist-photo">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=240&h=240&fit=crop&q=80" alt="Sophie Dubois" />
+        <div class="rating-pill">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          4.8
+        </div>
+      </div>
+      <div class="stylist-name">Sophie Dubois</div>
+      <div class="stylist-meta">Nails · Bern</div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Finde deine Inspiration</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="discover-row">
+    <a class="discover-card" href="#">
+      <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600&h=1067&fit=crop&q=80" alt="" />
+      <div class="discover-overlay"></div>
+      <div class="discover-title">
+        Curtain bangs are back
+        <div class="discover-source">@sophie.cuts · TikTok</div>
+      </div>
+    </a>
+    <a class="discover-card" href="#">
+      <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=600&h=1067&fit=crop&q=80" alt="" />
+      <div class="discover-overlay"></div>
+      <div class="discover-title">
+        Glazed donut nails
+        <div class="discover-source">@nailbar.basel · IG</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="spec">
+  <h4>V2-D69 proposal — warm minimal lane</h4>
+  <p><b>Base:</b> <code>#F9F8F6</code> warm pearl bg / <code>#FFFFFF</code> cards. Soft contrast lets cards "float" with shadow.</p>
+  <p><b>Typography:</b> Plus Jakarta Sans single family at extreme weight contrast — 800 h1 (clamp 40-60px, -0.035em tracking) vs 500 body vs 400 microcopy.</p>
+  <p><b>Hero gradient:</b> radial peach <code>#FFF0E6</code> fading to bg, ellipse at 60%/30% — Fresha "glowing top wash" feel, fully contained to hero.</p>
+  <p><b>Search card:</b> single white floating card, 24px radius, 3-layer soft drop shadow. Inputs share the card — divider lines, no individual outlines.</p>
+  <p><b>CTA:</b> brand green <code>#3B7A57</code> (matches your logo green). 16px radius, weight 700.</p>
+  <p><b>Cards:</b> 22px radius (up from 18px), 3-layer soft wide drop shadow. White surface lifts off pearl bg.</p>
+  <p><b>Badges:</b> "Heute frei" = pale mint <code>#E5F2EA</code> bg + brand green text. "-20%" = terracotta <code>#D87352</code> bg + white text. "15 Min" = glassmorphic (white 55% + blur 12px) + brand-green dot. Heart = glassmorphic, no solid white circle.</p>
+  <p><b>Stylists ("Lass dich verwöhnen"):</b> letter placeholders <code>(E, M, S)</code> replaced with real photo avatars. Each circle has soft drop shadow + floating white rating-pill with star.</p>
+  <p><b>Inspiration cards:</b> 9:16 aspect, full image + bottom dark gradient overlay, white text pops cleanly. Replaces "muddy brown/grey gradient" approach.</p>
+  <p style="margin-top: 10px; color: var(--ink-1); font-weight: 700;">Checklist — all 7 points from your brief now covered:<br>
+    ✓ Hero peach gradient · ✓ Single floating white search card · ✓ Plus Jakarta tighter geometric font · ✓ Larger H1 (clamp 40-60) · ✓ Card soft wide drop shadows · ✓ Card radius bumped to 22px · ✓ Glassmorphic heart + 15min badges · ✓ Brand green CTA · ✓ Terracotta -20% accent · ✓ Pale mint Heute frei · ✓ Stylist photos replace letter placeholders · ✓ Inspiration full-image + dark overlay
+  </p>
+</div>
+
+</body>
+</html>

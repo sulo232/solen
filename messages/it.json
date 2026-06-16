@@ -5884,5 +5884,32 @@
     "unreadDot": "Non letta",
     "emptyTitle": "Nessuna notifica",
     "emptyBody": "Gli aggiornamenti su prenotazioni, rimborsi e recensioni compaiono qui."
+  },
+  "rewards": {
+    "yourStatus": "Il tuo stato",
+    "tier_base": "Base",
+    "tier_gold": "Gold",
+    "tier_platinum": "Platinum",
+    "toNext": "{n} visite a {tier}",
+    "topTier": "Sei al livello massimo",
+    "ofVisits": "{n} di {total} visite",
+    "visitsCount": "{n} visite",
+    "windowNote": "In base alle tue visite dell'ultimo anno.",
+    "perksTitle": "I tuoi vantaggi",
+    "active": "Attivo",
+    "perk_birthday_t": "Priorità settimana del compleanno",
+    "perk_birthday_s": "Hai la precedenza nella settimana del tuo compleanno",
+    "howTitle": "Come funziona lo stato",
+    "howBody": "Il tuo stato si basa sulle visite completate nell'ultimo anno in qualsiasi salone Solen. {gold} visite per Gold, {platinum} per Platinum. Se smetti di prenotare, scende lentamente, un livello alla volta.",
+    "cta": "Prenota per mantenere il tuo stato",
+    "validThrough": "Valido fino al {date}. Prenota per mantenere il tuo stato.",
+    "perk_angebote_t": "Accesso anticipato alle offerte",
+    "perk_angebote_s": "Vedi le offerte 24 h prima di tutti",
+    "perk_memberDeals_t": "Offerte riservate ai membri",
+    "perk_memberDeals_s": "Sconti solo per i membri",
+    "perk_slots_t": "Accesso anticipato agli orari di punta",
+    "perk_slots_s": "Prenota prima gli orari migliori",
+    "perk_angebote48_t": "48 ore di anticipo",
+    "perk_angebote48_s": "Accesso ancora prima a offerte e orari"
   }
 }

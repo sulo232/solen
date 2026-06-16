@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Design language v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --ink3:#9B9B9B;
+    --blue:#276EF1;        /* v2 — BLUE = INTERACTIVITY (generous on tappable things) */
+    --green:#15803D;       /* v2 — success = deep solid green + white icon (no pale tint) */
+    --border:#E5E5E5;
+    --white:#fff;
+    --grey:#F4F4F5;        /* v2 — cool light grey ONLY where a subtle fill is needed (no warm cream) */
+    --error:#DC2626;
+    --star:#FFC32B;
+    --radius-card:16px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{
+    background:var(--grey);            /* v2 — cool grey page bg, not warm peach */
+    color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{padding:48px 24px 80px;}
+
+  /* ---------- on-load entrance: opacity 0->1 + 10px rise, staggered ---------- */
+  @keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .rise{opacity:0;animation:riseIn .55s cubic-bezier(.22,1,.36,1) forwards;}
+  .d1{animation-delay:.05s;} .d2{animation-delay:.13s;} .d3{animation-delay:.21s;}
+  .d4{animation-delay:.29s;} .d5{animation-delay:.37s;} .d6{animation-delay:.45s;} .d7{animation-delay:.53s;}
+
+  /* ================= page head ================= */
+  .page-head{max-width:1080px;margin:0 auto 8px;}
+  .page-head .eyebrow{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+  .page-head h1{font-family:"Inter Tight",sans-serif;font-weight:800;font-size:30px;letter-spacing:-0.02em;}
+  .page-head p{color:var(--ink2);font-size:14px;line-height:1.65;margin-top:10px;max-width:780px;}
+
+  /* ================= card grid (the spec sections) ================= */
+  .grid{max-width:1080px;margin:36px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+
+  .spec{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius-card);
+    padding:24px;
+    box-shadow:0 4px 14px rgba(10,10,10,.04);
+  }
+  .spec.wide{grid-column:1/-1;}
+  .spec .num{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+  .spec h2{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.01em;margin-bottom:4px;}
+  /* the one-line caption under each (the RULE) */
+  .rule{font-size:13px;line-height:1.55;color:var(--ink2);margin-top:14px;border-left:2px solid var(--border);padding-left:12px;}
+  .rule strong{color:var(--ink);font-weight:700;}
+
+  /* ================= (a) swatch row ================= */
+  .swatches{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px;}
+  .sw{display:flex;flex-direction:column;gap:8px;width:104px;}
+  .chip{height:64px;border-radius:14px;border:1px solid var(--border);position:relative;overflow:hidden;}
+  .chip .hex{position:absolute;bottom:7px;left:9px;font-family:"Inter",monospace;font-size:10px;font-weight:600;}
+  .sw .label{font-size:12px;font-weight:600;color:var(--ink);}
+  .sw .sub{font-size:11px;color:var(--ink3);line-height:1.4;margin-top:-4px;}
+  .chip-ink{background:var(--ink);}            .chip-ink .hex{color:rgba(255,255,255,.7);}
+  .chip-blue{background:var(--blue);}          .chip-blue .hex{color:rgba(255,255,255,.85);}
+  .chip-green{background:var(--green);}        .chip-green .hex{color:rgba(255,255,255,.85);}
+  .chip-white{background:var(--white);}        .chip-white .hex{color:var(--ink3);}
+  .chip-grey{background:var(--grey);}          .chip-grey .hex{color:var(--ink3);}
+
+  /* ================= (b) link vs body text ================= */
+  .copy-demo{margin-top:18px;font-size:15px;line-height:1.7;color:var(--ink);}
+  a.link{color:var(--blue);text-decoration:none;font-weight:600;border-bottom:1px solid transparent;transition:border-color .15s ease;}
+  a.link:hover{border-bottom-color:var(--blue);}
+  .seeall{display:inline-flex;align-items:center;gap:4px;color:var(--blue);font-weight:600;font-size:14px;text-decoration:none;margin-top:14px;border-bottom:1px solid transparent;transition:border-color .15s ease,gap .15s ease;}
+  .seeall:hover{border-bottom-color:var(--blue);gap:7px;}
+  .seeall svg{stroke:var(--blue);}
+
+  /* ================= (c) buttons: one INK commit + blue secondary/link ================= */
+  .btn-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:99px;font-family:"Inter",sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;cursor:pointer;border:1px solid transparent;transition:transform .12s ease,background .15s ease,box-shadow .15s ease;}
+  .btn:active{transform:scale(.97);}
+  .btn-ink{background:var(--ink);color:#fff;}                                  /* the ONE strong anchor */
+  .btn-ink:hover{box-shadow:0 8px 20px -8px rgba(10,10,10,.45);}
+  .btn-blue-ghost{background:var(--white);color:var(--blue);border-color:var(--blue);}  /* secondary, interactive = blue */
+  .btn-blue-ghost:hover{background:rgba(39,110,241,.06);}
+  .btn-link{background:transparent;color:var(--blue);padding:0 4px;font-weight:600;border-bottom:1px solid transparent;border-radius:0;height:auto;}
+  .btn-link:hover{border-bottom-color:var(--blue);}
+
+  /* ================= (d) deep-green success badge (looping) ================= */
+  .success-stage{margin-top:18px;display:flex;align-items:center;gap:18px;}
+  .success-wrap{position:relative;width:88px;height:88px;display:grid;place-items:center;flex:none;}
+  /* expanding ring pulse */
+  .ring{position:absolute;width:64px;height:64px;border-radius:99px;border:2px solid var(--green);opacity:0;}
+  /* the deep-green disc spring-pops in */
+  .disc{position:relative;width:64px;height:64px;border-radius:99px;background:var(--green);display:grid;place-items:center;box-shadow:0 10px 24px -10px rgba(21,128,61,.55);}
+  .disc svg{stroke:#fff;}                       /* WHITE checkmark on deep green */
+  .check-path{stroke-dasharray:26;stroke-dashoffset:26;}
+
+  @keyframes discPop{
+    0%{transform:scale(0);}
+    55%{transform:scale(1.14);}
+    72%{transform:scale(.95);}
+    100%{transform:scale(1);}
+  }
+  @keyframes ringPulse{
+    0%{transform:scale(.6);opacity:.55;}
+    70%{opacity:.18;}
+    100%{transform:scale(1.85);opacity:0;}
+  }
+  @keyframes drawCheck{to{stroke-dashoffset:0;}}
+
+  /* loop the whole demo every ~2.6s so the owner SEES it on load */
+  .success-loop .disc{animation:discPop 2.6s cubic-bezier(.2,1.3,.4,1) infinite;transform-origin:center;}
+  .success-loop .ring{animation:ringPulse 2.6s ease-out infinite;}
+  .success-loop .check-path{animation:drawCheck 2.6s ease-out infinite;animation-delay:.18s;}
+  .success-copy .st{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:16px;color:var(--ink);}
+  .success-copy .ss{font-size:13px;color:var(--ink2);line-height:1.5;margin-top:2px;}
+
+  /* the deep vs pale comparison strip */
+  .vs-strip{display:flex;gap:12px;margin-top:18px;}
+  .vs{flex:1;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:11px;}
+  .vs .mini{width:34px;height:34px;border-radius:99px;display:grid;place-items:center;flex:none;}
+  .vs .mini svg{width:18px;height:18px;}
+  .vs.deep .mini{background:var(--green);}        .vs.deep .mini svg{stroke:#fff;}
+  .vs.pale .mini{background:#DCFCE7;}             .vs.pale .mini svg{stroke:#15803D;}
+  .vs .vt{font-size:12px;font-weight:600;color:var(--ink);}
+  .vs .vl{font-size:11px;color:var(--ink3);}
+  .vs.deep{outline:2px solid var(--green);outline-offset:-1px;}
+  .vs .pickbar{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+  .vs.deep .pickbar{color:var(--green);} .vs.pale .pickbar{color:var(--ink3);}
+
+  /* ================= (e) sample card: hover lift + fade-in ================= */
+  .card-demo{margin-top:18px;}
+  .salon-card{
+    width:100%;max-width:340px;background:var(--white);border:1px solid var(--border);
+    border-radius:var(--radius-card);overflow:hidden;cursor:pointer;
+    transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease;
+    box-shadow:0 2px 8px rgba(10,10,10,.04);
+  }
+  .salon-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px -18px rgba(10,10,10,.28);}
+  .salon-card .photo{height:148px;background:
+      linear-gradient(135deg,#1b2a4a 0%,#2f4c84 55%,#3c63ad 100%);position:relative;}
+  .salon-card .photo .fav{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:99px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .salon-card .photo .fav svg{width:18px;height:18px;stroke:var(--ink);}
+  .salon-card .body{padding:14px 16px 16px;}
+  .salon-card .name{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.01em;}
+  .salon-card .meta{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:13px;color:var(--ink2);}
+  .salon-card .meta .star{display:inline-flex;align-items:center;gap:3px;color:var(--ink);font-weight:600;}
+  .salon-card .meta .star svg{width:14px;height:14px;fill:var(--star);stroke:var(--star);}
+  .salon-card .meta .dot{width:3px;height:3px;border-radius:99px;background:var(--ink3);}
+  .salon-card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .salon-card .price{font-size:13px;color:var(--ink2);}
+  .salon-card .price b{color:var(--ink);font-weight:700;}
+  .salon-card .book{font-size:13px;font-weight:700;color:var(--blue);display:inline-flex;align-items:center;gap:4px;}
+  .salon-card .book svg{stroke:var(--blue);width:15px;height:15px;}
+  .hint{font-size:11px;color:var(--ink3);margin-top:10px;}
+
+  /* footer summary */
+  .summary{max-width:1080px;margin:28px auto 0;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px 26px;}
+  .summary h3{font-family:"Inter Tight",sans-serif;font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;}
+  .summary ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .summary li{font-size:13.5px;line-height:1.55;color:var(--ink2);padding-left:18px;position:relative;}
+  .summary li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:99px;background:var(--blue);}
+  .summary li b{color:var(--ink);font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="page-head rise d1">
+  <div class="eyebrow">Solen · system spec</div>
+  <h1>Design language v2</h1>
+  <p>The new system on one screen, for sign-off on the language itself. White-first surfaces, blue used generously on anything you can touch, one ink commit anchor per screen, and deep confident success color. Everything below animates on load so you can feel the motion.</p>
+</div>
+
+<div class="grid">
+
+  <!-- (a) SWATCH ROW -->
+  <section class="spec rise d2">
+    <div class="num">a · Color roles</div>
+    <h2>Four roles, white-first</h2>
+    <div class="swatches">
+      <div class="sw">
+        <div class="chip chip-ink"><span class="hex">#0A0A0A</span></div>
+        <span class="label">Ink</span>
+        <span class="sub">Text + the one commit button</span>
+      </div>
+      <div class="sw">
+        <div class="chip chip-blue"><span class="hex">#276EF1</span></div>
+        <span class="label">Blue</span>
+        <span class="sub">Interactivity — anything tappable</span>
+      </div>
+      <div class="sw">
+        <div class="chip chip-green"><span class="hex">#15803D</span></div>
+        <span class="label">Green</span>
+        <span class="sub">Success, deep + solid</span>
+      </div>
+      <div class="sw">
+        <div class="chip chip-white"><span class="hex">#FFFFFF</span></div>
+        <span class="label">White</span>
+        <span class="sub">Default surface</span>
+      </div>
+      <div class="sw">
+        <div class="chip chip-grey"><span class="hex">#F4F4F5</span></div>
+        <span class="label">Cool grey</span>
+        <span class="sub">Subtle fill only</span>
+      </div>
+    </div>
+    <p class="rule"><strong>Cooler, cleaner.</strong> White is the default; cool grey #F4F4F5 fills only where truly needed. No warm cream, no dark surfaces anywhere.</p>
+  </section>
+
+  <!-- (b) LINK vs BODY -->
+  <section class="spec rise d3">
+    <div class="num">b · Text vs links</div>
+    <h2>Blue means tappable</h2>
+    <p class="copy-demo">
+      Book your next appointment in seconds. Browse top-rated salons near you, or
+      <a class="link" href="#">view this stylist's full availability</a>
+      before you commit. Prices, body copy and labels stay calm in ink.
+    </p>
+    <a class="seeall" href="#">See all salons in Zürich <i data-l="arrow-right" data-s="15"></i></a>
+    <p class="rule"><strong>Blue is reserved for touch.</strong> Links, "see all", and active states turn blue with a hover-underline. Body text and labels stay ink so the blue never vibrates.</p>
+  </section>
+
+  <!-- (c) BUTTONS -->
+  <section class="spec rise d4">
+    <div class="num">c · Actions</div>
+    <h2>One ink anchor, blue rest</h2>
+    <div class="btn-row">
+      <button class="btn btn-ink">Confirm booking</button>
+      <button class="btn btn-blue-ghost">Add to calendar</button>
+      <button class="btn btn-link">Cancel</button>
+    </div>
+    <p class="rule"><strong>Exactly one ink commit button per screen</strong> (Confirm booking) — the single strong anchor. Every other action leans blue: secondary outline, or a plain blue link.</p>
+  </section>
+
+  <!-- (d) SUCCESS BADGE -->
+  <section class="spec rise d5">
+    <div class="num">d · Success state</div>
+    <h2>Deep green, white check</h2>
+    <div class="success-stage success-loop">
+      <div class="success-wrap">
+        <span class="ring"></span>
+        <div class="disc">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path class="check-path" d="M5 12.5 L10 17.5 L19 7" />
+          </svg>
+        </div>
+      </div>
+      <div class="success-copy">
+        <div class="st">Booking confirmed</div>
+        <div class="ss">Ring pulse, disc spring-pop, check stroke-draws. Loops here so you can watch it.</div>
+      </div>
+    </div>
+    <div class="vs-strip">
+      <div class="vs deep">
+        <span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 L10 17.5 L19 7"/></svg></span>
+        <div><div class="vt">Deep #15803D fill</div><div class="vl">White icon, confident</div></div>
+        <span class="pickbar">Use</span>
+      </div>
+      <div class="vs pale">
+        <span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 L10 17.5 L19 7"/></svg></span>
+        <div><div class="vt">Pale tint</div><div class="vl">Washed, low confidence</div></div>
+        <span class="pickbar">Avoid</span>
+      </div>
+    </div>
+    <p class="rule"><strong>Depth, not pale washes.</strong> "Done" is a dark-green disc with a white checkmark, not a pale-green tint. Confident color reads as resolved.</p>
+  </section>
+
+  <!-- (e) SAMPLE CARD -->
+  <section class="spec rise d6">
+    <div class="num">e · Surface + motion</div>
+    <h2>Card lifts on hover</h2>
+    <div class="card-demo">
+      <div class="salon-card">
+        <div class="photo">
+          <div class="fav"><i data-l="heart" data-s="18"></i></div>
+        </div>
+        <div class="body">
+          <div class="name">Maison Coiffure</div>
+          <div class="meta">
+            <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.6 6 20.9l1.4-6.7L2.3 9.6l6.8-.7z"/></svg> 4.9</span>
+            <span class="dot"></span>
+            <span>Zürich, Kreis 4</span>
+          </div>
+          <div class="foot">
+            <span class="price">from <b>CHF 65</b></span>
+            <span class="book">Book <i data-l="arrow-right" data-s="15"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Hover the card to see the lift.</p>
+    <p class="rule"><strong>White card, faded in on load, lifts on hover.</strong> Rating star stays its semantic yellow #FFC32B; "Book" is blue because the whole card is tappable.</p>
+  </section>
+
+  <!-- summary -->
+  <section class="summary rise d7">
+    <h3>What v2 changes</h3>
+    <ul>
+      <li><b>Blue = interactivity.</b> Used generously on links, "see all", active tabs, and tappable rows — kept off body text so it never vibrates.</li>
+      <li><b>One ink commit button per screen</b> (#0A0A0A) is the single strong anchor; all other actions lean blue.</li>
+      <li><b>White-first, cooler surfaces.</b> Warm cream is dropped; only a cool grey #F4F4F5 fills where needed. No dark surfaces anywhere.</li>
+      <li><b>Deep, confident success.</b> Dark-green #15803D disc + white checkmark instead of pale-green tints.</li>
+      <li><b>Visible motion.</b> Staggered rise-in on load, success ring pulse + disc spring-pop + check stroke-draw, card hover lift, blue link hover, press scale.</li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+  document.querySelectorAll('[data-l]').forEach((el)=>{
+    const name = el.getAttribute('data-l');
+    const size = el.getAttribute('data-s') || '18';
+    const sw   = el.getAttribute('data-sw') || '2';
+    const key  = name.split('-').map(p=> p.charAt(0).toUpperCase()+p.slice(1)).join('');
+    const svg = lucide.createElement(lucide.icons[key] || lucide.icons.Circle);
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('stroke-width', sw);
+    el.replaceWith(svg);
+  });
+</script>
+</body>
+</html>

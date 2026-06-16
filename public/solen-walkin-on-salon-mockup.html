@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Walk-in on the salon page — mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E7E5E4;--sunken:#F5F5F4;
+    --accent:#185CE0;--accent-pale:#EAEFFE;--success:#16A34A;--success-bg:#E8F5E9;--star:#FFC32B;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#dcdcdc;
+    background-image:radial-gradient(1200px 600px at 50% -10%,#f0f0ef,#d2d2d1);
+    min-height:100vh;display:flex;gap:44px;align-items:flex-start;justify-content:center;padding:44px 24px;color:var(--ink);flex-wrap:wrap;}
+  .ic{display:inline-block;vertical-align:-.12em;}
+
+  /* phone */
+  .phone{width:402px;background:#fff;border-radius:46px;padding:11px;box-shadow:0 2px 6px rgba(0,0,0,.12),0 30px 70px -20px rgba(0,0,0,.45);}
+  .screen{background:#fff;border-radius:36px;overflow:hidden;height:872px;display:flex;flex-direction:column;position:relative;}
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:128px;height:32px;background:#0A0A0A;border-radius:0 0 18px 18px;z-index:40;}
+  .sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 6px;font-size:14px;font-weight:600;}
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;}
+  .ib{width:38px;height:38px;border-radius:99px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:#fff;}
+  .body{flex:1;overflow-y:auto;}.body::-webkit-scrollbar{display:none;}
+  .hero{height:158px;margin:0 14px;border-radius:18px;overflow:hidden;position:relative;}
+  .hero img{width:100%;height:100%;object-fit:cover;}
+  .pad{padding:0 20px;}
+  .nm{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:14px;}
+  .meta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);margin-top:6px;}
+  .meta .s{color:var(--star);}.meta b{color:var(--ink);}
+  .dot{width:3px;height:3px;border-radius:9px;background:var(--ink2);opacity:.5;}
+
+  /* === TOGGLE (re-skin of Delivery/Pickup) === */
+  .toggle{display:flex;background:var(--sunken);border-radius:99px;padding:4px;margin:16px 20px 0;}
+  .seg{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border-radius:99px;font-size:15px;font-weight:700;color:var(--ink2);}
+  .seg.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12);}
+
+  /* === STATUS BAR (re-skin of fee/arrival) === */
+  .statusbar{margin:14px 20px 0;border:1px solid var(--border);border-radius:16px;display:flex;overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,18,16,.04),0 10px 26px -18px rgba(20,18,16,.16);}
+  .stat{flex:1;padding:14px 16px;}
+  .stat + .stat{border-left:1px solid var(--border);}
+  .stat .v{font-size:21px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;}
+  .stat .k{font-size:12px;color:var(--ink2);margin-top:3px;}
+  .openrow{display:flex;align-items:center;gap:7px;margin:12px 20px 0;font-size:13px;font-weight:700;color:#0f7a37;}
+  .ping{position:relative;width:8px;height:8px;}
+  .ping b{position:absolute;inset:0;border-radius:9px;background:var(--success);}
+  .ping .p{animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite;opacity:.55;}
+  @keyframes ping{75%,100%{transform:scale(2.4);opacity:0;}}
+
+  .lab{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2);margin:22px 20px 11px;}
+  .svc{margin:0 20px 10px;border:2px solid var(--border);background:var(--sunken);border-radius:14px;padding:12px 15px;display:flex;align-items:center;gap:12px;}
+  .svc.on{border-color:var(--ink);background:#fff;}
+  .svc .l{flex:1;}.svc .t{font-size:15px;font-weight:700;}.svc .d{font-size:12px;color:var(--ink2);margin-top:1px;}
+  .svc .pr{font-size:15px;font-weight:700;color:var(--accent);}
+  .svc .ck{width:22px;height:22px;border-radius:99px;background:var(--ink);display:none;align-items:center;justify-content:center;}.svc.on .ck{display:flex;}
+
+  .cta-wrap{padding:13px 20px calc(13px + 8px);box-shadow:0 -10px 28px -16px rgba(10,10,10,.16);}
+  .cta{width:100%;height:54px;border-radius:99px;background:var(--ink);color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;border:none;}
+  .sec{text-align:center;font-size:12px;color:var(--ink2);margin-top:10px;font-weight:500;}
+
+  /* rail */
+  .rail{width:360px;display:flex;flex-direction:column;gap:18px;}
+  .card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 18px 46px -24px rgba(0,0,0,.4);}
+  .card h3{font-size:14px;margin-bottom:3px;}
+  .card .m{font-size:12px;color:#999;margin-bottom:14px;}
+  .map{display:flex;align-items:center;gap:10px;font-size:12.5px;padding:9px 0;border-top:1px solid #eee;}
+  .map:first-of-type{border-top:none;}
+  .from{flex:0 0 128px;color:#999;}.arrow{color:var(--accent);font-weight:800;}.to b{color:var(--ink);}
+
+  /* mini toggle demo */
+  .mtoggle{display:flex;background:var(--sunken);border-radius:99px;padding:3px;margin-top:6px;}
+  .mseg{flex:1;text-align:center;padding:9px;border-radius:99px;font-size:13px;font-weight:700;color:var(--ink2);}
+  .mseg.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12);}
+
+  /* search filter demo */
+  .chips{display:flex;gap:8px;overflow:hidden;margin-top:4px;flex-wrap:wrap;}
+  .chip{font-size:13px;font-weight:600;padding:8px 13px;border-radius:99px;border:1px solid var(--border);color:var(--ink2);display:flex;align-items:center;gap:6px;}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .scard{margin-top:14px;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .scard img{width:100%;height:96px;object-fit:cover;display:block;}
+  .scard .in{padding:10px 12px;}
+  .scard .sn{font-size:14px;font-weight:700;}
+  .freebadge{position:absolute;top:8px;left:8px;background:var(--success);color:#fff;font-size:11px;font-weight:700;padding:5px 9px;border-radius:99px;display:flex;align-items:center;gap:5px;}
+</style>
+</head>
+<body>
+
+<!-- MAIN: barbershop page in WALK-IN mode -->
+<div class="phone"><div class="screen">
+  <div class="notch"></div>
+  <div class="sb"><span>9:41</span><span>● ● ●&nbsp; 5G&nbsp; 🔋</span></div>
+  <div class="hdr">
+    <div class="ib"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <div style="font-size:15px;font-weight:700">Blade &amp; Stone</div>
+    <div class="ib"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0016.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></div>
+  </div>
+  <div class="body">
+    <div class="hero"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=900&q=80"></div>
+    <div class="pad">
+      <div class="nm">Blade &amp; Stone</div>
+      <div class="meta"><span class="s">★</span><b>4.8</b><span>(212)</span><span class="dot"></span><span>Barbershop</span><span class="dot"></span><span>0.4 km</span></div>
+    </div>
+
+    <!-- TOGGLE: Book / Walk-in  (re-skin of Delivery / Pickup) -->
+    <div class="toggle">
+      <div class="seg">
+        <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Book
+      </div>
+      <div class="seg on">
+        <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1.6"/><path d="M13 22l-2.5-7-3.5-2 1.5-5 4 1 3 2M9 13l-2 9"/></svg>
+        Walk-in
+      </div>
+    </div>
+
+    <!-- OPEN status -->
+    <div class="openrow"><span class="ping"><span class="p b"></span><span class="b"></span></span>Open until 19:00 · Walk-ins welcome</div>
+
+    <!-- STATUS BAR (re-skin of fee / earliest-arrival) -->
+    <div class="statusbar">
+      <div class="stat">
+        <div class="v"><svg class="ic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/></svg>2 ahead</div>
+        <div class="k">in line now</div>
+      </div>
+      <div class="stat">
+        <div class="v"><svg class="ic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>~25 min</div>
+        <div class="k">est. wait</div>
+      </div>
+    </div>
+
+    <div class="lab">Pick your cut</div>
+    <div class="svc"><div class="l"><div class="t">Bart trimmen</div><div class="d">20 min</div></div><div class="pr">CHF 28</div></div>
+    <div class="svc on"><div class="l"><div class="t">Herrenschnitt</div><div class="d">30 min</div></div><div class="pr">CHF 45</div><div class="ck"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>
+    <div class="svc"><div class="l"><div class="t">Coupe &amp; Bart</div><div class="d">45 min</div></div><div class="pr">CHF 68</div></div>
+    <div style="height:6px"></div>
+  </div>
+  <div class="cta-wrap">
+    <button class="cta"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Join the queue · Pay CHF 45</button>
+    <div class="sec">No charge until you're served · Stripe</div>
+  </div>
+</div></div>
+
+<!-- RAIL -->
+<div class="rail">
+  <div class="card">
+    <h3>Your circled Uber patterns → walk-in</h3>
+    <div class="m">same shapes, re-skinned text + icons</div>
+    <div class="map"><span class="from">Delivery / Pickup toggle</span><span class="arrow">→</span><span class="to"><b>Book / Walk-in</b> toggle</span></div>
+    <div class="map"><span class="from">Fee · Earliest arrival bar</span><span class="arrow">→</span><span class="to"><b>Ahead · Est. wait</b> bar</span></div>
+    <div class="map"><span class="from">"Group" pill</span><span class="arrow">→</span><span class="to"><b>"Walk-in" quick pill</b> (alt below)</span></div>
+  </div>
+
+  <div class="card">
+    <h3>The toggle, up close</h3>
+    <div class="m">tap Walk-in → the page flips to queue mode</div>
+    <div class="mtoggle"><div class="mseg">📅 Book</div><div class="mseg on">🚶 Walk-in</div></div>
+    <p style="font-size:12.5px;color:#666;margin-top:12px;line-height:1.45">Or, instead of a toggle — the <b style="color:#0A0A0A">"Group" pill re-skinned</b> as a second button next to Book:</p>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <div style="flex:1;height:46px;border-radius:99px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">Book</div>
+      <div style="flex:1;height:46px;border-radius:99px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:700">⚡ Walk-in</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>+ a "Walk-in" search filter</h3>
+    <div class="m">find shops you can skip into right now</div>
+    <div class="chips">
+      <div class="chip on">⚡ Walk-in now</div>
+      <div class="chip">Open now</div>
+      <div class="chip">Top rated</div>
+      <div class="chip">Nearby</div>
+    </div>
+    <div class="scard">
+      <div style="position:relative"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80"><span class="freebadge">⚡ Free in ~10 min</span></div>
+      <div class="in"><div class="sn">Blade &amp; Stone</div><div style="font-size:12px;color:#6B6B6B;margin-top:2px">★ 4.8 · Barbershop · 0.4 km · 2 in line</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

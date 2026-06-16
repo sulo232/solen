@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solen V3 — Pills + Title-wrap tweaks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #FFFFFF;
+      --ink-1: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --hairline: rgba(26, 18, 9, 0.06);
+      --hairline-strong: rgba(26, 18, 9, 0.12);
+      --brand: #043338;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --brand-mid: #0A6873;
+    }
+
+    html, body {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      color: var(--ink-1);
+      background: #FCFAF6;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .display { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; letter-spacing: -0.02em; }
+
+    /* ============ DOC HEADER ============ */
+    .doc-head {
+      padding: 56px 48px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .doc-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); margin-bottom: 16px; }
+    .doc-title { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 14px; max-width: 24ch; }
+    .doc-lede { font-size: 16px; max-width: 64ch; color: var(--ink-2); line-height: 1.5; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px 96px; }
+
+    /* ============ SECTION HEADER PATTERN ============ */
+    .sec-name { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; padding-bottom: 8px; border-bottom: 1px solid var(--hairline); }
+
+    /* ============ TWEAK 1: PILLS — SHINY vs LESS-SHINY ============ */
+    .pill-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 56px; }
+    .pill-col { background: white; border: 1px solid var(--hairline); border-radius: 16px; padding: 32px 28px; }
+    .pill-col-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 16px; }
+    .pill-col-label.current { color: #B8651D; }
+    .pill-col-label.tweaked { color: var(--brand); }
+    .pill-col-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .pill-col-deck { font-size: 12px; color: var(--ink-3); margin-bottom: 24px; line-height: 1.5; }
+
+    .pill-grid { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 24px 0; background: var(--brand-subtle); border-radius: 12px; padding: 28px 20px; justify-content: center; }
+    .pill-grid + .pill-grid { margin-top: 8px; background: #F4F2EE; }
+
+    /* CURRENT (shiny) pills */
+    .btn-shiny {
+      padding: 14px 22px;
+      background: linear-gradient(180deg, #0A6873 0%, #043338 100%);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.18),
+        0 1px 2px rgba(26,18,9,.04),
+        0 8px 20px rgba(4,51,56,.18);
+    }
+    .badge-shiny {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--ink-1);
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+    .badge-shiny-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px rgba(4,51,56,.2); }
+    .chip-shiny {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border: 1px solid rgba(26, 18, 9, 0.09);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(26,18,9,.06);
+    }
+
+    /* TWEAKED (less-shiny) pills */
+    .btn-clean {
+      padding: 14px 22px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    .btn-clean:hover { background: var(--brand-mid); transform: translateY(-1px); }
+    .badge-clean {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--ink-1);
+      border: 1px solid rgba(26,18,9,.08);
+    }
+    .badge-clean-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+    .chip-clean {
+      padding: 8px 14px;
+      background: var(--white);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      transition: border-color 150ms ease, background 150ms ease;
+      cursor: pointer;
+    }
+    .chip-clean:hover { border-color: var(--brand); background: var(--brand-subtle); }
+
+    /* Sample card photo for badge demo */
+    .sample-photo {
+      position: relative;
+      width: 200px;
+      aspect-ratio: 1/1;
+      border-radius: 16px;
+      background: #FFF1DD;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cooper BT', Sansita, serif;
+      font-weight: 900;
+      font-size: 56px;
+      color: #B5345A;
+    }
+    .sample-photo .badge-shiny, .sample-photo .badge-clean { position: absolute; top: 10px; left: 10px; }
+
+    /* ============ TWEAK 2: TITLE-WRAP OPTIONS ============ */
+    .title-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 800px) { .title-grid { grid-template-columns: 1fr; } }
+
+    .title-card {
+      background: white;
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 40px 32px;
+    }
+    .title-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); margin-bottom: 6px; }
+    .title-card-deck { font-size: 12px; color: var(--ink-3); margin-bottom: 32px; line-height: 1.5; }
+
+    /* The shared section h2 used in all options */
+    .h2-base {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif;
+      font-weight: 900;
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink-1);
+    }
+
+    /* OPTION A — current (plain, bland) */
+    .opt-a-h2 { /* nothing — plain h2 */ }
+
+    /* OPTION B — bordered-pill eyebrow ABOVE the h2 */
+    .opt-b-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 16px;
+    }
+    .opt-b-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+
+    /* OPTION C — Title flanked by thin lines (Republik-editorial) */
+    .opt-c-wrap {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 8px;
+    }
+    .opt-c-line { flex: 1; height: 1px; background: var(--hairline-strong); }
+    .opt-c-title { white-space: nowrap; }
+
+    /* OPTION D — Top-rule + small tag eyebrow + title (magazine section) */
+    .opt-d-rule { height: 1px; background: var(--ink-1); margin-bottom: 16px; }
+    .opt-d-meta-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .opt-d-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); }
+    .opt-d-meta { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+    /* OPTION E — Boxed h2 (full thin border around the title text) */
+    .opt-e-box {
+      display: inline-block;
+      padding: 12px 20px;
+      border: 1px solid var(--ink-1);
+      border-radius: 12px;
+      margin-bottom: 4px;
+    }
+
+    /* OPTION F — Underline only (thin rule below) */
+    .opt-f-h2 { display: inline-block; padding-bottom: 12px; border-bottom: 1px solid var(--ink-1); }
+
+    /* The sample sub-text shown after each h2 */
+    .sample-sub { font-size: 14px; color: var(--ink-3); margin-top: 12px; max-width: 60ch; line-height: 1.5; }
+
+    /* ============ DIFF NOTE ============ */
+    .diff {
+      max-width: 1200px;
+      margin: 64px auto 0;
+      padding: 32px 48px;
+      background: var(--brand);
+      color: var(--brand-pale);
+      border-radius: 16px;
+    }
+    .diff h2 { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 24px; letter-spacing: -0.018em; margin-bottom: 12px; }
+    .diff p { font-size: 13px; line-height: 1.6; opacity: 0.9; margin-bottom: 8px; }
+    .diff code { font-family: ui-monospace, monospace; font-size: 11px; background: rgba(194,240,241,.12); padding: 2px 6px; border-radius: 4px; }
+
+  </style>
+</head>
+<body>
+
+  <header class="doc-head">
+    <div class="doc-eyebrow">Tweaks · pills + titles</div>
+    <h1 class="doc-title display">Two tweaks. Keep the rest.</h1>
+    <p class="doc-lede">You said: keep the current shiny vibe overall, but pills feel too shiny and section titles feel bland. Two surgical changes below — pick which title-wrap option you want and I'll lock it.</p>
+  </header>
+
+  <div class="container">
+
+    <!-- ============ TWEAK 1: PILLS ============ -->
+    <div class="sec-name">Tweak 1 · Pills</div>
+
+    <div class="pill-row">
+      <div class="pill-col">
+        <div class="pill-col-label current">Current (shiny)</div>
+        <div class="pill-col-title">Inset highlights · gradient bg · stacked shadows · saturate(1.4)</div>
+        <div class="pill-col-deck">CTA button = gradient + tinted shadow + inner gloss. Glassy badge = blur + saturate(1.4) pump. Filter chip = inset white highlight + multi-shadow.</div>
+
+        <div class="pill-grid">
+          <button class="btn-shiny">Salon finden →</button>
+          <span class="chip-shiny">Coiffeur</span>
+          <span class="chip-shiny">Heute frei</span>
+          <span class="chip-shiny">In meiner Nähe</span>
+        </div>
+        <div class="pill-grid" style="margin-top: 14px;">
+          <div class="sample-photo">
+            <span class="badge-shiny"><span class="badge-shiny-dot"></span>Heute frei</span>
+            SH
+          </div>
+        </div>
+      </div>
+
+      <div class="pill-col">
+        <div class="pill-col-label tweaked">Tweaked (clean)</div>
+        <div class="pill-col-title">Flat bg · single transition · saturate(1.0) · 1px hairline border on chips</div>
+        <div class="pill-col-deck">CTA = flat brand teal, hover → flat mid-teal via transition. Badge = blur(12px) without saturation pump + 1px hairline. Chip = white + 1px hairline, brand on hover.</div>
+
+        <div class="pill-grid">
+          <button class="btn-clean">Salon finden →</button>
+          <span class="chip-clean">Coiffeur</span>
+          <span class="chip-clean">Heute frei</span>
+          <span class="chip-clean">In meiner Nähe</span>
+        </div>
+        <div class="pill-grid" style="margin-top: 14px;">
+          <div class="sample-photo">
+            <span class="badge-clean"><span class="badge-clean-dot"></span>Heute frei</span>
+            SH
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TWEAK 2: TITLE-WRAP OPTIONS ============ -->
+    <div class="sec-name">Tweak 2 · "wrap title with thin line" — pick one</div>
+
+    <div class="title-grid">
+
+      <!-- OPTION A — current (plain) -->
+      <div class="title-card">
+        <div class="title-card-label">Option A · Current (bland)</div>
+        <div class="title-card-deck">Plain h2, no framing. This is what you said feels too bland.</div>
+        <h2 class="h2-base display">In Basel diese Woche</h2>
+        <p class="sample-sub">23 Salons · 8 heute frei. Cooper BT 900 in ink-1, no thin-line wrap.</p>
+      </div>
+
+      <!-- OPTION B — bordered eyebrow pill above -->
+      <div class="title-card">
+        <div class="title-card-label">Option B · Bordered eyebrow above</div>
+        <div class="title-card-deck">Editorial: thin-bordered pill above the h2 with the section context. Feels like a magazine running header.</div>
+        <span class="opt-b-eyebrow"><span class="opt-b-eyebrow-dot"></span>BASEL · DIESE WOCHE</span>
+        <h2 class="h2-base display">In Basel diese Woche</h2>
+        <p class="sample-sub">23 Salons · 8 heute frei. Eyebrow pill carries the meta, h2 stays clean.</p>
+      </div>
+
+      <!-- OPTION C — Title flanked by thin lines -->
+      <div class="title-card">
+        <div class="title-card-label">Option C · Title flanked by thin lines</div>
+        <div class="title-card-deck">Title with thin horizontal rules on both sides, magazine pull-quote energy. The lines fill remaining space.</div>
+        <div class="opt-c-wrap">
+          <div class="opt-c-line"></div>
+          <h2 class="h2-base display opt-c-title">In Basel diese Woche</h2>
+          <div class="opt-c-line"></div>
+        </div>
+        <p class="sample-sub">23 Salons · 8 heute frei. Reads editorial / typeset.</p>
+      </div>
+
+      <!-- OPTION D — Top rule + eyebrow + meta + h2 -->
+      <div class="title-card">
+        <div class="title-card-label">Option D · Top rule + eyebrow + meta · h2</div>
+        <div class="title-card-deck">Magazine section break: 1px black rule, eyebrow on left + meta on right, then h2 below. Most editorial.</div>
+        <div class="opt-d-rule"></div>
+        <div class="opt-d-meta-row">
+          <span class="opt-d-eyebrow">BASEL · DIESE WOCHE</span>
+          <span class="opt-d-meta">23 SALONS · 8 HEUTE FREI</span>
+        </div>
+        <h2 class="h2-base display">In Basel diese Woche</h2>
+        <p class="sample-sub">Cooper BT below the meta row. Most "magazine".</p>
+      </div>
+
+      <!-- OPTION E — Boxed h2 -->
+      <div class="title-card">
+        <div class="title-card-label">Option E · Boxed h2 (thin border around the title)</div>
+        <div class="title-card-deck">Literal "wrap with thin line" — the title is inside a thin 1px border box.</div>
+        <span class="opt-e-box"><span class="h2-base display">In Basel diese Woche</span></span>
+        <p class="sample-sub">23 Salons · 8 heute frei. Architectural / framed.</p>
+      </div>
+
+      <!-- OPTION F — Underline only -->
+      <div class="title-card">
+        <div class="title-card-label">Option F · Underlined h2 (thin rule below)</div>
+        <div class="title-card-deck">Simplest: 1px black rule directly under the h2 baseline. Subtle, restrained.</div>
+        <h2 class="h2-base display opt-f-h2">In Basel diese Woche</h2>
+        <p class="sample-sub">23 Salons · 8 heute frei. Reads like a textbook chapter heading.</p>
+      </div>
+
+    </div>
+
+    <!-- ============ DIFF ============ -->
+    <div class="diff">
+      <h2>What gets touched if you go</h2>
+      <p><strong>Tweak 1 (pills):</strong> de-gloss every pill. <code>§5b L4 backdrop-filter saturate(1.4) → saturate(1)</code> · drop <code>inset 0 1px 0 rgba(255,255,255,.X)</code> from CTA buttons + chips · gradient CTA `#0A6873 → #043338` becomes flat `#043338` with `transition: background 150ms ease` for hover · chip pills get 1px hairline border instead of stacked shadow. Card body shadows + atmosphere wash + non-pill surfaces UNCHANGED.</p>
+      <p><strong>Tweak 2 (titles):</strong> add a §15 section-header pattern using your chosen option (A–F). Default usage: every section h2 above a content row gets the framing. Hero h1 stays unframed (already has its own atmospheric treatment).</p>
+      <p>Same brand teal, same Cooper BT, same Avant Garde, same atmosphere wash, same colors, same category combos, same ink scale. Just pills cleaned + section titles wrapped.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

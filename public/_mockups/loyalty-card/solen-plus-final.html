@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Plus: final (tier card + better perks)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --sunken:#F4F4F5; --accent:#276EF1; --accent-pale:#EAEFFE;
+    --ok:#16A34A; --ok-bg:#E7F6EC; --pink:#FF3366; --pink-bg:#FFE9EE;
+    --gold-ink:#8A6A1B; --gold-bg1:#F4ECD6; --gold-bg2:#FCF8EE; --gold-line:#E6D5A8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DEDEE2; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:34px 18px 60px;}
+  .lede{max-width:760px; margin:0 auto 22px;}
+  .lede h1{font-family:"Inter Tight"; font-size:21px; font-weight:700; letter-spacing:-.02em;}
+  .lede p{font-size:13px; color:#46464B; margin-top:6px; line-height:1.5;}
+  .stage{display:flex; justify-content:center;}
+
+  .phone{width:390px; background:#fff; border-radius:42px; overflow:hidden; box-shadow:0 36px 76px -28px rgba(0,0,0,.5);}
+  .status{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600;}
+  .status .dots{display:flex; gap:5px;}
+  .bar{display:flex; align-items:center; justify-content:space-between; padding:6px 16px 12px;}
+  .bar .lft{display:flex; align-items:center; gap:11px;}
+  .icirc{width:38px; height:38px; border-radius:50%; background:var(--sunken); display:grid; place-items:center;}
+  .bar h2{font-family:"Inter Tight"; font-size:18px; font-weight:600; letter-spacing:-.01em;}
+  .hist{font-size:12.5px; color:var(--accent); font-weight:500; display:inline-flex; align-items:center; gap:4px;}
+  .scroll{max-height:780px; overflow-y:auto;} .scroll::-webkit-scrollbar{display:none;}
+  .body{padding:0 16px 18px;}
+
+  /* tier card */
+  .tcard{position:relative; overflow:hidden; border-radius:20px; padding:18px; background:linear-gradient(150deg,var(--gold-bg1),var(--gold-bg2)); border:1px solid var(--gold-line); box-shadow:0 14px 30px -18px rgba(138,106,27,.34);}
+  .tcard .crown{position:absolute; right:-12px; top:-16px; color:var(--gold-line); opacity:.5;}
+  .tcard .wm{font-family:"Inter Tight"; font-weight:700; font-size:15px; letter-spacing:-.02em; color:var(--gold-ink);}
+  .tcard .wm sup{font-size:10px;}
+  .tcard .tier{display:flex; align-items:center; gap:9px; margin-top:11px;}
+  .tcard .tier .n{font-family:"Inter Tight"; font-weight:800; font-size:34px; letter-spacing:-.02em; line-height:1;}
+  .tcard .since{font-size:11.5px; color:var(--gold-ink); margin-top:4px;}
+  .tcard .track{height:8px; border-radius:99px; background:rgba(138,106,27,.15); overflow:hidden; margin-top:15px;}
+  .tcard .fill{height:100%; width:67%; border-radius:99px; background:linear-gradient(90deg,#C9A23F,#8A6A1B);}
+  .tcard .frow{display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--gold-ink); font-weight:600;}
+  .tcard .valid{display:flex; align-items:center; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--gold-line); font-size:11.5px; color:var(--gold-ink);}
+
+  /* perks , clean white cards, hairline-divided, NO gray fill, NO per-row check */
+  .sec{display:flex; align-items:center; justify-content:space-between; margin:20px 4px 9px;}
+  .sec .h{font-family:"Inter Tight"; font-size:14.5px; font-weight:600; letter-spacing:-.01em;}
+  .sec .tagp{font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:7px; display:inline-flex; align-items:center; gap:4px;}
+  .tagp.gold{background:var(--gold-bg1); color:var(--gold-ink);}
+  .tagp.plat{background:var(--sunken); color:var(--ink3);}
+  .card{border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 6px 18px -14px rgba(20,22,30,.22); overflow:hidden;}
+  .card.locked{background:#FCFCFD;}
+  .row{display:flex; align-items:center; gap:12px; padding:13px 14px;}
+  .row + .row{border-top:1px solid var(--line);}
+  .chip{width:36px; height:36px; border-radius:10px; display:grid; place-items:center; flex-shrink:0;}
+  .c-blue{background:var(--accent-pale); color:var(--accent);} .c-green{background:var(--ok-bg); color:var(--ok);}
+  .c-pink{background:var(--pink-bg); color:var(--pink);} .c-mut{background:var(--sunken); color:var(--ink3);}
+  .row .tx{flex:1; min-width:0;}
+  .row .tt{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .row .sb{font-size:11.5px; color:var(--ink2); margin-top:1px;}
+  .locked .tt{color:var(--ink2);} .locked .sb{color:var(--ink3);}
+  .row .lk{color:var(--ink3); flex-shrink:0;}
+
+  .cta{margin:18px 16px 4px; height:52px; border-radius:14px; background:var(--ink); color:#fff; font-family:"Inter Tight"; font-weight:700; font-size:15.5px; display:flex; align-items:center; justify-content:center; gap:8px;}
+</style>
+</head>
+<body>
+  <div class="lede">
+    <h1>Solen Plus , final (Tier card + reworked perks)</h1>
+    <p>Layout A you picked, with the perks redone: clean white cards, hairline-divided, no gray blocks, no repeated green checks. Grouped into what Gold includes vs what Platinum unlocks (the aspiration).</p>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:16px"></i><i data-lucide="wifi" style="width:16px"></i><i data-lucide="battery-full" style="width:18px"></i></span></div>
+      <div class="bar"><div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:19px"></i></div><h2>Solen Plus</h2></div><a class="hist"><i data-lucide="history" style="width:15px"></i> History</a></div>
+      <div class="scroll"><div class="body">
+
+        <div class="tcard">
+          <i data-lucide="crown" class="crown" style="width:96px;height:96px"></i>
+          <div class="wm">solen<sup>+</sup></div>
+          <div class="tier"><span class="n">Gold</span><i data-lucide="award" style="width:24px;color:var(--gold-ink)"></i></div>
+          <div class="since">Member since 2024</div>
+          <div class="track"><div class="fill"></div></div>
+          <div class="frow"><span>2 visits to Platinum</span><span>4 / 6</span></div>
+          <div class="valid"><i data-lucide="clock" style="width:13px"></i> Valid through 31 Aug. Book to keep it.</div>
+        </div>
+
+        <div class="sec"><span class="h">Included with Gold</span><span class="tagp gold"><i data-lucide="award" style="width:11px"></i> Gold</span></div>
+        <div class="card">
+          <div class="row"><span class="chip c-blue"><i data-lucide="tag" style="width:18px"></i></span><div class="tx"><div class="tt">Early access to Angebote</div><div class="sb">See new offers 24h before everyone</div></div></div>
+          <div class="row"><span class="chip c-green"><i data-lucide="badge-percent" style="width:18px"></i></span><div class="tx"><div class="tt">Members-only deals</div><div class="sb">Offers reserved for members</div></div></div>
+          <div class="row"><span class="chip c-pink"><i data-lucide="gift" style="width:18px"></i></span><div class="tx"><div class="tt">Birthday-week priority</div><div class="sb">Get seen in your birthday week</div></div></div>
+        </div>
+
+        <div class="sec"><span class="h">Unlock at Platinum</span><span class="tagp plat"><i data-lucide="lock" style="width:11px"></i> 2 visits away</span></div>
+        <div class="card locked">
+          <div class="row"><span class="chip c-mut"><i data-lucide="calendar-clock" style="width:18px"></i></span><div class="tx"><div class="tt">Prime-time slot early access</div><div class="sb">Book popular times first</div></div><i data-lucide="lock" class="lk" style="width:14px"></i></div>
+          <div class="row"><span class="chip c-mut"><i data-lucide="zap" style="width:18px"></i></span><div class="tx"><div class="tt">48-hour head start</div><div class="sb">Even earlier on offers and slots</div></div><i data-lucide="lock" class="lk" style="width:14px"></i></div>
+        </div>
+
+        <div class="cta"><i data-lucide="search" style="width:16px"></i> Book to keep your status</div>
+      </div></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

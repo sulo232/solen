@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · semantic color variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F1F1F2;
+    --grey-150: #E8E8EA;
+    --yellow: #FFC32B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 16px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+  .page-sub b { color: var(--ink); }
+
+  /* Palette legend (shared across all variants — explains the semantic logic once) */
+  .legend {
+    max-width: 480px;
+    margin: 0 auto 24px;
+    padding: 14px 20px;
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--grey-150);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .legend b { color: var(--ink); font-weight: 800; }
+  .legend-row { display: flex; align-items: center; gap: 8px; }
+  .legend-row .swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--yellow); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+
+  /* ─── Common page shell (same in all variants — typography from B) ─── */
+  .page { background: var(--white); position: relative; }
+  .page::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 540px;
+    background:
+      radial-gradient(ellipse 90% 50% at 78% 8%, rgba(22,56,196,0.22) 0%, transparent 62%),
+      radial-gradient(ellipse 100% 55% at 14% 14%, rgba(22,56,196,0.12) 0%, transparent 64%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .top-bar {
+    position: relative;
+    z-index: 2;
+    padding: 18px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: baseline;
+  }
+  .logo-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    margin-left: 3px;
+    transform: translateY(-1.5px);
+  }
+  .hamburger {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.06);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .hamburger svg { width: 18px; height: 18px; color: var(--ink); }
+
+  .hero {
+    position: relative;
+    z-index: 2;
+    padding: 28px 22px 24px;
+  }
+  .hero h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    color: var(--ink);
+    font-size: 60px;
+    line-height: 0.98;
+    letter-spacing: -0.042em;
+    margin-top: 22px;
+    margin-bottom: 28px;
+  }
+  /* Note: hero accent word kept brand-blue — the ONE permitted brand statement in headline */
+  .hero h1 .accent { color: var(--brand); }
+
+  .searchbar {
+    position: relative;
+    z-index: 2;
+    margin: 0 22px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 6px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .searchbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: var(--ink);
+  }
+  .searchbar-row:nth-of-type(3) { border-bottom: none; }
+  .searchbar-row svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .searchbar-row .field-text { font-size: 14px; font-weight: 600; }
+  .searchbar-cta {
+    width: 100%;
+    background: var(--brand);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 12px 28px rgba(22,56,196,0.20);
+  }
+
+  .section {
+    position: relative;
+    z-index: 2;
+    padding: 36px 22px 32px;
+  }
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .section-eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .section-h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    color: var(--ink);
+    font-size: 36px;
+    line-height: 1.02;
+    letter-spacing: -0.034em;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--ink-2);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  /* ─── Cards ─── */
+  .salon-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--white);
+    border: 1px solid var(--grey-150);
+    border-radius: 16px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .salon-photo {
+    flex-shrink: 0;
+    width: 72px; height: 72px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #E8EDFA 0%, #D5DEF2 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .salon-photo::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 8px;
+    background: rgba(22,56,196,0.08);
+  }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-name {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .salon-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .salon-rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .salon-rating svg { width: 12px; height: 12px; color: var(--yellow); }
+  .salon-pill {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--grey-50);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .heart {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  /* Tags row inside card */
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 8px;
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .tag svg { width: 11px; height: 11px; }
+
+  /* Live tagline at bottom */
+  .live-tagline {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .live-tagline .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ─────────────────────────────────────── */
+  /* A — VERY MUTED (pastel-soft)            */
+  /* ─────────────────────────────────────── */
+  .v-a .heart { color: #C2A8AC; }      /* greyed pink outline */
+  .v-a .heart.saved { color: #F4B5C2; fill: #F4B5C2; }
+  .v-a .tag-verified { background: #E4F1E4; color: #4A8A4A; }
+  .v-a .tag-sale { background: #FFEAD4; color: #A85F2E; }
+  .v-a .live-tagline { background: #ECF5E8; color: #4A8A4A; }
+  .v-a .live-tagline .dot { background: #95C9A8; box-shadow: 0 0 0 4px rgba(149,201,168,0.25); }
+
+  /* ─────────────────────────────────────── */
+  /* B — LIGHT BUT CLEAR (goldilocks)        */
+  /* ─────────────────────────────────────── */
+  .v-b .heart { color: #A88488; }
+  .v-b .heart.saved { color: #E48BA5; fill: #E48BA5; }
+  .v-b .tag-verified { background: #D7EBD8; color: #2E7C4F; }
+  .v-b .tag-sale { background: #FFD7A8; color: #944A1E; }
+  .v-b .live-tagline { background: #E2F0E0; color: #2E7C4F; }
+  .v-b .live-tagline .dot { background: #6FB48A; box-shadow: 0 0 0 4px rgba(111,180,138,0.22); }
+
+  /* ─────────────────────────────────────── */
+  /* C — FULL SEMANTIC STRENGTH              */
+  /* ─────────────────────────────────────── */
+  .v-c .heart { color: #8B6068; }
+  .v-c .heart.saved { color: #DC4A6C; fill: #DC4A6C; }
+  .v-c .tag-verified { background: #C6E6CC; color: #1F6E3F; }
+  .v-c .tag-sale { background: #FFB877; color: #6E2E0E; }
+  .v-c .live-tagline { background: #D9EBD9; color: #1F6E3F; }
+  .v-c .live-tagline .dot { background: #2E9D5C; box-shadow: 0 0 0 4px rgba(46,157,92,0.22); }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Semantic color palette</h1>
+  <p class="page-sub">
+    Brand royal blue stays at <b>10% (CTA only)</b>. Other affordances earn their <b>own</b> semantic color, used <b>lightly</b>. Heart = pink (love). Star = yellow (rating). Verified = green (trust). Sale = orange (discount). Live = mint (active). Each color tells you what it means before you read the label.
+  </p>
+
+  <!-- Legend (shared) -->
+  <div class="legend">
+    <div class="legend-row"><span class="swatch" style="background:#1638C4;"></span><b>Royal blue</b> · primary CTA only (10%)</div>
+    <div class="legend-row"><span class="swatch" style="background:#FFC32B;"></span><b>Yellow</b> · star ratings + logo dot</div>
+    <div class="legend-row"><span class="swatch" style="background:#E48BA5;"></span><b>Pink</b> · heart saved (love)</div>
+    <div class="legend-row"><span class="swatch" style="background:#6FB48A;"></span><b>Green</b> · verified · live · available (trust + active)</div>
+    <div class="legend-row"><span class="swatch" style="background:#FFB877;"></span><b>Orange</b> · sale · discount</div>
+    <div class="legend-row" style="margin-top:4px; color: var(--ink-3); font-size: 11px;">Variants A/B/C tune how muted vs how clear each non-brand color reads.</div>
+  </div>
+
+  <!-- ─── A · VERY MUTED ─── -->
+  <section class="variant v-a">
+    <div class="variant-label"><span>A</span>Very muted (pastel-soft)</div>
+    <div class="variant-meta">
+      Lowest saturation · all semantic colors near-grey · most calm<br/>
+      Risk: too soft, might not feel meaningfully "tagged" anymore<br/>
+      Vibe = Notion · Linear · Cash App settings (almost-neutral)
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span class="field-text">Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span class="field-text">Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="field-text">Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen →</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+              <span class="tag tag-sale">−20% heute</span>
+            </div>
+          </div>
+          <svg class="heart saved" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+            </div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="live-tagline">
+          <span class="dot"></span>
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── B · LIGHT BUT CLEAR ─── -->
+  <section class="variant v-b">
+    <div class="variant-label"><span>B</span>Light but clear (goldilocks)</div>
+    <div class="variant-meta">
+      Mid saturation · each color visibly readable as its semantic role · still calm<br/>
+      Most legible at a glance · ratings + status are guessable without labels<br/>
+      Vibe = Airbnb · Stripe Dashboard · Lyft (modern marketplace standard)
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span class="field-text">Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span class="field-text">Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="field-text">Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen →</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+              <span class="tag tag-sale">−20% heute</span>
+            </div>
+          </div>
+          <svg class="heart saved" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+            </div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="live-tagline">
+          <span class="dot"></span>
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── C · FULL SEMANTIC STRENGTH ─── -->
+  <section class="variant v-c">
+    <div class="variant-label"><span>C</span>Full semantic strength</div>
+    <div class="variant-meta">
+      Higher saturation · each color carries clear emotional weight<br/>
+      Risk: starts to compete visually with the brand-blue CTA<br/>
+      Vibe = Booking.com · Lyft Marketing · Lemonade (consumer/lifestyle)
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span class="field-text">Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span class="field-text">Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="field-text">Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen →</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+              <span class="tag tag-sale">−20% heute</span>
+            </div>
+          </div>
+          <svg class="heart saved" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+            <div class="tags">
+              <span class="tag tag-verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Verifiziert
+              </span>
+            </div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="live-tagline">
+          <span class="dot"></span>
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Each variant uses the SAME semantic mapping — only saturation changes.<br/>
+    <b>A</b> = whispered (might be too quiet to read as meaningful tags).<br/>
+    <b>B</b> = goldilocks (Airbnb/Stripe territory).<br/>
+    <b>C</b> = louder (Booking.com territory — risks competing with brand-blue CTA).<br/><br/>
+    My pick: <b>B</b>. Loud enough that "verified" reads green and "sale" reads orange without thinking, calm enough that nothing out-shouts the royal-blue CTA.
+  </footer>
+</body>
+</html>

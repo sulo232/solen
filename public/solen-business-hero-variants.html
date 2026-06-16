@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Business hero variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --s-ink:    #0A0A0A;
+    --s-ink-2:  #4A4A4A;
+    --s-ink-3:  #888888;
+    --s-bg-sub: #F5F5F4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E8E8EA; color: var(--s-ink); font-family: "Hanken Grotesk", system-ui, sans-serif; }
+  .font-display { font-family: "Bricolage Grotesque", system-ui, sans-serif; }
+
+  .page-header { text-align: center; padding: 32px 20px 8px; max-width: 800px; margin: 0 auto; }
+  .page-header h1 { font-family: "Bricolage Grotesque", sans-serif; font-size: 24px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .page-header p { font-size: 13px; color: var(--s-ink-2); line-height: 1.5; margin: 0; }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(280px, 360px));
+    gap: 24px;
+    justify-content: center;
+    padding: 24px 16px 80px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1300px) { .compare-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .phone-frame {
+    background: white;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.10), 0 8px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .phone-label {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--s-ink-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phone-status {
+    background: white;
+    padding: 12px 24px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--s-ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .clock { font-weight: 700; }
+  .icons { display: flex; gap: 4px; font-size: 11px; opacity: 0.7; }
+
+  /* Simulated nav header */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: white; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .nav-logo { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 800; color: var(--s-ink); letter-spacing: -0.02em; }
+  .nav-icons { display: flex; gap: 10px; }
+  .nav-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(0,0,0,0.04); display: grid; place-items: center; font-size: 14px; }
+  .nav-menu { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 10px; }
+
+  /* ─── Variant styles ─── */
+  .img { width: 100%; display: block; object-fit: cover; }
+
+  /* A — current (padded card, 4:5 mobile) */
+  .va-section { padding: 24px 16px; }
+  .va-card { position: relative; border-radius: 20px; overflow: hidden; }
+  .va-card .img { aspect-ratio: 4/5; }
+  .va-overlay { position: absolute; inset: 0; background: linear-gradient(to top right, rgba(0,0,0,0.55), rgba(0,0,0,0.15) 50%, transparent); }
+  .va-text { position: absolute; inset: auto 0 0 0; padding: 20px; color: white; }
+
+  /* B — full-bleed image + text BELOW on white */
+  .vb-img-wrap { width: 100%; }
+  .vb-img-wrap .img { aspect-ratio: 4/5; }
+  .vb-text { padding: 32px 24px; background: white; }
+  .vb-text h1, .vc-text h1, .va-text h1, .vd-text h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; line-height: 1.04; letter-spacing: -0.025em; margin: 8px 0 12px; }
+
+  /* C — full-bleed image taller + text overlay */
+  .vc-img-wrap { position: relative; width: 100%; }
+  .vc-img-wrap .img { aspect-ratio: 3/4; }
+  .vc-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 50%, transparent 70%); }
+  .vc-text { position: absolute; inset: auto 0 0 0; padding: 24px; color: white; }
+
+  /* D — full viewport image, text overlay center-bottom */
+  .vd-img-wrap { position: relative; width: 100%; min-height: 580px; }
+  .vd-img-wrap .img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .vd-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 40%, transparent 65%); }
+  .vd-text { position: absolute; inset: auto 0 0 0; padding: 32px 24px; color: white; text-align: left; }
+
+  /* Shared text styles */
+  .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; }
+  .eyebrow-dark { color: var(--s-ink-3); }
+  .h1 { font-size: 30px; }
+  .h1-xl { font-size: 36px; }
+  .sub { font-size: 14px; line-height: 1.5; margin: 0 0 18px; opacity: 0.9; max-width: 320px; }
+  .sub-dark { color: var(--s-ink-2); }
+  .btn-white { display: inline-flex; align-items: center; gap: 6px; padding: 12px 22px; border-radius: 999px; background: white; color: var(--s-ink); font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+  .btn-dark { display: inline-flex; align-items: center; gap: 6px; padding: 12px 22px; border-radius: 999px; background: var(--s-ink); color: white; font-weight: 700; font-size: 13px; text-decoration: none; }
+
+  .footer-note { max-width: 720px; margin: 0 auto 60px; padding: 24px; background: white; border-radius: 14px; font-size: 13px; line-height: 1.55; color: var(--s-ink-2); }
+  .footer-note strong { color: var(--s-ink); }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>Business hero — 4 variants</h1>
+  <p>Same content. Different framing. All shown at mobile width (402px) since that's where the dimensions matter most.</p>
+</header>
+
+<main class="compare-grid">
+
+  <!-- ═══ A — Current (control) ═══ -->
+  <section class="phone-frame">
+    <div class="phone-label">A · CURRENT</div>
+    <div class="phone-status"><span class="clock">17:42</span><span class="icons">5G · 67</span></div>
+    <div class="nav"><div class="nav-logo">Solen</div><div class="nav-icons"><div class="nav-icon">⊞</div><div class="nav-icon nav-menu">≡</div></div></div>
+    <div class="va-section">
+      <div class="va-card">
+        <img class="img" src="/illustrations/business/business-hero.png" alt="" />
+        <div class="va-overlay"></div>
+        <div class="va-text">
+          <div class="eyebrow">Für Salons</div>
+          <h1 class="h1">Solen für<br>dein Geschäft.</h1>
+          <p class="sub">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+          <a class="btn-white" href="#">Jetzt anmelden →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ B — Full-bleed image + text BELOW (Revolut "Your money's safe space") ═══ -->
+  <section class="phone-frame">
+    <div class="phone-label">B · BLEED + TEXT BELOW</div>
+    <div class="phone-status"><span class="clock">17:42</span><span class="icons">5G · 67</span></div>
+    <div class="nav"><div class="nav-logo">Solen</div><div class="nav-icons"><div class="nav-icon">⊞</div><div class="nav-icon nav-menu">≡</div></div></div>
+    <div class="vb-img-wrap"><img class="img" src="/illustrations/business/business-hero.png" alt="" /></div>
+    <div class="vb-text">
+      <div class="eyebrow eyebrow-dark">Für Salons</div>
+      <h1 class="h1-xl">Solen für<br>dein Geschäft.</h1>
+      <p class="sub sub-dark">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+      <a class="btn-dark" href="#">Jetzt anmelden →</a>
+    </div>
+  </section>
+
+  <!-- ═══ C — Full-bleed image taller + text overlay bottom ═══ -->
+  <section class="phone-frame">
+    <div class="phone-label">C · BLEED + OVERLAY</div>
+    <div class="phone-status"><span class="clock">17:42</span><span class="icons">5G · 67</span></div>
+    <div class="nav"><div class="nav-logo">Solen</div><div class="nav-icons"><div class="nav-icon">⊞</div><div class="nav-icon nav-menu">≡</div></div></div>
+    <div class="vc-img-wrap">
+      <img class="img" src="/illustrations/business/business-hero.png" alt="" />
+      <div class="vc-overlay"></div>
+      <div class="vc-text">
+        <div class="eyebrow">Für Salons</div>
+        <h1 class="h1-xl">Solen für<br>dein Geschäft.</h1>
+        <p class="sub">Mehr Buchungen, weniger Aufwand.</p>
+        <a class="btn-white" href="#">Jetzt anmelden →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ D — Viewport-filling hero, immersive ═══ -->
+  <section class="phone-frame">
+    <div class="phone-label">D · IMMERSIVE / FULL VIEWPORT</div>
+    <div class="phone-status"><span class="clock">17:42</span><span class="icons">5G · 67</span></div>
+    <div class="nav"><div class="nav-logo">Solen</div><div class="nav-icons"><div class="nav-icon">⊞</div><div class="nav-icon nav-menu">≡</div></div></div>
+    <div class="vd-img-wrap">
+      <img class="img" src="/illustrations/business/business-hero.png" alt="" />
+      <div class="vd-overlay"></div>
+      <div class="vd-text">
+        <div class="eyebrow">Für Salons</div>
+        <h1 class="h1-xl">Solen für<br>dein Geschäft.</h1>
+        <p class="sub">Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.</p>
+        <a class="btn-white" href="#">Jetzt anmelden →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="footer-note">
+  <p style="margin-top:0;"><strong>Quick read of each:</strong></p>
+  <ul style="margin:0;padding-left:20px;">
+    <li><strong>A · CURRENT</strong> — image in padded card, rounded corners, text overlay. Feels "contained" — like a slide, not a hero.</li>
+    <li><strong>B · BLEED + TEXT BELOW</strong> — image edge-to-edge then text on white. Most legible text. Closest to Revolut's "Your money's safe space" pattern. Two visual moments stacked.</li>
+    <li><strong>C · BLEED + OVERLAY</strong> — image edge-to-edge, taller, text overlaid bottom. One unified hero moment. Image is the "stage."</li>
+    <li><strong>D · IMMERSIVE</strong> — image fills the viewport, text floats at bottom. Most dramatic, most "cinematic." Risk: pushes everything else WAY down the page.</li>
+  </ul>
+  <p style="margin-bottom:0;margin-top:12px;">My pick: <strong>B</strong> for clarity, <strong>C</strong> for impact. Tell me which (or a hybrid) and I'll wire it.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solen V3 — Depth system A/B (current shiny vs proposed modern)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #FFFFFF;
+      --ink-1: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --hairline: rgba(26, 18, 9, 0.06);
+      --brand: #043338;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --brand-mid: #0A6873;
+    }
+
+    html, body {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      color: var(--ink-1);
+      background: #F4F2EE;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .display { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; letter-spacing: -0.02em; }
+
+    /* ============ DOC HEADER ============ */
+    .doc-head {
+      background: var(--white);
+      padding: 56px 48px 40px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .doc-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); margin-bottom: 16px; }
+    .doc-title { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 14px; max-width: 24ch; }
+    .doc-lede { font-size: 16px; max-width: 64ch; color: var(--ink-2); line-height: 1.5; }
+    .doc-lede strong { color: var(--ink-1); font-weight: 600; }
+
+    /* ============ A/B SPLIT LAYOUT ============ */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--ink-1);
+    }
+
+    .col {
+      padding: 32px 24px 64px;
+      min-height: 100vh;
+    }
+    .col.current { background: #FCFAF6; }
+    .col.modern  { background: #FCFAF6; }
+
+    .col-label {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px -24px 32px;
+      padding: 16px 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--hairline);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .col-label-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+    .col-label-eyebrow.current { color: #B8651D; }
+    .col-label-eyebrow.modern  { color: var(--brand); }
+    .col-label-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin-top: 4px; }
+    .col-label-deck { font-size: 12px; color: var(--ink-3); margin-top: 4px; max-width: 50ch; line-height: 1.4; }
+
+    /* ============ Section title in each column ============ */
+    .sec-title { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; margin-top: 32px; }
+    .sec-title:first-of-type { margin-top: 0; }
+
+    /* ===================================================================
+       LEFT (CURRENT) — uses current §5b spec literally
+       =================================================================== */
+
+    /* Hero — atmosphere wash heavy */
+    .hero-current {
+      position: relative;
+      background: var(--white);
+      padding: 56px 32px;
+      border-radius: 16px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid var(--hairline);
+    }
+    .hero-current::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
+        radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
+        linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+      z-index: 0;
+    }
+    .hero-current > * { position: relative; z-index: 1; }
+    .hero-current h1 { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: 44px; line-height: 0.96; letter-spacing: -0.02em; margin-bottom: 16px; max-width: 14ch; }
+    .hero-current h1 em { font-style: normal; color: var(--brand); }
+    .hero-current p { font-size: 15px; color: var(--ink-2); margin-bottom: 24px; max-width: 40ch; line-height: 1.5; }
+
+    /* CTA gradient + tinted shadow + inset highlight = Web 2.0 glossy button */
+    .cta-current {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      background: linear-gradient(180deg, #0A6873 0%, #043338 100%);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: 'ITC Avant Garde Gothic Std', 'League Spartan', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.18),
+        0 1px 2px rgba(26,18,9,.04),
+        0 8px 20px rgba(4,51,56,.18);
+    }
+
+    /* Salon card with stacked shadows + inset highlight + sheen gradient */
+    .row-current { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card-current {
+      background: linear-gradient(180deg, #fff 0%, #FDFAF5 100%);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 4px 16px rgba(26,18,9,.08),
+        0 16px 40px rgba(4,51,56,.06);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .card-current-photo {
+      aspect-ratio: 1/1;
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-current-photo.coiffeur { background: #FFF1DD; color: #B5345A; }
+    .card-current-photo.spa { background: #193120; color: #948565; }
+    .card-current-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(4,51,56,.08) 100%),
+        radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%);
+      pointer-events: none;
+    }
+    .card-current-initial { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 56px; }
+    .card-current-meta { padding: 10px 12px; }
+    .card-current-name { font-size: 13px; font-weight: 600; }
+    .card-current-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+    .badge-current {
+      position: absolute; top: 8px; left: 8px;
+      padding: 4px 9px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border-radius: 999px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--ink-1);
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px rgba(4,51,56,.2); }
+
+    /* B2B card — peach gradient + blurred blobs */
+    .b2b-current {
+      position: relative;
+      background: linear-gradient(160deg, #E1F4F4 0%, #FBC9A8 100%);
+      border-radius: 22px;
+      padding: 36px 28px;
+      overflow: hidden;
+      isolation: isolate;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.6),
+        0 1px 2px rgba(4,51,56,.1),
+        0 16px 32px rgba(4,51,56,.18);
+    }
+    .b2b-blob1, .b2b-blob2 { position: absolute; border-radius: 50%; filter: blur(40px); z-index: 0; }
+    .b2b-blob1 { width: 220px; height: 220px; background: rgba(4,51,56,.5); top: -60px; right: -60px; }
+    .b2b-blob2 { width: 180px; height: 180px; background: rgba(229,95,42,.4); bottom: -40px; left: -40px; }
+    .b2b-current > * { position: relative; z-index: 1; }
+    .b2b-current h3 { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 24px; line-height: 1.05; letter-spacing: -0.018em; margin-bottom: 8px; max-width: 20ch; }
+    .b2b-current p { font-size: 13px; color: var(--ink-2); margin-bottom: 16px; }
+    .b2b-cta-current {
+      padding: 10px 18px;
+      background: var(--ink-1);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 700;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(4,51,56,.18);
+      cursor: pointer;
+    }
+
+    /* City tile — gradient + line icon + white text */
+    .cities-current { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .city-current {
+      aspect-ratio: 1/1.1;
+      background: linear-gradient(160deg, #0A6873 0%, #043338 100%);
+      color: var(--white);
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+      display: flex; flex-direction: column; justify-content: space-between;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(4,51,56,.18);
+    }
+    .city-current::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 50%);
+      z-index: 0;
+    }
+    .city-current > * { position: relative; z-index: 1; }
+    .city-icon { width: 22px; height: 22px; border: 1.8px solid rgba(255,255,255,.95); border-radius: 50%; position: relative; }
+    .city-icon::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 1.8px; height: 8px; background: rgba(255,255,255,.95); }
+    .city-name { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 18px; letter-spacing: -0.018em; line-height: 1; }
+    .city-meta { font-size: 10px; opacity: 0.85; margin-top: 2px; }
+
+    /* ===================================================================
+       RIGHT (MODERN) — flat / Linear-Stripe-Vercel style
+       =================================================================== */
+
+    /* Hero — atmosphere wash much subtler */
+    .hero-modern {
+      position: relative;
+      background: var(--white);
+      padding: 56px 32px;
+      border-radius: 16px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid var(--hairline);
+    }
+    .hero-modern::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 75% 25%, rgba(202, 232, 255, 0.40) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 55% at 20% 80%, rgba(194, 240, 241, 0.40) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 65% at 100% 100%, rgba(0, 88, 152, 0.10) 0%, transparent 60%);
+      z-index: 0;
+    }
+    .hero-modern > * { position: relative; z-index: 1; }
+    .hero-modern h1 { font-family: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif; font-weight: 900; font-size: 44px; line-height: 0.96; letter-spacing: -0.02em; margin-bottom: 16px; max-width: 14ch; }
+    .hero-modern h1 em { font-style: normal; color: var(--brand); }
+    .hero-modern p { font-size: 15px; color: var(--ink-2); margin-bottom: 24px; max-width: 40ch; line-height: 1.5; }
+
+    /* CTA flat — Linear/Stripe style */
+    .cta-modern {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: 'ITC Avant Garde Gothic Std', 'League Spartan', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .cta-modern:hover { background: var(--brand-mid); }
+
+    /* Salon card flat — single soft shadow on hover only */
+    .row-modern { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card-modern {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--hairline);
+      transition: box-shadow 200ms ease, border-color 200ms ease;
+    }
+    .card-modern:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,.04);
+      border-color: rgba(26,18,9,.10);
+    }
+    .card-modern-photo {
+      aspect-ratio: 1/1;
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-modern-photo.coiffeur { background: #FFF1DD; color: #B5345A; }
+    .card-modern-photo.spa { background: #193120; color: #948565; }
+    .card-modern-initial { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 56px; }
+    .card-modern-meta { padding: 10px 12px; }
+    .card-modern-name { font-size: 13px; font-weight: 600; }
+    .card-modern-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+    .badge-modern {
+      position: absolute; top: 8px; left: 8px;
+      padding: 4px 9px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px) saturate(1);
+      -webkit-backdrop-filter: blur(16px) saturate(1);
+      border-radius: 999px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--ink-1);
+      display: flex; align-items: center; gap: 5px;
+      border: 1px solid rgba(26,18,9,.06);
+    }
+    .badge-modern-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+
+    /* B2B card — flat brand-subtle, no blobs */
+    .b2b-modern {
+      background: var(--brand-subtle);
+      border-radius: 22px;
+      padding: 36px 28px;
+      border: 1px solid rgba(4,51,56,.08);
+    }
+    .b2b-modern h3 { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 24px; line-height: 1.05; letter-spacing: -0.018em; margin-bottom: 8px; max-width: 20ch; color: var(--brand); }
+    .b2b-modern p { font-size: 13px; color: var(--ink-2); margin-bottom: 16px; }
+    .b2b-cta-modern {
+      padding: 10px 18px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .b2b-cta-modern:hover { background: var(--brand-mid); }
+
+    /* City tile flat — solid color tinted by city, dark text */
+    .cities-modern { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .city-modern {
+      aspect-ratio: 1/1.1;
+      border-radius: 16px;
+      padding: 14px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: transform 150ms ease;
+      cursor: pointer;
+    }
+    .city-modern:hover { transform: translateY(-1px); }
+    .city-modern.basel  { background: var(--brand-subtle); color: var(--brand); }
+    .city-modern.zuerich { background: #EFE7DD; color: var(--ink-1); }
+    .city-modern.bern   { background: #F2EBDC; color: var(--ink-1); }
+    .city-icon-modern { width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 50%; }
+    .city-icon-modern::after { content: ''; display: block; width: 1.5px; height: 7px; background: currentColor; margin: 4px auto 0; }
+    .city-name-modern { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 18px; letter-spacing: -0.018em; line-height: 1; }
+    .city-meta-modern { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+
+    /* ============ DIFF FOOTER ============ */
+    .diff {
+      grid-column: 1 / -1;
+      background: var(--ink-1);
+      color: #fff;
+      padding: 48px 48px 64px;
+    }
+    .diff h2 { font-family: 'Cooper BT', 'Sansita', serif; font-weight: 900; font-size: 28px; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .diff p { font-size: 14px; line-height: 1.6; opacity: 0.85; max-width: 64ch; margin-bottom: 16px; }
+    .diff table { width: 100%; max-width: 1200px; border-collapse: collapse; font-size: 12px; margin-top: 16px; }
+    .diff th, .diff td { text-align: left; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+    .diff th { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+    .diff code { font-family: ui-monospace, monospace; font-size: 11px; background: rgba(255,255,255,.06); padding: 2px 6px; border-radius: 4px; }
+
+    @media (max-width: 900px) {
+      .split { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="doc-head">
+    <div class="doc-eyebrow">Spec polish preview · §5b depth modernization</div>
+    <h1 class="doc-title display">Before &amp; after.</h1>
+    <p class="doc-lede"><strong>Same content, same fonts, same colors.</strong> Only the depth/effect treatment differs. LEFT applies §5b literally — inset highlights, stacked shadows, gradient CTAs, saturate(1.4) glass. RIGHT applies the proposed modern flat treatment — flat surfaces, single soft hover shadow, flat CTAs, saturate(1.0). Pick which feels like Solen.</p>
+  </header>
+
+  <div class="split">
+
+    <!-- ============ LEFT: CURRENT (V2-D15-3 §5b literal) ============ -->
+    <section class="col current">
+      <div class="col-label">
+        <div class="col-label-eyebrow current">Left · Current spec V2-D15-3 §5b</div>
+        <div class="col-label-title">Inset highlights · stacked shadows · gradient CTAs · saturate(1.4)</div>
+        <div class="col-label-deck">What the fresh agent built. Web 2.0/iOS 6 era depth tricks layered onto modern V3 fonts and colors.</div>
+      </div>
+
+      <div class="sec-title">Hero (atmosphere wash 0.78/0.72/0.32)</div>
+      <div class="hero-current">
+        <h1 class="display">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p>Die besten Beauty-Adressen der Schweiz, alle in einer App.</p>
+        <button class="cta-current">Salon finden →</button>
+      </div>
+
+      <div class="sec-title">Salon cards (L3 elevated — 3 stacked shadows + inset gloss + sheen gradient)</div>
+      <div class="row-current">
+        <div class="card-current">
+          <div class="card-current-photo coiffeur">
+            <span class="badge-current"><span class="badge-dot"></span>Heute frei</span>
+            <span class="card-current-initial">SH</span>
+          </div>
+          <div class="card-current-meta">
+            <div class="card-current-name">Studio Hegelhof</div>
+            <div class="card-current-sub">Coiffeur · Steinenvorstadt</div>
+          </div>
+        </div>
+        <div class="card-current">
+          <div class="card-current-photo spa">
+            <span class="badge-current"><span class="badge-dot"></span>Sofort frei</span>
+            <span class="card-current-initial">MA</span>
+          </div>
+          <div class="card-current-meta">
+            <div class="card-current-name">Maison Atelier</div>
+            <div class="card-current-sub">Spa &amp; Wellness · Gerbergasse</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">B2B promo (peach gradient + 2 blurred blobs + inset gloss)</div>
+      <div class="b2b-current">
+        <div class="b2b-blob1"></div>
+        <div class="b2b-blob2"></div>
+        <h3 class="display">Solen für dein Studio.</h3>
+        <p>Mehr Termine, weniger Anrufe. Schon Partner?</p>
+        <button class="b2b-cta-current">Mehr erfahren →</button>
+      </div>
+
+      <div class="sec-title">City tiles (gradient + line icons + white text)</div>
+      <div class="cities-current">
+        <div class="city-current">
+          <div class="city-icon"></div>
+          <div>
+            <div class="city-name display">Basel</div>
+            <div class="city-meta">128 Salons</div>
+          </div>
+        </div>
+        <div class="city-current">
+          <div class="city-icon"></div>
+          <div>
+            <div class="city-name display">Zürich</div>
+            <div class="city-meta">312 Salons</div>
+          </div>
+        </div>
+        <div class="city-current">
+          <div class="city-icon"></div>
+          <div>
+            <div class="city-name display">Bern</div>
+            <div class="city-meta">62 Salons</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RIGHT: MODERN (proposed §5b modernization) ============ -->
+    <section class="col modern">
+      <div class="col-label">
+        <div class="col-label-eyebrow modern">Right · Proposed modern §5b</div>
+        <div class="col-label-title">Flat surfaces · single soft hover shadow · flat CTAs · saturate(1.0)</div>
+        <div class="col-label-deck">Linear/Stripe/Vercel/Notion era. Drops Web 2.0 tricks. Keeps the same V3 fonts, colors, and pill rule.</div>
+      </div>
+
+      <div class="sec-title">Hero (atmosphere wash 0.40/0.40/0.10 — much subtler)</div>
+      <div class="hero-modern">
+        <h1 class="display">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p>Die besten Beauty-Adressen der Schweiz, alle in einer App.</p>
+        <button class="cta-modern">Salon finden →</button>
+      </div>
+
+      <div class="sec-title">Salon cards (border + soft hover shadow only — no inset, no sheen, no stack)</div>
+      <div class="row-modern">
+        <div class="card-modern">
+          <div class="card-modern-photo coiffeur">
+            <span class="badge-modern"><span class="badge-modern-dot"></span>Heute frei</span>
+            <span class="card-modern-initial">SH</span>
+          </div>
+          <div class="card-modern-meta">
+            <div class="card-modern-name">Studio Hegelhof</div>
+            <div class="card-modern-sub">Coiffeur · Steinenvorstadt</div>
+          </div>
+        </div>
+        <div class="card-modern">
+          <div class="card-modern-photo spa">
+            <span class="badge-modern"><span class="badge-modern-dot"></span>Sofort frei</span>
+            <span class="card-modern-initial">MA</span>
+          </div>
+          <div class="card-modern-meta">
+            <div class="card-modern-name">Maison Atelier</div>
+            <div class="card-modern-sub">Spa &amp; Wellness · Gerbergasse</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">B2B promo (flat brand-subtle bg, no blobs, hairline border)</div>
+      <div class="b2b-modern">
+        <h3 class="display">Solen für dein Studio.</h3>
+        <p>Mehr Termine, weniger Anrufe. Schon Partner?</p>
+        <button class="b2b-cta-modern">Mehr erfahren →</button>
+      </div>
+
+      <div class="sec-title">City tiles (flat tinted bg, dark text, lighter per-city tint variation)</div>
+      <div class="cities-modern">
+        <div class="city-modern basel">
+          <div class="city-icon-modern"></div>
+          <div>
+            <div class="city-name-modern display">Basel</div>
+            <div class="city-meta-modern">128 Salons</div>
+          </div>
+        </div>
+        <div class="city-modern zuerich">
+          <div class="city-icon-modern"></div>
+          <div>
+            <div class="city-name-modern display">Zürich</div>
+            <div class="city-meta-modern">312 Salons</div>
+          </div>
+        </div>
+        <div class="city-modern bern">
+          <div class="city-icon-modern"></div>
+          <div>
+            <div class="city-name-modern display">Bern</div>
+            <div class="city-meta-modern">62 Salons</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DIFF TABLE ============ -->
+    <section class="diff">
+      <h2>What changes if you say "go" on the polish</h2>
+      <p>Same V3 brand, V3 fonts, V3 categories, V3 pill rule, V3 atmosphere recipe, V3 color philosophy, V3 voice. Only the §5b depth system + §1 hover gradient + a few §19 / §20 specific bits get modernized.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Token / pattern</th>
+            <th>Current spec (left)</th>
+            <th>Modern proposal (right)</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>§5b L1 raised</code></td>
+            <td><code>inset 0 1px 0 rgba(255,255,255,.6)</code> + <code>0 1px 1px rgba(26,18,9,.04)</code></td>
+            <td><code>0 1px 2px rgba(0,0,0,.04)</code> only</td>
+            <td>Drops Web 2.0 inset highlight</td>
+          </tr>
+          <tr>
+            <td><code>§5b L2 surface</code></td>
+            <td>same inset + <code>0 2px 8px</code></td>
+            <td><code>0 2px 12px rgba(0,0,0,.04)</code></td>
+            <td>Single soft shadow</td>
+          </tr>
+          <tr>
+            <td><code>§5b L3 elevated</code></td>
+            <td>3 stacked shadows + inset</td>
+            <td><code>0 4px 16px rgba(0,0,0,.06)</code> on hover only</td>
+            <td>Flat resting state, lift on hover</td>
+          </tr>
+          <tr>
+            <td><code>§5b L4 overlay</code></td>
+            <td><code>blur(12px) saturate(1.4)</code></td>
+            <td><code>blur(16px) saturate(1)</code></td>
+            <td>Drops iOS 7 vibrance pump</td>
+          </tr>
+          <tr>
+            <td><code>§5b L5 accent glow</code></td>
+            <td>tinted brand-color shadow</td>
+            <td>Removed entirely — modern UIs don't glow CTAs</td>
+            <td>"Lift, never glow"</td>
+          </tr>
+          <tr>
+            <td><code>§1 hover gradient</code></td>
+            <td><code>linear-gradient(180deg, #0A6873 0%, #043338 100%)</code></td>
+            <td>Flat <code>#043338</code>, hover → flat <code>#0A6873</code> via <code>background</code> transition</td>
+            <td>Linear/Stripe button style</td>
+          </tr>
+          <tr>
+            <td><code>§5b card surface</code></td>
+            <td><code>linear-gradient(180deg, #fff, #FDFAF5)</code></td>
+            <td>Flat <code>#FFFFFF</code></td>
+            <td>Drops "waxed paper" sheen</td>
+          </tr>
+          <tr>
+            <td><code>§5g atmosphere wash opacity</code></td>
+            <td>0.78 / 0.72 / 0.32 / 0.28</td>
+            <td>0.40 / 0.40 / 0.10 / 0.10</td>
+            <td>Less screensaver, more weather behind glass</td>
+          </tr>
+          <tr>
+            <td><code>§19 city tiles</code></td>
+            <td>Brand-teal gradient + line icons + white text on all 3</td>
+            <td>Flat per-city tint (brand-subtle / warm bone / sand) + dark text</td>
+            <td>Restores city differentiation; flat reads modern</td>
+          </tr>
+          <tr>
+            <td><code>§20 B2B card</code></td>
+            <td>Peach gradient + 2 blurred blobs + 3 stacked shadows + inset</td>
+            <td>Flat brand-subtle bg + hairline border + flat CTA</td>
+            <td>Drops 2018 marketing-site tropes</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+</body>
+</html>

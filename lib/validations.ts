@@ -125,6 +125,8 @@ export const createPromoSchema = z.object({
   salon_id: uuid.optional().nullable(),
   valid_from: z.string().datetime().optional(),
   valid_until: z.string().datetime().optional().nullable(),
+  // Solen Plus members-only deal gate (LOYALTY_STRUCTURE.md §12.4): null = everyone.
+  min_tier: z.enum(["gold", "platinum"]).optional().nullable(),
 });
 
 export const completeReferralSchema = z.object({

@@ -297,14 +297,8 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
             {/* Utility rows below the grid: sign-in (primary), Warum Solen,
                 language. Each row carries a leading icon (kills the "dry" feel). */}
             <div className="mt-3 overflow-hidden rounded-[18px] bg-s-bg-surface shadow-[0_1px_3px_rgba(26,18,9,0.04)]">
-              {/* V3-D378: Geschenkkarten demoted to a row (Profil now lives in the grid above).
-                  /profile stays reachable from the menu via the grid tile. */}
-              <MenuRow
-                href={`/${locale}/vouchers/buy`}
-                label={t("giftCards")}
-                icon={<Gift size={20} strokeWidth={1.75} aria-hidden />}
-                onClick={onClose}
-              />
+              {/* Gift cards (Geschenkkarten) HIDDEN from customers (owner, 2026-06-14)
+                  in favour of a Solen-wide loyalty card. Restore this MenuRow to re-enable. */}
               {!loggedIn && (
                 <MenuRow
                   href={`/${locale}/auth/login`}

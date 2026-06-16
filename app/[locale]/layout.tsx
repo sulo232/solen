@@ -29,6 +29,12 @@ import Breadcrumb from "@/components-legacy/ui/Breadcrumb";
 import PageTransitionWrapper from "@/components-legacy/layout/PageTransitionWrapper";
 import MotionProvider from "@/components-legacy/layout/MotionProvider";
 
+// LOCAL TEST-SERVER ONLY (uncommitted): force every locale route dynamic so the
+// production build skips prerender of the dashboard/editor client page. Served via
+// `next build` + `next start` (NOT `next dev`, whose generateStaticParams static-paths
+// worker races the on-demand compiler and corrupts vendor-chunks). Do NOT commit.
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }

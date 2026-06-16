@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Status: improved UI variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#9A9A9A; --line:#ECECEE;
+    --sunken:#F4F4F5; --accent:#276EF1; --accent-deep:#1E54B7; --accent-pale:#EAEFFE;
+    --ok:#16A34A; --ok-bg:#E7F6EC; --star:#FFC32B; --star-bg:#FEF6E0; --pink:#FF3366; --pink-bg:#FFE9EE;
+    --gold-ink:#8A6A1B; --gold-bg1:#F4ECD6; --gold-bg2:#FCF8EE; --gold-line:#E6D5A8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DEDEE2; font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:34px 18px 60px;}
+  .lede{max-width:1180px; margin:0 auto 22px;}
+  .lede h1{font-family:"Inter Tight"; font-size:22px; font-weight:700; letter-spacing:-.02em;}
+  .lede p{font-size:13.5px; color:#46464B; margin-top:6px; line-height:1.55; max-width:840px;}
+  .names{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .nm{font-size:12.5px; font-weight:600; padding:5px 11px; border-radius:99px; border:1px solid var(--line); background:#fff;}
+  .nm.pick{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .nm small{font-weight:500; opacity:.6;}
+
+  .grid{display:flex; flex-wrap:wrap; gap:26px; justify-content:center; align-items:flex-start; max-width:1320px; margin:0 auto;}
+  .col{width:380px;}
+  .tag{display:flex; align-items:center; gap:8px; margin:0 4px 10px;}
+  .tag .lt{font-family:"Inter Tight"; font-weight:700; font-size:15px;}
+  .tag .ds{font-size:12.5px; color:#5A5A5F;}
+  .pill{font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:7px; background:var(--ink); color:#fff;}
+
+  .phone{width:380px; background:#fff; border-radius:42px; overflow:hidden; box-shadow:0 34px 70px -28px rgba(0,0,0,.5);}
+  .status{height:42px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:12.5px; font-weight:600;}
+  .status .dots{display:flex; gap:5px;}
+  .bar{display:flex; align-items:center; justify-content:space-between; padding:6px 16px 10px;}
+  .bar .lft{display:flex; align-items:center; gap:11px;}
+  .icirc{width:36px; height:36px; border-radius:50%; background:var(--sunken); display:grid; place-items:center;}
+  .bar h2{font-family:"Inter Tight"; font-size:17px; font-weight:600; letter-spacing:-.01em;}
+  .hist{font-size:12.5px; color:var(--accent); font-weight:500; display:inline-flex; align-items:center; gap:4px;}
+  .body{padding:6px 16px 18px;}
+
+  /* perks (shared) */
+  .h{font-family:"Inter Tight"; font-size:14.5px; font-weight:600; letter-spacing:-.01em; margin:16px 2px 10px;}
+  .perk{display:flex; align-items:center; gap:11px; background:var(--sunken); border-radius:13px; padding:11px 12px; margin-bottom:8px;}
+  .perk.lock{background:#fff; border:1px dashed var(--line);}
+  .chip{width:34px; height:34px; border-radius:10px; display:grid; place-items:center; flex-shrink:0;}
+  .c-blue{background:var(--accent-pale); color:var(--accent);} .c-green{background:var(--ok-bg); color:var(--ok);}
+  .c-pink{background:var(--pink-bg); color:var(--pink);} .c-mut{background:var(--sunken); color:var(--ink3);}
+  .perk .tx{flex:1; min-width:0;} .perk .tt{font-size:13px; font-weight:600;} .perk.lock .tt{color:var(--ink2);}
+  .perk .sb{font-size:11px; color:var(--ink2); margin-top:1px;}
+  .st{font-size:10.5px; font-weight:700; display:inline-flex; align-items:center; gap:3px; flex-shrink:0;}
+  .st.on{color:var(--ok);} .st.off{color:var(--ink3);}
+  .link{font-size:12.5px; color:var(--accent); font-weight:500; display:inline-flex; align-items:center; gap:3px; margin:4px 2px 0;}
+
+  /* ===== A: tier card hero ===== */
+  .tcard{position:relative; overflow:hidden; border-radius:18px; padding:18px; background:linear-gradient(150deg,var(--gold-bg1),var(--gold-bg2)); border:1px solid var(--gold-line); box-shadow:0 12px 26px -16px rgba(138,106,27,.30);}
+  .tcard .crown{position:absolute; right:-10px; top:-14px; color:var(--gold-line); opacity:.5;}
+  .tcard .wm{font-family:"Inter Tight"; font-weight:700; font-size:14px; letter-spacing:-.02em; color:var(--gold-ink);}
+  .tcard .wm sup{font-size:9px;}
+  .tcard .tier{display:flex; align-items:center; gap:8px; margin-top:10px;}
+  .tcard .tier .n{font-family:"Inter Tight"; font-weight:800; font-size:32px; letter-spacing:-.02em; color:var(--ink); line-height:1;}
+  .tcard .since{font-size:11px; color:var(--gold-ink); margin-top:3px;}
+  .tcard .track{height:7px; border-radius:99px; background:rgba(138,106,27,.14); overflow:hidden; margin-top:14px;}
+  .tcard .fill{height:100%; width:67%; border-radius:99px; background:linear-gradient(90deg,#C9A23F,#8A6A1B);}
+  .tcard .frow{display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11.5px; color:var(--gold-ink);}
+  .tcard .valid{display:flex; align-items:center; gap:5px; margin-top:11px; padding-top:11px; border-top:1px solid var(--gold-line); font-size:11px; color:var(--gold-ink);}
+
+  /* ===== B: tier tabs ===== */
+  .statline{display:flex; align-items:baseline; justify-content:space-between; margin:4px 2px 0;}
+  .statline .n{font-family:"Inter Tight"; font-weight:700; font-size:22px; letter-spacing:-.02em;}
+  .statline .r{font-size:12px; color:var(--ink3);}
+  .track2{height:8px; border-radius:99px; background:var(--sunken); overflow:hidden; margin:10px 2px 0;}
+  .track2 .f{height:100%; width:67%; border-radius:99px; background:linear-gradient(90deg,var(--ink),var(--accent));}
+  .tabs{display:flex; gap:7px; margin:16px 2px 4px;}
+  .tab{flex:1; text-align:center; padding:9px 0 8px; border-radius:11px; font-size:12px; font-weight:600; color:var(--ink3); background:var(--sunken); position:relative;}
+  .tab.done{color:var(--ink);}
+  .tab.active{background:var(--ink); color:#fff;}
+  .tab .tk{display:block; font-size:9px; font-weight:600; opacity:.6; margin-top:1px;}
+  .tabnote{font-size:11px; color:var(--ink3); margin:9px 2px 0; display:flex; align-items:center; gap:5px;}
+
+  /* ===== C: bold editorial ===== */
+  .eb{padding:8px 2px 0;}
+  .eb .kick{font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink3);}
+  .eb .big{font-family:"Inter Tight"; font-weight:800; font-size:40px; letter-spacing:-.03em; line-height:1.02; margin-top:6px;}
+  .eb .big em{font-style:normal; color:var(--star);}
+  .eb .sub{font-size:14px; color:var(--ink2); margin-top:10px; line-height:1.4;}
+  .ladder{position:relative; margin:20px 2px 0;}
+  .ll{position:absolute; left:24px; right:24px; top:8px; height:8px; border-radius:9px; background:var(--sunken);}
+  .ll .lp{height:100%; width:67%; border-radius:9px; background:linear-gradient(90deg,var(--ink),var(--accent));}
+  .ln{display:flex; justify-content:space-between; position:relative;}
+  .node{display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--sunken);color:var(--ink3);}
+  .node.done .dot{background:var(--ink);color:#fff;} .node.now .dot{background:var(--accent);color:#fff;box-shadow:0 0 0 4px var(--accent-pale);}
+  .node .l{font-size:10px;font-weight:600;color:var(--ink3);} .node.now .l{color:var(--accent-deep);} .node.done .l{color:var(--ink);}
+  .ebvalid{font-size:11px;color:var(--ink3); margin:16px 2px 0; display:flex; align-items:center; gap:5px;}
+</style>
+</head>
+<body>
+  <div class="lede">
+    <h1>Solen Status: improved UI, 3 directions + a new name</h1>
+    <p>Grounded in real loyalty UIs (Grab, Shopee, FARFETCH, Hollister). All keep the rank model (Gold, 2 visits to Platinum, gentle decay) and the real perks (Angebote / member deals / booking). "Treueprogramm" is out. Pick a layout + a name.</p>
+    <div class="names">
+      <span class="nm pick">Solen Plus <small>recommended, ties to the solen+ mark</small></span>
+      <span class="nm">Solen Club</span>
+      <span class="nm">Solen Circle</span>
+      <span class="nm">Solen Status</span>
+      <span class="nm">Solen Insider</span>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- A: tier card hero -->
+    <div class="col">
+      <div class="tag"><span class="lt">A. Tier card</span><span class="ds">Shopee / Grab</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Solen Plus</h2></div><a class="hist"><i data-lucide="history" style="width:14px"></i> History</a></div>
+        <div class="body">
+          <div class="tcard">
+            <i data-lucide="crown" class="crown" style="width:90px;height:90px"></i>
+            <div class="wm">solen<sup>+</sup></div>
+            <div class="tier"><span class="n">Gold</span><i data-lucide="award" style="width:22px;color:var(--gold-ink)"></i></div>
+            <div class="since">Member since 2024</div>
+            <div class="track"><div class="fill"></div></div>
+            <div class="frow"><span>2 visits to Platinum</span><span>4 / 6</span></div>
+            <div class="valid"><i data-lucide="clock" style="width:12px"></i> Valid through 31 Aug. Book to keep it.</div>
+          </div>
+          <div class="h">Your perks</div>
+          <div class="perk"><span class="chip c-blue"><i data-lucide="tag" style="width:17px"></i></span><div class="tx"><div class="tt">Early access to Angebote</div><div class="sb">Offers 24h before everyone</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i> Active</span></div>
+          <div class="perk"><span class="chip c-green"><i data-lucide="badge-percent" style="width:17px"></i></span><div class="tx"><div class="tt">Members-only deals</div><div class="sb">Reserved for members</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i> Active</span></div>
+          <div class="perk"><span class="chip c-pink"><i data-lucide="gift" style="width:17px"></i></span><div class="tx"><div class="tt">Birthday-week priority</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i> Active</span></div>
+          <div class="perk lock"><span class="chip c-mut"><i data-lucide="calendar-clock" style="width:17px"></i></span><div class="tx"><div class="tt">Prime-time slot early access</div></div><span class="st off"><i data-lucide="lock" style="width:11px"></i> Platinum</span></div>
+        </div>
+      </div>
+      <p class="lede" style="font-size:11.5px;color:#76767C;margin:10px 2px 0">The tier is a real membership card (gold tint = the tier). Decay date sits on the card. Warmest, most "premium object".</p>
+    </div>
+
+    <!-- B: tier tabs -->
+    <div class="col">
+      <div class="tag"><span class="lt">B. Tier tabs</span><span class="pill">Recommended</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Solen Plus</h2></div><a class="hist"><i data-lucide="history" style="width:14px"></i> History</a></div>
+        <div class="body">
+          <div class="statline"><span class="n">Gold</span><span class="r">4 / 6 visits</span></div>
+          <div class="track2"><div class="f"></div></div>
+          <div class="tabnote" style="margin-top:7px"><i data-lucide="arrow-up-right" style="width:12px"></i> 2 visits to Platinum. Valid through 31 Aug.</div>
+          <div class="tabs">
+            <div class="tab done">Base</div>
+            <div class="tab active">Gold</div>
+            <div class="tab">Platinum</div>
+          </div>
+          <div class="tabnote"><i data-lucide="hand" style="width:12px"></i> Tap a tier to see what it unlocks.</div>
+          <div class="h" style="margin-top:13px">Gold perks</div>
+          <div class="perk"><span class="chip c-blue"><i data-lucide="tag" style="width:17px"></i></span><div class="tx"><div class="tt">Early access to Angebote</div><div class="sb">Offers 24h before everyone</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+          <div class="perk"><span class="chip c-green"><i data-lucide="badge-percent" style="width:17px"></i></span><div class="tx"><div class="tt">Members-only deals</div><div class="sb">Reserved for members</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+          <div class="perk"><span class="chip c-pink"><i data-lucide="gift" style="width:17px"></i></span><div class="tx"><div class="tt">Birthday-week priority</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+        </div>
+      </div>
+      <p class="lede" style="font-size:11.5px;color:#76767C;margin:10px 2px 0">Tabs let a Gold member tap Platinum and see what they'd unlock, the motivation engine. Most scalable if tiers grow.</p>
+    </div>
+
+    <!-- C: bold editorial -->
+    <div class="col">
+      <div class="tag"><span class="lt">C. Bold</span><span class="ds">Hollister / FARFETCH</span></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><span class="dots"><i data-lucide="signal" style="width:15px"></i><i data-lucide="wifi" style="width:15px"></i><i data-lucide="battery-full" style="width:17px"></i></span></div>
+        <div class="bar"><div class="lft"><div class="icirc"><i data-lucide="arrow-left" style="width:18px"></i></div><h2>Solen Plus</h2></div><a class="hist"><i data-lucide="history" style="width:14px"></i> History</a></div>
+        <div class="body">
+          <div class="eb">
+            <div class="kick">Your status</div>
+            <div class="big">You're <em>Gold</em>.</div>
+            <div class="sub">2 more visits this year and you're Platinum.</div>
+          </div>
+          <div class="ladder">
+            <div class="ll"><div class="lp"></div></div>
+            <div class="ln">
+              <div class="node done"><span class="dot"><i data-lucide="check" style="width:13px"></i></span><span class="l">Base</span></div>
+              <div class="node now"><span class="dot"><i data-lucide="award" style="width:13px"></i></span><span class="l">Gold</span></div>
+              <div class="node"><span class="dot"><i data-lucide="crown" style="width:13px"></i></span><span class="l">Platinum</span></div>
+            </div>
+          </div>
+          <div class="ebvalid"><i data-lucide="clock" style="width:12px"></i> Valid through 31 Aug. Book to keep it.</div>
+          <div class="h">Your perks</div>
+          <div class="perk"><span class="chip c-blue"><i data-lucide="tag" style="width:17px"></i></span><div class="tx"><div class="tt">Early access to Angebote</div><div class="sb">Offers 24h before everyone</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+          <div class="perk"><span class="chip c-green"><i data-lucide="badge-percent" style="width:17px"></i></span><div class="tx"><div class="tt">Members-only deals</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+          <div class="perk"><span class="chip c-pink"><i data-lucide="gift" style="width:17px"></i></span><div class="tx"><div class="tt">Birthday-week priority</div></div><span class="st on"><i data-lucide="check" style="width:12px"></i></span></div>
+        </div>
+      </div>
+      <p class="lede" style="font-size:11.5px;color:#76767C;margin:10px 2px 0">Big confident headline, lots of air. Most "brand", least dense. Closest to the current ladder, just bolder.</p>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Design language v2 + mockups</title>
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9B9B9B;--blue:#276EF1;--green:#15803D;--border:#E5E5E5}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:Inter,-apple-system,system-ui,sans-serif;background:#FAFAFA;color:var(--ink);padding:28px 16px 64px;max-width:640px;margin:0 auto}
+  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:24px;line-height:1.55}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.04);transition:transform .15s,box-shadow .15s}
+  a.card:hover{box-shadow:0 8px 22px rgba(0,0,0,.07);transform:translateY(-1px)}
+  a.card:active{transform:scale(.99)}
+  a.hero{border:1.5px solid var(--blue);background:linear-gradient(#fff,#fff) padding-box}
+  .k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:6px}
+  .k.b{color:var(--blue)}
+  .t{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+  .s{font-size:13px;color:var(--ink2);line-height:1.55}
+  .go{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:var(--blue)}
+  .note{font-size:12px;color:var(--ink2);margin-top:18px;line-height:1.55;border-top:1px solid var(--border);padding-top:16px}
+</style>
+</head>
+<body>
+  <h1>Design language v2 + mockups</h1>
+  <p class="sub">Your pivot, applied: <b>blue for everything tappable</b>, white surfaces (cream dropped), no dark panels, <b>deep dark-green success + light check</b>, and visible animation. Start with the system spec, then the 4 screens. Tell me: approve v2 (I codify it + build) or adjust.</p>
+
+  <a class="card hero" href="design-language-v2.html">
+    <div class="k b">★ Start here · the system</div>
+    <div class="t">Design language v2 — spec</div>
+    <div class="s">One screen that defines the new rules: blue = interactivity (links, tabs, tappable) vs ink body text + one ink commit anchor; white/cool surfaces (no cream); deep-green success disc + white animated check; on-load motion + hover lift. Approve this and it becomes the locked system.</div>
+    <div class="go">View the system →</div>
+  </a>
+
+  <a class="card" href="reset-password.html">
+    <div class="k">1 · /auth/reset-password</div>
+    <div class="t">Clean B&amp;W + deep-green animated success</div>
+    <div class="s">Warm-glass dropped → flat white card. The "done" state is now a deep dark-green disc with a white checkmark that animates (ring pulse → spring pop → stroke-draw → text rise). Blue "back to sign in" link, ink commit.</div>
+    <div class="go">View before / after →</div>
+  </a>
+
+  <a class="card" href="account-messages.html">
+    <div class="k">2 · /account/messages</div>
+    <div class="t">Responsive list ↔ thread, blue-interactive</div>
+    <div class="s">Mobile list opens a thread on tap (back link). v2: blue on rows/unread/active tab/composer, ink sent bubbles, on-load stagger.</div>
+    <div class="go">View before / after →</div>
+  </a>
+
+  <a class="card" href="city-landing.html">
+    <div class="k">3 · /[city] landing</div>
+    <div class="t">Unified search landing, blue-interactive</div>
+    <div class="s">Old city page → the SearchTemplate every route uses, scoped to the city. v2: blue search/chips/sort/map + tappable salon-name links, card hover-lift + stagger.</div>
+    <div class="go">View before / after →</div>
+  </a>
+
+  <a class="card" href="empty-states.html">
+    <div class="k">4 · Empty states (Saved / Queue / generic)</div>
+    <div class="t">One EmptyState + light queue (no dark)</div>
+    <div class="s">The live-queue display is now LIGHT (dark surface dropped). One consistent empty-state anatomy with a blue link/CTA + on-load fade-up.</div>
+    <div class="go">View before / after →</div>
+  </a>
+
+  <p class="note">All v2, grounded in real code + real content. Throwaway previews (public/_mockups/) , deleted once the real builds land. The "vibrating blue" guardrail is kept: blue is on interactive things, body text stays ink, one ink commit per screen.</p>
+</body>
+</html>

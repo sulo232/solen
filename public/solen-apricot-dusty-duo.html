@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solen · Apricot + Dusty Blue duo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --apricot: #E86A3C;
+      --apricot-mid: #C8552B;
+      --apricot-deep: #8B3A1A;
+      --cool: #89B4CA;
+      --cool-deep: #4E7891;
+      --cool-soft: rgba(137, 180, 202, 0.18);
+      --cool-soft-text: #4E7891;
+      --ink: #1A1C19;
+      --ink-2: #6B7068;
+      --ink-3: #5F635D;
+      --emerald: #16A34A;
+      --emerald-bg: #E8F5E9;
+      --canvas: #FFFFFF;
+      --sunken: #F6F6F8;
+      --hairline: #E8E6E0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; letter-spacing: -0.03em; font-size: 28px; margin: 0 0 8px; }
+    .sub { font-size: 13px; color: #888; margin: 0 0 28px; max-width: 920px; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .col { background: #141414; border-radius: 16px; padding: 18px; }
+    .col-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+    .col-name { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px; color: #fff; letter-spacing: -0.02em; }
+    .col-tag { font-size: 10px; padding: 4px 9px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.04em; }
+    .col-tag.current { background: rgba(137,180,202,.15); color: #89B4CA; }
+    .col-tag.rec { background: rgba(232,106,60,.18); color: #E86A3C; }
+    .col-attrib { font-size: 12px; color: #aaa; margin-bottom: 16px; line-height: 1.5; }
+    .legend { display: flex; gap: 12px; margin-bottom: 18px; font-size: 11px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; color: #ccc; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 4px; }
+    .preview {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.5);
+      color: var(--ink);
+    }
+    .ph-banner {
+      background: var(--ink);
+      color: #fff;
+      font-size: 10px;
+      padding: 7px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ph-banner .ph-banner-cta {
+      background: var(--apricot);
+      color: #fff;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      font-size: 9px;
+    }
+    .ph-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .ph-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -0.03em; color: var(--ink); }
+    .ph-logo .dot { color: var(--apricot); }
+    .ph-header-right { display: flex; align-items: center; gap: 10px; }
+    .ph-header-link {
+      color: var(--cool-deep);
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .ph-cta {
+      background: var(--apricot);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 0;
+    }
+    .ph-hero {
+      padding: 30px 16px 20px;
+      background: #fff;
+    }
+    .ph-hero h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      margin: 0 0 6px;
+      color: var(--ink);
+    }
+    .ph-hero p { font-size: 12px; margin: 0 0 18px; color: var(--ink-2); }
+    .ph-hero-row { display: flex; gap: 10px; align-items: center; }
+    .ph-hero-cta {
+      display: inline-block;
+      padding: 11px 22px; border-radius: 9999px;
+      font-size: 12px; font-weight: 700;
+      background: var(--apricot);
+      color: #fff;
+    }
+    .ph-hero-secondary {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 10px 18px; border-radius: 9999px;
+      font-size: 12px; font-weight: 700;
+      border: 1.5px solid var(--cool);
+      color: var(--cool-deep);
+      background: transparent;
+    }
+
+    .ph-section-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 18px 16px 8px;
+      background: #fff;
+    }
+    .ph-section-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 0;
+    }
+    .ph-arrow {
+      width: 30px; height: 30px;
+      border-radius: 9999px;
+      display: inline-grid; place-items: center;
+      background: var(--cool-soft);
+      color: var(--cool-soft-text);
+    }
+    .ph-arrow svg { width: 13px; height: 13px; }
+
+    .ph-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 18px; background: #fff; }
+    .ph-card { border-radius: 12px; overflow: hidden; background: var(--sunken); }
+    .ph-card-img {
+      height: 72px;
+      background: linear-gradient(135deg, #e5e1da 0%, #d9d2c5 100%);
+      position: relative;
+    }
+    .ph-card-badge {
+      position: absolute;
+      top: 6px; left: 6px;
+      background: var(--emerald);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 9999px;
+      letter-spacing: 0.02em;
+    }
+    .ph-card-verified {
+      position: absolute;
+      top: 6px; right: 6px;
+      background: var(--cool);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 9999px;
+      display: inline-flex; align-items: center; gap: 3px;
+    }
+    .ph-card-info { padding: 8px 10px; }
+    .ph-card-name { font-size: 11px; font-weight: 700; color: var(--ink); }
+    .ph-card-meta { font-size: 10px; margin-top: 2px; color: var(--ink-3); }
+
+    .ph-inline-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 0 16px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cool-deep);
+      background: #fff;
+    }
+
+    .ph-bento-section {
+      padding: 20px 16px;
+      background: var(--sunken);
+    }
+    .ph-bento-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--ink-3); font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ph-bento-eyebrow:before {
+      content: ""; width: 5px; height: 5px; border-radius: 9999px;
+      background: var(--ink-3);
+    }
+    .ph-bento-h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 22px;
+      letter-spacing: -0.02em; line-height: 1.05;
+      color: var(--ink);
+      margin: 0 0 14px;
+    }
+    .ph-bento-h3 .accent { color: var(--apricot); }
+    .ph-bento-ctas { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ph-bento-cta-primary {
+      background: var(--apricot); color: #fff;
+      padding: 9px 16px; border-radius: 9999px;
+      font-size: 11px; font-weight: 700;
+    }
+    .ph-bento-cta-secondary {
+      background: transparent; color: var(--cool-deep);
+      border: 1.5px solid var(--cool);
+      padding: 7px 14px; border-radius: 9999px;
+      font-size: 11px; font-weight: 700;
+    }
+
+    .ph-footer {
+      padding: 14px 16px;
+      background: var(--apricot);
+      color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ph-footer-text { font-size: 10px; }
+    .ph-footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: -0.03em; }
+
+    .verdict {
+      font-size: 12px;
+      color: #ccc;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      line-height: 1.6;
+    }
+    .verdict .label { color: #fff; font-weight: 700; }
+    .verdict .risk { color: #f97316; }
+    .verdict .win { color: #34d399; }
+
+    .meta-strip {
+      margin-top: 32px;
+      padding: 22px;
+      background: #141414;
+      border-radius: 16px;
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.65;
+    }
+    .meta-strip h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 17px;
+      color: #fff; margin: 0 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Apricot + Dusty Blue · duo expansion</h1>
+  <p class="sub">
+    Apricot <code>#E86A3C</code> stays primary CTA (action / commit / convert). Dusty blue <code>#4E7891</code> is the secondary navigation/info color. Hue distance 186° = textbook complementary. Dusty blue is <strong>NOT the killed teal</strong> (teal was 187° but dark + saturated; dusty blue is desaturated + atmospheric). Question: stay current (A) or expand the duo (B)?
+  </p>
+
+  <div class="grid">
+
+    <!-- ─── VARIANT A — current state ─── -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-name">A · Current</div>
+        <div class="col-tag current">Today</div>
+      </div>
+      <div class="col-attrib">
+        Dusty blue lives in ONE place — section arrows. Everything else is apricot, ink, white, or status color.<br/>
+        Touchpoints: SectionHeader arrows only (~2 lines of code).
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--apricot)"></span> Apricot · CTAs</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--cool)"></span> Dusty blue · arrows only</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span> Emerald · status</div>
+      </div>
+
+      <div class="preview">
+        <div class="ph-banner">
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+          <span class="ph-banner-cta">Salons finden →</span>
+        </div>
+        <div class="ph-header">
+          <div class="ph-logo">Solen<span class="dot">.</span></div>
+          <div class="ph-header-right">
+            <button class="ph-cta">Anmelden</button>
+          </div>
+        </div>
+        <div class="ph-hero">
+          <h2>Cmon, book<br/>it already.</h2>
+          <p>Beauty &amp; Wellness in der Schweiz.</p>
+          <div class="ph-hero-row">
+            <span class="ph-hero-cta">Solen durchsuchen</span>
+          </div>
+        </div>
+        <div class="ph-section-row">
+          <h3 class="ph-section-title">In der Nähe</h3>
+          <span class="ph-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </div>
+        <div class="ph-cards">
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge">Jetzt frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Studio Mira</div>
+              <div class="ph-card-meta">200m · Heute frei</div>
+            </div>
+          </div>
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge">Jetzt frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Atelier Nine</div>
+              <div class="ph-card-meta">450m · 14:30</div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-bento-section">
+          <span class="ph-bento-eyebrow">Für Salons</span>
+          <h3 class="ph-bento-h3">Solen für<br/><span class="accent">dein Geschäft.</span></h3>
+          <div class="ph-bento-ctas">
+            <span class="ph-bento-cta-primary">Werde Solen-Partner →</span>
+          </div>
+        </div>
+        <div class="ph-footer">
+          <span class="ph-footer-text">© Solen AG · Zürich</span>
+          <span class="ph-footer-logo">Solen</span>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <span class="label">Read:</span> apricot is the only color. Dusty blue is so quiet you might not notice it. Page feels mono-chrome + apricot pop.<br/>
+        <span class="win">✓ Discipline:</span> apricot owns "click here," nothing competes.<br/>
+        <span class="risk">⚠ Risk:</span> secondary actions ("Mehr erfahren," "Wie funktioniert es?") have nowhere to live — they end up as plain underlined text or another apricot pill (which dilutes the primary).
+      </div>
+    </div>
+
+    <!-- ─── VARIANT B — expanded duo ─── -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-name">B · Expanded duo</div>
+        <div class="col-tag rec">My pick</div>
+      </div>
+      <div class="col-attrib">
+        Dusty blue gets 3 new roles: <strong>Verifiziert badges</strong> on salon cards, <strong>inline links</strong>, <strong>secondary "Mehr erfahren" pill</strong>. Apricot stays the only primary CTA.<br/>
+        Estimated touchpoints: 3 new component patterns, ~6 component files.
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--apricot)"></span> Apricot · primary action</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--cool)"></span> Dusty blue · navigation + info</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span> Emerald · status</div>
+      </div>
+
+      <div class="preview">
+        <div class="ph-banner">
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+          <span class="ph-banner-cta">Salons finden →</span>
+        </div>
+        <div class="ph-header">
+          <div class="ph-logo">Solen<span class="dot">.</span></div>
+          <div class="ph-header-right">
+            <a class="ph-header-link" href="#">Wie funktioniert's →</a>
+            <button class="ph-cta">Anmelden</button>
+          </div>
+        </div>
+        <div class="ph-hero">
+          <h2>Cmon, book<br/>it already.</h2>
+          <p>Beauty &amp; Wellness in der Schweiz.</p>
+          <div class="ph-hero-row">
+            <span class="ph-hero-cta">Solen durchsuchen</span>
+            <span class="ph-hero-secondary">Wie es geht →</span>
+          </div>
+        </div>
+        <div class="ph-section-row">
+          <h3 class="ph-section-title">In der Nähe</h3>
+          <span class="ph-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </div>
+        <div class="ph-cards">
+          <div class="ph-card">
+            <div class="ph-card-img">
+              <span class="ph-card-badge">Jetzt frei</span>
+              <span class="ph-card-verified">✓ Verifiziert</span>
+            </div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Studio Mira</div>
+              <div class="ph-card-meta">200m · Heute frei</div>
+            </div>
+          </div>
+          <div class="ph-card">
+            <div class="ph-card-img">
+              <span class="ph-card-badge">Jetzt frei</span>
+              <span class="ph-card-verified">✓ Verifiziert</span>
+            </div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Atelier Nine</div>
+              <div class="ph-card-meta">450m · 14:30</div>
+            </div>
+          </div>
+        </div>
+        <a class="ph-inline-link" href="#">→ Mehr Salons in Zürich anzeigen</a>
+        <div class="ph-bento-section">
+          <span class="ph-bento-eyebrow">Für Salons</span>
+          <h3 class="ph-bento-h3">Solen für<br/><span class="accent">dein Geschäft.</span></h3>
+          <div class="ph-bento-ctas">
+            <span class="ph-bento-cta-primary">Werde Solen-Partner →</span>
+            <span class="ph-bento-cta-secondary">Demo ansehen</span>
+          </div>
+        </div>
+        <div class="ph-footer">
+          <span class="ph-footer-text">© Solen AG · Zürich</span>
+          <span class="ph-footer-logo">Solen</span>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <span class="label">Read:</span> dusty blue is now a real second voice. Verified badges read trustworthy. Secondary CTAs have a home that's NOT apricot, so apricot stays special.<br/>
+        <span class="win">✓ Win:</span> "click vs. learn more" distinction is now visual, not just verbal. Trust signal (verified) gets its own color, not stolen from a status badge.<br/>
+        <span class="risk">⚠ Risk:</span> if I let dusty blue creep onto more surfaces (chips, tags, backgrounds), it becomes co-brand instead of support — page gets busy.<br/>
+        <span class="label">Mitigation:</span> hard rule = dusty blue ONLY on (1) section arrows, (2) Verifiziert badges, (3) "Mehr erfahren" secondary pills, (4) inline links. Nowhere else.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="meta-strip">
+    <h3>Why this works (and the kill-list check)</h3>
+    <strong>Hue math:</strong> apricot 16° + dusty blue 202° = 186° apart, near-perfect complement. Both desaturated enough to harmonize.<br/>
+    <strong>Killed teal vs. dusty blue:</strong> teal <code>#1A6B73</code> = saturated dark sea-glass (you killed it for being a heavy anchor). Dusty blue <code>#89B4CA</code> = atmospheric Swiss-fog. Different hue family, different saturation, different role.<br/>
+    <strong>Ship cost (B):</strong> ~30 min — 6 component files. Add s-cool semantic alias (e.g., <code>s-info</code>) for verified, swap inline-link colors, add secondary-pill variant.<br/>
+    <strong>If A → B feels too much:</strong> we ship A+verified-badges-only first (smallest expansion), see how it reads, then add secondary CTAs if needed.
+  </div>
+</body>
+</html>
