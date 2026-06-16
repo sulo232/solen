@@ -84,9 +84,9 @@ export default function ForYouSection() {
                 className="w-32 shrink-0 snap-start rounded-xl overflow-hidden bg-[--raised] border border-s-ink/[0.06] cursor-pointer hover:shadow-elevation-2 hover:-translate-y-px transition-[transform,box-shadow] duration-200 ease-glide"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5">
-                  {(sim.image_url || sim.tiktok_thumbnail_url) && (
+                  {(sim.tiktok_url || sim.image_url || sim.tiktok_thumbnail_url) && (
                     <Image
-                      src={sim.image_url || sim.tiktok_thumbnail_url!}
+                      src={sim.tiktok_url ? `/api/discovery/thumb/${sim.id}` : sim.image_url || sim.tiktok_thumbnail_url!}
                       alt={sim.style_name || ""}
                       fill
                       className="object-cover"
