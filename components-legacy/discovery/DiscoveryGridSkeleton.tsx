@@ -19,11 +19,12 @@ const RATIOS = [
 const SHIMMER =
   "bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%] animate-shimmer";
 
-export default function DiscoveryGridSkeleton() {
+export default function DiscoveryGridSkeleton({ fixed2col = false }: { fixed2col?: boolean }) {
   return (
-    // -mx-4 px-1.5 mirrors the real feed's edge-to-edge masonry (discover/page.tsx).
-    <div className="-mx-4 px-1.5" aria-hidden="true">
-      <div className="columns-2 md:columns-3 lg:columns-4 gap-1.5 [column-fill:balance]">
+    // fixed2col: the "More like this" masonry is ALWAYS 2 columns (page capped at 480px), so its skeleton must match,
+    // else it flashes 4 columns on desktop then snaps to 2. Feed default keeps the responsive masonry.
+    <div className={fixed2col ? "-mx-[18px] px-1.5" : "-mx-4 px-1.5"} aria-hidden="true">
+      <div className={`${fixed2col ? "columns-2" : "columns-2 md:columns-3 lg:columns-4"} gap-1.5 [column-fill:balance]`}>
         {RATIOS.map((ratio, i) => (
           <div key={i} className="mb-1.5 break-inside-avoid">
             <div className={`w-full rounded-2xl ${SHIMMER}`} style={{ aspectRatio: ratio }} />

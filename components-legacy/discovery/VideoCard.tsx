@@ -20,6 +20,9 @@ interface VideoCardProps {
   saved?: boolean;
   /** False hides the heart for items that can't be saved (e.g. the frontend-only salon PROOF mocks, no DB row). */
   canSave?: boolean;
+  /** Pinterest-clean variant (used in "More like this"): drops the big center play button + the haircut-type chip so
+   *  the card reads as a clean photo pin; a small corner play glyph still marks it as video. */
+  minimal?: boolean;
 }
 
 const extractTiktokId = (url: string | null) => {
@@ -40,6 +43,7 @@ export default memo(function VideoCard({
   onSave,
   saved = false,
   canSave = true,
+  minimal = false,
 }: VideoCardProps) {
   const [aspect, setAspect] = useState("9 / 16");
   const [imgError, setImgError] = useState(false);
@@ -103,13 +107,18 @@ export default memo(function VideoCard({
           />
         )}
 
-        {/* Light play affordance */}
-        {(!isExpanded || iframeError) && (
+        {/* Light play affordance — big center button in the feed; minimal (Pinterest) drops it for a small corner glyph. */}
+        {(!isExpanded || iframeError) && !minimal && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-elevation-2 backdrop-blur-[2px]">
               <Play size={15} className="ml-0.5 text-s-ink" fill="currentColor" />
             </div>
           </div>
+        )}
+        {minimal && (
+          <span className="pointer-events-none absolute bottom-1.5 left-1.5 grid h-6 w-6 place-items-center rounded-full bg-black/40 backdrop-blur-[2px]">
+            <Play size={11} className="ml-px text-white" fill="currentColor" />
+          </span>
         )}
 
         {/* Canonical heart — top-right (hidden for non-saveable items, e.g. salon PROOF mocks). */}
@@ -126,8 +135,8 @@ export default memo(function VideoCard({
           </div>
         )}
 
-        {/* Haircut-type chip — bottom-left on the photo */}
-        {styleTag && (
+        {/* Haircut-type chip — bottom-left on the photo (hidden in the Pinterest-clean minimal variant) */}
+        {styleTag && !minimal && (
           <span className="absolute bottom-1.5 left-1.5 max-w-[80%] truncate rounded-full bg-white/90 px-2 py-0.5 text-[12px] font-medium text-s-ink shadow-elevation-1 backdrop-blur-[2px]">
             {styleTag}
           </span>

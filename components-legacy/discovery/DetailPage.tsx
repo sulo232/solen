@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
-import MasonryGrid from "./MasonryGrid";
 import ItemCard from "./ItemCard";
 import VideoCard from "./VideoCard";
 import SaveToBoardSheet from "./SaveToBoardSheet";
@@ -64,7 +63,11 @@ function localized(item: DiscoveryItem, prefix: string, locale: string): string 
 
 function formatDate(dateStr: string, locale: string): string {
   try {
-    return new Date(dateStr).toLocaleDateString(locale === "de" ? "de-CH" : locale, { day: "numeric", month: "short" });
+    const d = new Date(dateStr);
+    const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+    // Add the year when it's NOT the current year, so an old (e.g. last-year) post doesn't read as recent.
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+    return d.toLocaleDateString(locale === "de" ? "de-CH" : locale, opts);
   } catch {
     return "";
   }
@@ -109,7 +112,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [similarLoading, setSimilarLoading] = useState(true);
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/discovery/similar?item_id=${item.id}&limit=4`)
+    fetch(`/api/discovery/similar?item_id=${item.id}&limit=12`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled) setSimilar(Array.isArray(d?.items) ? d.items : []); })
       .catch((err) => console.error("[DetailPage] similar load failed:", err))
@@ -181,7 +184,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           to this box, so it never pillarboxes. (Owner 2026-06-18.) */}
       <div className="relative w-full overflow-hidden rounded-b-[26px] bg-s-ink" style={{ height: "80vh" }}>
         {playing && videoId && playVariant === "inline" ? (
-          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
+          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
         ) : (
           thumbEl
         )}
@@ -241,7 +244,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               <X size={18} />
             </button>
             <div className="relative w-full" style={{ aspectRatio: videoAspect ?? "9 / 16", maxHeight: "82vh" }}>
-              <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
+              <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
             </div>
           </div>
         </div>
@@ -253,20 +256,21 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <button type="button" onClick={closePlayer} aria-label={t.back} style={{ ...FROST_GLASS, top: "calc(env(safe-area-inset-top, 0px) + 14px)" }} className="absolute right-4 z-10 grid h-10 w-10 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
             <X size={18} />
           </button>
-          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
+          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
         </div>
       )}
 
       {/* ─── Sheet (pulled over the hero, App-Store style) ─── */}
       <div className="relative z-[5] mt-0 bg-white px-[18px] pt-5 pb-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-        {/* Creator + date */}
+        {/* Creator pill (owner: "username as a pill under the video") + date. The pill links to the creator's TikTok
+            (attribution); neutral chip styling per the design system, not a blue text link. */}
         <div className="flex items-center gap-2">
           {creator && (
             item.author_url ? (
-              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="text-[13px] font-medium text-s-accent no-underline hover:underline">@{creator}</a>
+              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink no-underline transition-colors hover:bg-s-border">@{creator}</a>
             ) : (
-              <span className="text-[13px] font-medium text-s-accent">@{creator}</span>
+              <span className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink">@{creator}</span>
             )
           )}
           <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-3">
@@ -300,6 +304,34 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               {descOpen ? t.less : t.more}
               <ChevronDown size={15} className={`transition-transform duration-200 ${descOpen ? "rotate-180" : ""}`} />
             </button>
+          </div>
+        )}
+
+        {/* Details — dropdown (moved up: the look's attributes sit right under the description, before the booking CTA) */}
+        {hasDetails && (
+          <div className="mt-7 border-t border-s-border">
+            <button
+              type="button"
+              onClick={() => setDetailsOpen((o) => !o)}
+              aria-expanded={detailsOpen}
+              className="flex w-full items-center justify-between px-0.5 py-4"
+            >
+              <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
+              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
+            </button>
+            {detailsOpen && (
+              <div className="pb-2">
+                {maintenanceLabel && <DetailRow k={t.upkeep} v={maintenanceLabel} />}
+                {faceShapes && <DetailRow k={t.faces} v={faceShapes} />}
+                {products && <DetailRow k={t.products} v={products} />}
+                {item.cut_guide && (
+                  <div className="border-t border-s-border py-2.5">
+                    <p className="mb-1.5 text-[13.5px] text-s-ink-3">{t.cutGuide}</p>
+                    <p className="m-0 whitespace-pre-line font-mono text-[12.5px] leading-relaxed text-s-ink-2">{item.cut_guide}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -351,51 +383,25 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               )}
             </div>
             {similarLoading ? (
-              <DiscoveryGridSkeleton />
+              <DiscoveryGridSkeleton fixed2col />
             ) : (
-              <div className="-mx-[18px] px-1.5">
-                <MasonryGrid
-                  items={similar}
-                  renderItem={(s) =>
-                    s.media_type === "tiktok" ? (
-                      <VideoCard item={s} onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+              // ALWAYS 2 columns (the page is capped at 480px, so the shared grid's md/lg→3/4 columns made tiny cards
+              // on desktop). Fixed `columns-2` masonry: varied aspect ratios, big half-width cards, on any screen.
+              <div className="-mx-[18px] columns-2 gap-1.5 px-1.5 [column-fill:balance]">
+                {similar.map((s) => (
+                  <div key={s.id} className="mb-1.5 break-inside-avoid animate-in fade-in duration-300">
+                    {s.media_type === "tiktok" ? (
+                      <VideoCard item={s} minimal onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
                     ) : (
-                      <ItemCard item={s} onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
-                    )
-                  }
-                />
+                      <ItemCard item={s} minimal onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </section>
         )}
 
-        {/* Details — dropdown */}
-        {hasDetails && (
-          <div className="mt-7 border-t border-s-border">
-            <button
-              type="button"
-              onClick={() => setDetailsOpen((o) => !o)}
-              aria-expanded={detailsOpen}
-              className="flex w-full items-center justify-between px-0.5 py-4"
-            >
-              <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
-              <ChevronDown size={18} className={`text-s-ink-3 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
-            </button>
-            {detailsOpen && (
-              <div className="pb-2">
-                {maintenanceLabel && <DetailRow k={t.upkeep} v={maintenanceLabel} />}
-                {faceShapes && <DetailRow k={t.faces} v={faceShapes} />}
-                {products && <DetailRow k={t.products} v={products} />}
-                {item.cut_guide && (
-                  <div className="border-t border-s-border py-2.5">
-                    <p className="mb-1.5 text-[13.5px] text-s-ink-3">{t.cutGuide}</p>
-                    <p className="m-0 whitespace-pre-line font-mono text-[12.5px] leading-relaxed text-s-ink-2">{item.cut_guide}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Save-to-Kollektion picker — opened by the hero heart + the "more like this" hearts. */}

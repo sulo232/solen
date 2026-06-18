@@ -35,7 +35,7 @@ function fmt(sec: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export default function TikTokPlayer({ videoId, title, aspect }: { videoId: string; title?: string; aspect?: string }) {
+export default function TikTokPlayer({ videoId, title, aspect, tiktokUrl }: { videoId: string; title?: string; aspect?: string; tiktokUrl?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(true); // autoplay=1
@@ -54,6 +54,8 @@ export default function TikTokPlayer({ videoId, title, aspect }: { videoId: stri
         case "onPlayerReady":
           setReady(true);
           post("play"); // auto-start once ready (the user already tapped, so the gesture allows muted playback)
+          post("mute"); // FORCE muted on start — owner: the audio is loud. User opts INTO sound via the mute toggle.
+          setMuted(true);
           break;
         case "onStateChange":
           // -1 init, 0 ended, 1 playing, 2 paused, 3 buffering
@@ -131,18 +133,35 @@ export default function TikTokPlayer({ videoId, title, aspect }: { videoId: stri
               <div className="h-full rounded-full bg-white" style={{ width: `${pct}%` }} />
             </div>
           </div>
-          {/* play + mute + time, ALL bottom-left. The right side is TikTok's unhideable like/comment/share rail, so a
-              mute placed there overlaps their share button — bottom-left is the only collision-free home. */}
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={togglePlay}
-              aria-label={playing ? "Pause" : "Play"}
-              style={FROST_GLASS}
-              className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
-            >
-              {playing ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" className="ml-0.5" />}
-            </button>
+          {/* Controls: play + a "TikTok" jump pill (legal attribution — links to the original clip) on the LEFT;
+              mute on the RIGHT (owner). The TikTok NAME as text is the sanctioned referential use (their logo can't
+              be used without permission). */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={togglePlay}
+                aria-label={playing ? "Pause" : "Play"}
+                style={FROST_GLASS}
+                className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
+              >
+                {playing ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" className="ml-0.5" />}
+              </button>
+              {tiktokUrl && (
+                <a
+                  href={tiktokUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label="View on TikTok"
+                  style={FROST_GLASS}
+                  className="grid h-11 place-items-center rounded-full px-4 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink transition-transform duration-150 active:scale-95"
+                >
+                  TikTok
+                </a>
+              )}
+              <span className="ml-0.5 font-mono text-[12px] tabular-nums text-white/90">{fmt(pos.t)} / {fmt(pos.d)}</span>
+            </div>
             <button
               type="button"
               onClick={toggleMute}
@@ -152,7 +171,6 @@ export default function TikTokPlayer({ videoId, title, aspect }: { videoId: stri
             >
               {muted ? <VolumeX size={19} /> : <Volume2 size={19} />}
             </button>
-            <span className="ml-0.5 font-mono text-[12px] tabular-nums text-white/90">{fmt(pos.t)} / {fmt(pos.d)}</span>
           </div>
         </div>
       )}
