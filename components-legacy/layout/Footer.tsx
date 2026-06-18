@@ -58,7 +58,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {[
-                { label: t("platformDiscover") || "Entdecken", href: `/${locale}/discover` },
+                { label: t("platformDiscover") || "Inspo", href: `/${locale}/inspo` },
                 { label: t("platformSearch") || "Suchen", href: `/${locale}/search` },
               ].map(({ label, href }) => (
                 <li key={label}>

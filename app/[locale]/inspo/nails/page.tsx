@@ -6,5 +6,5 @@ interface Props {
 
 export default async function NailsDiscoverRedirect({ params }: Props) {
   const { locale } = await params;
-  permanentRedirect(`/${locale}/discover?category=nails`);
+  permanentRedirect(`/${locale}/inspo?category=nails`);
 }

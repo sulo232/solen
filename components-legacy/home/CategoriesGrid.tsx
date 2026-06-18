@@ -63,7 +63,7 @@ export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridPr
             Was suchst du?
           </h2>
           <Link
-            href={`/${locale}/discover`}
+            href={`/${locale}/inspo`}
             className="font-body font-medium text-s-ink hover:underline transition-colors"
             style={{ fontSize: 14 }}
             aria-label="Alle Kategorien ansehen"

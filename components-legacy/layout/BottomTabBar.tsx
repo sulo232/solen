@@ -12,7 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 
 const TABS = [
   { key: "home",     href: "/",         Icon: Home,    requiresAuth: false },
-  { key: "discover", href: "/discover", Icon: Compass, requiresAuth: false },
+  { key: "discover", href: "/inspo", Icon: Compass, requiresAuth: false },
   { key: "search",   href: "/search",   Icon: Search,  requiresAuth: false },
   { key: "account",  href: "/profile",  Icon: User,    requiresAuth: true },
 ] as const;

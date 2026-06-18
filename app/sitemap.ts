@@ -19,7 +19,7 @@ const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priorit
   { path: "/impressum",   freq: "weekly",  priority: 0.3 },
   { path: "/agb",         freq: "weekly",  priority: 0.3 },
   { path: "/datenschutz", freq: "weekly",  priority: 0.3 },
-  { path: "/discover",    freq: "daily",   priority: 0.8 },
+  { path: "/inspo",       freq: "daily",   priority: 0.8 },
   { path: "/search",      freq: "daily",   priority: 0.8 },
   { path: "/terms/discovery", freq: "weekly", priority: 0.2 },
 ];
@@ -85,7 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const item of discoveryItems ?? []) {
       for (const locale of LOCALES) {
         entries.push({
-          url:             `${APP_URL}/${locale}/discover/${item.id}`,
+          url:             `${APP_URL}/${locale}/inspo/${item.id}`,
           lastModified:    new Date(item.updated_at),
           changeFrequency: "weekly",
           priority:        0.6,

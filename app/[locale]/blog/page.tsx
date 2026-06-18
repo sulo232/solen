@@ -37,8 +37,8 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Aktuelle Looks und Trends gibt es schon jetzt in{" "}
-              <Link href={`${p}/entdecken`} className="text-s-accent hover:underline">
-                Entdecken
+              <Link href={`${p}/inspo`} className="text-s-accent hover:underline">
+                Inspo
               </Link>
               .
             </p>

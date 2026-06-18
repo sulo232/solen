@@ -1,7 +1,7 @@
 "use client";
 
 // V3-D414: collections row on the discovery feed, rebuilt as bigger 2-col collage cards (mockup frame 3) that
-// OPEN a board-detail page (/discover/board/[id]) — was small tiles that just applied a feed filter (the "tapping
+// OPEN a board-detail page (/inspo/board/[id]) — was small tiles that just applied a feed filter (the "tapping
 // does nothing" problem). Renders is_active discovery_boards; returns null on an empty library.
 
 import { useState, useEffect } from "react";
@@ -89,7 +89,7 @@ export default function FeaturedBoards(_props: { onBoardSelect?: (filters: Parti
             key={b.id}
             label={localName(b)}
             covers={(b.cover_images ?? []).slice(0, 3)}
-            onClick={() => router.push(`/${locale}/discover/board/${b.id}`)}
+            onClick={() => router.push(`/${locale}/inspo/board/${b.id}`)}
           />
         ))}
       </div>

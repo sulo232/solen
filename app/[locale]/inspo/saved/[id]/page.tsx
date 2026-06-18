@@ -44,14 +44,14 @@ export default function SavedCollectionPage() {
       router.push(`/${locale}/salon/${(item as any).salon_slug}`);
       return;
     }
-    router.push(`/${locale}/discover/${item.id}`);
+    router.push(`/${locale}/inspo/${item.id}`);
   };
 
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <button
-          onClick={() => router.push(`/${locale}/discover/saved`)}
+          onClick={() => router.push(`/${locale}/inspo/saved`)}
           aria-label="Zurück"
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >

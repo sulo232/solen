@@ -78,9 +78,9 @@ export default async function ProfileFavoritesPage({
             title="Noch keine Favoriten."
             lead="Tipp auf das Herz bei einem Salon und er landet hier, deine Merkliste fürs nächste Mal."
             bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-            bannerTitle="Entdecken öffnen"
+            bannerTitle="Inspo öffnen"
             bannerSub="Styles, Salons und Inspiration aus Basel"
-            bannerHref={`/${locale}/entdecken`}
+            bannerHref={`/${locale}/inspo`}
             hintIcon="heart"
             hintText="Das Herz findest du oben rechts auf jedem Salon-Foto."
             railTitle="Top bewertet"

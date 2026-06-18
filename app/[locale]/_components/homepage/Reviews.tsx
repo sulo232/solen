@@ -62,7 +62,7 @@ const REVIEWS: Review[] = [
   },
   {
     stars: 5,
-    text: "Habe einen Look auf Entdecken gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.",
+    text: "Habe einen Look auf Inspo gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.",
     initials: "SR",
     name: "Sara R.",
     meta: "Basel vor 1 Woche",

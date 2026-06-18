@@ -40,7 +40,7 @@ const CATEGORIES: { label: string; href: string }[] = [
   { label: "Coiffeur",   href: "/coiffeur"   },
   { label: "Barbershop", href: "/barbershop" },
   { label: "Nails",      href: "/nails"      },
-  { label: "Entdecken",  href: "/entdecken"  },
+  { label: "Inspo",      href: "/inspo"  },
 ];
 
 // V3-D75-header (2026-05-18): desktop dropdown menus. Replaces the
@@ -354,7 +354,7 @@ export default function Header({ locale }: { locale: string }) {
     if (!pathname) return true;
     const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "");
     if (seg === "") return true; // homepage
-    const TOP = ["/coiffeur", "/barbershop", "/nails", "/spa", "/search", "/entdecken", "/discover"];
+    const TOP = ["/coiffeur", "/barbershop", "/nails", "/spa", "/search", "/inspo"];
     if (TOP.includes(seg)) return true;
     const parts = seg.split("/").filter(Boolean); // city-category browse, e.g. /basel/coiffeur
     if (parts.length === 2 && ["coiffeur", "barbershop", "nails", "spa"].includes(parts[1])) return true;
@@ -373,10 +373,10 @@ export default function Header({ locale }: { locale: string }) {
       : null;
   }, [pathname]);
 
-  // V3-D410 (user): on the Discover page the logo slot becomes the page title + a
-  // "Solen › Entdecken" breadcrumb (Solen still taps → home), replacing the standalone
-  // wordmark + the page's own big h1 that were stacking redundantly. Route-gated to /discover.
-  const isDiscover = !!pathname && /^\/[a-z]{2}\/discover\/?$/.test(pathname);
+  // V3-D410 (user): on the Inspo page the logo slot becomes the page title + a
+  // "Solen › Inspo" breadcrumb (Solen still taps → home), replacing the standalone
+  // wordmark + the page's own big h1 that were stacking redundantly. Route-gated to /inspo.
+  const isDiscover = !!pathname && /^\/[a-z]{2}\/inspo\/?$/.test(pathname);
   const tDiscover = useTranslations("discover");
 
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
@@ -655,7 +655,7 @@ export default function Header({ locale }: { locale: string }) {
             locale={locale}
           />
           <Link
-            href={`/${locale}/entdecken`}
+            href={`/${locale}/inspo`}
             className={cn(
               "inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 font-body text-[14px] font-medium text-s-ink-2",
               "transition-colors duration-200 ease-glide",
@@ -663,7 +663,7 @@ export default function Header({ locale }: { locale: string }) {
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
-            Entdecken
+            Inspo
           </Link>
         </nav>
 

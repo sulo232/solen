@@ -9,7 +9,7 @@
  *   3. deal      — favorited salon has off-peak deal today
  *   4. reply     — review reply from salon owner in last 7d
  *   5. rebook    — average booking-cycle reached for any past salon (e.g. 28d since last cut)
- *   6. empty     — fallback CTA to /entdecken
+ *   6. empty     — fallback CTA to /inspo
  *
  * Caller polls every 60s while page is visible + revalidates on focus +
  * on websocket events (booking-create / review-reply / loyalty-stamp).
@@ -203,6 +203,6 @@ export async function GET(_request: NextRequest) {
   return NextResponse.json({
     kind: "empty",
     headline: "Salon entdecken",
-    href: `/entdecken`,
+    href: `/inspo`,
   });
 }

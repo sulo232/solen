@@ -17,7 +17,7 @@ import { ArrowRight } from "lucide-react";
  *   3. deal         — favorited salon has off-peak deal today
  *   4. reply        — review reply from salon owner in last 7d
  *   5. rebook       — average booking-cycle reached for any past salon
- *   6. empty        — no qualifying state, fallback CTA to /entdecken
+ *   6. empty        — no qualifying state, fallback CTA to /inspo
  *
  * Anatomy per state varies by register (see STATES below).
  *

@@ -74,7 +74,7 @@
   },
   "navigation": {
     "home": "Startseite",
-    "discover": "Entdecken",
+    "discover": "Inspo",
     "barbershop": "Barbershop",
     "coiffeur": "Coiffeur",
     "nails": "Nägel",
@@ -717,7 +717,7 @@
     "changeLanguage": "Sprache ändern",
     "fadpCompliant": "nDSG-konform · Schweizer Datenschutz",
     "platform": "Plattform",
-    "platformDiscover": "Entdecken",
+    "platformDiscover": "Inspo",
     "platformSearch": "Suchen",
     "forSalonsTitle": "Für Salons",
     "forSalonsPartner": "Partner werden",
@@ -3167,10 +3167,10 @@
   },
   "discovery": {
     "meta": {
-      "title": "Styles entdecken | solen.ch",
+      "title": "Inspo | solen.ch",
       "description": "Finde deine nächste Frisur, Nägel oder Make-up Inspiration"
     },
-    "title": "Entdecken",
+    "title": "Inspo",
     "subtitle": "Finde deinen nächsten Look",
     "search_placeholder": "Styles suchen...",
     "categories": {
@@ -4207,10 +4207,10 @@
     "walkIn": "Walk-in"
   },
   "discover": {
-    "title": "Entdecken",
+    "title": "Inspo",
     "subtitle": "Dein nächster Look",
     "genderPill": "Für wen?",
-    "texturePill": "Textur",
+    "texturePill": "Haare",
     "searchPlaceholder": "Styles suchen...",
     "tabs": {
       "all": "Alle",
@@ -4229,7 +4229,7 @@
       "men": "Männer",
       "unisex": "Unisex"
     },
-    "texture": "Textur",
+    "texture": "Haare",
     "trending": "Trending",
     "priceFrom": "ab {amount} CHF",
     "searchByPattern": "Nach Muster suchen",
@@ -5447,7 +5447,7 @@
     "viewReceipt": "Beleg ansehen",
     "eyebrow": "Gastsuche",
     "deskLead": "Als Gast gebucht, kein Konto? Gib deine Bestellnummer und die verwendete E-Mail ein. Wir senden dir einen sicheren Einmal-Link zum Öffnen deiner Buchung, wo du den Beleg ansehen oder eine Rückerstattung anfragen kannst.",
-    "navDiscover": "Entdecken",
+    "navDiscover": "Inspo",
     "navForSalons": "Für Salons",
     "navFindBooking": "Buchung finden",
     "navHelp": "Hilfe",

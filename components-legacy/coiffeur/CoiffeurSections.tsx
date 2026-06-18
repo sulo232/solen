@@ -160,7 +160,7 @@ export function CoiffeurBelowGrid() {
               </p>
             </div>
             <Link
-              href={`/${locale}/discover`}
+              href={`/${locale}/inspo`}
               className="flex items-center gap-1 text-sm text-s-accent hover:underline font-body shrink-0"
             >
               {t("trending_cta")} <ChevronRight size={14} />
@@ -170,7 +170,7 @@ export function CoiffeurBelowGrid() {
             {TRENDING_STYLES.map((style) => (
               <Link
                 key={style.label}
-                href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
+                href={`/${locale}/inspo?q=${encodeURIComponent(style.q)}`}
                 className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               >
                 <span className="text-[9px] font-heading uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink/60 self-start">

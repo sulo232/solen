@@ -301,7 +301,7 @@ interface FuerDichTile {
 
 const FUER_DICH_UNIVERSAL: FuerDichTile[] = [
   { key: "loyalty", labelKey: "fuerDich_loyalty", iconSrc: "/icons/fuer-dich/treueprogramm.png", icon: Award, route: "loyalty/stamp" },
-  { key: "discover", labelKey: "fuerDich_discover", iconSrc: "/icons/fuer-dich/entdecken.png", icon: Compass, route: "entdecken" },
+  { key: "discover", labelKey: "fuerDich_discover", iconSrc: "/icons/fuer-dich/entdecken.png", icon: Compass, route: "inspo" },
   { key: "group", labelKey: "fuerDich_group", iconSrc: "/icons/fuer-dich/gruppe.png", icon: Users }, // coming soon (backend only)
 ];
 

@@ -74,7 +74,7 @@
   },
   "navigation": {
     "home": "Accueil",
-    "discover": "Découvrir",
+    "discover": "Inspo",
     "barbershop": "Barbershop",
     "coiffeur": "Coiffeur",
     "nails": "Ongles",
@@ -717,7 +717,7 @@
     "changeLanguage": "Changer de langue",
     "fadpCompliant": "Conforme nLPD · Protection des données suisse",
     "platform": "Plateforme",
-    "platformDiscover": "Découvrir",
+    "platformDiscover": "Inspo",
     "platformSearch": "Rechercher",
     "forSalonsTitle": "Pour les salons",
     "forSalonsPartner": "Devenir partenaire",
@@ -3149,10 +3149,10 @@
   },
   "discovery": {
     "meta": {
-      "title": "Découvrir les styles | solen.ch",
+      "title": "Inspo | solen.ch",
       "description": "Trouvez votre prochaine coiffure, ongles ou maquillage"
     },
-    "title": "Découvrir",
+    "title": "Inspo",
     "subtitle": "Trouvez votre prochain look",
     "search_placeholder": "Rechercher des styles...",
     "categories": {
@@ -4189,10 +4189,10 @@
     "walkIn": "Sans rendez-vous"
   },
   "discover": {
-    "title": "Découvrir",
+    "title": "Inspo",
     "subtitle": "Ton prochain look",
     "genderPill": "Pour qui ?",
-    "texturePill": "Texture",
+    "texturePill": "Cheveux",
     "searchPlaceholder": "Rechercher des styles...",
     "tabs": {
       "all": "Tout",
@@ -4211,7 +4211,7 @@
       "men": "Hommes",
       "unisex": "Unisexe"
     },
-    "texture": "Texture",
+    "texture": "Cheveux",
     "trending": "Tendance",
     "priceFrom": "dès {amount} CHF",
     "searchByPattern": "Rechercher par motif",
@@ -5429,7 +5429,7 @@
     "viewReceipt": "Voir le reçu",
     "eyebrow": "Recherche invité",
     "deskLead": "Réservé en tant qu'invité, sans compte ? Saisissez votre numéro de commande et l'e-mail utilisé. Nous vous enverrons un lien sécurisé à usage unique pour ouvrir votre réservation, où vous pourrez voir le reçu ou demander un remboursement.",
-    "navDiscover": "Découvrir",
+    "navDiscover": "Inspo",
     "navForSalons": "Pour les salons",
     "navFindBooking": "Retrouver une réservation",
     "navHelp": "Aide",

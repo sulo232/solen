@@ -47,7 +47,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
  *
  * Routes used (Phase 2 wire-up depends on these existing):
  *   /auth/login, /help, /coiffeur, /barbershop, /nails, /spa,
- *   /entdecken, /business/signup
+ *   /inspo, /business/signup
  */
 
 interface MobileMenuProps {
@@ -62,7 +62,7 @@ const CATEGORIES: { label: string; href: string }[] = [
   { label: "Barbershop",     href: "/barbershop" },
   { label: "Nails",          href: "/nails"      },
   { label: "Spa & Wellness", href: "/spa"        },
-  { label: "Entdecken",      href: "/entdecken"  },
+  { label: "Inspo",          href: "/inspo"  },
 ];
 
 // V3-D168 (2026-05-26): Swiss flag rendered via CSS only — same recipe

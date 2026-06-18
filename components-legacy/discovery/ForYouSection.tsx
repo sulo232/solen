@@ -79,7 +79,7 @@ export default function ForYouSection() {
             {similar.map((sim) => (
               <div
                 key={sim.id}
-                onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
+                onClick={() => router.push(`/${locale}/inspo/${sim.id}`)}
                 /* V3-D346 (2026-05-29): motion swept to canonical §4 card-hover — duration-200 ease-glide, -translate-y-px, elevation-2; rounded-[12px]→rounded-xl (A2/A4). */
                 className="w-32 shrink-0 snap-start rounded-xl overflow-hidden bg-[--raised] border border-s-ink/[0.06] cursor-pointer hover:shadow-elevation-2 hover:-translate-y-px transition-[transform,box-shadow] duration-200 ease-glide"
               >

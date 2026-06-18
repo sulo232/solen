@@ -114,7 +114,7 @@ export default function BrowseByCitySection() {
                   }}
                   aria-hidden={!city.active}
                 >
-                  {tNav("discover") || "Entdecken"} →
+                  {tNav("discover") || "Inspo"} →
                 </span>
               </div>
             </Link>

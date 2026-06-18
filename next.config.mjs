@@ -21,6 +21,15 @@ const nextConfig = {
       { source: '/fuer-salons', destination: '/de/partner', permanent: true },
       { source: '/:locale(de|en|fr|it)/business', destination: '/:locale/partner', permanent: true },
       { source: '/business', destination: '/de/partner', permanent: true },
+      // OWNER 2026-06-18: the discovery feed is renamed "Inspo" everywhere (display + URL).
+      // The route moved app/[locale]/discover -> app/[locale]/inspo and the old German alias
+      // /entdecken was removed. These 301s keep every old shared link / bookmark / indexed URL
+      // alive (the :path* variant covers /discover/<id>, /board/<id>, /saved, ?category=… etc;
+      // query strings are preserved automatically). Keep until old links have aged out of search.
+      { source: '/:locale(de|en|fr|it)/discover/:path*', destination: '/:locale/inspo/:path*', permanent: true },
+      { source: '/:locale(de|en|fr|it)/discover', destination: '/:locale/inspo', permanent: true },
+      { source: '/:locale(de|en|fr|it)/entdecken/:path*', destination: '/:locale/inspo/:path*', permanent: true },
+      { source: '/:locale(de|en|fr|it)/entdecken', destination: '/:locale/inspo', permanent: true },
       {
         source: "/:locale/coiffeur",
         has: [{ type: "query", key: "quartier" }],

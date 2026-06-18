@@ -86,7 +86,7 @@ export function NailsBelowGrid() {
             </p>
           </div>
           <Link
-            href={`/${locale}/discover?category=nails`}
+            href={`/${locale}/inspo?category=nails`}
             className="flex items-center gap-1 text-sm text-s-accent hover:text-s-accent transition-colors duration-150 font-body shrink-0"
           >
             {t("inspo_see_all")} <ChevronRight size={14} />
@@ -96,7 +96,7 @@ export function NailsBelowGrid() {
           {INSPO_PLACEHOLDERS.map((item) => (
             <Link
               key={item.label}
-              href={`/${locale}/discover?category=nails`}
+              href={`/${locale}/inspo?category=nails`}
               className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               aria-label={item.label}
             >
@@ -122,7 +122,7 @@ export function NailsBelowGrid() {
           </p>
         </div>
         <Link
-          href={`/${locale}/discover?category=nails`}
+          href={`/${locale}/inspo?category=nails`}
           className="shrink-0 px-4 py-2 rounded-pill bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         >
           {t("ai_teaser_cta")}

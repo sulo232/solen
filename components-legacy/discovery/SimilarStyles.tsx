@@ -69,13 +69,13 @@ export default function SimilarStyles({ itemId, category, tags, isAuthenticated 
             item.media_type === "tiktok" ? (
               <VideoCard
                 item={item}
-                onClick={() => router.push(`/${locale}/discover/${item.id}`)}
+                onClick={() => router.push(`/${locale}/inspo/${item.id}`)}
                 isAuthenticated={isAuthenticated}
               />
             ) : (
               <ItemCard
                 item={item}
-                onClick={() => router.push(`/${locale}/discover/${item.id}`)}
+                onClick={() => router.push(`/${locale}/inspo/${item.id}`)}
                 isAuthenticated={isAuthenticated}
               />
             )

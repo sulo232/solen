@@ -74,7 +74,7 @@
   },
   "navigation": {
     "home": "Home",
-    "discover": "Discover",
+    "discover": "Inspo",
     "barbershop": "Barbershop",
     "coiffeur": "Hair Salon",
     "nails": "Nails",
@@ -717,7 +717,7 @@
     "changeLanguage": "Change language",
     "fadpCompliant": "FADP-compliant · Swiss data protection",
     "platform": "Platform",
-    "platformDiscover": "Discover",
+    "platformDiscover": "Inspo",
     "platformSearch": "Search",
     "forSalonsTitle": "For Salons",
     "forSalonsPartner": "Become a Partner",
@@ -3157,10 +3157,10 @@
   },
   "discovery": {
     "meta": {
-      "title": "Discover Styles | solen.ch",
+      "title": "Inspo | solen.ch",
       "description": "Find your next hairstyle, nails or makeup inspiration"
     },
-    "title": "Discover",
+    "title": "Inspo",
     "subtitle": "Find your next look",
     "search_placeholder": "Search styles...",
     "categories": {
@@ -4197,10 +4197,10 @@
     "walkIn": "Walk-in"
   },
   "discover": {
-    "title": "Discover",
+    "title": "Inspo",
     "subtitle": "Your next look",
     "genderPill": "For whom?",
-    "texturePill": "Texture",
+    "texturePill": "Hair",
     "searchPlaceholder": "Search styles...",
     "tabs": {
       "all": "All",
@@ -4219,7 +4219,7 @@
       "men": "Men",
       "unisex": "Unisex"
     },
-    "texture": "Texture",
+    "texture": "Hair",
     "trending": "Trending",
     "priceFrom": "from {amount} CHF",
     "searchByPattern": "Search by pattern",
@@ -5437,7 +5437,7 @@
     "viewReceipt": "View receipt",
     "eyebrow": "Guest lookup",
     "deskLead": "Booked as a guest, no account? Enter your order number and the email you used. We'll send a secure one-time link to open your booking, where you can view the receipt or request a refund.",
-    "navDiscover": "Discover",
+    "navDiscover": "Inspo",
     "navForSalons": "For salons",
     "navFindBooking": "Find a booking",
     "navHelp": "Help",

@@ -37,10 +37,10 @@ export default function Breadcrumb() {
     // handles /de, /en, /fr, /it with or without trailing slash
     /^\/(de|en|fr|it)\/?$/.test(normalizedPath);
   if (isHomepage) return null;
-  // V3-D384 (2026-05-30): /discover is a top-level browse destination (reached from header nav, like the homepage) —
+  // V3-D384 (2026-05-30): /inspo is a top-level browse destination (reached from header nav, like the homepage) —
   // no standalone back-bar, which was leaving a tall empty band + a lone arrow above the title. Exact match only, so
-  // the detail page /discover/[id] keeps its breadcrumb back button.
-  if (normalizedPath === `/${locale}/discover`) return null;
+  // the detail page /inspo/[id] keeps its breadcrumb back button.
+  if (normalizedPath === `/${locale}/inspo`) return null;
   if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
 
   // V3-D449: /{city}/{category} pages (e.g. /basel/coiffeur) render SearchTemplate, which

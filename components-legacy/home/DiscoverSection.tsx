@@ -52,12 +52,12 @@ export default function DiscoverSection() {
     <SectionCarousel
       eyebrow="Inspiration"
       headline="Entdecke"
-      seeAllHref="/entdecken"
+      seeAllHref="/inspo"
     >
       {items.map((item) => {
         const href = item.link_salon_slug
           ? `/${locale}/salon/${item.link_salon_slug}`
-          : `/${locale}/entdecken#${item.id}`;
+          : `/${locale}/inspo#${item.id}`;
         return (
           <Link
             key={item.id}

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * Entdecken preview — V2-D62 (2026-05-15) — TikTok-only homepage variant.
  *
  * Homepage shows TikTok videos only (uniform 9:16 portrait + play button).
- * The full /entdecken route (Phase 2) ships the Pinterest mixed-media feed
+ * The full /inspo route (Phase 2) ships the Pinterest mixed-media feed
  * with photo + video tiles at varied aspect ratios — that lives at the
  * destination page, not the homepage preview.
  *
@@ -157,7 +157,7 @@ export default function Entdecken() {
       <SectionFrame>
         <SectionTitle
           title="Finde deine Inspiration."
-          link={{ label: "Alle entdecken →", href: "/entdecken" }}
+          link={{ label: "Alle entdecken →", href: "/inspo" }}
           scrollRef={scrollRef}
         />
         <div
@@ -182,7 +182,7 @@ export default function Entdecken() {
             return (
               <Link
                 key={look.slug}
-                href={`/entdecken/${look.slug}`}
+                href={`/inspo/${look.slug}`}
                 aria-label={`${look.styleName} – TikTok-Inspo`}
                 className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
               >
@@ -380,7 +380,7 @@ export default function Entdecken() {
               the comment in the Entdecken function body). Static styling
               + desktop-only hover bump. */}
           <Link
-            href="/entdecken"
+            href="/inspo"
             aria-label="Alle Looks entdecken"
             className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
           >

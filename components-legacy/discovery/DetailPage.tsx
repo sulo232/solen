@@ -160,7 +160,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     `/${locale}/salon/${slug}/booking${script ? `?note=${encodeURIComponent(script)}` : ""}`;
 
   const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
-  const moreLikeThisHref = `/${locale}/discover?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
+  const moreLikeThisHref = `/${locale}/inspo?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
 
   const thumbEl: ReactNode = heroSrc ? (
     <Image
@@ -391,9 +391,9 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
                 {similar.map((s) => (
                   <div key={s.id} className="mb-1.5 break-inside-avoid animate-in fade-in duration-300">
                     {s.media_type === "tiktok" ? (
-                      <VideoCard item={s} minimal onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+                      <VideoCard item={s} minimal onClick={() => router.push(`/${locale}/inspo/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
                     ) : (
-                      <ItemCard item={s} minimal onClick={() => router.push(`/${locale}/discover/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
+                      <ItemCard item={s} minimal onClick={() => router.push(`/${locale}/inspo/${s.id}`)} isAuthenticated={isAuthenticated} onAuthRequired={() => router.push(`/${locale}/auth/login`)} onSave={handleSave} saved={savedIds.has(s.id)} />
                     )}
                   </div>
                 ))}

@@ -8,7 +8,7 @@
 >
 > For *status* (partial · deprecated · don't-reuse-for) see `_inventory/STATUS.md` (hand-kept).
 
-**Totals:** 132 routes · 356 API endpoints · 408 components · 100 lib/hooks modules · 26 DB functions · 74 DB tables · 883 columns indexed
+**Totals:** 134 routes · 352 API endpoints · 407 components · 106 lib/hooks modules · 34 DB functions · 74 DB tables · 883 columns indexed
 
 ## Routes (pages)
 
@@ -19,7 +19,6 @@
 | `/[locale]/[city]/[category]` | `app/[locale]/[city]/[category]/page.tsx` |
 | `/[locale]/account` | `app/[locale]/account/page.tsx` |
 | `/[locale]/account/messages` | `app/[locale]/account/messages/page.tsx` |
-| `/[locale]/account/saved` | `app/[locale]/account/saved/page.tsx` |
 | `/[locale]/agb` | `app/[locale]/agb/page.tsx` |
 | `/[locale]/angebote` | `app/[locale]/angebote/page.tsx` |
 | `/[locale]/auth/login` | `app/[locale]/auth/login/page.tsx` |
@@ -28,6 +27,7 @@
 | `/[locale]/auth/signup` | `app/[locale]/auth/signup/page.tsx` |
 | `/[locale]/barbershop` | `app/[locale]/barbershop/page.tsx` |
 | `/[locale]/behandlungen/[...slug]` | `app/[locale]/behandlungen/[...slug]/page.tsx` |
+| `/[locale]/blog` | `app/[locale]/blog/page.tsx` |
 | `/[locale]/booking-action` | `app/[locale]/booking-action/page.tsx` |
 | `/[locale]/booking/lookup` | `app/[locale]/booking/lookup/page.tsx` |
 | `/[locale]/booking/resend-link` | `app/[locale]/booking/resend-link/page.tsx` |
@@ -39,7 +39,6 @@
 | `/[locale]/checkout` | `app/[locale]/checkout/page.tsx` |
 | `/[locale]/coiffeur` | `app/[locale]/coiffeur/page.tsx` |
 | `/[locale]/coming-soon` | `app/[locale]/coming-soon/page.tsx` |
-| `/[locale]/compare` | `app/[locale]/compare/page.tsx` |
 | `/[locale]/confirmation` | `app/[locale]/confirmation/page.tsx` |
 | `/[locale]/dashboard` | `app/[locale]/dashboard/page.tsx` |
 | `/[locale]/dashboard/admin-sandbox` | `app/[locale]/dashboard/admin-sandbox/page.tsx` |
@@ -65,7 +64,6 @@
 | `/[locale]/dashboard/help-editor` | `app/[locale]/dashboard/help-editor/page.tsx` |
 | `/[locale]/dashboard/homepage-admin` | `app/[locale]/dashboard/homepage-admin/page.tsx` |
 | `/[locale]/dashboard/loyalty` | `app/[locale]/dashboard/loyalty/page.tsx` |
-| `/[locale]/dashboard/makeup-admin` | `app/[locale]/dashboard/makeup-admin/page.tsx` |
 | `/[locale]/dashboard/marketing` | `app/[locale]/dashboard/marketing/page.tsx` |
 | `/[locale]/dashboard/messages` | `app/[locale]/dashboard/messages/page.tsx` |
 | `/[locale]/dashboard/nail-admin` | `app/[locale]/dashboard/nail-admin/page.tsx` |
@@ -84,55 +82,58 @@
 | `/[locale]/dashboard/staff` | `app/[locale]/dashboard/staff/page.tsx` |
 | `/[locale]/dashboard/upcharge` | `app/[locale]/dashboard/upcharge/page.tsx` |
 | `/[locale]/dashboard/verification` | `app/[locale]/dashboard/verification/page.tsx` |
-| `/[locale]/dashboard/waxing-admin` | `app/[locale]/dashboard/waxing-admin/page.tsx` |
 | `/[locale]/datenschutz` | `app/[locale]/datenschutz/page.tsx` |
+| `/[locale]/dev/confirm-preview` | `app/[locale]/dev/confirm-preview/page.tsx` |
 | `/[locale]/dev/new-primitives` | `app/[locale]/dev/new-primitives/page.tsx` |
 | `/[locale]/dev/primitives` | `app/[locale]/dev/primitives/page.tsx` |
-| `/[locale]/discover` | `app/[locale]/discover/page.tsx` |
-| `/[locale]/discover/[id]` | `app/[locale]/discover/[id]/page.tsx` |
-| `/[locale]/discover/board/[id]` | `app/[locale]/discover/board/[id]/page.tsx` |
-| `/[locale]/discover/nails` | `app/[locale]/discover/nails/page.tsx` |
-| `/[locale]/discover/saved` | `app/[locale]/discover/saved/page.tsx` |
-| `/[locale]/discover/saved/[id]` | `app/[locale]/discover/saved/[id]/page.tsx` |
-| `/[locale]/entdecken` | `app/[locale]/entdecken/page.tsx` |
-| `/[locale]/entdecken/[id]` | `app/[locale]/entdecken/[id]/page.tsx` |
-| `/[locale]/entdecken/nails` | `app/[locale]/entdecken/nails/page.tsx` |
 | `/[locale]/fuer-salons` | `app/[locale]/fuer-salons/page.tsx` |
 | `/[locale]/help` | `app/[locale]/help/page.tsx` |
 | `/[locale]/help/[slug]` | `app/[locale]/help/[slug]/page.tsx` |
 | `/[locale]/impressum` | `app/[locale]/impressum/page.tsx` |
+| `/[locale]/inspo` | `app/[locale]/inspo/page.tsx` |
+| `/[locale]/inspo/[id]` | `app/[locale]/inspo/[id]/page.tsx` |
+| `/[locale]/inspo/board/[id]` | `app/[locale]/inspo/board/[id]/page.tsx` |
+| `/[locale]/inspo/nails` | `app/[locale]/inspo/nails/page.tsx` |
+| `/[locale]/inspo/saved` | `app/[locale]/inspo/saved/page.tsx` |
+| `/[locale]/inspo/saved/[id]` | `app/[locale]/inspo/saved/[id]/page.tsx` |
+| `/[locale]/karriere` | `app/[locale]/karriere/page.tsx` |
+| `/[locale]/kontakt` | `app/[locale]/kontakt/page.tsx` |
 | `/[locale]/last-minute` | `app/[locale]/last-minute/page.tsx` |
 | `/[locale]/legal/privacy` | `app/[locale]/legal/privacy/page.tsx` |
 | `/[locale]/legal/terms` | `app/[locale]/legal/terms/page.tsx` |
 | `/[locale]/loyalty/stamp` | `app/[locale]/loyalty/stamp/page.tsx` |
-| `/[locale]/makeup` | `app/[locale]/makeup/page.tsx` |
 | `/[locale]/nail-tech/[id]` | `app/[locale]/nail-tech/[id]/page.tsx` |
 | `/[locale]/nails` | `app/[locale]/nails/page.tsx` |
+| `/[locale]/notifications` | `app/[locale]/notifications/page.tsx` |
 | `/[locale]/onboarding` | `app/[locale]/onboarding/page.tsx` |
 | `/[locale]/onboarding/salon` | `app/[locale]/onboarding/salon/page.tsx` |
 | `/[locale]/partner` | `app/[locale]/partner/page.tsx` |
+| `/[locale]/presse` | `app/[locale]/presse/page.tsx` |
 | `/[locale]/privacy` | `app/[locale]/privacy/page.tsx` |
 | `/[locale]/profile` | `app/[locale]/profile/page.tsx` |
 | `/[locale]/profile/bookings` | `app/[locale]/profile/bookings/page.tsx` |
 | `/[locale]/profile/favorites` | `app/[locale]/profile/favorites/page.tsx` |
 | `/[locale]/profile/gift-cards` | `app/[locale]/profile/gift-cards/page.tsx` |
+| `/[locale]/profile/haarprofil` | `app/[locale]/profile/haarprofil/page.tsx` |
 | `/[locale]/profile/intake-forms` | `app/[locale]/profile/intake-forms/page.tsx` |
 | `/[locale]/profile/looks` | `app/[locale]/profile/looks/page.tsx` |
-| `/[locale]/profile/packages` | `app/[locale]/profile/packages/page.tsx` |
 | `/[locale]/profile/referral` | `app/[locale]/profile/referral/page.tsx` |
 | `/[locale]/profile/settings` | `app/[locale]/profile/settings/page.tsx` |
 | `/[locale]/profile/stamps` | `app/[locale]/profile/stamps/page.tsx` |
 | `/[locale]/profile/vouchers` | `app/[locale]/profile/vouchers/page.tsx` |
 | `/[locale]/queue/[token]` | `app/[locale]/queue/[token]/page.tsx` |
+| `/[locale]/recently-viewed` | `app/[locale]/recently-viewed/page.tsx` |
 | `/[locale]/referral/[code]` | `app/[locale]/referral/[code]/page.tsx` |
+| `/[locale]/reviews` | `app/[locale]/reviews/page.tsx` |
+| `/[locale]/rewards` | `app/[locale]/rewards/page.tsx` |
 | `/[locale]/salon/[slug]` | `app/[locale]/salon/[slug]/page.tsx` |
 | `/[locale]/salon/[slug]/barber/[barberSlug]` | `app/[locale]/salon/[slug]/barber/[barberSlug]/page.tsx` |
 | `/[locale]/salon/[slug]/booking` | `app/[locale]/salon/[slug]/booking/page.tsx` |
 | `/[locale]/salon/[slug]/gift-card` | `app/[locale]/salon/[slug]/gift-card/page.tsx` |
-| `/[locale]/salon/[slug]/packages` | `app/[locale]/salon/[slug]/packages/page.tsx` |
 | `/[locale]/salon/[slug]/reviews` | `app/[locale]/salon/[slug]/reviews/page.tsx` |
 | `/[locale]/salon/[slug]/staff/[staffId]` | `app/[locale]/salon/[slug]/staff/[staffId]/page.tsx` |
 | `/[locale]/search` | `app/[locale]/search/page.tsx` |
+| `/[locale]/sicherheit` | `app/[locale]/sicherheit/page.tsx` |
 | `/[locale]/spa` | `app/[locale]/spa/page.tsx` |
 | `/[locale]/staff-invite` | `app/[locale]/staff-invite/page.tsx` |
 | `/[locale]/termine` | `app/[locale]/termine/page.tsx` |
@@ -140,12 +141,13 @@
 | `/[locale]/terms/discovery` | `app/[locale]/terms/discovery/page.tsx` |
 | `/[locale]/tip/[bookingId]` | `app/[locale]/tip/[bookingId]/page.tsx` |
 | `/[locale]/tos` | `app/[locale]/tos/page.tsx` |
+| `/[locale]/ueber-uns` | `app/[locale]/ueber-uns/page.tsx` |
 | `/[locale]/vouchers` | `app/[locale]/vouchers/page.tsx` |
 | `/[locale]/vouchers/buy` | `app/[locale]/vouchers/buy/page.tsx` |
 | `/[locale]/walk-in-join` | `app/[locale]/walk-in-join/page.tsx` |
 | `/[locale]/walk-in-pay` | `app/[locale]/walk-in-pay/page.tsx` |
+| `/[locale]/walk-in-tip/[token]` | `app/[locale]/walk-in-tip/[token]/page.tsx` |
 | `/[locale]/warum-solen` | `app/[locale]/warum-solen/page.tsx` |
-| `/[locale]/waxing` | `app/[locale]/waxing/page.tsx` |
 
 ## API endpoints
 
@@ -227,7 +229,7 @@
 | `/api/barber/[slug]/portfolio` | GET | `app/api/barber/[slug]/portfolio/route.ts` |
 | `/api/bookings` | GET, POST | `app/api/bookings/route.ts` |
 | `/api/bookings/[id]` | GET, PATCH | `app/api/bookings/[id]/route.ts` |
-| `/api/bookings/[id]/cancel` | POST | `app/api/bookings/[id]/cancel/route.ts` |
+| `/api/bookings/[id]/cancel` | GET, POST | `app/api/bookings/[id]/cancel/route.ts` |
 | `/api/bookings/[id]/confirm` | POST | `app/api/bookings/[id]/confirm/route.ts` |
 | `/api/bookings/[id]/dispute` | GET, POST, PATCH | `app/api/bookings/[id]/dispute/route.ts` |
 | `/api/bookings/[id]/escalate` | POST | `app/api/bookings/[id]/escalate/route.ts` |
@@ -271,8 +273,10 @@
 | `/api/cron/auto-complete` | GET | `app/api/cron/auto-complete/route.ts` |
 | `/api/cron/barber-smart-reminders` | GET | `app/api/cron/barber-smart-reminders/route.ts` |
 | `/api/cron/birthday-messages` | GET | `app/api/cron/birthday-messages/route.ts` |
+| `/api/cron/discovery-deadcheck` | GET | `app/api/cron/discovery-deadcheck/route.ts` |
 | `/api/cron/generate-slots` | GET | `app/api/cron/generate-slots/route.ts` |
 | `/api/cron/late-cancel` | GET | `app/api/cron/late-cancel/route.ts` |
+| `/api/cron/loyalty-recompute` | GET | `app/api/cron/loyalty-recompute/route.ts` |
 | `/api/cron/nail-infill-reminders` | GET | `app/api/cron/nail-infill-reminders/route.ts` |
 | `/api/cron/no-show` | GET | `app/api/cron/no-show/route.ts` |
 | `/api/cron/pending-timeout` | GET | `app/api/cron/pending-timeout/route.ts` |
@@ -301,11 +305,6 @@
 | `/api/dashboard/coiffeur/formula-photo` | POST | `app/api/dashboard/coiffeur/formula-photo/route.ts` |
 | `/api/dashboard/disputes` | GET | `app/api/dashboard/disputes/route.ts` |
 | `/api/dashboard/fade-blueprints` | GET, POST | `app/api/dashboard/fade-blueprints/route.ts` |
-| `/api/dashboard/makeup/bridal` | GET, POST, PATCH | `app/api/dashboard/makeup/bridal/route.ts` |
-| `/api/dashboard/makeup/face-charts` | GET, POST | `app/api/dashboard/makeup/face-charts/route.ts` |
-| `/api/dashboard/makeup/kit` | GET, POST, PATCH | `app/api/dashboard/makeup/kit/route.ts` |
-| `/api/dashboard/makeup/kit-usage` | GET, POST | `app/api/dashboard/makeup/kit-usage/route.ts` |
-| `/api/dashboard/makeup/skin-tone-analytics` | GET | `app/api/dashboard/makeup/skin-tone-analytics/route.ts` |
 | `/api/dashboard/nail/ai-history` | GET, PATCH | `app/api/dashboard/nail/ai-history/route.ts` |
 | `/api/dashboard/nail/infill-due` | GET | `app/api/dashboard/nail/infill-due/route.ts` |
 | `/api/dashboard/nail/reminder-metrics` | GET | `app/api/dashboard/nail/reminder-metrics/route.ts` |
@@ -316,10 +315,7 @@
 | `/api/dashboard/spa/wellness-journal` | GET, POST | `app/api/dashboard/spa/wellness-journal/route.ts` |
 | `/api/dashboard/today` | GET | `app/api/dashboard/today/route.ts` |
 | `/api/dashboard/walkin-analytics` | GET | `app/api/dashboard/walkin-analytics/route.ts` |
-| `/api/dashboard/waxing/rebook-alerts` | GET, POST | `app/api/dashboard/waxing/rebook-alerts/route.ts` |
-| `/api/dashboard/waxing/sensitivity` | GET, POST | `app/api/dashboard/waxing/sensitivity/route.ts` |
-| `/api/dashboard/waxing/zone-preferences` | GET, POST | `app/api/dashboard/waxing/zone-preferences/route.ts` |
-| `/api/dashboard/waxing/zone-revenue` | GET | `app/api/dashboard/waxing/zone-revenue/route.ts` |
+| `/api/dev/login` | GET | `app/api/dev/login/route.ts` |
 | `/api/directory` | GET | `app/api/directory/route.ts` |
 | `/api/directory/[id]/claim` | POST | `app/api/directory/[id]/claim/route.ts` |
 | `/api/discover/nails` | GET, POST | `app/api/discover/nails/route.ts` |
@@ -362,6 +358,7 @@
 | `/api/loyalty/qr/[cardId]` | GET | `app/api/loyalty/qr/[cardId]/route.ts` |
 | `/api/loyalty/redeem` | POST | `app/api/loyalty/redeem/route.ts` |
 | `/api/loyalty/stamp` | POST | `app/api/loyalty/stamp/route.ts` |
+| `/api/loyalty/status` | GET | `app/api/loyalty/status/route.ts` |
 | `/api/me` | GET | `app/api/me/route.ts` |
 | `/api/metrics/global` | GET | `app/api/metrics/global/route.ts` |
 | `/api/nail-discovery/publish` | POST | `app/api/nail-discovery/publish/route.ts` |
@@ -379,18 +376,14 @@
 | `/api/notify/review-posted` | POST | `app/api/notify/review-posted/route.ts` |
 | `/api/notify/review-replied` | POST | `app/api/notify/review-replied/route.ts` |
 | `/api/off-peak` | GET, POST, DELETE | `app/api/off-peak/route.ts` |
-| `/api/packages` | GET, POST | `app/api/packages/route.ts` |
-| `/api/packages/[id]` | PATCH | `app/api/packages/[id]/route.ts` |
-| `/api/packages/[id]/refund` | POST | `app/api/packages/[id]/refund/route.ts` |
-| `/api/packages/purchase` | POST | `app/api/packages/purchase/route.ts` |
-| `/api/packages/redeem` | POST | `app/api/packages/redeem/route.ts` |
 | `/api/partner/leads` | POST | `app/api/partner/leads/route.ts` |
 | `/api/profile` | GET, PATCH | `app/api/profile/route.ts` |
 | `/api/profile/accept-tos` | POST | `app/api/profile/accept-tos/route.ts` |
 | `/api/profile/delete` | DELETE | `app/api/profile/delete/route.ts` |
 | `/api/profile/export` | GET | `app/api/profile/export/route.ts` |
-| `/api/profile/favorites` | GET, DELETE | `app/api/profile/favorites/route.ts` |
+| `/api/profile/favorites` | GET, POST, DELETE | `app/api/profile/favorites/route.ts` |
 | `/api/profile/live-state` | GET | `app/api/profile/live-state/route.ts` |
+| `/api/profile/notifications` | GET, PATCH | `app/api/profile/notifications/route.ts` |
 | `/api/profile/preferences` | GET | `app/api/profile/preferences/route.ts` |
 | `/api/profile/request-deletion` | POST | `app/api/profile/request-deletion/route.ts` |
 | `/api/profile/vouchers` | GET | `app/api/profile/vouchers/route.ts` |
@@ -398,6 +391,7 @@
 | `/api/promo/validate` | POST | `app/api/promo/validate/route.ts` |
 | `/api/quartier/subscribe` | POST | `app/api/quartier/subscribe/route.ts` |
 | `/api/recommendations` | GET | `app/api/recommendations/route.ts` |
+| `/api/recommendations/chips` | GET | `app/api/recommendations/chips/route.ts` |
 | `/api/referral` | GET | `app/api/referral/route.ts` |
 | `/api/referral/complete` | POST | `app/api/referral/complete/route.ts` |
 | `/api/referral/validate` | GET | `app/api/referral/validate/route.ts` |
@@ -430,7 +424,6 @@
 | `/api/salon/services` | GET | `app/api/salon/services/route.ts` |
 | `/api/salon/setup-progress` | GET | `app/api/salon/setup-progress/route.ts` |
 | `/api/salon/stations` | GET, PUT | `app/api/salon/stations/route.ts` |
-| `/api/salon/waxing-zone-packages` | GET, POST, DELETE | `app/api/salon/waxing-zone-packages/route.ts` |
 | `/api/salons` | GET, POST | `app/api/salons/route.ts` |
 | `/api/salons/[slug]` | GET, PATCH | `app/api/salons/[slug]/route.ts` |
 | `/api/salons/[slug]/ai-info` | POST | `app/api/salons/[slug]/ai-info/route.ts` |
@@ -440,6 +433,7 @@
 | `/api/salons/[slug]/nearby` | GET | `app/api/salons/[slug]/nearby/route.ts` |
 | `/api/salons/[slug]/off-peak-today` | GET | `app/api/salons/[slug]/off-peak-today/route.ts` |
 | `/api/salons/[slug]/score` | GET | `app/api/salons/[slug]/score/route.ts` |
+| `/api/salons/active` | POST | `app/api/salons/active/route.ts` |
 | `/api/salons/by-category` | GET | `app/api/salons/by-category/route.ts` |
 | `/api/salons/by-slug/[slug]` | GET | `app/api/salons/by-slug/[slug]/route.ts` |
 | `/api/salons/by-slugs` | GET | `app/api/salons/by-slugs/route.ts` |
@@ -454,6 +448,7 @@
 | `/api/salons/trending` | GET | `app/api/salons/trending/route.ts` |
 | `/api/salons/verify` | GET | `app/api/salons/verify/route.ts` |
 | `/api/search/detect-category` | GET | `app/api/search/detect-category/route.ts` |
+| `/api/search/event` | POST | `app/api/search/event/route.ts` |
 | `/api/search/smart` | GET | `app/api/search/smart/route.ts` |
 | `/api/search/suggest` | GET | `app/api/search/suggest/route.ts` |
 | `/api/search/treatments` | GET | `app/api/search/treatments/route.ts` |
@@ -463,8 +458,9 @@
 | `/api/services/import` | POST | `app/api/services/import/route.ts` |
 | `/api/services/reorder` | PATCH | `app/api/services/reorder/route.ts` |
 | `/api/services/suggest` | GET | `app/api/services/suggest/route.ts` |
-| `/api/slots` | GET | `app/api/slots/route.ts` |
+| `/api/slots` | GET, POST | `app/api/slots/route.ts` |
 | `/api/slots/[id]` | DELETE, PATCH | `app/api/slots/[id]/route.ts` |
+| `/api/slots/bulk` | POST | `app/api/slots/bulk/route.ts` |
 | `/api/slots/last-minute` | GET | `app/api/slots/last-minute/route.ts` |
 | `/api/slots/next-available` | GET | `app/api/slots/next-available/route.ts` |
 | `/api/staff` | GET | `app/api/staff/route.ts` |
@@ -475,7 +471,7 @@
 | `/api/staff/accept-invite` | POST | `app/api/staff/accept-invite/route.ts` |
 | `/api/staff/breaks` | GET, POST, DELETE | `app/api/staff/breaks/route.ts` |
 | `/api/staff/featured` | GET | `app/api/staff/featured/route.ts` |
-| `/api/staff/invite` | POST | `app/api/staff/invite/route.ts` |
+| `/api/staff/invite` | GET, POST | `app/api/staff/invite/route.ts` |
 | `/api/staff/my-schedule` | GET, PUT | `app/api/staff/my-schedule/route.ts` |
 | `/api/staff/portfolio` | POST | `app/api/staff/portfolio/route.ts` |
 | `/api/staff/schedule/auto-apply` | POST | `app/api/staff/schedule/auto-apply/route.ts` |
@@ -499,12 +495,14 @@
 | `/api/waitlist` | POST, GET | `app/api/waitlist/route.ts` |
 | `/api/walkin/availability` | GET | `app/api/walkin/availability/route.ts` |
 | `/api/walkin/confirm` | POST | `app/api/walkin/confirm/route.ts` |
+| `/api/walkin/nearby` | GET | `app/api/walkin/nearby/route.ts` |
 | `/api/walkin/pay-intent` | POST | `app/api/walkin/pay-intent/route.ts` |
 | `/api/walkin/queue` | GET, POST | `app/api/walkin/queue/route.ts` |
 | `/api/walkin/queue-stats` | GET | `app/api/walkin/queue-stats/route.ts` |
 | `/api/walkin/queue/[id]` | PATCH, DELETE | `app/api/walkin/queue/[id]/route.ts` |
 | `/api/walkin/queue/remote-join` | POST | `app/api/walkin/queue/remote-join/route.ts` |
 | `/api/walkin/queue/status` | GET | `app/api/walkin/queue/status/route.ts` |
+| `/api/walkin/review` | POST | `app/api/walkin/review/route.ts` |
 | `/api/walkin/salon-info` | GET | `app/api/walkin/salon-info/route.ts` |
 | `/api/walkin/tip` | POST | `app/api/walkin/tip/route.ts` |
 
@@ -601,6 +599,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 |---|---|
 | `anonymize_financial_rows_on_profile_delete` | `supabase/migrations/20260602083300_financial_retention_on_delete.sql` |
 | `create_group_booking` | `supabase/migrations/071_megabuild_booking_crm_payments.sql` |
+| `current_user_tier` | `supabase/migrations/20260614010000_solen_plus_phase1_perks.sql` |
 | `discovery_chip_terms` | `supabase/migrations/20260531_discovery_chip_terms.sql` |
 | `discovery_feed` | `supabase/migrations/20260531_discovery_feed_personalized.sql` |
 | `discovery_fts_doc` | `supabase/migrations/20260531_discovery_search_rpc.sql` |
@@ -608,6 +607,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `discovery_resolve_thumb` | `supabase/migrations/20260531_discovery_recent_and_style_suggest.sql` |
 | `discovery_style_suggest` | `supabase/migrations/20260531_discovery_recent_and_style_suggest.sql` |
 | `discovery_trending_terms` | `supabase/migrations/20260531_discovery_trending.sql` |
+| `f_unaccent` | `supabase/migrations/20260606185659_search_phase0_fts_extensions.sql` |
 | `generate_referral_code` | `supabase/migrations/049_referrals.sql` |
 | `get_last_minute_slots` | `supabase/migrations/014_new_schema.sql` |
 | `get_nearby_salon_ids` | `supabase/migrations/077_geospatial_search.sql` |
@@ -615,9 +615,15 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `increment_view_count` | `supabase/migrations/067_discovery.sql` |
 | `match_search_embeddings` | `supabase/migrations/074_search_embeddings.sql` |
 | `next_walkin_ticket_seq` | `supabase/migrations/20260602150000_walkin_ticket_seq.sql` |
+| `recompute_loyalty_status` | `supabase/migrations/20260614000000_loyalty_status_rank_phase2.sql` |
 | `refresh_salon_min_prices` | `supabase/migrations/20260401_salon_min_prices.sql` |
 | `resequence_walkin_queue` | `supabase/migrations/20260531_walkin_resequence_fn.sql` |
+| `salon_search_doc` | `supabase/migrations/20260606190256_search_phase1_fts_schema.sql` |
+| `salons_with_slot_in_hours` | `supabase/migrations/20260607182403_add_salons_with_slot_in_hours_rpc.sql` |
 | `search_discovery` | `supabase/migrations/20260531_discovery_search_rpc.sql` |
+| `search_salons_ranked` | `supabase/migrations/20260606190706_search_phase1_rpcs.sql` |
+| `search_suggest` | `supabase/migrations/20260606190706_search_phase1_rpcs.sql` |
+| `service_search_doc` | `supabase/migrations/20260606190256_search_phase1_fts_schema.sql` |
 | `set_updated_at` | `supabase/migrations/067_discovery.sql` |
 | `toggle_discovery_like` | `supabase/migrations/067_discovery.sql` |
 | `toggle_discovery_save` | `supabase/migrations/067_discovery.sql` |
@@ -628,7 +634,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 
 ## Components
 
-<details><summary>408 components — click to expand</summary>
+<details><summary>407 components — click to expand</summary>
 
 | Component | File |
 |---|---|
@@ -646,6 +652,8 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | ArtistOfTheMonth | `app/[locale]/_components/homepage/ArtistOfTheMonth.tsx` |
 | AtmosphereBlobs | `app/[locale]/_components/homepage/AtmosphereBlobs.tsx` |
 | AtmosphereGrain | `app/[locale]/_components/homepage/AtmosphereGrain.tsx` |
+| Avatar | `app/[locale]/_components/primitives/Avatar.tsx` |
+| BackButton | `app/[locale]/_components/primitives/BackButton.tsx` |
 | BackgroundBlobs | `components/ui/BackgroundBlobs.tsx` |
 | BackToTopButton | `app/[locale]/terms/components/BackToTopButton.tsx` |
 | BarberIcon | `components-legacy/icons/category/BarberIcon.tsx` |
@@ -661,7 +669,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | BentoCard | `app/[locale]/_components/business/BentoCard.tsx` |
 | BlobBackground | `components/ui/BlobBackground.tsx` |
 | BodyDiagram | `components-legacy/shared/BodyDiagram.tsx` |
-| BodyZoneSelector | `components-legacy/dashboard/waxing/BodyZoneSelector.tsx` |
 | BookCTA | `components-legacy/discovery/BookCTA.tsx` |
 | BookingBubble | `components-legacy/chat/BookingBubble.tsx` |
 | BookingCard | `components-legacy/booking/BookingCard.tsx` |
@@ -675,9 +682,9 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | BottomTabBar | `components-legacy/layout/BottomTabBar.tsx` |
 | breadcrumb | `components/ui/breadcrumb.tsx` |
 | Breadcrumb | `components-legacy/ui/Breadcrumb.tsx` |
-| BridalPlanner | `components-legacy/dashboard/makeup/BridalPlanner.tsx` |
 | BrowseByCitySection | `components-legacy/BrowseByCitySection.tsx` |
 | BusinessTeaser | `app/[locale]/_components/homepage/BusinessTeaser.tsx` |
+| CancelBookingSheet | `components-legacy/booking/CancelBookingSheet.tsx` |
 | card | `components/ui/card.tsx` |
 | CardFilterRow | `components-legacy/home/CardFilterRow.tsx` |
 | CardSignals | `components-legacy/discovery/CardSignals.tsx` |
@@ -685,6 +692,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | CategoriesGrid | `components-legacy/home/CategoriesGrid.tsx` |
 | CategoryBrowseRails | `app/[locale]/_components/search/CategoryBrowseRails.tsx` |
 | CategoryHero | `app/[locale]/_components/landings/CategoryHero.tsx` |
+| CategoryHeroCarousel | `app/[locale]/_components/search/CategoryHeroCarousel.tsx` |
 | CategoryPage | `components-legacy/CategoryPage.tsx` |
 | CategoryPills | `components-legacy/discovery/CategoryPills.tsx` |
 | CategoryPromos | `app/[locale]/_components/homepage/CategoryPromos.tsx` |
@@ -707,12 +715,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | ComingSoon | `app/[locale]/_components/primitives/ComingSoon.tsx` |
 | CommandPalette | `components-legacy/dashboard/CommandPalette.tsx` |
 | CommentSection | `components-legacy/discovery/CommentSection.tsx` |
-| CompareBar | `components-legacy/compare/CompareBar.tsx` |
-| CompareBar | `components/CompareBar.tsx` |
-| CompareContext | `components-legacy/compare/CompareContext.tsx` |
-| CompareDrawer | `components-legacy/compare/CompareDrawer.tsx` |
-| CompareDrawer | `components/CompareDrawer.tsx` |
-| ComparePageClient | `app/[locale]/compare/ComparePageClient.tsx` |
 | ConsultationNotes | `components-legacy/dashboard/coiffeur/ConsultationNotes.tsx` |
 | ContraindicationAlert | `components-legacy/dashboard/spa/ContraindicationAlert.tsx` |
 | CookieConsent | `app/[locale]/_components/primitives/CookieConsent.tsx` |
@@ -733,23 +735,24 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | DiscoveryAdmin | `components-legacy/discovery/DiscoveryAdmin.tsx` |
 | DiscoveryEmptyState | `components-legacy/discovery/DiscoveryEmptyState.tsx` |
 | DiscoveryErrorState | `components-legacy/discovery/DiscoveryErrorState.tsx` |
-| DiscoveryGrid | `components/discovery/DiscoveryGrid.tsx` |
 | DiscoveryGridSkeleton | `components-legacy/discovery/DiscoveryGridSkeleton.tsx` |
 | DynamicPricingConfig | `components-legacy/dashboard/nail/DynamicPricingConfig.tsx` |
 | EditorPage | `components-legacy/editor/EditorPage.tsx` |
 | EditPanel | `components-legacy/editor/EditPanel.tsx` |
+| EmptyServicesState | `components-legacy/booking/EmptyServicesState.tsx` |
 | EmptyState | `components-legacy/ui/EmptyState.tsx` |
+| EmptyStateDiscovery | `app/[locale]/_components/profile/EmptyStateDiscovery.tsx` |
 | EmptyStateFTU | `components-legacy/ui/EmptyStateFTU.tsx` |
 | Entdecken | `app/[locale]/_components/homepage/Entdecken.tsx` |
 | ErrorFallback | `components-legacy/ui/ErrorFallback.tsx` |
+| ErrorState | `components-legacy/ui/ErrorState.tsx` |
 | ExpandableTabs | `components-legacy/ui/ExpandableTabs.tsx` |
 | ExportButton | `components-legacy/ui/ExportButton.tsx` |
 | ExpressMenu | `components-legacy/dashboard/barber/ExpressMenu.tsx` |
 | ExpressRebook | `components-legacy/barber/ExpressRebook.tsx` |
-| FaceChartBuilder | `components-legacy/dashboard/makeup/FaceChartBuilder.tsx` |
-| FaceDiagram | `components-legacy/shared/FaceDiagram.tsx` |
 | FadeBlueprint | `components-legacy/dashboard/barber/FadeBlueprint.tsx` |
 | FAQItem | `app/[locale]/_components/business/FAQItem.tsx` |
+| FavoritesList | `app/[locale]/_components/profile/FavoritesList.tsx` |
 | FeatureBento | `app/[locale]/_components/homepage/FeatureBento.tsx` |
 | FeaturedBoards | `components-legacy/discovery/FeaturedBoards.tsx` |
 | FeaturedSalonCarousel | `components-legacy/ui/FeaturedSalonCarousel.tsx` |
@@ -757,7 +760,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | FieldHelper | `app/[locale]/_components/primitives/FieldHelper.tsx` |
 | FieldLabel | `app/[locale]/_components/primitives/FieldLabel.tsx` |
 | FilterBar | `components-legacy/ui/FilterBar.tsx` |
-| FilterBar | `components/FilterBar.tsx` |
 | FilterBottomSheet | `components-legacy/ui/FilterBottomSheet.tsx` |
 | FilterDrawer | `components-legacy/discovery/FilterDrawer.tsx` |
 | FilterDrawer | `components-legacy/ui/FilterDrawer.tsx` |
@@ -779,6 +781,8 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | GoLiveStep | `components-legacy/onboarding/steps/GoLiveStep.tsx` |
 | GuestBookingForm | `components-legacy/booking/GuestBookingForm.tsx` |
 | GuidedSearch | `components-legacy/ui/GuidedSearch.tsx` |
+| HaarprofilForm | `app/[locale]/profile/haarprofil/HaarprofilForm.tsx` |
+| HairStep | `components-legacy/booking/HairStep.tsx` |
 | HandChart | `components-legacy/nail/HandChart.tsx` |
 | HeadDiagram | `components-legacy/dashboard/barber/HeadDiagram.tsx` |
 | Header | `app/[locale]/_components/layout/Header.tsx` |
@@ -796,7 +800,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | ImageUploader | `components-legacy/ui/ImageUploader.tsx` |
 | ImportProgressBar | `components-legacy/discovery/ImportProgressBar.tsx` |
 | InfillReminderConfig | `components-legacy/dashboard/nail/InfillReminderConfig.tsx` |
-| InfoTabs | `components/discovery/InfoTabs.tsx` |
 | InlinePrefsPanel | `components-legacy/discovery/InlinePrefsPanel.tsx` |
 | InspoBoard | `components-legacy/nail/InspoBoard.tsx` |
 | InspoUploader | `components-legacy/nail/InspoUploader.tsx` |
@@ -804,20 +807,16 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | interactive-hover-button | `components-legacy/ui/interactive-hover-button.tsx` |
 | InteractiveZoneDiagram | `components-legacy/shared/InteractiveZoneDiagram.tsx` |
 | ItemCard | `components-legacy/discovery/ItemCard.tsx` |
-| KitInventory | `components-legacy/dashboard/makeup/KitInventory.tsx` |
 | LanguageSwitcher | `components-legacy/ui/LanguageSwitcher.tsx` |
-| LastMinute | `app/[locale]/_components/homepage/LastMinute.tsx` |
 | LastMinuteCard | `components-legacy/LastMinuteCard.tsx` |
 | LastMinuteManager | `components-legacy/dashboard/LastMinuteManager.tsx` |
-| LastMinuteStrip | `components-legacy/ui/LastMinuteStrip.tsx` |
 | LikeButton | `components-legacy/discovery/LikeButton.tsx` |
 | LiveActivityCard | `components-legacy/profile/LiveActivityCard.tsx` |
 | LiveQueuePanel | `components-legacy/dashboard/barber/LiveQueuePanel.tsx` |
 | Logo | `app/[locale]/_components/primitives/Logo.tsx` |
 | LoyaltyConfig | `components-legacy/dashboard/barber/LoyaltyConfig.tsx` |
-| MakeupIcon | `components-legacy/icons/category/MakeupIcon.tsx` |
-| MakeupSections | `components-legacy/makeup/MakeupSections.tsx` |
 | MapView | `components-legacy/MapView.tsx` |
+| MarketplaceReviewsList | `app/[locale]/reviews/_components/MarketplaceReviewsList.tsx` |
 | MarketplaceVisual | `app/[locale]/_components/business/MarketplaceVisual.tsx` |
 | MasonryGrid | `components-legacy/discovery/MasonryGrid.tsx` |
 | MaterialSelector | `components-legacy/nail/MaterialSelector.tsx` |
@@ -837,13 +836,14 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | NailsSections | `components-legacy/nail/NailsSections.tsx` |
 | Nearby | `app/[locale]/_components/homepage/Nearby.tsx` |
 | NearbySection | `components-legacy/home/NearbySection.tsx` |
+| NotificationBell | `app/[locale]/_components/layout/NotificationBell.tsx` |
 | NotificationCenter | `components-legacy/dashboard/NotificationCenter.tsx` |
 | NotificationItem | `components-legacy/notifications/NotificationItem.tsx` |
+| NotificationsClient | `app/[locale]/notifications/NotificationsClient.tsx` |
+| OfflineBanner | `app/[locale]/_components/layout/OfflineBanner.tsx` |
 | OffPeakManager | `components-legacy/dashboard/OffPeakManager.tsx` |
 | OnboardingFlow | `app/[locale]/onboarding/OnboardingFlow.tsx` |
 | OpeningHoursStep | `components-legacy/onboarding/steps/OpeningHoursStep.tsx` |
-| PackageManager | `components-legacy/dashboard/PackageManager.tsx` |
-| PackageRedeemBanner | `components-legacy/booking/PackageRedeemBanner.tsx` |
 | PageTransition | `components-legacy/layout/PageTransition.tsx` |
 | PageTransitionWrapper | `components-legacy/layout/PageTransitionWrapper.tsx` |
 | PartnerBlock | `components-legacy/home/PartnerBlock.tsx` |
@@ -859,6 +859,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | PLComparison | `components-legacy/dashboard/barber/PLComparison.tsx` |
 | PostFromDiscover | `components-legacy/discovery/PostFromDiscover.tsx` |
 | PostHogProvider | `components-legacy/PostHogProvider.tsx` |
+| PriceFrom | `app/[locale]/_components/primitives/PriceFrom.tsx` |
 | PriceOfferModal | `components-legacy/ui/PriceOfferModal.tsx` |
 | PriceRangeBadge | `components/discovery/PriceRangeBadge.tsx` |
 | PrivacyContent | `app/[locale]/privacy/components/PrivacyContent.tsx` |
@@ -876,14 +877,13 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | QuickPreviewSheet | `components-legacy/ui/QuickPreviewSheet.tsx` |
 | QuickReplyChips | `components-legacy/chat/QuickReplyChips.tsx` |
 | Radio | `app/[locale]/_components/primitives/Radio.tsx` |
-| RebookAlerts | `components-legacy/dashboard/waxing/RebookAlerts.tsx` |
+| RatingStars | `app/[locale]/_components/primitives/RatingStars.tsx` |
 | RecentlyViewed | `app/[locale]/_components/homepage/RecentlyViewed.tsx` |
 | RecentlyViewed | `components-legacy/RecentlyViewed.tsx` |
+| RecentlyViewedClient | `app/[locale]/recently-viewed/RecentlyViewedClient.tsx` |
 | RecentSearches | `components-legacy/discovery/RecentSearches.tsx` |
-| RecommendedSalons | `components/RecommendedSalons.tsx` |
 | ReferralDashboard | `components-legacy/dashboard/ReferralDashboard.tsx` |
 | RefundCaseView | `components-legacy/refund/RefundCaseView.tsx` |
-| RegrowthConfig | `components-legacy/dashboard/waxing/RegrowthConfig.tsx` |
 | RelatedTikToks | `components-legacy/discovery/RelatedTikToks.tsx` |
 | RemoteQueueJoin | `components-legacy/barber/RemoteQueueJoin.tsx` |
 | ReportButton | `components-legacy/discovery/ReportButton.tsx` |
@@ -895,6 +895,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | ReviewBreakdown | `components-legacy/ReviewBreakdown.tsx` |
 | ReviewForm | `components-legacy/ReviewForm.tsx` |
 | Reviews | `app/[locale]/_components/homepage/Reviews.tsx` |
+| RewardsView | `app/[locale]/rewards/RewardsView.tsx` |
 | RoomManager | `components-legacy/dashboard/spa/RoomManager.tsx` |
 | SalonAbout | `app/[locale]/_components/salon/SalonAbout.tsx` |
 | SalonAboutEditor | `components-legacy/dashboard/SalonAboutEditor.tsx` |
@@ -910,6 +911,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | SalonHeader | `app/[locale]/_components/salon/SalonHeader.tsx` |
 | SalonHero | `app/[locale]/_components/salon/SalonHero.tsx` |
 | SalonHero | `components-legacy/salon/SalonHero.tsx` |
+| SalonImageGallery | `app/[locale]/_components/salon/SalonImageGallery.tsx` |
 | SalonLightbox | `app/[locale]/_components/salon/SalonLightbox.tsx` |
 | SalonLocation | `app/[locale]/_components/salon/SalonLocation.tsx` |
 | SalonLoyalty | `app/[locale]/_components/salon/SalonLoyalty.tsx` |
@@ -934,6 +936,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | SalonSidebar | `app/[locale]/_components/salon/SalonSidebar.tsx` |
 | SalonSidebar | `components-legacy/salon/SalonSidebar.tsx` |
 | SalonStickyTabNav | `app/[locale]/_components/salon/SalonStickyTabNav.tsx` |
+| SalonSwitcher | `components-legacy/dashboard/SalonSwitcher.tsx` |
 | SalonTeam | `app/[locale]/_components/salon/SalonTeam.tsx` |
 | SalonVenuesNearby | `app/[locale]/_components/salon/SalonVenuesNearby.tsx` |
 | SalonWalkInPanel | `components-legacy/salon/SalonWalkInPanel.tsx` |
@@ -946,6 +949,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | SearchBar | `app/[locale]/_components/homepage/SearchBar.tsx` |
 | SearchBar | `components-legacy/discovery/SearchBar.tsx` |
 | SearchCriteriaChips | `components-legacy/search/SearchCriteriaChips.tsx` |
+| SearchOverlay | `app/[locale]/_components/search/SearchOverlay.tsx` |
 | SearchResultGrid | `components-legacy/search/SearchResultGrid.tsx` |
 | SearchResults | `app/[locale]/_components/search/SearchResults.tsx` |
 | SearchTemplate | `app/[locale]/_components/search/SearchTemplate.tsx` |
@@ -953,7 +957,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | SectionHeader | `app/[locale]/_components/homepage/SectionHeader.tsx` |
 | Select | `app/[locale]/_components/primitives/Select.tsx` |
 | SelectedCheckBadge | `components-legacy/ui/SelectedCheckBadge.tsx` |
-| SensitivityLog | `components-legacy/dashboard/waxing/SensitivityLog.tsx` |
 | ServiceAutosuggest | `components-legacy/ui/ServiceAutosuggest.tsx` |
 | ServiceCategoryFilter | `components-legacy/salon/ServiceCategoryFilter.tsx` |
 | ServiceDetailSheet | `components-legacy/booking/ServiceDetailSheet.tsx` |
@@ -972,7 +975,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | SimilarStyles | `components-legacy/discovery/SimilarStyles.tsx` |
 | Skeleton | `app/[locale]/_components/primitives/Skeleton.tsx` |
 | Skeleton | `components-legacy/ui/Skeleton.tsx` |
-| SkinToneMatcher | `components-legacy/dashboard/makeup/SkinToneMatcher.tsx` |
+| SkeletonCard | `app/[locale]/_components/primitives/SkeletonCard.tsx` |
 | SkipLink | `app/[locale]/_components/primitives/SkipLink.tsx` |
 | SmartReminderConfig | `components-legacy/dashboard/barber/SmartReminderConfig.tsx` |
 | SolenExclusiveBadge | `components-legacy/ui/SolenExclusiveBadge.tsx` |
@@ -993,6 +996,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | StaffProfilePage | `components-legacy/staff/StaffProfilePage.tsx` |
 | StaffReviewsSheet | `components-legacy/staff/StaffReviewsSheet.tsx` |
 | StaffSection | `components-legacy/salon/StaffSection.tsx` |
+| StaffStep | `components-legacy/booking/StaffStep.tsx` |
 | StampCard | `components-legacy/loyalty/StampCard.tsx` |
 | StatCard | `components-legacy/dashboard/StatCard.tsx` |
 | StationManager | `components-legacy/dashboard/nail/StationManager.tsx` |
@@ -1001,6 +1005,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | Step | `app/[locale]/_components/business/Step.tsx` |
 | StyleNamePills | `components-legacy/discovery/StyleNamePills.tsx` |
 | SubCategoryChips | `components-legacy/ui/SubCategoryChips.tsx` |
+| SuccessMark | `app/[locale]/_components/primitives/SuccessMark.tsx` |
 | Switch | `app/[locale]/_components/primitives/Switch.tsx` |
 | TabPill | `app/[locale]/_components/primitives/TabPill.tsx` |
 | TeamStep | `components-legacy/onboarding/steps/TeamStep.tsx` |
@@ -1010,6 +1015,9 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | TestimonialCarousel | `components-legacy/TestimonialCarousel.tsx` |
 | Textarea | `app/[locale]/_components/primitives/Textarea.tsx` |
 | TextInput | `app/[locale]/_components/primitives/TextInput.tsx` |
+| TikTokPlayer | `components-legacy/discovery/TikTokPlayer.tsx` |
+| TipFlow | `app/[locale]/_components/tips/TipFlow.tsx` |
+| TipSheet | `app/[locale]/_components/tips/TipSheet.tsx` |
 | Toast | `app/[locale]/_components/primitives/Toast.tsx` |
 | Toast | `components-legacy/ui/Toast.tsx` |
 | TodayLiveCard | `components-legacy/dashboard/TodayLiveCard.tsx` |
@@ -1026,26 +1034,23 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | UpchargeApproveView | `components-legacy/refund/UpchargeApproveView.tsx` |
 | UserPostsSection | `components-legacy/discovery/UserPostsSection.tsx` |
 | VideoCard | `components-legacy/discovery/VideoCard.tsx` |
-| WaitlistModal | `components/WaitlistModal.tsx` |
+| WaitlistModal | `components-legacy/booking/WaitlistModal.tsx` |
 | WaitTimeDisplay | `components-legacy/barber/WaitTimeDisplay.tsx` |
 | WalkinAnalytics | `components-legacy/dashboard/barber/WalkinAnalytics.tsx` |
 | WalkInBand | `app/[locale]/_components/homepage/WalkInBand.tsx` |
 | WalkinHourlyChart | `components-legacy/dashboard/barber/WalkinHourlyChart.tsx` |
 | WalkInModal | `components-legacy/dashboard/WalkInModal.tsx` |
 | WalkInPaymentForm | `components-legacy/barber/WalkInPaymentForm.tsx` |
-| WaxingIcon | `components-legacy/icons/category/WaxingIcon.tsx` |
-| WaxingSections | `components-legacy/waxing/WaxingSections.tsx` |
 | WeatherBanner | `components/WeatherBanner.tsx` |
+| WelcomeToast | `app/[locale]/_components/primitives/WelcomeToast.tsx` |
 | WellnessJournal | `components-legacy/dashboard/spa/WellnessJournal.tsx` |
 | WhySolen | `app/[locale]/_components/homepage/WhySolen.tsx` |
-| ZonePackages | `components-legacy/dashboard/waxing/ZonePackages.tsx` |
-| ZoneRevenueChart | `components-legacy/dashboard/waxing/ZoneRevenueChart.tsx` |
 
 </details>
 
 ## lib/ modules
 
-<details><summary>100 modules — click to expand</summary>
+<details><summary>106 modules — click to expand</summary>
 
 | Module | File |
 |---|---|
@@ -1056,6 +1061,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | useSalonProfile | `hooks/useSalonProfile.ts` |
 | useScrollReveal | `hooks/useScrollReveal.ts` |
 | useSectionObserver | `hooks/useSectionObserver.ts` |
+| active-salon | `lib/active-salon.ts` |
 | ai-vision | `lib/ai-vision.ts` |
 | recommendations | `lib/ai/recommendations.ts` |
 | translate | `lib/ai/translate.ts` |
@@ -1069,12 +1075,14 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | loyalty-qr | `lib/barber/loyalty-qr.ts` |
 | visit-cycle-algorithm | `lib/barber/visit-cycle-algorithm.ts` |
 | wait-time-calculator | `lib/barber/wait-time-calculator.ts` |
+| walkin-availability | `lib/barber/walkin-availability.ts` |
 | walkin-ticket | `lib/barber/walkin-ticket.ts` |
 | basel-neighborhoods | `lib/basel-neighborhoods.ts` |
 | booking-context | `lib/booking-context.tsx` |
 | booking-email | `lib/booking-email.ts` |
 | booking-state | `lib/booking-state.ts` |
 | authorize | `lib/bookings/authorize.ts` |
+| auto-assign | `lib/bookings/auto-assign.ts` |
 | charge-fee | `lib/bookings/charge-fee.ts` |
 | dispute-engine | `lib/bookings/dispute-engine.ts` |
 | guest-access | `lib/bookings/guest-access.ts` |
@@ -1109,6 +1117,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | env | `lib/env.ts` |
 | feature-flags | `lib/feature-flags.ts` |
 | format-currency | `lib/format-currency.ts` |
+| format-phone | `lib/format-phone.ts` |
 | format | `lib/format.ts` |
 | frost-glass | `lib/frost-glass.ts` |
 | anonymize-guest | `lib/gdpr/anonymize-guest.ts` |
@@ -1116,6 +1125,8 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | guided-search-data | `lib/guided-search-data.ts` |
 | ics-generator | `lib/ics-generator.ts` |
 | intake-templates | `lib/intake-templates.ts` |
+| perks | `lib/loyalty/perks.ts` |
+| status | `lib/loyalty/status.ts` |
 | motion | `lib/motion.ts` |
 | ai-budget | `lib/nail/ai-budget.ts` |
 | ai-prompts | `lib/nail/ai-prompts.ts` |

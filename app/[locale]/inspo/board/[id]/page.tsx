@@ -54,7 +54,7 @@ export default function BoardDetailPage() {
       router.push(`/${locale}/salon/${(item as any).salon_slug}`);
       return;
     }
-    router.push(`/${locale}/discover/${item.id}`);
+    router.push(`/${locale}/inspo/${item.id}`);
   };
 
   return (

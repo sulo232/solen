@@ -74,7 +74,7 @@
   },
   "navigation": {
     "home": "Home",
-    "discover": "Scopri",
+    "discover": "Inspo",
     "barbershop": "Barbershop",
     "coiffeur": "Parrucchiere",
     "nails": "Unghie",
@@ -699,7 +699,7 @@
     "changeLanguage": "Cambia lingua",
     "fadpCompliant": "Conforme nLPD · Protezione dei dati svizzera",
     "platform": "Piattaforma",
-    "platformDiscover": "Scopri",
+    "platformDiscover": "Inspo",
     "platformSearch": "Cerca",
     "forSalonsTitle": "Per i saloni",
     "forSalonsPartner": "Diventa partner",
@@ -3131,10 +3131,10 @@
   },
   "discovery": {
     "meta": {
-      "title": "Scopri stili | solen.ch",
+      "title": "Inspo | solen.ch",
       "description": "Trova la tua prossima acconciatura, unghie o ispirazione trucco"
     },
-    "title": "Scopri",
+    "title": "Inspo",
     "subtitle": "Trova il tuo prossimo look",
     "search_placeholder": "Cerca stili...",
     "categories": {
@@ -4170,10 +4170,10 @@
     "walkIn": "Senza appuntamento"
   },
   "discover": {
-    "title": "Scoprire",
+    "title": "Inspo",
     "subtitle": "Il tuo prossimo look",
     "genderPill": "Per chi?",
-    "texturePill": "Texture",
+    "texturePill": "Capelli",
     "searchPlaceholder": "Cerca stili...",
     "tabs": {
       "all": "Tutto",
@@ -4192,7 +4192,7 @@
       "men": "Uomini",
       "unisex": "Unisex"
     },
-    "texture": "Texture",
+    "texture": "Capelli",
     "trending": "In tendenza",
     "priceFrom": "da {amount} CHF",
     "searchByPattern": "Cerca per motivo",
@@ -5418,7 +5418,7 @@
     "viewReceipt": "Visualizza la ricevuta",
     "eyebrow": "Ricerca ospite",
     "deskLead": "Hai prenotato come ospite, senza account? Inserisci il numero d'ordine e l'e-mail che hai usato. Ti invieremo un link sicuro monouso per aprire la tua prenotazione, dove potrai vedere la ricevuta o richiedere un rimborso.",
-    "navDiscover": "Scopri",
+    "navDiscover": "Inspo",
     "navForSalons": "Per i saloni",
     "navFindBooking": "Trova una prenotazione",
     "navHelp": "Aiuto",

@@ -41,22 +41,22 @@ export default function HideInBooking({
   const pathname = usePathname() ?? "/";
   if (!pathname) return <>{children}</>;
 
-  if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;
+  if (hideOnFeed && /\/inspo(\/|$)/.test(pathname)) return null;
 
   if (hideOnDashboard && /\/dashboard(\/|$)/.test(pathname)) return null;
 
   // Customer account section — no marketing footer below the account content.
   if (hideOnAccount && /\/(profile|account)(\/|$)/.test(pathname)) return null;
 
-  // V3-D414: board detail + saved (/discover/board/[id], /discover/saved, /discover/saved/[id]) are focused views
+  // V3-D414: board detail + saved (/inspo/board/[id], /inspo/saved, /inspo/saved/[id]) are focused views
   // with their own back button. Drop the marketing chrome (city bar, header, breadcrumb, footer) so there aren't
-  // doubled back/cancel controls stacked above them. The feed (/discover) is unaffected and keeps its header.
-  if (/\/discover\/(board|saved)(\/|$)/.test(pathname)) return null;
+  // doubled back/cancel controls stacked above them. The feed (/inspo) is unaffected and keeps its header.
+  if (/\/inspo\/(board|saved)(\/|$)/.test(pathname)) return null;
 
-  // The look-detail page (/discover/<uuid>) is a focused PDP-style view: a full-bleed hero with its own frosted
+  // The look-detail page (/inspo/<uuid>) is a focused PDP-style view: a full-bleed hero with its own frosted
   // back + heart over the photo. Drop the global chrome so the hero leads and the back isn't doubled. Matched by the
-  // uuid shape so the feed (/discover) and the board/saved subroutes above are untouched. (Discovery detail rebuild.)
-  if (/\/discover\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/.test(pathname)) return null;
+  // uuid shape so the feed (/inspo) and the board/saved subroutes above are untouched. (Discovery detail rebuild.)
+  if (/\/inspo\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/.test(pathname)) return null;
 
   // Booking flow, individual staff pages, onboarding, and the walk-in pay flow are
   // self-contained — always drop the marketing chrome. The guest self-service

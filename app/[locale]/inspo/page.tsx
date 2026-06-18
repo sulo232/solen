@@ -217,7 +217,7 @@ function DiscoverPageContent() {
       router.push(`/${locale}/salon/${item.salon_slug}`);
       return;
     }
-    router.push(`/${locale}/discover/${item.id}`);
+    router.push(`/${locale}/inspo/${item.id}`);
   };
 
   // Heart tapped while signed in → open the lookbook picker for that look.
@@ -295,10 +295,10 @@ function DiscoverPageContent() {
   ];
 
   return (
-    <main className="min-h-screen bg-white pt-4 pb-24">
+    <main className="min-h-screen bg-white pt-1.5 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* V3-D410 (user): the page title ("Entdecken") + a "Solen › Entdecken" breadcrumb now live in the global
-            header's logo slot (see Header.tsx, route-gated to /discover) — so the standalone h1 here is removed to
+            header's logo slot (see Header.tsx, route-gated to /inspo) — so the standalone h1 here is removed to
             stop the title stacking under the wordmark. */}
 
         {/* Search (V1: top of the filter zone). V4: a cancel-arrow appears left on focus (Pinterest), and the trending
@@ -354,7 +354,7 @@ function DiscoverPageContent() {
             {/* V3-D414 (Phase 2): Kollektionen entry point — opens the user's saved collections. */}
             <button
               type="button"
-              onClick={() => router.push(`/${locale}/discover/saved`)}
+              onClick={() => router.push(`/${locale}/inspo/saved`)}
               aria-label="Kollektionen"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
@@ -394,7 +394,7 @@ function DiscoverPageContent() {
                 type="button"
                 onClick={() => setPatternOpen((o) => !o)}
                 aria-expanded={patternOpen}
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-xs font-heading font-medium transition-colors duration-150 ${
+                className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                   texture
                     ? "bg-s-ink text-white"
                     : "bg-s-bg-sunken text-s-ink border border-s-border hover:bg-s-bg-sunken"

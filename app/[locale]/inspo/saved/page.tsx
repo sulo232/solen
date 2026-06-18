@@ -64,7 +64,7 @@ export default function SavedPage() {
     <main className="min-h-screen bg-white pb-24">
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <button
-          onClick={() => router.push(`/${locale}/discover`)}
+          onClick={() => router.push(`/${locale}/inspo`)}
           aria-label="Zurück"
           className="grid h-10 w-10 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >
@@ -90,7 +90,7 @@ export default function SavedPage() {
             {collections.map((c) => (
               <button
                 key={c.id}
-                onClick={() => router.push(`/${locale}/discover/saved/${c.id}`)}
+                onClick={() => router.push(`/${locale}/inspo/saved/${c.id}`)}
                 className="text-left transition-transform duration-150 active:scale-[0.98]"
               >
                 <div className="grid aspect-[4/3] w-full grid-cols-2 grid-rows-2 gap-0.5 overflow-hidden rounded-2xl border border-s-border bg-s-bg-sunken">

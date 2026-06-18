@@ -7,7 +7,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 // insert time from TikTok's signed CDN (`p16-common-sign.tiktokcdn-us.com`).
 // The signatures embedded in those URLs expire — older rows show broken
 // thumbnails everywhere they're rendered (homepage Entdecken + the
-// /discover detail pages). Same bug would hit production, not just dev.
+// /inspo detail pages). Same bug would hit production, not just dev.
 //
 // Flow per request:
 //   1. Look up the item by id → get its stable `tiktok_url` (e.g.

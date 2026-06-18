@@ -83,7 +83,7 @@ export default function FavoritesList({
       <div className="mt-10 text-center">
         <p className="font-body text-[15px] text-s-ink-2">{t("removedFromFavorites")}.</p>
         <a
-          href={`/${locale}/entdecken`}
+          href={`/${locale}/inspo`}
           className="mt-2 inline-block font-body text-[14px] font-medium text-s-accent"
         >
           {t("view")}

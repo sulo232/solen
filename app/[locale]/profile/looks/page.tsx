@@ -46,11 +46,11 @@ export default async function ProfileLooksPage({
         <EmptyStateDiscovery
           locale={locale}
           title="Noch keine Looks."
-          lead="Sammle Inspiration aus Salon-Profilen und Discovery, hier findest du sie wieder."
+          lead="Sammle Inspiration aus Salon-Profilen und Inspo, hier findest du sie wieder."
           bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-          bannerTitle="Entdecken öffnen"
+          bannerTitle="Inspo öffnen"
           bannerSub="Frische Looks aus Basler Salons"
-          bannerHref={`/${locale}/entdecken`}
+          bannerHref={`/${locale}/inspo`}
           hintIcon="bookmark"
           hintText="Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios."
           railTitle="Top bewertet"

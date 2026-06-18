@@ -109,12 +109,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: image ? [{ url: image }] : undefined,
     },
     alternates: {
-      canonical: `https://solen.ch/${locale}/discover/${id}`,
+      canonical: `https://solen.ch/${locale}/inspo/${id}`,
       languages: {
-        de: `https://solen.ch/de/discover/${id}`,
-        en: `https://solen.ch/en/discover/${id}`,
-        fr: `https://solen.ch/fr/discover/${id}`,
-        it: `https://solen.ch/it/discover/${id}`,
+        de: `https://solen.ch/de/inspo/${id}`,
+        en: `https://solen.ch/en/inspo/${id}`,
+        fr: `https://solen.ch/fr/inspo/${id}`,
+        it: `https://solen.ch/it/inspo/${id}`,
       },
     },
   };
