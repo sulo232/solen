@@ -17,6 +17,7 @@ on:
     - cron: '0 10 * * *'
     - cron: '0 11 * * *'
     - cron: '0 4 1 * *'
+    - cron: '0 5 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -154,4 +155,15 @@ jobs:
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/loyalty-recompute
+          secret: ${{ secrets.CRON_SECRET }}
+
+  weekly-mon-05-utc:
+    if: github.event.schedule == '0 5 * * 1'
+    name: Weekly (Mon) 05:00 UTC · discovery-deadcheck (hide deleted/private TikToks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/discovery-deadcheck
           secret: ${{ secrets.CRON_SECRET }}
