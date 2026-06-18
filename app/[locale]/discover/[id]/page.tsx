@@ -1,12 +1,18 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { DiscoveryItem } from "@/lib/types";
 import DetailPage, { type SalonLite } from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 import { discoveryAiLimiter, checkRateLimit } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
+
+// The look-detail page is a full-bleed DARK hero. Override the global light theme-color (#F4F4F6) with a dark one so
+// the phone's status-bar area blends into the video instead of showing as a white strip above it (owner-reported).
+export const viewport: Viewport = {
+  themeColor: "#0A0A0A",
+};
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>;

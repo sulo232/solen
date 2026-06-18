@@ -4,12 +4,13 @@ import { useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play } from "lucide-react";
+import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import MasonryGrid from "./MasonryGrid";
 import ItemCard from "./ItemCard";
 import VideoCard from "./VideoCard";
 import SaveToBoardSheet from "./SaveToBoardSheet";
+import TikTokPlayer from "./TikTokPlayer";
 import DiscoveryGridSkeleton from "./DiscoveryGridSkeleton";
 import { formatCreator } from "./format";
 import { FROST_GLASS } from "@/lib/frost-glass";
@@ -80,7 +81,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const router = useRouter();
   const t = L[locale] ?? L.en;
 
-  const [aspect, setAspect] = useState("9 / 16");
   const [descOpen, setDescOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -92,6 +92,13 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // video plays INLINE in our page only when the user taps play (never opens TikTok; TikTok's cookie wall only
   // appears on that intentional tap, never on load).
   const [playing, setPlaying] = useState(false);
+  // TEMP interaction switch (owner deciding the play interaction): ?play=inline (current) | sheet | fullscreen.
+  // Client-only read; the play surfaces only appear after a tap, so no hydration mismatch. Default = current inline.
+  const [playVariant] = useState<"inline" | "sheet" | "fullscreen">(() => {
+    if (typeof window === "undefined") return "inline";
+    const v = new URLSearchParams(window.location.search).get("play");
+    return v === "sheet" || v === "fullscreen" ? v : "inline";
+  });
   const handleSave = (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
     setSaveItemId(id);
@@ -122,6 +129,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     item.tiktok_embed_html?.match(/\/video\/(\d+)/)?.[1] ??
     item.tiktok_url?.match(/\/video\/(\d+)/)?.[1] ??
     null;
+  const closePlayer = () => setPlaying(false);
   // Shape the frame to the real video ratio (probed from the thumbnail; the iframe is cross-origin) so the embed
   // fills cleanly instead of a one-size 9/16 guess.
   useEffect(() => {
@@ -151,7 +159,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
   const moreLikeThisHref = `/${locale}/discover?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
 
-  const heroAspectRatio = videoId ? (videoAspect ?? "9 / 16") : aspect;
   const thumbEl: ReactNode = heroSrc ? (
     <Image
       src={heroSrc}
@@ -160,7 +167,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
       priority
       sizes="(max-width: 480px) 100vw, 480px"
       className="object-cover animate-in fade-in duration-500"
-      onLoad={(e) => { const img = e.currentTarget; if (img.naturalWidth && img.naturalHeight) setAspect(`${img.naturalWidth} / ${img.naturalHeight}`); }}
     />
   ) : (
     <div className="absolute inset-0 grid place-items-center text-sm text-white/30">{t.noMedia}</div>
@@ -170,14 +176,12 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     <div className="mx-auto max-w-[480px] bg-white">
       {/* ─── Hero — the cover IMAGE is the look (clean: no cookie wall, never opens TikTok). Tapping play loads the
            TikTok embed INLINE in our page (in-web; TikTok's cookie wall only appears on that intentional tap). ─── */}
-      <div className="relative w-full overflow-hidden bg-s-ink" style={{ aspectRatio: heroAspectRatio }}>
-        {playing && videoId ? (
-          <iframe
-            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
-            className="absolute inset-0 h-full w-full border-0"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-            title={item.style_name || "TikTok"}
-          />
+      {/* Fixed height (not the video's aspect) so EVERY look — any aspect ratio — gets the same hero size with a
+          consistent peek of the content below (scroll affordance). The cover image + player both cover-fill + crop
+          to this box, so it never pillarboxes. (Owner 2026-06-18.) */}
+      <div className="relative w-full overflow-hidden rounded-b-[26px] bg-s-ink" style={{ height: "80vh" }}>
+        {playing && videoId && playVariant === "inline" ? (
+          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
         ) : (
           thumbEl
         )}
@@ -227,8 +231,34 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
       </div>
 
+      {/* SHEET player variant (?play=sheet) — video rises in a bottom sheet over the dimmed look; the hero stays the
+          clean image. Mirrors the locked sheet physics (backdrop blur + rounded-t + slide-in-from-bottom). */}
+      {playing && videoId && playVariant === "sheet" && (
+        <div className="fixed inset-0 z-[60] flex items-end" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
+          <div className="absolute inset-0 bg-s-ink/60 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={closePlayer} />
+          <div className="relative w-full overflow-hidden rounded-t-[22px] bg-black shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
+            <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
+              <X size={18} />
+            </button>
+            <div className="relative w-full" style={{ aspectRatio: videoAspect ?? "9 / 16", maxHeight: "82vh" }}>
+              <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FULLSCREEN player variant (?play=fullscreen) — takes over the screen like opening a reel; tap X to return. */}
+      {playing && videoId && playVariant === "fullscreen" && (
+        <div className="fixed inset-0 z-[60] bg-black animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
+          <button type="button" onClick={closePlayer} aria-label={t.back} style={{ ...FROST_GLASS, top: "calc(env(safe-area-inset-top, 0px) + 14px)" }} className="absolute right-4 z-10 grid h-10 w-10 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
+            <X size={18} />
+          </button>
+          <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} />
+        </div>
+      )}
+
       {/* ─── Sheet (pulled over the hero, App-Store style) ─── */}
-      <div className="relative z-[5] -mt-[26px] rounded-t-[28px] bg-white px-[18px] pt-6 pb-9 shadow-[0_-10px_28px_-16px_rgba(0,0,0,0.22)] animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="relative z-[5] mt-0 bg-white px-[18px] pt-5 pb-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {/* Creator + date */}
         <div className="flex items-center gap-2">
