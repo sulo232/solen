@@ -122,3 +122,29 @@ fade", row 3 "stacked no dots ... the color differentiation is enough".
   green/red vs grey colour separates them. Verified on the real PDP ("Geschlossen
   Öffnet Montag um 09:00", no dot).
 - Pending: add the "sticky-bar = gradient fade" rule to `CONTROL_ELEVATION.md`.
+
+---
+
+## Inspo home chrome , multi-category architecture (council + owner, 2026-06-20)
+
+Convened the LLM council (Gemini 3.1 Pro + Grok 4 + Claude) on the `/inspo` home. Both external
+models converged: the page is built hair-only but the product is multi-category (hair/nails/barber/
+spa), so the chrome IA is broken. Full record + phase-2 list: [`_discovery-audit/HOME_DIRECTION.md`](_discovery-audit/HOME_DIRECTION.md).
+
+| Dimension | Decision | Why |
+|---|---|---|
+| **Category switcher** | **Pills, not a segmented control.** Keep the current rounded-box (`rounded-card`) filter-pill shape; category pills are the first control. | Owner wants the existing pill language, not new heavy chrome. Lighter, on-system. |
+| **Filter model** | **Two-level progressive disclosure.** Top = category pills; tap a category -> expands to that category's sub-style pills (Hair reuses today's data-driven quick-chips; nails/barber/spa get their own). | Solves the council's "category collision" without a separate taxonomy fighting the feed. |
+| **Default feed** | **Blended "For You"** (all categories), scoped by the pills + search. Hybrid, not pure-segmented. | Owner likes blended-for-you; council's siloed-intent concern is handled by the pill scope on tap. |
+| **Feed cards** | **Keep as-is this pass** (owner "what we got rn"). | Card redesign is out of scope; chrome/IA first. |
+| **Selected pill state** | Blue border + blue text, NO fill; neutral resting pills. | Re-confirms the locked filter-pill rule (V3-D450). |
+
+### Deferred (phase 2, data-coupled)
+- Per-category sub-taxonomy for nails/barber/spa (extend `/api/discovery/chip-terms` to be category-scoped).
+- Inventory-aware category pills (Basel-only cold-start: only show categories with real looks; no empty Spa pill).
+- Real booking signal on cards (distance / "Frei diese Woche" / book-this-look) , needs geo + live availability.
+- Seed-image mismatch cleanup (content fix, not design).
+
+### Applied in code?
+- Not yet , owner said "write it down" first. Next when greenlit: mockup of the real `/inspo` chrome
+  (cards untouched) as a link, mockup-first.
