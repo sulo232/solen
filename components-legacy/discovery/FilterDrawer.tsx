@@ -57,8 +57,10 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-colors duration-150 ${
-          activeCount > 0 ? "border-s-ink text-s-ink" : "border-s-border text-s-ink-2 hover:text-s-ink"
+        /* Owner 2026-06-20: the count badge alone signals active filters. Dropped the active-state black ring
+           (border-s-ink) , it read as a heavy black circle. Border stays a neutral hairline; active just darkens the icon. */
+        className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border transition-colors duration-150 ${
+          activeCount > 0 ? "text-s-ink" : "text-s-ink-2 hover:text-s-ink"
         }`}
       >
         <SlidersHorizontal size={18} />
