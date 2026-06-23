@@ -13,7 +13,7 @@ import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
 import InlinePrefsPanel from "@/components-legacy/discovery/InlinePrefsPanel";
 import FeaturedBoards from "@/components-legacy/discovery/FeaturedBoards";
 import FilterDrawer from "@/components-legacy/discovery/FilterDrawer";
-import PatternSelector from "@/components-legacy/discovery/PatternSelector";
+import { DISCOVERY_CATEGORIES } from "@/components-legacy/discovery/CategoryTabBar";
 import DiscoveryErrorState from "@/components-legacy/discovery/DiscoveryErrorState";
 import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import ForYouSection from "@/components-legacy/discovery/ForYouSection";
@@ -22,7 +22,7 @@ import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
 import SaveToBoardSheet from "@/components-legacy/discovery/SaveToBoardSheet";
-import { ArrowLeft, ChevronDown, Bookmark, Check } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -57,6 +57,7 @@ function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("discover");
+  const tTabs = useTranslations("discover.tabs"); // MOCKUP 2026-06-20: category-pill labels
   const searchParams = useSearchParams() ?? new URLSearchParams();
 
   const [items, setItems] = useState<DiscoveryItem[]>([]);
@@ -72,11 +73,15 @@ function DiscoverPageContent() {
   const [search, setSearch] = useState("");           // committed query — drives the feed + search logging
   const [searchInput, setSearchInput] = useState("");  // V3-D414: live text — drives ONLY the dropdown; typing no longer auto-searches/logs
   const [searchFocused, setSearchFocused] = useState(false);
-  const [patternOpen, setPatternOpen] = useState(false); // V3-D397: Hair-pattern pill dropdown
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
   // photo OF that style (not a generic feed thumbnail). Fetched once; stable across filter taps.
   const [chipTerms, setChipTerms] = useState<{ term: string; thumb: string }[]>([]);
+  // Owner 2026-06-23 (Option C, inventory-aware): each category pill shows a REAL look photo from that category's
+  // own content (via the persisted /api/discovery/thumb proxy), NOT an illustration. A category with zero looks
+  // (nails/lashes/brows today) gets NO photo , it falls back to a plain text pill until real content lands, when
+  // its cover appears automatically. count + cover are fetched once below. No illustrations, no mismatched photos.
+  const [categoryMeta, setCategoryMeta] = useState<Record<string, { count: number; cover: string | null }>>({});
 
   // Derive filter values from activeFilters
   const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
@@ -137,6 +142,38 @@ function DiscoverPageContent() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && Array.isArray(d?.terms)) setChipTerms(d.terms.slice(0, 9)); })
       .catch((err) => console.error("[Discover] chip-terms load failed:", err));
+    return () => { cancelled = true; };
+  }, []);
+
+  // Owner 2026-06-23 (Option C, inventory-aware): fetch each category's real count + cover ONCE. A category with
+  // looks (count > 0) renders a photo pill from its own top look; an empty category renders a plain text pill. The
+  // cover uses the persisted thumb proxy so it never expires. "Alle" = the unfiltered pool (always the photo pill).
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      DISCOVERY_CATEGORIES.map(async ({ key }) => {
+        // "Alle" = the blended pool: pull a few and pick a representative that isn't just the top hair look, so its
+        // tile doesn't twin the Haare tile while the catalogue is still hair-only. Category pills take their own top look.
+        const qs = key === "all" ? "limit=6" : `category=${key}&limit=1`;
+        try {
+          const r = await fetch(`/api/discovery/feed?${qs}`);
+          if (!r.ok) return [key, { count: 0, cover: null }] as const;
+          const d = await r.json();
+          const list = Array.isArray(d?.items) ? d.items : [];
+          const top = key === "all" ? (list[2] ?? list[0] ?? null) : (list[0] ?? null);
+          const count = key === "all" ? (top ? 1 : 0) : Number(d?.total ?? 0);
+          // TikTok looks resolve through the thumb proxy; stock/photo looks (Pexels/Unsplash) serve image_url
+          // directly. The old code always used the TikTok proxy, so stock-topped categories showed a broken tile.
+          const cover = top
+            ? (top.tiktok_url ? `/api/discovery/thumb/${top.id}` : (top.image_url || top.tiktok_thumbnail_url || null))
+            : null;
+          return [key, { count, cover }] as const;
+        } catch (err) {
+          console.error(`[Discover] category cover load failed (${key}):`, err);
+          return [key, { count: 0, cover: null }] as const;
+        }
+      })
+    ).then((entries) => { if (!cancelled) setCategoryMeta(Object.fromEntries(entries)); });
     return () => { cancelled = true; };
   }, []);
 
@@ -358,7 +395,7 @@ function DiscoverPageContent() {
               aria-label="Kollektionen"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
-              <Bookmark size={18} />
+              <Heart size={18} />
             </button>
           </div>
           {searchFocused && (
@@ -385,30 +422,50 @@ function DiscoverPageContent() {
           )}
         </div>
 
-        {/* V3-D401 (user): category tabs REMOVED; the texture chip row takes their slot as the primary filter row.
-            Category is still switchable via the tune/filter sheet (FilterDrawer → CategoryPills). */}
+        {/* MOCKUP (owner direction 2026-06-20): category pills are the FIRST control, in the rounded-box (rounded-card)
+            pill shape. "Alle" = the blended For You default (boards + personalized + all looks below). Tapping a
+            category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
+            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = blue border + blue text, NO fill (locked rule). */}
+        <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
+          {DISCOVERY_CATEGORIES.map(({ key }) => {
+            const sel = category === key;
+            const meta = categoryMeta[key];
+            const cover = meta && meta.count > 0 ? meta.cover : null;
+            const pick = () => { setCategory(key as DiscoveryCategory | "all"); setActiveFilters([]); setSearch(""); setSearchInput(""); };
+            // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
+            // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
+            // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
+            // look automatically once that category has content. Selected = the chip greys (NO check, NO ring, NO blue).
+            return (
+              <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
+                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
+                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
+                  {cover
+                    ? <img src={cover} alt="" className="h-full w-full object-cover" />
+                    : <span className="h-full w-full bg-s-bg-sunken" />}
+                </span>
+                <span className={`w-full rounded-pill py-1 text-center font-heading text-[12px] transition-colors duration-150 ${
+                  sel ? "bg-s-bg-sunken font-semibold text-s-ink" : "font-medium text-s-ink-2"
+                }`}>
+                  {tTabs(key)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Sub-style pills, EXPAND only when a category is selected (progressive disclosure). "Alle" / For You stays
+            clean (no sub-row). The hair texture ("Haare") pill is hair-specific, so it shows only under Hair; other
+            categories show their style chips. Per-category sub-taxonomy for nails/lashes/brows is phase-2 (data). */}
+        {category !== "all" && (
         <div className="relative mb-5">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-none -mx-4 px-4">
-              {/* texture chip — dark when a pattern is picked (shows the pattern name), grey "Textur" otherwise */}
-              <button
-                type="button"
-                onClick={() => setPatternOpen((o) => !o)}
-                aria-expanded={patternOpen}
-                className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
-                  texture
-                    ? "bg-s-ink text-white"
-                    : "bg-s-bg-sunken text-s-ink border border-s-border hover:bg-s-bg-sunken"
-                }`}
-              >
-                {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}
-                <ChevronDown size={14} className={`transition-transform duration-150 ${patternOpen ? "rotate-180" : ""}`} />
-              </button>
-              {/* V3-D407/408 (#22): photo-backed quick chips — data-driven labels (top style tags, never an empty
-                  feed) AND a representative photo OF that style (not a generic feed thumbnail). Same chip visual. */}
-              {chipTerms.map(({ term, thumb }) => {
+              {/* Owner 2026-06-20: with photos now on the CATEGORY pills, the sub-style pills are PLAIN (no photo) ,
+                  lightweight refinement under the visual category switcher. Redundant "Haare" texture pill stays dropped. */}
+              {chipTerms.map(({ term }) => {
                 const label = formatChip(term);
-                // V3-D414 (user pick: option E): selected chip = dimmed. A chip is "selected" when its label is the
-                // committed search. Tapping commits the search (+ fills the bar); tapping the selected one clears it.
+                // A pill is "selected" when its label is the committed search. Tapping commits the search; tapping the
+                // selected one clears it.
                 const sel = !!search && search.trim().toLowerCase() === label.toLowerCase();
                 return (
                   <button
@@ -416,45 +473,19 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
-                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-card shadow-elevation-1"
-                    aria-label={label}
+                    className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
+                      sel
+                        ? "bg-s-bg-sunken text-s-ink border border-s-border"
+                        : "bg-white text-s-ink/60 border border-s-border hover:text-s-ink"
+                    }`}
                   >
-                    <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                    {/* vibrant treatment: photo stays clear down to ~40%, scrim fades in behind the label only.
-                        selected (2026-06-09): photo stays BRIGHT; a small accent check badge (top-right, INSIDE the chip
-                        so nothing clips in the scroll row) marks it. Replaces the dark-scrim "option E" + an outset
-                        accent ring, both rejected (the ring also clipped against overflow-x-auto). */}
-                    <span className="absolute inset-0 bg-gradient-to-b from-transparent from-[40%] to-s-ink/65" />
-                    <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
-                    {sel && (
-                      <span className="absolute right-1 top-1 z-20 flex h-[15px] w-[15px] items-center justify-center rounded-full bg-s-accent text-white shadow-sm ring-1 ring-white/60">
-                        <Check size={9} strokeWidth={3.5} />
-                      </span>
-                    )}
+                    {label}
                   </button>
                 );
               })}
             </div>
-            {patternOpen && (
-              <>
-                {/* click-away */}
-                <div className="fixed inset-0 z-20" onClick={() => setPatternOpen(false)} />
-                <div className="absolute left-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
-                  <PatternSelector
-                    category="hair"
-                    heading=""
-                    selected={texture}
-                    onSelect={(tx) => {
-                      const next = activeFilters.filter((f) => f.pillId !== "texture");
-                      if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
-                      setActiveFilters(next);
-                      setPatternOpen(false);
-                    }}
-                  />
-                </div>
-              </>
-            )}
         </div>
+        )}
 
         {/* Inline preferences setup (shown when profile not configured) */}
         {profileChecked && showProfileSetup && (
