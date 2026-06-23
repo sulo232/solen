@@ -68,6 +68,17 @@ jobs:
           paths: /api/cron/release-deposits,/api/cron/release-payments
           secret: ${{ secrets.CRON_SECRET }}
 
+  every-30-min-ai-backfill:
+    if: github.event.schedule == '*/30 * * * *'
+    name: Every 30 min · discovery-ai-backfill (auto-spec un-described looks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/discovery-ai-backfill
+          secret: ${{ secrets.CRON_SECRET }}
+
   daily-02-utc:
     if: github.event.schedule == '0 2 * * *'
     name: Daily 02:00 UTC · generate-slots
