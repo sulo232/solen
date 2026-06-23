@@ -292,11 +292,17 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <h1 className="mt-2.5 font-heading text-[25px] font-bold leading-[1.16] tracking-[-0.022em] text-s-ink">{item.style_name}</h1>
         )}
 
-        {/* Tags */}
+        {/* Tags , tappable: each jumps into the searched feed (owner: "search based on this look"). */}
         {item.tags?.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {item.tags.slice(0, 6).map((tag) => (
-              <span key={tag} className="rounded-full bg-s-bg-sunken px-2.5 py-1 text-[12px] text-s-ink-2">{tag}</span>
+              <Link
+                key={tag}
+                href={`/${locale}/inspo?search=${encodeURIComponent(tag)}`}
+                className="rounded-full bg-s-bg-sunken px-2.5 py-1 text-[12px] text-s-ink-2 transition-colors duration-150 hover:bg-s-border hover:text-s-ink"
+              >
+                {tag}
+              </Link>
             ))}
           </div>
         )}
