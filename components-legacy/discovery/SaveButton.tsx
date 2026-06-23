@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bookmark } from "lucide-react";
+import { Heart } from "lucide-react";
 import SaveToBoardSheet from "./SaveToBoardSheet";
 
 const GUEST_SAVES_KEY = "disc_saves_guest";
@@ -65,11 +65,11 @@ export default function SaveButton(props: SaveButtonProps) {
         aria-label={saved ? "Gespeichert" : "Speichern"}
         aria-pressed={saved}
       >
-        <Bookmark
+        <Heart
           size={18}
           className={[
             "transition-[fill,color] duration-150",
-            saved ? "fill-s-ink text-s-ink" : "text-s-ink/30 group-hover:text-s-ink-2",
+            saved ? "fill-s-love text-s-love" : "text-s-ink/30 group-hover:text-s-ink-2",
           ].join(" ")}
         />
       </button>

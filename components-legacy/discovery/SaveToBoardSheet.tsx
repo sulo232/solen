@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { X, Plus, Bookmark } from "lucide-react";
+import { X, Plus, Images } from "lucide-react";
 
 // V3-D414 (Phase 2): "Speichern in" sheet. Lists the user's collections + a create row; picking one saves the
 // look into it (POST /collections/[id]/items, upsert), creating one then saves into the new board. Mockup frame 5.
@@ -122,7 +122,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                   <span className="grid h-12 w-12 shrink-0 grid-cols-2 grid-rows-2 gap-px overflow-hidden rounded-[12px] bg-s-bg-sunken">
                     {c.covers && c.covers.length > 0
                       ? c.covers.slice(0, 4).map((src, i) => <img key={i} src={src} alt="" className="h-full w-full object-cover" />)
-                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-3"><Bookmark size={18} /></span>}
+                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-3"><Images size={18} /></span>}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{c.name}</span>

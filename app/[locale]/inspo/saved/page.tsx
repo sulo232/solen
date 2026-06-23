@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Bookmark, Plus } from "lucide-react";
+import { ArrowLeft, Images, Plus } from "lucide-react";
 
 // V3-D414 (Phase 2): the user's saved "Kollektionen" (owner-named term, 2026-06-14 — matches the editorial
 // Kollektionen row on Discover). Reached from the bookmark entry point in the discovery header. Focused view
@@ -105,7 +105,7 @@ export default function SavedPage() {
                       />
                     ))
                   ) : (
-                    <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-3"><Bookmark size={22} /></span>
+                    <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-3"><Images size={22} /></span>
                   )}
                 </div>
                 <p className="mt-2 truncate font-heading text-[14px] font-semibold text-s-ink">{c.name}</p>
