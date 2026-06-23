@@ -211,7 +211,12 @@ function DiscoverPageContent() {
       const data = await res.json();
 
       if (append) {
-        setItems((prev) => [...prev, ...(data.items ?? [])]);
+        // De-dupe by id: when new looks are inserted (e.g. live imports), offset-paged results overlap, which made
+        // the SAME look appear twice ("multiple same picture"). Drop any incoming look we already have.
+        setItems((prev) => {
+          const seen = new Set(prev.map((i) => i.id));
+          return [...prev, ...((data.items ?? []) as DiscoveryItem[]).filter((i) => !seen.has(i.id))];
+        });
       } else {
         setItems(data.items ?? []);
         // Cache only the initial page of a combo (infinite-scroll pages stay live).
