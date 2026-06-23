@@ -250,7 +250,7 @@ export const discoverySaveSchema = z.object({
 
 export const discoverySearchStockSchema = z.object({
   query: z.string().min(1).max(100),
-  category: z.enum(["hair", "beard", "nails"]).optional(),
+  category: z.enum(["hair", "beard", "nails", "lashes", "brows"]).optional(),
   source: z.enum(["unsplash", "pexels", "pixabay", "all"]).default("all"),
   page: z.coerce.number().int().min(1).default(1),
 });
@@ -656,7 +656,11 @@ export const adminDiscoveryModerationSchema = z.object({
 });
 
 export const adminDiscoveryBulkImportSchema = z.object({
-  category: z.enum(["hair", "beard", "nails"]),
+  category: z.enum(["hair", "beard", "nails", "lashes", "brows"]),
+  // Free-text term (e.g. "coffin nails"): when present, the route searches stock for THIS and imports the whole
+  // batch into `category`, instead of the fixed QUERIES_BY_CATEGORY. `pages` controls how many result pages to pull.
+  query: z.string().trim().min(2).max(80).optional(),
+  pages: z.coerce.number().int().min(1).max(5).optional(),
 });
 
 export const adminDiscoverySmartImportSchema = z.object({

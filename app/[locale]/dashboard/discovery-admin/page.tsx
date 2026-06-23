@@ -9,7 +9,7 @@ import ImportProgressBar from "@/components-legacy/discovery/ImportProgressBar";
 import Spinner from "@/components-legacy/ui/Spinner";
 import {
   Search, Upload, CheckCircle, XCircle, Trash2, Eye,
-  Video, RefreshCw, Sparkles,
+  Video, RefreshCw, Download,
   AlertTriangle, GripVertical,
 } from "lucide-react";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
@@ -17,7 +17,7 @@ import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from "@d
 import { CSS } from "@dnd-kit/utilities";
 import type { DiscoveryStagingItem, DiscoveryItem, DiscoveryCategory } from "@/lib/types";
 
-const CATEGORIES: DiscoveryCategory[] = ["hair", "beard", "nails"];
+const CATEGORIES: DiscoveryCategory[] = ["hair", "beard", "nails", "lashes", "brows"];
 const TABS = ["Stock Import", "TikTok Import", "Manual Upload", "Staging", "Published", "Flagged"] as const;
 type Tab = (typeof TABS)[number];
 
@@ -133,16 +133,20 @@ function StockImportTab() {
     setSelected(new Set());
   };
 
+  // Type a term (e.g. "coffin nails") + hit this -> the route searches stock for it and imports the whole batch
+  // into the chosen category. No term -> the category's preset queries. This is the "fill a category in one click".
   const handleBulkImport = async () => {
     setBulkImporting(true);
+    setBulkResult(null);
     try {
       const res = await fetch("/api/admin/discovery/bulk-import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category }),
+        body: JSON.stringify({ category, query: query.trim() || undefined, pages: 3 }),
       });
       const data = await res.json();
-      setBulkResult(t("bulkImportedToStaging", { n: data.imported ?? 0 }));
+      if (!res.ok) { setBulkResult(data.error ?? "Import failed"); return; }
+      setBulkResult(`Imported ${data.imported ?? 0} ${query.trim() ? `"${query.trim()}"` : category} photos into ${category}.`);
     } finally {
       setBulkImporting(false);
     }
@@ -179,7 +183,7 @@ function StockImportTab() {
           {loading ? <Spinner size="sm" /> : <Search size={16} />} {t("searchBtn")}
         </button>
         <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-btn bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-          {bulkImporting ? <Spinner size="sm" /> : <Sparkles size={16} />} {t("autoImportBtn")}
+          {bulkImporting ? <Spinner size="sm" /> : <Download size={16} />} {t("autoImportBtn")}
         </button>
       </div>
 

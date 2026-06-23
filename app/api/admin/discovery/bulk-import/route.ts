@@ -34,33 +34,52 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(adminDiscoveryBulkImportSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { category } = validated;
-  const queries = QUERIES_BY_CATEGORY[category];
-  if (!queries) return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+  const customQuery = validated.query?.trim();
+  // With a free-text term, search THAT (across a few pages for volume) and import the batch into `category`.
+  // Without one, fall back to the category's preset queries.
+  const queries = customQuery ? [customQuery] : QUERIES_BY_CATEGORY[category];
+  if (!queries || queries.length === 0) {
+    return NextResponse.json(
+      { error: `No preset for "${category}". Type a search term (e.g. "coffin nails", "volume lashes").` },
+      { status: 400 },
+    );
+  }
+  const pages = customQuery ? Math.min(validated.pages ?? 3, 5) : 1;
+  const queryTags = customQuery ? customQuery.toLowerCase().split(/\s+/).filter(Boolean) : [];
+  const titleCase = (s: string) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
   const admin = createAdminSupabaseClient();
   const batchId = crypto.randomUUID();
+  const seen = new Set<string>();
   let totalImported = 0;
 
   for (const query of queries) {
-    const result = await searchStockPhotos(query, category, "all", 1);
-
-    for (const photo of result.photos) {
-      const { error } = await admin.from("discovery_items").upsert({
-        id: crypto.randomUUID(),
-        image_url: photo.url,
-        media_type: "photo",
-        content_type: "inspo",
-        category,
-        author_name: photo.author,
-        alt_text: photo.alt_text,
-        tags: photo.tags,
-        status: "published",
-        is_active: true,
-        uploaded_by: user.id,
-        source_url: photo.url,
-      }, { onConflict: "id" });
-
-      if (!error) totalImported++;
+    for (let page = 1; page <= pages; page++) {
+      const result = await searchStockPhotos(query, category, "all", page);
+      if (!result.photos?.length) break; // ran out of results for this term
+      for (const photo of result.photos) {
+        if (!photo.url || seen.has(photo.url)) continue; // de-dupe within this run
+        seen.add(photo.url);
+        // Tag with the search words + the stock photo's own keywords so the for-you point system has signal.
+        const tags = Array.from(new Set([...queryTags, ...(photo.tags ?? [])])).filter(Boolean).slice(0, 12);
+        const { error } = await admin.from("discovery_items").upsert({
+          id: crypto.randomUUID(),
+          image_url: photo.url,
+          media_type: "photo",
+          content_type: "inspo",
+          category,
+          ...(customQuery ? { style_name: titleCase(customQuery) } : {}),
+          author_name: photo.author,
+          alt_text: photo.alt_text,
+          tags,
+          status: "published",
+          is_active: true,
+          uploaded_by: user.id,
+          source: photo.source ?? "stock",
+          source_url: photo.url,
+        }, { onConflict: "id" });
+        if (!error) totalImported++;
+      }
     }
   }
 
