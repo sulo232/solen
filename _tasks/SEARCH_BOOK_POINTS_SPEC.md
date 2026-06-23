@@ -39,6 +39,13 @@ score until the web search UI is instrumented to POST `/api/search/event` (impre
 result tap, respecting consent). **This client instrumentation is the real keystone, ahead of phases 4-5.**
 Until it's wired, the points engine runs on an empty pipe.
 
+**RESOLVED (search) 2026-06-23:** `lib/searchTelemetry.ts` + SearchOverlay now fire impression +
+click events to `/api/search/event` (consent-gated, keepalive). Verified: POSTs land real rows in
+`search_events`. The funnel source is live for search. **Discovery instrumentation DEFERRED with reason:**
+0 of 18 `discovery_items` have `owner_salon_id`, so discovery interactions can't resolve to a salon and
+would feed the points engine nothing yet — plus discovery is a design NO-TOUCH surface. Revisit once
+salons own looks.
+
 ## 2. Session backbone (reused, not reinvented)
 `solen_se_sid` httpOnly cookie, `path: "/"`, sameSite lax, 30-day sliding (`search/event/route.ts:56,99-105`).
 It reaches `/api/bookings` (path "/"), so the booking route reads the SAME cookie as the attribution key.
