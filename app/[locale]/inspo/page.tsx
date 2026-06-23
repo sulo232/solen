@@ -450,7 +450,12 @@ function DiscoverPageContent() {
             const sel = category === key;
             const meta = categoryMeta[key];
             const cover = meta && meta.count > 0 ? meta.cover : null;
-            const pick = () => { setCategory(key as DiscoveryCategory | "all"); setActiveFilters([]); setSearch(""); setSearchInput(""); };
+            // Tapping the already-selected category again toggles back to "Alle" (owner 2026-06-23: a second tap
+            // should deselect, not no-op). "Alle" itself doesn't toggle off.
+            const pick = () => {
+              const next = category === key && key !== "all" ? "all" : key;
+              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setSearch(""); setSearchInput("");
+            };
             // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
             // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
             // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
