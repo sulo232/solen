@@ -193,7 +193,13 @@ export default function BookingWizard({ services, staffList, salon, staffService
         ) : (
           <button
             type="button"
-            onClick={() => router.push(`/${locale}/salon/${salon.slug}`)}
+            onClick={() => {
+              // Step 1 back: return to where the user actually came from (the Inspo look, search, the salon page...).
+              // It was hardcoded to the salon page, which dumped anyone arriving via Inspo "Book this look" onto a
+              // page they never visited. Fall back to the salon page only on a deep link with no history.
+              if (typeof window !== 'undefined' && window.history.length > 1) router.back();
+              else router.push(`/${locale}/salon/${salon.slug}`);
+            }}
             aria-label={t('back')}
             className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-s-ink/5"
           >
