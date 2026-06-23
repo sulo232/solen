@@ -1030,11 +1030,11 @@ function TimePicker({
       </div>
 
       <div className="mt-3">
-        {/* Calendar for any other day (DateTimePicker single-date primitive).
-            German Mo-first weekdays + blue selected day per council mockup. */}
+        {/* Calendar for any other day (DateTimePicker single-date primitive). German Mo-first weekdays.
+            Selected day = ink (owner 2026-06-23: one selected look everywhere; was blue, now matches booking). */}
         <DateTimePicker
           variant="single-date"
-          selectedTone="accent"
+          selectedTone="ink"
           value={{ date: zeitDate, time: null }}
           onChange={({ date }) => onDateChange(date)}
         />
