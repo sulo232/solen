@@ -21,6 +21,7 @@ export interface SalonLite {
   slug: string;
   rating: number | null;
   priceFrom: number | null;
+  serviceId: string | null;
 }
 
 interface DetailPageProps {
@@ -165,8 +166,14 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // The AI cut-instruction (salon_script) no longer shows as a card; it auto-fills the booking note when the user
   // books a salon from this look (owner 2026-06-14: "how you want the staff to cut your hair auto transfers to the
   // booking note section"). Passed via ?note= and seeded into the booking wizard's customerNote.
-  const bookHref = (slug: string) =>
-    `/${locale}/salon/${slug}/booking${script ? `?note=${encodeURIComponent(script)}` : ""}`;
+  // Pre-select the matched service (so booking opens ON it, not an empty picker) + seed the cut note.
+  const bookHref = (slug: string, serviceId: string | null) => {
+    const params = new URLSearchParams();
+    if (serviceId) params.set("service", serviceId);
+    if (script) params.set("note", script);
+    const qs = params.toString();
+    return `/${locale}/salon/${slug}/booking${qs ? `?${qs}` : ""}`;
+  };
 
   const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
   const moreLikeThisHref = `/${locale}/inspo?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
@@ -358,7 +365,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               {salons.map((s) => (
                 <Link
                   key={s.id}
-                  href={bookHref(s.slug)}
+                  href={bookHref(s.slug, s.serviceId)}
                   className="flex items-center gap-3 border-t border-s-border py-3 first:border-t-0"
                 >
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-s-bg-sunken font-heading text-[14px] font-bold tracking-[-0.02em] text-s-ink-2">{initials(s.name)}</span>

@@ -150,7 +150,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   try {
     const { data: salonRows } = await supabase
       .from("salons")
-      .select("id, name, slug, average_rating, services!inner(price, category, is_active)")
+      .select("id, name, slug, average_rating, services!inner(id, name_de, name_en, price, category, is_active)")
       .eq("is_active", true)
       .eq("services.is_active", true)
       .eq("services.category", serviceCategory)
@@ -158,15 +158,25 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
       .limit(60);
     const rows = salonRows ?? [];
     salonTotal = rows.length;
+    // Style-word tokens (>3 chars) from the look's name, to try to land booking on the matching service.
+    const styleWords = (item.style_name ?? "").toLowerCase().split(/\s+/).filter((w) => w.length > 3);
     salons = rows.slice(0, 3).map((s: Record<string, unknown>) => {
-      const services = (s.services as { price: number | null }[]) ?? [];
-      const prices = services.map((x) => x.price).filter((p): p is number => typeof p === "number" && p > 0);
+      type Svc = { id: string; name_de: string | null; name_en: string | null; price: number | null };
+      const services = ((s.services as Svc[]) ?? []).filter((x) => typeof x.price === "number" && x.price > 0);
+      // Pre-select the service whose name matches the look's style; else the cheapest in-category service, so
+      // "Book this look" lands on a real service instead of an empty picker (owner: "is it connecting it back").
+      const matched = services.find((x) => {
+        const n = `${x.name_de ?? ""} ${x.name_en ?? ""}`.toLowerCase();
+        return styleWords.some((w) => n.includes(w));
+      });
+      const chosen = matched ?? services.slice().sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0];
       return {
         id: s.id as string,
         name: s.name as string,
         slug: s.slug as string,
         rating: (s.average_rating as number | null) ?? null,
-        priceFrom: prices.length ? Math.min(...prices) : null,
+        priceFrom: services.length ? Math.min(...services.map((x) => x.price as number)) : null,
+        serviceId: chosen?.id ?? null,
       };
     });
   } catch (err) {
