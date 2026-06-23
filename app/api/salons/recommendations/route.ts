@@ -46,7 +46,31 @@ export async function GET(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
 
   if (user) {
-    // Try to get user preferences
+    // 1) Affinity-ranked (the points engine): the user's most-engaged salons first.
+    //    user_salon_affinity is recomputed daily from kept bookings / favorites / reviews
+    //    (+ the search funnel once its logging is wired). Highest score = strongest affinity.
+    const { data: aff } = await admin
+      .from("user_salon_affinity")
+      .select("salon_id, score")
+      .eq("user_id", user.id)
+      .order("score", { ascending: false })
+      .limit(12);
+    if (aff && aff.length > 0) {
+      const ids = aff.map((a) => a.salon_id as string);
+      const { data: affSalons } = await admin
+        .from("salons")
+        .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
+        .in("id", ids)
+        .eq("is_active", true)
+        .eq("listed_on_marketplace", true);
+      if (affSalons && affSalons.length > 0) {
+        const rank = new Map(aff.map((a, i) => [a.salon_id as string, i]));
+        const ordered = affSalons.slice().sort((a, b) => (rank.get(a.id) ?? 999) - (rank.get(b.id) ?? 999));
+        return NextResponse.json({ salons: ordered, source: "affinity" });
+      }
+    }
+
+    // 2) Try to get user preferences
     const { data: prefs } = await admin
       .from("user_preferences")
       .select("favorite_quartiers, favorite_services")
