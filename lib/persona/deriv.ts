@@ -149,8 +149,8 @@ export function deriveHairDna(input: {
 
   // ---- one-line characterisation ----
   const bits = [colorIdentity.label !== "Not set" ? colorIdentity.label : null, vibe].filter(Boolean);
-  const tail = avgDays ? ` — ${rhythmLabel.replace("~", "~")}` : "";
-  const tagline = (bits.join(", ") || "Your hair profile") + tail + (rhythm_overdue(dueDate, now) ? " · due now" : "");
+  const tail = avgDays ? `, ${rhythmLabel}` : "";
+  const tagline = (bits.join(", ") || "Your hair profile") + tail + (rhythm_overdue(dueDate, now) ? " (due now)" : "");
 
   return {
     colorIdentity,
