@@ -125,15 +125,16 @@ function DiscoverPageContent() {
     return () => { cancelled = true; };
   }, []);
 
-  // V3-D407 (#22): load the data-driven quick-chip terms once (top style tags in real content).
+  // Data-driven quick-chip terms, now PER CATEGORY (owner 2026-06-23): refetch when the selected category changes,
+  // so Haare shows hair tags and Nägel shows nail finishes (not one global mixed list). "all" -> global top tags.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/discovery/chip-terms")
+    fetch(`/api/discovery/chip-terms?category=${encodeURIComponent(category)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && Array.isArray(d?.terms)) setChipTerms(d.terms.slice(0, 9)); })
       .catch((err) => console.error("[Discover] chip-terms load failed:", err));
     return () => { cancelled = true; };
-  }, []);
+  }, [category]);
 
   // Owner 2026-06-23 (Option C, inventory-aware): fetch each category's real count + cover ONCE. A category with
   // looks (count > 0) renders a photo pill from its own top look; an empty category renders a plain text pill. The
@@ -317,7 +318,9 @@ function DiscoverPageContent() {
     } catch { /* best effort */ }
   };
 
-  const hasActiveFilters = category !== "all" || activeFilters.length > 0;
+  // Category is a SELECTOR, not a filter (owner 2026-06-23): picking Haare scopes the feed but is NOT an "active
+  // filter". hasActiveFilters reflects only the filter sheet (gender) + chip-row refinements, never the category.
+  const hasActiveFilters = activeFilters.length > 0;
 
   const resetFilters = () => {
     setCategory("all");
@@ -377,33 +380,9 @@ function DiscoverPageContent() {
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
               />
             </div>
-            {/* Filter + saved fade out + collapse when the search is focused (owner 2026-06-23), so the input
-                expands into their space; they reappear on blur. (Relocating the filter is the category revamp.) */}
-            <div className={`flex items-center gap-2 transition-all duration-200 ${searchFocused ? "pointer-events-none w-0 gap-0 overflow-hidden opacity-0" : ""}`}>
-            <FilterDrawer
-              category={category}
-              gender={gender}
-              texture={texture}
-              style={style}
-              onCategoryChange={setCategory}
-              onGenderChange={(g) => {
-                const next = activeFilters.filter((f) => f.pillId !== "gender");
-                if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
-                setActiveFilters(next);
-              }}
-              onTextureChange={(tx) => {
-                const next = activeFilters.filter((f) => f.pillId !== "texture");
-                if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
-                setActiveFilters(next);
-              }}
-              onStyleChange={(s) => {
-                const next = activeFilters.filter((f) => f.pillId !== "style");
-                if (s) next.push({ pillId: "style", subId: s, label: s });
-                setActiveFilters(next);
-              }}
-              onReset={resetFilters}
-            />
-            {/* Saved entry point , opens the plain "Gespeichert" grid (collections ditched 2026-06-23). */}
+            {/* Saved heart fades + collapses when the search is focused (owner 2026-06-23) so the input expands.
+                The filter moved OFF the search row to the refine row below the category tabs. */}
+            <div className={`flex items-center transition-all duration-200 ${searchFocused ? "pointer-events-none w-0 overflow-hidden opacity-0" : ""}`}>
             <button
               type="button"
               onClick={() => router.push(`/${locale}/inspo/saved`)}
@@ -475,15 +454,24 @@ function DiscoverPageContent() {
           })}
         </div>
 
-        {/* Sub-style pills, EXPAND only when a category is selected (progressive disclosure). "Alle" / For You stays
-            clean (no sub-row). The hair texture ("Haare") pill is hair-specific, so it shows only under Hair; other
-            categories show their style chips. Per-category sub-taxonomy for nails/lashes/brows is phase-2 (data). */}
-        {category !== "all" && (
+        {/* Refine row (owner 2026-06-23): the filter sheet trigger (icon-only) lives here now, OFF the search bar and
+            always available. The quick pills are PER-CATEGORY (hair tags under Haare, nail finishes under Nägel,
+            driven by /api/discovery/chip-terms?category=) and show once a category is picked; "Alle" stays clean
+            (just the filter). Selected pill = ink fill, no ring (owner: no focus ring on selected pills). */}
         <div className="relative mb-5">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-none -mx-4 px-4">
-              {/* Owner 2026-06-20: with photos now on the CATEGORY pills, the sub-style pills are PLAIN (no photo) ,
-                  lightweight refinement under the visual category switcher. Redundant "Haare" texture pill stays dropped. */}
-              {chipTerms.map(({ term }) => {
+              <FilterDrawer
+                gender={gender}
+                texture={texture}
+                style={style}
+                onGenderChange={(g) => {
+                  const next = activeFilters.filter((f) => f.pillId !== "gender");
+                  if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
+                  setActiveFilters(next);
+                }}
+                onReset={resetFilters}
+              />
+              {category !== "all" && chipTerms.map(({ term }) => {
                 const label = formatChip(term);
                 // A pill is "selected" when its label is the committed search. Tapping commits the search; tapping the
                 // selected one clears it.
@@ -496,8 +484,8 @@ function DiscoverPageContent() {
                     onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
-                        ? "bg-s-bg-sunken text-s-ink border border-s-border"
-                        : "bg-white text-s-ink/60 border border-s-border hover:text-s-ink"
+                        ? "border border-s-ink bg-s-ink text-white"
+                        : "border border-s-border bg-s-bg-sunken text-s-ink-2 hover:text-s-ink"
                     }`}
                   >
                     {label}
@@ -506,7 +494,6 @@ function DiscoverPageContent() {
               })}
             </div>
         </div>
-        )}
 
         {/* Inline preferences setup (shown when profile not configured) */}
         {profileChecked && showProfileSetup && (
@@ -522,7 +509,7 @@ function DiscoverPageContent() {
         {isAdmin && <DiscoveryAdmin />}
 
         {/* For You personalization (authenticated + no filters) */}
-        {isAuthenticated && !hasActiveFilters && !search && (
+        {isAuthenticated && category === "all" && !hasActiveFilters && !search && (
           <ForYouSection />
         )}
 

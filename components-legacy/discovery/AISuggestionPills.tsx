@@ -69,8 +69,8 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
     <div>
       {/* Plain "Trending" label (no decorative icon, per the approved search mockup 2026-06-23). */}
       <p className="px-1 font-heading text-[13px] font-bold tracking-[-0.01em] text-s-ink">{t("trending")}</p>
-      {/* Pills WRAP (calm, all visible) — selected = blue border + blue text, NO ink fill (LOCKFILE filter-pill);
-          unselected = sunken pill + hairline (matches the category/sub-style pills). Fixes the "looks ass" pills. */}
+      {/* Pills WRAP (calm, all visible). Selected = ink fill, NO ring (owner 2026-06-23: the blue outline read as the
+          banned focus ring). Unselected = sunken pill + hairline (matches the category sub-style pills). */}
       <div className="mt-2.5 flex flex-wrap gap-2.5">
         {pills.map(({ label }) => (
           <button
@@ -83,7 +83,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
             className={[
               "rounded-pill px-3.5 py-2 text-[13.5px] font-semibold whitespace-nowrap transition-[background-color,color,border-color] duration-150",
               selected === label
-                ? "border border-s-accent bg-white text-s-accent"
+                ? "border border-s-ink bg-s-ink text-white"
                 : "border border-s-border bg-s-bg-sunken text-s-ink-2 hover:text-s-ink",
             ].join(" ")}
           >

@@ -16,9 +16,13 @@ export async function GET(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
+  // Per-category chips (owner 2026-06-23): ?category=hair -> hair tags only; absent / 'all' -> global top tags.
+  const categoryParam = req.nextUrl.searchParams.get("category");
+  const pCategory = categoryParam && categoryParam !== "all" ? categoryParam : null;
+
   try {
     const admin = createAdminSupabaseClient();
-    const { data, error } = await admin.rpc("discovery_chip_terms", { p_limit: 10 });
+    const { data, error } = await admin.rpc("discovery_chip_terms", { p_limit: 10, p_category: pCategory });
     if (error) {
       console.error("[Discover] chip-terms RPC failed:", error);
       return NextResponse.json({ terms: [] });

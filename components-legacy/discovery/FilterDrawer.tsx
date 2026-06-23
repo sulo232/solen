@@ -2,22 +2,16 @@
 import { useState } from "react";
 import { X, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { DiscoveryCategory, DiscoveryGender } from "@/lib/types";
-import { DISCOVERY_CATEGORIES } from "./CategoryTabBar";
+import type { DiscoveryGender } from "@/lib/types";
 
 interface FilterDrawerProps {
-  category: DiscoveryCategory | "all";
   gender: DiscoveryGender | "all";
   texture: string | null;
   style: string | null;
-  onCategoryChange: (c: DiscoveryCategory | "all") => void;
   onGenderChange: (g: DiscoveryGender | "all") => void;
-  onTextureChange: (t: string | null) => void;
-  onStyleChange: (s: string | null) => void;
   onReset: () => void;
 }
 
-const CATEGORY_KEYS = DISCOVERY_CATEGORIES.map((c) => c.key) as (DiscoveryCategory | "all")[];
 const GENDER_KEYS: (DiscoveryGender | "all")[] = ["all", "female", "male", "unisex"];
 
 // V3-D414: filter rebuilt to the captured Pinterest pattern (IMG_4980) in Solen skin — a clean RADIO list
@@ -43,13 +37,13 @@ function RadioRow({ label, selected, onClick }: { label: string; selected: boole
 export default function FilterDrawer(props: FilterDrawerProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslations("discoveryFilters") as any;
-  const tt = useTranslations("discover.tabs") as any;
   const tg = useTranslations("discover.gender") as any;
 
   // Count of active filters → the trigger badge. Texture/style still count (set from the chip row) so the badge
-  // reflects the true active state even though they're not edited in this sheet.
+  // reflects the true active state even though they're not edited in this sheet. Category is NOT a filter (owner
+  // 2026-06-23): it's the top selector, removed from this sheet entirely, so it never counts here.
   const activeCount =
-    (props.category !== "all" ? 1 : 0) + (props.gender !== "all" ? 1 : 0) + (props.texture ? 1 : 0) + (props.style ? 1 : 0);
+    (props.gender !== "all" ? 1 : 0) + (props.texture ? 1 : 0) + (props.style ? 1 : 0);
 
   return (
     <>
@@ -85,11 +79,8 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 pb-4">
-              <p className="pb-1 pt-3 text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("category")}</p>
-              {CATEGORY_KEYS.map((key) => (
-                <RadioRow key={key} label={tt(key)} selected={props.category === key} onClick={() => props.onCategoryChange(key)} />
-              ))}
-              <p className="pb-1 pt-4 text-[12px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("gender")}</p>
+              {/* Category radios removed (owner 2026-06-23): category is the top selector, never a filter here. */}
+              <p className="pb-1 pt-3 font-heading text-[13px] font-bold text-s-ink">{t("gender")}</p>
               {GENDER_KEYS.map((key) => (
                 <RadioRow
                   key={key}
