@@ -82,6 +82,15 @@ function DiscoverPageContent() {
   // (nails/lashes/brows today) gets NO photo , it falls back to a plain text pill until real content lands, when
   // its cover appears automatically. count + cover are fetched once below. No illustrations, no mismatched photos.
   const [categoryMeta, setCategoryMeta] = useState<Record<string, { count: number; cover: string | null }>>({});
+  // Owner 2026-06-23: order the category pills by the viewer's CATEGORY affinity (the DNA point system) , the
+  // category they engage with most slides left. "Alle" stays first; cold / logged-out keeps the default order.
+  const [categoryOrder, setCategoryOrder] = useState<string[]>([]);
+  const orderedCategories = [...DISCOVERY_CATEGORIES].sort((a, b) => {
+    if (a.key === "all") return -1;
+    if (b.key === "all") return 1;
+    const ra = categoryOrder.indexOf(a.key), rb = categoryOrder.indexOf(b.key);
+    return (ra === -1 ? Infinity : ra) - (rb === -1 ? Infinity : rb);
+  });
 
   // Derive filter values from activeFilters
   const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
@@ -174,6 +183,16 @@ function DiscoverPageContent() {
         }
       })
     ).then((entries) => { if (!cancelled) setCategoryMeta(Object.fromEntries(entries)); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Viewer's DNA category order (empty for logged-out / cold -> pills keep default order).
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/discovery/category-order")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && Array.isArray(d?.order)) setCategoryOrder(d.order); })
+      .catch((err) => console.error("[Discover] category order load failed:", err));
     return () => { cancelled = true; };
   }, []);
 
@@ -427,7 +446,7 @@ function DiscoverPageContent() {
             category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
             DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = blue border + blue text, NO fill (locked rule). */}
         <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
-          {DISCOVERY_CATEGORIES.map(({ key }) => {
+          {orderedCategories.map(({ key }) => {
             const sel = category === key;
             const meta = categoryMeta[key];
             const cover = meta && meta.count > 0 ? meta.cover : null;
