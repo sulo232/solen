@@ -10,6 +10,7 @@ import { validateBody, createBookingSchema } from "@/lib/validations";
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
+import { attributeBookingToSearch } from "@/lib/points/attribution";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -511,6 +512,20 @@ export async function POST(request: NextRequest) {
         }
       }
     } catch { /* referral failure must not break booking */ }
+  }
+
+  // 10. Search→book attribution (points/affinity funnel). Best-effort, must NEVER break a booking.
+  //     /api/search/event sets an httpOnly solen_se_sid cookie (path "/") on every search; if a
+  //     recent click in that session led to THIS salon, flip search_events.booked + stamp the
+  //     booking (last-touch, 60-min window). No-op without a session/consent or a matching click.
+  try {
+    const searchSid = request.cookies.get("solen_se_sid")?.value;
+    if (searchSid) {
+      const admin = createAdminSupabaseClient();
+      await attributeBookingToSearch(admin, { sessionId: searchSid, salonId: slot.salon_id as string, bookingId: booking.id });
+    }
+  } catch (err) {
+    console.error("[bookings] search→book attribution failed:", err);
   }
 
   // Surface the freshly-assigned reference_code on the returned row (the insert ran before the
