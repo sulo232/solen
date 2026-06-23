@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
             ?? (Array.isArray(aiResult.products_needed) ? aiResult.products_needed : []);
 
           await admin.from("discovery_items").update({
-            category: aiResult.category ?? "hair",
+            category: aiResult.category ?? defaultCategory,
             gender: aiResult.gender ?? "unisex",
             texture: aiResult.texture,
             style_name: aiResult.style_name,

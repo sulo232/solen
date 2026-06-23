@@ -267,7 +267,7 @@ export const discoveryStagingSchema = z.object({
 
 export const discoveryTikTokImportSchema = z.object({
   urls: z.array(z.string().url()).min(1).max(20),
-  category: z.enum(["hair", "beard", "nails"]).optional(),
+  category: z.enum(["hair", "beard", "nails", "lashes", "brows"]).optional(),
 });
 
 // ─── Megabuild Schemas ──────────────────────────────────────────────────────
