@@ -72,6 +72,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "**.pexels.com",
+      },
       // V3-D389 PROOF-ONLY: placeholder host for the salon-portfolio-in-Entdecken frontend proof. Remove with the
       // seeded PROOF_SALON_ITEMS once real opted-in salon photos (Supabase Storage, already allowlisted) flow in.
       {
