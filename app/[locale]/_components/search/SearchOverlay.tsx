@@ -3,6 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import { logSearchClick, logSearchImpression } from "@/lib/searchTelemetry";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
@@ -686,6 +687,17 @@ function ServiceSearch({
   // ── "Für dich" chips (empty-state in-between zone). Personalized terms from
   //    the discovery engine; falls back to the static TRENDING list on miss/err.
   const [forYou, setForYou] = React.useState<{ label: string; query: string }[]>([]);
+
+  // search-event: fire ONE impression per distinct query when results show (consent-gated in helper).
+  const lastImpression = React.useRef("");
+  const totalResults = results.services.length + results.salons.length + results.stylists.length;
+  React.useEffect(() => {
+    const q = query.trim();
+    if (q.length >= 2 && totalResults > 0 && lastImpression.current !== q) {
+      lastImpression.current = q;
+      logSearchImpression({ query: q, locale, resultsCount: totalResults });
+    }
+  }, [query, totalResults, locale]);
   React.useEffect(() => {
     let alive = true;
     fetch("/api/recommendations/chips")
@@ -769,14 +781,14 @@ function ServiceSearch({
               <div className="pb-2">
                 {wantServices && results.services.length > 0 && (
                   <Group label={t("groupServices")}>
-                    {results.services.map((s) => {
+                    {results.services.map((s, i) => {
                       const name = locale === "en" ? s.name_en || s.name_de : s.name_de;
                       return (
                         <SuggestRow
                           key={s.id}
                           icon={<Scissors size={15} strokeWidth={2} aria-hidden />}
                           title={name}
-                          onClick={() => onServiceSuggest(name)}
+                          onClick={() => { logSearchClick({ query, locale, clickedType: "service", clickedId: s.id, clickedPosition: i }); onServiceSuggest(name); }}
                         />
                       );
                     })}
@@ -784,28 +796,28 @@ function ServiceSearch({
                 )}
                 {wantSalons && results.salons.length > 0 && (
                   <Group label={t("groupSalons")}>
-                    {results.salons.map((s) => (
+                    {results.salons.map((s, i) => (
                       <VenueRow
                         key={s.id}
                         name={s.name}
                         photoUrl={s.cover_photo_url}
                         rating={s.average_rating}
                         meta={s.address?.split(",")[0]}
-                        onClick={() => onSalonSuggest(s.slug, s.name)}
+                        onClick={() => { logSearchClick({ query, locale, clickedType: "salon", clickedId: s.id, clickedPosition: i }); onSalonSuggest(s.slug, s.name); }}
                       />
                     ))}
                   </Group>
                 )}
                 {wantStylists && results.stylists.length > 0 && (
                   <Group label={t("groupStylists")}>
-                    {results.stylists.map((s) => (
+                    {results.stylists.map((s, i) => (
                       <VenueRow
                         key={s.id}
                         name={s.name}
                         photoUrl={s.avatar_url}
                         meta={s.salon_name}
                         rounded
-                        onClick={() => onStylistSuggest(s.salon_slug, s.name)}
+                        onClick={() => { logSearchClick({ query, locale, clickedType: "stylist", clickedId: s.id, clickedPosition: i }); onStylistSuggest(s.salon_slug, s.name); }}
                       />
                     ))}
                   </Group>
