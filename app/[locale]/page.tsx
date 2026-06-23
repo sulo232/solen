@@ -25,6 +25,9 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // V3-D348: client-side curation — "Weil du X magst" salon rows for the
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
+// Real per-user affinity row (the points engine) — consumes /api/salons/recommendations,
+// renders null without affinity so logged-out / new users see the homepage unchanged.
+import ForYouAffinityRow from "./_components/homepage/ForYouAffinityRow";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -164,6 +167,7 @@ export default async function Page() {
             redundant with the hero's "Hallo, {name}" — two name-greetings on
             one page. Hero greeting is the single greeting now. */}
         <MobileCategoriesRow />
+        <ForYouAffinityRow />
         <ForYouSalonRows />
         <RecentlyViewed />
         <Nearby />
