@@ -67,13 +67,17 @@ converted) — derived, not a second write path. `ATTRIBUTION_WINDOW_MIN = 60`.
 - **Follow-up (optional):** regenerate `lib/database.types.ts` to type `attributed_search_event_id` /
   `acquisition_source` (today the helper uses a loosely-typed client to absorb the drift — build is green).
 
-## 5. Rollup A — per-user affinity (phase 3, LATER)
-Weighted points per `(user_id, salon_id)` + `(user_id, category)` from `search_events` +
-`discovery_interactions`, time-decayed (reuse `discovery-algorithm.ts` decay). New tables
-`user_salon_affinity` / `user_category_affinity`, materialized by a cron mirroring
-`app/api/cron/loyalty-recompute` (CRON_SECRET bearer, admin RPC, `.github/workflows/cron-jobs.yml`).
-Consumers: extend `lib/ai/recommendations.ts` (today only time+location); feed Hair-DNA `serviceMix`.
-Consent-gated rows only.
+## 5. Rollup A — per-user affinity (phase 3, SHIPPED + LIVE WITH REAL DATA)
+Table `user_salon_affinity (user_id, salon_id, score, clicks, books, last_event_at)` + RPC
+`recompute_user_salon_affinity()` (security-definer, mirrors loyalty recompute). DERIVED, not a wallet:
+each run re-sums weighted, time-decayed (exp, 60-day) engagement per (user, salon). Cron:
+`/api/cron/affinity-recompute` daily (added to the `daily-03-utc` job).
+**Signals (v1):** kept bookings 0.5 (repeats compound = rebook reward) + favorites 0.4 + reviews 0.35
+(all ALREADY captured → real data today) + search clicks 0.25 / books 0.5 (dormant until the camera is
+wired). **Verified:** ran live → 121 affinity rows, 15 users, 21 salons, top 3.14, avg 0.73.
+**Deferred:** discovery saves (items have `owner_salon_id` null → resolve to no salon); `user_category_affinity`.
+**Next:** consume in `lib/ai/recommendations.ts` (today only time+location) + feed Hair-DNA. RLS select-own;
+the score itself is internal (a visible/gamified user-facing layer is a separate later decision).
 
 ## 6. Rollup B — per-salon conversion score (phase 4, LATER)
 Per salon: `clicks` (search_events clicking it) and `books` (booked=true). Score = **conversion RATE** =
