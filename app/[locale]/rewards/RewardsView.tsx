@@ -30,7 +30,7 @@ const PERKS = [
 
 function chipClass(kind: string): string {
   const base = "grid h-9 w-9 shrink-0 place-items-center rounded-[11px]";
-  if (kind === "accent") return `${base} bg-s-accent/10 text-s-accent`;
+  if (kind === "accent") return `${base} bg-s-ink/[0.07] text-s-ink`;
   if (kind === "success") return `${base} bg-s-success/10 text-s-success`;
   if (kind === "pink") return `${base} bg-[#FF3366]/10 text-[#FF3366]`;
   return `${base} bg-s-bg-sunken text-s-ink-3`;
@@ -50,26 +50,26 @@ function LadderNode({
   const Icon = icon === "check" ? Check : icon === "award" ? Award : Crown;
   const dot =
     state === "done"
-      ? "bg-s-ink text-white"
+      ? "bg-s-ink/80 text-white"
       : state === "now"
-        ? "bg-s-accent text-white"
+        ? "bg-s-ink text-white"
         : "bg-s-bg-sunken text-s-ink-3";
   const labelCls =
     state === "now"
-      ? "text-s-accent-deep"
+      ? "text-s-ink font-bold"
       : state === "done"
-        ? "text-s-ink"
+        ? "text-s-ink-2"
         : "text-s-ink-3";
   return (
     <div className="flex flex-col items-center gap-1.5">
       {state === "now" && !reduce ? (
         <motion.span
-          className="grid h-6 w-6 place-items-center rounded-full bg-s-accent text-white"
+          className="grid h-6 w-6 place-items-center rounded-full bg-s-ink text-white"
           animate={{
             boxShadow: [
-              "0 0 0 4px rgba(39,110,241,0.18)",
-              "0 0 0 8px rgba(39,110,241,0.06)",
-              "0 0 0 4px rgba(39,110,241,0.18)",
+              "0 0 0 4px rgba(10,10,10,0.16)",
+              "0 0 0 8px rgba(10,10,10,0.05)",
+              "0 0 0 4px rgba(10,10,10,0.16)",
             ],
           }}
           transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
@@ -78,7 +78,7 @@ function LadderNode({
         </motion.span>
       ) : (
         <span
-          className={`grid h-6 w-6 place-items-center rounded-full ${dot} ${state === "now" ? "ring-4 ring-s-accent/15" : ""}`}
+          className={`grid h-6 w-6 place-items-center rounded-full ${dot} ${state === "now" ? "ring-4 ring-s-ink/10" : ""}`}
         >
           <Icon size={13} strokeWidth={2.5} aria-hidden />
         </span>
@@ -118,12 +118,12 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
       >
         <span
           aria-hidden
-          className="pointer-events-none absolute -bottom-9 -right-3 font-display text-[150px] font-bold leading-none text-s-accent/[0.05]"
+          className="pointer-events-none absolute -bottom-9 -right-3 font-display text-[150px] font-bold leading-none text-s-ink/[0.04]"
         >
           +
         </span>
         <div className="font-display text-[16px] font-bold tracking-[-0.02em] text-s-ink">
-          solen<span className="align-top text-[11px] font-extrabold text-s-accent">+</span>
+          solen<span className="align-top text-[11px] font-extrabold text-s-ink">+</span>
         </div>
         <p className="relative mt-3.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-s-ink-3">
           {t("yourStatus")}
@@ -133,7 +133,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
             {tierLabel(status.tier)}
           </span>
           {status.tier === "platinum" ? (
-            <Crown size={24} className="text-s-accent" aria-hidden />
+            <Crown size={24} className="text-s-ink" aria-hidden />
           ) : status.tier === "gold" ? (
             <Award size={24} className="text-s-star" aria-hidden />
           ) : null}
@@ -143,7 +143,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
         <div className="relative mt-5">
           <div className="absolute left-[26px] right-[26px] top-[7px] h-2.5 overflow-hidden rounded-full bg-s-bg-sunken">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-s-ink to-s-accent"
+              className="h-full rounded-full bg-gradient-to-r from-s-ink to-s-ink/60"
               initial={{ width: reduce ? `${pct}%` : 0 }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 1.05, ease: EASE, delay: 0.45 }}
