@@ -102,7 +102,8 @@ export async function POST(req: NextRequest) {
         const aiResult = await analyzeDiscoveryTikTok(
           oembed.thumbnail_url ?? "",
           oembed.title ?? "",
-          url
+          url,
+          defaultCategory
         );
         if (aiResult) {
           styleName = aiResult.style_name ?? null;

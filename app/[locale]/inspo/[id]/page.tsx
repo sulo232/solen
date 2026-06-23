@@ -32,8 +32,9 @@ async function getItem(id: string): Promise<DiscoveryItem | null> {
 
 /** On-demand AI analysis — runs serverside when item has no AI data yet */
 async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
-  // Already analyzed
-  if (item.style_name || item.description_en) return item;
+  // Already analyzed , key off the DESCRIPTION, not style_name. Stock looks ship with a style_name but no
+  // description/specs, so the old `style_name` guard skipped them forever (the "no Gemini explanation" bug).
+  if (item.description_en) return item;
 
   const imageUrl = item.image_url || item.tiktok_thumbnail_url;
   if (!imageUrl || !getServerEnv().GEMINI_API_KEY) return item;
@@ -51,8 +52,8 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
   try {
     const isTikTok = !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
     const aiResult = isTikTok
-      ? await analyzeDiscoveryTikTok(imageUrl, item.alt_text ?? "", item.tiktok_url ?? undefined)
-      : await analyzeDiscoveryImage(imageUrl);
+      ? await analyzeDiscoveryTikTok(imageUrl, item.alt_text ?? "", item.tiktok_url ?? undefined, item.category)
+      : await analyzeDiscoveryImage(imageUrl, item.category);
 
     if (!aiResult) return item;
 
