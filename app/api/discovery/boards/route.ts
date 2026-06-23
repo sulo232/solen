@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
@@ -13,13 +13,17 @@ export async function GET(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
+  // Order boards by the viewer's style affinity (the DNA point system, owner 2026-06-23) when logged in: a board's
+  // theme (style_name/name) is scored against the user's tag/texture/gender points, so a fades-leaning user sees the
+  // Fades board first. Logged-out / cold users score 0 across the board -> the existing neutral sort_order.
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const userId = session?.user?.id ?? null;
+
   const admin = createAdminSupabaseClient();
-  const { data: boards, error } = await admin
-    .from("discovery_boards")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true })
-    .limit(10);
+  const { data: boards, error } = userId
+    ? await admin.rpc("discovery_boards_for_you", { p_user_id: userId })
+    : await admin.from("discovery_boards").select("*").eq("is_active", true).order("sort_order", { ascending: true }).limit(10);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
