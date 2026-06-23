@@ -8,7 +8,6 @@ import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "luci
 import type { DiscoveryItem } from "@/lib/types";
 import ItemCard from "./ItemCard";
 import VideoCard from "./VideoCard";
-import SaveToBoardSheet from "./SaveToBoardSheet";
 import TikTokPlayer from "./TikTokPlayer";
 import DiscoveryGridSkeleton from "./DiscoveryGridSkeleton";
 import { formatCreator } from "./format";
@@ -89,7 +88,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   // Save gesture (consistent with the feed): hero heart + "more like this" hearts open the Kollektion picker.
-  const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [videoAspect, setVideoAspect] = useState<string | null>(null);
   // The cover IMAGE is the look (from TikTok — allowed via oEmbed; clean, no cookie wall, never opens TikTok). The
@@ -103,9 +101,27 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     const v = new URLSearchParams(window.location.search).get("play");
     return v === "sheet" || v === "fullscreen" ? v : "inline";
   });
-  const handleSave = (id: string) => {
+  // Plain save toggle (no board picker; collections ditched 2026-06-23). Optimistic, then reconcile to the
+  // server's authoritative saved state from the toggle RPC.
+  const handleSave = async (id: string) => {
     if (!isAuthenticated) { router.push(`/${locale}/auth/login`); return; }
-    setSaveItemId(id);
+    const wasSaved = savedIds.has(id);
+    setSavedIds((prev) => { const next = new Set(prev); if (wasSaved) next.delete(id); else next.add(id); return next; });
+    try {
+      const res = await fetch("/api/discovery/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item_id: id }),
+      });
+      if (!res.ok) throw new Error(`save ${res.status}`);
+      const json = await res.json().catch(() => null);
+      if (json && typeof json.saved === "boolean") {
+        setSavedIds((prev) => { const next = new Set(prev); if (json.saved) next.add(id); else next.delete(id); return next; });
+      }
+    } catch (err) {
+      console.error("[discovery detail] save toggle failed:", err);
+      setSavedIds((prev) => { const next = new Set(prev); if (wasSaved) next.add(id); else next.delete(id); return next; });
+    }
   };
 
   // "More like this" — fetched client-side (below the fold; shimmer while loading).
@@ -428,14 +444,6 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
         )}
 
       </div>
-
-      {/* Save-to-Kollektion picker — opened by the hero heart + the "more like this" hearts. */}
-      <SaveToBoardSheet
-        itemId={saveItemId ?? ""}
-        open={!!saveItemId}
-        onClose={() => setSaveItemId(null)}
-        onSaved={() => { if (saveItemId) setSavedIds((prev) => new Set(prev).add(saveItemId)); }}
-      />
     </div>
   );
 }

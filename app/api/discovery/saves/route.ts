@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.user) return NextResponse.json({ items: [] });
 
-  const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "3", 10), 10);
+  // Default 3 (the ForYouSection peek); the Gespeichert page asks for up to 60 to show the full saved grid.
+  const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "3", 10), 60);
 
   // Get user's most recent saved item IDs
   const { data: saves } = await supabase

@@ -15,13 +15,12 @@ interface LikeButtonProps {
   /** "overlay" (default) = frosted-glass circle for on-image cards. "bare" = plain heart for light-bg toolbars. */
   variant?: "overlay" | "bare";
   /**
-   * Save mode (V3-D414, feed-save gesture): when provided, the heart OPENS the lookbook picker (calls onSave with
-   * the itemId) instead of toggling a like. The feed uses this so a tile's heart reaches the Save-to-lookbook sheet
-   * (the gap the audit flagged: the sheet existed but no tile could open it). The `/api/discovery/like` path is
-   * untouched for callers that don't pass onSave (e.g. the detail-page action bar).
+   * Save mode: when provided, the heart calls onSave(itemId) instead of toggling a like, and the PARENT decides
+   * what happens. Since collections were ditched (2026-06-23) the parent does a plain save toggle (no board picker).
+   * The `/api/discovery/like` path is untouched for callers that don't pass onSave (e.g. the detail-page action bar).
    */
   onSave?: (itemId: string) => void;
-  /** Save mode only: controlled "is this look in a lookbook" fill — owned by the page (real session saves, no fetch). */
+  /** Save mode only: controlled "is this look saved" fill — owned by the page (optimistic, reconciled to the server). */
   saved?: boolean;
 }
 

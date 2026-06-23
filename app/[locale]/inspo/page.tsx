@@ -11,7 +11,6 @@ import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSk
 import DiscoveryEmptyState from "@/components-legacy/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
 import InlinePrefsPanel from "@/components-legacy/discovery/InlinePrefsPanel";
-import FeaturedBoards from "@/components-legacy/discovery/FeaturedBoards";
 import FilterDrawer from "@/components-legacy/discovery/FilterDrawer";
 import { DISCOVERY_CATEGORIES } from "@/components-legacy/discovery/CategoryTabBar";
 import DiscoveryErrorState from "@/components-legacy/discovery/DiscoveryErrorState";
@@ -21,9 +20,8 @@ import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import SaveToBoardSheet from "@/components-legacy/discovery/SaveToBoardSheet";
 import { ArrowLeft, Heart } from "lucide-react";
-import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
+import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 // (Removed PROOF_SALON_ITEMS , the 3 hardcoded picsum salon previews. Real content now fills the feed, and the fake
@@ -87,7 +85,6 @@ function DiscoverPageContent() {
 
   // Save-to-lookbook gesture (feed-save mockup): tapping a tile's heart opens the picker for THAT item.
   // `savedIds` fills the heart for looks the user saved THIS session (a real action just taken, never fabricated).
-  const [saveItemId, setSaveItemId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
   // Profile setup
@@ -265,8 +262,39 @@ function DiscoverPageContent() {
     router.push(`/${locale}/inspo/${item.id}`);
   };
 
-  // Heart tapped while signed in → open the lookbook picker for that look.
-  const handleSave = (itemId: string) => setSaveItemId(itemId);
+  // Heart tapped while signed in → plain save toggle (no board picker; collections ditched 2026-06-23).
+  // Optimistic, then reconcile to the server's authoritative state from the toggle RPC.
+  const handleSave = async (itemId: string) => {
+    const wasSaved = savedIds.has(itemId);
+    setSavedIds((prev) => {
+      const next = new Set(prev);
+      if (wasSaved) next.delete(itemId); else next.add(itemId);
+      return next;
+    });
+    try {
+      const res = await fetch("/api/discovery/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item_id: itemId }),
+      });
+      if (!res.ok) throw new Error(`save ${res.status}`);
+      const json = await res.json().catch(() => null);
+      if (json && typeof json.saved === "boolean") {
+        setSavedIds((prev) => {
+          const next = new Set(prev);
+          if (json.saved) next.add(itemId); else next.delete(itemId);
+          return next;
+        });
+      }
+    } catch (err) {
+      console.error("[inspo] save toggle failed:", err);
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        if (wasSaved) next.add(itemId); else next.delete(itemId);
+        return next;
+      });
+    }
+  };
   // Heart tapped while signed out → send to login (saving requires an account).
   const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
 
@@ -287,20 +315,6 @@ function DiscoverPageContent() {
         }),
       });
     } catch { /* best effort */ }
-  };
-
-  const handleBoardSelect = (filters: Partial<DiscoveryFilters>) => {
-    // V3-D346 (Move 1): boards carry a keyword in `search` — apply it so the tile filters the feed.
-    if (filters.search !== undefined) { setSearch(filters.search); setSearchInput(filters.search); }
-    if (filters.category) setCategory(filters.category);
-    const newFilters: ActiveFilter[] = [];
-    if (filters.gender && filters.gender !== "all") {
-      newFilters.push({ pillId: "gender", subId: filters.gender, label: filters.gender });
-    }
-    if (filters.texture) {
-      newFilters.push({ pillId: "texture", subId: filters.texture, label: filters.texture });
-    }
-    setActiveFilters(newFilters);
   };
 
   const hasActiveFilters = category !== "all" || activeFilters.length > 0;
@@ -396,11 +410,11 @@ function DiscoverPageContent() {
               }}
               onReset={resetFilters}
             />
-            {/* V3-D414 (Phase 2): Kollektionen entry point — opens the user's saved collections. */}
+            {/* Saved entry point , opens the plain "Gespeichert" grid (collections ditched 2026-06-23). */}
             <button
               type="button"
               onClick={() => router.push(`/${locale}/inspo/saved`)}
-              aria-label="Kollektionen"
+              aria-label="Gespeichert"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
               <Heart size={18} />
@@ -513,11 +527,6 @@ function DiscoverPageContent() {
         {/* Admin panel (admin-only) */}
         {isAdmin && <DiscoveryAdmin />}
 
-        {/* Featured boards (only when no filters active) */}
-        {!hasActiveFilters && !search && (
-          <FeaturedBoards onBoardSelect={handleBoardSelect} />
-        )}
-
         {/* For You personalization (authenticated + no filters) */}
         {isAuthenticated && !hasActiveFilters && !search && (
           <ForYouSection />
@@ -574,16 +583,6 @@ function DiscoverPageContent() {
           </div>
         )}
       </div>
-
-      {/* Save-to-lookbook picker — one instance, opened by any tile's heart (feed-save gesture). */}
-      <SaveToBoardSheet
-        itemId={saveItemId ?? ""}
-        open={!!saveItemId}
-        onClose={() => setSaveItemId(null)}
-        onSaved={() => {
-          if (saveItemId) setSavedIds((prev) => new Set(prev).add(saveItemId));
-        }}
-      />
 
       {/* Floating post button */}
       <PostFromDiscover isAuthenticated={isAuthenticated} />
