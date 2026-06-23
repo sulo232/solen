@@ -25,8 +25,19 @@
 | Per-user affinity / per-salon score | ❌ later (phases 3-4) | — |
 
 **Key correction vs the first draft:** `acquisition_source`, `search_events.booked`, and `session_id`
-ALREADY existed (the generated `database.types.ts` lagged the live DB — schema drift). So the migration
-was tiny, and no second event log is needed — points derive from `search_events` action depth.
+ALREADY existed (the generated `database.types.ts` lagged the live DB, schema drift). So the migration
+was tiny, and no second event log is needed: points derive from `search_events` action depth.
+
+## ⚠️ BLOCKER: the funnel source is not capturing data (found 2026-06-23)
+Live DB: `search_events` = **0 rows**, `discovery_interactions` = **0 rows**. The `/api/search/event`
+logging route exists but **NOTHING in the app calls it** (grep: zero client callers; the route was
+scaffolded in sweep commit 9d4cc10b9 and never integrated). So search impressions/clicks are never
+recorded. The 949 bookings + 900 `acquisition_source` values are **SEED/test data**, not real tracking;
+`discovery_search_events` has 34 real rows (the Inspo search box).
+**Consequence:** phases 1 + 3 are built and correct but **DORMANT** — there is nothing to attribute or
+score until the web search UI is instrumented to POST `/api/search/event` (impression on search, click on
+result tap, respecting consent). **This client instrumentation is the real keystone, ahead of phases 4-5.**
+Until it's wired, the points engine runs on an empty pipe.
 
 ## 2. Session backbone (reused, not reinvented)
 `solen_se_sid` httpOnly cookie, `path: "/"`, sameSite lax, 30-day sliding (`search/event/route.ts:56,99-105`).
