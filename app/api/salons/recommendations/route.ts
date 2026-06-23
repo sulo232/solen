@@ -97,7 +97,29 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Fallback: highest explore_score
+  // Fallback A: rank by global engagement (salon_engagement, phase 4 — kept bookings + favorites
+  // + reviews, decayed). The cold-start "popular for you" when there's no personal affinity yet.
+  const { data: eng } = await admin
+    .from("salon_engagement")
+    .select("salon_id, score")
+    .order("score", { ascending: false })
+    .limit(20);
+  if (eng && eng.length > 0) {
+    const ids = eng.map((e) => e.salon_id as string);
+    const { data: engSalons } = await admin
+      .from("salons")
+      .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
+      .in("id", ids)
+      .eq("is_active", true)
+      .eq("listed_on_marketplace", true);
+    if (engSalons && engSalons.length > 0) {
+      const rank = new Map(eng.map((e, i) => [e.salon_id as string, i]));
+      const ordered = engSalons.slice().sort((a, b) => (rank.get(a.id) ?? 999) - (rank.get(b.id) ?? 999)).slice(0, 8);
+      return NextResponse.json({ salons: ordered, source: "engagement" });
+    }
+  }
+
+  // Fallback B: highest explore_score (when engagement hasn't been computed yet)
   const { data: popular } = await admin
     .from("salons")
     .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")

@@ -44,7 +44,9 @@ function loadAffinity(): Promise<ApiSalon[] | null> {
       );
     })
     .then((data) => {
-      if (!data || (data as { source?: string }).source !== "affinity") return null;
+      // affinity = personalized (engaged users); engagement = popular cold-start (new users).
+      const src = (data as { source?: string } | null)?.source;
+      if (!data || (src !== "affinity" && src !== "engagement")) return null;
       const salons = (data as { salons?: unknown }).salons;
       return Array.isArray(salons) ? (salons as ApiSalon[]) : null;
     })
