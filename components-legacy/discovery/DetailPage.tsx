@@ -175,7 +175,10 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     return `/${locale}/salon/${slug}/booking${qs ? `?${qs}` : ""}`;
   };
 
-  const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery${item.style_name ? `&style=${encodeURIComponent(item.style_name)}` : ""}`;
+  // See-all goes to the category's salon search (already category-scoped by the route). We deliberately do NOT pass
+  // the look's style_name as a query , it's a long descriptive name that matches zero salons and would empty the page
+  // ("nothing in the background"). The route's category filter is the right scope.
+  const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery`;
   const moreLikeThisHref = `/${locale}/inspo?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
 
   const thumbEl: ReactNode = heroSrc ? (
