@@ -1,6 +1,7 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
+import { after } from "next/server";
 import type { Metadata, Viewport } from "next";
 import type { DiscoveryItem } from "@/lib/types";
 import DetailPage, { type SalonLite } from "@/components-legacy/discovery/DetailPage";
@@ -82,9 +83,11 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
       ...(freshThumb ? { tiktok_thumbnail_url: freshThumb } : {}),
     };
 
-    admin.from("discovery_items").update(updates).eq("id", item.id).then(() => {});
+    // Awaited (not fire-and-forget) , this now runs inside `after()`, so we must let the write finish before the
+    // background task ends, otherwise the description never persists.
+    await admin.from("discovery_items").update(updates).eq("id", item.id);
 
-    // Return enriched item for immediate display
+    // Return enriched item (used if a future caller wants it inline; the after() path persists via the update above).
     return { ...item, ...updates } as DiscoveryItem;
   } catch (err) {
     console.error("[discover/[id]] On-demand AI failed:", err);
@@ -126,8 +129,13 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   let item = await getItem(id);
   if (!item) notFound();
 
-  // On-demand AI analysis — fills in descriptions, prices, etc. on first view
-  item = await ensureAIData(item);
+  // On-demand AI runs AFTER the response is sent (next/server `after`) so the page renders INSTANTLY instead of
+  // blocking ~10s on a Gemini call , this was the cause of "everything loads so slow" (you've imported a pile of
+  // fresh TikToks that got analyzed synchronously on open). The look's image/name/tags show immediately; the
+  // description fills for the next visit, and the cron sweeps any stragglers.
+  if (!item.description_en) {
+    after(() => ensureAIData(item).catch((e) => console.error("[discover/[id]] background analyze failed:", e)));
+  }
 
   // Increment view count (fire-and-forget)
   const supabase = await createServerSupabaseClient();
