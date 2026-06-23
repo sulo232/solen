@@ -60,6 +60,28 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ items, total, page: filters.page, limit, has_more: total > offset + limit });
     }
 
+    // For-you DNA ranking (owner 2026-06-23): a logged-in viewer doing a PURE browse (no category/gender/texture/
+    // style/creator filter) gets the whole feed RANKED by their derived style affinity (user_style_affinity,
+    // recomputed from saves/likes/views/searches). Cold users score 0 across the board, so the order is identical
+    // to neutral. Any explicit filter, or logged-out, falls through to discovery_feed below (graceful on error).
+    const isPureBrowse =
+      !filters.creator &&
+      (!filters.category || filters.category === "all") &&
+      (!filters.gender || filters.gender === "all") &&
+      !filters.texture && !filters.style;
+    if (userId && isPureBrowse) {
+      const { data: fyRows, error: fyErr } = await admin.rpc("discovery_feed_for_you", {
+        p_user_id: userId, p_limit: limit, p_offset: offset,
+      });
+      if (!fyErr) {
+        const fyList = (fyRows ?? []) as Array<Record<string, any>>;
+        const fyTotal = fyList.length > 0 ? Number(fyList[0].total_count) : 0;
+        const fyItems = fyList.map(({ total_count, ...rest }) => rest);
+        return NextResponse.json({ items: fyItems, total: fyTotal, page: filters.page, limit, has_more: fyTotal > offset + limit });
+      }
+      console.error("[Discover] discovery_feed_for_you failed, falling back to neutral feed:", fyErr);
+    }
+
     // V3-D406 (#23): personalized browse via the discovery_feed RPC. The viewer's saved disc_gender soft-biases
     // their gender (+ unisex) to the TOP — never a hard filter, so they still see everything. Logged-out / no
     // profile → p_user_gender null → neutral order (identical to before). This supersedes the old binary

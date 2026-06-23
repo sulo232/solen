@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 
@@ -19,13 +19,16 @@ export async function POST(req: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
   const userId = session?.user?.id ?? null;
 
-  // Fire-and-forget — don't await
-  supabase.from("discovery_interactions").insert({
+  // Fire-and-forget. Two prior bugs kept discovery_interactions empty (task #9): (1) the column is `action`, not
+  // `interaction_type` (phantom column), and (2) RLS only grants INSERT to `authenticated` for their own row, so
+  // the session/anon client hit "permission denied". Telemetry logs via the ADMIN client (same pattern as the
+  // search-event logging in the feed route) so anonymous views are captured too. user_id stays null when logged out.
+  createAdminSupabaseClient().from("discovery_interactions").insert({
     item_id: data.item_id,
     user_id: userId,
-    interaction_type: data.type,
+    action: data.type,
     duration_ms: data.duration_ms,
-  }).then(() => {});
+  }).then(({ error: insErr }) => { if (insErr) console.error("[discovery/interactions] insert failed:", insErr); });
 
   return NextResponse.json({ ok: true });
 }

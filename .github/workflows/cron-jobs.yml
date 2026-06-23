@@ -101,6 +101,11 @@ jobs:
         with:
           paths: /api/cron/reconcile
           secret: ${{ secrets.CRON_SECRET }}
+      - name: style-affinity recompute (GET)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/style-affinity-recompute
+          secret: ${{ secrets.CRON_SECRET }}
 
   daily-08-utc:
     if: github.event.schedule == '0 8 * * *'

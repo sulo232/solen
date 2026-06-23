@@ -120,6 +120,15 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
     return () => { cancelled = true; };
   }, [item.id]);
 
+  // Log a 'view' once per look open , feeds the for-you style-affinity points (the DNA point system). Fire-and-forget.
+  useEffect(() => {
+    fetch("/api/discovery/interactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item_id: item.id, type: "view" }),
+    }).catch((err) => console.error("[DetailPage] view log failed:", err));
+  }, [item.id]);
+
   const isVideo = item.media_type === "tiktok" || !!item.tiktok_url || !!item.tiktok_embed_html;
   const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : item.image_url || item.tiktok_thumbnail_url;
   const creator = formatCreator(item.author_name);
