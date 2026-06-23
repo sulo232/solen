@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { TrendingUp } from "lucide-react";
 
 /**
  * AI Suggestion Pills – quick-tap trending style/service suggestions.
@@ -67,15 +66,12 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
   const pills = SUGGESTIONS[category] ?? SUGGESTIONS.all;
 
   return (
-    <div className="relative scroll-fade-right">
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {/* V3-D346: eyebrow swept to plain ink-3 text. V3-D381 (2026-05-30): de-eyebrowed — sentence-case 12px
-            (was uppercase+tracked 9px, the "weird font" treatment the user flagged). */}
-        <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink tracking-[-0.01em]">
-          {/* V3-D393: trending-up mark — a literal signal for "what's rising", not decoration. Stays ink (chrome). */}
-          <TrendingUp size={14} className="shrink-0" aria-hidden />
-          {t("trending")}
-        </span>
+    <div>
+      {/* Plain "Trending" label (no decorative icon, per the approved search mockup 2026-06-23). */}
+      <p className="px-1 font-heading text-[13px] font-bold tracking-[-0.01em] text-s-ink">{t("trending")}</p>
+      {/* Pills WRAP (calm, all visible) — selected = blue border + blue text, NO ink fill (LOCKFILE filter-pill);
+          unselected = sunken pill + hairline (matches the category/sub-style pills). Fixes the "looks ass" pills. */}
+      <div className="mt-2.5 flex flex-wrap gap-2.5">
         {pills.map(({ label }) => (
           <button
             key={label}
@@ -84,12 +80,11 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
               setSelected(selected === label ? null : label);
               onSelect(selected === label ? "" : label);
             }}
-            /* V3-D394: selected = accent (blue), matching the discovery selected-state sweep. */
             className={[
-              "shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
+              "rounded-pill px-3.5 py-2 text-[13.5px] font-semibold whitespace-nowrap transition-[background-color,color,border-color] duration-150",
               selected === label
-                ? "bg-s-ink text-white border border-s-ink"
-                : "border border-s-ink/[0.08] text-s-ink-2 bg-white/70 hover:border-s-ink/40 hover:text-s-ink",
+                ? "border border-s-accent bg-white text-s-accent"
+                : "border border-s-border bg-s-bg-sunken text-s-ink-2 hover:text-s-ink",
             ].join(" ")}
           >
             {label}

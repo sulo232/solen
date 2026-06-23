@@ -20,7 +20,7 @@ import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import { ArrowLeft, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -364,16 +364,7 @@ function DiscoverPageContent() {
             suggestions drop down. Tap the arrow to clear + exit search. */}
         <div className="relative mb-3">
           <div className="flex items-center gap-2">
-            {/* V3-D392: always rendered (toggle `hidden`, not presence) — a conditional sibling BEFORE the input would
-                remount it on focus and drop focus, resetting searchFocused. */}
-            <button
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); setSearch(""); setSearchInput(""); setSearchFocused(false); (document.activeElement as HTMLElement | null)?.blur?.(); }}
-              aria-label={t("clearSearch")}
-              className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink ${searchFocused ? "" : "hidden"}`}
-            >
-              <ArrowLeft size={18} />
-            </button>
+            {/* No back/cancel button (owner 2026-06-23): tap outside to dismiss (onBlur closes), iOS-style. */}
             <div className="min-w-0 flex-1">
               <DiscoverySearchBar
                 value={searchInput}
@@ -386,7 +377,9 @@ function DiscoverPageContent() {
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
               />
             </div>
-            {/* V3-D399 (measured Pinterest): tune/filter icon BESIDE the search bar (not after the category pills). */}
+            {/* Filter + saved fade out + collapse when the search is focused (owner 2026-06-23), so the input
+                expands into their space; they reappear on blur. (Relocating the filter is the category revamp.) */}
+            <div className={`flex items-center gap-2 transition-all duration-200 ${searchFocused ? "pointer-events-none w-0 gap-0 overflow-hidden opacity-0" : ""}`}>
             <FilterDrawer
               category={category}
               gender={gender}
@@ -419,9 +412,10 @@ function DiscoverPageContent() {
             >
               <Heart size={18} />
             </button>
+            </div>
           </div>
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[discover-drop_.2s_cubic-bezier(.2,.8,.2,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
