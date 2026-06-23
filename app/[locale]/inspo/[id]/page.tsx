@@ -141,7 +141,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   // IMPORTANT: discovery uses its own taxonomy ("hair"/"beard"/"nails") but the services table uses the marketplace
   // taxonomy ("coiffeur"/"barbershop"/"nails"/"spa"). Map across, else the join silently returns 0 salons (the bug
   // the audit flagged in the old salons-for-style stub: every look is "hair", no service has category "hair").
-  const CATEGORY_ROUTES: Record<string, string> = { hair: "coiffeur", beard: "barbershop", nails: "nails" };
+  const CATEGORY_ROUTES: Record<string, string> = { hair: "coiffeur", beard: "barbershop", nails: "nails", lashes: "spa", brows: "spa" };
   const categoryRoute = CATEGORY_ROUTES[item.category] ?? "coiffeur";
   const serviceCategory = categoryRoute; // route slug == services.category in this marketplace
   let salons: SalonLite[] = [];

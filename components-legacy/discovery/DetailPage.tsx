@@ -279,7 +279,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             item.author_url ? (
               <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink no-underline transition-colors hover:bg-s-border">@{creator}</a>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink">@{creator}</span>
+              <span className="inline-flex items-center rounded-full bg-s-bg-sunken px-3 py-1 text-[12.5px] font-semibold tracking-[-0.01em] text-s-ink">{item.source === "tiktok" ? `@${creator}` : `Foto: ${creator}`}</span>
             )
           )}
           <span className="inline-flex items-center gap-1.5 text-[12px] text-s-ink-3">

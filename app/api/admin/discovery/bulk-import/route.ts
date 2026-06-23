@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
           category,
           ...(customQuery ? { style_name: titleCase(customQuery) } : {}),
           author_name: photo.author,
+          author_url: photo.author_url ?? null,
           // Pexels alt is photo-composition junk ("close-up of a hand with blue tips"); the detail page would show
           // it as the description. Leave it null -> falls back to the style name + tags (the actual spec). A real
           // per-look spec needs a category-aware AI pass (separate task).

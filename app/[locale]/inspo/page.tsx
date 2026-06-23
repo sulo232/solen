@@ -26,24 +26,8 @@ import { ArrowLeft, Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
-// PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
-// render in the feed — studio attribution + tap→salon + varied aspect ratios (900×650, 700×700, 640×860). Images are
-// picsum placeholders; real salons + slugs. NO DB / NO sync. Remove this const + its prepend + the picsum allowlist in
-// next.config when the real opt-in sync lands.
-const PROOF_SALON_ITEMS = [
-  { id: "proof-salon-1", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
-    image_url: "https://picsum.photos/seed/solensalon1/900/650", tiktok_url: null, tiktok_embed_html: null,
-    author_name: "Muse Beauty Studio", salon_slug: "muse-beauty-studio", style_name: "Balayage",
-    tags: ["balayage"], like_count: 0, alt_text: "Balayage — Muse Beauty Studio" },
-  { id: "proof-salon-2", source: "salon", content_type: "salon", media_type: "photo", category: "nails",
-    image_url: "https://picsum.photos/seed/solensalon2/700/700", tiktok_url: null, tiktok_embed_html: null,
-    author_name: "Nail Studio Bliss", salon_slug: "nail-studio-bliss", style_name: "Gel Nails",
-    tags: ["gel nails"], like_count: 0, alt_text: "Gel nails — Nail Studio Bliss" },
-  { id: "proof-salon-3", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
-    image_url: "https://picsum.photos/seed/solensalon3/640/860", tiktok_url: null, tiktok_embed_html: null,
-    author_name: "Old Town Barbers", salon_slug: "old-town-barbers", style_name: "Skin Fade",
-    tags: ["skin fade"], like_count: 0, alt_text: "Skin fade — Old Town Barbers" },
-] as unknown as DiscoveryItem[];
+// (Removed PROOF_SALON_ITEMS , the 3 hardcoded picsum salon previews. Real content now fills the feed, and the fake
+//  salon names/images were the "wrong images / wrong names" the owner flagged. Salon opt-in sync is the real path.)
 
 // V3-D407 (#22): quick-chip labels are now DATA-DRIVEN — fetched from /api/discovery/chip-terms (the top style
 // tags in the actual content), so chips always lead to populated results and self-update as content grows. This
@@ -282,7 +266,7 @@ function DiscoverPageContent() {
   const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
 
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
-  const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
+  const feedItems = items;
 
   const handleProfileSave = async (prefs: Record<string, string | null>) => {
     try {

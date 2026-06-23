@@ -14,6 +14,8 @@ const CATEGORY_ROUTES: Record<string, string> = {
   hair: "coiffeur",
   beard: "barbershop",
   nails: "nails",
+  lashes: "spa",
+  brows: "spa",
 };
 
 // Default price ranges when AI doesn't provide them
