@@ -240,24 +240,47 @@ function TikTokImportTab() {
   const [urls, setUrls] = useState("");
   const [category, setCategory] = useState<DiscoveryCategory>("hair");
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [result, setResult] = useState<{ published: number; rejected: number; pending: number; failed: number } | null>(null);
 
+  // Bulk import: parse + dedupe the pasted list, keep only real tiktok.com links, then import in small CHUNKS.
+  // The per-URL oEmbed + AI tagging is slow, and one giant request both timed out AND silently dropped everything
+  // past the route's 20-URL cap. Sequential chunks keep each request short, run the WHOLE list (nothing dropped),
+  // and give live progress; the totals tick up as each chunk lands.
+  const CHUNK = 4;
   const handleImport = async () => {
-    const urlList = urls.split("\n").map((u) => u.trim()).filter(Boolean);
+    const urlList = Array.from(new Set(urls.split(/\s+/).map((u) => u.trim()).filter(Boolean)))
+      .filter((u) => u.includes("tiktok.com"));
     if (urlList.length === 0) return;
     setLoading(true);
     setResult(null);
+    setProgress({ done: 0, total: urlList.length });
+    const acc = { published: 0, rejected: 0, pending: 0, failed: 0 };
     try {
-      const res = await fetch("/api/admin/discovery/import-tiktok", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ urls: urlList, category }),
-      });
-      const data = await res.json();
-      setResult({ published: data.published ?? 0, rejected: data.rejected ?? 0, pending: data.pending ?? 0, failed: data.failed ?? 0 });
-      if ((data.published ?? 0) > 0 || (data.pending ?? 0) > 0) setUrls("");
+      for (let i = 0; i < urlList.length; i += CHUNK) {
+        const chunk = urlList.slice(i, i + CHUNK);
+        try {
+          const res = await fetch("/api/admin/discovery/import-tiktok", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ urls: chunk, category }),
+          });
+          const data = await res.json();
+          acc.published += data.published ?? 0;
+          acc.rejected += data.rejected ?? 0;
+          acc.pending += data.pending ?? 0;
+          acc.failed += data.failed ?? 0;
+        } catch (err) {
+          console.error("[TikTokImport] chunk failed:", err);
+          acc.failed += chunk.length;
+        }
+        setProgress({ done: Math.min(i + CHUNK, urlList.length), total: urlList.length });
+        setResult({ ...acc });
+      }
+      if (acc.published > 0 || acc.pending > 0) setUrls("");
     } finally {
       setLoading(false);
+      setProgress(null);
     }
   };
 
@@ -280,7 +303,9 @@ function TikTokImportTab() {
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
         className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-border text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
       />
-      {loading && <AIProcessingIndicator text={t("tiktokProcessing")} />}
+      {loading && (
+        <AIProcessingIndicator text={progress ? `${t("tiktokProcessing")} ${progress.done}/${progress.total}` : t("tiktokProcessing")} />
+      )}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
         {loading ? <Spinner size="sm" /> : <Video size={16} />} {t("importTikToksBtn")}
       </button>

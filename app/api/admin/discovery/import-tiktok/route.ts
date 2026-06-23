@@ -5,6 +5,10 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, discoveryTikTokImportSchema } from "@/lib/validations";
 import { analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 
+// oEmbed + AI tagging per URL is slow; allow the function more room so a small chunk doesn't get cut off mid-batch.
+// The admin UI sends SMALL chunks (so it stays well under this), but the headroom protects against a slow AI call.
+export const maxDuration = 60;
+
 /**
  * POST /api/admin/discovery/import-tiktok
  * Import TikTok videos by URL. For each URL:
