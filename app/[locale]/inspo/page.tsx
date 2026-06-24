@@ -381,7 +381,7 @@ function DiscoverPageContent() {
             </div>
             {/* Saved heart fades + collapses when the search is focused (owner 2026-06-23) so the input expands.
                 The filter moved OFF the search row to the refine row below the category tabs. */}
-            <div className={`flex items-center transition-all duration-200 ${searchFocused ? "pointer-events-none w-0 overflow-hidden opacity-0" : ""}`}>
+            <div className={`flex items-center transition-all duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] ${searchFocused ? "pointer-events-none w-0 overflow-hidden opacity-0" : ""}`}>
             <button
               type="button"
               onClick={() => router.push(`/${locale}/inspo/saved`)}
@@ -393,7 +393,7 @@ function DiscoverPageContent() {
             </div>
           </div>
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[fadeIn_.15s_ease] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[inspo-panel-in_.34s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
@@ -419,8 +419,8 @@ function DiscoverPageContent() {
         {/* MOCKUP (owner direction 2026-06-20): category pills are the FIRST control, in the rounded-box (rounded-card)
             pill shape. "Alle" = the blended For You default (boards + personalized + all looks below). Tapping a
             category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
-            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = ink ring on the photo + bold ink label, NO
-            grey pill (owner 2026-06-24, no blue). */}
+            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = a soft grey pill behind the label (the "lil
+            grey" the owner asked back, 2026-06-24); photos stay full brightness; NO ring/border/dim, no blue. */}
         <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
           {orderedCategories.map(({ key }) => {
             const sel = category === key;
@@ -435,19 +435,19 @@ function DiscoverPageContent() {
             // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
             // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
             // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
-            // look automatically once that category has content. Selected = the chip greys (NO check, NO ring, NO blue).
+            // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
             return (
               <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
                 className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
-                {/* Selected = the vivid photo + bold label; the OTHERS dim back (spotlight). NO ring/border/outline
-                    or label pill , owner reads any of those as the banned focus ring (2026-06-24). */}
-                <span className={`grid h-[66px] w-full place-items-center overflow-hidden rounded-card transition-opacity duration-150 ${sel ? "opacity-100" : "opacity-55"}`}>
+                {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
+                    those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
+                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
                   {cover
                     ? <img src={cover} alt="" className="h-full w-full object-cover" />
                     : <span className="h-full w-full bg-s-bg-sunken" />}
                 </span>
                 <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
-                  sel ? "font-bold text-s-ink" : "font-medium text-s-ink-2"
+                  sel ? "rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink" : "font-medium text-s-ink-2"
                 }`}>
                   {tTabs(key)}
                 </span>
@@ -489,8 +489,8 @@ function DiscoverPageContent() {
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "border border-s-ink bg-s-ink text-white"
-                        : "border border-s-border bg-s-bg-sunken text-s-ink-2 hover:text-s-ink"
-                    }`}
+                        : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink"
+                    } ${sel ? "animate-[inspo-pillpop_.24s_cubic-bezier(.34,1.56,.64,1)]" : ""}`}
                   >
                     {label}
                   </button>

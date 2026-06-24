@@ -53,7 +53,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
         aria-label={t("open_filters")}
         /* Owner 2026-06-20: the count badge alone signals active filters. Dropped the active-state black ring
            (border-s-ink) , it read as a heavy black circle. Border stays a neutral hairline; active just darkens the icon. */
-        className={`relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border transition-colors duration-150 ${
+        className={`relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white transition-colors duration-150 ${
           activeCount > 0 ? "text-s-ink" : "text-s-ink-2 hover:text-s-ink"
         }`}
       >

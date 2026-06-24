@@ -84,7 +84,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
               "rounded-pill px-3.5 py-2 text-[13.5px] font-semibold whitespace-nowrap transition-[background-color,color,border-color] duration-150",
               selected === label
                 ? "border border-s-ink bg-s-ink text-white"
-                : "border border-s-border bg-s-bg-sunken text-s-ink-2 hover:text-s-ink",
+                : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink",
             ].join(" ")}
           >
             {label}
