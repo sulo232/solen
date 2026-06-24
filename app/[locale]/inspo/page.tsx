@@ -394,7 +394,7 @@ function DiscoverPageContent() {
             </div>
           </div>
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[discover-drop_.2s_cubic-bezier(.2,.8,.2,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[fadeIn_.15s_ease] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
@@ -420,7 +420,8 @@ function DiscoverPageContent() {
         {/* MOCKUP (owner direction 2026-06-20): category pills are the FIRST control, in the rounded-box (rounded-card)
             pill shape. "Alle" = the blended For You default (boards + personalized + all looks below). Tapping a
             category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
-            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = blue border + blue text, NO fill (locked rule). */}
+            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = ink ring on the photo + bold ink label, NO
+            grey pill (owner 2026-06-24, no blue). */}
         <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
           {orderedCategories.map(({ key }) => {
             const sel = category === key;
@@ -439,13 +440,13 @@ function DiscoverPageContent() {
             return (
               <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
                 className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
-                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
+                <span className={`grid h-[66px] w-full place-items-center overflow-hidden rounded-card border-2 transition-colors duration-150 ${sel ? "border-s-ink" : "border-transparent"}`}>
                   {cover
                     ? <img src={cover} alt="" className="h-full w-full object-cover" />
                     : <span className="h-full w-full bg-s-bg-sunken" />}
                 </span>
-                <span className={`w-full rounded-pill py-1 text-center font-heading text-[12px] transition-colors duration-150 ${
-                  sel ? "bg-s-bg-sunken font-semibold text-s-ink" : "font-medium text-s-ink-2"
+                <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
+                  sel ? "font-bold text-s-ink" : "font-medium text-s-ink-2"
                 }`}>
                   {tTabs(key)}
                 </span>
@@ -471,17 +472,17 @@ function DiscoverPageContent() {
                 }}
                 onReset={resetFilters}
               />
-              {category !== "all" && chipTerms.map(({ term }) => {
+              {chipTerms.map(({ term }) => {
                 const label = formatChip(term);
-                // A pill is "selected" when its label is the committed search. Tapping commits the search; tapping the
-                // selected one clears it.
-                const sel = !!search && search.trim().toLowerCase() === label.toLowerCase();
+                // A pill is "selected" when it's the active `style` filter. Tapping toggles the style filter (NOT the
+                // search bar) , the feed filters by p_style (matches tags) so this discriminates correctly.
+                const sel = !!style && style.toLowerCase() === label.toLowerCase();
                 return (
                   <button
                     key={term}
                     type="button"
                     aria-pressed={sel}
-                    onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
+                    onClick={() => { const isSel = !!style && style.toLowerCase() === label.toLowerCase(); const next = activeFilters.filter((f) => f.pillId !== "style"); if (!isSel) next.push({ pillId: "style", subId: label, label }); setActiveFilters(next); }}
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "border border-s-ink bg-s-ink text-white"
