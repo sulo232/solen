@@ -86,7 +86,8 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                   key={key}
                   label={tg(key === "female" ? "women" : key === "male" ? "men" : key)}
                   selected={props.gender === key}
-                  onClick={() => props.onGenderChange(key)}
+                  // Owner 2026-06-24: tapping the already-selected gender DESELECTS it (back to "all"), so it toggles.
+                  onClick={() => props.onGenderChange(props.gender === key ? "all" : key)}
                 />
               ))}
             </div>

@@ -49,7 +49,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
            this touch search, so the input stays the calm sunken pill on focus — the `!` focus overrides kill BOTH
            the old blue ring AND the global ink halo (globals.css input:focus-visible). `!` modifiers also restore
            the pill + sunken + pl-9 over the globals base reset. 48px min-height + 16px font (touch + iOS no-zoom). */
-        className="w-full !pl-9 !pr-8 py-3 !rounded-pill !bg-white border border-s-border font-body text-s-ink placeholder:text-s-ink/40 transition-colors focus:outline-none focus:!border-s-border focus:!bg-white focus:!shadow-none"
+        className="w-full !pl-9 !pr-8 py-3 !rounded-pill !bg-white border !border-s-border font-body text-s-ink placeholder:text-s-ink/40 transition-colors focus:outline-none focus:!border-s-border focus:!bg-white focus:!shadow-none"
       />
       {/* V3-D414: voice/mic removed (no voice feature). Clear (X) shows only while typing. */}
       {local && (
