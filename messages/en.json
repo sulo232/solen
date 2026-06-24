@@ -3952,7 +3952,17 @@
     "reset": "Reset",
     "apply": "Apply",
     "close": "Close",
-    "all_styles": "All styles"
+    "all_styles": "All styles",
+    "dna_note": "Already tuned to your profile, you can change anything.",
+    "hairType": "Hair type",
+    "texture_straight": "Straight",
+    "texture_wavy": "Wavy",
+    "texture_curly": "Curly",
+    "texture_coily": "Coily",
+    "sortBy": "Sort",
+    "sort_for_you": "For you",
+    "sort_new": "New",
+    "sort_popular": "Popular"
   },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",

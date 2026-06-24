@@ -3944,7 +3944,17 @@
     "reset": "Réinitialiser",
     "apply": "Appliquer",
     "close": "Fermer",
-    "all_styles": "Tous les styles"
+    "all_styles": "Tous les styles",
+    "dna_note": "Déjà adapté à ton profil, tu peux tout changer.",
+    "hairType": "Type de cheveux",
+    "texture_straight": "Lisses",
+    "texture_wavy": "Ondulés",
+    "texture_curly": "Bouclés",
+    "texture_coily": "Crépus",
+    "sortBy": "Trier",
+    "sort_for_you": "Pour toi",
+    "sort_new": "Nouveau",
+    "sort_popular": "Populaire"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classement Barbers",

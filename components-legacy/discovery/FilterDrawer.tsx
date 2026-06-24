@@ -1,35 +1,46 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { DiscoveryGender } from "@/lib/types";
+
+type SortKey = "for_you" | "new" | "popular";
 
 interface FilterDrawerProps {
   gender: DiscoveryGender | "all";
   texture: string | null;
   style: string | null;
   onGenderChange: (g: DiscoveryGender | "all") => void;
+  onTextureChange: (t: string | null) => void;
+  sort: SortKey;
+  onSortChange: (s: SortKey) => void;
+  /** DNA pre-select: the viewer's saved profile values (null when no profile / logged out). */
+  dnaGender?: DiscoveryGender | null;
+  dnaTexture?: string | null;
   onReset: () => void;
 }
 
-const GENDER_KEYS: (DiscoveryGender | "all")[] = ["all", "female", "male", "unisex"];
+const GENDER_KEYS: (DiscoveryGender)[] = ["female", "male", "unisex"];
+const TEXTURE_KEYS = ["straight", "wavy", "curly", "coily"] as const;
+const SORT_KEYS: SortKey[] = ["for_you", "new", "popular"];
 
-// V3-D414: filter rebuilt to the captured Pinterest pattern (IMG_4980) in Solen skin — a clean RADIO list
-// (Kategorie + Für) + Reset/Anwenden, and a count BADGE on the sliders trigger (replaces the tiny "weird dot").
-// Texture + style stay in the chip row (they're redundant here), so the sheet reads clean. Primary stays INK
-// (not Pinterest red) per LOCKFILE §1.5.
-function RadioRow({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+// V3-D414 -> mockup E (2026-06-24): the sheet is now three PILL groups (Geschlecht / Haartyp / Sortieren),
+// pre-set from the viewer's DNA (disc_gender + disc_hair_texture) when they haven't already chosen. Selected =
+// INK FILL (never blue, per the graveyard: a blue outline reads as the banned focus ring). No count badge on the
+// trigger (owner: "don't put any numbers counts"). Primary stays INK per LOCKFILE §1.5.
+function Pill({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className="flex w-full items-center justify-between px-1 py-3.5 text-left transition-colors duration-150 active:bg-s-bg-sunken"
+      className={`inline-flex h-10 shrink-0 items-center rounded-[14px] px-4 font-heading text-[14px] font-semibold transition-colors duration-150 ${
+        selected
+          ? "border border-s-ink bg-s-ink text-white"
+          : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink"
+      }`}
     >
-      <span className="font-heading text-[16px] font-semibold text-s-ink">{label}</span>
-      <span className={`grid h-[22px] w-[22px] place-items-center rounded-full border-2 transition-colors duration-150 ${selected ? "border-s-ink" : "border-s-border"}`}>
-        {selected && <span className="h-[11px] w-[11px] rounded-full bg-s-ink" />}
-      </span>
+      {label}
     </button>
   );
 }
@@ -39,70 +50,105 @@ export default function FilterDrawer(props: FilterDrawerProps) {
   const t = useTranslations("discoveryFilters") as any;
   const tg = useTranslations("discover.gender") as any;
 
-  // Count of active filters → the trigger badge. Texture/style still count (set from the chip row) so the badge
-  // reflects the true active state even though they're not edited in this sheet. Category is NOT a filter (owner
-  // 2026-06-23): it's the top selector, removed from this sheet entirely, so it never counts here.
-  const activeCount =
-    (props.gender !== "all" ? 1 : 0) + (props.texture ? 1 : 0) + (props.style ? 1 : 0);
+  // DNA pre-select: when the sheet first opens, seed gender + hair-type from the profile IF the viewer hasn't
+  // already set that filter (so it never overrides a manual choice). Runs once per "open" rising edge.
+  const seededRef = useRef(false);
+  useEffect(() => {
+    if (!open) { seededRef.current = false; return; }
+    if (seededRef.current) return;
+    seededRef.current = true;
+    if (props.gender === "all" && props.dnaGender) props.onGenderChange(props.dnaGender);
+    if (!props.texture && props.dnaTexture) props.onTextureChange(props.dnaTexture);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   return (
     <>
-      {/* Trigger — sliders icon + active-count badge (V3-D414, was a tiny ink dot the user flagged as "weird"). */}
+      {/* Trigger: sliders icon, white square pill. No count badge (owner 2026-06-24: no numbers/counts). */}
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        /* Owner 2026-06-20: the count badge alone signals active filters. Dropped the active-state black ring
-           (border-s-ink) , it read as a heavy black circle. Border stays a neutral hairline; active just darkens the icon. */
-        className={`relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white transition-colors duration-150 ${
-          activeCount > 0 ? "text-s-ink" : "text-s-ink-2 hover:text-s-ink"
-        }`}
+        className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
       >
         <SlidersHorizontal size={18} />
-        {activeCount > 0 && (
-          <span className="absolute right-0 top-0 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-s-ink px-1 text-[12px] font-heading font-bold leading-none text-white ring-2 ring-white animate-in zoom-in duration-200">
-            {activeCount}
-          </span>
-        )}
       </button>
 
       {open && (
         <div role="dialog" aria-modal="true" aria-label={t("filter_label")} className="fixed inset-0 z-50 flex items-end">
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={() => setOpen(false)} />
-          <div className="relative flex max-h-[82vh] w-full flex-col rounded-t-[22px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
-            {/* Header: ✕ · title (centered) */}
-            <div className="flex items-center justify-between px-5 pb-3 pt-4">
-              <button onClick={() => setOpen(false)} aria-label={t("close")} className="text-s-ink transition-colors duration-150 hover:text-s-ink-2">
-                <X size={20} />
+          <div className="relative flex max-h-[82vh] w-full flex-col rounded-t-[26px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
+            {/* Grabber */}
+            <div className="mx-auto mt-2.5 h-1 w-[38px] rounded-full bg-s-border" />
+
+            {/* Header: title · circled ✕ */}
+            <div className="flex items-center justify-between px-5 pb-1 pt-3">
+              <p className="font-heading text-[18px] font-bold tracking-[-0.02em] text-s-ink">{t("filter_label")}</p>
+              <button onClick={() => setOpen(false)} aria-label={t("close")} className="grid h-[34px] w-[34px] place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
+                <X size={15} />
               </button>
-              <p className="font-heading text-[17px] font-semibold text-s-ink">{t("filter_label")}</p>
-              <span className="w-5" />
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 pb-4">
-              {/* Category radios removed (owner 2026-06-23): category is the top selector, never a filter here. */}
-              <p className="pb-1 pt-3 font-heading text-[13px] font-bold text-s-ink">{t("gender")}</p>
-              {GENDER_KEYS.map((key) => (
-                <RadioRow
-                  key={key}
-                  label={tg(key === "female" ? "women" : key === "male" ? "men" : key)}
-                  selected={props.gender === key}
-                  // Owner 2026-06-24: tapping the already-selected gender DESELECTS it (back to "all"), so it toggles.
-                  onClick={() => props.onGenderChange(props.gender === key ? "all" : key)}
-                />
-              ))}
+              <p className="pb-3.5 pt-0.5 text-[12.5px] text-s-ink-2">{t("dna_note")}</p>
+
+              {/* Geschlecht: pills (was RadioRows). Tapping the active gender toggles it off (back to "all"). */}
+              <div className="mb-4">
+                <p className="mb-2.5 font-heading text-[13px] font-bold text-s-ink">{t("gender")}</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {GENDER_KEYS.map((key) => (
+                    <Pill
+                      key={key}
+                      label={tg(key === "female" ? "women" : key === "male" ? "men" : key)}
+                      selected={props.gender === key}
+                      onClick={() => props.onGenderChange(props.gender === key ? "all" : key)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Haartyp (NEW). Maps Glatt/Wellig/Lockig/Coily to texture values straight/wavy/curly/coily. Toggles off. */}
+              <div className="mb-4">
+                <p className="mb-2.5 font-heading text-[13px] font-bold text-s-ink">{t("hairType")}</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {TEXTURE_KEYS.map((key) => (
+                    <Pill
+                      key={key}
+                      label={t(`texture_${key}`)}
+                      selected={props.texture === key}
+                      onClick={() => props.onTextureChange(props.texture === key ? null : key)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Sortieren (NEW). "Für dich" is the default (the current feed order). Neu/Beliebt are selectable;
+                  their re-order is a follow-up RPC change (see report) so they currently behave as Für dich. */}
+              <div className="mb-1">
+                <p className="mb-2.5 font-heading text-[13px] font-bold text-s-ink">{t("sortBy")}</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {SORT_KEYS.map((key) => (
+                    <Pill
+                      key={key}
+                      label={t(`sort_${key}`)}
+                      selected={props.sort === key}
+                      onClick={() => props.onSortChange(key)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Footer: Reset (sunken) · Apply (INK, per LOCKFILE) */}
+            {/* Footer: Zurücksetzen (ghost) · Anwenden (INK, per LOCKFILE) */}
             <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[15px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
+                className="h-12 flex-1 rounded-pill border border-s-border bg-white font-heading text-[15px] font-bold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
               >
                 {t("reset")}
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="h-12 flex-1 rounded-pill bg-s-ink font-heading text-[15px] font-semibold text-white transition-transform duration-150 active:scale-[0.97]"
+                className="h-12 flex-[1.4] rounded-pill bg-s-ink font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.97]"
               >
                 {t("apply")}
               </button>

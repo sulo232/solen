@@ -3962,7 +3962,17 @@
     "reset": "Zurücksetzen",
     "apply": "Anwenden",
     "close": "Schliessen",
-    "all_styles": "Alle Styles"
+    "all_styles": "Alle Styles",
+    "dna_note": "Schon auf dein Profil abgestimmt, du kannst alles ändern.",
+    "hairType": "Haartyp",
+    "texture_straight": "Glatt",
+    "texture_wavy": "Wellig",
+    "texture_curly": "Lockig",
+    "texture_coily": "Coily",
+    "sortBy": "Sortieren",
+    "sort_for_you": "Für dich",
+    "sort_new": "Neu",
+    "sort_popular": "Beliebt"
   },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",

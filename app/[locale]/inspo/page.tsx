@@ -78,6 +78,16 @@ function DiscoverPageContent() {
   const texture = activeFilters.find((f) => f.pillId === "texture")?.subId || null;
   const style = activeFilters.find((f) => f.pillId === "style")?.subId || null;
 
+  // Sort (mockup E): "Für dich" is the default (= the current for-you feed order). "Neu"/"Beliebt" are selectable
+  // but their re-order needs a follow-up RPC change (discovery_feed RETURNS TABLE has no created_at column), so
+  // they currently fall back to the Für dich order. See report. No core-feed RPC touched.
+  const [sort, setSort] = useState<"for_you" | "new" | "popular">("for_you");
+
+  // DNA pre-select source (mockup E): the viewer's saved profile values, used to seed the gender/hair-type pills the
+  // first time the sheet opens (only when those filters are still unset, never overrides a manual choice).
+  const [dnaGender, setDnaGender] = useState<DiscoveryGender | null>(null);
+  const [dnaTexture, setDnaTexture] = useState<string | null>(null);
+
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -116,6 +126,11 @@ function DiscoverPageContent() {
           if (cancelled) return;
           if (p && p.disc_profile_set === false) {
             setShowProfileSetup(true);
+          }
+          // DNA pre-select source for the filter sheet (mockup E): seed pills from the saved profile.
+          if (p) {
+            if (p.disc_gender) setDnaGender(p.disc_gender as DiscoveryGender);
+            if (p.disc_hair_texture) setDnaTexture(p.disc_hair_texture as string);
           }
           setProfileChecked(true);
         })
@@ -326,6 +341,7 @@ function DiscoverPageContent() {
     setActiveFilters([]);
     setSearch("");
     setSearchInput("");
+    setSort("for_you");
   };
 
   // Build filter pills — labels from translations (Issues C + D)
@@ -471,6 +487,17 @@ function DiscoverPageContent() {
                   if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
                   setActiveFilters(next);
                 }}
+                onTextureChange={(tx) => {
+                  // Same pattern as gender: write the texture into activeFilters (pillId "texture"); the feed already
+                  // reads `texture` from there and passes p_texture to the RPC. null clears it.
+                  const next = activeFilters.filter((f) => f.pillId !== "texture");
+                  if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
+                  setActiveFilters(next);
+                }}
+                sort={sort}
+                onSortChange={setSort}
+                dnaGender={dnaGender}
+                dnaTexture={dnaTexture}
                 onReset={resetFilters}
               />
               {chipTerms.map(({ term }) => {

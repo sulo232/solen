@@ -3926,7 +3926,17 @@
     "reset": "Reimposta",
     "apply": "Applica",
     "close": "Chiudi",
-    "all_styles": "Tutti gli stili"
+    "all_styles": "Tutti gli stili",
+    "dna_note": "Già adattato al tuo profilo, puoi cambiare tutto.",
+    "hairType": "Tipo di capelli",
+    "texture_straight": "Lisci",
+    "texture_wavy": "Mossi",
+    "texture_curly": "Ricci",
+    "texture_coily": "Crespi",
+    "sortBy": "Ordina",
+    "sort_for_you": "Per te",
+    "sort_new": "Nuovo",
+    "sort_popular": "Popolare"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classifica Barber",
