@@ -93,6 +93,8 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // The cover IMAGE is the look (from TikTok — allowed via oEmbed; clean, no cookie wall, never opens TikTok). The
   // video plays INLINE in our page only when the user taps play (never opens TikTok; TikTok's cookie wall only
   // appears on that intentional tap, never on load).
+  // NOTE (owner 2026-06-24): true autoplay-on-open is NOT possible for a TikTok cross-origin EMBED on iOS. Safari
+  // blocks autoplay without a tap gesture (even muted), and TikTok's URL `autoplay=1` errors. So it stays tap-to-play.
   const [playing, setPlaying] = useState(false);
   // TEMP interaction switch (owner deciding the play interaction): ?play=inline (current) | sheet | fullscreen.
   // Client-only read; the play surfaces only appear after a tap, so no hydration mismatch. Default = current inline.
