@@ -440,7 +440,9 @@ function DiscoverPageContent() {
             return (
               <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
                 className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
-                <span className={`grid h-[66px] w-full place-items-center overflow-hidden rounded-card border-2 transition-colors duration-150 ${sel ? "border-s-ink" : "border-transparent"}`}>
+                {/* Selected = the vivid photo + bold label; the OTHERS dim back (spotlight). NO ring/border/outline
+                    or label pill , owner reads any of those as the banned focus ring (2026-06-24). */}
+                <span className={`grid h-[66px] w-full place-items-center overflow-hidden rounded-card transition-opacity duration-150 ${sel ? "opacity-100" : "opacity-55"}`}>
                   {cover
                     ? <img src={cover} alt="" className="h-full w-full object-cover" />
                     : <span className="h-full w-full bg-s-bg-sunken" />}
