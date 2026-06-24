@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 // V3-D396: ONLY real user-supplied icons (bg-removed, trimmed, normalised → /public/hair-patterns/), rendered as CSS
-// masks so they inherit currentColor — ink by default, accent-blue when selected. NO hand-drawn fallbacks: any texture
+// masks so they inherit currentColor (ink on the grey tile, white on the selected ink tile). NO hand-drawn fallbacks: any texture
 // without a real icon (coily, bald) is HIDDEN from the row (see the map), never shown with a placeholder glyph.
 const Mask = (src: string): ReactNode => (
   <span
@@ -82,8 +82,8 @@ export default function PatternSelector({ category, selected, onSelect, heading 
               key={opt.value ?? "all"}
               aria-pressed={active}
               onClick={() => onSelect(opt.value)}
-              /* V3-D394: glyph-tile (icon draws the pattern) + accent selected-state. Sentence-case per §2.5 A7. */
-              /* V3-D398 (council): "colours, not a pale shape" → selected = SOLID accent + white icon (was pale tint,
+              /* V3-D394: glyph-tile (icon draws the pattern) + ink selected-state. Sentence-case per §2.5 A7. */
+              /* V3-D398 (council): "colours, not a pale shape" -> selected = SOLID INK + white icon (was pale tint,
                  which read as disabled). Unselected = grey tile + full-ink icon (was greyed /55). */
               className={cn(
                 "flex min-h-[60px] min-w-[64px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-transparent px-3 py-2.5 text-[12px] font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",

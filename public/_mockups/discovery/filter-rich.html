@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  Exists-check: /de/inspo filter sheet is components-legacy/discovery/FilterDrawer.tsx (npm run exists filter, this
+  turn) , shipped this session as mockup E (gender + hair-type + sort pills, DNA pre-select, no counts). Owner: that
+  sheet is "too basic, nothing is really it". This ENRICHES the SAME sheet (treatment, not new structure): a personal
+  "Dein Haar" summary banner (reads disc_* DNA), hair-type as VISUAL tiles instead of plain text pills, tighter rhythm.
+  REMOVED: category stays OUT of the sheet, and selected = ink fill / ink border NOT a blue ring (both graveyarded).
+  NEW = the Dein-Haar banner + the visual hair-type tiles. Gender + Sort stay pills. No CDN: tokens inline, system-font
+  stack, real Lucide geometry, real Pexels thumbs. Hair-type photos are PLACEHOLDERS; final tiles use texture-matched imagery.
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Filter sheet rich</title>
+<style>
+  :root{ --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B; --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --disp:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif; --body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--body);color:var(--ink);background:#EAEAEC;line-height:1.4;padding:24px 14px 70px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:430px;margin:0 auto}
+  .optlbl{margin:22px 0 12px}
+  .optlbl .tag{display:inline-block;font-family:var(--disp);font-weight:700;font-size:12px;color:var(--ink);background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:3px 11px}
+  .optlbl h2{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;margin-top:9px}
+  .optlbl p{font-size:13px;color:var(--ink-2);margin-top:4px}
+  .frame{width:100%;background:#d9d7da;border-radius:30px;overflow:hidden;box-shadow:0 18px 44px rgba(20,18,16,.14);border:1px solid var(--border)}
+  .stage{position:relative;min-height:560px}
+  .dim{position:absolute;inset:0;background:rgba(10,10,10,.38)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--white);border-radius:26px 26px 0 0;padding:10px 18px 18px}
+  .grab{width:38px;height:4px;border-radius:999px;background:#D9D9DE;margin:2px auto 12px}
+  .shead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .shead .t{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .shead .x{width:34px;height:34px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;background:var(--white)}
+  .shead .x svg{width:15px;height:15px;color:var(--ink)}
+  .dna{display:flex;align-items:center;gap:12px;background:var(--sunken);border:1px solid var(--border);border-radius:16px;padding:11px 13px;margin-bottom:20px}
+  .dna .av{width:42px;height:42px;border-radius:12px;overflow:hidden;flex:none;background:#ddd;border:1px solid var(--border)}
+  .dna .av img{width:100%;height:100%;object-fit:cover;display:block}
+  .dna .tx .h{font-family:var(--disp);font-weight:700;font-size:14.5px;letter-spacing:-.01em}
+  .dna .tx .s{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+  .grp{margin-bottom:20px}
+  .grp .gl{font-family:var(--disp);font-weight:700;font-size:13px;color:var(--ink);margin-bottom:11px}
+  .tiles{display:flex;gap:9px}
+  .tile{flex:1;position:relative}
+  .tile .ph{width:100%;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--sunken);border:2px solid transparent}
+  .tile .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .tile.sel .ph{border-color:var(--ink)}
+  .tile .lb{display:block;text-align:center;font-size:12px;font-weight:600;color:var(--ink-2);margin-top:6px}
+  .tile.sel .lb{color:var(--ink);font-weight:700}
+  .tile .ck{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:999px;background:var(--ink);display:none;place-items:center}
+  .tile.sel .ck{display:grid}
+  .tile .ck svg{width:12px;height:12px;color:#fff}
+  .grow{display:flex;flex-wrap:wrap;gap:9px}
+  .opt{font-size:14px;font-weight:600;padding:9px 16px;border-radius:14px;background:var(--white);border:1px solid var(--border);color:var(--ink-2)}
+  .opt.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  .sbtns{display:flex;gap:10px;margin-top:4px}
+  .sbtns .reset{flex:1;height:50px;border-radius:999px;border:1px solid var(--border);background:var(--white);display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:15px;color:var(--ink)}
+  .sbtns .apply{flex:1.5;height:50px;border-radius:999px;background:var(--ink);display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:15px;color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="optlbl"><span class="tag">Vorschlag</span><h2>Filter, reicher statt basic</h2>
+    <p>Oben eine persoenliche "Dein Haar" Zeile aus deinem Profil. Haartyp als sichtbare Kacheln statt nackter Pills. Geschlecht und Sortieren bleiben Pills. Auswahl = Tinte, kein Ring.</p></div>
+  <div class="frame"><div class="stage" id="rich"></div></div>
+</div>
+<script>
+const P="https://images.pexels.com/photos/";
+function src(id){ return P+id+"/pexels-photo-"+id+".jpeg?auto=compress&cs=tinysrgb&h=200&w=200"; }
+function E(t,c){const n=document.createElement(t);if(c)n.className=c;return n;}
+function T(t,c,x){const n=E(t,c);n.textContent=x;return n;}
+function IMG(id){const im=new Image();im.src=src(id);im.loading="lazy";im.alt="";return im;}
+function svg(p,w){const ns="http://www.w3.org/2000/svg";const s=document.createElementNS(ns,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("stroke","currentColor");s.setAttribute("stroke-width",w||"2");s.setAttribute("stroke-linecap","round");s.setAttribute("stroke-linejoin","round");p.forEach(d=>{const x=document.createElementNS(ns,"path");x.setAttribute("d",d);s.appendChild(x);});return s;}
+const I_X=()=>svg(["M18 6 6 18","m6 6 12 12"],"2.2");
+const I_CHECK=()=>svg(["M20 6 9 17l-5-5"],"3");
+
+(function(){
+  const stage=document.getElementById("rich");
+  stage.appendChild(E("div","dim"));
+  const sheet=E("div","sheet"); sheet.appendChild(E("div","grab"));
+  const sh=E("div","shead"); sh.appendChild(T("div","t","Filter")); const x=E("div","x"); x.appendChild(I_X()); sh.appendChild(x); sheet.appendChild(sh);
+  const dna=E("div","dna"); const av=E("div","av"); av.appendChild(IMG("3993449")); dna.appendChild(av);
+  const tx=E("div","tx"); tx.appendChild(T("div","h","Welliges, schulterlanges Haar")); tx.appendChild(T("div","s","Schon auf dich abgestimmt. Alles aenderbar.")); dna.appendChild(tx);
+  sheet.appendChild(dna);
+  const g1=E("div","grp"); g1.appendChild(T("div","gl","Haartyp"));
+  const tiles=E("div","tiles");
+  [["Glatt","3618162",0],["Wellig","2787341",1],["Lockig","1844012",0],["Coily","1898555",0]].forEach(([lb,id,sel])=>{
+    const t=E("div","tile"+(sel?" sel":"")); const ph=E("div","ph"); ph.appendChild(IMG(id)); t.appendChild(ph);
+    const ck=E("div","ck"); ck.appendChild(I_CHECK()); t.appendChild(ck);
+    t.appendChild(T("span","lb",lb)); tiles.appendChild(t);
+  });
+  g1.appendChild(tiles); sheet.appendChild(g1);
+  const g2=E("div","grp"); g2.appendChild(T("div","gl","Geschlecht"));
+  const row2=E("div","grow"); [["Frauen",1],["Maenner",0],["Unisex",0]].forEach(([o,s])=>row2.appendChild(T("div","opt"+(s?" sel":""),o))); g2.appendChild(row2); sheet.appendChild(g2);
+  const g3=E("div","grp"); g3.appendChild(T("div","gl","Sortieren"));
+  const row3=E("div","grow"); [["Fuer dich",1],["Neu",0],["Beliebt",0]].forEach(([o,s])=>row3.appendChild(T("div","opt"+(s?" sel":""),o))); g3.appendChild(row3); sheet.appendChild(g3);
+  const btns=E("div","sbtns"); btns.appendChild(T("div","reset","Zuruecksetzen")); btns.appendChild(T("div","apply","Anwenden")); sheet.appendChild(btns);
+  stage.appendChild(sheet);
+})();
+</script>
+</body>
+</html>

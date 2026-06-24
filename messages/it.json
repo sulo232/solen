@@ -3936,7 +3936,19 @@
     "sortBy": "Ordina",
     "sort_for_you": "Per te",
     "sort_new": "Nuovo",
-    "sort_popular": "Popolare"
+    "sort_popular": "Popolare",
+    "dna_subline": "Già adattato a te. Puoi cambiare tutto.",
+    "dna_heading_with_length": "Capelli {texture}, {length}",
+    "dna_heading_texture_only": "Capelli {texture}",
+    "dna_texture_straight": "lisci",
+    "dna_texture_wavy": "mossi",
+    "dna_texture_curly": "ricci",
+    "dna_texture_coily": "crespi",
+    "dna_texture_protective": "protettivi",
+    "dna_texture_bald": "molto corti",
+    "dna_length_short": "corti",
+    "dna_length_medium": "medi",
+    "dna_length_long": "lunghi"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classifica Barber",

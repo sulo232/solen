@@ -87,6 +87,7 @@ function DiscoverPageContent() {
   // first time the sheet opens (only when those filters are still unset, never overrides a manual choice).
   const [dnaGender, setDnaGender] = useState<DiscoveryGender | null>(null);
   const [dnaTexture, setDnaTexture] = useState<string | null>(null);
+  const [dnaLength, setDnaLength] = useState<string | null>(null);
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -131,6 +132,7 @@ function DiscoverPageContent() {
           if (p) {
             if (p.disc_gender) setDnaGender(p.disc_gender as DiscoveryGender);
             if (p.disc_hair_texture) setDnaTexture(p.disc_hair_texture as string);
+            if (p.disc_hair_length) setDnaLength(p.disc_hair_length as string);
           }
           setProfileChecked(true);
         })
@@ -502,21 +504,29 @@ function DiscoverPageContent() {
                 texture={texture}
                 style={style}
                 onGenderChange={(g) => {
-                  const next = activeFilters.filter((f) => f.pillId !== "gender");
-                  if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
-                  setActiveFilters(next);
+                  // Functional update: a DNA pre-select fires gender + texture in one tick, so reading the
+                  // stale activeFilters closure made the second call clobber the first (gender was lost).
+                  setActiveFilters((prev) => {
+                    const next = prev.filter((f) => f.pillId !== "gender");
+                    if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
+                    return next;
+                  });
                 }}
                 onTextureChange={(tx) => {
                   // Same pattern as gender: write the texture into activeFilters (pillId "texture"); the feed already
-                  // reads `texture` from there and passes p_texture to the RPC. null clears it.
-                  const next = activeFilters.filter((f) => f.pillId !== "texture");
-                  if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
-                  setActiveFilters(next);
+                  // reads `texture` from there and passes p_texture to the RPC. null clears it. Functional update so
+                  // a gender + texture DNA pre-select (both in one tick) do not clobber each other.
+                  setActiveFilters((prev) => {
+                    const next = prev.filter((f) => f.pillId !== "texture");
+                    if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
+                    return next;
+                  });
                 }}
                 sort={sort}
                 onSortChange={setSort}
                 dnaGender={dnaGender}
                 dnaTexture={dnaTexture}
+                dnaLength={dnaLength}
                 onReset={resetFilters}
               />
               {chipTerms.map(({ term }) => {

@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { X, SlidersHorizontal } from "lucide-react";
+import { X, SlidersHorizontal, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { DiscoveryGender } from "@/lib/types";
+import PatternSelector from "@/components-legacy/discovery/PatternSelector";
 
 type SortKey = "for_you" | "new" | "popular";
 
@@ -17,12 +18,23 @@ interface FilterDrawerProps {
   /** DNA pre-select: the viewer's saved profile values (null when no profile / logged out). */
   dnaGender?: DiscoveryGender | null;
   dnaTexture?: string | null;
+  /** DNA hair length (short | medium | long) — drives the banner sub-phrase. null when not set. */
+  dnaLength?: string | null;
   onReset: () => void;
 }
 
 const GENDER_KEYS: (DiscoveryGender)[] = ["female", "male", "unisex"];
-const TEXTURE_KEYS = ["straight", "wavy", "curly", "coily"] as const;
 const SORT_KEYS: SortKey[] = ["for_you", "new", "popular"];
+
+// Banner hair-pattern icon: reuses PatternSelector's masked-PNG technique (the icon inherits currentColor → ink in
+// the banner tile). curly maps to coily.png, matching PatternSelector. Textures without a real icon (coily, bald)
+// fall back to a neutral tile (handled below) — no placeholder glyph.
+const BANNER_PATTERN_SRC: Record<string, string> = {
+  straight: "/hair-patterns/straight.png",
+  wavy: "/hair-patterns/wavy.png",
+  curly: "/hair-patterns/coily.png",
+  protective: "/hair-patterns/protective.png",
+};
 
 // V3-D414 -> mockup E (2026-06-24): the sheet is now three PILL groups (Geschlecht / Haartyp / Sortieren),
 // pre-set from the viewer's DNA (disc_gender + disc_hair_texture) when they haven't already chosen. Selected =
@@ -89,7 +101,45 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 pb-4">
-              <p className="pb-3.5 pt-0.5 text-[12.5px] text-s-ink-2">{t("dna_note")}</p>
+              {/* The generic "pre-set from your profile" note shows ONLY when the Dein Haar banner is absent (no saved
+                  texture), so the two never stack the same "abgestimmt" line. */}
+              {!props.dnaTexture && (
+                <p className="pb-3.5 pt-0.5 text-[12.5px] text-s-ink-2">{t("dna_note")}</p>
+              )}
+
+              {/* Dein Haar banner: the viewer's REAL hair profile (texture + optional length). Hidden entirely when
+                  there's no saved texture (logged out / no profile) — never fabricated. Left = the user's own
+                  hair-pattern icon (masked PNG, same technique as PatternSelector) or a neutral fallback tile. */}
+              {props.dnaTexture && (() => {
+                const texLabel = t(`dna_texture_${props.dnaTexture}`);
+                const heading = props.dnaLength
+                  ? t("dna_heading_with_length", { texture: texLabel, length: t(`dna_length_${props.dnaLength}`) })
+                  : t("dna_heading_texture_only", { texture: texLabel });
+                const iconSrc = BANNER_PATTERN_SRC[props.dnaTexture];
+                return (
+                  <div className="mb-5 flex items-center gap-3 rounded-[16px] border border-s-border bg-s-bg-sunken p-3">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] border border-s-border bg-white text-s-ink">
+                      {iconSrc ? (
+                        <span
+                          aria-hidden
+                          className="h-6 w-6"
+                          style={{
+                            backgroundColor: "currentColor",
+                            WebkitMaskImage: `url(${iconSrc})`, maskImage: `url(${iconSrc})`,
+                            WebkitMaskSize: "contain", maskSize: "contain",
+                            WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat",
+                            WebkitMaskPosition: "center", maskPosition: "center",
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">{heading}</p>
+                      <p className="mt-0.5 text-[12.5px] text-s-ink-2">{t("dna_subline")}</p>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Geschlecht: pills (was RadioRows). Tapping the active gender toggles it off (back to "all"). */}
               <div className="mb-4">
@@ -106,19 +156,12 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                 </div>
               </div>
 
-              {/* Haartyp (NEW). Maps Glatt/Wellig/Lockig/Coily to texture values straight/wavy/curly/coily. Toggles off. */}
+              {/* Haartyp: REAL masked icon-tiles via the shared PatternSelector (ink-selected; "All" tile = null =
+                  clears the filter, which matches toggle-off). heading="" suppresses its internal eyebrow so we keep
+                  ONE group label matching Geschlecht/Sortieren. */}
               <div className="mb-4">
                 <p className="mb-2.5 font-heading text-[13px] font-bold text-s-ink">{t("hairType")}</p>
-                <div className="flex flex-wrap gap-2.5">
-                  {TEXTURE_KEYS.map((key) => (
-                    <Pill
-                      key={key}
-                      label={t(`texture_${key}`)}
-                      selected={props.texture === key}
-                      onClick={() => props.onTextureChange(props.texture === key ? null : key)}
-                    />
-                  ))}
-                </div>
+                <PatternSelector category="hair" selected={props.texture} onSelect={props.onTextureChange} heading="" />
               </div>
 
               {/* Sortieren (NEW). "Für dich" is the default (the current feed order). Neu/Beliebt are selectable;
@@ -138,21 +181,31 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               </div>
             </div>
 
-            {/* Footer: Zurücksetzen (ghost) · Anwenden (INK, per LOCKFILE) */}
-            <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
-              <button
-                onClick={() => { props.onReset(); setOpen(false); }}
-                className="h-12 flex-1 rounded-pill border border-s-border bg-white font-heading text-[15px] font-bold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
-              >
-                {t("reset")}
-              </button>
-              <button
-                onClick={() => setOpen(false)}
-                className="h-12 flex-[1.4] rounded-pill bg-s-ink font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.97]"
-              >
-                {t("apply")}
-              </button>
-            </div>
+            {/* Footer: Anwenden (INK, per LOCKFILE) — preceded by a small circular reset icon only when a filter is
+                active. Reset = clear + close; Anwenden = close. */}
+            {(() => {
+              const active = props.gender !== "all" || !!props.texture || props.sort !== "for_you";
+              return (
+                <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
+                  {active && (
+                    <button
+                      type="button"
+                      onClick={() => { props.onReset(); setOpen(false); }}
+                      aria-label={t("reset")}
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
+                    >
+                      <RotateCcw size={18} />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="h-11 flex-1 rounded-pill bg-s-ink font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.97]"
+                  >
+                    {t("apply")}
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

@@ -3962,7 +3962,19 @@
     "sortBy": "Sort",
     "sort_for_you": "For you",
     "sort_new": "New",
-    "sort_popular": "Popular"
+    "sort_popular": "Popular",
+    "dna_subline": "Already tuned to you. Change anything.",
+    "dna_heading_with_length": "{texture}, {length} hair",
+    "dna_heading_texture_only": "{texture} hair",
+    "dna_texture_straight": "Straight",
+    "dna_texture_wavy": "Wavy",
+    "dna_texture_curly": "Curly",
+    "dna_texture_coily": "Coily",
+    "dna_texture_protective": "Protective",
+    "dna_texture_bald": "Very short",
+    "dna_length_short": "short",
+    "dna_length_medium": "shoulder-length",
+    "dna_length_long": "long"
   },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",

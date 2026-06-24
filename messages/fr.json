@@ -3954,7 +3954,19 @@
     "sortBy": "Trier",
     "sort_for_you": "Pour toi",
     "sort_new": "Nouveau",
-    "sort_popular": "Populaire"
+    "sort_popular": "Populaire",
+    "dna_subline": "Déjà adapté à toi. Tout est modifiable.",
+    "dna_heading_with_length": "Cheveux {texture}, {length}",
+    "dna_heading_texture_only": "Cheveux {texture}",
+    "dna_texture_straight": "lisses",
+    "dna_texture_wavy": "ondulés",
+    "dna_texture_curly": "bouclés",
+    "dna_texture_coily": "crépus",
+    "dna_texture_protective": "protecteurs",
+    "dna_texture_bald": "très courts",
+    "dna_length_short": "courts",
+    "dna_length_medium": "mi-longs",
+    "dna_length_long": "longs"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classement Barbers",
