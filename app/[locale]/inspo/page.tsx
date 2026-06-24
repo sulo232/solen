@@ -15,7 +15,6 @@ import FilterDrawer from "@/components-legacy/discovery/FilterDrawer";
 import { DISCOVERY_CATEGORIES } from "@/components-legacy/discovery/CategoryTabBar";
 import DiscoveryErrorState from "@/components-legacy/discovery/DiscoveryErrorState";
 import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
-import ForYouSection from "@/components-legacy/discovery/ForYouSection";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
@@ -476,15 +475,17 @@ function DiscoverPageContent() {
               />
               {chipTerms.map(({ term }) => {
                 const label = formatChip(term);
-                // A pill is "selected" when it's the active `style` filter. Tapping toggles the style filter (NOT the
-                // search bar) , the feed filters by p_style (matches tags) so this discriminates correctly.
-                const sel = !!style && style.toLowerCase() === label.toLowerCase();
+                // A pill narrows the feed by its tag. The feed RPC has NO tag filter (p_style matches style_name
+                // exactly = 0 results), so we route the tag through the committed SEARCH query (search_discovery
+                // FTS-matches tags) but DROP setSearchInput , the feed filters, yet the term never shows in the
+                // search bar (owner 2026-06-24: "what's the reason to have it in the search bar"). Tap again clears.
+                const sel = !!search && search.trim().toLowerCase() === term.toLowerCase();
                 return (
                   <button
                     key={term}
                     type="button"
                     aria-pressed={sel}
-                    onClick={() => { const isSel = !!style && style.toLowerCase() === label.toLowerCase(); const next = activeFilters.filter((f) => f.pillId !== "style"); if (!isSel) next.push({ pillId: "style", subId: label, label }); setActiveFilters(next); }}
+                    onClick={() => setSearch(sel ? "" : term)}
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "border border-s-ink bg-s-ink text-white"
@@ -510,11 +511,6 @@ function DiscoverPageContent() {
 
         {/* Admin panel (admin-only) */}
         {isAdmin && <DiscoveryAdmin />}
-
-        {/* For You personalization (authenticated + no filters) */}
-        {isAuthenticated && category === "all" && !hasActiveFilters && !search && (
-          <ForYouSection />
-        )}
 
         {/* Grid */}
         {error ? (
