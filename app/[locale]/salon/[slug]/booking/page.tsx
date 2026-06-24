@@ -163,13 +163,22 @@ export default async function BookingSalonPage({
       ).data ?? []
     : [];
 
+  // Owner 2026-06-24: if BOTH ?staff and ?service were deep-linked, make sure the stylist actually OFFERS that
+  // service, else drop the stylist preselect (a mismatched stylist must never seed). Fallback matches StaffStep:
+  // a stylist with NO service mappings does everything, so only drop one that HAS mappings missing the service.
+  let safeStaffId = initialStaffId;
+  if (initialStaffId && initialService) {
+    const sm = staffServices.filter((m) => m.staff_member_id === initialStaffId);
+    if (sm.length > 0 && !sm.some((m) => m.service_id === initialService.id)) safeStaffId = undefined;
+  }
+
   // No bookable services (onboarded-but-empty, or all deactivated) → the wizard would dump
   // the user on a dead step 1. Show the empty state with real paths forward instead (audit #8).
   const hasServices = Array.isArray(services) && services.length > 0;
   const salonAny = salon as unknown as { phone: string | null; cover_photo_url: string | null; average_rating: number | null; review_count: number | null; address: string | null };
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam}>
+    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam}>
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}

@@ -196,7 +196,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
   // See-all goes to the category's salon search (already category-scoped by the route). We deliberately do NOT pass
   // the look's style_name as a query , it's a long descriptive name that matches zero salons and would empty the page
   // ("nothing in the background"). The route's category filter is the right scope.
-  const seeAllSalonsHref = `/${locale}/${categoryRoute}?from=discovery`;
+  const seeAllSalonsHref = `/${locale}/${categoryRoute}`;
   const moreLikeThisHref = `/${locale}/inspo?search=${encodeURIComponent(item.style_name || item.tags?.[0] || "")}`;
 
   const thumbEl: ReactNode = heroSrc ? (
@@ -244,7 +244,10 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
         <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
           <button
             type="button"
-            onClick={() => router.back()}
+            // Owner 2026-06-24: back goes EXPLICITLY to the feed, never router.back(). router.back() walked browser
+            // history, so look -> similar look -> look made "back" unwind the detail chain instead of returning to
+            // discovery (the "loop loop loop"). Always /inspo = one tap back to the feed, no loop.
+            onClick={() => router.push(`/${locale}/inspo`)}
             aria-label={t.back}
             style={FROST_GLASS}
             className="grid h-9 w-9 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
