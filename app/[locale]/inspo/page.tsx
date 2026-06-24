@@ -313,6 +313,25 @@ function DiscoverPageContent() {
   // Heart tapped while signed out → send to login (saving requires an account).
   const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
 
+  // Commit a real (non-empty) search: drive the feed + close the dropdown AND persist the term to localStorage so
+  // recent-searches work logged-OUT too (the DB history is per-user/logged-in only). Dedup case-insensitively,
+  // most-recent-first, cap 8. SSR-guarded. The chip-row tag refine does NOT route through here (owner: a tag must
+  // not land in the search bar), so only typed/picked searches are remembered.
+  const commitSearch = (raw: string) => {
+    const term = raw.trim();
+    setSearch(term);
+    setSearchInput(term);
+    setSearchFocused(false);
+    if (!term || typeof window === "undefined") return;
+    try {
+      const prev: string[] = JSON.parse(window.localStorage.getItem("inspo:recent-searches") || "[]");
+      const next = [term, ...prev.filter((t) => t.toLowerCase() !== term.toLowerCase())].slice(0, 8);
+      window.localStorage.setItem("inspo:recent-searches", JSON.stringify(next));
+    } catch (err) {
+      console.error("[inspo] recent-searches localStorage write failed:", err);
+    }
+  };
+
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
   const feedItems = items;
 
@@ -388,8 +407,8 @@ function DiscoverPageContent() {
                 value={searchInput}
                 /* typing only updates the live text (→ dropdown). Clearing to empty also resets the feed to browse. */
                 onChange={(v) => { setSearchInput(v); if (!v.trim()) setSearch(""); }}
-                /* Enter commits → the feed actually searches + logs once. */
-                onSubmit={(v) => { const term = v.trim(); setSearch(term); setSearchInput(term); setSearchFocused(false); }}
+                /* Enter commits → the feed actually searches + logs once + remembers the term (commitSearch). */
+                onSubmit={(v) => commitSearch(v)}
                 placeholder={t("searchPlaceholder")}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
@@ -414,17 +433,17 @@ function DiscoverPageContent() {
               {searchInput.trim() ? (
                 <SearchAutocomplete
                   query={searchInput}
-                  onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }}
+                  onSelect={(term) => commitSearch(term)}
                   onSalonSelect={(slug) => { setSearchFocused(false); router.push(`/${locale}/salon/${slug}`); }}
                 />
               ) : (
                 <>
                   {/* V3-D413: recent searches (per-user history, photo · term · remove) above the trending row.
                       RecentSearches renders nothing when there's no history → only Trending shows (fallback ladder). */}
-                  <RecentSearches onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }} />
+                  <RecentSearches onSelect={(term) => commitSearch(term)} />
                   <AISuggestionPills
                     category={category}
-                    onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }}
+                    onSelect={(term) => commitSearch(term)}
                   />
                 </>
               )}
@@ -477,7 +496,7 @@ function DiscoverPageContent() {
             driven by /api/discovery/chip-terms?category=) and show once a category is picked; "Alle" stays clean
             (just the filter). Selected pill = ink fill, no ring (owner: no focus ring on selected pills). */}
         <div className="relative mb-5">
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none -mx-4 px-4">
+            <div className="flex items-center gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
               <FilterDrawer
                 gender={gender}
                 texture={texture}
@@ -515,7 +534,7 @@ function DiscoverPageContent() {
                     onClick={() => setSearch(sel ? "" : term)}
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
-                        ? "border border-s-ink bg-s-ink text-white"
+                        ? "relative z-10 border border-s-ink bg-s-ink text-white"
                         : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink"
                     } ${sel ? "animate-[inspo-pillpop_.24s_cubic-bezier(.34,1.56,.64,1)]" : ""}`}
                   >

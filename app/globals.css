@@ -378,6 +378,17 @@
   outline: none !important;
 }
 
+/* ── Discovery search input: force a UNIFORM cool hairline (measured 2026-06-24).
+     Tailwind parses `!border-s-border` two ways and ALSO emits
+     `border-inline-start-color: hsl(var(--border))` (the legacy WARM token
+     #DED9D3), which wins the LEFT edge over the cool `border-color` (#E4E4E7),
+     so the bar showed cool top/right/bottom + a warm left. This forces all four
+     to the cool s-border. Outside @layer + !important = beats the utility. ── */
+input.discovery-searchbar {
+  border-color: #E4E4E7 !important;              /* drift-ok: s-border literal; no CSS var exists (only the legacy warm --border) */
+  border-inline-start-color: #E4E4E7 !important; /* drift-ok: s-border literal; overrides the warm logical-side leak */
+}
+
 /* ── P.1: Page-load stagger animation ──────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(16px); }

@@ -12,11 +12,36 @@ interface RecentTerm {
   thumb: string | null;
 }
 
+const LS_KEY = "inspo:recent-searches";
+
+// localStorage layer so recent searches work logged-OUT (the DB history is per-user/logged-in only). Terms are
+// plain strings (no thumb); SSR-guarded; dedup is the writer's job (commitSearch in the inspo page).
+const readLocal = (): string[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = JSON.parse(window.localStorage.getItem(LS_KEY) || "[]");
+    return Array.isArray(raw) ? raw.filter((t): t is string => typeof t === "string") : [];
+  } catch (err) {
+    console.error("[RecentSearches] localStorage read failed:", err);
+    return [];
+  }
+};
+const writeLocal = (terms: string[]) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(LS_KEY, JSON.stringify(terms));
+  } catch (err) {
+    console.error("[RecentSearches] localStorage write failed:", err);
+  }
+};
+
 /**
  * RecentSearches — the dropdown empty-state history (V3-D413), the Pinterest "thumbnail · term · remove" pattern
- * in Solen's skin. Reads /api/discovery/recent-searches (per-user, already logged). Renders NOTHING when there's
- * no history (logged-out or no searches yet) → the dropdown then shows only Trending: the fallback ladder.
- * A null thumb → a neutral search-tile (never a wrong/random photo). X removes one; "Clear all" wipes the list.
+ * in Solen's skin. Reads localStorage ("inspo:recent-searches", ALWAYS, works logged-out) AND
+ * /api/discovery/recent-searches (per-user, logged-in only), then MERGES: localStorage terms first, then DB terms
+ * not already present (case-insensitive), dedup, cap 8. Renders NOTHING when there's no history → the dropdown then
+ * shows only Trending: the fallback ladder. A null thumb → a neutral search-tile (never a wrong/random photo); the
+ * localStorage terms have no thumb. X removes one (from both DB + localStorage); "Clear all" wipes both.
  *
  * NOTE: the two micro-labels are hardcoded de for the prototype pass — move to next-intl (discover namespace)
  * before this ships to en/fr/it.
@@ -27,11 +52,26 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
 
   useEffect(() => {
     let cancelled = false;
+    // Seed from localStorage immediately (logged-out gets history with no network round-trip).
+    const local: RecentTerm[] = readLocal().map((term) => ({ term, thumb: null }));
+    // Show localStorage history immediately (logged-out path never waits on the DB fetch to flip `loaded`).
+    if (!cancelled) { setTerms(local); if (local.length > 0) setLoaded(true); }
     (async () => {
       try {
         const res = await fetch("/api/discovery/recent-searches");
         const data = await res.json();
-        if (!cancelled) setTerms(Array.isArray(data.terms) ? data.terms : []);
+        const db: RecentTerm[] = Array.isArray(data.terms) ? data.terms : [];
+        if (!cancelled) {
+          // Merge: localStorage terms first, then DB terms not already present (case-insensitive), cap 8.
+          const seen = new Set(local.map((t) => t.term.toLowerCase()));
+          const merged = [...local];
+          for (const d of db) {
+            if (seen.has(d.term.toLowerCase())) continue;
+            seen.add(d.term.toLowerCase());
+            merged.push(d);
+          }
+          setTerms(merged.slice(0, 8));
+        }
       } catch (err) {
         console.error("[RecentSearches] fetch failed:", err);
       } finally {
@@ -43,6 +83,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
 
   const remove = useCallback(async (term: string) => {
     setTerms((prev) => prev.filter((t) => t.term !== term)); // optimistic
+    writeLocal(readLocal().filter((t) => t.toLowerCase() !== term.toLowerCase()));
     try {
       await fetch(`/api/discovery/recent-searches?term=${encodeURIComponent(term)}`, { method: "DELETE" });
     } catch (err) {
@@ -52,6 +93,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
 
   const clearAll = useCallback(async () => {
     setTerms([]);
+    writeLocal([]);
     try {
       await fetch("/api/discovery/recent-searches?all=1", { method: "DELETE" });
     } catch (err) {
@@ -64,7 +106,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between px-1.5 pb-1">
-        <span className="text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-3">Zuletzt gesucht</span>
+        <span className="text-[13px] font-heading font-bold text-s-ink">Zuletzt gesucht</span>
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
