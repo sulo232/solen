@@ -54,7 +54,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
       {/* My Looks */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Grid3X3 size={16} className="text-s-accent" />
+          <Grid3X3 size={16} className="text-s-ink-2" />
           <h3 className="text-base font-heading text-s-ink">{t("myLooks")}</h3>
         </div>
         <UserPostsSection userId={userId} />
@@ -64,7 +64,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Palette size={16} className="text-s-blue" />
+            <Palette size={16} className="text-s-ink-2" />
             <h3 className="text-base font-heading text-s-ink">{t("preferences")}</h3>
           </div>
           <button
