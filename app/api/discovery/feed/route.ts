@@ -25,6 +25,13 @@ export async function GET(req: NextRequest) {
     const limit = filters.limit;
     const offset = (filters.page - 1) * limit;
 
+    // Progressive drill-down cut tags: comma-joined on the wire → a trimmed text[] for discovery_feed(p_tags_any).
+    // Empty/absent → null (the RPC treats null as a no-op). The filter is a tag OVERLAP (di.tags && p_tags_any).
+    const tagsAny = filters.tags
+      ? filters.tags.split(",").map((s) => s.trim()).filter(Boolean)
+      : [];
+    const pTagsAny = tagsAny.length ? tagsAny : null;
+
     // V3-D405 (#20): when there's a search term, route through the relevance-ranked FTS RPC (search_discovery)
     // instead of a flat ILIKE. It ranks by ts_rank over name/author/style/tags/description, applies the same
     // category/gender/texture/style filters, and returns the light grid column set + a window count(*) for has_more.
@@ -68,7 +75,7 @@ export async function GET(req: NextRequest) {
       !filters.creator &&
       (!filters.category || filters.category === "all") &&
       (!filters.gender || filters.gender === "all") &&
-      !filters.texture && !filters.style;
+      !filters.texture && !filters.style && !pTagsAny;
     if (userId && isPureBrowse) {
       const { data: fyRows, error: fyErr } = await admin.rpc("discovery_feed_for_you", {
         p_user_id: userId, p_limit: limit, p_offset: offset,
@@ -102,6 +109,8 @@ export async function GET(req: NextRequest) {
       p_user_gender: userGender,
       p_limit: limit,
       p_offset: offset,
+      // Progressive drill-down cut tags (di.tags && p_tags_any). 9th arg, live-applied + verified; no-op when null.
+      p_tags_any: pTagsAny,
     });
     if (feedErr) {
       console.error("[Discover] discovery_feed RPC failed:", feedErr);

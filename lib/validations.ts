@@ -163,6 +163,9 @@ export const discoveryFeedSchema = z.object({
   gender: z.enum(["all", "female", "male", "unisex"]).default("all"),
   texture: z.string().optional(),
   style: z.string().optional(),
+  // Progressive drill-down cut tags (comma-joined on the wire). Threaded into discovery_feed(p_tags_any) for a
+  // di.tags && p_tags_any overlap filter. Capped + length-bounded to keep the array small + safe.
+  tags: z.string().max(400).optional(),
   search: z.string().max(100).optional(),
   creator: z.string().uuid().optional(),
   page: z.coerce.number().int().min(1).default(1),

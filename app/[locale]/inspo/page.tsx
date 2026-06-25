@@ -78,6 +78,11 @@ function DiscoverPageContent() {
   const texture = activeFilters.find((f) => f.pillId === "texture")?.subId || null;
   const style = activeFilters.find((f) => f.pillId === "style")?.subId || null;
 
+  // Progressive drill-down cut TAGS (drill.html L2): selected discovery_items.tags values, threaded into the feed
+  // as the `tags` param → discovery_feed(p_tags_any). Multi-select; an array, so it lives in its own state rather
+  // than activeFilters (which is single-value-per-pill).
+  const [cuts, setCuts] = useState<string[]>([]);
+
   // Sort (mockup E): "Für dich" is the default (= the current for-you feed order). "Neu"/"Beliebt" are selectable
   // but their re-order needs a follow-up RPC change (discovery_feed RETURNS TABLE has no created_at column), so
   // they currently fall back to the Für dich order. See report. No core-feed RPC touched.
@@ -198,7 +203,7 @@ function DiscoverPageContent() {
   // already loaded restores its page-1 results instantly (no network, no grid flash) instead of a ~700ms refetch.
   const feedCache = useRef<Map<string, { items: DiscoveryItem[]; hasMore: boolean }>>(new Map());
   const fetchItems = useCallback(async (pageNum: number, append = false) => {
-    const sig = JSON.stringify({ category, gender, search, texture, style });
+    const sig = JSON.stringify({ category, gender, search, texture, style, cuts });
     // Cache-first for the initial page of a combo → instant repeat taps, no loading flash.
     if (pageNum === 1 && !append) {
       const cached = feedCache.current.get(sig);
@@ -219,6 +224,9 @@ function DiscoverPageContent() {
       if (search) params.set("search", search);
       if (texture) params.set("texture", texture);
       if (style) params.set("style", style);
+      // Progressive drill-down cuts → tag overlap filter. The route forwards `tags` to discovery_feed(p_tags_any),
+      // which filters by di.tags && p_tags_any (a look matches if it has ANY selected cut tag). Comma-joined.
+      if (cuts.length) params.set("tags", cuts.join(","));
 
       const res = await fetch(`/api/discovery/feed?${params}`);
       if (!res.ok) throw new Error("fetch failed");
@@ -244,7 +252,7 @@ function DiscoverPageContent() {
     } finally {
       setLoading(false);
     }
-  }, [category, gender, search, texture, style]);
+  }, [category, gender, search, texture, style, cuts]);
 
   // Reset and fetch on filter change
   useEffect(() => {
@@ -360,6 +368,7 @@ function DiscoverPageContent() {
   const resetFilters = () => {
     setCategory("all");
     setActiveFilters([]);
+    setCuts([]);
     setSearch("");
     setSearchInput("");
     setSort("for_you");
@@ -503,6 +512,8 @@ function DiscoverPageContent() {
                 gender={gender}
                 texture={texture}
                 style={style}
+                cuts={cuts}
+                onCutsChange={setCuts}
                 onGenderChange={(g) => {
                   // Functional update: a DNA pre-select fires gender + texture in one tick, so reading the
                   // stale activeFilters closure made the second call clobber the first (gender was lost).
