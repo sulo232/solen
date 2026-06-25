@@ -45,7 +45,7 @@ as $$
     and (p_texture  is null or di.texture    = p_texture)
     and (p_style    is null or di.style_name = p_style)
     and (p_creator  is null or di.owner_user_id = p_creator::uuid)
-    and (p_tags_any is null or array_length(p_tags_any, 1) is null or di.tags && p_tags_any)
+    and (p_tags_any is null or cardinality(p_tags_any) = 0 or di.tags && p_tags_any)
   order by
     case
       when p_user_gender is null then 0

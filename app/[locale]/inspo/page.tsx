@@ -332,6 +332,9 @@ function DiscoverPageContent() {
     setSearch(term);
     setSearchInput(term);
     setSearchFocused(false);
+    // FIX 3: search and cuts are mutually exclusive (the search path has no tag param, so an active cut would be
+    // silently dropped). Committing a real search clears the cut selection.
+    if (term) setCuts([]);
     if (!term || typeof window === "undefined") return;
     try {
       const prev: string[] = JSON.parse(window.localStorage.getItem("inspo:recent-searches") || "[]");
@@ -476,7 +479,9 @@ function DiscoverPageContent() {
             // should deselect, not no-op). "Alle" itself doesn't toggle off.
             const pick = () => {
               const next = category === key && key !== "all" ? "all" : key;
-              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setSearch(""); setSearchInput("");
+              // FIX 1(a): also clear the L2 cut tags. Cuts are a HAIR-only taxonomy; without this they stay stuck
+              // and the new category's feed (e.g. Nägel) gets a `tags` overlap filter no item satisfies → empty.
+              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setCuts([]); setSearch(""); setSearchInput("");
             };
             // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
             // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
@@ -509,11 +514,17 @@ function DiscoverPageContent() {
         <div className="relative mb-5">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
               <FilterDrawer
+                category={category}
                 gender={gender}
                 texture={texture}
                 style={style}
                 cuts={cuts}
-                onCutsChange={setCuts}
+                onCutsChange={(tags) => {
+                  // FIX 3: selecting a cut while a search is active clears the search (mutually exclusive, the
+                  // search path has no tag param, so they cannot both apply). Deselecting all cuts touches nothing.
+                  if (tags.length && search) { setSearch(""); setSearchInput(""); }
+                  setCuts(tags);
+                }}
                 onGenderChange={(g) => {
                   // Functional update: a DNA pre-select fires gender + texture in one tick, so reading the
                   // stale activeFilters closure made the second call clobber the first (gender was lost).
@@ -552,7 +563,7 @@ function DiscoverPageContent() {
                     key={term}
                     type="button"
                     aria-pressed={sel}
-                    onClick={() => setSearch(sel ? "" : term)}
+                    onClick={() => { const next = sel ? "" : term; setSearch(next); if (next) setCuts([]); /* FIX 3: a chip-search drops cuts (mutually exclusive) */ }}
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "relative z-10 border border-s-ink bg-s-ink text-white"
@@ -585,7 +596,15 @@ function DiscoverPageContent() {
         ) : loading && items.length === 0 ? (
           <DiscoveryGridSkeleton />
         ) : items.length === 0 ? (
-          <DiscoveryEmptyState />
+          // Over-filtered 0-result state: when ANY filter is active, offer a one-tap clear instead of the
+          // "be the first to share" new-creator copy (which is wrong when the catalogue just got filtered to empty).
+          <DiscoveryEmptyState
+            reset={
+              gender !== "all" || !!texture || cuts.length > 0 || !!search
+                ? resetFilters
+                : undefined
+            }
+          />
         ) : (
           /* V3-D412 (user): the look-feed breaks out of the page's px-4 to span (near) edge-to-edge — Pinterest
              immersion. -mx-4 cancels the container padding, px-1.5 leaves a 6px edge gutter matching the masonry. */

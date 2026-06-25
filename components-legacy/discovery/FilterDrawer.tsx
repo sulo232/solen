@@ -2,12 +2,14 @@
 import { useState, useEffect, useRef } from "react";
 import { X, SlidersHorizontal, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { DiscoveryGender } from "@/lib/types";
+import type { DiscoveryGender, DiscoveryCategory } from "@/lib/types";
 import ProgressiveFilter from "@/components-legacy/discovery/ProgressiveFilter";
 
 type SortKey = "for_you" | "new" | "popular";
 
 interface FilterDrawerProps {
+  /** Active feed category. Gates the Haartyp + Cuts (L2) hair-only sections; only "hair" has cut/texture data. */
+  category: DiscoveryCategory | "all";
   gender: DiscoveryGender | "all";
   texture: string | null;
   style: string | null;
@@ -46,7 +48,9 @@ export default function FilterDrawer(props: FilterDrawerProps) {
     if (seededRef.current) return;
     seededRef.current = true;
     if (props.gender === "all" && props.dnaGender) props.onGenderChange(props.dnaGender);
-    if (!props.texture && props.dnaTexture) {
+    // FIX 1(c): only seed a hair TEXTURE on a hair feed. nails/lashes/brows have no texture taxonomy, so a
+    // pre-seeded hair texture there would silently empty the feed. Gender seed is fine for all categories.
+    if (props.category === "hair" && !props.texture && props.dnaTexture) {
       props.onTextureChange(props.dnaTexture);
       setShowProfileTag(true); // pre-seeded from profile → show the "aus deinem Profil" tag until manual change.
     }
@@ -84,6 +88,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                   slide-to-left FLIP · Cuts L2 (multi-select) · Sortieren. Pre-selected gender + texture are seeded
                   above from the viewer's DNA. */}
               <ProgressiveFilter
+                category={props.category}
                 gender={props.gender}
                 texture={props.texture}
                 cuts={props.cuts}

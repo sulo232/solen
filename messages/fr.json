@@ -3966,7 +3966,12 @@
     "dna_texture_bald": "très courts",
     "dna_length_short": "courts",
     "dna_length_medium": "mi-longs",
-    "dna_length_long": "longs"
+    "dna_length_long": "longs",
+    "gender_women": "Femmes",
+    "gender_men": "Hommes",
+    "gender_unisex": "Unisexe",
+    "cut_for": "Coupe pour {texture}",
+    "profile_tag": "depuis ton profil"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classement Barbers",

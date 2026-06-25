@@ -3948,7 +3948,12 @@
     "dna_texture_bald": "molto corti",
     "dna_length_short": "corti",
     "dna_length_medium": "medi",
-    "dna_length_long": "lunghi"
+    "dna_length_long": "lunghi",
+    "gender_women": "Donne",
+    "gender_men": "Uomini",
+    "gender_unisex": "Unisex",
+    "cut_for": "Taglio per {texture}",
+    "profile_tag": "dal tuo profilo"
   },
   "barber_dashboard": {
     "leaderboard_title": "Classifica Barber",

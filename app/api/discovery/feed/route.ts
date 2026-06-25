@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     // Progressive drill-down cut tags: comma-joined on the wire → a trimmed text[] for discovery_feed(p_tags_any).
     // Empty/absent → null (the RPC treats null as a no-op). The filter is a tag OVERLAP (di.tags && p_tags_any).
     const tagsAny = filters.tags
-      ? filters.tags.split(",").map((s) => s.trim()).filter(Boolean)
+      ? filters.tags.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 10)
       : [];
     const pTagsAny = tagsAny.length ? tagsAny : null;
 

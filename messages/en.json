@@ -3974,7 +3974,12 @@
     "dna_texture_bald": "Very short",
     "dna_length_short": "short",
     "dna_length_medium": "shoulder-length",
-    "dna_length_long": "long"
+    "dna_length_long": "long",
+    "gender_women": "Women",
+    "gender_men": "Men",
+    "gender_unisex": "Unisex",
+    "cut_for": "Cut for {texture}",
+    "profile_tag": "from your profile"
   },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",
