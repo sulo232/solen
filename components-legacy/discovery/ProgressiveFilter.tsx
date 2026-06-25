@@ -1,12 +1,11 @@
 "use client";
-import { useLayoutEffect, useRef } from "react";
 import type { DiscoveryGender } from "@/lib/types";
 import { HAIR_CUTS } from "@/lib/discovery/hair-cuts";
 
 // Progressive HAIR filter body (drill.html v3, owner-approved). Replaces the flat pill body of FilterDrawer:
 //   1. Geschlecht , segmented control with a MORPHING ink thumb that slides between Frauen/Maenner/Unisex.
 //   2. Haartyp , 4 masked-PNG texture tiles (owner's /hair-patterns icons). Selected = GRAYED (sunken), no
-//      checkmark, and the tile SLIDES to the leftmost slot via a robust reflow-based FLIP.
+//      checkmark. Plain toggle , click selects, click again deselects (no reorder/slide; reverted 2026-06-25).
 //   3. Cuts (L2) , expands under the chosen texture; text chips, grayed-selected, multi-select.
 //   4. Sortieren , Fuer dich / Neu / Beliebt chips, grayed-selected.
 //   5. Footer (rendered by the host shell) , reset + a wide ink "Anwenden".
@@ -55,49 +54,9 @@ export interface ProgressiveFilterProps {
 export default function ProgressiveFilter(props: ProgressiveFilterProps) {
   const { gender, texture, cuts, sort } = props;
 
-  // The visual order of the texture tiles: the selected texture floats to the leftmost slot, the rest keep their
-  // canonical order. Recomputed each render from `texture` so it stays in sync with controlled state.
-  const orderedTextures = texture
-    ? [
-        ...TEXTURES.filter((tx) => tx.value === texture),
-        ...TEXTURES.filter((tx) => tx.value !== texture),
-      ]
-    : TEXTURES;
-
-  // FLIP: when the texture selection changes the tile order, animate each tile from its previous position to its new
-  // one. We capture the rects BEFORE React reorders, then in useLayoutEffect (after the DOM has the new order)
-  // apply the inverse transform, force a reflow so the start frame paints, then transition back to 0. This is the
-  // robust reflow approach from the prototype (rAF is throttled). Keyed on `texture`.
-  const tileRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
-  const prevRects = useRef<Map<string, DOMRect>>(new Map());
-  const firstLayout = useRef(true);
-
-  useLayoutEffect(() => {
-    const next = new Map<string, DOMRect>();
-    tileRefs.current.forEach((el, key) => next.set(key, el.getBoundingClientRect()));
-
-    // Skip the very first layout (mount) , there's no "before" to animate from.
-    if (!firstLayout.current) {
-      tileRefs.current.forEach((el, key) => {
-        const before = prevRects.current.get(key);
-        const after = next.get(key);
-        if (!before || !after) return;
-        const dx = before.left - after.left;
-        if (!dx) { el.style.transition = "none"; el.style.transform = ""; return; }
-        el.style.transition = "none";
-        el.style.transform = `translateX(${dx}px)`;
-      });
-      // Force a reflow so the inverted start frame paints before we transition to 0 (robust, no rAF).
-      void document.body.offsetWidth;
-      tileRefs.current.forEach((el) => {
-        el.style.transition = "transform .55s cubic-bezier(.34,1.28,.52,1)";
-        el.style.transform = "";
-      });
-    }
-    firstLayout.current = false;
-    prevRects.current = next;
-  }, [texture]);
-
+  // Owner 2026-06-25: the hair-type tiles are a PLAIN toggle , click = grayed (selected), click again =
+  // deselect. They keep their fixed order; no slide-to-left, no FLIP, no animation (that was reverted at the
+  // owner's request for this specific component). The gender morphing thumb below is unaffected.
   const segIndex = GENDERS.findIndex((g) => g.value === gender);
 
   const toggleTexture = (value: string) => {
@@ -155,7 +114,7 @@ export default function ProgressiveFilter(props: ProgressiveFilterProps) {
         </div>
       </div>
 
-      {/* 2. HAARTYP , masked-PNG tiles; grayed-selected (no check); selected slides to the leftmost slot (FLIP). */}
+      {/* 2. HAARTYP , masked-PNG tiles; grayed-selected (no check); plain toggle, no reorder/slide. */}
       <div className="mb-4">
         <p className="mb-2.5 flex items-center gap-2 font-heading text-[13px] font-bold text-s-ink">
           Haartyp
@@ -166,16 +125,12 @@ export default function ProgressiveFilter(props: ProgressiveFilterProps) {
           )}
         </p>
         <div className="flex gap-2">
-          {orderedTextures.map((tx) => {
+          {TEXTURES.map((tx) => {
             const on = texture === tx.value;
             return (
               <button
                 key={tx.value}
                 type="button"
-                ref={(el) => {
-                  if (el) tileRefs.current.set(tx.value, el);
-                  else tileRefs.current.delete(tx.value);
-                }}
                 aria-pressed={on}
                 onClick={() => toggleTexture(tx.value)}
                 className={`flex h-[72px] flex-1 flex-col items-center justify-center gap-1.5 rounded-[14px] border transition-[background-color,border-color] duration-150 ${
