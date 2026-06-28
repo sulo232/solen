@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspo Filter, editorial calm</title>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --hairline:#E4E4E7;
+    --sunken:#F4F4F5;
+    --white:#fff;
+    --display:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif;
+    --body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{
+    background:#EDEDED;
+    font-family:var(--body);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:40px 16px 64px;
+    gap:18px;
+  }
+
+  /* ---- caption above the frame ---- */
+  .caption{
+    font-family:var(--display);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--ink-2);
+    text-align:center;
+  }
+  .caption span{color:var(--ink);}
+
+  /* ---- phone frame ---- */
+  .phone{
+    width:390px;
+    height:760px;
+    border-radius:42px;
+    background:#1c1c1e;
+    padding:8px;
+    position:relative;
+    box-shadow:0 1px 0 rgba(0,0,0,.04);
+  }
+  .screen{
+    position:relative;
+    width:100%;
+    height:100%;
+    border-radius:34px;
+    overflow:hidden;
+    background:#dcdcdc;
+  }
+  /* faint feed behind to ground the sheet (purely backdrop) */
+  .feed{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(180deg,#cfcfcf 0%,#c6c6c6 100%);
+  }
+  .feed::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(90deg,#bdbdbd 1px,transparent 1px),
+      linear-gradient(180deg,#bdbdbd 1px,transparent 1px);
+    background-size:130px 170px;
+    opacity:.35;
+  }
+
+  /* ---- dimmed backdrop ---- */
+  .backdrop{
+    position:absolute;inset:0;
+    background:rgba(10,10,10,.42);
+  }
+
+  /* ---- the sheet ---- */
+  .sheet{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    background:var(--white);
+    border-top-left-radius:26px;
+    border-top-right-radius:26px;
+    padding:0 22px 22px;
+  }
+
+  /* grabber, refined: short, thin, soft */
+  .grabber{
+    width:34px;height:4px;border-radius:99px;
+    background:var(--hairline);
+    margin:10px auto 4px;
+  }
+
+  /* sheet header */
+  .sheet-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 0 18px;
+  }
+  .sheet-title{
+    font-family:var(--display);
+    font-size:21px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    line-height:1;
+  }
+  .close{
+    width:34px;height:34px;border-radius:99px;
+    border:1px solid var(--hairline);
+    background:var(--white);
+    color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+  .close svg{width:16px;height:16px;}
+
+  /* ---- Dein Haar : the hero ---- */
+  .haar{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    padding:2px 0 26px;
+  }
+  .haar-glyph{
+    width:46px;height:46px;flex:0 0 auto;
+    border-radius:14px;
+    background:var(--sunken);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    margin-top:2px;
+  }
+  .haar-glyph .m{
+    width:26px;height:26px;display:block;
+    background-color:currentColor;
+    -webkit-mask-size:contain;mask-size:contain;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:center;mask-position:center;
+    -webkit-mask-image:url(/hair-patterns/wavy.png);
+    mask-image:url(/hair-patterns/wavy.png);
+  }
+  .haar-eyebrow{
+    font-size:12px;
+    font-weight:400;
+    color:var(--ink-3);
+    letter-spacing:0.005em;
+    margin-bottom:4px;
+  }
+  .haar-line{
+    font-family:var(--display);
+    font-size:21px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    line-height:1.16;
+    color:var(--ink);
+  }
+  .haar-sub{
+    font-size:13px;
+    font-weight:400;
+    line-height:1.4;
+    color:var(--ink-2);
+    margin-top:7px;
+    max-width:250px;
+  }
+  .haar-sub b{
+    font-weight:400;
+    color:var(--ink);
+  }
+
+  .rule{
+    height:1px;
+    background:var(--hairline);
+    margin:0 -22px;
+  }
+
+  /* ---- a filter group ---- */
+  .group{
+    padding:30px 0 0;
+  }
+  .group-title{
+    font-family:var(--display);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:-0.005em;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+
+  /* segmented single-select (Geschlecht / Sortieren) */
+  .seg{
+    display:flex;
+    gap:8px;
+  }
+  .seg-item{
+    flex:1;
+    height:42px;
+    border-radius:12px;
+    border:1px solid var(--hairline);
+    background:var(--white);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:15px;
+    font-weight:400;
+    letter-spacing:-0.01em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .seg-item.sel{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--white);
+    font-weight:600;
+  }
+
+  /* Haartyp tiles */
+  .tiles{
+    display:flex;
+    gap:8px;
+  }
+  .tile{
+    flex:1;
+    border-radius:14px;
+    border:1px solid var(--hairline);
+    background:var(--white);
+    color:var(--ink);
+    padding:13px 4px 11px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+  }
+  .tile .m{
+    width:28px;height:28px;display:block;
+    background-color:currentColor;
+    -webkit-mask-size:contain;mask-size:contain;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:center;mask-position:center;
+  }
+  /* "All" has no glyph: keep the same vertical rhythm with a quiet dot-free spacer */
+  .tile.no-icon{justify-content:center;padding-top:0;padding-bottom:0;height:auto;}
+  .tile.no-icon .all-mark{
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);
+    font-size:15px;font-weight:600;letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  .tile-label{
+    font-size:13px;
+    font-weight:400;
+    letter-spacing:-0.005em;
+    color:var(--ink);
+    line-height:1;
+  }
+  .tile.sel{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--white);
+  }
+  .tile.sel .tile-label{color:var(--white);font-weight:600;}
+  .tile.sel .all-mark{color:var(--white);}
+
+  .m.straight{-webkit-mask-image:url(/hair-patterns/straight.png);mask-image:url(/hair-patterns/straight.png);}
+  .m.wavy{-webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png);}
+  .m.curly{-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png);}
+  .m.protective{-webkit-mask-image:url(/hair-patterns/protective.png);mask-image:url(/hair-patterns/protective.png);}
+
+  /* ---- footer ---- */
+  .footer{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:30px 0 0;
+  }
+  .reset{
+    width:44px;height:44px;flex:0 0 auto;
+    border-radius:99px;
+    border:1px solid var(--hairline);
+    background:var(--white);
+    color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .reset svg{width:18px;height:18px;}
+  .apply{
+    flex:1;
+    height:52px;
+    border-radius:16px;
+    background:var(--ink);
+    color:var(--white);
+    border:none;
+    font-family:var(--display);
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    display:flex;align-items:center;justify-content:center;
+  }
+</style>
+</head>
+<body>
+
+  <div class="caption">Direction <span>&middot; Editorial calm</span> (Apple / Aesop): typography, space, restraint</div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="feed"></div>
+      <div class="backdrop"></div>
+
+      <div class="sheet">
+        <div class="grabber"></div>
+
+        <div class="sheet-head">
+          <div class="sheet-title">Filter</div>
+          <button class="close" aria-label="Schliessen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- HERO : Dein Haar -->
+        <div class="haar">
+          <div class="haar-glyph"><span class="m" aria-hidden="true"></span></div>
+          <div>
+            <div class="haar-eyebrow">Dein Haar</div>
+            <div class="haar-line">Welliges, schulterlanges Haar</div>
+            <div class="haar-sub">Schon auf dich abgestimmt. <b>Alles änderbar.</b></div>
+          </div>
+        </div>
+
+        <div class="rule"></div>
+
+        <!-- Geschlecht -->
+        <div class="group">
+          <div class="group-title">Geschlecht</div>
+          <div class="seg">
+            <div class="seg-item">Frauen</div>
+            <div class="seg-item sel">Männer</div>
+            <div class="seg-item">Unisex</div>
+          </div>
+        </div>
+
+        <!-- Haartyp -->
+        <div class="group">
+          <div class="group-title">Haartyp</div>
+          <div class="tiles">
+            <div class="tile no-icon">
+              <span class="all-mark">All</span>
+            </div>
+            <div class="tile">
+              <span class="m straight" aria-hidden="true"></span>
+              <span class="tile-label">Straight</span>
+            </div>
+            <div class="tile sel">
+              <span class="m wavy" aria-hidden="true"></span>
+              <span class="tile-label">Wavy</span>
+            </div>
+            <div class="tile">
+              <span class="m curly" aria-hidden="true"></span>
+              <span class="tile-label">Curly</span>
+            </div>
+            <div class="tile">
+              <span class="m protective" aria-hidden="true"></span>
+              <span class="tile-label">Protective</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sortieren -->
+        <div class="group">
+          <div class="group-title">Sortieren</div>
+          <div class="seg">
+            <div class="seg-item sel">Für dich</div>
+            <div class="seg-item">Neu</div>
+            <div class="seg-item">Beliebt</div>
+          </div>
+        </div>
+
+        <!-- footer -->
+        <div class="footer">
+          <button class="reset" aria-label="Zurücksetzen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <button class="apply">Anwenden</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

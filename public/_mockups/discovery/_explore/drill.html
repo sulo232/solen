@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+  Exists-check: Inspo FilterDrawer sheet (components-legacy/discovery/FilterDrawer.tsx; npm run exists this turn).
+  Drill-down v3. Owner changes: (1) NO checkmarks anywhere; selected = grayed (sunken) fill; (2) a selected filter
+  SLIDES to the leftmost spot (FLIP animation), deselect by re-tapping; (3) keep the morphing gender thumb; (4) remove
+  the "Schritt 2" badge (obvious); (5) hair-type is synced from disc_hair_texture (grayed + leftmost on load) with an
+  "aus deinem Profil" tag that clears on manual change. L1 = owner's /hair-patterns icons, L2 = text cuts. No CDN; JS
+  uses classList/textContent/style only (no innerHTML).
+-->
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Drill-down v3</title>
+<style>
+  :root{--ink:#0A0A0A;--ink-2:#6B6B6B;--hair:#E4E4E7;--sunken:#F4F4F5;--white:#fff;--disp:'Inter Tight',-apple-system,system-ui,sans-serif;--body:'Inter',-apple-system,system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--body);background:#EFEFF1;color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:26px 14px 50px}
+  .cap{font-size:12px;color:var(--ink-2);max-width:390px;width:100%;margin-bottom:14px}.cap b{color:var(--ink)}
+  .frame{width:390px;background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 18px 48px rgba(20,18,16,.16);border:1px solid var(--hair)}
+  .sheet{padding:0 20px 18px}
+  .grab{width:34px;height:5px;border-radius:3px;background:var(--hair);margin:9px auto 4px}
+  .head{display:flex;align-items:center;justify-content:space-between;height:46px}
+  .ttl{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .x{width:32px;height:32px;border-radius:50%;border:1px solid var(--hair);display:grid;place-items:center}.x svg{width:15px;height:15px}
+  .sec{padding:16px 0;border-top:1px solid var(--hair)}.sec:first-of-type{border-top:none}
+  .lab{font-size:13px;font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+  .prof{font-size:11px;font-weight:500;color:var(--ink-2);background:var(--sunken);border:1px solid var(--hair);border-radius:20px;padding:2px 9px}
+  /* gender: morphing ink thumb (kept) */
+  .seg{position:relative;display:flex;background:var(--sunken);border-radius:12px;padding:3px}
+  .thumb{position:absolute;top:3px;left:3px;height:36px;width:calc((100% - 6px)/3);background:var(--ink);border-radius:9px;box-shadow:0 1px 2px rgba(10,10,10,.2);transition:transform .36s cubic-bezier(.34,1.4,.5,1);z-index:0}
+  .sg{position:relative;z-index:1;flex:1;height:36px;border:none;background:transparent;font:500 14px var(--body);color:var(--ink-2);cursor:pointer;transition:color .25s}
+  .sg.on{color:#fff;font-weight:600}
+  /* hair-type tiles: grayed selected (no check), slide-to-left on select */
+  .tiles{display:flex;gap:8px}
+  .tile{position:relative;flex:1;height:72px;border-radius:14px;border:1px solid var(--hair);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:background .18s,border-color .18s}
+  .tile .ic{width:30px;height:30px;background:var(--ink);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+  .tile .w{font-size:12px;font-weight:500;color:var(--ink-2)}
+  .tile.on{background:var(--sunken);border-color:#D7D7DB}.tile.on .w{color:var(--ink);font-weight:600}
+  .l2{max-height:0;overflow:hidden;opacity:0;transition:max-height .34s cubic-bezier(.4,0,.2,1),opacity .26s}
+  .l2.open{max-height:210px;opacity:1}
+  .cuts{display:flex;flex-wrap:wrap;gap:8px}
+  .cut{height:36px;padding:0 15px;border-radius:18px;border:1px solid var(--hair);background:#fff;font:500 13px var(--body);color:var(--ink-2);cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+  .cut.on{background:var(--sunken);border-color:#D7D7DB;color:var(--ink);font-weight:600}.cut.hide{display:none}
+  .chips{display:flex;gap:8px}
+  .chip{height:36px;padding:0 17px;border-radius:18px;border:1px solid var(--hair);background:#fff;font:500 13px var(--body);color:var(--ink-2);cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+  .chip.on{background:var(--sunken);border-color:#D7D7DB;color:var(--ink);font-weight:600}
+  .foot{display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--hair)}
+  .rs{width:48px;height:48px;border-radius:24px;border:1px solid var(--hair);background:#fff;display:grid;place-items:center;cursor:pointer}.rs svg{width:18px;height:18px}
+  .ap{flex:1;height:48px;border-radius:24px;border:none;background:var(--ink);color:#fff;font:600 15px var(--disp);cursor:pointer}
+</style></head><body>
+<p class="cap"><b>Drill-down v3.</b> Auswahl = grau + rutscht nach links (kein Haken). Nochmal tippen = abwaehlen. Geschlecht morpht.</p>
+<div class="frame"><div class="sheet">
+  <div class="grab"></div>
+  <div class="head"><div class="ttl">Filter</div><div class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div></div>
+  <div class="sec"><div class="lab">Geschlecht</div>
+    <div class="seg"><div class="thumb" id="thumb"></div><button class="sg">Frauen</button><button class="sg on">M&auml;nner</button><button class="sg">Unisex</button></div>
+  </div>
+  <div class="sec"><div class="lab">Haartyp <span class="prof" id="prof">aus deinem Profil</span></div>
+    <div class="tiles" id="tiles">
+      <button class="tile" data-t="straight"><span class="ic" style="-webkit-mask-image:url(/hair-patterns/straight.png);mask-image:url(/hair-patterns/straight.png)"></span><span class="w">Glatt</span></button>
+      <button class="tile" data-t="wavy"><span class="ic" style="-webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png)"></span><span class="w">Wellig</span></button>
+      <button class="tile" data-t="curly"><span class="ic" style="-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png)"></span><span class="w">Lockig</span></button>
+      <button class="tile" data-t="coily"><span class="ic" style="-webkit-mask-image:url(/hair-patterns/protective.png);mask-image:url(/hair-patterns/protective.png)"></span><span class="w">Coily</span></button>
+    </div>
+    <div class="l2" id="l2"><div style="padding-top:16px"><div class="lab" id="l2lab">Schnitt</div><div class="cuts" id="cuts">
+      <button class="cut"></button><button class="cut"></button><button class="cut"></button><button class="cut"></button><button class="cut"></button>
+    </div></div></div>
+  </div>
+  <div class="sec"><div class="lab">Sortieren</div><div class="chips"><button class="chip on">F&uuml;r dich</button><button class="chip">Neu</button><button class="chip">Beliebt</button></div></div>
+  <div class="foot"><button class="rs" id="rs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="ap">Anwenden</button></div>
+</div></div>
+<script>
+const CUTS={straight:["Buzz Cut","Crew Cut","Seitenscheitel","Slick Back","Comb Over"],wavy:["Textured Crop","Curtain","Mid Fade","Quiff","Mullet"],curly:["Low Fade","Taper Fade","Textured Crop","Line-up","Afro"],coily:["High Top","Taper","Twists","Line-up","Fade"]};
+const tilesWrap=document.getElementById("tiles"),l2=document.getElementById("l2"),l2lab=document.getElementById("l2lab"),cutEls=[...document.querySelectorAll("#cuts .cut")],prof=document.getElementById("prof");
+let curT=null;
+function fillCuts(tx,word){const list=CUTS[tx];cutEls.forEach((c,i)=>{if(list[i]){c.textContent=list[i];c.classList.remove("hide","on");}else c.classList.add("hide");});l2lab.textContent="Schnitt fuer "+word;}
+// FLIP: animate the row when a tile changes order (slide-to-left)
+function flip(mutate){
+  const items=[...tilesWrap.children];
+  const before=items.map(el=>el.getBoundingClientRect().left);
+  mutate();
+  const after=items.map(el=>el.getBoundingClientRect().left);
+  items.forEach((el,i)=>{const dx=before[i]-after[i];el.style.transition="none";el.style.transform=dx?("translateX("+dx+"px)"):"";});
+  void tilesWrap.offsetWidth; // force reflow so the start frame paints, then animate to 0 (robust, no rAF)
+  items.forEach(el=>{el.style.transition="transform .55s cubic-bezier(.34,1.28,.52,1)";el.style.transform="";});
+}
+function applySelect(t){tilesWrap.querySelectorAll(".tile").forEach(x=>{x.classList.remove("on");x.style.order="";});t.classList.add("on");t.style.order="-1";}
+function applyDeselect(t){t.classList.remove("on");t.style.order="";}
+tilesWrap.querySelectorAll(".tile").forEach(t=>t.addEventListener("click",()=>{
+  prof.style.display="none";
+  if(curT===t.dataset.t){flip(()=>applyDeselect(t));curT=null;l2.classList.remove("open");cutEls.forEach(c=>c.classList.remove("on"));return;}
+  flip(()=>applySelect(t));curT=t.dataset.t;fillCuts(curT,t.querySelector(".w").textContent);l2.classList.add("open");
+}));
+cutEls.forEach(c=>c.addEventListener("click",()=>{const was=c.classList.contains("on");cutEls.forEach(x=>x.classList.remove("on"));if(!was)c.classList.add("on");}));
+const segBtns=[...document.querySelectorAll(".seg .sg")],thumb=document.getElementById("thumb");
+function setSeg(i){thumb.style.transform="translateX("+(i*100)+"%)";segBtns.forEach((b,j)=>b.classList.toggle("on",j===i));}
+segBtns.forEach((b,i)=>b.addEventListener("click",()=>setSeg(i)));
+document.querySelectorAll(".chips .chip").forEach(c=>c.addEventListener("click",()=>{document.querySelectorAll(".chips .chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");}));
+document.getElementById("rs").addEventListener("click",()=>{tilesWrap.querySelectorAll(".tile").forEach(x=>{x.classList.remove("on");x.style.order="";});curT=null;l2.classList.remove("open");cutEls.forEach(c=>c.classList.remove("on"));});
+// boot: gender + hair-type synced from profile (Maenner, Wellig). Wellig already grayed + slid leftmost.
+setSeg(1);
+const w=[...tilesWrap.querySelectorAll(".tile")].find(t=>t.dataset.t==="wavy");applySelect(w);curT="wavy";fillCuts("wavy","Wellig");l2.classList.add("open");
+</script>
+</body></html>

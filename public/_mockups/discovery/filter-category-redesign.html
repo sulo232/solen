@@ -1,0 +1,168 @@
+<!doctype html>
+<!--
+  Exists-check: the Inspo category tabs + refine row + FilterDrawer ALREADY exist (npm run exists "category filter";
+    inspo/page.tsx category tiles ~line 430-455, refine row + chip pills ~line 461-496, FilterDrawer.tsx). This is a
+    REDESIGN of that zone, not a new component. REMOVED.md hits: none. NEW = the treatment: (1) category as clean
+    text chips OR fixed photo tiles (drop the random grey "underline" selected state), (2) the filter as a rectangle
+    pill matching the row (not a lone circle), (3) a "Sortieren" pill fills the empty refine row on Alle, (4) the
+    per-category pills become FILTERS (ink-selected, toggle) instead of searches that dump into the search bar,
+    (5) the gender count badge sits contained (no overlap into the category row), (6) animation toned down.
+  No CDN: tokens inline, real Lucide geometry, system-font fallback, real Pexels covers. English (internal artifact).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo filter + category, redesigned</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff; --pink:#FF3366;
+    --disp:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif;
+    --body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--body);color:var(--ink);background:#EAEAEC;line-height:1.4;padding:28px 16px 90px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:430px;margin:0 auto}
+  .intro h1{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1}
+  .intro ul{margin:12px 0 0;padding:0;list-style:none}
+  .intro li{position:relative;padding-left:18px;font-size:13px;color:var(--ink-2);margin-top:6px}
+  .intro li::before{content:"";position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:999px;background:var(--ink-3)}
+  .intro li b{color:var(--ink);font-weight:600}
+  .optlbl{margin:30px 0 12px}
+  .optlbl .tag{display:inline-block;font-family:var(--disp);font-weight:700;font-size:12px;color:var(--ink);background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:3px 11px}
+  .optlbl h2{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;margin-top:9px}
+  .optlbl p{font-size:13px;color:var(--ink-2);margin-top:4px}
+  .frame{width:100%;background:var(--white);border-radius:30px;overflow:hidden;box-shadow:0 18px 44px rgba(20,18,16,.14);border:1px solid var(--border)}
+  .scr{padding:14px 0 18px}
+  /* header */
+  .ahead{display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px}
+  .ahead .title{font-family:var(--disp);font-weight:800;font-size:25px;letter-spacing:-.02em}
+  .ahead .icons{display:flex;gap:10px}
+  .circ{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink)}
+  .circ svg{width:18px;height:18px}
+  /* search */
+  .searchrow{display:flex;align-items:center;gap:10px;padding:0 16px}
+  .sbar{flex:1;display:flex;align-items:center;height:46px;border-radius:999px;background:var(--sunken);padding:0 16px;gap:10px;color:var(--ink-3)}
+  .sbar svg{width:17px;height:17px}
+  .sbar span{font-size:15px}
+  /* category , text chips */
+  .catchips{display:flex;gap:9px;overflow-x:auto;padding:16px 16px 4px;scrollbar-width:none}
+  .catchips::-webkit-scrollbar{display:none}
+  .chip{flex:none;font-family:var(--body);font-size:14px;font-weight:600;padding:9px 16px;border-radius:999px;background:var(--sunken);border:1px solid var(--border);color:var(--ink-2)}
+  .chip.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  /* category , photo tiles */
+  .cattiles{display:flex;gap:14px;overflow-x:auto;padding:16px 16px 4px;scrollbar-width:none}
+  .cattiles::-webkit-scrollbar{display:none}
+  .tile{flex:none;width:74px;text-align:center}
+  .tile .ph{width:74px;height:74px;border-radius:18px;overflow:hidden;background:var(--sunken);border:2px solid transparent}
+  .tile.sel .ph{border-color:var(--ink)}
+  .tile .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .tile .lbl{font-family:var(--disp);font-size:12.5px;margin-top:7px;color:var(--ink-2);font-weight:500}
+  .tile.sel .lbl{color:var(--ink);font-weight:700}
+  /* refine row */
+  .refine{display:flex;align-items:center;gap:9px;overflow-x:auto;padding:14px 16px 4px;scrollbar-width:none}
+  .refine::-webkit-scrollbar{display:none}
+  .fbtn{flex:none;position:relative;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--sunken);border:1px solid var(--border);color:var(--ink)}
+  .fbtn svg{width:18px;height:18px}
+  .fpill{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 15px;border-radius:14px;background:var(--sunken);border:1px solid var(--border);color:var(--ink-2);font-size:13.5px;font-weight:600}
+  .fpill svg{width:15px;height:15px}
+  .fpill.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  .sortpill{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 15px;border-radius:14px;background:var(--sunken);border:1px solid var(--border);color:var(--ink);font-size:13.5px;font-weight:600}
+  .sortpill svg{width:15px;height:15px;color:var(--ink-2)}
+  /* feed hint */
+  .feedhint{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 0}
+  .feedhint .c{border-radius:16px;overflow:hidden;background:var(--sunken);aspect-ratio:3/4}
+  .feedhint .c img{width:100%;height:100%;object-fit:cover;display:block}
+  .cap{margin-top:10px;font-size:12px;color:var(--ink-3);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>Filter + category, redesigned</h1>
+    <ul>
+      <li><b>Category</b> , no more random grey "underline". Two options below: clean text chips, or fixed photo tiles.</li>
+      <li><b>Filter is a square pill</b> matching the row, not a lone circle next to rectangles.</li>
+      <li><b>On "Alle"</b> a <b>Sortieren</b> pill fills the empty row (no lone icon in a void).</li>
+      <li><b>Refine pills are FILTERS now</b> (tap = ink-fill toggle), not searches that dump the word into the search bar.</li>
+      <li>Gender count badge sits <b>contained</b> (no overlap into the category row); animation toned right down.</li>
+    </ul>
+  </div>
+
+  <div class="optlbl"><span class="tag">Option A</span><h2>Clean text chips</h2>
+    <p>Drop the photos entirely. Fast, calm, scannable (Fresha-style). Selected = ink fill.</p></div>
+  <div class="frame"><div class="scr" id="optA"></div></div>
+
+  <div class="optlbl"><span class="tag">Option B</span><h2>Photo tiles, fixed</h2>
+    <p>Keep the photos but curated (not random), and the selected tile gets a clean ink ring + bold label , no grey pill.</p></div>
+  <div class="frame"><div class="scr" id="optB"></div></div>
+  <div class="cap">Refine pills shown as filters: tap to toggle (ink = active). "Curly" is active in B.</div>
+</div>
+
+<script>
+const P="https://images.pexels.com/photos/";
+function src(id){ return P+id+"/pexels-photo-"+id+".jpeg?auto=compress&cs=tinysrgb&h=240&w=240"; }
+const CATS = [
+  { key:"Alle", img:"30265797" },
+  { key:"Haare", img:"6364028" },
+  { key:"Nägel", img:"11503402" },
+  { key:"Wimpern", img:"21412169" },
+  { key:"Brauen", img:"5128259" },
+];
+const HAIR_FILTERS = ["Short Hair","Long Hair","Curly","Protective","Bangs"];
+const FEED = ["30265797","6364028","20729710","8638585"];
+
+function E(t,c){ const n=document.createElement(t); if(c)n.className=c; return n; }
+function T(t,c,x){ const n=E(t,c); n.textContent=x; return n; }
+function IMG(id){ const im=new Image(); im.src=src(id); im.loading="lazy"; im.alt=""; return im; }
+function svg(paths,w){ const ns="http://www.w3.org/2000/svg"; const s=document.createElementNS(ns,"svg");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("fill","none"); s.setAttribute("stroke","currentColor");
+  s.setAttribute("stroke-width",w||"2"); s.setAttribute("stroke-linecap","round"); s.setAttribute("stroke-linejoin","round");
+  paths.forEach(p=>{ if(p.c){const c=document.createElementNS(ns,"circle");c.setAttribute("cx",p.c[0]);c.setAttribute("cy",p.c[1]);c.setAttribute("r",p.c[2]);s.appendChild(c);} else {const path=document.createElementNS(ns,"path");path.setAttribute("d",p);s.appendChild(path);} });
+  return s; }
+const I_SEARCH=()=>svg([{c:[11,11,8]},"m21 21-4.3-4.3"],"2.1");
+const I_BELL=()=>svg(["M10.268 21a2 2 0 0 0 3.464 0","M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"],"2");
+const I_MENU=()=>svg(["M4 6h16","M4 12h16","M4 18h16"],"2.1");
+const I_HEART=()=>svg(["M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"],"2");
+const I_FILTER=()=>svg(["M22 3H2l8 9.46V19l4 2v-8.54L22 3z"],"1.9");
+const I_CHEV=()=>svg(["m6 9 6 6 6-6"],"2.2");
+
+function header(){ const h=E("div","ahead"); h.appendChild(T("div","title","Inspo"));
+  const ic=E("div","icons"); const b=E("div","circ"); b.appendChild(I_BELL()); const m=E("div","circ"); m.appendChild(I_MENU());
+  ic.appendChild(b); ic.appendChild(m); h.appendChild(ic); return h; }
+function searchrow(){ const r=E("div","searchrow"); const sb=E("div","sbar"); sb.appendChild(I_SEARCH()); sb.appendChild(T("span",null,"Styles suchen..."));
+  r.appendChild(sb); const ht=E("div","circ"); ht.appendChild(I_HEART()); r.appendChild(ht); return r; }
+function fbtn(){ const b=E("div","fbtn"); b.appendChild(I_FILTER()); return b; }
+function feedHint(){ const g=E("div","feedhint"); FEED.forEach(id=>{ const c=E("div","c"); c.appendChild(IMG(id)); g.appendChild(c); }); return g; }
+
+// Option A , text chips + Alle + Sortieren
+function renderA(root){
+  root.appendChild(header());
+  root.appendChild(searchrow());
+  const chips=E("div","catchips");
+  CATS.forEach((c,i)=>chips.appendChild(T("div","chip"+(i===0?" sel":""),c.key)));
+  root.appendChild(chips);
+  const ref=E("div","refine"); ref.appendChild(fbtn());
+  const sort=E("div","sortpill"); sort.appendChild(T("span",null,"Sortieren")); sort.appendChild(I_CHEV()); ref.appendChild(sort);
+  root.appendChild(ref);
+  root.appendChild(feedHint());
+}
+// Option B , photo tiles (fixed selected) + Haare + hair filter pills
+function renderB(root){
+  root.appendChild(header());
+  root.appendChild(searchrow());
+  const tiles=E("div","cattiles");
+  CATS.forEach((c,i)=>{ const t=E("div","tile"+(i===1?" sel":"")); const ph=E("div","ph"); ph.appendChild(IMG(c.img)); t.appendChild(ph); t.appendChild(T("div","lbl",c.key)); tiles.appendChild(t); });
+  root.appendChild(tiles);
+  const ref=E("div","refine"); ref.appendChild(fbtn());
+  HAIR_FILTERS.forEach((f)=>{ ref.appendChild(T("div","fpill"+(f==="Curly"?" sel":""),f)); });
+  root.appendChild(ref);
+  root.appendChild(feedHint());
+}
+
+renderA(document.getElementById("optA"));
+renderB(document.getElementById("optB"));
+</script>
+</body>
+</html>

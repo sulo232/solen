@@ -1,0 +1,156 @@
+<!doctype html>
+<!--
+  Exists-check: the Inspo search ALREADY exists (npm run exists search) — SearchBar.tsx (input), the focused
+    dropdown in inspo/page.tsx:363-443, RecentSearches.tsx (+ /api/discovery/recent-searches, per-user history),
+    AISuggestionPills.tsx (trending), SearchAutocomplete.tsx (typed). A real /api/discovery/trending endpoint
+    exists but is orphaned. REMOVED.md hits: none. NEW = only the FOCUSED-STATE treatment: ink focus (not the
+    blue ring, which violates the locked focus recipe), search expands while the filter + heart fade out, NO back
+    button (tap outside to dismiss), recent searches shown up top, trending pills fixed to the locked selected
+    state (blue border + blue text, NOT ink fill), and the panel lifts on a soft shadow.
+  No CDN: tokens inline, real Lucide geometry inlined, system-font fallback, real Pexels thumbs. English (internal
+  decision artifact); ships localized. Recent/trending terms are illustrative; wired to real data on build.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo search, focused state</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --blue:#276EF1; --blue-pale:#EAEFFE;
+    --disp:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif;
+    --body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--body);color:var(--ink);background:#EAEAEC;line-height:1.4;
+       padding:28px 16px 90px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:430px;margin:0 auto}
+  .intro h1{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1}
+  .intro ul{margin:12px 0 0;padding:0;list-style:none}
+  .intro li{position:relative;padding-left:18px;font-size:13px;color:var(--ink-2);margin-top:6px}
+  .intro li::before{content:"";position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:999px;background:var(--ink-3)}
+  .intro li b{color:var(--ink);font-weight:600}
+  .frame{width:100%;margin-top:20px;background:var(--white);border-radius:30px;overflow:hidden;
+       box-shadow:0 18px 44px rgba(20,18,16,.14);border:1px solid var(--border);min-height:560px}
+  .scr{padding:14px 16px 24px}
+  /* header row , focused: title + expanded search; filter/heart faded out */
+  .toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .title{font-family:var(--disp);font-weight:800;font-size:25px;letter-spacing:-.02em}
+  .faded{display:flex;gap:10px;opacity:.18}
+  .faded .circ{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center}
+  .faded .circ svg{width:18px;height:18px;color:var(--ink)}
+  /* search input row , expanded, ink focus (NO blue) */
+  .searchrow{display:flex;align-items:center;gap:10px}
+  .searchbar{flex:1;position:relative;display:flex;align-items:center;height:48px;border-radius:999px;
+       background:var(--sunken);border:1.5px solid var(--ink);
+       box-shadow:0 0 0 3px rgba(10,10,10,.10);transition:all .2s ease}
+  .searchbar .si{position:absolute;left:14px;width:17px;height:17px;color:var(--ink-3)}
+  .searchbar input{flex:1;border:0;outline:0;background:transparent;font-family:var(--body);font-size:16px;
+       color:var(--ink);padding:0 40px 0 40px;height:100%}
+  .searchbar input::placeholder{color:var(--ink-3)}
+  .searchbar .cursor{position:absolute;left:40px;width:1.5px;height:20px;background:var(--ink);animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .searchbar .clr{position:absolute;right:13px;width:30px;height:30px;border-radius:999px;display:grid;place-items:center;
+       background:rgba(10,10,10,.06)}
+  .searchbar .clr svg{width:14px;height:14px;color:var(--ink-2)}
+  /* dropdown panel , lifts on a soft shadow */
+  .panel{margin-top:12px;background:var(--white);border:1px solid var(--border);border-radius:20px;
+       box-shadow:0 12px 30px rgba(20,18,16,.12),0 2px 8px rgba(20,18,16,.06);padding:8px 6px 10px;
+       animation:rise .22s cubic-bezier(.2,.8,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .sechead{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px}
+  .sechead .lbl{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:-.01em;color:var(--ink)}
+  .sechead .act{font-size:12.5px;font-weight:600;color:var(--blue)}
+  /* recent rows */
+  .rrow{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:14px}
+  .rrow:active{background:var(--sunken)}
+  .rrow .thumb{width:44px;height:44px;border-radius:12px;overflow:hidden;background:var(--sunken);flex:none;border:1px solid var(--border)}
+  .rrow .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .rrow .term{flex:1;font-size:15px;color:var(--ink);font-weight:500}
+  .rrow .rm{width:30px;height:30px;display:grid;place-items:center;flex:none}
+  .rrow .rm svg{width:15px;height:15px;color:var(--ink-3)}
+  .sep{height:1px;background:var(--border);margin:6px 12px}
+  /* trending pills , fixed: neutral unselected, selected = blue border + blue text (no fill) */
+  .pills{display:flex;flex-wrap:wrap;gap:9px;padding:4px 12px 6px}
+  .pill{font-family:var(--body);font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:999px;
+       background:var(--sunken);border:1px solid var(--border);color:var(--ink-2)}
+  .pill.sel{background:var(--white);border-color:var(--blue);color:var(--blue)}
+  .cap{margin-top:14px;font-size:12px;color:var(--ink-3);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>Search, focused: cleaned up</h1>
+    <ul>
+      <li><b>Ink focus, no blue ring</b> (the blue was a drift; the system uses a soft ink halo)</li>
+      <li><b>Search expands</b> on tap; the filter + heart <b>fade out</b> to get out of the way</li>
+      <li><b>No back button</b> , tap anywhere outside to close (iOS-style)</li>
+      <li><b>Recent searches</b> sit up top (already stored per-user, just surfaced)</li>
+      <li><b>Trending pills fixed</b> , selected is a blue outline, not a black fill; neutral, even spacing</li>
+      <li>The panel <b>lifts on a soft shadow</b> as it opens</li>
+    </ul>
+  </div>
+  <div class="frame"><div class="scr" id="scr"></div></div>
+  <div class="cap">Empty-query focused state. Type a letter and this becomes the style + salon autocomplete (unchanged).</div>
+</div>
+
+<script>
+const P="https://images.pexels.com/photos/";
+function src(id){ return P+id+"/pexels-photo-"+id+".jpeg?auto=compress&cs=tinysrgb&h=200&w=200"; }
+const RECENT = [
+  { term:"Wolf cut", img:"30265797" },
+  { term:"Balayage", img:"6391646" },
+  { term:"Gel nails", img:"30691552" },
+];
+const TRENDING = ["Curtain bangs","Butterfly cut","Wolf cut","Balayage","Glossy nails","French tips","Clean girl","Buzz cut"];
+const SELECTED = "Wolf cut";
+
+function E(t,c){ const n=document.createElement(t); if(c)n.className=c; return n; }
+function T(t,c,x){ const n=E(t,c); n.textContent=x; return n; }
+function IMG(id){ const im=new Image(); im.src=src(id); im.loading="lazy"; im.alt=""; return im; }
+function svg(paths, w){ const ns="http://www.w3.org/2000/svg"; const s=document.createElementNS(ns,"svg");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("fill","none"); s.setAttribute("stroke","currentColor");
+  s.setAttribute("stroke-width",w||"2"); s.setAttribute("stroke-linecap","round"); s.setAttribute("stroke-linejoin","round");
+  paths.forEach(p=>{ if(p.c){ const c=document.createElementNS(ns,"circle"); c.setAttribute("cx",p.c[0]); c.setAttribute("cy",p.c[1]); c.setAttribute("r",p.c[2]); s.appendChild(c);} else { const path=document.createElementNS(ns,"path"); path.setAttribute("d",p); s.appendChild(path);} });
+  return s; }
+const I_SEARCH=()=>svg([{c:[11,11,8]},"m21 21-4.3-4.3"],"2.1");
+const I_X=()=>svg(["M18 6 6 18","m6 6 12 12"],"2.2");
+const I_FILTER=()=>svg(["M3 6h18","M7 12h10","M11 18h2"],"2.2");
+const I_HEART=()=>svg(["M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"],"2.1");
+
+(function render(){
+  const root=document.getElementById("scr");
+  // top row: title + faded (filter+heart fading out)
+  const top=E("div","toprow"); top.appendChild(T("div","title","Inspo"));
+  const faded=E("div","faded");
+  const c1=E("div","circ"); c1.appendChild(I_FILTER()); const c2=E("div","circ"); c2.appendChild(I_HEART());
+  faded.appendChild(c1); faded.appendChild(c2); top.appendChild(faded);
+  root.appendChild(top);
+  // search row (expanded, ink focus)
+  const sr=E("div","searchrow"); const sb=E("div","searchbar");
+  const si=I_SEARCH(); si.classList.add("si"); sb.appendChild(si);
+  const inp=document.createElement("input"); inp.type="text"; inp.placeholder=""; inp.value=""; sb.appendChild(inp);
+  sb.appendChild(E("div","cursor"));
+  const clr=E("div","clr"); clr.appendChild(I_X()); sb.appendChild(clr);
+  sr.appendChild(sb); root.appendChild(sr);
+  // panel
+  const panel=E("div","panel");
+  // recent
+  const h1=E("div","sechead"); h1.appendChild(T("div","lbl","Zuletzt gesucht")); h1.appendChild(T("div","act","Alle löschen"));
+  panel.appendChild(h1);
+  RECENT.forEach(r=>{ const row=E("div","rrow"); const th=E("div","thumb"); th.appendChild(IMG(r.img)); row.appendChild(th);
+    row.appendChild(T("div","term",r.term)); const rm=E("div","rm"); rm.appendChild(I_X()); row.appendChild(rm); panel.appendChild(row); });
+  panel.appendChild(E("div","sep"));
+  // trending
+  const h2=E("div","sechead"); h2.appendChild(T("div","lbl","Trending")); panel.appendChild(h2);
+  const pills=E("div","pills");
+  TRENDING.forEach(t=>{ const p=T("div","pill"+(t===SELECTED?" sel":""),t); pills.appendChild(p); });
+  panel.appendChild(pills);
+  root.appendChild(panel);
+})();
+</script>
+</body>
+</html>

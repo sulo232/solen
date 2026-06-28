@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+  Exists-check: the Inspo category tabs + filter ALREADY exist (npm run exists filter/category) — the category
+    photo-pill selector + the sub-style chip row (chipTerms) + FilterDrawer + activeFilters all in inspo/page.tsx
+    (~363-520), /api/discovery/chip-terms (global tags), /api/discovery/feed (applies category/gender/texture/style).
+    REMOVED.md hits: makeup/waxing categories (unrelated). NEW (the revamp): (1) category becomes a pure SELECTOR,
+    never a filter chip (decouple hasActiveFilters from category); (2) the sub-filter row becomes PER-CATEGORY
+    (chip-terms?category=hair -> hair tags, ?category=nails -> nail tags) instead of one global list; (3) the Filter
+    button moves OFF the search row to the start of the sub-filter row, opening a sheet (gender/length) that applies.
+  No CDN: tokens inline, real Lucide geometry inlined, system-font fallback, real Pexels images. English (internal
+  decision artifact); ships localized. Pills/looks are real tags + images from the live library.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo category + filter revamp</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9B9B9B;
+    --border:#E4E4E7; --sunken:#F4F4F5; --white:#fff;
+    --blue:#276EF1; --blue-pale:#EAEFFE;
+    --disp:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif;
+    --body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--body);color:var(--ink);background:#EAEAEC;line-height:1.4;
+       padding:28px 16px 90px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:430px;margin:0 auto}
+  .intro h1{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1}
+  .intro ol{margin:12px 0 0;padding-left:0;list-style:none;counter-reset:n}
+  .intro li{position:relative;padding-left:26px;font-size:13px;color:var(--ink-2);margin-top:8px;counter-increment:n}
+  .intro li::before{content:counter(n);position:absolute;left:0;top:0;width:18px;height:18px;border-radius:999px;
+       background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;font-family:var(--disp)}
+  .intro li b{color:var(--ink);font-weight:600}
+  .lbl{margin:26px 0 -6px;font-family:var(--disp);font-weight:700;font-size:13px;color:#555}
+  .frame{width:100%;margin-top:14px;background:var(--white);border-radius:30px;overflow:hidden;
+       box-shadow:0 18px 44px rgba(20,18,16,.14);border:1px solid var(--border)}
+  .scr{padding:14px 0 18px}
+  .pad{padding:0 16px}
+  /* header */
+  .ah{display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px}
+  .ah .title{font-family:var(--disp);font-weight:800;font-size:25px;letter-spacing:-.02em}
+  .ah .icons{display:flex;gap:10px}
+  .circ{width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center}
+  .circ svg{width:18px;height:18px;color:var(--ink)}
+  /* search row , NO filter icon (moved) */
+  .srow{display:flex;align-items:center;gap:10px;padding:0 16px 14px}
+  .sbar{flex:1;display:flex;align-items:center;height:46px;border-radius:999px;background:var(--sunken);padding:0 16px;gap:10px}
+  .sbar svg{width:17px;height:17px;color:var(--ink-3)}
+  .sbar span{color:var(--ink-3);font-size:15px}
+  /* category tabs */
+  .tabs{display:flex;gap:14px;overflow-x:auto;padding:0 16px 2px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;width:76px;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .tab .cov{width:76px;height:62px;border-radius:14px;overflow:hidden;background:var(--sunken)}
+  .tab .cov img{width:100%;height:100%;object-fit:cover;display:block}
+  .tab .nm{font-family:var(--disp);font-size:12.5px;font-weight:500;color:var(--ink-2);padding:3px 10px;border-radius:999px;white-space:nowrap}
+  .tab.sel .nm{background:var(--sunken);color:var(--ink);font-weight:700}
+  /* sub-filter row , Filter button + per-category pills */
+  .subrow{display:flex;align-items:center;gap:9px;overflow-x:auto;padding:16px 16px 4px;scrollbar-width:none}
+  .subrow::-webkit-scrollbar{display:none}
+  .fbtn{flex:none;position:relative;width:36px;height:36px;border-radius:999px;display:grid;place-items:center;
+       background:var(--sunken);border:1px solid var(--border);color:var(--ink)}
+  .fbtn svg{width:17px;height:17px}
+  .fbtn .dot{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:1.5px solid #fff}
+  .spill{flex:none;height:36px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;
+       background:var(--sunken);border:1px solid var(--border);color:var(--ink-2);font-weight:600;font-size:13.5px;white-space:nowrap}
+  .spill.sel{background:var(--ink);border-color:var(--ink);color:var(--white)}
+  /* feed */
+  .feed{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+  .card .ph{width:100%;border-radius:16px;overflow:hidden;background:var(--sunken)}
+  .card .ph img{width:100%;display:block;object-fit:cover}
+  .card .cn{font-size:13px;font-weight:500;margin-top:7px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* filter sheet */
+  .sheetwrap{margin-top:14px;background:var(--white);border-radius:28px 28px 20px 20px;border:1px solid var(--border);
+       box-shadow:0 18px 44px rgba(20,18,16,.14);overflow:hidden}
+  .grab{width:38px;height:5px;border-radius:999px;background:var(--border);margin:12px auto 4px}
+  .sheet{padding:8px 18px 20px}
+  .sheet h3{font-family:var(--disp);font-weight:800;font-size:18px;letter-spacing:-.02em}
+  .grp{margin-top:18px}
+  .grp .gl{font-family:var(--disp);font-weight:700;font-size:13px;color:var(--ink)}
+  .seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+  .seg .o{padding:9px 16px;border-radius:999px;background:var(--sunken);border:1px solid var(--border);
+       color:var(--ink-2);font-weight:600;font-size:13.5px}
+  .seg .o.sel{background:var(--ink);border-color:var(--ink);color:var(--white)}
+  .sheetcta{display:flex;gap:10px;margin-top:22px}
+  .sheetcta .reset{flex:none;height:48px;padding:0 18px;border-radius:999px;background:var(--sunken);color:var(--ink);font-weight:600;font-size:14.5px;border:0;display:grid;place-items:center;font-family:var(--body)}
+  .sheetcta .apply{flex:1;height:48px;border-radius:999px;background:var(--ink);color:#fff;font-weight:600;font-size:14.5px;border:0;font-family:var(--body)}
+  .note{margin-top:14px;font-size:12px;color:var(--ink-3);text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>Category + filter, revamped</h1>
+    <ol>
+      <li><b>Category is just a selector</b> now: tapping Haare scopes the feed, it does NOT become a filter chip</li>
+      <li><b>The pills under it are per-category</b>: Haare shows hair styles, Nägel shows nail finishes (not one mixed list)</li>
+      <li><b>Filter moved off the search bar</b> to the start of the pill row; it opens gender / length and actually applies</li>
+    </ol>
+  </div>
+
+  <div class="lbl">Haare selected</div>
+  <div class="frame"><div class="scr" id="frameHair"></div></div>
+
+  <div class="lbl">Nägel selected: same row, nail pills</div>
+  <div class="frame"><div class="scr" id="frameNails"></div></div>
+
+  <div class="lbl">What the Filter button opens</div>
+  <div class="sheetwrap"><div class="grab"></div><div class="sheet" id="sheet"></div></div>
+
+  <div class="note">Real tags + looks from your library. Filter holds the cross-cutting bits (gender, length); the
+     per-category pills handle the style refinements. Counts illustrative; ships localized.</div>
+</div>
+
+<script>
+const P="https://images.pexels.com/photos/";
+function src(id,h){ const png={"35843347":1,"30294768":1}; const e=png[id]?"png":"jpeg"; return P+id+"/pexels-photo-"+id+"."+e+"?auto=compress&cs=tinysrgb&h="+(h||420)+"&w=320"; }
+
+const TABS = [
+  { nm:"Alle", img:"36415965" },
+  { nm:"Haare", img:"6822023" },
+  { nm:"Nägel", img:"30691552" },
+  { nm:"Wimpern", img:"21412169" },
+  { nm:"Augenbrauen", img:"5128259" },
+];
+const HAIR_PILLS = ["Curtain bangs","Wolf cut","Butterfly cut","Face-framing","Balayage","Shag","Bob"];
+const NAIL_PILLS = ["Gel","French tips","Chrome","Matte","Almond","Glossy","Coffin"];
+const HAIR_FEED = [
+  { id:"30265797", h:520, nm:"Curly shag" },
+  { id:"6822023", h:420, nm:"Blunt bob" },
+  { id:"6391646", h:430, nm:"Balayage lob" },
+  { id:"33414725", h:520, nm:"Long layers" },
+];
+
+function E(t,c){ const n=document.createElement(t); if(c)n.className=c; return n; }
+function T(t,c,x){ const n=E(t,c); n.textContent=x; return n; }
+function IMG(id,h){ const im=new Image(); im.src=src(id,h); im.loading="lazy"; im.alt=""; return im; }
+function svg(paths,w){ const ns="http://www.w3.org/2000/svg"; const s=document.createElementNS(ns,"svg");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("fill","none"); s.setAttribute("stroke","currentColor");
+  s.setAttribute("stroke-width",w||"2"); s.setAttribute("stroke-linecap","round"); s.setAttribute("stroke-linejoin","round");
+  paths.forEach(p=>{ if(p.c){ const c=document.createElementNS(ns,"circle"); c.setAttribute("cx",p.c[0]); c.setAttribute("cy",p.c[1]); c.setAttribute("r",p.c[2]); s.appendChild(c);} else { const path=document.createElementNS(ns,"path"); path.setAttribute("d",p); s.appendChild(path);} }); return s; }
+const I_BELL=()=>svg(["M10.268 21a2 2 0 0 0 3.464 0","M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.41 5.956-2.738 7.326"],"1.9");
+const I_MENU=()=>svg(["M4 6h16","M4 12h16","M4 18h16"],"2.1");
+const I_SEARCH=()=>svg([{c:[11,11,8]},"m21 21-4.3-4.3"],"2.1");
+const I_HEART=()=>svg(["M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"],"2.1");
+const I_FILTER=()=>svg(["M3 6h18","M7 12h10","M10 18h4"],"2.2");
+
+function header(){
+  const h=E("div","ah"); h.appendChild(T("div","title","Inspo"));
+  const ic=E("div","icons"); const b=E("div","circ"); b.appendChild(I_BELL()); const m=E("div","circ"); m.appendChild(I_MENU());
+  ic.appendChild(b); ic.appendChild(m); h.appendChild(ic); return h;
+}
+function searchRow(){
+  const r=E("div","srow"); const sb=E("div","sbar"); sb.appendChild(I_SEARCH()); sb.appendChild(T("span",null,"Styles suchen..."));
+  r.appendChild(sb); const hb=E("div","circ"); hb.appendChild(I_HEART()); r.appendChild(hb); return r;
+}
+function tabs(selName){
+  const t=E("div","tabs");
+  TABS.forEach(c=>{ const tb=E("div","tab"+(c.nm===selName?" sel":"")); const cov=E("div","cov"); cov.appendChild(IMG(c.img,160)); tb.appendChild(cov);
+    tb.appendChild(T("div","nm",c.nm)); t.appendChild(tb); });
+  return t;
+}
+function subrow(pills, selIdx){
+  const r=E("div","subrow");
+  const fb=E("div","fbtn"); fb.appendChild(I_FILTER());
+  const dot=T("span","dot","2"); fb.appendChild(dot); r.appendChild(fb);
+  pills.forEach((p,i)=>{ r.appendChild(T("div","spill"+(i===selIdx?" sel":""),p)); });
+  return r;
+}
+function feed(items){
+  const f=E("div","feed");
+  items.forEach(it=>{ const c=E("div","card"); const ph=E("div","ph"); const im=IMG(it.id,it.h); ph.appendChild(im); c.appendChild(ph);
+    c.appendChild(T("div","cn",it.nm)); f.appendChild(c); });
+  return f;
+}
+
+// Frame 1 , Haare selected (full)
+(function(){
+  const r=document.getElementById("frameHair");
+  r.appendChild(header()); r.appendChild(searchRow()); r.appendChild(tabs("Haare"));
+  r.appendChild(subrow(HAIR_PILLS, 0)); r.appendChild(feed(HAIR_FEED));
+})();
+// Frame 2 , Nägel selected (top only, to show the pills change)
+(function(){
+  const r=document.getElementById("frameNails");
+  r.appendChild(header()); r.appendChild(searchRow()); r.appendChild(tabs("Nägel"));
+  r.appendChild(subrow(NAIL_PILLS, 1));
+})();
+// Filter sheet
+(function(){
+  const s=document.getElementById("sheet");
+  s.appendChild(T("h3",null,"Filter"));
+  const mk=(label, opts, selIdx)=>{ const g=E("div","grp"); g.appendChild(T("div","gl",label)); const seg=E("div","seg");
+    opts.forEach((o,i)=>seg.appendChild(T("div","o"+(i===selIdx?" sel":""),o))); g.appendChild(seg); return g; };
+  s.appendChild(mk("Geschlecht", ["Alle","Damen","Herren","Unisex"], 1));
+  s.appendChild(mk("Länge", ["Kurz","Mittel","Lang"], 2));
+  const cta=E("div","sheetcta"); cta.appendChild(T("button","reset","Zurücksetzen")); cta.appendChild(T("button","apply","Anwenden"));
+  s.appendChild(cta);
+})();
+</script>
+</body>
+</html>
