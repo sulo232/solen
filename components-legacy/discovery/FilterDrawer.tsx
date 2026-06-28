@@ -81,7 +81,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
 
             <div className="flex-1 overflow-y-auto px-5 pb-4 pt-2">
               {/* Progressive drill-down body (drill.html v3): Geschlecht morphing thumb · Haartyp masked tiles with
-                  slide-to-left FLIP · Cuts L2 (multi-select) · Sortieren. Pre-selected gender + texture are seeded
+                  slide-to-left FLIP · Cuts L2 (multi-select). Pre-selected gender + texture are seeded
                   above from the viewer's DNA. */}
               <ProgressiveFilter
                 category={props.category}

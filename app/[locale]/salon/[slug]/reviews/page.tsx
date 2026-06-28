@@ -116,7 +116,10 @@ export default async function SalonReviewsPage({
     booking_id: r.booking_id,
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
-    review_replies: r.review_replies ?? [],
+    // SECURITY: the admin client bypasses RLS, so it returns is_public=false replies
+    // (owner/author-only per migration 041). Strip them entirely before the rows reach
+    // the client — hiding them in render still ships reply_text in the wire payload.
+    review_replies: (r.review_replies ?? []).filter((rp: any) => rp.is_public === true),
   }));
 
   return (

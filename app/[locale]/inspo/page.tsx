@@ -371,33 +371,6 @@ function DiscoverPageContent() {
     setSearchInput("");
   };
 
-  // Build filter pills — labels from translations (Issues C + D)
-  const tGender = useTranslations("discover.gender");
-  const filterPills: FilterPill[] = [
-    {
-      id: "gender",
-      label: t("genderPill"),
-      subFilters: [
-        { id: "all",      label: tGender("all") },
-        { id: "female",   label: tGender("women") },
-        { id: "male",     label: tGender("men") },
-        { id: "unisex",   label: tGender("unisex") },
-      ],
-    },
-    {
-      id: "texture",
-      label: t("texturePill"),
-      subFilters: [
-        { id: "straight",   label: "Straight" },
-        { id: "wavy",       label: "Wavy" },
-        { id: "curly",      label: "Curly" },
-        { id: "coily",      label: "Coily" },
-        { id: "protective", label: "Protective" },
-        { id: "bald",       label: "Bald" },
-      ],
-    },
-  ];
-
   return (
     <main className="min-h-screen bg-white pt-1.5 pb-24">
       <div className="max-w-7xl mx-auto px-4">

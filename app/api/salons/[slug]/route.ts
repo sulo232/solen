@@ -82,11 +82,19 @@ export async function GET(
     }));
   }
 
+  // SECURITY: the admin client bypasses RLS, so review_replies includes is_public=false
+  // rows (owner/author-only per migration 041). Strip non-public replies before they ship
+  // in the response — the client only gates rendering, so unfiltered rows leak reply_text.
+  const reviews = (reviewsRes.data ?? []).map((r: any) => ({
+    ...r,
+    review_replies: (r.review_replies ?? []).filter((rp: any) => rp.is_public === true),
+  }));
+
   return NextResponse.json({
     ...salon,
     services: servicesRes.data ?? [],
     staff: staffWithServices,
-    reviews: reviewsRes.data ?? [],
+    reviews,
   });
 }
 
