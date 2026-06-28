@@ -2,7 +2,7 @@
 
 > **Operational playbook for any new V3 surface.** Distills what we built on the homepage into reusable patterns + concrete rules + a Fresha→Solen adaptation guide. Auto-loaded by Claude on session start via `CLAUDE.md` "Topic-specific rules" table.
 >
-> **Hierarchy:** `_tasks/SOLEN_LIVE_TRUTH.md` is the principal *spec* doc (surface-level §15/§16/§17/§18 patterns + §5h color law). This file is the *playbook* — how to apply those locked specs to new surfaces. When the two disagree, LIVE_TRUTH wins.
+> **Hierarchy:** `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal *spec* docs. This file is the *playbook*: how to apply those locked specs to new surfaces. When the two disagree, SOURCE.md + LOCKFILE.md win. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived; do not treat it as authoritative.)
 >
 > Last updated 2026-05-10 after V2-D49 series.
 
@@ -163,7 +163,7 @@ All section primitives are exported from `app/[locale]/_components/homepage/Sect
 
 ### 3.1 Documentation hierarchy
 
-1. `_tasks/SOLEN_LIVE_TRUTH.md` §X — the principal spec (rules win).
+1. `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md`: the principal spec (rules win). (Old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.)
 2. `_tasks/V2_REBUILD_LOG.md` V2-D## — the decision log.
 3. `public/solen-v2-*.html` — locked visual references.
 4. Component JSDoc — last source of truth, lowest priority.
@@ -253,12 +253,12 @@ All section primitives are exported from `app/[locale]/_components/homepage/Sect
 
 ## Part 5 — Workflow when the Fresha reference arrives
 
-1. **Spec draft** → Append `§SD · Salon detail page` to `_tasks/SOLEN_LIVE_TRUTH.md` covering Fresha-mapped IA in V3 voice. Include anatomy diagram, tab structure, sticky bar behavior, motion specs, accessibility map.
+1. **Spec draft** → Record the salon-detail-page spec in `_design-system/SOURCE.md` (canonical) covering Fresha-mapped IA in current voice. Include anatomy diagram, tab structure, sticky bar behavior, motion specs, accessibility map.
 2. **Mockup HTML** → `public/solen-v2-salon-detail.html` rendering full page at desktop + mobile widths. Use real V3 tokens. No new patterns invented — every element references a Part 2 pattern by name.
 3. **Conflict scan** → Cross-check against §5h.2 (every emerald is action, every terracotta is heartbeat), §16 (SalonCard variant), §15 (SectionTitle scroll-arrow rule), §0d.7 (anti-patterns).
 4. **User sign-off** on mockup — mockup-first per CLAUDE.md visualize-visual-questions rule.
 5. **Implement** under `app/[locale]/salon/[slug]/page.tsx` + components in `app/[locale]/salon/[slug]/_components/`. Reuse Part 2 components verbatim where possible.
-6. **Lock** with `V2-D##` entry in `V2_REBUILD_LOG.md`. Mark `§SD` as locked in LIVE_TRUTH.
+6. **Lock** with `V2-D##` entry in `V2_REBUILD_LOG.md`. Mark the salon-detail spec as locked in `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md`.
 
 ---
 

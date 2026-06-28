@@ -15,7 +15,7 @@
 #
 # Fires BLOCK (exit 2) when ALL hold for the current Write:
 #   1. The target is a NEW (not-yet-on-disk) file on a duplicate-prone surface:
-#        app/**/page.tsx | app/**/route.ts | supabase/migrations/*.sql
+#        app/**/page.tsx | app/**/route.ts | supabase/migrations/*.sql | lib/**/*.ts(x)
 #   2. `npm run exists` / scripts/exists.mjs did NOT run in this turn's transcript
 #   3. No fresh override flag
 #
@@ -47,6 +47,7 @@ case "$FILE" in
   */app/*/page.tsx|*/app/*/page.jsx) SURFACE="route (page)";;
   */app/*/route.ts|*/app/*/route.js) SURFACE="API endpoint";;
   */supabase/migrations/*.sql)       SURFACE="DB migration";;
+  */lib/*.ts|*/lib/*.tsx)            SURFACE="lib module";;
   */public/solen-*.html)             SURFACE="design mockup";;
   */public/_mockups/*.html)          SURFACE="design mockup";;
   *) exit 0;;

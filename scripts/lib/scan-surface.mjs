@@ -130,6 +130,49 @@ export function scanLib() {
   return out.sort((a, b) => a.file.localeCompare(b.file));
 }
 
+// Top-level EXPORTED symbols. Catches CONCEPT/SIGNATURE duplication that the filename scan
+// misses: a new session rebuilding logic around an existing algorithm (e.g. deriveHairDna in
+// lib/persona/deriv.ts) under a different filename. Matches the four export forms below; the
+// leading-^ anchor keeps it to TOP-LEVEL exports (no re-exports buried mid-block, no indented
+// inner declarations). `export default function NAME` is captured when it has a name.
+const EXPORT_RE =
+  /^export\s+(?:async\s+)?function\s+([A-Za-z_]\w*)|^export\s+(?:const|let|var)\s+([A-Za-z_]\w*)|^export\s+(?:abstract\s+)?class\s+([A-Za-z_]\w*)|^export\s+default\s+(?:async\s+)?function\s+([A-Za-z_]\w*)/gm;
+
+/**
+ * Every top-level exported symbol (function / const / class / default-function) across lib/** and
+ * app/** .ts/.tsx. This is the CONCEPT layer of the dedup system: filenames catch "someone made
+ * another deriv.ts", but the real recurring miss is "someone rebuilt the hair-DNA logic under a
+ * fresh name" — `exists deriveHairDna` / `exists hair dna` now surfaces lib/persona/deriv.ts via
+ * the exported symbol even though the file is named deriv.ts. Regex-based + skips node_modules/.next
+ * (via walk's IGNORE_DIRS), so it stays fast. Returns { name, file }.
+ */
+export function scanExports() {
+  const dirs = [join(REPO_ROOT, "lib"), join(REPO_ROOT, "app")];
+  const seen = new Map();
+  for (const d of dirs) {
+    if (!existsSync(d)) continue;
+    for (const f of walk(
+      d,
+      (_full, name) => (name.endsWith(".ts") || name.endsWith(".tsx")) && !name.endsWith(".d.ts"),
+    )) {
+      let src = "";
+      try {
+        src = readFileSync(f, "utf8");
+      } catch {
+        continue; // unreadable -> no symbols
+      }
+      const r = rel(f);
+      for (const m of src.matchAll(EXPORT_RE)) {
+        const name = m[1] || m[2] || m[3] || m[4];
+        if (!name) continue;
+        const key = `${name}${r}`; // same symbol can appear once per file; dedupe per (name,file)
+        if (!seen.has(key)) seen.set(key, { name, file: r });
+      }
+    }
+  }
+  return [...seen.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
 const RPC_RE = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+(?:public\.)?["']?([a-zA-Z_]\w*)/gi;
 
 /**

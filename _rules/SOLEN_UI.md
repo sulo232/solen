@@ -14,7 +14,7 @@ Solen is in active design overhaul. Multiple agents (Claude Code, Claude Design,
 
 This file is the **mental checklist every agent runs before producing UI**. It's not a rulebook. It's a forcing function: articulate *why* your design works before you commit to pixels.
 
-For Solen-specific locks (emerald hex, fonts, retired patterns, glass rules, blob rules) → `_tasks/SOLEN_LIVE_TRUTH.md` is the principal source of truth (V3 lock per V2-D48 + V2-D42 + V2-D49j). This skill sits *on top* of that — universal principles, not tokens.
+For Solen-specific locks (token hex, fonts, retired patterns, glass rules) → `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal source of truth. This skill sits *on top* of that: universal principles, not tokens. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.)
 
 ---
 
@@ -298,7 +298,7 @@ Caveat: only reuse the marker when the things genuinely *are* related. Reusing a
 ### Design systems mindset
 - A design system is a **shared language**, not a uniformity enforcer. Two designers/agents working from the same tokens should produce work that *feels* coherent without being identical.
 - The *process* of defining the system (rules, scales, patterns) is often more valuable than the system itself — it forces decisions that would otherwise drift.
-- **Break the system with intention, not by accident.** Every deviation from `_tasks/SOLEN_LIVE_TRUTH.md` should be a deliberate, justifiable choice — and ideally fed back into the system as a new pattern, not left as a one-off. Log it as a `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`.
+- **Break the system with intention, not by accident.** Every deviation from `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` should be a deliberate, justifiable choice, and ideally fed back into the system as a new pattern, not left as a one-off. Log it as a `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`.
 
 ### Token architecture — layers, not flat
 Tokens are layered. Don't flatten them into one bucket of named hex values:
@@ -326,7 +326,7 @@ A change to a primitive should propagate up. A change to a composite should neve
 
 | File | When |
 |---|---|
-| `_tasks/SOLEN_LIVE_TRUTH.md` | Always. Principal source of truth for tokens, retired patterns, locked decisions (V3 lock per V2-D48 + V2-D42 + V2-D49j). |
+| `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` | Always. Principal source of truth for tokens, retired patterns, locked decisions. (Old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.) |
 | `_rules/SOLEN_PATTERNS.md` | Always. Operational playbook — every shipped V3 pattern with file path + Fresha translation rules. |
 | Live preview | `npm run dev` → `http://localhost:3000/de` for the current V3 visual reference. |
 | `_rules/I18N_ROUTING.md` | Before any copy or layout — text expands ~30% in DE/FR. |
@@ -395,6 +395,6 @@ If you catch yourself producing any of these, **back up and re-run the checklist
 
 When briefing another tool (Claude Design, Cursor, a fresh Claude Code session), include this line:
 
-> "Before outputting any UI work, read `_rules/SOLEN_UI.md` + `_tasks/SOLEN_LIVE_TRUTH.md` + `_rules/SOLEN_PATTERNS.md`. Walk through every principle in SOLEN_UI and answer how the design satisfies it before producing pixels. Apply the tactical heuristics (typography, spacing, shadows, buttons, image overlays, micro-interactions) when you build. LIVE_TRUTH is the principal spec; SOLEN_PATTERNS is the operational playbook with shipped patterns + file paths; SOLEN_UI is the thinking layer."
+> "Before outputting any UI work, read `_rules/SOLEN_UI.md` + `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` + `_rules/SOLEN_PATTERNS.md`. Walk through every principle in SOLEN_UI and answer how the design satisfies it before producing pixels. Apply the tactical heuristics (typography, spacing, shadows, buttons, image overlays, micro-interactions) when you build. SOURCE.md + LOCKFILE.md are the principal spec; SOLEN_PATTERNS is the operational playbook with shipped patterns + file paths; SOLEN_UI is the thinking layer."
 
 That's the contract. If the output doesn't reflect the checklist, send it back.

@@ -8,7 +8,7 @@
 >
 > For *status* (partial · deprecated · don't-reuse-for) see `_inventory/STATUS.md` (hand-kept).
 
-**Totals:** 134 routes · 352 API endpoints · 407 components · 106 lib/hooks modules · 34 DB functions · 74 DB tables · 883 columns indexed
+**Totals:** 134 routes · 356 API endpoints · 408 components · 108 lib/hooks modules · 38 DB functions · 74 DB tables · 883 columns indexed
 
 ## Routes (pages)
 
@@ -273,6 +273,7 @@
 | `/api/cron/auto-complete` | GET | `app/api/cron/auto-complete/route.ts` |
 | `/api/cron/barber-smart-reminders` | GET | `app/api/cron/barber-smart-reminders/route.ts` |
 | `/api/cron/birthday-messages` | GET | `app/api/cron/birthday-messages/route.ts` |
+| `/api/cron/discovery-ai-backfill` | GET | `app/api/cron/discovery-ai-backfill/route.ts` |
 | `/api/cron/discovery-deadcheck` | GET | `app/api/cron/discovery-deadcheck/route.ts` |
 | `/api/cron/generate-slots` | GET | `app/api/cron/generate-slots/route.ts` |
 | `/api/cron/late-cancel` | GET | `app/api/cron/late-cancel/route.ts` |
@@ -290,6 +291,7 @@
 | `/api/cron/review-prompt` | GET | `app/api/cron/review-prompt/route.ts` |
 | `/api/cron/salon-onboarding` | GET | `app/api/cron/salon-onboarding/route.ts` |
 | `/api/cron/sms-reminders` | GET | `app/api/cron/sms-reminders/route.ts` |
+| `/api/cron/style-affinity-recompute` | GET | `app/api/cron/style-affinity-recompute/route.ts` |
 | `/api/cron/welcome-series` | GET | `app/api/cron/welcome-series/route.ts` |
 | `/api/dashboard/activity-feed` | GET | `app/api/dashboard/activity-feed/route.ts` |
 | `/api/dashboard/barber-leaderboard` | GET | `app/api/dashboard/barber-leaderboard/route.ts` |
@@ -321,6 +323,7 @@
 | `/api/discover/nails` | GET, POST | `app/api/discover/nails/route.ts` |
 | `/api/discovery/boards` | GET | `app/api/discovery/boards/route.ts` |
 | `/api/discovery/boards/[id]` | GET | `app/api/discovery/boards/[id]/route.ts` |
+| `/api/discovery/category-order` | GET | `app/api/discovery/category-order/route.ts` |
 | `/api/discovery/chip-terms` | GET | `app/api/discovery/chip-terms/route.ts` |
 | `/api/discovery/collections` | GET, POST | `app/api/discovery/collections/route.ts` |
 | `/api/discovery/collections/[id]` | GET, PATCH, DELETE | `app/api/discovery/collections/[id]/route.ts` |
@@ -377,6 +380,7 @@
 | `/api/notify/review-replied` | POST | `app/api/notify/review-replied/route.ts` |
 | `/api/off-peak` | GET, POST, DELETE | `app/api/off-peak/route.ts` |
 | `/api/partner/leads` | POST | `app/api/partner/leads/route.ts` |
+| `/api/persona/hair-dna` | GET | `app/api/persona/hair-dna/route.ts` |
 | `/api/profile` | GET, PATCH | `app/api/profile/route.ts` |
 | `/api/profile/accept-tos` | POST | `app/api/profile/accept-tos/route.ts` |
 | `/api/profile/delete` | DELETE | `app/api/profile/delete/route.ts` |
@@ -600,8 +604,10 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `anonymize_financial_rows_on_profile_delete` | `supabase/migrations/20260602083300_financial_retention_on_delete.sql` |
 | `create_group_booking` | `supabase/migrations/071_megabuild_booking_crm_payments.sql` |
 | `current_user_tier` | `supabase/migrations/20260614010000_solen_plus_phase1_perks.sql` |
+| `discovery_boards_for_you` | `supabase/migrations/20260623131500_discovery_boards_for_you.sql` |
 | `discovery_chip_terms` | `supabase/migrations/20260531_discovery_chip_terms.sql` |
 | `discovery_feed` | `supabase/migrations/20260531_discovery_feed_personalized.sql` |
+| `discovery_feed_for_you` | `supabase/migrations/20260623124500_user_style_affinity.sql` |
 | `discovery_fts_doc` | `supabase/migrations/20260531_discovery_search_rpc.sql` |
 | `discovery_recent_searches` | `supabase/migrations/20260531_discovery_recent_and_style_suggest.sql` |
 | `discovery_resolve_thumb` | `supabase/migrations/20260531_discovery_recent_and_style_suggest.sql` |
@@ -616,6 +622,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `match_search_embeddings` | `supabase/migrations/074_search_embeddings.sql` |
 | `next_walkin_ticket_seq` | `supabase/migrations/20260602150000_walkin_ticket_seq.sql` |
 | `recompute_loyalty_status` | `supabase/migrations/20260614000000_loyalty_status_rank_phase2.sql` |
+| `recompute_user_style_affinity` | `supabase/migrations/20260623124500_user_style_affinity.sql` |
 | `refresh_salon_min_prices` | `supabase/migrations/20260401_salon_min_prices.sql` |
 | `resequence_walkin_queue` | `supabase/migrations/20260531_walkin_resequence_fn.sql` |
 | `salon_search_doc` | `supabase/migrations/20260606190256_search_phase1_fts_schema.sql` |
@@ -624,6 +631,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `search_salons_ranked` | `supabase/migrations/20260606190706_search_phase1_rpcs.sql` |
 | `search_suggest` | `supabase/migrations/20260606190706_search_phase1_rpcs.sql` |
 | `service_search_doc` | `supabase/migrations/20260606190256_search_phase1_fts_schema.sql` |
+| `set_customer_persona` | `supabase/migrations/20260623_set_customer_persona.sql` |
 | `set_updated_at` | `supabase/migrations/067_discovery.sql` |
 | `toggle_discovery_like` | `supabase/migrations/067_discovery.sql` |
 | `toggle_discovery_save` | `supabase/migrations/067_discovery.sql` |
@@ -634,7 +642,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 
 ## Components
 
-<details><summary>407 components — click to expand</summary>
+<details><summary>408 components — click to expand</summary>
 
 | Component | File |
 |---|---|
@@ -870,6 +878,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | ProfileHero | `components-legacy/profile/ProfileHero.tsx` |
 | ProfilePage | `components-legacy/ProfilePage.tsx` |
 | ProfileSetupModal | `components-legacy/discovery/ProfileSetupModal.tsx` |
+| ProgressiveFilter | `components-legacy/discovery/ProgressiveFilter.tsx` |
 | PromoManager | `components-legacy/dashboard/PromoManager.tsx` |
 | PWAInstallPrompt | `components-legacy/ui/PWAInstallPrompt.tsx` |
 | QuartiersGrid | `components-legacy/home/QuartiersGrid.tsx` |
@@ -1050,7 +1059,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 
 ## lib/ modules
 
-<details><summary>106 modules — click to expand</summary>
+<details><summary>108 modules — click to expand</summary>
 
 | Module | File |
 |---|---|
@@ -1107,6 +1116,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | interactive-zone | `lib/diagrams/interactive-zone.ts` |
 | discovery-algorithm | `lib/discovery-algorithm.ts` |
 | discovery-moderation | `lib/discovery-moderation.ts` |
+| hair-cuts | `lib/discovery/hair-cuts.ts` |
 | editor-prompts | `lib/editor-prompts.ts` |
 | audit-notifications | `lib/email-templates/audit-notifications.ts` |
 | booking-notifications | `lib/email-templates/booking-notifications.ts` |
@@ -1133,6 +1143,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | infill-calculator | `lib/nail/infill-calculator.ts` |
 | station-availability | `lib/nail/station-availability.ts` |
 | notifications | `lib/notifications.ts` |
+| deriv | `lib/persona/deriv.ts` |
 | posthog-api | `lib/posthog-api.ts` |
 | posthog-server | `lib/posthog-server.ts` |
 | issue-purchase-refund | `lib/purchases/issue-purchase-refund.ts` |

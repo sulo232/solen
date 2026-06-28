@@ -395,6 +395,113 @@ A14_OVER_IMAGE_RE = re.compile(r"\b(?:backdrop-blur|absolute|inset-0|object-cove
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# C1-C7 - anti-hardcode family (2026-06-28). Secrets, URLs, UUIDs, magic numbers,
+# untranslated copy, absolute fs paths, money literals. C1 HARD-blocks ON PRESENCE
+# (a pre-existing secret still blocks, special-cased in run_gate_stdin); C2/C3/C6/C7
+# block NET-NEW; C4/C5 + the soft variants are WARN (INFO-prefixed, never gate).
+# D1-D6 - anti-bloat family. All WARN (INFO-prefixed): console noise, dead commented
+# code, overlong/duplicated functions, redundant comments, bare TODO markers.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# C1 - secret/credential literals. Each is a (name, compiled-regex) pair. The
+# `service_role` word is handled separately (bare = WARN, next-to `=`/`eyJ` = BLOCK).
+C1_STRIPE_RE = re.compile(r"\b(?:sk|pk|rk)_(?:live|test)_[0-9A-Za-z]{8,}")
+# JWT / Supabase anon|service key: three base64url segments, the first two each
+# starting with `eyJ` (header + payload).
+C1_JWT_RE = re.compile(r"\beyJ[0-9A-Za-z_-]{10,}\.eyJ[0-9A-Za-z_-]{10,}\.[0-9A-Za-z_-]{10,}")
+C1_ANTHROPIC_RE = re.compile(r"\bsk-(?:ant|proj)-[0-9A-Za-z_-]{8,}")
+C1_GOOGLE_API_RE = re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b")
+# Generic: a credential-named key assigned a quoted literal >= 12 chars.
+C1_GENERIC_RE = re.compile(
+    r"\b(?:api_key|apikey|secret|token|password|passwd|private_key|access_key|"
+    r"secret_key|client_secret|auth_token)\b"
+    r"\s*[:=]\s*[\"'`]([^\"'`]{12,})[\"'`]",
+    re.IGNORECASE,
+)
+C1_SERVICE_ROLE_RE = re.compile(r"\bservice_role\b")
+# Lines that legitimately carry long base64-ish / opaque strings that are NOT
+# secrets: inline SVG path data, data: URIs, XML namespaces, SRI integrity hashes.
+C1_SKIP_LINE_RE = re.compile(r'\bd="|\bdata:|\bxmlns|\bintegrity=')
+# Files exempt from the generic-secret heuristic noise (lockfiles / message bundles
+# / SVG assets handled per-rule below).
+C1_LOCKFILE_NAMES = ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lockb")
+
+# C2 - environment/secret-bearing URLs. Supabase project URL, the solen.ch
+# production domain, and any localhost:PORT hardcode BLOCK net-new; any other
+# quoted http(s):// literal is WARN.
+C2_SUPABASE_URL_RE = re.compile(r"https?://[a-z0-9]{8,}\.supabase\.(?:co|in|net)\b", re.IGNORECASE)
+C2_SOLEN_URL_RE = re.compile(r"https?://(?:[a-z0-9-]+\.)*solen\.ch\b", re.IGNORECASE)
+C2_LOCALHOST_RE = re.compile(r"https?://(?:localhost|127\.0\.0\.1):\d{2,5}\b")
+C2_ANY_URL_RE = re.compile(r"[\"'`](https?://[^\"'`\s]+)[\"'`]")
+# Allowlist substrings - these http(s) literals are spec/standards refs, not env.
+C2_ALLOW_HINTS = ("schema.org", "www.w3.org", "ogp.me", "googleapis.com/css")
+
+# C3 - hardcoded v4 UUID literal (e.g. a pinned salon/user id in source).
+C3_UUID_RE = re.compile(
+    r"\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}\b"
+)
+
+# C4 - magic numbers (WARN, heavily filtered). A bare numeric literal that is not
+# a CSS/Tailwind value, not an array index, not a known-safe constant.
+C4_NUMBER_RE = re.compile(r"(?<![\w.#%\[-])(\d{2,})(?![\w.%px])")
+C4_KNOWN_SAFE = {0, 1, 2, -1, 100, 1000, 24, 60, 7, 12, 30, 365}
+# Lines that are CSS/Tailwind/style and should be skipped wholesale for C4.
+C4_SKIP_LINE_RE = re.compile(
+    r"-\[|rounded|\bgap-|\bp-|\bpx-|\bpy-|\bpt-|\bpb-|\bpl-|\bpr-|\bm-|\bmx-|\bmy-|"
+    r"\bz-|\bw-|\bh-|\brgba?\(|cubic-bezier|px\b|%|translate|rotate|scale|opacity-|"
+    r"duration-|delay-|tracking-|leading-"
+)
+# HTTP status codes are fine in API routes.
+C4_HTTP_STATUS = {200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 409, 410, 422, 429, 500, 502, 503}
+
+# C5 - untranslated JSX copy (next-intl). A JSX text node or a display-prop string
+# literal holding a human phrase that is not wrapped in {t(...)}.
+C5_JSX_TEXT_RE = re.compile(r">\s*([A-Za-z][A-Za-z .,!?'’\-]{3,})\s*<")
+C5_DISPLAY_PROP_RE = re.compile(
+    r'\b(?:title|label|placeholder|alt|aria-label)\s*=\s*"([A-Za-z][A-Za-z .,!?\'’\-]{3,})"'
+)
+C5_BRAND_ALLOW = {"solen", "stripe", "supabase", "google", "apple"}
+
+# C6 - absolute filesystem path literal embedded in app source.
+C6_FS_PATH_RE = re.compile(
+    r"[\"'`](?:/Users/|/home/|[A-Za-z]:\\\\|[A-Za-z]:/|/private/tmp/|/var/folders/)[^\"'`]+[\"'`]"
+)
+
+# C7 - money: a fee/commission/tax field assigned a numeric literal.
+C7_MONEY_RE = re.compile(
+    r"\b(commission|platform_fee|fee|vat|mwst|tax|discount|rate)\b"
+    r"\s*[:=]\s*(-?\d+(?:\.\d+)?)",
+    re.IGNORECASE,
+)
+# CHF display literal -> WARN.
+C7_CHF_RE = re.compile(r"\bCHF\s*\d|\b\d+(?:\.\d{2})?\s*CHF\b")
+# VAT special note (project defers the 8.1% VAT; keys off bookings.platform_fee).
+C7_VAT_RE = re.compile(r"\b0\.081\b|\b8\.1\s*%")
+
+# D1 - console noise (console.error / console.warn are ALLOWED per project rule).
+D1_CONSOLE_RE = re.compile(r"\bconsole\.(log|debug|dir|trace)\b|\bdebugger\b")
+
+# D2 - commented-out code block: a `//`-prefixed line that looks like code (ends
+# in `;`/`{`/`}`/`)` or contains an assignment/keyword). Only flagged in runs >= 3.
+D2_CODE_COMMENT_RE = re.compile(
+    r"^\s*//\s*(?:const |let |var |function |return |if\s*\(|for\s*\(|while\s*\(|"
+    r"import |export |await |[A-Za-z_$][\w$.]*\s*=|[A-Za-z_$][\w$.]*\([^)]*\)\s*;?\s*$|"
+    r".*[;{}]\s*$)"
+)
+D2_JSDOC_EXAMPLE_RE = re.compile(r"@example")
+
+# D5 - redundant comment: `// set/get/return/loop through <noun>`.
+D5_REDUNDANT_RE = re.compile(
+    r"^\s*//\s*(set|get|return|loop through|loop over|increment|decrement)\s+\w+",
+    re.IGNORECASE,
+)
+
+# D6 - bare TODO/FIXME/XXX/HACK without a ticket reference.
+D6_TODO_RE = re.compile(r"\b(TODO|FIXME|XXX|HACK)\b")
+D6_TICKET_RE = re.compile(r"#\d|SOL-\d|V3-D\d|https?://")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Scanner
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -486,6 +593,156 @@ def _code_only(line: str, in_block: bool) -> tuple[str, bool]:
     return "".join(out), in_block
 
 
+# ── C/D path-scope helpers ──────────────────────────────────────────────────
+# These keep the per-line C/D logic readable; each answers "does rule X apply to
+# this file?" based ONLY on the relative path (cheap, no content).
+
+def _rel_basename(rel: str) -> str:
+    return rel.rsplit("/", 1)[-1]
+
+
+def _is_test_file(rel: str) -> bool:
+    base = _rel_basename(rel)
+    return (
+        ".test." in base or ".spec." in base or ".stories." in base
+        or "/__tests__/" in rel or rel.startswith("__tests__/")
+    )
+
+
+def _c1_jwt_exempt(rel: str) -> bool:
+    """JWT pattern (C1) is exempt in test/spec files only."""
+    base = _rel_basename(rel)
+    return (
+        ".test." in base or ".spec." in base
+        or "/__tests__/" in rel or rel.startswith("__tests__/")
+    )
+
+
+def _is_app_source(rel: str) -> bool:
+    """app/** + components*/** + lib/** TS/TSX source (C3 / C6 / C7 net-new scope)."""
+    if not (rel.startswith("app/") or rel.startswith("components") or rel.startswith("lib/")):
+        return False
+    return rel.endswith((".ts", ".tsx"))
+
+
+def _c3_exempt(rel: str) -> bool:
+    base = _rel_basename(rel)
+    return (
+        _is_test_file(rel)
+        or "seed" in base.lower()
+        or "fixture" in rel.lower() or "mock" in rel.lower()
+        or "supabase/migrations" in rel
+        or rel.startswith("_inventory") or "/_inventory/" in rel
+    )
+
+
+def _is_api_route(rel: str) -> bool:
+    return rel.startswith("app/api/")
+
+
+def _c5_exempt_file(rel: str) -> bool:
+    return (
+        not rel.endswith(".tsx")
+        or rel.startswith("messages/") or "/messages/" in rel
+        or ".stories." in _rel_basename(rel)
+        or ".test." in _rel_basename(rel)
+        or rel.startswith("public/_mockups/") or "/public/_mockups/" in rel
+        or rel.startswith("_design-system/") or "/_design-system/" in rel
+    )
+
+
+def _compute_d2_lines(lines: list[str]) -> set[int]:
+    """1-based line numbers that are part of a >=3-consecutive commented-out-code
+    run (D2). JSDoc @example lines and pure prose `//` comments do not count."""
+    flagged: set[int] = set()
+    run: list[int] = []
+    for i, raw in enumerate(lines, start=1):
+        is_code_comment = bool(D2_CODE_COMMENT_RE.match(raw)) and not D2_JSDOC_EXAMPLE_RE.search(raw)
+        if is_code_comment:
+            run.append(i)
+        else:
+            if len(run) >= 3:
+                flagged.update(run)
+            run = []
+    if len(run) >= 3:
+        flagged.update(run)
+    return flagged
+
+
+def _compute_d3_lines(lines: list[str]) -> set[int]:
+    """Start-line of every function body longer than 80 lines whose body contains
+    control flow (if/for/while/switch). Brace-depth tracked from the declaration."""
+    flagged: set[int] = set()
+    decl_re = re.compile(
+        r"\b(?:function\s+[A-Za-z_$][\w$]*\s*\(|"
+        r"(?:const|let|var)\s+[A-Za-z_$][\w$]*\s*=\s*(?:async\s+)?\([^)]*\)\s*=>|"
+        r"(?:const|let|var)\s+[A-Za-z_$][\w$]*\s*=\s*(?:async\s+)?function\b|"
+        r"[A-Za-z_$][\w$]*\s*\([^)]*\)\s*\{)"
+    )
+    control_re = re.compile(r"\b(?:if|for|while|switch)\s*\(")
+    n = len(lines)
+    i = 0
+    while i < n:
+        line = lines[i]
+        if decl_re.search(line) and "{" in line:
+            # Walk braces from the first '{' on the declaration line.
+            depth = 0
+            started = False
+            j = i
+            has_control = False
+            while j < n:
+                for ch in lines[j]:
+                    if ch == "{":
+                        depth += 1
+                        started = True
+                    elif ch == "}":
+                        depth -= 1
+                if j > i and control_re.search(lines[j]):
+                    has_control = True
+                if started and depth <= 0:
+                    break
+                j += 1
+            body_len = j - i + 1
+            if body_len > 80 and has_control:
+                flagged.add(i + 1)
+            i = j + 1
+            continue
+        i += 1
+    return flagged
+
+
+def _compute_d4_lines(lines: list[str]) -> set[int]:
+    """Start-line of the SECOND occurrence of any duplicated 6-line window of
+    non-trivial code (D4). Trivial lines (blank, lone brace, import) are skipped
+    when forming the window so cosmetic repetition isn't flagged."""
+    flagged: set[int] = set()
+
+    def _nontrivial(s: str) -> bool:
+        t = s.strip()
+        if len(t) < 4:
+            return False
+        if t in ("{", "}", "{}", "})", "});", "()", "([", "])"):
+            return False
+        if t.startswith(("import ", "export ", "//", "/*", "*", "*/")):
+            return False
+        return True
+
+    idxs = [i for i, s in enumerate(lines) if _nontrivial(s)]
+    seen: dict[str, int] = {}
+    win = 6
+    for k in range(len(idxs) - win + 1):
+        window_idxs = idxs[k:k + win]
+        # require the window to be reasonably contiguous (no giant gap)
+        if window_idxs[-1] - window_idxs[0] > win * 3:
+            continue
+        key = "\n".join(lines[wi].strip() for wi in window_idxs)
+        if key in seen:
+            flagged.add(window_idxs[0] + 1)
+        else:
+            seen[key] = window_idxs[0]
+    return flagged
+
+
 def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Finding]:
     """Scan raw text as one virtual file `rel`.
 
@@ -499,7 +756,14 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
     """
     findings: list[Finding] = []
     in_block_comment = False
-    for ln_no, line in enumerate(text.splitlines(), start=1):
+    all_lines = text.splitlines()
+    # Multi-line D-family pre-passes (D2/D3/D4 need cross-line context). Skipped
+    # for *.md (D2 prose) below per-line; D3/D4 only fire on app-ish source lines.
+    is_md = rel.endswith(".md")
+    d2_lines = set() if is_md else _compute_d2_lines(all_lines)
+    d3_lines = _compute_d3_lines(all_lines)
+    d4_lines = _compute_d4_lines(all_lines)
+    for ln_no, line in enumerate(all_lines, start=1):
         # Comment-strip for A1 hex detection only (V3-D446): a hex inside a // or /* */
         # (incl. JSX {/* */}) comment is documentation, not drift. Every other rule keeps
         # the raw line — the no-emoji-in-comments rule (A6) is deliberate.
@@ -786,6 +1050,243 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 recommendation="Per CONTROL_ELEVATION.md (V3-D420): white+shadow is reserved for glass-over-photo (FROST_GLASS, lib/frost-glass.ts) and the one ink CTA. A calm control on white / s-bg-sunken casts NO shadow: text -> bg-s-bg-sunken no shadow; icon-only -> bg-white border-s-border no shadow. If this control IS over a photo, ignore (the line scanner can't see the background).",
             ))
 
+        # ─────────────────────────────────────────────────────────────
+        # C1-C7 - anti-hardcode family (2026-06-28).
+        # ─────────────────────────────────────────────────────────────
+
+        # C1 - secrets. HARD-BLOCK ON PRESENCE (special-cased in run_gate_stdin so a
+        # pre-existing secret still blocks). Skips *.svg / lockfiles / messages/*.json
+        # entirely, and per-line skips SVG path data / data: URIs / xmlns / integrity.
+        c1_base = _rel_basename(rel)
+        c1_file_skip = (
+            rel.endswith(".svg")
+            or c1_base in C1_LOCKFILE_NAMES
+            or (rel.startswith("messages/") and rel.endswith(".json"))
+            or ("/messages/" in rel and rel.endswith(".json"))
+        )
+        if not c1_file_skip and not C1_SKIP_LINE_RE.search(line):
+            secret_hit = None
+            if C1_STRIPE_RE.search(line):
+                secret_hit = "Stripe key"
+            elif not _c1_jwt_exempt(rel) and C1_JWT_RE.search(line):
+                secret_hit = "JWT / Supabase key"
+            elif C1_ANTHROPIC_RE.search(line):
+                secret_hit = "Anthropic key"
+            elif C1_GOOGLE_API_RE.search(line):
+                secret_hit = "Google API key"
+            elif C1_GENERIC_RE.search(line):
+                secret_hit = "generic credential literal"
+            if secret_hit:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="C1: secret/credential literal",
+                    snippet=line,
+                    recommendation=f"A {secret_hit} is committed in source. Move it to an env var (process.env.X) and rotate the exposed value. Never hardcode credentials.",
+                ))
+            elif C1_SERVICE_ROLE_RE.search(line):
+                # service_role next to `=` / `eyJ` -> BLOCK; bare word -> WARN.
+                if "=" in line or "eyJ" in line:
+                    findings.append(Finding(
+                        file=rel, line=ln_no, rule="C1: service_role key assignment",
+                        snippet=line,
+                        recommendation="A service_role key bypasses RLS. Never assign it in source; read SUPABASE_SERVICE_ROLE_KEY from env and keep it server-only.",
+                    ))
+                else:
+                    findings.append(Finding(
+                        file=rel, line=ln_no, rule="INFO C1: service_role mention",
+                        snippet=line,
+                        recommendation="`service_role` mentioned. Confirm this is not embedding the service-role key; it must come from a server-only env var.",
+                    ))
+
+        # C2 - env/secret-bearing URLs. Supabase project URL / solen.ch / localhost:PORT
+        # BLOCK net-new; other quoted http(s):// -> WARN. Allowlist + *.svg skip.
+        if not rel.endswith(".svg"):
+            c2_localhost_skip = (
+                _is_test_file(rel) or rel.startswith("scripts/") or "/scripts/" in rel
+            )
+            if C2_SUPABASE_URL_RE.search(line):
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="C2: hardcoded Supabase project URL",
+                    snippet=line,
+                    recommendation="The Supabase project URL must come from NEXT_PUBLIC_SUPABASE_URL, not a hardcoded literal (it differs per environment).",
+                ))
+            elif C2_SOLEN_URL_RE.search(line):
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="C2: hardcoded solen.ch URL",
+                    snippet=line,
+                    recommendation="Use a relative path or the env-driven base URL (NEXT_PUBLIC_SITE_URL) instead of hardcoding the solen.ch production domain.",
+                ))
+            elif C2_LOCALHOST_RE.search(line) and not c2_localhost_skip:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="C2: hardcoded localhost:PORT",
+                    snippet=line,
+                    recommendation="A hardcoded localhost:PORT breaks in every non-local environment. Use an env-driven base URL.",
+                ))
+            else:
+                for m in C2_ANY_URL_RE.finditer(line):
+                    url = m.group(1)
+                    if any(h in url for h in C2_ALLOW_HINTS):
+                        continue
+                    findings.append(Finding(
+                        file=rel, line=ln_no, rule="INFO C2: hardcoded URL",
+                        snippet=line,
+                        recommendation=f"`{url}` is a hardcoded URL. Confirm it should not be env-driven or a relative path.",
+                    ))
+                    break
+
+        # C3 - hardcoded v4 UUID literal. BLOCK net-new in app/components/lib source.
+        if _is_app_source(rel) and not _c3_exempt(rel) and C3_UUID_RE.search(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="C3: hardcoded UUID literal",
+                snippet=line,
+                recommendation="A hardcoded v4 UUID in source is a pinned id (salon/user/row). Pass it as data / param / fixture, not a literal in application code.",
+            ))
+
+        # C4 - magic numbers (WARN only, heavily filtered).
+        if not C4_SKIP_LINE_RE.search(line):
+            c4_api = _is_api_route(rel)
+            for m in C4_NUMBER_RE.finditer(line):
+                start = m.start(1)
+                # array index `[N]` -> skip
+                if start > 0 and line[start - 1] == "[":
+                    continue
+                try:
+                    val = int(m.group(1))
+                except ValueError:
+                    continue
+                if val in C4_KNOWN_SAFE:
+                    continue
+                if c4_api and val in C4_HTTP_STATUS:
+                    continue
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="INFO C4: magic number",
+                    snippet=line,
+                    recommendation=f"`{val}` is an unexplained literal. Extract it to a named constant or add a comment so its meaning is self-evident.",
+                ))
+                break
+
+        # C5 - untranslated JSX copy (next-intl). WARN, .tsx only.
+        if not _c5_exempt_file(rel) and "{t(" not in line and "{t." not in line:
+            def _c5_flag(phrase: str) -> bool:
+                p = phrase.strip()
+                letters = sum(c.isalpha() for c in p)
+                if letters < 4 and " " not in p:
+                    return False
+                low = p.lower()
+                if low in C5_BRAND_ALLOW:
+                    return False
+                if p.isupper():  # all-caps token (e.g. CSS / DE / EN)
+                    return False
+                # single PascalCase word (likely a component / identifier)
+                if " " not in p and p[:1].isupper() and p.isalnum() and not p.islower():
+                    return False
+                return True
+
+            c5_done = False
+            for m in C5_JSX_TEXT_RE.finditer(line):
+                if _c5_flag(m.group(1)):
+                    findings.append(Finding(
+                        file=rel, line=ln_no, rule="INFO C5: untranslated JSX copy",
+                        snippet=line,
+                        recommendation=f"`{m.group(1).strip()}` looks like user-facing copy not wrapped in next-intl `{{t('...')}}`. Move it to messages/*.json and render via t().",
+                    ))
+                    c5_done = True
+                    break
+            if not c5_done:
+                for m in C5_DISPLAY_PROP_RE.finditer(line):
+                    if _c5_flag(m.group(1)):
+                        findings.append(Finding(
+                            file=rel, line=ln_no, rule="INFO C5: untranslated display prop",
+                            snippet=line,
+                            recommendation=f"`{m.group(1)}` is a hardcoded display string. Wrap it with next-intl `t('...')` and add the key to messages/*.json.",
+                        ))
+                        break
+
+        # C6 - absolute filesystem path literal. BLOCK net-new in app source;
+        # scripts/** and .claude/** are exempt (tooling legitimately uses them).
+        c6_exempt = rel.startswith("scripts/") or "/scripts/" in rel or rel.startswith(".claude/") or "/.claude/" in rel
+        if _is_app_source(rel) and not c6_exempt and C6_FS_PATH_RE.search(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="C6: absolute filesystem path literal",
+                snippet=line,
+                recommendation="An absolute machine path (/Users, /home, drive-letter, /private/tmp, /var/folders) will not exist in production. Use a relative path, an env var, or path.join from a known root.",
+            ))
+
+        # C7 - money literals. fee/commission/tax = numeric -> BLOCK net-new
+        # (RHS 0/1 allowed); CHF display literal -> WARN; VAT 0.081 / 8.1% note.
+        m_money = C7_MONEY_RE.search(line)
+        if m_money:
+            try:
+                rhs = float(m_money.group(2))
+            except ValueError:
+                rhs = None
+            if rhs is not None and rhs not in (0.0, 1.0):
+                vat_note = ""
+                if C7_VAT_RE.search(line):
+                    vat_note = " NOTE: the project DEFERS the 8.1% VAT on the platform fee (project_commission_vat_deferred) and keys off bookings.platform_fee; do not hardcode 0.081 / 8.1%."
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="C7: hardcoded money/fee literal",
+                    snippet=line,
+                    recommendation=f"`{m_money.group(1)} = {m_money.group(2)}` hardcodes a money rule. Source fees/commission/tax from config or the DB (bookings.platform_fee), not a literal.{vat_note}",
+                ))
+        elif C7_CHF_RE.search(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO C7: CHF amount literal",
+                snippet=line,
+                recommendation="A CHF amount literal in source is usually data, not code. Confirm it should not come from the DB / config (price, fee, discount).",
+            ))
+
+        # ─────────────────────────────────────────────────────────────
+        # D1-D6 - anti-bloat family (2026-06-28). All WARN (INFO-prefixed).
+        # ─────────────────────────────────────────────────────────────
+
+        # D1 - console noise. console.error / console.warn are ALLOWED (project rule).
+        if D1_CONSOLE_RE.search(code_line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D1: console/debugger statement",
+                snippet=line,
+                recommendation="Remove console.log/debug/dir/trace + debugger before shipping. For real error logging use console.error / console.warn (the project-allowed forms).",
+            ))
+
+        # D2 - commented-out code block (>= 3 consecutive code-shaped // lines).
+        if ln_no in d2_lines:
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D2: commented-out code block",
+                snippet=line,
+                recommendation="Commented-out code rots and confuses readers. Delete it (git history keeps it). Keep only explanatory prose comments.",
+            ))
+
+        # D3 - overlong added function (> 80 lines with branching).
+        if ln_no in d3_lines:
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D3: overlong function",
+                snippet=line,
+                recommendation="This function exceeds 80 lines and contains branching. Consider extracting helpers so each unit does one thing.",
+            ))
+
+        # D4 - duplicated block (>= 6 non-trivial lines repeated).
+        if ln_no in d4_lines:
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D4: duplicated code block",
+                snippet=line,
+                recommendation="This 6+ line block duplicates an earlier one. Extract a shared helper instead of copy-pasting.",
+            ))
+
+        # D5 - redundant comment (// set/get/return/loop through + noun).
+        if D5_REDUNDANT_RE.match(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D5: redundant comment",
+                snippet=line,
+                recommendation="This comment restates what the next line of code already says. Delete it or replace with a comment that explains WHY, not WHAT.",
+            ))
+
+        # D6 - bare TODO/FIXME/XXX/HACK without a ticket reference.
+        if not rel.endswith(".md") and D6_TODO_RE.search(code_line) and not D6_TICKET_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO D6: bare TODO/FIXME marker",
+                snippet=line,
+                recommendation="A TODO/FIXME/XXX/HACK without a ticket reference (#123, SOL-123, V3-D{n}, or a URL) gets lost. Add a tracking reference or resolve it now.",
+            ))
+
     return findings
 
 
@@ -975,6 +1476,11 @@ def run_gate_stdin() -> int:
         [f for f in scan_text(old, rel, respect_inline_skip=True) if not _is_info_rule(f)]
         if old else []
     )
+    # C1 secrets BLOCK ON PRESENCE (bypass the net-new diff): a credential is a
+    # leak whether or not the edit introduced it, so any C1 hit in `new` always
+    # counts as over-budget even if `old` already carried it.
+    secret_rules = {f.rule for f in new_hard if f.rule.startswith("C1:")}
+
     # Net-new is computed per RULE by count, not by exact line text: editing the
     # text around a pre-existing violation must NOT re-trigger the gate (the line
     # snippet changes even though the drift is unchanged). Block only when `new`
@@ -988,9 +1494,13 @@ def run_gate_stdin() -> int:
     new_counts = _counts(new_hard)
     old_counts = _counts(old_hard)
     over_rules = {r for r, n in new_counts.items() if n > old_counts.get(r, 0)}
+    over_rules |= secret_rules  # secrets always block, even pre-existing
     if not over_rules:
         return 0
-    delta = sum(new_counts[r] - old_counts.get(r, 0) for r in over_rules)
+    delta = sum(
+        new_counts[r] if r in secret_rules else (new_counts[r] - old_counts.get(r, 0))
+        for r in over_rules
+    )
 
     # Dedup display by (rule, snippet) so the same offending line isn't repeated.
     seen: set[tuple[str, str]] = set()
