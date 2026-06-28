@@ -8,13 +8,10 @@ import { HAIR_CUTS } from "@/lib/discovery/hair-cuts";
 //   2. Haartyp , 4 masked-PNG texture tiles (owner's /hair-patterns icons). Selected = GRAYED (sunken), no
 //      checkmark. Plain toggle , click selects, click again deselects (no reorder/slide; reverted 2026-06-25).
 //   3. Cuts (L2) , expands under the chosen texture; text chips, grayed-selected, multi-select.
-//   4. Sortieren , Fuer dich / Neu / Beliebt chips, grayed-selected.
-//   5. Footer (rendered by the host shell) , reset + a wide ink "Anwenden".
+//   4. Footer (rendered by the host shell) , reset + a wide ink "Anwenden".
 // HARD RULE: selected = ink/GRAYED, never blue, never a ring. The one commit CTA (Anwenden) stays solid ink.
 // #D7D7DB is the owner-approved grayed-selected border from drill.html (one step darker than s-border so the
 // sunken tile reads as chosen without any colour); marked drift-ok where used.
-
-type SortKey = "for_you" | "new" | "popular";
 
 // Texture order in the row (also the order tiles return to on deselect). curly maps to coily.png, coily maps to
 // protective.png , exactly as the owner-approved drill.html prototype. `tKey` -> discoveryFilters.texture_<key>.
@@ -31,12 +28,6 @@ const GENDERS: { value: DiscoveryGender; tKey: string }[] = [
   { value: "unisex", tKey: "gender_unisex" },
 ];
 
-const SORTS: { value: SortKey; tKey: string }[] = [
-  { value: "for_you", tKey: "sort_for_you" },
-  { value: "new", tKey: "sort_new" },
-  { value: "popular", tKey: "sort_popular" },
-];
-
 export interface ProgressiveFilterProps {
   /** Active feed category. Haartyp + Cuts (L2) render ONLY for "hair" (the one category with texture/cut data). */
   category: DiscoveryCategory | "all";
@@ -44,18 +35,16 @@ export interface ProgressiveFilterProps {
   texture: string | null;
   /** Selected cut TAG values (discovery_items.tags), multi-select. */
   cuts: string[];
-  sort: SortKey;
   onGenderChange: (g: DiscoveryGender | "all") => void;
   onTextureChange: (t: string | null) => void;
   onCutsChange: (tags: string[]) => void;
-  onSortChange: (s: SortKey) => void;
   /** True while the "aus deinem Profil" tag should show next to Haartyp (cleared on first manual texture change). */
   showProfileTag: boolean;
   onClearProfileTag: () => void;
 }
 
 export default function ProgressiveFilter(props: ProgressiveFilterProps) {
-  const { category, gender, texture, cuts, sort } = props;
+  const { category, gender, texture, cuts } = props;
   // `as any` (the established discovery-folder pattern, mirrors FilterDrawer.tsx) so dynamic tKeys like
   // g.tKey / tx.tKey / s.tKey / the texture-derived cut heading key resolve without per-key literal typing.
   const t = useTranslations("discoveryFilters") as any;
@@ -197,28 +186,6 @@ export default function ProgressiveFilter(props: ProgressiveFilterProps) {
       </div>
       )}
 
-      {/* 4. SORTIEREN , chips, grayed-selected. Fuer dich default. (Neu/Beliebt re-sort is a future RPC change.) */}
-      <div className="mb-1">
-        <p className="mb-2.5 font-heading text-[13px] font-bold text-s-ink">{t("sortBy")}</p>
-        <div className="flex gap-2">
-          {SORTS.map((s) => {
-            const on = sort === s.value;
-            return (
-              <button
-                key={s.value}
-                type="button"
-                aria-pressed={on}
-                onClick={() => props.onSortChange(s.value)}
-                className={`h-9 rounded-[18px] border px-[17px] font-body text-[13px] transition-[background-color,border-color,color] duration-150 ${
-                  on ? "border-[#D7D7DB] bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white font-medium text-s-ink-2" /* drift-ok: #D7D7DB = owner-approved grayed-selected border (drill.html) */
-                }`}
-              >
-                {t(s.tKey)}
-              </button>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

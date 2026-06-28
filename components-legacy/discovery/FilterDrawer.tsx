@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import type { DiscoveryGender, DiscoveryCategory } from "@/lib/types";
 import ProgressiveFilter from "@/components-legacy/discovery/ProgressiveFilter";
 
-type SortKey = "for_you" | "new" | "popular";
-
 interface FilterDrawerProps {
   /** Active feed category. Gates the Haartyp + Cuts (L2) hair-only sections; only "hair" has cut/texture data. */
   category: DiscoveryCategory | "all";
@@ -18,8 +16,6 @@ interface FilterDrawerProps {
   onGenderChange: (g: DiscoveryGender | "all") => void;
   onTextureChange: (t: string | null) => void;
   onCutsChange: (tags: string[]) => void;
-  sort: SortKey;
-  onSortChange: (s: SortKey) => void;
   /** DNA pre-select: the viewer's saved profile values (null when no profile / logged out). */
   dnaGender?: DiscoveryGender | null;
   dnaTexture?: string | null;
@@ -92,11 +88,9 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                 gender={props.gender}
                 texture={props.texture}
                 cuts={props.cuts}
-                sort={props.sort}
                 onGenderChange={props.onGenderChange}
                 onTextureChange={props.onTextureChange}
                 onCutsChange={props.onCutsChange}
-                onSortChange={props.onSortChange}
                 showProfileTag={showProfileTag}
                 onClearProfileTag={() => setShowProfileTag(false)}
               />
@@ -105,7 +99,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             {/* Footer: Anwenden (INK, per LOCKFILE), preceded by a small circular reset icon only when a filter is
                 active. Reset = clear + close; Anwenden = close. */}
             {(() => {
-              const active = props.gender !== "all" || !!props.texture || props.cuts.length > 0 || props.sort !== "for_you";
+              const active = props.gender !== "all" || !!props.texture || props.cuts.length > 0;
               return (
                 <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
                   {active && (

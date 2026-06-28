@@ -83,11 +83,6 @@ function DiscoverPageContent() {
   // than activeFilters (which is single-value-per-pill).
   const [cuts, setCuts] = useState<string[]>([]);
 
-  // Sort (mockup E): "Für dich" is the default (= the current for-you feed order). "Neu"/"Beliebt" are selectable
-  // but their re-order needs a follow-up RPC change (discovery_feed RETURNS TABLE has no created_at column), so
-  // they currently fall back to the Für dich order. See report. No core-feed RPC touched.
-  const [sort, setSort] = useState<"for_you" | "new" | "popular">("for_you");
-
   // DNA pre-select source (mockup E): the viewer's saved profile values, used to seed the gender/hair-type pills the
   // first time the sheet opens (only when those filters are still unset, never overrides a manual choice).
   const [dnaGender, setDnaGender] = useState<DiscoveryGender | null>(null);
@@ -374,7 +369,6 @@ function DiscoverPageContent() {
     setCuts([]);
     setSearch("");
     setSearchInput("");
-    setSort("for_you");
   };
 
   // Build filter pills — labels from translations (Issues C + D)
@@ -544,8 +538,6 @@ function DiscoverPageContent() {
                     return next;
                   });
                 }}
-                sort={sort}
-                onSortChange={setSort}
                 dnaGender={dnaGender}
                 dnaTexture={dnaTexture}
                 dnaLength={dnaLength}
