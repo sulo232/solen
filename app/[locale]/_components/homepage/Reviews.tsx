@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { ChevronRight, Star, Store } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 
 /**
  * Bewertungen — Fresha-style horizontal carousel (2026-05-14).
@@ -120,6 +120,54 @@ export default function Reviews() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
   const locale = useLocale();
+  const [reviews, setReviews] = React.useState<Review[]>(REVIEWS);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    fetch("/api/reviews/featured?limit=10")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const items: any[] = Array.isArray(data?.items) ? data.items : [];
+        if (items.length === 0) return; // keep fallback
+        const mapped: Review[] = items.map((item) => {
+          const name: string = item.reviewer_name ?? "Anonym";
+          // Derive initials from the reviewer name (up to 2 chars).
+          const initials = name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((w: string) => w[0].toUpperCase())
+            .join("");
+          // Prefer the real slug from the API; fall back to deriving one from the name.
+          const salonName: string = item.salon_name ?? "";
+          const salonSlug = item.salon_slug || slugify(salonName);
+          // created_at gives us a relative date label, in the active locale.
+          const meta: string = item.created_at
+            ? new Date(item.created_at).toLocaleDateString(locale, {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : "";
+          return {
+            stars: Math.min(5, Math.max(1, Math.round(item.rating ?? 5))),
+            text: item.comment ?? "",
+            initials,
+            name,
+            meta,
+            salonName,
+            salonSlug,
+          };
+        });
+        setReviews(mapped);
+      })
+      .catch((err) => {
+        console.error("[Reviews] featured fetch failed:", err);
+        // keep hardcoded fallback
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const openReview = (slug: string) => {
     router.push(`/${locale}/salon/${slug}/reviews`);
@@ -134,7 +182,7 @@ export default function Reviews() {
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>
-          {REVIEWS.map((r, i) => (
+          {reviews.map((r, i) => (
             <ReviewCard
               key={`${r.salonSlug}-${i}`}
               review={r}
