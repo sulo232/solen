@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
+import { useLocale } from "next-intl";
 import { useCustomerPrefs, type CustomerPrefs } from "./useCustomerPrefs";
 
 /**
@@ -42,8 +43,8 @@ const CATEGORIES: Category[] = [
   { slug: "coiffeur",   label: "Coiffeur", icon: "/icons/categories/scissors.png" },
   { slug: "barbershop", label: "Barber",   icon: "/icons/categories/clippers.png" },
   { slug: "nails",      label: "Nails",    icon: "/icons/categories/nails.png" },
-  { slug: "map",        label: "Karte",    icon: "/icons/categories/map.png", href: "/de/search?view=map" },
-  { slug: "walk-in",    label: "Walk-in",  icon: "/icons/categories/walkin.png", href: "/de/barbershop?walk_in=true" },
+  { slug: "map",        label: "Karte",    icon: "/icons/categories/map.png", href: "search?view=map" },
+  { slug: "walk-in",    label: "Walk-in",  icon: "/icons/categories/walkin.png", href: "barbershop?walk_in=true" },
   { slug: "spa",        label: "Spa",      icon: "/icons/categories/spa.png" },
 ];
 
@@ -53,6 +54,7 @@ export default function MobileCategoriesRow({
   /** Test seam — when provided, bypasses the live fetch (used by dev previews). */
   prefsOverride?: CustomerPrefs | null;
 } = {}) {
+  const locale = useLocale();
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
   const picked = prefs?.categories ?? [];
@@ -78,7 +80,7 @@ export default function MobileCategoriesRow({
             return (
               <Link
                 key={slug}
-                href={hrefOverride ?? `/de/${slug}`}
+                href={hrefOverride ? `/${locale}/${hrefOverride}` : `/${locale}/${slug}`}
                 aria-label={label}
                 className="group focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-3xl"
               >

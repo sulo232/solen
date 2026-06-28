@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { MapPin } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
@@ -139,6 +140,7 @@ export default function Nearby({
   /** Test seam — bypasses the live fetch when provided (dev previews). */
   prefsOverride?: CustomerPrefs | null;
 } = {}) {
+  const locale = useLocale();
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
   // V3-D348: bend toward the user's picks — picked-category salons lead, the
@@ -154,7 +156,7 @@ export default function Nearby({
       <SectionFrame>
         <SectionTitle
           title="In der Nähe"
-          link={{ label: "Alle in deiner Nähe →", href: "/de/search?nearby=true" }}
+          link={{ label: "Alle in deiner Nähe →", href: `/${locale}/search?nearby=true` }}
           scrollRef={scrollRef}
         />
         {/* V3-D348 (tweak #2): map teaser — gives "In der Nähe" a location-led
@@ -162,7 +164,7 @@ export default function Nearby({
             The salon cards below are UNCHANGED (name+star / street / time·price).
             Tap → nearby results. */}
         <a
-          href="/de/search?view=map"
+          href={`/${locale}/search?view=map`}
           aria-label="Salons in der Nähe auf der Karte ansehen"
           className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.97]"
         >

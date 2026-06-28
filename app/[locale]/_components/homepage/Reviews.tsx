@@ -122,7 +122,7 @@ export default function Reviews() {
   const locale = useLocale();
 
   const openReview = (slug: string) => {
-    router.push(`/salon/${slug}/reviews`);
+    router.push(`/${locale}/salon/${slug}/reviews`);
   };
 
   return (
@@ -154,11 +154,11 @@ function ReviewCard({
   review: Review;
   onOpenReview: () => void;
 }) {
+  const locale = useLocale();
   // V3-D169 (2026-05-26): split `meta` ("Basel · vor 2 Wochen") so the
   // time-relative portion can sit top-right (Fresha/TexBazar pattern)
   // while the city stays implicit via the salon name below.
-  const metaParts = review.meta.split(" ");
-  const dateText = metaParts.length > 1 ? metaParts[metaParts.length - 1] : review.meta;
+  const dateText = review.meta.includes("·") ? (review.meta.split("·").pop() ?? "").trim() : review.meta;
 
   return (
     <div
@@ -234,7 +234,7 @@ function ReviewCard({
           </div>
           {/* V2-D49l salon link — secondary tap target, z-10 above overlay */}
           <Link
-            href={`/salon/${review.salonSlug}`}
+            href={`/${locale}/salon/${review.salonSlug}`}
             onClick={(e) => e.stopPropagation()}
             aria-label={`Salon ${review.salonName} ansehen`}
             className={cn(

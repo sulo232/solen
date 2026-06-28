@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Clapperboard, Play } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { HeartButton } from "./HeartButton";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ const solidLabelStyle = {
 } as const;
 
 export default function Entdecken() {
+  const locale = useLocale();
   const scrollRef = React.useRef<HTMLDivElement>(null);
   // V3-D160 (2026-05-26): live wire to /api/discovery/feed restored.
   // Pattern lifted from the original DiscoverCarousel.tsx (deleted in
@@ -157,7 +159,7 @@ export default function Entdecken() {
       <SectionFrame>
         <SectionTitle
           title="Finde deine Inspiration."
-          link={{ label: "Alle entdecken →", href: "/inspo" }}
+          link={{ label: "Alle entdecken →", href: `/${locale}/inspo` }}
           scrollRef={scrollRef}
         />
         <div
@@ -182,7 +184,7 @@ export default function Entdecken() {
             return (
               <Link
                 key={look.slug}
-                href={`/inspo/${look.slug}`}
+                href={`/${locale}/inspo/${look.slug}`}
                 aria-label={`${look.styleName} – TikTok-Inspo`}
                 className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
               >
@@ -380,7 +382,7 @@ export default function Entdecken() {
               the comment in the Entdecken function body). Static styling
               + desktop-only hover bump. */}
           <Link
-            href="/inspo"
+            href={`/${locale}/inspo`}
             aria-label="Alle Looks entdecken"
             className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
           >

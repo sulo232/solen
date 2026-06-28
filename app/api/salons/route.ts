@@ -108,7 +108,12 @@ export async function GET(request: NextRequest) {
         ),
       );
       const cityId = cMatch?.id as string | undefined;
-      if (cityId) query = query.eq("city_id", cityId);
+      if (cityId) {
+        query = query.eq("city_id", cityId);
+      } else {
+        // Non-empty city param resolved to no known city — return empty result
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
 
       // Auto-hide test salons when real salons already exist for this city+category combo
       if (category && cityId) {

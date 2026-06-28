@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Scissors, Sparkles, Droplets, Palette, Zap, X, Clock } from "lucide-react";
+import { Scissors, Sparkles, Droplets, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import FilterBar from "@/components-legacy/ui/FilterBar";
 import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
@@ -52,7 +52,7 @@ export default function LastMinutePage() {
   const filteredSlots = slots
     .filter((slot) => {
       if (selectedCategories.length > 0) {
-        const slotCategory = (slot as LastMinuteSlot & { category?: string }).category;
+        const slotCategory = (slot as any).service?.category as string | undefined;
         if (slotCategory && !selectedCategories.includes(slotCategory)) return false;
       }
       if (maxPrice !== null) {
