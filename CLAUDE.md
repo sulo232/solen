@@ -21,9 +21,12 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 
 Given a multi-step task or a list, **finish it.** Do not stop after each step to report and wait for "ok" — that wastes the user's turns and is a top recurring complaint. Keep going until the work is actually done, THEN report once.
 
-Pause mid-task ONLY for:
-- a genuine **decision** only the user can make (a real fork, not a default you can pick), or
-- a **design / taste choice that needs a MOCKUP** for the user to react to.
+Pause mid-task ONLY for (the **dependency test**):
+- a **BLOCKING** decision only the user can make: a real fork that is a *dependency of the remaining work*, so continuing would mean building on a guess (the #1 failure mode), or
+- a **design / taste choice that needs a MOCKUP** for the user to react to, or
+- a destructive op, a credential, or an irreversible external side-effect.
+
+**Park non-blocking decisions, do NOT stop for them.** If a decision affects only the current item's polish or a later *independent* task, PARK it: append it under the "Unplanned additions" / parked section of `_plans/ACTIVE.md`, keep going on the rest, and SURFACE every parked decision in your closing report. Only a decision that BLOCKS the next task is a hard stop.
 
 Everything else (mechanical edits, sweeps, enforcement wiring, verification, applying an already-decided spec) = keep going to completion. **"ok" / "continue" / "go" means finish the list, not do one item.**
 

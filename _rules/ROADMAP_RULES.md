@@ -137,5 +137,5 @@ After writing a roadmap from a spec, do a keyword grep check for:
 - Trigger conditions (e.g. "same-day")
 - SACRED/never constraints
 
-- **UI & Design Rules:** Before writing ANY frontend code, read and strictly adhere to `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07) + `_rules/SOLEN_UI.md`. Decision history in `_tasks/V2_REBUILD_LOG.md`. Single light theme. Glass restricted to LIVE_TRUTH §5b L4-overlay sanctioned contexts (nav / hero card overlay / trust strip), NOT a default surface treatment. Layout grammar follows LIVE_TRUTH §13–§25 per surface. (Historical Q-locks Q1–Q63 in SOLEN_DESIGN.md §20 are context only; V3 supersedes any conflict.)
+- **UI & Design Rules:** Before writing ANY frontend code, read and strictly adhere to `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) + `_rules/SOLEN_UI.md`. Decision history in `_tasks/V2_REBUILD_LOG.md`. Single light theme. Glass restricted to the sanctioned contexts in SOURCE.md / LOCKFILE.md (nav / hero card overlay / trust strip), NOT a default surface treatment. Layout grammar follows SOURCE.md + LOCKFILE.md per surface. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.)
 

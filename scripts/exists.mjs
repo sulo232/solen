@@ -12,6 +12,7 @@ import {
   scanEndpoints,
   scanComponents,
   scanLib,
+  scanExports,
   scanRpcs,
   loadDbTables,
   loadDbColumns,
@@ -34,6 +35,25 @@ const lib = scanLib().filter((m) => hit(m.name, m.file));
 const rpcs = scanRpcs().filter((r) => hit(r.name, r.file));
 const db = loadDbTables();
 const tables = (db.tables || []).filter((t) => hit(t.name));
+
+// EXPORTED SYMBOLS: top-level exported names across lib/** + app/**. Catches CONCEPT/SIGNATURE
+// duplication (a session rebuilding logic around an existing algorithm under a fresh filename),
+// e.g. `exists deriveHairDna` / `exists hair dna` surfaces lib/persona/deriv.ts. Capped so a
+// broad term doesn't flood the report.
+const SYM_CAP = 30;
+const symbolsAll = scanExports().filter((s) => hit(s.name));
+const symbols = symbolsAll.slice(0, SYM_CAP);
+
+// CONCEPT ALIASES: hand-kept _inventory/CONCEPTS.md maps a capability to its many names so a
+// search for ANY alias surfaces the canonical file (the cross-session dedup the symbol/filename
+// scans can't fully cover: different name, different file, same logic).
+const CONCEPTS_PATH = new URL("../_inventory/CONCEPTS.md", import.meta.url).pathname;
+const conceptHits = existsSync(CONCEPTS_PATH)
+  ? readFileSync(CONCEPTS_PATH, "utf8")
+      .split("\n")
+      .filter((l) => l.startsWith("- ") && hit(l))
+      .map((l) => l.slice(2))
+  : [];
 
 // Column-level matches (table.column). Capped so a broad term ("status", "id") doesn't flood.
 const dbc = loadDbColumns();
@@ -78,7 +98,8 @@ const removedHits = existsSync(REMOVED_PATH)
 
 const total =
   routes.length + endpoints.length + components.length + lib.length + rpcs.length +
-  tables.length + colHitsAll.length + removedHits.length + sectionHits.length;
+  tables.length + colHitsAll.length + removedHits.length + sectionHits.length +
+  symbolsAll.length + conceptHits.length;
 
 console.log(`\n🔎  "${term}"  —  ${total} existing match${total === 1 ? "" : "es"}\n`);
 
@@ -90,6 +111,7 @@ function section(title, items, fmt) {
 }
 
 section("🪦 REMOVED — DO NOT REBUILD", removedHits, (l) => l);
+section("Concept aliases", conceptHits, (l) => l);
 section("ROUTES (pages)", routes, (r) => `${r.url}   →  ${r.file}`);
 section("PAGE SECTIONS (inline)", sectionHits, (l) => l);
 section("API ENDPOINTS", endpoints, (e) => `${e.url}  [${e.methods.join(", ")}]   →  ${e.file}`);
@@ -99,6 +121,8 @@ if (colHitsAll.length > COL_CAP) console.log(`    …and ${colHitsAll.length - C
 section("DB FUNCTIONS / RPCs", rpcs, (r) => `${r.name}()   →  ${r.file}`);
 section("COMPONENTS", components, (c) => `${c.name}   →  ${c.file}`);
 section("lib / hooks MODULES", lib, (m) => `${m.file}`);
+section("Exported symbols", symbols, (s) => `${s.name}   →  ${s.file}`);
+if (symbolsAll.length > SYM_CAP) console.log(`    …and ${symbolsAll.length - SYM_CAP} more exported-symbol matches (narrow the term)\n`);
 
 if (total === 0) {
   console.log("  ✗  Nothing found. Likely safe to build new — but try a synonym before you do.\n");
