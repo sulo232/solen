@@ -73,7 +73,13 @@ export async function GET(
       arr.push(l.service_id);
       byStaff.set(l.staff_member_id, arr);
     });
-    staffWithServices = staff.map((s) => ({ ...s, service_ids: byStaff.get(s.id) ?? [] }));
+    staffWithServices = staff.map((s) => ({
+      ...s,
+      service_ids: byStaff.get(s.id) ?? [],
+      // Aliases for SalonTeam.tsx which reads staff_average_rating / staff_review_count.
+      staff_average_rating: s.average_rating,
+      staff_review_count: s.review_count,
+    }));
   }
 
   return NextResponse.json({

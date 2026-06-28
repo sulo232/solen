@@ -153,7 +153,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
       <div className="flex items-center gap-3 pt-1">
         <button
           type="button"
-          onClick={() => goToStep('services-staff')}
+          onClick={() => goToStep(staffList.length > 1 ? 'staff' : 'services-staff')}
           className="flex items-center gap-2 rounded-full border border-s-border py-1.5 pl-1.5 pr-3 transition-colors hover:border-s-ink/25"
         >
           <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">

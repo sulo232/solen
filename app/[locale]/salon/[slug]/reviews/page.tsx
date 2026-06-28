@@ -16,7 +16,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
 
@@ -67,8 +67,11 @@ export default async function SalonReviewsPage({
   } = await supabase.auth.getSession();
   const userId = session?.user?.id ?? null;
 
+  // Use admin client for reviews: profiles RLS blocks anon reads and nulls display_name.
+  // We expose only display_name + avatar_url here, matching /api/salons/[slug]/route.ts.
+  const adminClient = createAdminSupabaseClient();
   const [reviewsRes, completedRes] = await Promise.all([
-    supabase
+    adminClient
       .from("reviews")
       .select(`
         id, rating, comment, created_at, user_id, booking_id,
