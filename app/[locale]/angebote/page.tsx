@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Scissors, Sparkles, Droplets, X, Clock } from "lucide-react";
+import { Scissors, Hand, Droplets, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import FilterBar from "@/components-legacy/ui/FilterBar";
 import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
@@ -39,7 +39,7 @@ export default function LastMinutePage() {
 
   const FILTER_CATEGORIES = [
     { key: "coiffeur", label: "Coiffeur", Icon: Scissors },
-    { key: "nails", label: "Nails", Icon: Sparkles },
+    { key: "nails", label: "Nails", Icon: Hand },
     { key: "spa", label: "Spa", Icon: Droplets },
   ];
 
