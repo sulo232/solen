@@ -11,6 +11,7 @@
     "inventory": "node scripts/inventory.mjs",
     "inventory:check": "node scripts/inventory.mjs --check",
     "exists": "node scripts/exists.mjs",
+    "health": "node scripts/system-health.mjs",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs"
