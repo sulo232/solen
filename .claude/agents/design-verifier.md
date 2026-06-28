@@ -1,5 +1,6 @@
 ---
 name: design-verifier
+model: sonnet
 tools: Read, Grep, Glob, Bash
 description: Verifies a live UI section against the current Solen design system (black/white surfaces + sparse blue accent). Compares live component code + rendered HTML against `public/solen-styleguide.html`, `_design-system/SOURCE.md`, and `_design-system/LOCKFILE.md`. Returns PASS or a structured punch list of gaps with citations. Read-only — never edits code.
 ---
