@@ -114,8 +114,13 @@ export async function POST(req: NextRequest) {
       const isTikTok = !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
       const correctContentType = isTikTok ? "tiktok" : item.content_type;
 
-      // Analyze with Gemini — inline for better error tracking
-      const imageUrl = item.image_url || item.tiktok_thumbnail_url;
+      // Analyze with Gemini — inline for better error tracking.
+      // TikTok CDN thumbnails are time-signed and expire, so re-fetching the raw URL 403s on older
+      // items. Route TikTok items through the persisted thumb proxy (Storage-backed), which still
+      // serves the bytes after the original URL is dead.
+      const imageUrl = isTikTok
+        ? `${req.nextUrl.origin}/api/discovery/thumb/${item.id}`
+        : (item.image_url || item.tiktok_thumbnail_url);
       if (!imageUrl) {
         results.push({ id: item.id, style_name: null, status: "skipped_no_image" });
         continue;
@@ -160,16 +165,28 @@ export async function POST(req: NextRequest) {
       const productsFlat = aiResult.products_flat
         ?? (Array.isArray(aiResult.products_needed) ? aiResult.products_needed : []);
 
+      // Clamp the AI category to the allowed discovery set — Gemini occasionally returns an
+      // off-list value (e.g. "skincare"), which would fail the category check constraint and
+      // discard the whole (otherwise good) analysis. Fall back to the item's existing category.
+      const ALLOWED_CATS = ["hair", "beard", "nails", "lashes", "brows"];
+      const safeCategory = ALLOWED_CATS.includes(aiResult.category) ? aiResult.category : item.category;
+      // Gemini can return off-list enum values for the other constrained columns too; clamp each to
+      // its allowed set so one bad value doesn't discard the whole analysis (e.g. texture_check on a
+      // lash "D-curl"). Fall back to the item's existing value when the AI value isn't allowed.
+      const safeGender = ["male", "female", "unisex"].includes(aiResult.gender) ? aiResult.gender : item.gender;
+      const safeTexture = ["straight", "wavy", "curly", "coily"].includes(aiResult.texture) ? aiResult.texture : item.texture;
+      const safeMaint = ["low", "medium", "high"].includes(aiResult.maintenance_level) ? aiResult.maintenance_level : item.maintenance;
+
       const { error } = await admin
         .from("discovery_items")
         .update({
           content_type: correctContentType,
-          category: aiResult.category ?? item.category,
-          gender: aiResult.gender ?? item.gender,
-          texture: aiResult.texture ?? item.texture,
+          category: safeCategory,
+          gender: safeGender,
+          texture: safeTexture,
           style_name: aiResult.style_name,
           tags: aiResult.tags?.length > 0 ? aiResult.tags : item.tags,
-          maintenance: aiResult.maintenance_level ?? item.maintenance,
+          maintenance: safeMaint,
           face_shapes: aiResult.face_shapes?.length > 0 ? aiResult.face_shapes : item.face_shapes,
           products_needed: productsFlat,
           hair_type_match: aiResult.hair_type_match ?? [],
