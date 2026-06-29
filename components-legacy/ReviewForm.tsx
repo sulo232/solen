@@ -6,6 +6,7 @@ import {
   X,
   Check,
   MoreHorizontal,
+  ImagePlus,
   ShieldCheck,
   CreditCard,
   Dog,
@@ -427,37 +428,25 @@ export default function ReviewForm({
                     style={{ minHeight: "84px" }}
                   />
 
-                  {/* Photo previews + add slot (up to 3) */}
-                  <div className="flex gap-2 flex-wrap">
-                    {photos.map((p, i) => (
-                      <div
-                        key={i}
-                        className="relative h-14 w-14 overflow-hidden rounded-[12px] border border-s-border shrink-0"
+                  {/* Photos , salon variant only (the quick stylist review stays photo-free).
+                      Labeled add-photo control (council 2026-06-29): a stable flat row with an
+                      ImagePlus icon + the existing photos_label, previews on their own row below,
+                      disabled (not removed) at the 3-photo cap so it never vanishes silently. */}
+                  {isSalon && (
+                    <div className="mt-3 space-y-2">
+                      <label
+                        className={`flex w-full items-center gap-2 rounded-[16px] border border-s-border bg-white px-[14px] py-3 text-[14px] font-medium text-s-ink-2 transition-colors ${
+                          photos.length >= 3 ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-s-bg-sunken"
+                        }`}
+                        aria-disabled={photos.length >= 3}
                       >
-                        <img
-                          src={URL.createObjectURL(p)}
-                          alt="Preview"
-                          className="h-full w-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setPhotos(photos.filter((_, idx) => idx !== i))
-                          }
-                          className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-s-ink/60 text-white"
-                          aria-label="Remove photo"
-                        >
-                          <X size={10} />
-                        </button>
-                      </div>
-                    ))}
-                    {photos.length < 3 && (
-                      <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border-2 border-dashed border-s-border text-s-ink-3 hover:bg-s-bg-sunken transition-colors">
-                        <span className="text-lg leading-none">+</span>
+                        <ImagePlus size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                        <span>{t("photos_label")}</span>
                         <input
                           type="file"
                           accept="image/jpeg, image/png, image/webp"
                           multiple
+                          disabled={photos.length >= 3}
                           className="hidden"
                           onChange={(e) => {
                             const files = Array.from(e.target.files || []);
@@ -465,8 +454,32 @@ export default function ReviewForm({
                           }}
                         />
                       </label>
-                    )}
-                  </div>
+                      {photos.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {photos.map((p, i) => (
+                            <div
+                              key={i}
+                              className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[12px] border border-s-border"
+                            >
+                              <img
+                                src={URL.createObjectURL(p)}
+                                alt="Preview"
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
+                                className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-s-ink/60 text-white"
+                                aria-label="Remove photo"
+                              >
+                                <X size={10} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Amenities section (salon variant only) */}
                   {isSalon && (
