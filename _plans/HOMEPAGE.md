@@ -23,3 +23,12 @@ The small fixes done (item 6 = icon swap, item 9 = shadow+quote) were NOT what t
 - [x] **Walk-in SECTION redesign** , DONE. Owner picked B (live-board) -> refined to R1 (located) -> APPLIED to the real `WalkInBand` + committed. (Feed-card mockup `feed-card-redesign.html` was a mis-read of "cards" , parked, not the ask.)
 - [x] **Reviews redesign** , owner picked **B (person-led)** -> applied to `Reviews.tsx` + committed. Mockup `reviews-redesign.html`. Only remaining: the relative-date helper (parked).
 - Walk-in clarifier (item 7): committed with draft copy; owner to refine the wording.
+
+## Reviews , WRITE path + system (off the 9-item list; owner 2026-06-29)
+Owner expanded reviews from the homepage carousel into the write-path + a system design. VERIFIED state (go-check, not guessed):
+- **Form modernization** (mockup DONE, not applied): `components-legacy/ReviewForm.tsx` -> bottom sheet, DS-compliant (cool shadow, ink-edge focus, sentence-case, circled-X, sheet/pill radii, fixed malformed `hover:bg-s-ink/5:bg-white/5`). Mockup `public/_mockups/review-form-redesign.html`. Same fields + same POST /api/reviews.
+- **Attribute tags** (NEW capture): customer confirms the salon's amenities Google-Maps-style. Reuses the real 9-amenity set + Lucide icons from `SalonAdditionalInfo` (wheelchair/Accessibility, LGBTQ/Heart, woman-owned/Star, family/Home, pet/Dog, kid/Baby, wifi, transit/Bus, student/GraduationCap). The `reviews` table does NOT store attributes today -> net-new: a `review_attributes` capture + aggregate to confirm vs owner-claimed. Shown in the mockup.
+- **Staff rating** in the form: uses existing `reviews.staff_member_id` (FK). Display has a known bug (per-staff ratings remap , already in BUG_HUNT FIX-clear). Shown in the mockup.
+- **Backend already has TWO visit-gated review paths**: appointment (`/api/reviews`, completed booking) + walk-in (`/api/walkin/review`, completed walk-in visit, token-gated). Both write `reviews`; both carry `staff_member_id`.
+- **PENDING OWNER FORK**: "review at store anytime" = the walk-in path (exists, gated) OR a truly UNGATED "rate without a visit" (NEW; breaks the visit-gated anti-fraud model , every review today is tied to a real completed visit). Awaiting owner: ungated vs keep-gated.
+- **Dedup finding**: `app/[locale]/_components/salon/SalonReviews.tsx` (current-tree) is display-only + UNUSED (orphan); the live write flow is the legacy `components-legacy/SalonReviews.tsx` + `ReviewForm`. Consolidate into the current tree when applying.
