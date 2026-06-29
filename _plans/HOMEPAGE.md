@@ -40,3 +40,13 @@ Owner: "never black when selected, want grayed out like Airbnb/Uber/Fresha." Pic
 - **Contract updated**: CLAUDE.md selected/active + filter-pill rows; LOCKFILE §13.7 selection line. Graveyard line added (no re-adding black-selected).
 - **Enforced**: new `no-black-selected-gate` hook (PreToolUse) blocks ink fill on any selected state; commit button + avatar check-badge exempt.
 - **PARKED**: `SelectedCheckBadge` (avatar check-marker for staff/barber pickers) stays INK , a gray check on a photo would vanish; it is a marker, not a filled option. Flag for owner if they want it grayed too (would need a visible gray recipe). Booking date/slot stays blue (separate locked rule, not flagged).
+
+## Review WRITE form: LOCKED direction (owner 2026-06-29, Mobbin-grounded)
+After ~8 iterations the owner picked, grounded in real refs (Mobbin: Uber/Fresha/Airbnb review flows).
+- **Two review types, both = ONE rating + ONE obvious comment as the core:**
+  1. **Stylist review (right after the appointment)** = Uber's pattern: stylist avatar + "How was Jonas?" + 5 big stars + Skip + an OBVIOUS bordered comment field. The overall rating IS the per-staff score (no separate staff sub-rating; attribute via booking.staff_member_id). FAST.
+  2. **Salon review (fuller)** = "How was {Salon}?" + stars + obvious comment + **more**: photos + Amenities chips inline.
+- **CUT (owner: "no one's gonna do this"):** the staff star sub-row + Result/Atmosphere/Value aspect ratings. Airbnb-style category ratings deliberately NOT used (that is multi-day-stay friction).
+- **Amenities:** noun label "Amenities" (NOT a question/sentence), chips soft-gray-fill + check when selected, white when not, a dots "more" glyph (not "+5"). Net-new `review_attributes` table.
+- **Treatment:** line separators (not cards), sunken ONLY for selected, comment = obvious bordered field (ink edge on focus, no ring). Mockup `public/_mockups/review-form-redesign.html` (+ `review-directions.html` is the A/B reference).
+- **NEXT (build):** wire the stylist review into the real legacy `ReviewForm.tsx` -> current tree; the salon review variant; the `review_attributes` migration. Per-staff display bug remap is already in BUG_HUNT FIX-clear.
