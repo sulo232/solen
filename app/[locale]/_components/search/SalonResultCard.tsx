@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
@@ -236,7 +236,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
             {nextSlot && (
               // V3-D443: green availability pill REMOVED per owner ("don't like the green pill"). Plain ink text.
               <div className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-medium text-s-ink">
-                <Clock size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+                <Calendar size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
                 <span>{nextSlot}</span>
               </div>
             )}
@@ -388,7 +388,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
             {nextSlot && (
               // V3-D443: green availability pill REMOVED per owner. Plain ink text.
               <span className="inline-flex items-center gap-1 font-body text-[12px] font-medium text-s-ink">
-                <Clock size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+                <Calendar size={12} strokeWidth={2} aria-hidden className="text-s-ink-2" />
                 {nextSlot}
               </span>
             )}
