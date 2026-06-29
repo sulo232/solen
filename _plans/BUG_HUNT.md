@@ -1,0 +1,44 @@
+# BUG_HUNT , customer + onboarding + admin (dashboard EXCLUDED)
+
+> Status: **PAUSED** (2026-06-29, for the Homepage design pass + the hook/meta work). Resume here.
+> RECONSTRUCTED 2026-06-29 from the last SessionStart snapshot , the disk original was overwritten and was never committed, so it was lost from git. Re-verify the OPEN items still reproduce before fixing; the FIXED items are real (commits below).
+>
+> Dynamic /loop: exercise live (dev-login `GET /api/dev/login?to=<path>` + curl/load on localhost:3000), fix backend/logic/functional straight through (council auto-reviews each), mockup+PARK frontend VISUAL. Stop after 2 consecutive full passes find 0 new bugs. Hunt+fix+commit on MAIN (/Users/sulo/Documents/solen).
+
+## Surfaces (order) , dashboard EXCLUDED
+1. customer frontend  2. customer APIs/backend  3. salon onboarding  4. admin
+
+## Pass tracking
+- Pass 1: [~] customer FE (home/inspo/angebote/Reviews/PDP/booking hunted; account/favorites/walk-in PENDING) · [~] customer APIs (/api/salons, reviews/featured, discovery/feed, salons/[slug], bookings, availability hunted; search/promo/favorites/walk-in PENDING) · [ ] onboarding · [ ] admin
+- Pass 2: [ ] all. Stop when a full pass adds 0 new bugs twice running.
+
+## FIXED (committed)
+- [x] iter2 `c4215276e`: /api/salons unknown-city -> {items,total,page,limit}; angebote category chip; homepage locale-aware links (Entdecken/MobileCategoriesRow/Nearby/Reviews); Reviews dateText.
+- [x] iter3 `8cf715a75`: Reviews homepage shows REAL reviews via /api/reviews/featured (admin client, real names, created_at, ?limit, customer-visible filter, slugify, locale dates).
+
+## BUGS , to FIX (queued)
+- [ ] HIGH **i18n-leak BATCH** (German on /en /fr /it): angebote hero/sort/price/reset/load-more; Nearby 'Nur X heute'; Reviews title/'Alle Bewertungen'/aria/'Anonym'; + add `locale` to the Reviews fetch deps.
+- [ ] HIGH **dedup /api/reviews/featured vs /api/reviews/homepage**: /homepage is BROKEN (phantom `reviewer_name` col) + its only caller is the dead `components-legacy/TestimonialCarousel.tsx`. Consolidate to /featured, delete /homepage + archive carousel + REMOVED.md; move the salon-visibility gate to a DB predicate; name the 20/6/1/120 magic numbers.
+- [ ] HIGH **angebote FilterBar dead** (page writes URL params /api/slots/last-minute never reads). Unverifiable until discount data exists.
+- [ ] MED /api/salons sort=price pagination (DB created_at vs JS page re-sort; cheapest hidden >20). route.ts:326,482.
+- [ ] MED /api/salons RPC `search_salons_ranked` failure -> empty vs graceful fallback. :79-81.
+- [ ] MED /api/salons date pre-filter makes post-query availableIds dead. :295-305 vs 354-367.
+- [ ] LOW timeToMinutes dup vs lib/salon-hours (:704); nextSlots no .limit (:370); hardcoded Basel coords (:570); angebote client-filter breaks Load-More count.
+
+## OWNER-RESOLVED (to implement)
+- [ ] inspo sort -> consolidate "Neu"+"Beliebt" into ONE "Trending" chip (drop the two dead ones); wire a trending signal in the feed RPC, or reuse an existing one, else client-sort by a proxy.
+- [ ] angebote Sparkles icon (banned) -> swap for the Nails category icon (or a non-banned Lucide).
+
+## PARKED , frontend VISUAL (owner mockup; do NOT auto-restyle)
+- angebote BANNED Sparkles icon; window.prompt() notify-me; inspo empty-state hides reset on category-0; home Nearby/RecentlyViewed FABRICATED "Heute 15:30" demo times (no-fab violation); Reviews hand-rolled stars vs <RatingStars>; angebote hand-rolled skeleton vs <Skeleton>.
+
+## PDP + BOOKING findings (iter4 hunt)
+FIX-clear:
+- [ ] HIGH PDP /reviews sub-page empty (anon client + profiles RLS) -> admin client. `salon/[slug]/reviews/page.tsx:70-80`.
+- [ ] HIGH PDP per-staff ratings never show (API returns average_rating/review_count but type/component expect staff_average_rating/staff_review_count) -> remap in /api/salons/[slug]. `_shared.ts:29`, `SalonTeam.tsx:168`.
+- [ ] HIGH booking online-pay hidden (booking salon query omits `accepts_online_payment`) -> add to select. `salon/[slug]/booking/page.tsx:41-50`, `PayConfirmStep.tsx:133`.
+- [ ] MED booking "change stylist" pill -> goToStep('staff') not 'services-staff' on multi-staff. `DateTimeStep.tsx:156`.
+FIX-careful (legal / booking-state):
+- [ ] HIGH booking VAT 8.1% hardcoded for ALL salons incl non-`vat_registered` -> select vat_registered + gate the line `PayConfirmStep.tsx:396`; + write `vat_rate` to bookings INSERT `/api/bookings/route.ts:320-344`.
+- [ ] MED booking multi-service locks only the PRIMARY service slot -> extras double-bookable. `/api/bookings/route.ts:139-158`.
+- [ ] MED booking pending booking not cancelled on PI-failure/Back -> 409 blocks rebooking same slot. `PayConfirmStep.tsx:262,602`.
