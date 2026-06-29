@@ -32,3 +32,11 @@ Owner expanded reviews from the homepage carousel into the write-path + a system
 - **Backend already has TWO visit-gated review paths**: appointment (`/api/reviews`, completed booking) + walk-in (`/api/walkin/review`, completed walk-in visit, token-gated). Both write `reviews`; both carry `staff_member_id`.
 - **PENDING OWNER FORK**: "review at store anytime" = the walk-in path (exists, gated) OR a truly UNGATED "rate without a visit" (NEW; breaks the visit-gated anti-fraud model , every review today is tied to a real completed visit). Awaiting owner: ungated vs keep-gated.
 - **Dedup finding**: `app/[locale]/_components/salon/SalonReviews.tsx` (current-tree) is display-only + UNUSED (orphan); the live write flow is the legacy `components-legacy/SalonReviews.tsx` + `ReviewForm`. Consolidate into the current tree when applying.
+
+## Selected-state: ink/black -> LIGHT GRAY (owner 2026-06-29, APPLIED)
+Owner: "never black when selected, want grayed out like Airbnb/Uber/Fresha." Picked **light** depth.
+- **Decision**: selected = `bg-s-bg-sunken` (#F4F4F5) + `text-s-ink` + semibold over a WHITE unselected (the canonical TabPill treatment); menu/list options keep a check. Supersedes ink-fill (V3-D421) + blue-border (V3-D450). Reviewed by Gemini + Grok (both: gray is right for a B&W+sparse-blue app; black would compete; risk = disabled-look, mitigated by full ink + semibold + white unselected).
+- **Swept (committed)**: `PillToggle` (+ its consumers FilterSheet/Radio/Checkbox), `SearchBar.tsx:695`, discovery `CategoryPills` + `AISuggestionPills`. Verified on live `/inspo` (Fur dich pill renders gray-selected, reads clearly vs white neighbors).
+- **Contract updated**: CLAUDE.md selected/active + filter-pill rows; LOCKFILE §13.7 selection line. Graveyard line added (no re-adding black-selected).
+- **Enforced**: new `no-black-selected-gate` hook (PreToolUse) blocks ink fill on any selected state; commit button + avatar check-badge exempt.
+- **PARKED**: `SelectedCheckBadge` (avatar check-marker for staff/barber pickers) stays INK , a gray check on a photo would vanish; it is a marker, not a filled option. Flag for owner if they want it grayed too (would need a visible gray recipe). Booking date/slot stays blue (separate locked rule, not flagged).

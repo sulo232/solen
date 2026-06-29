@@ -50,7 +50,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 
 | axis | locked |
 |---|---|
-| selected / active | blue `s-accent`. date/slot = blue FILL; **filter pills/chips = blue BORDER + blue text, NO fill** (V3-D450). ink ONLY for the one commit button. |
+| selected / active | calm GRAY fill: `bg-s-bg-sunken` (#F4F4F5) + `text-s-ink` + semibold over a WHITE unselected; menu/list options add a check. The TabPill treatment, used for every pill/chip/option (owner 2026-06-29, light depth; SUPERSEDES ink-fill V3-D421 AND blue-border V3-D450). NEVER black/ink fill on a selected state (gate `no-black-selected`). Exceptions: the ONE commit button stays ink; booking date/slot stays blue; the avatar `SelectedCheckBadge` stays ink for photo contrast (parked). |
 | link | text links = blue `s-accent` #276EF1 (small clickable bit), hover underline. **See-all arrows = ink/black; big CTAs = ink; secondary buttons = neutral outline.** Blue is SPARSE — links, small buttons/chips, review counts "(54)" only (LOCKED 2026-06-10 restraint, supersedes "use blue a lot"; ref Apple/Airbnb/Fresha). |
 | shadow | card `shadow-elevation-2` rest / `-3` hover; over-photo = frost; calm control = flat; sticky bar = gradient fade |
 | text size | name **14** · meta **12** · section-H2 **clamp(18px,2vw,20)** · body **14** · CTA **15** (never ≤13 on a button) · eyebrow **11** |
@@ -65,7 +65,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | focus | inputs: ONE ink edge — `border-s-ink` + a single soft halo `box-shadow:0 0 0 3px rgba(10,10,10,.10)`, set globally in globals.css; primitives add NO extra `outline` (V3-D449 — no double ring). buttons/links: the global 2px ink `outline`. |
 | disabled | `opacity-50 cursor-not-allowed` (e.g. the commit button before a slot is picked) |
 | touch target | interactive controls ≥ 44px (`h-11`), the a11y floor |
-| filter pill | selected = `border-s-accent` + `text-s-accent`, **NO fill**; hover (inactive) = `bg-s-bg-sunken` (sink), never `hover:border-s-ink` (V3-D450) |
+| filter pill | selected = `bg-s-bg-sunken` + `text-s-ink` + semibold (calm gray, never blue-border, never black); unselected = white + hairline, hover deepens text (owner 2026-06-29, supersedes V3-D450) |
 | category tag | neutral — `bg-s-bg-sunken` + `text-s-ink-2`, NO per-category colour (incl. the on-photo eyebrow → `text-white`); owner picked B, V3-D449 |
 | date / time | ONE `DateTimePicker` primitive — `dateLayout` strip (booking) \| calendar (search); booking + search share it. NO bespoke date UI (V3-D445) |
 | nav | sub-page nav is single — the global `Breadcrumb` is excluded on `/{city}/{category}` (SearchTemplate owns it). No stacked home+back (V3-D449) |
