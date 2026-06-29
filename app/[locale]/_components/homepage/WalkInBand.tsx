@@ -32,8 +32,6 @@ type WalkInSalon = {
   queueLength: number;
 };
 
-const QUEUE_DOTS = 5;
-
 export default function WalkInBand() {
   const locale = useLocale();
   const [salons, setSalons] = useState<WalkInSalon[] | null>(null);
@@ -80,6 +78,12 @@ export default function WalkInBand() {
               <p className="mt-1 font-body text-[13px] leading-[1.3] text-s-ink-2">
                 Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.
               </p>
+              {/* B "live board" (owner pick 2026-06-29): wait/queue are real-time (GET
+                  /api/walkin/nearby), so a "Live" marker is honest signal, not decoration. */}
+              <span className="mt-1 inline-flex items-center gap-1.5 font-body text-[12px] font-bold text-s-success">
+                <span className="h-[7px] w-[7px] rounded-full bg-s-success" aria-hidden />
+                Live
+              </span>
             </div>
           </div>
 
@@ -99,14 +103,22 @@ export default function WalkInBand() {
                 ))
               : salons!.map((s) => {
                   const sofort = s.waitMinutes <= 0;
-                  const filled = Math.min(s.queueLength, QUEUE_DOTS);
                   return (
                     <a
                       key={s.id}
                       href={`/${locale}/salon/${s.slug}`}
-                      className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)] transition-transform duration-200 ease-glide active:scale-[0.98]`}
+                      className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 transition-transform duration-200 ease-glide active:scale-[0.98]`}
                     >
-                      <div className="flex items-center gap-1.5">
+                      {/* R1 "located" (owner pick 2026-06-29): wait-range hero + "bis frei", then
+                          name + rating (gold star is the separator), then address + queue on their OWN
+                          lines , NO middot between two same-weight metadata bits (taste rule 2). */}
+                      <div className="font-display text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-success">
+                        {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
+                      </div>
+                      {!sofort && (
+                        <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-3">bis frei</div>
+                      )}
+                      <div className="mt-2.5 flex items-center gap-2">
                         <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
                         {s.reviewCount > 0 && (
                           <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-s-ink-2">
@@ -115,20 +127,10 @@ export default function WalkInBand() {
                           </span>
                         )}
                       </div>
-                      {s.address && <div className="mt-[3px] truncate text-[12px] text-s-ink-2">{s.address}</div>}
-                      <div className="mt-2.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-bold text-s-success">
-                        <span className="h-[7px] w-[7px] rounded-full bg-s-success" />
-                        {sofort ? "Sofort frei" : `Frei in ${s.waitMinutes}-${s.waitMinutesMax} Min`}
-                      </div>
-                      <div className="mt-2.5 flex items-center gap-[7px] text-[12px] text-s-ink-2">
-                        <span className="flex gap-[3px]">
-                          {Array.from({ length: QUEUE_DOTS }).map((_, i) => (
-                            <span
-                              key={i}
-                              className={`h-[6px] w-[6px] rounded-full ${i < filled ? "bg-s-ink" : "bg-s-border"}`}
-                            />
-                          ))}
-                        </span>
+                      {s.address && (
+                        <div className="mt-[3px] truncate font-body text-[12px] text-s-ink-2">{s.address}</div>
+                      )}
+                      <div className="mt-[3px] font-body text-[12px] text-s-ink-2">
                         {s.queueLength === 0 ? "Niemand wartet" : `${s.queueLength} vor dir`}
                       </div>
                     </a>
