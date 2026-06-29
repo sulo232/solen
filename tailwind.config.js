@@ -273,10 +273,10 @@ module.exports = {
         // owner-approved 2026-06-11). Barely-there lift for rows-in-one-card lists.
         whisper:            "0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10)",
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
-        // V3 (2026-06-29, owner-approved mockup "A"): single-layer. The old two-layer values read as a
-        // "double line" outside cards. elevation-2 = clean rest, elevation-3 = soft single-layer hover lift.
-        "elevation-2":      "0 1px 4px rgba(50,47,44,0.06)",
-        "elevation-3":      "0 6px 20px rgba(50,47,44,0.10)",
+        // V3 (2026-06-29, owner + council): single-layer (the old two-layer read as a "double line").
+        // "A" (0 1px 4px) came back too light; council pick = a touch heavier, still single-layer, visible.
+        "elevation-2":      "0 2px 8px rgba(50,47,44,0.09)",
+        "elevation-3":      "0 6px 16px rgba(50,47,44,0.12)",
         // ── Float (V3-D-depth, 2026-06-09; SOFTENED same day) ── a SUBTLE, restrained lift for
         // resting cards, NOT a wide decorative float. The original wide float read as over-engineered
         // ("visual overworking" per Tim Gabe; owner: "overmade the depths"). Premium feel comes from

@@ -648,10 +648,10 @@ function CollapsedRow({
         // input height is 47 CSS px, not 56. My h-14 bump over-shot Fresha
         // by 9px. Reverted to h-12 (~Fresha-exact 48px). px-5 + rounded-2xl
         // stay (those measurements were correct).
-        // Depth system (2026-06-09): filled-gray field (Apple pattern), no hairline border.
-        "rounded-[13px] bg-s-bg-sunken border border-transparent h-[46px] px-[14px]",
+        // 2026-06-29 (owner + council): drop the gray fill , white + 1px hairline reads cleaner.
+        "rounded-[13px] bg-white border border-s-border h-[46px] px-[14px]",
         "transition-[background,border-color] duration-150 ease-glide",
-        "hover:bg-s-bg-active",
+        "hover:bg-s-bg-sunken",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
       )}
     >
