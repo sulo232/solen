@@ -66,8 +66,8 @@ export const PillToggle = React.forwardRef<HTMLButtonElement, PillToggleProps>(
           "border transition-colors duration-150 ease-snap",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           active
-            ? "bg-s-ink text-white border-s-ink font-semibold"
-            : "bg-s-bg-base text-s-ink border-s-border font-medium hover:border-s-border",
+            ? "bg-s-bg-sunken text-s-ink border-s-border font-semibold"
+            : "bg-s-bg-base text-s-ink-2 border-s-border font-medium hover:text-s-ink",
           disabled && "opacity-40 cursor-not-allowed",
           !disabled && "cursor-pointer",
           className,

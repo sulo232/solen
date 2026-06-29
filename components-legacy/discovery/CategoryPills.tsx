@@ -26,12 +26,13 @@ export default function CategoryPills({ selected, onSelect }: CategoryPillsProps
           aria-pressed={selected === key}
           /* V3-D392: sentence-case per §2.5 rule A7 (tab-label role — only Eyebrow/Tag may be uppercase), matching the
              CategoryTabBar treatment so the same categories don't read differently in the drawer vs the feed. */
-          /* V3-D394: selected = accent (blue) — discovery selected-state sweep. */
+          /* Selected = calm gray fill, never black (owner 2026-06-29) , the TabPill treatment:
+             sunken fill + ink text + semibold over a white unselected so the selection reads. */
           className={[
             "px-4 py-2.5 rounded-pill text-xs font-heading font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
             selected === key
-              ? "bg-s-ink text-white"
-              : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken",
+              ? "bg-s-bg-sunken text-s-ink font-semibold"
+              : "bg-white text-s-ink-2 hover:text-s-ink",
           ].join(" ")}
         >
           {t(key)}
