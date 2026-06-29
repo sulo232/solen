@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import ReviewForm from "@/components-legacy/ReviewForm";
+import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
 import type { Review } from "@/lib/types";
 
 // ─────────────────────────────────────────────────
@@ -17,7 +18,6 @@ import type { Review } from "@/lib/types";
 interface ReviewPhoto {
   id: string;
   photo_url: string;
-  sort_order: number;
 }
 
 interface ReviewReply {
@@ -51,25 +51,6 @@ interface SalonReviewsProps {
   locale: string;
   onLightbox?: (photoUrl: string) => void;
   onReviewSubmitted?: () => void;
-}
-
-// ─────────────────────────────────────────────────
-// Stars helper
-// ─────────────────────────────────────────────────
-
-function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) {
-  const sz = size === "sm" ? "w-3 h-3" : "w-4 h-4";
-  const rounded = Math.round(rating);
-  return (
-    <span className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          className={[sz, i <= rounded ? "fill-s-star text-s-star" : "text-s-border"].join(" ")}
-        />
-      ))}
-    </span>
-  );
 }
 
 // ─────────────────────────────────────────────────
@@ -306,7 +287,7 @@ export default function SalonReviews({
 
                     {/* Measured Fresha rhythm: header→stars 14px, stars→text 16px */}
                     <div className="mt-3.5">
-                      <Stars rating={rev.rating} size="md" />
+                      <RatingStars mode="five" value={rev.rating} size="md" />
                     </div>
 
                     {displayText && (
@@ -333,7 +314,7 @@ export default function SalonReviews({
                             </p>
                           ) : (
                             <>
-                              <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/40 mb-2">
+                              <p className="text-[12px] font-heading text-s-ink-3 mb-2">
                                 {t("flagReasonLabel")}
                               </p>
                               <textarea
@@ -346,15 +327,15 @@ export default function SalonReviews({
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink/40 hover:text-s-ink-2 font-heading uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
+                                  className="text-xs text-s-ink-3 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-colors duration-150"
                                 >
                                   {t("flagCancel")}
                                 </button>
+                                {/* primary submit action — ink fill is the commit CTA treatment, selected-ok */}
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
-                                  style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,.25)" }}
+                                  className="text-xs text-white font-body font-semibold px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] disabled:opacity-50 transition-[transform,filter] duration-150"
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}
                                 </button>

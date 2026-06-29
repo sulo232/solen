@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Star, X } from "lucide-react";
+import { X } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
+import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -37,71 +38,6 @@ function initialsOf(name?: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "?";
   return ((parts[0][0] ?? "") + (parts[parts.length - 1][0] ?? "")).toUpperCase();
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Interactive star row
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface StarRowProps {
-  value: number;
-  onChange: (v: number) => void;
-  reduced: boolean;
-}
-
-function InteractiveStarRow({ value, onChange, reduced }: StarRowProps) {
-  const [hover, setHover] = useState(0);
-  const active = hover || value;
-
-  return (
-    <div
-      role="radiogroup"
-      aria-label="Rating"
-      className="flex gap-1"
-      onMouseLeave={() => setHover(0)}
-    >
-      {[1, 2, 3, 4, 5].map((star) => {
-        const filled = active >= star;
-        return (
-          <motion.button
-            key={star}
-            type="button"
-            role="radio"
-            aria-checked={value === star}
-            aria-label={`${star} star${star > 1 ? "s" : ""}`}
-            onMouseEnter={() => setHover(star)}
-            onClick={() => onChange(star)}
-            className="p-1 focus:outline-none"
-            whileTap={reduced ? {} : { scale: 0.85 }}
-            animate={
-              reduced
-                ? {}
-                : value >= star
-                ? {
-                    scale: [1, 1.38, 1],
-                    transition: {
-                      delay: (star - 1) * 0.07,
-                      duration: 0.45,
-                      ease: [0.34, 1.56, 0.64, 1],
-                    },
-                  }
-                : { scale: 1 }
-            }
-          >
-            <Star
-              size={42}
-              strokeWidth={1.2}
-              className={
-                filled
-                  ? "fill-s-star text-s-star"
-                  : "fill-transparent text-s-border"
-              }
-            />
-          </motion.button>
-        );
-      })}
-    </div>
-  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -260,13 +196,18 @@ export default function ReviewForm({
       }}
     >
       <motion.div
-        className="relative w-full max-w-lg mx-auto rounded-t-[28px] bg-white px-6 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+        className="relative w-full max-w-lg mx-auto rounded-t-[28px] bg-white px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
         style={{ boxShadow: "0 -10px 40px rgba(10,10,10,.12)" }}
         variants={sheetVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
+        {/* Grabber pill — matches approved mockup (.grab: 36x4px, rounded-full, s-border fill) */}
+        <div className="flex justify-center pt-2 pb-3.5">
+          <div className="h-1 w-9 rounded-full bg-s-border" />
+        </div>
+
         {/* Skip button (top-right) */}
         <button
           type="button"
@@ -319,19 +260,31 @@ export default function ReviewForm({
             </motion.p>
           )}
 
-          {/* 5 big tappable stars (42px) */}
+          {/* 5 big tappable stars (42px) via RatingStars interactive mode */}
           <motion.div variants={reducedItem} className="mt-5">
-            <InteractiveStarRow
+            <RatingStars
+              mode="interactive"
               value={rating}
               onChange={handleRating}
-              reduced={reduced}
+              starPx={42}
             />
           </motion.div>
 
-          {/* Rating word: rises+fades in on tap */}
+          {/* "Tap to rate" hint — shown before any rating, disappears once rated */}
           <div className="h-7 flex items-center mt-2">
             <AnimatePresence mode="wait">
-              {rating > 0 && (
+              {rating === 0 ? (
+                <motion.span
+                  key="hint"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-[13px] text-s-ink-3"
+                >
+                  Tap to rate
+                </motion.span>
+              ) : (
                 <motion.span
                   key={rating}
                   initial={{ y: 8, opacity: 0 }}
