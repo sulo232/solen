@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Clapperboard, Play } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { useLocale } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { HeartButton } from "./HeartButton";
@@ -326,23 +326,10 @@ export default function Entdecken() {
                     // sits ~24px from card top (button h-11 with h-8
                     // visible glass at top-[2px]). Marquee text height
                     // ~16px → top should be 16 to put center at 24. ✓
-                    className="absolute top-4 left-3 w-[42%] overflow-hidden pointer-events-none"
+                    className="absolute top-2 left-2 z-[2] inline-flex items-center rounded-full bg-black/55 px-2.5 py-[3px] backdrop-blur-[4px] pointer-events-none"
                     aria-hidden
                   >
-                    <div className="flex animate-marquee">
-                      <span
-                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
-                        style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
-                      >
-                        TikTok TikTok TikTok TikTok
-                      </span>
-                      <span
-                        className="shrink-0 whitespace-nowrap pr-5 font-body text-[12px] font-normal text-white"
-                        style={{ textShadow: "0 1px 3px rgba(0,0,0,0.75)" }}
-                      >
-                        TikTok TikTok TikTok TikTok
-                      </span>
-                    </div>
+                    <span className="font-body text-[11px] font-semibold leading-none text-white">TikTok</span>
                   </div>
                   )}
 
@@ -363,15 +350,7 @@ export default function Entdecken() {
                       the centered play glyph is the single video signal there
                       (matches the approved mockup), so the clapperboard would
                       double up. */}
-                  {!showFallback && (
-                    <Clapperboard
-                      size={18}
-                      strokeWidth={2}
-                      aria-hidden
-                      className="absolute bottom-[13px] right-2 text-white"
-                      style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }}
-                    />
-                  )}
+                  {/* video signalled by the top-left TikTok pill; clapperboard removed 2026-06-29 */}
                 </div>
               </Link>
             );
