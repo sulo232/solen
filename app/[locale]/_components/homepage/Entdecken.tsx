@@ -357,14 +357,14 @@ export default function Entdecken() {
                   {/* video signalled by the top-left TikTok pill; clapperboard removed 2026-06-29 */}
                 </div>
                 {(look.authorName || look.price != null) && (
-                  <div className="flex items-baseline justify-between gap-2 px-0.5 pt-1.5">
+                  <div className="flex items-baseline gap-2 px-0.5 pt-1.5">
                     {look.authorName && (
                       <span className="truncate font-body text-[12px] text-s-ink-2">
                         {look.authorName}
                       </span>
                     )}
                     {look.price != null && (
-                      <span className="shrink-0 font-body text-[12px] font-semibold text-s-ink">
+                      <span className="ml-auto shrink-0 font-body text-[12px] font-semibold text-s-ink">
                         ab CHF {look.price}
                       </span>
                     )}
@@ -381,7 +381,7 @@ export default function Entdecken() {
           <Link
             href={`/${locale}/inspo`}
             aria-label="Alle Looks entdecken"
-            className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
+            className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
           >
             <div
               className={cn(
