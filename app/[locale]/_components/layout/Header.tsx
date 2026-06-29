@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { Session } from "@supabase/supabase-js";
 import MobileMenu from "./MobileMenu";
+import { Logo } from "@/app/[locale]/_components/primitives";
 import NotificationBell from "./NotificationBell";
 import DesktopCitySelector from "./DesktopCitySelector";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
@@ -377,6 +378,9 @@ export default function Header({ locale }: { locale: string }) {
   // "Solen › Inspo" breadcrumb (Solen still taps → home), replacing the standalone
   // wordmark + the page's own big h1 that were stacking redundantly. Route-gated to /inspo.
   const isDiscover = !!pathname && /^\/[a-z]{2}\/inspo\/?$/.test(pathname);
+  // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
+  // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
+  const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
   const tDiscover = useTranslations("discover");
 
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
@@ -549,6 +553,19 @@ export default function Header({ locale }: { locale: string }) {
             )}
           >
             {tDiscover("title")}
+          </Link>
+        ) : isHome ? (
+          // Owner 2026-06-29: homepage shows the Solen wordmark, not the redundant home icon.
+          <Link
+            href={`/${locale}`}
+            aria-label="Solen, zur Startseite"
+            className={cn(
+              "shrink-0 transition-opacity duration-200 ease-glide",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+            )}
+          >
+            <Logo size="md" tone={isDark ? "dark" : "light"} />
           </Link>
         ) : isTopLevel ? (
           <Link
