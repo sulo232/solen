@@ -40,7 +40,14 @@ interface SalonReviewsProps {
   reviewCount: number;
   salonId: string;
   salonSlug: string;
+  salonName?: string;
   unreviewedBookingId: string | null;
+  /** First name (or full name) of the staff member on the unreviewed booking. */
+  unreviewedBookingStaffName?: string;
+  /** UUID of the staff member on the unreviewed booking. */
+  unreviewedBookingStaffMemberId?: string;
+  /** Avatar URL of the staff member on the unreviewed booking. */
+  unreviewedBookingStaffPhotoUrl?: string;
   locale: string;
   onLightbox?: (photoUrl: string) => void;
   onReviewSubmitted?: () => void;
@@ -75,7 +82,11 @@ export default function SalonReviews({
   reviewCount,
   salonId,
   salonSlug,
+  salonName,
   unreviewedBookingId,
+  unreviewedBookingStaffName,
+  unreviewedBookingStaffMemberId,
+  unreviewedBookingStaffPhotoUrl,
   locale,
   onLightbox,
   onReviewSubmitted,
@@ -407,11 +418,15 @@ export default function SalonReviews({
         )}
       </div>
 
-      {/* Review form modal */}
+      {/* Review form bottom sheet */}
       {showReviewForm && unreviewedBookingId && (
         <ReviewForm
           salonId={salonId}
+          salonName={salonName}
           bookingId={unreviewedBookingId}
+          staffName={unreviewedBookingStaffName}
+          staffMemberId={unreviewedBookingStaffMemberId}
+          staffPhotoUrl={unreviewedBookingStaffPhotoUrl}
           onSuccess={() => {
             setShowReviewForm(false);
             onReviewSubmitted?.();

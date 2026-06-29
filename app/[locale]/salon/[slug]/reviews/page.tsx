@@ -16,7 +16,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
 
@@ -67,11 +67,8 @@ export default async function SalonReviewsPage({
   } = await supabase.auth.getSession();
   const userId = session?.user?.id ?? null;
 
-  // Use admin client for reviews: profiles RLS blocks anon reads and nulls display_name.
-  // We expose only display_name + avatar_url here, matching /api/salons/[slug]/route.ts.
-  const adminClient = createAdminSupabaseClient();
   const [reviewsRes, completedRes] = await Promise.all([
-    adminClient
+    supabase
       .from("reviews")
       .select(`
         id, rating, comment, created_at, user_id, booking_id,
@@ -84,27 +81,48 @@ export default async function SalonReviewsPage({
     userId
       ? supabase
           .from("bookings")
-          .select("id")
+          .select("id, staff_member_id")
           .eq("user_id", userId)
           .eq("salon_id", salon.id)
           .eq("status", "completed")
           .order("starts_at", { ascending: false })
-      : Promise.resolve({ data: [] as { id: string }[] }),
+      : Promise.resolve({ data: [] as { id: string; staff_member_id: string | null }[] }),
   ]);
 
   // Mirror GET /api/reviews/my-booking: of this user's completed bookings at this
   // salon, find the first with no review yet → SalonReviews renders the
   // "Write review" button. (Two-step exclusion, not a PostgREST subquery filter.)
   let unreviewedBookingId: string | null = null;
-  const completedBookings = (completedRes.data ?? []) as { id: string }[];
+  let unreviewedBookingStaffMemberId: string | null = null;
+  const completedBookings = (completedRes.data ?? []) as { id: string; staff_member_id: string | null }[];
   if (completedBookings.length > 0) {
     const { data: reviewedRows } = await supabase
       .from("reviews")
       .select("booking_id")
       .in("booking_id", completedBookings.map((b) => b.id));
     const reviewedIds = new Set((reviewedRows ?? []).map((r) => r.booking_id));
-    unreviewedBookingId = completedBookings.find((b) => !reviewedIds.has(b.id))?.id ?? null;
+    const unreviewedBooking = completedBookings.find((b) => !reviewedIds.has(b.id)) ?? null;
+    unreviewedBookingId = unreviewedBooking?.id ?? null;
+    unreviewedBookingStaffMemberId = unreviewedBooking?.staff_member_id ?? null;
   }
+
+  // If the unreviewed booking has a staff member, fetch their name + avatar for the
+  // stylist-led review form ("How was {name}?").
+  let unreviewedBookingStaffName: string | undefined;
+  let unreviewedBookingStaffPhotoUrl: string | undefined;
+  if (unreviewedBookingStaffMemberId) {
+    const { data: staffRow } = await supabase
+      .from("staff_members")
+      .select("name, avatar_url")
+      .eq("id", unreviewedBookingStaffMemberId)
+      .single();
+    if (staffRow) {
+      // Use the first word of the name (first name) for the heading.
+      unreviewedBookingStaffName = staffRow.name?.split(" ")[0] ?? staffRow.name ?? undefined;
+      unreviewedBookingStaffPhotoUrl = staffRow.avatar_url ?? undefined;
+    }
+  }
+
   // Pass rows through in the shape SalonReviews reads (profiles / review_photos /
   // review_replies / booking_id stay as embedded objects).
   const enrichedReviews = (reviewsRes.data ?? []).map((r: any) => ({
@@ -116,10 +134,7 @@ export default async function SalonReviewsPage({
     booking_id: r.booking_id,
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
-    // SECURITY: the admin client bypasses RLS, so it returns is_public=false replies
-    // (owner/author-only per migration 041). Strip them entirely before the rows reach
-    // the client — hiding them in render still ships reply_text in the wire payload.
-    review_replies: (r.review_replies ?? []).filter((rp: any) => rp.is_public === true),
+    review_replies: r.review_replies ?? [],
   }));
 
   return (
@@ -131,7 +146,11 @@ export default async function SalonReviewsPage({
           reviewCount={salon.review_count ?? 0}
           salonId={salon.id}
           salonSlug={slug}
+          salonName={salon.name}
           unreviewedBookingId={unreviewedBookingId}
+          unreviewedBookingStaffName={unreviewedBookingStaffName}
+          unreviewedBookingStaffMemberId={unreviewedBookingStaffMemberId ?? undefined}
+          unreviewedBookingStaffPhotoUrl={unreviewedBookingStaffPhotoUrl}
           locale={locale}
         />
       </div>
