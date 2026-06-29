@@ -237,47 +237,19 @@ function ReviewCard({
         )}
       />
 
-      {/* Top row: filled lucide stars left, date right.
-          V3-D169: replaces the bare orange ★ row with lucide Star icons.
-          V3-D180 (2026-05-26, council unanimous): (1) star size 13→12
-          to match SalonCard exactly (1px parity break across page).
-          (2) Dropped "(5/5)" — 5 gold stars already say it. */}
-      <div className="relative pointer-events-none mb-3 flex items-center justify-between gap-2">
-        <div className="inline-flex items-center gap-[1px]">
-          {Array.from({ length: review.stars }).map((_, i) => (
-            <Star
-              key={i}
-              size={12}
-              stroke="none"
-              aria-hidden
-              className="fill-s-star"
-            />
-          ))}
-        </div>
-        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-3 tabular-nums">
-          {dateText}
-        </span>
-      </div>
-
-      {/* Quote body — flex-1 + line-clamp-3 keeps consistent card heights.
-          V3-D180 (council unanimous): (3) line-clamp-4 → line-clamp-3
-          (3 lines reads as quote pull, 4 reads as paragraph). (4) leading
-          1.55 → 1.5 (card density not article density). */}
-      <p className="relative pointer-events-none flex-1 font-body text-[14px] leading-[1.5] text-s-ink line-clamp-3 mb-3">
-        &ldquo;{review.text}&rdquo;
-      </p>
-
-      {/* Footer (no divider line per V3-D169 — content carries itself).
-          Avatar + name stacked with salon link. */}
-      <div className="relative mt-auto flex items-center gap-2.5">
+      {/* B "person-led" (owner pick 2026-06-29): identity (avatar + name + salon)
+          leads as the card header, then stars + date, then the quote. Warmer,
+          more human/trustworthy. Avatar bumped 32->40px + name to 14 semibold
+          so the person anchors. */}
+      <div className="relative mb-3 flex items-center gap-2.5">
         <div
-          className="pointer-events-none font-display grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-black text-s-ink-2 bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-10 w-10 shrink-0 place-items-center rounded-full text-[14px] font-black text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="pointer-events-none font-body text-[13px] font-medium leading-[1.2] text-s-ink truncate">
+          <div className="pointer-events-none font-body text-[14px] font-semibold leading-[1.2] text-s-ink truncate">
             {review.name}
           </div>
           {/* V2-D49l salon link — secondary tap target, z-10 above overlay */}
@@ -298,6 +270,29 @@ function ReviewCard({
           </Link>
         </div>
       </div>
+
+      {/* Stars + date, below the identity header. */}
+      <div className="relative pointer-events-none mb-3 flex items-center justify-between gap-2">
+        <div className="inline-flex items-center gap-[1px]">
+          {Array.from({ length: review.stars }).map((_, i) => (
+            <Star
+              key={i}
+              size={12}
+              stroke="none"
+              aria-hidden
+              className="fill-s-star"
+            />
+          ))}
+        </div>
+        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-3 tabular-nums">
+          {dateText}
+        </span>
+      </div>
+
+      {/* Quote , flex-1 fills the rest, line-clamp-3 keeps card heights even. */}
+      <p className="relative pointer-events-none flex-1 font-body text-[14px] leading-[1.5] text-s-ink line-clamp-3">
+        &ldquo;{review.text}&rdquo;
+      </p>
     </div>
   );
 }

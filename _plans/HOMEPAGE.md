@@ -11,7 +11,7 @@
 6. [~] Category-page cards , treatment ALREADY EXISTS (`SalonResultCard` via `SearchTemplate`: price=`avg_price` renders, next-slot wired via `with_slots=1`+`nextSlotLabel`). Swapped `Clock`->`Calendar` to match the homepage card. DONE except the next-slot is sparse (real availability), which is a data matter, not the card.
 7. [x] **Walk-in section redesign + clarify** , DONE. `WalkInBand`: clarifier sub-line + direction **B/R1** (live-board, located): "Live" marker + green wait-RANGE hero ("35-49 Min" / "bis frei") + name+rating row + address + queue, each datum on its OWN line (NO middot, taste rule 2). Mockups: `walk-in-section-redesign.html` (A/B/C) + `walk-in-B-refined.html` (R1/R2/R3). Committed.
 8. [x] Inspo preview , clean 9:16 tiles + top-left "TikTok" pill + creator·price caption from real feed (`2cedef343` + caption + CTA-alignment fix).
-9. [x] Reviews block , cool `elevation-2`/`-3` shadow + 14px focal quote.
+9. [x] Reviews block , REDESIGNED to direction **B (person-led)**: identity header (avatar 40px + name 14 semibold + salon link) on TOP, then stars + date, then quote. Keeps the earlier `elevation-2`/`-3` shadow + 14px quote. Mockup: `reviews-redesign.html`. STILL PARKED: relative date ("vor 2 Wo." , shown in the mockup) needs `Intl.RelativeTimeFormat`; live still shows the full date.
 
 ## PARKED (decide)
 - **Inspo "ab CHF" i18n** (`Entdecken.tsx` ~368): German "ab" leaks on /en /fr /it; SalonCard uses bare "CHF X". Pick: drop "ab" (match SalonCard) / localize via existing `fromPrice` key / keep.
@@ -21,5 +21,5 @@
 ## REDESIGNS requested (owner 2026-06-29) , I'd DROPPED these; mockups pending
 The small fixes done (item 6 = icon swap, item 9 = shadow+quote) were NOT what the owner wanted , they want FULLER REDESIGNS, delivered as mockups first.
 - [x] **Walk-in SECTION redesign** , DONE. Owner picked B (live-board) -> refined to R1 (located) -> APPLIED to the real `WalkInBand` + committed. (Feed-card mockup `feed-card-redesign.html` was a mis-read of "cards" , parked, not the ask.)
-- [ ] **Reviews redesign** (item 9 escalated, beyond the shadow + 14px quote). Mockup -> build. Cards first, reviews next.
+- [x] **Reviews redesign** , owner picked **B (person-led)** -> applied to `Reviews.tsx` + committed. Mockup `reviews-redesign.html`. Only remaining: the relative-date helper (parked).
 - Walk-in clarifier (item 7): committed with draft copy; owner to refine the wording.
