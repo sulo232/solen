@@ -4733,6 +4733,8 @@
     "comment_placeholder": "Wie war dein Besuch? (Optional)",
     "how_was_staff": "Wie war {name}?",
     "how_was_visit": "Wie war dein Besuch?",
+    "how_was_salon": "Wie war {name}?",
+    "amenities_label": "Ausstattung",
     "tap_to_rate": "Tippe zum Bewerten",
     "rating_word_1": "Schlecht",
     "rating_word_2": "Okay",

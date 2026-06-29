@@ -4713,6 +4713,8 @@
     "comment_placeholder": "Com'e andata la tua visita? (Opzionale)",
     "how_was_staff": "Com'e stato {name}?",
     "how_was_visit": "Com'e andata la tua visita?",
+    "how_was_salon": "Com'era {name}?",
+    "amenities_label": "Servizi",
     "tap_to_rate": "Tocca per valutare",
     "rating_word_1": "Scarso",
     "rating_word_2": "Sufficiente",

@@ -2,7 +2,23 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { X } from "lucide-react";
+import {
+  X,
+  Check,
+  MoreHorizontal,
+  ShieldCheck,
+  CreditCard,
+  Dog,
+  Baby,
+  Wifi,
+  Accessibility,
+  Bus,
+  Heart,
+  Star,
+  Home,
+  GraduationCap,
+  Repeat,
+} from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
@@ -17,15 +33,64 @@ export interface ReviewFormProps {
   bookingId: string;
   salonName?: string;
   salonSlug?: string;
-  /** Staff first name for the "How was {name}?" heading. */
+  /** Staff first name for the "How was {name}?" heading (stylist variant). */
   staffName?: string;
   /** UUID for staff_member_id in the POST body. */
   staffMemberId?: string;
-  /** Staff avatar URL (optional). */
+  /** Staff avatar URL (optional, stylist variant only). */
   staffPhotoUrl?: string;
+  /**
+   * "stylist" (default): avatar + "How was {staff}?" - staff rating focus.
+   * "salon": no avatar, "How was {salonName}?" + amenity chips after rating.
+   */
+  variant?: "stylist" | "salon";
   onSuccess: () => void;
   onClose: () => void;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Amenity chip data (reused from SalonAdditionalInfo icon set)
+// Lucide icons + stable keys matching salon DB column names
+// ─────────────────────────────────────────────────────────────────────────────
+
+type AmenityItem = {
+  key: string;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  labelKey: string;
+};
+
+// EXPERIENTIAL amenities a customer confirms about the place (Google-Maps style).
+// Deliberately EXCLUDES booking/platform features (instant booking, online pay, free
+// cancel) , those are not something a reviewer attests to about the physical/social space.
+// Labels are hardcoded DE here mirroring SalonAdditionalInfo (which is also hardcoded DE);
+// TODO(i18n): add per-amenity keys to messages/*.json + reuse them in both places.
+const AMENITY_ITEMS: AmenityItem[] = [
+  { key: "lgbtq_friendly", icon: Heart, labelKey: "lgbtq_friendly" },
+  { key: "wheelchair_accessible", icon: Accessibility, labelKey: "wheelchair_accessible" },
+  { key: "woman_owned", icon: Star, labelKey: "woman_owned" },
+  { key: "wifi_friendly", icon: Wifi, labelKey: "wifi_friendly" },
+  { key: "kid_friendly", icon: Baby, labelKey: "kid_friendly" },
+  { key: "pet_friendly", icon: Dog, labelKey: "pet_friendly" },
+  { key: "family_owned", icon: Home, labelKey: "family_owned" },
+  { key: "near_public_transport", icon: Bus, labelKey: "near_public_transport" },
+  { key: "student_discount", icon: GraduationCap, labelKey: "student_discount" },
+];
+
+// German display labels for each amenity (mirrors SalonAdditionalInfo)
+const AMENITY_LABEL_DE: Record<string, string> = {
+  pet_friendly: "Haustiere willkommen",
+  kid_friendly: "Kinderfreundlich",
+  wifi_friendly: "Kostenloses WLAN",
+  wheelchair_accessible: "Rollstuhlgerecht",
+  near_public_transport: "Nähe ÖV",
+  lgbtq_friendly: "LGBTQ+ willkommen",
+  woman_owned: "Frauengeführt",
+  family_owned: "Familiengeführt",
+  student_discount: "Studentenrabatt",
+};
+
+// Threshold above which we show the "more" overflow pill
+const AMENITY_VISIBLE_MAX = 6;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -49,6 +114,7 @@ export default function ReviewForm({
   staffName,
   staffMemberId,
   staffPhotoUrl,
+  variant = "stylist",
   onSuccess,
   onClose,
 }: ReviewFormProps) {
@@ -62,10 +128,18 @@ export default function ReviewForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const hasStaff = Boolean(staffName);
-  const title = hasStaff
-    ? t("how_was_staff", { name: staffName })
-    : t("how_was_visit");
+  // Salon variant: selected amenity keys (visual/state only - no backend yet)
+  const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
+  const [showAllAmenities, setShowAllAmenities] = useState(false);
+
+  const isSalon = variant === "salon";
+
+  // Title: salon variant uses salonName, stylist uses staffName
+  const title = isSalon
+    ? t("how_was_salon", { name: salonName ?? "" })
+    : staffName
+      ? t("how_was_staff", { name: staffName })
+      : t("how_was_visit");
 
   const ratingWords = [
     "",
@@ -75,12 +149,28 @@ export default function ReviewForm({
     t("rating_word_4"),
     t("rating_word_5"),
   ];
-  const subtitle = salonName ?? "";
+
+  // Stylist variant shows salon name as subtitle; salon variant has no subtitle
+  const subtitle = isSalon ? "" : (salonName ?? "");
 
   const handleRating = (v: number) => {
     setRating(v);
     setError(null);
   };
+
+  const toggleAmenity = (key: string) => {
+    setSelectedAmenities((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const visibleAmenities = showAllAmenities
+    ? AMENITY_ITEMS
+    : AMENITY_ITEMS.slice(0, AMENITY_VISIBLE_MAX);
+  const hasMoreAmenities = AMENITY_ITEMS.length > AMENITY_VISIBLE_MAX;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,6 +189,7 @@ export default function ReviewForm({
         comment: comment.trim() || undefined,
       };
       if (staffMemberId) body.staff_member_id = staffMemberId;
+      // TODO(chunk2-backend): persist selectedAmenities once review_attributes table exists
 
       const res = await fetch("/api/reviews", {
         method: "POST",
@@ -212,7 +303,7 @@ export default function ReviewForm({
         animate="visible"
         exit="exit"
       >
-        {/* Grabber pill - matches approved mockup (.grab: 36x4px, rounded-full, s-border fill) */}
+        {/* Grabber pill */}
         <div className="flex justify-center pt-2 pb-3.5">
           <div className="h-1 w-9 rounded-full bg-s-border" />
         </div>
@@ -233,23 +324,28 @@ export default function ReviewForm({
           initial="hidden"
           animate="visible"
         >
-          {/* Staff avatar: 64px sunken circle with initials or photo */}
-          <motion.div
-            variants={reducedItem}
-            className="mb-4 mt-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-s-bg-sunken text-[18px] font-semibold text-s-ink-2"
-          >
-            {staffPhotoUrl ? (
-              <Image
-                src={staffPhotoUrl}
-                alt={staffName ?? "Stylist"}
-                width={64}
-                height={64}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span>{initialsOf(staffName)}</span>
-            )}
-          </motion.div>
+          {/* Staff avatar: 64px sunken circle with initials or photo (stylist only) */}
+          {!isSalon && (
+            <motion.div
+              variants={reducedItem}
+              className="mb-4 mt-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-s-bg-sunken text-[18px] font-semibold text-s-ink-2"
+            >
+              {staffPhotoUrl ? (
+                <Image
+                  src={staffPhotoUrl}
+                  alt={staffName ?? "Stylist"}
+                  width={64}
+                  height={64}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span>{initialsOf(staffName)}</span>
+              )}
+            </motion.div>
+          )}
+
+          {/* Salon variant: extra top margin when no avatar */}
+          {isSalon && <div className="mt-4" />}
 
           {/* Title: 20px semibold */}
           <motion.h2
@@ -259,7 +355,7 @@ export default function ReviewForm({
             {title}
           </motion.h2>
 
-          {/* Subtitle: salon name at 13px ink-3 */}
+          {/* Subtitle: salon name at 13px ink-3 (stylist variant only) */}
           {subtitle && (
             <motion.p
               variants={reducedItem}
@@ -372,6 +468,53 @@ export default function ReviewForm({
                     )}
                   </div>
 
+                  {/* Amenities section (salon variant only) */}
+                  {isSalon && (
+                    <div className="space-y-2.5">
+                      <p className="text-[13px] font-semibold text-s-ink">
+                        {t("amenities_label")}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {visibleAmenities.map((item) => {
+                          const Icon = item.icon;
+                          const selected = selectedAmenities.has(item.key);
+                          return (
+                            <button
+                              key={item.key}
+                              type="button"
+                              onClick={() => toggleAmenity(item.key)}
+                              className={[
+                                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] transition-colors",
+                                selected
+                                  ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink"
+                                  : "border-s-border bg-white font-normal text-s-ink-2 hover:bg-s-bg-sunken",
+                              ].join(" ")}
+                            >
+                              {selected && (
+                                <Check size={12} strokeWidth={2.5} className="shrink-0 text-s-ink" />
+                              )}
+                              {!selected && (
+                                <Icon size={12} strokeWidth={2} className="shrink-0" />
+                              )}
+                              <span>{AMENITY_LABEL_DE[item.key]}</span>
+                            </button>
+                          );
+                        })}
+                        {/* "More" pill - shown when set is long and not yet expanded */}
+                        {hasMoreAmenities && !showAllAmenities && (
+                          <button
+                            type="button"
+                            onClick={() => setShowAllAmenities(true)}
+                            className="inline-flex items-center gap-1 rounded-full border border-s-border bg-white px-3 py-1.5 text-[13px] text-s-ink-3 hover:bg-s-bg-sunken transition-colors"
+                            aria-label="Show more amenities"
+                          >
+                            <MoreHorizontal size={14} strokeWidth={2} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {uploadProgress && (
                     <p className="text-[13px] text-s-accent font-medium">
                       {uploadProgress}
@@ -387,7 +530,7 @@ export default function ReviewForm({
                     </div>
                   )}
 
-                  {/* Submit: primary commit CTA, ink fill per LOCKFILE §3 */}
+                  {/* Submit: primary commit CTA, ink fill per LOCKFILE */}
                   <button
                     type="submit"
                     disabled={loading || rating === 0}

@@ -4715,6 +4715,8 @@
     "comment_placeholder": "Comment s'est passée votre visite ? (Optionnel)",
     "how_was_staff": "Comment etait {name} ?",
     "how_was_visit": "Comment s'est passee votre visite ?",
+    "how_was_salon": "Comment etait {name} ?",
+    "amenities_label": "Equipements",
     "tap_to_rate": "Appuyez pour noter",
     "rating_word_1": "Mauvais",
     "rating_word_2": "Passable",

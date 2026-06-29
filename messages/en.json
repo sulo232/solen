@@ -4723,6 +4723,8 @@
     "comment_placeholder": "How was your visit? (Optional)",
     "how_was_staff": "How was {name}?",
     "how_was_visit": "How was your visit?",
+    "how_was_salon": "How was {name}?",
+    "amenities_label": "Amenities",
     "tap_to_rate": "Tap to rate",
     "rating_word_1": "Poor",
     "rating_word_2": "Fair",
