@@ -20,6 +20,6 @@
 
 ## REDESIGNS requested (owner 2026-06-29) , I'd DROPPED these; mockups pending
 The small fixes done (item 6 = icon swap, item 9 = shadow+quote) were NOT what the owner wanted , they want FULLER REDESIGNS, delivered as mockups first.
-- [ ] **Card redesign** (item 6 escalated, beyond the calendar-icon swap). Scope (which cards) + direction being pinned with the owner, then mockup -> build. DO FIRST.
+- [ ] **Walk-in SECTION redesign** (owner 2026-06-29: "the whole section of walk in"). The ENTIRE homepage `WalkInBand`: header + chips + CTA , not just the chips, and NOT the feed SalonCard. (Feed-card mockup `feed-card-redesign.html` was a mis-read of "cards" , parked, not the ask.) Mockup `walk-in-section-redesign.html` -> owner picks a direction -> build on the real WalkInBand. DO FIRST.
 - [ ] **Reviews redesign** (item 9 escalated, beyond the shadow + 14px quote). Mockup -> build. Cards first, reviews next.
 - Walk-in clarifier (item 7): committed with draft copy; owner to refine the wording.

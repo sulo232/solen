@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Walk-in section , redesign directions</title>
+<!-- Exists-check: real section = app/[locale]/_components/homepage/WalkInBand.tsx (icon + "Walk-in" H2 + clarifier sub-line; horizontal white text-chips name/rating/address + green "Frei in X-Y Min" + 5 queue-dots + "N vor dir"; "Alle Walk-ins" CTA). Data = GET /api/walkin/nearby (real wait/queue). This mocks WHOLE-SECTION redesign directions per owner "the whole section of walk in". Placeholder photos. Net-new: nothing built. REMOVED-check: no QR, no walk-in-pay stepper/queue-number (killed); queue/[token] is THE tracker. -->
+<style>
+:root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#71717A;--border:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B;--accent:#276EF1;--success:#16A34A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:22px 16px 60px;max-width:430px;margin:0 auto}
+h1{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.lead{color:var(--ink2);font-size:12.5px;line-height:1.5;margin:0 0 4px}
+.block{margin-top:30px;border-top:1px solid var(--border);padding-top:18px}
+.lab{font-size:13px;font-weight:700;margin:0 0 2px}
+.why{font-size:11.5px;color:var(--ink3);margin:0 0 14px;line-height:1.4}
+.hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.hicon{width:52px;height:52px;flex-shrink:0;display:grid;place-items:center;border-radius:15px;background:var(--sunken)}
+.hicon img{width:66%;height:66%;object-fit:contain}
+.htitle{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.05}
+.hsub{font-size:13px;color:var(--ink2);line-height:1.3;margin-top:2px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--success);margin-top:4px}
+.live .pulse{width:7px;height:7px;border-radius:999px;background:var(--success)}
+.rail{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.rail::-webkit-scrollbar{display:none}
+.chip{flex:0 0 64%;min-width:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.05);padding:12px}
+.nmrow{display:flex;align-items:center;gap:6px}
+.nm{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.rt{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ink2)}
+.rt svg{width:11px;height:11px}
+.addr{font-size:12px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wait{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--success);margin-top:10px}
+.wait .dot{width:7px;height:7px;border-radius:999px;background:var(--success)}
+.q{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);margin-top:10px}
+.qd{display:flex;gap:3px}.qd i{width:6px;height:6px;border-radius:999px;background:var(--border)}.qd i.on{background:var(--ink)}
+.cta{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px;font-size:14px;font-weight:700}
+.cta svg{width:16px;height:16px}
+.A .chip{padding:0;overflow:hidden}
+.A .ph{height:96px;background:linear-gradient(150deg,#d8cfc6,#b9a99b)}
+.A .ph.b{background:linear-gradient(150deg,#cdd2da,#9aa3b2)}
+.A .inner{padding:11px 12px 12px}
+.B .chip{padding:13px}
+.B .waithero{font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--success);line-height:1}
+.B .waitlbl{font-size:11px;color:var(--ink3);font-weight:600;margin-top:2px}
+.B .bnm{font-size:13.5px;font-weight:700;margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.B .bq{font-size:12px;color:var(--ink2);margin-top:2px}
+.C .list{border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.C .lrow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+.C .lrow:last-child{border-bottom:0}
+.C .lmain{min-width:0;flex:1}
+.C .lnm{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.C .lmeta{font-size:12px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.C .lright{flex-shrink:0;text-align:right}
+.C .lwait{font-size:13px;font-weight:700;color:var(--success);white-space:nowrap}
+.C .lq{font-size:11px;color:var(--ink3);margin-top:2px;white-space:nowrap}
+</style></head><body>
+
+<h1>Walk-in section , whole-section redesign directions</h1>
+<p class="lead">The homepage <b>WalkInBand</b> (header + cards + CTA). Same live data (wait + queue) on each; only the treatment changes. Photos placeholder. Pick a direction (or a mix) and I build it on the real component.</p>
+
+<div class="block">
+  <div class="lab">Current</div>
+  <div class="why">Icon + "Walk-in" + the clarifier I just added. White text-chips: name/rating, address, green "Frei in X-Y Min", 5 queue-dots + "N vor dir". No photos.</div>
+  <div class="hdr"><span class="hicon"><img src="/icons/categories/walkin.png" alt=""></span><div><div class="htitle">Walk-in</div><div class="hsub">Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</div></div></div>
+  <div class="rail">
+    <div class="chip"><div class="nmrow"><span class="nm">Cuts &amp; Culture</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div><div class="addr">Elsässerstrasse 10, Basel</div><div class="wait"><span class="dot"></span>Frei in 35-49 Min</div><div class="q"><span class="qd"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>3 vor dir</div></div>
+    <div class="chip"><div class="nmrow"><span class="nm">Blade &amp; Steel</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span></div><div class="addr">Feldbergstrasse 82, Basel</div><div class="wait"><span class="dot"></span>Frei in 35-49 Min</div><div class="q"><span class="qd"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>3 vor dir</div></div>
+  </div>
+  <div class="cta">Alle Walk-ins <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+</div>
+
+<div class="block A">
+  <div class="lab">A , Photo-rich</div>
+  <div class="why">Chips become mini cards with a photo , warmer, more inviting, consistent with the photo-led homepage. Wait + queue stay.</div>
+  <div class="hdr"><span class="hicon"><img src="/icons/categories/walkin.png" alt=""></span><div><div class="htitle">Walk-in</div><div class="hsub">Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</div></div></div>
+  <div class="rail">
+    <div class="chip"><div class="ph"></div><div class="inner"><div class="nmrow"><span class="nm">Cuts &amp; Culture</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div><div class="wait"><span class="dot"></span>Frei in 35 Min</div><div class="q"><span class="qd"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>3 vor dir</div></div></div>
+    <div class="chip"><div class="ph b"></div><div class="inner"><div class="nmrow"><span class="nm">Blade &amp; Steel</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span></div><div class="wait"><span class="dot"></span>Frei in 35 Min</div><div class="q"><span class="qd"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>3 vor dir</div></div></div>
+  </div>
+  <div class="cta">Alle Walk-ins <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+</div>
+
+<div class="block B">
+  <div class="lab">B , Live board (wait is the hero)</div>
+  <div class="why">Leans into the walk-in superpower: real-time. A "Live" marker in the header, and the wait time leads each card , scan for "who's free soonest".</div>
+  <div class="hdr"><span class="hicon"><img src="/icons/categories/walkin.png" alt=""></span><div><div class="htitle">Walk-in</div><div class="hsub">Ohne Termin , sieh, wer am schnellsten frei ist.</div><span class="live"><span class="pulse"></span>Live</span></div></div>
+  <div class="rail">
+    <div class="chip"><div class="waithero">35 Min</div><div class="waitlbl">bis frei</div><div class="bnm">Cuts &amp; Culture</div><div class="bq">3 vor dir · 4.8 ★</div></div>
+    <div class="chip"><div class="waithero">10 Min</div><div class="waitlbl">bis frei</div><div class="bnm">The Fade Factory</div><div class="bq">1 vor dir · 4.9 ★</div></div>
+  </div>
+  <div class="cta">Alle Walk-ins <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+</div>
+
+<div class="block C">
+  <div class="lab">C , Clean vertical list</div>
+  <div class="why">Drop the horizontal scroll for a calm, scannable list , name + meta left, wait + queue right. Less card-clutter, more "at a glance".</div>
+  <div class="hdr"><span class="hicon"><img src="/icons/categories/walkin.png" alt=""></span><div><div class="htitle">Walk-in</div><div class="hsub">Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</div></div></div>
+  <div class="list">
+    <div class="lrow"><div class="lmain"><div class="lnm">Cuts &amp; Culture</div><div class="lmeta">Elsässerstrasse 10 · 4.8 ★</div></div><div class="lright"><div class="lwait">Frei in 35 Min</div><div class="lq">3 vor dir</div></div></div>
+    <div class="lrow"><div class="lmain"><div class="lnm">The Fade Factory</div><div class="lmeta">Steinenvorstadt 4 · 4.9 ★</div></div><div class="lright"><div class="lwait">Frei in 10 Min</div><div class="lq">1 vor dir</div></div></div>
+    <div class="lrow"><div class="lmain"><div class="lnm">Blade &amp; Steel</div><div class="lmeta">Feldbergstrasse 82 · 4.4 ★</div></div><div class="lright"><div class="lwait">Frei in 49 Min</div><div class="lq">3 vor dir</div></div></div>
+  </div>
+  <div class="cta">Alle Walk-ins <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+</div>
+
+</body></html>
