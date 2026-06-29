@@ -255,10 +255,10 @@ export function SearchBar() {
         }}
         transition={transition}
         className={cn(
-          // V3 (2026-06-29, owner-approved mockup "A"): the search shadow had drifted to a heavy
-          // 0.13-black / 44px-blur / 18px-lift slab ("too thick"). Softened to a single light hero float.
+          // V3 (2026-06-29, owner + gemini): the wide 24px-blur float bled a "halo" below the dark CTA on
+          // mobile (read like the button had a shadow). Unified to the tight card token elevation-2 , no bleed.
           "relative w-full max-w-[540px] overflow-hidden bg-white",
-          "shadow-[0_8px_24px_-10px_rgba(0,0,0,0.10)]",
+          "shadow-elevation-2",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           // V3-D228 (2026-05-27, desktop placement fix): cap collapsed-state
