@@ -8,7 +8,7 @@
 >
 > For *status* (partial · deprecated · don't-reuse-for) see `_inventory/STATUS.md` (hand-kept).
 
-**Totals:** 134 routes · 356 API endpoints · 408 components · 108 lib/hooks modules · 38 DB functions · 74 DB tables · 883 columns indexed
+**Totals:** 132 routes · 355 API endpoints · 406 components · 108 lib/hooks modules · 38 DB functions · 74 DB tables · 883 columns indexed
 
 ## Routes (pages)
 
@@ -20,7 +20,6 @@
 | `/[locale]/account` | `app/[locale]/account/page.tsx` |
 | `/[locale]/account/messages` | `app/[locale]/account/messages/page.tsx` |
 | `/[locale]/agb` | `app/[locale]/agb/page.tsx` |
-| `/[locale]/angebote` | `app/[locale]/angebote/page.tsx` |
 | `/[locale]/auth/login` | `app/[locale]/auth/login/page.tsx` |
 | `/[locale]/auth/register` | `app/[locale]/auth/register/page.tsx` |
 | `/[locale]/auth/reset-password` | `app/[locale]/auth/reset-password/page.tsx` |
@@ -98,7 +97,6 @@
 | `/[locale]/inspo/saved/[id]` | `app/[locale]/inspo/saved/[id]/page.tsx` |
 | `/[locale]/karriere` | `app/[locale]/karriere/page.tsx` |
 | `/[locale]/kontakt` | `app/[locale]/kontakt/page.tsx` |
-| `/[locale]/last-minute` | `app/[locale]/last-minute/page.tsx` |
 | `/[locale]/legal/privacy` | `app/[locale]/legal/privacy/page.tsx` |
 | `/[locale]/legal/terms` | `app/[locale]/legal/terms/page.tsx` |
 | `/[locale]/loyalty/stamp` | `app/[locale]/loyalty/stamp/page.tsx` |
@@ -406,7 +404,6 @@
 | `/api/reviews/[id]/respond` | PATCH | `app/api/reviews/[id]/respond/route.ts` |
 | `/api/reviews/eligibility` | GET | `app/api/reviews/eligibility/route.ts` |
 | `/api/reviews/featured` | GET | `app/api/reviews/featured/route.ts` |
-| `/api/reviews/homepage` | GET | `app/api/reviews/homepage/route.ts` |
 | `/api/reviews/my-booking` | GET | `app/api/reviews/my-booking/route.ts` |
 | `/api/reviews/reply` | POST | `app/api/reviews/reply/route.ts` |
 | `/api/reviews/salon/[salon_id]` | GET | `app/api/reviews/salon/[salon_id]/route.ts` |
@@ -642,7 +639,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 
 ## Components
 
-<details><summary>408 components — click to expand</summary>
+<details><summary>406 components — click to expand</summary>
 
 | Component | File |
 |---|---|
@@ -816,7 +813,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | InteractiveZoneDiagram | `components-legacy/shared/InteractiveZoneDiagram.tsx` |
 | ItemCard | `components-legacy/discovery/ItemCard.tsx` |
 | LanguageSwitcher | `components-legacy/ui/LanguageSwitcher.tsx` |
-| LastMinuteCard | `components-legacy/LastMinuteCard.tsx` |
 | LastMinuteManager | `components-legacy/dashboard/LastMinuteManager.tsx` |
 | LikeButton | `components-legacy/discovery/LikeButton.tsx` |
 | LiveActivityCard | `components-legacy/profile/LiveActivityCard.tsx` |
@@ -1021,7 +1017,6 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | TechPortfolio | `components-legacy/nail/TechPortfolio.tsx` |
 | TermsContent | `app/[locale]/terms/components/TermsContent.tsx` |
 | TermsSidebar | `app/[locale]/terms/components/TermsSidebar.tsx` |
-| TestimonialCarousel | `components-legacy/TestimonialCarousel.tsx` |
 | Textarea | `app/[locale]/_components/primitives/Textarea.tsx` |
 | TextInput | `app/[locale]/_components/primitives/TextInput.tsx` |
 | TikTokPlayer | `components-legacy/discovery/TikTokPlayer.tsx` |
