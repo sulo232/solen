@@ -1,0 +1,81 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Walk-in B , refined</title>
+<!-- Exists-check: real section = app/[locale]/_components/homepage/WalkInBand.tsx (direction B already applied live: "Live" header + green wait-range hero + name + queue). Confirmed via `npm run exists walk-in` (71 hits, WalkInBand exists). This refines B's CHIP per owner "make more mockup of refined B". Header + "Alle Walk-ins" CTA unchanged from B. Wait stays a RANGE (copy rule: no "ca."/single). Placeholder data. Net-new: nothing. -->
+<style>
+:root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#71717A;--border:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B;--accent:#276EF1;--success:#16A34A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:22px 16px 60px;max-width:430px;margin:0 auto}
+h1{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.lead{color:var(--ink2);font-size:12.5px;line-height:1.5;margin:0 0 16px}
+.hdr{display:flex;align-items:center;gap:14px;margin:0 0 6px}
+.hicon{width:52px;height:52px;flex-shrink:0;display:grid;place-items:center;border-radius:15px;background:var(--sunken)}
+.hicon img{width:66%;height:66%;object-fit:contain}
+.htitle{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.05}
+.hsub{font-size:13px;color:var(--ink2);line-height:1.3;margin-top:2px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--success);margin-top:4px}
+.live .pd{width:7px;height:7px;border-radius:999px;background:var(--success)}
+.hnote{font-size:11px;color:var(--ink3);font-style:italic;margin:2px 0 0}
+.block{margin-top:26px;border-top:1px solid var(--border);padding-top:16px}
+.lab{font-size:13px;font-weight:700;margin:0 0 2px}
+.why{font-size:11.5px;color:var(--ink3);margin:0 0 12px;line-height:1.4}
+.rail{display:flex;gap:12px}
+.chip{flex:1;min-width:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.05);padding:12px}
+.hero{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--success)}
+.hero.ink{color:var(--ink)}
+.herolbl{font-size:12px;font-weight:600;color:var(--ink3);margin-top:3px}
+.nm{font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm.big{font-size:15px}
+.r1{display:flex;align-items:center;gap:6px;min-width:0}
+.r1 .st{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:2px;font-size:12px;font-weight:600;color:var(--ink2)}
+.r1 .st svg{width:11px;height:11px}
+.addr{font-size:12px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:12px;color:var(--ink2);margin-top:3px}
+.freedot{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--success)}
+.freedot .pd{width:7px;height:7px;border-radius:999px;background:var(--success)}
+</style></head><body>
+
+<h1>Walk-in B , refined</h1>
+<p class="lead">B's "live board" direction, polished. Header + "Alle Walk-ins" CTA stay as-is; the refinement is the chip. Pick R1 / R2 / R3 (or a mix) and I update the live component.</p>
+
+<div class="hdr">
+  <span class="hicon"><img src="/icons/categories/walkin.png" alt=""></span>
+  <div><div class="htitle">Walk-in</div><div class="hsub">Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</div><span class="live"><span class="pd"></span>Live</span></div>
+</div>
+<p class="hnote">Header unchanged. Below: the current live chip vs three refinements.</p>
+
+<div class="block">
+  <div class="lab">Current B (live now)</div>
+  <div class="why">Big green range + "bis frei" + name + queue/rating. Issues: range reads clunky at 20px, very green, no location.</div>
+  <div class="rail">
+    <div class="chip"><div class="hero">35-49 Min</div><div class="herolbl">bis frei</div><div class="nm" style="margin-top:10px">Cuts &amp; Culture</div><div class="meta">3 vor dir · 4.8 ★</div></div>
+    <div class="chip"><div class="hero">10-20 Min</div><div class="herolbl">bis frei</div><div class="nm" style="margin-top:10px">The Fade Factory</div><div class="meta">1 vor dir · 4.9 ★</div></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="lab">R1 , Located (recommended)</div>
+  <div class="why">Keeps the green wait-hero, but restores the address (you walk there) and gives the name real presence. Queue + rating recede to one meta line.</div>
+  <div class="rail">
+    <div class="chip"><div class="hero">35-49 Min</div><div class="herolbl">bis frei</div><div class="r1" style="margin-top:11px"><span class="nm">Cuts &amp; Culture</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div><div class="addr">Elsässerstrasse 10 · 3 vor dir</div></div>
+    <div class="chip"><div class="hero">10-20 Min</div><div class="herolbl">bis frei</div><div class="r1" style="margin-top:11px"><span class="nm">The Fade Factory</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div><div class="addr">Steinenvorstadt 4 · 1 vor dir</div></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="lab">R2 , Balanced green</div>
+  <div class="why">Same layout, but the number is ink and only a small green "frei" dot carries the live colour , less green overall (closer to your "availability = ink" lean), wait still the hero.</div>
+  <div class="rail">
+    <div class="chip"><div class="hero ink">35-49 Min</div><div class="freedot" style="margin-top:3px"><span class="pd"></span>frei</div><div class="r1" style="margin-top:11px"><span class="nm">Cuts &amp; Culture</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div><div class="addr">Elsässerstrasse 10 · 3 vor dir</div></div>
+    <div class="chip"><div class="hero ink">10-20 Min</div><div class="freedot" style="margin-top:3px"><span class="pd"></span>frei</div><div class="r1" style="margin-top:11px"><span class="nm">The Fade Factory</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div><div class="addr">Steinenvorstadt 4 · 1 vor dir</div></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="lab">R3 , Name anchor</div>
+  <div class="why">Salon name leads (it's still a salon card), wait sits just under it as the green hero. Best if the name matters more than the raw wait.</div>
+  <div class="rail">
+    <div class="chip"><div class="r1"><span class="nm big">Cuts &amp; Culture</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div><div class="addr">Elsässerstrasse 10</div><div class="hero" style="margin-top:9px">35-49 Min</div><div class="herolbl">bis frei · 3 vor dir</div></div>
+    <div class="chip"><div class="r1"><span class="nm big">The Fade Factory</span><span class="st"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div><div class="addr">Steinenvorstadt 4</div><div class="hero" style="margin-top:9px">10-20 Min</div><div class="herolbl">bis frei · 1 vor dir</div></div>
+  </div>
+</div>
+
+</body></html>
