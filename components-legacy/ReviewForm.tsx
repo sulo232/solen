@@ -432,36 +432,41 @@ export default function ReviewForm({
                     style={{ minHeight: "84px" }}
                   />
 
-                  {/* Photos , salon only. Owner 2026-06-29: an image-icon upload CARD, minimal text
-                      (no wordy label). Preview cards in a row + an icon-only add card; hidden at 3. */}
+                  {/* Photos , salon only. Owner 2026-06-29: a FULL-WIDTH image-icon upload card
+                      (matches the comment field width, no lone small tile / blank gutter), no text.
+                      Added photos preview as cards above it; the add card hides at the 3 cap. */}
                   {isSalon && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {photos.map((p, i) => (
-                        <div
-                          key={i}
-                          className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[12px] border border-s-border"
-                        >
-                          <img
-                            src={previewUrls[i]}
-                            alt="Preview"
-                            className="h-full w-full object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
-                            className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-s-ink/60 text-white"
-                            aria-label="Remove photo"
-                          >
-                            <X size={10} />
-                          </button>
+                    <div className="mt-3 space-y-2">
+                      {photos.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {photos.map((p, i) => (
+                            <div
+                              key={i}
+                              className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[12px] border border-s-border"
+                            >
+                              <img
+                                src={previewUrls[i]}
+                                alt="Preview"
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
+                                className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-s-ink/60 text-white"
+                                aria-label="Remove photo"
+                              >
+                                <X size={10} />
+                              </button>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                       {photos.length < 3 && (
                         <label
                           aria-label={t("photos_label")}
-                          className="grid h-16 w-16 shrink-0 cursor-pointer place-items-center rounded-[12px] border border-s-border bg-white text-s-ink-3 transition-colors hover:bg-s-bg-sunken hover:text-s-ink-2"
+                          className="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-s-border bg-white text-s-ink-3 transition-colors hover:bg-s-bg-sunken hover:text-s-ink-2"
                         >
-                          <ImagePlus size={22} strokeWidth={1.75} />
+                          <ImagePlus size={24} strokeWidth={1.75} />
                           <input
                             type="file"
                             accept="image/jpeg, image/png, image/webp"
