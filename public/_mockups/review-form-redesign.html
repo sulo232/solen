@@ -43,9 +43,10 @@ textarea:focus{border-color:var(--ink)}
 .attrlab{font-size:13px;font-weight:600;color:var(--ink);margin:18px 0 2px}
 .attrsub{font-size:12px;color:var(--ink3);margin:0 0 10px;line-height:1.4}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:13px;color:var(--ink);background:#fff}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:13px;color:var(--ink2);background:#fff}
 .chip svg{width:15px;height:15px;color:var(--ink2)}
-.chip.on{background:var(--sunken);color:var(--ink);border-color:var(--ink);font-weight:600}.chip.on svg{color:var(--ink)}
+/* selected = soft gray fill + ink text + semibold, hairline border (NO ink outline , that read as a focus ring). Matches Google Maps review topic chips. */
+.chip.on{background:var(--sunken);color:var(--ink);border-color:var(--border);font-weight:600}.chip.on svg{color:var(--ink)}
 .morenote{font-size:12px;color:var(--ink3);margin-top:8px}
 </style></head><body>
 
