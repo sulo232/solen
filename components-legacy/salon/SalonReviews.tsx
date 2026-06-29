@@ -165,7 +165,7 @@ export default function SalonReviews({
           />
         ) : (
           <>
-            {/* Summary — big rating + count. Blue (s-accent) on the count where Fresha uses
+            {/* Summary - big rating + count. Blue (s-accent) on the count where Fresha uses
                 purple; Inter Tight bold number (not the lighter data-text weight). */}
             <div className="mt-3 flex items-center gap-2">
               <Star className="h-6 w-6 fill-s-star text-s-star" />
@@ -176,7 +176,7 @@ export default function SalonReviews({
               </span>
             </div>
 
-            {/* Filter by rating — interactive checkboxes that filter the list (Fresha). */}
+            {/* Filter by rating - interactive checkboxes that filter the list (Fresha). */}
             <div className="mt-6">
               <p className="mb-2.5 text-[15px] font-semibold text-s-ink">{t("filterBy")}</p>
               <div className="space-y-0.5">
@@ -244,8 +244,8 @@ export default function SalonReviews({
 
                 return (
                   <div key={rev.id}>
-                    {/* Header — avatar + name/date stacked, flag icon top-right (measured Fresha
-                        anatomy: avatar 56px; no trailing action row — that lone flag row left
+                    {/* Header - avatar + name/date stacked, flag icon top-right (measured Fresha
+                        anatomy: avatar 56px; no trailing action row - that lone flag row left
                         ~60px of dead space per card). */}
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
@@ -304,7 +304,7 @@ export default function SalonReviews({
                       </p>
                     )}
 
-                    {/* Flag form — only while flagging (the icon lives in the header) */}
+                    {/* Flag form - only while flagging (the icon lives in the header) */}
                     {flaggingReviewId === rev.id && (
                       <div className="mt-3">
                         <div className="w-full rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
@@ -331,7 +331,7 @@ export default function SalonReviews({
                                 >
                                   {t("flagCancel")}
                                 </button>
-                                {/* primary submit action — ink fill is the commit CTA treatment, selected-ok */}
+                                {/* primary submit action - ink fill is the commit CTA treatment, selected-ok */}
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}

@@ -4,15 +4,15 @@ import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * RatingStars — the canonical rating display and interactive input (CONTRADICTIONS.md §4).
+ * RatingStars - the canonical rating display and interactive input (CONTRADICTIONS.md §4).
  * Layer 3 (semantic): the star is yellow because rating IS the message
  * (s-star #FFC32B per the universal-colour table); NOT part of the 3% accent budget.
  *
  * Replaces ~14 hand-rolled `<Star className="fill-s-star" /> {value}` blocks +
  * 5 raw `<svg><polygon>` five-star renders. Three modes cover every site:
- *   compact     — one star + value (+ optional count), e.g. salon cards, PDP header
- *   five        — N stars filled to value, e.g. an individual review row
- *   interactive — tappable star input (role="radiogroup"), e.g. review-write form
+ *   compact     - one star + value (+ optional count), e.g. salon cards, PDP header
+ *   five        - N stars filled to value, e.g. an individual review row
+ *   interactive - tappable star input (role="radiogroup"), e.g. review-write form
  */
 export type RatingStarsSize = "sm" | "md" | "lg";
 
@@ -50,7 +50,7 @@ const STAR_PX: Record<RatingStarsSize, number> = { sm: 11, md: 13, lg: 16 };
 // Interactive star default sizes (larger than display stars).
 const INTERACTIVE_STAR_PX: Record<RatingStarsSize, number> = { sm: 24, md: 32, lg: 40 };
 
-// Inner component for interactive mode — needs access to useReducedMotion hook.
+// Inner component for interactive mode - needs access to useReducedMotion hook.
 function InteractiveStars({
   value,
   max,

@@ -203,7 +203,7 @@ export default function ReviewForm({
         animate="visible"
         exit="exit"
       >
-        {/* Grabber pill — matches approved mockup (.grab: 36x4px, rounded-full, s-border fill) */}
+        {/* Grabber pill - matches approved mockup (.grab: 36x4px, rounded-full, s-border fill) */}
         <div className="flex justify-center pt-2 pb-3.5">
           <div className="h-1 w-9 rounded-full bg-s-border" />
         </div>
@@ -270,7 +270,7 @@ export default function ReviewForm({
             />
           </motion.div>
 
-          {/* "Tap to rate" hint — shown before any rating, disappears once rated */}
+          {/* "Tap to rate" hint - shown before any rating, disappears once rated */}
           <div className="h-7 flex items-center mt-2">
             <AnimatePresence mode="wait">
               {rating === 0 ? (
