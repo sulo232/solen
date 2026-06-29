@@ -31,8 +31,6 @@ export interface ReviewFormProps {
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-const RATING_WORDS = ["", "Poor", "Fair", "Good", "Great", "Excellent"];
-
 function initialsOf(name?: string): string {
   if (!name) return "?";
   const parts = name.trim().split(/\s+/);
@@ -65,7 +63,18 @@ export default function ReviewForm({
   const [error, setError] = useState<string | null>(null);
 
   const hasStaff = Boolean(staffName);
-  const title = hasStaff ? `How was ${staffName}?` : "How was your visit?";
+  const title = hasStaff
+    ? t("how_was_staff", { name: staffName })
+    : t("how_was_visit");
+
+  const ratingWords = [
+    "",
+    t("rating_word_1"),
+    t("rating_word_2"),
+    t("rating_word_3"),
+    t("rating_word_4"),
+    t("rating_word_5"),
+  ];
   const subtitle = salonName ?? "";
 
   const handleRating = (v: number) => {
@@ -282,7 +291,7 @@ export default function ReviewForm({
                   transition={{ duration: 0.2 }}
                   className="text-[13px] text-s-ink-3"
                 >
-                  Tap to rate
+                  {t("tap_to_rate")}
                 </motion.span>
               ) : (
                 <motion.span
@@ -293,7 +302,7 @@ export default function ReviewForm({
                   transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
                   className="text-[20px] font-semibold text-s-ink"
                 >
-                  {RATING_WORDS[rating]}
+                  {ratingWords[rating]}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -313,7 +322,7 @@ export default function ReviewForm({
                 <form onSubmit={handleSubmit} className="w-full mt-4 space-y-4">
                   {/* Comment textarea: real bordered box, ink border on focus, no ring */}
                   <textarea
-                    placeholder="Add a few words (optional)"
+                    placeholder={t("comment_placeholder")}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useAnimationControls } from "framer-motion";
 
 /**
  * RatingStars - the canonical rating display and interactive input (CONTRADICTIONS.md §4).
@@ -50,6 +50,57 @@ const STAR_PX: Record<RatingStarsSize, number> = { sm: 11, md: 13, lg: 16 };
 // Interactive star default sizes (larger than display stars).
 const INTERACTIVE_STAR_PX: Record<RatingStarsSize, number> = { sm: 24, md: 32, lg: 40 };
 
+// Single interactive star: pops exactly once when it transitions from
+// unfilled to filled. Imperative controls mean framer-motion never
+// re-triggers the animation on hover or unrelated re-renders.
+function InteractiveStar({
+  starNum,
+  filled,
+  px,
+  reduced,
+  delay,
+  onTap,
+}: {
+  starNum: number;
+  filled: boolean;
+  px: number;
+  reduced: boolean;
+  delay: number;
+  onTap: () => void;
+}) {
+  const controls = useAnimationControls();
+  const prevFilledRef = React.useRef(filled);
+
+  React.useEffect(() => {
+    if (!reduced && filled && !prevFilledRef.current) {
+      controls.start({
+        scale: [1, 1.38, 1],
+        transition: { delay, duration: 0.45, ease: [0.34, 1.56, 0.64, 1] },
+      });
+    }
+    prevFilledRef.current = filled;
+  }, [filled, reduced, delay, controls]);
+
+  return (
+    <motion.button
+      type="button"
+      role="radio"
+      aria-checked={filled}
+      aria-label={`${starNum} star${starNum > 1 ? "s" : ""}`}
+      onClick={onTap}
+      className="p-1 rounded focus-visible:bg-s-bg-sunken"
+      whileTap={reduced ? {} : { scale: 0.85 }}
+      animate={controls}
+    >
+      <Star
+        size={px}
+        strokeWidth={1.2}
+        className={filled ? "fill-s-star text-s-star" : "fill-transparent text-s-border"}
+      />
+    </motion.button>
+  );
+}
+
 // Inner component for interactive mode - needs access to useReducedMotion hook.
 function InteractiveStars({
   value,
@@ -76,36 +127,15 @@ function InteractiveStars({
         const starNum = i + 1;
         const filled = value >= starNum;
         return (
-          <motion.button
+          <InteractiveStar
             key={i}
-            type="button"
-            role="radio"
-            aria-checked={value === starNum}
-            aria-label={`${starNum} star${starNum > 1 ? "s" : ""}`}
-            onClick={() => onChange?.(starNum)}
-            className="p-1 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 rounded"
-            whileTap={reduced ? {} : { scale: 0.85 }}
-            animate={
-              reduced
-                ? {}
-                : value >= starNum
-                ? {
-                    scale: [1, 1.38, 1],
-                    transition: {
-                      delay: i * 0.07,
-                      duration: 0.45,
-                      ease: [0.34, 1.56, 0.64, 1],
-                    },
-                  }
-                : { scale: 1 }
-            }
-          >
-            <Star
-              size={px}
-              strokeWidth={1.2}
-              className={filled ? "fill-s-star text-s-star" : "fill-transparent text-s-border"}
-            />
-          </motion.button>
+            starNum={starNum}
+            filled={filled}
+            px={px}
+            reduced={reduced}
+            delay={i * 0.07}
+            onTap={() => onChange?.(value === starNum ? 0 : starNum)}
+          />
         );
       })}
     </div>

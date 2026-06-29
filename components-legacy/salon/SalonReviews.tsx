@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Star, ShieldCheck, MessageSquare, Check, ChevronDown, Flag } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import ReviewForm from "@/components-legacy/ReviewForm";
@@ -400,21 +400,23 @@ export default function SalonReviews({
       </div>
 
       {/* Review form bottom sheet */}
-      {showReviewForm && unreviewedBookingId && (
-        <ReviewForm
-          salonId={salonId}
-          salonName={salonName}
-          bookingId={unreviewedBookingId}
-          staffName={unreviewedBookingStaffName}
-          staffMemberId={unreviewedBookingStaffMemberId}
-          staffPhotoUrl={unreviewedBookingStaffPhotoUrl}
-          onSuccess={() => {
-            setShowReviewForm(false);
-            onReviewSubmitted?.();
-          }}
-          onClose={() => setShowReviewForm(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showReviewForm && unreviewedBookingId && (
+          <ReviewForm
+            salonId={salonId}
+            salonName={salonName}
+            bookingId={unreviewedBookingId}
+            staffName={unreviewedBookingStaffName}
+            staffMemberId={unreviewedBookingStaffMemberId}
+            staffPhotoUrl={unreviewedBookingStaffPhotoUrl}
+            onSuccess={() => {
+              setShowReviewForm(false);
+              onReviewSubmitted?.();
+            }}
+            onClose={() => setShowReviewForm(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sort sheet (Fresha: "Best ▾" → bottom sheet with radio options) */}
       <Sheet isOpen={sortSheetOpen} onOpenChange={setSortSheetOpen} height="auto" aria-label={t("sortBy")}>
