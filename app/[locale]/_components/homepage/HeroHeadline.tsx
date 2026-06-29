@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
  * HeroHeadline — V3-D108 (2026-05-23).
  *
  * Rotating playful slogan on every page refresh. Some variants have an
- * optional inline CTA link (e.g. the coupon slogan → /angebote).
+ * optional inline CTA link (e.g. a coupon slogan → a deals/search link).
  *
  * Original V3-D107 (no CTA support) preserved in git history.
  *
