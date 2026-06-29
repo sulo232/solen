@@ -17,3 +17,9 @@
 - **Inspo "ab CHF" i18n** (`Entdecken.tsx` ~368): German "ab" leaks on /en /fr /it; SalonCard uses bare "CHF X". Pick: drop "ab" (match SalonCard) / localize via existing `fromPrice` key / keep.
 - **Reviews date** (`Reviews.tsx` ~146): full "11. Juni 2026" -> relative "vor 2 Wo." (needs `Intl.RelativeTimeFormat`). Owner said commit+move-on; optional.
 - **Homepage FABRICATED next-slot times** (no-fab): Nearby/RecentlyViewed hardcode "Heute 15:30" (`Nearby.tsx:76`, `RecentlyViewed.tsx:55-57`). The honest fix behind item-6's next-slot gap is to make THESE real (or drop them), not to fake the category cards.
+
+## REDESIGNS requested (owner 2026-06-29) , I'd DROPPED these; mockups pending
+The small fixes done (item 6 = icon swap, item 9 = shadow+quote) were NOT what the owner wanted , they want FULLER REDESIGNS, delivered as mockups first.
+- [ ] **Card redesign** (item 6 escalated, beyond the calendar-icon swap). Scope (which cards) + direction being pinned with the owner, then mockup -> build. DO FIRST.
+- [ ] **Reviews redesign** (item 9 escalated, beyond the shadow + 14px quote). Mockup -> build. Cards first, reviews next.
+- Walk-in clarifier (item 7): committed with draft copy; owner to refine the wording.

@@ -1,0 +1,136 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Feed card , redesign directions</title>
+<!-- Exists-check: real homepage feed card = app/[locale]/_components/homepage/SalonCard.tsx (1:1 photo + heart, name + gold-star rating, address line, Calendar+slot+price row, ~157px wide, rounded-22, elevation-2). This mocks REDESIGN DIRECTIONS for that card per owner "idk show me". Placeholder photos (gradients) + data. Net-new: nothing built (exploration). REMOVED-check: no AvailabilityPill (killed), no "Nur 1 heute" urgency badge (killed). -->
+<style>
+:root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#71717A;--border:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B;--accent:#276EF1;--success:#16A34A}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:22px 16px 60px;max-width:430px;margin:0 auto}
+h1{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.lead{color:var(--ink2);font-size:12.5px;line-height:1.5;margin:0 0 4px}
+.sec{margin-top:30px}
+.lab{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 2px}
+.why{font-size:11.5px;color:var(--ink3);margin:0 0 12px;line-height:1.4}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{display:flex;flex-direction:column;min-width:0}
+.ph{position:relative;width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;box-shadow:0 2px 8px rgba(50,47,44,.09)}
+.g1{background:linear-gradient(150deg,#d8cfc6,#b9a99b)}
+.g2{background:linear-gradient(150deg,#cdd2da,#9aa3b2)}
+.heart{position:absolute;top:8px;right:8px;display:grid;place-items:center;height:30px;width:30px;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.heart svg{width:16px;height:16px}
+.body{margin-top:10px;padding:0 2px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.r1{display:flex;align-items:baseline;gap:8px;min-width:0}
+.nm{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;line-height:1.25}
+.rt{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rt svg{width:12px;height:12px}
+.addr{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.r3{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink2);line-height:1.35;margin-top:1px}
+.slot{display:inline-flex;align-items:center;gap:4px;min-width:0}
+.slot svg{width:12px;height:12px;flex-shrink:0;color:var(--ink2)}
+.price{flex-shrink:0;font-weight:600;color:var(--ink)}
+/* A , editorial */
+.editorial .ph{aspect-ratio:4/5}
+.editorial .nm{font-size:15px}
+.vibe{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.95);color:var(--ink);font-size:11px;font-weight:600;border-radius:999px;padding:3px 9px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* B , clean */
+.clean .body{gap:4px;margin-top:11px}
+.clean .merged{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.clean .merged b{color:var(--ink);font-weight:600}
+/* C , booking-forward */
+.booking .chip{display:inline-flex;align-items:center;gap:4px;background:var(--sunken);color:var(--ink);font-size:11.5px;font-weight:600;border-radius:8px;padding:3px 8px;margin-top:3px}
+.booking .chip svg{width:12px;height:12px}
+.booking .r3b{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.note{font-size:11px;color:var(--ink3);margin-top:6px;font-style:italic}
+</style></head><body>
+
+<h1>Homepage feed card , redesign directions</h1>
+<p class="lead">The For You / Nearby card (<b>SalonCard</b>). Same data on every variant; only the treatment changes. Photos are placeholder gradients. Pick a direction (or mix) and I build it on the real component.</p>
+
+<div class="sec">
+  <div class="lab">Current</div>
+  <div class="why">1:1 photo · name + gold star · address · calendar + bare time + price. Note the "15:30" is a bare time (your no-times rule wants "Heute 15:30").</div>
+  <div class="row">
+    <div class="card">
+      <div class="ph g1"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Muse Beauty Studio</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div>
+        <div class="addr">Aeschenvorstadt 55, Basel</div>
+        <div class="r3"><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>15:30</span><span class="price">CHF 80</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ph g2"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Old Town Barbers</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div>
+        <div class="addr">Spalenberg 12, Basel</div>
+        <div class="r3"><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>16:15</span><span class="price">CHF 45</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec editorial">
+  <div class="lab">A , Editorial / richer</div>
+  <div class="why">Taller 4:5 photo (more presence + "alive"), a calm vibe-tag on the image, slightly larger name. Time fixed to "Heute 15:30".</div>
+  <div class="row">
+    <div class="card">
+      <div class="ph g1"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span><span class="vibe">Coiffeur</span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Muse Beauty Studio</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div>
+        <div class="r3"><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Heute 15:30</span><span class="price">CHF 80</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ph g2"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span><span class="vibe">Barber</span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Old Town Barbers</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div>
+        <div class="r3"><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Heute 16:15</span><span class="price">CHF 45</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec clean">
+  <div class="lab">B , Clean / calm</div>
+  <div class="why">1:1 photo, name + star, then ONE merged line: time + price together, address dropped (it lives on the PDP). More air, fewer rows.</div>
+  <div class="row">
+    <div class="card">
+      <div class="ph g1"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Muse Beauty Studio</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div>
+        <div class="merged">Heute 15:30 · <b>CHF 80</b></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ph g2"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Old Town Barbers</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div>
+        <div class="merged">Heute 16:15 · <b>CHF 45</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec booking">
+  <div class="lab">C , Booking-forward</div>
+  <div class="why">Availability is the hook: next slot becomes a quiet ink chip, price sits opposite it. Reads "bookable now" at a glance.</div>
+  <div class="row">
+    <div class="card">
+      <div class="ph g1"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Muse Beauty Studio</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span></div>
+        <div class="addr">Aeschenvorstadt 55, Basel</div>
+        <div class="r3b"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Heute 15:30</span><span class="price">CHF 80</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ph g2"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+      <div class="body">
+        <div class="r1"><span class="nm">Old Town Barbers</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div>
+        <div class="addr">Spalenberg 12, Basel</div>
+        <div class="r3b"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Heute 16:15</span><span class="price">CHF 45</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">All three fix the bare-time issue (→ "Heute 15:30") and keep the locked bits: 1:1 (or 4:5) photo, gold star, heart, elevation-2, rounded-22.</p>
+</div>
+
+</body></html>
