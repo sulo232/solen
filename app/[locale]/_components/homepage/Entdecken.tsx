@@ -47,6 +47,8 @@ interface Look {
    *  the bottom-left pill (prefixed with @) when present; DEMO entries
    *  fall back to the long styleName. */
   authorName?: string;
+  /** Lowest price (CHF) from `discovery_items.price_min`, when present , shown right of the creator. */
+  price?: number;
 }
 
 // V3-D100 (2026-05-22): gradients migrated to 5-stripe Orange identity.
@@ -114,6 +116,7 @@ export default function Entdecken() {
           name?: string | null;
           author_name?: string | null;
           tiktok_url?: string | null;
+          price_min?: number | null;
         }, i: number) => ({
           slug: item.id,
           styleName:
@@ -128,6 +131,7 @@ export default function Entdecken() {
             ? `/api/discovery/thumb/${item.id}`
             : undefined,
           authorName: item.author_name || undefined,
+          price: typeof item.price_min === "number" ? item.price_min : undefined,
         }));
         setLooks(mapped);
       } catch (err) {
@@ -186,11 +190,11 @@ export default function Entdecken() {
                 key={look.slug}
                 href={`/${locale}/inspo/${look.slug}`}
                 aria-label={`${look.styleName} – TikTok-Inspo`}
-                className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
+                className="group relative flex flex-col shrink-0 snap-center w-[44vw] max-w-[200px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
               >
                 <div
                   className={cn(
-                    "relative w-full h-full rounded-[16px] overflow-hidden origin-center",
+                    "relative w-full aspect-[9/16] rounded-[16px] overflow-hidden origin-center",
                     "transition-transform duration-[250ms] ease-glide",
                     // V3-D163: dim/scroll-zoom removed. Cards stay scale-1 +
                     // opacity-1 always; only desktop hover bumps the active
@@ -352,6 +356,20 @@ export default function Entdecken() {
                       double up. */}
                   {/* video signalled by the top-left TikTok pill; clapperboard removed 2026-06-29 */}
                 </div>
+                {(look.authorName || look.price != null) && (
+                  <div className="flex items-baseline justify-between gap-2 px-0.5 pt-1.5">
+                    {look.authorName && (
+                      <span className="truncate font-body text-[12px] text-s-ink-2">
+                        {look.authorName}
+                      </span>
+                    )}
+                    {look.price != null && (
+                      <span className="shrink-0 font-body text-[12px] font-semibold text-s-ink">
+                        ab CHF {look.price}
+                      </span>
+                    )}
+                  </div>
+                )}
               </Link>
             );
           })}
