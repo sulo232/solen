@@ -77,6 +77,9 @@ export default function WalkInBand() {
               <h2 className="font-display text-[18px] font-bold leading-[1.05] tracking-[-0.01em] text-s-ink">
                 Walk-in
               </h2>
+              <p className="mt-1 font-body text-[13px] leading-[1.3] text-s-ink-2">
+                Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.
+              </p>
             </div>
           </div>
 
