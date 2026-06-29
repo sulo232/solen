@@ -348,7 +348,7 @@ export function SearchBar() {
             // extra mt-4 (16px) stacked on the 12px gap = 28px, so the CTA sat
             // unbalanced/low vs the even 12px input rhythm. mt-0 lets the gap-3
             // carry it = uniform 12px. Desktop unchanged (md:mt-0 already set).
-            className="font-heading shrink-0 mt-0 rounded-[13px] md:rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white shadow-[0_10px_22px_-8px_rgba(10,10,10,0.7)] transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
+            className="font-heading shrink-0 mt-0 rounded-[13px] md:rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
           >
             {/* V3-D178 (2026-05-26, council item #5): "Solen durchsuchen" →
                 "Termine finden". Rhetorical echo with the H1 ("Termin in
