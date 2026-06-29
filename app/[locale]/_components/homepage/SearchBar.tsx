@@ -255,13 +255,10 @@ export function SearchBar() {
         }}
         transition={transition}
         className={cn(
-          // V3-D72 (2026-05-18) — unified Aurex floating shadow with cards
-          // per user "apply a soft, wide shadow to ALL your white cards" —
-          // single value across SearchBar + SalonCard for visual consistency.
-          // `0px 6px 24px rgba(0, 0, 0, 0.06)` + no visible border. Was V2-D71's
-          // slightly different `0 8px 24px 0.06` — now matches cards exactly.
+          // V3 (2026-06-29, owner-approved mockup "A"): the search shadow had drifted to a heavy
+          // 0.13-black / 44px-blur / 18px-lift slab ("too thick"). Softened to a single light hero float.
           "relative w-full max-w-[540px] overflow-hidden bg-white",
-          "shadow-[0_18px_44px_-12px_rgba(0,0,0,0.13),0_4px_12px_-6px_rgba(0,0,0,0.07)]",
+          "shadow-[0_8px_24px_-10px_rgba(0,0,0,0.10)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           // V3-D228 (2026-05-27, desktop placement fix): cap collapsed-state
