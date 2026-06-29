@@ -1,57 +1,61 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Review , stylist + salon</title>
-<!-- Exists-check: real write form = components-legacy/ReviewForm.tsx (POST /api/reviews), mounted by components-legacy/salon/SalonReviews.tsx. `npm run exists review` ran. Two review types (owner pick, grounded in Mobbin refs): (1) STYLIST review right after service = Uber pattern (avatar + "How was Jonas?" + stars + obvious comment), the rating IS the per-staff score; (2) SALON review = fuller, includes more (comment + photos + amenity tags inline). Amenities = net-new review_attributes table. -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Review , motion</title>
+<!-- Exists-check: real write form = components-legacy/ReviewForm.tsx (POST /api/reviews), mounted by components-legacy/salon/SalonReviews.tsx. `npm run exists review` ran. Locked direction A (stylist, right after) with RICH MOTION (owner "make morphing more"): on-load entrance, star cascade-fill + pop on tap, rating word rises in, comment + Submit morph up. transform/opacity only, prefers-reduced-motion guarded (MOTION.md). Net-new: review_attributes for salon-review chips. -->
 <style>
 :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#71717A;--border:#E4E4E7;--sunken:#F4F4F5;--star:#FFC32B;--starempty:#D4D4D8;--accent:#276EF1}
 *{box-sizing:border-box}
 body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:22px 16px 50px;max-width:430px;margin:0 auto}
 h1{font-size:18px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
-.lead{color:var(--ink2);font-size:13px;line-height:1.5;margin:0 0 18px}
-.cap{font-size:13px;font-weight:600;color:var(--ink);margin:20px 0 2px}
-.capsub{font-size:12px;color:var(--ink3);margin:0 0 8px;line-height:1.45}
-.phone{position:relative;border:1px solid var(--border);border-radius:28px;overflow:hidden;background:#f7f7f8}
+.lead{color:var(--ink2);font-size:13px;line-height:1.5;margin:0 0 16px}
+.phone{position:relative;border:1px solid var(--border);border-radius:28px;overflow:hidden;height:720px;background:#f7f7f8}
 .behind{position:absolute;inset:0;background:#fff;transform:scale(.96);transform-origin:top center;opacity:.5}
 .behind .bar{height:8px;background:var(--sunken);margin:18px 16px;border-radius:4px}.behind .bar.s{width:55%}
 .scrim{position:absolute;inset:0;background:rgba(10,10,10,.35)}
-.sheet{position:relative;background:#fff;border-radius:28px;box-shadow:0 -10px 40px rgba(10,10,10,.10);padding:8px 20px 24px}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -10px 40px rgba(10,10,10,.12);padding:8px 20px 24px;max-height:94%;overflow:auto;transition:transform .5s cubic-bezier(.32,.72,0,1)}
 .grab{width:36px;height:4px;border-radius:999px;background:var(--starempty);margin:8px auto 14px}
 .topbar{display:flex;align-items:center;justify-content:flex-end;min-height:20px}
 .skip{font-size:14px;color:var(--ink3)}
-.head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.title{font-size:15px;font-weight:400;color:var(--ink2)}
-.x{width:36px;height:36px;border-radius:999px;border:1px solid var(--border);background:#fff;display:grid;place-items:center;color:var(--ink2)}.x svg{width:17px;height:17px}
 
 .avatar{width:64px;height:64px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:20px;font-weight:600;color:var(--ink2);margin:8px auto 12px}
 .ask{text-align:center;font-size:20px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
 .asksub{text-align:center;font-size:13px;color:var(--ink3);margin-top:4px}
-.bigstars{display:flex;justify-content:center;gap:8px;margin-top:18px}
-.bigstars svg{width:40px;height:40px;fill:var(--starempty)}
-.bigstars svg.f{fill:var(--star)}
-.rword{text-align:center;font-size:15px;font-weight:600;color:var(--ink);margin-top:12px}
+.bigstars{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.star{border:0;background:none;padding:0;cursor:pointer;line-height:0;transform-origin:center}
+.star svg{width:42px;height:42px;fill:var(--starempty);transition:fill .18s ease}
+.star.f svg{fill:var(--star)}
+.star:active{transform:scale(.85)}
+.star.pop{animation:pop .42s cubic-bezier(.34,1.56,.64,1)}
 
-/* obvious comment field , a real bordered box, not a bare line */
-.field{margin-top:22px;border:1px solid var(--border);border-radius:16px;padding:14px 15px;min-height:84px}
+.rword{text-align:center;font-size:20px;font-weight:600;color:var(--ink);height:26px;margin-top:14px;opacity:0;transform:translateY(8px);transition:opacity .3s ease,transform .3s ease}
+.rword.show{opacity:1;transform:none}
+.hint{text-align:center;font-size:13px;color:var(--ink3);height:26px;margin-top:14px;transition:opacity .25s ease}
+
+.reveal{max-height:0;opacity:0;overflow:hidden;transition:max-height .55s cubic-bezier(.32,.72,0,1),opacity .4s ease}
+.reveal.open{max-height:420px;opacity:1}
+.morph{transform:translateY(14px);opacity:0;transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .45s ease}
+.reveal.open .morph{transform:none;opacity:1}
+.reveal.open .morph.d2{transition-delay:.08s}
+
+.field{margin-top:24px;border:1px solid var(--border);border-radius:16px;padding:14px 15px;min-height:84px;transition:border-color .2s ease}
+.field:focus-within{border-color:var(--ink)}
 .field textarea{width:100%;border:0;padding:0;font:inherit;font-size:15px;line-height:1.5;color:var(--ink);resize:none;outline:none;background:transparent}
 .field textarea::placeholder{color:var(--ink3)}
+.submit{width:100%;margin-top:16px;padding:16px;border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.submit:active{transform:scale(.98)}
+.note{margin-top:20px;font-size:12px;color:var(--ink2);line-height:1.55}.note b{color:var(--ink)}
 
-.seclbl{font-size:13px;font-weight:600;color:var(--ink);margin:22px 0 10px}
-.photos{display:flex;gap:8px}
-.pt{width:56px;height:56px;border-radius:12px;display:grid;place-items:center}
-.pt.add{border:1px solid var(--border);color:var(--ink3);font-size:22px;font-weight:300}
-.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-size:13px;color:var(--ink2);background:#fff}
-.chip svg{width:15px;height:15px;color:var(--ink2)}
-.chip.on{background:var(--sunken);color:var(--ink);border-color:var(--border);font-weight:600}.chip.on svg{color:var(--ink)}
-.more{display:inline-flex;align-items:center;justify-content:center;width:40px;height:34px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--ink3)}.more svg{width:18px;height:18px}
-
-.submit{width:100%;margin-top:24px;padding:16px;border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600}
-.note{margin-top:22px;font-size:12px;color:var(--ink2);line-height:1.55}.note b{color:var(--ink)}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.38)}100%{transform:scale(1)}}
+@keyframes entrance{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes risein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.avatar{animation:entrance .45s ease both}
+.ask{animation:risein .45s ease both;animation-delay:.05s}
+.asksub{animation:risein .45s ease both;animation-delay:.1s}
+.bigstars{animation:risein .5s ease both;animation-delay:.15s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 
-<h1>Review , stylist (quick) + salon (more)</h1>
-<p class="lead">Direction A locked. Right after the appointment = a quick stylist review (the rating doubles as the per-staff score). The salon review is the fuller one , it includes photos + amenities. Comment field is a real, obvious box now.</p>
+<h1>Review , richer motion</h1>
+<p class="lead">Tap a star. Stars cascade-fill with a pop, the word rises in, and the comment + Submit morph up into place. Locked direction A (stylist, right after). Same fields + same POST /api/reviews.</p>
 
-<div class="cap">1 , right after , your stylist</div>
-<div class="capsub">Uber pattern: avatar + "How was Jonas?" + stars + an obvious comment. Fast.</div>
 <div class="phone">
   <div class="behind"><div class="bar"></div><div class="bar s"></div><div class="bar"></div></div>
   <div class="scrim"></div>
@@ -61,53 +65,40 @@ h1{font-size:18px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
     <div class="avatar">JM</div>
     <div class="ask">How was Jonas?</div>
     <div class="asksub">Cuts &amp; Culture</div>
-    <div class="bigstars">
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+    <div class="bigstars" id="hero"></div>
+    <div class="rword" id="rword"></div>
+    <div class="hint" id="hint">Tap to rate</div>
+    <div class="reveal" id="reveal">
+      <div class="field morph"><textarea rows="3" placeholder="Add a few words (optional)"></textarea></div>
+      <button class="submit morph d2">Submit</button>
     </div>
-    <div class="rword">Excellent</div>
-    <div class="field"><textarea rows="3" placeholder="Add a few words (optional)"></textarea></div>
-    <button class="submit">Submit</button>
   </div>
 </div>
 
-<div class="cap">2 , salon review , includes more</div>
-<div class="capsub">Stars + an obvious comment, plus photos and amenities. The fuller, place-level review.</div>
-<div class="phone">
-  <div class="behind"><div class="bar"></div><div class="bar s"></div><div class="bar"></div></div>
-  <div class="scrim"></div>
-  <div class="sheet">
-    <div class="grab"></div>
-    <div class="head">
-      <div class="title">How was Cuts &amp; Culture?</div>
-      <button class="x" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-    </div>
-    <div class="bigstars" style="margin-top:24px">
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-      <svg class="f" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-    </div>
-    <div class="rword">Excellent</div>
-    <div class="field"><textarea rows="3">Spotless place, warm welcome, and Jonas nailed the fade. Coming back.</textarea></div>
-    <div class="seclbl">Photos</div>
-    <div class="photos"><div class="pt add">+</div></div>
-    <div class="seclbl">Amenities</div>
-    <div class="chips">
-      <span class="chip on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>LGBTQ+ welcome</span>
-      <span class="chip on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Wheelchair access</span>
-      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>Woman-owned</span>
-      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></svg>Free WiFi</span>
-      <span class="more" aria-label="Show more"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>
-    </div>
-    <button class="submit">Submit</button>
-  </div>
-</div>
+<p class="note"><b>Motion added:</b> on-load entrance (avatar, title, stars rise in); star cascade-fill with a spring pop per star on tap; press-scale on every tap; rating word rises + fades in; comment field + Submit morph up (staggered) when you rate; ink-edge focus on the comment, press-scale on Submit. transform/opacity only, reduced-motion respected.</p>
 
-<p class="note"><b>Owner pass:</b> A (stylist, right after) locked , avatar + "How was Jonas?" + stars + an obvious bordered comment field; the rating is the per-staff score. Salon review includes more , photos + Amenities inline. Both keep one rating + one obvious comment as the core.</p>
-
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  var STAR='M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z';
+  var WORDS=['Poor','Fair','Good','Great','Excellent'];
+  var hero=document.getElementById('hero'),rword=document.getElementById('rword'),hint=document.getElementById('hint'),reveal=document.getElementById('reveal');
+  var stars=[];
+  for(var i=1;i<=5;i++){
+    var b=document.createElement('button');b.className='star';b.setAttribute('data-i',i);b.setAttribute('aria-label',i+' stars');
+    var svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 24 24');
+    var p=document.createElementNS(NS,'path');p.setAttribute('d',STAR);
+    svg.appendChild(p);b.appendChild(svg);hero.appendChild(b);stars.push(b);
+  }
+  function setRating(n){
+    stars.forEach(function(s,i){s.classList.toggle('f',i<n);s.classList.remove('pop');s.style.animationDelay='';});
+    void hero.offsetWidth;
+    stars.forEach(function(s,i){if(i<n){s.style.animationDelay=(i*0.07)+'s';s.classList.add('pop');}});
+    rword.textContent=WORDS[n-1];rword.classList.add('show');
+    hint.style.opacity='0';
+    reveal.classList.add('open');
+  }
+  hero.addEventListener('click',function(e){var b=e.target.closest('.star');if(!b)return;setRating(+b.getAttribute('data-i'));});
+})();
+</script>
 </body></html>
