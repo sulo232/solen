@@ -49,4 +49,8 @@ After ~8 iterations the owner picked, grounded in real refs (Mobbin: Uber/Fresha
 - **CUT (owner: "no one's gonna do this"):** the staff star sub-row + Result/Atmosphere/Value aspect ratings. Airbnb-style category ratings deliberately NOT used (that is multi-day-stay friction).
 - **Amenities:** noun label "Amenities" (NOT a question/sentence), chips soft-gray-fill + check when selected, white when not, a dots "more" glyph (not "+5"). Net-new `review_attributes` table.
 - **Treatment:** line separators (not cards), sunken ONLY for selected, comment = obvious bordered field (ink edge on focus, no ring). Mockup `public/_mockups/review-form-redesign.html` (+ `review-directions.html` is the A/B reference).
-- **NEXT (build):** wire the stylist review into the real legacy `ReviewForm.tsx` -> current tree; the salon review variant; the `review_attributes` migration. Per-staff display bug remap is already in BUG_HUNT FIX-clear.
+- **APPROVED 2026-06-29** (incl. the rich motion). BUILDING:
+  - **Chunk 1 (in progress):** rebuild legacy `ReviewForm.tsx` to direction A (stylist-led + motion), keep POST /api/reviews (booking_id, rating, comment, staff_member_id; NO sub-scores) + gating + photos; plumb staffName/staffMemberId from the unreviewed booking via `SalonReviews`. Layered loop.
+  - **Chunk 2 (later):** salon-review variant (+ photos + amenities) + `review_attributes` migration (additive).
+  - **Chunk 3 (later):** "right after the appointment" entry trigger (today the only entry is the /salon/[slug]/reviews button on an unreviewed booking).
+  - Per-staff display bug remap already in BUG_HUNT FIX-clear.
