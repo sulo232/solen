@@ -219,10 +219,10 @@ function ReviewCard({
         "snap-start scroll-snap-align-start",
         "rounded-2xl border bg-s-bg-surface p-4",
         "border-s-border",
-        "shadow-[0_1px_3px_rgba(31,23,9,0.04)]",
+        "shadow-elevation-2",
         "transition-[transform,box-shadow] duration-200 ease-glide",
-        "hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(31,23,9,0.08)]",
-        "focus-within:-translate-y-[2px] focus-within:shadow-[0_8px_20px_rgba(31,23,9,0.08)]",
+        "hover:-translate-y-[2px] hover:shadow-elevation-3",
+        "focus-within:-translate-y-[2px] focus-within:shadow-elevation-3",
       )}
     >
       {/* V2-D49l overlay button — full-card click target for opening review */}
@@ -263,7 +263,7 @@ function ReviewCard({
           V3-D180 (council unanimous): (3) line-clamp-4 → line-clamp-3
           (3 lines reads as quote pull, 4 reads as paragraph). (4) leading
           1.55 → 1.5 (card density not article density). */}
-      <p className="relative pointer-events-none flex-1 font-body text-[13px] leading-[1.5] text-s-ink line-clamp-3 mb-3">
+      <p className="relative pointer-events-none flex-1 font-body text-[14px] leading-[1.5] text-s-ink line-clamp-3 mb-3">
         &ldquo;{review.text}&rdquo;
       </p>
 
