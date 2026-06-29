@@ -193,7 +193,7 @@ export default async function Hero() {
               Still the page's biggest type, but stops bullying the fold so the
               search is reachable without scrolling. */}
           <h1 className="mb-3 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.08] tracking-[-0.02em] text-s-ink">
-            Termin in 30 Sekunden.
+            Termine, sofort bestätigt.
           </h1>
           {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}
           {/* V3-D330: Hero sub tracking -0.015em → -0.005em per LOCKFILE §2.5 canonical Hero sub recipe. */}
