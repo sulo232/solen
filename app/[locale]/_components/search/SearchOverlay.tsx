@@ -126,10 +126,6 @@ export interface SearchOverlayProps {
    *  (Service / Stadt / Zeit) so tapping "City" lands on the city picker, not
    *  the service search. Defaults to "service" (Fresha-style ready-to-type). */
   initialFocus?: Segment;
-  /** Preview ONLY (/dev): render the overlay as a top-anchored in-place MORPH that
-   *  grows from the bar over a BLURRED backdrop, instead of the full-screen white
-   *  fade. Default false , the live homepage/search are unchanged. */
-  morphPreview?: boolean;
 }
 
 export function SearchOverlay({
@@ -139,7 +135,6 @@ export function SearchOverlay({
   initialService = "",
   initialCity = "",
   initialFocus = "service",
-  morphPreview = false,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -383,31 +378,16 @@ export function SearchOverlay({
   return createPortal(
     <AnimatePresence>
       {open && (
-        <>
-        {morphPreview && (
-          <motion.div
-            key="morph-scrim"
-            className="fixed inset-0 z-[799] bg-s-ink/15 backdrop-blur-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={transition}
-            onClick={onClose}
-          />
-        )}
         <motion.div
           key="search-overlay"
           role="dialog"
           aria-modal="true"
           aria-label={t("title")}
-          initial={morphPreview ? { opacity: 0, scale: 0.97, y: -10 } : { opacity: 0 }}
-          animate={morphPreview ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1 }}
-          exit={morphPreview ? { opacity: 0, scale: 0.97, y: -10 } : { opacity: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={transition}
-          style={morphPreview ? { transformOrigin: "top center" } : undefined}
-          className={morphPreview
-            ? "fixed inset-x-2 top-[12%] bottom-2 z-[800] flex flex-col overflow-hidden rounded-[28px] bg-white shadow-[0_26px_80px_rgba(10,10,10,0.24)]"
-            : "fixed inset-0 z-[800] flex flex-col bg-white"}
+          className="fixed inset-0 z-[800] flex flex-col bg-white"
         >
           {/* ── Header: back (when in a focused picker) OR title + close ── */}
           <div className="flex items-center gap-3 px-4 pb-3 pt-[max(16px,env(safe-area-inset-top))] md:px-6">
@@ -542,7 +522,6 @@ export function SearchOverlay({
             </div>
           </div>
         </motion.div>
-        </>
       )}
     </AnimatePresence>,
     document.body,
