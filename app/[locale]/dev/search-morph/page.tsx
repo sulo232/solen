@@ -90,7 +90,7 @@ export default function SearchMorphPreviewPage() {
   const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]);
   // Card margin + radius: flush as expand approaches 1 (replaces inputFocused CSS class swap)
   const cardMx = useTransform(expand, [0, 0.7], [12, 0]);
-  const cardRadius = useTransform(expand, [0, 0.7], [22, 0]);
+  const cardRadius = useTransform(expand, [0, 0.7], [22, 18]); // keep a rounded TOP when focused (cropped sheet look, blur above), never square full-bleed
 
   useEffect(() => setMounted(true), []);
   useEffect(() => { // measure env(safe-area-inset-top) so the focused sheet clears the notch
