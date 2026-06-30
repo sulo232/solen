@@ -20,8 +20,9 @@ import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchS
 import { Skeleton } from "@/app/[locale]/_components/primitives";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
-const OPEN_SPRING = { type: "spring", stiffness: 420, damping: 38, mass: 0.9 } as const;
-const MORPH_SPRING = { type: "spring", stiffness: 460, damping: 40 } as const;
+// tweens, NOT springs , owner: "too bouncy". A smooth ease-out has no overshoot/bounce.
+const OPEN_T = { duration: 0.4, ease: EASE } as const;
+const MORPH_T = { duration: 0.28, ease: EASE } as const;
 const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 // selected-ok: the ONE primary commit CTA stays ink (bg-s-ink) per the design contract; every other selected state is gray/blue-border
@@ -101,8 +102,8 @@ export default function SearchMorphPreviewPage() {
 
   if (process.env.NODE_ENV === "production") notFound(); // dev preview only , real 404 in production
 
-  const openT = reduce ? { duration: 0 } : OPEN_SPRING;
-  const morphT = reduce ? { duration: 0 } : MORPH_SPRING;
+  const openT = reduce ? { duration: 0 } : OPEN_T;
+  const morphT = reduce ? { duration: 0 } : MORPH_T;
 
   // ── suggestion lists (capped preview in the step, full when morphed open) ──
   const serviceSuggestions = (full: boolean): ReactNode => {
@@ -296,7 +297,7 @@ export default function SearchMorphPreviewPage() {
       {mounted && createPortal(
         <AnimatePresence>
           {open && [
-            <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-2xl"
+            <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
             <motion.button key="closeX" onClick={close} aria-label="Schliessen"
