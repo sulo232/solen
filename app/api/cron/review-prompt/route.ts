@@ -61,7 +61,8 @@ export async function GET(req: NextRequest) {
   let baseUrl: string;
   try {
     baseUrl = getAppUrl();
-  } catch {
+  } catch (err) {
+    console.warn("[review-prompt] getAppUrl failed, falling back to prod URL:", err);
     baseUrl = "https://www.solen.ch";
   }
 
@@ -235,17 +236,22 @@ export async function GET(req: NextRequest) {
       }
 
       // In-app "review your appointment": create iff THIS booking has no review yet
-      // (per-booking, not per-salon , so a 2nd booking at the same salon still prompts)
-      // and no review_prompt notification already exists for it. Auto-deleted on review submit.
-      const { data: bookingReview } = await supabase
+      // (per-booking, not per-salon , so a 2nd booking at the same salon still prompts) AND
+      // we are not sending the Google-nudge for this visit (isHighRating && hasGooglePlace , the
+      // user already reviewed, so no contradictory in-app prompt) AND no review_prompt
+      // notification already exists for it. On a query error we SKIP (never create on unknown
+      // DB state , the silent-no-op trap). Auto-deleted on review submit.
+      const { data: bookingReview, error: bookingReviewErr } = await supabase
         .from("reviews")
         .select("id")
         .eq("booking_id", booking.id)
         .maybeSingle();
 
-      if (!bookingReview) {
+      if (bookingReviewErr) {
+        console.error(`[review-prompt] bookingReview check failed for ${booking.id}:`, bookingReviewErr);
+      } else if (!bookingReview && !(isHighRating && hasGooglePlace)) {
         // Dedup: skip if a review_prompt notification already exists for this booking.
-        const { data: existingNotif } = await supabase
+        const { data: existingNotif, error: existingNotifErr } = await supabase
           .from("notifications")
           .select("id")
           .eq("user_id", booking.user_id)
@@ -253,7 +259,9 @@ export async function GET(req: NextRequest) {
           .eq("data->>booking_id", booking.id)
           .maybeSingle();
 
-        if (!existingNotif) {
+        if (existingNotifErr) {
+          console.error(`[review-prompt] existingNotif check failed for ${booking.id}:`, existingNotifErr);
+        } else if (!existingNotif) {
           // Strip HTML tags from body for the plain in-app text.
           const plainBody = lang.solenBody1.replace(/<[^>]+>/g, "");
           await sendNotification({
