@@ -8,6 +8,7 @@
 // Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
 import { useState, useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, ArrowLeft, Store, type LucideIcon } from "lucide-react";
@@ -49,6 +50,8 @@ export default function SearchMorphPreviewPage() {
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [searchFocused, setSearchFocused] = useState(false); // tap the search input -> full-screen search
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context (like the real SearchOverlay)
   // lock body scroll while the overlay is open, so the scroll stays inside the overlay (not the page behind)
   useEffect(() => {
     if (!open) return;
@@ -91,6 +94,7 @@ export default function SearchMorphPreviewPage() {
         </motion.button>
       </div>
 
+      {mounted && createPortal(
       <AnimatePresence>
         {open && (
           <motion.div
@@ -282,7 +286,8 @@ export default function SearchMorphPreviewPage() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body)}
     </div>
   );
 }
