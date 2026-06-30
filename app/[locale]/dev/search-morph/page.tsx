@@ -12,8 +12,8 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { notFound } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, useMotionValueEvent, animate } from "motion/react";
-import { Search, MapPin, Navigation, X, Clock, User, ArrowLeft, Store, type LucideIcon } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from "motion/react";
+import { Search, MapPin, Navigation, X, Clock, User, ArrowLeft, Store, ChevronLeft, ChevronRight, Globe, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
@@ -55,13 +55,16 @@ function monthGrid(d: Date) {
 export default function SearchMorphPreviewPage() {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState<Step>("service");
-  const [inputFocused, setInputFocused] = useState(false); // keyboard/editable side-effect only (set when expand ~1); NOT a layout swap
+  // inputFocused is set ONLY by an explicit tap on the search input (onFocus).
+  // It is never set by scroll position -- scroll only drives the expand motion value.
+  const [inputFocused, setInputFocused] = useState(false);
   const [service, setService] = useState("");
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
   const [serviceQ, setServiceQ] = useState("");
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
+  const [monthOffset, setMonthOffset] = useState(0); // paged calendar: 0 = current month, arrows step it
   const [selKey, setSelKey] = useState<string | null>(null);
   const [recents, setRecents] = useState(RECENTS); // removable via the per-row X
   const [mounted, setMounted] = useState(false);
@@ -70,17 +73,24 @@ export default function SearchMorphPreviewPage() {
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const committed = useRef(false); // at the very top, LOCK it , scrolling back down must NOT un-expand (owner: reverse is gimmicky); exit via the back arrow
 
-  // ── SMOOTHNESS: nothing animates LAYOUT per scroll frame except the crop. The heading scrolls away NATIVELY
-  // (it lives in the scroll container, bar is sticky), the steps + footer collapse DISCRETELY via a CSS class at
-  // commit, and the card's shadow/bg/margin/radius toggle by the `inputFocused` class. Per-frame box-shadow +
-  // multiple height animations were the freeze. Only `cropTop` (+ the cheap X-fade) stay scroll-linked.
+  // PURE 1:1 SCROLL-LINKED EXPAND
+  // expand = clamp(scrollTop / EXPAND_DIST, 0, 1). Every property driven from this
+  // single value via useTransform. No commit, no lock, no auto-jump, no write-back.
+  // Scroll down = card follows finger up. Scroll back = card follows finger down.
+  // Every paused frame is a valid resting state.
   const expand = useMotionValue(0);
-  const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]); // LINEAR: sheet rises with the scroll from the start (was held-then-lurch); focused = cropped, not full-screen
-  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);       // heading collapses (sibling above the list, so it never shifts the list scroll , no jump)
+  const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]); // sheet rises proportionally
+  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);              // heading collapses at the same pace as the sheet
   const headingOp = useTransform(expand, [0, 0.42], [1, 0]);
-  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X fades as it goes focused
+  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);                       // close-X fades late
+  // Other-step rows + footer: fade+collapse out as expand rises (replaces inputFocused CSS switch)
+  const stepsOp = useTransform(expand, [0.4, 0.8], [1, 0]);
+  const stepsH = useTransform(expand, [0.4, 0.8], [ROW_H * 2 + 20, 0]);
+  const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]);
+  // Card margin + radius: flush as expand approaches 1 (replaces inputFocused CSS class swap)
+  const cardMx = useTransform(expand, [0, 0.7], [12, 0]);
+  const cardRadius = useTransform(expand, [0, 0.7], [22, 0]);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => { // measure env(safe-area-inset-top) so the focused sheet clears the notch
@@ -104,15 +114,12 @@ export default function SearchMorphPreviewPage() {
     return () => { document.body.style.overflow = prev; };
   }, [open]);
   useEffect(() => { if (inputFocused) (activeStep === "location" ? cityRef : serviceRef).current?.focus(); }, [inputFocused, activeStep]);
-  // PURE finger-follow: expand tracks scrollTop 1:1 (no auto-snap). At the very top, LOCK once (focused) so scrolling
-  // back down scrolls the list instead of un-expanding. Exit via the back arrow.
-  useMotionValueEvent(expand, "change", (v) => {
-    if (v >= 0.98 && !committed.current && activeStep !== "date") { committed.current = true; setInputFocused(true); expand.set(1); } // lock at the top , instant, no auto-animation
-  });
 
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1)]; // current + next month (the bookable window); avoids the "all year" clutter
   const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
+  const maxMonthOffset = (windowEnd.getFullYear() - now.getFullYear()) * 12 + (windowEnd.getMonth() - now.getMonth()); // last bookable month
+  const shownMonth = new Date(now.getFullYear(), now.getMonth() + Math.min(monthOffset, maxMonthOffset), 1); // paged calendar
 
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no calls while closed
   const typing = serviceQ.trim().length >= 2;
@@ -122,8 +129,8 @@ export default function SearchMorphPreviewPage() {
   const morphT = reduce ? { duration: 0 } : MORPH_T;
   const openT = reduce ? { duration: 0 } : OPEN_T;
   const grow = (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
-  // collapse back to the accordion: release the lock + rewind the list scroll so the next expand starts clean
-  const collapse = () => { committed.current = false; if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
+  // collapse: rewind the list scroll so the next expand starts from the top
+  const collapse = () => { if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
 
   const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); };
   const advance = (s: Step) => {
@@ -131,7 +138,7 @@ export default function SearchMorphPreviewPage() {
     const next = STEPS[STEPS.indexOf(s) + 1];
     if (next) setActiveStep(next);
   };
-  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); committed.current = false; expand.set(0); };
+  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); };
   const reset = () => {
     setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null);
     setActiveStep("service"); setInputFocused(false); collapse();
@@ -139,7 +146,7 @@ export default function SearchMorphPreviewPage() {
 
   if (process.env.NODE_ENV === "production") notFound(); // dev preview only , real 404 in production
 
-  // ── suggestion lists (the full list always renders; the growing viewport reveals more rows) ──
+  // suggestion lists (the full list always renders; the growing viewport reveals more rows)
   const serviceSuggestions = (): ReactNode => {
     if (typing) {
       if (loading) return <div className="space-y-2 pt-1">{[0, 1, 2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
@@ -199,7 +206,7 @@ export default function SearchMorphPreviewPage() {
     </>
   );
 
-  // ── the search bar: ONE element. Magnifier <-> back swaps at the very end (inputFocused ~= expand>=0.96). ──
+  // the search bar: ONE element. Magnifier <-> back swaps when inputFocused (explicit tap only).
   const bar = (s: Step): ReactNode => {
     const isS = s === "service";
     const q = isS ? serviceQ : cityQ;
@@ -287,32 +294,47 @@ export default function SearchMorphPreviewPage() {
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
               style={{ top: cropTop }}
-              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-200 ${inputFocused ? "rounded-t-[18px] bg-white" : "bg-transparent"}`}>
+              className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
               {activeStep === "service" ? (
-                /* SEARCH , the ONLY step with the scroll-up expand. The heading scrolls away NATIVELY inside the scroll
-                   container (bar is sticky); steps + footer collapse via a CSS class at commit. Only the crop animates
-                   per frame -> no layout thrash -> smooth. */
+                // SEARCH -- the ONLY step with the scroll-up expand.
+                // Every visual property (card margin, radius, shadow, row height, footer height)
+                // is a useTransform output of `expand`. No CSS time-transitions keyed off state,
+                // no committed lock. The finger IS the single source of truth every frame.
                 <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }}
                   className="flex min-h-0 flex-1 flex-col">
-                  <div className={`flex min-h-0 flex-1 flex-col overflow-hidden bg-white transition-[margin,border-radius,box-shadow] duration-300 ${inputFocused ? "mx-0 rounded-none" : "mx-3 rounded-[22px] shadow-[0_18px_50px_rgba(10,10,10,0.13)]"}`}>
-                    {/* heading is a SIBLING above the list (collapses by height) , collapsing it never shifts the list scroll, so no jump */}
+                  {/* Card: margin + radius driven by motion values, not class swap */}
+                  <motion.div
+                    style={{
+                      marginLeft: cardMx,
+                      marginRight: cardMx,
+                      borderRadius: cardRadius,
+                      boxShadow: "0 18px 50px rgba(10,10,10,0.13)",
+                    }}
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+                    {/* heading is a SIBLING above the list -- collapsing it never shifts the list scroll, no jump */}
                     <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                       <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
                     </motion.div>
                     <div className="shrink-0 px-3 pb-2 pt-1">{bar("service")}</div>
+                    {/* onScroll: pure clamp -- no committed guard, no lock */}
                     <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4"
-                      onScroll={(e) => { if (!committed.current) expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
+                      onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                       {serviceSuggestions()}
                     </div>
-                  </div>
-                  <div className={`overflow-hidden px-3 transition-[max-height,opacity] duration-300 ${inputFocused ? "max-h-0 opacity-0" : "max-h-44 opacity-100"}`}>
+                  </motion.div>
+                  {/* Other-step rows: height + opacity driven by expand, not by inputFocused class */}
+                  <motion.div style={{ height: stepsH, opacity: stepsOp }} className="overflow-hidden px-3">
                     <div className="pt-2.5">{collapsedRow("location")}</div>
                     <div className="pt-2.5">{collapsedRow("date")}</div>
-                  </div>
-                  <div className={`shrink-0 overflow-hidden transition-[max-height,opacity] duration-300 ${inputFocused ? "max-h-0 opacity-0" : "max-h-32 opacity-100"}`}>{footerInner}</div>
+                  </motion.div>
+                  {/* Footer: same */}
+                  <motion.div style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden">
+                    {footerInner}
+                  </motion.div>
                 </motion.div>
               ) : (
-                /* LOCATION or DATE , plain accordion in FIXED order (Suche > Standort > Datum); the active one expands IN PLACE, no scroll-expand. */
+                // LOCATION or DATE -- plain accordion in FIXED order (Suche > Standort > Datum);
+                // the active one expands IN PLACE, no scroll-expand.
                 <motion.div key={activeStep} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }}
                   style={{ transformOrigin: "top center" }} className="flex min-h-0 flex-1 flex-col px-3 pt-3">
                   {STEPS.map((s) => s !== activeStep ? (
@@ -341,10 +363,18 @@ export default function SearchMorphPreviewPage() {
                         <AnimatePresence mode="wait" initial={false}>
                           {dateTab === "daten" ? (
                             <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
+                              {/* one month at a time; arrows page forward/back (no stacked months) */}
+                              <div className="mb-2 flex items-center justify-between">
+                                <p className="font-heading text-[17px] font-bold capitalize text-s-ink">{shownMonth.toLocaleDateString("de-CH", { month: "long" })} {shownMonth.getFullYear()}</p>
+                                <div className="flex items-center gap-1">
+                                  <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
+                                    className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25"><ChevronLeft size={20} strokeWidth={2} /></button>
+                                  <button onClick={() => setMonthOffset((o) => Math.min(maxMonthOffset, o + 1))} disabled={monthOffset >= maxMonthOffset} aria-label="Nächster Monat"
+                                    className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25"><ChevronRight size={20} strokeWidth={2} /></button>
+                                </div>
+                              </div>
                               <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
-                              {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
-                                <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
-                              ))}
+                              <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} hideHeader onPick={(key, label) => { setSelKey(key); setDate(label); }} />
                             </motion.div>
                           ) : (
                             <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
@@ -373,8 +403,8 @@ function SectionLabel({ children, className = "" }: { children: ReactNode; class
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
-function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
-  monthDate: Date; now: Date; windowEnd: Date; selKey: string | null; onPick: (key: string, label: string) => void;
+function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, hideHeader }: {
+  monthDate: Date; now: Date; windowEnd: Date; selKey: string | null; onPick: (key: string, label: string) => void; hideHeader?: boolean;
 }) {
   const y = monthDate.getFullYear(), m = monthDate.getMonth();
   const monthLong = monthDate.toLocaleDateString("de-CH", { month: "long" });
@@ -383,7 +413,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
   const windowMid = windowEnd.getTime();
   return (
     <div className="mb-5">
-      <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthLong} {y}</p>
+      {!hideHeader && <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthLong} {y}</p>}
       <div className="grid grid-cols-7 gap-y-1.5">
         {cells.map((d, i) => {
           if (d === null) return <div key={i} />;
@@ -395,7 +425,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
           return (
             <div key={i} className="flex justify-center">
               {disabled ? (
-                <span className="grid h-11 w-11 place-items-center text-[14px] text-s-ink-3/35">{d}</span> // faint, NO strikethrough (declutter)
+                <span className="grid h-11 w-11 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
                   className={`grid h-11 w-11 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
