@@ -141,7 +141,7 @@ export default function SearchMorphPreviewPage() {
         <SectionLabel className="mt-3">Vorschläge</SectionLabel>
         <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint
           onClick={() => { setService("In der Nähe"); advance("service"); }} />
-        {CATEGORIES.map((c) => (
+        {(full ? CATEGORIES : CATEGORIES.slice(0, 2)).map((c) => (
           <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
             onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
         ))}
@@ -200,27 +200,27 @@ export default function SearchMorphPreviewPage() {
   const stepPanel = (s: Step): ReactNode => {
     if (s === "service") {
       return (
-        <div className="px-1 pt-1">
+        <div className="rounded-[18px] border border-s-border bg-white p-4">
           <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
           <button onClick={() => setInputFocused(true)}
             className="mb-3 flex w-full items-center gap-2.5 rounded-[14px] border border-s-border bg-s-bg-sunken px-4 py-3 text-left">
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
             <span className={`truncate text-[15px] ${service ? "text-s-ink" : "text-s-ink-3"}`}>{service || "Service, Salon oder Stylist:in"}</span>
           </button>
-          <div className="max-h-[38vh] overflow-y-auto overscroll-contain">{serviceSuggestions(false)}</div>
+          <div className="max-h-[30vh] overflow-y-auto overscroll-contain">{serviceSuggestions(false)}</div>
         </div>
       );
     }
     if (s === "location") {
       return (
-        <div className="px-1 pt-1">
+        <div className="rounded-[18px] border border-s-border bg-white p-4">
           <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wo?</h2>
           <button onClick={() => setInputFocused(true)}
             className="mb-3 flex w-full items-center gap-2.5 rounded-[14px] border border-s-border bg-s-bg-sunken px-4 py-3 text-left">
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
             <span className={`truncate text-[15px] ${city ? "text-s-ink" : "text-s-ink-3"}`}>{city || "Stadt suchen"}</span>
           </button>
-          <div className="max-h-[38vh] overflow-y-auto overscroll-contain">{cityList()}</div>
+          <div className="max-h-[30vh] overflow-y-auto overscroll-contain">{cityList()}</div>
         </div>
       );
     }
@@ -235,7 +235,7 @@ export default function SearchMorphPreviewPage() {
             className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
         </div>
         {dateTab === "daten" ? (
-          <div className="max-h-[40vh] overflow-y-auto overscroll-contain">
+          <div>
             <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
               {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
             </div>
@@ -299,7 +299,7 @@ export default function SearchMorphPreviewPage() {
               dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.55 }}
               onDragEnd={(_e, info) => { if (info.offset.y > 140 || info.velocity.y > 600) close(); }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              className="fixed inset-x-0 bottom-0 top-[max(56px,calc(env(safe-area-inset-top)+12px))] z-[101] flex flex-col overflow-hidden rounded-t-[28px] bg-white">
+              className={`fixed inset-x-0 bottom-0 top-[max(56px,calc(env(safe-area-inset-top)+12px))] z-[101] flex flex-col overflow-hidden rounded-t-[28px] transition-colors duration-300 ${focusedSearch ? "bg-white" : "bg-s-bg-sunken"}`}>
               {/* grabber , the drag handle (only this starts the dismiss drag, so list-scroll never fights it) */}
               <div onPointerDown={(e) => dragControls.start(e)}
                 className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
@@ -338,7 +338,7 @@ export default function SearchMorphPreviewPage() {
                       </motion.div>
                     </div>
                     {/* bottom bar (accordion only) , hairline top, Reset link + ink commit CTA */}
-                    <div className="shrink-0 border-t border-s-border bg-white px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+                    <div className="shrink-0 border-t border-s-border bg-s-bg-sunken px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
                       <div className="flex items-center justify-between">
                         <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
                         <button onClick={close} className={COMMIT_BTN}>
