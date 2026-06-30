@@ -30,6 +30,7 @@ const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font
 const STEPS = ["service", "location", "date"] as const;
 type Step = (typeof STEPS)[number];
 
+// sample recent searches , built from the REAL constants (the live port wires useRecentSearches)
 const RECENTS = [
   { svc: CATEGORIES[0].label, city: SEARCH_CITIES[0], when: FLEX_DATES[1] },
   { svc: CATEGORIES[1].label, city: SEARCH_CITIES[1], when: FLEX_DATES[2] },
@@ -60,8 +61,9 @@ export default function SearchMorphPreviewPage() {
   const reduce = useReducedMotion();
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
+  const touchStartY = useRef(0); // guard the scroll-to-morph to downward swipes only
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -76,9 +78,9 @@ export default function SearchMorphPreviewPage() {
 
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
-  const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42);
+  const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
 
-  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined });
+  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no network calls while closed
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
@@ -97,7 +99,7 @@ export default function SearchMorphPreviewPage() {
     setActiveStep("service"); setInputFocused(false);
   };
 
-  if (process.env.NODE_ENV === "production") notFound();
+  if (process.env.NODE_ENV === "production") notFound(); // dev preview only , real 404 in production
 
   const openT = reduce ? { duration: 0 } : OPEN_SPRING;
   const morphT = reduce ? { duration: 0 } : MORPH_SPRING;
@@ -280,13 +282,11 @@ export default function SearchMorphPreviewPage() {
             <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-black/35"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
-            !focusedSearch ? (
-              <motion.button key="closeX" onClick={close} aria-label="Schliessen"
-                className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.25 }}>
-                <X size={17} strokeWidth={2.2} />
-              </motion.button>
-            ) : null,
+            <motion.button key="closeX" onClick={close} aria-label="Schliessen"
+              className={`fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink ${focusedSearch ? "pointer-events-none" : ""}`}
+              initial={{ opacity: 0 }} animate={{ opacity: focusedSearch ? 0 : 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.25 }}>
+              <X size={17} strokeWidth={2.2} />
+            </motion.button>,
 
             <motion.div key="sheet"
               drag="y" dragListener={false} dragControls={dragControls}
@@ -302,7 +302,8 @@ export default function SearchMorphPreviewPage() {
               {/* ONE morphing structure , the step's bar slides up (layout) while the heading + other steps + footer collapse (animated height). No subtree swap = no jump. */}
               <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
                 onWheel={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.deltaY > 0) setInputFocused(true); }}
-                onTouchMove={() => { if (!focusedSearch && (activeStep === "service" || activeStep === "location")) setInputFocused(true); }}>
+                onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
+                onTouchMove={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.touches[0].clientY < touchStartY.current) setInputFocused(true); }}>
                 <motion.div layout className="flex flex-col gap-2.5 pb-3">
                   <AnimatePresence initial={false}>
                     {STEPS.filter((s) => !(focusedSearch && activeStep !== s)).map((s) => (
