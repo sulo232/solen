@@ -39,10 +39,38 @@ export function SalonVenuesNearby({
   const [items, setItems] = React.useState<NearbyVenue[]>([]);
   const [loading, setLoading] = React.useState(true);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const sectionRef = React.useRef<HTMLElement>(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(false);
+  // Track whether the section has entered the viewport to defer the fetch.
+  const [visible, setVisible] = React.useState(false);
+
+  // Defer the API fetch until the section scrolls near the viewport.
+  // rootMargin 200px fires while still below the fold so there is no
+  // perceived delay when the user reaches the rail.
+  React.useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) {
+      // Fallback for very old browsers: fetch immediately.
+      setVisible(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   React.useEffect(() => {
+    if (!visible) return;
     const ac = new AbortController();
     setLoading(true);
     fetch(`/api/salons/by-category?cat=${cat}&limit=8`, { signal: ac.signal })
@@ -57,7 +85,7 @@ export function SalonVenuesNearby({
       })
       .catch(() => setLoading(false));
     return () => ac.abort();
-  }, [cat, excludeId]);
+  }, [visible, cat, excludeId]);
 
   React.useEffect(() => {
     const el = scrollRef.current;
@@ -82,9 +110,15 @@ export function SalonVenuesNearby({
     el.scrollBy({ left: delta, behavior: "smooth" });
   };
 
+  // Before the section enters the viewport, render only the anchor element
+  // so the IntersectionObserver has a target without triggering the API fetch.
+  if (!visible) {
+    return <section ref={sectionRef} aria-hidden />;
+  }
+
   if (loading) {
     return (
-      <section>
+      <section ref={sectionRef}>
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           In der Nähe
@@ -101,7 +135,7 @@ export function SalonVenuesNearby({
   if (items.length === 0) return null;
 
   return (
-    <section>
+    <section ref={sectionRef}>
       <div className="flex items-center justify-between">
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">

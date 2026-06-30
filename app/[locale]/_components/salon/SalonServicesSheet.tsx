@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Check, ChevronRight, Clock, Plus, Star, X } from "lucide-react";
 import type { SalonDetail, Service } from "./_shared";
 import { capitalize } from "./_shared";
+import { formatPrice } from "@/lib/format";
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
 
@@ -279,7 +280,7 @@ export function SalonServicesSheet({
                               </p>
                             )}
                             <div className="font-body mt-3 text-[16px] font-normal text-s-ink-2">
-                              CHF {s.price}
+                              {formatPrice(s.price, locale)}
                             </div>
                           </div>
                           <button
@@ -322,6 +323,7 @@ export function SalonServicesSheet({
               total={total}
               totalDuration={totalDuration}
               continueHref={continueHref}
+              locale={locale}
             />
           </div>
         </aside>
@@ -337,7 +339,7 @@ export function SalonServicesSheet({
                 : `${selectedIds.size} Service${selectedIds.size > 1 ? "s" : ""} ${totalDuration} min`}
             </div>
             <div className="font-body text-[16px] font-semibold text-s-ink">
-              {total === 0 ? "Gratis" : `CHF ${total}`}
+              {total === 0 ? "Gratis" : formatPrice(total, locale)}
             </div>
           </div>
           <Link
@@ -371,12 +373,14 @@ function CartCard({
   total,
   totalDuration,
   continueHref,
+  locale,
 }: {
   salon: SalonDetail;
   selectedServices: Service[];
   total: number;
   totalDuration: number;
   continueHref: string;
+  locale: string;
 }) {
   return (
     // V3-D202 (A21): cart card shadow → shadow-elevation-3.
@@ -452,7 +456,7 @@ function CartCard({
                   </div>
                 </div>
                 <span className="shrink-0 font-semibold text-s-ink">
-                  CHF {s.price}
+                  {formatPrice(s.price, locale)}
                 </span>
               </li>
             ))}
@@ -475,7 +479,7 @@ function CartCard({
           )}
         </div>
         <div className="font-body text-[22px] font-semibold text-s-ink">
-          {total === 0 ? "Gratis" : `CHF ${total}`}
+          {total === 0 ? "Gratis" : formatPrice(total, locale)}
         </div>
       </div>
 

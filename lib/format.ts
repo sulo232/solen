@@ -91,6 +91,58 @@ export function formatDateLabel(iso: string, locale: string = "de"): string {
   }
 }
 
+// Locale maps for next-slot relative labels (mirrors SLOT_TODAY/SLOT_TOMORROW
+// used in SearchTemplate; extracted here so CategoryBrowseRails and
+// SearchTemplate share one implementation).
+const NEXT_SLOT_TODAY: Record<string, string> = { de: "heute", en: "today", fr: "auj.", it: "oggi" };
+const NEXT_SLOT_TOMORROW: Record<string, string> = { de: "morgen", en: "tomorrow", fr: "demain", it: "domani" };
+const NEXT_SLOT_WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+
+/**
+ * Given an array of services (each with optional `slots` ISO strings), return
+ * a short human-readable label for the earliest upcoming slot across all services.
+ * Uses Europe/Zurich for hour formatting so the label is correct regardless of
+ * where the JS runtime is hosted.
+ *
+ * nextAvailableSlotLabel(services, "de") -> "heute 15:30" | "morgen 09:00" | "Mi. 14:00" | null
+ */
+export function nextAvailableSlotLabel(
+  services: Array<{ slots?: string[] | null }> | null | undefined,
+  locale: string = "de",
+): string | null {
+  if (!services?.length) return null;
+  const now = Date.now();
+  let earliest: Date | null = null;
+  for (const svc of services) {
+    for (const iso of svc.slots ?? []) {
+      const t = new Date(iso);
+      if (!Number.isNaN(t.getTime()) && t.getTime() > now && (!earliest || t < earliest)) {
+        earliest = t;
+      }
+    }
+  }
+  if (!earliest) return null;
+  // Use Zurich timezone so late-evening slots are attributed to the correct day.
+  const hhmm = earliest.toLocaleTimeString("de-CH", {
+    timeZone: "Europe/Zurich",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const tzFormatter = new Intl.DateTimeFormat("de-CH", { timeZone: "Europe/Zurich", dateStyle: "short" });
+  const todayStr = tzFormatter.format(new Date());
+  const tomorrowDate = new Date();
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+  const tomorrowStr = tzFormatter.format(tomorrowDate);
+  const slotStr = tzFormatter.format(earliest);
+  if (slotStr === todayStr) return `${NEXT_SLOT_TODAY[locale] ?? NEXT_SLOT_TODAY.de} ${hhmm}`;
+  if (slotStr === tomorrowStr) return `${NEXT_SLOT_TOMORROW[locale] ?? NEXT_SLOT_TOMORROW.de} ${hhmm}`;
+  const dayIdx = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Zurich", weekday: "short" }).format(earliest);
+  // Map English 3-char abbreviation to DE index: Sun=0,Mon=1,...
+  const EN_DAYS: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const wdIdx = EN_DAYS[dayIdx] ?? earliest.getDay();
+  return `${NEXT_SLOT_WEEKDAYS[wdIdx]}. ${hhmm}`;
+}
+
 /**
  * Format relative time offset for upcoming surfaces, e.g. "in 2h", "in 45 min".
  * Caller passes minutes; we pick the readable register.

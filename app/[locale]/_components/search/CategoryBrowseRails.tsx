@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "../homepage/SectionHeader";
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
+import { nextAvailableSlotLabel } from "@/lib/format";
 
 /**
  * CategoryBrowseRails — V3-D366 (2026-05-29) · re-expanded to 6 rails V3-D368
@@ -65,7 +66,6 @@ const TITLES = {
 
 const pick = (rec: Record<string, string>, locale: string) => rec[locale] ?? rec.de;
 
-const WD = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."]; // short DE weekdays
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 // Service-name matchers (lowercased, locale-agnostic substrings).
@@ -78,34 +78,17 @@ function serviceText(s: RailSalon): string {
     .join(" | ");
 }
 
-function earliestSlot(s: RailSalon): Date | null {
-  const now = Date.now();
-  let min: Date | null = null;
-  for (const sv of s.services ?? []) {
-    for (const iso of sv.slots ?? []) {
-      const t = new Date(iso);
-      if (!Number.isNaN(t.getTime()) && t.getTime() >= now && (!min || t < min)) min = t;
-    }
-  }
-  return min;
-}
-
-function slotLabel(d: Date | null): string | undefined {
-  if (!d) return undefined;
-  const hhmm = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-  const isToday = d.toDateString() === new Date().toDateString();
-  return isToday ? hhmm : `${WD[d.getDay()]} ${hhmm}`;
-}
-
 /** One horizontal rail. Renders nothing when the slice has < 2 salons. */
 function Rail({
   title,
   salons,
   cat,
+  locale,
 }: {
   title: string;
   salons: RailSalon[];
   cat: SalonCardProps["category"];
+  locale: string;
 }) {
   const ref = React.useRef<HTMLDivElement>(null);
   if (salons.length < 2) return null;
@@ -125,7 +108,7 @@ function Rail({
               photoUrl={s.cover_photo_url ?? undefined}
               variant="availability"
               priceFromCHF={s.avg_price ?? undefined}
-              nextSlotLabel={slotLabel(earliestSlot(s))}
+              nextSlotLabel={nextAvailableSlotLabel(s.services, locale) ?? undefined}
               address={s.address}
               city={(s.quartier ? cap(s.quartier) : undefined) || s.city}
             />
@@ -173,11 +156,24 @@ export function CategoryBrowseRails({
       : [...salons]
   ).slice(0, 10);
 
-  // 4. Bald frei — soonest free slot.
+  // 4. Bald frei: soonest free slot. Uses the shared nextAvailableSlotLabel
+  //    helper's same approach to find the earliest slot per salon for sorting.
   const soon = [...salons]
-    .map((s) => ({ s, t: earliestSlot(s) }))
-    .filter((x) => x.t != null)
-    .sort((a, b) => (a.t as Date).getTime() - (b.t as Date).getTime())
+    .map((s) => {
+      const now = Date.now();
+      let earliest: number | null = null;
+      for (const sv of s.services ?? []) {
+        for (const iso of sv.slots ?? []) {
+          const ms = new Date(iso).getTime();
+          if (!Number.isNaN(ms) && ms > now && (earliest === null || ms < earliest)) {
+            earliest = ms;
+          }
+        }
+      }
+      return { s, t: earliest };
+    })
+    .filter((x) => x.t !== null)
+    .sort((a, b) => (a.t as number) - (b.t as number))
     .map((x) => x.s)
     .slice(0, 10);
 
@@ -189,12 +185,12 @@ export function CategoryBrowseRails({
 
   return (
     <div className="mt-2">
-      <Rail title={pick(TITLES.top, locale)} salons={top} cat={cat} />
-      <Rail title={pick(TITLES.deals, locale)} salons={deals} cat={cat} />
-      <Rail title={pick(TITLES.nearby, locale)} salons={nearby} cat={cat} />
-      <Rail title={pick(TITLES.soon, locale)} salons={soon} cat={cat} />
-      <Rail title={pick(TITLES.men, locale)} salons={men} cat={cat} />
-      <Rail title={pick(TITLES.color, locale)} salons={color} cat={cat} />
+      <Rail title={pick(TITLES.top, locale)} salons={top} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.deals, locale)} salons={deals} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.nearby, locale)} salons={nearby} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.soon, locale)} salons={soon} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.men, locale)} salons={men} cat={cat} locale={locale} />
+      <Rail title={pick(TITLES.color, locale)} salons={color} cat={cat} locale={locale} />
     </div>
   );
 }

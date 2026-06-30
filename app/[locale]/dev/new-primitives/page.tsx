@@ -8,12 +8,10 @@
  */
 
 import * as React from "react";
-import { Star } from "lucide-react";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Skeleton } from "@/app/[locale]/_components/primitives/Skeleton";
 import { ComingSoon } from "@/app/[locale]/_components/primitives/ComingSoon";
 import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
-import { StatusPill } from "@/app/[locale]/_components/salon/StatusPill";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
 
 export default function NewPrimitivesDemo() {
@@ -170,50 +168,6 @@ export default function NewPrimitivesDemo() {
         </div>
       </section>
 
-      {/* ─── StatusPill (NEW — salon Phase A · V3-D201) ─── */}
-      <section>
-        <h2 className="font-display text-[20px] font-semibold leading-[1.2] tracking-[-0.03em] text-s-ink">
-          StatusPill
-        </h2>
-        <p className="mt-1 font-body text-[13px] font-normal leading-[1.4] text-s-ink-2 mb-4">
-          Layer 3 semantic UI. Open → universal green. Closed → muted grey. Single source for salon-detail open/closed state.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
-              size=sm, showDot=true (inline meta row)
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <StatusPill isOpen={true} label="Geöffnet bis 19:30" />
-              <StatusPill isOpen={false} label="Geschlossen Öffnet 10:00" />
-            </div>
-          </div>
-          <div>
-            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
-              size=sm, showDot=false (with bullet separators)
-            </p>
-            <div className="font-body text-[13px] text-s-ink-2 inline-flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 text-s-ink">
-                <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
-                4.8 (1.2k)
-              </span>
-              <MetaDot />
-              <StatusPill isOpen={true} label="Geöffnet bis 19:30" showDot={false} />
-              <MetaDot />
-              <span>Basel</span>
-            </div>
-          </div>
-          <div>
-            <p className="mb-1.5 font-body text-[12px] font-medium uppercase tracking-[0.1em] text-s-ink-3">
-              size=md (sidebar block)
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <StatusPill isOpen={true} label="Geöffnet bis 19:30" size="md" />
-              <StatusPill isOpen={false} label="Heute geschlossen" size="md" />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ─── TabPill (NEW — salon Phase A · V3-D201) ─── */}
       <section>
