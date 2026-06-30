@@ -75,22 +75,13 @@ export default function SearchMorphPreviewPage() {
   const snapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined); // scroll-end debounce -> snap to a full state (never rests half-open)
   const snapping = useRef(false);  // true while a snap animation runs , ignore the scroll it triggers
 
-  // ── the single continuous driver + every property derived from it ──
+  // ── SMOOTHNESS: nothing animates LAYOUT per scroll frame except the crop. The heading scrolls away NATIVELY
+  // (it lives in the scroll container, bar is sticky), the steps + footer collapse DISCRETELY via a CSS class at
+  // commit, and the card's shadow/bg/margin/radius toggle by the `inputFocused` class. Per-frame box-shadow +
+  // multiple height animations were the freeze. Only `cropTop` (+ the cheap X-fade) stay scroll-linked.
   const expand = useMotionValue(0);
-  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, Math.max(safeTop + 6, 50)]); // focused stays a CROPPED sheet (blur above), NOT full-screen , owner
-  const sheetRadiusTop = useTransform(expand, [0.5, 1], [0, 18]);          // focused sheet keeps a rounded top (Airbnb), never square full-bleed
-  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X persists, fades last
-  // FLOATING CARD over the frosted backdrop -> flat full-bleed when focused. Shadow, bg, margin AND radius are all
-  // toggled by the `inputFocused` CLASS (one CSS transition at commit), NOT interpolated per scroll frame , a 50px-blur
-  // box-shadow + margins repainted/relaid-out every frame was the freeze/jank. Only the crop + heights stay scroll-linked.
-  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);        // heading collapses in place
-  const headingOp = useTransform(expand, [0, 0.45], [1, 0]);
-  const step1H = useTransform(expand, [0.2, 0.42], [ROW_H, 0]);            // first other-step consumed
-  const step1Op = useTransform(expand, [0.2, 0.38], [1, 0]);
-  const step2H = useTransform(expand, [0.45, 0.68], [ROW_H, 0]);           // second other-step consumed
-  const step2Op = useTransform(expand, [0.45, 0.62], [1, 0]);
-  const footerMaxH = useTransform(expand, [0.78, 1], [240, 0]);           // footer COLLAPSES its height so the focused list fills , no reserved white gap
-  const footerOp = useTransform(expand, [0.84, 1], [1, 0]);
+  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, Math.max(safeTop + 6, 50)]); // sheet rises a touch as you scroll; focused stays a cropped sheet (blur above), not full-screen
+  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X fades as it goes focused
 
   useEffect(() => setMounted(true), []);
   useEffect(() => { // measure env(safe-area-inset-top) so the focused sheet clears the notch
@@ -197,7 +188,7 @@ export default function SearchMorphPreviewPage() {
         {FEATURED_SALONS.map((sl) => (
           <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
         ))}
-        <SectionLabel className="mt-3">Vorschläge</SectionLabel>
+        <SectionLabel className="mt-3">Kategorien</SectionLabel>
         <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
         {CATEGORIES.map((c) => (
           <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
@@ -206,7 +197,7 @@ export default function SearchMorphPreviewPage() {
         <div className="flex flex-wrap gap-2 pb-2 pt-1">
           {TRENDING.map((t) => (
             <button key={t.query} onClick={() => { setService(t.label); advance("service"); }}
-              className="rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{t.label}</button>
+              className="rounded-full bg-s-bg-sunken px-4 py-2 text-[13px] font-medium text-s-ink-2 active:scale-[0.97] hover:bg-s-border/60">{t.label}</button>
           ))}
         </div>
       </>
@@ -230,12 +221,12 @@ export default function SearchMorphPreviewPage() {
     const ref = isS ? serviceRef : cityRef;
     const ph = isS ? "Service, Salon oder Stylist:in" : "Stadt suchen";
     return (
-      <div className="flex h-12 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
+      <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
         {inputFocused ? (
           <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Zurück"
-            className="-ml-1 shrink-0 text-s-ink"><ArrowLeft size={20} strokeWidth={2} /></button>
+            className="grid h-6 w-6 shrink-0 place-items-center text-s-ink"><ArrowLeft size={20} strokeWidth={2} /></button>
         ) : (
-          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+          <span className="grid h-6 w-6 shrink-0 place-items-center"><Search size={19} strokeWidth={2} className="text-s-ink-3" /></span>
         )}
         <input ref={ref} value={inputFocused ? q : (isS ? service : city)}
           onFocus={() => { setInputFocused(true); grow(1); }} onChange={(e) => setQ(e.target.value)} placeholder={ph}
@@ -259,15 +250,13 @@ export default function SearchMorphPreviewPage() {
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
     </button>
   );
-  // padding lives on the INNER div so the maxHeight collapse fully closes it (a padded wrapper kept ~26px of white)
-  const footer = (style?: object) => (
-    <motion.div style={style} className="shrink-0 overflow-hidden">
-      <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-        <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
-        <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
-      </div>
-    </motion.div>
+  const footerInner = (
+    <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
+      <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
+    </div>
   );
+  const footer = () => <div className="shrink-0">{footerInner}</div>;
 
   return (
     <div className="min-h-screen bg-white">
@@ -311,30 +300,34 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop, borderTopLeftRadius: sheetRadiusTop, borderTopRightRadius: sheetRadiusTop }}
-              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-200 ${inputFocused ? "bg-white" : "bg-transparent"}`}>
+              style={{ top: cropTop }}
+              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-200 ${inputFocused ? "rounded-t-[18px] bg-white" : "bg-transparent"}`}>
               {activeStep === "service" ? (
-                /* SEARCH , the ONLY step with the scroll-up expand (continuous follow -> snap -> focused). */
-                <motion.div key="service" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                /* SEARCH , the ONLY step with the scroll-up expand. The heading scrolls away NATIVELY inside the scroll
+                   container (bar is sticky); steps + footer collapse via a CSS class at commit. Only the crop animates
+                   per frame -> no layout thrash -> smooth. */
+                <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }}
                   className="flex min-h-0 flex-1 flex-col">
                   <div className={`flex min-h-0 flex-1 flex-col overflow-hidden bg-white transition-[margin,border-radius,box-shadow] duration-300 ${inputFocused ? "mx-0 rounded-none" : "mx-3 rounded-[22px] shadow-[0_18px_50px_rgba(10,10,10,0.13)]"}`}>
-                    <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
-                      <h2 className="px-4 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
-                    </motion.div>
-                    <div className="shrink-0 px-3 pb-2 pt-1">{bar("service")}</div>
-                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
+                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
                       onScroll={(e) => {
                         if (committed.current || snapping.current) return;
                         expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST));
                         if (snapTimer.current) clearTimeout(snapTimer.current);
                         snapTimer.current = setTimeout(snapSettle, 110);
                       }}>
-                      {serviceSuggestions()}
+                      {!inputFocused && (
+                        <h2 className="px-4 pb-1 pt-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
+                      )}
+                      <div className="sticky top-0 z-10 bg-white px-3 pb-2 pt-3">{bar("service")}</div>
+                      <div className="px-4 pb-4">{serviceSuggestions()}</div>
                     </div>
                   </div>
-                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3"><div className="pt-2.5">{collapsedRow("location")}</div></motion.div>
-                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3"><div className="pt-2.5">{collapsedRow("date")}</div></motion.div>
-                  {footer({ maxHeight: footerMaxH, opacity: footerOp })}
+                  <div className={`overflow-hidden px-3 transition-[max-height,opacity] duration-300 ${inputFocused ? "max-h-0 opacity-0" : "max-h-44 opacity-100"}`}>
+                    <div className="pt-2.5">{collapsedRow("location")}</div>
+                    <div className="pt-2.5">{collapsedRow("date")}</div>
+                  </div>
+                  <div className={`shrink-0 overflow-hidden transition-[max-height,opacity] duration-300 ${inputFocused ? "max-h-0 opacity-0" : "max-h-32 opacity-100"}`}>{footerInner}</div>
                 </motion.div>
               ) : (
                 /* LOCATION or DATE , plain accordion in FIXED order (Suche > Standort > Datum); the active one expands IN PLACE, no scroll-expand. */
@@ -356,25 +349,30 @@ export default function SearchMorphPreviewPage() {
                   ) : (
                     <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                       <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
-                      <div className="mb-4 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
-                        <button onClick={() => setDateTab("daten")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
-                        <button onClick={() => setDateTab("flexibel")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
+                      <div className="relative mb-4 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
+                        <motion.div layout transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                          className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm" style={{ left: dateTab === "daten" ? 4 : "calc(50% + 0px)" }} />
+                        <button onClick={() => setDateTab("daten")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
+                        <button onClick={() => setDateTab("flexibel")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
                       </div>
                       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-                        {dateTab === "daten" ? (
-                          <>
-                            <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
-                            {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
-                              <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
-                            ))}
-                          </>
-                        ) : (
-                          <div className="flex flex-wrap gap-2">
-                            {FLEX_DATES.map((dd) => (
-                              <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${date === dd ? "border-s-accent text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
-                            ))}
-                          </div>
-                        )}
+                        <AnimatePresence mode="wait" initial={false}>
+                          {dateTab === "daten" ? (
+                            <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
+                              <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
+                              {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
+                                <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                              ))}
+                            </motion.div>
+                          ) : (
+                            <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
+                              className="grid grid-cols-2 gap-2.5 pt-1">
+                              {FLEX_DATES.map((dd) => (
+                                <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-colors ${date === dd ? "border-s-accent bg-s-accent/5 text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
                   ))}
