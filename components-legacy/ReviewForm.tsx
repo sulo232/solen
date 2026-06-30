@@ -185,7 +185,7 @@ export default function ReviewForm({
         comment: comment.trim() || undefined,
       };
       if (staffMemberId) body.staff_member_id = staffMemberId;
-      // TODO(chunk2-backend): persist selectedAmenities once review_attributes table exists
+      if (selectedAmenities.size > 0) body.attributes = [...selectedAmenities];
 
       const res = await fetch("/api/reviews", {
         method: "POST",

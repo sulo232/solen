@@ -67,6 +67,16 @@ export const createReviewSchema = z.object({
   score_ergebnis: z.number().int().min(1).max(5).optional(),
   score_atmosphaere: z.number().int().min(1).max(5).optional(),
   score_preis_leistung: z.number().int().min(1).max(5).optional(),
+  // Salon-review amenity confirmations (Google-Maps style). Validated to the known set.
+  attributes: z
+    .array(
+      z.enum([
+        "lgbtq_friendly", "wheelchair_accessible", "woman_owned", "wifi_friendly",
+        "kid_friendly", "pet_friendly", "family_owned", "near_public_transport", "student_discount",
+      ]),
+    )
+    .max(12)
+    .optional(),
 });
 
 export const createMessageSchema = z.object({

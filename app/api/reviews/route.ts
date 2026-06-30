@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(createReviewSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { booking_id, rating: rawRating, comment, staff_member_id, score_ergebnis, score_atmosphaere, score_preis_leistung } = validated;
+  const { booking_id, rating: rawRating, comment, staff_member_id, score_ergebnis, score_atmosphaere, score_preis_leistung, attributes } = validated;
 
   // If all 3 sub-ratings provided, compute weighted overall rating (half-star granularity)
   const rating = (score_ergebnis && score_atmosphaere && score_preis_leistung)
@@ -77,6 +77,13 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+
+  // Persist confirmed amenity attributes (salon review). Non-fatal: the review stands either way.
+  if (attributes && attributes.length > 0 && data?.id) {
+    const rows = attributes.map((key) => ({ review_id: data.id, attribute_key: key }));
+    const { error: attrErr } = await supabase.from("review_attributes").insert(rows);
+    if (attrErr) console.error("[reviews] review_attributes insert failed:", attrErr);
+  }
 
   // Fire notification to salon (fire-and-forget)
   let baseUrl: string;
