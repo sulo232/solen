@@ -128,7 +128,7 @@ export default function SearchMorphPreviewPage() {
                         <ArrowLeft size={20} strokeWidth={2} />
                       </button>
                       <input autoFocus value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
-                        className="flex-1 rounded-[14px] border border-s-ink bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:shadow-none focus:outline-none" />
+                        className="flex-1 rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
                     </div>
                   ) : (
                     <>
@@ -137,7 +137,7 @@ export default function SearchMorphPreviewPage() {
                         <ChevronUp size={20} className="text-s-ink-3" />
                       </button>
                       <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
-                        className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                        className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
                     </>
                   )}
                   {/* capped + internal-scroll in the accordion so Standort/Datum stay visible; uncapped in full-search */}
