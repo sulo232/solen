@@ -15,9 +15,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get tab parameter (default: upcoming)
+    // Get tab + pagination parameters
     const url = new URL(req.url);
     const tab = (url.searchParams.get('tab') as 'upcoming' | 'past' | 'cancelled') || 'upcoming';
+    const page = Math.max(0, parseInt(url.searchParams.get('page') ?? '0', 10));
+    const PAGE_SIZE = 20;
+    const from = page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     const now = new Date().toISOString();
 
@@ -34,7 +38,9 @@ export async function GET(req: NextRequest) {
       )
       .eq('user_id', user.id);
 
-    // Apply status and date filters based on tab
+    // Apply status, date filters, and pagination based on tab.
+    // 'upcoming' is naturally small so no pagination needed; 'past' and
+    // 'cancelled' grow unbounded over a user's lifetime, so paginate them.
     if (tab === 'upcoming') {
       query = query
         .eq('status', 'confirmed')
@@ -44,11 +50,13 @@ export async function GET(req: NextRequest) {
       query = query
         .eq('status', 'completed')
         .lt('starts_at', now)
-        .order('starts_at', { ascending: false });
+        .order('starts_at', { ascending: false })
+        .range(from, to);
     } else if (tab === 'cancelled') {
       query = query
         .eq('status', 'cancelled')
-        .order('starts_at', { ascending: false });
+        .order('starts_at', { ascending: false })
+        .range(from, to);
     }
 
     const { data: bookings, error } = await query;
@@ -58,7 +66,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ bookings: bookings ?? [] });
+    const list = bookings ?? [];
+    return NextResponse.json({
+      bookings: list,
+      page,
+      pageSize: PAGE_SIZE,
+      hasMore: list.length === PAGE_SIZE,
+    });
   } catch (err) {
     console.error('[GET /api/bookings/user] Unexpected error:', err);
     return NextResponse.json(

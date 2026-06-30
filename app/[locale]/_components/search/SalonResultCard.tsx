@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
@@ -132,7 +133,7 @@ const ALL_SVC_LABEL: Record<string, string> = {
   it: "Vedi tutti i servizi",
 };
 
-export function SalonResultCard(props: SalonResultCardProps) {
+function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, distanceMeters, priceFromCHF, isSaved, salonId,
@@ -398,3 +399,11 @@ export function SalonResultCard(props: SalonResultCardProps) {
     </article>
   );
 }
+
+// Memoized: re-render only when the card's own identity (salonId) or saved state
+// changes. A favorite toggle in SearchTemplate replaces the favoriteIds Set which
+// re-renders the parent, but each individual card should stay stable unless it is
+// the one that was toggled.
+export const SalonResultCard = memo(SalonResultCardInner, (prev, next) => {
+  return prev.salonId === next.salonId && prev.isSaved === next.isSaved;
+});

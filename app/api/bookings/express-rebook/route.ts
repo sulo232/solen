@@ -81,11 +81,21 @@ export async function POST(req: NextRequest) {
 
   const suggestedDate = new Date(slot.starts_at);
 
+  // Format date and time in Europe/Zurich so the label the customer sees
+  // matches the slot's local time, regardless of the server's timezone.
+  const zurichTimeFmt = new Intl.DateTimeFormat("de-CH", {
+    timeZone: "Europe/Zurich",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  // Format date as YYYY-MM-DD (Intl gives DD.MM.YYYY in de-CH, so use en-CA for ISO)
+  const zurichDateIsoFmt = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" });
+
   return NextResponse.json({
     suggestedSlot: {
       slotId: slot.id,
-      date: suggestedDate.toISOString().split("T")[0],
-      time: suggestedDate.toTimeString().slice(0, 5),
+      date: zurichDateIsoFmt.format(suggestedDate),
+      time: zurichTimeFmt.format(suggestedDate),
       startsAt: slot.starts_at,
       endsAt: slot.ends_at,
     },

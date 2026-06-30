@@ -50,7 +50,7 @@ export async function GET(_request: NextRequest) {
   try {
     const { data: upcomingBookings } = await supabase
       .from("bookings")
-      .select("id, starts_at, services(name), salons(slug, name, neighborhood)")
+      .select("id, starts_at, services(name_de, name_en), salons(slug, name, quartier)")
       .eq("user_id", userId)
       .gte("starts_at", now.toISOString())
       .lte("starts_at", in24h.toISOString())
@@ -67,7 +67,7 @@ export async function GET(_request: NextRequest) {
         kind: "upcoming",
         eyebrow: `${timeLabel} Termin`,
         headline: b.salons?.name ?? "Termin",
-        meta: `${b.services?.name ?? ""} ${slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}`,
+        meta: `${b.services?.name_de ?? b.services?.name_en ?? ""} ${slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}`,
         href: `/booking/${b.id}`,
       });
     }
