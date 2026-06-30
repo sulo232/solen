@@ -1,7 +1,7 @@
 import {
+  Gem,
   Leaf,
   Scissors,
-  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -49,7 +49,7 @@ export const CATEGORIES: SearchCategory[] = [
   },
   {
     label: "Nails",
-    icon: Sparkles,
+    icon: Gem,
     bg: "bg-[#D4DDC8]",
     fg: "text-[#8E4A2D]",
     count: "31 Salons",

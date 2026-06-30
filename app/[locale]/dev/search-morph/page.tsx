@@ -1,14 +1,15 @@
 "use client";
 
 // exists-check: net-new dev PREVIEW route (no match in `npm run exists search-morph`). Mirrors the REAL
-// Airbnb mobile search (captured live 2026-06-30) with OUR design tokens. USES THE EXISTING DATA , imports
-// CATEGORIES (searchCategories.ts), SEARCH_CITIES (lib/cities.ts), TRENDING (searchTrending.ts); does NOT
-// re-declare any of it (owner: "categories and locations u keep switching up"). White cards FLOAT on a
-// frosted-blur backdrop. Preview only, not linked in nav, does not touch the live homepage SearchBar.
+// Airbnb mobile search (captured live 2026-06-30: Recent searches row + Suggested rows, big-title active
+// card, collapsed label/value cards, multi-month calendar with past days struck, Reset + commit) with OUR
+// tokens. USES THE EXISTING DATA , imports CATEGORIES (searchCategories.ts), SEARCH_CITIES (lib/cities.ts),
+// TRENDING (searchTrending.ts); does NOT re-declare it. White cards FLOAT on a frosted-blur backdrop.
+// Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, MapPin, Navigation, X, Gem, type LucideIcon } from "lucide-react";
+import { Search, MapPin, Navigation, X, Clock, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SEARCH_CITIES } from "@/lib/cities";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
@@ -19,6 +20,12 @@ const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 
 type Step = "service" | "location" | "date";
 
+// sample recent searches , built from the REAL constants (the live port wires useRecentSearches)
+const RECENTS = [
+  { svc: CATEGORIES[0].label, city: SEARCH_CITIES[0], when: FLEX_DATES[1] },
+  { svc: CATEGORIES[1].label, city: SEARCH_CITIES[1], when: FLEX_DATES[2] },
+];
+
 function monthGrid(d: Date) {
   const y = d.getFullYear(), m = d.getMonth();
   const first = (new Date(y, m, 1).getDay() + 6) % 7;
@@ -27,10 +34,9 @@ function monthGrid(d: Date) {
   for (let i = 1; i <= total; i++) cells.push(i);
   return cells;
 }
-// banned Sparkles glyph (CATEGORIES uses it for Nails) swapped for Gem
-const safeIcon = (label: string, icon: LucideIcon): LucideIcon => (label === "Nails" ? Gem : icon);
 
 export default function SearchMorphPreviewPage() {
+  if (process.env.NODE_ENV === "production") return null; // dev preview only , not public
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("service");
   const [service, setService] = useState("");
@@ -39,12 +45,10 @@ export default function SearchMorphPreviewPage() {
   const [serviceQ, setServiceQ] = useState("");
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
+  const [selKey, setSelKey] = useState<string | null>(null);
 
   const now = new Date();
-  const monthLong = now.toLocaleDateString("de-CH", { month: "long" });
-  const monthName = `${monthLong} ${now.getFullYear()}`;
-  const cells = monthGrid(now);
-  const [selDay, setSelDay] = useState<number | null>(null);
+  const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1)];
 
   const cats = CATEGORIES.filter((c) => c.label.toLowerCase().includes(serviceQ.toLowerCase()));
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
@@ -55,7 +59,7 @@ export default function SearchMorphPreviewPage() {
     if (next) setTimeout(() => setStep(next), 220);
   };
   const close = () => { setOpen(false); setStep("service"); };
-  const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelDay(null); setStep("service"); };
+  const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setStep("service"); };
 
   return (
     <div className="min-h-screen bg-white">
@@ -93,14 +97,24 @@ export default function SearchMorphPreviewPage() {
             </div>
 
             <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-1">
-              {/* SERVICE , uses CATEGORIES (real) + TRENDING (real) */}
+              {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
                 <ActiveCard title="Wonach suchst du?">
                   <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
                     className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                  {serviceQ === "" && (
+                    <>
+                      <p className="mb-1 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
+                      {RECENTS.map((r) => (
+                        <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock}
+                          onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setStep("date"); }} />
+                      ))}
+                      <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Vorschläge</p>
+                    </>
+                  )}
                   <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
                   {cats.map((c) => (
-                    <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={safeIcon(c.label, c.icon)}
+                    <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
                       onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
                   ))}
                   {serviceQ === "" && (
@@ -135,7 +149,7 @@ export default function SearchMorphPreviewPage() {
                 <CollapsedCard label="Standort" value={city} placeholder="Hinzufügen" onClick={() => setStep("location")} />
               )}
 
-              {/* DATE */}
+              {/* DATE , multi-month calendar with past days struck (Airbnb) */}
               {step === "date" ? (
                 <ActiveCard title="Wann?">
                   <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
@@ -146,27 +160,18 @@ export default function SearchMorphPreviewPage() {
                   </div>
                   {dateTab === "daten" ? (
                     <>
-                      <p className="mb-2 font-heading text-[15px] font-bold capitalize text-s-ink">{monthName}</p>
                       <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
                         {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                       </div>
-                      <div className="grid grid-cols-7 gap-y-0.5">
-                        {cells.map((d, i) => (
-                          <div key={i} className="flex justify-center py-0.5">
-                            {d === null ? <span /> : (
-                              <button onClick={() => { setSelDay(d); setDate(`${d}. ${monthLong}`); }}
-                                className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selDay === d ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
-                                {d}
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                      {months.map((mDate) => (
+                        <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} selKey={selKey}
+                          onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                      ))}
                     </>
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {FLEX_DATES.map((dd) => (
-                        <button key={dd} onClick={() => { setDate(dd); setSelDay(null); }}
+                        <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }}
                           className={`rounded-full border px-4 py-1.5 text-[13px] transition-colors ${date === dd ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
                       ))}
                     </div>
@@ -187,6 +192,39 @@ export default function SearchMorphPreviewPage() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function MonthGrid({ monthDate, now, selKey, onPick }: {
+  monthDate: Date; now: Date; selKey: string | null; onPick: (key: string, label: string) => void;
+}) {
+  const y = monthDate.getFullYear(), m = monthDate.getMonth();
+  const monthLong = monthDate.toLocaleDateString("de-CH", { month: "long" });
+  const cells = monthGrid(monthDate);
+  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return (
+    <div className="mb-4">
+      <p className="mb-2 font-heading text-[15px] font-bold capitalize text-s-ink">{monthLong} {y}</p>
+      <div className="grid grid-cols-7 gap-y-0.5">
+        {cells.map((d, i) => {
+          if (d === null) return <div key={i} />;
+          const key = `${y}-${m}-${d}`;
+          const past = new Date(y, m, d).getTime() < todayMid;
+          return (
+            <div key={i} className="flex justify-center py-0.5">
+              {past ? (
+                <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3 line-through">{d}</span>
+              ) : (
+                <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
+                  className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selKey === key ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
+                  {d}
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

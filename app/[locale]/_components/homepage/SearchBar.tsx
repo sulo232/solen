@@ -24,6 +24,7 @@ import {
 import { type CalendarDate, getLocalTimeZone } from "@internationalized/date";
 import { DateTimePicker } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
+import { SEARCH_CITIES as CITIES } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
 import { SearchOverlay } from "@/app/[locale]/_components/search/SearchOverlay";
 
@@ -114,7 +115,7 @@ const SERVICES: { label: string; icon: LucideIcon }[] = [
   { label: "Färben",         icon: Palette },
 ];
 
-const CITIES = ["Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur"];
+// CITIES: single canonical source is SEARCH_CITIES (lib/cities.ts), imported above.
 
 // V2-D49: period-of-day chips replace the loose "Jetzt / Heute / Morgen" list.
 // Locked decision (user pick B): day + period chips, NOT hour-by-hour. Exact-slot

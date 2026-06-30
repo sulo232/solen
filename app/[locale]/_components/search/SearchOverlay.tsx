@@ -27,6 +27,7 @@ import {
 import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { DateTimePicker, RatingStars } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
+import { SEARCH_CITIES as CITIES } from "@/lib/cities";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import {
   useRecentSearches,
@@ -84,7 +85,7 @@ const instantTransition: Transition = { duration: 0 };
 // (Service quick-pick chips removed — the approved resting state, mockup A1, is
 //  recents-only, not category chips.)
 
-const CITIES = ["Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur"];
+// CITIES: single canonical source is SEARCH_CITIES (lib/cities.ts), imported above.
 
 // Approx city centroids — "use current location" resolves real GPS coords to the
 // nearest of these (squared-distance; fine at country scale, no reverse-geocode dep).
