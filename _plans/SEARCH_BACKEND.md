@@ -60,3 +60,15 @@ Frontend: `<NoResultsHelper>` in EmptyState; tappable rows that push the adjuste
 
 ## Post-mockup wiring (owner confirmed 2026-07-01)
 After the mockup is signed off: port into the real `SearchOverlay` (per "Feature 1" above) AND wire personalization , the **DNA** (style-affinity point system: `user_style_affinity` / search-book affinity, see project memories `project_style_affinity_for_you` + `project_search_book_points`). The search results + suggestions should be personalized by the user's DNA/affinity, not just raw ranking. This is part of the port, not the mockup.
+
+### DNA wiring , DONE + verified 2026-07-01 (commit 678a7b129, migration 20260701120000_search_dna_affinity.sql)
+- `search_salons_ranked` + `search_suggest` now read the signed-in caller via **`auth.uid()` inside the function** (same 3-arg signatures , CREATE OR REPLACE preserves grants, no DROP/GRANT, no route changes) and add `w_affinity * category_affinity` to the score, mirroring `discovery_feed_for_you`.
+- **`search_ranking_weights.w_affinity` (new, default 0.0 = INERT).** The feature ships dark; one UPDATE activates it.
+- **Security:** auth.uid() (not a caller param) closes the IDOR the council flagged; search_path pinned; no injection. Passed the catastrophic-op guard (no DROP/GRANT) by keeping signatures.
+- **Verified live:** anon results byte-identical to pre-migration baseline (no regression); auth.uid() resolves inside the definer fn; with w_affinity temporarily 1000 the test user's affinity boosted 8/12 coiffeur results (rolled back).
+- **Taxonomy mismatch caught + bridged.** Discovery affinity vocab (hair/nails/lashes/brows/beard) != salon vocab (coiffeur/barbershop/nails/spa). Pre-bridge the join matched 0 salons (silent no-op). Mapped confident pairs: hair->coiffeur, beard->barbershop, nails->nails.
+
+### OPEN owner decisions (DNA)
+- **D5 activation weight.** `update public.search_ranking_weights set w_affinity = <x> where id = 1;` Recommend starting ~0.3-0.5, tune live (instantly reversible). Currently 0.0 (off).
+- **D6 lashes/brows/spa mapping.** These affinity/salon categories have no clean counterpart, so they do NOT boost today (graceful). Owner to confirm: should a lashes/brows-affinity user be nudged toward `spa` salons? Should `spa` map from any affinity category? Add the CASE arms once decided.
+- **Data note:** only 1 user has category affinity today; the daily `style-affinity-recompute` cron grows it from discovery saves/likes/searches. Real personalization scales with usage.
