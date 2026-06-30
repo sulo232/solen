@@ -1,33 +1,37 @@
 "use client";
 
+// mockup-ok: port of LOCKED search-morph mockup (app/[locale]/dev/search-morph/page.tsx,
+// council-approved 2026-06-30). Entire file is a design port, not a live exploration.
+
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "motion/react";
 import {
   ArrowLeft,
+  ChevronLeft,
   ChevronRight,
   X,
   Search,
-  Scissors,
   MapPin,
-  Navigation,
-  Calendar as CalendarIcon,
   Clock,
-  SearchX,
-  TriangleAlert,
-  Sunrise,
-  Sun,
-  Sunset,
-  Moon,
+  User,
+  Store,
+  Globe,
   type LucideIcon,
 } from "lucide-react";
-import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
-import { DateTimePicker, RatingStars } from "@/app/[locale]/_components/primitives";
-import { cn } from "@/lib/utils";
-import { SEARCH_CITIES as CITIES } from "@/lib/cities";
+import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
+import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
+import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
+import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import {
   useRecentSearches,
@@ -35,99 +39,58 @@ import {
   type RecentSearch,
 } from "../homepage/useRecentSearches";
 import { useRecentlyViewed } from "../homepage/useRecentlyViewed";
-import { TRENDING } from "../homepage/searchTrending";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 
-/**
- * SearchOverlay — full-page search surface (V2-D51 / Path C, completed).
- *
- * Design truth = the locked mockups:
- *   public/solen-search-screens.html   (full flow, flow A)
- *   public/solen-search-consistent.html (state grammar)
- *   public/solen-search-council.html   (selected-state treatment)
- *   public/solen-search-states.html    (loading / no-match / empty / error)
- *
- * Decision lock: search is FULL-PAGE everywhere (like Fresha), NOT a half-sheet.
- * Opened from BOTH the homepage SearchBar and the SearchTemplate sticky bar.
- *
- * Layer 1 chrome (B&W). The only color is semantic: rating star (s-star), the
- * date/time PICK (solid blue — the one allowed blue fill), open/closed badge
- * (green/grey), and the "clear / Loeschen" link (blue). Input focus = blue
- * focus-visible ring only. Primary submit = ink.
- *
- * STATE GRAMMAR (from the mockups, never invented):
- *   - Selected pill/segment  = soft-grey sink (bg-s-bg-sunken) + ink text.
- *     Inactive = white + muted text. Mirrors TabPill.tsx.
- *   - Date PICK (chosen day) = solid blue (DateTimePicker handles this — its
- *     selected cell is ink today, so we keep the period chips on the sink
- *     grammar; the calendar's own selected state is the component's contract).
- *
- * Composition / reuse:
- *   - useSearchSuggest  → debounced as-you-type groups (services/salons/stylists)
- *   - useRecentSearches → recent pills (click = restore + auto-submit)
- *   - DateTimePicker    → the "Zeit" segment day picker (single-date variant)
- *   - FEATURED_SALONS / TRENDING → resting content
- *   - Categories are RESKINNED inline (the old searchCategories.ts palette is
- *     dead pre-B&W terracotta/cream + fake counts; the mockup shows a neutral
- *     icon row, so we render that instead).
- */
+// ── Constants ────────────────────────────────────────────────────────────────
 
-type Segment = "service" | "stadt" | "zeit";
+const EASE = [0.32, 0.72, 0, 1] as const;
+const OPEN_T = { duration: 0.4, ease: EASE } as const;
+const EXPAND_DIST = 120; // px of scroll = full 0->1 expand (service step only)
+const HEADING_H = 56;    // collapsing heading height (px)
+const ROW_H = 66;        // collapsed step row (h-14=56 + pt-2.5=10)
+const FOOTER_H = 68;     // footer slide-off distance
 
-// ── Animation: fast cross-fade + slight rise, matches the overlay feel (the
-//    island morph lives on the collapsed pill; the overlay itself just fades in).
-const overlayTransition: Transition = {
-  type: "tween",
-  ease: [0.22, 1, 0.36, 1],
-  duration: 0.28,
-};
-const instantTransition: Transition = { duration: 0 };
+const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first de-CH
 
-// (Service quick-pick chips removed — the approved resting state, mockup A1, is
-//  recents-only, not category chips.)
+type Step = "service" | "location" | "date";
+const STEPS: Step[] = ["service", "location", "date"];
 
-// CITIES: single canonical source is SEARCH_CITIES (lib/cities.ts), imported above.
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
-// Approx city centroids — "use current location" resolves real GPS coords to the
-// nearest of these (squared-distance; fine at country scale, no reverse-geocode dep).
-const CITY_COORDS: Record<string, [number, number]> = {
-  Basel: [47.5596, 7.5886], "Zürich": [47.3769, 8.5417], Bern: [46.948, 7.4474],
-  Lausanne: [46.5197, 6.6323], Genf: [46.2044, 6.1432], Luzern: [47.0502, 8.3093],
-  "St. Gallen": [47.4245, 9.3767], Winterthur: [47.5008, 8.7241],
-};
-function nearestCity(lat: number, lng: number): string {
-  let best = "", bestD = Infinity;
-  for (const [city, [la, lo]] of Object.entries(CITY_COORDS)) {
-    const d = (la - lat) ** 2 + (lo - lng) ** 2;
-    if (d < bestD) { bestD = d; best = city; }
-  }
-  return best;
+function buildMonthGrid(d: Date): (number | null)[] {
+  const y = d.getFullYear(), m = d.getMonth();
+  const first = (new Date(y, m, 1).getDay() + 6) % 7;
+  const total = new Date(y, m + 1, 0).getDate();
+  const cells: (number | null)[] = Array.from({ length: first }, () => null);
+  for (let i = 1; i <= total; i++) cells.push(i);
+  return cells;
 }
 
-// ── Period-of-day chips. English values for URL params, label via i18n.
-const PERIODS: { value: string; icon: LucideIcon }[] = [
-  { value: "morning", icon: Sunrise },
-  { value: "noon", icon: Sun },
-  { value: "afternoon", icon: Sunset },
-  { value: "evening", icon: Moon },
-];
+// `${y}-${m0based}-${d}` -> zero-padded ISO yyyy-mm-dd
+function keyToISO(key: string): string {
+  const [ys, ms, ds] = key.split("-");
+  return `${ys}-${String(Number(ms) + 1).padStart(2, "0")}-${String(Number(ds)).padStart(2, "0")}`;
+}
 
-// (Category cards removed — not in the approved mockup; resting state is recents-only.)
+// Maps the de i18n chip labels to URL param values.
+const PERIOD_CHIP_TO_URL: Record<string, string> = {
+  Vormittag: "morning",
+  Nachmittag: "afternoon",
+  Abend: "evening",
+};
+
+// ── Props (PRESERVED EXACTLY) ────────────────────────────────────────────────
 
 export interface SearchOverlayProps {
-  /** Controlled open state. */
   open: boolean;
-  /** Fires on X / Escape / backdrop / cancel. */
   onClose: () => void;
-  /** Locale for navigation + DateTimePicker formatting. */
   locale: string;
-  /** Optional seed values (e.g. the sticky bar passes the active city). */
   initialService?: string;
   initialCity?: string;
-  /** Which focused picker to open into. The hero rows pass the tapped field
-   *  (Service / Stadt / Zeit) so tapping "City" lands on the city picker, not
-   *  the service search. Defaults to "service" (Fresha-style ready-to-type). */
-  initialFocus?: Segment;
+  initialFocus?: "service" | "stadt" | "zeit";
 }
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export function SearchOverlay({
   open,
@@ -139,115 +102,115 @@ export function SearchOverlay({
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
-  const prefersReducedMotion = useReducedMotion();
-  const transition = prefersReducedMotion ? instantTransition : overlayTransition;
+  const reduce = useReducedMotion();
 
-  // ── Composer state ──────────────────────────────────────────────────────
-  const [query, setQuery] = React.useState("");
-  // "committed" collapses the live typeahead (e.g. after picking a service or opening a
-  // field) so City + When are reachable — lets you compose service → city → date. Typing clears it.
-  const [committed, setCommitted] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState<Step>("service");
   const [service, setService] = React.useState(initialService);
+  const [serviceQ, setServiceQ] = React.useState("");
   const [stadt, setStadt] = React.useState(initialCity);
-  const [zeitDate, setZeitDate] = React.useState<CalendarDate | null>(null);
-  // No setter: picking a period auto-searches (navigates away), so it's never held in state.
-  const [zeitPeriod] = React.useState<string>("");
+  const [cityQ, setCityQ] = React.useState("");
+  const [isoDate, setIsoDate] = React.useState(""); // URL `date` param
+  const [selKey, setSelKey] = React.useState<string | null>(null);
+  const [dateLabel, setDateLabel] = React.useState("");
+  const [zeitPeriod, setZeitPeriod] = React.useState(""); // morning/afternoon/evening/""
+  const [dateTab, setDateTab] = React.useState<"daten" | "flexibel">("daten");
+  const [monthOffset, setMonthOffset] = React.useState(0);
+  const [inputFocused, setInputFocused] = React.useState(false);
 
-  // Which segment's focused picker is open (null = the resting/typing screen).
-  const [segment, setSegment] = React.useState<Segment | null>(null);
+  const { recent, push } = useRecentSearches();
+  const [hiddenRecents, setHiddenRecents] = React.useState<Set<number>>(new Set());
+  const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
-  // Suggestion scope tabs (Alle / Services / Salons / Stylisten).
-  type Scope = "all" | "services" | "salons" | "stylists";
-  const [scope, setScope] = React.useState<Scope>("all");
+  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: stadt || undefined });
+  const typing = serviceQ.trim().length >= 2;
+  const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
 
-  const { recent, push, clear } = useRecentSearches();
-  const { items: recentlyViewed, clear: clearViewed } = useRecentlyViewed(4);
-  const { results, loading, error } = useSearchSuggest(query, {
-    city: stadt || undefined,
-  });
+  const serviceRef = React.useRef<HTMLInputElement>(null);
+  const cityRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const dateScrollRef = React.useRef<HTMLDivElement>(null);
 
-  const trimmed = query.trim();
-  const isTyping = trimmed.length >= 2 && !committed;
-  const hasAnyResults =
-    results.services.length > 0 ||
-    results.salons.length > 0 ||
-    results.stylists.length > 0;
+  const [safeTop, setSafeTop] = React.useState(0);
+  React.useEffect(() => {
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:fixed;top:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
+    document.body.appendChild(probe);
+    setSafeTop(Math.round(probe.getBoundingClientRect().height) || 0);
+    probe.remove();
+  }, []);
 
-  // ── Period label map (i18n) ─────────────────────────────────────────────
-  const periodLabel = React.useCallback(
-    (value: string) => {
-      const map: Record<string, string> = {
-        morning: t("periodMorning"),
-        noon: t("periodNoon"),
-        afternoon: t("periodAfternoon"),
-        evening: t("periodEvening"),
-      };
-      return map[value] ?? value;
-    },
-    [t],
-  );
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
 
-  // ── Derived "Zeit" display label (date + period) ─────────────────────────
-  const zeitLabel = React.useMemo(() => {
-    if (!zeitDate && !zeitPeriod) return "";
-    const periodTxt = zeitPeriod ? periodLabel(zeitPeriod) : "";
-    if (!zeitDate) return periodTxt;
-    const dateStr = new Intl.DateTimeFormat(`${locale}-CH`, {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    }).format(zeitDate.toDate(getLocalTimeZone()));
-    return periodTxt ? `${dateStr}, ${periodTxt}` : dateStr;
-  }, [zeitDate, zeitPeriod, periodLabel, locale]);
-
-  // ── Body-scroll lock while open ──────────────────────────────────────────
   React.useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  // ── Escape closes (the focused picker first, else the overlay) ───────────
   React.useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (segment) setSegment(null);
-      else onClose();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, segment, onClose]);
+  }, [open, onClose]);
 
-  // ── Sync seeds when (re)opened ───────────────────────────────────────────
   React.useEffect(() => {
     if (open) {
       setService(initialService);
       setStadt(initialCity);
-      // Open into the picker for the field the user tapped (Service / Stadt /
-      // Zeit). Defaults to "service" (Fresha-style ready-to-type) for the CTA +
-      // Service row; the City row passes "stadt" so it opens the city picker
-      // instead of the service search, and Zeit opens the date picker (owner
-      // 2026-06-13). Other pickers stay reachable via the drill's back button.
-      setSegment(initialFocus);
+      if (initialFocus === "stadt") setActiveStep("location");
+      else if (initialFocus === "zeit") setActiveStep("date");
+      else setActiveStep("service");
+      setInputFocused(false);
+      expand.set(0);
     }
-    // Intentionally only on open toggle — typed state is reset on close below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // ── Submit — preserves the EXACT URL contract the legacy SearchBar built
-  //    (service / city / date / period). Free-text `q` is added when present.
+  const now = React.useMemo(() => new Date(), []);
+  const windowEnd = React.useMemo(() => new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42), [now]);
+  const maxMonthOffset = React.useMemo(
+    () => (windowEnd.getFullYear() - now.getFullYear()) * 12 + (windowEnd.getMonth() - now.getMonth()),
+    [now, windowEnd],
+  );
+  const shownMonth = React.useMemo(
+    () => new Date(now.getFullYear(), now.getMonth() + Math.min(monthOffset, maxMonthOffset), 1),
+    [now, monthOffset, maxMonthOffset],
+  );
+
+  // PURE SCROLL-LINKED EXPAND (service step only)
+  const expand = useMotionValue(0);
+  const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]);
+  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);
+  const headingOp = useTransform(expand, [0, 0.42], [1, 0]);
+  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);
+  const stepsOp = useTransform(expand, [0.4, 0.8], [1, 0]);
+  const stepsH = useTransform(expand, [0.4, 0.8], [ROW_H * 2 + 20, 0]);
+  const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]);
+  const cardMx = useTransform(expand, [0, 0.7], [12, 0]);
+  const cardRadius = useTransform(expand, [0, 0.7], [22, 18]);
+
+  const grow = React.useCallback(
+    (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [reduce],
+  );
+  const collapse = React.useCallback(() => { if (listRef.current) listRef.current.scrollTop = 0; grow(0); }, [grow]);
+  const openStep = React.useCallback((s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); }, [collapse]);
+  const advance = React.useCallback((s: Step) => {
+    setInputFocused(false); collapse();
+    const next = STEPS[STEPS.indexOf(s) + 1];
+    if (next) setActiveStep(next);
+  }, [collapse]);
+
+  // URL contract (PRESERVED EXACTLY)
   const buildParams = React.useCallback(
     (over?: Partial<{ q: string; service: string; city: string; date: string; period: string }>) => {
       const sp = new URLSearchParams();
-      const qv = over?.q ?? trimmed;
-      const sv = over?.service ?? service;
-      const cv = over?.city ?? stadt;
-      const dv = over?.date ?? (zeitDate ? zeitDate.toString() : "");
-      const pv = over?.period ?? zeitPeriod;
+      const qv = over?.q ?? serviceQ.trim(), sv = over?.service ?? service;
+      const cv = over?.city ?? stadt, dv = over?.date ?? isoDate, pv = over?.period ?? zeitPeriod;
       if (qv && qv.length >= 2) sp.set("q", qv);
       if (sv) sp.set("service", sv);
       if (cv) sp.set("city", cv);
@@ -255,1058 +218,401 @@ export function SearchOverlay({
       if (pv) sp.set("period", pv);
       return sp;
     },
-    [trimmed, service, stadt, zeitDate, zeitPeriod],
+    [serviceQ, service, stadt, isoDate, zeitPeriod],
   );
 
   const navigate = React.useCallback(
-    (sp: URLSearchParams) => {
-      const qs = sp.toString();
-      router.push(`/${locale}/search${qs ? `?${qs}` : ""}`);
-      onClose();
-    },
+    (sp: URLSearchParams) => { const qs = sp.toString(); router.push(`/${locale}/search${qs ? `?${qs}` : ""}`); onClose(); },
     [router, locale, onClose],
   );
 
   const handleSubmit = React.useCallback(() => {
-    push({
-      query: trimmed || undefined,
-      service: service || undefined,
-      city: stadt || undefined,
-      date: zeitDate ? zeitDate.toString() : undefined,
-      period: zeitPeriod || undefined,
-    });
+    push({ query: serviceQ.trim() || undefined, service: service || undefined, city: stadt || undefined, date: isoDate || undefined, period: zeitPeriod || undefined });
     navigate(buildParams());
-  }, [push, trimmed, service, stadt, zeitDate, zeitPeriod, buildParams, navigate]);
+  }, [push, serviceQ, service, stadt, isoDate, zeitPeriod, buildParams, navigate]);
 
-  // Auto-search: a committing selection (city / date / period) fires the search
-  // immediately with the just-picked value — no manual "Suchen" tap. The value is
-  // passed explicitly because setState hasn't flushed yet when this runs.
   const autoSearch = React.useCallback(
     (over: Partial<{ city: string; date: string; period: string }>) => {
-      push({
-        query: trimmed || undefined,
-        service: service || undefined,
-        city: over.city ?? stadt ?? undefined,
-        date: over.date ?? (zeitDate ? zeitDate.toString() : undefined),
-        period: over.period ?? zeitPeriod ?? undefined,
-      });
+      push({ query: serviceQ.trim() || undefined, service: service || undefined, city: over.city ?? stadt ?? undefined, date: over.date ?? isoDate ?? undefined, period: over.period ?? zeitPeriod ?? undefined });
       navigate(buildParams(over));
     },
-    [push, trimmed, service, stadt, zeitDate, zeitPeriod, buildParams, navigate],
+    [push, serviceQ, service, stadt, isoDate, zeitPeriod, buildParams, navigate],
+  );
+  void autoSearch; // export contract: preserved for external callers
+
+  const handleRecentClick = React.useCallback((r: RecentSearch) => {
+    const sp = new URLSearchParams();
+    if (r.query) sp.set("q", r.query);
+    if (r.service) sp.set("service", r.service);
+    if (r.city) sp.set("city", r.city);
+    if (r.date) sp.set("date", r.date);
+    if (r.period) sp.set("period", r.period);
+    push({ query: r.query, service: r.service, city: r.city, date: r.date, period: r.period });
+    navigate(sp);
+  }, [push, navigate]);
+
+  const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); onClose(); }, [expand, onClose]);
+  const reset = React.useCallback(() => { setService(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
+
+  // i18n (all at top level)
+  const searchHeadingTxt        = t("searchHeading");
+  const locationHeadingTxt      = t("locationHeading");
+  const dateHeadingTxt          = t("dateHeading");
+  const fieldServiceLabelTxt    = t("fieldServiceLabel");
+  const queryPlaceholderTxt     = t("queryPlaceholder");
+  const fieldAddPlaceholderTxt  = t("fieldAddPlaceholder");
+  const anytimeTxt              = t("anytime");
+  const noPreferenceTxt         = t("noPreference");
+  const noPreferenceSubTxt      = t("noPreferenceSub");
+  const citySearchPlaceholderTxt = t("citySearchPlaceholder");
+  const tabDatesTxt             = t("tabDates");
+  const tabFlexibleTxt          = t("tabFlexible");
+  const uhrzeitTxt              = t("uhrzeitLabel");
+  const todayTxt                = t("today");
+  const tomorrowTxt             = t("tomorrow");
+  const flexThisWeekTxt         = t("flexThisWeek");
+  const flexWeekendTxt          = t("flexWeekend");
+  const flexThisMonthTxt        = t("flexThisMonth");
+  const flexFlexibleTxt         = t("flexFlexible");
+  const periodForenoonTxt       = t("periodForenoon");
+  const periodAfternoonShortTxt = t("periodAfternoonShort");
+  const periodEveningShortTxt   = t("periodEveningShort");
+  const resetTxt                = t("reset");
+  const submitTxt               = t("submit");
+  const closeTxt                = t("close");
+  const backTxt                 = t("back");
+  const noMatchTitleTxt         = t("noMatchTitle");
+  const recentLabelTxt          = t("recentLabel");
+  const storesLabelTxt          = t("storesLabel");
+  const categoriesLabelTxt      = t("categoriesLabel");
+  const trendingLabelTxt        = t("trendingLabel");
+
+  const flexDates = React.useMemo(
+    () => [todayTxt, tomorrowTxt, flexThisWeekTxt, flexWeekendTxt, flexThisMonthTxt, flexFlexibleTxt],
+    [todayTxt, tomorrowTxt, flexThisWeekTxt, flexWeekendTxt, flexThisMonthTxt, flexFlexibleTxt],
+  );
+  const timeChips = React.useMemo(() => [
+    { label: periodForenoonTxt,       urlVal: PERIOD_CHIP_TO_URL[periodForenoonTxt]       ?? "morning"   },
+    { label: periodAfternoonShortTxt, urlVal: PERIOD_CHIP_TO_URL[periodAfternoonShortTxt] ?? "afternoon" },
+    { label: periodEveningShortTxt,   urlVal: PERIOD_CHIP_TO_URL[periodEveningShortTxt]   ?? "evening"   },
+  ], [periodForenoonTxt, periodAfternoonShortTxt, periodEveningShortTxt]);
+
+  const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
+    service:  { label: fieldServiceLabelTxt,  value: service,    placeholder: queryPlaceholderTxt     },
+    location: { label: locationHeadingTxt,    value: stadt || "", placeholder: fieldAddPlaceholderTxt },
+    date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
+  }), [fieldServiceLabelTxt, service, queryPlaceholderTxt, locationHeadingTxt, stadt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
+
+  const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
+  const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
+
+  const collapsedRow = (s: Step) => (
+    <button key={s} onClick={() => openStep(s)}
+      className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+      <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
+      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
+        {stepMeta[s].value || stepMeta[s].placeholder}
+      </span>
+    </button>
   );
 
-  // ── Recent pill → restore all fields + auto-submit (useRecentSearches doc) ─
-  const handleRecentClick = React.useCallback(
-    (r: RecentSearch) => {
-      const sp = new URLSearchParams();
-      if (r.query) sp.set("q", r.query);
-      if (r.service) sp.set("service", r.service);
-      if (r.city) sp.set("city", r.city);
-      if (r.date) sp.set("date", r.date);
-      if (r.period) sp.set("period", r.period);
-      push({
-        query: r.query,
-        service: r.service,
-        city: r.city,
-        date: r.date,
-        period: r.period,
-      });
-      navigate(sp);
-    },
-    [push, navigate],
+  const serviceBar = (
+    <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
+      {inputFocused ? (
+        <button onClick={() => { setInputFocused(false); collapse(); }} aria-label={backTxt}
+          className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
+          <ArrowLeft size={20} strokeWidth={2} />
+        </button>
+      ) : (
+        <span className="grid h-6 w-6 shrink-0 place-items-center">
+          <Search size={19} strokeWidth={2} className="text-s-ink-3" />
+        </span>
+      )}
+      <input ref={serviceRef} value={inputFocused ? serviceQ : service}
+        onFocus={() => { setInputFocused(true); grow(1); }}
+        onChange={(e) => setServiceQ(e.target.value)}
+        placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
+        className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+      {inputFocused && serviceQ.length > 0 && (
+        <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
+          aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
+          <X size={18} strokeWidth={2.2} />
+        </button>
+      )}
+    </div>
   );
 
-  // ── Suggestion-row clicks ────────────────────────────────────────────────
-  const onServiceSuggest = React.useCallback(
-    (name: string) => {
-      // Compose: fill the query with the picked service + collapse the results so City + When
-      // stay reachable. (Was: navigate immediately, which blocked composing service → city → date.)
-      // Drill-in: also return to the home composer so the Service field shows the picked term.
-      setQuery(name);
-      setCommitted(true);
-      setSegment(null);
-    },
-    [],
-  );
-  const onSalonSuggest = React.useCallback(
-    (slug: string, name: string) => {
-      push({ query: name });
-      router.push(`/${locale}/salon/${slug}`);
-      onClose();
-    },
-    [push, router, locale, onClose],
-  );
-  const onStylistSuggest = React.useCallback(
-    (salonSlug: string, name: string) => {
-      push({ query: name });
-      router.push(`/${locale}/salon/${salonSlug}`);
-      onClose();
-    },
-    [push, router, locale, onClose],
+  const serviceSuggestions = () => {
+    if (typing) {
+      if (loading) return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
+      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-3">{noMatchTitleTxt}</p>;
+      return (
+        <>
+          {results.services.map((s) => { const name = locale === "en" ? s.name_en || s.name_de : s.name_de; return (
+            <SuggestRow key={s.id} name={name} sub="Service" Icon={Search} onClick={() => { setService(name); setServiceQ(""); advance("service"); }} />
+          ); })}
+          {results.salons.map((s) => <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />)}
+          {results.stylists.map((s) => <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />)}
+        </>
+      );
+    }
+    return (
+      <>
+        {visibleRecents.length > 0 && (<>
+          <SectionLabel>{recentLabelTxt}</SectionLabel>
+          {visibleRecents.map((r, i) => (
+            <SuggestRow key={`${recentLabel(r)}-${i}`} name={recentLabel(r)} sub={r.city || r.date || ""} Icon={Clock}
+              onClick={() => handleRecentClick(r)} onRemove={() => setHiddenRecents((prev) => new Set([...prev, i]))} />
+          ))}
+        </>)}
+        <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
+        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />)}
+        <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
+        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />)}
+        <SectionLabel className="mt-3">{trendingLabelTxt}</SectionLabel>
+        <div className="flex flex-wrap gap-2 pb-2 pt-1">
+          {TRENDING.map((item) => (
+            <button key={item.query} onClick={() => { setService(item.label); advance("service"); }}
+              className="rounded-full bg-s-bg-sunken px-4 py-2 text-[13px] font-medium text-s-ink-2 transition-colors hover:bg-s-border/60 active:scale-[0.97]">
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </>
+    );
+  };
+
+  const cityList = () => (
+    <>
+      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(""); setCityQ(""); advance("location"); }} />
+      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); advance("location"); }} />)}
+    </>
   );
 
-  // ── Trending → free-text submit (bypasses the composer, per plan D2) ──────
-  const onTrending = React.useCallback(
-    (q: string) => {
-      push({ query: q });
-      navigate(buildParams({ q }));
-    },
-    [push, navigate, buildParams],
+  // selected-ok: bg-s-ink is the ONE primary commit CTA, not a selected state
+  const footerInner = (
+    <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
+      <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]" /* selected-ok: primary commit CTA */>
+        <Search size={16} strokeWidth={2.2} />{submitTxt}
+      </button>
+    </div>
   );
-
-  // ── Reset typed + composer state on close so a reopen starts clean ────────
-  const close = React.useCallback(() => {
-    setSegment(null);
-    setQuery("");
-    setCommitted(false);
-    setScope("all");
-    onClose();
-  }, [onClose]);
-
-  // Portal to <body> so the overlay escapes the SearchBar island's stacking +
-  // transform + overflow context. Nested, a fixed z-index is scoped to that
-  // transformed ancestor, so later page sections paint over the overlay.
-  // SSR-safe via the mounted gate (document is unavailable during SSR).
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  // NOTE: the body-scroll lock lives in ONE effect above (~line 200). A duplicate
-  // here caused the lock to stick (each effect captured the other's "hidden" as its
-  // restore value), leaving the page unscrollable after close. Removed.
 
   if (!mounted) return null;
 
   return createPortal(
     <AnimatePresence>
-      {open && (
-        <motion.div
-          key="search-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("title")}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-          className="fixed inset-0 z-[800] flex flex-col bg-white"
-        >
-          {/* ── Header: back (when in a focused picker) OR title + close ── */}
-          <div className="flex items-center gap-3 px-4 pb-3 pt-[max(16px,env(safe-area-inset-top))] md:px-6">
-            {segment ? (
-              <button
-                type="button"
-                onClick={() => setSegment(null)}
-                aria-label={t("back")}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-              >
-                <ArrowLeft size={18} strokeWidth={2} aria-hidden />
-              </button>
-            ) : null}
-            <h2 className="font-heading text-[19px] font-extrabold tracking-[-0.02em] text-s-ink">
-              {segment === "service"
-                ? t("searchTitle")
-                : segment === "stadt"
-                  ? t("locationTitle")
-                  : segment === "zeit"
-                    ? t("dateTitle")
-                    : t("title")}
-            </h2>
-            <button
-              type="button"
-              onClick={close}
-              aria-label={t("close")}
-              className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink transition-colors hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-            >
-              <X size={18} strokeWidth={2} aria-hidden />
-            </button>
-          </div>
+      {open && [
+        <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
-          {/* ── Scrollable body ── */}
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 md:px-6">
-            <div className="mx-auto w-full max-w-[640px]">
-              {segment === "stadt" ? (
-                <LocationPicker
-                  t={t}
-                  value={stadt}
-                  onChange={setStadt}
-                  onPick={(city) => {
-                    setStadt(city);
-                    setSegment(null); // compose: fill the City field, back to the composer (no search yet)
-                  }}
-                  onUseCurrent={() => {
-                    if (typeof navigator !== "undefined" && navigator.geolocation) {
-                      navigator.geolocation.getCurrentPosition(
-                        (pos) => {
-                          setStadt(nearestCity(pos.coords.latitude, pos.coords.longitude) || t("currentLocation"));
-                          setSegment(null);
-                        },
-                        (err) => {
-                          console.error("[SearchOverlay] geolocation failed:", err.message);
-                          setSegment(null);
-                        },
-                        { timeout: 8000, maximumAge: 300000 },
-                      );
-                    } else {
-                      setStadt(t("currentLocation"));
-                      setSegment(null);
-                    }
-                  }}
-                />
-              ) : segment === "zeit" ? (
-                <TimePicker
-                  t={t}
-                  locale={locale}
-                  zeitDate={zeitDate}
-                  zeitPeriod={zeitPeriod}
-                  // compose: a day HOLDS the date (calendar turns blue); a time band COMMITS
-                  // the search with the held date + period. So you set date AND time, then go.
-                  onDateChange={setZeitDate}
-                  onPeriodChange={(p) => autoSearch({ period: p })}
-                />
-              ) : segment === "service" ? (
-                <ServiceSearch
-                  t={t}
-                  locale={locale}
-                  query={query}
-                  setQuery={(v) => {
-                    setQuery(v);
-                    setCommitted(false);
-                  }}
-                  scope={scope}
-                  setScope={setScope}
-                  isTyping={isTyping}
-                  loading={loading}
-                  error={error}
-                  results={results}
-                  hasAnyResults={hasAnyResults}
-                  recent={recent}
-                  recentlyViewed={recentlyViewed}
-                  onRecentClick={handleRecentClick}
-                  onServiceSuggest={onServiceSuggest}
-                  onSalonSuggest={onSalonSuggest}
-                  onStylistSuggest={onStylistSuggest}
-                  onTrending={onTrending}
-                  onSubmitAnyway={handleSubmit}
-                />
-              ) : (
-                <Home
-                  t={t}
-                  query={query}
-                  stadt={stadt}
-                  zeitLabel={zeitLabel}
-                  recent={recent}
-                  clearRecent={() => {
-                    clear();
-                    clearViewed();
-                  }}
-                  onRecentClick={handleRecentClick}
-                  onOpenSegment={(seg) => {
-                    setCommitted(true); // moving to a field commits the typed query → results collapse
-                    setSegment(seg);
-                  }}
-                  onSubmitAnyway={handleSubmit}
-                />
+        <motion.button key="closeX" onClick={close} aria-label={closeTxt}
+          className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+          style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+          <X size={17} strokeWidth={2.2} />
+        </motion.button>,
+
+        <motion.div key="sheet" initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+          transition={reduce ? { duration: 0 } : OPEN_T}
+          style={{ top: activeStep === "date" ? Math.max(safeTop, 24) : cropTop }}
+          className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
+
+          {activeStep === "service" ? (
+            <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }} className="flex min-h-0 flex-1 flex-col">
+              <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderRadius: cardRadius, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
+                className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+                <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
+                  <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
+                </motion.div>
+                <div className="shrink-0 px-3 pb-1 pt-4">{serviceBar}</div>
+                <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
+                  onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
+                  {serviceSuggestions()}
+                </div>
+              </motion.div>
+              <motion.div style={{ height: stepsH, opacity: stepsOp }} className="overflow-hidden px-3">
+                <div className="pt-2.5">{collapsedRow("location")}</div>
+                <div className="pt-2.5">{collapsedRow("date")}</div>
+              </motion.div>
+              <motion.div style={{ height: footerH, opacity: stepsOp }} className="shrink-0 overflow-hidden">
+                {footerInner}
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div key={activeStep} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+              className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+              {STEPS.map((s) =>
+                s !== activeStep ? (
+                  <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
+                ) : s === "location" ? (
+                  <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                    <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</h2>
+                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
+                      <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                      <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
+                        placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
+                        className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+                      {cityQ.length > 0 && (
+                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
+                          <X size={18} strokeWidth={2.2} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
+                  </div>
+                ) : (
+                  <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                    <h2 className="mb-2 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</h2>
+                    <div className="relative mb-3 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
+                      <motion.div layout transition={reduce ? { duration: 0 } : { duration: 0.28, ease: EASE }}
+                        className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm"
+                        style={{ left: dateTab === "daten" ? 4 : "calc(50% + 0px)" }} />
+                      <button onClick={() => setDateTab("daten")}
+                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>
+                        {tabDatesTxt}
+                      </button>
+                      <button onClick={() => setDateTab("flexibel")}
+                        className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>
+                        {tabFlexibleTxt}
+                      </button>
+                    </div>
+                    <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                      <AnimatePresence mode="wait" initial={false}>
+                        {dateTab === "daten" ? (
+                          <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
+                            <div className="mb-2 flex items-center justify-between">
+                              <p className="font-heading text-[17px] font-bold capitalize text-s-ink">
+                                {shownMonth.toLocaleDateString("de-CH", { month: "long" })} {shownMonth.getFullYear()}
+                              </p>
+                              <div className="flex items-center gap-1">
+                                <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
+                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
+                                  <ChevronLeft size={20} strokeWidth={2} />
+                                </button>
+                                <button onClick={() => setMonthOffset((o) => Math.min(maxMonthOffset, o + 1))} disabled={monthOffset >= maxMonthOffset} aria-label="Naechster Monat"
+                                  className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
+                                  <ChevronRight size={20} strokeWidth={2} />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
+                              {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
+                            </div>
+                            <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey}
+                              onPick={(key, label) => {
+                                setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label);
+                                setTimeout(() => dateScrollRef.current?.scrollTo({ top: dateScrollRef.current.scrollHeight, behavior: "smooth" }), 300);
+                              }} />
+                            <div className={`overflow-hidden transition-[max-height,opacity] duration-300 ${selKey ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}>
+                              <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">{uhrzeitTxt}</p>
+                              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                                {timeChips.map(({ label, urlVal }) => {
+                                  const picked = zeitPeriod === urlVal;
+                                  return (
+                                    <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
+                                      className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                      {label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
+                            className="grid grid-cols-2 gap-2.5 pt-1">
+                            {/* selected-ok: blue fill for date/slot chips (design contract) */}
+                            {flexDates.map((dd) => (
+                              <button key={dd} onClick={() => { setDateLabel(dd); setIsoDate(""); setSelKey(null); }}
+                                className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-colors ${dateLabel === dd ? "border-s-accent bg-s-accent font-semibold text-white" /* selected-ok: flex date chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                {dd}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                ),
               )}
-            </div>
-          </div>
-
-          {/* ── Footer: the single ink commit action ── */}
-          <div className="border-t border-s-bg-sunken px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 md:px-6">
-            <div className="mx-auto w-full max-w-[640px]">
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="flex h-12 w-full items-center justify-center rounded-[13px] bg-s-ink font-heading text-[15px] font-bold text-white transition-colors duration-200 ease-glide hover:bg-black active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-              >
-                {t("submit")}
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
+              <div className="shrink-0">{footerInner}</div>
+            </motion.div>
+          )}
+        </motion.div>,
+      ]}
     </AnimatePresence>,
     document.body,
   );
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   RESTING (query<2) + TYPING (query>=2) screen
-   ════════════════════════════════════════════════════════════════════════ */
+// ── Sub-components ────────────────────────────────────────────────────────────
 
-type TFn = ReturnType<typeof useTranslations>;
-
-/* ────────────────────────────────────────────────────────────────────────
-   HOME composer (segment === null) — three tap-fields + recent.
-   No inline input, no live results, no for-you chips here: each field drills
-   into its own focused sub-screen (Service / Stadt / Zeit), mirroring the
-   Location + Date screens. (solen-search-drill.html frame 1.)
-   ──────────────────────────────────────────────────────────────────────── */
-
-function Home({
-  t,
-  query,
-  stadt,
-  zeitLabel,
-  recent,
-  clearRecent,
-  onRecentClick,
-  onOpenSegment,
-  onSubmitAnyway,
-}: {
-  t: TFn;
-  query: string;
-  stadt: string;
-  zeitLabel: string;
-  recent: RecentSearch[];
-  clearRecent: () => void;
-  onRecentClick: (r: RecentSearch) => void;
-  onOpenSegment: (s: Segment) => void;
-  onSubmitAnyway: () => void;
-}) {
-  return (
-    <>
-      {/* ── Three tap-fields (stacked). All three drill into their own screen. ── */}
-      <div className="flex flex-col gap-[9px] pt-1">
-        {/* Service — drill into the focused search sub-screen */}
-        <FieldButton
-          icon={<Search size={17} strokeWidth={2} aria-hidden />}
-          value={query || t("queryPlaceholder")}
-          isPlaceholder={!query}
-          onClick={() => onOpenSegment("service")}
-          ariaLabel={t("queryPlaceholder")}
-        />
-
-        {/* Stadt — drill into the location picker */}
-        <FieldButton
-          icon={<MapPin size={17} strokeWidth={2} aria-hidden />}
-          value={stadt || t("cityField")}
-          isPlaceholder={!stadt}
-          onClick={() => onOpenSegment("stadt")}
-          ariaLabel={t("cityField")}
-        />
-
-        {/* Zeit — drill into the date/time picker */}
-        <FieldButton
-          icon={<CalendarIcon size={17} strokeWidth={2} aria-hidden />}
-          value={zeitLabel || t("anytime")}
-          isPlaceholder={!zeitLabel}
-          onClick={() => onOpenSegment("zeit")}
-          ariaLabel={t("dateField")}
-        />
-      </div>
-
-      {/* ── Zuletzt — recent searches for quick re-search + browse-all shortcut. ── */}
-      <div className="mt-5 pb-2">
-        <div className="flex items-center justify-between">
-          <SectionLabel>{t("recentLabel")}</SectionLabel>
-          {recent.length > 0 && (
-            <button
-              type="button"
-              onClick={clearRecent}
-              className="font-body text-[13px] font-semibold text-s-accent transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-            >
-              {t("clear")}
-            </button>
-          )}
-        </div>
-        <div className="mt-1">
-          {/* recent search terms */}
-          {recent.slice(0, 10).map((r, i) => (
-            <SuggestRow
-              key={`recent-${recentLabel(r)}-${i}`}
-              icon={<Search size={16} strokeWidth={2} aria-hidden />}
-              title={recentLabel(r)}
-              onClick={() => onRecentClick(r)}
-            />
-          ))}
-          {/* persistent browse-all shortcut (Fresha "All treatments") */}
-          <SuggestRow
-            icon={<Search size={16} strokeWidth={2} aria-hidden />}
-            title={t("allServices")}
-            onClick={onSubmitAnyway}
-          />
-        </div>
-      </div>
-    </>
-  );
+function SectionLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   SERVICE search sub-screen (segment === "service") — the focused search.
-   Autofocus input → typing shows live results; empty shows discovery
-   (Für dich / Zuletzt / Schon besucht / Im Trend). Picking a result or a
-   chip returns to the Home composer with the query filled.
-   (solen-search-drill.html frame 2.)
-   ──────────────────────────────────────────────────────────────────────── */
-
-function ServiceSearch({
-  t,
-  locale,
-  query,
-  setQuery,
-  scope,
-  setScope,
-  isTyping,
-  loading,
-  error,
-  results,
-  hasAnyResults,
-  recent,
-  recentlyViewed,
-  onRecentClick,
-  onServiceSuggest,
-  onSalonSuggest,
-  onStylistSuggest,
-  onTrending,
-  onSubmitAnyway,
-}: {
-  t: TFn;
-  locale: string;
-  query: string;
-  setQuery: (v: string) => void;
-  scope: "all" | "services" | "salons" | "stylists";
-  setScope: (s: "all" | "services" | "salons" | "stylists") => void;
-  isTyping: boolean;
-  loading: boolean;
-  error: Error | null;
-  results: ReturnType<typeof useSearchSuggest>["results"];
-  hasAnyResults: boolean;
-  recent: RecentSearch[];
-  recentlyViewed: ReturnType<typeof useRecentlyViewed>["items"];
-  onRecentClick: (r: RecentSearch) => void;
-  onServiceSuggest: (name: string) => void;
-  onSalonSuggest: (slug: string, name: string) => void;
-  onStylistSuggest: (salonSlug: string, name: string) => void;
-  onTrending: (q: string) => void;
-  onSubmitAnyway: () => void;
+function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
+  monthDate: Date; now: Date; windowEnd: Date; selKey: string | null;
+  onPick: (key: string, label: string) => void;
 }) {
-  const wantServices = scope === "all" || scope === "services";
-  const wantSalons = scope === "all" || scope === "salons";
-  const wantStylists = scope === "all" || scope === "stylists";
-
-  // ── "Für dich" chips (empty-state in-between zone). Personalized terms from
-  //    the discovery engine; falls back to the static TRENDING list on miss/err.
-  const [forYou, setForYou] = React.useState<{ label: string; query: string }[]>([]);
-  React.useEffect(() => {
-    let alive = true;
-    fetch("/api/recommendations/chips")
-      .then((r) => r.json())
-      .then((d) => {
-        if (!alive) return;
-        const terms = ((d?.terms ?? []) as { term: string }[])
-          .map((x) => x.term)
-          .filter(Boolean)
-          .slice(0, 8)
-          .map((term) => ({ label: term, query: term }));
-        setForYou(terms.length > 0 ? terms : TRENDING.map((x) => ({ label: x.label, query: x.query })));
-      })
-      .catch((e) => {
-        console.error("[SearchOverlay] chip-terms fetch failed:", e);
-        setForYou(TRENDING.map((x) => ({ label: x.label, query: x.query })));
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
+  const y = monthDate.getFullYear(), m = monthDate.getMonth();
+  const monthLong = monthDate.toLocaleDateString("de-CH", { month: "long" });
+  const cells = buildMonthGrid(monthDate);
+  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const windowMid = windowEnd.getTime();
   return (
-    <>
-      <div className="flex flex-col gap-[9px] pt-1">
-        {/* Query field — the live text input (autofocus). */}
-        <label
-          className={cn(
-            "flex h-12 items-center gap-[10px] rounded-[13px] border bg-white px-[13px]",
-            "border-s-border focus-within:border-s-accent",
-            "transition-colors",
-          )}
-        >
-          <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
-          <input
-            type="text"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("queryPlaceholder")}
-            aria-label={t("queryPlaceholder")}
-            className="min-w-0 flex-1 !border-0 !bg-transparent !px-0 !min-h-0 font-body text-[14.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:shadow-none"
-          />
-        </label>
-
-        {/* ── TYPING = live results; EMPTY = discovery stack. ── */}
-        {isTyping ? (
-          <>
-            {/* Scope tabs — sink grammar (selected = soft-grey, inactive = white) */}
-            <div
-              className="scrollbar-none mt-[13px] flex gap-[7px] overflow-x-auto"
-              style={{ scrollbarWidth: "none" }}
-              role="tablist"
-              aria-label={t("scopeLabel")}
-            >
-              {(["all", "services", "salons", "stylists"] as const).map((s) => (
-                <ScopeTab
-                  key={s}
-                  active={scope === s}
-                  onClick={() => setScope(s)}
-                  label={
-                    s === "all"
-                      ? t("scopeAll")
-                      : s === "services"
-                        ? t("scopeServices")
-                        : s === "salons"
-                          ? t("scopeSalons")
-                          : t("scopeStylists")
-                  }
-                />
-              ))}
-            </div>
-
-            {error ? (
-              <ErrorBlock t={t} />
-            ) : loading ? (
-              <SuggestSkeleton />
-            ) : !hasAnyResults ? (
-              <NoMatchBlock t={t} query={query} onSubmitAnyway={onSubmitAnyway} onTrending={onTrending} />
+    <div className="mb-2 grid grid-cols-7 gap-y-0.5">
+      {cells.map((d, i) => {
+        if (d === null) return <div key={i} />;
+        const key = `${y}-${m}-${d}`;
+        const ts = new Date(y, m, d).getTime();
+        const disabled = ts < todayMid || ts > windowMid;
+        const isToday = ts === todayMid;
+        // selected-ok: locked date-fill is blue s-accent (design contract)
+        const selected = selKey === key;
+        return (
+          <div key={i} className="flex justify-center">
+            {disabled ? (
+              <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
             ) : (
-              <div className="pb-2">
-                {wantServices && results.services.length > 0 && (
-                  <Group label={t("groupServices")}>
-                    {results.services.map((s) => {
-                      const name = locale === "en" ? s.name_en || s.name_de : s.name_de;
-                      return (
-                        <SuggestRow
-                          key={s.id}
-                          icon={<Scissors size={15} strokeWidth={2} aria-hidden />}
-                          title={name}
-                          onClick={() => onServiceSuggest(name)}
-                        />
-                      );
-                    })}
-                  </Group>
-                )}
-                {wantSalons && results.salons.length > 0 && (
-                  <Group label={t("groupSalons")}>
-                    {results.salons.map((s) => (
-                      <VenueRow
-                        key={s.id}
-                        name={s.name}
-                        photoUrl={s.cover_photo_url}
-                        rating={s.average_rating}
-                        meta={s.address?.split(",")[0]}
-                        onClick={() => onSalonSuggest(s.slug, s.name)}
-                      />
-                    ))}
-                  </Group>
-                )}
-                {wantStylists && results.stylists.length > 0 && (
-                  <Group label={t("groupStylists")}>
-                    {results.stylists.map((s) => (
-                      <VenueRow
-                        key={s.id}
-                        name={s.name}
-                        photoUrl={s.avatar_url}
-                        meta={s.salon_name}
-                        rounded
-                        onClick={() => onStylistSuggest(s.salon_slug, s.name)}
-                      />
-                    ))}
-                  </Group>
-                )}
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            {/* (a) Für dich — personalized chips */}
-            {forYou.length > 0 && (
-              <div className="pt-1">
-                <SectionLabel>{t("forYou")}</SectionLabel>
-                {/* single tidy scroll row (was flex-wrap → ragged multi-row clutter) */}
-                <div className="scrollbar-none mt-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-                  {forYou.map((c) => (
-                    <button
-                      key={c.query}
-                      type="button"
-                      onClick={() => onTrending(c.query)}
-                      className="shrink-0 whitespace-nowrap rounded-full border border-s-border bg-white px-3.5 py-2 font-body text-[13.5px] font-semibold text-s-ink transition-colors hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-                    >
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* (b) Zuletzt — recent searches */}
-            {recent.length > 0 && (
-              <div className="mt-5">
-                <SectionLabel>{t("recentLabel")}</SectionLabel>
-                <div className="mt-1">
-                  {recent.slice(0, 10).map((r, i) => (
-                    <SuggestRow
-                      key={`recent-${recentLabel(r)}-${i}`}
-                      icon={<Search size={16} strokeWidth={2} aria-hidden />}
-                      title={recentLabel(r)}
-                      onClick={() => onRecentClick(r)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* (c) Schon besucht — recently-viewed venues (photo thumbnails) */}
-            {recentlyViewed.length > 0 && (
-              <div className="mt-5">
-                <SectionLabel>{t("visitedLabel")}</SectionLabel>
-                <div className="mt-1">
-                  {recentlyViewed.map((v) => (
-                    <VenueRow
-                      key={`rv-${v.slug}`}
-                      name={v.name}
-                      photoUrl={v.photoUrl ?? null}
-                      rating={v.rating ?? null}
-                      meta={v.category.charAt(0).toUpperCase() + v.category.slice(1)}
-                      onClick={() => onSalonSuggest(v.slug, v.name)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* (d) Im Trend — numbered trending list (rank + label) */}
-            <div className="mt-5 pb-2">
-              <SectionLabel>{t("trendingLabel")}</SectionLabel>
-              <div className="mt-1">
-                {TRENDING.map((item) => (
-                  <button
-                    key={item.rank}
-                    type="button"
-                    onClick={() => onTrending(item.query)}
-                    className="flex w-full items-center gap-3 rounded-[10px] px-2 py-2.5 text-left transition-colors hover:bg-s-bg-sunken focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-                  >
-                    <span className="w-4 shrink-0 text-center font-heading text-[14px] font-extrabold text-s-ink-3" aria-hidden>
-                      {item.rank}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-body text-[14.5px] font-medium text-s-ink">{item.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   LOCATION picker (Stadt segment)
-   ════════════════════════════════════════════════════════════════════════ */
-
-function LocationPicker({
-  t,
-  value,
-  onChange,
-  onPick,
-  onUseCurrent,
-}: {
-  t: TFn;
-  value: string;
-  onChange: (v: string) => void;
-  onPick: (city: string) => void;
-  onUseCurrent: () => void;
-}) {
-  return (
-    <div className="pt-1">
-      <label className="flex h-12 items-center gap-[10px] rounded-[13px] border border-s-border bg-white px-[13px] focus-within:border-s-accent">
-        <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
-        <input
-          type="text"
-          autoFocus
-          value={value === t("currentLocation") ? "" : value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={t("cityPlaceholder")}
-          aria-label={t("cityPlaceholder")}
-          className="min-w-0 flex-1 !border-0 !bg-transparent !px-0 !min-h-0 font-body text-[14.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:shadow-none"
-        />
-      </label>
-
-      <button
-        type="button"
-        onClick={onUseCurrent}
-        className="mt-3 flex w-full items-center gap-3 rounded-[13px] px-2 py-3 text-left transition-colors hover:bg-s-bg-sunken focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-      >
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-accent/[0.10] text-s-accent">
-          <Navigation size={16} strokeWidth={2.25} aria-hidden />
-        </span>
-        <span className="font-body text-[14.5px] font-semibold text-s-accent">{t("useCurrentLocation")}</span>
-      </button>
-
-      <div className="mt-4">
-        <SectionLabel>{t("popularCities")}</SectionLabel>
-        <div className="mt-1">
-          {CITIES.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => onPick(c)}
-              className="flex w-full items-center gap-3 rounded-[10px] px-2 py-2.5 text-left transition-colors hover:bg-s-bg-sunken focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-            >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-                <MapPin size={16} strokeWidth={2} aria-hidden />
-              </span>
-              <span className="flex-1 font-body text-[14.5px] font-medium text-s-ink">{c}</span>
-              <ChevronRight size={16} strokeWidth={2} className="text-s-ink-3" aria-hidden />
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   TIME picker (Zeit segment) — DateTimePicker (single-date) + period chips
-   ════════════════════════════════════════════════════════════════════════ */
-
-function TimePicker({
-  t,
-  locale,
-  zeitDate,
-  zeitPeriod,
-  onDateChange,
-  onPeriodChange,
-}: {
-  t: TFn;
-  locale: string;
-  zeitDate: CalendarDate | null;
-  zeitPeriod: string;
-  onDateChange: (d: CalendarDate | null) => void;
-  onPeriodChange: (p: string) => void;
-}) {
-  const tz = getLocalTimeZone();
-  const todayDate = today(tz);
-  const tomorrowDate = todayDate.add({ days: 1 });
-  const subOf = (d: CalendarDate) =>
-    new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "long" }).format(d.toDate(tz));
-  const dayPicked = (d: CalendarDate) => zeitDate != null && zeitDate.compare(d) === 0;
-
-  // Council time bands: 4 periods (with ranges) then Jederzeit last. Values = URL params.
-  const BANDS: { value: string; label: string; range: string }[] = [
-    { value: "morning", label: t("periodMorning"), range: "9–12" },
-    { value: "noon", label: t("periodNoon"), range: "12–15" },
-    { value: "afternoon", label: t("periodAfternoon"), range: "15–18" },
-    { value: "evening", label: t("periodEvening"), range: "18+" },
-    { value: "", label: t("anytime"), range: "" },
-  ];
-
-  return (
-    <div className="pt-1">
-      <SectionLabel>{t("pickDay")}</SectionLabel>
-      {/* Day quick-cards (council mockup) — selected = royal-blue accent ("blue marks your pick"). */}
-      <div className="mt-2 flex gap-2.5">
-        {[
-          { d: todayDate, label: t("today") },
-          { d: tomorrowDate, label: t("tomorrow") },
-        ].map(({ d, label }) => {
-          const picked = dayPicked(d);
-          return (
-            <button
-              key={label}
-              type="button"
-              onClick={() => onDateChange(picked ? null : d)}
-              aria-pressed={picked}
-              className={cn(
-                "flex-1 rounded-[13px] border px-3.5 py-3 text-left transition-colors",
-                "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
-                picked ? "border-s-ink bg-s-ink text-white" : "border-s-border bg-white text-s-ink hover:border-s-ink",
-              )}
-            >
-              <span className="block font-body text-[14px] font-semibold">{label}</span>
-              <span className={cn("mt-0.5 block font-body text-[12px]", picked ? "text-white/85" : "text-s-ink-2")}>
-                {subOf(d)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-3">
-        {/* Calendar for any other day (DateTimePicker single-date primitive). German Mo-first weekdays.
-            Selected day = ink (owner 2026-06-23: one selected look everywhere; was blue, now matches booking). */}
-        <DateTimePicker
-          variant="single-date"
-          selectedTone="ink"
-          value={{ date: zeitDate, time: null }}
-          onChange={({ date }) => onDateChange(date)}
-        />
-      </div>
-
-      <div className="mt-5">
-        <SectionLabel>{t("pickTime")}</SectionLabel>
-        {/* 2-col grid: all 5 bands visible at once (no cut-off scroll rail). Jederzeit spans full
-            width. Gives the time picker real presence + fills the screen so the CTA doesn't float. */}
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          {BANDS.map((band) => {
-            const picked = zeitPeriod === band.value;
-            const isAnytime = band.value === "";
-            return (
-              <button
-                key={band.value || "anytime"}
-                type="button"
-                onClick={() => onPeriodChange(band.value)}
-                aria-pressed={picked}
-                className={cn(
-                  "rounded-[13px] border px-4 py-3.5 text-left transition-colors",
-                  isAnytime && "col-span-2",
-                  "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
-                  // sink toggle (council .tchip): selected = #F5F5F4 fill + ink text, no ring; idle = white + muted
-                  picked ? "border-s-border bg-s-bg-sunken text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:border-s-ink",
-                )}
-              >
-                <span className="block font-body text-[14px] font-semibold leading-tight">{band.label}</span>
-                {band.range && (
-                  <span className="mt-0.5 block font-body text-[12px] leading-tight text-s-ink-2">
-                    {band.range}
-                  </span>
-                )}
+              <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
+                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
+                {d}
               </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   Small shared bits (match the mockup anatomy)
-   ════════════════════════════════════════════════════════════════════════ */
-
-function FieldButton({
-  icon,
-  value,
-  isPlaceholder,
-  onClick,
-  ariaLabel,
-}: {
-  icon: React.ReactNode;
-  value: string;
-  isPlaceholder: boolean;
-  onClick: () => void;
-  ariaLabel: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className="flex h-12 items-center gap-[10px] rounded-[13px] border border-s-border bg-white px-[13px] text-left transition-colors hover:border-s-ink/30 focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-    >
-      <span className="flex shrink-0 items-center text-s-ink-3">{icon}</span>
-      <span
-        className={cn(
-          "min-w-0 flex-1 truncate font-body text-[14.5px]",
-          isPlaceholder ? "font-normal text-s-ink-3" : "font-medium text-s-ink",
-        )}
-      >
-        {value}
-      </span>
-    </button>
-  );
-}
-
-function ScopeTab({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={active}
-      onClick={onClick}
-      className={cn(
-        "inline-flex h-[34px] shrink-0 items-center rounded-full border px-[14px] font-body text-[13px] leading-none transition-colors",
-        "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
-        active
-          ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink"
-          : "border-s-border bg-white font-medium text-s-ink-2 hover:text-s-ink",
-      )}
-    >
-      {label}
-    </button>
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div className="font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">{children}</div>;
-}
-
-function Group({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mt-5">
-      <SectionLabel>{label}</SectionLabel>
-      <div className="mt-1">{children}</div>
-    </div>
-  );
-}
-
-function SuggestRow({
-  icon,
-  title,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-[10px] px-2 py-2.5 text-left transition-colors hover:bg-s-bg-sunken focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-    >
-      <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-        {icon}
-      </span>
-      <span className="min-w-0 flex-1 truncate font-body text-[14.5px] font-medium text-s-ink">{title}</span>
-    </button>
-  );
-}
-
-function VenueRow({
-  name,
-  photoUrl,
-  rating,
-  meta,
-  rounded,
-  onClick,
-}: {
-  name: string;
-  photoUrl: string | null;
-  rating?: number | null;
-  meta?: string | null;
-  rounded?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-[12px] px-2 py-2.5 text-left transition-colors hover:bg-s-bg-sunken focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-    >
-      <span
-        className={cn(
-          "relative h-[52px] w-[52px] shrink-0 overflow-hidden bg-s-bg-sunken",
-          rounded ? "rounded-full" : "rounded-[12px]",
-        )}
-      >
-        {photoUrl ? (
-          <Image src={photoUrl} alt="" fill sizes="52px" className="object-cover" />
-        ) : (
-          <span className="absolute inset-0 grid place-items-center font-heading text-[20px] font-black text-s-ink-3" aria-hidden>
-            {name.charAt(0)}
-          </span>
-        )}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-body text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{name}</span>
-        {(rating != null || meta) && (
-          <span className="mt-0.5 flex items-center gap-2.5 font-body text-[12.5px] text-s-ink-2">
-            {rating != null && (
-              <RatingStars value={rating} size="sm" className="font-semibold text-s-ink" />
             )}
-            {meta && <span className="truncate">{meta}</span>}
-          </span>
-        )}
-      </span>
-    </button>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   Data states — loading / no-match / error (per solen-search-states.html)
-   ════════════════════════════════════════════════════════════════════════ */
-
-function SuggestSkeleton() {
-  return (
-    <div className="mt-5 flex flex-col gap-4 pb-2" aria-hidden>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3">
-          <div className="h-[34px] w-[34px] shrink-0 rounded-full bg-s-bg-sunken animate-shimmer" />
-          <div className="flex-1">
-            <div className="h-[14px] w-1/2 rounded bg-s-bg-sunken animate-shimmer" />
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-function NoMatchBlock({
-  t,
-  query,
-  onSubmitAnyway,
-  onTrending,
-}: {
-  t: TFn;
-  query: string;
-  onSubmitAnyway: () => void;
-  onTrending: (q: string) => void;
+function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
+  name: string; sub?: string; Icon?: LucideIcon; img?: string;
+  onClick: () => void; onRemove?: () => void;
 }) {
   return (
-    <div className="pb-2">
-      <div className="flex flex-col items-center px-6 pt-8 text-center">
-        <span className="mb-4 grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-          <SearchX size={26} strokeWidth={2} aria-hidden />
+    <div className="flex w-full items-center gap-3.5 rounded-2xl pr-1 hover:bg-s-bg-sunken">
+      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left">
+        {img ? (
+          <img src={img} alt="" className="h-12 w-12 shrink-0 object-contain" />
+        ) : (
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-s-bg-sunken text-s-ink-2">
+            {Icon ? <Icon size={20} strokeWidth={1.9} /> : null}
+          </span>
+        )}
+        <span className="min-w-0">
+          <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
+          {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}
         </span>
-        <div className="font-heading text-[18px] font-extrabold tracking-[-0.01em] text-s-ink">
-          {t("noMatchTitle")}
-        </div>
-        <div className="mt-1.5 max-w-[260px] font-body text-[13.5px] leading-snug text-s-ink-2">
-          {t("noMatchBody", { query })}
-        </div>
-      </div>
-
-      {/* "Trotzdem suchen" — never a dead end */}
-      <button
-        type="button"
-        onClick={onSubmitAnyway}
-        className="mt-5 flex w-full items-center gap-3 rounded-[13px] border border-s-border px-3.5 py-3 text-left transition-colors hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2"
-      >
-        <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink">
-          <Search size={17} strokeWidth={2} aria-hidden />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block font-body text-[14.5px] font-semibold text-s-ink">{t("searchAnyway")}</span>
-          <span className="block truncate font-body text-[12px] text-s-ink-2">{t("searchAnywaySub", { query })}</span>
-        </span>
-        <ChevronRight size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
       </button>
-
-      {/* Popular fallback */}
-      <div className="mt-5">
-        <SectionLabel>{t("popularLabel")}</SectionLabel>
-        <div className="mt-1">
-          {TRENDING.map((item) => (
-            <SuggestRow
-              key={item.rank}
-              icon={<Scissors size={15} strokeWidth={2} aria-hidden />}
-              title={item.label}
-              onClick={() => onTrending(item.query)}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ErrorBlock({ t }: { t: TFn }) {
-  return (
-    <div className="flex flex-col items-center px-6 pb-4 pt-10 text-center">
-      <span className="mb-4 grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-        <TriangleAlert size={26} strokeWidth={2} aria-hidden />
-      </span>
-      <div className="font-heading text-[18px] font-extrabold tracking-[-0.01em] text-s-ink">{t("errorTitle")}</div>
-      <div className="mt-1.5 max-w-[260px] font-body text-[13.5px] leading-snug text-s-ink-2">{t("errorBody")}</div>
+      {onRemove && (
+        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3">
+          <X size={17} strokeWidth={2} />
+        </button>
+      )}
     </div>
   );
 }
