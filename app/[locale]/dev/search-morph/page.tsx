@@ -2,10 +2,10 @@
 
 // exists-check: net-new dev PREVIEW route (no match in `npm run exists search-morph`). Sibling to the
 // other app/[locale]/dev/* preview pages. Mirrors the REAL Airbnb mobile search (captured live 2026-06-30:
-// full-screen grey surface, X top-right, active card = big bold title + content, collapsed steps = label
-// LEFT / value RIGHT cards, suggestion rows = icon tile + name + subtitle, bottom = Reset + commit button)
-// translated to OUR tokens + data (services / cities / recents). In-place top-anchored morph + blur backdrop.
-// Preview only, not linked in nav, does not touch the live homepage SearchBar. Owner: "make it like Airbnb".
+// full-screen surface, active card = big bold title + content, collapsed steps = label LEFT / value RIGHT
+// cards, suggestion rows = icon tile + name + subtitle, Daten/Flexibel toggle + calendar, bottom = Reset +
+// commit) translated to OUR tokens + data. The white cards FLOAT on a frosted-blur backdrop (the page shows
+// through, blurred). Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
@@ -30,14 +30,15 @@ const CITY_SUGGEST: Suggest[] = [
     (c): Suggest => ({ name: c, sub: "Schweiz", Icon: MapPin }),
   ),
 ];
-const DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
-const WEEKDAYS = ["S", "M", "D", "M", "D", "F", "S"];
+const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
+// Monday-first (de-CH calendar convention)
+const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"];
 
 type Step = "service" | "location" | "date";
 
 function monthGrid(d: Date) {
   const y = d.getFullYear(), m = d.getMonth();
-  const first = new Date(y, m, 1).getDay();
+  const first = (new Date(y, m, 1).getDay() + 6) % 7; // Monday-first offset
   const total = new Date(y, m + 1, 0).getDate();
   const cells: (number | null)[] = Array.from({ length: first }, () => null);
   for (let i = 1; i <= total; i++) cells.push(i);
@@ -50,18 +51,26 @@ export default function SearchMorphPreviewPage() {
   const [service, setService] = useState("");
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
+  const [serviceQ, setServiceQ] = useState("");
+  const [cityQ, setCityQ] = useState("");
+  const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
 
   const now = new Date();
-  const monthName = now.toLocaleDateString("de-CH", { month: "long", year: "numeric" });
+  const monthLong = now.toLocaleDateString("de-CH", { month: "long" });
+  const monthName = `${monthLong} ${now.getFullYear()}`;
   const cells = monthGrid(now);
   const [selDay, setSelDay] = useState<number | null>(null);
+
+  const svcList = SERVICE_SUGGEST.filter((s) => s.name.toLowerCase().includes(serviceQ.toLowerCase()));
+  const cityList = CITY_SUGGEST.filter((s) => s.name.toLowerCase().includes(cityQ.toLowerCase()));
 
   const advance = (s: Step) => {
     const order: Step[] = ["service", "location", "date"];
     const next = order[order.indexOf(s) + 1];
-    if (next) setTimeout(() => setStep(next), 220);
+    if (next) setTimeout(() => setStep(next), 220); // let the morph start, then advance
   };
-  const reset = () => { setService(""); setCity(""); setDate(""); setSelDay(null); setStep("service"); };
+  const close = () => { setOpen(false); setStep("service"); };
+  const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelDay(null); setStep("service"); };
 
   return (
     <div className="min-h-screen bg-white">
@@ -93,16 +102,16 @@ export default function SearchMorphPreviewPage() {
         {open && (
           <motion.div
             key="surface"
-            className="fixed inset-0 z-[60] flex flex-col bg-s-bg-sunken/80 backdrop-blur-2xl"
+            className="fixed inset-0 z-[60] flex flex-col bg-s-bg-sunken/55 backdrop-blur-2xl"
             style={{ transformOrigin: "top center" }}
-            initial={{ opacity: 0, scale: 0.97, y: -10 }}
+            initial={{ opacity: 0, scale: 0.98, y: -8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: -10 }}
+            exit={{ opacity: 0, scale: 0.98, y: -8 }}
             transition={{ duration: 0.42, ease: EASE }}
           >
-            {/* X close , top-right on the grey surface (Airbnb) */}
+            {/* X close , top-right on the frosted surface (Airbnb) */}
             <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
-              <button onClick={() => setOpen(false)} aria-label="Schliessen"
+              <button onClick={close} aria-label="Schliessen"
                 className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">
                 <X size={18} strokeWidth={2.2} />
               </button>
@@ -112,19 +121,22 @@ export default function SearchMorphPreviewPage() {
               {/* SERVICE */}
               {step === "service" ? (
                 <ActiveCard title="Wonach suchst du?">
-                  <input placeholder="Service, Salon oder Stylist:in"
-                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none"
-                    onChange={(e) => setService(e.target.value)} />
-                  {SERVICE_SUGGEST.map((s) => (
-                    <SuggestRow key={s.name} {...s} onClick={() => { setService(s.name); advance("service"); }} />
+                  <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
+                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                  {svcList.map((s) => (
+                    <SuggestRow key={s.name} {...s} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
                   ))}
-                  <p className="mb-2 mt-4 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
-                  <div className="flex flex-wrap gap-2">
-                    {RECENTS.map((r) => (
-                      <button key={r} onClick={() => { setService(r); advance("service"); }}
-                        className="rounded-full border border-s-border bg-white px-4 py-2 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{r}</button>
-                    ))}
-                  </div>
+                  {serviceQ === "" && (
+                    <>
+                      <p className="mb-2 mt-4 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
+                      <div className="flex flex-wrap gap-2">
+                        {RECENTS.map((r) => (
+                          <button key={r} onClick={() => { setService(r); advance("service"); }}
+                            className="rounded-full border border-s-border bg-white px-4 py-2 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{r}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </ActiveCard>
               ) : (
                 <CollapsedCard label="Service" value={service} placeholder="Hinzufügen" onClick={() => setStep("service")} />
@@ -133,12 +145,11 @@ export default function SearchMorphPreviewPage() {
               {/* LOCATION */}
               {step === "location" ? (
                 <ActiveCard title="Wo?">
-                  <input placeholder="Stadt suchen"
-                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none"
-                    onChange={(e) => setCity(e.target.value)} />
+                  <input value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
+                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
                   <div className="max-h-[42vh] overflow-y-auto">
-                    {CITY_SUGGEST.map((s) => (
-                      <SuggestRow key={s.name} {...s} onClick={() => { setCity(s.name); advance("location"); }} />
+                    {cityList.map((s) => (
+                      <SuggestRow key={s.name} {...s} onClick={() => { setCity(s.name); setCityQ(""); advance("location"); }} />
                     ))}
                   </div>
                 </ActiveCard>
@@ -149,33 +160,39 @@ export default function SearchMorphPreviewPage() {
               {/* DATE */}
               {step === "date" ? (
                 <ActiveCard title="Wann?">
-                  {/* Daten / Flexibel segmented toggle (Airbnb) */}
                   <div className="mb-5 flex rounded-full bg-s-bg-sunken p-1">
-                    <span className="flex-1 rounded-full bg-white py-2 text-center text-[14px] font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">Daten</span>
-                    <span className="flex-1 py-2 text-center text-[14px] font-medium text-s-ink-3">Flexibel</span>
+                    <button onClick={() => setDateTab("daten")}
+                      className={`flex-1 rounded-full py-2 text-center text-[14px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]" : "font-medium text-s-ink-3"}`}>Daten</button>
+                    <button onClick={() => setDateTab("flexibel")}
+                      className={`flex-1 rounded-full py-2 text-center text-[14px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]" : "font-medium text-s-ink-3"}`}>Flexibel</button>
                   </div>
-                  <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthName}</p>
-                  <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
-                    {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
-                  </div>
-                  <div className="grid grid-cols-7 gap-y-1">
-                    {cells.map((d, i) => (
-                      <div key={i} className="flex justify-center py-0.5">
-                        {d === null ? <span /> : (
-                          <button onClick={() => { setSelDay(d); setDate(`${d}. ${monthName.split(" ")[0]}`); }}
-                            className={`grid h-10 w-10 place-items-center rounded-full text-[14px] ${selDay === d ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
-                            {d}
-                          </button>
-                        )}
+                  {dateTab === "daten" ? (
+                    <>
+                      <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthName}</p>
+                      <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
+                        {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                       </div>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {DATES.map((dd) => (
-                      <button key={dd} onClick={() => { setDate(dd); setSelDay(null); }}
-                        className={`rounded-full border px-4 py-2 text-[13px] transition-colors ${date === dd ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
-                    ))}
-                  </div>
+                      <div className="grid grid-cols-7 gap-y-1">
+                        {cells.map((d, i) => (
+                          <div key={i} className="flex justify-center py-0.5">
+                            {d === null ? <span /> : (
+                              <button onClick={() => { setSelDay(d); setDate(`${d}. ${monthLong}`); }}
+                                className={`grid h-10 w-10 place-items-center rounded-full text-[14px] ${selDay === d ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
+                                {d}
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {FLEX_DATES.map((dd) => (
+                        <button key={dd} onClick={() => { setDate(dd); setSelDay(null); }}
+                          className={`rounded-full border px-4 py-2 text-[13px] transition-colors ${date === dd ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                      ))}
+                    </div>
+                  )}
                 </ActiveCard>
               ) : (
                 <CollapsedCard label="Datum" value={date} placeholder="Jederzeit" onClick={() => setStep("date")} />
@@ -200,7 +217,7 @@ export default function SearchMorphPreviewPage() {
 function ActiveCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <motion.div layout transition={{ duration: 0.42, ease: EASE }}
-      className="rounded-[24px] bg-white px-6 pb-6 pt-6 shadow-[0_12px_36px_rgba(10,10,10,0.12)]">
+      className="rounded-[24px] bg-white px-6 pb-6 pt-6 shadow-[0_18px_50px_rgba(10,10,10,0.16)]">
       <h2 className="mb-5 font-heading text-[28px] font-bold leading-none tracking-[-0.02em] text-s-ink">{title}</h2>
       {children}
     </motion.div>
@@ -212,7 +229,7 @@ function CollapsedCard({ label, value, placeholder, onClick }: {
 }) {
   return (
     <motion.button layout transition={{ duration: 0.42, ease: EASE }} onClick={onClick}
-      className="flex w-full items-center justify-between rounded-[24px] border border-s-border bg-white px-6 py-5 text-left">
+      className="flex w-full items-center justify-between rounded-[24px] bg-white px-6 py-5 text-left shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
       <span className="text-[16px] text-s-ink-3">{label}</span>
       <span className={`text-[16px] font-semibold ${value ? "text-s-ink" : "text-s-ink-2"}`}>{value || placeholder}</span>
     </motion.button>
