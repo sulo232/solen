@@ -315,7 +315,7 @@ export default function SearchMorphPreviewPage() {
                     <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                       <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
                     </motion.div>
-                    <div className="shrink-0 px-3 pb-1 pt-1">{bar("service")}</div>
+                    <div className="shrink-0 px-3 pb-1 pt-4">{bar("service")}</div>
                     {/* onScroll: pure clamp -- no committed guard, no lock */}
                     <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
                       onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
@@ -335,8 +335,8 @@ export default function SearchMorphPreviewPage() {
               ) : (
                 // LOCATION or DATE -- plain accordion in FIXED order (Suche > Standort > Datum);
                 // the active one expands IN PLACE, no scroll-expand.
-                <motion.div key={activeStep} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }}
-                  style={{ transformOrigin: "top center" }} className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+                <motion.div key={activeStep} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                  className="flex min-h-0 flex-1 flex-col px-3 pt-3">
                   {STEPS.map((s) => s !== activeStep ? (
                     <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
                   ) : s === "location" ? (
@@ -351,9 +351,9 @@ export default function SearchMorphPreviewPage() {
                       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
                     </div>
                   ) : (
-                    <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                      <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
-                      <div className="relative mb-4 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
+                    <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                      <h2 className="mb-2 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
+                      <div className="relative mb-3 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
                         <motion.div layout transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
                           className="absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm" style={{ left: dateTab === "daten" ? 4 : "calc(50% + 0px)" }} />
                         <button onClick={() => setDateTab("daten")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
@@ -379,8 +379,9 @@ export default function SearchMorphPreviewPage() {
                           ) : (
                             <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
                               className="grid grid-cols-2 gap-2.5 pt-1">
+                              {/* selected-ok: blue fill, date-flexibility = date/slot category */}
                               {FLEX_DATES.map((dd) => (
-                                <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-colors ${date === dd ? "border-s-accent bg-s-accent/5 text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                                <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-2xl border py-4 text-center text-[14px] font-medium transition-colors ${date === dd ? "border-s-accent bg-s-accent font-semibold text-white" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
                               ))}
                             </motion.div>
                           )}
@@ -412,9 +413,9 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, hideHeader }: {
   const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const windowMid = windowEnd.getTime();
   return (
-    <div className="mb-5">
+    <div className="mb-2">
       {!hideHeader && <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthLong} {y}</p>}
-      <div className="grid grid-cols-7 gap-y-1.5">
+      <div className="grid grid-cols-7 gap-y-0.5">
         {cells.map((d, i) => {
           if (d === null) return <div key={i} />;
           const key = `${y}-${m}-${d}`;
@@ -425,10 +426,10 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, hideHeader }: {
           return (
             <div key={i} className="flex justify-center">
               {disabled ? (
-                <span className="grid h-11 w-11 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
+                <span className="grid h-10 w-10 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                  className={`grid h-11 w-11 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
+                  className={`grid h-10 w-10 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
               )}
             </div>
           );
