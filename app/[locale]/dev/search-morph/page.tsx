@@ -63,8 +63,9 @@ export default function SearchMorphPreviewPage() {
   const cityRef = useRef<HTMLInputElement>(null);
   const [safeTop, setSafeTop] = useState(0); // measured env(safe-area-inset-top)
   const expand = useMotionValue(0); // 0 = accordion, 1 = focused; the UP-drag drives this so the panel GROWS following the finger
-  const cropTop = useTransform(expand, [0, 1], [58, 16]); // the sheet BG crop follows the gesture (px from top)
-  const contentPad = useTransform(cropTop, (t) => Math.max(0, safeTop - t)); // keep the bar/list below the notch even as the sheet bg rises under it
+  // crop the VISIBLE content follows: accordion ~88px down -> focused at the notch (max(20,safeTop)). Safe-area is baked into
+  // the range (not a counter-padding) so the bar actually MOVES on a real device, not just the container. See feedback_mockup_change_not_visible.
+  const cropTop = useTransform(expand, [0, 1], [88, Math.max(20, safeTop)]);
 
   useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
   useEffect(() => { // measure the device safe-area once so the sheet content never hides under the notch / dynamic island
@@ -335,7 +336,7 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop, paddingTop: contentPad }}
+              style={{ top: cropTop }}
               className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "rounded-t-[20px] bg-white" : "bg-transparent"}`}>
               {focusedSearch ? (
                 /* FOCUSED (Airbnb): bar PINNED (shrink-0, never scrolls), full list scrolls UNDER it.
