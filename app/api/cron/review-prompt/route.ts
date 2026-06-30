@@ -2,9 +2,12 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { getServerEnv } from "@/lib/env";
+import { getServerEnv, getAppUrl } from "@/lib/env";
 import { tipPromptEmail } from "@/lib/email";
 import { sendNotification } from "@/lib/notifications";
+
+// review_prompt notifications self-expire after this many days (auto-deleted earlier on review submit).
+const REVIEW_PROMPT_TTL_DAYS = 30;
 
 /**
  * Cron handler: send review prompt email 24h after completed appointment.
@@ -44,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   // TTL: delete review_prompt notifications older than 30 days
   try {
-    const ttlCutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const ttlCutoff = new Date(now.getTime() - REVIEW_PROMPT_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString();
     await supabase
       .from("notifications")
       .delete()
@@ -52,6 +55,14 @@ export async function GET(req: NextRequest) {
       .lt("created_at", ttlCutoff);
   } catch (err) {
     console.error("[review-prompt] TTL cleanup failed:", err);
+  }
+
+  // Env-backed base URL (NOT hardcoded), computed once. Falls back to the prod domain.
+  let baseUrl: string;
+  try {
+    baseUrl = getAppUrl();
+  } catch {
+    baseUrl = "https://www.solen.ch";
   }
 
   let sentCount = 0;
@@ -186,7 +197,7 @@ export async function GET(req: NextRequest) {
                 <h2 style="font-family: Syne, sans-serif; color: #1A1209;">${lang.solenTitle}</h2>
                 <p style="color: #666;">${lang.greeting}</p>
                 <p style="color: #666;">${lang.solenBody1}</p>
-                <a href="https://www.solen.ch/${userLocale}/salon/${salon?.slug}#bewertungen"
+                <a href="${baseUrl}/${userLocale}/salon/${salon?.slug}#bewertungen"
                   style="display: inline-block; background: #0A0A0A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
                   ${lang.solenBtn}
                 </a>
@@ -212,7 +223,7 @@ export async function GET(req: NextRequest) {
             customerName: profile?.display_name ?? "",
             stylistName,
             stylistPhoto: staff?.avatar_url ?? "",
-            tipUrl: `https://www.solen.ch/${tipLocale}/tip/${booking.id}`,
+            tipUrl: `${baseUrl}/${tipLocale}/tip/${booking.id}`,
           },
           tipLocale,
         );
@@ -223,9 +234,16 @@ export async function GET(req: NextRequest) {
         }).catch((err) => console.error(`[review-prompt] tip email failed for booking ${booking.id}:`, err));
       }
 
-      // In-app notification: only for the standard review prompt (not the Google nudge,
-      // where the user already reviewed). Skip if user already reviewed this booking.
-      if (!isHighRating) {
+      // In-app "review your appointment": create iff THIS booking has no review yet
+      // (per-booking, not per-salon , so a 2nd booking at the same salon still prompts)
+      // and no review_prompt notification already exists for it. Auto-deleted on review submit.
+      const { data: bookingReview } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("booking_id", booking.id)
+        .maybeSingle();
+
+      if (!bookingReview) {
         // Dedup: skip if a review_prompt notification already exists for this booking.
         const { data: existingNotif } = await supabase
           .from("notifications")
