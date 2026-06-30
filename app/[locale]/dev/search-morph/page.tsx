@@ -80,11 +80,9 @@ export default function SearchMorphPreviewPage() {
   const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, Math.max(safeTop + 6, 50)]); // focused stays a CROPPED sheet (blur above), NOT full-screen , owner
   const sheetRadiusTop = useTransform(expand, [0.5, 1], [0, 18]);          // focused sheet keeps a rounded top (Airbnb), never square full-bleed
   const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X persists, fades last
-  // FLOATING CARDS over the frosted backdrop (owner-approved look) -> flatten to a full-bleed white sheet only at the end.
-  const sheetBg = useTransform(expand, [0.55, 1], ["rgba(255,255,255,0)", "rgba(255,255,255,1)"]); // blur shows around the cards, fills white when focused
-  const cardMargin = useTransform(expand, [0, 0.7], [12, 0]);             // side gutters (blur peeks) -> edge-to-edge
-  const cardRadius = useTransform(expand, [0.45, 1], [22, 0]);            // floating radius -> square full-bleed
-  const cardShadow = useTransform(expand, [0, 0.55], ["0px 18px 50px rgba(10,10,10,0.13)", "0px 0px 0px rgba(10,10,10,0)"]); // float -> flat
+  // FLOATING CARD over the frosted backdrop -> flat full-bleed when focused. Shadow, bg, margin AND radius are all
+  // toggled by the `inputFocused` CLASS (one CSS transition at commit), NOT interpolated per scroll frame , a 50px-blur
+  // box-shadow + margins repainted/relaid-out every frame was the freeze/jank. Only the crop + heights stay scroll-linked.
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);        // heading collapses in place
   const headingOp = useTransform(expand, [0, 0.45], [1, 0]);
   const step1H = useTransform(expand, [0.2, 0.42], [ROW_H, 0]);            // first other-step consumed
@@ -261,16 +259,15 @@ export default function SearchMorphPreviewPage() {
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
     </button>
   );
+  // padding lives on the INNER div so the maxHeight collapse fully closes it (a padded wrapper kept ~26px of white)
   const footer = (style?: object) => (
-    <motion.div style={style} className="shrink-0 overflow-hidden px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-      <div className="flex items-center justify-between">
+    <motion.div style={style} className="shrink-0 overflow-hidden">
+      <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
         <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
         <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
       </div>
     </motion.div>
   );
-
-  const otherSteps = STEPS.filter((s) => s !== activeStep);
 
   return (
     <div className="min-h-screen bg-white">
@@ -314,48 +311,17 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop, backgroundColor: sheetBg, borderTopLeftRadius: sheetRadiusTop, borderTopRightRadius: sheetRadiusTop }}
-              className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden">
-              {activeStep === "date" ? (
-                /* DATE step , no scroll-expand; the collapsed steps + calendar + footer. Keyed -> morphs in (no hard jump). */
-                <motion.div key="date" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
-                  className="flex min-h-0 flex-1 flex-col px-3 pt-3">
-                  <div className="shrink-0 space-y-2.5">{collapsedRow("service")}{collapsedRow("location")}</div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2 pt-2.5">
-                   <div className="rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                    <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
-                    <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
-                      <button onClick={() => setDateTab("daten")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
-                      <button onClick={() => setDateTab("flexibel")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
-                    </div>
-                    {dateTab === "daten" ? (
-                      <>
-                        <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
-                        {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
-                          <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
-                        ))}
-                      </>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {FLEX_DATES.map((dd) => (
-                          <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${date === dd ? "border-s-accent text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
-                        ))}
-                      </div>
-                    )}
-                   </div>
-                  </div>
-                  {footer()}
-                </motion.div>
-              ) : (
-                /* SERVICE / LOCATION , ONE continuous tree; scroll the list -> `expand` -> the chrome collapses + the list grows. Keyed -> morphs in. */
-                <motion.div key={activeStep} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+              style={{ top: cropTop, borderTopLeftRadius: sheetRadiusTop, borderTopRightRadius: sheetRadiusTop }}
+              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-200 ${inputFocused ? "bg-white" : "bg-transparent"}`}>
+              {activeStep === "service" ? (
+                /* SEARCH , the ONLY step with the scroll-up expand (continuous follow -> snap -> focused). */
+                <motion.div key="service" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
                   className="flex min-h-0 flex-1 flex-col">
-                  <motion.div style={{ marginLeft: cardMargin, marginRight: cardMargin, borderRadius: cardRadius, boxShadow: cardShadow }}
-                    className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
-                    <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden px-4 pt-4">
-                      <h2 className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{activeStep === "service" ? "Wonach suchst du?" : "Wo?"}</h2>
+                  <div className={`flex min-h-0 flex-1 flex-col overflow-hidden bg-white transition-[margin,border-radius,box-shadow] duration-300 ${inputFocused ? "mx-0 rounded-none" : "mx-3 rounded-[22px] shadow-[0_18px_50px_rgba(10,10,10,0.13)]"}`}>
+                    <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
+                      <h2 className="px-4 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
                     </motion.div>
-                    <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
+                    <div className="shrink-0 px-3 pb-2 pt-1">{bar("service")}</div>
                     <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
                       onScroll={(e) => {
                         if (committed.current || snapping.current) return;
@@ -363,12 +329,56 @@ export default function SearchMorphPreviewPage() {
                         if (snapTimer.current) clearTimeout(snapTimer.current);
                         snapTimer.current = setTimeout(snapSettle, 110);
                       }}>
-                      {activeStep === "location" ? cityList() : serviceSuggestions()}
+                      {serviceSuggestions()}
                     </div>
-                  </motion.div>
-                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[0])}</motion.div>
-                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[1])}</motion.div>
+                  </div>
+                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3"><div className="pt-2.5">{collapsedRow("location")}</div></motion.div>
+                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3"><div className="pt-2.5">{collapsedRow("date")}</div></motion.div>
                   {footer({ maxHeight: footerMaxH, opacity: footerOp })}
+                </motion.div>
+              ) : (
+                /* LOCATION or DATE , plain accordion in FIXED order (Suche > Standort > Datum); the active one expands IN PLACE, no scroll-expand. */
+                <motion.div key={activeStep} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                  className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+                  {STEPS.map((s) => s !== activeStep ? (
+                    <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
+                  ) : s === "location" ? (
+                    <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                      <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wo?</h2>
+                      <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
+                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+                        <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen" autoFocus
+                          className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
+                        {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>}
+                      </div>
+                      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
+                    </div>
+                  ) : (
+                    <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                      <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
+                      <div className="mb-4 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
+                        <button onClick={() => setDateTab("daten")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
+                        <button onClick={() => setDateTab("flexibel")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
+                      </div>
+                      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                        {dateTab === "daten" ? (
+                          <>
+                            <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
+                            {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
+                              <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                            ))}
+                          </>
+                        ) : (
+                          <div className="flex flex-wrap gap-2">
+                            {FLEX_DATES.map((dd) => (
+                              <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${date === dd ? "border-s-accent text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  {footer()}
                 </motion.div>
               )}
             </motion.div>,
