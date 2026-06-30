@@ -379,20 +379,23 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
   const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const windowMid = windowEnd.getTime();
   return (
-    <div className="mb-4">
-      <p className="mb-2 font-heading text-[15px] font-bold capitalize text-s-ink">{monthLong} {y}</p>
-      <div className="grid grid-cols-7 gap-y-0.5">
+    <div className="mb-5">
+      <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthLong} {y}</p>
+      <div className="grid grid-cols-7 gap-y-1.5">
         {cells.map((d, i) => {
           if (d === null) return <div key={i} />;
           const key = `${y}-${m}-${d}`;
           const t = new Date(y, m, d).getTime();
           const disabled = t < todayMid || t > windowMid;
+          const isToday = t === todayMid;
+          const selected = selKey === key; // selected-ok: locked date-fill is blue s-accent (design contract), not ink
           return (
-            <div key={i} className="flex justify-center py-0.5">
+            <div key={i} className="flex justify-center">
               {disabled ? (
-                <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3/35">{d}</span> // faint, NO strikethrough (declutter)
+                <span className="grid h-11 w-11 place-items-center text-[14px] text-s-ink-3/35">{d}</span> // faint, NO strikethrough (declutter)
               ) : (
-                <button onClick={() => onPick(key, `${d}. ${monthLong}`)} className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selKey === key ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
+                <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
+                  className={`grid h-11 w-11 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
               )}
             </div>
           );
@@ -407,13 +410,13 @@ function SuggestRow({ name, sub, Icon, img, tint, onClick, onRemove }: {
 }) {
   // a div (not a button) so the remove-X can be a real nested button without invalid <button> nesting
   return (
-    <div className="flex w-full items-center gap-3 rounded-xl pr-1 hover:bg-s-bg-sunken">
-      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left">
+    <div className="flex w-full items-center gap-3.5 rounded-2xl pr-1 hover:bg-s-bg-sunken">
+      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left">
         {img ? (
-          <img src={img} alt="" className="h-11 w-11 shrink-0 object-contain" />
+          <img src={img} alt="" className="h-12 w-12 shrink-0 object-contain" />
         ) : (
-          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
-            {Icon ? <Icon size={18} strokeWidth={1.9} /> : null}
+          <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
+            {Icon ? <Icon size={20} strokeWidth={1.9} /> : null}
           </span>
         )}
         <span className="min-w-0">
