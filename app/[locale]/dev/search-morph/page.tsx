@@ -66,6 +66,7 @@ export default function SearchMorphPreviewPage() {
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [monthOffset, setMonthOffset] = useState(0); // paged calendar: 0 = current month, arrows step it
   const [selKey, setSelKey] = useState<string | null>(null);
+  const [period, setPeriod] = useState("Egal"); // optional time-of-day; expands once a date is picked ("Egal" = no time preference)
   const [recents, setRecents] = useState(RECENTS); // removable via the per-row X
   const [mounted, setMounted] = useState(false);
   const [safeTop, setSafeTop] = useState(0);
@@ -73,6 +74,7 @@ export default function SearchMorphPreviewPage() {
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const dateScrollRef = useRef<HTMLDivElement>(null); // scroll the date card to reveal the time picker on pick
 
   // PURE 1:1 SCROLL-LINKED EXPAND
   // expand = clamp(scrollTop / EXPAND_DIST, 0, 1). Every property driven from this
@@ -293,7 +295,7 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop }}
+              style={{ top: activeStep === "date" ? Math.max(safeTop, 24) : cropTop }}
               className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
               {activeStep === "service" ? (
                 // SEARCH -- the ONLY step with the scroll-up expand.
@@ -359,7 +361,7 @@ export default function SearchMorphPreviewPage() {
                         <button onClick={() => setDateTab("daten")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "daten" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
                         <button onClick={() => setDateTab("flexibel")} className={`relative z-10 flex-1 rounded-full py-2 text-center text-[13px] transition-colors ${dateTab === "flexibel" ? "font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
                       </div>
-                      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                      <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                         <AnimatePresence mode="wait" initial={false}>
                           {dateTab === "daten" ? (
                             <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
@@ -374,7 +376,20 @@ export default function SearchMorphPreviewPage() {
                                 </div>
                               </div>
                               <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
-                              <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} hideHeader onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                              <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} hideHeader onPick={(key, label) => { setSelKey(key); setDate(label); setTimeout(() => dateScrollRef.current?.scrollTo({ top: dateScrollRef.current.scrollHeight, behavior: "smooth" }), 300); }} />
+                              {/* time-of-day picker , expands once a date is picked; optional ("Egal" = no time) */}
+                              <AnimatePresence initial={false}>
+                                {selKey && (
+                                  <motion.div key="uhrzeit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: reduce ? 0 : 0.26, ease: EASE }} className="overflow-hidden">
+                                    <p className="mb-2 mt-2 text-[13px] font-semibold text-s-ink">Uhrzeit</p>
+                                    <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                                      {["Egal", "Vormittag", "Nachmittag", "Abend"].map((tp) => (
+                                        <button key={tp} onClick={() => setPeriod(tp)} className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${period === tp ? "border-s-accent bg-s-accent text-white" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{tp}</button>
+                                      ))}
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </motion.div>
                           ) : (
                             <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
@@ -426,10 +441,10 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, hideHeader }: {
           return (
             <div key={i} className="flex justify-center">
               {disabled ? (
-                <span className="grid h-10 w-10 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
+                <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-3/35">{d}</span>
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                  className={`grid h-10 w-10 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
+                  className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
               )}
             </div>
           );
