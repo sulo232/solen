@@ -19,16 +19,18 @@ Customer surface = home, `/{city}/{category}` search, `/salon/{slug}` PDP + book
 - **P4 DECISIONS** , list parked directional items for owner.
 
 ## Status
-- P0: review-form (no-toggle + capped sheet) committed. SWEEP plan written. P1 discovery LAUNCHED.
+- P0 done: review-form committed. P1 done: discovery , 40 fix / 30 mockup (`_plans/SWEEP_BACKLOG.md`).
+- P2 RUNNING: fix loop batch 1 (6 disjoint groups: salons-route, pdp, inspo, dead-code, quick-singletons, availability). Promo/charge fix held for a careful separate pass (money path). Dedup refactors (shared share-block, date-formatter) = batch 2 (shared files).
 
-## Backlog (populated by P1)
-_pending discovery_
+## Backlog
+Full categorized list: `_plans/SWEEP_BACKLOG.md` (40 fix, 30 mockup).
 
 ## Parked , frontend mockups (owner approval)
-_pending_
+All 30 `mockup` items in `_plans/SWEEP_BACKLOG.md` (design + motion). Built one coherent pass in P3, NEVER auto-applied.
 
 ## Parked , decisions (owner)
-_pending_
+- **Gender filter dead** (`/api/salons` suitable_gender): every active service is tagged BOTH genders, so "Fuer wen" never narrows results. Seed realistic per-service gender, or hide the control? (data, not code.)
+- **Deals/Angebote always empty** (`/api/salons` last_minute_discount_percent): 0 salons have a discount, so the deals pill + rail + sort are permanently empty. Seed real discounts, or hide until data exists? (data, not code.)
 
 ## Folds in
 ACTIVE.md customer bug items (onboarding + admin dropped per the customer-only scope).
