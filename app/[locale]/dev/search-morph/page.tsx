@@ -61,10 +61,19 @@ export default function SearchMorphPreviewPage() {
   const reduce = useReducedMotion();
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
+  const [safeTop, setSafeTop] = useState(0); // measured env(safe-area-inset-top)
   const expand = useMotionValue(0); // 0 = accordion, 1 = focused; the UP-drag drives this so the panel GROWS following the finger
-  const cropTop = useTransform(expand, [0, 1], [58, 22]); // the sheet crop follows the gesture (px from top)
+  const cropTop = useTransform(expand, [0, 1], [58, 16]); // the sheet BG crop follows the gesture (px from top)
+  const contentPad = useTransform(cropTop, (t) => Math.max(0, safeTop - t)); // keep the bar/list below the notch even as the sheet bg rises under it
 
   useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
+  useEffect(() => { // measure the device safe-area once so the sheet content never hides under the notch / dynamic island
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:fixed;top:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
+    document.body.appendChild(probe);
+    setSafeTop(Math.round(probe.getBoundingClientRect().height) || 0);
+    probe.remove();
+  }, []);
   // hide the /dev app-shell header so the crop shows only the (blurred) homepage , removes the duplicate dimmed back arrow that glitches
   useEffect(() => {
     const h = document.querySelector("header");
@@ -323,7 +332,7 @@ export default function SearchMorphPreviewPage() {
             <motion.div key="sheet"
               drag="y" dragListener={!focusedSearch}
               dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.04, bottom: 0.55 }}
-              onDrag={(_e, info) => { if (!focusedSearch && info.offset.y < 0) expand.set(Math.min(1, -info.offset.y / 180)); }}
+              onDrag={(_e, info) => { if (!focusedSearch) expand.set(info.offset.y < 0 ? Math.min(1, -info.offset.y / 180) : 0); }}
               onDragEnd={(_e, info) => {
                 if (info.offset.y > 140 || info.velocity.y > 600) { close(); return; }
                 // a SWIPE/flick up (low velocity bar) OR a modest drag snaps it fully open , a swipe expands all the way, not just as far as you dragged
@@ -331,7 +340,7 @@ export default function SearchMorphPreviewPage() {
                 else { animate(expand, focusedSearch ? 1 : 0, reduce ? { duration: 0 } : { duration: 0.26, ease: EASE }); }
               }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop }}
+              style={{ top: cropTop, paddingTop: contentPad }}
               className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "rounded-t-[20px] bg-white" : "bg-transparent"}`}>
               {!focusedSearch && (
                 <div className="flex shrink-0 justify-center pb-1 pt-2.5">
