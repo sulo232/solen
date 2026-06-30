@@ -10,7 +10,7 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { notFound } from "next/navigation";
-import { motion, AnimatePresence, useDragControls, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ArrowLeft, Store, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
@@ -58,11 +58,11 @@ export default function SearchMorphPreviewPage() {
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [selKey, setSelKey] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const dragControls = useDragControls();
   const reduce = useReducedMotion();
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const touchStartY = useRef(0); // guard the scroll-to-morph to downward swipes only
+  const expand = useMotionValue(0); // 0 = accordion, 1 = focused; the UP-drag drives this so the panel GROWS following the finger
+  const cropTop = useTransform(expand, [0, 1], [58, 22]); // the sheet crop follows the gesture (px from top)
 
   useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
   // hide the /dev app-shell header so the crop shows only the (blurred) homepage , removes the duplicate dimmed back arrow that glitches
@@ -84,6 +84,12 @@ export default function SearchMorphPreviewPage() {
     if (!inputFocused) return;
     (activeStep === "location" ? cityRef : serviceRef).current?.focus();
   }, [inputFocused, activeStep]);
+  // keep the crop in sync with the committed state , tap-to-focus animates the same grow; back animates it down
+  useEffect(() => {
+    const target = inputFocused && (activeStep === "service" || activeStep === "location") ? 1 : 0;
+    const c = animate(expand, target, reduce ? { duration: 0 } : { duration: 0.3, ease: EASE });
+    return () => c.stop();
+  }, [inputFocused, activeStep, reduce, expand]);
 
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
@@ -315,14 +321,19 @@ export default function SearchMorphPreviewPage() {
             </motion.button>,
 
             <motion.div key="sheet"
-              drag="y" dragListener={false} dragControls={dragControls}
-              dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.55 }}
-              onDragEnd={(_e, info) => { if (info.offset.y > 140 || info.velocity.y > 600) close(); }}
+              drag="y" dragListener={!focusedSearch}
+              dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.04, bottom: 0.55 }}
+              onDrag={(_e, info) => { if (!focusedSearch && info.offset.y < 0) expand.set(Math.min(1, -info.offset.y / 180)); }}
+              onDragEnd={(_e, info) => {
+                if (info.offset.y > 140 || info.velocity.y > 600) { close(); return; }
+                if (!focusedSearch && (info.offset.y < -64 || info.velocity.y < -550) && (activeStep === "service" || activeStep === "location")) { setInputFocused(true); }
+                else { animate(expand, focusedSearch ? 1 : 0, reduce ? { duration: 0 } : { duration: 0.26, ease: EASE }); }
+              }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "top-[max(22px,env(safe-area-inset-top))] rounded-t-[20px] bg-white" : "top-[max(56px,calc(env(safe-area-inset-top)+12px))] bg-transparent"}`}>
+              style={{ top: cropTop }}
+              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "rounded-t-[20px] bg-white" : "bg-transparent"}`}>
               {!focusedSearch && (
-                <div onPointerDown={(e) => dragControls.start(e)}
-                  className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
+                <div className="flex shrink-0 justify-center pb-1 pt-2.5">
                   <span className="h-1 w-9 rounded-full bg-s-border" />
                 </div>
               )}
@@ -340,10 +351,7 @@ export default function SearchMorphPreviewPage() {
               ) : (
                 /* ACCORDION: frosted floating cards (active panel + thin step bars) + footer */
                 <>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
-                    onWheel={(e) => { if ((activeStep === "service" || activeStep === "location") && e.deltaY > 0) setInputFocused(true); }}
-                    onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
-                    onTouchMove={(e) => { if ((activeStep === "service" || activeStep === "location") && e.touches[0].clientY < touchStartY.current) setInputFocused(true); }}>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1">
                     <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
                       {STEPS.map((s) => (
                         <motion.div key={s} layout="position" transition={morphT}
