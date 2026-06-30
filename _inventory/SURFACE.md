@@ -8,7 +8,7 @@
 >
 > For *status* (partial · deprecated · don't-reuse-for) see `_inventory/STATUS.md` (hand-kept).
 
-**Totals:** 132 routes · 355 API endpoints · 406 components · 108 lib/hooks modules · 38 DB functions · 74 DB tables · 883 columns indexed
+**Totals:** 133 routes · 355 API endpoints · 406 components · 108 lib/hooks modules · 38 DB functions · 142 DB tables · 1603 columns indexed
 
 ## Routes (pages)
 
@@ -85,6 +85,7 @@
 | `/[locale]/dev/confirm-preview` | `app/[locale]/dev/confirm-preview/page.tsx` |
 | `/[locale]/dev/new-primitives` | `app/[locale]/dev/new-primitives/page.tsx` |
 | `/[locale]/dev/primitives` | `app/[locale]/dev/primitives/page.tsx` |
+| `/[locale]/dev/review-preview` | `app/[locale]/dev/review-preview/page.tsx` |
 | `/[locale]/fuer-salons` | `app/[locale]/fuer-salons/page.tsx` |
 | `/[locale]/help` | `app/[locale]/help/page.tsx` |
 | `/[locale]/help/[slug]` | `app/[locale]/help/[slug]/page.tsx` |
@@ -509,86 +510,152 @@
 
 ## DB tables (live snapshot)
 
-_Snapshot 2026-06-02 · schema `public` · via live Supabase introspection (NOT migration files, which drift)._
+_Snapshot 2026-06-30 · schema `public` · via live Supabase introspection (NOT migration files, which drift)._
 
 | Table | Rows | RLS |
 |---|---|---|
 | `account_actions` | 0 | on |
 | `account_warnings` | 0 | on |
-| `audit_log` | 19 | on |
-| `availability_slots` | 921 | on |
+| `addons` | 0 | on |
+| `audit_log` | 22 | on |
+| `availability_slots` | 221188 | on |
 | `barber_chairs` | 0 | on |
-| `barber_cut_history` | 0 | on |
+| `barber_cut_history` | 10 | on |
 | `barber_loyalty_cards` | 0 | on |
 | `barber_loyalty_history` | 0 | on |
-| `barber_loyalty_programs` | 0 | on |
-| `barber_walkin_queue` | 0 | on |
+| `barber_loyalty_programs` | 1 | on |
+| `barber_walkin_queue` | 20 | on |
 | `booking_disputes` | 4 | on |
-| `bookings` | 6 | on |
+| `booking_waitlist` | 0 | on |
+| `bookings` | 951 | on |
+| `bridal_workflows` | 0 | on |
 | `calendar_tokens` | 0 | on |
 | `case_events` | 7 | on |
+| `chat_templates` | 0 | on |
 | `cities` | 3 | on |
+| `client_formulas` | 3 | on |
+| `client_notes` | 1 | on |
+| `client_photos` | 0 | on |
+| `client_tags` | 0 | on |
+| `consultation_notes` | 2 | on |
 | `content_reports` | 0 | on |
 | `conversations` | 0 | on |
-| `customer_segment_members` | 0 | **OFF** |
-| `customer_segments` | 5 | **OFF** |
+| `customer_segment_members` | 0 | on |
+| `customer_segments` | 5 | on |
 | `data_deletion_log` | 0 | on |
-| `discovery_board_pins` | 0 | **OFF** |
-| `discovery_boards` | 3 | **OFF** |
-| `discovery_collections` | 0 | **OFF** |
-| `discovery_comments` | 0 | **OFF** |
-| `discovery_interactions` | 0 | **OFF** |
-| `discovery_items` | 18 | **OFF** |
-| `discovery_likes` | 0 | **OFF** |
-| `discovery_product_recommendations` | 0 | **OFF** |
-| `discovery_products` | 0 | **OFF** |
-| `discovery_saves` | 0 | **OFF** |
-| `discovery_search_events` | 24 | on |
-| `discovery_staging` | 3 | **OFF** |
-| `feature_flags` | 12 | on |
+| `discovery_board_pins` | 0 | on |
+| `discovery_boards` | 3 | on |
+| `discovery_collections` | 2 | on |
+| `discovery_comments` | 0 | on |
+| `discovery_interactions` | 66 | on |
+| `discovery_items` | 1071 | on |
+| `discovery_likes` | 0 | on |
+| `discovery_product_recommendations` | 0 | on |
+| `discovery_products` | 0 | on |
+| `discovery_saves` | 2 | on |
+| `discovery_search_events` | 71 | on |
+| `discovery_staging` | 3 | on |
+| `fade_blueprints` | 4 | on |
+| `favorites` | 5 | on |
+| `feature_flags` | 13 | on |
 | `feature_requests` | 4 | on |
+| `gift_cards` | 2 | on |
+| `group_bookings` | 0 | on |
+| `guest_bookings` | 0 | on |
+| `hand_chart_notes` | 0 | on |
+| `help_articles` | 4 | on |
+| `intake_form_responses` | 2 | on |
+| `inventory` | 0 | on |
+| `loyalty_cards` | 2 | on |
+| `loyalty_stamps` | 9 | on |
+| `loyalty_status` | 8 | on |
+| `makeup_face_charts` | 0 | on |
+| `makeup_kit_items` | 0 | on |
 | `messages` | 0 | on |
-| `notifications` | 0 | on |
-| `partner_leads` | 0 | on |
+| `nail_client_preferences` | 2 | on |
+| `nail_design_history` | 4 | on |
+| `nail_dynamic_pricing_rules` | 2 | on |
+| `nail_inspo_boards` | 0 | on |
+| `nail_inspo_images` | 0 | on |
+| `nail_retail_products` | 5 | on |
+| `nail_stations` | 1 | on |
+| `notification_preferences` | 0 | on |
+| `notifications` | 2 | on |
+| `off_peak_slots` | 0 | on |
+| `package_purchases` | 1 | on |
+| `partner_leads` | 5 | on |
 | `platform_settings` | 1 | on |
-| `platform_stats` | 0 | **OFF** |
+| `platform_stats` | 0 | on |
+| `price_disputes` | 0 | on |
+| `price_offers` | 0 | on |
+| `pricing_rules` | 0 | on |
 | `processed_webhook_events` | 0 | on |
-| `profiles` | 6 | on |
+| `profiles` | 15 | on |
+| `promo_codes` | 13 | on |
+| `push_subscriptions` | 0 | on |
+| `quartier_subscriptions` | 0 | on |
 | `recurring_booking_rules` | 0 | on |
+| `referrals` | 10 | on |
+| `retail_purchases` | 0 | on |
+| `retail_sales` | 11 | on |
+| `review_attributes` | 0 | on |
 | `review_photos` | 0 | on |
-| `reviews` | 14 | on |
+| `review_replies` | 1 | on |
+| `reviews` | 260 | on |
 | `sale_line_items` | 1 | on |
 | `sales` | 1 | on |
+| `salon_analytics` | 0 | on |
 | `salon_badge_assignments` | 0 | on |
 | `salon_badges` | 4 | on |
 | `salon_clients` | 1 | on |
 | `salon_closures` | 0 | on |
 | `salon_directory` | 48 | on |
 | `salon_documents` | 0 | on |
+| `salon_drafts` | 1 | on |
+| `salon_engagement` | 22 | on |
+| `salon_groups` | 0 | on |
+| `salon_last_minute_settings` | 0 | on |
 | `salon_pace` | 0 | on |
-| `salon_page_views` | 55 | on |
+| `salon_page_views` | 247 | on |
 | `salon_payouts` | 0 | on |
+| `salon_photos` | 0 | on |
 | `salons` | 23 | on |
-| `search_embeddings` | 0 | on |
+| `search_embeddings` | 101 | on |
+| `search_events` | 2 | on |
+| `search_ranking_weights` | 1 | on |
+| `search_synonyms` | 65 | on |
 | `service_addons` | 10 | on |
+| `service_categories` | 67 | on |
 | `service_options` | 6 | on |
-| `services` | 83 | on |
+| `service_packages` | 2 | on |
+| `services` | 259 | on |
 | `site_content` | 7 | on |
+| `sms_reminders` | 0 | on |
+| `spa_treatment_outcomes` | 2 | on |
+| `spa_treatment_rooms` | 3 | on |
 | `staff_breaks` | 0 | on |
+| `staff_calendars` | 0 | on |
 | `staff_invites` | 0 | on |
 | `staff_members` | 71 | on |
-| `staff_portfolio_images` | 0 | on |
-| `staff_schedules` | 19 | on |
-| `staff_services` | 40 | on |
+| `staff_portfolio_images` | 12 | on |
+| `staff_schedules` | 403 | on |
+| `staff_services` | 254 | on |
 | `staff_time_off` | 0 | on |
-| `test_table` | 0 | **OFF** |
-| `tips` | 0 | on |
+| `test_table` | 0 | on |
+| `tier_perks` | 3 | on |
+| `tips` | 1 | on |
+| `user_credits` | 0 | on |
 | `user_preferences` | 0 | on |
-| `waitlist` | 0 | **OFF** |
+| `user_salon_affinity` | 121 | on |
+| `user_style_affinity` | 46 | on |
+| `voucher_purchases` | 2 | on |
+| `vouchers` | 2 | on |
+| `waitlist` | 1 | on |
 | `warnings` | 0 | on |
+| `waxing_sensitivity_log` | 0 | on |
 | `waxing_zone_packages` | 0 | on |
-
-> ⚠️ **16 tables have RLS OFF** (anon key can read/write): `customer_segment_members`, `customer_segments`, `discovery_board_pins`, `discovery_boards`, `discovery_collections`, `discovery_comments`, `discovery_interactions`, `discovery_items`, `discovery_likes`, `discovery_product_recommendations`, `discovery_products`, `discovery_saves`, `discovery_staging`, `platform_stats`, `test_table`, `waitlist`.
+| `waxing_zone_preferences` | 0 | on |
+| `wellness_journals` | 2 | on |
 
 _Columns are indexed in `_inventory/_db-columns.json` and searchable: `npm run exists <column>`._
 
