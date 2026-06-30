@@ -10,8 +10,9 @@
 import { useState, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, type LucideIcon } from "lucide-react";
+import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, Store, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
+import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { SEARCH_CITIES } from "@/lib/cities";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchSuggest";
@@ -50,7 +51,8 @@ export default function SearchMorphPreviewPage() {
   const [selKey, setSelKey] = useState<string | null>(null);
 
   const now = new Date();
-  const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1)];
+  const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
+  const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
 
   const { results, loading } = useSearchSuggest(serviceQ, { city: city || undefined });
   const typing = serviceQ.trim().length >= 2;
@@ -139,6 +141,11 @@ export default function SearchMorphPreviewPage() {
                         <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock}
                           onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setStep("date"); }} />
                       ))}
+                      <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Beliebte Stores</p>
+                      {FEATURED_SALONS.map((sl) => (
+                        <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
+                          onClick={() => { setService(sl.name); advance("service"); }} />
+                      ))}
                       <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Vorschläge</p>
                       <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
                       {CATEGORIES.map((c) => (
@@ -190,7 +197,7 @@ export default function SearchMorphPreviewPage() {
                         {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                       </div>
                       {months.map((mDate) => (
-                        <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} selKey={selKey}
+                        <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey}
                           onPick={(key, label) => { setSelKey(key); setDate(label); }} />
                       ))}
                     </>
@@ -226,13 +233,14 @@ export default function SearchMorphPreviewPage() {
   );
 }
 
-function MonthGrid({ monthDate, now, selKey, onPick }: {
-  monthDate: Date; now: Date; selKey: string | null; onPick: (key: string, label: string) => void;
+function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
+  monthDate: Date; now: Date; windowEnd: Date; selKey: string | null; onPick: (key: string, label: string) => void;
 }) {
   const y = monthDate.getFullYear(), m = monthDate.getMonth();
   const monthLong = monthDate.toLocaleDateString("de-CH", { month: "long" });
   const cells = monthGrid(monthDate);
   const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const windowMid = windowEnd.getTime();
   return (
     <div className="mb-4">
       <p className="mb-2 font-heading text-[15px] font-bold capitalize text-s-ink">{monthLong} {y}</p>
@@ -240,10 +248,11 @@ function MonthGrid({ monthDate, now, selKey, onPick }: {
         {cells.map((d, i) => {
           if (d === null) return <div key={i} />;
           const key = `${y}-${m}-${d}`;
-          const past = new Date(y, m, d).getTime() < todayMid;
+          const t = new Date(y, m, d).getTime();
+          const disabled = t < todayMid || t > windowMid; // past OR beyond the booking window
           return (
             <div key={i} className="flex justify-center py-0.5">
-              {past ? (
+              {disabled ? (
                 <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3 line-through">{d}</span>
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
