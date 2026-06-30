@@ -48,6 +48,7 @@ export default function SearchMorphPreviewPage() {
   const [serviceQ, setServiceQ] = useState("");
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
+  const [searchFocused, setSearchFocused] = useState(false); // tap the search input -> full-screen search
   const [selKey, setSelKey] = useState<string | null>(null);
 
   const now = new Date();
@@ -60,12 +61,13 @@ export default function SearchMorphPreviewPage() {
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
 
   const advance = (s: Step) => {
+    setSearchFocused(false);
     const order: Step[] = ["service", "location", "date"];
     const next = order[order.indexOf(s) + 1];
     if (next) setTimeout(() => setStep(next), 220);
   };
-  const close = () => { setOpen(false); setStep("service"); };
-  const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setStep("service"); };
+  const close = () => { setOpen(false); setStep("service"); setSearchFocused(false); };
+  const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setStep("service"); setSearchFocused(false); };
 
   // dev preview only , real 404 in production (matches app/[locale]/dev/primitives convention)
   if (process.env.NODE_ENV === "production") notFound();
@@ -108,9 +110,11 @@ export default function SearchMorphPreviewPage() {
             <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-1">
               {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
-                <ActiveCard title="Wonach suchst du?" onToggle={() => setStep(null)}>
-                  <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
+                <ActiveCard title="Wonach suchst du?" onToggle={() => (searchFocused ? setSearchFocused(false) : setStep(null))}>
+                  <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} onFocus={() => setSearchFocused(true)} placeholder="Service, Salon oder Stylist:in"
                     className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                  {/* capped + internal-scroll in the accordion so Standort/Datum stay visible; uncapped in full-search */}
+                  <div className={searchFocused ? "" : "max-h-[44vh] overflow-y-auto"}>
                   {typing ? (
                     loading ? (
                       <div className="space-y-2 pt-1">
@@ -139,35 +143,46 @@ export default function SearchMorphPreviewPage() {
                       <p className="mb-1 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
                       {RECENTS.map((r) => (
                         <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock}
-                          onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setStep("date"); }} />
+                          onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setSearchFocused(false); setStep("date"); }} />
                       ))}
-                      <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Beliebte Stores</p>
-                      {/* mockup: in production a store row navigates to /salon/[slug]; here it fills the Suche field */}
-                      {FEATURED_SALONS.map((sl) => (
-                        <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
-                          onClick={() => { setService(sl.name); advance("service"); }} />
-                      ))}
+                      {/* Stores + Trending only in full-search (keeps the accordion compact so the steps stay visible) */}
+                      {searchFocused && (
+                        <>
+                          <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Beliebte Stores</p>
+                          {/* mockup: in production a store row navigates to /salon/[slug]; here it fills the Suche field */}
+                          {FEATURED_SALONS.map((sl) => (
+                            <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
+                              onClick={() => { setService(sl.name); advance("service"); }} />
+                          ))}
+                        </>
+                      )}
                       <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Vorschläge</p>
                       <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
                       {CATEGORIES.map((c) => (
                         <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
                           onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
                       ))}
-                      <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink-3">Im Trend</p>
-                      <div className="flex flex-wrap gap-2">
-                        {TRENDING.map((t) => (
-                          <button key={t.query} onClick={() => { setService(t.label); advance("service"); }}
-                            className="rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{t.label}</button>
-                        ))}
-                      </div>
+                      {searchFocused && (
+                        <>
+                          <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink-3">Im Trend</p>
+                          <div className="flex flex-wrap gap-2">
+                            {TRENDING.map((t) => (
+                              <button key={t.query} onClick={() => { setService(t.label); advance("service"); }}
+                                className="rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{t.label}</button>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
+                  </div>
                 </ActiveCard>
               ) : (
                 <CollapsedCard label="Suche" value={service} placeholder="Stores, Services, Stylist:innen" onClick={() => setStep("service")} />
               )}
 
-              {/* LOCATION , uses SEARCH_CITIES (real) */}
+              {/* LOCATION + DATE hide in full-search mode (the search takes the whole screen) */}
+              {!searchFocused && (<>
               {step === "location" ? (
                 <ActiveCard title="Wo?">
                   <input value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
@@ -216,6 +231,7 @@ export default function SearchMorphPreviewPage() {
               ) : (
                 <CollapsedCard label="Datum" value={date} placeholder="Jederzeit" onClick={() => setStep("date")} />
               )}
+              </>)}
             </div>
 
             {/* sticky action bar , white + gradient fade above (DS: sticky bar = gradient fade), NOT a card */}
