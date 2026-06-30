@@ -1,32 +1,48 @@
 "use client";
 
 // exists-check: net-new dev PREVIEW route (no match in `npm run exists search-morph`). Sibling to the
-// other app/[locale]/dev/* preview pages. A faithful Airbnb-style search ACCORDION mockup for OUR search
-// (Service / Standort / Datum steps that expand INLINE, the others collapse to rows) using our real
-// SERVICES + CITIES data + recents, with the in-place top-anchored MORPH + BLURRED backdrop. Preview only,
-// not linked in nav, does not touch the live homepage SearchBar. Owner: "make it like Airbnb" (2026-06-30).
+// other app/[locale]/dev/* preview pages. Mirrors the REAL Airbnb mobile search (captured live 2026-06-30:
+// full-screen grey surface, X top-right, active card = big bold title + content, collapsed steps = label
+// LEFT / value RIGHT cards, suggestion rows = icon tile + name + subtitle, bottom = Reset + commit button)
+// translated to OUR tokens + data (services / cities / recents). In-place top-anchored morph + blur backdrop.
+// Preview only, not linked in nav, does not touch the live homepage SearchBar. Owner: "make it like Airbnb".
 
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Search, MapPin, Calendar, Navigation, X, ChevronRight,
-  Scissors, Leaf, Hand, Footprints, Palette, Gem, type LucideIcon,
+  Search, MapPin, Navigation, X, Scissors, Leaf, Gem, type LucideIcon,
 } from "lucide-react";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
-// real service set (SearchBar.tsx); banned Sparkles/Star/Zap glyphs swapped for safe ones
-const SERVICES: { label: string; Icon: LucideIcon }[] = [
-  { label: "Coiffeur", Icon: Scissors }, { label: "Barbershop", Icon: Scissors },
-  { label: "Nails", Icon: Gem }, { label: "Spa & Wellness", Icon: Leaf },
-  { label: "Massage", Icon: Hand }, { label: "Maniküre", Icon: Gem },
-  { label: "Pediküre", Icon: Footprints }, { label: "Färben", Icon: Palette },
+type Suggest = { name: string; sub: string; Icon: LucideIcon; tint?: boolean };
+const SERVICE_SUGGEST: Suggest[] = [
+  { name: "In der Nähe", sub: "Salons um dich herum", Icon: Navigation, tint: true },
+  { name: "Coiffeur", sub: "Haarschnitt und Styling", Icon: Scissors },
+  { name: "Barbershop", sub: "Bart und Fade", Icon: Scissors },
+  { name: "Nails", sub: "Maniküre und Pediküre", Icon: Gem },
+  { name: "Spa und Wellness", sub: "Massage und Treatments", Icon: Leaf },
 ];
-const CITIES = ["Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur"];
 const RECENTS = ["Coiffeur", "Nails", "Massage Bern"];
+const CITY_SUGGEST: Suggest[] = [
+  { name: "In der Nähe", sub: "Aktueller Standort", Icon: Navigation, tint: true },
+  ...["Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur"].map(
+    (c): Suggest => ({ name: c, sub: "Schweiz", Icon: MapPin }),
+  ),
+];
 const DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
+const WEEKDAYS = ["S", "M", "D", "M", "D", "F", "S"];
 
 type Step = "service" | "location" | "date";
+
+function monthGrid(d: Date) {
+  const y = d.getFullYear(), m = d.getMonth();
+  const first = new Date(y, m, 1).getDay();
+  const total = new Date(y, m + 1, 0).getDate();
+  const cells: (number | null)[] = Array.from({ length: first }, () => null);
+  for (let i = 1; i <= total; i++) cells.push(i);
+  return cells;
+}
 
 export default function SearchMorphPreviewPage() {
   const [open, setOpen] = useState(false);
@@ -35,12 +51,17 @@ export default function SearchMorphPreviewPage() {
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
 
-  const pick = (s: Step, set: (v: string) => void, v: string) => {
-    set(v);
+  const now = new Date();
+  const monthName = now.toLocaleDateString("de-CH", { month: "long", year: "numeric" });
+  const cells = monthGrid(now);
+  const [selDay, setSelDay] = useState<number | null>(null);
+
+  const advance = (s: Step) => {
     const order: Step[] = ["service", "location", "date"];
     const next = order[order.indexOf(s) + 1];
-    setTimeout(() => next && setStep(next), 200);
+    if (next) setTimeout(() => setStep(next), 220);
   };
+  const reset = () => { setService(""); setCity(""); setDate(""); setSelDay(null); setStep("service"); };
 
   return (
     <div className="min-h-screen bg-white">
@@ -70,124 +91,144 @@ export default function SearchMorphPreviewPage() {
 
       <AnimatePresence>
         {open && (
-          <>
-            {/* blurred backdrop */}
-            <motion.div
-              key="scrim"
-              className="fixed inset-0 z-[60] bg-s-ink/15 backdrop-blur-xl"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.35, ease: EASE }}
-              onClick={() => setOpen(false)}
-            />
-            {/* the panel , morphs in place, top-anchored (grows from the bar), NOT a bottom sheet */}
-            <motion.div
-              key="panel"
-              className="fixed inset-x-2 top-[11%] bottom-2 z-[61] flex flex-col overflow-hidden rounded-[28px] bg-s-bg-sunken shadow-[0_26px_80px_rgba(10,10,10,0.24)]"
-              style={{ transformOrigin: "top center" }}
-              initial={{ opacity: 0, scale: 0.96, y: -12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: -12 }}
-              transition={{ duration: 0.42, ease: EASE }}
-            >
-              <div className="flex items-center justify-between px-5 pb-3 pt-5">
-                <h2 className="font-heading text-[19px] font-extrabold tracking-[-0.02em] text-s-ink">Suche</h2>
-                <button onClick={() => setOpen(false)} aria-label="Schliessen"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink">
-                  <X size={16} strokeWidth={2.2} />
-                </button>
-              </div>
+          <motion.div
+            key="surface"
+            className="fixed inset-0 z-[60] flex flex-col bg-s-bg-sunken/80 backdrop-blur-2xl"
+            style={{ transformOrigin: "top center" }}
+            initial={{ opacity: 0, scale: 0.97, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: -10 }}
+            transition={{ duration: 0.42, ease: EASE }}
+          >
+            {/* X close , top-right on the grey surface (Airbnb) */}
+            <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
+              <button onClick={() => setOpen(false)} aria-label="Schliessen"
+                className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">
+                <X size={18} strokeWidth={2.2} />
+              </button>
+            </div>
 
-              <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-3">
-                {/* SERVICE */}
-                <StepCard active={step === "service"} icon={Search} label="Service" value={service} placeholder="Was suchst du?" onOpen={() => setStep("service")}>
-                  <input autoFocus placeholder="Service, Salon oder Stylist:in"
-                    className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:outline-none"
+            <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-2">
+              {/* SERVICE */}
+              {step === "service" ? (
+                <ActiveCard title="Wonach suchst du?">
+                  <input placeholder="Service, Salon oder Stylist:in"
+                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none"
                     onChange={(e) => setService(e.target.value)} />
-                  <div className="flex flex-wrap gap-2">
-                    {SERVICES.map(({ label, Icon }) => (
-                      <button key={label} onClick={() => pick("service", setService, label)}
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] transition-colors ${service === label ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>
-                        <Icon size={13} strokeWidth={2} /> {label}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="mb-2 mt-4 text-[12px] font-medium text-s-ink-3">Zuletzt gesucht</p>
+                  {SERVICE_SUGGEST.map((s) => (
+                    <SuggestRow key={s.name} {...s} onClick={() => { setService(s.name); advance("service"); }} />
+                  ))}
+                  <p className="mb-2 mt-4 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
                   <div className="flex flex-wrap gap-2">
                     {RECENTS.map((r) => (
-                      <button key={r} onClick={() => pick("service", setService, r)}
-                        className="rounded-full border border-s-border bg-white px-3.5 py-2 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{r}</button>
+                      <button key={r} onClick={() => { setService(r); advance("service"); }}
+                        className="rounded-full border border-s-border bg-white px-4 py-2 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{r}</button>
                     ))}
                   </div>
-                </StepCard>
+                </ActiveCard>
+              ) : (
+                <CollapsedCard label="Service" value={service} placeholder="Hinzufügen" onClick={() => setStep("service")} />
+              )}
 
-                {/* LOCATION */}
-                <StepCard active={step === "location"} icon={MapPin} label="Standort" value={city} placeholder="Stadt hinzufügen" onOpen={() => setStep("location")}>
-                  <button onClick={() => pick("location", setCity, "In der Nähe")}
-                    className="mb-1 flex w-full items-center gap-3 rounded-xl py-3 text-left hover:bg-s-bg-sunken">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-s-accent/10 text-s-accent"><Navigation size={16} /></span>
-                    <span className="text-[15px] font-semibold text-s-accent">Aktuellen Standort verwenden</span>
-                  </button>
-                  <div className="max-h-[32vh] overflow-y-auto">
-                    {CITIES.map((c) => (
-                      <button key={c} onClick={() => pick("location", setCity, c)}
-                        className={`flex w-full items-center gap-3 rounded-xl px-1 py-2.5 text-left hover:bg-s-bg-sunken ${city === c ? "bg-s-bg-sunken" : ""}`}>
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2"><MapPin size={15} /></span>
-                        <span className="text-[15px] text-s-ink">{c}</span>
-                      </button>
+              {/* LOCATION */}
+              {step === "location" ? (
+                <ActiveCard title="Wo?">
+                  <input placeholder="Stadt suchen"
+                    className="mb-4 w-full rounded-[14px] border border-s-border bg-white px-4 py-3.5 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none"
+                    onChange={(e) => setCity(e.target.value)} />
+                  <div className="max-h-[42vh] overflow-y-auto">
+                    {CITY_SUGGEST.map((s) => (
+                      <SuggestRow key={s.name} {...s} onClick={() => { setCity(s.name); advance("location"); }} />
                     ))}
                   </div>
-                </StepCard>
+                </ActiveCard>
+              ) : (
+                <CollapsedCard label="Standort" value={city} placeholder="Hinzufügen" onClick={() => setStep("location")} />
+              )}
 
-                {/* DATE */}
-                <StepCard active={step === "date"} icon={Calendar} label="Datum" value={date} placeholder="Jederzeit" onOpen={() => setStep("date")}>
-                  <div className="flex flex-wrap gap-2">
-                    {DATES.map((d) => (
-                      <button key={d} onClick={() => setDate(d)}
-                        className={`rounded-full border px-4 py-2 text-[13px] transition-colors ${date === d ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>{d}</button>
+              {/* DATE */}
+              {step === "date" ? (
+                <ActiveCard title="Wann?">
+                  {/* Daten / Flexibel segmented toggle (Airbnb) */}
+                  <div className="mb-5 flex rounded-full bg-s-bg-sunken p-1">
+                    <span className="flex-1 rounded-full bg-white py-2 text-center text-[14px] font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">Daten</span>
+                    <span className="flex-1 py-2 text-center text-[14px] font-medium text-s-ink-3">Flexibel</span>
+                  </div>
+                  <p className="mb-3 font-heading text-[17px] font-bold capitalize text-s-ink">{monthName}</p>
+                  <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
+                    {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
+                  </div>
+                  <div className="grid grid-cols-7 gap-y-1">
+                    {cells.map((d, i) => (
+                      <div key={i} className="flex justify-center py-0.5">
+                        {d === null ? <span /> : (
+                          <button onClick={() => { setSelDay(d); setDate(`${d}. ${monthName.split(" ")[0]}`); }}
+                            className={`grid h-10 w-10 place-items-center rounded-full text-[14px] ${selDay === d ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
+                            {d}
+                          </button>
+                        )}
+                      </div>
                     ))}
                   </div>
-                </StepCard>
-              </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {DATES.map((dd) => (
+                      <button key={dd} onClick={() => { setDate(dd); setSelDay(null); }}
+                        className={`rounded-full border px-4 py-2 text-[13px] transition-colors ${date === dd ? "border-s-border bg-s-bg-sunken font-semibold text-s-ink" : "border-s-border bg-white text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                    ))}
+                  </div>
+                </ActiveCard>
+              ) : (
+                <CollapsedCard label="Datum" value={date} placeholder="Jederzeit" onClick={() => setStep("date")} />
+              )}
+            </div>
 
-              {/* selected-ok: this is the ONE primary commit CTA, ink per the design contract (not a selected state) */}
-              <div className="border-t border-s-border bg-white px-4 pb-5 pt-3">
-                <button className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-s-ink font-heading text-[15px] font-bold text-white active:scale-[0.98]">
-                  <Search size={17} strokeWidth={2.2} /> Termine finden
-                </button>
-              </div>
-            </motion.div>
-          </>
+            {/* bottom bar , Reset + commit button (Airbnb), NOT a full-width footer */}
+            <div className="flex items-center justify-between border-t border-s-border bg-s-bg-sunken/60 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+              <button onClick={reset} className="text-[15px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
+              {/* selected-ok: the ONE primary commit CTA, ink per the design contract (not a selected state) */}
+              <button className="flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 font-heading text-[15px] font-bold text-white active:scale-[0.98]">
+                <Search size={17} strokeWidth={2.2} /> Suchen
+              </button>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
 
-function StepCard({ active, icon: Icon, label, value, placeholder, onOpen, children }: {
-  active: boolean; icon: LucideIcon; label: string; value: string; placeholder: string;
-  onOpen: () => void; children: ReactNode;
-}) {
+function ActiveCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <motion.div layout transition={{ duration: 0.42, ease: EASE }}
-      className={`overflow-hidden rounded-[20px] bg-white ${active ? "shadow-[0_10px_30px_rgba(10,10,10,0.10)]" : "border border-s-border"}`}>
-      <button onClick={onOpen} className="flex w-full items-center justify-between px-5 py-4 text-left">
-        <span className="flex items-center gap-3">
-          <Icon size={20} strokeWidth={2} className="text-s-ink-3" />
-          <span>
-            <span className="block text-[12px] font-medium text-s-ink-3">{label}</span>
-            <span className={`block text-[16px] font-semibold ${value ? "text-s-ink" : "text-s-ink-3"}`}>{value || placeholder}</span>
-          </span>
-        </span>
-        {!active && <ChevronRight size={18} className="text-s-ink-3" />}
-      </button>
-      <AnimatePresence initial={false}>
-        {active && (
-          <motion.div key="body" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: EASE }} className="px-5 pb-5">
-            {children}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      className="rounded-[24px] bg-white px-6 pb-6 pt-6 shadow-[0_12px_36px_rgba(10,10,10,0.12)]">
+      <h2 className="mb-5 font-heading text-[28px] font-bold leading-none tracking-[-0.02em] text-s-ink">{title}</h2>
+      {children}
     </motion.div>
+  );
+}
+
+function CollapsedCard({ label, value, placeholder, onClick }: {
+  label: string; value: string; placeholder: string; onClick: () => void;
+}) {
+  return (
+    <motion.button layout transition={{ duration: 0.42, ease: EASE }} onClick={onClick}
+      className="flex w-full items-center justify-between rounded-[24px] border border-s-border bg-white px-6 py-5 text-left">
+      <span className="text-[16px] text-s-ink-3">{label}</span>
+      <span className={`text-[16px] font-semibold ${value ? "text-s-ink" : "text-s-ink-2"}`}>{value || placeholder}</span>
+    </motion.button>
+  );
+}
+
+function SuggestRow({ name, sub, Icon, tint, onClick }: Suggest & { onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="flex w-full items-center gap-4 rounded-2xl py-2.5 pr-2 text-left hover:bg-s-bg-sunken">
+      <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
+        <Icon size={22} strokeWidth={1.9} />
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-[16px] font-semibold text-s-ink">{name}</span>
+        <span className="block truncate text-[14px] text-s-ink-3">{sub}</span>
+      </span>
+    </button>
   );
 }
