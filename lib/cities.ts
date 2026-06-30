@@ -30,6 +30,16 @@ export const CITIES: Record<CitySlug, { name_de: string; name_en: string; name_f
 
 export const CITY_SLUGS: CitySlug[] = ["basel", "zuerich", "bern"];
 
+/**
+ * Display cities for the SEARCH location picker , the broader set a user can search.
+ * Superset of the 3 active routing cities above (which have dedicated /[city] pages).
+ * CANONICAL single source. SearchBar.tsx + SearchOverlay.tsx currently hold a duplicate
+ * of this list (pre-existing debt) , they should import SEARCH_CITIES to unify.
+ */
+export const SEARCH_CITIES = [
+  "Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur",
+] as const;
+
 /** Get localized city name */
 export function getCityName(slug: CitySlug, locale: string): string {
   const city = CITIES[slug];
