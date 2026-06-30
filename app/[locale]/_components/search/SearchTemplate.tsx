@@ -666,31 +666,41 @@ export default function SearchTemplate({
     return () => ac.abort();
   }, [buildUrl]);
 
-  // ── Walk-in live availability — only when the walk_in filter is on. One batched
-  //    /api/walkin/availability call for the loaded salons; feeds the "Frei in
-  //    X–Y Min · N in der Schlange" line on each result card (variant A). ────────
+  // Walk-in live availability: only when the walk_in filter is on.
+  // One batched /api/walkin/availability call for the loaded salons.
+  // Dep is the stable comma-joined ID string (not the salons array reference)
+  // so the effect only re-fires when the actual set of IDs changes, not on
+  // every render that produces a new array object with the same contents.
+  const salonIdsKey = walkIn ? salons.map((s) => s.id).join(",") : "";
   React.useEffect(() => {
-    if (!walkIn || salons.length === 0) {
+    if (!walkIn || !salonIdsKey) {
       setWalkinAvail({});
       return;
     }
     const ac = new AbortController();
-    const ids = salons.map((s) => s.id).join(",");
-    fetch(`/api/walkin/availability?salon_ids=${encodeURIComponent(ids)}`, { signal: ac.signal })
+    fetch(`/api/walkin/availability?salon_ids=${encodeURIComponent(salonIdsKey)}`, { signal: ac.signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setWalkinAvail(data?.availability ?? {}))
       .catch((err) => {
         if (err?.name !== "AbortError") console.error("[SearchTemplate] walk-in availability fetch failed:", err);
       });
     return () => ac.abort();
-  }, [walkIn, salons]);
+  }, [walkIn, salonIdsKey]);
 
-  // ── Favorites prefetch ────────────────────────────────────────────────────
+  // Favorites prefetch: guard with a ref so the fetch runs at most once per
+  // component lifetime. Prevents the React Strict Mode double-invoke from
+  // issuing two requests, and avoids re-firing if the component is temporarily
+  // unmounted and remounted while higher-level state changes.
+  // Individual toggles update favoriteIds optimistically, so the initial
+  // fetch only needs to happen once.
+  const favoritesFetchedRef = React.useRef(false);
   React.useEffect(() => {
+    if (favoritesFetchedRef.current) return;
+    favoritesFetchedRef.current = true;
     fetch("/api/profile/favorites")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        // API returns { items: salon[], total } — items keyed by `id`.
+        // API returns { items: salon[], total } keyed by `id`.
         const items = data?.items ?? [];
         setFavoriteIds(
           new Set((items as { id: string }[]).map((s) => s.id)),
