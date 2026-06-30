@@ -299,9 +299,9 @@ export function SearchOverlay({
 
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
     service:  { label: fieldServiceLabelTxt,  value: service,    placeholder: queryPlaceholderTxt     },
-    location: { label: locationHeadingTxt,    value: stadt || "", placeholder: fieldAddPlaceholderTxt },
+    location: { label: locationHeadingTxt,    value: stadt || noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
     date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
-  }), [fieldServiceLabelTxt, service, queryPlaceholderTxt, locationHeadingTxt, stadt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
+  }), [fieldServiceLabelTxt, service, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
   const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
