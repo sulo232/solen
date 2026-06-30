@@ -207,7 +207,7 @@ export default function SearchMorphPreviewPage() {
   const activePanel = (s: Step): ReactNode => {
     if (s === "date") {
       return (
-        <div>
+        <div className="p-4">
           <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
           <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
             <button onClick={() => setDateTab("daten")}
@@ -240,7 +240,7 @@ export default function SearchMorphPreviewPage() {
     }
     // service / location , the morphing step
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col p-4">
         <AnimatePresence initial={false}>
           {!focusedSearch && (
             <motion.div key="heading" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
@@ -274,12 +274,29 @@ export default function SearchMorphPreviewPage() {
           className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
         </button>
+        {/* faux homepage behind the overlay , gives the frosted backdrop real content to blur (the real SearchOverlay sits over the live homepage) */}
+        <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+          {CATEGORIES.map((c) => (
+            <span key={c.label} className="flex shrink-0 items-center gap-1.5 rounded-full border border-s-border bg-white px-3.5 py-2 text-[13px] font-medium text-s-ink-2">
+              <c.icon size={15} strokeWidth={2} /> {c.label}
+            </span>
+          ))}
+        </div>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          {FEATURED_SALONS.slice(0, 4).map((s, i) => (
+            <div key={s.id}>
+              <div className="aspect-[4/3] rounded-[16px]" style={{ background: ["linear-gradient(135deg,#DBEAFE,#BFDBFE)", "linear-gradient(135deg,#FFE4E6,#FED7AA)", "linear-gradient(135deg,#D1FAE5,#CCFBF1)", "linear-gradient(135deg,#EDE9FE,#FAE8FF)"][i % 4] }} />
+              <p className="mt-1.5 truncate text-[14px] font-semibold text-s-ink">{s.name}</p>
+              <p className="truncate text-[12px] text-s-ink-3">{s.address}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {mounted && createPortal(
         <AnimatePresence>
           {open && [
-            <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-black/35"
+            <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-2xl"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
             <motion.button key="closeX" onClick={close} aria-label="Schliessen"
@@ -293,7 +310,7 @@ export default function SearchMorphPreviewPage() {
               dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.55 }}
               onDragEnd={(_e, info) => { if (info.offset.y > 140 || info.velocity.y > 600) close(); }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              className="fixed inset-x-0 bottom-0 top-[max(56px,calc(env(safe-area-inset-top)+12px))] z-[101] flex flex-col overflow-hidden rounded-t-[28px] bg-white">
+              className="fixed inset-x-0 bottom-0 top-[max(56px,calc(env(safe-area-inset-top)+12px))] z-[101] flex flex-col overflow-hidden bg-transparent">
               <div onPointerDown={(e) => dragControls.start(e)}
                 className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
                 <span className="h-1 w-9 rounded-full bg-s-border" />
@@ -308,12 +325,12 @@ export default function SearchMorphPreviewPage() {
                   <AnimatePresence initial={false}>
                     {STEPS.filter((s) => !(focusedSearch && activeStep !== s)).map((s) => (
                       <motion.div key={s} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                        transition={morphT} className="overflow-hidden">
+                        transition={morphT} className="overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                         {activeStep === s ? (
                           activePanel(s)
                         ) : (
                           <button onClick={() => openStep(s)}
-                            className="flex h-14 w-full items-center justify-between rounded-[16px] border border-s-border bg-white px-4 text-left">
+                            className="flex h-14 w-full items-center justify-between px-4 text-left">
                             <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
                             <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
                               {stepMeta[s].value || stepMeta[s].placeholder}
@@ -330,7 +347,7 @@ export default function SearchMorphPreviewPage() {
                 {!focusedSearch && (
                   <motion.div key="footer" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                     transition={morphT} className="shrink-0 overflow-hidden">
-                    <div className="flex items-center justify-between border-t border-s-border px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+                    <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
                       <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
                       <button onClick={close} className={COMMIT_BTN}>
                         <Search size={16} strokeWidth={2.2} /> Suchen
