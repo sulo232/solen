@@ -10,7 +10,7 @@
 import { useState, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, MapPin, Navigation, X, Clock, User, type LucideIcon } from "lucide-react";
+import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SEARCH_CITIES } from "@/lib/cities";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
@@ -40,7 +40,7 @@ function monthGrid(d: Date) {
 
 export default function SearchMorphPreviewPage() {
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<Step>("service");
+  const [step, setStep] = useState<Step | null>("service");
   const [service, setService] = useState("");
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
@@ -106,7 +106,7 @@ export default function SearchMorphPreviewPage() {
             <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-1">
               {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
-                <ActiveCard title="Wonach suchst du?">
+                <ActiveCard title="Wonach suchst du?" onToggle={() => setStep(null)}>
                   <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
                     className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
                   {typing ? (
@@ -156,7 +156,7 @@ export default function SearchMorphPreviewPage() {
                   )}
                 </ActiveCard>
               ) : (
-                <CollapsedCard label="Service" value={service} placeholder="Hinzufügen" onClick={() => setStep("service")} />
+                <CollapsedCard label="Suche" value={service} placeholder="Stores, Services, Stylist:innen" onClick={() => setStep("service")} />
               )}
 
               {/* LOCATION , uses SEARCH_CITIES (real) */}
@@ -259,11 +259,15 @@ function MonthGrid({ monthDate, now, selKey, onPick }: {
   );
 }
 
-function ActiveCard({ title, children }: { title: string; children: ReactNode }) {
+function ActiveCard({ title, onToggle, children }: { title: string; onToggle?: () => void; children: ReactNode }) {
   return (
     <motion.div layout transition={{ duration: 0.42, ease: EASE }}
       className="rounded-[20px] bg-white px-5 pb-5 pt-5 shadow-[0_14px_40px_rgba(10,10,10,0.14)]">
-      <h2 className="mb-4 font-heading text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-ink">{title}</h2>
+      {/* tap the title again to collapse this step (Airbnb toggle) */}
+      <button onClick={onToggle} className="mb-4 flex w-full items-center justify-between text-left">
+        <span className="font-heading text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-ink">{title}</span>
+        <ChevronUp size={20} className="text-s-ink-3" />
+      </button>
       {children}
     </motion.div>
   );
