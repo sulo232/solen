@@ -28,7 +28,8 @@ const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 // selected-ok: the ONE primary commit CTA stays ink (bg-s-ink) per the design contract; every other selected state is gray/blue-border
 const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]";
-const EXPAND_DIST = 230; // px of scroll that maps to the full accordion->focused expand
+const EXPAND_DIST = 120; // px of scroll that maps to the full accordion->focused expand (short = less swipe)
+const SNAP_AT = 0.4;     // on scroll-end, >= this commits to focused, else springs back , never rests half-open
 const HEADING_H = 56;    // collapsing heading height
 const ROW_H = 66;        // collapsing step-row wrapper height = h-14 (56) + pt-2.5 (10); must fit the row or the two rows overlap
 const FOOTER_H = 68;     // footer slide-off distance
@@ -71,6 +72,8 @@ export default function SearchMorphPreviewPage() {
   const cityRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const committed = useRef(false); // once fully expanded, LOCK it , scrolling back down must NOT un-expand (owner: reverse is gimmicky); exit via the back arrow
+  const snapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined); // scroll-end debounce -> snap to a full state (never rests half-open)
+  const snapping = useRef(false);  // true while a snap animation runs , ignore the scroll it triggers
 
   // ── the single continuous driver + every property derived from it ──
   const expand = useMotionValue(0);
@@ -133,7 +136,19 @@ export default function SearchMorphPreviewPage() {
   const openT = reduce ? { duration: 0 } : OPEN_T;
   const grow = (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
   // collapse back to the accordion: release the commit-lock + rewind the list scroll so the next expand starts clean
-  const collapse = () => { committed.current = false; if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
+  const collapse = () => { committed.current = false; snapping.current = false; if (snapTimer.current) clearTimeout(snapTimer.current); if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
+  // on scroll-end: settle to focused (>= SNAP_AT) or back to accordion , so a partial swipe never rests half-open
+  const snapSettle = () => {
+    if (committed.current || snapping.current) return;
+    if (expand.get() >= SNAP_AT) {
+      committed.current = true; setInputFocused(true);
+      if (listRef.current) listRef.current.scrollTop = 0; // committed now blocks onScroll, so this reset is safe
+      grow(1);
+    } else {
+      snapping.current = true; grow(0);
+      setTimeout(() => { if (listRef.current) listRef.current.scrollTop = 0; snapping.current = false; }, 360); // rewind after the retract so it doesn't jump
+    }
+  };
 
   const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); };
   const advance = (s: Step) => {
@@ -342,7 +357,12 @@ export default function SearchMorphPreviewPage() {
                     </motion.div>
                     <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
                     <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
-                      onScroll={(e) => { if (!committed.current) expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
+                      onScroll={(e) => {
+                        if (committed.current || snapping.current) return;
+                        expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST));
+                        if (snapTimer.current) clearTimeout(snapTimer.current);
+                        snapTimer.current = setTimeout(snapSettle, 110);
+                      }}>
                       {activeStep === "location" ? cityList() : serviceSuggestions()}
                     </div>
                   </motion.div>
