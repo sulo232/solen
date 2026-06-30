@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
 
@@ -9,6 +10,23 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa" },
 };
 
+/**
+ * Single cached salon read shared by generateMetadata + the layout body.
+ * React cache() dedupes the call within one request render, so the salon row
+ * is fetched ONCE on the server per PDP load instead of twice (the metadata
+ * select + the breadcrumb select were two independent round-trips). The union
+ * of columns both callers need is selected so neither has to re-query.
+ */
+const getSalonMeta = cache(async (slug: string) => {
+  const supabase = await createServerSupabaseClient();
+  const { data } = await supabase
+    .from("salons")
+    .select("name, address, cover_photo_url, categories, average_rating, review_count")
+    .eq("slug", slug)
+    .single();
+  return data;
+});
+
 export async function generateMetadata({
   params,
 }: {
@@ -16,13 +34,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const loc = locale ?? "de";
-  const supabase = await createServerSupabaseClient();
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("name, address, cover_photo_url, categories, average_rating, review_count")
-    .eq("slug", slug)
-    .single();
+  const salon = await getSalonMeta(slug);
 
   if (!salon) {
     return { title: "Salon — solen.ch" };
@@ -94,13 +107,10 @@ export default async function SalonLayout({
 }) {
   const { locale, slug } = await params;
   const loc = locale ?? "de";
-  const supabase = await createServerSupabaseClient();
 
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("name, categories")
-    .eq("slug", slug)
-    .single();
+  // Reuses the same cache()d read as generateMetadata, so the salon row is
+  // fetched once per request instead of twice on the server.
+  const salon = await getSalonMeta(slug);
 
   const firstCat = Array.isArray(salon?.categories) && salon.categories.length > 0
     ? salon.categories[0]

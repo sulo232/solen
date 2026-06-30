@@ -18,9 +18,21 @@ export async function GET(
   // The [slug] param may be a UUID (owner settings page passes salon.id) or a slug.
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
 
+  // Explicit public column list (replaces `select("*")` which shipped all 98
+  // salon columns, including stripe_account_id / owner_id-adjacent fields /
+  // search_doc / score_details, to anonymous PDP visitors). This is exactly the
+  // set the PDP consumers read: the SalonDetail type + the section components
+  // (incl. SalonAbout's locale-keyed about_text_{locale}) + the inline
+  // walkin_enabled read, plus the columns this route's own logic needs (owner_id
+  // for the owner-preview check, is_active for the visibility gate). Same response
+  // shape for every field the UI uses; only unused/sensitive columns are dropped.
+  // Kept as one literal string so PostgREST can infer the row type (a runtime
+  // join() of the list collapses to GenericStringError).
   let query = supabase
     .from("salons")
-    .select("*")
+    .select(
+      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled"
+    )
     .eq(isUuid ? "id" : "slug", slug);
 
   const { data: salon, error } = await query.single();
@@ -53,6 +65,11 @@ export async function GET(
       .from("reviews")
       .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")
       .eq("salon_id", salon.id)
+      // Filter out auto-moderated (hidden) reviews: the admin client bypasses
+      // RLS, so without this an automod-hidden review would ship to the PDP
+      // (SalonReviews renders the bundled reviews directly). Matches the
+      // /api/reviews/salon/[salon_id] route's contract.
+      .eq("is_hidden", false)
       .order("created_at", { ascending: false })
       .limit(20),
   ]);
