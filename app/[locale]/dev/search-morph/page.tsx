@@ -74,7 +74,7 @@ export default function SearchMorphPreviewPage() {
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
   const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
 
-  const { results, loading } = useSearchSuggest(serviceQ, { city: city || undefined });
+  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no network calls while closed
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
@@ -87,7 +87,7 @@ export default function SearchMorphPreviewPage() {
     const next = STEPS[STEPS.indexOf(s) + 1];
     if (next) setActiveStep(next);
   };
-  const close = () => { setOpen(false); setInputFocused(false); };
+  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); };
   const reset = () => {
     setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null);
     setActiveStep("service"); setInputFocused(false);
@@ -172,7 +172,7 @@ export default function SearchMorphPreviewPage() {
   );
 
   // ── the focused search bar: [back] [input] [clear-X] as ONE bordered bar (ask 2 + 4) ──
-  const focusedBar = (() => {
+  const focusedBar = focusedSearch ? (() => {
     const isService = activeStep === "service";
     const q = isService ? serviceQ : cityQ;
     const setQ = isService ? setServiceQ : setCityQ;
@@ -185,7 +185,7 @@ export default function SearchMorphPreviewPage() {
           <ArrowLeft size={18} strokeWidth={2} />
         </button>
         <input ref={ref} autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder}
-          className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:shadow-none focus-visible:outline-none" />
+          className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus-visible:border-s-border focus:outline-none focus-visible:shadow-none focus-visible:outline-none" />
         {q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
             className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
@@ -194,7 +194,7 @@ export default function SearchMorphPreviewPage() {
         )}
       </div>
     );
-  })();
+  })() : null;
 
   // ── the active (open) panel for a step ──
   const stepPanel = (s: Step): ReactNode => {
@@ -230,9 +230,9 @@ export default function SearchMorphPreviewPage() {
         <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
         <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
           <button onClick={() => setDateTab("daten")}
-            className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]" : "font-medium text-s-ink-3"}`}>Daten</button>
+            className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
           <button onClick={() => setDateTab("flexibel")}
-            className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]" : "font-medium text-s-ink-3"}`}>Flexibel</button>
+            className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
         </div>
         {dateTab === "daten" ? (
           <div className="max-h-[40vh] overflow-y-auto overscroll-contain">
@@ -271,7 +271,7 @@ export default function SearchMorphPreviewPage() {
         <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
         <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
         <button type="button" onClick={() => { setActiveStep("service"); setInputFocused(false); setOpen(true); }}
-          className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3 shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
+          className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
         </button>
       </div>
@@ -287,7 +287,7 @@ export default function SearchMorphPreviewPage() {
 
             // ── CLOSE-X (on the scrim, in the top crop; distinct from the in-bar clear-X) ──
             <motion.button key="closeX" onClick={close} aria-label="Schliessen"
-              className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.10)]"
+              className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: reduce ? 0 : 0.25 }}>
               <X size={17} strokeWidth={2.2} />
