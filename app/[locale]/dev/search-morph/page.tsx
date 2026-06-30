@@ -315,9 +315,9 @@ export default function SearchMorphPreviewPage() {
                     <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                       <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
                     </motion.div>
-                    <div className="shrink-0 px-3 pb-2 pt-1">{bar("service")}</div>
+                    <div className="shrink-0 px-3 pb-1 pt-1">{bar("service")}</div>
                     {/* onScroll: pure clamp -- no committed guard, no lock */}
-                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4"
+                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
                       onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                       {serviceSuggestions()}
                     </div>
