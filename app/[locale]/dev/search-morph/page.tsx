@@ -89,27 +89,29 @@ export default function SearchMorphPreviewPage() {
           <motion.div
             key="surface"
             layoutId="searchMorph"
-            className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-s-bg-sunken/55 backdrop-blur-2xl"
+            className={`fixed inset-0 z-[100] flex flex-col overflow-hidden ${searchFocused ? "bg-white" : "bg-s-bg-sunken/55 backdrop-blur-2xl"}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: EASE }}
           >
-            <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
-              <button onClick={close} aria-label="Schliessen"
-                className="grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">
-                <X size={17} strokeWidth={2.2} />
-              </button>
-            </div>
+            {!searchFocused && (
+              <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
+                <button onClick={close} aria-label="Schliessen"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.08)]">
+                  <X size={17} strokeWidth={2.2} />
+                </button>
+              </div>
+            )}
 
-            <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-1">
+            <div className={`flex-1 space-y-3 overflow-y-auto px-4 pb-4 ${searchFocused ? "pt-[max(14px,env(safe-area-inset-top))]" : "pt-1"}`}>
               {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
                 <motion.div layout transition={{ duration: 0.42, ease: EASE }}
-                  className="rounded-[20px] bg-white px-5 pb-5 pt-5 shadow-[0_14px_40px_rgba(10,10,10,0.14)]">
+                  className={searchFocused ? "" : "rounded-[20px] bg-white px-5 pb-5 pt-5 shadow-[0_14px_40px_rgba(10,10,10,0.14)]"}>
                   {searchFocused ? (
-                    /* FULL search (Airbnb focused state): back arrow + input at the very top, no title */
-                    <div className="mb-3 flex items-center gap-2">
+                    /* FULL search (Airbnb focused state): full-bleed white, back arrow + input pinned at the very top */
+                    <div className="sticky top-0 z-10 mb-3 flex items-center gap-2 bg-white pb-2">
                       <button onClick={() => setSearchFocused(false)} aria-label="Zurück"
                         className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken">
                         <ArrowLeft size={20} strokeWidth={2} />
