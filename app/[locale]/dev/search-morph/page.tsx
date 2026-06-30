@@ -7,7 +7,7 @@
 // TRENDING (searchTrending.ts); does NOT re-declare it. White cards FLOAT on a frosted-blur backdrop.
 // Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, Store, type LucideIcon } from "lucide-react";
@@ -49,6 +49,12 @@ export default function SearchMorphPreviewPage() {
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [searchFocused, setSearchFocused] = useState(false); // tap the search input -> full-screen search
+  const [scrolled, setScrolled] = useState(false); // homepage bar collapses to a compact pill on scroll (Airbnb)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const [selKey, setSelKey] = useState<string | null>(null);
 
   const now = new Date();
@@ -74,19 +80,42 @@ export default function SearchMorphPreviewPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="mx-auto max-w-[430px] px-5 pt-14">
-        <div className="mb-8 flex items-center justify-between">
-          <span className="font-heading text-[24px] font-extrabold tracking-[-0.02em] text-s-ink">Solen</span>
-          <span className="grid h-11 w-11 place-items-center rounded-[14px] border border-s-border text-s-ink">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+      {/* sticky search header , collapses on scroll, tap the pill to EXPAND into the search (Airbnb) */}
+      <div className="sticky top-0 z-10 mx-auto max-w-[430px] border-b border-s-border bg-white/95 px-5 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur">
+        <div className={`flex items-center justify-between overflow-hidden transition-all duration-300 ${scrolled ? "max-h-0 opacity-0" : "mb-3 max-h-12 opacity-100"}`}>
+          <span className="font-heading text-[22px] font-extrabold tracking-[-0.02em] text-s-ink">Solen</span>
+          <span className="grid h-10 w-10 place-items-center rounded-[12px] border border-s-border text-s-ink">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
           </span>
         </div>
-        <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
-        <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
         <motion.button layoutId="searchMorph" type="button" onClick={() => setOpen(true)}
-          className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3 shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
-          <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
+          className={`flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white text-s-ink-3 shadow-[0_6px_20px_rgba(10,10,10,0.10)] transition-all ${scrolled ? "justify-center px-4 py-2.5 text-[14px]" : "px-5 py-3.5 text-[15px]"}`}>
+          <Search size={scrolled ? 16 : 18} strokeWidth={2} /> Suche starten
         </motion.button>
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5">
+          {CATEGORIES.map(({ label, icon: Icon }) => (
+            <button key={label} onClick={() => { setService(label); setOpen(true); }}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2">
+              <Icon size={14} strokeWidth={2} /> {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* page content (scrollable , gives the collapse-on-scroll something to react to) */}
+      <div className="mx-auto max-w-[430px] px-5 py-4">
+        <h2 className="mb-3 font-heading text-[18px] font-bold text-s-ink">Beliebte Stores</h2>
+        <div className="space-y-4">
+          {[...FEATURED_SALONS, ...FEATURED_SALONS].map((sl, i) => (
+            <div key={i} className="overflow-hidden rounded-[20px] border border-s-border">
+              <div className="h-40 bg-s-bg-sunken" />
+              <div className="p-4">
+                <p className="font-heading text-[16px] font-bold text-s-ink">{sl.name}</p>
+                <p className="text-[13px] text-s-ink-3">{sl.address}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <AnimatePresence>
