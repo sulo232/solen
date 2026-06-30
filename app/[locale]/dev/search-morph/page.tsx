@@ -8,6 +8,7 @@
 // Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
 import { useState, type ReactNode } from "react";
+import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
@@ -36,7 +37,6 @@ function monthGrid(d: Date) {
 }
 
 export default function SearchMorphPreviewPage() {
-  if (process.env.NODE_ENV === "production") return null; // dev preview only , not public
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("service");
   const [service, setService] = useState("");
@@ -60,6 +60,9 @@ export default function SearchMorphPreviewPage() {
   };
   const close = () => { setOpen(false); setStep("service"); };
   const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setStep("service"); };
+
+  // dev preview only , real 404 in production (matches app/[locale]/dev/primitives convention)
+  if (process.env.NODE_ENV === "production") notFound();
 
   return (
     <div className="min-h-screen bg-white">
