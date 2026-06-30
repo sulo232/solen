@@ -88,7 +88,14 @@ export function useSearchSuggest(
           signal: ac.signal,
         });
         if (!res.ok) throw new Error(`Search failed: ${res.status}`);
-        const data = (await res.json()) as SearchResults;
+        const raw = (await res.json()) as Partial<SearchResults>;
+        // Normalize: the suggest route omits keys on some fallback paths (e.g. no `stylists`),
+        // so default every group to [] , else `results.stylists.length` throws downstream.
+        const data: SearchResults = {
+          services: raw.services ?? [],
+          salons: raw.salons ?? [],
+          stylists: raw.stylists ?? [],
+        };
         setState({ results: data, loading: false, error: null });
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

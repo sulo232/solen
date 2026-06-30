@@ -118,15 +118,15 @@ export default function SearchMorphPreviewPage() {
                       <>
                         {results.services.map((s) => (
                           <SuggestRow key={s.id} name={s.name_de} sub="Service" Icon={Search}
-                            onClick={() => { setService(s.name_de); advance("service"); }} />
+                            onClick={() => { setService(s.name_de); setServiceQ(""); advance("service"); }} />
                         ))}
                         {results.salons.map((s) => (
                           <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin}
-                            onClick={() => { setService(s.name); advance("service"); }} />
+                            onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
                         ))}
                         {results.stylists.map((s) => (
                           <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User}
-                            onClick={() => { setService(s.name); advance("service"); }} />
+                            onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
                         ))}
                       </>
                     ) : (
