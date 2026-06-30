@@ -22,7 +22,9 @@ Customer surface = home, `/{city}/{category}` search, `/salon/{slug}` PDP + book
 - P0 done: review-form committed. P1 done: discovery , 40 fix / 30 mockup (`_plans/SWEEP_BACKLOG.md`).
 - P2 batch 1 DONE + committed (6 groups, behavior-verified via tsc + curl): salons-route (col-trim no-leak + Promise.all + slot-RPC + with_slots cap), pdp (3x-fetch dedupe + is_hidden filter + col-trim), inspo (5 RPCs -> 1 /api/discovery/category-meta; DISCOVERY_CATEGORIES extracted to lib/discovery-categories so the route drops the client-import + edge), availability (single scan), quick (bookings/user pagination, express-rebook Zurich tz, profile/live-state real cols, reviews/eligibility 22P02, SalonResultCard memo), dead-code (4 deletions + REMOVED). Council true-review running on the data-logic files.
   - LESSON: the fix-workflow's loop-reviewers read the WORKTREE not MAIN -> false-negative verdicts; I verified MAIN myself (tsc + curl). Point batch-2 reviewers at MAIN abs paths.
-  - NEXT: batch 2 = promo/charge fix (careful, money), dedup refactors (share-block x5, date-formatter x3), remaining low items. Then P3 mockups.
+  - batch 2 DONE + committed: promo charge fix (discount now applied to the Stripe charge; re-validated server-side, subtracted before fee, idempotent webhook increment via increment_promo_use RPC; migration bookings.promo_code + RPC APPLIED LIVE + verified col/rpc exist), share-dedup (lib/share.ts + 6 consumers), date-dedup (lib/format locale-aware + 3 consumers, fixes FR/IT German weekdays). Verified: tsc clean, home/PDP/search render 200, pay-intent 400-not-500. Money-path council running.
+  - FOLLOW: refresh inventory snapshot for bookings.promo_code (live, snapshot stale).
+  - NEXT: batch 3 = low-severity tail (14 items), then P3 mockups (30 parked design+motion).
 
 ## Backlog
 Full categorized list: `_plans/SWEEP_BACKLOG.md` (40 fix, 30 mockup).
