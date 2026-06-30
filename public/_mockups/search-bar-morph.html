@@ -1,0 +1,199 @@
+<!doctype html>
+<!--
+  Exists-check: target surface = app/[locale]/_components/homepage/SearchBar.tsx (the REAL search bar:
+  a 3-field card , Service / City / Time , where tapping a field opens a SEPARATE full-page picker
+  overlay with back+X navigation). REMOVED.md: no hits. NET-NEW here = the in-place ACCORDION MORPH
+  (Airbnb pattern, checked live on airbnb.com mobile): one surface where the active step expands with
+  its picker INLINE and the others collapse to compact rows, with a smooth height/layout transition,
+  instead of full-page picker swaps. English labels per the mockup-English rule.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Search bar , in-place accordion morph (mockup)</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#71717A; --border:#E4E4E7;
+    --sunken:#F4F4F5; --accent:#276EF1; --white:#fff; --star:#FFC32B;
+    --ease:cubic-bezier(.32,.72,0,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#ECECEE;color:var(--ink);
+    font-family:"Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:24px 0 40px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .cap{max-width:430px;width:92%;color:var(--ink3);font-size:12.5px;line-height:1.5}
+  .cap b{color:var(--ink)}
+  .phone{width:390px;max-width:94vw;height:760px;background:var(--white);border-radius:38px;
+    box-shadow:0 18px 60px rgba(10,10,10,.18);overflow:hidden;position:relative;border:1px solid #e3e3e6}
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.32);opacity:0;transition:opacity .4s var(--ease);pointer-events:none}
+  .phone.open .scrim{opacity:1}
+  .hero{padding:64px 20px 0}
+  .hgreet{font-size:13px;color:var(--ink3);margin:0 0 6px;font-weight:500}
+  .htitle{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0 0 18px;line-height:1.1}
+  .pill{display:flex;align-items:center;gap:10px;width:100%;background:var(--white);border:1px solid var(--border);
+    border-radius:999px;padding:15px 18px;box-shadow:0 6px 20px rgba(10,10,10,.08);cursor:pointer;
+    font-size:15px;color:var(--ink3);transition:transform .18s var(--ease)}
+  .pill:active{transform:scale(.985)}
+  .pill svg{flex:0 0 auto}
+  .surface{position:absolute;left:0;right:0;bottom:0;background:#F7F7F8;border-radius:28px 28px 0 0;
+    padding:10px 14px max(16px,env(safe-area-inset-bottom));transform:translateY(102%);
+    transition:transform .42s var(--ease);display:flex;flex-direction:column;max-height:92%;}
+  .phone.open .surface{transform:translateY(0)}
+  .grab{width:36px;height:4px;border-radius:99px;background:var(--border);margin:6px auto 8px}
+  .shead{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 12px}
+  .shead h2{font-size:18px;font-weight:700;margin:0}
+  .x{width:34px;height:34px;border-radius:99px;border:1px solid var(--border);background:var(--white);
+    display:grid;place-items:center;cursor:pointer}
+  .steps{display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+  .step{background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;
+    transition:box-shadow .3s var(--ease)}
+  .step.active{box-shadow:0 10px 30px rgba(10,10,10,.10)}
+  .srow{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;gap:12px}
+  .srow .l{display:flex;align-items:center;gap:11px;min-width:0}
+  .srow .ic{width:20px;height:20px;color:var(--ink3);flex:0 0 auto}
+  .srow .lab{font-size:12px;color:var(--ink3);font-weight:500}
+  .srow .val{font-size:16px;font-weight:600;color:var(--ink);margin-top:1px}
+  .srow .val.ph{color:var(--ink3);font-weight:500}
+  .step.active .srow{padding-bottom:6px}
+  .body{max-height:0;opacity:0;overflow:hidden;transition:max-height .42s var(--ease),opacity .3s var(--ease);padding:0 18px}
+  .step.active .body{max-height:360px;opacity:1;padding-bottom:18px}
+  .bhead{font-size:12px;color:var(--ink3);margin:6px 0 12px;font-weight:500}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);background:var(--white);
+    border-radius:999px;padding:9px 14px;font-size:13px;color:var(--ink2);cursor:pointer;
+    transition:background .18s var(--ease),color .18s var(--ease)}
+  .chip.sel{background:var(--sunken);color:var(--ink);font-weight:600}
+  .opt{display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;border-radius:12px;
+    transition:background .15s var(--ease)}
+  .opt:hover{background:var(--sunken)}
+  .opt.sel{background:var(--sunken)}
+  .opt .pin{width:36px;height:36px;border-radius:99px;background:var(--sunken);display:grid;place-items:center;color:var(--ink2);flex:0 0 auto}
+  .opt .nm{font-size:15px;font-weight:500}
+  .opt.use .pin{background:rgba(39,110,241,.12);color:var(--accent)}
+  .opt.use .nm{color:var(--accent);font-weight:600}
+  .cta{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+    background:var(--ink);color:#fff;border:0;border-radius:999px;padding:15px;font-size:15px;font-weight:600;
+    cursor:pointer;transition:transform .18s var(--ease),filter .18s var(--ease)}
+  .cta:active{transform:scale(.985);filter:brightness(1.06)}
+  .hint{font-size:11px;color:var(--ink3);text-align:center;margin-top:9px}
+</style>
+</head>
+<body>
+  <div class="cap"><b>Search bar , in-place accordion morph.</b> Tap the rest pill to open, then tap a step
+    (Service / City / Date) , the active step expands with its picker inline while the others collapse to
+    rows, in one surface (Airbnb pattern, smooth height morph). Replaces the current full-page picker swaps.</div>
+
+  <div class="phone" id="phone">
+    <div class="hero">
+      <p class="hgreet">Beauty & Wellness, all of Switzerland</p>
+      <h1 class="htitle">Appointments,<br/>instantly confirmed.</h1>
+      <div class="pill" onclick="openSurface()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Start your search
+      </div>
+    </div>
+
+    <div class="scrim" onclick="closeSurface()"></div>
+
+    <div class="surface" id="surface">
+      <div class="grab"></div>
+      <div class="shead">
+        <h2>Find appointments</h2>
+        <div class="x" onclick="closeSurface()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step active" data-step="service">
+          <div class="srow" onclick="setActive('service')">
+            <div class="l">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+              <div><div class="lab">Service</div><div class="val" id="v-service">Hair</div></div>
+            </div>
+          </div>
+          <div class="body">
+            <p class="bhead">What are you looking for?</p>
+            <div class="chips">
+              <span class="chip sel" onclick="pickChip(this,'service','Hair')">Hair</span>
+              <span class="chip" onclick="pickChip(this,'service','Barber')">Barber</span>
+              <span class="chip" onclick="pickChip(this,'service','Nails')">Nails</span>
+              <span class="chip" onclick="pickChip(this,'service','Spa')">Spa</span>
+              <span class="chip" onclick="pickChip(this,'service','Massage')">Massage</span>
+              <span class="chip" onclick="pickChip(this,'service','Lashes')">Lashes</span>
+              <span class="chip" onclick="pickChip(this,'service','Brows')">Brows</span>
+              <span class="chip" onclick="pickChip(this,'service','Waxing')">Waxing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-step="city">
+          <div class="srow" onclick="setActive('city')">
+            <div class="l">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div><div class="lab">City</div><div class="val ph" id="v-city">Add a city</div></div>
+            </div>
+          </div>
+          <div class="body">
+            <div class="opt use" onclick="pickOpt(this,'city','Near me')">
+              <span class="pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/></svg></span>
+              <span class="nm">Use current location</span>
+            </div>
+            <div class="opt" onclick="pickOpt(this,'city','Basel')"><span class="pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/></svg></span><span class="nm">Basel</span></div>
+            <div class="opt" onclick="pickOpt(this,'city','Zürich')"><span class="pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/></svg></span><span class="nm">Zürich</span></div>
+            <div class="opt" onclick="pickOpt(this,'city','Bern')"><span class="pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/></svg></span><span class="nm">Bern</span></div>
+            <div class="opt" onclick="pickOpt(this,'city','Lausanne')"><span class="pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/></svg></span><span class="nm">Lausanne</span></div>
+          </div>
+        </div>
+
+        <div class="step" data-step="date">
+          <div class="srow" onclick="setActive('date')">
+            <div class="l">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <div><div class="lab">Date</div><div class="val ph" id="v-date">Any time</div></div>
+            </div>
+          </div>
+          <div class="body">
+            <p class="bhead">When works for you?</p>
+            <div class="chips">
+              <span class="chip" onclick="pickChip(this,'date','Today')">Today</span>
+              <span class="chip" onclick="pickChip(this,'date','Tomorrow')">Tomorrow</span>
+              <span class="chip" onclick="pickChip(this,'date','This week')">This week</span>
+              <span class="chip" onclick="pickChip(this,'date','Flexible')">Flexible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="cta">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Find appointments
+      </button>
+      <div class="hint">Tap a step , it expands here, the others fold to rows. One smooth surface.</div>
+    </div>
+  </div>
+
+<script>
+  const phone = document.getElementById('phone');
+  function openSurface(){ phone.classList.add('open'); }
+  function closeSurface(){ phone.classList.remove('open'); }
+  function setActive(step){
+    document.querySelectorAll('.step').forEach(s => s.classList.toggle('active', s.dataset.step === step));
+  }
+  function advance(step){ const order=['service','city','date']; const i=order.indexOf(step); if(i<order.length-1) setActive(order[i+1]); }
+  function pickChip(el, step, val){
+    el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+    el.classList.add('sel');
+    const v=document.getElementById('v-'+step); v.textContent=val; v.classList.remove('ph');
+    setTimeout(()=>advance(step), 240);
+  }
+  function pickOpt(el, step, val){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    const v=document.getElementById('v-'+step); v.textContent=val; v.classList.remove('ph');
+    setTimeout(()=>advance(step), 240);
+  }
+</script>
+</body>
+</html>
