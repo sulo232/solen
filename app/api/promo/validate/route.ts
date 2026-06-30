@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   const { data: promo, error: dbError } = await supabase
     .from("promo_codes")
     .select("*")
-    .ilike("code", data.code)
+    .eq("code", data.code.toUpperCase())
     .eq("is_active", true)
     .single();
 

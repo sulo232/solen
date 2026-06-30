@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
       const { data: promo } = await admin
         .from("promo_codes")
         .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, salon_id, valid_from, valid_until, is_active, min_tier")
-        .ilike("code", booking.promo_code)
+        .eq("code", booking.promo_code.toUpperCase())
         .eq("is_active", true)
         .maybeSingle();
 
@@ -422,7 +422,7 @@ export async function POST(req: NextRequest) {
     promo_discount: actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0, // CHF off via the promo code
     payment_mode: paymentMode,                           // deposit | prepay
     deposit_percent: paymentMode === "deposit" ? depositPct : null,
-    remaining_at_salon: paymentMode === "deposit" ? Math.round((priceChf - piChargeChf) * 100) / 100 : 0,
+    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0)) - piChargeChf) * 100) / 100 : 0,
     service_name: service.name_de,
   });
 }

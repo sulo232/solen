@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
   const { data: existing } = await supabase
     .from("promo_codes")
     .select("id")
-    .ilike("code", data.code)
+    .eq("code", data.code.toUpperCase())
     .single();
 
   if (existing) {
