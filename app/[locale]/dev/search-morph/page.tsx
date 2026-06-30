@@ -72,8 +72,12 @@ export default function SearchMorphPreviewPage() {
   // ── the single continuous driver + every property derived from it ──
   const expand = useMotionValue(0);
   const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, safeTop]);     // top parked, then rises last
-  const sheetRadius = useTransform(expand, [0.6, 1], [20, 0]);             // corners square off at the end
   const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X persists, fades last
+  // FLOATING CARDS over the frosted backdrop (owner-approved look) -> flatten to a full-bleed white sheet only at the end.
+  const sheetBg = useTransform(expand, [0.55, 1], ["rgba(255,255,255,0)", "rgba(255,255,255,1)"]); // blur shows around the cards, fills white when focused
+  const cardMargin = useTransform(expand, [0, 0.7], [12, 0]);             // side gutters (blur peeks) -> edge-to-edge
+  const cardRadius = useTransform(expand, [0.45, 1], [22, 0]);            // floating radius -> square full-bleed
+  const cardShadow = useTransform(expand, [0, 0.55], ["0px 18px 50px rgba(10,10,10,0.13)", "0px 0px 0px rgba(10,10,10,0)"]); // float -> flat
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);        // heading collapses in place
   const headingOp = useTransform(expand, [0, 0.45], [1, 0]);
   const step1H = useTransform(expand, [0.2, 0.42], [ROW_H, 0]);            // first other-step consumed
@@ -225,7 +229,7 @@ export default function SearchMorphPreviewPage() {
     date: { label: "Datum", value: date, placeholder: "Jederzeit" },
   };
   const collapsedRow = (s: Step) => (
-    <button onClick={() => openStep(s)} className="mb-2.5 flex h-14 w-full items-center justify-between rounded-[16px] border border-s-border bg-white px-4 text-left">
+    <button onClick={() => openStep(s)} className="mb-2.5 flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
     </button>
@@ -283,13 +287,14 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop, borderTopLeftRadius: sheetRadius, borderTopRightRadius: sheetRadius }}
-              className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-white">
+              style={{ top: cropTop, backgroundColor: sheetBg }}
+              className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden">
               {activeStep === "date" ? (
                 /* DATE step , no scroll-expand; the collapsed steps + calendar + footer */
                 <div className="flex min-h-0 flex-1 flex-col px-3 pt-3">
                   <div className="shrink-0">{collapsedRow("service")}{collapsedRow("location")}</div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2">
+                   <div className="rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                     <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
                     <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
                       <button onClick={() => setDateTab("daten")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
@@ -309,21 +314,25 @@ export default function SearchMorphPreviewPage() {
                         ))}
                       </div>
                     )}
+                   </div>
                   </div>
                   {footer()}
                 </div>
               ) : (
                 /* SERVICE / LOCATION , ONE continuous tree; scroll the list -> `expand` -> the chrome collapses + the list grows */
                 <div className="flex min-h-0 flex-1 flex-col">
-                  <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden px-4 pt-4">
-                    <h2 className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{activeStep === "service" ? "Wonach suchst du?" : "Wo?"}</h2>
+                  <motion.div style={{ marginLeft: cardMargin, marginRight: cardMargin, borderRadius: cardRadius, boxShadow: cardShadow }}
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+                    <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden px-4 pt-4">
+                      <h2 className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{activeStep === "service" ? "Wonach suchst du?" : "Wo?"}</h2>
+                    </motion.div>
+                    <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
+                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
+                      onScroll={(e) => expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST))}>
+                      {activeStep === "location" ? cityList() : serviceSuggestions()}
+                    </div>
                   </motion.div>
-                  <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
-                    onScroll={(e) => expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST))}>
-                    {activeStep === "location" ? cityList() : serviceSuggestions()}
-                  </div>
-                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2">{collapsedRow(otherSteps[0])}</motion.div>
+                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[0])}</motion.div>
                   <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3">{collapsedRow(otherSteps[1])}</motion.div>
                   {footer({ y: footerY, opacity: footerOp })}
                 </div>
