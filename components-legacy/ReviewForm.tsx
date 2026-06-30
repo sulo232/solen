@@ -270,30 +270,30 @@ export default function ReviewForm({
       }}
     >
       <motion.div
-        className="relative w-full max-w-lg mx-auto rounded-t-[28px] bg-white px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+        className="relative w-full max-w-lg mx-auto max-h-[88vh] overflow-y-auto rounded-t-[28px] bg-white px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
         style={{ boxShadow: "0 -10px 40px rgba(10,10,10,.12)" }}
         variants={sheetVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
-        {/* Grabber pill */}
-        <div className="flex justify-center pt-2 pb-3.5">
-          <div className="h-1 w-9 rounded-full bg-s-border" />
+        {/* Sticky header: grabber + Skip stay reachable while the body scrolls (sheet can be tall) */}
+        <div className="sticky top-0 z-10 -mx-6 rounded-t-[28px] bg-white px-6 pt-2 pb-3">
+          <div className="flex justify-center">
+            <div className="h-1 w-9 rounded-full bg-s-border" />
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Skip"
+            className="absolute top-2.5 right-5 text-[14px] font-medium text-s-ink-3 hover:text-s-ink transition-colors"
+          >
+            Skip
+          </button>
         </div>
 
-        {/* Skip button (top-right) */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Skip"
-          className="absolute top-5 right-5 text-[14px] font-medium text-s-ink-3 hover:text-s-ink transition-colors"
-        >
-          Skip
-        </button>
-
         <motion.div
-          className="flex flex-col items-center"
+          className="flex w-full flex-col items-center"
           variants={reduced ? {} : contentVariants}
           initial="hidden"
           animate="visible"
@@ -388,10 +388,9 @@ export default function ReviewForm({
                     style={{ minHeight: "84px" }}
                   />
 
-                  {/* Photos , salon only. Owner 2026-06-29: a FULL-WIDTH image-icon upload card
+                  {/* Photos , stage 2 (after a rating). FULL-WIDTH image-icon upload card
                       (matches the comment field width, no lone small tile / blank gutter), no text.
                       Added photos preview as cards above it; the add card hides at the 3 cap. */}
-                  {isSalon && (
                     <div className="mt-3 space-y-2">
                       {photos.length > 0 && (
                         <div className="flex flex-wrap gap-2">
@@ -436,10 +435,8 @@ export default function ReviewForm({
                         </label>
                       )}
                     </div>
-                  )}
 
-                  {/* Amenities section (salon variant only) */}
-                  {isSalon && (
+                  {/* Amenities , stage 2 (after a rating). */}
                     <div className="space-y-2.5">
                       <p className="text-[13px] font-semibold text-s-ink">
                         {t("amenities_label")}
@@ -469,7 +466,6 @@ export default function ReviewForm({
                         })}
                       </div>
                     </div>
-                  )}
 
                   {uploadProgress && (
                     <p className="text-[13px] text-s-accent font-medium">
