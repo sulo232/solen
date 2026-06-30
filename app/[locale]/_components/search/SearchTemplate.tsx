@@ -83,6 +83,7 @@ import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, isValidCitySlug, type CitySlug } from "@/lib/cities";
+import { formatDateLabel } from "@/lib/format";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -350,18 +351,6 @@ function periodLabel(p: string, t: Translator): string {
   };
   const key = keyByPeriod[p];
   return key ? t(key) : p;
-}
-
-function formatDateLabel(iso: string): string {
-  try {
-    return new Intl.DateTimeFormat("de-CH", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
 }
 
 // V3-D451: singular/plural "Salon(s)" via the passed-in `searchUi` translator.
@@ -978,7 +967,7 @@ export default function SearchTemplate({
                   "max-h-5 opacity-100", // V3-D421d: keep line 2 (city/date) visible when pinned
                 )}
               >
-                {date ? formatDateLabel(date) : null}
+                {date ? formatDateLabel(date, locale) : null}
                 {date ? <span className="text-s-ink-3"> </span> : null}
                 {cityName}
                 {period && (

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Filter, X, ArrowUpDown, MapPin, Star } from "lucide-react";
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
 import { cn } from "@/lib/utils";
+import { formatDateLabel } from "@/lib/format";
 
 /**
  * SearchResults — V3 search results page (V2-D52 Phase F.1.E #19).
@@ -170,7 +171,7 @@ export function SearchResults({ locale }: { locale: string }) {
   if (date) {
     activeFilters.push({
       key: "date",
-      label: formatDateLabel(date),
+      label: formatDateLabel(date, locale),
       onRemove: () => updateParam("date", null),
     });
   }
@@ -401,16 +402,3 @@ function EmptyState({ locale }: { locale: string }) {
   );
 }
 
-function formatDateLabel(iso: string): string {
-  // YYYY-MM-DD → "Mo. 13. Mai"
-  try {
-    const d = new Date(iso);
-    return new Intl.DateTimeFormat("de-CH", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    }).format(d);
-  } catch {
-    return iso;
-  }
-}

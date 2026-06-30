@@ -58,6 +58,39 @@ export function formatRating(score: number): string {
   return score.toFixed(1);
 }
 
+// Maps app locale keys (de/en/fr/it) to the Swiss regional variants so
+// Intl.DateTimeFormat produces the correct weekday/month language for each locale.
+const SWISS_DATE_LOCALES: Record<string, string> = {
+  de: "de-CH",
+  en: "en-CH",
+  fr: "fr-CH",
+  it: "it-CH",
+};
+
+/**
+ * Format an ISO date string (YYYY-MM-DD) as a short weekday + day + month label.
+ * The locale param accepts both bare app keys ("de", "fr") and full BCP-47 tags
+ * ("de-CH") and maps them to the correct Swiss regional variant so FR/IT users
+ * see their own weekday abbreviations instead of German ones.
+ *
+ * formatDateLabel("2026-07-04")         -> "Sa. 4. Jul." (de-CH)
+ * formatDateLabel("2026-07-04", "fr")   -> "sam. 4 juil." (fr-CH)
+ * formatDateLabel("2026-07-04", "it")   -> "sab 4 lug" (it-CH)
+ * formatDateLabel("2026-07-04", "en")   -> "Sat 4 Jul" (en-CH)
+ */
+export function formatDateLabel(iso: string, locale: string = "de"): string {
+  try {
+    const resolved = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+    return new Intl.DateTimeFormat(resolved, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
 /**
  * Format relative time offset for upcoming surfaces, e.g. "in 2h", "in 45 min".
  * Caller passes minutes; we pick the readable register.

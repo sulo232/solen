@@ -24,6 +24,7 @@ import {
 import { type CalendarDate, getLocalTimeZone } from "@internationalized/date";
 import { DateTimePicker } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
+import { formatDateLabel } from "@/lib/format";
 import { SearchOverlay } from "@/app/[locale]/_components/search/SearchOverlay";
 
 /**
@@ -157,14 +158,13 @@ export function SearchBar() {
   const [zeitPeriod, setZeitPeriod] = React.useState<string>("");
   const zeit = React.useMemo(() => {
     if (!zeitDate) return zeitPeriod ? PERIODS.find((p) => p.value === zeitPeriod)?.label ?? "" : "";
-    const dateStr = new Intl.DateTimeFormat("de-CH", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    }).format(zeitDate.toDate(getLocalTimeZone()));
+    // CalendarDate.toDate returns a Date; extract ISO date then format via the
+    // shared helper so FR/IT users see their own weekday abbreviations.
+    const isoStr = zeitDate.toDate(getLocalTimeZone()).toISOString().split("T")[0];
+    const dateStr = formatDateLabel(isoStr, locale);
     const periodLabel = PERIODS.find((p) => p.value === zeitPeriod)?.label;
     return periodLabel ? `${dateStr} ${periodLabel}` : dateStr;
-  }, [zeitDate, zeitPeriod]);
+  }, [zeitDate, zeitPeriod, locale]);
 
   const [isDesktop, setIsDesktop] = React.useState(false);
   const prefersReducedMotion = useReducedMotion();
