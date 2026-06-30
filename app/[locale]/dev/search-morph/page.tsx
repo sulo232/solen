@@ -7,7 +7,7 @@
 // TRENDING (searchTrending.ts); does NOT re-declare it. White cards FLOAT on a frosted-blur backdrop.
 // Preview only, not linked in nav, does not touch the live homepage SearchBar.
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, ArrowLeft, Store, type LucideIcon } from "lucide-react";
@@ -49,6 +49,13 @@ export default function SearchMorphPreviewPage() {
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [searchFocused, setSearchFocused] = useState(false); // tap the search input -> full-screen search
+  // lock body scroll while the overlay is open, so the scroll stays inside the overlay (not the page behind)
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
   const [selKey, setSelKey] = useState<string | null>(null);
 
   const now = new Date();
@@ -78,7 +85,7 @@ export default function SearchMorphPreviewPage() {
       <div className="mx-auto max-w-[430px] px-5 pt-14">
         <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
         <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
-        <motion.button layoutId="searchMorph" type="button" onClick={() => setOpen(true)}
+        <motion.button type="button" onClick={() => setOpen(true)}
           className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3 shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
         </motion.button>
@@ -88,12 +95,13 @@ export default function SearchMorphPreviewPage() {
         {open && (
           <motion.div
             key="surface"
-            layoutId="searchMorph"
             className={`fixed inset-0 z-[100] flex flex-col overflow-hidden ${searchFocused ? "bg-white" : "bg-s-bg-sunken/55 backdrop-blur-2xl"}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: EASE }}
+            onWheel={(e) => { if (step === "service" && !searchFocused && e.deltaY > 0) setSearchFocused(true); }}
+            onTouchMove={() => { if (step === "service" && !searchFocused) setSearchFocused(true); }}
           >
             {!searchFocused && (
               <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
@@ -104,7 +112,10 @@ export default function SearchMorphPreviewPage() {
               </div>
             )}
 
-            <div className={`flex-1 space-y-3 overflow-y-auto px-4 pb-4 ${searchFocused ? "pt-[max(14px,env(safe-area-inset-top))]" : "pt-1"}`}>
+            <div className={`flex-1 space-y-3 overflow-y-auto px-4 pb-4 ${searchFocused ? "pt-[max(14px,env(safe-area-inset-top))]" : "pt-1"}`}
+              onScroll={(e) => { if (step === "service" && !searchFocused && e.currentTarget.scrollTop > 8) setSearchFocused(true); }}
+              onWheel={(e) => { if (step === "service" && !searchFocused && e.deltaY > 0) setSearchFocused(true); }}
+              onTouchMove={() => { if (step === "service" && !searchFocused) setSearchFocused(true); }}>
               {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
                 <motion.div layout transition={{ duration: 0.42, ease: EASE }}
@@ -125,12 +136,14 @@ export default function SearchMorphPreviewPage() {
                         <span className="font-heading text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-ink">Wonach suchst du?</span>
                         <ChevronUp size={20} className="text-s-ink-3" />
                       </button>
-                      <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} onFocus={() => setSearchFocused(true)} placeholder="Service, Salon oder Stylist:in"
+                      <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
                         className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
                     </>
                   )}
                   {/* capped + internal-scroll in the accordion so Standort/Datum stay visible; uncapped in full-search */}
-                  <div className={searchFocused ? "" : "max-h-[44vh] overflow-y-auto"}>
+                  {/* scroll the suggestions -> the card EXPANDS to full search (Airbnb scroll-driven open) */}
+                  <div className={searchFocused ? "" : "max-h-[44vh] overflow-y-auto"}
+                    onScroll={(e) => { if (!searchFocused && e.currentTarget.scrollTop > 16) setSearchFocused(true); }}>
                   {typing ? (
                     loading ? (
                       <div className="space-y-2 pt-1">
