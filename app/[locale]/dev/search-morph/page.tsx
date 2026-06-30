@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, ArrowLeft, Store, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
-import { SEARCH_CITIES } from "@/lib/cities";
+import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchSuggest";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -74,7 +74,7 @@ export default function SearchMorphPreviewPage() {
     setSearchFocused(false);
     const order: Step[] = ["service", "location", "date"];
     const next = order[order.indexOf(s) + 1];
-    if (next) setTimeout(() => setStep(next), 220);
+    if (next) setTimeout(() => setStep(next), 360); // match the ~420ms card collapse so steps don't overlap (council)
   };
   const close = () => { setOpen(false); setStep("service"); setSearchFocused(false); };
   const reset = () => { setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setStep("service"); setSearchFocused(false); };
@@ -227,7 +227,7 @@ export default function SearchMorphPreviewPage() {
                   <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setCity("In der Nähe"); advance("location"); }} />
                   <div className="max-h-[40vh] overflow-y-auto">
                     {cities.map((c) => (
-                      <SuggestRow key={c} name={c} Icon={MapPin} onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
+                      <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
                     ))}
                   </div>
                 </ActiveCard>
@@ -353,14 +353,18 @@ function CollapsedCard({ label, value, placeholder, onClick }: {
   );
 }
 
-function SuggestRow({ name, sub, Icon, tint, onClick }: {
-  name: string; sub?: string; Icon: LucideIcon; tint?: boolean; onClick: () => void;
+function SuggestRow({ name, sub, Icon, img, tint, onClick }: {
+  name: string; sub?: string; Icon?: LucideIcon; img?: string; tint?: boolean; onClick: () => void;
 }) {
   return (
     <button onClick={onClick} className="flex w-full items-center gap-3 rounded-xl py-2 pr-2 text-left hover:bg-s-bg-sunken">
-      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
-        <Icon size={18} strokeWidth={1.9} />
-      </span>
+      {img ? (
+        <img src={img} alt="" className="h-11 w-11 shrink-0 object-contain" />
+      ) : (
+        <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
+          {Icon ? <Icon size={18} strokeWidth={1.9} /> : null}
+        </span>
+      )}
       <span className="min-w-0">
         <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
         {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}

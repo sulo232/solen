@@ -37,8 +37,24 @@ export const CITY_SLUGS: CitySlug[] = ["basel", "zuerich", "bern"];
  * of this list (pre-existing debt) , they should import SEARCH_CITIES to unify.
  */
 export const SEARCH_CITIES = [
-  "Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur",
+  "Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "Neuchâtel", "Winterthur",
 ] as const;
+
+/**
+ * City illustration tiles for the search location picker (Airbnb-style destination icons).
+ * Owner-provided blue line-art on pale-blue tiles, processed to uniform 128px PNGs with
+ * transparent corners (public/icons/cities). Keyed by the SEARCH_CITIES display name.
+ */
+export const CITY_ICONS: Record<string, string> = {
+  "Basel": "/icons/cities/basel.png",
+  "Zürich": "/icons/cities/zurich.png",
+  "Bern": "/icons/cities/bern.png",
+  "Lausanne": "/icons/cities/lausanne.png",
+  "Genf": "/icons/cities/genf.png",
+  "Luzern": "/icons/cities/luzern.png",
+  "Neuchâtel": "/icons/cities/neuchatel.png",
+  "Winterthur": "/icons/cities/winterthur.png",
+};
 
 /** Get localized city name */
 export function getCityName(slug: CitySlug, locale: string): string {
