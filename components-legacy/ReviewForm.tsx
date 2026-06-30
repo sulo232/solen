@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   X,
   Check,
-  MoreHorizontal,
   ImagePlus,
   ShieldCheck,
   CreditCard,
@@ -90,9 +89,6 @@ const AMENITY_LABEL_DE: Record<string, string> = {
   student_discount: "Studentenrabatt",
 };
 
-// Threshold above which we show the "more" overflow pill
-const AMENITY_VISIBLE_MAX = 6;
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
@@ -135,7 +131,6 @@ export default function ReviewForm({
   // One blob URL per photo, revoked when photos change / on unmount (no per-render leak).
   const previewUrls = useMemo(() => photos.map((p) => URL.createObjectURL(p)), [photos]);
   useEffect(() => () => previewUrls.forEach((u) => URL.revokeObjectURL(u)), [previewUrls]);
-  const [showAllAmenities, setShowAllAmenities] = useState(false);
 
   const isSalon = variant === "salon";
 
@@ -172,10 +167,6 @@ export default function ReviewForm({
     });
   };
 
-  const visibleAmenities = showAllAmenities
-    ? AMENITY_ITEMS
-    : AMENITY_ITEMS.slice(0, AMENITY_VISIBLE_MAX);
-  const hasMoreAmenities = AMENITY_ITEMS.length > AMENITY_VISIBLE_MAX;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -489,7 +480,7 @@ export default function ReviewForm({
                         {t("amenities_label")}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {visibleAmenities.map((item) => {
+                        {AMENITY_ITEMS.map((item) => {
                           const Icon = item.icon;
                           const selected = selectedAmenities.has(item.key);
                           return (
@@ -497,6 +488,7 @@ export default function ReviewForm({
                               key={item.key}
                               type="button"
                               onClick={() => toggleAmenity(item.key)}
+                              aria-pressed={selected}
                               className={[
                                 "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] transition-colors",
                                 selected
@@ -504,27 +496,12 @@ export default function ReviewForm({
                                   : "border-s-border bg-white font-normal text-s-ink-2 hover:bg-s-bg-sunken",
                               ].join(" ")}
                             >
-                              {selected && (
-                                <Check size={12} strokeWidth={2.5} className="shrink-0 text-s-ink" />
-                              )}
-                              {!selected && (
-                                <Icon size={12} strokeWidth={2} className="shrink-0" />
-                              )}
+                              {/* selected = gray fill, the amenity icon STAYS (no checkmark swap) */}
+                              <Icon size={12} strokeWidth={2} className="shrink-0" />
                               <span>{AMENITY_LABEL_DE[item.key]}</span>
                             </button>
                           );
                         })}
-                        {/* "More" pill - shown when set is long and not yet expanded */}
-                        {hasMoreAmenities && !showAllAmenities && (
-                          <button
-                            type="button"
-                            onClick={() => setShowAllAmenities(true)}
-                            className="inline-flex items-center gap-1 rounded-full border border-s-border bg-white px-3 py-1.5 text-[13px] text-s-ink-3 hover:bg-s-bg-sunken transition-colors"
-                            aria-label="Show more amenities"
-                          >
-                            <MoreHorizontal size={14} strokeWidth={2} />
-                          </button>
-                        )}
                       </div>
                     </div>
                   )}
