@@ -58,6 +58,21 @@ export async function GET(request: NextRequest) {
       ? "id, name_de, name_en, duration_minutes, price, category"
       : "price";
 
+    // Explicit public column list. Replaces the old `select('*')` which shipped all
+    // ~98 salon columns to anonymous clients, including owner/payment internals
+    // (stripe_account_id, owner_id), the growing FTS doc (search_doc), the scoring
+    // jsonb (score_details), and moderation fields (verification_warnings,
+    // frozen_reason, rejection_reason). This is exactly the set the cards + their
+    // downstream filters read (audited across SearchTemplate / SearchResults /
+    // SalonResultCard / SplitView / CityPage / RecentlyViewed) plus the columns this
+    // route orders on (solen_score, average_rating, last_minute_discount_percent,
+    // created_at). The is_active / listed_on_marketplace / is_test / city_id filters
+    // are applied as .eq() predicates and do not need to be selected. Never select
+    // search_doc / score_details / stripe_account_id / owner_id here. Kept as one
+    // string literal so the supabase client can type the select.
+    const salonCols =
+      "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at";
+
     const supabase = await createServerSupabaseClient();
 
     // Free-text: resolve semantic rank FIRST, then AND it with the structured filters
@@ -85,7 +100,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("salons")
-      .select(`*, services(${servicesCols})`, { count: "exact" })
+      .select(`${salonCols}, services(${servicesCols})`, { count: "exact" })
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .eq("is_test", false);
@@ -93,45 +108,6 @@ export async function GET(request: NextRequest) {
     if (rankIndex) query = query.in("id", [...rankIndex.keys()]);
 
     if (category) query = query.contains("categories", [category]);
-    
-    if (city) {
-      // Resolve the city by slug OR localized name, case-insensitive — the search overlay
-      // sends the display name ("Zürich") while category pages send the slug ("zuerich").
-      // Matching both means location filtering works from either entry point. (cities is tiny.)
-      const { data: cityRows } = await supabase
-        .from("cities")
-        .select("id, slug, name_de, name_en, name_fr, name_it");
-      const cKey = city.toLowerCase().trim();
-      const cMatch = (cityRows ?? []).find((c: Record<string, unknown>) =>
-        [c.slug, c.name_de, c.name_en, c.name_fr, c.name_it].some(
-          (v) => typeof v === "string" && v.toLowerCase().trim() === cKey,
-        ),
-      );
-      const cityId = cMatch?.id as string | undefined;
-      if (cityId) {
-        query = query.eq("city_id", cityId);
-      } else {
-        // Non-empty city param resolved to no known city — return empty result
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
-
-      // Auto-hide test salons when real salons already exist for this city+category combo
-      if (category && cityId) {
-        const { count: realCount } = await supabase
-          .from("salons")
-          .select("id", { count: "exact", head: true })
-          .eq("city_id", cityId)
-          .contains("categories", [category])
-          .eq("is_active", true)
-          .eq("is_test", false);
-
-        if ((realCount ?? 0) > 0) {
-          // Real salons exist — hide test salons from results
-          query = query.eq("is_test", false);
-        }
-        // else: no real salons → let test salons through (is_test filter already applied above)
-      }
-    }
 
     if (idsParam) {
       const idArray = idsParam.split(",").filter(id => id.trim() !== "");
@@ -140,43 +116,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Service sub-filter: filter to salons offering this service
-    if (serviceFilter) {
-      const servicePattern = `%${serviceFilter}%`;
-      const { data: serviceMatches } = await supabase
-        .from("services")
-        .select("salon_id")
-        .ilike("name_de", servicePattern)
-        .eq("is_active", true);
-      const matchedSalonIds = [...new Set((serviceMatches ?? []).map((s: { salon_id: string }) => s.salon_id))];
-      if (matchedSalonIds.length > 0) {
-        query = query.in("id", matchedSalonIds);
-      } else {
-        // No salons match this service — return empty
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
-    }
-
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));
     if (accepts_payment === "true") query = query.eq("accepts_online_payment", true);
-
-    // Filter to salons with availability slots in next 48 hours
-    if (instant_bookable === "true") {
-      const now = new Date().toISOString();
-      const fortyEightHoursFromNow = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
-      const { data: availSalons } = await supabase
-        .from("availability_slots")
-        .select("salon_id")
-        .eq("status", "available")
-        .gte("starts_at", now)
-        .lte("starts_at", fortyEightHoursFromNow);
-      const availIds = [...new Set((availSalons ?? []).map((s: { salon_id: string }) => s.salon_id))];
-      if (availIds.length > 0) {
-        query = query.in("id", availIds);
-      } else {
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
-    }
 
     // Filter to salons with active last-minute deals
     if (deals === "true") {
@@ -190,70 +131,7 @@ export async function GET(request: NextRequest) {
       query = query.eq("walkin_enabled", true);
     }
 
-    // Time-of-day filter: salons with >=1 available slot whose LOCAL hour falls in the
-    // period window. If a date is set → that day's window; otherwise the next 14 days.
-    // Slots are naive-local timestamps, so the hour is read straight off the ISO string.
-    if (period && PERIOD_HOURS[period]) {
-      const [startH, endH] = PERIOD_HOURS[period];
-      const validDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date);
-      const lo = validDate ? `${date}T00:00:00` : new Date().toISOString();
-      const hi = validDate
-        ? `${date}T23:59:59`
-        : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-      // DISTINCT salon_ids resolved in SQL via RPC — the old fetch-all-slots-then-JS-filter
-      // truncated at PostgREST's row cap on the wide no-date (14-day) window, returning only
-      // a few salons. The RPC does EXTRACT(hour) + DISTINCT server-side, so no cap.
-      const { data: periodRows, error: periodErr } = await supabase.rpc("salons_with_slot_in_hours", {
-        p_start_hour: startH,
-        p_end_hour: endH,
-        p_from: lo,
-        p_to: hi,
-      });
-      if (periodErr) console.error("[api/salons GET] period RPC failed:", periodErr.message);
-      const periodIds = (periodRows ?? []).map((r: { salon_id: string }) => r.salon_id);
-      if (periodIds.length > 0) query = query.in("id", periodIds);
-      else return NextResponse.json({ items: [], total: 0, page, limit });
-    }
-
-    // Open-now filter. "Open right now" depends on Zurich-local day/time vs the free-form
-    // opening_hours jsonb (+ overnight wrap), which the shared isOpenNow helper computes in
-    // JS — it can't be a PostgREST predicate. So resolve the open salon IDs first and
-    // constrain with .in() BEFORE .range() below, exactly like instant_bookable, so count +
-    // pagination stay correct (a client-side post-filter would only ever see one page).
-    if (open_now === "true") {
-      const { data: hoursRows } = await supabase
-        .from("salons")
-        .select("id, opening_hours")
-        .eq("is_active", true)
-        .eq("listed_on_marketplace", true)
-        .eq("is_test", false);
-      const openIds = (hoursRows ?? [])
-        .filter((s: { opening_hours: unknown }) => isOpenNow(s.opening_hours as OpeningHours).isOpen)
-        .map((s: { id: string }) => s.id as string);
-      if (openIds.length > 0) {
-        query = query.in("id", openIds);
-      } else {
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
-    }
-
-    // V3-D387: Service type / "Für wen" — salons with >=1 active service suitable
-    // for the chosen gender (suitable_gender is a text[] like {male,female}).
-    if (gender) {
-      const { data: gRows } = await supabase
-        .from("services")
-        .select("salon_id")
-        .eq("is_active", true)
-        .contains("suitable_gender", [gender]);
-      const gIds = [...new Set((gRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
-      if (gIds.length > 0) {
-        query = query.in("id", gIds);
-      } else {
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
-    }
-
-    // V3-D387: amenity boolean filters — each query param maps 1:1 to a salons
+    // V3-D387: amenity boolean filters. Each query param maps 1:1 to a salons
     // boolean column (seeded data). Simple .eq(col, true) when the param is "true".
     for (const col of [
       "wheelchair_accessible",
@@ -269,39 +147,214 @@ export async function GET(request: NextRequest) {
       if (searchParams.get(col) === "true") query = query.eq(col, true);
     }
 
-    // V3-D384: Price filter — salons with >=1 active service in the [min,max]
-    // band. Price lives in `services`, so resolve matching salon_ids first (same
-    // pattern as instant_bookable above), then constrain the salon query.
-    if (min_price || max_price) {
+    const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit });
+
+    // Concurrent pre-queries. Each of the filters below resolves an independent
+    // salon-id set (or a city lookup) that is AND-combined into the main query via
+    // .in("id", ...). They have no data dependency on one another, so they ran as
+    // a chain of sequential awaits before (city, then service, instant, gender,
+    // price, date), each adding a full round-trip to the latency. Fire them all at
+    // once with Promise.all and apply the results afterwards. AND-combining .in()
+    // filters is order-independent, so the result set + count are identical, just
+    // one round-trip of latency instead of N. The id-resolving slot scans
+    // (instant_bookable + date) go through salons_with_slot_in_hours over the full
+    // 0..24 hour range, which returns DISTINCT salon_ids server-side (no ~17k-row
+    // JS pull, no PostgREST row-cap truncation).
+    const validDate = !!date && /^\d{4}-\d{2}-\d{2}$/.test(date);
+    const dateNarrows = validDate && !(period && PERIOD_HOURS[period]);
+
+    // City resolution (rows lookup + the test-salon-hide count) as one concurrent
+    // task. The count depends on cityId, so it chains inside this closure, but the
+    // whole task runs in parallel with the other filters.
+    type CityOutcome =
+      | { kind: "skip" }
+      | { kind: "empty" }
+      | { kind: "ok"; cityId: string; hideTest: boolean };
+    const cityTask: Promise<CityOutcome> = (async () => {
+      if (!city) return { kind: "skip" };
+      // Resolve the city by slug OR localized name, case-insensitive: the search
+      // overlay sends the display name ("Zuerich") while category pages send the
+      // slug. Matching both means location filtering works from either entry point.
+      const { data: cityRows } = await supabase
+        .from("cities")
+        .select("id, slug, name_de, name_en, name_fr, name_it");
+      const cKey = city.toLowerCase().trim();
+      const cMatch = (cityRows ?? []).find((c: Record<string, unknown>) =>
+        [c.slug, c.name_de, c.name_en, c.name_fr, c.name_it].some(
+          (v) => typeof v === "string" && v.toLowerCase().trim() === cKey,
+        ),
+      );
+      const cityId = cMatch?.id as string | undefined;
+      if (!cityId) return { kind: "empty" };
+      // Auto-hide test salons when real salons already exist for this city+category.
+      let hideTest = false;
+      if (category) {
+        const { count: realCount } = await supabase
+          .from("salons")
+          .select("id", { count: "exact", head: true })
+          .eq("city_id", cityId)
+          .contains("categories", [category])
+          .eq("is_active", true)
+          .eq("is_test", false);
+        hideTest = (realCount ?? 0) > 0;
+      }
+      return { kind: "ok", cityId, hideTest };
+    })();
+
+    // Service sub-filter: salons offering a service whose name matches.
+    const serviceTask = serviceFilter
+      ? supabase
+          .from("services")
+          .select("salon_id")
+          .ilike("name_de", `%${serviceFilter}%`)
+          .eq("is_active", true)
+      : null;
+
+    // V3-D387: "Fuer wen" (gender). Salons with >=1 active service for the gender
+    // (suitable_gender is a text[] like {male,female}).
+    const genderTask = gender
+      ? supabase
+          .from("services")
+          .select("salon_id")
+          .eq("is_active", true)
+          .contains("suitable_gender", [gender])
+      : null;
+
+    // V3-D384: Price filter. Salons with >=1 active service in the [min,max] band.
+    function buildPriceTask() {
       let priceQ = supabase.from("services").select("salon_id").eq("is_active", true);
       if (min_price) priceQ = priceQ.gte("price", parseFloat(min_price));
       if (max_price) priceQ = priceQ.lte("price", parseFloat(max_price));
-      const { data: priceRows } = await priceQ;
-      const priceIds = [...new Set((priceRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
-      if (priceIds.length > 0) {
-        query = query.in("id", priceIds);
-      } else {
-        return NextResponse.json({ items: [], total: 0, page, limit });
-      }
+      return priceQ;
+    }
+    const priceTask = (min_price || max_price) ? buildPriceTask() : null;
+
+    // Time-of-day (period) filter. DISTINCT salon_ids whose available slot's local
+    // hour is in the window, server-side via the RPC (no row-cap, no JS scan). If a
+    // date is set it scopes to that day, otherwise the next 14 days.
+    let periodTask: ReturnType<typeof supabase.rpc> | null = null;
+    if (period && PERIOD_HOURS[period]) {
+      const [startH, endH] = PERIOD_HOURS[period];
+      const lo = validDate ? `${date}T00:00:00` : new Date().toISOString();
+      const hi = validDate
+        ? `${date}T23:59:59`
+        : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+      periodTask = supabase.rpc("salons_with_slot_in_hours", {
+        p_start_hour: startH,
+        p_end_hour: endH,
+        p_from: lo,
+        p_to: hi,
+      });
     }
 
-    // Date filter: narrow to salons with >=1 available slot on the chosen day.
-    // Mirrors the period / instant_bookable pattern (resolve ids → query.in BEFORE
-    // .range so count + pagination stay correct). Skipped when a period is set —
-    // the period block above already restricts to that day's time window.
-    // Owner 2026-06-13: picking a date should actually NARROW results, not just
-    // annotate "next available" (the post-query block below still computes labels
-    // for any non-date / multi-day views).
-    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && !(period && PERIOD_HOURS[period])) {
-      const { data: dayRows } = await supabase
-        .from("availability_slots")
-        .select("salon_id")
-        .eq("status", "available")
-        .gte("starts_at", `${date}T00:00:00`)
-        .lt("starts_at", `${date}T23:59:59`);
-      const dayIds = [...new Set((dayRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
+    // instant_bookable: salons with >=1 available slot in the next 48h. Resolved as
+    // DISTINCT salon_ids via the hour-window RPC over the full 0..24 range, so it no
+    // longer pulls ~17k slot rows into JS just to dedupe ~21 ids (and no longer
+    // silently drops salons past PostgREST's row cap).
+    let instantTask: ReturnType<typeof supabase.rpc> | null = null;
+    if (instant_bookable === "true") {
+      instantTask = supabase.rpc("salons_with_slot_in_hours", {
+        p_start_hour: 0,
+        p_end_hour: 24,
+        p_from: new Date().toISOString(),
+        p_to: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      });
+    }
+
+    // date narrow-filter: salons with >=1 available slot on the chosen day. Same
+    // DISTINCT-via-RPC approach (0..24 hour range is the whole day). Owner
+    // 2026-06-13: picking a date should NARROW results, not just annotate the next
+    // available slot (the post-query block below still computes those labels).
+    let dateTask: ReturnType<typeof supabase.rpc> | null = null;
+    if (dateNarrows) {
+      dateTask = supabase.rpc("salons_with_slot_in_hours", {
+        p_start_hour: 0,
+        p_end_hour: 24,
+        p_from: `${date}T00:00:00`,
+        p_to: `${date}T23:59:59`,
+      });
+    }
+
+    // open_now: "open right now" depends on Zurich-local day/time vs the free-form
+    // opening_hours jsonb, which the shared isOpenNow helper computes in JS (it
+    // cannot be a PostgREST predicate). Fetch the candidate rows; filter in JS below
+    // and constrain with .in() BEFORE .range() so count + pagination stay correct.
+    const openNowTask = open_now === "true"
+      ? supabase
+          .from("salons")
+          .select("id, opening_hours")
+          .eq("is_active", true)
+          .eq("listed_on_marketplace", true)
+          .eq("is_test", false)
+      : null;
+
+    const [
+      cityOutcome, serviceRes, genderRes, priceRes,
+      periodRes, instantRes, dateRes, openNowRes,
+    ] = await Promise.all([
+      cityTask, serviceTask, genderTask, priceTask,
+      periodTask, instantTask, dateTask, openNowTask,
+    ]);
+
+    // Apply city resolution (rows + test-salon hide) in the original semantics.
+    if (cityOutcome.kind === "empty") return emptyResult();
+    if (cityOutcome.kind === "ok") {
+      query = query.eq("city_id", cityOutcome.cityId);
+      if (cityOutcome.hideTest) query = query.eq("is_test", false);
+    }
+
+    // Service sub-filter.
+    if (serviceTask) {
+      const matchedSalonIds = [...new Set((serviceRes?.data ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (matchedSalonIds.length > 0) query = query.in("id", matchedSalonIds);
+      else return emptyResult();
+    }
+
+    // Gender filter.
+    if (genderTask) {
+      const gIds = [...new Set((genderRes?.data ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (gIds.length > 0) query = query.in("id", gIds);
+      else return emptyResult();
+    }
+
+    // Price filter.
+    if (priceTask) {
+      const priceIds = [...new Set((priceRes?.data ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (priceIds.length > 0) query = query.in("id", priceIds);
+      else return emptyResult();
+    }
+
+    // Period filter.
+    if (periodTask) {
+      if (periodRes?.error) console.error("[api/salons GET] period RPC failed:", periodRes.error.message);
+      const periodIds = ((periodRes?.data as Array<{ salon_id: string }>) ?? []).map((r) => r.salon_id);
+      if (periodIds.length > 0) query = query.in("id", periodIds);
+      else return emptyResult();
+    }
+
+    // instant_bookable filter.
+    if (instantTask) {
+      if (instantRes?.error) console.error("[api/salons GET] instant_bookable RPC failed:", instantRes.error.message);
+      const availIds = ((instantRes?.data as Array<{ salon_id: string }>) ?? []).map((r) => r.salon_id);
+      if (availIds.length > 0) query = query.in("id", availIds);
+      else return emptyResult();
+    }
+
+    // date narrow-filter.
+    if (dateTask) {
+      if (dateRes?.error) console.error("[api/salons GET] date RPC failed:", dateRes.error.message);
+      const dayIds = ((dateRes?.data as Array<{ salon_id: string }>) ?? []).map((r) => r.salon_id);
       if (dayIds.length > 0) query = query.in("id", dayIds);
-      else return NextResponse.json({ items: [], total: 0, page, limit });
+      else return emptyResult();
+    }
+
+    // open_now filter (JS-evaluated against opening_hours).
+    if (openNowTask) {
+      const openIds = (openNowRes?.data ?? [])
+        .filter((s: { opening_hours: unknown }) => isOpenNow(s.opening_hours as OpeningHours).isOpen)
+        .map((s: { id: string }) => s.id as string);
+      if (openIds.length > 0) query = query.in("id", openIds);
+      else return emptyResult();
     }
 
     let distanceMap: Record<string, number> | null = null;
@@ -352,13 +405,23 @@ export async function GET(request: NextRequest) {
     let nextDates: Record<string, string> = {};
 
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      // Find salon IDs with available slots on the given date
-      const { data: availSlots } = await supabase
-        .from("availability_slots")
-        .select("salon_id")
-        .eq("status", "available")
-        .gte("starts_at", `${date}T00:00:00`)
-        .lt("starts_at", `${date}T23:59:59`);
+      // Find salon IDs with available slots on the given date. DISTINCT salon_ids
+      // via the hour-window RPC (0..24 = whole day) instead of pulling every slot
+      // row for the day just to dedupe in JS. Reuse the date pre-query result when
+      // it already resolved this exact day (the no-period date-narrow path).
+      let availSlots: Array<{ salon_id: string }> | null = null;
+      if (dateTask && dateRes && !dateRes.error) {
+        availSlots = (dateRes.data as Array<{ salon_id: string }>) ?? [];
+      } else {
+        const { data: dayAvail, error: dayErr } = await supabase.rpc("salons_with_slot_in_hours", {
+          p_start_hour: 0,
+          p_end_hour: 24,
+          p_from: `${date}T00:00:00`,
+          p_to: `${date}T23:59:59`,
+        });
+        if (dayErr) console.error("[api/salons GET] date availability RPC failed:", dayErr.message);
+        availSlots = (dayAvail as Array<{ salon_id: string }>) ?? [];
+      }
 
       availableIds = new Set((availSlots ?? []).map((s: { salon_id: string }) => s.salon_id));
 
@@ -409,31 +472,48 @@ export async function GET(request: NextRequest) {
       if (serviceIds.length > 0) {
         const nowIso = new Date().toISOString();
         const horizonIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-        const { data: upcoming, error: slotErr } = await supabase
-          .from("availability_slots")
-          .select("service_id, starts_at")
-          .eq("status", "available")
-          .in("service_id", serviceIds)
-          .gte("starts_at", nowIso)
-          .lte("starts_at", horizonIso)
-          .order("starts_at", { ascending: true })
-          .limit(3000);
-        if (slotErr) {
-          console.error("[api/salons GET] next-slots query error:", slotErr.message);
-        } else {
-          const slotsByService: Record<string, string[]> = {};
-          for (const slot of upcoming ?? []) {
+        // Pull EXACTLY the earliest 3 slots per service via one bounded query each,
+        // run concurrently. The old approach selected up to 3000 rows ordered by time
+        // across ALL service_ids, then kept the first 3 per service in JS, so for a
+        // full page it transferred far more than the ~180 slots actually shown (and a
+        // service whose slots sorted past the 3000 cap got zero, a latent correctness
+        // bug). Per-service .limit(3) crosses the wire with at most 3 rows per service
+        // (idx on service_id supports it), returning the same earliest-3-ascending set.
+        const slotsByService: Record<string, string[]> = {};
+        const perServiceResults = await Promise.all(
+          serviceIds.map((svcId) =>
+            supabase
+              .from("availability_slots")
+              .select("service_id, starts_at")
+              .eq("status", "available")
+              .eq("service_id", svcId)
+              .gte("starts_at", nowIso)
+              .lte("starts_at", horizonIso)
+              .order("starts_at", { ascending: true })
+              .limit(3),
+          ),
+        );
+        let slotErr: { message: string } | null = null;
+        for (const res of perServiceResults) {
+          if (res.error) {
+            slotErr = res.error;
+            continue;
+          }
+          for (const slot of res.data ?? []) {
             const svcId = (slot as { service_id: string }).service_id;
             const ts = (slot as { starts_at: string }).starts_at;
             if (!slotsByService[svcId]) slotsByService[svcId] = [];
             if (slotsByService[svcId].length < 3) slotsByService[svcId].push(ts);
           }
-          for (const sid of Object.keys(topServicesBySalon)) {
-            topServicesBySalon[sid] = topServicesBySalon[sid].map((s) => ({
-              ...s,
-              slots: slotsByService[s.id as string] ?? [],
-            }));
-          }
+        }
+        if (slotErr) {
+          console.error("[api/salons GET] next-slots query error:", slotErr.message);
+        }
+        for (const sid of Object.keys(topServicesBySalon)) {
+          topServicesBySalon[sid] = topServicesBySalon[sid].map((s) => ({
+            ...s,
+            slots: slotsByService[s.id as string] ?? [],
+          }));
         }
       }
     }
