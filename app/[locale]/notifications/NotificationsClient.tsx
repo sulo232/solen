@@ -40,6 +40,7 @@ const TYPE_ICON: Record<string, { Icon: LucideIcon; cls: string }> = {
   refund_processed: { Icon: RotateCcw, cls: "bg-s-success/10 text-s-success" },
   upcharge_charged: { Icon: Banknote, cls: "bg-s-bg-sunken text-s-ink-2" },
   new_review: { Icon: Star, cls: "bg-s-star/15 text-s-star" },
+  review_prompt: { Icon: Star, cls: "bg-s-star/15 text-s-star" },
   review_response: { Icon: MessageSquare, cls: "bg-s-accent-pale text-s-accent" },
   voucher_purchased: { Icon: Gift, cls: "bg-s-accent-pale text-s-accent" },
   payout_completed: { Icon: Banknote, cls: "bg-s-success/10 text-s-success" },
@@ -108,6 +109,7 @@ export default function NotificationsClient() {
   const Row = ({ n }: { n: Notification }) => {
     const { Icon, cls } = TYPE_ICON[n.type] ?? FALLBACK_ICON;
     const bookingId = typeof n.data?.booking_id === "string" ? (n.data.booking_id as string) : null;
+    const salonSlug = typeof n.data?.salon_slug === "string" ? (n.data.salon_slug as string) : null;
     const inner = (
       <div className="flex items-start gap-3 px-4 py-3.5">
         <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${cls}`}>
@@ -124,8 +126,15 @@ export default function NotificationsClient() {
         {!n.read && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-s-accent" aria-label={t("unreadDot")} />}
       </div>
     );
-    return bookingId ? (
-      <Link href={`/${locale}/profile/bookings`} onClick={() => markOne(n.id)} className="block transition active:opacity-70">
+    const href =
+      n.type === "review_prompt" && salonSlug
+        ? `/${locale}/salon/${salonSlug}/reviews`
+        : bookingId
+        ? `/${locale}/profile/bookings`
+        : null;
+
+    return href ? (
+      <Link href={href} onClick={() => markOne(n.id)} className="block transition active:opacity-70">
         {inner}
       </Link>
     ) : (

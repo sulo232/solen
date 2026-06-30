@@ -44,7 +44,8 @@ export type NotificationType =
   | 'ts_changes'
   | 'salon_strike'
   | 'salon_rejected'
-  | 'voucher_purchased';
+  | 'voucher_purchased'
+  | 'review_prompt';
 
 export async function sendNotification(params: {
   userId: string;

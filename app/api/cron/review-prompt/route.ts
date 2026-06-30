@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { tipPromptEmail } from "@/lib/email";
+import { sendNotification } from "@/lib/notifications";
 
 /**
  * Cron handler: send review prompt email 24h after completed appointment.
@@ -40,6 +41,18 @@ export async function GET(req: NextRequest) {
     .gte("starts_at", windowStart.toISOString())
     .lte("starts_at", windowEnd.toISOString())
     .limit(50);
+
+  // TTL: delete review_prompt notifications older than 30 days
+  try {
+    const ttlCutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    await supabase
+      .from("notifications")
+      .delete()
+      .eq("type", "review_prompt")
+      .lt("created_at", ttlCutoff);
+  } catch (err) {
+    console.error("[review-prompt] TTL cleanup failed:", err);
+  }
 
   let sentCount = 0;
   let googlePushCount = 0;
@@ -208,6 +221,36 @@ export async function GET(req: NextRequest) {
           headers: { "Authorization": `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({ from: "Solen <noreply@solen.ch>", to: email, subject: tip.subject, html: tip.html }),
         }).catch((err) => console.error(`[review-prompt] tip email failed for booking ${booking.id}:`, err));
+      }
+
+      // In-app notification: only for the standard review prompt (not the Google nudge,
+      // where the user already reviewed). Skip if user already reviewed this booking.
+      if (!isHighRating) {
+        // Dedup: skip if a review_prompt notification already exists for this booking.
+        const { data: existingNotif } = await supabase
+          .from("notifications")
+          .select("id")
+          .eq("user_id", booking.user_id)
+          .eq("type", "review_prompt")
+          .eq("data->>booking_id", booking.id)
+          .maybeSingle();
+
+        if (!existingNotif) {
+          // Strip HTML tags from body for the plain in-app text.
+          const plainBody = lang.solenBody1.replace(/<[^>]+>/g, "");
+          await sendNotification({
+            userId: booking.user_id,
+            type: "review_prompt",
+            title: lang.solenTitle,
+            body: plainBody,
+            data: {
+              booking_id: booking.id,
+              salon_slug: salon?.slug ?? "",
+              salon_name: salon?.name ?? "",
+              staff_name: (booking.staff_members as any)?.name ?? "",
+            },
+          }).catch((err) => console.error(`[review-prompt] in-app notification failed for booking ${booking.id}:`, err));
+        }
       }
 
       await supabase.from("bookings").update({ review_prompt_sent: true }).eq("id", booking.id);

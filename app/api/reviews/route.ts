@@ -85,6 +85,21 @@ export async function POST(request: NextRequest) {
     if (attrErr) console.error("[reviews] review_attributes insert failed:", attrErr);
   }
 
+  // Auto-delete the review_prompt notification for this booking now that the review is in.
+  // Non-fatal: the review row stands either way. Uses admin client to bypass RLS.
+  {
+    const admin = createAdminSupabaseClient();
+    admin
+      .from("notifications")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("type", "review_prompt")
+      .eq("data->>booking_id", booking_id)
+      .then(({ error: delErr }) => {
+        if (delErr) console.error("[reviews] review_prompt notification delete failed:", delErr);
+      });
+  }
+
   // Fire notification to salon (fire-and-forget)
   let baseUrl: string;
   try {

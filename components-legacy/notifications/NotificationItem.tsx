@@ -42,7 +42,9 @@ export function NotificationItem({
 
   // Calculate the href based on the notification type and data attached.
   let href = "#";
-  if (notification.type.startsWith("booking") && notification.data?.booking_id) {
+  if (notification.type === "review_prompt" && notification.data?.salon_slug) {
+    href = `/salon/${notification.data.salon_slug}/reviews`;
+  } else if (notification.type.startsWith("booking") && notification.data?.booking_id) {
     href = `/account/bookings/${notification.data.booking_id}`;
   } else if (notification.type.includes("review") && notification.data?.salon_slug) {
     href = `/salons/${notification.data.salon_slug}#reviews`;
