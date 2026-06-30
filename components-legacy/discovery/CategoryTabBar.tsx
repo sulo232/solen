@@ -2,22 +2,12 @@
 
 import { useRef, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { DISCOVERY_CATEGORIES, type CategoryTab } from "@/lib/discovery-categories";
 
-export interface CategoryTab {
-  key: string;
-  labelKey: string;
-}
-
-// V3-D398 (council): category tabs are TEXT-ONLY. The per-category icons (nails=sparkles, brows=none) didn't make
-// sense — abstract glyphs add nothing on the tabs. Icons belong on the texture-pattern swatches, not here.
-export const DISCOVERY_CATEGORIES: CategoryTab[] = [
-  { key: "all",     labelKey: "all" },
-  { key: "hair",    labelKey: "hair" },
-  { key: "nails",   labelKey: "nails" },
-  { key: "lashes",  labelKey: "lashes" },
-  { key: "brows",   labelKey: "brows" },
-  // V3-D391: Makeup tab dropped (user: "we don't have makeup and waxing"). Discovery categories = hair/nails/lashes/brows.
-];
+// DISCOVERY_CATEGORIES + CategoryTab moved to lib/discovery-categories (non-client) so server
+// routes can import them; re-exported here for existing client consumers (inspo, CategoryPills).
+export { DISCOVERY_CATEGORIES };
+export type { CategoryTab };
 
 interface CategoryTabBarProps {
   activeCategory: string;

@@ -38,7 +38,7 @@ function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("discover");
-  const tTabs = useTranslations("discover.tabs"); // MOCKUP 2026-06-20: category-pill labels
+  const tTabs = useTranslations("discover.tabs") as any; // category-pill labels (dynamic key)
   const searchParams = useSearchParams() ?? new URLSearchParams();
 
   const [items, setItems] = useState<DiscoveryItem[]>([]);
@@ -152,35 +152,21 @@ function DiscoverPageContent() {
     return () => { cancelled = true; };
   }, [category]);
 
-  // Owner 2026-06-23 (Option C, inventory-aware): fetch each category's real count + cover ONCE. A category with
-  // looks (count > 0) renders a photo pill from its own top look; an empty category renders a plain text pill. The
-  // cover uses the persisted thumb proxy so it never expires. "Alle" = the unfiltered pool (always the photo pill).
+  // Owner 2026-06-23 (Option C, inventory-aware): fetch each category's real count + cover ONCE.
+  // Perf fix: replaced 5 parallel discovery_feed RPC calls (each running window count(*)) with a
+  // single /api/discovery/category-meta call that does 4 lightweight indexed .limit(1) selects
+  // + 1 six-row global select in parallel on the server, then returns the full {key:{count,cover}}
+  // map in one response. "Alle" = unfiltered pool (3rd item to avoid twinning the Haare tile).
   useEffect(() => {
     let cancelled = false;
-    Promise.all(
-      DISCOVERY_CATEGORIES.map(async ({ key }) => {
-        // "Alle" = the blended pool: pull a few and pick a representative that isn't just the top hair look, so its
-        // tile doesn't twin the Haare tile while the catalogue is still hair-only. Category pills take their own top look.
-        const qs = key === "all" ? "limit=6" : `category=${key}&limit=1`;
-        try {
-          const r = await fetch(`/api/discovery/feed?${qs}`);
-          if (!r.ok) return [key, { count: 0, cover: null }] as const;
-          const d = await r.json();
-          const list = Array.isArray(d?.items) ? d.items : [];
-          const top = key === "all" ? (list[2] ?? list[0] ?? null) : (list[0] ?? null);
-          const count = key === "all" ? (top ? 1 : 0) : Number(d?.total ?? 0);
-          // TikTok looks resolve through the thumb proxy; stock/photo looks (Pexels/Unsplash) serve image_url
-          // directly. The old code always used the TikTok proxy, so stock-topped categories showed a broken tile.
-          const cover = top
-            ? (top.tiktok_url ? `/api/discovery/thumb/${top.id}` : (top.image_url || top.tiktok_thumbnail_url || null))
-            : null;
-          return [key, { count, cover }] as const;
-        } catch (err) {
-          console.error(`[Discover] category cover load failed (${key}):`, err);
-          return [key, { count: 0, cover: null }] as const;
+    fetch("/api/discovery/category-meta")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!cancelled && d?.meta && typeof d.meta === "object") {
+          setCategoryMeta(d.meta);
         }
       })
-    ).then((entries) => { if (!cancelled) setCategoryMeta(Object.fromEntries(entries)); });
+      .catch((err) => console.error("[Discover] category-meta load failed:", err));
     return () => { cancelled = true; };
   }, []);
 
