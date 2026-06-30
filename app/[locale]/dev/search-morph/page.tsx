@@ -10,10 +10,12 @@
 import { useState, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, MapPin, Navigation, X, Clock, type LucideIcon } from "lucide-react";
+import { Search, MapPin, Navigation, X, Clock, User, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SEARCH_CITIES } from "@/lib/cities";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
+import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchSuggest";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
@@ -50,7 +52,9 @@ export default function SearchMorphPreviewPage() {
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1)];
 
-  const cats = CATEGORIES.filter((c) => c.label.toLowerCase().includes(serviceQ.toLowerCase()));
+  const { results, loading } = useSearchSuggest(serviceQ, { city: city || undefined });
+  const typing = serviceQ.trim().length >= 2;
+  const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
 
   const advance = (s: Step) => {
@@ -105,7 +109,30 @@ export default function SearchMorphPreviewPage() {
                 <ActiveCard title="Wonach suchst du?">
                   <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
                     className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
-                  {serviceQ === "" && (
+                  {typing ? (
+                    loading ? (
+                      <div className="space-y-2 pt-1">
+                        {[0, 1, 2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}
+                      </div>
+                    ) : hasResults ? (
+                      <>
+                        {results.services.map((s) => (
+                          <SuggestRow key={s.id} name={s.name_de} sub="Service" Icon={Search}
+                            onClick={() => { setService(s.name_de); advance("service"); }} />
+                        ))}
+                        {results.salons.map((s) => (
+                          <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin}
+                            onClick={() => { setService(s.name); advance("service"); }} />
+                        ))}
+                        {results.stylists.map((s) => (
+                          <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User}
+                            onClick={() => { setService(s.name); advance("service"); }} />
+                        ))}
+                      </>
+                    ) : (
+                      <p className="py-8 text-center text-[14px] text-s-ink-3">Keine Treffer für {serviceQ}</p>
+                    )
+                  ) : (
                     <>
                       <p className="mb-1 text-[13px] font-semibold text-s-ink-3">Zuletzt gesucht</p>
                       {RECENTS.map((r) => (
@@ -113,15 +140,11 @@ export default function SearchMorphPreviewPage() {
                           onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setStep("date"); }} />
                       ))}
                       <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Vorschläge</p>
-                    </>
-                  )}
-                  <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
-                  {cats.map((c) => (
-                    <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
-                      onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
-                  ))}
-                  {serviceQ === "" && (
-                    <>
+                      <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
+                      {CATEGORIES.map((c) => (
+                        <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
+                          onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
+                      ))}
                       <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink-3">Im Trend</p>
                       <div className="flex flex-wrap gap-2">
                         {TRENDING.map((t) => (
