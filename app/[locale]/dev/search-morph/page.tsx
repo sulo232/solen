@@ -30,7 +30,7 @@ const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]";
 const EXPAND_DIST = 230; // px of scroll that maps to the full accordion->focused expand
 const HEADING_H = 56;    // collapsing heading height
-const ROW_H = 64;        // collapsing step-row height (incl. gap)
+const ROW_H = 66;        // collapsing step-row wrapper height = h-14 (56) + pt-2.5 (10); must fit the row or the two rows overlap
 const FOOTER_H = 68;     // footer slide-off distance
 
 const STEPS = ["service", "location", "date"] as const;
@@ -68,10 +68,13 @@ export default function SearchMorphPreviewPage() {
   const reduce = useReducedMotion();
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const committed = useRef(false); // once fully expanded, LOCK it , scrolling back down must NOT un-expand (owner: reverse is gimmicky); exit via the back arrow
 
   // ── the single continuous driver + every property derived from it ──
   const expand = useMotionValue(0);
-  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, safeTop]);     // top parked, then rises last
+  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, Math.max(safeTop + 6, 50)]); // focused stays a CROPPED sheet (blur above), NOT full-screen , owner
+  const sheetRadiusTop = useTransform(expand, [0.5, 1], [0, 18]);          // focused sheet keeps a rounded top (Airbnb), never square full-bleed
   const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X persists, fades last
   // FLOATING CARDS over the frosted backdrop (owner-approved look) -> flatten to a full-bleed white sheet only at the end.
   const sheetBg = useTransform(expand, [0.55, 1], ["rgba(255,255,255,0)", "rgba(255,255,255,1)"]); // blur shows around the cards, fills white when focused
@@ -109,9 +112,10 @@ export default function SearchMorphPreviewPage() {
     return () => { document.body.style.overflow = prev; };
   }, [open]);
   useEffect(() => { if (inputFocused) (activeStep === "location" ? cityRef : serviceRef).current?.focus(); }, [inputFocused, activeStep]);
-  // inputFocused is a SIDE-EFFECT of expand (editable + keyboard at the very end), with hysteresis , NOT a layout switch
+  // inputFocused is a SIDE-EFFECT of expand (editable + back-arrow at the very end), NOT a layout switch.
+  // At the top, COMMIT: lock expand at 1 so scrolling back down scrolls the list instead of un-expanding.
   useMotionValueEvent(expand, "change", (v) => {
-    if (v >= 0.96 && !inputFocused && activeStep !== "date") setInputFocused(true);
+    if (v >= 0.96 && activeStep !== "date") { committed.current = true; if (!inputFocused) setInputFocused(true); }
     else if (v < 0.85 && inputFocused) setInputFocused(false);
   });
 
@@ -127,17 +131,19 @@ export default function SearchMorphPreviewPage() {
   const morphT = reduce ? { duration: 0 } : MORPH_T;
   const openT = reduce ? { duration: 0 } : OPEN_T;
   const grow = (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
+  // collapse back to the accordion: release the commit-lock + rewind the list scroll so the next expand starts clean
+  const collapse = () => { committed.current = false; if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
 
-  const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); grow(0); };
+  const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); };
   const advance = (s: Step) => {
-    setInputFocused(false); grow(0);
+    setInputFocused(false); collapse();
     const next = STEPS[STEPS.indexOf(s) + 1];
     if (next) setActiveStep(next);
   };
-  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); };
+  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); committed.current = false; expand.set(0); };
   const reset = () => {
     setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null);
-    setActiveStep("service"); setInputFocused(false); grow(0);
+    setActiveStep("service"); setInputFocused(false); collapse();
   };
 
   if (process.env.NODE_ENV === "production") notFound(); // dev preview only , real 404 in production
@@ -207,13 +213,13 @@ export default function SearchMorphPreviewPage() {
       <motion.div layout="position" transition={morphT}
         className="flex h-12 items-center gap-1.5 rounded-[14px] border border-s-border bg-white pl-2 pr-1.5">
         {inputFocused ? (
-          <button onClick={() => { setInputFocused(false); grow(0); }} aria-label="Zurück"
+          <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Zurück"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken"><ArrowLeft size={18} strokeWidth={2} /></button>
         ) : (
           <span className="grid h-9 w-9 shrink-0 place-items-center"><Search size={18} strokeWidth={2} className="text-s-ink-3" /></span>
         )}
-        <input ref={ref} value={inputFocused ? q : (isS ? service : city)} readOnly={!inputFocused}
-          onFocus={() => grow(1)} onClick={() => grow(1)} onChange={(e) => setQ(e.target.value)} placeholder={ph}
+        <input ref={ref} value={inputFocused ? q : (isS ? service : city)}
+          onFocus={() => { setInputFocused(true); grow(1); }} onChange={(e) => setQ(e.target.value)} placeholder={ph}
           className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
         {inputFocused && q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
@@ -229,7 +235,7 @@ export default function SearchMorphPreviewPage() {
     date: { label: "Datum", value: date, placeholder: "Jederzeit" },
   };
   const collapsedRow = (s: Step) => (
-    <button onClick={() => openStep(s)} className="mb-2.5 flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+    <button onClick={() => openStep(s)} className="flex h-14 w-full items-center justify-between rounded-[20px] bg-white px-4 text-left shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
       <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
       <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
     </button>
@@ -287,7 +293,7 @@ export default function SearchMorphPreviewPage() {
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop, backgroundColor: sheetBg }}
+              style={{ top: cropTop, backgroundColor: sheetBg, borderTopLeftRadius: sheetRadiusTop, borderTopRightRadius: sheetRadiusTop }}
               className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden">
               {activeStep === "date" ? (
                 /* DATE step , no scroll-expand; the collapsed steps + calendar + footer */
@@ -327,13 +333,13 @@ export default function SearchMorphPreviewPage() {
                       <h2 className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{activeStep === "service" ? "Wonach suchst du?" : "Wo?"}</h2>
                     </motion.div>
                     <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
-                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
-                      onScroll={(e) => expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST))}>
+                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
+                      onScroll={(e) => { if (!committed.current) expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                       {activeStep === "location" ? cityList() : serviceSuggestions()}
                     </div>
                   </motion.div>
                   <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[0])}</motion.div>
-                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3">{collapsedRow(otherSteps[1])}</motion.div>
+                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[1])}</motion.div>
                   {footer({ y: footerY, opacity: footerOp })}
                 </div>
               )}
