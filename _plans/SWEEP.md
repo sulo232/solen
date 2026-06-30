@@ -34,5 +34,11 @@ All 30 `mockup` items in `_plans/SWEEP_BACKLOG.md` (design + motion). Built one 
 - **Gender filter dead** (`/api/salons` suitable_gender): every active service is tagged BOTH genders, so "Fuer wen" never narrows results. Seed realistic per-service gender, or hide the control? (data, not code.)
 - **Deals/Angebote always empty** (`/api/salons` last_minute_discount_percent): 0 salons have a discount, so the deals pill + rail + sort are permanently empty. Seed real discounts, or hide until data exists? (data, not code.)
 
+## Batch-1 council (true review on MAIN) , triaged 2026-06-30
+- FIXED (real regressions from batch 1): bookings/user , raised cap 20->100 (no silent history loss) + `page=` NaN guard (committed).
+- PARKED mockup (frontend): "Load more" UI on BookingsList past/cancelled (wire the `hasMore` the API already returns).
+- PARKED i18n-copy (owner): profile/live-state German response strings; express-rebook suggested-label LOCALE (the tz BUG is fixed; locale-polish deferred); PDP SEO metadata hardcodes "Basel" city + `solen.ch` domain (should use city_id lookup + an env URL).
+- OUT-OF-SCOPE (salon onboarding, pre-existing , NOT this customer sweep): `app/api/salons` POST handler `[FIX]` hardcodes (quartier='grossbasel', Basel coord fallback, schema-bypass TODOs). Flag for an onboarding pass.
+
 ## Folds in
 ACTIVE.md customer bug items (onboarding + admin dropped per the customer-only scope).
