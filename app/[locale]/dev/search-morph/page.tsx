@@ -10,7 +10,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, Store, type LucideIcon } from "lucide-react";
+import { Search, MapPin, Navigation, X, Clock, User, ChevronUp, ArrowLeft, Store, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { SEARCH_CITIES } from "@/lib/cities";
@@ -94,7 +94,7 @@ export default function SearchMorphPreviewPage() {
         </motion.button>
         <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5">
           {CATEGORIES.map(({ label, icon: Icon }) => (
-            <button key={label} onClick={() => { setService(label); setOpen(true); }}
+            <button key={label} onClick={() => { setService(label); setStep("service"); setOpen(true); }}
               className="flex shrink-0 items-center gap-1.5 rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2">
               <Icon size={14} strokeWidth={2} /> {label}
             </button>
@@ -139,9 +139,28 @@ export default function SearchMorphPreviewPage() {
             <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4 pt-1">
               {/* SERVICE , Recent searches + Suggested (Airbnb structure), all real data */}
               {step === "service" ? (
-                <ActiveCard title="Wonach suchst du?" onToggle={() => (searchFocused ? setSearchFocused(false) : setStep(null))}>
-                  <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} onFocus={() => setSearchFocused(true)} placeholder="Service, Salon oder Stylist:in"
-                    className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                <motion.div layout transition={{ duration: 0.42, ease: EASE }}
+                  className="rounded-[20px] bg-white px-5 pb-5 pt-5 shadow-[0_14px_40px_rgba(10,10,10,0.14)]">
+                  {searchFocused ? (
+                    /* FULL search (Airbnb focused state): back arrow + input at the very top, no title */
+                    <div className="mb-3 flex items-center gap-2">
+                      <button onClick={() => setSearchFocused(false)} aria-label="Zurück"
+                        className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken">
+                        <ArrowLeft size={20} strokeWidth={2} />
+                      </button>
+                      <input autoFocus value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} placeholder="Service, Salon oder Stylist:in"
+                        className="flex-1 rounded-[14px] border border-s-ink bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:shadow-none focus:outline-none" />
+                    </div>
+                  ) : (
+                    <>
+                      <button onClick={() => setStep(null)} className="mb-4 flex w-full items-center justify-between text-left">
+                        <span className="font-heading text-[20px] font-extrabold leading-none tracking-[-0.02em] text-s-ink">Wonach suchst du?</span>
+                        <ChevronUp size={20} className="text-s-ink-3" />
+                      </button>
+                      <input value={serviceQ} onChange={(e) => setServiceQ(e.target.value)} onFocus={() => setSearchFocused(true)} placeholder="Service, Salon oder Stylist:in"
+                        className="mb-3 w-full rounded-[14px] border border-s-border bg-white px-4 py-3 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:border-s-ink focus:shadow-none focus:outline-none" />
+                    </>
+                  )}
                   {/* capped + internal-scroll in the accordion so Standort/Datum stay visible; uncapped in full-search */}
                   <div className={searchFocused ? "" : "max-h-[44vh] overflow-y-auto"}>
                   {typing ? (
@@ -205,7 +224,7 @@ export default function SearchMorphPreviewPage() {
                     </>
                   )}
                   </div>
-                </ActiveCard>
+                </motion.div>
               ) : (
                 <CollapsedCard label="Suche" value={service} placeholder="Stores, Services, Stylist:innen" onClick={() => setStep("service")} />
               )}
