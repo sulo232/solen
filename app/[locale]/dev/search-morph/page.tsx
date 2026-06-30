@@ -63,6 +63,7 @@ export default function SearchMorphPreviewPage() {
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [selKey, setSelKey] = useState<string | null>(null);
+  const [recents, setRecents] = useState(RECENTS); // removable via the per-row X
   const [mounted, setMounted] = useState(false);
   const [safeTop, setSafeTop] = useState(0);
   const reduce = useReducedMotion();
@@ -87,7 +88,7 @@ export default function SearchMorphPreviewPage() {
   const step1Op = useTransform(expand, [0.2, 0.38], [1, 0]);
   const step2H = useTransform(expand, [0.45, 0.68], [ROW_H, 0]);           // second other-step consumed
   const step2Op = useTransform(expand, [0.45, 0.62], [1, 0]);
-  const footerY = useTransform(expand, [0.8, 1], [0, FOOTER_H]);           // footer slides off last
+  const footerMaxH = useTransform(expand, [0.78, 1], [240, 0]);           // footer COLLAPSES its height so the focused list fills , no reserved white gap
   const footerOp = useTransform(expand, [0.84, 1], [1, 0]);
 
   useEffect(() => setMounted(true), []);
@@ -115,12 +116,12 @@ export default function SearchMorphPreviewPage() {
   // inputFocused is a SIDE-EFFECT of expand (editable + back-arrow at the very end), NOT a layout switch.
   // At the top, COMMIT: lock expand at 1 so scrolling back down scrolls the list instead of un-expanding.
   useMotionValueEvent(expand, "change", (v) => {
-    if (v >= 0.96 && activeStep !== "date") { committed.current = true; if (!inputFocused) setInputFocused(true); }
-    else if (v < 0.85 && inputFocused) setInputFocused(false);
+    if (v >= 0.96 && !committed.current && activeStep !== "date") { committed.current = true; setInputFocused(true); grow(1); } // snap to EXACTLY 1 so the footer fully collapses (no gap)
+    else if (v < 0.85 && inputFocused && !committed.current) setInputFocused(false);
   });
 
   const now = new Date();
-  const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
+  const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1)]; // current + next month (the bookable window); avoids the "all year" clutter
   const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
 
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no calls while closed
@@ -169,10 +170,16 @@ export default function SearchMorphPreviewPage() {
     }
     return (
       <>
-        <SectionLabel>Zuletzt gesucht</SectionLabel>
-        {RECENTS.map((r) => (
-          <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock} onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); openStep("date"); }} />
-        ))}
+        {recents.length > 0 && (
+          <>
+            <SectionLabel>Zuletzt gesucht</SectionLabel>
+            {recents.map((r, i) => (
+              <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock}
+                onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); openStep("date"); }}
+                onRemove={() => setRecents((rs) => rs.filter((_, idx) => idx !== i))} />
+            ))}
+          </>
+        )}
         <SectionLabel className="mt-3">Beliebte Stores</SectionLabel>
         {FEATURED_SALONS.map((sl) => (
           <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
@@ -210,22 +217,21 @@ export default function SearchMorphPreviewPage() {
     const ref = isS ? serviceRef : cityRef;
     const ph = isS ? "Service, Salon oder Stylist:in" : "Stadt suchen";
     return (
-      <motion.div layout="position" transition={morphT}
-        className="flex h-12 items-center gap-1.5 rounded-[14px] border border-s-border bg-white pl-2 pr-1.5">
+      <div className="flex h-12 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
         {inputFocused ? (
           <button onClick={() => { setInputFocused(false); collapse(); }} aria-label="Zurück"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken"><ArrowLeft size={18} strokeWidth={2} /></button>
+            className="-ml-1 shrink-0 text-s-ink"><ArrowLeft size={20} strokeWidth={2} /></button>
         ) : (
-          <span className="grid h-9 w-9 shrink-0 place-items-center"><Search size={18} strokeWidth={2} className="text-s-ink-3" /></span>
+          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
         )}
         <input ref={ref} value={inputFocused ? q : (isS ? service : city)}
           onFocus={() => { setInputFocused(true); grow(1); }} onChange={(e) => setQ(e.target.value)} placeholder={ph}
           className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
         {inputFocused && q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2"><X size={15} strokeWidth={2.4} /></button>
+            className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>
         )}
-      </motion.div>
+      </div>
     );
   };
 
@@ -241,7 +247,7 @@ export default function SearchMorphPreviewPage() {
     </button>
   );
   const footer = (style?: object) => (
-    <motion.div style={style} className="shrink-0 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+    <motion.div style={style} className="shrink-0 overflow-hidden px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
       <div className="flex items-center justify-between">
         <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
         <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
@@ -296,10 +302,11 @@ export default function SearchMorphPreviewPage() {
               style={{ top: cropTop, backgroundColor: sheetBg, borderTopLeftRadius: sheetRadiusTop, borderTopRightRadius: sheetRadiusTop }}
               className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden">
               {activeStep === "date" ? (
-                /* DATE step , no scroll-expand; the collapsed steps + calendar + footer */
-                <div className="flex min-h-0 flex-1 flex-col px-3 pt-3">
-                  <div className="shrink-0">{collapsedRow("service")}{collapsedRow("location")}</div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2">
+                /* DATE step , no scroll-expand; the collapsed steps + calendar + footer. Keyed -> morphs in (no hard jump). */
+                <motion.div key="date" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                  className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+                  <div className="shrink-0 space-y-2.5">{collapsedRow("service")}{collapsedRow("location")}</div>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2 pt-2.5">
                    <div className="rounded-[20px] bg-white p-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                     <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
                     <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
@@ -323,10 +330,11 @@ export default function SearchMorphPreviewPage() {
                    </div>
                   </div>
                   {footer()}
-                </div>
+                </motion.div>
               ) : (
-                /* SERVICE / LOCATION , ONE continuous tree; scroll the list -> `expand` -> the chrome collapses + the list grows */
-                <div className="flex min-h-0 flex-1 flex-col">
+                /* SERVICE / LOCATION , ONE continuous tree; scroll the list -> `expand` -> the chrome collapses + the list grows. Keyed -> morphs in. */
+                <motion.div key={activeStep} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                  className="flex min-h-0 flex-1 flex-col">
                   <motion.div style={{ marginLeft: cardMargin, marginRight: cardMargin, borderRadius: cardRadius, boxShadow: cardShadow }}
                     className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
                     <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden px-4 pt-4">
@@ -340,8 +348,8 @@ export default function SearchMorphPreviewPage() {
                   </motion.div>
                   <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[0])}</motion.div>
                   <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3 pt-2.5">{collapsedRow(otherSteps[1])}</motion.div>
-                  {footer({ y: footerY, opacity: footerOp })}
-                </div>
+                  {footer({ maxHeight: footerMaxH, opacity: footerOp })}
+                </motion.div>
               )}
             </motion.div>,
           ]}
@@ -375,7 +383,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
           return (
             <div key={i} className="flex justify-center py-0.5">
               {disabled ? (
-                <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3 line-through">{d}</span>
+                <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3/35">{d}</span> // faint, NO strikethrough (declutter)
               ) : (
                 <button onClick={() => onPick(key, `${d}. ${monthLong}`)} className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selKey === key ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
               )}
@@ -387,22 +395,28 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
   );
 }
 
-function SuggestRow({ name, sub, Icon, img, tint, onClick }: {
-  name: string; sub?: string; Icon?: LucideIcon; img?: string; tint?: boolean; onClick: () => void;
+function SuggestRow({ name, sub, Icon, img, tint, onClick, onRemove }: {
+  name: string; sub?: string; Icon?: LucideIcon; img?: string; tint?: boolean; onClick: () => void; onRemove?: () => void;
 }) {
+  // a div (not a button) so the remove-X can be a real nested button without invalid <button> nesting
   return (
-    <button onClick={onClick} className="flex w-full items-center gap-3 rounded-xl py-2 pr-2 text-left hover:bg-s-bg-sunken">
-      {img ? (
-        <img src={img} alt="" className="h-11 w-11 shrink-0 object-contain" />
-      ) : (
-        <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
-          {Icon ? <Icon size={18} strokeWidth={1.9} /> : null}
+    <div className="flex w-full items-center gap-3 rounded-xl pr-1 hover:bg-s-bg-sunken">
+      <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left">
+        {img ? (
+          <img src={img} alt="" className="h-11 w-11 shrink-0 object-contain" />
+        ) : (
+          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tint ? "bg-s-accent/10 text-s-accent" : "bg-s-bg-sunken text-s-ink-2"}`}>
+            {Icon ? <Icon size={18} strokeWidth={1.9} /> : null}
+          </span>
+        )}
+        <span className="min-w-0">
+          <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
+          {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}
         </span>
+      </button>
+      {onRemove && (
+        <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-3"><X size={17} strokeWidth={2} /></button>
       )}
-      <span className="min-w-0">
-        <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
-        {sub ? <span className="block truncate text-[13px] text-s-ink-3">{sub}</span> : null}
-      </span>
-    </button>
+    </div>
   );
 }
