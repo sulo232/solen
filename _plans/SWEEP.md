@@ -20,7 +20,9 @@ Customer surface = home, `/{city}/{category}` search, `/salon/{slug}` PDP + book
 
 ## Status
 - P0 done: review-form committed. P1 done: discovery , 40 fix / 30 mockup (`_plans/SWEEP_BACKLOG.md`).
-- P2 RUNNING: fix loop batch 1 (6 disjoint groups: salons-route, pdp, inspo, dead-code, quick-singletons, availability). Promo/charge fix held for a careful separate pass (money path). Dedup refactors (shared share-block, date-formatter) = batch 2 (shared files).
+- P2 batch 1 DONE + committed (6 groups, behavior-verified via tsc + curl): salons-route (col-trim no-leak + Promise.all + slot-RPC + with_slots cap), pdp (3x-fetch dedupe + is_hidden filter + col-trim), inspo (5 RPCs -> 1 /api/discovery/category-meta; DISCOVERY_CATEGORIES extracted to lib/discovery-categories so the route drops the client-import + edge), availability (single scan), quick (bookings/user pagination, express-rebook Zurich tz, profile/live-state real cols, reviews/eligibility 22P02, SalonResultCard memo), dead-code (4 deletions + REMOVED). Council true-review running on the data-logic files.
+  - LESSON: the fix-workflow's loop-reviewers read the WORKTREE not MAIN -> false-negative verdicts; I verified MAIN myself (tsc + curl). Point batch-2 reviewers at MAIN abs paths.
+  - NEXT: batch 2 = promo/charge fix (careful, money), dedup refactors (share-block x5, date-formatter x3), remaining low items. Then P3 mockups.
 
 ## Backlog
 Full categorized list: `_plans/SWEEP_BACKLOG.md` (40 fix, 30 mockup).
