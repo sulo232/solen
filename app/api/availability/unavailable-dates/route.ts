@@ -55,21 +55,34 @@ export async function GET(req: NextRequest) {
     const vacStart = salonVac?.vacation_start ?? null;
     const vacEnd = salonVac?.vacation_end ?? null;
 
-    // Extract available dates from the slots
+    // Extract available dates from the slots using Europe/Zurich day boundaries.
+    // Slots store true UTC instants; a slot at e.g. 22:30 UTC is 00:30 the next
+    // calendar day in Zurich (CEST, UTC+2), so we must convert to local date here
+    // to match the DateTimePicker which uses /api/availability/time-slots and its
+    // Zurich-local day boundaries.
+    const zurichDateFmt = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Zurich",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const toZurichDate = (isoInstant: string) =>
+      zurichDateFmt.format(new Date(isoInstant));
+
     const availableDates = new Set(
-      (slots || []).map((slot) =>
-        new Date(slot.starts_at).toISOString().split('T')[0]
-      )
+      (slots || []).map((slot) => toZurichDate(slot.starts_at))
     );
 
-    // Generate 60 days of all possible dates starting from today
+    // Generate 60 days of all possible dates starting from today (Zurich local date).
+    // Build the list by stepping a UTC midnight anchor so date arithmetic stays clean
+    // and the output YYYY-MM-DD strings agree with the Zurich-local slot dates above.
     const allDates: string[] = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayZurich = toZurichDate(new Date().toISOString());
+    const anchor = new Date(`${todayZurich}T00:00:00Z`);
     for (let i = 0; i < 60; i++) {
-      const date = new Date(today);
-      date.setDate(date.getDate() + i);
-      allDates.push(date.toISOString().split('T')[0]);
+      const d = new Date(anchor);
+      d.setUTCDate(d.getUTCDate() + i);
+      allDates.push(d.toISOString().split('T')[0]);
     }
 
     // Unavailable = dates with no available slots OR inside the salon's vacation range

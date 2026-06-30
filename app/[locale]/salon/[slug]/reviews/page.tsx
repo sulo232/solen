@@ -77,7 +77,9 @@ export default async function SalonReviewsPage({
         review_replies(id, reply_text, is_public)
       `)
       .eq("salon_id", salon.id)
-      .order("created_at", { ascending: false }),
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false })
+      .limit(50),
     userId
       ? supabase
           .from("bookings")
