@@ -326,7 +326,8 @@ export default function SearchMorphPreviewPage() {
               onDrag={(_e, info) => { if (!focusedSearch && info.offset.y < 0) expand.set(Math.min(1, -info.offset.y / 180)); }}
               onDragEnd={(_e, info) => {
                 if (info.offset.y > 140 || info.velocity.y > 600) { close(); return; }
-                if (!focusedSearch && (info.offset.y < -64 || info.velocity.y < -550) && (activeStep === "service" || activeStep === "location")) { setInputFocused(true); }
+                // a SWIPE/flick up (low velocity bar) OR a modest drag snaps it fully open , a swipe expands all the way, not just as far as you dragged
+                if (!focusedSearch && (info.offset.y < -40 || info.velocity.y < -250) && (activeStep === "service" || activeStep === "location")) { setInputFocused(true); }
                 else { animate(expand, focusedSearch ? 1 : 0, reduce ? { duration: 0 } : { duration: 0.26, ease: EASE }); }
               }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
