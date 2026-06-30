@@ -71,7 +71,7 @@ export default function SearchMorphPreviewPage() {
     if (!h) return;
     const prev = h.style.display;
     h.style.display = "none";
-    return () => { h.style.display = prev; };
+    return () => { if (document.contains(h)) h.style.display = prev; };
   }, []);
   useEffect(() => {
     if (!open) return;
