@@ -1,11 +1,13 @@
 "use client";
 
 // exists-check: net-new dev PREVIEW route (no match in `npm run exists search-morph`). Faithful Airbnb
-// mobile-search clone (refs IMG_6228/6229/6230, measured 2026-06-30) with OUR tokens. STRUCTURE = Airbnb
-// (scrim + top-crop bottom-sheet, drag-to-dismiss, accordion + one open step, scroll/tap MORPHS the step
-// into the full search , the bar slides up and the heading/other steps/footer collapse, no subtree swap,
-// no card). AESTHETIC = Solen tokens. USES THE EXISTING DATA (CATEGORIES, SEARCH_CITIES, CITY_ICONS,
-// TRENDING, FEATURED_SALONS, useSearchSuggest). Preview only, not linked in nav.
+// mobile-search clone (refs IMG_6228/6229/6230 + ScreenRecording_06-30, council-analyzed 2026-06-30).
+// THE EXPAND IS ONE CONTINUOUS SCROLL-LINKED TRANSFORM: a single `expand` motion value (0=accordion,
+// 1=focused) drives EVERY property (sheet crop, heading collapse, the other-step rows, footer slide,
+// the magnifier->back swap, the X fade) via useTransform , every paused frame is a valid resting state.
+// NO subtree swap, NO threshold commit (see feedback_search_expand_gesture_linked). AESTHETIC = Solen
+// tokens. USES EXISTING DATA (CATEGORIES, SEARCH_CITIES, CITY_ICONS, TRENDING, FEATURED_SALONS,
+// useSearchSuggest). Preview only.
 
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -20,16 +22,20 @@ import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchS
 import { Skeleton } from "@/app/[locale]/_components/primitives";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
-// tweens, NOT springs , owner: "too bouncy". A smooth ease-out has no overshoot/bounce.
 const OPEN_T = { duration: 0.4, ease: EASE } as const;
-const MORPH_T = { duration: 0.28, ease: EASE } as const;
+const MORPH_T = { duration: 0.34, ease: EASE } as const;
 const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 // selected-ok: the ONE primary commit CTA stays ink (bg-s-ink) per the design contract; every other selected state is gray/blue-border
 const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]";
+const EXPAND_DIST = 230; // px of scroll that maps to the full accordion->focused expand
+const HEADING_H = 56;    // collapsing heading height
+const ROW_H = 64;        // collapsing step-row height (incl. gap)
+const FOOTER_H = 68;     // footer slide-off distance
 
 const STEPS = ["service", "location", "date"] as const;
 type Step = (typeof STEPS)[number];
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
 // sample recent searches , built from the REAL constants (the live port wires useRecentSearches)
 const RECENTS = [
@@ -49,7 +55,7 @@ function monthGrid(d: Date) {
 export default function SearchMorphPreviewPage() {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState<Step>("service");
-  const [inputFocused, setInputFocused] = useState(false); // service/location: the bar floated up + full list
+  const [inputFocused, setInputFocused] = useState(false); // keyboard/editable side-effect only (set when expand ~1); NOT a layout swap
   const [service, setService] = useState("");
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
@@ -58,25 +64,34 @@ export default function SearchMorphPreviewPage() {
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [selKey, setSelKey] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [safeTop, setSafeTop] = useState(0);
   const reduce = useReducedMotion();
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const [safeTop, setSafeTop] = useState(0); // measured env(safe-area-inset-top)
-  const expand = useMotionValue(0); // 0 = accordion, 1 = focused; the UP-drag drives this so the panel GROWS following the finger
-  // crop the VISIBLE content follows: accordion ~88px down -> focused at the notch (max(20,safeTop)). Safe-area is baked into
-  // the range (not a counter-padding) so the bar actually MOVES on a real device, not just the container. See feedback_mockup_change_not_visible.
-  const cropTop = useTransform(expand, [0, 1], [88, Math.max(20, safeTop)]);
 
-  useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
-  useEffect(() => { // measure the device safe-area once so the sheet content never hides under the notch / dynamic island
+  // ── the single continuous driver + every property derived from it ──
+  const expand = useMotionValue(0);
+  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, safeTop]);     // top parked, then rises last
+  const sheetRadius = useTransform(expand, [0.6, 1], [20, 0]);             // corners square off at the end
+  const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X persists, fades last
+  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);        // heading collapses in place
+  const headingOp = useTransform(expand, [0, 0.45], [1, 0]);
+  const step1H = useTransform(expand, [0.2, 0.42], [ROW_H, 0]);            // first other-step consumed
+  const step1Op = useTransform(expand, [0.2, 0.38], [1, 0]);
+  const step2H = useTransform(expand, [0.45, 0.68], [ROW_H, 0]);           // second other-step consumed
+  const step2Op = useTransform(expand, [0.45, 0.62], [1, 0]);
+  const footerY = useTransform(expand, [0.8, 1], [0, FOOTER_H]);           // footer slides off last
+  const footerOp = useTransform(expand, [0.84, 1], [1, 0]);
+
+  useEffect(() => setMounted(true), []);
+  useEffect(() => { // measure env(safe-area-inset-top) so the focused sheet clears the notch
     const probe = document.createElement("div");
     probe.style.cssText = "position:fixed;top:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
     document.body.appendChild(probe);
     setSafeTop(Math.round(probe.getBoundingClientRect().height) || 0);
     probe.remove();
   }, []);
-  // hide the /dev app-shell header so the crop shows only the (blurred) homepage , removes the duplicate dimmed back arrow that glitches
-  useEffect(() => {
+  useEffect(() => { // hide the /dev app-shell header so the crop shows only the (blurred) homepage
     const h = document.querySelector("header");
     if (!h) return;
     const prev = h.style.display;
@@ -89,68 +104,55 @@ export default function SearchMorphPreviewPage() {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, [open]);
-  // focus the live input when the step morphs into focused search (tap OR scroll)
-  useEffect(() => {
-    if (!inputFocused) return;
-    (activeStep === "location" ? cityRef : serviceRef).current?.focus();
-  }, [inputFocused, activeStep]);
-  // keep the crop in sync with the committed state , tap-to-focus animates the same grow; back animates it down
-  useEffect(() => {
-    const target = inputFocused && (activeStep === "service" || activeStep === "location") ? 1 : 0;
-    const c = animate(expand, target, reduce ? { duration: 0 } : { duration: 0.3, ease: EASE });
-    return () => c.stop();
-  }, [inputFocused, activeStep, reduce, expand]);
-  // scroll-driven commit: when the scroll has grown the sheet ~fully, lock into focused (pinned bar + full list)
+  useEffect(() => { if (inputFocused) (activeStep === "location" ? cityRef : serviceRef).current?.focus(); }, [inputFocused, activeStep]);
+  // inputFocused is a SIDE-EFFECT of expand (editable + keyboard at the very end), with hysteresis , NOT a layout switch
   useMotionValueEvent(expand, "change", (v) => {
-    if (v >= 0.96 && !inputFocused && (activeStep === "service" || activeStep === "location")) setInputFocused(true);
+    if (v >= 0.96 && !inputFocused && activeStep !== "date") setInputFocused(true);
+    else if (v < 0.85 && inputFocused) setInputFocused(false);
   });
 
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
   const windowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 42); // ~6-week booking window
 
-  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no network calls while closed
+  const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no calls while closed
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
   const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
 
-  const focusedSearch = inputFocused && (activeStep === "service" || activeStep === "location");
+  const morphT = reduce ? { duration: 0 } : MORPH_T;
+  const openT = reduce ? { duration: 0 } : OPEN_T;
+  const grow = (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
 
-  const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); };
+  const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); grow(0); };
   const advance = (s: Step) => {
-    setInputFocused(false);
+    setInputFocused(false); grow(0);
     const next = STEPS[STEPS.indexOf(s) + 1];
     if (next) setActiveStep(next);
   };
-  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); };
+  const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); };
   const reset = () => {
     setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null);
-    setActiveStep("service"); setInputFocused(false);
+    setActiveStep("service"); setInputFocused(false); grow(0);
   };
 
   if (process.env.NODE_ENV === "production") notFound(); // dev preview only , real 404 in production
 
-  const openT = reduce ? { duration: 0 } : OPEN_T;
-  const morphT = reduce ? { duration: 0 } : MORPH_T;
-
-  // ── suggestion lists (capped preview in the step, full when morphed open) ──
-  const serviceSuggestions = (full: boolean): ReactNode => {
+  // ── suggestion lists (the full list always renders; the growing viewport reveals more rows) ──
+  const serviceSuggestions = (): ReactNode => {
     if (typing) {
       if (loading) return <div className="space-y-2 pt-1">{[0, 1, 2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
       if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-3">Keine Treffer für {serviceQ}</p>;
       return (
         <>
           {results.services.map((s) => (
-            <SuggestRow key={s.id} name={s.name_de} sub="Service" Icon={Search}
-              onClick={() => { setService(s.name_de); setServiceQ(""); advance("service"); }} />
+            <SuggestRow key={s.id} name={s.name_de} sub="Service" Icon={Search} onClick={() => { setService(s.name_de); setServiceQ(""); advance("service"); }} />
           ))}
           {results.salons.map((s) => (
-            <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin}
-              onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
+            <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
           ))}
           {results.stylists.map((s) => (
-            <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User}
-              onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
+            <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />
           ))}
         </>
       );
@@ -159,52 +161,38 @@ export default function SearchMorphPreviewPage() {
       <>
         <SectionLabel>Zuletzt gesucht</SectionLabel>
         {RECENTS.map((r) => (
-          <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock}
-            onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); openStep("date"); }} />
+          <SuggestRow key={r.svc} name={`${r.svc} in ${r.city}`} sub={r.when} Icon={Clock} onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); openStep("date"); }} />
         ))}
-        {full && (
-          <>
-            <SectionLabel className="mt-3">Beliebte Stores</SectionLabel>
-            {FEATURED_SALONS.map((sl) => (
-              <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
-                onClick={() => { setService(sl.name); advance("service"); }} />
-            ))}
-          </>
-        )}
+        <SectionLabel className="mt-3">Beliebte Stores</SectionLabel>
+        {FEATURED_SALONS.map((sl) => (
+          <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />
+        ))}
         <SectionLabel className="mt-3">Vorschläge</SectionLabel>
-        <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint
-          onClick={() => { setService("In der Nähe"); advance("service"); }} />
-        {(full ? CATEGORIES : CATEGORIES.slice(0, 3)).map((c) => (
-          <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon}
-            onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
+        <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setService("In der Nähe"); advance("service"); }} />
+        {CATEGORIES.map((c) => (
+          <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />
         ))}
-        {full && (
-          <>
-            <SectionLabel className="mt-3">Im Trend</SectionLabel>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {TRENDING.map((t) => (
-                <button key={t.query} onClick={() => { setService(t.label); advance("service"); }}
-                  className="rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{t.label}</button>
-              ))}
-            </div>
-          </>
-        )}
+        <SectionLabel className="mt-3">Im Trend</SectionLabel>
+        <div className="flex flex-wrap gap-2 pb-2 pt-1">
+          {TRENDING.map((t) => (
+            <button key={t.query} onClick={() => { setService(t.label); advance("service"); }}
+              className="rounded-full border border-s-border bg-white px-3.5 py-1.5 text-[13px] text-s-ink-2 hover:bg-s-bg-sunken">{t.label}</button>
+          ))}
+        </div>
       </>
     );
   };
 
   const cityList = (): ReactNode => (
     <>
-      <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint
-        onClick={() => { setCity("In der Nähe"); advance("location"); }} />
+      <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setCity("In der Nähe"); advance("location"); }} />
       {cities.map((c) => (
-        <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin}
-          onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
+        <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
       ))}
     </>
   );
 
-  // ── the search bar (service/location). Same element in both states , it MORPHS (layout) ──
+  // ── the search bar: ONE element. Magnifier <-> back swaps at the very end (inputFocused ~= expand>=0.96). ──
   const bar = (s: Step): ReactNode => {
     const isS = s === "service";
     const q = isS ? serviceQ : cityQ;
@@ -213,78 +201,21 @@ export default function SearchMorphPreviewPage() {
     const ph = isS ? "Service, Salon oder Stylist:in" : "Stadt suchen";
     return (
       <motion.div layout="position" transition={morphT}
-        className={`mb-3 flex h-12 items-center gap-1.5 rounded-[14px] border border-s-border bg-white ${focusedSearch ? "pl-1 pr-1.5" : "px-4"}`}>
-        {focusedSearch ? (
-          <button onClick={() => setInputFocused(false)} aria-label="Zurück"
+        className="flex h-12 items-center gap-1.5 rounded-[14px] border border-s-border bg-white pl-2 pr-1.5">
+        {inputFocused ? (
+          <button onClick={() => { setInputFocused(false); grow(0); }} aria-label="Zurück"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken"><ArrowLeft size={18} strokeWidth={2} /></button>
         ) : (
-          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+          <span className="grid h-9 w-9 shrink-0 place-items-center"><Search size={18} strokeWidth={2} className="text-s-ink-3" /></span>
         )}
-        <input ref={ref} value={focusedSearch ? q : (isS ? service : city)} readOnly={!focusedSearch}
-          onFocus={() => setInputFocused(true)} onClick={() => setInputFocused(true)}
-          onChange={(e) => setQ(e.target.value)} placeholder={ph}
+        <input ref={ref} value={inputFocused ? q : (isS ? service : city)} readOnly={!inputFocused}
+          onFocus={() => grow(1)} onClick={() => grow(1)} onChange={(e) => setQ(e.target.value)} placeholder={ph}
           className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
-        {focusedSearch && q.length > 0 && (
+        {inputFocused && q.length > 0 && (
           <button onClick={() => { setQ(""); ref.current?.focus(); }} aria-label="Eingabe löschen"
             className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2"><X size={15} strokeWidth={2.4} /></button>
         )}
       </motion.div>
-    );
-  };
-
-  // ── the open step: service/location morph (heading collapses, bar slides up, list grows); date = calendar ──
-  const activePanel = (s: Step): ReactNode => {
-    if (s === "date") {
-      return (
-        <div className="p-4">
-          <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
-          <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
-            <button onClick={() => setDateTab("daten")}
-              className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
-            <button onClick={() => setDateTab("flexibel")}
-              className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
-          </div>
-          {dateTab === "daten" ? (
-            <div>
-              <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
-                {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
-              </div>
-              {months
-                .filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime())
-                .map((mDate) => (
-                  <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey}
-                    onPick={(key, label) => { setSelKey(key); setDate(label); }} />
-                ))}
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {FLEX_DATES.map((dd) => (
-                <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }}
-                  className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${date === dd ? "border-s-accent text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
-    // service / location , the morphing step
-    return (
-      <div className="flex flex-col p-4">
-        <AnimatePresence initial={false}>
-          {!focusedSearch && (
-            <motion.div key="heading" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-              transition={morphT} className="overflow-hidden">
-              <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">
-                {s === "service" ? "Wonach suchst du?" : "Wo?"}
-              </h2>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {bar(s)}
-        <div>
-          {s === "service" ? serviceSuggestions(focusedSearch) : cityList()}
-        </div>
-      </div>
     );
   };
 
@@ -293,17 +224,33 @@ export default function SearchMorphPreviewPage() {
     location: { label: "Standort", value: city, placeholder: "Hinzufügen" },
     date: { label: "Datum", value: date, placeholder: "Jederzeit" },
   };
+  const collapsedRow = (s: Step) => (
+    <button onClick={() => openStep(s)} className="mb-2.5 flex h-14 w-full items-center justify-between rounded-[16px] border border-s-border bg-white px-4 text-left">
+      <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
+      <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>{stepMeta[s].value || stepMeta[s].placeholder}</span>
+    </button>
+  );
+  const footer = (style?: object) => (
+    <motion.div style={style} className="shrink-0 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+      <div className="flex items-center justify-between">
+        <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
+        <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
+      </div>
+    </motion.div>
+  );
+
+  const otherSteps = STEPS.filter((s) => s !== activeStep);
 
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-[430px] px-5 pt-14">
         <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
         <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
-        <button type="button" onClick={() => { setActiveStep("service"); setInputFocused(false); setOpen(true); }}
+        <button type="button" onClick={() => { setActiveStep("service"); setInputFocused(false); expand.set(0); setOpen(true); }}
           className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
         </button>
-        {/* faux homepage behind the overlay , gives the frosted backdrop real content to blur (the real SearchOverlay sits over the live homepage) */}
+        {/* faux homepage behind the overlay , gives the frosted backdrop real content to blur */}
         <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
           {CATEGORIES.map((c) => (
             <span key={c.label} className="flex shrink-0 items-center gap-1.5 rounded-full border border-s-border bg-white px-3.5 py-2 text-[13px] font-medium text-s-ink-2">
@@ -329,58 +276,57 @@ export default function SearchMorphPreviewPage() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, ease: EASE }} />,
 
             <motion.button key="closeX" onClick={close} aria-label="Schliessen"
-              className={`fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink ${focusedSearch ? "pointer-events-none" : ""}`}
-              initial={{ opacity: 0 }} animate={{ opacity: focusedSearch ? 0 : 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.25 }}>
+              className="fixed right-4 top-[max(14px,env(safe-area-inset-top))] z-[102] grid h-9 w-9 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+              style={{ opacity: xOpacity }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
               <X size={17} strokeWidth={2.2} />
             </motion.button>,
 
             <motion.div key="sheet"
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              style={{ top: cropTop }}
-              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "rounded-t-[20px] bg-white" : "bg-transparent"}`}>
-              {focusedSearch ? (
-                /* FOCUSED (Airbnb): bar PINNED (shrink-0, never scrolls), full list scrolls UNDER it.
-                   Invariant: focusedSearch is service/location-only (see derivation), so bar(activeStep) here is never the date step.
-                   Drag-to-dismiss is intentionally accordion-only; the focused state exits via the in-bar back arrow. */
-                <>
-                  <div className="shrink-0 px-3 pb-2 pt-2">{bar(activeStep)}</div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-5">
-                    {activeStep === "location" ? cityList() : serviceSuggestions(true)}
-                  </div>
-                </>
-              ) : (
-                /* ACCORDION: frosted floating cards (active panel + thin step bars) + footer */
-                <>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
-                    onScroll={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location")) expand.set(Math.min(1, e.currentTarget.scrollTop / 96)); }}>
-                    <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
-                      {STEPS.map((s) => (
-                        <motion.div key={s} layout="position" transition={morphT}
-                          className="overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                          {activeStep === s ? (
-                            activePanel(s)
-                          ) : (
-                            <button onClick={() => openStep(s)}
-                              className="flex h-14 w-full items-center justify-between px-4 text-left">
-                              <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
-                              <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
-                                {stepMeta[s].value || stepMeta[s].placeholder}
-                              </span>
-                            </button>
-                          )}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  </div>
-                  <div className="shrink-0 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-                    <div className="flex items-center justify-between">
-                      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
-                      <button onClick={close} className={COMMIT_BTN}>
-                        <Search size={16} strokeWidth={2.2} /> Suchen
-                      </button>
+              style={{ top: cropTop, borderTopLeftRadius: sheetRadius, borderTopRightRadius: sheetRadius }}
+              className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-white">
+              {activeStep === "date" ? (
+                /* DATE step , no scroll-expand; the collapsed steps + calendar + footer */
+                <div className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+                  <div className="shrink-0">{collapsedRow("service")}{collapsedRow("location")}</div>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-1">
+                    <h2 className="mb-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wann?</h2>
+                    <div className="mb-4 flex rounded-full bg-s-bg-sunken p-1">
+                      <button onClick={() => setDateTab("daten")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "daten" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Daten</button>
+                      <button onClick={() => setDateTab("flexibel")} className={`flex-1 rounded-full py-2 text-center text-[13px] ${dateTab === "flexibel" ? "bg-white font-semibold text-s-ink" : "font-medium text-s-ink-3"}`}>Flexibel</button>
                     </div>
+                    {dateTab === "daten" ? (
+                      <>
+                        <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
+                        {months.filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime()).map((mDate) => (
+                          <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey} onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                        ))}
+                      </>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {FLEX_DATES.map((dd) => (
+                          <button key={dd} onClick={() => { setDate(dd); setSelKey(null); }} className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${date === dd ? "border-s-accent text-s-accent" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{dd}</button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </>
+                  {footer()}
+                </div>
+              ) : (
+                /* SERVICE / LOCATION , ONE continuous tree; scroll the list -> `expand` -> the chrome collapses + the list grows */
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden px-4 pt-4">
+                    <h2 className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{activeStep === "service" ? "Wonach suchst du?" : "Wo?"}</h2>
+                  </motion.div>
+                  <div className="shrink-0 px-3 pb-2 pt-1">{bar(activeStep)}</div>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
+                    onScroll={(e) => expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST))}>
+                    {activeStep === "location" ? cityList() : serviceSuggestions()}
+                  </div>
+                  <motion.div style={{ height: step1H, opacity: step1Op }} className="shrink-0 overflow-hidden px-3 pt-2">{collapsedRow(otherSteps[0])}</motion.div>
+                  <motion.div style={{ height: step2H, opacity: step2Op }} className="shrink-0 overflow-hidden px-3">{collapsedRow(otherSteps[1])}</motion.div>
+                  {footer({ y: footerY, opacity: footerOp })}
+                </div>
               )}
             </motion.div>,
           ]}
@@ -416,10 +362,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
               {disabled ? (
                 <span className="grid h-9 w-9 place-items-center text-[13px] text-s-ink-3 line-through">{d}</span>
               ) : (
-                <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                  className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selKey === key ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>
-                  {d}
-                </button>
+                <button onClick={() => onPick(key, `${d}. ${monthLong}`)} className={`grid h-9 w-9 place-items-center rounded-full text-[13px] ${selKey === key ? "bg-s-accent font-bold text-white" : "text-s-ink hover:bg-s-bg-sunken"}`}>{d}</button>
               )}
             </div>
           );
