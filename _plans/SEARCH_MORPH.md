@@ -35,3 +35,11 @@ Full Airbnb search flow, our tokens:
 
 ## LOCKED 2026-07-01 (owner: "lock it, it's already good")
 The /dev/search-morph mockup design is FROZEN as the spec for the production port. Final state: pure 1:1 scroll-expand (no auto/lock), floating frosted cards -> cropped rounded focused sheet, search-first accordion (Suche > Standort > Datum), Standort default "Keine Präferenz" (no In der Nähe), paged calendar with arrows (full month) + optional toggle time-of-day (Vormittag/Nachmittag/Abend) that reveals on date-pick, balanced Flexibel grid (blue selected). Port into SearchOverlay per SEARCH_BACKEND.md (keep its data contract + i18n; add keys for the new German strings).
+
+## PORTED + VERIFIED 2026-07-01 (commits b6df58187 wip + c29b61159 fix)
+The mockup is now LIVE in the production `SearchOverlay.tsx` (homepage SearchBar + search-page sticky bar). Reviewer-graded PASS 13/14; the one fix (Keine Präferenz default showed greyed "Hinzufügen" -> now bold-ink "Keine Präferenz") applied. 31 i18n keys added across de/en/fr/it (en/fr/it use German placeholders , PARKED for owner copy). Data contract preserved (props + q/service/city/date/period URL + suggest/recents hooks + date-ISO + period-map). Runtime-verified after a clean .next rebuild: overlay opens on both callers, renders the new design, "Keine Präferenz" shows, typeahead returns real data, results page 200. NOTE: the headless submit-tap->URL was not captured live (next-dev HMR flakiness + two animating same-text Suchen buttons); the path is reviewer-confirmed at code level (line 396 handleSubmit -> navigate -> router.push). Owner to eyeball the Suchen tap on device.
+
+## REMAINING (post-port)
+1. **DNA personalization wiring** (owner-confirmed part of the port, SEARCH_BACKEND "Post-mockup wiring") , personalize suggest/results by user_style_affinity / search-book affinity. NOT yet done.
+2. **No-results helper** (SEARCH_BACKEND Feature 2) , BLOCKED on owner decisions D1 (3 vs 5 cities) + D4 (fallback copy).
+3. **en/fr/it translations** for the 31 new keys (German placeholders today).
