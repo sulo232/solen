@@ -18,8 +18,12 @@ export async function GET(req: NextRequest) {
     // Get tab + pagination parameters
     const url = new URL(req.url);
     const tab = (url.searchParams.get('tab') as 'upcoming' | 'past' | 'cancelled') || 'upcoming';
-    const page = Math.max(0, parseInt(url.searchParams.get('page') ?? '0', 10));
-    const PAGE_SIZE = 20;
+    // `|| '0'` (not ??) so an empty `page=` also falls back; trailing `|| 0` guards parseInt NaN
+    // (NaN would make .range(NaN, NaN) error).
+    const page = Math.max(0, parseInt(url.searchParams.get('page') || '0', 10) || 0);
+    // Generous cap: bounds the query (no unbounded lifetime fetch) yet no realistic user hits it,
+    // so no silent history loss. hasMore is still returned for a future "Load more" (parked mockup).
+    const PAGE_SIZE = 100;
     const from = page * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
