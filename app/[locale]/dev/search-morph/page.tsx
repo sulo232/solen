@@ -142,6 +142,7 @@ export default function SearchMorphPreviewPage() {
                           onClick={() => { setService(r.svc); setCity(r.city); setDate(r.when); setStep("date"); }} />
                       ))}
                       <p className="mb-1 mt-3 text-[13px] font-semibold text-s-ink-3">Beliebte Stores</p>
+                      {/* mockup: in production a store row navigates to /salon/[slug]; here it fills the Suche field */}
                       {FEATURED_SALONS.map((sl) => (
                         <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
                           onClick={() => { setService(sl.name); advance("service"); }} />
@@ -196,10 +197,12 @@ export default function SearchMorphPreviewPage() {
                       <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">
                         {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                       </div>
-                      {months.map((mDate) => (
-                        <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey}
-                          onPick={(key, label) => { setSelKey(key); setDate(label); }} />
-                      ))}
+                      {months
+                        .filter((mDate) => new Date(mDate.getFullYear(), mDate.getMonth(), 1).getTime() <= windowEnd.getTime())
+                        .map((mDate) => (
+                          <MonthGrid key={mDate.getMonth()} monthDate={mDate} now={now} windowEnd={windowEnd} selKey={selKey}
+                            onPick={(key, label) => { setSelKey(key); setDate(label); }} />
+                        ))}
                     </>
                   ) : (
                     <div className="flex flex-wrap gap-2">
