@@ -65,6 +65,14 @@ export default function SearchMorphPreviewPage() {
   const touchStartY = useRef(0); // guard the scroll-to-morph to downward swipes only
 
   useEffect(() => setMounted(true), []); // portal target ready , escape the page stacking context
+  // hide the /dev app-shell header so the crop shows only the (blurred) homepage , removes the duplicate dimmed back arrow that glitches
+  useEffect(() => {
+    const h = document.querySelector("header");
+    if (!h) return;
+    const prev = h.style.display;
+    h.style.display = "none";
+    return () => { h.style.display = prev; };
+  }, []);
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -184,7 +192,7 @@ export default function SearchMorphPreviewPage() {
     const ref = isS ? serviceRef : cityRef;
     const ph = isS ? "Service, Salon oder Stylist:in" : "Stadt suchen";
     return (
-      <motion.div layout transition={morphT}
+      <motion.div layout="position" transition={morphT}
         className={`mb-3 flex h-12 items-center gap-1.5 rounded-[14px] border border-s-border bg-white ${focusedSearch ? "pl-1 pr-1.5" : "px-4"}`}>
         {focusedSearch ? (
           <button onClick={() => setInputFocused(false)} aria-label="Zurück"
@@ -322,10 +330,10 @@ export default function SearchMorphPreviewPage() {
                 onWheel={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.deltaY > 0) setInputFocused(true); }}
                 onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
                 onTouchMove={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.touches[0].clientY < touchStartY.current) setInputFocused(true); }}>
-                <motion.div layout className="flex flex-col gap-2.5 pb-3">
+                <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
                   <AnimatePresence initial={false}>
                     {STEPS.filter((s) => !(focusedSearch && activeStep !== s)).map((s) => (
-                      <motion.div key={s} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                      <motion.div key={s} layout="position" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                         transition={morphT} className="overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                         {activeStep === s ? (
                           activePanel(s)
