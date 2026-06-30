@@ -10,7 +10,7 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { notFound } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, useMotionValueEvent, animate } from "motion/react";
 import { Search, MapPin, Navigation, X, Clock, User, ArrowLeft, Store, type LucideIcon } from "lucide-react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
@@ -99,6 +99,10 @@ export default function SearchMorphPreviewPage() {
     const c = animate(expand, target, reduce ? { duration: 0 } : { duration: 0.3, ease: EASE });
     return () => c.stop();
   }, [inputFocused, activeStep, reduce, expand]);
+  // scroll-driven commit: when the scroll has grown the sheet ~fully, lock into focused (pinned bar + full list)
+  useMotionValueEvent(expand, "change", (v) => {
+    if (v >= 0.96 && !inputFocused && (activeStep === "service" || activeStep === "location")) setInputFocused(true);
+  });
 
   const now = new Date();
   const months = [now, new Date(now.getFullYear(), now.getMonth() + 1, 1), new Date(now.getFullYear(), now.getMonth() + 2, 1)];
@@ -276,7 +280,7 @@ export default function SearchMorphPreviewPage() {
           )}
         </AnimatePresence>
         {bar(s)}
-        <div className={focusedSearch ? "" : "max-h-[36vh] overflow-hidden"}>
+        <div>
           {s === "service" ? serviceSuggestions(focusedSearch) : cityList()}
         </div>
       </div>
@@ -330,24 +334,9 @@ export default function SearchMorphPreviewPage() {
             </motion.button>,
 
             <motion.div key="sheet"
-              drag="y" dragListener={!focusedSearch}
-              dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.04, bottom: 0.55 }}
-              onDrag={(_e, info) => { if (!focusedSearch) expand.set(info.offset.y < 0 ? Math.min(1, -info.offset.y / 180) : 0); }}
-              onDragEnd={(_e, info) => {
-                if (info.offset.y > 140 || info.velocity.y > 600) { close(); return; }
-                // a SWIPE/flick up (low velocity bar) OR a modest drag snaps it fully open , a swipe expands all the way, not just as far as you dragged
-                if (!focusedSearch && (info.offset.y < -40 || info.velocity.y < -250) && (activeStep === "service" || activeStep === "location")) { setInputFocused(true); }
-                else { animate(expand, focusedSearch ? 1 : 0, reduce ? { duration: 0 } : { duration: 0.26, ease: EASE }); }
-              }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
               style={{ top: cropTop, paddingTop: contentPad }}
               className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "rounded-t-[20px] bg-white" : "bg-transparent"}`}>
-              {!focusedSearch && (
-                <div className="flex shrink-0 justify-center pb-1 pt-2.5">
-                  <span className="h-1 w-9 rounded-full bg-s-border" />
-                </div>
-              )}
-
               {focusedSearch ? (
                 /* FOCUSED (Airbnb): bar PINNED (shrink-0, never scrolls), full list scrolls UNDER it.
                    Invariant: focusedSearch is service/location-only (see derivation), so bar(activeStep) here is never the date step.
@@ -361,7 +350,8 @@ export default function SearchMorphPreviewPage() {
               ) : (
                 /* ACCORDION: frosted floating cards (active panel + thin step bars) + footer */
                 <>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
+                    onScroll={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location")) expand.set(Math.min(1, e.currentTarget.scrollTop / 96)); }}>
                     <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
                       {STEPS.map((s) => (
                         <motion.div key={s} layout="position" transition={morphT}
