@@ -57,3 +57,6 @@ Frontend: `<NoResultsHelper>` in EmptyState; tappable rows that push the adjuste
 2. `count_only=1` on `/api/salons` (self-test good/bad).
 3. `get_nearby_cities` RPC (additive migration) + `/api/search/no-results` + `<NoResultsHelper>` (gate nearby on supply).
 4. Cleanup: delete dead SearchResults.tsx + /api/salons/search + REMOVED.md.
+
+## Post-mockup wiring (owner confirmed 2026-07-01)
+After the mockup is signed off: port into the real `SearchOverlay` (per "Feature 1" above) AND wire personalization , the **DNA** (style-affinity point system: `user_style_affinity` / search-book affinity, see project memories `project_style_affinity_for_you` + `project_search_book_points`). The search results + suggestions should be personalized by the user's DNA/affinity, not just raw ranking. This is part of the port, not the mockup.
