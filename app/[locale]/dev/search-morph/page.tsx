@@ -319,7 +319,7 @@ export default function SearchMorphPreviewPage() {
               dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.55 }}
               onDragEnd={(_e, info) => { if (info.offset.y > 140 || info.velocity.y > 600) close(); }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-[top,background-color] duration-300 ${focusedSearch ? "top-[max(22px,env(safe-area-inset-top))] rounded-t-[20px] bg-white" : "top-[max(56px,calc(env(safe-area-inset-top)+12px))] bg-transparent"}`}>
+              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-colors duration-300 ${focusedSearch ? "top-[max(22px,env(safe-area-inset-top))] rounded-t-[20px] bg-white" : "top-[max(56px,calc(env(safe-area-inset-top)+12px))] bg-transparent"}`}>
               {!focusedSearch && (
                 <div onPointerDown={(e) => dragControls.start(e)}
                   className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
@@ -328,7 +328,9 @@ export default function SearchMorphPreviewPage() {
               )}
 
               {focusedSearch ? (
-                /* FOCUSED (Airbnb): the bar is PINNED (shrink-0, never scrolls) and the full list scrolls UNDER it */
+                /* FOCUSED (Airbnb): bar PINNED (shrink-0, never scrolls), full list scrolls UNDER it.
+                   Invariant: focusedSearch is service/location-only (see derivation), so bar(activeStep) here is never the date step.
+                   Drag-to-dismiss is intentionally accordion-only; the focused state exits via the in-bar back arrow. */
                 <>
                   <div className="shrink-0 px-3 pb-2 pt-2">{bar(activeStep)}</div>
                   <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-5">
