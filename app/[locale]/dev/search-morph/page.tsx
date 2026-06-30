@@ -95,7 +95,7 @@ export default function SearchMorphPreviewPage() {
         {open && (
           <motion.div
             key="surface"
-            className={`fixed inset-0 z-[100] flex flex-col overflow-hidden ${searchFocused ? "bg-white" : "bg-s-bg-sunken/55 backdrop-blur-2xl"}`}
+            className={`fixed inset-0 z-[100] flex flex-col overflow-hidden transition-colors duration-300 ${searchFocused ? "bg-white" : "bg-s-bg-sunken/55 backdrop-blur-2xl"}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -143,7 +143,9 @@ export default function SearchMorphPreviewPage() {
                   {/* capped + internal-scroll in the accordion so Standort/Datum stay visible; uncapped in full-search */}
                   {/* scroll the suggestions -> the card EXPANDS to full search (Airbnb scroll-driven open) */}
                   <div className={searchFocused ? "" : "max-h-[44vh] overflow-y-auto"}
-                    onScroll={(e) => { if (!searchFocused && e.currentTarget.scrollTop > 16) setSearchFocused(true); }}>
+                    onScroll={(e) => { if (!searchFocused && e.currentTarget.scrollTop > 16) setSearchFocused(true); }}
+                    onWheel={(e) => { if (!searchFocused && e.deltaY > 0) setSearchFocused(true); }}
+                    onTouchMove={() => { if (!searchFocused) setSearchFocused(true); }}>
                   {typing ? (
                     loading ? (
                       <div className="space-y-2 pt-1">
@@ -211,7 +213,9 @@ export default function SearchMorphPreviewPage() {
               )}
 
               {/* LOCATION + DATE hide in full-search mode (the search takes the whole screen) */}
-              {!searchFocused && (<>
+              <AnimatePresence initial={false}>
+              {!searchFocused && (
+                <motion.div key="steps" animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.32, ease: EASE }} className="space-y-3 overflow-hidden">
               {step === "location" ? (
                 <ActiveCard title="Wo?">
                   <input value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
@@ -260,7 +264,9 @@ export default function SearchMorphPreviewPage() {
               ) : (
                 <CollapsedCard label="Datum" value={date} placeholder="Jederzeit" onClick={() => setStep("date")} />
               )}
-              </>)}
+                </motion.div>
+              )}
+              </AnimatePresence>
             </div>
 
             {/* sticky action bar , white + gradient fade above (DS: sticky bar = gradient fade), NOT a card */}
