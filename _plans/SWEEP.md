@@ -24,7 +24,11 @@ Customer surface = home, `/{city}/{category}` search, `/salon/{slug}` PDP + book
   - LESSON: the fix-workflow's loop-reviewers read the WORKTREE not MAIN -> false-negative verdicts; I verified MAIN myself (tsc + curl). Point batch-2 reviewers at MAIN abs paths.
   - batch 2 DONE + committed: promo charge fix (discount now applied to the Stripe charge; re-validated server-side, subtracted before fee, idempotent webhook increment via increment_promo_use RPC; migration bookings.promo_code + RPC APPLIED LIVE + verified col/rpc exist), share-dedup (lib/share.ts + 6 consumers), date-dedup (lib/format locale-aware + 3 consumers, fixes FR/IT German weekdays). Verified: tsc clean, home/PDP/search render 200, pay-intent 400-not-500. Money-path council running.
   - FOLLOW: refresh inventory snapshot for bookings.promo_code (live, snapshot stale).
-  - NEXT: batch 3 = low-severity tail (14 items), then P3 mockups (30 parked design+motion).
+  - MONEY-PATH COUNCIL applied: FIXED security (promo .ilike -> .eq(upper) in 3 routes + charset , kills LIKE-wildcard injection + secret-code redemption; verified real matches, wildcard does not) + remaining_at_salon discounted-gross. Committed.
+  - **KEY FINDING , promo is DORMANT until a FE input exists**: the booking wizard has NO promo-code field (formData.promoCode always ''), so booking.promo_code is always null and the (now correct + secure) discount never runs. The promo INPUT is FRONTEND -> PARKED as a mockup. Backend is ready + secure; the feature goes live only once the FE input lands.
+  - PARKED (backend follow): extract the duplicated promo-validation (booking-pay-intent + /api/promo/validate share 8 checks) into lib/promo/validate-code (dedup, council HIGH).
+  - PARKED (i18n-copy, owner): German strings in booking-pay-intent error + lib/format time unit.
+  - NEXT: batch 3 = low-severity tail, then P3 mockups (30 parked design+motion + the promo-input + bookings Load-more).
 
 ## Backlog
 Full categorized list: `_plans/SWEEP_BACKLOG.md` (40 fix, 30 mockup).
