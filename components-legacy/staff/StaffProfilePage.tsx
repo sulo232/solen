@@ -10,6 +10,7 @@ import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
+import { shareOrCopy } from "@/lib/share";
 
 interface StaffProfile {
   id: string;
@@ -234,11 +235,7 @@ export default function StaffProfilePage({
         <button
           type="button"
           aria-label="Teilen"
-          onClick={() => {
-            const url = window.location.href;
-            if (navigator.share) navigator.share({ title: staff.name, url }).catch(() => {});
-            else navigator.clipboard?.writeText(url).catch(() => {});
-          }}
+          onClick={() => shareOrCopy(staff.name, window.location.href)}
           className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
         >
           <Share size={18} strokeWidth={2.1} className="text-s-ink" />

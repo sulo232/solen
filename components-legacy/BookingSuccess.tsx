@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Calendar, Share2, MapPin } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { formatPrice } from "@/lib/format";
+import { shareOrCopy } from "@/lib/share";
 import { markFirstBooking } from "@/components-legacy/ui/PWAInstallPrompt";
 import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 import CelebrationRing from "@/components-legacy/ui/CelebrationRing";
@@ -105,16 +106,11 @@ export default function BookingSuccess(props: BookingSuccessProps) {
   };
 
   const handleShare = async () => {
-    const shareData = {
-      title: t("shareTitle", { salonName: props.salonName }),
-      text: `${props.salonName} ${dateStr} ${timeStr}`,
-      url: `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
-    };
-    if (navigator.share) {
-      await navigator.share(shareData).catch((err) => console.error("[BookingSuccess] navigator.share failed:", err));
-    } else {
-      await navigator.clipboard.writeText(shareData.url);
-    }
+    await shareOrCopy(
+      t("shareTitle", { salonName: props.salonName }),
+      `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
+      `${props.salonName} ${dateStr} ${timeStr}`,
+    );
   };
 
   const summaryRows: Array<{ label: string; value: string }> = [

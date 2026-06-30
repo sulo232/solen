@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 // V3-D420: FROST_GLASS promoted to a shared util (canonical "A" recipe, control-over-photo).
 // Was a local const here (V3-D72); consolidated so SaveHeart / card overlays stop re-deriving it.
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { shareOrCopy } from "@/lib/share";
 
 /**
  * SalonHero — V2-D53.3 (2026-05-11).
@@ -105,14 +106,7 @@ export function SalonHero({
           <button
             type="button"
             aria-label="Salon teilen"
-            onClick={() => {
-              if (typeof navigator !== "undefined" && navigator.share) {
-                navigator.share({ title: salon.name, url: window.location.href }).catch(() => {});
-              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-                // fallback for browsers without the Web Share API (audit #20) — copy the link
-                navigator.clipboard.writeText(window.location.href).catch(() => {});
-              }
-            }}
+            onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
             <span aria-hidden style={FROST_GLASS} className="grid h-[38px] w-[38px] place-items-center rounded-full transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]">

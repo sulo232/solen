@@ -7,6 +7,7 @@ import { ArrowLeft, Share } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
 import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
+import { shareOrCopy } from "@/lib/share";
 
 /**
  * SalonStickyTabNav — V2-D53.3 (2026-05-11).
@@ -36,11 +37,7 @@ export function SalonStickyTabNav({
   const router = useRouter();
   // V3-D421 (Hero B): share action mirrors SalonHero's, for the mobile scroll-header.
   const shareSalon = React.useCallback(() => {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      navigator.share({ title: salon.name, url: window.location.href }).catch(() => {});
-    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href).catch(() => {});
-    }
+    shareOrCopy(salon.name, window.location.href);
   }, [salon.name]);
   const [activeTab, setActiveTab] = React.useState<TabKey>("photos");
   const [visible, setVisible] = React.useState(false);

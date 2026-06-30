@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Scissors, Star, ArrowLeft, Share2, MapPin } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import { shareOrCopy } from "@/lib/share";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 
 interface BarberProfile {
@@ -91,13 +92,9 @@ export default function BarberProfilePage() {
     );
   }
 
-  const handleShare = async () => {
+  const handleShare = () => {
     const url = `${window.location.origin}/${locale}/salon/${salonSlug}/barber/${barberSlug}`;
-    if (navigator.share) {
-      await navigator.share({ title: barber.name, url });
-    } else {
-      await navigator.clipboard.writeText(url);
-    }
+    shareOrCopy(barber.name, url);
   };
 
   const styleFilters = ["fade", "buzz", "crop", "pompadour", "afro", "braids", "razor_art"];

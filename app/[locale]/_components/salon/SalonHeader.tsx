@@ -7,6 +7,7 @@ import { HeartButton } from "../homepage/HeartButton";
 import { StatusInline } from "./StatusInline";
 import type { SalonDetail } from "./_shared";
 import { computeOpenStatus } from "./_shared";
+import { shareOrCopy } from "@/lib/share";
 
 /**
  * SalonHeader — V3-D232 (2026-05-27, hero austerity strip per Fresha capture).
@@ -132,15 +133,7 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
           <button
             type="button"
             aria-label="Salon teilen"
-            onClick={() => {
-              if (typeof navigator !== "undefined" && navigator.share) {
-                navigator
-                  .share({ title: salon.name, url: window.location.href })
-                  .catch(() => {});
-              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-                navigator.clipboard.writeText(window.location.href).catch(() => {});
-              }
-            }}
+            onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95"
           >
             <Share size={18} strokeWidth={2.1} className="text-s-ink" aria-hidden />
