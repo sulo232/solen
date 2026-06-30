@@ -207,7 +207,7 @@ export default function SearchMorphPreviewPage() {
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
             <span className={`truncate text-[15px] ${service ? "text-s-ink" : "text-s-ink-3"}`}>{service || "Service, Salon oder Stylist:in"}</span>
           </button>
-          <div className="max-h-[30vh] overflow-y-auto overscroll-contain">{serviceSuggestions(false)}</div>
+          <div className="max-h-[30vh] overflow-y-auto overscroll-contain" onWheel={(e) => { if (e.deltaY > 0) setInputFocused(true); }} onTouchMove={() => setInputFocused(true)}>{serviceSuggestions(false)}</div>
         </div>
       );
     }
@@ -220,7 +220,7 @@ export default function SearchMorphPreviewPage() {
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
             <span className={`truncate text-[15px] ${city ? "text-s-ink" : "text-s-ink-3"}`}>{city || "Stadt suchen"}</span>
           </button>
-          <div className="max-h-[30vh] overflow-y-auto overscroll-contain">{cityList()}</div>
+          <div className="max-h-[30vh] overflow-y-auto overscroll-contain" onWheel={(e) => { if (e.deltaY > 0) setInputFocused(true); }} onTouchMove={() => setInputFocused(true)}>{cityList()}</div>
         </div>
       );
     }
