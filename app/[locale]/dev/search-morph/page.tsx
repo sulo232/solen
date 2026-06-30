@@ -59,14 +59,14 @@ export default function SearchMorphPreviewPage() {
   // It is never set by scroll position -- scroll only drives the expand motion value.
   const [inputFocused, setInputFocused] = useState(false);
   const [service, setService] = useState("");
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("Keine Präferenz"); // location default = no preference (Egal)
   const [date, setDate] = useState("");
   const [serviceQ, setServiceQ] = useState("");
   const [cityQ, setCityQ] = useState("");
   const [dateTab, setDateTab] = useState<"daten" | "flexibel">("daten");
   const [monthOffset, setMonthOffset] = useState(0); // paged calendar: 0 = current month, arrows step it
   const [selKey, setSelKey] = useState<string | null>(null);
-  const [period, setPeriod] = useState("Egal"); // optional time-of-day; expands once a date is picked ("Egal" = no time preference)
+  const [period, setPeriod] = useState(""); // optional time-of-day; default empty = any time; tap a chip to toggle
   const [recents, setRecents] = useState(RECENTS); // removable via the per-row X
   const [mounted, setMounted] = useState(false);
   const [safeTop, setSafeTop] = useState(0);
@@ -142,7 +142,7 @@ export default function SearchMorphPreviewPage() {
   };
   const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); };
   const reset = () => {
-    setService(""); setCity(""); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null);
+    setService(""); setCity("Keine Präferenz"); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setPeriod("");
     setActiveStep("service"); setInputFocused(false); collapse();
   };
 
@@ -201,7 +201,7 @@ export default function SearchMorphPreviewPage() {
 
   const cityList = (): ReactNode => (
     <>
-      <SuggestRow name="In der Nähe" sub="Aktueller Standort" Icon={Navigation} tint onClick={() => { setCity("In der Nähe"); advance("location"); }} />
+      <SuggestRow name="Keine Präferenz" sub="Überall in der Schweiz" Icon={Globe} onClick={() => { setCity("Keine Präferenz"); setCityQ(""); advance("location"); }} />
       {cities.map((c) => (
         <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
       ))}
@@ -377,19 +377,15 @@ export default function SearchMorphPreviewPage() {
                               </div>
                               <div className="mb-1 grid grid-cols-7 text-center text-[12px] font-medium text-s-ink-3">{WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}</div>
                               <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey} hideHeader onPick={(key, label) => { setSelKey(key); setDate(label); setTimeout(() => dateScrollRef.current?.scrollTo({ top: dateScrollRef.current.scrollHeight, behavior: "smooth" }), 300); }} />
-                              {/* time-of-day picker , expands once a date is picked; optional ("Egal" = no time) */}
-                              <AnimatePresence initial={false}>
-                                {selKey && (
-                                  <motion.div key="uhrzeit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: reduce ? 0 : 0.26, ease: EASE }} className="overflow-hidden">
-                                    <p className="mb-2 mt-2 text-[13px] font-semibold text-s-ink">Uhrzeit</p>
-                                    <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-                                      {["Egal", "Vormittag", "Nachmittag", "Abend"].map((tp) => (
-                                        <button key={tp} onClick={() => setPeriod(tp)} className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${period === tp ? "border-s-accent bg-s-accent text-white" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{tp}</button>
-                                      ))}
-                                    </div>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
+                              {/* time-of-day , reveals once a date is picked (CSS max-height = smooth). Default = none (any time); tap a chip to toggle on/off. */}
+                              <div className={`overflow-hidden transition-[max-height,opacity] duration-300 ${selKey ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}>
+                                <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">Uhrzeit</p>
+                                <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                                  {["Vormittag", "Nachmittag", "Abend"].map((tp) => (
+                                    <button key={tp} onClick={() => setPeriod((cur) => (cur === tp ? "" : tp))} className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${period === tp ? "border-s-accent bg-s-accent text-white" : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>{tp}</button>
+                                  ))}
+                                </div>
+                              </div>
                             </motion.div>
                           ) : (
                             <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
