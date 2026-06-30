@@ -24,12 +24,11 @@ import { Skeleton } from "@/app/[locale]/_components/primitives";
 const EASE = [0.32, 0.72, 0, 1] as const;
 const OPEN_T = { duration: 0.4, ease: EASE } as const;
 const MORPH_T = { duration: 0.34, ease: EASE } as const;
-const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Flexibel"];
+const FLEX_DATES = ["Heute", "Morgen", "Diese Woche", "Wochenende", "Diesen Monat", "Flexibel"]; // 6 -> balanced 2x3 grid
 const WEEKDAYS = ["M", "D", "M", "D", "F", "S", "S"]; // Monday-first (de-CH)
 // selected-ok: the ONE primary commit CTA stays ink (bg-s-ink) per the design contract; every other selected state is gray/blue-border
 const COMMIT_BTN = "flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]";
-const EXPAND_DIST = 120; // px of scroll that maps to the full accordion->focused expand (short = less swipe)
-const SNAP_AT = 0.4;     // on scroll-end, >= this commits to focused, else springs back , never rests half-open
+const EXPAND_DIST = 120; // px of scroll that maps to the full accordion->focused expand (short = less swipe; pure 1:1 follow)
 const HEADING_H = 56;    // collapsing heading height
 const ROW_H = 66;        // collapsing step-row wrapper height = h-14 (56) + pt-2.5 (10); must fit the row or the two rows overlap
 const FOOTER_H = 68;     // footer slide-off distance
@@ -71,9 +70,7 @@ export default function SearchMorphPreviewPage() {
   const serviceRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const committed = useRef(false); // once fully expanded, LOCK it , scrolling back down must NOT un-expand (owner: reverse is gimmicky); exit via the back arrow
-  const snapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined); // scroll-end debounce -> snap to a full state (never rests half-open)
-  const snapping = useRef(false);  // true while a snap animation runs , ignore the scroll it triggers
+  const committed = useRef(false); // at the very top, LOCK it , scrolling back down must NOT un-expand (owner: reverse is gimmicky); exit via the back arrow
 
   // ── SMOOTHNESS: nothing animates LAYOUT per scroll frame except the crop. The heading scrolls away NATIVELY
   // (it lives in the scroll container, bar is sticky), the steps + footer collapse DISCRETELY via a CSS class at
@@ -105,11 +102,10 @@ export default function SearchMorphPreviewPage() {
     return () => { document.body.style.overflow = prev; };
   }, [open]);
   useEffect(() => { if (inputFocused) (activeStep === "location" ? cityRef : serviceRef).current?.focus(); }, [inputFocused, activeStep]);
-  // inputFocused is a SIDE-EFFECT of expand (editable + back-arrow at the very end), NOT a layout switch.
-  // At the top, COMMIT: lock expand at 1 so scrolling back down scrolls the list instead of un-expanding.
+  // PURE finger-follow: expand tracks scrollTop 1:1 (no auto-snap). At the very top, LOCK once (focused) so scrolling
+  // back down scrolls the list instead of un-expanding. Exit via the back arrow.
   useMotionValueEvent(expand, "change", (v) => {
-    if (v >= 0.96 && !committed.current && activeStep !== "date") { committed.current = true; setInputFocused(true); grow(1); } // snap to EXACTLY 1 so the footer fully collapses (no gap)
-    else if (v < 0.85 && inputFocused && !committed.current) setInputFocused(false);
+    if (v >= 0.98 && !committed.current && activeStep !== "date") { committed.current = true; setInputFocused(true); expand.set(1); } // lock at the top , instant, no auto-animation
   });
 
   const now = new Date();
@@ -124,20 +120,8 @@ export default function SearchMorphPreviewPage() {
   const morphT = reduce ? { duration: 0 } : MORPH_T;
   const openT = reduce ? { duration: 0 } : OPEN_T;
   const grow = (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE });
-  // collapse back to the accordion: release the commit-lock + rewind the list scroll so the next expand starts clean
-  const collapse = () => { committed.current = false; snapping.current = false; if (snapTimer.current) clearTimeout(snapTimer.current); if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
-  // on scroll-end: settle to focused (>= SNAP_AT) or back to accordion , so a partial swipe never rests half-open
-  const snapSettle = () => {
-    if (committed.current || snapping.current) return;
-    if (expand.get() >= SNAP_AT) {
-      committed.current = true; setInputFocused(true);
-      if (listRef.current) listRef.current.scrollTop = 0; // committed now blocks onScroll, so this reset is safe
-      grow(1);
-    } else {
-      snapping.current = true; grow(0);
-      setTimeout(() => { if (listRef.current) listRef.current.scrollTop = 0; snapping.current = false; }, 360); // rewind after the retract so it doesn't jump
-    }
-  };
+  // collapse back to the accordion: release the lock + rewind the list scroll so the next expand starts clean
+  const collapse = () => { committed.current = false; if (listRef.current) listRef.current.scrollTop = 0; grow(0); };
 
   const openStep = (s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); };
   const advance = (s: Step) => {
@@ -310,12 +294,7 @@ export default function SearchMorphPreviewPage() {
                   className="flex min-h-0 flex-1 flex-col">
                   <div className={`flex min-h-0 flex-1 flex-col overflow-hidden bg-white transition-[margin,border-radius,box-shadow] duration-300 ${inputFocused ? "mx-0 rounded-none" : "mx-3 rounded-[22px] shadow-[0_18px_50px_rgba(10,10,10,0.13)]"}`}>
                     <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-                      onScroll={(e) => {
-                        if (committed.current || snapping.current) return;
-                        expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST));
-                        if (snapTimer.current) clearTimeout(snapTimer.current);
-                        snapTimer.current = setTimeout(snapSettle, 110);
-                      }}>
+                      onScroll={(e) => { if (!committed.current) expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
                       {!inputFocused && (
                         <h2 className="px-4 pb-1 pt-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
                       )}
@@ -331,8 +310,8 @@ export default function SearchMorphPreviewPage() {
                 </motion.div>
               ) : (
                 /* LOCATION or DATE , plain accordion in FIXED order (Suche > Standort > Datum); the active one expands IN PLACE, no scroll-expand. */
-                <motion.div key={activeStep} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
-                  className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+                <motion.div key={activeStep} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }}
+                  style={{ transformOrigin: "top center" }} className="flex min-h-0 flex-1 flex-col px-3 pt-3">
                   {STEPS.map((s) => s !== activeStep ? (
                     <div key={s} className="mb-2.5 shrink-0">{collapsedRow(s)}</div>
                   ) : s === "location" ? (
@@ -340,7 +319,7 @@ export default function SearchMorphPreviewPage() {
                       <h2 className="mb-3 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wo?</h2>
                       <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
                         <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-3" />
-                        <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen" autoFocus
+                        <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
                           className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
                         {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-3"><X size={18} strokeWidth={2.2} /></button>}
                       </div>
