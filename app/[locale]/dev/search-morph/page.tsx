@@ -75,22 +75,22 @@ export default function SearchMorphPreviewPage() {
         </div>
         <p className="mb-1.5 text-[13px] font-medium text-s-ink-3">Beauty und Wellness in der ganzen Schweiz</p>
         <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
-        <button type="button" onClick={() => setOpen(true)}
+        <motion.button layoutId="searchMorph" type="button" onClick={() => setOpen(true)}
           className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-3 shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum
-        </button>
+        </motion.button>
       </div>
 
       <AnimatePresence>
         {open && (
           <motion.div
             key="surface"
-            className="fixed inset-0 z-[60] flex flex-col bg-s-bg-sunken/55 backdrop-blur-2xl"
-            style={{ transformOrigin: "top center" }}
-            initial={{ opacity: 0, scale: 0.98, y: -8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.98, y: -8 }}
-            transition={{ duration: 0.42, ease: EASE }}
+            layoutId="searchMorph"
+            className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-s-bg-sunken/55 backdrop-blur-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
           >
             <div className="flex justify-end px-5 pt-[max(14px,env(safe-area-inset-top))]">
               <button onClick={close} aria-label="Schliessen"
@@ -185,12 +185,16 @@ export default function SearchMorphPreviewPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t border-s-border bg-s-bg-sunken/60 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-              <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
-              {/* selected-ok: the ONE primary commit CTA, ink per the design contract (not a selected state) */}
-              <button className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]">
-                <Search size={16} strokeWidth={2.2} /> Suchen
-              </button>
+            {/* sticky action bar , white + gradient fade above (DS: sticky bar = gradient fade), NOT a card */}
+            <div className="relative bg-white">
+              <div className="pointer-events-none absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-white to-transparent" />
+              <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+                <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
+                {/* selected-ok: primary commit CTA, ink per design contract */}
+                <button className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white active:scale-[0.98]">
+                  <Search size={16} strokeWidth={2.2} /> Suchen
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
