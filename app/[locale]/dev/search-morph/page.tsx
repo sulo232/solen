@@ -319,52 +319,58 @@ export default function SearchMorphPreviewPage() {
               dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.55 }}
               onDragEnd={(_e, info) => { if (info.offset.y > 140 || info.velocity.y > 600) close(); }}
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={openT}
-              className="fixed inset-x-0 bottom-0 top-[max(56px,calc(env(safe-area-inset-top)+12px))] z-[101] flex flex-col overflow-hidden bg-transparent">
-              <div onPointerDown={(e) => dragControls.start(e)}
-                className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
-                <span className="h-1 w-9 rounded-full bg-s-border" />
-              </div>
+              className={`fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden transition-[top,background-color] duration-300 ${focusedSearch ? "top-[max(22px,env(safe-area-inset-top))] rounded-t-[20px] bg-white" : "top-[max(56px,calc(env(safe-area-inset-top)+12px))] bg-transparent"}`}>
+              {!focusedSearch && (
+                <div onPointerDown={(e) => dragControls.start(e)}
+                  className="flex shrink-0 cursor-grab touch-none justify-center pb-1 pt-2.5 active:cursor-grabbing">
+                  <span className="h-1 w-9 rounded-full bg-s-border" />
+                </div>
+              )}
 
-              {/* ONE morphing structure , the step's bar slides up (layout) while the heading + other steps + footer collapse (animated height). No subtree swap = no jump. */}
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
-                onWheel={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.deltaY > 0) setInputFocused(true); }}
-                onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
-                onTouchMove={(e) => { if (!focusedSearch && (activeStep === "service" || activeStep === "location") && e.touches[0].clientY < touchStartY.current) setInputFocused(true); }}>
-                <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
-                  <AnimatePresence initial={false}>
-                    {STEPS.filter((s) => !(focusedSearch && activeStep !== s)).map((s) => (
-                      <motion.div key={s} layout="position" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                        transition={morphT} className="overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
-                        {activeStep === s ? (
-                          activePanel(s)
-                        ) : (
-                          <button onClick={() => openStep(s)}
-                            className="flex h-14 w-full items-center justify-between px-4 text-left">
-                            <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
-                            <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
-                              {stepMeta[s].value || stepMeta[s].placeholder}
-                            </span>
-                          </button>
-                        )}
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
-              </div>
-
-              <AnimatePresence initial={false}>
-                {!focusedSearch && (
-                  <motion.div key="footer" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                    transition={morphT} className="shrink-0 overflow-hidden">
-                    <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+              {focusedSearch ? (
+                /* FOCUSED (Airbnb): the bar is PINNED (shrink-0, never scrolls) and the full list scrolls UNDER it */
+                <>
+                  <div className="shrink-0 px-3 pb-2 pt-2">{bar(activeStep)}</div>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-5">
+                    {activeStep === "location" ? cityList() : serviceSuggestions(true)}
+                  </div>
+                </>
+              ) : (
+                /* ACCORDION: frosted floating cards (active panel + thin step bars) + footer */
+                <>
+                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-1"
+                    onWheel={(e) => { if ((activeStep === "service" || activeStep === "location") && e.deltaY > 0) setInputFocused(true); }}
+                    onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
+                    onTouchMove={(e) => { if ((activeStep === "service" || activeStep === "location") && e.touches[0].clientY < touchStartY.current) setInputFocused(true); }}>
+                    <motion.div layout="position" className="flex flex-col gap-2.5 pb-3">
+                      {STEPS.map((s) => (
+                        <motion.div key={s} layout="position" transition={morphT}
+                          className="overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                          {activeStep === s ? (
+                            activePanel(s)
+                          ) : (
+                            <button onClick={() => openStep(s)}
+                              className="flex h-14 w-full items-center justify-between px-4 text-left">
+                              <span className="text-[14px] font-medium text-s-ink-2">{stepMeta[s].label}</span>
+                              <span className={`truncate pl-3 text-[14px] ${stepMeta[s].value ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
+                                {stepMeta[s].value || stepMeta[s].placeholder}
+                              </span>
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </div>
+                  <div className="shrink-0 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
+                    <div className="flex items-center justify-between">
                       <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
                       <button onClick={close} className={COMMIT_BTN}>
                         <Search size={16} strokeWidth={2.2} /> Suchen
                       </button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </>
+              )}
             </motion.div>,
           ]}
         </AnimatePresence>,
