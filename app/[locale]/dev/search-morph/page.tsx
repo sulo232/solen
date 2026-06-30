@@ -77,7 +77,9 @@ export default function SearchMorphPreviewPage() {
   // commit, and the card's shadow/bg/margin/radius toggle by the `inputFocused` class. Per-frame box-shadow +
   // multiple height animations were the freeze. Only `cropTop` (+ the cheap X-fade) stay scroll-linked.
   const expand = useMotionValue(0);
-  const cropTop = useTransform(expand, [0, 0.6, 1], [96, 96, Math.max(safeTop + 6, 50)]); // sheet rises a touch as you scroll; focused stays a cropped sheet (blur above), not full-screen
+  const cropTop = useTransform(expand, [0, 1], [96, Math.max(safeTop + 6, 50)]); // LINEAR: sheet rises with the scroll from the start (was held-then-lurch); focused = cropped, not full-screen
+  const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]);       // heading collapses (sibling above the list, so it never shifts the list scroll , no jump)
+  const headingOp = useTransform(expand, [0, 0.42], [1, 0]);
   const xOpacity = useTransform(expand, [0.82, 1], [1, 0]);               // close-X fades as it goes focused
 
   useEffect(() => setMounted(true), []);
@@ -293,13 +295,14 @@ export default function SearchMorphPreviewPage() {
                 <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }}
                   className="flex min-h-0 flex-1 flex-col">
                   <div className={`flex min-h-0 flex-1 flex-col overflow-hidden bg-white transition-[margin,border-radius,box-shadow] duration-300 ${inputFocused ? "mx-0 rounded-none" : "mx-3 rounded-[22px] shadow-[0_18px_50px_rgba(10,10,10,0.13)]"}`}>
-                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                    {/* heading is a SIBLING above the list (collapses by height) , collapsing it never shifts the list scroll, so no jump */}
+                    <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
+                      <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
+                    </motion.div>
+                    <div className="shrink-0 px-3 pb-2 pt-1">{bar("service")}</div>
+                    <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4"
                       onScroll={(e) => { if (!committed.current) expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
-                      {!inputFocused && (
-                        <h2 className="px-4 pb-1 pt-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Wonach suchst du?</h2>
-                      )}
-                      <div className="sticky top-0 z-10 bg-white px-3 pb-2 pt-3">{bar("service")}</div>
-                      <div className="px-4 pb-4">{serviceSuggestions()}</div>
+                      {serviceSuggestions()}
                     </div>
                   </div>
                   <div className={`overflow-hidden px-3 transition-[max-height,opacity] duration-300 ${inputFocused ? "max-h-0 opacity-0" : "max-h-44 opacity-100"}`}>
