@@ -8,6 +8,8 @@ import { sendNotification } from "@/lib/notifications";
 
 // review_prompt notifications self-expire after this many days (auto-deleted earlier on review submit).
 const REVIEW_PROMPT_TTL_DAYS = 30;
+const SOLEN_EMAIL_SENDER = "Solen <noreply@solen.ch>";
+const RESEND_EMAILS_URL = "https://api.resend.com/emails";
 
 /**
  * Cron handler: send review prompt email 24h after completed appointment.
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
   const windowEnd = new Date(now.getTime() - 23 * 60 * 60 * 1000);
 
   // Find bookings completed ~24h ago that haven't been prompted
-  const { data: bookings } = await supabase
+  const { data: bookings, error: bookingsErr } = await supabase
     .from("bookings")
     .select("id, user_id, salon_id, starts_at, status, review_prompt_sent, salons(name, slug, google_place_id, stripe_account_id), staff_members(name, avatar_url), profiles(display_name, banned_at, locale)")
     .eq("status", "completed")
@@ -44,6 +46,11 @@ export async function GET(req: NextRequest) {
     .gte("starts_at", windowStart.toISOString())
     .lte("starts_at", windowEnd.toISOString())
     .limit(50);
+
+  if (bookingsErr) {
+    console.error("[review-prompt] bookings query failed:", bookingsErr);
+    return NextResponse.json({ error: "bookings_query_failed" }, { status: 500 });
+  }
 
   // TTL: delete review_prompt notifications older than 30 days
   try {
@@ -84,13 +91,18 @@ export async function GET(req: NextRequest) {
     const userLocale = profile?.locale || "de";
 
     // Check if user already left a high-rating review for this booking's salon
-    const { data: existingReview } = await supabase
+    const { data: existingReview, error: existingReviewErr } = await supabase
       .from("reviews")
       .select("id, rating")
       .eq("user_id", booking.user_id)
       .eq("salon_id", booking.salon_id)
       .gte("created_at", windowStart.toISOString())
       .maybeSingle();
+
+    if (existingReviewErr) {
+      console.error(`[review-prompt] existingReview check failed for ${booking.id}:`, existingReviewErr);
+      continue;
+    }
 
     const isHighRating = existingReview && existingReview.rating >= 4;
     const hasGooglePlace = salon?.google_place_id;
@@ -155,14 +167,14 @@ export async function GET(req: NextRequest) {
         // User already rated 4-5 stars on Solen → nudge Google review
         const googleReviewUrl = `https://search.google.com/local/writereview?placeid=${salon.google_place_id}`;
 
-        await fetch("https://api.resend.com/emails", {
+        await fetch(RESEND_EMAILS_URL, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${resendApiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Solen <noreply@solen.ch>",
+            from: SOLEN_EMAIL_SENDER,
             to: email,
             subject: lang.googleSubject,
             html: `
@@ -183,14 +195,14 @@ export async function GET(req: NextRequest) {
         googlePushCount++;
       } else {
         // Standard review prompt
-        await fetch("https://api.resend.com/emails", {
+        await fetch(RESEND_EMAILS_URL, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${resendApiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Solen <noreply@solen.ch>",
+            from: SOLEN_EMAIL_SENDER,
             to: email,
             subject: lang.solenSubject,
             html: `
@@ -228,10 +240,10 @@ export async function GET(req: NextRequest) {
           },
           tipLocale,
         );
-        await fetch("https://api.resend.com/emails", {
+        await fetch(RESEND_EMAILS_URL, {
           method: "POST",
           headers: { "Authorization": `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ from: "Solen <noreply@solen.ch>", to: email, subject: tip.subject, html: tip.html }),
+          body: JSON.stringify({ from: SOLEN_EMAIL_SENDER, to: email, subject: tip.subject, html: tip.html }),
         }).catch((err) => console.error(`[review-prompt] tip email failed for booking ${booking.id}:`, err));
       }
 
