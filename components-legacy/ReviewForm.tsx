@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import {
   X,
@@ -23,6 +22,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
+import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -76,30 +76,6 @@ const AMENITY_ITEMS: AmenityItem[] = [
   { key: "student_discount", icon: GraduationCap, labelKey: "student_discount" },
 ];
 
-// German display labels for each amenity (mirrors SalonAdditionalInfo)
-const AMENITY_LABEL_DE: Record<string, string> = {
-  pet_friendly: "Haustiere willkommen",
-  kid_friendly: "Kinderfreundlich",
-  wifi_friendly: "Kostenloses WLAN",
-  wheelchair_accessible: "Rollstuhlgerecht",
-  near_public_transport: "Nähe ÖV",
-  lgbtq_friendly: "LGBTQ+ willkommen",
-  woman_owned: "Frauengeführt",
-  family_owned: "Familiengeführt",
-  student_discount: "Studentenrabatt",
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-function initialsOf(name?: string): string {
-  if (!name) return "?";
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "?";
-  return ((parts[0][0] ?? "") + (parts[parts.length - 1][0] ?? "")).toUpperCase();
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Main component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -116,6 +92,8 @@ export default function ReviewForm({
   onClose,
 }: ReviewFormProps) {
   const t = useTranslations("reviews") as any;
+  // Amenity labels live in the searchUi namespace (shared with the search filters).
+  const tAmenity = useTranslations("searchUi") as any;
   const reduced = useReducedMotion() ?? false;
 
   const [rating, setRating] = useState(0);
@@ -125,7 +103,7 @@ export default function ReviewForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Salon variant: selected amenity keys (visual/state only - no backend yet)
+  // Salon variant: selected amenity keys (POSTed as attributes, persisted to review_attributes).
   const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
 
   // One blob URL per photo, revoked when photos change / on unmount (no per-render leak).
@@ -320,23 +298,10 @@ export default function ReviewForm({
           initial="hidden"
           animate="visible"
         >
-          {/* Staff avatar: 64px sunken circle with initials or photo (stylist only) */}
+          {/* Staff avatar (stylist only) , the canonical Avatar primitive (photo-or-initials). */}
           {!isSalon && (
-            <motion.div
-              variants={reducedItem}
-              className="mb-4 mt-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-s-bg-sunken text-[18px] font-semibold text-s-ink-2"
-            >
-              {staffPhotoUrl ? (
-                <Image
-                  src={staffPhotoUrl}
-                  alt={staffName ?? "Stylist"}
-                  width={64}
-                  height={64}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span>{initialsOf(staffName)}</span>
-              )}
+            <motion.div variants={reducedItem} className="mb-4 mt-2">
+              <Avatar src={staffPhotoUrl} name={staffName ?? "Stylist"} size={64} />
             </motion.div>
           )}
 
@@ -498,7 +463,7 @@ export default function ReviewForm({
                             >
                               {/* selected = gray fill, the amenity icon STAYS (no checkmark swap) */}
                               <Icon size={12} strokeWidth={2} className="shrink-0" />
-                              <span>{AMENITY_LABEL_DE[item.key]}</span>
+                              <span>{tAmenity(`amenity_${item.key}`)}</span>
                             </button>
                           );
                         })}
