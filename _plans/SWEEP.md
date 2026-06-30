@@ -28,7 +28,14 @@ Customer surface = home, `/{city}/{category}` search, `/salon/{slug}` PDP + book
   - **KEY FINDING , promo is DORMANT until a FE input exists**: the booking wizard has NO promo-code field (formData.promoCode always ''), so booking.promo_code is always null and the (now correct + secure) discount never runs. The promo INPUT is FRONTEND -> PARKED as a mockup. Backend is ready + secure; the feature goes live only once the FE input lands.
   - PARKED (backend follow): extract the duplicated promo-validation (booking-pay-intent + /api/promo/validate share 8 checks) into lib/promo/validate-code (dedup, council HIGH).
   - PARKED (i18n-copy, owner): German strings in booking-pay-intent error + lib/format time unit.
-  - NEXT: batch 3 = low-severity tail, then P3 mockups (30 parked design+motion + the promo-input + bookings Load-more).
+  - batch 3 DONE + committed: search-perf (favorites-prefetch guard + stable walk-in dep), parallelize (live-state Promise.allSettled, PDP-reviews bound+hidden-filter, unavailable-dates Zurich days), pdp-cleanup (lazy SalonVenuesNearby, CategoryBrowseRails dedup, formatPrice, dead StatusPill deleted). Verified pages 200 + tsc clean.
+  - Cleanup: 36 macOS sync-junk route dirs removed (untracked).
+
+## P2 FIX LOOP , COMPLETE (2026-06-30)
+All customer-facing fix items shipped + verified + committed across batches 1-3 + 3 councils (bugs, perf, storage, code-health, money/promo, security). SKIPPED as marginal/auth-sensitive (parked): edge getSession() round-trip (auth-sensitive), PayConfirmStep `as any` (cosmetic), PhotoGallery empty-catch (chat is OFF). 2 DECISIONS parked (gender + deals = data). i18n-copy parked for owner.
+
+## P3 , MOCKUPS (next, frontend , one coherent pass, mockup-first, owner approval)
+Owner's emphasized ask: "more morphing + animation everywhere, find all, make mockups." Build from the 30 `mockup` items in SWEEP_BACKLOG.md + the MOTION lens inventory, PLUS the two functional-but-frontend pieces the fix loop surfaced: the **promo-code input** in the booking wizard (unlocks the live promo discount) + a **Load-more** on BookingsList. NEVER auto-applied , shown for approval.
 
 ## Backlog
 Full categorized list: `_plans/SWEEP_BACKLOG.md` (40 fix, 30 mockup).
