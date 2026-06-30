@@ -54,6 +54,18 @@ export const createBookingSchema = z
     guest_email: z.string().email().optional(),
     // Hair step v3: one-line customer wish for THIS appointment (bookings.customer_note).
     customer_note: z.string().max(140).optional().nullable(),
+    // Promo / gift-card fix (2026-06-30): the FE (PayConfirmStep) sends these; without them
+    // Zod silently STRIPPED the promo, so the booking never persisted it and the discount the
+    // UI promised was never applied to the charge. promo_code is persisted on the booking and
+    // RE-VALIDATED server-side in /api/stripe/booking-pay-intent (the client value is never
+    // trusted for the discount). gift_card_code is accepted so it is not a 400, but the
+    // booking-charge gift-card redemption path is intentionally NOT wired (gift cards are
+    // owner-HIDDEN, 2026-06-14): see booking-pay-intent for the explicit skip plus note.
+    // total_price is the client's display total; accepted to avoid a strip-then-confuse, but
+    // the server ALWAYS recomputes the real price from the services table (never trusts it).
+    promo_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()).optional().nullable(),
+    gift_card_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()).optional().nullable(),
+    total_price: z.number().nonnegative().optional().nullable(),
   })
   .refine((d) => Boolean(d.slot_id) || Boolean(d.salon_id && d.starts_at), {
     message: "Either slot_id or (salon_id + starts_at) is required",

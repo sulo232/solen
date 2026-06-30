@@ -115,8 +115,17 @@ export async function POST(request: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const { slot_id, salon_id, service_id, staff_member_id, starts_at, is_first_visit,
-          referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids, customer_note } = validated;
+          referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids, customer_note,
+          promo_code, gift_card_code } = validated;
   const isOnlinePay = payment_method === "online";
+
+  // gift_card_code is accepted by the schema (so the FE field is not a 400) but the
+  // booking-charge gift-card redemption path is intentionally NOT wired here: gift cards are
+  // owner-HIDDEN (2026-06-14, in favour of the Solen-wide loyalty card), and no booking-charge
+  // gift-card redemption exists. Log it for visibility and drop it (no silent strip).
+  if (gift_card_code) {
+    console.warn("[bookings] gift_card_code received but gift-card redemption is not wired (gift cards hidden 2026-06-14); ignoring:", gift_card_code);
+  }
 
   // Zod cannot see the session, so it keeps guest fields optional. The route enforces them:
   // no session => name + phone are required (the CHECK constraint is the DB-level backstop).
@@ -135,9 +144,14 @@ export async function POST(request: NextRequest) {
   //     When staff is "any" (null), the first available slot at that time wins.
   // SP-1: use `db` so the guest path reads via service-role; slots are public-readable anyway
   // (slots_select_available USING (true)) but a single client keeps the two paths consistent.
+  // Slot-validation select trimmed (2026-06-30): was `*, salons(*), services(*)` (every slot
+  // column + the full ~98-col salon row + full service row). List ONLY the fields this handler
+  // reads: slot identity / time / staff / price; the salon's scheduling, payment, vacation,
+  // confirmation, policy, VAT and owner fields; the service price + names. Same data, fewer bytes.
+  // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("*, salons(*), services(*)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -168,7 +182,13 @@ export async function POST(request: NextRequest) {
   const slotSalonId = String((candidateSlots[0] as { salon_id?: string }).salon_id ?? salon_id ?? "");
   const bookingDay = String(candidateSlots[0].starts_at).slice(0, 10);
 
-  let slot = candidateSlots[0];
+  // Loose row type: the trimmed select (2026-06-30) makes PostgREST type the embedded
+  // salons/services as arrays, but this is a to-one relation so the rest of the handler reads
+  // them as single objects (as the `*` select implicitly allowed). Widen once here so the
+  // existing object-style access (slot.salons?.name, slot.services?.price) stays valid, and so
+  // the auto-assign `picked` (SlotRow) is assignable. Mirrors the file's existing `as any` style.
+  type LooseSlot = Record<string, any> & { id: string; salon_id: string; starts_at: string; ends_at: string; staff_member_id: string | null; services?: { price?: number; name_de?: string; name_en?: string } | null; salons?: Record<string, any> | null };
+  let slot = candidateSlots[0] as unknown as LooseSlot;
   if (!slot_id && !staff_member_id && (autoMethod !== "manual" || dailyLimitOn)) {
     const picked = await pickSlotForAnyStaff(db, candidateSlots as never, {
       method: autoMethod, dailyLimitOn, dailyLimit, salonId: slotSalonId, day: bookingDay,
@@ -176,7 +196,7 @@ export async function POST(request: NextRequest) {
     if (!picked) {
       return NextResponse.json({ message: "Alle Stylist:innen sind an diesem Tag ausgebucht.", code: "STAFF_DAILY_LIMIT" }, { status: 409 });
     }
-    slot = picked;
+    slot = picked as unknown as LooseSlot;
   } else if (dailyLimitOn && slot.staff_member_id) {
     const cnt = await countStaffBookingsOnDay(db, slotSalonId, slot.staff_member_id as string, bookingDay);
     if (cnt >= dailyLimit) {
@@ -338,6 +358,12 @@ export async function POST(request: NextRequest) {
       // Lane A consent (SP-AC): frozen policy terms + acceptance timestamp, written for
       // EVERY booking (guest + logged-in). Gates the cancellation/no-show auto-charge.
       customer_note: customer_note?.trim() || null,
+      // Promo fix (2026-06-30): persist the code the customer applied so booking-pay-intent
+      // (which only receives booking_id) can RE-VALIDATE it server-side and subtract the
+      // discount, and the webhook can increment promo_codes.current_uses once paid. Stored
+      // uppercased (schema normalizes). Its presence here grants NO discount: every constraint
+      // (active / expiry / usage / min-spend / applicability / min_tier) is re-checked at charge.
+      promo_code: promo_code || null,
       policy_accepted_at: new Date().toISOString(),
       policy_snapshot: policySnapshot,
     })
@@ -380,7 +406,7 @@ export async function POST(request: NextRequest) {
   if (!isOnlinePay && customerEmail) {
     try {
       // Price + VAT-inclusive breakdown (registered salon → Netto/MWST/Gesamt + UID; else just
-      // the total). slot.salons is salons(*), so it already carries vat_registered/vat_rate/vat_number.
+      // the total). slot.salons carries vat_registered/vat_rate/vat_number (selected explicitly above).
       const salonVat = slot.salons as { vat_registered?: boolean; vat_rate?: number; vat_number?: string } | null;
       const grossRappen = Math.round(Number(price ?? 0) * 100);
       const { computeVat } = await import("@/lib/vat");

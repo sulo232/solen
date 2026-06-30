@@ -6,8 +6,8 @@ import { stripe, toRappen } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
-import { resolveMemberDiscount } from "@/lib/loyalty/perks";
-import { LOYALTY } from "@/lib/loyalty/status";
+import { resolveMemberDiscount, getCurrentTier, tierAtLeast } from "@/lib/loyalty/perks";
+import { LOYALTY, type Tier } from "@/lib/loyalty/status";
 import { createHash } from "crypto";
 
 // POST /api/stripe/booking-pay-intent
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   //    service, slot, time, staff, and — for guests — guest_email/name.
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons")
+    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons, promo_code")
     .eq("id", booking_id)
     .single();
   if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -151,9 +151,83 @@ export async function POST(req: NextRequest) {
   // + stripe_account_id gates above still fail-closed for unconfigured salons.
   const fullRappen = toRappen(priceChf);
   const depositPct = Math.min(100, Math.max(1, Number((salon as { deposit_percent?: number }).deposit_percent) || 20));
-  const amountRappen = paymentMode === "deposit"
-    ? Math.max(50, Math.round((fullRappen * depositPct) / 100))   // ≥ CHF 0.50 (Stripe minimum)
-    : fullRappen;                                                  // prepay AND at_salon-by-choice → full
+  const baseAmountRappen = paymentMode === "deposit"
+    ? Math.max(50, Math.round((fullRappen * depositPct) / 100))   // >= CHF 0.50 (Stripe minimum)
+    : fullRappen;                                                  // prepay AND at_salon-by-choice => full
+
+  // 3b. PROMO CODE (fix 2026-06-30). The booking flow collected a promo code and
+  //     /api/promo/validate told the customer "you save CHF X", but this charge step never
+  //     applied it (the customer was billed full price). Apply it server-side here: RE-VALIDATE
+  //     the persisted code against the LIVE promo_codes row + ALL constraints (active, valid_from,
+  //     valid_until, max_uses, min_booking_amount, salon applicability, min_tier). The client
+  //     value is NEVER trusted. Only a fully-valid promo reduces the gross; an invalid / expired /
+  //     over-limit / min-tier-failing / min-spend-failing code is ignored (no discount), so it can
+  //     never lower the charge. The discount is computed off the FULL service price (priceChf) the
+  //     same way /api/promo/validate does, then capped so it can never exceed what is charged now
+  //     and never push below the Stripe minimum. promoCodeApplied is carried in PI metadata so the
+  //     webhook increments promo_codes.current_uses exactly once on payment success.
+  //
+  //     PRECEDENCE vs the Solen Plus member waiver (step 6b): INDEPENDENT, no double-discount.
+  //     The PROMO is a price reduction the SALON bears (it lowers the gross, so it lowers the salon
+  //     payout). The member waiver is a COMMISSION reduction SOLEN bears (it lowers Solen's
+  //     application_fee; salon payout unchanged). Order: promo first (it defines the gross and the
+  //     fee base), then the member waiver on the resulting commission.
+  let promoDiscountRappen = 0;
+  let promoCodeApplied: string | null = null;
+  if (booking.promo_code) {
+    try {
+      const { data: promo } = await admin
+        .from("promo_codes")
+        .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, salon_id, valid_from, valid_until, is_active, min_tier")
+        .ilike("code", booking.promo_code)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      const now = new Date();
+      const fullPriceChf = priceChf;                  // promo % and min-spend are judged on the FULL price
+      let promoOk = !!promo;
+      if (promo) {
+        if (promo.valid_from && new Date(promo.valid_from) > now) promoOk = false;
+        if (promo.valid_until && new Date(promo.valid_until) < now) promoOk = false;
+        if (promo.max_uses !== null && (promo.current_uses ?? 0) >= promo.max_uses) promoOk = false;
+        if (fullPriceChf < (promo.min_booking_amount ?? 0)) promoOk = false;
+        if (promo.salon_id && promo.salon_id !== booking.salon_id) promoOk = false;
+        // min_tier gate (Solen Plus, LOYALTY_STRUCTURE.md §12.4): the server derives the LIVE tier;
+        // a guest (no user_id) is base and fails any tier-gated promo. Mirrors /api/promo/validate.
+        if (promo.min_tier === "gold" || promo.min_tier === "platinum") {
+          const tier = await getCurrentTier(admin, booking.user_id);
+          if (!tierAtLeast(tier, promo.min_tier as Tier)) promoOk = false;
+        }
+      }
+
+      if (promo && promoOk) {
+        // Discount CHF off the FULL price, identical formula to /api/promo/validate.
+        const discountChf = promo.discount_type === "percent"
+          ? Math.round(fullPriceChf * (promo.discount_value / 100) * 100) / 100
+          : Math.min(promo.discount_value, fullPriceChf);
+        const discountRappen = toRappen(discountChf);
+        // Cap: never exceed what is charged now (baseAmountRappen), and never push the charge
+        // below the Stripe minimum (50 Rappen). On the deposit path the promo can at most reduce
+        // the deposit down to that floor.
+        promoDiscountRappen = Math.max(0, Math.min(discountRappen, baseAmountRappen - 50));
+        if (promoDiscountRappen > 0) {
+          promoCodeApplied = promo.code;
+        } else {
+          promoDiscountRappen = 0;  // discount fully clamped away, treat as not applied
+        }
+      }
+    } catch (err) {
+      // Never let a promo lookup error block or under-charge: fail to NO discount (full charge).
+      console.error("[booking-pay-intent] promo re-validation failed; charging without discount:", err);
+      promoDiscountRappen = 0;
+      promoCodeApplied = null;
+    }
+  }
+
+  // The gross the customer pays NOW = base (full / deposit) minus the validated promo discount,
+  // floored at the Stripe minimum by the cap above. The platform fee and member waiver below all
+  // compute off THIS post-promo amount (instruction: subtract the discount BEFORE the fee).
+  const amountRappen = baseAmountRappen - promoDiscountRappen;
 
   // 4. Re-verify the slot is still held by THIS booking (don't take a card for
   //    a slot that was released / re-booked under us).
@@ -272,6 +346,11 @@ export async function POST(req: NextRequest) {
       deposit_percent: paymentMode === "deposit" ? String(depositPct) : "",
       applied_tier: appliedTier ?? "",                            // Solen Plus tier that funded a member discount
       tier_discount_rappen: tierDiscountRappen ? String(tierDiscountRappen) : "",
+      // Promo (fix 2026-06-30): the validated code + Rappen discount applied to the gross. The
+      // webhook reads promo_code on payment success to increment promo_codes.current_uses ONCE
+      // (idempotently). Empty string when no valid promo applied (so the webhook no-ops).
+      promo_code: promoCodeApplied ?? "",
+      promo_discount_rappen: promoDiscountRappen ? String(promoDiscountRappen) : "",
     },
     description: `Buchung: ${service.name_de ?? "Service"} @ ${salon.name ?? "Salon"}`,
   };
@@ -283,17 +362,18 @@ export async function POST(req: NextRequest) {
     intentParams.transfer_data = { destination: salon.stripe_account_id };
   }
 
-  // 8. Idempotency: a deterministic key per (booking, amount) so a double-submit
+  // 8. Idempotency: a deterministic key per (booking, base amount) so a double-submit
   //    of the pay step reuses the SAME PaymentIntent (no double PI, no double
   //    charge). §10b#11. Stripe replays the original response for a matching key.
-  // Key on the PRE-DISCOUNT amount (stable per booking), NOT chargeRappen. The member
-  // discount depends on the live tier + use cap, which can change between two pay
-  // attempts on the same booking; keying on chargeRappen would fork the key and mint a
-  // SECOND capturable PaymentIntent (orphan-PI: money captured, booking never marked
-  // paid because the webhook keys paid-state on the PI id we overwrite). The discount is
-  // still applied via intentParams.amount + application_fee_amount above.
+  // Key on baseAmountRappen, the PRE-DISCOUNT full/deposit amount (stable per booking), NOT
+  // chargeRappen and NOT the post-promo amountRappen. BOTH the member discount (live tier + use
+  // cap) AND the promo (a code can expire / hit its use cap between two pay attempts) can change
+  // between attempts on the same booking; keying on a varying amount would fork the key and mint a
+  // SECOND capturable PaymentIntent (orphan-PI: money captured, booking never marked paid because
+  // the webhook keys paid-state on the PI id we overwrite). Both discounts are still applied via
+  // intentParams.amount + application_fee_amount above; a replay returns the original PI's amounts.
   const idempotencyKey = createHash("sha256")
-    .update(`booking-pay:${booking.id}:${amountRappen}`)
+    .update(`booking-pay:${booking.id}:${baseAmountRappen}`)
     .digest("hex");
 
   let paymentIntent;
@@ -318,6 +398,10 @@ export async function POST(req: NextRequest) {
   const piFeeRappen = paymentIntent.application_fee_amount ?? platformFeeRappen;
   const actualDiscountRappen = Math.max(0, platformFeeRappen - piFeeRappen);
   const actualTier = (paymentIntent.metadata?.applied_tier as string) || null;
+  // Promo: read back from the RETURNED PI (replay-safe, same rule as the member discount above).
+  // A replayed idempotent intent carries whatever promo was applied originally.
+  const actualPromoCode = (paymentIntent.metadata?.promo_code as string) || null;
+  const actualPromoDiscountRappen = Number(paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
 
   const bookingPatch: Record<string, unknown> = { payment_intent_id: paymentIntent.id };
   if (actualDiscountRappen > 0 && actualTier) {
@@ -330,10 +414,12 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
-    amount: piChargeChf,                                 // charged NOW (deposit or full, minus member discount)
+    amount: piChargeChf,                                 // charged NOW (full or deposit, minus promo + member discount)
     full_price: priceChf,                                // full service price
-    member_discount: actualDiscountRappen ? actualDiscountRappen / 100 : 0, // CHF off via Solen Plus
-    applied_tier: actualTier,                            // tier that funded the discount (null when none)
+    member_discount: actualDiscountRappen ? actualDiscountRappen / 100 : 0, // CHF off via Solen Plus (commission waiver)
+    applied_tier: actualTier,                            // tier that funded the member discount (null when none)
+    promo_code: actualPromoCode,                         // the validated promo code applied (null when none)
+    promo_discount: actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0, // CHF off via the promo code
     payment_mode: paymentMode,                           // deposit | prepay
     deposit_percent: paymentMode === "deposit" ? depositPct : null,
     remaining_at_salon: paymentMode === "deposit" ? Math.round((priceChf - piChargeChf) * 100) / 100 : 0,

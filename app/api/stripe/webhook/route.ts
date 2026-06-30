@@ -157,6 +157,25 @@ export async function POST(req: NextRequest) {
               .update({ status: "booked", booking_id: bookingId })
               .eq("id", pi.metadata.slot_id);
           }
+
+          // Promo redemption (fix 2026-06-30): booking-pay-intent re-validated the promo and put
+          // the applied code in pi.metadata.promo_code (empty when none applied). Count the use
+          // NOW (on real payment) so current_uses reflects only paid redemptions. IDEMPOTENT: the
+          // top-level processed_webhook_events claim guarantees this whole event body runs at most
+          // once per Stripe event id, so this fires exactly once per successful payment. The
+          // increment_promo_use() RPC does the increment in ONE atomic statement (no read-then-
+          // write race across concurrent paid redemptions of the same code) and never exceeds
+          // max_uses (it returns null when the code is unknown or already at its cap).
+          const promoCode = (pi.metadata?.promo_code as string) || "";
+          if (promoCode) {
+            try {
+              const { error: promoErr } = await admin.rpc("increment_promo_use", { p_code: promoCode });
+              if (promoErr) console.error("[StripeWebhook] promo current_uses increment failed:", promoErr.message);
+            } catch (promoIncErr) {
+              // Non-fatal: never break booking confirmation over the usage counter.
+              console.error("[StripeWebhook] promo current_uses increment threw:", promoIncErr);
+            }
+          }
         } else {
           await admin.from("bookings").update({
             payment_status: "deposit_held",
