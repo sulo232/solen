@@ -99,6 +99,9 @@ export interface SearchOverlayProps {
   /** Shared ref to the query input so the OPENER can focus it synchronously inside its tap
    *  (via flushSync) , the only reliable way to open the iOS keyboard without a scroll jump. */
   serviceInputRef?: React.RefObject<HTMLInputElement | null>;
+  /** Extra URL params to carry through on submit (e.g. { map: "1" } so searching from the map
+   *  view stays on the map instead of bouncing to the list then back). */
+  extraParams?: Record<string, string>;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -112,6 +115,7 @@ export function SearchOverlay({
   initialFocus = "service",
   autoFocusService = false,
   serviceInputRef,
+  extraParams,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -274,9 +278,11 @@ export function SearchOverlay({
       if (cv) sp.set("city", cv);
       if (dv) sp.set("date", dv);
       if (pv) sp.set("period", pv);
+      // Carry through the view context (e.g. map=1) so a search from the map stays on the map.
+      if (extraParams) for (const [k, v] of Object.entries(extraParams)) sp.set(k, v);
       return sp;
     },
-    [serviceQ, service, stadt, isoDate, zeitPeriod],
+    [serviceQ, service, stadt, isoDate, zeitPeriod, extraParams],
   );
 
   const navigate = React.useCallback(

@@ -1708,6 +1708,7 @@ export default function SearchTemplate({
         initialCity={activeCity ? cityName : ""}
         autoFocusService={autoFocusSearch}
         serviceInputRef={searchInputRef}
+        extraParams={mapOpen ? { map: "1" } : undefined}
       />
     </div>
   );
