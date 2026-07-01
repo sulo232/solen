@@ -9,7 +9,7 @@
  * Reuses the real SuccessMark primitive. Real tokens, Lucide, no CDN.
  */
 import { useState } from "react";
-import { Loader2, CreditCard, Hash, Clock, Users } from "lucide-react";
+import { Loader2, CreditCard, Hash, Clock, Users, CalendarPlus, UserPlus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
@@ -75,6 +75,13 @@ export default function CheckoutConfirmMockup() {
                   <span className="font-medium text-s-ink">Do 11. Juni, 12:00</span>
                 </div>
               </div>
+              {/* owner 2026-07-02: a button to the login/account page (guests) + add to calendar */}
+              <button className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-s-ink py-3 text-[14px] font-bold text-white" /* selected-ok: primary commit CTA (create account) */>
+                <UserPlus size={16} /> Create an account to manage it
+              </button>
+              <button className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full border border-s-border py-3 text-[14px] font-semibold text-s-ink">
+                <CalendarPlus size={16} /> Add to calendar
+              </button>
             </Phone>
           </div>
 
@@ -104,12 +111,41 @@ export default function CheckoutConfirmMockup() {
               </div>
             </Phone>
           </div>
+
+          <div>
+            <h2 className="mb-2 text-[13px] font-semibold text-s-ink-2">4 , Certainty (popup + push)</h2>
+            <Phone>
+              {/* a push notification lands the moment it's booked (owner 2026-07-02: "no notification mark to be certain") */}
+              <div className="flex items-center gap-2.5 rounded-2xl border border-s-border bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_6px_20px_rgba(10,10,10,0.08)]">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-s-ink"><SuccessMark size={20} /></span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-bold text-s-ink">Solen</p>
+                  <p className="truncate text-[13px] text-s-ink-2">Appointment confirmed , Do 11. Juni, 12:00</p>
+                </div>
+                <span className="shrink-0 text-[12px] text-s-ink-3">now</span>
+              </div>
+
+              {/* the in-app confirmation popup (modal) , unmistakable "you're booked" */}
+              <div className="mt-6 rounded-[24px] border border-s-border bg-white p-6 text-center shadow-[0_1px_2px_rgba(10,10,10,0.10),0_16px_40px_rgba(10,10,10,0.14)]">
+                <div className="mx-auto flex flex-col items-center">
+                  <SuccessMark size={56} />
+                  <h3 className="mt-4 font-heading text-[20px] font-bold text-s-ink">You&apos;re booked</h3>
+                  <p className="mt-1 text-[13px] text-s-ink-2">Old Town Barbers</p>
+                  <p className="text-[13px] font-semibold text-s-ink">Do 11. Juni, 12:00</p>
+                </div>
+                <button className="mt-5 w-full rounded-full bg-s-ink py-3 text-[14px] font-bold text-white" /* selected-ok: primary commit CTA */>View my booking</button>
+                <button className="mt-2 w-full rounded-full py-2.5 text-[14px] font-semibold text-s-accent">Add to calendar</button>
+              </div>
+            </Phone>
+          </div>
         </div>
 
         <ul className="mt-7 max-w-[640px] space-y-2 text-[13px] text-s-ink-2">
           <li><b className="text-s-ink">Card last-4 is the missing piece</b> , the confirmation already has amount + reference + date; adding the card closes the &ldquo;did I pay?&rdquo; loop.</li>
           <li><b className="text-s-ink">Real spinner, no fake delay</b> , the button shows &ldquo;Processing payment…&rdquo; only while Stripe actually resolves. Fast is trustworthy; padding it would add doubt.</li>
           <li><b className="text-s-ink">Same for walk-in</b> , pay to join the queue shows the same processing beat + ticket number as the receipt.</li>
+          <li><b className="text-s-ink">Account CTA</b> , guests get a &ldquo;Create an account to manage it&rdquo; button + Add to calendar on the receipt.</li>
+          <li><b className="text-s-ink">Certainty</b> , a push notification lands the moment it&apos;s booked, plus an unmistakable &ldquo;You&apos;re booked&rdquo; popup. And pressing back no longer drops you into the search flow (fixed in code this turn).</li>
         </ul>
       </div>
     </main>
