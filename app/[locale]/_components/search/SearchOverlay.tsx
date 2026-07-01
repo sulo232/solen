@@ -330,10 +330,16 @@ export function SearchOverlay({
   // city/date). openSalon: jump to that salon's PDP. openLookItem: open the tapped Inspo
   // look's own detail page (owner: tapping a look should open the look).
   const searchTerm = React.useCallback((term: string) => {
-    const q = term.trim();
-    push({ query: q || undefined, service: service || undefined, city: stadt || undefined }); // recent = search + location only
-    navigate(buildParams({ q }));
-  }, [push, service, stadt, buildParams, navigate]);
+    // Pick a suggested service but DON'T search yet: return to the composed view so the user can
+    // still set location + date (the Wo?/Wann? rows are hidden while the autocomplete is up). The
+    // "Suchen {query}" primary row + the bottom Suchen still search immediately. (owner 2026-07-01:
+    // "I can't select dates, you didn't implement the whole system" , the typed path skipped them.)
+    setService(term.trim());
+    setServiceQ("");
+    setInputFocused(false);
+    setActiveStep("service");
+    collapse();
+  }, [collapse]);
   const openSalon = React.useCallback((slug: string) => {
     if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
     router.push(`/${locale}/salon/${slug}`); close();
