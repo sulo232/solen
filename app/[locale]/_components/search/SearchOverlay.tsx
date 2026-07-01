@@ -176,14 +176,17 @@ export function SearchOverlay({
       if (initialFocus === "stadt") setActiveStep("location");
       else if (initialFocus === "zeit") setActiveStep("date");
       else setActiveStep("service");
-      setInputFocused(false);
       expand.set(0);
-      // Homepage 3-section search: auto-focus the query input on the service step so the
-      // keyboard opens without a second tap (owner 2026-07-01). rAF waits for the portal to
-      // mount; focusing fires the input's onFocus -> grow(1) -> the ready-to-type state.
-      // Category pages pass autoFocusService=false (service pre-filled), so no keyboard.
+      // Homepage 3-section search: land directly in the focused/typing state so the field
+      // shows what you type (inputFocused=true, NOT reset to false), the sheet expands, and
+      // we focus the input (autoFocus on the element is the iOS keyboard's best shot; the rAF
+      // focus is the fallback for DOM focus). Category pages pass autoFocusService=false.
       if (autoFocusService && initialFocus === "service") {
-        requestAnimationFrame(() => requestAnimationFrame(() => serviceRef.current?.focus()));
+        setInputFocused(true);
+        grow(1);
+        requestAnimationFrame(() => serviceRef.current?.focus());
+      } else {
+        setInputFocused(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -371,6 +374,10 @@ export function SearchOverlay({
         </span>
       )}
       <input ref={serviceRef} value={inputFocused ? serviceQ : service}
+        // autoFocus fires during the tap's commit , iOS Safari's only window to open the soft
+        // keyboard from a programmatic focus. inputFocused is set true in the open effect, so
+        // the field shows typed text regardless of whether autoFocus/onFocus fire.
+        autoFocus={autoFocusService && initialFocus === "service"}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
