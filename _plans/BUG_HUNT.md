@@ -34,14 +34,14 @@
 
 ## PDP + BOOKING findings (iter4 hunt)
 FIX-clear:
-- [ ] HIGH PDP /reviews sub-page empty (anon client + profiles RLS) -> admin client. `salon/[slug]/reviews/page.tsx:70-80`.
-- [ ] HIGH PDP per-staff ratings never show (API returns average_rating/review_count but type/component expect staff_average_rating/staff_review_count) -> remap in /api/salons/[slug]. `_shared.ts:29`, `SalonTeam.tsx:168`.
-- [ ] HIGH booking online-pay hidden (booking salon query omits `accepts_online_payment`) -> add to select. `salon/[slug]/booking/page.tsx:41-50`, `PayConfirmStep.tsx:133`.
-- [ ] MED booking "change stylist" pill -> goToStep('staff') not 'services-staff' on multi-staff. `DateTimeStep.tsx:156`.
+- [x] HIGH PDP /reviews sub-page empty -> DONE (admin client present `reviews/page.tsx:48-88`, re-verified live 16 reviews).
+- [x] HIGH PDP per-staff ratings never show -> DONE (aliases `staff_average_rating`/`staff_review_count` at `/api/salons/[slug]/route.ts:96-98`).
+- [x] HIGH booking online-pay hidden -> DONE (`accepts_online_payment, vat_registered` in booking page select `booking/page.tsx:46`).
+- [x] MED booking "change stylist" pill -> DONE (`DateTimeStep.tsx:156` sends multi-staff to 'staff', single to 'services-staff').
 FIX-careful (legal / booking-state):
-- [ ] HIGH booking VAT 8.1% hardcoded for ALL salons incl non-`vat_registered` -> select vat_registered + gate the line `PayConfirmStep.tsx:396`; + write `vat_rate` to bookings INSERT `/api/bookings/route.ts:320-344`.
-- [ ] MED booking multi-service locks only the PRIMARY service slot -> extras double-bookable. `/api/bookings/route.ts:139-158`.
-- [ ] MED booking pending booking not cancelled on PI-failure/Back -> 409 blocks rebooking same slot. `PayConfirmStep.tsx:262,602`.
+- [x] HIGH booking VAT gate -> BACKEND was DONE (`api/bookings/route.ts:413` gates on vat_registered + writes vat_rate). **DISPLAY line was STILL ungated (real remaining bug) -> FIXED this iter**: `PayConfirmStep.tsx:398` MwSt line now gated on `salonVatRegistered`, uses the salon's own `vat_rate ?? 8.1` (not hardcoded 8.1%). A non-vat_registered salon no longer shows a false MwSt line. (pending council-correctness)
+- [x] MED multi-service extras "double-bookable" -> VERIFIED NOT-A-BUG. Extras are priced add-ons folded into ONE slot's `extras_addons` + `price_paid` (`api/bookings/route.ts:262-278,354`); they carry no independent slot/duration (booking `ends_at` = primary slot). That's the intended model (add-ons within the appointment), not a scheduling bug.
+- [x] MED pending booking not cancelled on PI-failure/Back -> VERIFIED MITIGATED + not reproducible. The abandon-sweep cron cancels a pending online-pay booking whose card step is never completed (`PayConfirmStep.tsx:203-205`); the dup-guard 409 is intentional (owner 2026-06-12). No online-pay salon in seed -> not live-reproducible. PARK until an online-pay salon exists.
 
 ## STATUS RECONCILE 2026-07-01 (avoid re-doing done work)
 Discovered via git that the **FIX-clear + FIX-careful batches are ALREADY DONE** , do NOT redo:

@@ -126,7 +126,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
   // Phase D — the salon's payment_mode drives the pay step (was a free choice that ignored it):
   //   at_salon → no online charge (pay in person);  deposit → deposit_percent% now;  prepay → full.
-  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number; accepts_online_payment?: boolean };
+  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number; accepts_online_payment?: boolean; vat_registered?: boolean; vat_rate?: number };
   // Online pay is offered ONLY when the salon can actually take it (owner repro
   // 2026-06-12: the chooser offered online, the server then errored "kassiert vor
   // Ort"). The pay-intent route stays the fail-closed backstop.
@@ -137,6 +137,15 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const depositPct = Math.min(100, Math.max(1, Number(salonExt.deposit_percent) || 20));
   const depositAmount = Math.round(totalPrice * depositPct) / 100;              // CHF charged now (deposit)
   const remainingAtSalon = Math.round((totalPrice - depositAmount) * 100) / 100;
+  // VAT (legal): only a vat_registered salon charges MwSt, so the "included VAT" line is shown
+  // for them ONLY , a non-registered salon must not display a tax line (it collects none). Mirrors
+  // the booking-record gate in /api/bookings (vat_registered + computeVat). vat_rate is a PERCENT
+  // (8.1); null/undefined -> the standard 8.1 (route.ts uses `?? 8.1`), but a stored 0 stays 0 so
+  // a registered-but-zero-rate salon shows no line. Uses the salon's own rate, not a hardcoded 8.1.
+  const salonVatRegistered = salonExt.vat_registered === true;
+  const vatRatePercent = salonExt.vat_rate == null ? 8.1 : Number(salonExt.vat_rate);
+  const vatFraction = vatRatePercent / 100;
+  const vatIncludedAmount = vatFraction > 0 ? (totalPrice * vatFraction) / (1 + vatFraction) : 0;
 
   // deposit/prepay -> online (salon-mandated). at_salon -> the CUSTOMER chooses
   // (mockup 24d ink, owner-approved 2026-06-12): online preselected, salon below.
@@ -391,10 +400,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               <span className="shrink-0 tabular-nums text-s-ink">{formatPrice(s.price, localeCode)}</span>
             </div>
           ))}
-          <div className="flex items-baseline justify-between gap-3 text-[13px]">
-            <span className="text-s-ink-2">{tp('vatIncl')}</span>
-            <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice((totalPrice * 0.081) / 1.081, localeCode)}</span>
-          </div>
+          {salonVatRegistered && vatIncludedAmount > 0 && (
+            <div className="flex items-baseline justify-between gap-3 text-[13px]">
+              <span className="text-s-ink-2">{tp('vatIncl')}</span>
+              <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice(vatIncludedAmount, localeCode)}</span>
+            </div>
+          )}
         </div>
         <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
           <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
