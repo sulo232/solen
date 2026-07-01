@@ -265,13 +265,16 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       // 2a. IN-PERSON (and any non-online method): unchanged — the booking is created without a
       //     charge; go straight to the confirmation page.
       if (paymentMethod !== 'online') {
-        // Locale-prefix the push — without it next-intl middleware rerouted /de bookings
+        // Locale-prefix the push , without it next-intl middleware rerouted /de bookings
         // to the default-locale /en/confirmation (found in the 2026-06-11 e2e).
         // Reset the wizard so browser-back can't re-confirm a fully-armed flow
         // (owner 2026-06-12: "they can just click back and book as many times as
         // they want"); the server DUPLICATE_BOOKING guard is the backstop.
+        // REPLACE not push (owner 2026-07-02: "after you book, click back it jumps you into the
+        // search version"): the booking is done, so drop the wizard from history , back goes to
+        // the salon page, not the reset booking flow.
         resetForm();
-        router.push(`/${locale}${path}`);
+        router.replace(`/${locale}${path}`);
         return;
       }
 
@@ -609,7 +612,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             locale={locale}
             localeCode={localeCode}
             returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
-            onSucceeded={() => { resetForm(); router.push(`/${locale}${confirmationPath}`); }}
+            onSucceeded={() => { resetForm(); router.replace(`/${locale}${confirmationPath}`); }}
             onUseOtherMethod={() => {
               // Drop back to the selector. The pending online booking is left for the
               // abandon-sweep cron; a fresh selection creates its own booking.
