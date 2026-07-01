@@ -1683,7 +1683,9 @@ export default function SearchTemplate({
         open={searchOverlayOpen}
         onClose={() => setSearchOverlayOpen(false)}
         locale={locale}
-        initialService={activeCategory ?? ""}
+        // Seed the current search so reopening shows it selected: category if present, else the
+        // free-text query (owner: reopening the bar should keep the applied search + location).
+        initialService={activeCategory ?? q}
         initialCity={activeCity ? cityName : ""}
       />
     </div>

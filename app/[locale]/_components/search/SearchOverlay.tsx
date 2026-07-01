@@ -214,6 +214,9 @@ export function SearchOverlay({
   const footerH = useTransform(expand, [0.4, 0.8], [FOOTER_H, 0]);
   const cardMx = useTransform(expand, [0, 0.7], [12, 0]);
   const cardRadius = useTransform(expand, [0, 0.7], [22, 18]);
+  // mockup-ok: fully expanded, the card sits flush to the viewport bottom, so the bottom corners
+  // go SQUARE (rounded bottom corners against the screen edge look wrong , owner). Top stays rounded.
+  const cardRadiusBottom = useTransform(expand, [0, 0.7], [22, 0]);
 
   const grow = React.useCallback(
     (to: number) => animate(expand, to, reduce ? { duration: 0 } : { duration: 0.34, ease: EASE }),
@@ -254,14 +257,16 @@ export function SearchOverlay({
     [router, locale, onClose],
   );
 
+  // Recents store ONLY search + location, never date (owner: a stale date re-applied from a
+  // past search gets fucked up). The live search still uses the date via navigate/buildParams.
   const handleSubmit = React.useCallback(() => {
-    push({ query: serviceQ.trim() || undefined, service: service || undefined, city: stadt || undefined, date: isoDate || undefined, period: zeitPeriod || undefined });
+    push({ query: serviceQ.trim() || undefined, service: service || undefined, city: stadt || undefined });
     navigate(buildParams());
-  }, [push, serviceQ, service, stadt, isoDate, zeitPeriod, buildParams, navigate]);
+  }, [push, serviceQ, service, stadt, buildParams, navigate]);
 
   const autoSearch = React.useCallback(
     (over: Partial<{ city: string; date: string; period: string }>) => {
-      push({ query: serviceQ.trim() || undefined, service: service || undefined, city: over.city ?? stadt ?? undefined, date: over.date ?? isoDate ?? undefined, period: over.period ?? zeitPeriod ?? undefined });
+      push({ query: serviceQ.trim() || undefined, service: service || undefined, city: over.city ?? stadt ?? undefined });
       navigate(buildParams(over));
     },
     [push, serviceQ, service, stadt, isoDate, zeitPeriod, buildParams, navigate],
@@ -269,13 +274,13 @@ export function SearchOverlay({
   void autoSearch; // export contract: preserved for external callers
 
   const handleRecentClick = React.useCallback((r: RecentSearch) => {
+    // Tapping a recent re-applies ONLY search + location, never the date (owner: date must
+    // not tap back). A recent is a "search here again" shortcut, not a full state restore.
     const sp = new URLSearchParams();
     if (r.query) sp.set("q", r.query);
     if (r.service) sp.set("service", r.service);
     if (r.city) sp.set("city", r.city);
-    if (r.date) sp.set("date", r.date);
-    if (r.period) sp.set("period", r.period);
-    push({ query: r.query, service: r.service, city: r.city, date: r.date, period: r.period });
+    push({ query: r.query, service: r.service, city: r.city });
     navigate(sp);
   }, [push, navigate]);
 
@@ -287,9 +292,9 @@ export function SearchOverlay({
   // look's own detail page (owner: tapping a look should open the look).
   const searchTerm = React.useCallback((term: string) => {
     const q = term.trim();
-    push({ query: q || undefined, service: service || undefined, city: stadt || undefined, date: isoDate || undefined, period: zeitPeriod || undefined });
+    push({ query: q || undefined, service: service || undefined, city: stadt || undefined }); // recent = search + location only
     navigate(buildParams({ q }));
-  }, [push, service, stadt, isoDate, zeitPeriod, buildParams, navigate]);
+  }, [push, service, stadt, buildParams, navigate]);
   const openSalon = React.useCallback((slug: string) => {
     if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
     router.push(`/${locale}/salon/${slug}`); close();
@@ -543,7 +548,7 @@ export function SearchOverlay({
 
           {activeStep === "service" ? (
             <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }} className="flex min-h-0 flex-1 flex-col">
-              <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderRadius: cardRadius, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
+              <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
                 className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
                 <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
