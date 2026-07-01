@@ -181,3 +181,22 @@ MINIMAL FIX (surgical, on the CURRENT structure, NO 3-row B redesign):
 This DIRECTLY targets the owner's concern. Mockup-first: mock the chip treatment on the current
 search, owner approves, then apply (delete 3 advance() calls + chip + overlap). B 3-row redesign
 SHELVED (owner: minimal). 
+
+## HARDEN 2026-07-01 (owner: mockup was German)
+english-mockup-gate ONLY covered /_mockups/*.html, so my /dev/search-flow.tsx mockup (German)
+slipped through. Extended it to also gate /dev/ + /mocks/ .tsx/.jsx. Self-tested: German /dev
+mockup -> DENY; English -> PASS; real app code (localised) -> PASS; stray city name -> PASS. Wired.
+
+## STATUS OF ALL 8 ITEMS (owner re-pasted feeling skipped , nothing is dropped)
+- #1 map bar city stuck: ROOT-CAUSED (bar shows SEARCH city, not pan). UX fork logged. TODO.
+- #2 pin tap -> store preview: BLOCKED on owner reference screenshot (not in ~/solen/screenshots).
+- #3 pin label = rating+count not price, NOT black: BLOCKED on Fresha ref for the exact look; the
+  price->rating swap can be mocked now. TODO mockup.
+- #4 map search bar sizing (same as normal + inside back button): TODO mockup.
+- #5 filter refine + focus ring in filter: focus ring GLOBALLY fixed (#6). filter refine TODO.
+- #6 focus rings: DONE (removed global outline, measured 0 rings; no-focus-ring-gate hardened).
+- #7 category/city confusion: ROOT CAUSE = auto-advance. Owner: KEEP CURRENT + MINIMAL. Fix =
+  remove the advance() calls (+ chip + overlap). B 3-row redesign SHELVED. DOING NOW.
+- #8 checkout no processing state: council DONE (dense receipt + honest processing + SuccessMark;
+  gaps = card last-4 + PayConfirmStep beat). TODO mockup.
+NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -> #1 fork + #2/#3 refs.
