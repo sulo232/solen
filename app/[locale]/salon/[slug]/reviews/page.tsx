@@ -77,7 +77,7 @@ export default async function SalonReviewsPage({
     admin
       .from("reviews")
       .select(`
-        id, rating, comment, created_at, user_id, booking_id,
+        id, rating, comment, created_at,
         profiles(display_name, avatar_url),
         review_photos(id, photo_url),
         review_replies(id, reply_text, is_public)
@@ -132,14 +132,15 @@ export default async function SalonReviewsPage({
   }
 
   // Pass rows through in the shape SalonReviews reads (profiles / review_photos /
-  // review_replies / booking_id stay as embedded objects).
+  // review_replies stay as embedded objects). user_id + booking_id are NOT forwarded:
+  // SalonReviews never reads them (the write-review gate uses unreviewedBookingId), so
+  // shipping every reviewer's auth UUID + booking UUID into the client HTML was a
+  // needless exposure. The write-review dedup uses its own server-side query above.
   const enrichedReviews = (reviewsRes.data ?? []).map((r: any) => ({
     id: r.id,
     rating: r.rating,
     comment: r.comment,
     created_at: r.created_at,
-    user_id: r.user_id,
-    booking_id: r.booking_id,
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
     review_replies: r.review_replies ?? [],
