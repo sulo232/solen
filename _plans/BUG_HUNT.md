@@ -95,3 +95,23 @@ NEXT: /api/salon-draft (GET/POST/DELETE) + the collected-but-unstored onboarding
 5. bookings past-tab: 95 hidden bookings surfaced , 1ed22c6f8
 6+7. onboarding quartier fabrication + tiktok_url data-loss , 18ed14037
 Plus earlier this turn: map pin labels + filter count (#3), filter neutral (no blue/ring), map store-recenter. PARKED (visual, mockup-first): favorites legacy-SalonCard badge/Zap; onboarding uppercase labels. DECISION for owner: onboarding collects phone_verified/cancellation_policy/google_place_id/email but public.salons has no such columns (drop the fields or add columns).
+
+## ADMIN AUTH FULL SWEEP RESULT 2026-07-01
+Swept ALL ~49 /api/admin/* handlers for the role gate. One flagged [0 gate refs]:
+`notify-new-salon` , RESOLVED, not a bug: it's a PUBLIC onboarding notification (POST during
+salon signup, before the user is admin) that emails the FIXED ADMIN_EMAIL; rate-limited by IP,
+recipient is not user-controlled, so no arbitrary-email/spam-bomb risk. Intentionally not
+admin-gated. All other admin routes gate on profiles.role==='admin' (or requireAdmin). Admin
+auth-gating = CLEAN.
+
+## OWNER URGENT BATCH 2026-07-01 (interrupt , fixed + verified)
+- Focus rings ("two focus rings", furious): the touch focus-suppression only covered BUTTON
+  outlines; INPUTS still ran the global input:focus-visible (ink-border darken + 3px halo = the
+  two rings) on the homepage search + overlay/filter inputs. Fixed at the GLOBAL source
+  (globals.css @media coarse now drops the input halo + border darken). 0c91d5d04. Verified.
+- Map blank on 0-result city: map overlay was gated on salons.length>0 -> blank on a city with no
+  listings + never moved to the city. Dropped the gate + MapView emptyCenter recenters to the
+  picked city. 84f6e3eca. Verified (Zürich -> map recenters, "0 Salons", not blank).
+- Map "can't select dates": typing hid the Wo?/Wann? rows + a suggestion tap searched immediately.
+  searchTerm now fills the service + returns to the composed view (Wo?/Wann? reachable). 5ce152341.
+  Verified.
