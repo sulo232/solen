@@ -611,6 +611,7 @@ export function SearchBar() {
         initialService={service}
         initialCity={stadt}
         initialFocus={overlayFocus}
+        autoFocusService
       />
     </>
   );

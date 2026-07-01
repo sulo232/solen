@@ -92,6 +92,9 @@ export interface SearchOverlayProps {
   initialService?: string;
   initialCity?: string;
   initialFocus?: "service" | "stadt" | "zeit";
+  /** Homepage 3-section search passes true so tapping it auto-opens the keyboard on the
+   *  service step (no second tap). Category pages omit it (service is pre-filled, no keyboard). */
+  autoFocusService?: boolean;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -103,6 +106,7 @@ export function SearchOverlay({
   initialService = "",
   initialCity = "",
   initialFocus = "service",
+  autoFocusService = false,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -171,6 +175,13 @@ export function SearchOverlay({
       else setActiveStep("service");
       setInputFocused(false);
       expand.set(0);
+      // Homepage 3-section search: auto-focus the query input on the service step so the
+      // keyboard opens without a second tap (owner 2026-07-01). rAF waits for the portal to
+      // mount; focusing fires the input's onFocus -> grow(1) -> the ready-to-type state.
+      // Category pages pass autoFocusService=false (service pre-filled), so no keyboard.
+      if (autoFocusService && initialFocus === "service") {
+        requestAnimationFrame(() => requestAnimationFrame(() => serviceRef.current?.focus()));
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
