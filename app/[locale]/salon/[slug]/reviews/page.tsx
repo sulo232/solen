@@ -16,7 +16,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
 
@@ -45,6 +45,12 @@ export default async function SalonReviewsPage({
 }) {
   const { locale, slug } = await params;
   const supabase = await createServerSupabaseClient();
+  // Admin (service-role) client for the PUBLIC reviews read: the anon client + `profiles`
+  // RLS made the reviewer-name join return null, so the page rendered every review as
+  // "Anonym"/empty (same bug the featured-reviews endpoint had). Only public review fields
+  // are selected, and SalonReviews already gates replies on is_public, so no private data
+  // leaks. User-scoped data (session + the viewer's bookings) stays on the anon client.
+  const admin = createAdminSupabaseClient();
 
   // Resolve the salon first — reviews are keyed by salon_id, not slug, so we
   // need the id before we can fetch the review rows.
@@ -68,7 +74,7 @@ export default async function SalonReviewsPage({
   const userId = session?.user?.id ?? null;
 
   const [reviewsRes, completedRes] = await Promise.all([
-    supabase
+    admin
       .from("reviews")
       .select(`
         id, rating, comment, created_at, user_id, booking_id,
