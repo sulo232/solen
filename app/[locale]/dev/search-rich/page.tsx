@@ -105,7 +105,14 @@ function V2() {
       <SearchField />
       <Label>Looks</Label>
       <LooksStrip />
-      <Label>Salons that do buzzcut</Label>
+      {/* Council B: the searched STYLE as one row (label + from-price + salon count),
+          not a list of generic service names. Contrast separates the fields (no middots). */}
+      <div className="mx-4 mb-2 mt-5 flex items-center gap-3 text-[13px]">
+        <Scissors size={16} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
+        <span className="font-semibold text-s-ink">Buzzcut</span>
+        <span className="text-s-ink-3">from CHF 38</span>
+        <span className="ml-auto font-medium text-s-accent">5 salons</span>
+      </div>
       <div className="flex flex-col gap-3 px-4">
         {SALONS.map((s) => (
           <button key={s.name} className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)]">
@@ -123,19 +130,6 @@ function V2() {
               </span>
             </span>
             <ArrowRight size={18} className="shrink-0 self-center text-s-ink" />
-          </button>
-        ))}
-      </div>
-      <Label>Services</Label>
-      <div className="px-4">
-        {SERVICES.map((s) => (
-          <button key={s.name} className="flex w-full items-center gap-3 border-b border-s-border py-3 text-left">
-            <Scissors size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-[14px] font-semibold text-s-ink">{s.name}</span>
-              <span className="text-[12px] text-s-ink-3">{s.cat}</span>
-            </span>
-            <span className="shrink-0 text-[13px] font-semibold text-s-ink">CHF {s.price}</span>
           </button>
         ))}
       </div>
@@ -193,7 +187,7 @@ function V3() {
 }
 
 const VARIANTS: { key: string; label: string; note: string; el: React.ReactNode }[] = [
-  { key: "final", label: "Chosen , V2 + Services", note: "Salon cards (matching service + price inline), then a Services section, Looks strip on top.", el: <V2 /> },
+  { key: "final", label: "Chosen , V2 + style from-price", note: "One 'Buzzcut, from CHF 38, 5 salons' row (no services list), then salon cards. Looks strip on top.", el: <V2 /> },
   { key: "1", label: "V1 , Sectioned (alt)", note: "Looks, then Salons (from-price), then Services.", el: <V1 /> },
   { key: "3", label: "V3 , Tabbed (alt)", note: "All / Salons / Services / Looks tabs.", el: <V3 /> },
 ];
@@ -206,7 +200,7 @@ export default function SearchRichVariantsPage() {
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">Rich search , 3 variations</h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Typing "buzzcut" shows Looks + Salons (with prices) + Services inside the bar. Chosen: V2 + Services.
+          Typing "buzzcut" shows Looks, a "Buzzcut from CHF X, N salons" summary, then Salon cards. Council B: no services list.
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
