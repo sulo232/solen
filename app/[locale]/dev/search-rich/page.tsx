@@ -126,6 +126,19 @@ function V2() {
           </button>
         ))}
       </div>
+      <Label>Services</Label>
+      <div className="px-4">
+        {SERVICES.map((s) => (
+          <button key={s.name} className="flex w-full items-center gap-3 border-b border-s-border py-3 text-left">
+            <Scissors size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[14px] font-semibold text-s-ink">{s.name}</span>
+              <span className="text-[12px] text-s-ink-3">{s.cat}</span>
+            </span>
+            <span className="shrink-0 text-[13px] font-semibold text-s-ink">CHF {s.price}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -180,9 +193,9 @@ function V3() {
 }
 
 const VARIANTS: { key: string; label: string; note: string; el: React.ReactNode }[] = [
-  { key: "1", label: "V1 , Sectioned", note: "Looks, then Salons (from-price), then Services. Scannable.", el: <V1 /> },
-  { key: "2", label: "V2 , Salon-first cards", note: "Rich salon cards with the matching service + price inline.", el: <V2 /> },
-  { key: "3", label: "V3 , Tabbed blend", note: "All / Salons / Services / Looks tabs. App-like.", el: <V3 /> },
+  { key: "final", label: "Chosen , V2 + Services", note: "Salon cards (matching service + price inline), then a Services section, Looks strip on top.", el: <V2 /> },
+  { key: "1", label: "V1 , Sectioned (alt)", note: "Looks, then Salons (from-price), then Services.", el: <V1 /> },
+  { key: "3", label: "V3 , Tabbed (alt)", note: "All / Salons / Services / Looks tabs.", el: <V3 /> },
 ];
 
 export default function SearchRichVariantsPage() {
@@ -193,7 +206,7 @@ export default function SearchRichVariantsPage() {
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">Rich search , 3 variations</h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Typing "buzzcut" shows Looks + Salons (with prices) + Services inside the bar. My take: V1.
+          Typing "buzzcut" shows Looks + Salons (with prices) + Services inside the bar. Chosen: V2 + Services.
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
