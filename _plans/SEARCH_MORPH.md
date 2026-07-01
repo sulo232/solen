@@ -82,3 +82,8 @@ DONE + committed:
 
 ## STILL PARKED (owner decision)
 - #2-city "Schweizweit" default (from batch 1) , unchanged, still needs the geolocation-UX + filter-vs-label call.
+
+## #3 RESOLVED 2026-07-01 (owner clarified: map pin labels + filter count)
+Owner picked the two: MAP PIN PRICE LABELS + FILTER COUNT.
+- Map pins (commit 0e2d4b270): selecting a pin rebuilt every marker (render effect dep on selectedId) -> all price labels flickered on each tap. Now restyles only the tapped pill IN PLACE (applyPillSelection + selectedIdRef + salonPillsRef); render rebuilds only on data/zoom. Also fixed the BANNED Geist font on pins -> Inter, + eased transition. Verified: tap one pill -> exactly 1 ink-selected, other 8 unchanged, map eases to it. (Zoom still rebuilds markers , clustering genuinely changes with zoom; acceptable.)
+- Filter count: wrapped list header + map "X Salons in diesem Bereich" + apply button counts in tabular-nums so digits don't reflow/jitter as filters change. (If the owner meant the network LAG of live-filtering rather than reflow, next step = debounce or apply-on-commit , flagged.)
