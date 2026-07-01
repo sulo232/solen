@@ -346,14 +346,17 @@
      white = ~5.8:1 contrast (passes WCAG 1.4.11 / 2.4.7 AA Normal). Originally
      locked as Q47 2026-05-02; supersedes that. ─ */
 @layer base {
+  /* Owner 2026-07-01 (furious, repeated): NO focus ring on interactive chrome, on ANY device.
+     The global 2px ink :focus-visible outline lit up on every button/link/pill (desktop keyboard
+     + the tap-focus that iOS fires). Removed entirely per the owner's standing no-focus-ring
+     policy. (a11y note: this drops the WCAG 2.4.7 keyboard focus indicator on chrome , owner call;
+     inputs keep their caret, and the no-focus-ring-gate blocks re-adding a ring.) */
   a:focus-visible,
   button:focus-visible,
   [role="button"]:focus-visible,
   [tabindex]:focus-visible,
   summary:focus-visible {
-    outline: 2px solid #0A0A0A;
-    outline-offset: 2px;
-    border-radius: 4px;
+    outline: none;
   }
 
   /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly */
