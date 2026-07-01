@@ -1194,7 +1194,8 @@ export default function SearchTemplate({
           <span />
         ) : total > 0 ? (
           <p className="font-display text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
-            {total} {pluralSalons(total, tx)}
+            {/* tabular-nums so the count doesn't reflow/jitter as filters change the digit count. */}
+            <span className="tabular-nums">{total}</span> {pluralSalons(total, tx)}
             {activeCity ? <>{t("inCity", { city: cityName })}</> : null}
           </p>
         ) : (
@@ -1565,7 +1566,7 @@ export default function SearchTemplate({
               <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
                 {t.rich("salonsInArea", {
                   count: salons.length,
-                  b: (chunks) => <span className="font-semibold text-s-ink">{chunks}</span>,
+                  b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
                 })}
               </div>
               <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">

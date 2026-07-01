@@ -460,7 +460,7 @@ export function FilterSheet(props: FilterSheetProps) {
       onClick={onClose}
       className={cn(
         "flex-1 rounded-pill bg-s-ink px-6 py-3 text-center",
-        "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-white",
+        "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-white tabular-nums",
         "transition-[background-color,transform] duration-150 ease-glide",
         "hover:bg-black active:scale-[0.98] active:duration-[80ms]",
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",

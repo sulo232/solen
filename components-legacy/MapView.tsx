@@ -13,6 +13,22 @@ import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
 
+// Toggle ONLY the selection-dependent styles of a salon price pill, IN PLACE. Selecting a
+// pin used to tear down + rebuild every marker, which flickered every price label on the map
+// on each tap (owner 2026-07-01). Invariant styles are set once at creation; this flips the
+// rest via the CSS transition on the inner element.
+function applyPillSelection(inner: HTMLElement, isSelected: boolean) {
+  inner.style.padding = isSelected ? "6px 12px" : "5px 11px";
+  inner.style.fontSize = isSelected ? "13px" : "12.5px";
+  inner.style.boxShadow = isSelected
+    ? "0 2px 4px rgba(10,10,10,0.16),0 10px 22px rgba(10,10,10,0.20)"
+    : "0 1px 2px rgba(10,10,10,0.10),0 4px 12px rgba(10,10,10,0.08)";
+  inner.style.background = isSelected ? "#0A0A0A" : "#ffffff";
+  inner.style.color = isSelected ? "#ffffff" : "#0A0A0A";
+  inner.style.border = "1px solid " + (isSelected ? "#0A0A0A" : "rgba(10,10,10,0.10)");
+  inner.style.transform = isSelected ? "scale(1.12)" : "scale(1)";
+}
+
 interface MapViewProps {
   salons: SalonCard[];
   selectedId?: string;
@@ -44,6 +60,13 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   // fitBounds should fire only when the SET of salons changes, not on every
   // re-render — repeated fitBounds is what made the map "move weirdly".
   const fittedSigRef = useRef<string>("");
+  // Selection is applied to price pills IN PLACE (no marker rebuild), so keep the
+  // current selectedId in a ref for the marker build + hover handlers, and keep a
+  // handle to each salon's inner pill element to restyle on selection change.
+  const selectedIdRef = useRef(selectedId);
+  selectedIdRef.current = selectedId;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const salonPillsRef = useRef<Map<string, any>>(new Map());
 
   // Markers reflect exactly the salons the PAGE passes — the page owns category
   // filtering now (MapView's own chip row was a duplicate; removed V3-D378).
@@ -167,6 +190,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     const render = () => {
       markersRef.current.forEach((m) => m.remove());
       markersRef.current.clear();
+      salonPillsRef.current.clear();
 
       const zoom = Math.floor(map.getZoom());
       const features = clusterIndex.getClusters([-180, -85, 180, 85], zoom);
@@ -180,8 +204,10 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         const el = document.createElement("div");
         el.style.cursor = "pointer";
         const inner = document.createElement("div");
-        inner.style.fontFamily = "Geist, system-ui, -apple-system, sans-serif";
-        inner.style.transition = "transform 150ms ease";
+        // Inter (the app font) , NOT Geist (banned). Transition covers the in-place
+        // selection restyle so the pill eases instead of snapping.
+        inner.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";
+        inner.style.transition = "transform 150ms ease, padding 150ms ease, box-shadow 150ms ease, background-color 150ms ease, color 150ms ease";
 
         if ((props as { cluster?: boolean }).cluster) {
           // Cluster bubble — ink-filled circle + white count. Click zooms in to
@@ -208,23 +234,19 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         // Individual salon — solid price pill, ink-filled when selected.
         const salonId = props.salonId as string;
         const minPrice = props.minPrice as number | null;
-        const isSelected = salonId === selectedId;
+        const isSelected = salonId === selectedIdRef.current;
 
         if (minPrice && minPrice > 0) {
-          // V3-D386 (user): price-only pill, no star. Crisp 2-layer shadow; the
-          // selected pill lifts bigger with a deeper shadow so it visibly pops.
+          // V3-D386 (user): price-only pill, no star. Invariant styles here; the
+          // selection-dependent bits (fill/size/shadow/scale) go through
+          // applyPillSelection so a select restyles IN PLACE (no marker rebuild).
           inner.style.cssText += `
             display:flex;align-items:center;justify-content:center;
-            padding:${isSelected ? "6px 12px" : "5px 11px"};border-radius:9999px;
-            font-size:${isSelected ? "13px" : "12.5px"};font-weight:600;white-space:nowrap;
-            box-shadow:${isSelected
-              ? "0 2px 4px rgba(10,10,10,0.16),0 10px 22px rgba(10,10,10,0.20)"
-              : "0 1px 2px rgba(10,10,10,0.10),0 4px 12px rgba(10,10,10,0.08)"};
-            background:${isSelected ? "#0A0A0A" : "#ffffff"};
-            color:${isSelected ? "#ffffff" : "#0A0A0A"};
-            border:1px solid ${isSelected ? "#0A0A0A" : "rgba(10,10,10,0.10)"};
+            border-radius:9999px;font-weight:600;white-space:nowrap;
           `;
+          applyPillSelection(inner, isSelected);
           inner.textContent = `ab ${formatCurrency(minPrice)}`;
+          salonPillsRef.current.set(salonId, inner);
         } else {
           inner.style.cssText += `
             width:13px;height:13px;border-radius:50%;background:#0A0A0A;
@@ -236,7 +258,9 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
         el.addEventListener("click", () => onSelectRef.current?.(salonId));
         el.addEventListener("mouseenter", () => { inner.style.transform = "scale(1.15)"; });
-        el.addEventListener("mouseleave", () => { inner.style.transform = isSelected ? "scale(1.12)" : "scale(1)"; });
+        // Read the CURRENT selection (ref), not the creation-time value , the pill can be
+        // selected/deselected in place without a rebuild.
+        el.addEventListener("mouseleave", () => { inner.style.transform = salonId === selectedIdRef.current ? "scale(1.12)" : "scale(1)"; });
 
         // V3-D382: no marker popup. The bottom-sheet card already shows the
         // salon's name / rating / price, so a popup bubble over the map was a
@@ -261,7 +285,15 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     else map.once("load", render);
     map.on("zoomend", render);
     return () => { map.off("zoomend", render); };
-  }, [clusterIndex, selectedId]);
+    // NOTE: selectedId is intentionally NOT a dep , rebuilding every marker on each
+    // selection flickered all price labels. Selection is applied in place below.
+  }, [clusterIndex]);
+
+  // Restyle the affected price pills IN PLACE when the selection changes (no marker
+  // teardown/rebuild, so labels don't flicker on every tap). Pairs with the easeTo pan.
+  useEffect(() => {
+    salonPillsRef.current.forEach((inner, id) => applyPillSelection(inner, id === selectedId));
+  }, [selectedId]);
 
   // V3-D382: PAN (don't hard-zoom) to the selected salon. Forcing zoom:15 on
   // every swipe-select ratcheted the map deeper each time, so the overview was
