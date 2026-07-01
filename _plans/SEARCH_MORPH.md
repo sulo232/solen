@@ -87,3 +87,12 @@ DONE + committed:
 Owner picked the two: MAP PIN PRICE LABELS + FILTER COUNT.
 - Map pins (commit 0e2d4b270): selecting a pin rebuilt every marker (render effect dep on selectedId) -> all price labels flickered on each tap. Now restyles only the tapped pill IN PLACE (applyPillSelection + selectedIdRef + salonPillsRef); render rebuilds only on data/zoom. Also fixed the BANNED Geist font on pins -> Inter, + eased transition. Verified: tap one pill -> exactly 1 ink-selected, other 8 unchanged, map eases to it. (Zoom still rebuilds markers , clustering genuinely changes with zoom; acceptable.)
 - Filter count: wrapped list header + map "X Salons in diesem Bereich" + apply button counts in tabular-nums so digits don't reflow/jitter as filters change. (If the owner meant the network LAG of live-filtering rather than reflow, next step = debounce or apply-on-commit , flagged.)
+
+## #2-CITY DONE 2026-07-01 (kill "Schweizweit", default a real city) , commit 31f4de09a
+- Generic /search + map now default the location to DEFAULT_CITY_SLUG (env NEXT_PUBLIC_DEFAULT_CITY, else Basel), applied as a REAL filter so the label is honest. Verified: map pill + /de/search show "Basel", not "Schweizweit".
+- Scoped to the generic search surface: /de/coiffeur (category landing) stays countrywide ("8 Salons", no forced Basel) , SEO preserved. `?city=all` sentinel (Keine Präferenz + empty-state "search everywhere") = countrywide ("20 Salons"). Verified all 3.
+- Fixed a latent bug: overlay wrote the city DISPLAY NAME to the URL but activeCity only accepted a slug -> picking a city silently fell back to countrywide. New slugFromCity() maps name-or-slug.
+- PARKED (future): true geolocation / last-searched-city detection , needs a per-city inventory check first (else a Zürich/Bern user with 0 salons lands on 0 results). Today every honest default resolves to Basel.
+
+## SEARCH WORKSTREAM , all owner asks addressed as of 2026-07-01
+Rich search wired, ported design, map-view search (open/stay/3-together/store-recenter/city-recenter), filters neutral (no blue/ring), map pin labels + filter count smoothed, "Schweizweit" default killed. Only future enhancement parked: geolocation city detection (needs inventory-by-city).
