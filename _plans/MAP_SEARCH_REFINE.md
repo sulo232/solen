@@ -101,3 +101,18 @@ immediately + docked bar, (C) leaner per voice 3.
 - #8 checkout-no-processing-state: council dispatched (owner asked). Then mockup.
 BLOCKED-ON-OWNER: #7 pick (A/B/C); #2 store-preview ref; #3 Fresha rating-pill ref; #1 bar-vs-area
 UX fork. NON-BLOCKED next: #8 (council->mockup), #4 bar-sizing mockup, #5 filter refine mockup.
+
+## #8 COUNCIL (2026-07-01) , post-payment confidence
+Voice 1 (trust lens):
+- SEQUENCE: tap Pay -> button morphs to spinner (label gone, SAME width, no layout jump) ->
+  "Zahlung wird verarbeitet..." centered state -> success moment.
+- Processing beat = REAL (tied to the Stripe round-trip), hard FLOOR ~1.4s so a fast (200ms)
+  response can't snap-through and create doubt; cap ~8s then error. NOT a fake pad.
+- "Money moved" = the RECEIPT TRIANGLE: charged AMOUNT (large mono, CHF 85.00) + CARD last-4
+  (Mastercard ···· 4821) + BOOKING/TICKET REFERENCE (mono). All three close the loop; a generic
+  green check is insufficient.
+- Success moment: SuccessMark primitive ONCE at natural speed (<600ms, no loop) + one medium
+  haptic (.success). No confetti/bounce.
+Voice 2 (skeptic): pending (will pressure-test the 1.4s floor: honest-async vs theater).
+NEXT: mockup the payment->processing->confirmation sequence (both walk-in + normal booking), owner
+approves, then wire (careful , checkout/payment area). Reuse the existing SuccessMark primitive.
