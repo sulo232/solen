@@ -55,6 +55,12 @@ export default async function ProfileFavoritesPage({
       const { services: _s, ...rest } = s;
       return { ...rest, avg_price };
     });
+
+    // `.in("id", ids)` does NOT preserve the ids order, so the list came back in
+    // arbitrary order , losing the "most-recently-favorited first" intent (favs is
+    // ordered created_at desc). Re-sort to the favorites order.
+    const orderIndex = new Map(ids.map((id, i) => [id, i]));
+    salons.sort((a, b) => (orderIndex.get(a.id) ?? 0) - (orderIndex.get(b.id) ?? 0));
   }
 
   // Mockup-19 Option B (owner-picked 2026-06-11): real top-rated salons for the
