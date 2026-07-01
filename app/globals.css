@@ -381,6 +381,18 @@
     summary:focus-visible {
       outline: none;
     }
+    /* INPUTS too (owner 2026-07-01, furious repeat): on touch the input :focus-visible rule
+       above darkened the border to ink AND added a 3px halo = the "two focus rings" the owner
+       keeps seeing on the homepage search + the overlay/filter inputs. On a touch tap the caret
+       + keyboard already signal focus, so drop BOTH , keep the resting hairline, no halo. GLOBAL
+       source fix (not per-input), so it can't recur component by component. */
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: none;
+      box-shadow: none;
+      border-color: var(--color-border);
+    }
   }
 }
 
