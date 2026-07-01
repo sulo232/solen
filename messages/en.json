@@ -5394,7 +5394,8 @@
       "confirmed": "Confirmed",
       "pending": "Pending",
       "cancelled": "Cancelled",
-      "completed": "Completed"
+      "completed": "Completed",
+      "no_show": "No-show"
     },
     "minutes": "min.",
     "reviews": "reviews",

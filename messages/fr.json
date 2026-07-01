@@ -5386,7 +5386,8 @@
       "confirmed": "Confirmé",
       "pending": "En attente",
       "cancelled": "Annulé",
-      "completed": "Complété"
+      "completed": "Complété",
+      "no_show": "Absence"
     },
     "minutes": "min.",
     "reviews": "avis",

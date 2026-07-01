@@ -5375,7 +5375,8 @@
       "confirmed": "Confermato",
       "pending": "In sospeso",
       "cancelled": "Annullato",
-      "completed": "Completato"
+      "completed": "Completato",
+      "no_show": "Assente"
     },
     "minutes": "min.",
     "reviews": "recensioni",

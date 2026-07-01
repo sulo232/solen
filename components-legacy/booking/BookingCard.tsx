@@ -15,7 +15,7 @@ export interface Booking {
   starts_at: string;
   ends_at: string;
   price_paid: number;
-  status: 'confirmed' | 'pending' | 'cancelled' | 'completed';
+  status: 'confirmed' | 'pending' | 'cancelled' | 'completed' | 'no_show';
   is_first_visit?: boolean;
   is_recurring?: boolean;
   sms_sent_24h?: boolean;
@@ -86,8 +86,13 @@ export default function BookingCard({
     pending: { label: t('status.pending'), bg: 'bg-s-warning/10', fg: 'text-s-warning' },
     cancelled: { label: t('status.cancelled'), bg: 'bg-s-error/10', fg: 'text-s-error' },
     completed: { label: t('status.completed'), bg: 'bg-s-ink/5', fg: 'text-s-ink-2' },
+    no_show: { label: t('status.no_show'), bg: 'bg-s-ink/5', fg: 'text-s-ink-2' },
   };
-  const status = statusConfig[booking.status];
+  // Fallback so an unexpected status can never crash the card (was `statusConfig[status]`
+  // with no guard, which would throw for no_show before it was added).
+  const status = statusConfig[booking.status] ?? statusConfig.completed;
+  // Reschedule/cancel only make sense for a confirmed booking that hasn't happened yet.
+  const isUpcoming = new Date(booking.starts_at).getTime() > Date.now();
 
   const getServiceName = () => {
     if (!booking.service) return '-';
@@ -148,7 +153,7 @@ export default function BookingCard({
           >
             {t('rebook')}
           </button>
-          {booking.status === 'confirmed' && (
+          {booking.status === 'confirmed' && isUpcoming && (
             <div className="relative">
               <button
                 onClick={(e) => { stop(e); setShowMenu((v) => !v); }}

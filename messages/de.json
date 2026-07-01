@@ -5404,7 +5404,8 @@
       "confirmed": "Bestätigt",
       "pending": "Ausstehend",
       "cancelled": "Storniert",
-      "completed": "Abgeschlossen"
+      "completed": "Abgeschlossen",
+      "no_show": "Nicht erschienen"
     },
     "minutes": "Min.",
     "reviews": "Bewertungen",

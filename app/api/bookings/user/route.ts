@@ -51,8 +51,14 @@ export async function GET(req: NextRequest) {
         .gte('starts_at', now)
         .order('starts_at', { ascending: true });
     } else if (tab === 'past') {
+      // A "past" booking is one that happened and wasn't cancelled: completed, OR a
+      // confirmed booking whose time has passed (not every salon auto-completes , the
+      // auto-complete cron only runs for auto_complete_enabled salons), OR a no-show.
+      // Filtering to status='completed' alone hid confirmed-past + no_show bookings from
+      // the customer entirely (they also fail upcoming's starts_at>=now), so a booking a
+      // customer actually had would vanish from their list.
       query = query
-        .eq('status', 'completed')
+        .in('status', ['completed', 'confirmed', 'no_show'])
         .lt('starts_at', now)
         .order('starts_at', { ascending: false })
         .range(from, to);
