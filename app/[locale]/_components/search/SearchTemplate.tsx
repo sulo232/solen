@@ -1719,6 +1719,23 @@ export default function SearchTemplate({
         autoFocusService={autoFocusSearch}
         serviceInputRef={searchInputRef}
         extraParams={mapOpen ? { map: "1" } : undefined}
+        // MAP CONTEXT (owner + council 2026-07-01): tapping a store on the map recenters to its
+        // pin (see the location) instead of opening the salon page. If the salon is already in the
+        // current map results, select it (MapView eases to it + the sheet card highlights);
+        // otherwise search it onto the map so it loads + the map fits to it.
+        onSalonLocate={
+          mapOpen || mobileView === "map"
+            ? (s) => {
+                setSearchOverlayOpen(false);
+                setMobileView("map");
+                if (salons.some((x) => x.id === s.id)) {
+                  setMapSelectedId(s.id);
+                } else {
+                  router.push(`/${locale}/search?q=${encodeURIComponent(s.name)}&map=1`);
+                }
+              }
+            : undefined
+        }
       />
     </div>
   );

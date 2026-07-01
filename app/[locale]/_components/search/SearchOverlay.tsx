@@ -102,6 +102,11 @@ export interface SearchOverlayProps {
   /** Extra URL params to carry through on submit (e.g. { map: "1" } so searching from the map
    *  view stays on the map instead of bouncing to the list then back). */
   extraParams?: Record<string, string>;
+  /** MAP CONTEXT (owner + council 2026-07-01): when the overlay is opened FROM the map, a store
+   *  tap should recenter the map to that salon's pin so the user SEES its location, NOT navigate
+   *  away to the salon page. The map parent supplies this; when absent (normal results), store
+   *  taps open the salon page as before. Keeps ONE overlay, context-aware navigation (not two). */
+  onSalonLocate?: (s: { id: string; slug: string; name: string }) => void;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -116,6 +121,7 @@ export function SearchOverlay({
   autoFocusService = false,
   serviceInputRef,
   extraParams,
+  onSalonLocate,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -332,6 +338,12 @@ export function SearchOverlay({
     if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
     router.push(`/${locale}/salon/${slug}`); close();
   }, [router, locale, close]);
+  // Store tap dispatcher: on the MAP (onSalonLocate present) recenter to the pin; otherwise open
+  // the salon page. ONE overlay, context-aware navigation (council 2026-07-01).
+  const goSalon = React.useCallback((id: string, slug: string, name: string) => {
+    if (onSalonLocate) { onSalonLocate({ id, slug, name }); close(); }
+    else openSalon(slug);
+  }, [onSalonLocate, openSalon, close]);
   const openLookItem = React.useCallback((id: string) => { router.push(`/${locale}/inspo/${id}`); close(); }, [router, locale, close]);
 
   // i18n (all at top level)
@@ -461,9 +473,13 @@ export function SearchOverlay({
               <SectionLabel className="mt-4">{groupSalonsTxt}</SectionLabel>
               <div className="flex flex-col gap-2.5">
                 {results.salons.map((s) => (
-                  // Store tap: mark it selected (fill the search + remember it) THEN the card's
-                  // Link opens the store page (owner: keep opening the store, but select the option).
-                  <div key={s.id} onClickCapture={() => { setService(s.name); push({ service: s.name, city: stadt || undefined }); }}>
+                  // Store tap: mark it selected (fill the search + remember it). On the MAP,
+                  // recenter to the pin instead of following the card's Link to the salon page
+                  // (capture-phase preventDefault cancels the Link); otherwise the Link opens it.
+                  <div key={s.id} onClickCapture={(e) => {
+                    setService(s.name); push({ service: s.name, city: stadt || undefined });
+                    if (onSalonLocate) { e.preventDefault(); e.stopPropagation(); onSalonLocate({ id: s.id, slug: s.slug, name: s.name }); close(); }
+                  }}>
                     <SalonResultCard
                       variant="suggest"
                       slug={s.slug}
@@ -538,7 +554,7 @@ export function SearchOverlay({
         {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
             + opens the store page), it does NOT advance to the location step (owner). */}
         {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
-          onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); openSalon(sl.slug); }} />)}
+          onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
         {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />)}
         {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
