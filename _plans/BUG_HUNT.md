@@ -42,3 +42,13 @@ FIX-careful (legal / booking-state):
 - [ ] HIGH booking VAT 8.1% hardcoded for ALL salons incl non-`vat_registered` -> select vat_registered + gate the line `PayConfirmStep.tsx:396`; + write `vat_rate` to bookings INSERT `/api/bookings/route.ts:320-344`.
 - [ ] MED booking multi-service locks only the PRIMARY service slot -> extras double-bookable. `/api/bookings/route.ts:139-158`.
 - [ ] MED booking pending booking not cancelled on PI-failure/Back -> 409 blocks rebooking same slot. `PayConfirmStep.tsx:262,602`.
+
+## STATUS RECONCILE 2026-07-01 (avoid re-doing done work)
+Discovered via git that the **FIX-clear + FIX-careful batches are ALREADY DONE** , do NOT redo:
+- `a884f01c6` PDP+booking FIX-clear batch: reviews-subpage admin client, per-staff rating aliases (`/api/salons/[slug]` lines 96-98 `staff_average_rating`/`staff_review_count`), `accepts_online_payment` in booking page select, change-stylist pill (`HairStep.tsx:207` -> `goToStep("services-staff")`). Verified present.
+- `12bf4d33d` council fix: review_replies is_public privacy leak (SalonReviews gates at render). 
+- VAT: `api/bookings/route.ts:413` gates VAT on `salonVat?.vat_registered` + writes vat_rate. DONE.
+- Multi-service slot locking + PI-failure/back cancel: part of a884f01c6 batch (booking).
+REGRESSION REPAIRED this session: `bfa385699` (a perf commit) reverted the reviews sub-page from the admin client back to the anon client -> page went empty/"Anonym" again. Re-fixed in `c63008dd2` (admin client) + `e188106e3` (stop forwarding reviewer user_id/booking_id to the client , low-sev privacy). Verified live: /de/salon/cuts-and-culture/reviews shows 16 real reviews (Luca M etc.).
+GENUINELY-UNDONE (next hunt): account/favorites/walk-in customer pages + remaining customer APIs (search/promo/favorites/walk-in), then onboarding, then admin. NOT yet hunted.
+NOTE: subagents run in the WORKTREE (elated-raman-2dda12) which lacks MAIN's latest commits , a council-security agent reviewed a STALE copy of the reviews page. Verify council findings against MAIN before acting.
