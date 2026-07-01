@@ -147,6 +147,74 @@ function Phone({ title, tag, children }: { title: string; tag: string; children:
   );
 }
 
+// ── REFINED B (owner's pick + polish council) , the direction to BUILD ───────
+function RefinedRow({ icon: Icon, label, value, ghost, dim, first, onOpen, onClear }: {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string; value: string | null; ghost?: boolean; dim: boolean; first?: boolean;
+  onOpen: () => void; onClear?: () => void;
+}) {
+  return (
+    <button onClick={onOpen}
+      className={`flex h-14 w-full items-center gap-3 px-4 text-left transition-opacity ${first ? "" : "border-t border-s-border"} ${dim ? "opacity-55" : "opacity-100"}`}>
+      {!value && <Icon size={19} className="shrink-0 text-s-ink/40" />}
+      {value ? (
+        ghost ? (
+          // default (guessed) city , dashed ghost chip = "we guessed, tap to change" (council v2)
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-s-border bg-white px-2 py-1 text-[13px] font-medium text-s-ink-2">
+            {value}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-s-bg-sunken px-2 py-1 text-[13px] font-medium text-s-ink">
+            {value}
+            {onClear && <X size={14} className="text-s-ink/30" onClick={(e) => { e.stopPropagation(); onClear(); }} />}
+          </span>
+        )
+      ) : (
+        <span className="text-[13px] font-medium text-s-ink-2">{label}</span>
+      )}
+    </button>
+  );
+}
+
+function RefinedPicker({ title, options, onPick }: { title: string; options: string[]; onPick: (v: string) => void }) {
+  return (
+    <div className="border-t border-s-border bg-s-bg-sunken p-3">
+      <p className="mb-2 px-1 text-[12px] font-semibold text-s-ink-2">{title}</p>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => (
+          <button key={o} onClick={() => onPick(o)}
+            className="rounded-full border border-s-border bg-white px-3.5 py-2 text-[13px] font-medium text-s-ink hover:bg-s-bg-sunken">{o}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RefinedB() {
+  const [svc, setSvc] = useState<string | null>(null);
+  const [city, setCity] = useState<string>("Basel");
+  const [cityConfirmed, setCityConfirmed] = useState(false);
+  const [date, setDate] = useState<string | null>(null);
+  const [open, setOpen] = useState<"svc" | "city" | "date" | null>(null);
+  const tog = (k: "svc" | "city" | "date") => setOpen(open === k ? null : k);
+  const any = open !== null;
+  return (
+    <div className="space-y-3">
+      <div className="overflow-hidden rounded-2xl border border-s-border bg-white shadow-elevation-2">
+        <RefinedRow icon={Scissors} label="Service oder Kategorie" value={svc} dim={any && open !== "svc"} first onOpen={() => tog("svc")} onClear={() => setSvc(null)} />
+        {open === "svc" && <RefinedPicker title="Was suchst du?" options={CATS} onPick={(v) => { setSvc(v); setOpen(null); }} />}
+        <RefinedRow icon={MapPin} label="Ort" value={city || null} ghost={!cityConfirmed && !!city} dim={any && open !== "city"} onOpen={() => tog("city")} onClear={() => { setCity(""); setCityConfirmed(true); }} />
+        {open === "city" && <RefinedPicker title="Wo?" options={CITIES} onPick={(v) => { setCity(v); setCityConfirmed(true); setOpen(null); }} />}
+        <RefinedRow icon={Calendar} label="Wann?" value={date} dim={any && open !== "date"} onOpen={() => tog("date")} onClear={() => setDate(null)} />
+        {open === "date" && <RefinedPicker title="Wann?" options={["Heute", "Morgen", "Diese Woche", "Egal"]} onPick={(v) => { setDate(v); setOpen(null); }} />}
+      </div>
+      <button className="flex w-full items-center justify-center gap-2 rounded-full bg-s-ink px-6 py-3.5 text-[15px] font-bold text-white active:scale-[0.98]" /* selected-ok: the ONE primary commit CTA (Suchen), ink is exempt */>
+        <Search size={16} /> Suchen
+      </button>
+    </div>
+  );
+}
+
 export default function SearchFlowMockup() {
   if (process.env.NODE_ENV === "production") notFound();
   return (
@@ -159,7 +227,31 @@ export default function SearchFlowMockup() {
           chip (your call). They differ on auto-advance + whether Date is up front. Recommendation: B
           {" "}, it removes the "yanked / disappearing" feeling without hiding anything. Tap the fields to try.
         </p>
-        <div className="mt-7 flex flex-wrap gap-8">
+
+        {/* REFINED B , the owner picked this + the polish council. THIS is what I'd build. */}
+        <div className="mt-8 rounded-2xl border border-s-border bg-s-bg-sunken p-5">
+          <h2 className="font-heading text-[16px] font-bold text-s-ink">B , refined (your pick) , this is what I'd build</h2>
+          <div className="mt-4 flex flex-col gap-6 md:flex-row md:items-start">
+            <div className="w-full max-w-[360px] shrink-0">
+              <div className="rounded-[28px] border border-s-border bg-white p-3">
+                <div className="rounded-[22px] bg-white p-3.5">
+                  <RefinedB />
+                </div>
+              </div>
+            </div>
+            <ul className="max-w-[560px] space-y-1.5 text-[13px] text-s-ink-2">
+              <li><b className="text-s-ink">One card, not three pills</b> , the 3 rows live in a single card (hairline dividers), so nothing floats or overlaps (fixes your "overlap").</li>
+              <li><b className="text-s-ink">One picker at a time</b> , tapping another row closes the open one; nothing appears/disappears on its own.</li>
+              <li><b className="text-s-ink">Other rows dim while editing</b> , one question at a time, but all three stay visible.</li>
+              <li><b className="text-s-ink">Pick = a chip in place</b> , grey pill + small dim ×; the row never vanishes.</li>
+              <li><b className="text-s-ink">Ort is a dashed "guess" chip</b> (Basel) until you tap to confirm/change , so it doesn&apos;t look like you already set it.</li>
+              <li className="pt-1 text-s-ink-3">Try it: tap Service, then Ort, then Wann?. This maps 1:1 to the real SearchOverlay once you approve.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2 className="mt-10 font-heading text-[15px] font-semibold text-s-ink-2">The 3 directions you picked from (for reference)</h2>
+        <div className="mt-3 flex flex-wrap gap-8">
           <Phone title="A , Auto-advance (Airbnb)" tag="Pick a field -> it auto-jumps to the next. Fast, but can feel 'yanked'.">
             <VariantA />
           </Phone>
