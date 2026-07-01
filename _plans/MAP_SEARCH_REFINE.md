@@ -65,6 +65,25 @@
 - #2 (pin -> store preview) + #3-black-style: BLOCKED on owner reference screenshots.
 - #8 checkout processing state: council, then mockup.
 
+## #7 COUNCIL (2026-07-01) , owner asked for the council on the category-tap behavior
+Owner already decided: pick a city -> COLLAPSE TO A CITY CHIP.
+Voices 1 (IA) + 2 (Airbnb patterns) converge:
+- **Category chip tap -> fill the service + AUTO-ADVANCE to the location step** (a chip tap is a
+  complete commit; advancing = the Airbnb pattern). The service row stays visible as a chip above.
+- **Hybrid composer**: exactly ONE field expanded at a time; every answered field COMPRESSES to a
+  dismissible chip in its OWN slot; all three rows (service/location/date) always visible. Not an
+  accordion (all-open overwhelms), not a hidden wizard.
+- **THE rule that kills the confusion**: a field only changes state on a USER action. "City
+  disappears" = the composer reacting to its OWN state change. Never REMOVE a row , COMPRESS it to
+  a chip in place. Visibility = trust.
+- **MAP nuance** (voice 2): on the map, a category/place pick can commit IMMEDIATELY to the map
+  viewport, composer stays docked as a compact top bar for refinement (Google/Airbnb map pattern).
+  -> this is a natural VARIATION to mock (compose-first vs commit-immediately-on-map).
+Voice 3 (simplicity): pending , will inform whether DATE stays up-front or defers to results.
+NEXT: build 2-3 MOCKUP VARIATIONS of this composer (hybrid+chips, auto-advance) side by side on a
+/dev route, owner picks. Variations = (A) compose-first everywhere, (B) map commits category
+immediately + docked bar, (C) leaner per voice 3.
+
 ## Open questions to ASK the owner (for #7)
 - When you pick a category (Barber), should the flow auto-advance to location, or stay so you can
   also pick a service? What should happen to the city selector after you pick a city , collapse to
