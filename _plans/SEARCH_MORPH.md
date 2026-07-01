@@ -57,3 +57,18 @@ Backend + data (all EXISTING, reused):
 - i18n: 3 new keys per locale (`looksLabel`, `seeAllResults`, `fromPrice`) in de/en/fr/it (these ARE translated, not placeholders). Reused `groupSalons`/`groupStylists`.
 
 Verified live (localhost:3000, iPhone 13, Playwright): DE "buzzcut" -> autocomplete (buzzcut + Bart trimmen/Coupe & Bart/...) + 2 salon cards (Cuts & Culture 4.8 ab CHF 15, Old Town Barbers 4.3) + See all + Looks; EN "coiffeur" -> Salon Lumière 4.4 `from CHF 35` + `See all results`. No console errors. tsc clean (4 pre-existing errors in admin/cron discovery-backfill, unrelated).
+
+## MAP-VIEW SEARCH BATCH 2026-07-01 (owner 9-item batch)
+Owner asked to bring the improved overlay + fixes into the map view and fix map behavior.
+DONE + committed:
+- **#1** map bar drops "Suchen" placeholder; shows `{q} | {city}` or just city (f641b2975).
+- **#3** searching from the map preserves `map=1` via overlay `extraParams` (adbec2e5d).
+- **#4** map search bar opens the REGULAR overlay state (no auto-keyboard) , `openSearchOverlay(false)`.
+- **#5** overlay opened from the map lets you set all three together (service + Wo?/city + Wann?/date); verified live , picking a city advances to the date step, all rows apply.
+- **#6** city recenter , the map stays mounted so the existing `fitBounds`-on-salon-set-change recenters to the new city's pins. (Only Basel has seed salons, so not visually demonstrable in dev; logic verified + the real blocker (being dumped to list) is fixed.)
+- **#7/#8** touch focus rings suppressed in globals.css `@media (hover:none) and (pointer:coarse)`; filter pills neutral (ink border + sunken bg, no blue) both list + map (f641b2975).
+- **#9** filter button active after a plain search , NOT reproduced: verified on BOTH list and map, all filter pills render neutral (aria-pressed=false, no ink/blue) after a `q`-only search. `activeFilterCount` already excludes `q`.
+- **weird transition (map->list->map)** root-caused + fixed (bd89e517a): mobile map only opened on `?view=map`, not `?map=1`; and the map overlay unmounted during `loading`. Now honors `mapOpen` (both params) + stays mounted through re-fetch (old pins persist).
+
+### PARKED , owner decision (blocks #2)
+- **#2 "don't show Schweizweit , detect/default a city (Basel/Zürich)".** The map/search pill shows "Schweizweit" when no city is set. Owner wants a detected/default CITY instead. Can't just relabel (showing a city name while searching countrywide = fabricated filter). Real options: (A) browser-geolocation -> nearest Swiss city with salons -> default filter + honest label (needs permission prompt; risk: auto-filtering hides other cities , a user in an empty city sees 0 salons); (B) default to last-used city from recents (honest, no prompt, but "Schweizweit" persists for first-time users); (C) static launch-default = Basel (all seed data is Basel today) + filter. Recommendation: A with fallback chain last-used -> geolocated-nearest-with-salons -> Basel, and fall back to countrywide (neutral label) only if none resolve. Needs owner's call on geolocation-prompt + filter-vs-label before building.

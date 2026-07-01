@@ -8,7 +8,7 @@
 | 1 | Homepage design pass | **ACTIVE** | [HOMEPAGE.md](HOMEPAGE.md) | item 7 Walk-in (not started); parked: ab-CHF i18n decision, fake-times no-fab fix |
 | 2 | Bug-hunt (customer/onboarding/admin) | **PAUSED** (since 2026-06-29, for #1) | [BUG_HUNT.md](BUG_HUNT.md) | onboarding + admin not started; PDP/booking FIX-clear + FIX-careful queued; i18n batch; reviews dedup |
 | 3 | System-Upgrade (hooks/meta) | **DONE** | [SYSTEM_UPGRADE_PLAN.md](SYSTEM_UPGRADE_PLAN.md) | deferred polish: armed-flag TTL/cleanup, silent-stop detector, mockup-gate web arm, memory merge, skill retarget, log archive |
-| 4 | Search redesign (Airbnb-style) | **ACTIVE** | [SEARCH_MORPH.md](SEARCH_MORPH.md) | mockup DONE at /dev/search-morph (full Airbnb flow, real data); parked owner decisions: canonical cities 8-vs-3 + port into real SearchOverlay |
+| 4 | Search redesign (Airbnb-style) | **ACTIVE** | [SEARCH_MORPH.md](SEARCH_MORPH.md) | ported + rich search wired; map-view batch 2026-07-01 done (#1,3,4,5,6,7,8,9 + weird-transition fix bd89e517a); PARKED owner decision: #2 detect/default city vs "Schweizweit" (geolocation UX + filter-vs-label) |
 
 ## Why this file is an index (2026-06-29)
 The old single-`ACTIVE.md` model **clobbered** the bug-hunt plan: it was overwritten by #3 and was never committed, so it was lost from git entirely. Fix: workstreams now live in separate files; this index is the never-lose map; `_plans/` is committed so nothing is working-tree-only again. The `workstreams-index-guard` hook blocks any write to this file that isn't an index (missing the marker above), so a single plan can't clobber it.
