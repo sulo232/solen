@@ -52,3 +52,9 @@ Discovered via git that the **FIX-clear + FIX-careful batches are ALREADY DONE**
 REGRESSION REPAIRED this session: `bfa385699` (a perf commit) reverted the reviews sub-page from the admin client back to the anon client -> page went empty/"Anonym" again. Re-fixed in `c63008dd2` (admin client) + `e188106e3` (stop forwarding reviewer user_id/booking_id to the client , low-sev privacy). Verified live: /de/salon/cuts-and-culture/reviews shows 16 real reviews (Luca M etc.).
 GENUINELY-UNDONE (next hunt): account/favorites/walk-in customer pages + remaining customer APIs (search/promo/favorites/walk-in), then onboarding, then admin. NOT yet hunted.
 NOTE: subagents run in the WORKTREE (elated-raman-2dda12) which lacks MAIN's latest commits , a council-security agent reviewed a STALE copy of the reviews page. Verify council findings against MAIN before acting.
+
+## FAVORITES SURFACE HUNT 2026-07-01
+- FIXED (7fccf8c25): favorites rendered in arbitrary order , `.in("id", ids)` doesn't preserve order, losing the created_at-desc recency. Re-sorted to the favorites order.
+- PARKED (visual, mockup-first): FavoritesList uses the LEGACY `components-legacy/SalonCard` which renders a "★ TOP" priority badge via `SalonBadge` + imports the BANNED `Zap` icon , violates `project_card_badges` (no Top/Neu/Beliebt/#1 badges) + `feedback_no_zap_icon`. Rest of the app uses the clean `SalonResultCard`. Fix = swap FavoritesList to SalonResultCard (or strip the badge), but it's a customer-visible card change -> mockup-first + owner approval. `FavoritesList.tsx:103`, `components-legacy/SalonCard.tsx:11,164-172`.
+- Favorites data path otherwise clean: session-scoped, is_active gate. (Minor: no is_test/listed_on_marketplace gate, but favorites are the user's own explicit picks.)
+NEXT: profile/bookings + walk-in (queue/[token], walk-in-join/pay) + remaining customer APIs (search/promo), then onboarding, then admin.
