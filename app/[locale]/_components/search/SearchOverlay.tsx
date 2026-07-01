@@ -546,8 +546,9 @@ export function SearchOverlay({
           style={{ top: activeStep === "date" ? "auto" : cropTop, maxHeight: activeStep === "date" ? "calc(100dvh - 12px)" : undefined }}
           className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
 
+          <AnimatePresence mode="wait" initial={false}>
           {activeStep === "service" ? (
-            <motion.div key="service" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.2 }} className="flex min-h-0 flex-1 flex-col">
+            <motion.div key="service" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: reduce ? 0 : 0.24, ease: EASE }} className="flex min-h-0 flex-1 flex-col">
               <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
                 className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
                 <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
@@ -568,8 +569,8 @@ export function SearchOverlay({
               </motion.div>
             </motion.div>
           ) : (
-            <motion.div key={activeStep} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+            <motion.div key={activeStep} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: reduce ? 0 : 0.26, ease: EASE }}
               className="flex min-h-0 flex-1 flex-col px-3 pt-3">
               {STEPS.map((s) =>
                 s !== activeStep ? (
@@ -676,6 +677,7 @@ export function SearchOverlay({
               <div className="shrink-0">{footerInner}</div>
             </motion.div>
           )}
+          </AnimatePresence>
         </motion.div>,
       ]}
     </AnimatePresence>,
