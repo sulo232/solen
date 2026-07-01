@@ -1747,6 +1747,7 @@ function NoResultsHelper({
   locale: string;
 }) {
   const t = useTranslations("searchUi");
+  const tNav = useTranslations("navigation");
   const router = useRouter();
   const [data, setData] = React.useState<NoResultsData | null>(null);
 
@@ -1784,7 +1785,9 @@ function NoResultsHelper({
   }
   if (data.category) {
     const value = data.category.value;
-    const catName = value.charAt(0).toUpperCase() + value.slice(1);
+    // Localized category name (navigation.<slug>): "Alle Nägel anzeigen", not "Alle Nails".
+    const navKey = value as Parameters<typeof tNav>[0];
+    const catName = tNav.has(navKey) ? tNav(navKey) : value.charAt(0).toUpperCase() + value.slice(1);
     const p = new URLSearchParams({ category: value });
     rows.push({
       key: "category",

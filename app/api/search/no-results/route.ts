@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { generateEmbedding } from "@/lib/search/embeddings";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 // GET /api/search/no-results?q=<query>&city=<city>
 //
@@ -21,7 +22,12 @@ import { generateEmbedding } from "@/lib/search/embeddings";
 // Nearby-city row is intentionally omitted until >= 2 cities have salons (supply gate,
 // SEARCH_BACKEND R1/D1: today all live salons are in Basel, so a nearby row would be useless).
 export async function GET(req: NextRequest) {
-  const q = (req.nextUrl.searchParams.get("q") || "").trim();
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
+  // Cap query length (match the suggest sibling) so a direct caller cannot feed a
+  // multi-KB string to the embedding API + RPC.
+  const q = (req.nextUrl.searchParams.get("q") || "").trim().slice(0, 100);
   const city = req.nextUrl.searchParams.get("city");
   if (q.length < 2) {
     return NextResponse.json({ anywhere: null, category: null });
