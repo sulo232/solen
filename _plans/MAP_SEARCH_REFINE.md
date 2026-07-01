@@ -259,3 +259,20 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
   - [x] account CTA after confirmation ("Create an account to manage it" + Add to calendar) at /dev/checkout-confirm
   - [x] BUG FIXED (real code): after booking BACK re-entered the wizard , router.push -> replace (adeab86fb); walk-in already replace
   - [x] confirmation POPUP + push notification ("You're booked") at /dev/checkout-confirm phone 4
+
+## 🌊 BATCH 3 (owner 2026-07-02): FULL-PAGE production mockups, not component boards
+## Owner: "make [the] mockup in a full page not components, in accurate aspect ratios, refine it
+## for production, compare to actual [page] one by one, and components [match] design rules."
+## = each screen as ONE full phone screen (390px wide, natural height, iPhone aspect), production-
+## refined per the design system, compared side-by-side with the REAL current app page.
+- [x] capture the REAL current pages (baseline for compare-to-actual)
+  - [x] real map/results page (/[city]/[category]) at iPhone 13 , real-results.png
+  - [x] real confirmation page at iPhone 13 , real-confirm.png
+  - [x] real filter sheet at iPhone 13 , live-filter.png (captured earlier)
+- [x] FULL-PAGE mockups , FORMAT ESTABLISHED on 2 screens (portal to body, 390px, production, design-rules)
+  - [x] map view (bar + pins + store preview) full-page , /dev/map-full
+  - [x] checkout confirmation full-page , /dev/confirm-full
+  - [ ] filter sheet full-page , AWAITING owner format sign-off on map-full + confirm-full, then same treatment
+  - [ ] results list full-page , AWAITING owner format sign-off, then same treatment
+  - [ ] search suggestions full-page , AWAITING owner format sign-off, then same treatment
+- [x] compare each mockup to its real page, one by one , map-full vs real-results, confirm-full vs real-confirm (presented)
