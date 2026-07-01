@@ -166,3 +166,18 @@ Voice 2 (clarity):
   nothing hidden. Kills the "everything at once" feeling.
 BUILD: refined B mockup at /dev/search-flow (top section) with all of the above. Then owner approves ->
 wire the real SearchOverlay to B.
+
+## #7 ROOT CAUSE FOUND + MINIMAL-FIX SCOPE (owner picked "keep + minimal", asked "will it fix")
+ROOT CAUSE of "city selector disappears in the middle" = AUTO-ADVANCE. SearchOverlay:
+- advance() (line 265-268) sets activeStep to the NEXT step.
+- category tap (line 565): setService + advance("service") -> jumps to LOCATION.
+- city tap (line 586): setStadt + advance("location") -> jumps to DATE -> the city list is REPLACED
+  by the calendar = "disappears in the middle". Confirmed, not a bug , the designed auto-advance.
+MINIMAL FIX (surgical, on the CURRENT structure, NO 3-row B redesign):
+1. Remove the advance() calls on category/city tap (lines 565/585/586) -> tapping sets the value +
+   you STAY; nothing jumps/disappears. Move to next field only on user tap; Suchen commits.
+2. Show a picked value as a chip in place (visible, never vanishes).
+3. Fix the overlap (city list stacks over the bar above , the sheet top/cropTop layout).
+This DIRECTLY targets the owner's concern. Mockup-first: mock the chip treatment on the current
+search, owner approves, then apply (delete 3 advance() calls + chip + overlap). B 3-row redesign
+SHELVED (owner: minimal). 
