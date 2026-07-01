@@ -33,10 +33,10 @@ import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
-import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import { useStyleLooks } from "../homepage/useStyleLooks";
 import { useInspoLooks } from "../homepage/useInspoLooks";
+import { useForYouLooks } from "../homepage/useForYouLooks";
 import { SalonResultCard } from "./SalonResultCard";
 import {
   useRecentSearches,
@@ -135,6 +135,9 @@ export function SearchOverlay({
   // fed by the RICH Inspo feed (search_discovery) so it shows real, plentiful looks.
   const { terms: styleTerms } = useStyleLooks(open ? serviceQ : "");
   const { looks: inspoLooks } = useInspoLooks(open ? serviceQ : "");
+  // "Für dich": DNA/style-affinity looks (discovery_feed_for_you; popular for logged-out).
+  // Replaces the old Trending chips in the idle state + fills short typing results.
+  const { looks: forYouLooks } = useForYouLooks(open);
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
 
@@ -155,11 +158,29 @@ export function SearchOverlay({
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
+  // iOS-safe body-scroll lock: overflow:hidden alone doesn't lock iOS or preserve position, so
+  // the page scrolled under the overlay (opened mid-page) and lost its spot on close, and the
+  // input autofocus scrolled the page. Pin the body at -scrollY while open, restore on close.
   React.useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const prev = { position: body.style.position, top: body.style.top, left: body.style.left, right: body.style.right, width: body.style.width, overflow: body.style.overflow };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
   }, [open]);
 
   React.useEffect(() => {
@@ -331,10 +352,10 @@ export function SearchOverlay({
   const recentLabelTxt          = t("recentLabel");
   const storesLabelTxt          = t("storesLabel");
   const categoriesLabelTxt      = t("categoriesLabel");
-  const trendingLabelTxt        = t("trendingLabel");
   const groupSalonsTxt          = t("groupSalons");
   const groupStylistsTxt        = t("groupStylists");
   const looksLabelTxt           = t("looksLabel");
+  const forYouTxt               = t("forYou");
   const seeAllResultsTxt        = t("seeAllResults");
 
   const flexDates = React.useMemo(
@@ -432,17 +453,20 @@ export function SearchOverlay({
               <SectionLabel className="mt-4">{groupSalonsTxt}</SectionLabel>
               <div className="flex flex-col gap-2.5">
                 {results.salons.map((s) => (
-                  <SalonResultCard
-                    key={s.id}
-                    variant="suggest"
-                    slug={s.slug}
-                    name={s.name}
-                    locale={locale}
-                    rating={s.average_rating}
-                    photoUrl={s.cover_photo_url}
-                    address={s.address}
-                    priceFromCHF={s.from_price}
-                  />
+                  // Store tap: mark it selected (fill the search + remember it) THEN the card's
+                  // Link opens the store page (owner: keep opening the store, but select the option).
+                  <div key={s.id} onClickCapture={() => { setService(s.name); push({ service: s.name, city: stadt || undefined }); }}>
+                    <SalonResultCard
+                      variant="suggest"
+                      slug={s.slug}
+                      name={s.name}
+                      locale={locale}
+                      rating={s.average_rating}
+                      photoUrl={s.cover_photo_url}
+                      address={s.address}
+                      priceFromCHF={s.from_price}
+                    />
+                  </div>
                 ))}
               </div>
               <button
@@ -465,16 +489,27 @@ export function SearchOverlay({
             </>
           )}
 
-          {/* Looks , real Inspo-feed photos for the query; tap opens the full filtered Inspo gallery. */}
+          {/* Looks , query-related Inspo looks as a compact strip (B1); each opens its look. */}
           {looks.length > 0 && (
             <>
               <SectionLabel className="mt-4">{looksLabelTxt}</SectionLabel>
-              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+              <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1">
                 {looks.map((l) => (
-                  <button key={l.id} onClick={() => openLookItem(l.id)} aria-label={l.title}
-                    className="shrink-0 overflow-hidden rounded-[14px] active:scale-[0.98]">
-                    <img src={l.image} alt="" loading="lazy" className="h-24 w-[72px] object-cover" />
-                  </button>
+                  <div key={l.id} className="w-[116px] shrink-0">
+                    <LookCard image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Für dich , DNA-personalized looks fill the bottom so short results never read empty (C). */}
+          {forYouLooks.length > 0 && (
+            <>
+              <SectionLabel className="mt-5">{forYouTxt}</SectionLabel>
+              <div className="grid grid-cols-2 gap-3">
+                {forYouLooks.map((l) => (
+                  <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
                 ))}
               </div>
             </>
@@ -492,18 +527,24 @@ export function SearchOverlay({
           ))}
         </>)}
         <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
-        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store} onClick={() => { setService(sl.name); advance("service"); }} />)}
+        {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
+            + opens the store page), it does NOT advance to the location step (owner). */}
+        {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
+          onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); openSalon(sl.slug); }} />)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
         {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />)}
-        <SectionLabel className="mt-3">{trendingLabelTxt}</SectionLabel>
-        <div className="flex flex-wrap gap-2 pb-2 pt-1">
-          {TRENDING.map((item) => (
-            <button key={item.query} onClick={() => { setService(item.label); advance("service"); }}
-              className="rounded-full bg-s-bg-sunken px-4 py-2 text-[13px] font-medium text-s-ink-2 transition-colors hover:bg-s-border/60 active:scale-[0.97]">
-              {item.label}
-            </button>
-          ))}
-        </div>
+        {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
+            logged-out). Tapping a look opens it in Inspo. */}
+        {forYouLooks.length > 0 && (
+          <>
+            <SectionLabel className="mt-3">{forYouTxt}</SectionLabel>
+            <div className="grid grid-cols-2 gap-3 pb-2 pt-1">
+              {forYouLooks.map((l) => (
+                <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
+              ))}
+            </div>
+          </>
+        )}
       </>
     );
   };
@@ -689,6 +730,20 @@ export function SearchOverlay({
 
 function SectionLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
+}
+
+// Compact Inspo look card: fixed 3:4 photo + style name below, whole card taps to the look.
+// The uniform fixed aspect suits the overlay's strip + 2-col grids (the /inspo feed keeps
+// ItemCard's natural-aspect masonry). No heart here , owner picked the name-below card.
+function LookCard({ image, title, onClick }: { image: string; title: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} aria-label={title} className="group flex w-full flex-col gap-1.5 text-left active:scale-[0.99]">
+      <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "3 / 4" }}>
+        {image ? <img src={image} alt="" loading="lazy" className="h-full w-full object-cover" /> : null}
+      </span>
+      <span className="truncate px-0.5 text-[13px] font-semibold text-s-ink">{title}</span>
+    </button>
+  );
 }
 
 // Traditional-search autocomplete row: magnifier + ink term + up-left "insert" arrow.

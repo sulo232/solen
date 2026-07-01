@@ -1124,9 +1124,9 @@ export default function SearchTemplate({
                     "active:scale-[0.97] active:duration-[80ms]",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                     p.active
-                      // V3-D450 (owner): selected = blue hairline + blue text, NO fill (was a soft
-                      // blue wash). The wrapping + text carry the state; chevron stays blue.
-                      ? "border border-s-accent bg-white text-s-accent font-semibold"
+                      // Owner 2026-07-01: selected = NEUTRAL (ink hairline + sunken fill + ink text),
+                      // NOT blue. Supersedes the V3-D450 blue-pill , owner "don't like the blue, grey/sink it".
+                      ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
                       : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                   )}
                 >
@@ -1134,7 +1134,7 @@ export default function SearchTemplate({
                       Active state is the blue tint alone; the chevron (dropdowns only) is the
                       one affordance marker. No decorative pips — see LOCKFILE no-dots rule. */}
                   {p.label}
-                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-accent" : "opacity-50"} aria-hidden />}
+                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                 </button>
               ))}
             {/* (Old right-side Filter button removed — V3-D421k: it's now the far-left
@@ -1524,12 +1524,12 @@ export default function SearchTemplate({
                       "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                       "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
                       p.active
-                        ? "border border-s-accent bg-white text-s-accent font-semibold"
+                        ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
                         : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                     )}
                   >
                     {p.label}
-                    {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-accent" : "opacity-50"} aria-hidden />}
+                    {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                   </button>
                 ))}
               </div>
