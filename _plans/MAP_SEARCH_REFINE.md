@@ -206,7 +206,7 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] #7 category/city confusion , city pick no longer jumps to calendar (25faf66be)
 - [x] META harden , english-mockup-gate (dev .tsx) + unfinished-batch-gate + plan-first + mockup-visual
 - [ ] #4 map search bar sizing , MOCKUP READY FOR REVIEW at /dev/map-bar (full-width + back arrow inside)
-- [ ] #3 pin label rating+count swap (not price) , mockup (the NOT-BLACK styling: BLOCKED, needs Fresha ref)
+- [ ] #3 pin label rating+count swap , MOCKUP READY FOR REVIEW at /dev/pin-label (white pill not black; exact Fresha styling BLOCKED on ref)
 - [ ] #5 filter refine , BLOCKED: focus-ring-in-filter DONE (#6); the 'refine each filter' part needs owner specifics (what to change)
 - [ ] #8 checkout processing beat + card last-4 , mockup
 - [ ] #1 map bar city stuck (BLOCKED: needs owner call , bar-tracks-pan vs "search this area" fork)
