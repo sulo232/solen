@@ -242,20 +242,20 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 ## 6260 = pins (black ★5.0, NO count, teardrop); 6257/6258 = results list + search bar (back-arrow
 ## inside + query + subtitle + map/list toggle); 6259 = search suggestions; 6263 = filter sheet
 ## (icon chips + Loeschen/Anwenden). Owner: make NEW mockups from these, EXCEPT pin labels.
-- [ ] PIN LABEL (#3) , SETTLED, small change (keep white, do NOT follow the black ref)
-  - [ ] pick B; A==B once counts are gone , remove the COUNT entirely (star + rating 4.6 only)
-  - [ ] keep WHITE pill + blue inline (owner: "keep it white, blue inline")
-- [ ] FOCUS RING (recurring, owner FURIOUS: "both has fucking focus ring on open, same mistake over and over")
-  - [ ] investigate live WHERE the ring still shows (measure getComputedStyle , not eyeball)
-  - [ ] HARDEN the no-focus-ring gate to close the gap that let it recur
-  - [ ] fix the instance (kill the ring)
-- [ ] NEW MOCKUPS from the references (all new, except pin labels)
-  - [ ] #2 store-preview card , from 6254/6255/6261 (photo + carousel dots + name + star rating + distance dot address + category dot reviews + X close)
-  - [ ] #4 map search bar , from 6257/6260 (back arrow INSIDE + query + subtitle + map/list toggle icon on the right)
-  - [ ] #5 filter sheet , from 6263 (icon chips like "Bietet Angebote"/"Akzeptiert Gruppen" + Loeschen/Anwenden footer)
-  - [ ] results-list card , from 6257/6258 (photo + heart + name + star + distance dot address + category dot reviews + service rows + "X anzeigen" blue link)
-  - [ ] "open maps" / search suggestions , from 6259 (Alle/Behandlungen/Anbieter count-tabs + treatment + provider lists + Mehr anzeigen)
-- [ ] CHECKOUT / WALK-IN confirmation (owner: current confirmation is "kinda fucked")
-  - [ ] after confirmation, a button to go to the LOGIN page (guest-to-account)
-  - [ ] BUG: after booking, pressing BACK jumps into the search version , must not (investigate the real flow)
-  - [ ] add a confirmation POPUP / notification mark so the user is CERTAIN they have an appointment
+- [x] PIN LABEL (#3) , SETTLED (white, star + 4.6, no count, blue selected) at /dev/pin-label
+  - [x] pick B; A==B once counts are gone , removed the COUNT (star + rating 4.6 only)
+  - [x] keep WHITE pill + blue inline (selected = blue fill, teardrop pointer, never black)
+- [x] FOCUS RING (recurring) , fixed + hardened (b8423a4de)
+  - [x] investigated live , measured 0 on desktop; root = kill was :focus-visible ONLY, iOS fires plain :focus on tap
+  - [x] HARDENED no-focus-ring-gate , also blocks re-enabling -webkit-tap-highlight-color to a visible colour (self-tested 6)
+  - [x] fixed , globals.css now kills plain :focus too (belt-and-suspenders). Caveat: can't repro iOS headless; if it persists get a screenshot of the exact element
+- [x] NEW MOCKUPS from the references (all new, except pin labels) at /dev/map-v2
+  - [x] #2 store-preview card , photo + carousel dots + name + star + address + category/reviews + Book
+  - [x] #4 map search bar , back arrow INSIDE + query + subtitle + map/list toggle
+  - [x] #5 filter sheet , icon chips (Offers/Groups/Open now) selected = blue border + Clear/Apply
+  - [x] results-list card , photo + heart + rating + service rows + "Show N services" blue link
+  - [x] "open maps" / search suggestions , All/Treatments/Salons count-tabs + lists + Show more (b7c0e1efd)
+- [x] CHECKOUT / WALK-IN confirmation
+  - [x] account CTA after confirmation ("Create an account to manage it" + Add to calendar) at /dev/checkout-confirm
+  - [x] BUG FIXED (real code): after booking BACK re-entered the wizard , router.push -> replace (adeab86fb); walk-in already replace
+  - [x] confirmation POPUP + push notification ("You're booked") at /dev/checkout-confirm phone 4
