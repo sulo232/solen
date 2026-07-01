@@ -1,127 +1,79 @@
 // exists-check: dev-only mockup route (notFound in prod), net-new. `npm run exists
-// no-results-variants` -> 0. Renders 3 DISTINCT design directions for the search
-// no-results empty state so the owner can compare + pick one; uses the real Tailwind
-// tokens (not a from-scratch redraw). The shipped state lives in SearchTemplate EmptyState.
+// no-results-variants` -> 0. Three tight takes on the "one clear CTA" no-results
+// direction (owner picked C, wanted less text + variations). English copy only
+// (mockups are always English). Real Tailwind tokens; shipped state = SearchTemplate.
 "use client";
 
 import { notFound } from "next/navigation";
-import {
-  SearchX,
-  Globe,
-  Compass,
-  ChevronRight,
-  ArrowRight,
-  Scissors,
-  MapPinOff,
-} from "lucide-react";
+import { Globe, Scissors, MapPinOff, SearchX } from "lucide-react";
 
-// Variant A , editorial list (the current shipped direction): calm, minimal, ink icon,
-// tappable list rows with hairline dividers.
-function VariantA() {
-  const rows: [typeof Globe, string, string][] = [
-    [Globe, "Überall in der Schweiz suchen", "12 Salons"],
-    [Compass, "Alle Coiffeur anzeigen", "8 Salons"],
-  ];
+// C1 , single CTA: calm, one ink commit button + one secondary text link.
+function C1() {
   return (
-    <div className="flex flex-col items-center px-6 pt-10 pb-8 text-center">
-      <div className="grid h-[72px] w-[72px] place-items-center rounded-full bg-s-bg-sunken shadow-[0_2px_8px_rgba(10,10,10,0.06)]">
-        <SearchX size={32} strokeWidth={1.5} className="text-s-ink" />
+    <div className="flex flex-col items-center px-6 pt-11 pb-9 text-center">
+      <div className="grid h-[68px] w-[68px] place-items-center rounded-full bg-s-bg-sunken shadow-[0_2px_8px_rgba(10,10,10,0.06)]">
+        <MapPinOff size={30} strokeWidth={1.5} className="text-s-ink" />
       </div>
       <h2 className="font-display mt-5 text-[20px] font-semibold tracking-[-0.02em] text-s-ink">
-        Keine Salons gefunden.
+        No salons in Bern
       </h2>
-      <p className="font-body mt-4 max-w-md text-[14px] leading-relaxed text-s-ink-2">
-        Versuche eine andere Stadt oder lass die Filter weg.
-      </p>
-      <div className="mt-8 w-full border-t border-s-border pt-6 text-left">
-        <p className="mb-1 text-[12px] font-semibold text-s-ink-3">Vorschläge</p>
-        {rows.map(([Icon, label, count], i) => (
-          <button
-            key={i}
-            className="-mx-2 flex w-[calc(100%+1rem)] items-center gap-3.5 border-b border-s-border px-2 py-3.5 text-left transition-colors duration-150 hover:bg-s-bg-sunken"
-          >
-            <Icon size={20} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-[14px] font-semibold text-s-ink">{label}</span>
-              <span className="block text-[12px] text-s-ink-3">{count}</span>
-            </span>
-            <ChevronRight size={18} className="shrink-0 text-s-ink-2" />
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Variant B , action cards: the suggestions become elevated cards with a prominent count.
-// More visual weight, more "reward for tapping".
-function VariantB() {
-  return (
-    <div className="flex flex-col items-center px-5 pt-10 pb-8 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken">
-        <SearchX size={28} strokeWidth={1.5} className="text-s-ink" />
-      </div>
-      <h2 className="font-display mt-5 text-[20px] font-semibold tracking-[-0.02em] text-s-ink">
-        Keine Treffer in Bern
-      </h2>
-      <p className="font-body mt-3 text-[14px] text-s-ink-2">Aber es gibt Wege weiter.</p>
-      <div className="mt-6 flex w-full flex-col gap-3">
-        <button className="flex items-center gap-4 rounded-card border border-s-border bg-white p-4 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)] transition-shadow duration-150 hover:shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-s-accent/10 text-s-accent">
-            <Globe size={22} strokeWidth={2} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[15px] font-semibold text-s-ink">Überall suchen</span>
-            <span className="block text-[13px] text-s-ink-2">12 Salons in der Schweiz</span>
-          </span>
-          <ArrowRight size={18} className="shrink-0 text-s-ink" />
-        </button>
-        <button className="flex items-center gap-4 rounded-card border border-s-border bg-white p-4 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)] transition-shadow duration-150 hover:shadow-[0_8px_24px_rgba(10,10,10,0.10)]">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink">
-            <Scissors size={20} strokeWidth={2} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[15px] font-semibold text-s-ink">Alle Coiffeur</span>
-            <span className="block text-[13px] text-s-ink-2">8 Studios</span>
-          </span>
-          <ArrowRight size={18} className="shrink-0 text-s-ink" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Variant C , conversational with one primary CTA: warmer copy, a single ink commit button
-// for the main broaden, secondary actions as text links (Airbnb-style focused recovery).
-function VariantC() {
-  return (
-    <div className="flex flex-col items-center px-6 pt-12 pb-8 text-center">
-      <div className="grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-        <MapPinOff size={34} strokeWidth={1.5} className="text-s-ink-2" />
-      </div>
-      <h2 className="font-display mt-6 text-[22px] font-semibold leading-snug tracking-[-0.02em] text-s-ink">
-        Nichts für „Coiffeur" in Bern.
-      </h2>
-      <p className="font-body mt-3 max-w-[17rem] text-[14px] leading-relaxed text-s-ink-2">
-        Kein Problem. Probier es schweizweit.
-      </p>
-      <button className="mt-7 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black">
-        <Globe size={18} strokeWidth={2} /> In der ganzen Schweiz suchen
+      <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black">
+        <Globe size={18} strokeWidth={2} /> Search all of Switzerland
       </button>
       <button className="mt-4 text-[14px] font-medium text-s-accent hover:underline">
-        Alle Coiffeur ansehen (8)
+        Browse Coiffeur (8)
       </button>
-      <button className="mt-3 text-[13px] font-medium text-s-ink-3 transition-colors hover:text-s-ink">
-        Neue Suche
+    </div>
+  );
+}
+
+// C2 , two choices: headline + two buttons side by side (ink primary + neutral outline).
+function C2() {
+  return (
+    <div className="flex flex-col items-center px-6 pt-11 pb-9 text-center">
+      <div className="grid h-[68px] w-[68px] place-items-center rounded-full bg-s-bg-sunken">
+        <SearchX size={30} strokeWidth={1.5} className="text-s-ink" />
+      </div>
+      <h2 className="font-display mt-5 text-[20px] font-semibold tracking-[-0.02em] text-s-ink">
+        Nothing in Bern
+      </h2>
+      <div className="mt-6 flex w-full gap-3">
+        <button className="flex flex-1 items-center justify-center gap-2 rounded-btn bg-s-ink px-4 py-3 text-[14px] font-semibold text-white transition-colors duration-150 hover:bg-black">
+          <Globe size={16} strokeWidth={2} /> Switzerland 12
+        </button>
+        <button className="flex flex-1 items-center justify-center gap-2 rounded-btn border border-s-border bg-white px-4 py-3 text-[14px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
+          <Scissors size={16} strokeWidth={2} /> Coiffeur 8
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// C3 , minimal: one ink CTA only, most restrained + a tiny escape link.
+function C3() {
+  return (
+    <div className="flex flex-col items-center px-6 pt-12 pb-10 text-center">
+      <div className="grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken">
+        <SearchX size={28} strokeWidth={1.5} className="text-s-ink-2" />
+      </div>
+      <h2 className="font-display mt-5 text-[20px] font-semibold tracking-[-0.02em] text-s-ink">
+        No match
+      </h2>
+      <p className="font-body mt-2 text-[14px] text-s-ink-2">Nothing for that in Bern.</p>
+      <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black">
+        Search everywhere (12)
+      </button>
+      <button className="mt-4 text-[13px] font-medium text-s-ink-3 transition-colors hover:text-s-ink">
+        New search
       </button>
     </div>
   );
 }
 
 const VARIANTS: { key: string; label: string; note: string; el: React.ReactNode }[] = [
-  { key: "A", label: "Variante A , Editorial-Liste", note: "Aktuell live. Ruhig, minimal, ink Icon, Listenzeilen mit Hairlines.", el: <VariantA /> },
-  { key: "B", label: "Variante B , Aktionskarten", note: "Vorschläge als erhöhte Karten mit Zahl. Visueller, mehr Gewicht.", el: <VariantB /> },
-  { key: "C", label: "Variante C , Ein klarer CTA", note: "Wärmere Copy, EIN ink Hauptbutton, Rest als Textlinks. Fokussiert.", el: <VariantC /> },
+  { key: "C1", label: "C1 , Single CTA", note: "One ink button + one text link. Calm.", el: <C1 /> },
+  { key: "C2", label: "C2 , Two choices", note: "Two buttons side by side. Compact.", el: <C2 /> },
+  { key: "C3", label: "C3 , Minimal", note: "One button only. Most restrained.", el: <C3 /> },
 ];
 
 export default function NoResultsVariantsPage() {
@@ -131,10 +83,10 @@ export default function NoResultsVariantsPage() {
     <div className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">
-          No-Results , 3 Varianten
+          No results , 3 takes on C
         </h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Suche „Coiffeur" in Bern (0 Treffer). Drei Richtungen zum Vergleichen. Empfehlung: A oder C.
+          One clear CTA, tighter copy. Pick one. My take: C1.
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
