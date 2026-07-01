@@ -125,3 +125,19 @@ No bug. (My first pg_constraint check missed it , the guard is a unique INDEX, n
 
 ## PASS 1 COMPLETE 2026-07-01 , all four surfaces swept
 customer FE + APIs (reviews/favorites/bookings/walk-in), onboarding (entry+backend+draft), admin (all ~49 routes auth-gated). 7 real bugs fixed + owner's urgent focus-ring/map batch. Remaining = OWNER-INPUT items only: onboarding collected-but-unstored fields decision; 2 parked visual drifts (favorites legacy card badge/Zap, onboarding uppercase labels) for mockup-first. No open functional bugs found in the swept surfaces.
+
+## PROMO PATH HUNT 2026-07-01 , CLEAN (already hardened 2026-06-30)
+/api/promo/validate (advisory) + /api/stripe/booking-pay-intent (redemption): SOLID. The charge
+step RE-VALIDATES the persisted promo_code against the LIVE row + ALL constraints (is_active,
+valid_from, valid_until, max_uses, min_booking_amount, salon_id, min_tier), NEVER trusts the
+client discount, computes the discount server-side (capped, never below Stripe min), and the
+webhook increments current_uses exactly once on payment success. No client-forgeable discount.
+No bug. (Narrow theoretical race: two concurrent redemptions of a max_uses=1 code could both pass
+the pre-webhook check , depends on the webhook increment being a guarded atomic update; low-freq,
+not chased this pass.)
+
+## CONVERGENCE NOTE 2026-07-01
+Last several deep-checks (walk-in status/join/pay/confirm, promo validate+redeem, admin auth x49,
+salon-draft) all returned NO new bugs , the pass is converging toward the 2-clean-passes stop
+condition. Open items are OWNER-INPUT only: onboarding collected-but-unstored fields (drop vs add
+columns); parked visual drifts (favorites legacy card, onboarding uppercase labels) for mockup-first.
