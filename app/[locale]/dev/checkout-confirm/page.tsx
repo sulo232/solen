@@ -9,7 +9,7 @@
  * Reuses the real SuccessMark primitive. Real tokens, Lucide, no CDN.
  */
 import { useState } from "react";
-import { Loader2, CreditCard, Hash, Clock } from "lucide-react";
+import { Loader2, CreditCard, Hash, Clock, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
@@ -73,6 +73,33 @@ export default function CheckoutConfirmMockup() {
                 <div className="flex items-center justify-between text-[13px]">
                   <span className="flex items-center gap-1.5 text-s-ink-2"><Clock size={15} /> When</span>
                   <span className="font-medium text-s-ink">Do 11. Juni, 12:00</span>
+                </div>
+              </div>
+            </Phone>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-[13px] font-semibold text-s-ink-2">3 , Walk-in (same beat, queue ticket)</h2>
+            <Phone>
+              <div className="flex flex-col items-center pt-2 text-center">
+                <SuccessMark size={54} />
+                <h3 className="mt-4 font-heading text-[19px] font-bold text-s-ink">You&apos;re in the queue</h3>
+                <p className="mt-0.5 text-[13px] text-s-ink-2">Old Town Barbers , show this number at the counter</p>
+              </div>
+              <div className="mt-5 flex flex-col items-center rounded-2xl border border-s-border bg-s-bg-sunken py-5">
+                <span className="text-[12px] font-medium text-s-ink-2">Your number</span>
+                <span className="font-mono text-[40px] font-bold leading-none tracking-tight text-s-ink">A17</span>
+                <span className="mt-2 flex items-center gap-1.5 text-[13px] text-s-ink-2"><Users size={15} /> 3 ahead , about 25 min</span>
+              </div>
+              <div className="mt-4 space-y-2.5 rounded-2xl border border-s-border p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-s-ink-2">Charged</span>
+                  <span className="font-heading text-[16px] font-bold tabular-nums text-s-ink">CHF 45.00</span>
+                </div>
+                <div className="h-px bg-s-border" />
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="flex items-center gap-1.5 text-s-ink-2"><CreditCard size={15} /> Card</span>
+                  <span className="font-medium text-s-ink">Mastercard ···· 4242</span>{/* drift-ok: masked card digits, not a separator */}
                 </div>
               </div>
             </Phone>
