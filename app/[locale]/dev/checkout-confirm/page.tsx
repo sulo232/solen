@@ -1,0 +1,90 @@
+"use client";
+
+/**
+ * /dev/checkout-confirm , MOCKUP (owner 2026-07-01, #8). English copy (mockup rule). Exists-check:
+ * `npm run exists checkout-confirm` = 0; real screens = PayConfirmStep + BookingConfirmation.tsx
+ * (already has the essentials card + SuccessMark). Council synthesis: the "did I pay?" doubt is
+ * about CONFIRMATION DENSITY, not time , add the CARD last-4 (the missing receipt-triangle leg) +
+ * an HONEST processing beat on the Pay button (spinner while Stripe actually works, NO fake floor).
+ * Reuses the real SuccessMark primitive. Real tokens, Lucide, no CDN.
+ */
+import { useState } from "react";
+import { Loader2, CreditCard, Hash, Clock } from "lucide-react";
+import { notFound } from "next/navigation";
+import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
+
+function Phone({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="w-full max-w-[340px] rounded-[26px] border border-s-border bg-s-bg-sunken p-3">
+      <div className="min-h-[380px] rounded-[20px] bg-white p-5">{children}</div>
+    </div>
+  );
+}
+
+export default function CheckoutConfirmMockup() {
+  if (process.env.NODE_ENV === "production") notFound();
+  const [busy, setBusy] = useState(false);
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="mx-auto max-w-[900px] px-4 pb-16 pt-6">
+        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , checkout confidence (#8)</p>
+        <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">An honest processing beat, then a receipt you can trust</h1>
+        <p className="mt-1 max-w-[640px] text-[13px] text-s-ink-2">The doubt (&ldquo;did I actually pay?&rdquo;) isn&apos;t about time , it&apos;s density. Show the card last-4 + amount + reference, and a real spinner ONLY while Stripe is working (no fake delay).</p>
+
+        <div className="mt-7 flex flex-wrap gap-8">
+          <div>
+            <h2 className="mb-2 text-[13px] font-semibold text-s-ink-2">1 , Pay (honest processing)</h2>
+            <Phone>
+              <p className="text-[13px] text-s-ink-2">Herrenschnitt , Old Town Barbers</p>
+              <p className="mt-1 font-heading text-[15px] font-bold text-s-ink">Do 11. Juni, 12:00</p>
+              <div className="mt-4 rounded-2xl border border-s-border p-3 text-[13px] text-s-ink-2">
+                <div className="flex justify-between"><span>Total</span><span className="font-semibold tabular-nums text-s-ink">CHF 45.00</span></div>
+              </div>
+              <button onClick={() => setBusy((v) => !v)}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-s-ink px-6 py-3.5 text-[15px] font-bold text-white active:scale-[0.98]" /* selected-ok: primary commit CTA (pay) */>
+                {busy ? <><Loader2 size={17} className="animate-spin" /> Processing payment…</> : "Pay CHF 45.00"}
+              </button>
+              <p className="mt-2 text-center text-[12px] text-s-ink-3">Tap to toggle the processing state</p>
+            </Phone>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-[13px] font-semibold text-s-ink-2">2 , Confirmation (dense receipt)</h2>
+            <Phone>
+              <div className="flex flex-col items-center pt-2 text-center">
+                <SuccessMark size={54} />
+                <h3 className="mt-4 font-heading text-[19px] font-bold text-s-ink">Booking confirmed</h3>
+                <p className="mt-0.5 text-[13px] text-s-ink-2">Old Town Barbers , Do 11. Juni, 12:00</p>
+              </div>
+              <div className="mt-5 space-y-2.5 rounded-2xl border border-s-border p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-s-ink-2">Charged</span>
+                  <span className="font-heading text-[18px] font-bold tabular-nums text-s-ink">CHF 45.00</span>
+                </div>
+                <div className="h-px bg-s-border" />
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="flex items-center gap-1.5 text-s-ink-2"><CreditCard size={15} /> Card</span>
+                  <span className="font-medium text-s-ink">Mastercard ···· 4242</span>{/* drift-ok: masked card digits, not a separator */}
+                </div>
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="flex items-center gap-1.5 text-s-ink-2"><Hash size={15} /> Reference</span>
+                  <span className="font-mono text-[13px] font-semibold text-s-ink">4F2K9</span>
+                </div>
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="flex items-center gap-1.5 text-s-ink-2"><Clock size={15} /> When</span>
+                  <span className="font-medium text-s-ink">Do 11. Juni, 12:00</span>
+                </div>
+              </div>
+            </Phone>
+          </div>
+        </div>
+
+        <ul className="mt-7 max-w-[640px] space-y-2 text-[13px] text-s-ink-2">
+          <li><b className="text-s-ink">Card last-4 is the missing piece</b> , the confirmation already has amount + reference + date; adding the card closes the &ldquo;did I pay?&rdquo; loop.</li>
+          <li><b className="text-s-ink">Real spinner, no fake delay</b> , the button shows &ldquo;Processing payment…&rdquo; only while Stripe actually resolves. Fast is trustworthy; padding it would add doubt.</li>
+          <li><b className="text-s-ink">Same for walk-in</b> , pay to join the queue shows the same processing beat + ticket number as the receipt.</li>
+        </ul>
+      </div>
+    </main>
+  );
+}

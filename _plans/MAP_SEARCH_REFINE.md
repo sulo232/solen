@@ -208,6 +208,6 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [ ] #4 map search bar sizing , MOCKUP READY FOR REVIEW at /dev/map-bar (full-width + back arrow inside)
 - [ ] #3 pin label rating+count swap , MOCKUP READY FOR REVIEW at /dev/pin-label (white pill not black; exact Fresha styling BLOCKED on ref)
 - [ ] #5 filter refine , BLOCKED: focus-ring-in-filter DONE (#6); the 'refine each filter' part needs owner specifics (what to change)
-- [ ] #8 checkout processing beat + card last-4 , mockup
+- [ ] #8 checkout processing beat + card last-4 , MOCKUP READY FOR REVIEW at /dev/checkout-confirm (honest Stripe spinner + dense receipt w/ card last-4 + reference)
 - [ ] #1 map bar city stuck (BLOCKED: needs owner call , bar-tracks-pan vs "search this area" fork)
 - [ ] #2 pin -> store preview (BLOCKED: needs owner reference screenshot)
