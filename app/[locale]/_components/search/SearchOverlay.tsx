@@ -371,9 +371,6 @@ export function SearchOverlay({
         </span>
       )}
       <input ref={serviceRef} value={inputFocused ? serviceQ : service}
-        // autoFocus fires in the commit triggered by the opener tap , the only reliable
-        // moment iOS Safari will open the soft keyboard for a programmatic focus.
-        autoFocus={autoFocusService && initialFocus === "service"}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
