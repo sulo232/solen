@@ -142,3 +142,17 @@ paid/processing/confirming state. So #8 is NARROW:
   last-4. Same for walk-in (queue/[token] success). Then owner approves -> wire (careful area).
 NEXT BUILDS (all mockup-first, don't need owner): #8 sequence mockup, #3 pin rating+count (not
 black) mockup, #4 map-bar sizing mockup.
+
+## #7 B-COMPOSER POLISH COUNCIL (2026-07-01) , owner: "mockups + council thoughts first"
+Owner picked B as-is (3 rows: Service/Ort/Wann). Polish council:
+Voice 1 (premium visual):
+- ROWS: 56px tall, 16px h-pad, icon 20px ink-40% left, label 13px/medium ink-60. ALL 3 rows in ONE
+  rounded-2xl card (bg-white, shadow-elevation-2), 1px #E4E4E7 hairline BETWEEN rows only (not
+  above first/below last). One surface, NOT 3 floating pills , THIS kills the overlap/cramped feel.
+- CHIP (filled): replaces placeholder inline, left after icon. Pill bg #F4F4F5, 6px radius, 8/5 pad,
+  ink 13px/medium, × 14px ink-30% 8px right (small+dim = erasable, not clutter).
+- ACTIVE row: height animates 56 -> 56+picker (240ms ease-out), rows below SLIDE DOWN (no overlap).
+  Picker = 1px hairline top + sunken #F4F4F5 fill docked under the header. NO elevation/shadow on the
+  active row (calm).
+- CUT: drop the per-row icon once a field has a chip value (chip is self-labeling; icon = noise).
+Voice 2 (clarity): pending.
