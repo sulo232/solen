@@ -128,3 +128,17 @@ same width, no layout jump); NO minimum-duration floor. The "moment" comes from 
 transition (once, natural <600ms, + haptic), not a padded wait.
 -> MOCKUP: pay -> (real) processing -> DENSE confirmation + SuccessMark, for walk-in + normal
 booking. Then wire (careful checkout area). Reuse SuccessMark primitive + the receipt fields.
+
+## #8 GROUNDING (mockup-first: improve the REAL screens, don't redraw)
+Existing (reuse): SuccessMark primitive; BookingConfirmation.tsx (317L) ALREADY has a scorecard
+essentials card (salon, DATE-focal, service, paid+price, referenceCode) + SuccessMark + a
+paid/processing/confirming state. So #8 is NARROW:
+- GAP 1: the receipt is missing the CARD last-4 (Mastercard ···· 4821) , add to the essentials
+  card (the "receipt triangle" = amount + card + reference; amount+ref already present).
+- GAP 2: the visible processing beat is in PayConfirmStep (the Pay button), not this screen , the
+  owner's "snap" is the pay->confirmation transition. Make the pay button morph to a spinner ->
+  "Zahlung wird verarbeitet" DURING the real Stripe round-trip (no fake floor, per synthesis).
+- MOCKUP scope: (a) PayConfirmStep pay-button processing states, (b) BookingConfirmation + card
+  last-4. Same for walk-in (queue/[token] success). Then owner approves -> wire (careful area).
+NEXT BUILDS (all mockup-first, don't need owner): #8 sequence mockup, #3 pin rating+count (not
+black) mockup, #4 map-bar sizing mockup.
