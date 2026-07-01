@@ -200,3 +200,14 @@ mockup -> DENY; English -> PASS; real app code (localised) -> PASS; stray city n
 - #8 checkout no processing state: council DONE (dense receipt + honest processing + SuccessMark;
   gaps = card last-4 + PayConfirmStep beat). TODO mockup.
 NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -> #1 fork + #2/#3 refs.
+
+## ✅ BATCH CHECKLIST (enforced by unfinished-batch-gate , no silent defers)
+- [x] #6 focus rings , removed global outline, 0 rings measured
+- [x] #7 category/city confusion , city pick no longer jumps to calendar (25faf66be)
+- [x] META harden , english-mockup-gate (dev .tsx) + unfinished-batch-gate + plan-first + mockup-visual
+- [ ] #4 map search bar sizing (same size as normal bar + inside the back button) , DOING NOW
+- [ ] #3 pin label rating+count swap (not price) , mockup (the NOT-BLACK styling: BLOCKED, needs Fresha ref)
+- [ ] #5 filter refine , mockup
+- [ ] #8 checkout processing beat + card last-4 , mockup
+- [ ] #1 map bar city stuck (BLOCKED: needs owner call , bar-tracks-pan vs "search this area" fork)
+- [ ] #2 pin -> store preview (BLOCKED: needs owner reference screenshot)
