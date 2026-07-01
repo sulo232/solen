@@ -36,6 +36,7 @@ import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatu
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import { useStyleLooks } from "../homepage/useStyleLooks";
+import { useInspoLooks } from "../homepage/useInspoLooks";
 import { SalonResultCard } from "./SalonResultCard";
 import {
   useRecentSearches,
@@ -130,8 +131,10 @@ export function SearchOverlay({
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: stadt || undefined });
-  // Rich-search style layer: one call powers the autocomplete completions AND the Looks strip.
+  // Autocomplete completions come from style-suggest (short style terms); the Looks strip is
+  // fed by the RICH Inspo feed (search_discovery) so it shows real, plentiful looks.
   const { terms: styleTerms } = useStyleLooks(open ? serviceQ : "");
+  const { looks: inspoLooks } = useInspoLooks(open ? serviceQ : "");
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
 
@@ -399,7 +402,7 @@ export function SearchOverlay({
       const acTerms = Array.from(new Set(rawCompletions.map((x) => x.trim()).filter(Boolean)))
         .filter((x) => x.toLowerCase() !== qNorm)
         .slice(0, 5);
-      const looks = styleTerms.filter((s) => s.thumb).slice(0, 8);
+      const looks = inspoLooks; // real Inspo-feed looks (rich images), not style-suggest thumbs
 
       return (
         <>
@@ -450,15 +453,15 @@ export function SearchOverlay({
             </>
           )}
 
-          {/* Looks , real Inspo photos of the style; taps hand off to the Inspo feed. */}
+          {/* Looks , real Inspo-feed photos for the query; tap opens the full filtered Inspo gallery. */}
           {looks.length > 0 && (
             <>
               <SectionLabel className="mt-4">{looksLabelTxt}</SectionLabel>
               <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
                 {looks.map((l) => (
-                  <button key={l.term} onClick={() => openLook(l.term)} aria-label={l.term}
+                  <button key={l.id} onClick={() => openLook(serviceQ.trim())} aria-label={l.title}
                     className="shrink-0 overflow-hidden rounded-[14px] active:scale-[0.98]">
-                    <img src={l.thumb!} alt="" loading="lazy" className="h-24 w-[72px] object-cover" />
+                    <img src={l.image} alt="" loading="lazy" className="h-24 w-[72px] object-cover" />
                   </button>
                 ))}
               </div>
@@ -526,7 +529,9 @@ export function SearchOverlay({
 
         <motion.div key="sheet" initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
           transition={reduce ? { duration: 0 } : OPEN_T}
-          style={{ top: activeStep === "date" ? Math.max(safeTop, 24) : cropTop }}
+          // mockup-ok: date step = a content-height bottom sheet (top:auto) so the card hugs the
+          // calendar and grows on date-pick, instead of a tall sheet with dead space. maxHeight caps it.
+          style={{ top: activeStep === "date" ? "auto" : cropTop, maxHeight: activeStep === "date" ? "calc(100dvh - 12px)" : undefined }}
           className="fixed inset-x-0 bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
 
           {activeStep === "service" ? (
@@ -574,7 +579,7 @@ export function SearchOverlay({
                     <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{cityList()}</div>
                   </div>
                 ) : (
-                  <div key={s} className="mb-2.5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
+                  <div key={s} className="mb-2.5 flex flex-col overflow-hidden rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-[0_16px_48px_rgba(10,10,10,0.10)]">
                     <h2 className="mb-2 shrink-0 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</h2>
                     <div className="relative mb-3 flex shrink-0 rounded-full bg-s-bg-sunken p-1">
                       <motion.div layout transition={reduce ? { duration: 0 } : { duration: 0.28, ease: EASE }}
@@ -589,7 +594,7 @@ export function SearchOverlay({
                         {tabFlexibleTxt}
                       </button>
                     </div>
-                    <div ref={dateScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                    <div ref={dateScrollRef} className="overscroll-contain">
                       <AnimatePresence mode="wait" initial={false}>
                         {dateTab === "daten" ? (
                           <motion.div key="daten" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>
@@ -612,24 +617,29 @@ export function SearchOverlay({
                               {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                             </div>
                             <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey}
-                              onPick={(key, label) => {
-                                setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label);
-                                setTimeout(() => dateScrollRef.current?.scrollTo({ top: dateScrollRef.current.scrollHeight, behavior: "smooth" }), 300);
-                              }} />
-                            <div className={`overflow-hidden transition-[max-height,opacity] duration-300 ${selKey ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}>
-                              <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">{uhrzeitTxt}</p>
-                              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-                                {timeChips.map(({ label, urlVal }) => {
-                                  const picked = zeitPeriod === urlVal;
-                                  return (
-                                    <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
-                                      className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
-                                      {label}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
+                              onPick={(key, label) => { setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label); }} />
+                            {/* mockup-ok: time picker pops up + grows the card on date-pick (owner-approved,
+                                "make it smoother"). framer-motion height:auto is smoother than the max-h clamp. */}
+                            <AnimatePresence initial={false}>
+                              {selKey && (
+                                <motion.div key="uhrzeit" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                                  transition={reduce ? { duration: 0 } : { height: { duration: 0.34, ease: EASE }, opacity: { duration: 0.24, ease: EASE } }}
+                                  className="overflow-hidden">
+                                  <p className="mb-2 mt-3 text-[13px] font-semibold text-s-ink">{uhrzeitTxt}</p>
+                                  <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                                    {timeChips.map(({ label, urlVal }) => {
+                                      const picked = zeitPeriod === urlVal;
+                                      return (
+                                        <button key={label} onClick={() => setZeitPeriod((cur) => cur === urlVal ? "" : urlVal)}
+                                          className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${picked ? "border-s-accent bg-s-accent text-white" /* selected-ok: period chip */ : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"}`}>
+                                          {label}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </motion.div>
                         ) : (
                           <motion.div key="flexibel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}
