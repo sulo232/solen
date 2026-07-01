@@ -78,7 +78,7 @@ import {
   DoorOpen,
   Brush,
 } from "lucide-react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
@@ -543,6 +543,20 @@ export default function SearchTemplate({
   // (search is full-page everywhere, like Fresha) instead of routing to the
   // homepage. Seeds the active city so the composer continues the context.
   const [searchOverlayOpen, setSearchOverlayOpen] = React.useState(false);
+  // Shared input ref + auto-focus flag so the map-view "edit search" bar opens the SAME
+  // overlay in place WITH the keyboard (flushSync sync-focus inside the tap = iOS keyboard).
+  // The main results bar opens without auto-focus so the applied search stays visible (B).
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const [autoFocusSearch, setAutoFocusSearch] = React.useState(false);
+  const openSearchOverlay = React.useCallback((withKeyboard: boolean) => {
+    if (withKeyboard) {
+      flushSync(() => { setAutoFocusSearch(true); setSearchOverlayOpen(true); });
+      searchInputRef.current?.focus({ preventScroll: true });
+    } else {
+      setAutoFocusSearch(false);
+      setSearchOverlayOpen(true);
+    }
+  }, []);
 
   // 2026-06-05: the homepage "Karte" tile deep-links here with `?view=map`. On
   // mobile that means "open the full-screen map view" (mobileView state); on
@@ -956,11 +970,11 @@ export default function SearchTemplate({
             ref={bigSearchRef}
             role="button"
             tabIndex={0}
-            onClick={() => setSearchOverlayOpen(true)}
+            onClick={() => openSearchOverlay(false)}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                setSearchOverlayOpen(true);
+                openSearchOverlay(false);
               }
             }}
             aria-label={tChrome("editSearch")}
@@ -1474,17 +1488,21 @@ export default function SearchTemplate({
               >
                 <ArrowLeft size={20} strokeWidth={2} aria-hidden />
               </button>
-              <Link
-                href={`/${locale}`}
+              {/* Map-view search bar: opens the SAME improved overlay IN PLACE (with keyboard),
+                  instead of navigating back to the homepage (owner: implement all this in map view). */}
+              <button
+                type="button"
+                onClick={() => openSearchOverlay(true)}
                 aria-label={tChrome("editSearch")}
-                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
+                aria-haspopup="dialog"
+                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 text-left shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
               >
                 <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                 <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
                   {q || tChrome("searchPlaceholder")}
                   <span className="ml-1.5 font-normal text-s-ink-2">| {cityName}</span>
                 </span>
-              </Link>
+              </button>
             </div>
             {/* bottom sheet — DRAG the handle: snaps expanded / peek / collapsed.
                 `fixed` so the px drag-top works; z-[31] keeps it above the map. */}
@@ -1687,6 +1705,8 @@ export default function SearchTemplate({
         // free-text query (owner: reopening the bar should keep the applied search + location).
         initialService={activeCategory ?? q}
         initialCity={activeCity ? cityName : ""}
+        autoFocusService={autoFocusSearch}
+        serviceInputRef={searchInputRef}
       />
     </div>
   );
