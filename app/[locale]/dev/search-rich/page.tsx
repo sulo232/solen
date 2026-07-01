@@ -103,16 +103,17 @@ function V2() {
   return (
     <div className="pb-6">
       <SearchField />
+      {/* The "Buzzcut" thing: a tappable style row that jumps straight to the full
+          results page. Label = query term, from-price = cheapest bookable across salons. */}
+      <button className="mx-4 mb-1 mt-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-[14px] bg-s-bg-sunken px-4 py-3 text-left">
+        <Scissors size={17} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
+        <span className="text-[14px] font-semibold text-s-ink">Buzzcut</span>
+        <span className="text-[13px] text-s-ink-3">from CHF 38</span>
+        <ChevronRight size={17} className="ml-auto shrink-0 text-s-ink-2" />
+      </button>
       <Label>Looks</Label>
       <LooksStrip />
-      {/* Council B: the searched STYLE as one row (label + from-price + salon count),
-          not a list of generic service names. Contrast separates the fields (no middots). */}
-      <div className="mx-4 mb-2 mt-5 flex items-center gap-3 text-[13px]">
-        <Scissors size={16} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
-        <span className="font-semibold text-s-ink">Buzzcut</span>
-        <span className="text-s-ink-3">from CHF 38</span>
-        <span className="ml-auto font-medium text-s-accent">5 salons</span>
-      </div>
+      <Label>Salons</Label>
       <div className="flex flex-col gap-3 px-4">
         {SALONS.map((s) => (
           <button key={s.name} className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)]">
@@ -126,12 +127,18 @@ function V2() {
                 <span className="inline-flex items-center gap-0.5"><MapPin size={11} /> {s.area}</span>
               </span>
               <span className="mt-1.5 text-[13px] text-s-ink-2">
-                {s.svc} <span className="font-semibold text-s-ink">CHF {s.price}</span>
+                from <span className="font-semibold text-s-ink">CHF {s.from}</span>
               </span>
             </span>
             <ArrowRight size={18} className="shrink-0 self-center text-s-ink" />
           </button>
         ))}
+      </div>
+      {/* Preview shows only 3-5 salons; See all jumps to the full results page. */}
+      <div className="mt-4 px-4">
+        <button className="flex w-full items-center justify-center gap-1.5 rounded-btn border border-s-border bg-white py-3 text-[14px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
+          See all 5 salons <ChevronRight size={16} />
+        </button>
       </div>
     </div>
   );
@@ -187,7 +194,7 @@ function V3() {
 }
 
 const VARIANTS: { key: string; label: string; note: string; el: React.ReactNode }[] = [
-  { key: "final", label: "Chosen , V2 + style from-price", note: "One 'Buzzcut, from CHF 38, 5 salons' row (no services list), then salon cards. Looks strip on top.", el: <V2 /> },
+  { key: "final", label: "Chosen , preview + jump", note: "Tappable 'Buzzcut from CHF' jumps to results; Looks; 3-5 salon preview (per-salon from-price); See all button.", el: <V2 /> },
   { key: "1", label: "V1 , Sectioned (alt)", note: "Looks, then Salons (from-price), then Services.", el: <V1 /> },
   { key: "3", label: "V3 , Tabbed (alt)", note: "All / Salons / Services / Looks tabs.", el: <V3 /> },
 ];
@@ -200,7 +207,7 @@ export default function SearchRichVariantsPage() {
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">Rich search , 3 variations</h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Typing "buzzcut" shows Looks, a "Buzzcut from CHF X, N salons" summary, then Salon cards. Council B: no services list.
+          Tap "Buzzcut from CHF X" to jump to results. Looks, a 3-5 salon preview (per-salon from-price), then See all. No services list (council B).
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
