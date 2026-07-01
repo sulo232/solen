@@ -29,7 +29,7 @@ import {
   Globe,
   type LucideIcon,
 } from "lucide-react";
-import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
+import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
@@ -394,7 +394,7 @@ export function SearchOverlay({
 
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
     service:  { label: fieldServiceLabelTxt,  value: service,    placeholder: queryPlaceholderTxt     },
-    location: { label: locationHeadingTxt,    value: stadt || noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
+    location: { label: locationHeadingTxt,    value: stadt && stadt !== ALL_CITIES_PARAM ? stadt : noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
     date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
   }), [fieldServiceLabelTxt, service, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
@@ -575,7 +575,8 @@ export function SearchOverlay({
 
   const cityList = () => (
     <>
-      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(""); setCityQ(""); advance("location"); }} />
+      {/* Explicit "everywhere": emit city=all so it isn't re-defaulted to the launch city. */}
+      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); advance("location"); }} />
       {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); advance("location"); }} />)}
     </>
   );

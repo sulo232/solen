@@ -86,7 +86,7 @@ import { CategoryHeroCarousel } from "./CategoryHeroCarousel";
 import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
-import { getCityName, isValidCitySlug, type CitySlug } from "@/lib/cities";
+import { getCityName, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
@@ -400,10 +400,16 @@ export default function SearchTemplate({
     (urlService && (V3_CATS as readonly string[]).includes(urlService.toLowerCase())
       ? (urlService.toLowerCase() as SalonCategory)
       : null);
-  // City: prop wins, then URL.
+  // City: prop wins, then URL, then a DEFAULT on the generic /search surface so the bar/map show a
+  // real city instead of "Schweizweit" (owner 2026-07-01). Scoped to the generic search (no
+  // serviceFilter/cityFilter route) so category landings (/coiffeur) stay countrywide for SEO.
+  // `?city=all` is the explicit-countrywide sentinel (Keine Präferenz / search everywhere).
   const urlCity = searchParams.get("city");
+  const explicitCountrywide = urlCity === ALL_CITIES_PARAM;
   const activeCity: CitySlug | null =
-    cityFilter ?? (urlCity && isValidCitySlug(urlCity) ? urlCity : null);
+    cityFilter ??
+    (urlCity ? slugFromCity(urlCity) : null) ??
+    (!serviceFilter && !cityFilter && !explicitCountrywide ? DEFAULT_CITY_SLUG : null);
   const date = searchParams.get("date");
   const period = searchParams.get("period");
   const sortParam = searchParams.get("sort") ?? "rating";
@@ -1300,10 +1306,11 @@ export default function SearchTemplate({
                 router.replace(activeCategory ? pathname : `/${locale}/search`)
               }
               onSearchEverywhere={() =>
+                // Explicit countrywide (city=all) so it isn't re-defaulted to the city.
                 router.push(
                   q.trim().length >= 2
-                    ? `/${locale}/search?q=${encodeURIComponent(q.trim())}`
-                    : `/${locale}/search`,
+                    ? `/${locale}/search?q=${encodeURIComponent(q.trim())}&city=${ALL_CITIES_PARAM}`
+                    : `/${locale}/search?city=${ALL_CITIES_PARAM}`,
                 )
               }
               onAnyDate={() => emptyDropParams(["date", "period"])}

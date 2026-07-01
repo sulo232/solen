@@ -94,3 +94,40 @@ function haversine(lat1: number, lon1: number, lat2: number, lon2: number): numb
 export function isValidCitySlug(slug: string): slug is CitySlug {
   return CITY_SLUGS.includes(slug as CitySlug);
 }
+
+/**
+ * Resolve a `city` value to a CitySlug, accepting EITHER a slug ("basel") OR a localized display
+ * name ("Basel"/"Zürich"/"Zurich"/...). The search overlay writes the display name into the URL,
+ * but the routing layer keys off slugs , without this, picking a city silently failed the
+ * isValidCitySlug check and fell back to countrywide. Returns null for unknown / non-routing cities
+ * (e.g. Lausanne, which has no dedicated city yet).
+ */
+export function slugFromCity(value: string): CitySlug | null {
+  const v = value.trim().toLowerCase();
+  if (isValidCitySlug(v)) return v;
+  for (const slug of CITY_SLUGS) {
+    const c = CITIES[slug];
+    if ([c.name_de, c.name_en, c.name_fr, c.name_it].some((n) => n.toLowerCase() === v)) return slug;
+  }
+  return null;
+}
+
+/**
+ * The city the SEARCH surface defaults to when the user has not chosen one, so the search bar and
+ * map show a REAL city instead of "Schweizweit" (owner 2026-07-01). Applied as a real filter, so
+ * the label is always honest (never a city name over countrywide results). Env-overridable; falls
+ * back to the launch city (Basel , the only city with inventory today). Real DETECTION
+ * (geolocation / last-searched city) is a deliberate follow-up: it needs a per-city inventory
+ * check first, else a user near an empty city (Zürich/Bern have 0 salons) lands on 0 results.
+ */
+export const DEFAULT_CITY_SLUG: CitySlug =
+  process.env.NEXT_PUBLIC_DEFAULT_CITY && isValidCitySlug(process.env.NEXT_PUBLIC_DEFAULT_CITY)
+    ? (process.env.NEXT_PUBLIC_DEFAULT_CITY as CitySlug)
+    : "basel";
+
+/**
+ * URL sentinel for an EXPLICIT "search the whole country" choice (the overlay's "Keine Präferenz"
+ * and the empty-state "search everywhere"). Distinct from "no city chosen yet" (which falls back
+ * to DEFAULT_CITY_SLUG): `?city=all` resolves activeCity to null so results are countrywide.
+ */
+export const ALL_CITIES_PARAM = "all";
