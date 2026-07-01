@@ -331,6 +331,8 @@ export function SearchOverlay({
       <input ref={serviceRef} value={inputFocused ? serviceQ : service}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
+        enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
         className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
       {inputFocused && serviceQ.length > 0 && (
