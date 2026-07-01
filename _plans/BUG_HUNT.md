@@ -74,3 +74,11 @@ NEXT: /api/walkin/confirm + pay-intent + PaymentSheet (careful); promo/favorites
 - `/onboarding/page.tsx`: CLEAN , auth-gated + a proper open-redirect guard on the ?redirect param (`raw.startsWith("/") && !raw.startsWith("//")`).
 - `/onboarding/salon/page.tsx` (736L): submission goes through POST /api/salons + draft autosave via /api/salon-draft (API owns the insert , good). PARKED (visual, mockup-first): form field labels use `uppercase tracking-[.14em]` (lines 83/94/106/145...), violates `feedback_no_caps_lock` (no ALL-CAPS, sentence case) + the mockup-preflight banned tracked-uppercase labels. Salon-facing but still a drift.
 NEXT FOCUSED UNIT: onboarding BACKEND , POST /api/salons (create handler: validation, phantom columns, owner/role assignment, RLS) + /api/salon-draft (GET/POST/DELETE). Then admin surface.
+
+## ONBOARDING BACKEND FIX 2026-07-01 (18ed14037) , 2 real bugs in POST /api/salons
+Verified against LIVE information_schema (schema-drift aware):
+- quartier was hardcoded "grossbasel" for EVERY new salon (stale NOT-NULL bypass; column is nullable now) -> fabricated a Basel neighborhood on every salon incl. non-Basel, surfaces in cards/PDP. Set null (downstream null-guards).
+- tiktok_url commented out as "missing from schema" but the column EXISTS + the PDP selects it -> onboarding silently dropped it. Now persisted.
+- phone_verified / cancellation_policy / google_place_id / email genuinely NOT in public.salons -> correctly left commented (uncommenting would break the insert). Those form fields are collected but not stored on salons (separate silent-no-op worth an owner decision: drop the fields, or add columns).
+NOT live-exercised (a real create would write a salon row). tsc clean + columns confirmed present.
+NEXT: /api/salon-draft (GET/POST/DELETE) + the collected-but-unstored onboarding fields decision; then ADMIN surface (surface #4).
