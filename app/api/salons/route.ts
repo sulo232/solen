@@ -635,7 +635,11 @@ export async function POST(request: NextRequest) {
           name,
           slug,
           city_id,
-          quartier: "grossbasel", // [FIX] Bypassing BOTH Not-Null and legacy CHECK constraint
+          // quartier is nullable now (verified live schema 2026-07-01); the old hardcoded
+          // "grossbasel" stamped a Basel neighborhood onto EVERY new salon (wrong for non-Basel
+          // salons, and it surfaces in cards/PDP). Leave it null until it's a real value; downstream
+          // (search/cards) already null-guards quartier.
+          quartier: null,
           categories,
           address,
           phone: phone || null,
@@ -647,7 +651,7 @@ export async function POST(request: NextRequest) {
           description_en: finalDescEn || null,
           instagram_url: instagram_url || null,
           website_url: website_url || null,
-          // tiktok_url: tiktok_url || null, // [FIX] Field missing from cache or db schema
+          tiktok_url: tiktok_url || null, // column exists (verified live schema 2026-07-01); was dropping the onboarding value + the PDP reads it
           opening_hours: opening_hours || {},
           is_active: false, // Pending approval
           last_minute_discount_percent: last_minute_discount_percent || 0,
