@@ -156,3 +156,13 @@ Voice 1 (premium visual):
   active row (calm).
 - CUT: drop the per-row icon once a field has a chip value (chip is self-labeling; icon = noise).
 Voice 2 (clarity): pending.
+
+Voice 2 (clarity):
+- ONE picker open at a time; tapping a different row instantly closes the previous (no delay). Multiple
+  open = the overlap problem.
+- Default Ort chip (pre-filled Basel) is AMBIGUOUS -> render it as a GHOST/dashed chip ("we guessed,
+  tap to confirm/change"), distinct from a solid user-CONFIRMED chip. Reconfirm -> flips to solid.
+- MOST IMPORTANT: when a picker is open, DIM the other rows (~55% opacity) , one question at a time,
+  nothing hidden. Kills the "everything at once" feeling.
+BUILD: refined B mockup at /dev/search-flow (top section) with all of the above. Then owner approves ->
+wire the real SearchOverlay to B.
