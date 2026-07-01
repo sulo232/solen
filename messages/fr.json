@@ -5923,7 +5923,12 @@
     "suggestTitle": "Suggestions",
     "suggestEverywhere": "Chercher partout en Suisse",
     "suggestCategory": "Voir tous les {category}",
-    "suggestCount": "{count} salons"
+    "suggestCount": "{count} salons",
+    "nrCityHeadline": "Aucun salon à {city}",
+    "nrDateHeadline": "Rien de libre ce jour-là",
+    "nrAnyDate": "Afficher toutes les dates",
+    "nrQueryHeadline": "Aucun résultat pour « {query} »",
+    "nrFiltersHeadline": "Aucun salon ne correspond à vos filtres"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Réservez votre prochain soin",

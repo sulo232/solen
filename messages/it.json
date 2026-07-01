@@ -5912,7 +5912,12 @@
     "suggestTitle": "Suggerimenti",
     "suggestEverywhere": "Cerca in tutta la Svizzera",
     "suggestCategory": "Vedi tutti i {category}",
-    "suggestCount": "{count} saloni"
+    "suggestCount": "{count} saloni",
+    "nrCityHeadline": "Nessun salone a {city}",
+    "nrDateHeadline": "Niente libero in questo giorno",
+    "nrAnyDate": "Mostra qualsiasi data",
+    "nrQueryHeadline": "Nessun risultato per «{query}»",
+    "nrFiltersHeadline": "Nessun salone corrisponde ai tuoi filtri"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Prenota subito il tuo prossimo trattamento",

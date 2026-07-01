@@ -639,7 +639,11 @@ export default function Header({ locale }: { locale: string }) {
             own full-width row below this container (see the category-tab row). Non-
             category routes (homepage etc.) keep the empty spacer (NO city — owner
             "not in homepage"). */}
-        {categorySegment ? (
+        {/* V3 (2026-07-01, UX council): on /search the search bar OWNS the city (shows
+            "Coiffeur / Bern"), so the header's global cookie-city chip is redundant AND
+            can disagree with the search (cookie "Basel" vs search "Bern"). Hide it there;
+            keep it on the category landing routes where there is no in-bar city control. */}
+        {categorySegment && categorySegment !== "search" ? (
           <div
             className={cn(
               "flex min-w-0 flex-1 justify-center md:hidden",

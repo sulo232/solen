@@ -64,6 +64,8 @@ import {
   SearchX,
   Globe,
   ChevronRight,
+  MapPinOff,
+  CalendarOff,
   Check,
   SlidersHorizontal,
   // V3-D354: Fuer-dich surface-shortcut icons (PLACEHOLDER lucide glyphs - the
@@ -812,6 +814,22 @@ export default function SearchTemplate({
     (gender ? 1 : 0) +
     (activeAmenities.length > 0 ? 1 : 0);
 
+  // Cause signals for the no-results EmptyState (which recovery action to surface).
+  const hasDateFilter = !!date || !!period;
+  const hasOtherFilters =
+    openNow || instantBookable || deals || walkIn || !!minRating ||
+    minPrice != null || maxPrice != null || !!gender || activeAmenities.length > 0;
+  // Navigate keeping the current path, dropping specific query params (for "any date").
+  const emptyDropParams = React.useCallback(
+    (drop: string[]) => {
+      const sp = new URLSearchParams(searchParams.toString());
+      drop.forEach((k) => sp.delete(k));
+      const qs = sp.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname);
+    },
+    [searchParams, pathname, router],
+  );
+
   // ── Map toggle — shared by the big-search map icon + the floating Karte FAB.
   // Desktop = open/close the split panel via the `map` URL param. Mobile =
   // enter/exit full-viewport map view via `mobileView` state. Single source of
@@ -1251,12 +1269,23 @@ export default function SearchTemplate({
               locale={locale}
               query={q}
               city={activeCity}
+              cityName={activeCity ? cityName : null}
+              hasDate={hasDateFilter}
+              hasOtherFilters={hasOtherFilters}
               hasFilters={
                 activeFilterCount > 0 || q.length > 0 || !!activeCategory
               }
               onClearFilters={() =>
                 router.replace(activeCategory ? pathname : `/${locale}/search`)
               }
+              onSearchEverywhere={() =>
+                router.push(
+                  q.trim().length >= 2
+                    ? `/${locale}/search?q=${encodeURIComponent(q.trim())}`
+                    : `/${locale}/search`,
+                )
+              }
+              onAnyDate={() => emptyDropParams(["date", "period"])}
             />
           ) : (
             <>
@@ -1665,95 +1694,91 @@ export default function SearchTemplate({
 // EmptyState — per LoadingStates.md Pattern 2.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function EmptyState({
-  locale,
-  query,
-  city,
-  hasFilters,
-  onClearFilters,
-}: {
-  locale: string;
-  query: string;
-  city: string | null;
-  hasFilters: boolean;
-  onClearFilters: () => void;
-}) {
-  const t = useTranslations("searchUi");
-  return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken">
-        <SearchX size={28} strokeWidth={1.75} className="text-s-ink-3" />
-      </div>
-      {/* V3-D240 (W2): match LOCKFILE Section H2 — 20/24 semibold. Empty-state
-          heading is mid-page emphasis, not page-level. */}
-      <h2 className="font-display mt-5 text-[clamp(18px,2vw,20px)] font-semibold leading-tight tracking-[-0.02em] text-s-ink">
-        {t("emptyTitle")}
-      </h2>
-      <p className="font-body mt-2 max-w-md text-[14px] leading-relaxed text-s-ink-2">
-        {t("emptyBody")}
-      </p>
-      {query.trim().length >= 2 && (
-        <NoResultsHelper query={query} city={city} locale={locale} />
-      )}
-      <div className="mt-5 flex flex-col items-center gap-2 sm:flex-row">
-        {hasFilters && (
-          <button
-            type="button"
-            onClick={onClearFilters}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-btn bg-s-ink px-5 py-2.5",
-              "font-body text-[14px] font-semibold text-white",
-              "transition-colors duration-150 hover:bg-black",
-              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-            )}
-          >
-            {t("clearFilters")}
-          </button>
-        )}
-        <Link
-          href={`/${locale}`}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-btn px-5 py-2.5",
-            "font-body text-[14px] font-semibold text-s-ink-2",
-            "transition-colors duration-150 hover:text-s-ink hover:underline",
-            "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-          )}
-        >
-          {t("toHome")}
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NoResultsHelper: Google-style "did you mean / broaden" rows for a zero-result
-// search. Fetches /api/search/no-results (counts are real, never fabricated); renders
-// only the rows the endpoint returns. Tapping a row navigates to the broadened search.
-// ─────────────────────────────────────────────────────────────────────────────
-
 type NoResultsData = {
   anywhere: { count: number } | null;
   category: { value: string; count: number } | null;
 };
 
-function NoResultsHelper({
+// C1State: the owner-picked no-results shape , icon + short headline + ONE ink CTA +
+// optional secondary text link. EmptyState below picks WHICH state fits the cause.
+function C1State({
+  Icon,
+  headline,
+  primary,
+  secondary,
+}: {
+  Icon: LucideIcon;
+  headline: string;
+  primary: { label: string; Icon?: LucideIcon; onClick: () => void };
+  secondary?: { label: string; onClick: () => void };
+}) {
+  return (
+    <div className="flex flex-col items-center px-6 pt-10 pb-9 text-center">
+      <div className="grid h-[68px] w-[68px] place-items-center rounded-full bg-s-bg-sunken text-s-ink shadow-[0_2px_8px_rgba(10,10,10,0.06)]">
+        <Icon size={30} strokeWidth={1.5} />
+      </div>
+      <h2 className="font-display mt-5 max-w-xs text-[20px] font-semibold leading-snug tracking-[-0.02em] text-s-ink">
+        {headline}
+      </h2>
+      <button
+        type="button"
+        onClick={primary.onClick}
+        className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black"
+      >
+        {primary.Icon ? <primary.Icon size={18} strokeWidth={2} /> : null}
+        {primary.label}
+      </button>
+      {secondary ? (
+        <button
+          type="button"
+          onClick={secondary.onClick}
+          className="mt-4 font-body text-[14px] font-medium text-s-accent hover:underline"
+        >
+          {secondary.label}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+// EmptyState: cause-aware no-results. Detects WHY there are 0 results and shows the
+// matching recovery (no city supply -> search nationwide; a date filter -> any date;
+// other filters -> clear; a query miss -> browse closest category / broaden). Counts
+// come from /api/search/no-results (never fabricated).
+function EmptyState({
+  locale,
   query,
   city,
-  locale,
+  cityName,
+  hasDate,
+  hasOtherFilters,
+  hasFilters,
+  onClearFilters,
+  onSearchEverywhere,
+  onAnyDate,
 }: {
+  locale: string;
   query: string;
   city: string | null;
-  locale: string;
+  cityName: string | null;
+  hasDate: boolean;
+  hasOtherFilters: boolean;
+  hasFilters: boolean;
+  onClearFilters: () => void;
+  onSearchEverywhere: () => void;
+  onAnyDate: () => void;
 }) {
   const t = useTranslations("searchUi");
   const tNav = useTranslations("navigation");
   const router = useRouter();
   const [data, setData] = React.useState<NoResultsData | null>(null);
 
+  const q = query.trim();
   React.useEffect(() => {
-    const q = query.trim();
-    if (q.length < 2) return;
+    if (q.length < 2) {
+      setData(null);
+      return;
+    }
     let alive = true;
     const params = new URLSearchParams({ q });
     if (city) params.set("city", city);
@@ -1762,76 +1787,69 @@ function NoResultsHelper({
       .then((d: NoResultsData | null) => {
         if (alive) setData(d);
       })
-      .catch((e) => console.error("[NoResultsHelper] fetch failed:", e));
+      .catch((e) => console.error("[EmptyState] no-results fetch failed:", e));
     return () => {
       alive = false;
     };
-  }, [query, city]);
+  }, [q, city]);
 
-  if (!data || (!data.anywhere && !data.category)) return null;
+  const anywhere = data?.anywhere?.count ?? null;
+  const catValue = data?.category?.value ?? null;
+  const catName = catValue
+    ? tNav.has(catValue as Parameters<typeof tNav>[0])
+      ? tNav(catValue as Parameters<typeof tNav>[0])
+      : catValue.charAt(0).toUpperCase() + catValue.slice(1)
+    : null;
+  const goCategory = () => {
+    if (catValue) router.push(`/${locale}/search?category=${catValue}`);
+  };
+  const goHome = () => router.push(`/${locale}`);
 
-  const fmt = (n: number) => (n >= 60 ? "60+" : String(n));
-  const rows: { key: string; Icon: typeof Globe; label: string; count: number; href: string }[] = [];
-
-  if (data.anywhere) {
-    const p = new URLSearchParams({ q: query.trim() });
-    rows.push({
-      key: "anywhere",
-      Icon: Globe,
-      label: t("suggestEverywhere"),
-      count: data.anywhere.count,
-      href: `/${locale}/search?${p.toString()}`,
-    });
+  // 1. City has no supply, but the query matches nationwide (known-good recovery first).
+  if (cityName && anywhere && anywhere > 0) {
+    return (
+      <C1State
+        Icon={MapPinOff}
+        headline={t("nrCityHeadline", { city: cityName })}
+        primary={{ label: t("suggestEverywhere"), Icon: Globe, onClick: onSearchEverywhere }}
+        secondary={catName ? { label: t("suggestCategory", { category: catName }), onClick: goCategory } : undefined}
+      />
+    );
   }
-  if (data.category) {
-    const value = data.category.value;
-    // Localized category name (navigation.<slug>): "Alle Nägel anzeigen", not "Alle Nails".
-    const navKey = value as Parameters<typeof tNav>[0];
-    const catName = tNav.has(navKey) ? tNav(navKey) : value.charAt(0).toUpperCase() + value.slice(1);
-    const p = new URLSearchParams({ category: value });
-    rows.push({
-      key: "category",
-      Icon: Compass,
-      label: t("suggestCategory", { category: catName }),
-      count: data.category.count,
-      href: `/${locale}/search?${p.toString()}`,
-    });
+  // 2. A date / time filter is the constraint , loosen it.
+  if (hasDate) {
+    return <C1State Icon={CalendarOff} headline={t("nrDateHeadline")} primary={{ label: t("nrAnyDate"), onClick: onAnyDate }} />;
   }
-
+  // 3. Other filters are the constraint , one tap to reset.
+  if (hasOtherFilters) {
+    return <C1State Icon={SlidersHorizontal} headline={t("nrFiltersHeadline")} primary={{ label: t("clearFilters"), onClick: onClearFilters }} />;
+  }
+  // 4. A query that just did not match , browse the closest category or broaden.
+  if (q.length >= 2) {
+    const primary = catName
+      ? { label: t("suggestCategory", { category: catName }), Icon: Compass, onClick: goCategory }
+      : anywhere && anywhere > 0
+        ? { label: t("suggestEverywhere"), Icon: Globe, onClick: onSearchEverywhere }
+        : { label: t("toHome"), onClick: goHome };
+    return (
+      <C1State
+        Icon={SearchX}
+        headline={t("nrQueryHeadline", { query: q })}
+        primary={primary}
+        secondary={hasFilters ? { label: t("clearFilters"), onClick: onClearFilters } : undefined}
+      />
+    );
+  }
+  // 5. Generic fallback (no query, no clear cause).
   return (
-    <div className="mt-8 w-full max-w-sm text-left">
-      <p className="font-body mb-3 text-[13px] font-medium text-s-ink-3">
-        {t("suggestTitle")}
-      </p>
-      <div className="flex flex-col gap-2">
-        {rows.map((r) => (
-          <button
-            key={r.key}
-            type="button"
-            onClick={() => router.push(r.href)}
-            className={cn(
-              "group flex w-full items-center gap-3 rounded-[16px] border border-s-border bg-white px-4 py-3 text-left",
-              "transition-colors duration-150 hover:bg-s-bg-sunken",
-            )}
-          >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-              <r.Icon size={18} strokeWidth={1.75} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate font-body text-[14px] font-semibold text-s-ink">
-                {r.label}
-              </span>
-              <span className="block font-body text-[12px] text-s-ink-3">
-                {t("suggestCount", { count: fmt(r.count) })}
-              </span>
-            </span>
-            <ChevronRight size={18} className="shrink-0 text-s-ink-3" />
-          </button>
-        ))}
-      </div>
-    </div>
+    <C1State
+      Icon={SearchX}
+      headline={t("emptyTitle")}
+      primary={hasFilters ? { label: t("clearFilters"), onClick: onClearFilters } : { label: t("toHome"), onClick: goHome }}
+    />
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ErrorState — per LoadingStates.md Pattern 3.

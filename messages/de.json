@@ -5941,7 +5941,12 @@
     "suggestTitle": "Vorschläge",
     "suggestEverywhere": "Überall in der Schweiz suchen",
     "suggestCategory": "Alle {category} anzeigen",
-    "suggestCount": "{count} Salons"
+    "suggestCount": "{count} Salons",
+    "nrCityHeadline": "Keine Salons in {city}",
+    "nrDateHeadline": "Nichts frei an diesem Tag",
+    "nrAnyDate": "Beliebiges Datum anzeigen",
+    "nrQueryHeadline": "Keine Treffer für „{query}“",
+    "nrFiltersHeadline": "Keine Salons passen zu deinen Filtern"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Buche jetzt deine nächste Behandlung",

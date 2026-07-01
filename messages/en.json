@@ -5930,7 +5930,12 @@
     "suggestTitle": "Suggestions",
     "suggestEverywhere": "Search everywhere in Switzerland",
     "suggestCategory": "Browse all {category}",
-    "suggestCount": "{count} salons"
+    "suggestCount": "{count} salons",
+    "nrCityHeadline": "No salons in {city}",
+    "nrDateHeadline": "Nothing free on this day",
+    "nrAnyDate": "Show any date",
+    "nrQueryHeadline": "No results for “{query}”",
+    "nrFiltersHeadline": "No salons match your filters"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Book your next treatment now",
