@@ -86,7 +86,7 @@ import { CategoryHeroCarousel } from "./CategoryHeroCarousel";
 import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
-import { getCityName, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
+import { getCityName, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, CITIES, type CitySlug } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
@@ -1453,7 +1453,7 @@ export default function SearchTemplate({
       {/* Stay mounted during a re-fetch (no `!loading`): searching from the map keeps
           the previous pins on screen until the new results swap in, instead of flashing
           the list underneath (the owner's "jumps to normal search then map"). */}
-      {mobileView === "map" && !error && salons.length > 0 && (() => {
+      {mobileView === "map" && !error && (() => {
         // V3-D381: three-snap map sheet. peek/expanded → vertical list + filter
         // pills; collapsed → mostly map + a horizontal swipeable card stub whose
         // centered card selects + recenters the matching pin (Google/Apple-Maps pattern).
@@ -1491,6 +1491,9 @@ export default function SearchTemplate({
                 selectedId={mapSelectedId ?? undefined}
                 onSelect={(id) => setMapSelectedId(id)}
                 enhanced
+                // When the picked city has no listings, recenter to the city so the map goes
+                // there (instead of a blank sheet + the previous city). owner 2026-07-01.
+                emptyCenter={activeCity ? [CITIES[activeCity].lng, CITIES[activeCity].lat] : null}
               />
             </div>
             {/* V3-D382: floating top bar over the map — back button + search pill

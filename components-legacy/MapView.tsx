@@ -37,9 +37,13 @@ interface MapViewProps {
   enhanced?: boolean;
   /** Callback when user clicks "In diesem Bereich suchen" with map bounds */
   onAreaSearch?: (bounds: { north: number; south: number; east: number; west: number }) => void;
+  /** [lng, lat] to recenter on when there are ZERO salons (e.g. the user picked a city with no
+   *  listings yet). Without this the map stayed on the previous city while the sheet said "0 in X",
+   *  which read as "it doesn't bring me to that city" (owner 2026-07-01). */
+  emptyCenter?: [number, number] | null;
 }
 
-export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch }: MapViewProps) {
+export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch, emptyCenter }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // mapbox-gl v3's Map/Marker types are so deeply recursive that tsc throws
   // TS2321 "Excessive stack depth" when comparing them on assignment — a known
@@ -305,6 +309,13 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     if (!salon) return;
     mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], duration: 400 });
   }, [selectedId, filteredSalons]);
+
+  // ZERO results (e.g. a city with no listings): recenter to that city so the map visibly
+  // "goes there" instead of sitting on the previous city behind a "0 Salons" sheet (owner).
+  useEffect(() => {
+    if (!mapRef.current || filteredSalons.length > 0 || !emptyCenter) return;
+    mapRef.current.easeTo({ center: emptyCenter, zoom: 12, duration: 500 });
+  }, [emptyCenter, filteredSalons]);
 
   const handleAreaSearch = useCallback(() => {
     const map = mapRef.current;
