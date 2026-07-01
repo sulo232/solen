@@ -582,8 +582,12 @@ export function SearchOverlay({
   const cityList = () => (
     <>
       {/* Explicit "everywhere": emit city=all so it isn't re-defaulted to the launch city. */}
-      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); advance("location"); }} />
-      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); advance("location"); }} />)}
+      {/* Owner 2026-07-01 #7 fix: picking a city returns to the composed view (city shows as a
+          collapsed row) instead of AUTO-ADVANCING to the date step , which replaced the city list
+          with the calendar and read as "the city selector disappears in the middle". No auto-jump;
+          the user taps Wann? or Suchen when ready. */}
+      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); openStep("service"); }} />
+      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); openStep("service"); }} />)}
     </>
   );
 
