@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { generalLimiter, authLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createSalonSchema } from "@/lib/validations";
@@ -26,7 +27,11 @@ export async function GET(request: NextRequest) {
     if (rateLimited) return rateLimited;
 
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
+    // Normalize: a ?service=<category-slug> (from the search overlay) is a CATEGORY filter,
+    // not a service-name text match , fixes the ?service=/?category= ambiguity (IA council).
+    const rawService = searchParams.get("service");
+    const serviceIsCategory = !!rawService && SALON_CATEGORY_SLUGS.includes(rawService.toLowerCase());
+    const category = searchParams.get("category") ?? (serviceIsCategory ? rawService!.toLowerCase() : null);
     const city = searchParams.get("city");
     const min_price = searchParams.get("min_price");
     const max_price = searchParams.get("max_price");
@@ -45,7 +50,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(50, parseInt(searchParams.get("limit") ?? "20"));
     const offset = (page - 1) * limit;
     const idsParam = searchParams.get("ids");
-    const serviceFilter = searchParams.get("service");
+    const serviceFilter = serviceIsCategory ? null : rawService;
     const q = searchParams.get("q")?.trim(); // free-text — semantic rank, combined with the filters below
     const period = searchParams.get("period"); // morning|noon|afternoon|evening — open-slot time-of-day filter
 

@@ -213,7 +213,11 @@ export const discoveryCommentSchema = z.object({
 
 // ─── Salon Registration ─────────────────────────────────────────────────────
 
-const salonCategory = z.enum(["coiffeur", "barbershop", "nails", "spa"]);
+// reinvent-ok: exporting the EXISTING canonical enum as the single source of truth for
+// reuse (overlay + api). This REDUCES the V3_CATS / VALID_CATEGORIES duplication, not adds to it.
+export const salonCategory = z.enum(["coiffeur", "barbershop", "nails", "spa"]);
+/** Canonical salon category slugs, derived from the enum. */
+export const SALON_CATEGORY_SLUGS: readonly string[] = salonCategory.options;
 
 export const createSalonSchema = z.object({
   name: z.string().min(2).max(100),

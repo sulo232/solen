@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
+import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
@@ -212,7 +213,12 @@ export function SearchOverlay({
       const qv = over?.q ?? serviceQ.trim(), sv = over?.service ?? service;
       const cv = over?.city ?? stadt, dv = over?.date ?? isoDate, pv = over?.period ?? zeitPeriod;
       if (qv && qv.length >= 2) sp.set("q", qv);
-      if (sv) sp.set("service", sv);
+      // A category slug (e.g. opening search from /coiffeur) filters by CATEGORY, not a
+      // text-match on service names , fixes the ?service=/?category= ambiguity.
+      if (sv) {
+        if (SALON_CATEGORY_SLUGS.includes(sv.toLowerCase())) sp.set("category", sv.toLowerCase());
+        else sp.set("service", sv);
+      }
       if (cv) sp.set("city", cv);
       if (dv) sp.set("date", dv);
       if (pv) sp.set("period", pv);
