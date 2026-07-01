@@ -236,3 +236,26 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] #1 map bar city stuck
   - [x] investigate bar-city-vs-pan , root-caused (bar shows the SEARCH city, not the pan)
   - [x] recommendation , LEAD: "Search this area" button on pan (standard; onAreaSearch exists) mocked at /dev/map-extras; owner confirms the fork before wiring
+
+## 🌊 BATCH 2 (owner 2026-07-02, voice; references IMG_6254-6263 in ~/solen/screenshots)
+## Fresha references reviewed (native vision): 6254/6255/6261/6262 = map + store-preview card;
+## 6260 = pins (black ★5.0, NO count, teardrop); 6257/6258 = results list + search bar (back-arrow
+## inside + query + subtitle + map/list toggle); 6259 = search suggestions; 6263 = filter sheet
+## (icon chips + Loeschen/Anwenden). Owner: make NEW mockups from these, EXCEPT pin labels.
+- [ ] PIN LABEL (#3) , SETTLED, small change (keep white, do NOT follow the black ref)
+  - [ ] pick B; A==B once counts are gone , remove the COUNT entirely (star + rating 4.6 only)
+  - [ ] keep WHITE pill + blue inline (owner: "keep it white, blue inline")
+- [ ] FOCUS RING (recurring, owner FURIOUS: "both has fucking focus ring on open, same mistake over and over")
+  - [ ] investigate live WHERE the ring still shows (measure getComputedStyle , not eyeball)
+  - [ ] HARDEN the no-focus-ring gate to close the gap that let it recur
+  - [ ] fix the instance (kill the ring)
+- [ ] NEW MOCKUPS from the references (all new, except pin labels)
+  - [ ] #2 store-preview card , from 6254/6255/6261 (photo + carousel dots + name + star rating + distance dot address + category dot reviews + X close)
+  - [ ] #4 map search bar , from 6257/6260 (back arrow INSIDE + query + subtitle + map/list toggle icon on the right)
+  - [ ] #5 filter sheet , from 6263 (icon chips like "Bietet Angebote"/"Akzeptiert Gruppen" + Loeschen/Anwenden footer)
+  - [ ] results-list card , from 6257/6258 (photo + heart + name + star + distance dot address + category dot reviews + service rows + "X anzeigen" blue link)
+  - [ ] "open maps" / search suggestions , from 6259 (Alle/Behandlungen/Anbieter count-tabs + treatment + provider lists + Mehr anzeigen)
+- [ ] CHECKOUT / WALK-IN confirmation (owner: current confirmation is "kinda fucked")
+  - [ ] after confirmation, a button to go to the LOGIN page (guest-to-account)
+  - [ ] BUG: after booking, pressing BACK jumps into the search version , must not (investigate the real flow)
+  - [ ] add a confirmation POPUP / notification mark so the user is CERTAIN they have an appointment

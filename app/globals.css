@@ -351,11 +351,15 @@
      + the tap-focus that iOS fires). Removed entirely per the owner's standing no-focus-ring
      policy. (a11y note: this drops the WCAG 2.4.7 keyboard focus indicator on chrome , owner call;
      inputs keep their caret, and the no-focus-ring-gate blocks re-adding a ring.) */
-  a:focus-visible,
-  button:focus-visible,
-  [role="button"]:focus-visible,
-  [tabindex]:focus-visible,
-  summary:focus-visible {
+  /* BELT-AND-SUSPENDERS (owner 2026-07-02, furious repeat: "both has focus ring on open"):
+     kill plain :focus too, not just :focus-visible. iOS Safari can classify a TAP as :focus
+     WITHOUT :focus-visible, so the UA ring slipped through the :focus-visible-only kill (desktop
+     showed nothing, the phone showed the ring). Chrome elements only , inputs keep their edge below. */
+  a:focus, a:focus-visible,
+  button:focus, button:focus-visible,
+  [role="button"]:focus, [role="button"]:focus-visible,
+  [tabindex]:focus, [tabindex]:focus-visible,
+  summary:focus, summary:focus-visible {
     outline: none;
   }
 
