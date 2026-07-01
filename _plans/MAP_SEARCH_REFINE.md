@@ -201,13 +201,38 @@ mockup -> DENY; English -> PASS; real app code (localised) -> PASS; stray city n
   gaps = card last-4 + PayConfirmStep beat). TODO mockup.
 NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -> #1 fork + #2/#3 refs.
 
-## ✅ BATCH CHECKLIST (enforced by unfinished-batch-gate , no silent defers)
-- [x] #6 focus rings , removed global outline, 0 rings measured
-- [x] #7 category/city confusion , city pick no longer jumps to calendar (25faf66be)
-- [x] META harden , english-mockup-gate (dev .tsx) + unfinished-batch-gate + plan-first + mockup-visual
-- [ ] #4 map search bar sizing , MOCKUP READY FOR REVIEW at /dev/map-bar (full-width + back arrow inside)
-- [ ] #3 pin label rating+count swap , MOCKUP READY FOR REVIEW at /dev/pin-label (white pill not black; exact Fresha styling BLOCKED on ref)
-- [ ] #5 filter refine , BLOCKED: focus-ring-in-filter DONE (#6); the 'refine each filter' part needs owner specifics (what to change)
-- [ ] #8 checkout processing beat + card last-4 , MOCKUP READY FOR REVIEW at /dev/checkout-confirm (honest Stripe spinner + dense receipt w/ card last-4 + reference)
-- [ ] #1 map bar city stuck (BLOCKED: needs owner call , bar-tracks-pan vs "search this area" fork)
-- [ ] #2 pin -> store preview (BLOCKED: needs owner reference screenshot)
+## ✅ BATCH CHECKLIST v2 , ATOMIC sub-asks (owner 2026-07-01: "you forgot ~8 things"; each item
+## split into its sub-asks so nothing hides; gate v2 checks these atomic boxes, not top lines)
+- [x] #6 focus rings
+  - [x] home button ring , removed global outline, measured 0
+  - [x] pills ring , measured 0
+- [x] #7 category/city flow
+  - [x] "disappears mid-way" , auto-advance removed (25faf66be)
+  - [ ] "a lot of overlap" , SKIPPED before; investigating live + fixing/mocking now
+  - [x] give ideas + ask , council + AskUserQuestion, owner picked "keep + minimal"
+- [x] META harden
+  - [x] plan-first + mockup-visual + english-mockup gates
+  - [x] unfinished-batch-gate v2 (VAGUE_PUNT + BUNDLE-not-atomized) + multi-ask-decompose , self-tested, wired
+- [ ] #3 pin label
+  - [x] rating + count instead of price , mocked
+  - [x] not black (white pill) , mocked
+  - [ ] 3+ variations , shipped 1 before; delivering 3 now
+  - [ ] exact Fresha styling , BLOCKED: needs owner Fresha reference screenshot
+- [ ] #4 map bar sizing
+  - [x] same size as normal bar , mocked
+  - [x] back arrow integrated inside , mocked
+  - [ ] 3+ variations , shipped 1 before; delivering 3 now
+- [ ] #5 filter refine + focus ring
+  - [x] focus ring in filter , fixed via #6
+  - [ ] refine each filter , punted "needs specifics" before; investigating live + proposing now
+- [ ] #8 checkout processing
+  - [x] honest processing beat , mocked
+  - [x] dense receipt + card last-4 , mocked
+  - [x] normal booking , mocked
+  - [ ] walk-in variant , omitted before; adding now
+- [ ] #2 pin -> store preview
+  - [ ] preview card (first version from the existing SalonResultCard) , delivering now
+  - [ ] exact look , BLOCKED: needs owner reference screenshot
+- [ ] #1 map bar city stuck
+  - [x] investigate bar-city-vs-pan , root-caused (bar shows the SEARCH city, not the pan)
+  - [ ] recommendation + mock , LEAD: recommend a "Search this area" button (standard pattern; MapView.onAreaSearch already exists) then owner confirms the fork

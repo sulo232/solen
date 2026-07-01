@@ -83,6 +83,13 @@ Verified against LIVE information_schema (schema-drift aware):
 NOT live-exercised (a real create would write a salon row). tsc clean + columns confirmed present.
 NEXT: /api/salon-draft (GET/POST/DELETE) + the collected-but-unstored onboarding fields decision; then ADMIN surface (surface #4).
 
+## /api/salon-draft HUNT 2026-07-01 , CLEAN (no fix)
+- GET/PUT/DELETE all auth-gated; user_id-scoped admin client; PUT has 50KB size cap + zod (draft_data record, current_step 1-7) + upsert onConflict user_id. Wired: onboarding/salon/page.tsx:387/422/525. salon_drafts table exists (RLS on).
+- Nits (NOT fixed , not reproducible bugs, surgical-edits-only): GET uses `.single()` (406+PGRST116 for a fresh user with no draft; route still returns {draft:null} 200 so harmless) where `.maybeSingle()` is idiomatic; DELETE omits the rate-limit + ban-check GET/PUT have and ignores the delete error (self-scoped idempotent delete , inconsequential).
+
+## VAT DISPLAY FIX 2026-07-01 (026a50313) , real legal bug the reconcile note missed
+The STATUS RECONCILE above marked VAT "DONE" but only the BACKEND (booking record). The CUSTOMER-FACING MwSt line in PayConfirmStep was still ungated + hardcoded 8.1% -> a non-vat_registered salon showed a false tax line. FIXED: gate on salonVatRegistered + salon's own vat_rate (mirrors lib/vat.ts computeVat: ?? 8.1, rate<=0 -> no line); added vat_rate to booking/page.tsx select. Council-correctness reviewed (stale-worktree false-positive on #1; #2 select-vat_rate + #3 zero-rate-guard folded in). tsc clean.
+
 ## ADMIN SURFACE HUNT 2026-07-01
 - Admin API access-gating: CLEAN on the high-risk routes , purchase-refund (role!=admin -> 403), commission GET+PUT (403), feature-flags GET+PATCH (403), seed-test-salons (requireAdmin helper). Consistent pattern: getSession -> 401 if no user -> profiles.role check -> 403 if !admin -> adminLimiter. The money-write + config-write routes are all gated.
 - REMAINING (not a bug, coverage note): ~20 /api/admin/* routes total; spot-checked the 4 highest-risk. A full per-route sweep + the *-admin dashboard pages (nail/discovery/spa/homepage/commission-admin) is the remaining admin coverage. No bug found in what was checked.
