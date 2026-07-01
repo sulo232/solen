@@ -82,3 +82,16 @@ Verified against LIVE information_schema (schema-drift aware):
 - phone_verified / cancellation_policy / google_place_id / email genuinely NOT in public.salons -> correctly left commented (uncommenting would break the insert). Those form fields are collected but not stored on salons (separate silent-no-op worth an owner decision: drop the fields, or add columns).
 NOT live-exercised (a real create would write a salon row). tsc clean + columns confirmed present.
 NEXT: /api/salon-draft (GET/POST/DELETE) + the collected-but-unstored onboarding fields decision; then ADMIN surface (surface #4).
+
+## ADMIN SURFACE HUNT 2026-07-01
+- Admin API access-gating: CLEAN on the high-risk routes , purchase-refund (role!=admin -> 403), commission GET+PUT (403), feature-flags GET+PATCH (403), seed-test-salons (requireAdmin helper). Consistent pattern: getSession -> 401 if no user -> profiles.role check -> 403 if !admin -> adminLimiter. The money-write + config-write routes are all gated.
+- REMAINING (not a bug, coverage note): ~20 /api/admin/* routes total; spot-checked the 4 highest-risk. A full per-route sweep + the *-admin dashboard pages (nail/discovery/spa/homepage/commission-admin) is the remaining admin coverage. No bug found in what was checked.
+
+## TURN ROLL-UP 2026-07-01 (7 real bugs fixed this session's continuation)
+1. #2-city default city (kill "Schweizweit") + name->slug city-select bug , 31f4de09a
+2. reviews sub-page regression repair (admin client) , c63008dd2
+3. reviews reviewer-UUID exposure stripped , e188106e3
+4. favorites recency ordering , 7fccf8c25
+5. bookings past-tab: 95 hidden bookings surfaced , 1ed22c6f8
+6+7. onboarding quartier fabrication + tiktok_url data-loss , 18ed14037
+Plus earlier this turn: map pin labels + filter count (#3), filter neutral (no blue/ring), map store-recenter. PARKED (visual, mockup-first): favorites legacy-SalonCard badge/Zap; onboarding uppercase labels. DECISION for owner: onboarding collects phone_verified/cancellation_policy/google_place_id/email but public.salons has no such columns (drop the fields or add columns).
