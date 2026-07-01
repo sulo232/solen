@@ -156,6 +156,39 @@ export default function MapV2Mockup() {
             </div>
           </Phone>
 
+          {/* 4. SEARCH SUGGESTIONS (from IMG_6259) */}
+          <Phone label="Search suggestions (from your ref)">
+            <div className="absolute inset-0 overflow-y-auto bg-white p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <button className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink"><ArrowLeft size={18} strokeWidth={2.2} /></button>
+                <span className="font-heading text-[17px] font-bold text-s-ink">Search</span>
+              </div>
+              <div className="mb-4 flex gap-2 overflow-x-auto">
+                <span className="rounded-full bg-s-ink px-3 py-1.5 text-[12.5px] font-semibold text-white" /* selected-ok: active tab */>All</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-s-border px-3 py-1.5 text-[12.5px] font-medium text-s-ink">Treatments <span className="rounded-full bg-s-bg-sunken px-1.5 text-[12px] text-s-ink-2">30</span></span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-s-border px-3 py-1.5 text-[12.5px] font-medium text-s-ink">Salons <span className="rounded-full bg-s-bg-sunken px-1.5 text-[12px] text-s-ink-2">2</span></span>
+              </div>
+              <p className="mb-2 text-[13px] font-semibold text-s-ink">Treatments</p>
+              <div className="space-y-1">
+                {["Buzz Cut", "Haircut", "Wet cut", "Dry cut"].map((t) => (
+                  <div key={t} className="flex items-center gap-3 py-2 text-[13.5px] text-s-ink"><Search size={16} className="text-s-ink-3" /> {t}</div>
+                ))}
+              </div>
+              <button className="mt-1 text-[13px] font-semibold text-s-accent">Show more</button>
+              <p className="mb-2 mt-4 text-[13px] font-semibold text-s-ink">Salons</p>
+              <div className="space-y-2">
+                {[["Golden Cut", "Hair salon , Basel", "2.1 km"], ["Disco Cut", "Hair salon , Zurich", "> 50 km"]].map(([n, s, d]) => (
+                  <div key={n} className="flex items-center gap-3">
+                    <span className="h-10 w-10 shrink-0 rounded-full bg-s-bg-sunken" />
+                    <div className="min-w-0 flex-1"><p className="truncate text-[13.5px] font-medium text-s-ink">{n}</p><p className="truncate text-[12px] text-s-ink-2">{s}</p></div>
+                    <span className="shrink-0 text-[12px] text-s-ink-3">{d}</span>
+                  </div>
+                ))}
+              </div>
+              <button className="mt-2 text-[13px] font-semibold text-s-accent">Show more</button>
+            </div>
+          </Phone>
+
         </div>
 
         <ul className="mt-8 max-w-[680px] space-y-2 text-[13px] text-s-ink-2">
