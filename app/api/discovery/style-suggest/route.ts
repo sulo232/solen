@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
@@ -24,8 +24,10 @@ export async function GET(req: NextRequest) {
   if (!q || q.length < 2) return NextResponse.json({ terms: [] });
 
   try {
-    const admin = createAdminSupabaseClient();
-    const { data, error } = await admin.rpc("discovery_style_suggest", { q: q.slice(0, 60), p_limit: 6 });
+    // Anon/session client (not service-role): the RPC is SECURITY INVOKER and reads only
+    // discovery_items, which has a public-read RLS policy , no elevated privilege needed.
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase.rpc("discovery_style_suggest", { q: q.slice(0, 60), p_limit: 6 });
     if (error) {
       console.error("[Discover] style-suggest RPC failed:", error);
       return NextResponse.json({ terms: [] });

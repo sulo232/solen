@@ -17,6 +17,7 @@ import {
 } from "motion/react";
 import {
   ArrowLeft,
+  ArrowUpLeft,
   ChevronLeft,
   ChevronRight,
   X,
@@ -34,6 +35,8 @@ import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
+import { useStyleLooks } from "../homepage/useStyleLooks";
+import { SalonResultCard } from "./SalonResultCard";
 import {
   useRecentSearches,
   recentLabel,
@@ -123,6 +126,8 @@ export function SearchOverlay({
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: stadt || undefined });
+  // Rich-search style layer: one call powers the autocomplete completions AND the Looks strip.
+  const { terms: styleTerms } = useStyleLooks(open ? serviceQ : "");
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
 
@@ -260,6 +265,20 @@ export function SearchOverlay({
   const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); onClose(); }, [expand, onClose]);
   const reset = React.useCallback(() => { setService(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
 
+  // Rich-search taps. searchTerm: run a specific autocomplete term as the query (keeps
+  // city/date). openSalon: jump straight to that salon's PDP. openLook: hand off to the
+  // Inspo feed pre-filtered by the style term (the "connect w inspo" tie-in).
+  const searchTerm = React.useCallback((term: string) => {
+    const q = term.trim();
+    push({ query: q || undefined, service: service || undefined, city: stadt || undefined, date: isoDate || undefined, period: zeitPeriod || undefined });
+    navigate(buildParams({ q }));
+  }, [push, service, stadt, isoDate, zeitPeriod, buildParams, navigate]);
+  const openSalon = React.useCallback((slug: string) => {
+    if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
+    router.push(`/${locale}/salon/${slug}`); close();
+  }, [router, locale, close]);
+  const openLook = React.useCallback((term: string) => { router.push(`/${locale}/inspo?search=${encodeURIComponent(term)}`); close(); }, [router, locale, close]);
+
   // i18n (all at top level)
   const searchHeadingTxt        = t("searchHeading");
   const locationHeadingTxt      = t("locationHeading");
@@ -287,11 +306,14 @@ export function SearchOverlay({
   const submitTxt               = t("submit");
   const closeTxt                = t("close");
   const backTxt                 = t("back");
-  const noMatchTitleTxt         = t("noMatchTitle");
   const recentLabelTxt          = t("recentLabel");
   const storesLabelTxt          = t("storesLabel");
   const categoriesLabelTxt      = t("categoriesLabel");
   const trendingLabelTxt        = t("trendingLabel");
+  const groupSalonsTxt          = t("groupSalons");
+  const groupStylistsTxt        = t("groupStylists");
+  const looksLabelTxt           = t("looksLabel");
+  const seeAllResultsTxt        = t("seeAllResults");
 
   const flexDates = React.useMemo(
     () => [todayTxt, tomorrowTxt, flexThisWeekTxt, flexWeekendTxt, flexThisMonthTxt, flexFlexibleTxt],
@@ -352,15 +374,85 @@ export function SearchOverlay({
 
   const serviceSuggestions = () => {
     if (typing) {
-      if (loading) return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
-      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-3">{noMatchTitleTxt}</p>;
+      if (loading && !hasResults && styleTerms.length === 0)
+        return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
+
+      // Autocomplete completions: style-name terms FIRST, then service names, merged so the
+      // "similar" list stays rich even when style-suggest returns only the query term itself.
+      // Minus the raw query (it always leads the list). Deduped case-insensitively, capped.
+      const qNorm = serviceQ.trim().toLowerCase();
+      const rawCompletions = [
+        ...styleTerms.map((s) => s.term),
+        ...results.services.map((s) => (locale === "en" ? s.name_en || s.name_de : s.name_de)),
+      ];
+      const acTerms = Array.from(new Set(rawCompletions.map((x) => x.trim()).filter(Boolean)))
+        .filter((x) => x.toLowerCase() !== qNorm)
+        .slice(0, 5);
+      const looks = styleTerms.filter((s) => s.thumb).slice(0, 8);
+
       return (
         <>
-          {results.services.map((s) => { const name = locale === "en" ? s.name_en || s.name_de : s.name_de; return (
-            <SuggestRow key={s.id} name={name} sub="Service" Icon={Search} onClick={() => { setService(name); setServiceQ(""); advance("service"); }} />
-          ); })}
-          {results.salons.map((s) => <SuggestRow key={s.id} name={s.name} sub="Salon" Icon={MapPin} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />)}
-          {results.stylists.map((s) => <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User} onClick={() => { setService(s.name); setServiceQ(""); advance("service"); }} />)}
+          {/* Autocomplete , the query + similar terms as clean ink rows (traditional search) */}
+          <div className="divide-y divide-s-border">
+            <AutocompleteRow label={serviceQ.trim()} primary onClick={() => handleSubmit()} />
+            {acTerms.map((term) => (
+              <AutocompleteRow key={term} label={term} onClick={() => searchTerm(term)} />
+            ))}
+          </div>
+
+          {/* Salons , the focal, bookable result. Rich card + rating + area + from-price. */}
+          {results.salons.length > 0 && (
+            <>
+              <SectionLabel className="mt-4">{groupSalonsTxt}</SectionLabel>
+              <div className="flex flex-col gap-2.5">
+                {results.salons.map((s) => (
+                  <SalonResultCard
+                    key={s.id}
+                    variant="suggest"
+                    slug={s.slug}
+                    name={s.name}
+                    locale={locale}
+                    rating={s.average_rating}
+                    photoUrl={s.cover_photo_url}
+                    address={s.address}
+                    priceFromCHF={s.from_price}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => handleSubmit()}
+                className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-[13px] font-semibold text-s-ink active:scale-[0.98]"
+              >
+                {seeAllResultsTxt} <ChevronRight size={15} strokeWidth={2.2} />
+              </button>
+            </>
+          )}
+
+          {/* Stylists , preserved capability (search by name); compact rows. */}
+          {results.stylists.length > 0 && (
+            <>
+              <SectionLabel className="mt-4">{groupStylistsTxt}</SectionLabel>
+              {results.stylists.map((s) => (
+                <SuggestRow key={s.id} name={s.name} sub={s.salon_name} Icon={User}
+                  onClick={() => openSalon(s.salon_slug)} />
+              ))}
+            </>
+          )}
+
+          {/* Looks , real Inspo photos of the style; taps hand off to the Inspo feed. */}
+          {looks.length > 0 && (
+            <>
+              <SectionLabel className="mt-4">{looksLabelTxt}</SectionLabel>
+              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                {looks.map((l) => (
+                  <button key={l.term} onClick={() => openLook(l.term)} aria-label={l.term}
+                    className="shrink-0 overflow-hidden rounded-[14px] active:scale-[0.98]">
+                    <img src={l.thumb!} alt="" loading="lazy" className="h-24 w-[72px] object-cover" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </>
       );
     }
@@ -560,6 +652,19 @@ export function SearchOverlay({
 function SectionLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
+
+// Traditional-search autocomplete row: magnifier + ink term + up-left "insert" arrow.
+// `primary` weights the raw-query row above the similar terms. Not a grey pill.
+function AutocompleteRow({ label, primary, onClick }: { label: string; primary?: boolean; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="flex w-full items-center gap-3 py-2.5 text-left">
+      <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+      <span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${primary ? "font-semibold" : "font-medium"}`}>{label}</span>
+      <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+    </button>
+  );
+}
+
 
 function MonthGrid({ monthDate, now, windowEnd, selKey, onPick }: {
   monthDate: Date; now: Date; windowEnd: Date; selKey: string | null;

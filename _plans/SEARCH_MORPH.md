@@ -43,3 +43,17 @@ The mockup is now LIVE in the production `SearchOverlay.tsx` (homepage SearchBar
 1. **DNA personalization wiring** (owner-confirmed part of the port, SEARCH_BACKEND "Post-mockup wiring") , personalize suggest/results by user_style_affinity / search-book affinity. NOT yet done.
 2. **No-results helper** (SEARCH_BACKEND Feature 2) , BLOCKED on owner decisions D1 (3 vs 5 cities) + D4 (fallback copy).
 3. **en/fr/it translations** for the 31 new keys (German placeholders today).
+
+## RICH SEARCH WIRED 2026-07-01 (mockup `/dev/search-rich` V2, owner "approved")
+The overlay's TYPING state (query >=2 chars) is now a rich, sectioned result INSIDE the overlay (calendar/location steps untouched). Ported from the approved `/dev/search-rich` V2.
+- **Autocomplete** , the raw query (leads, semibold) + up to 5 "similar" terms as clean ink rows (magnifier + up-left arrow, hairline dividers, NOT grayed). Sources MERGED: `useStyleLooks` style terms first, then `useSearchSuggest` service names. Tap a term -> `searchTerm(term)` -> /search?q=term.
+- **Salons** (focal) , `results.salons` as rich cards: cover (or Store fallback), name, star rating, address, `from CHF X`, trailing arrow. Tap -> salon PDP (`/salon/<slug>`). Inline **See all results** row -> handleSubmit (full search page). Capped at the suggest limit (3).
+- **Stylists** , preserved capability; compact rows, tap -> the stylist's salon PDP.
+- **Looks** (small strip) , real Inspo photos from `style-suggest` thumbs; tap -> `/inspo?search=<term>` (the "connect w inspo" tie-in). Inspo now reads `?search=` into its committed-query state so the deep-link lands pre-filtered (was a would-be dead param).
+
+Backend + data (all EXISTING, reused):
+- `search_suggest` RPC gained a per-salon `from_price` (min active priced service at the salon) , additive CREATE OR REPLACE, same signature. NOTE (parked): it's the salon's OVERALL cheapest service, not the query-matched treatment, so a barbershop shows `ab CHF 15` (a beard trim) on a "buzzcut" search. Honest "starting at" price but a category-scoped from-price would be more relevant , refinement parked.
+- New hook `useStyleLooks` (colocated w/ useSearchSuggest) , debounced fetch of `/api/discovery/style-suggest` (discovery-flag-gated, fails soft). One call powers BOTH the autocomplete completions and the Looks thumbs.
+- i18n: 3 new keys per locale (`looksLabel`, `seeAllResults`, `fromPrice`) in de/en/fr/it (these ARE translated, not placeholders). Reused `groupSalons`/`groupStylists`.
+
+Verified live (localhost:3000, iPhone 13, Playwright): DE "buzzcut" -> autocomplete (buzzcut + Bart trimmen/Coupe & Bart/...) + 2 salon cards (Cuts & Culture 4.8 ab CHF 15, Old Town Barbers 4.3) + See all + Looks; EN "coiffeur" -> Salon Lumière 4.4 `from CHF 35` + `See all results`. No console errors. tsc clean (4 pre-existing errors in admin/cron discovery-backfill, unrelated).

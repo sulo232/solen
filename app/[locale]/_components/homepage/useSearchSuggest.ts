@@ -27,12 +27,17 @@ export type SalonResult = {
   id: string;
   name: string;
   slug: string;
-  average_rating: number;
+  // Nullable: the RPC orders by `average_rating desc nulls last`, so a salon with no
+  // reviews returns null (AVG of empty set), not 0. Callers null-guard before .toFixed.
+  average_rating: number | null;
   cover_photo_url: string | null;
   address: string;
   city_id: string;
   latitude: number;
   longitude: number;
+  // Entry price: min active service price at the salon. Powers the "from CHF X"
+  // on the rich-search salon cards. Nullable when the salon has no priced service.
+  from_price: number | null;
 };
 
 export type StylistResult = {

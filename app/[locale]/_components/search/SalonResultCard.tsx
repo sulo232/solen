@@ -1,7 +1,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar } from "lucide-react";
+import { Calendar, Store, MapPin, ArrowRight } from "lucide-react";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
@@ -64,8 +64,10 @@ export interface SalonResultCardProps {
   /** "grid" = square 2-col card (default). "list" = Fresha-style row (photo-left)
    *  for the map-OPEN split. "card" = full-width landscape gallery card (photo on
    *  TOP, text below) - Fresha's real mobile-search shape, photo-led, for map-CLOSED
-   *  browse. Same card family - only the shape changes (doctrine V3-D355/D356). */
-  variant?: "grid" | "list" | "card";
+   *  browse. "suggest" = compact bordered row for the search OVERLAY typing state
+   *  (70px photo, name, rating+address, from-price, trailing arrow; no heart/next-slot).
+   *  Same card family - only the shape changes (doctrine V3-D355/D356). */
+  variant?: "grid" | "list" | "card" | "suggest";
   /** Walk-in live status (variant A) — shown only when the walk_in filter is active.
    *  Raw minutes from /api/walkin/availability (the card owns the copy + i18n):
    *  `walkInWaitMin`/`walkInWaitMax` = wait range; 0 → "Jetzt frei". `walkInQueue` = N waiting.
@@ -136,7 +138,7 @@ const ALL_SVC_LABEL: Record<string, string> = {
 function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
-    city, distanceMeters, priceFromCHF, isSaved, salonId,
+    city, address, distanceMeters, priceFromCHF, isSaved, salonId,
     nextSlot, services, variant = "grid",
     walkInWaitMin, walkInQueue,
   } = props;
@@ -197,6 +199,48 @@ function SalonResultCardInner(props: SalonResultCardProps) {
       {initial}
     </span>
   );
+
+  // SUGGEST variant (2026-07-01) - compact salon card for the search overlay's typing
+  // state. Photo-left (70px, Store-icon fallback), name, rating + address, from-price,
+  // trailing arrow. No heart / next-slot (dropdown context). Reuses the card-family
+  // primitives (CardName/CardMeta/RatingStars/PriceFrom) so it stays consistent + kills
+  // the parallel SalonSuggestCard (council-dedup, 2026-07-01). Whole row is a Link to the
+  // PDP; tapping navigates (unmounting + closing the overlay).
+  if (variant === "suggest") {
+    const line = address ?? city ?? null;
+    return (
+      <Link href={href} className="group flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 active:scale-[0.99]">
+        <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded-[12px] bg-s-bg-sunken">
+          {photoUrl ? (
+            <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
+          ) : (
+            <span className="grid h-full w-full place-items-center text-s-ink-3" aria-hidden>
+              <Store size={22} strokeWidth={1.5} />
+            </span>
+          )}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col justify-center">
+          <CardName as="h3" className="truncate text-[15px] leading-[1.25] tracking-[-0.01em]">
+            {name}
+          </CardName>
+          <CardMeta as="div" className="mt-0.5 flex items-center gap-2 text-[12px] leading-[1.35]">
+            {rating != null && <RatingStars value={rating} size="sm" />}
+            {line && (
+              <span className="inline-flex min-w-0 items-center gap-0.5">
+                <MapPin size={11} className="shrink-0" /> <span className="truncate">{line}</span>
+              </span>
+            )}
+          </CardMeta>
+          {priceFromCHF != null && (
+            <CardMeta as="div" className="mt-1 text-[13px] leading-[1.35]">
+              <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+            </CardMeta>
+          )}
+        </div>
+        <ArrowRight size={18} className="shrink-0 self-center text-s-ink" aria-hidden />
+      </Link>
+    );
+  }
 
   // V3-D355 (2026-05-28): LIST variant - Fresha-style row (photo-left, text-right).
   // Behind ?layout=list in SearchTemplate; pairs with the desktop map split (one

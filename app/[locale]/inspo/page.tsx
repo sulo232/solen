@@ -51,8 +51,11 @@ function DiscoverPageContent() {
   const [category, setCategory] = useState<DiscoveryCategory | "all">(
     (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
   );
-  const [search, setSearch] = useState("");           // committed query — drives the feed + search logging
-  const [searchInput, setSearchInput] = useState("");  // V3-D414: live text — drives ONLY the dropdown; typing no longer auto-searches/logs
+  // `?search=` deep-link (e.g. from the global search overlay's Looks strip) seeds a committed
+  // query so the feed lands pre-filtered, same pattern as `category` above. Empty when absent.
+  const initialSearch = (searchParams?.get("search")?.trim() || "").slice(0, 100);
+  const [search, setSearch] = useState(initialSearch);       // committed query: drives the feed + search logging
+  const [searchInput, setSearchInput] = useState(initialSearch);  // V3-D414: live text drives ONLY the dropdown; typing no longer auto-searches/logs
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
@@ -309,7 +312,9 @@ function DiscoverPageContent() {
   // most-recent-first, cap 8. SSR-guarded. The chip-row tag refine does NOT route through here (owner: a tag must
   // not land in the search bar), so only typed/picked searches are remembered.
   const commitSearch = (raw: string) => {
-    const term = raw.trim();
+    // Cap length to mirror the API's max(100): a crafted ?search=<huge> deep-link would
+    // otherwise write an unbounded string into localStorage (local storage-quota abuse).
+    const term = raw.trim().slice(0, 100);
     setSearch(term);
     setSearchInput(term);
     setSearchFocused(false);
