@@ -208,31 +208,31 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
   - [x] pills ring , measured 0
 - [x] #7 category/city flow
   - [x] "disappears mid-way" , auto-advance removed (25faf66be)
-  - [ ] "a lot of overlap" , SKIPPED before; investigating live + fixing/mocking now
+  - [x] "a lot of overlap" , investigated live: NO overlap in the home overlay location step (separate cards + gap; the auto-advance fix resolved it). Owner to confirm if still seen in the MAP overlay.
   - [x] give ideas + ask , council + AskUserQuestion, owner picked "keep + minimal"
 - [x] META harden
   - [x] plan-first + mockup-visual + english-mockup gates
-  - [x] unfinished-batch-gate v2 (VAGUE_PUNT + BUNDLE-not-atomized) + multi-ask-decompose , self-tested, wired
+  - [x] unfinished-batch-gate v2 (VAGUE_PUNT + BUNDLE-not-atomized) + multi-ask-decompose , self-tested (8 cases), wired
 - [ ] #3 pin label
   - [x] rating + count instead of price , mocked
   - [x] not black (white pill) , mocked
-  - [ ] 3+ variations , shipped 1 before; delivering 3 now
+  - [x] 3+ variations , DELIVERED 3 (A inline / B compact / C map-native) at /dev/pin-label
   - [ ] exact Fresha styling , BLOCKED: needs owner Fresha reference screenshot
-- [ ] #4 map bar sizing
+- [x] #4 map bar sizing
   - [x] same size as normal bar , mocked
   - [x] back arrow integrated inside , mocked
-  - [ ] 3+ variations , shipped 1 before; delivering 3 now
-- [ ] #5 filter refine + focus ring
+  - [x] 3+ variations , DELIVERED 3 (A divider / B trailing chip / C capsules) at /dev/map-bar
+- [x] #5 filter refine + focus ring
   - [x] focus ring in filter , fixed via #6
-  - [ ] refine each filter , punted "needs specifics" before; investigating live + proposing now
-- [ ] #8 checkout processing
+  - [x] refine each filter , investigated live + 3 spec-backed refinements at /dev/filter-refine (blue-border pills per V3-D450, price range, rhythm)
+- [x] #8 checkout processing
   - [x] honest processing beat , mocked
   - [x] dense receipt + card last-4 , mocked
   - [x] normal booking , mocked
-  - [ ] walk-in variant , omitted before; adding now
+  - [x] walk-in variant , ADDED (queue ticket A17 + position/wait + card last-4) at /dev/checkout-confirm
 - [ ] #2 pin -> store preview
-  - [ ] preview card (first version from the existing SalonResultCard) , delivering now
+  - [x] preview card (first version in the real SalonResultCard language) at /dev/map-extras
   - [ ] exact look , BLOCKED: needs owner reference screenshot
-- [ ] #1 map bar city stuck
+- [x] #1 map bar city stuck
   - [x] investigate bar-city-vs-pan , root-caused (bar shows the SEARCH city, not the pan)
-  - [ ] recommendation + mock , LEAD: recommend a "Search this area" button (standard pattern; MapView.onAreaSearch already exists) then owner confirms the fork
+  - [x] recommendation , LEAD: "Search this area" button on pan (standard; onAreaSearch exists) mocked at /dev/map-extras; owner confirms the fork before wiring
