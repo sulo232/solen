@@ -69,3 +69,8 @@ NEXT: walk-in flow (queue/[token], walk-in-join/pay/verify) + remaining customer
 - `walk-in-join/page.tsx`: CLEAN , 10-line deprecated redirect stub (single-tracker design; queue/[token] is THE tracker). 
 - `walk-in-pay/page.tsx` (625L, Stripe pay flow): no bug found on READ , redirect to queue gated on `paid && tracking_token` (orphan-safe), pay-intent/verify/cancel have real error handling + token gating. NOTE: it has a DEMO booking fallback (line 84, hardcoded "Barbier Studio Zürich" mock) , confirm it's gated to a dev/demo path and can't render for a real user (potential no-fabrication concern). FLAGGED for a dedicated careful hunt of the full Stripe confirm path (PaymentSheet + /api/walkin/confirm + pay-intent) , payment logic warrants focused attention, not a tail-of-session pass.
 NEXT: /api/walkin/confirm + pay-intent + PaymentSheet (careful); promo/favorites-toggle APIs; then onboarding; then admin.
+
+## ONBOARDING SURFACE HUNT 2026-07-01 (started)
+- `/onboarding/page.tsx`: CLEAN , auth-gated + a proper open-redirect guard on the ?redirect param (`raw.startsWith("/") && !raw.startsWith("//")`).
+- `/onboarding/salon/page.tsx` (736L): submission goes through POST /api/salons + draft autosave via /api/salon-draft (API owns the insert , good). PARKED (visual, mockup-first): form field labels use `uppercase tracking-[.14em]` (lines 83/94/106/145...), violates `feedback_no_caps_lock` (no ALL-CAPS, sentence case) + the mockup-preflight banned tracked-uppercase labels. Salon-facing but still a drift.
+NEXT FOCUSED UNIT: onboarding BACKEND , POST /api/salons (create handler: validation, phantom columns, owner/role assignment, RLS) + /api/salon-draft (GET/POST/DELETE). Then admin surface.
