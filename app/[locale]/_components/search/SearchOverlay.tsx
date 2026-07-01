@@ -280,8 +280,8 @@ export function SearchOverlay({
   const reset = React.useCallback(() => { setService(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
 
   // Rich-search taps. searchTerm: run a specific autocomplete term as the query (keeps
-  // city/date). openSalon: jump straight to that salon's PDP. openLook: hand off to the
-  // Inspo feed pre-filtered by the style term (the "connect w inspo" tie-in).
+  // city/date). openSalon: jump to that salon's PDP. openLookItem: open the tapped Inspo
+  // look's own detail page (owner: tapping a look should open the look).
   const searchTerm = React.useCallback((term: string) => {
     const q = term.trim();
     push({ query: q || undefined, service: service || undefined, city: stadt || undefined, date: isoDate || undefined, period: zeitPeriod || undefined });
@@ -291,7 +291,7 @@ export function SearchOverlay({
     if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
     router.push(`/${locale}/salon/${slug}`); close();
   }, [router, locale, close]);
-  const openLook = React.useCallback((term: string) => { router.push(`/${locale}/inspo?search=${encodeURIComponent(term)}`); close(); }, [router, locale, close]);
+  const openLookItem = React.useCallback((id: string) => { router.push(`/${locale}/inspo/${id}`); close(); }, [router, locale, close]);
 
   // i18n (all at top level)
   const searchHeadingTxt        = t("searchHeading");
@@ -371,6 +371,9 @@ export function SearchOverlay({
         </span>
       )}
       <input ref={serviceRef} value={inputFocused ? serviceQ : service}
+        // autoFocus fires in the commit triggered by the opener tap , the only reliable
+        // moment iOS Safari will open the soft keyboard for a programmatic focus.
+        autoFocus={autoFocusService && initialFocus === "service"}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
@@ -459,7 +462,7 @@ export function SearchOverlay({
               <SectionLabel className="mt-4">{looksLabelTxt}</SectionLabel>
               <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
                 {looks.map((l) => (
-                  <button key={l.id} onClick={() => openLook(serviceQ.trim())} aria-label={l.title}
+                  <button key={l.id} onClick={() => openLookItem(l.id)} aria-label={l.title}
                     className="shrink-0 overflow-hidden rounded-[14px] active:scale-[0.98]">
                     <img src={l.image} alt="" loading="lazy" className="h-24 w-[72px] object-cover" />
                   </button>
@@ -617,7 +620,10 @@ export function SearchOverlay({
                               {WEEKDAYS.map((w, i) => <span key={i}>{w}</span>)}
                             </div>
                             <MonthGrid monthDate={shownMonth} now={now} windowEnd={windowEnd} selKey={selKey}
-                              onPick={(key, label) => { setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label); }} />
+                              onPick={(key, label) => {
+                                if (selKey === key) { setSelKey(null); setIsoDate(""); setDateLabel(""); setZeitPeriod(""); } // tap again = deselect
+                                else { setSelKey(key); setIsoDate(keyToISO(key)); setDateLabel(label); }
+                              }} />
                             {/* mockup-ok: time picker pops up + grows the card on date-pick (owner-approved,
                                 "make it smoother"). framer-motion height:auto is smoother than the max-h clamp. */}
                             <AnimatePresence initial={false}>
