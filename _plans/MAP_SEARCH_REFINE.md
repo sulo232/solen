@@ -88,3 +88,16 @@ immediately + docked bar, (C) leaner per voice 3.
 - When you pick a category (Barber), should the flow auto-advance to location, or stay so you can
   also pick a service? What should happen to the city selector after you pick a city , collapse to
   a chip, stay open, or advance? (Draft options in the mockup.)
+
+## PROGRESS pt 2 (2026-07-01)
+- #7 council done + MOCKUP shipped at /dev/search-flow (3 variants A/B/C, recommend B). BLOCKED on
+  owner picking a variant.
+- #1 map-bar-city-stuck: ROOT CAUSE = the map bar shows cityName = the SEARCH city (activeCity/URL
+  param), NOT the map's pan viewport (SearchTemplate.tsx:1524). Panning to Basel never touches it.
+  This is a UX FORK, not a bug: (a) bar TRACKS the map pan (non-standard; Google/Airbnb DON'T), or
+  (b) keep the bar = your search + add a "In diesem Bereich suchen" button on pan (the standard
+  MapView.onAreaSearch already exists but may be unwired in the overlay). Needs owner's call / a
+  mockup , NOT guess-implemented.
+- #8 checkout-no-processing-state: council dispatched (owner asked). Then mockup.
+BLOCKED-ON-OWNER: #7 pick (A/B/C); #2 store-preview ref; #3 Fresha rating-pill ref; #1 bar-vs-area
+UX fork. NON-BLOCKED next: #8 (council->mockup), #4 bar-sizing mockup, #5 filter refine mockup.
