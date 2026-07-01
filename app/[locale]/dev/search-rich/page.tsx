@@ -103,18 +103,18 @@ function V2() {
   return (
     <div className="pb-6">
       <SearchField />
-      {/* The "Buzzcut" thing: a tappable style row that jumps straight to the full
-          results page. Label = query term, from-price = cheapest bookable across salons. */}
-      <button className="mx-4 mb-1 mt-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-[14px] bg-s-bg-sunken px-4 py-3 text-left">
-        <Scissors size={17} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
-        <span className="text-[14px] font-semibold text-s-ink">Buzzcut</span>
-        <span className="text-[13px] text-s-ink-3">from CHF 38</span>
-        <ChevronRight size={17} className="ml-auto shrink-0 text-s-ink-2" />
+      {/* Jump pill: the searched style, 2 lines (no comma-run), taps to full results. */}
+      <button className="mx-4 mb-1 mt-3 flex w-[calc(100%-2rem)] items-center gap-3 rounded-[14px] bg-s-bg-sunken px-4 py-2.5 text-left">
+        <Scissors size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14px] font-semibold text-s-ink">Buzzcut</span>
+          <span className="block text-[12px] text-s-ink-2">from CHF 38</span>
+        </span>
+        <ChevronRight size={18} className="shrink-0 text-s-ink-2" />
       </button>
-      <Label>Looks</Label>
-      <LooksStrip />
-      <Label>Salons</Label>
-      <div className="flex flex-col gap-3 px-4">
+      {/* FOCAL: the salons. 24pt group gap above; price is ink; see-all is an inline
+          ink text row (not a competing full-width button). */}
+      <div className="mt-6 flex flex-col gap-3 px-4">
         {SALONS.map((s) => (
           <button key={s.name} className="flex items-stretch gap-3 rounded-card border border-s-border bg-white p-3 text-left shadow-[0_1px_3px_rgba(10,10,10,0.06)]">
             <span className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
@@ -126,23 +126,27 @@ function V2() {
                 <Stars r={s.rating} />
                 <span className="inline-flex items-center gap-0.5"><MapPin size={11} /> {s.area}</span>
               </span>
-              <span className="mt-1.5 text-[13px] text-s-ink-2">
-                from <span className="font-semibold text-s-ink">CHF {s.from}</span>
-              </span>
+              <span className="mt-1.5 text-[13px] font-semibold text-s-ink">from CHF {s.from}</span>
             </span>
             <ArrowRight size={18} className="shrink-0 self-center text-s-ink" />
           </button>
         ))}
-      </div>
-      {/* Preview shows only 3-5 salons; See all jumps to the full results page. */}
-      <div className="mt-4 px-4">
-        <button className="flex w-full items-center justify-center gap-1.5 rounded-btn border border-s-border bg-white py-3 text-[14px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
-          See all 5 salons <ChevronRight size={16} />
+        <button className="mt-1 flex items-center justify-center gap-1 py-1 text-[13px] font-semibold text-s-ink">
+          See all 5 salons <ChevronRight size={15} />
         </button>
       </div>
-      {/* Similar services , related searches to jump to. Ink (not grayed), no price, just an arrow. */}
-      <Label>Similar services</Label>
-      <div className="px-4">
+      {/* Looks: de-emphasized + moved BELOW the bookable content (secondary, smaller tiles). */}
+      <p className="mb-2 mt-6 px-4 text-[12px] font-semibold text-s-ink-3">Looks</p>
+      <div className="flex gap-2 overflow-hidden px-4">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
+            <Scissors size={16} strokeWidth={1.5} />
+          </div>
+        ))}
+      </div>
+      {/* Similar services: separated pivot section at the bottom (divider + de-emphasized label). */}
+      <div className="mx-4 mt-6 border-t border-s-border pt-4">
+        <p className="mb-1 text-[12px] font-semibold text-s-ink-3">Similar services</p>
         {["Fade", "Skin fade", "Undercut", "Crew cut"].map((s) => (
           <button key={s} className="flex w-full items-center border-b border-s-border py-3 text-left">
             <span className="flex-1 text-[14px] font-semibold text-s-ink">{s}</span>
@@ -217,7 +221,7 @@ export default function SearchRichVariantsPage() {
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">Rich search , 3 variations</h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Tap "Buzzcut from CHF X" to jump to results. Looks, a 3-5 salon preview (per-salon from-price), then See all. No services list (council B).
+          Balanced per council: jump pill, then Salons (focal) + inline See all, then a smaller Looks strip, then Similar services at the bottom. Prices ink; one focal.
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
