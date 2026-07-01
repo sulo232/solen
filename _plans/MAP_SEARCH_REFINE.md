@@ -39,6 +39,15 @@
    confirmation instantly -> no confidence "did I actually pay?". ASK THE COUNCIL. Add a
    processing/loading beat -> then the confirmation. [UX + motion -> council + mockup]
 
+## PROGRESS 2026-07-01
+- **#6 FOCUS RINGS , FIXED + hardened.** Measured (keyboard-Tab, desktop): every button/link/pill
+  had `outline: 2px solid #0A0A0A` on :focus-visible (globals.css). Removed globally -> re-measured
+  0 rings across 7 focusables. Commit e6af39ad1. HARDENED: no-focus-ring-gate now also catches a
+  raw CSS `outline: Npx solid` (the gap that let it recur , utility patterns missed it); self-tested
+  (denies re-add, passes `outline: none`).
+- Remaining #1-5, #7, #8 = mockups / refs / council / Q&A (below). No real-component code yet ,
+  mockup-visual-gate enforces mockup-first.
+
 ## Meta (owner demanded , DONE)
 - HARDENED plan-first: plan-first-stamp.py (UserPromptSubmit) + plan-first-gate.py (PreToolUse)
   block substantive code edits until _plans/ is updated this turn. Self-tested (trips + 4 passes),
