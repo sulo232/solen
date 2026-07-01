@@ -6,7 +6,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { Search, Star, Scissors, ChevronRight, ArrowRight, MapPin } from "lucide-react";
+import { Search, Star, Scissors, ChevronRight, ArrowRight, ArrowUpLeft, MapPin } from "lucide-react";
 
 // Sample data grounded in the real suggest shape (services carry price, salons carry
 // rating + area; Inspo carries photos + style tags). Not fabricated counts , placeholders.
@@ -103,15 +103,23 @@ function V2() {
   return (
     <div className="pb-6">
       <SearchField />
-      {/* Jump pill: the searched style, 2 lines (no comma-run), taps to full results. */}
-      <button className="mx-4 mb-1 mt-3 flex w-[calc(100%-2rem)] items-center gap-3 rounded-[14px] bg-s-bg-sunken px-4 py-2.5 text-left">
-        <Scissors size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
-        <span className="min-w-0 flex-1">
-          <span className="block text-[14px] font-semibold text-s-ink">Buzzcut</span>
-          <span className="block text-[12px] text-s-ink-2">from CHF 38</span>
-        </span>
-        <ChevronRight size={18} className="shrink-0 text-s-ink-2" />
-      </button>
+      {/* Traditional autocomplete: the query + similar terms as clean ink rows (not a grey
+          pill), each taps to search. Merges the old bottom "similar services" up here. */}
+      <div className="mt-2 px-4">
+        {[
+          { label: "Buzzcut", primary: true },
+          { label: "Buzzcut fade" },
+          { label: "Skin fade" },
+          { label: "Undercut" },
+          { label: "Crew cut" },
+        ].map((r) => (
+          <button key={r.label} className="flex w-full items-center gap-3 border-b border-s-border py-2.5 text-left">
+            <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+            <span className={`flex-1 text-[14px] text-s-ink ${r.primary ? "font-semibold" : "font-medium"}`}>{r.label}</span>
+            <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+          </button>
+        ))}
+      </div>
       {/* FOCAL: the salons. 24pt group gap above; price is ink; see-all is an inline
           ink text row (not a competing full-width button). */}
       <div className="mt-6 flex flex-col gap-3 px-4">
@@ -142,16 +150,6 @@ function V2() {
           <div key={i} className="grid h-16 w-16 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-3">
             <Scissors size={16} strokeWidth={1.5} />
           </div>
-        ))}
-      </div>
-      {/* Similar services: separated pivot section at the bottom (divider + de-emphasized label). */}
-      <div className="mx-4 mt-6 border-t border-s-border pt-4">
-        <p className="mb-1 text-[12px] font-semibold text-s-ink-3">Similar services</p>
-        {["Fade", "Skin fade", "Undercut", "Crew cut"].map((s) => (
-          <button key={s} className="flex w-full items-center border-b border-s-border py-3 text-left">
-            <span className="flex-1 text-[14px] font-semibold text-s-ink">{s}</span>
-            <ChevronRight size={16} className="shrink-0 text-s-ink-2" />
-          </button>
         ))}
       </div>
     </div>
@@ -208,7 +206,7 @@ function V3() {
 }
 
 const VARIANTS: { key: string; label: string; note: string; el: React.ReactNode }[] = [
-  { key: "final", label: "Chosen , preview + jump", note: "Tappable 'Buzzcut from CHF' jumps to results; Looks; 3-5 salon preview (per-salon from-price); See all button.", el: <V2 /> },
+  { key: "final", label: "Chosen", note: "Autocomplete (query + similar, ink), then Salons (focal) + inline See all, then a small Looks strip.", el: <V2 /> },
   { key: "1", label: "V1 , Sectioned (alt)", note: "Looks, then Salons (from-price), then Services.", el: <V1 /> },
   { key: "3", label: "V3 , Tabbed (alt)", note: "All / Salons / Services / Looks tabs.", el: <V3 /> },
 ];
@@ -221,7 +219,7 @@ export default function SearchRichVariantsPage() {
       <div className="mx-auto max-w-[440px]">
         <h1 className="font-display text-[24px] font-bold tracking-[-0.02em] text-s-ink">Rich search , 3 variations</h1>
         <p className="font-body mt-2 text-[14px] text-s-ink-2">
-          Balanced per council: jump pill, then Salons (focal) + inline See all, then a smaller Looks strip, then Similar services at the bottom. Prices ink; one focal.
+          Autocomplete on top (query + similar, traditional search), then Salons (focal) + inline See all, then a smaller Looks strip. Prices ink; one focal.
         </p>
         <div className="mt-8 flex flex-col gap-10">
           {VARIANTS.map((v) => (
