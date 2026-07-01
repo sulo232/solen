@@ -115,3 +115,13 @@ auth-gating = CLEAN.
 - Map "can't select dates": typing hid the Wo?/Wann? rows + a suggestion tap searched immediately.
   searchTerm now fills the service + returns to the composed view (Wo?/Wann? reachable). 5ce152341.
   Verified.
+
+## WALK-IN PAY/CONFIRM DEEP HUNT 2026-07-01 , CLEAN (idempotent + payment-verified)
+/api/walkin/confirm + lib/barber/walkin-ticket.ts: SOLID.
+- Payment verified server-side: retrieves the PaymentIntent from Stripe, rejects unless status is requires_capture|succeeded BEFORE creating the queue entry (no free tickets, no client-trust).
+- Token flow matches the PI to the booking (no payment hijacking); tokenless flow uses server-set PI metadata (salon/price derived server-side).
+- Idempotent: barber_walkin_queue has payment_intent_id + a UNIQUE INDEX uq_barber_walkin_queue_payment_intent -> a double confirm (retry/double-tap) hits 23505 and returns the EXISTING ticket, not a 2nd one. Ticket code pre-issued from an atomic per-salon counter.
+No bug. (My first pg_constraint check missed it , the guard is a unique INDEX, not a constraint; re-verified via pg_indexes.)
+
+## PASS 1 COMPLETE 2026-07-01 , all four surfaces swept
+customer FE + APIs (reviews/favorites/bookings/walk-in), onboarding (entry+backend+draft), admin (all ~49 routes auth-gated). 7 real bugs fixed + owner's urgent focus-ring/map batch. Remaining = OWNER-INPUT items only: onboarding collected-but-unstored fields decision; 2 parked visual drifts (favorites legacy card badge/Zap, onboarding uppercase labels) for mockup-first. No open functional bugs found in the swept surfaces.
