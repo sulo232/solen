@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
@@ -146,9 +147,19 @@ export function SearchBar() {
   // the city picker, not the service search (owner 2026-06-13). The CTA defaults
   // to "service" (ready-to-type).
   const [overlayFocus, setOverlayFocus] = React.useState<Segment>("service");
+  // Shared ref to the overlay's query input , lets us focus it inside the tap (below).
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
   const openOverlay = (seg: Segment) => {
-    setOverlayFocus(seg);
-    setOverlayOpen(true);
+    if (seg === "service") {
+      // Open synchronously (flushSync mounts the overlay + its input now), then focus the input
+      // INSIDE this tap , iOS opens the soft keyboard only for a focus() within the user gesture.
+      // preventScroll stops the open-then-scroll-down jump.
+      flushSync(() => { setOverlayFocus("service"); setOverlayOpen(true); });
+      searchInputRef.current?.focus({ preventScroll: true });
+    } else {
+      setOverlayFocus(seg);
+      setOverlayOpen(true);
+    }
   };
   const [service, setService] = React.useState("");
   const [stadt, setStadt] = React.useState("");
@@ -612,6 +623,7 @@ export function SearchBar() {
         initialCity={stadt}
         initialFocus={overlayFocus}
         autoFocusService
+        serviceInputRef={searchInputRef}
       />
     </>
   );

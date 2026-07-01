@@ -96,6 +96,9 @@ export interface SearchOverlayProps {
   /** Homepage 3-section search passes true so tapping it auto-opens the keyboard on the
    *  service step (no second tap). Category pages omit it (service is pre-filled, no keyboard). */
   autoFocusService?: boolean;
+  /** Shared ref to the query input so the OPENER can focus it synchronously inside its tap
+   *  (via flushSync) , the only reliable way to open the iOS keyboard without a scroll jump. */
+  serviceInputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -108,6 +111,7 @@ export function SearchOverlay({
   initialCity = "",
   initialFocus = "service",
   autoFocusService = false,
+  serviceInputRef,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -401,7 +405,7 @@ export function SearchOverlay({
           <Search size={19} strokeWidth={2} className="text-s-ink-3" />
         </span>
       )}
-      <input ref={serviceRef} value={inputFocused ? serviceQ : service}
+      <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={inputFocused ? serviceQ : service}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
