@@ -1088,9 +1088,10 @@ export default function SearchTemplate({
               "grid h-9 w-9 shrink-0 place-items-center rounded-full border",
               "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
               "active:scale-[0.94] active:duration-[80ms]",
-              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "focus-visible:outline-none",
               activeFilterCount > 0
-                ? "border-s-accent bg-white text-s-accent"
+                // Owner (2026-07-01): filter button active = ink, not blue.
+                ? "border-s-ink bg-white text-s-ink"
                 : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
             )}
           >
@@ -1141,7 +1142,7 @@ export default function SearchTemplate({
                     "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                     "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
                     "active:scale-[0.97] active:duration-[80ms]",
-                    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                    "focus-visible:outline-none",
                     p.active
                       // Owner 2026-07-01: selected = NEUTRAL (ink hairline + sunken fill + ink text),
                       // NOT blue. Supersedes the V3-D450 blue-pill , owner "don't like the blue, grey/sink it".
@@ -1550,6 +1551,7 @@ export default function SearchTemplate({
                     className={cn(
                       "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                       "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
+                      "focus-visible:outline-none",
                       p.active
                         ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
                         : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",

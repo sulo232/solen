@@ -117,9 +117,10 @@ function PriceSlider({
         aria-valuenow={val}
       >
         <div className="h-1.5 w-full rounded-full bg-s-border" />
-        <div className="absolute h-1.5 rounded-full bg-s-accent" style={{ width: `${pct}%` }} />
+        {/* Owner (2026-07-01): filters are neutral, not blue , the fill + handle are ink. */}
+        <div className="absolute h-1.5 rounded-full bg-s-ink" style={{ width: `${pct}%` }} />
         <div
-          className="absolute h-5 w-5 -translate-x-1/2 rounded-full border-2 border-s-accent bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]"
+          className="absolute h-5 w-5 -translate-x-1/2 rounded-full border-2 border-s-ink bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]"
           style={{ left: `${pct}%` }}
         />
       </div>
@@ -243,12 +244,13 @@ function SheetChip({
         "font-body text-[14px] font-medium leading-none",
         "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
         "active:scale-[0.97] active:duration-[80ms]",
-        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+        "focus-visible:outline-none",
         active
-          // V3-D421k (owner): selections INSIDE the sheet mark BLUE (tint), matching the
-          // active chips in the row — soft blue wash + blue hairline + ink text.
-          ? "border border-s-accent/40 bg-s-accent/[0.08] text-s-ink font-semibold"
-          : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+          // Owner (2026-07-01, 3rd ask): filters are NEUTRAL, not blue. Selected =
+          // ink hairline + sunken wash + ink text, matching the row pills. Blue is
+          // reserved for links/small clickable bits, not filter state.
+          ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
+          : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
       )}
     >
       {children}
@@ -314,10 +316,10 @@ function FilterSheetContent({
                     "flex-1 rounded-[9px] px-2 py-2 text-center",
                     "font-body text-[12.5px] leading-none",
                     "transition-[background-color,color,box-shadow] duration-150 ease-glide",
-                    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                    "focus-visible:outline-none",
                     isActive
-                      // V3-D421k (owner): selected sort segment marks blue too.
-                      ? "bg-s-accent/[0.12] font-semibold text-s-accent"
+                      // Owner (2026-07-01): neutral, not blue , selected sort = sunken + ink.
+                      ? "bg-s-bg-sunken font-semibold text-s-ink"
                       : "font-medium text-s-ink-2 hover:text-s-ink",
                   )}
                 >
