@@ -205,7 +205,9 @@ export function SearchOverlay({
       if (autoFocusService && initialFocus === "service") {
         setInputFocused(true);
         grow(1);
-        requestAnimationFrame(() => serviceRef.current?.focus());
+        // preventScroll: stop iOS from scrolling the focused input into view (that was the
+        // "opens then scrolls down" jank). The input already sits at the top of the sheet.
+        requestAnimationFrame(() => serviceRef.current?.focus({ preventScroll: true }));
       } else {
         setInputFocused(false);
       }
@@ -400,10 +402,6 @@ export function SearchOverlay({
         </span>
       )}
       <input ref={serviceRef} value={inputFocused ? serviceQ : service}
-        // autoFocus fires during the tap's commit , iOS Safari's only window to open the soft
-        // keyboard from a programmatic focus. inputFocused is set true in the open effect, so
-        // the field shows typed text regardless of whether autoFocus/onFocus fire.
-        autoFocus={autoFocusService && initialFocus === "service"}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
