@@ -116,3 +116,15 @@ Voice 1 (trust lens):
 Voice 2 (skeptic): pending (will pressure-test the 1.4s floor: honest-async vs theater).
 NEXT: mockup the payment->processing->confirmation sequence (both walk-in + normal booking), owner
 approves, then wire (careful , checkout/payment area). Reuse the existing SuccessMark primitive.
+
+## #8 SYNTHESIS (both voices)
+AGREE (the real fix): the "did I pay?" doubt is about CONFIRMATION DENSITY, not time. The success
+screen must lead with a clear "Buchungsbestätigung" + the RECEIPT (amount charged in mono, card
+last-4, booking/ticket reference) + service + date/time. That closes the loop.
+DISAGREE (the beat): v1 wants a 1.4s real-but-floored processing beat; v2 says NO artificial floor
+(speed = trust; a fake delay adds doubt + is dark-pattern-adjacent). RESOLUTION: honest processing
+state ONLY while genuinely awaiting Stripe/server (button spinner -> "Zahlung wird verarbeitet",
+same width, no layout jump); NO minimum-duration floor. The "moment" comes from the SuccessMark
+transition (once, natural <600ms, + haptic), not a padded wait.
+-> MOCKUP: pay -> (real) processing -> DENSE confirmation + SuccessMark, for walk-in + normal
+booking. Then wire (careful checkout area). Reuse SuccessMark primitive + the receipt fields.
