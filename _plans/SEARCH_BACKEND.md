@@ -72,3 +72,13 @@ After the mockup is signed off: port into the real `SearchOverlay` (per "Feature
 - **D5 activation weight.** `update public.search_ranking_weights set w_affinity = <x> where id = 1;` Recommend starting ~0.3-0.5, tune live (instantly reversible). Currently 0.0 (off).
 - **D6 lashes/brows/spa mapping.** These affinity/salon categories have no clean counterpart, so they do NOT boost today (graceful). Owner to confirm: should a lashes/brows-affinity user be nudged toward `spa` salons? Should `spa` map from any affinity category? Add the CASE arms once decided.
 - **Data note:** only 1 user has category affinity today; the daily `style-affinity-recompute` cron grows it from discovery saves/likes/searches. Real personalization scales with usage.
+
+### Feature 2 (no-results helper) + i18n , DONE 2026-07-01 (commits 9709b93e4, d98e317ac)
+- **No-results helper SHIPPED.** `GET /api/search/no-results` (self-contained: reuses `search_salons_ranked` + a category tally; NO `/api/salons` change, NO migration/RPC , sidesteps the DDL guard). Returns `anywhere` (drop-city count) + `category` (dominant-category browse), each only when count > 0 (no fabrication). `<NoResultsHelper>` renders in SearchTemplate's EmptyState above the fallback buttons. Verified: Coiffeur+Bern -> 12 + coiffeur 8; Nagel+Bern -> nails 4; nonsense -> nulls.
+  - **Nearby-city row DEFERRED** (R1/D1): all live salons are in Basel, so a nearby row is useless until supply grows. Add it (haversine over cities, gate on >=2 cities-with-salons) when Zürich/Bern have salons.
+- **i18n DONE:** the 20 SearchOverlay port keys + 4 no-results keys translated to en/fr/it (were German placeholders). Competent translations; owner may refine tone.
+- **D3 (category matcher):** resolved to the dominant-category-of-matches approach (reuses existing fuzzy/trigram), NOT Gemini and NOT a hand-keyword list. D1 resolved to 3 real cities (nearby deferred). D4 copy: shipped competent de/en/fr/it, owner may refine.
+
+## STILL open (genuine owner decisions only , not blocking)
+- **D5 DNA activation:** `update public.search_ranking_weights set w_affinity = <x> where id = 1;` , left at 0.0 (inert). This is a product go-live + tuning call (needs real affinity data to tune; only 1 user has any today), so it is intentionally the owner's to flip, not a default I set blind. Recommend ~0.3-0.5, tune live.
+- **D6 lashes/brows/spa category mapping** (see DNA section) , add CASE arms when decided.
