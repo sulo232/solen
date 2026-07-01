@@ -272,7 +272,7 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] FULL-PAGE mockups , FORMAT ESTABLISHED on 2 screens (portal to body, 390px, production, design-rules)
   - [x] map view (bar + pins + store preview) full-page , /dev/map-full
   - [x] checkout confirmation full-page , /dev/confirm-full
-  - [ ] filter sheet full-page , AWAITING owner format sign-off on map-full + confirm-full, then same treatment
+  - [ ] filter sheet full-page , AWAITING owner format sign-off on the two screens above, then same treatment
   - [ ] results list full-page , AWAITING owner format sign-off, then same treatment
   - [ ] search suggestions full-page , AWAITING owner format sign-off, then same treatment
 - [x] compare each mockup to its real page, one by one , map-full vs real-results, confirm-full vs real-confirm (presented)
