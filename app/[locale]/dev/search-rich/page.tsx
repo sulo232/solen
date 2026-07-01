@@ -140,6 +140,16 @@ function V2() {
           See all 5 salons <ChevronRight size={16} />
         </button>
       </div>
+      {/* Similar services , related searches to jump to. Ink (not grayed), no price, just an arrow. */}
+      <Label>Similar services</Label>
+      <div className="px-4">
+        {["Fade", "Skin fade", "Undercut", "Crew cut"].map((s) => (
+          <button key={s} className="flex w-full items-center border-b border-s-border py-3 text-left">
+            <span className="flex-1 text-[14px] font-semibold text-s-ink">{s}</span>
+            <ChevronRight size={16} className="shrink-0 text-s-ink-2" />
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
