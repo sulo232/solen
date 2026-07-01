@@ -565,12 +565,17 @@ export default function SearchTemplate({
   const viewMapApplied = React.useRef(false);
   React.useEffect(() => {
     if (viewMapApplied.current) return;
-    if (searchParams.get("view") !== "map") return;
+    // Open the full-screen mobile map for EITHER param the desktop split honors:
+    // `?view=map` (homepage Karte tile) and `?map=1` (a search made ON the map).
+    // Reading only `view=map` here dumped mobile users back to the LIST after they
+    // searched from the map (the owner's "weird transition"). Fire once so a later
+    // filter change can't re-trigger it.
+    if (!mapOpen) return;
     viewMapApplied.current = true;
     if (typeof window !== "undefined" && window.innerWidth < 768) {
       setMobileView("map");
     }
-  }, [searchParams]);
+  }, [mapOpen]);
 
   // V3-D378 (2026-05-30): lock body scroll while the mobile full-screen map is
   // open, so the page (footer etc.) can't scroll behind the fixed map overlay.
@@ -1436,7 +1441,10 @@ export default function SearchTemplate({
           result cards (V3-D378). Replaces the old bare full-screen swap: the map
           fills below the header, the sheet overlays the lower ~half with the count
           + vertical cards (scroll inside the sheet). Body scroll is locked above. */}
-      {mobileView === "map" && !loading && !error && salons.length > 0 && (() => {
+      {/* Stay mounted during a re-fetch (no `!loading`): searching from the map keeps
+          the previous pins on screen until the new results swap in, instead of flashing
+          the list underneath (the owner's "jumps to normal search then map"). */}
+      {mobileView === "map" && !error && salons.length > 0 && (() => {
         // V3-D381: three-snap map sheet. peek/expanded → vertical list + filter
         // pills; collapsed → mostly map + a horizontal swipeable card stub whose
         // centered card selects + recenters the matching pin (Google/Apple-Maps pattern).
