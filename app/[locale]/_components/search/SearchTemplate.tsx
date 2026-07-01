@@ -1488,19 +1488,20 @@ export default function SearchTemplate({
               >
                 <ArrowLeft size={20} strokeWidth={2} aria-hidden />
               </button>
-              {/* Map-view search bar: opens the SAME improved overlay IN PLACE (with keyboard),
-                  instead of navigating back to the homepage (owner: implement all this in map view). */}
+              {/* Map-view search bar: opens the SAME improved overlay IN PLACE over the map (owner:
+                  implement all this in map view). Opens in the REGULAR state (no auto-keyboard/expand)
+                  , it's not the 3-section homepage search. */}
               <button
                 type="button"
-                onClick={() => openSearchOverlay(true)}
+                onClick={() => openSearchOverlay(false)}
                 aria-label={tChrome("editSearch")}
                 aria-haspopup="dialog"
                 className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 text-left shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
               >
                 <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                 <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
-                  {q || tChrome("searchPlaceholder")}
-                  <span className="ml-1.5 font-normal text-s-ink-2">| {cityName}</span>
+                  {/* No "Suchen" placeholder (owner) , show the query + city, or just the city. */}
+                  {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> | {cityName}</span></> : cityName}
                 </span>
               </button>
             </div>

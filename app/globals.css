@@ -368,6 +368,20 @@
     background: #ffffff;
     box-shadow: 0 0 0 3px rgba(10,10,10,.10);
   }
+
+  /* Touch devices fire :focus-visible on TAP for buttons/rows (iOS Safari), so the ink ring
+     lit up "everywhere" after a tap , esp. on selected filter pills (owner 2026-07-01). Keyboard
+     users are on hover-capable devices, so drop the button/link focus ring on touch only;
+     desktop keyboard nav keeps it for a11y. */
+  @media (hover: none) and (pointer: coarse) {
+    a:focus-visible,
+    button:focus-visible,
+    [role="button"]:focus-visible,
+    [tabindex]:focus-visible,
+    summary:focus-visible {
+      outline: none;
+    }
+  }
 }
 
 /* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
