@@ -5937,7 +5937,11 @@
     "clearFilters": "Filter zurücksetzen",
     "toHome": "Zur Startseite",
     "errorTitle": "Etwas ist schiefgelaufen.",
-    "retry": "Nochmal versuchen"
+    "retry": "Nochmal versuchen",
+    "suggestTitle": "Vorschläge",
+    "suggestEverywhere": "Überall in der Schweiz suchen",
+    "suggestCategory": "Alle {category} anzeigen",
+    "suggestCount": "{count} Salons"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Buche jetzt deine nächste Behandlung",

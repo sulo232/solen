@@ -5908,7 +5908,11 @@
     "clearFilters": "Cancella i filtri",
     "toHome": "Home",
     "errorTitle": "Qualcosa e andato storto.",
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "suggestTitle": "Suggerimenti",
+    "suggestEverywhere": "Cerca in tutta la Svizzera",
+    "suggestCategory": "Vedi tutti i {category}",
+    "suggestCount": "{count} saloni"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Prenota subito il tuo prossimo trattamento",

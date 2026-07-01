@@ -5926,7 +5926,11 @@
     "clearFilters": "Clear filters",
     "toHome": "Back to home",
     "errorTitle": "Something went wrong.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "suggestTitle": "Suggestions",
+    "suggestEverywhere": "Search everywhere in Switzerland",
+    "suggestCategory": "Browse all {category}",
+    "suggestCount": "{count} salons"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Book your next treatment now",

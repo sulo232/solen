@@ -5919,7 +5919,11 @@
     "clearFilters": "Effacer les filtres",
     "toHome": "Accueil",
     "errorTitle": "Une erreur est survenue.",
-    "retry": "Reessayer"
+    "retry": "Reessayer",
+    "suggestTitle": "Suggestions",
+    "suggestEverywhere": "Chercher partout en Suisse",
+    "suggestCategory": "Voir tous les {category}",
+    "suggestCount": "{count} salons"
   },
   "bookingsListUi": {
     "emptyUpcoming": "Réservez votre prochain soin",

@@ -62,6 +62,8 @@ import {
   AlertCircle,
   Loader2,
   SearchX,
+  Globe,
+  ChevronRight,
   Check,
   SlidersHorizontal,
   // V3-D354: Fuer-dich surface-shortcut icons (PLACEHOLDER lucide glyphs - the
@@ -1247,6 +1249,8 @@ export default function SearchTemplate({
           ) : salons.length === 0 ? (
             <EmptyState
               locale={locale}
+              query={q}
+              city={activeCity}
               hasFilters={
                 activeFilterCount > 0 || q.length > 0 || !!activeCategory
               }
@@ -1663,10 +1667,14 @@ export default function SearchTemplate({
 
 function EmptyState({
   locale,
+  query,
+  city,
   hasFilters,
   onClearFilters,
 }: {
   locale: string;
+  query: string;
+  city: string | null;
   hasFilters: boolean;
   onClearFilters: () => void;
 }) {
@@ -1684,6 +1692,9 @@ function EmptyState({
       <p className="font-body mt-2 max-w-md text-[14px] leading-relaxed text-s-ink-2">
         {t("emptyBody")}
       </p>
+      {query.trim().length >= 2 && (
+        <NoResultsHelper query={query} city={city} locale={locale} />
+      )}
       <div className="mt-5 flex flex-col items-center gap-2 sm:flex-row">
         {hasFilters && (
           <button
@@ -1710,6 +1721,110 @@ function EmptyState({
         >
           {t("toHome")}
         </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NoResultsHelper: Google-style "did you mean / broaden" rows for a zero-result
+// search. Fetches /api/search/no-results (counts are real, never fabricated); renders
+// only the rows the endpoint returns. Tapping a row navigates to the broadened search.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type NoResultsData = {
+  anywhere: { count: number } | null;
+  category: { value: string; count: number } | null;
+};
+
+function NoResultsHelper({
+  query,
+  city,
+  locale,
+}: {
+  query: string;
+  city: string | null;
+  locale: string;
+}) {
+  const t = useTranslations("searchUi");
+  const router = useRouter();
+  const [data, setData] = React.useState<NoResultsData | null>(null);
+
+  React.useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) return;
+    let alive = true;
+    const params = new URLSearchParams({ q });
+    if (city) params.set("city", city);
+    fetch(`/api/search/no-results?${params.toString()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: NoResultsData | null) => {
+        if (alive) setData(d);
+      })
+      .catch((e) => console.error("[NoResultsHelper] fetch failed:", e));
+    return () => {
+      alive = false;
+    };
+  }, [query, city]);
+
+  if (!data || (!data.anywhere && !data.category)) return null;
+
+  const fmt = (n: number) => (n >= 60 ? "60+" : String(n));
+  const rows: { key: string; Icon: typeof Globe; label: string; count: number; href: string }[] = [];
+
+  if (data.anywhere) {
+    const p = new URLSearchParams({ q: query.trim() });
+    rows.push({
+      key: "anywhere",
+      Icon: Globe,
+      label: t("suggestEverywhere"),
+      count: data.anywhere.count,
+      href: `/${locale}/search?${p.toString()}`,
+    });
+  }
+  if (data.category) {
+    const value = data.category.value;
+    const catName = value.charAt(0).toUpperCase() + value.slice(1);
+    const p = new URLSearchParams({ category: value });
+    rows.push({
+      key: "category",
+      Icon: Compass,
+      label: t("suggestCategory", { category: catName }),
+      count: data.category.count,
+      href: `/${locale}/search?${p.toString()}`,
+    });
+  }
+
+  return (
+    <div className="mt-8 w-full max-w-sm text-left">
+      <p className="font-body mb-3 text-[13px] font-medium text-s-ink-3">
+        {t("suggestTitle")}
+      </p>
+      <div className="flex flex-col gap-2">
+        {rows.map((r) => (
+          <button
+            key={r.key}
+            type="button"
+            onClick={() => router.push(r.href)}
+            className={cn(
+              "group flex w-full items-center gap-3 rounded-[16px] border border-s-border bg-white px-4 py-3 text-left",
+              "transition-colors duration-150 hover:bg-s-bg-sunken",
+            )}
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
+              <r.Icon size={18} strokeWidth={1.75} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-body text-[14px] font-semibold text-s-ink">
+                {r.label}
+              </span>
+              <span className="block font-body text-[12px] text-s-ink-3">
+                {t("suggestCount", { count: fmt(r.count) })}
+              </span>
+            </span>
+            <ChevronRight size={18} className="shrink-0 text-s-ink-3" />
+          </button>
+        ))}
       </div>
     </div>
   );
