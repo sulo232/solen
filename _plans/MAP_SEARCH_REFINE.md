@@ -304,3 +304,10 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
   - [x] refined card (photo + heart + rating + searched-service price + Show N services)
 - [x] SEARCH suggestions , 2 full-page variations at /dev/suggest-full (A tabbed / B discovery-first)
 - [x] DECISION resolved (no action): the gray-selected call does NOT diverge from the locked docs , LOCKFILE.md:1215 + CLAUDE.md:53/68 ALREADY say "calm GRAY fill, supersedes blue-border V3-D450 (owner 2026-06-29)". Gate + memory + both locked docs all agree = gray. My earlier "decide this" flag was off a STALE session-start CLAUDE.md snapshot; verified against the real files. Documented exceptions stay: avatar check-badge = ink (photo contrast); booking date/slot = blue.
+
+## 🌊 BATCH 5 (owner 2026-07-02, voice). Ground in REALITY, not invention. ATOMIC:
+- [x] SUGGESTIONS: removed the FABRICATED "popular services" + "recents" (didn't exist). suggest-full now = REAL { services + salons } only (matches /api/search/suggest). No-fab reinforced.
+- [x] RESULTS list: regrounded to the real SalonResultCard "card" style (rating + inline count, cat/city/distance meta, from-price, View all services) , /dev/results-full
+- [x] MAP view: bottom sheet = SCROLLABLE list of COMPACT store rows (real "list" style), "19 salons, drag up for more" , /dev/map-full; current search-bar style kept
+- [x] CONFIRM (booked): 3 sections (date / service / staff) + Lena Brunner name + profile avatar , /dev/confirm-full
+- [x] FILTER: IMPLEMENTED in the REAL FilterSheet.tsx (SheetChip selected = gray sunken, no ink border; price unchanged) , f29e2dd7c
