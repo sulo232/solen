@@ -317,3 +317,13 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] REVERTED map-full to the LOVED single-store preview (restored from 7ebec2803): big photo + prices + Book + grab handle. NOT a list.
   - [x] answered "multiple stores" WITHOUT a list: a pager (< / 2 of 19 / >) swipes between pins, one preview each
 - [x] RESULTS + SEARCH BAR: LEFT ALONE this turn (no change). Owner: already figured out, stop changing them. results-full stays grounded in the real SalonResultCard.
+
+## 🌊 BATCH 7 (owner 2026-07-02, voice). Map preview re-work + status Q. ATOMIC:
+- [ ] MAP photo ASPECT RATIO wrong -> use the REAL card ratio aspect-[3/2] (SalonResultCard "card" variant), not a fixed banner
+- [ ] REMOVE the swipe-between-pins pager (owner: "that's not okay")
+- [ ] instead: SCROLL DOWN (full page) through stores as distinct CARDS (rich "card" style, NOT thin rectangle rows, NOT one-at-a-time swipe) , "easy to distinguish between the sources"
+- [ ] REMOVE the Book button (owner: people mis-click it; tap the card instead)
+- [ ] REMOVE the bottom NAV bar , I FABRICATED it, Solen has none ("we don't have that, stop making stuff up"). Feed REMOVED.md.
+- [ ] refine THIS card style (the map store card)
+- [ ] ANSWER owner Q: status of the other screens (confirm-full, filter, results, suggestions) , approved? pending?
+- [ ] PARK (owner "we can talk about it"): reuse this card style in the normal search bar for specific-cut searches , NOT now
