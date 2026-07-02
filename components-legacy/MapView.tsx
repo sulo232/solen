@@ -32,6 +32,23 @@ function applyPillSelection(inner: HTMLElement, isSelected: boolean) {
   inner.style.transform = isSelected ? "scale(1.10)" : "scale(1)";
 }
 
+// M2 "Soft" zoom enter-motion (owner-picked, /dev/map-zoom, 2026-07-02): when a marker is
+// (re)built on zoomend / salon-set change, ease it in via the Web Animations API instead of
+// popping in solid, opacity 0->1 + scale 0.9->end, staggered by index. `endScale` is the
+// marker's RESTING transform (1 for a plain marker, 1.12 for a pin that's already selected)
+// so the enter animation lands exactly where applyPillSelection/hover expect it. Reduced-motion
+// skips the animation entirely (element is left at its resting state).
+function animateMarkerIn(el: HTMLElement, index: number, endScale: number) {
+  if (typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  el.animate(
+    [
+      { opacity: 0, transform: "scale(0.9)" },
+      { opacity: 1, transform: `scale(${endScale})` },
+    ],
+    { duration: 260, delay: Math.min(index * 30, 180), easing: "cubic-bezier(0.32,0.72,0,1)", fill: "backwards" },
+  );
+}
+
 interface MapViewProps {
   salons: SalonCard[];
   selectedId?: string;
@@ -202,7 +219,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       const zoom = Math.floor(map.getZoom());
       const features = clusterIndex.getClusters([-180, -85, 180, 85], zoom);
 
-      features.forEach((f) => {
+      features.forEach((f, i) => {
         const [lng, lat] = f.geometry.coordinates as [number, number];
         const props = f.properties as Record<string, unknown>;
 
@@ -217,14 +234,20 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         inner.style.transition = "transform 150ms ease, padding 150ms ease, box-shadow 150ms ease, background-color 150ms ease, color 150ms ease";
 
         if ((props as { cluster?: boolean }).cluster) {
-          // Cluster bubble — ink-filled circle + white count. Click zooms in to
-          // split it (Fresha behaviour).
-          inner.style.cssText += `
-            display:flex;align-items:center;justify-content:center;
-            min-width:30px;height:30px;padding:0 9px;border-radius:9999px;
-            font-size:13px;font-weight:700;background:#0A0A0A;color:#ffffff;
-            border:2px solid #ffffff;box-shadow:0 2px 10px rgba(10,10,10,0.30);
-          `;
+          // Cluster bubble , WHITE disc + ink count + shadow (owner-approved
+          // /dev/map-motion + /dev/map-zoom mockups, 2026-07-02: "normal disc,
+          // white with shadow, not gray, not black"). mockup-ok. Click zooms in
+          // to split it (Fresha behaviour). Hex set via explicit properties
+          // below so each token line carries its own drift-ok , vanilla-DOM
+          // mapbox marker, no Tailwind.
+          inner.style.cssText +=
+            "display:flex;align-items:center;justify-content:center;" +
+            "min-width:32px;height:32px;padding:0 9px;border-radius:9999px;" +
+            "font-size:13px;font-weight:700;"; // mockup-ok: owner-approved /dev/map-motion + /dev/map-zoom
+          inner.style.background = "#ffffff"; // drift-ok: token white, inline for vanilla-DOM marker
+          inner.style.color = "#0A0A0A"; // drift-ok: token s-ink, inline for vanilla-DOM marker
+          inner.style.border = "1.5px solid #E4E4E7"; // drift-ok: token s-border, inline for vanilla-DOM marker
+          inner.style.boxShadow = "0 1px 2px rgba(10,10,10,0.12),0 6px 16px rgba(10,10,10,0.12)"; // drift-ok: token shadow values, inline for vanilla-DOM marker
           inner.textContent = String(props.point_count as number);
           el.appendChild(inner);
           el.addEventListener("click", () => {
@@ -235,6 +258,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           el.addEventListener("mouseleave", () => { inner.style.transform = "scale(1)"; });
           const cm = new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
           markersRef.current.set(`cluster-${props.cluster_id}`, cm);
+          animateMarkerIn(inner, i, 1);
           return;
         }
 
@@ -268,6 +292,9 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         }
         if (isSelected) inner.style.transform = "scale(1.12)";
         el.appendChild(inner);
+        // M2 "Soft" zoom enter-motion (owner-picked, /dev/map-zoom, 2026-07-02) , eases the
+        // cluster<->pins transition on zoomend/salon-set-change instead of a solid pop-in.
+        animateMarkerIn(inner, i, isSelected ? 1.12 : 1);
 
         el.addEventListener("click", () => onSelectRef.current?.(salonId));
         el.addEventListener("mouseenter", () => { inner.style.transform = "scale(1.15)"; });

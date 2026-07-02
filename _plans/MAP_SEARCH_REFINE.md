@@ -464,3 +464,7 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 - cluster look held at gray disc while judging MOTION (2 vs 3 is a separate pick).
 
 - [x] MOCKUP /dev/map-zoom (interactive, framer-motion): zoom-in cluster->pins / zoom-out pins->cluster, 3 motions M1 Burst / M2 Soft / M3 Cascade to pick. Verified render + video, 0 page errors. AWAITING owner: pick motion + cluster look (2/3).
+
+### BATCH 18 OWNER PICKS (2026-07-02): cluster = WHITE disc + shadow + ink count (NOT gray, NOT black, NOT stacked). Motion = M2 Soft.
+
+### BATCH 18 BUILT (2026-07-02, coder af44442a): into real app , cluster WHITE disc + M2 marker enter-motion (MapView); sheet framer-motion morph + unified bar + overlap sticky+hairline + drag-from-header (SearchTemplate). tsc clean, live-verified (white cluster, unified bar, overlap, 8 salons, 6 markers, 0 errors). design-verifier a5aee910 running. H (live-list) PARKED , needs /api/salons bounds param.

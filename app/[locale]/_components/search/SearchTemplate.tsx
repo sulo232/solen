@@ -37,6 +37,7 @@
 import * as React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react"; // mockup-ok: owner-approved /dev/map-motion (2026-07-02)
 import { useTranslations } from "next-intl";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -91,7 +92,11 @@ import { formatDateLabel } from "@/lib/format";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
-// Lazy Mapbox — never blocks SSR, bundle only ships on toggle.
+// Shared search-bar ease (owner-approved /dev/map-motion, 2026-07-02) , drives the mobile
+// map sheet's top-position tween + the list<->salon body morph below. mockup-ok.
+const EASE = [0.32, 0.72, 0, 1] as const;
+
+// Lazy Mapbox, never blocks SSR, bundle only ships on toggle.
 const MapView = dynamic(() => import("@/components-legacy/MapView"), {
   ssr: false,
   loading: () => (
@@ -382,6 +387,9 @@ export default function SearchTemplate({
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
   const pathname = usePathname() ?? "/";
+  // Owner-approved /dev/map-motion (2026-07-02): sheet-top tween + list<->salon morph both
+  // collapse to duration 0 when the user prefers reduced motion. mockup-ok.
+  const reduce = useReducedMotion();
   // V3-D351 (2026-05-28): all search-chrome + filter-sheet strings via next-intl.
   // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
   const tChrome = useTranslations("ui.searchChrome");
@@ -1580,121 +1588,167 @@ export default function SearchTemplate({
                 emptyCenter={activeCity ? [CITIES[activeCity].lng, CITIES[activeCity].lat] : null}
               />
             </div>
-            {/* V3-D382: floating top bar over the map — back button + search pill
-                ONLY (no logo / category chips / hamburger). The full-screen overlay
+            {/* Unified bar (owner-approved /dev/map-motion, 2026-07-02, mockup-ok): ONE frosted
+                pill , back-arrow + divider + search icon + query/city + list-toggle , replacing
+                the two separate boxes (back button next to a search pill). Full-screen overlay
                 covers the global header, so this IS the entire map-view chrome. */}
-            <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2.5 px-4 pt-3">
-              <button
-                type="button"
-                onClick={() => setMobileView("list")}
-                aria-label={t("backToList")}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-s-border bg-white text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)] transition-transform active:scale-95"
-              >
-                <ArrowLeft size={20} strokeWidth={2} aria-hidden />
-              </button>
-              {/* Map-view search bar: opens the SAME improved overlay IN PLACE over the map (owner:
-                  implement all this in map view). Opens in the REGULAR state (no auto-keyboard/expand)
-                  , it's not the 3-section homepage search. */}
-              <button
-                type="button"
-                onClick={() => openSearchOverlay(false)}
-                aria-label={tChrome("editSearch")}
-                aria-haspopup="dialog"
-                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 text-left shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
-              >
-                <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
-                <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
-                  {/* No "Suchen" placeholder (owner) , show the query + city, or just the city. */}
-                  {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> | {cityName}</span></> : cityName}
-                </span>
-              </button>
+            <div className="absolute inset-x-0 top-0 z-20 px-3 pt-3">
+              <div className="flex items-center gap-1 rounded-full border border-s-border bg-white/95 py-1.5 pl-1.5 pr-1.5 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_8px_24px_rgba(10,10,10,0.10)] backdrop-blur-xl">
+                <button
+                  type="button"
+                  onClick={() => setMobileView("list")}
+                  aria-label={t("backToList")}
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+                >
+                  <ArrowLeft size={21} strokeWidth={2.2} aria-hidden />
+                </button>
+                <span className="h-6 w-px shrink-0 bg-s-border" aria-hidden />
+                {/* Map-view search bar: opens the SAME improved overlay IN PLACE over the map (owner:
+                    implement all this in map view). Opens in the REGULAR state (no auto-keyboard/expand)
+                    , it's not the 3-section homepage search. */}
+                <button
+                  type="button"
+                  onClick={() => openSearchOverlay(false)}
+                  aria-label={tChrome("editSearch")}
+                  aria-haspopup="dialog"
+                  className="flex min-w-0 flex-1 items-center gap-2.5 py-1.5 pl-1 text-left"
+                >
+                  <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                  <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+                    {/* No "Suchen" placeholder (owner) , show the query + city, or just the city. */}
+                    {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> | {cityName}</span></> : cityName}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileView("list")}
+                  aria-label={t("backToList")}
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-transform active:scale-95"
+                >
+                  <ListIcon size={19} strokeWidth={2} aria-hidden />
+                </button>
+              </div>
             </div>
-            {/* bottom sheet — DRAG the handle: snaps expanded / peek / collapsed.
-                `fixed` so the px drag-top works; z-[31] keeps it above the map. */}
-            <div
-              className={cn(
-                "fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[28px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]",
-                !sheetDragging && "transition-[top] duration-300 ease-glide",
-              )}
-              style={{ top: `${curTop}px` }}
+            {/* bottom sheet , DRAG the whole header (handle + sticky pills/count): snaps
+                expanded / peek / collapsed. `fixed` (via motion.div's inline style) so the
+                px drag-top works; z-[31] keeps it above the map. framer-motion top tween
+                (owner-approved /dev/map-motion, 2026-07-02) , finger-tracking stays 1:1
+                while dragging (duration 0), eases on release. */}
+            <motion.div
+              className="fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[28px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]"
+              style={{ top: 0 }}
+              animate={{ top: curTop }}
+              transition={sheetDragging || reduce ? { duration: 0 } : { type: "tween", ease: EASE, duration: 0.32 }}
             >
-              {/* V3-D386: bigger grab area so the handle is easy to drag. */}
+              {/* DRAG-ZONE (owner ask, 2026-07-02): the handle + the sticky pills/count
+                  wrapper are BOTH draggable, not just the ~24px handle. The scroll region
+                  below stays separately scrollable (no drag handlers). */}
               <div
                 onPointerDown={onSheetPointerDown}
                 onPointerMove={onSheetPointerMove}
                 onPointerUp={onSheetPointerUp}
-                className="flex shrink-0 cursor-grab touch-none items-center justify-center pb-2 pt-5 active:cursor-grabbing"
-                role="button"
-                aria-label={t("dragList")}
+                className="shrink-0 touch-none cursor-grab active:cursor-grabbing"
               >
-                <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
+                {/* V3-D386: bigger grab area so the handle is easy to drag. */}
+                <div
+                  className="flex items-center justify-center pb-2 pt-5"
+                  role="button"
+                  aria-label={t("dragList")}
+                >
+                  <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
+                </div>
+
+                {/* OVERLAP FIX (owner-approved /dev/map-motion): sticky pills + count on a
+                    solid white bg + a 1px hairline, no shadow (calm/flat per
+                    CONTROL_ELEVATION) , so the first list card never overlaps the chrome. */}
+                {!mapSelectedId && (
+                  <div className="sticky top-0 z-10 bg-white">
+                    {/* V3-D386: no collapsed swiper, the sheet just lowers over the map
+                        (Fresha). Always the dropdown filter pills + count + vertical list. */}
+                    <div
+                      className="scrollbar-none flex items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
+                      style={{ scrollbarWidth: "none" }}
+                    >
+                      {filterPills.map((p) => (
+                        <button
+                          key={p.key}
+                          type="button"
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
+                          aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
+                          aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
+                          className={cn(
+                            "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                            "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
+                            "focus-visible:outline-none",
+                            p.active
+                              ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
+                              : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
+                          )}
+                        >
+                          {p.label}
+                          {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="px-4 pb-2 pt-1 font-body text-[12.5px] text-s-ink-2">
+                      {t.rich("salonsInArea", {
+                        count: salons.length,
+                        b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
+                      })}
+                    </div>
+                    <div className="h-px bg-s-border" aria-hidden />
+                  </div>
+                )}
               </div>
 
-              {/* V3-D453: the ONE sheet morphs LIST/SALON. LIST mode keeps the filter
-                  pills + count + vertical feed cards (unchanged); SALON mode
+              {/* V3-D453: the ONE sheet morphs LIST/SALON, now an AnimatePresence
+                  crossfade+rise instead of a hard swap (owner-approved /dev/map-motion).
+                  LIST mode keeps the vertical feed cards (unchanged); SALON mode
                   (mapSelectedId set) swaps the whole body for MapSalonDetail, matching
                   the owner-approved /dev/map-behavior mockup. */}
-              {mapSelectedId ? (
-                (() => {
-                  const selectedSalon = salons.find((s) => s.id === mapSelectedId);
-                  if (!selectedSalon) return null;
-                  return (
-                    <div className="flex-1 overflow-y-auto px-4 pb-8 pt-1">
-                      <MapSalonDetail
-                        salon={selectedSalon}
-                        locale={locale}
-                        onBack={() => setMapSelectedId(null)}
-                        full={isSalonFull}
-                        isSaved={favoriteIds.has(selectedSalon.id)}
-                        backLabel={t("allSalons")}
-                        viewStoreLabel={t("viewStore")}
-                      />
-                    </div>
-                  );
-                })()
-              ) : (
-                <>
-                  {/* V3-D386: no collapsed swiper, the sheet just lowers over the map
-                      (Fresha). Always the dropdown filter pills + count + vertical list. */}
-                  <div
-                    className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
-                    style={{ scrollbarWidth: "none" }}
-                  >
-                    {filterPills.map((p) => (
-                      <button
-                        key={p.key}
-                        type="button"
-                        onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
-                        aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
-                        aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
-                        className={cn(
-                          "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
-                          "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
-                          "focus-visible:outline-none",
-                          p.active
-                            ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
-                            : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
-                        )}
+              <AnimatePresence mode="wait">
+                {mapSelectedId ? (
+                  (() => {
+                    const selectedSalon = salons.find((s) => s.id === mapSelectedId);
+                    if (!selectedSalon) return null;
+                    return (
+                      <motion.div
+                        key="salon"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={reduce ? { duration: 0 } : { duration: 0.24, ease: EASE }}
+                        className="flex-1 overflow-y-auto px-4 pb-8 pt-1"
                       >
-                        {p.label}
-                        {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
-                    {t.rich("salonsInArea", {
-                      count: salons.length,
-                      b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
-                    })}
-                  </div>
-                  <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
+                        <MapSalonDetail
+                          salon={selectedSalon}
+                          locale={locale}
+                          onBack={() => setMapSelectedId(null)}
+                          full={isSalonFull}
+                          isSaved={favoriteIds.has(selectedSalon.id)}
+                          backLabel={t("allSalons")}
+                          viewStoreLabel={t("viewStore")}
+                        />
+                      </motion.div>
+                    );
+                  })()
+                ) : (
+                  <motion.div
+                    key="list"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={reduce ? { duration: 0 } : { duration: 0.24, ease: EASE }}
+                    className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-3"
+                  >
                     {salons.map((s) => (
                       <SalonResultCard key={s.id} variant="feed" onSelect={setMapSelectedId} {...cardProps(s)} />
                     ))}
-                  </div>
-                </>
-              )}
-            </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
         );
         // V3-D382: portal to <body> so the overlay escapes the trapped stacking
