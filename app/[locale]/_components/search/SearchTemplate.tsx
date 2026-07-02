@@ -1814,7 +1814,7 @@ export default function SearchTemplate({
                     <div className="px-4 pb-2 pt-1 text-center font-body text-[12.5px] text-s-ink-2">
                       {t("salonsInArea", { count: salons.length })}
                     </div>
-                    <div className="h-px bg-s-border" aria-hidden />
+                    {/* hairline removed (owner 2026-07-02: "it's enough that the count is there"). */}
                   </div>
                 )}
               </div>

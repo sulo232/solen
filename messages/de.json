@@ -5926,7 +5926,7 @@
     "salonOne": "Salon",
     "salonOther": "Salons",
     "inCity": " in {city}",
-    "salonsInArea": "{count} Orte in diesem Bereich",
+    "salonsInArea": "{count} Orte",
     "countrywide": "Schweizweit",
     "sortAria": "Sortierung: {label}",
     "loading": "Lade…",
