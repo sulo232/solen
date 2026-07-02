@@ -483,3 +483,4 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 - [x] H DONE: /api/salons bounds (curl-proven: basel=8, tight-box=5, huge=8, subset not no-op) + onAreaSearch wired + clear-on-new-search. Desktop MapView left unwired (flagged).
 - [x] 4 DONE: divider line removed from the map bar.
 - [x] 1-blue DONE: MapView declutter now hides POI/transit/rail labels on the custom style too (the blue "fonts like Azul"). Screenshot-verified gone.
+- [x] 2/3 DONE (verifier running): content-region scroll<->drag handoff , scroll-up expands the sheet, drag-down-at-top collapses smoothly; native scroll preserved when not at top. onContentPointerDown/Move/Up + shared endSheetDrag(). tsc clean.

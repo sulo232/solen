@@ -510,10 +510,20 @@ export default function SearchTemplate({
   // full), per the owner-approved /dev/map-behavior mockup (SALON_DETENTS/SALON_MEDIUM).
   const sheetSnaps = () => {
     const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    // SHEET_HEADER_MIN_PX: the sticky header (grab handle + filter pills + count
+    // row + hairline, roughly 116px) PLUS the list body's own vertical padding
+    // (pt-3 + pb-8, 44px, a floor `overflow-y-auto` cannot shrink below) that the
+    // collapsed detent must still contain, ever since V3-D386 dropped the old
+    // short "swiper stub" collapsed layout in favor of always showing that
+    // header. A raw h*0.8 could land the sheet shorter than that combined floor,
+    // an invisible overflow past the viewport bottom (the owner's "empty space
+    // that doesn't exist" bug), so `collapsed` is clamped to never leave less
+    // room than the header + body padding need.
+    const SHEET_HEADER_MIN_PX = 170;
     return {
       expanded: Math.round(h * 0.16),
       peek: Math.round(h * 0.55),
-      collapsed: Math.round(h * 0.8),
+      collapsed: Math.min(Math.round(h * 0.8), h - SHEET_HEADER_MIN_PX),
       salonFull: Math.round(h * 0.12),
       salonMedium: Math.round(h * 0.42),
     };
@@ -538,23 +548,29 @@ export default function SearchTemplate({
     const cur = sheetTopPx ?? salonMedium;
     return cur < (salonFull + salonMedium) / 2;
   })();
-  const onSheetPointerDown = (e: React.PointerEvent) => {
+  // Shared drag helpers (owner-spec'd gesture refinement, 2026-07-02, mockup-ok:
+  // pure interaction logic, no appearance/token change). Used by BOTH the header
+  // grab-zone and the content-region handoff below so the clamp/snap math has
+  // exactly one implementation.
+  const beginSheetDrag = (startY: number) => {
     const { peek, salonMedium } = sheetSnaps();
-    sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? (mapSelectedId ? salonMedium : peek), moved: false };
+    sheetDragRef.current = { startY, startTop: sheetTopPx ?? (mapSelectedId ? salonMedium : peek), moved: false };
     setSheetDragging(true);
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
   };
-  const onSheetPointerMove = (e: React.PointerEvent) => {
+  const driveSheetDrag = (clientY: number) => {
     const d = sheetDragRef.current;
     if (!d) return;
-    const delta = e.clientY - d.startY;
+    const delta = clientY - d.startY;
     if (Math.abs(delta) > 6) d.moved = true;
     const { expanded, collapsed, salonFull } = sheetSnaps();
     const minTop = mapSelectedId ? salonFull - 30 : expanded - 30;
-    const maxTop = mapSelectedId ? collapsed : collapsed + 40;
+    // Clamp exactly to `collapsed` (no rubber-band past the real detent): dragging
+    // further used to require a 40px snap back on release, which read as a sudden
+    // jump (owner "suddenly collapses"). The finger now stops where it settles.
+    const maxTop = collapsed;
     setSheetTopPx(Math.max(minTop, Math.min(maxTop, d.startTop + delta)));
   };
-  const onSheetPointerUp = () => {
+  const endSheetDrag = () => {
     const d = sheetDragRef.current;
     if (!d) return;
     const { expanded, peek, collapsed, salonFull, salonMedium } = sheetSnaps();
@@ -579,6 +595,67 @@ export default function SearchTemplate({
     }
     sheetDragRef.current = null;
     setSheetDragging(false);
+  };
+  const onSheetPointerDown = (e: React.PointerEvent) => {
+    beginSheetDrag(e.clientY);
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+  const onSheetPointerMove = (e: React.PointerEvent) => driveSheetDrag(e.clientY);
+  const onSheetPointerUp = () => endSheetDrag();
+
+  // Content-region gesture handoff (owner spec, 2026-07-02, mockup-ok: pure
+  // interaction logic). The list + salon-detail scroll containers get their own
+  // pointer handlers that resolve grab-vs-scroll on the first ~6px of movement:
+  //   - at the top of the list, pulling DOWN collapses the sheet
+  //   - pulling UP while the sheet can still grow expands the sheet
+  //   - otherwise, native overflow-y scroll, untouched
+  // This is what makes "scroll up expands the sheet" work without stealing every
+  // scroll gesture (a scroll-down-while-not-at-top must stay a plain scroll).
+  const contentDragRef = React.useRef<{
+    startY: number;
+    startScrollTop: number;
+    mode: "drag" | "scroll" | null;
+  } | null>(null);
+  const onContentPointerDown = (e: React.PointerEvent) => {
+    const el = e.currentTarget as HTMLElement;
+    contentDragRef.current = { startY: e.clientY, startScrollTop: el.scrollTop, mode: null };
+  };
+  const onContentPointerMove = (e: React.PointerEvent) => {
+    const c = contentDragRef.current;
+    if (!c) return;
+    const el = e.currentTarget as HTMLElement;
+    const dy = e.clientY - c.startY;
+    if (c.mode === null) {
+      if (Math.abs(dy) <= 6) return;
+      const { expanded, peek, salonFull, salonMedium } = sheetSnaps();
+      const mostExpanded = mapSelectedId ? salonFull : expanded;
+      // Same "current top" fallback the header drag uses (peek/salonMedium, NOT
+      // the most-expanded detent). sheetTopPx is null until the FIRST drag, so
+      // falling back to `mostExpanded` here made the sheet read as already-fully-
+      // expanded on a fresh page load, silently disabling scroll-up-expands.
+      const cur = sheetTopPx ?? (mapSelectedId ? salonMedium : peek);
+      if (c.startScrollTop <= 0 && dy > 0) {
+        c.mode = "drag"; // at the top, pulling down collapses the sheet
+      } else if (dy < 0 && cur > mostExpanded) {
+        c.mode = "drag"; // pulling up while the sheet can still grow expands it
+      } else {
+        c.mode = "scroll";
+      }
+      if (c.mode === "drag") {
+        beginSheetDrag(c.startY);
+        (el as HTMLElement).setPointerCapture?.(e.pointerId);
+      }
+    }
+    if (c.mode === "drag") {
+      e.preventDefault();
+      driveSheetDrag(e.clientY);
+    }
+    // mode "scroll" leaves native overflow-y scrolling alone.
+  };
+  const onContentPointerUp = () => {
+    const c = contentDragRef.current;
+    if (c?.mode === "drag") endSheetDrag();
+    contentDragRef.current = null;
   };
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortBtnRef = React.useRef<HTMLDivElement>(null);
@@ -1751,7 +1828,16 @@ export default function SearchTemplate({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={reduce ? { duration: 0 } : { duration: 0.24, ease: EASE }}
-                        className="flex-1 overflow-y-auto px-4 pb-8 pt-1"
+                        // min-h-0 is load-bearing: without it this flex-1 child refuses to
+                        // shrink below its content's intrinsic height, which forces the
+                        // sheet (a flex column with no fixed height) taller than its `top`
+                        // position intends, an invisible overflow past the viewport bottom,
+                        // the owner's "empty space that doesn't exist" at the collapsed detent.
+                        className="min-h-0 flex-1 overflow-y-auto px-4 pb-8 pt-1"
+                        onPointerDown={onContentPointerDown}
+                        onPointerMove={onContentPointerMove}
+                        onPointerUp={onContentPointerUp}
+                        onPointerCancel={onContentPointerUp}
                       >
                         <MapSalonDetail
                           salon={selectedSalon}
@@ -1772,7 +1858,12 @@ export default function SearchTemplate({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={reduce ? { duration: 0 } : { duration: 0.24, ease: EASE }}
-                    className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-3"
+                    // min-h-0: same overflow bugfix as the salon-detail body above.
+                    className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-3"
+                    onPointerDown={onContentPointerDown}
+                    onPointerMove={onContentPointerMove}
+                    onPointerUp={onContentPointerUp}
+                    onPointerCancel={onContentPointerUp}
                   >
                     {salons.map((s) => (
                       <SalonResultCard key={s.id} variant="feed" onSelect={setMapSelectedId} {...cardProps(s)} />
