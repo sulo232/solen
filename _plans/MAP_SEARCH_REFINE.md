@@ -365,9 +365,16 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [ ] fix the dropped map design in the real build: search bar pill + pins (white star, no count, gray-selected) + filter chips (gray-selected, NO focus ring on selected/hover) + colors , folded into the running map coder; design-verifier + fix punch list on return
 - [x] remove "Top bewertet" hero , folded into the map coder + graveyard fed
 
-### BATCH 13 , design-verifier round 1 punch list (2026-07-02) + fixes applied
+### BATCH 13 , design-verifier round 1 punch list (2026-07-02) + fixes applied , DONE (commit 673e43dfa, round2 PASS 3/3)
 Verifier (a1995fb58): 4/6 FAIL. #2 map search bar = PASS. #4 price control (single-thumb, no min-max) = PASS.
-- [ ] #1 MAP PINS (components-legacy/MapView.tsx:20-30 applyPillSelection + 238-259 builder): price-only + ink-black-selected -> ★+rating pill (reads props.rating) + gray-sunken selected (#F4F4F5, ink text, s-border). Supersedes V3-D386 price-only.
-- [ ] #3 CHIP selected border (SearchTemplate.tsx:1159 sticky + :1615 map-sheet): border-s-ink -> border-transparent (match FilterSheet SheetChip:252 + approved filter-refine). Focus rings already gone (PASS).
-- [ ] #5 TOP BEWERTET hero (SearchTemplate.tsx:85 import + 1069-1077 render): remove (owner). REMOVED.md already fed.
-- Then: design-verifier round 2 -> PASS, commit, tunnel link.
+- [x] #1 MAP PINS (components-legacy/MapView.tsx applyPillSelection + builder): price-only + ink-black-selected -> ★+rating pill (reads props.rating) + gray-sunken selected (#F4F4F5, ink text, s-border). Supersedes V3-D386 price-only.
+- [x] #3 CHIP selected border (SearchTemplate.tsx sticky + map-sheet): border-s-ink -> border-transparent (match FilterSheet SheetChip + approved filter-refine). Focus rings already gone.
+- [x] #5 TOP BEWERTET hero (SearchTemplate.tsx import + render): removed (owner). REMOVED.md fed. (orphaned CategoryHeroCarousel.tsx file left as dead code.)
+- [x] design-verifier round 2 (a06dcb4f3) -> PASS 3/3 (live computed styles + screenshots). Committed. Tunnel link given.
+
+### BATCH 14 (owner 2026-07-02): map interaction , pin popup + card single/double click
+- [x] MOCKUP built (interactive): /dev/map-interact , pin tap = floating store popup over the map (pointer to pin, gray-selected pin, no Book btn); card single tap = locate on map (select pin + popup + "Showing on map" hint); card double tap = open store. Verified render (2 screenshots). AWAITING OWNER APPROVAL before real build.
+  - [ ] A. real: MAP PIN CLICK -> store PREVIEW POPUP over the map (extends plan item #2). BLOCKED on approval.
+  - [ ] B1. real: card SINGLE click -> locate store's pin on the map (don't open). BLOCKED on approval.
+  - [ ] B2. real: card DOUBLE click -> open the store page. BLOCKED on approval.
+- concern VOICED: double-TAP on mobile collides with map double-tap-zoom + is undiscoverable. Recommend single-tap card = popup/locate, tap the popup = open (one clean model). Owner to confirm double-tap vs popup-tap.
