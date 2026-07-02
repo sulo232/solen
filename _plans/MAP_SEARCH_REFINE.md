@@ -378,3 +378,15 @@ Verifier (a1995fb58): 4/6 FAIL. #2 map search bar = PASS. #4 price control (sing
   - [ ] B1. real: card SINGLE click -> locate store's pin on the map (don't open). BLOCKED on approval.
   - [ ] B2. real: card DOUBLE click -> open the store page. BLOCKED on approval.
 - concern VOICED: double-TAP on mobile collides with map double-tap-zoom + is undiscoverable. Recommend single-tap card = popup/locate, tap the popup = open (one clean model). Owner to confirm double-tap vs popup-tap.
+
+### BATCH 15 (owner 2026-07-02): tap pin -> bottom sheet becomes single salon (NOT a floating popup) + HARDEN don't-invent-UI
+Owner: "again you made up a new UI element for the bottom sheet (recurring). harden = improve a hook/rule. didn't you get the reference in ss folder? make it so when you tap [a pin] the bottom sheet becomes THAT SALON ONLY + more info + expands more. make multiple mockups to decide direction."
+Reference GROUNDING (viewed IMG_6267-6272): Fresha map = the BOTTOM SHEET is the container for everything (drag handle, filter chips, cards). NO floating popup over the map (that was invented). Tap a pin -> sheet shows that salon.
+- [x] HARDEN a: no-invented-ui-gate.py (PreToolUse Write) , NEW /dev mockup or public/_mockups must carry a "Grounded-in:" provenance line naming each element's source. Self-tested 7 cases, wired settings.json.
+- [x] HARDEN b: memory feedback_no_invented_ui + added to feedback_rules_are_hooks live-gates + MEMORY.md index.
+- [x] REMOVED.md: floating store popup over the map (invented) , superseded by bottom-sheet-single-salon.
+- [x] MOCKUPS built at /dev/map-single (toggle 1/2/3), tap-pin -> sheet = single salon expanded, verified render (3 screenshots):
+  - [x] Direction 1: compact (~half) , isolated card + top 3 services + "View store" + "All salons" back chip.
+  - [x] Direction 2: medium (~two-thirds) , + hours + reviews row + 4 services. (RECOMMEND)
+  - [x] Direction 3: full (~full) , mini-PDP (photo carousel + hours + amenity chips + 5 services + review snippet).
+- [x] link + recommendation given. Double-tap concern RESOLVED by this model: single tap focuses the salon in the sheet, "View store"/a service opens the PDP (no double-tap needed). AWAITING owner: pick a direction.
