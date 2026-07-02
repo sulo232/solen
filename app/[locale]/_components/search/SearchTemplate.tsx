@@ -1217,8 +1217,11 @@ export default function SearchTemplate({
               }}
               className={cn(
                 "grid shrink-0 place-items-center rounded-full border border-s-border",
-                "text-s-ink transition-all duration-300 ease-glide hover:border-s-ink",
-                "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                // mockup-ok + owner-requested (2026-07-02): the "ring on hover" the owner sees on the map
+                // icon was hover:border-s-ink darkening the circular border to ink (iOS keeps :hover after a
+                // tap = a STUCK ink ring). Locked V3-D450 bans it -> sink the bg instead. Also drop the dead
+                // focus-ring utility (globals.css base already kills the outline; it was invisible anyway).
+                "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
                 "h-9 w-9", // V3-D421d: map icon stays full size when pinned
               )}
             >

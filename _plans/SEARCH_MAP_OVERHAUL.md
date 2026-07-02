@@ -24,6 +24,13 @@
 ## Sequencing (orchestrator)
 1. PLAN (this doc). 2. Confirm C1 hook. 3. COUNCIL WORKFLOW: research A1-A5 + investigate B1-B6 in parallel -> structured directions + fix diagnoses. 4. Build MOCKUPS (multiple) for A1-A4 + B1/B6 from the synthesis. 5. Apply clear functional fixes (B1, B5 focus rings, B2/B3) with verification. 6. A5 bundles = plan + owner decision.
 
+## PROGRESS (this session)
+- A1-A4 MOCKUPS built + committed + phone-verified (screenshots): A1 /dev/filter-menus (b432c7e06), A2 /dev/category-flow (239f010ab, phone-stack + canonical icons ce9d61463), A3 /dev/card-ratio (d9aea8d36), A4 /dev/spec-chip (6c0315132). AWAITING owner pick per item, then wire real code.
+- B5 FOCUS RINGS , DIAGNOSED + partially fixed (owner named 2 surfaces):
+  - Homepage tiles: MEASURED on :3000 , focus-visible TRUE but outlineStyle=none, boxShadow=none = NO ring (desktop + touch). Already killed by the globals.css work (2026-07-01/02, base `outline:none` on :focus AND :focus-visible, chrome-wide + a touch @media). The 104 `focus-visible:outline-2` UTILITIES are DEAD/invisible on MAIN (they set width/color, never `outline-style`, so base's style:none wins). No sweep needed for correctness; optional dead-code cleanup only.
+  - Map icon (search bar): the "ring on hover" is NOT a focus ring , it is `hover:border-s-ink` darkening the circular border to full ink (and iOS keeps :hover after a tap = a STUCK ink ring). Violates locked V3-D450 (never hover:border-s-ink). FIX: -> `hover:bg-s-bg-sunken` (sink, non-ring). SearchTemplate.tsx map-icon span.
+  - SPREAD: `hover:border-s-ink` in 46 files. Only CIRCULAR/PILL bordered controls read as a ring; rectangular cards read as border-emphasis (fine). Proposed scoped sweep (rings only) = report to owner.
+
 ## COUNCIL SYNTHESIS (workflow w0bavxo93, 12 agents) , directions locked
 WAVE 1 (functional, no mockup): B5 focus rings (35 tsx files carry focus-visible:outline-* utilities that out-spec the global outline:none; sweep + non-ring cue + harden gate to DETECT) ; B1 count (shorten + delete the hairline) ; B2 city-lock (RE-DIAGNOSE: research stale, my auto-update already landed) ; B3 auto-city (bug half = SearchOverlay city display-name vs slug mismatch, quick; street->city resolver = net-new, defer).
 WAVE 2: B4 perf (REAL not tunnel: generateEmbedding blocks every text search +0.4-1.3s @ api/salons/route.ts; with_slots 3rd wave , race embedding w/ 400-600ms timeout + defer with_slots) ; B6 scroll morph (boolean `scrolled` + max-height transition = layout thrash/snap; -> continuous scrollY-bound transform+opacity, one listener; needs before/after mockup).
