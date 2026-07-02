@@ -1647,7 +1647,7 @@ export default function SearchTemplate({
                 onPointerDown={onSheetPointerDown}
                 onPointerMove={onSheetPointerMove}
                 onPointerUp={onSheetPointerUp}
-                className="shrink-0 touch-none cursor-grab active:cursor-grabbing"
+                className="shrink-0 touch-none select-none cursor-grab active:cursor-grabbing"
               >
                 {/* V3-D386: bigger grab area so the handle is easy to drag. */}
                 <div
