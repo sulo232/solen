@@ -354,3 +354,8 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [ ] NO-SEARCH (browse) state for the NORMAL/results page: same salon-only cards
 - [ ] SEARCHED state already approved (service prices + View N) , the two states are the spec, not 3 arbitrary variations
 - [ ] WIRE the real components only AFTER the browse state is approved too (owner: "make that mockup first")
+
+## BATCH 12 (owner 2026-07-02): GO BUILD the approved design into the real app. Staged (large, shared components):
+- [x] price tweak: browse card from-price on the right beneath rating (mockups) , committed
+- [ ] BUILD results page (mobile 1-col borderless card feed, searched + browse states) , coder dispatched (layered loop), preserve walk-in/slots/desktop; review + verify on return
+- [ ] BUILD map page (bottom-sheet card feed + filters-in-sheet + pins + preview) , next loop after results

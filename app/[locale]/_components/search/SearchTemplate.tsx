@@ -130,6 +130,10 @@ type Salon = {
   average_rating: number | null;
   review_count?: number | null;
   cover_photo_url: string | null;
+  // V3-D452: real gallery photo count for the mobile "feed" card's carousel dots
+  // (2026-07-02, /dev/results-full + /dev/results-browse). Never fabricated: dots
+  // render only when this is > 1.
+  gallery_urls?: string[] | null;
   address?: string;
   city?: string;
   categories?: string[];
@@ -1317,12 +1321,54 @@ export default function SearchTemplate({
             />
           ) : (
             <>
+              {/* V3-D452 (2026-07-02, owner-approved /dev/results-full + /dev/results-browse):
+                  mobile 1-col borderless feed. Mobile-only (md:hidden); the desktop
+                  grid below is untouched. Escape hatches (?layout=list / ?layout=grid)
+                  keep their existing behavior on every breakpoint (skip the feed).
+                  walk_in stays on the "card" variant (desktop-grid block below, shown
+                  on mobile too in this mode) so the queue busyness bar/tier is not lost. */}
+              {!listLayout && !gridLayout && !walkIn && (
+                <div className="flex flex-col gap-6 md:hidden">
+                  {salons.map((s) => (
+                    <SalonResultCard
+                      key={s.id}
+                      variant="feed"
+                      slug={s.slug}
+                      name={s.name}
+                      locale={locale}
+                      rating={s.average_rating}
+                      photoUrl={s.cover_photo_url ?? undefined}
+                      galleryCount={s.gallery_urls?.length ?? 0}
+                      hasServiceQuery={q.length > 0}
+                      category={activeCategory ? undefined : safeCategory(s.categories)}
+                      city={
+                        s.address ||
+                        (s.quartier
+                          ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
+                          : undefined) ||
+                        (activeCity ? getCityName(activeCity, locale) : undefined)
+                      }
+                      address={s.address}
+                      distanceMeters={s.distance_meters ?? null}
+                      priceFromCHF={s.avg_price ?? null}
+                      reviewCount={s.review_count ?? null}
+                      services={s.services}
+                      isSaved={favoriteIds.has(s.id)}
+                      salonId={s.id}
+                    />
+                  ))}
+                </div>
+              )}
+
               {/* V3-D350: 2-column grid of clean Airbnb cards (SalonResultCard).
-                  Mobile = 2 cols per the approved mockup; scales to 3/4 on
-                  larger screens (and stays 2 when the desktop map split is open). */}
+                  Desktop only (md:block) - mobile now renders the feed above instead,
+                  EXCEPT walk_in mode (keeps its "card" variant + queue bar on every
+                  breakpoint - the feed above skips walk_in) and the ?layout= escape
+                  hatches (also shown on mobile, unchanged). */}
               <div
                 className={cn(
                   "salon-card-stagger",
+                  !listLayout && !gridLayout && !walkIn && "hidden md:grid",
                   listLayout
                     ? cn(
                         // V3-D355: list rows stack vertically. Map closed on desktop:
@@ -1338,9 +1384,11 @@ export default function SearchTemplate({
                         )
                       : cn(
                           // DEFAULT (V3-D372): full-width landscape cards - 1-col on
-                          // mobile (photo-led), 2-3 col on desktop (2 when map open).
-                          "grid grid-cols-1 gap-x-4 gap-y-7 md:grid-cols-2",
+                          // mobile ONLY for walk_in (the feed above covers every other
+                          // case), 2-3 col on desktop (2 when map open).
+                          "grid grid-cols-1 md:grid-cols-2",
                           mapOpen ? "lg:grid-cols-2" : "lg:grid-cols-3",
+                          "gap-x-4 gap-y-7",
                         ),
                 )}
               >

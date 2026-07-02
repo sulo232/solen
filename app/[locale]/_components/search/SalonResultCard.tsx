@@ -2,6 +2,7 @@ import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Store, MapPin, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
@@ -66,12 +67,25 @@ export interface SalonResultCardProps {
    *  TOP, text below) - Fresha's real mobile-search shape, photo-led, for map-CLOSED
    *  browse. "suggest" = compact bordered row for the search OVERLAY typing state
    *  (70px photo, name, rating+address, from-price, trailing arrow; no heart/next-slot).
-   *  Same card family - only the shape changes (doctrine V3-D355/D356). */
-  variant?: "grid" | "list" | "card" | "suggest";
-  /** Walk-in live status (variant A) — shown only when the walk_in filter is active.
+   *  "feed" = the owner-approved BORDERLESS mobile results card (2026-07-02, /dev/results-full
+   *  + /dev/results-browse): no card shadow/border, carousel dots, up to 3 gray service-price
+   *  rows + a blue "View N matching services" link when a service was searched, else a
+   *  right-hand rating + "from CHF X" column. Same card family - only the shape changes
+   *  (doctrine V3-D355/D356). */
+  variant?: "grid" | "list" | "card" | "suggest" | "feed";
+  /** "feed" variant only, real photo count (gallery_urls.length) so the carousel
+   *  dots reflect an actual gallery, never a fabricated multi-photo affordance on a
+   *  salon with a single cover photo. Dots render only when greater than 1. */ // mockup-ok
+  galleryCount?: number | null;
+  /** "feed" variant only, true when the results were reached via a typed service
+   *  query (renders the up to 3 service price rows plus a "View N" link, the
+   *  /dev/results-full state); false/absent = browse state (/dev/results-browse:
+   *  rating plus from-price column). */ // mockup-ok
+  hasServiceQuery?: boolean;
+  /** Walk-in live status (variant A), shown only when the walk_in filter is active.
    *  Raw minutes from /api/walkin/availability (the card owns the copy + i18n):
    *  `walkInWaitMin`/`walkInWaitMax` = wait range; 0 → "Jetzt frei". `walkInQueue` = N waiting.
-   *  Pass `walkInWaitMin` even when 0 — null means "no walk-in data", 0 means "free now". */
+   *  Pass `walkInWaitMin` even when 0, null means "no walk-in data", 0 means "free now". */
   walkInWaitMin?: number | null;
   walkInWaitMax?: number | null;
   walkInQueue?: number | null;
@@ -135,11 +149,29 @@ const ALL_SVC_LABEL: Record<string, string> = {
   it: "Vedi tutti i servizi",
 };
 
+// "feed" variant only (approved /dev/results-full mockup copy): "View N matching
+// services" under the max-3 service-price rows, blue small-clickable-bit link.
+const VIEW_N_SERVICES_LABEL: Record<string, (n: number) => string> = {
+  de: (n) => `${n} weitere passende Services ansehen`,
+  en: (n) => `View ${n} matching services`,
+  fr: (n) => `Voir ${n} services correspondants`,
+  it: (n) => `Vedi ${n} servizi corrispondenti`,
+};
+
+// "feed" variant only: "category, N reviews" meta line (per the approved mockup).
+const REVIEWS_LABEL: Record<string, string> = {
+  de: "Bewertungen",
+  en: "reviews",
+  fr: "avis",
+  it: "recensioni",
+};
+
 function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, address, distanceMeters, priceFromCHF, isSaved, salonId,
     nextSlot, services, variant = "grid",
+    galleryCount, hasServiceQuery,
     walkInWaitMin, walkInQueue,
   } = props;
 
@@ -181,9 +213,9 @@ function SalonResultCardInner(props: SalonResultCardProps) {
       sizes={
         variant === "list"
           ? "112px"
-          : variant === "card"
-            ? "(max-width: 768px) 100vw, 420px"
-            : "(max-width: 640px) 50vw, 200px"
+          : variant === "card" || variant === "feed"
+            ? "(max-width: 768px) 100vw, 420px" // copy-ok
+            : "(max-width: 640px) 50vw, 200px" // copy-ok
       }
       className="object-cover"
     />
@@ -375,6 +407,109 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           {walkInWaitMin != null && (
             <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-s-border">
               <div className={`h-full rounded-full ${wTier.bar}`} style={{ width: `${Math.round(wFill * 100)}%` }} />
+            </div>
+          )}
+        </Link>
+      </article>
+    );
+  }
+
+  // FEED variant (2026-07-02, owner-approved /dev/results-full + /dev/results-browse):
+  // the mobile 1-col results feed. Borderless (no card shadow/border, per the mockup),
+  // rounded-2xl photo, carousel dots (real gallery_urls count, only when > 1), then
+  // name + inline star, "distance, address" line, "category, N reviews" line. Searched
+  // state (hasServiceQuery) adds up to 3 gray service-price rows plus a blue "View N"
+  // link; browse state swaps in a right-hand rating + "from CHF X" column instead.
+  if (variant === "feed") {
+    const line1 = [distanceMeters != null ? formatDistance(distanceMeters) : null, address ?? city]
+      .filter(Boolean)
+      .join(", ");
+    const line2 = [catLabel, reviewCount != null && reviewCount > 0 ? `${reviewCount} ${REVIEWS_LABEL[locale] ?? REVIEWS_LABEL.de}` : null]
+      .filter(Boolean)
+      .join(", ");
+    const rows = (services ?? []).filter((s) => s.price != null).slice(0, 3);
+    const moreCount = Math.max(0, (services?.filter((s) => s.price != null).length ?? 0) - rows.length);
+    const viewNLabel = (VIEW_N_SERVICES_LABEL[locale] ?? VIEW_N_SERVICES_LABEL.de)(moreCount);
+    const dotCount = Math.min(galleryCount ?? 0, 3);
+
+    return (
+      <article className="relative">
+        <Link href={href} className="block active:opacity-90">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+            {photoInner}
+            <div className="absolute right-3 top-3 z-10">
+              <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} size={36} iconSize={16} />
+            </div>
+            {dotCount > 1 && (
+              <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden>
+                {Array.from({ length: dotCount }).map((_, i) => (
+                  <span key={i} className={cn("h-1.5 w-1.5 rounded-full", i === 0 ? "bg-white" : "bg-white/55")} />
+                ))}
+              </span>
+            )}
+          </div>
+          {hasServiceQuery ? (
+            // SEARCHED state (/dev/results-full): name + inline star on one row, then
+            // the two meta lines, then up to 3 service-price rows + "View N" link.
+            <div className="pt-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <CardName as="p" className="truncate font-heading text-[16px] font-bold">
+                  {name}
+                </CardName>
+                {rating != null && (
+                  <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
+                    <RatingStars value={rating} size="md" />
+                  </span>
+                )}
+              </div>
+              {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
+              {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
+              {rows.length > 0 && (
+                <>
+                  <div className="mt-2.5 space-y-1.5">
+                    {rows.map((s) => {
+                      const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
+                      const dur = formatDuration(s.duration_minutes);
+                      return (
+                        <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
+                          <span className="min-w-0">
+                            <span className="block truncate text-s-ink">{svcName}</span>
+                            {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
+                          </span>
+                          <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {moreCount > 0 && (
+                    <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">{viewNLabel}</span>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
+            // BROWSE state (/dev/results-browse): ONE row, name/meta stacked LEFT,
+            // rating + "from CHF X" stacked RIGHT with a gap under the rating.
+            <div className="flex items-start justify-between gap-3 pt-2.5">
+              <div className="min-w-0">
+                <CardName as="p" className="truncate font-heading text-[16px] font-bold">
+                  {name}
+                </CardName>
+                {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
+                {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-2.5">
+                {rating != null && (
+                  <span className="flex items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
+                    <RatingStars value={rating} size="md" />
+                  </span>
+                )}
+                {priceFromCHF != null && (
+                  <CardMeta as="span" className="text-[13.5px] font-semibold text-s-ink">
+                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                  </CardMeta>
+                )}
+              </div>
             </div>
           )}
         </Link>
