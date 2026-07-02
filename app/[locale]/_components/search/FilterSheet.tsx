@@ -246,10 +246,10 @@ function SheetChip({
         "active:scale-[0.97] active:duration-[80ms]",
         "focus-visible:outline-none",
         active
-          // Owner (2026-07-01, 3rd ask): filters are NEUTRAL, not blue. Selected =
-          // ink hairline + sunken wash + ink text, matching the row pills. Blue is
-          // reserved for links/small clickable bits, not filter state.
-          ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
+          // Owner (2026-07-02, approved mockup /dev/filter-refine): selected = calm GRAY sunken,
+          // NO ink/blue border ("you have the pill, just sync it out grayed"). Gray wash + ink
+          // text + semibold (TabPill treatment). border-transparent keeps the box size stable.
+          ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
           : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
       )}
     >
