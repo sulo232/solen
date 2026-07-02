@@ -281,25 +281,25 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] OVERALL selected-state (recurring, harden DONE): selected/active = GRAY sunken, NEVER blue OR black.
   - [x] HARDENED no-black-selected-gate to ALSO block BLUE-selected (bg/border-s-accent) + const SEL classes; self-tested 8 cases
   - [x] updated memory feedback_selected_state_ink_not_blue_ring , now GRAY (supersedes ink + blue)
-- [ ] MAP view (map-full) , refine
-  - [ ] search bar shape: rectangle -> PILL (rounded, like the normal search bar)
-  - [ ] "Search this area": AUTOMATIC on pan (no tap button)
-  - [ ] bottom store-preview = draggable BOTTOM SHEET (pull up/down) that coexists with the bottom nav bar
-  - [ ] preview photo BIGGER + WIDER aspect ratio
-  - [ ] more store details in the preview (from the PDP)
-  - [ ] show service PRICES in the preview when searching a service (e.g. "buzz cut")
-  - [ ] (exact bottom-sheet interaction BLOCKED on owner screenshot , build first version now)
-- [ ] CHECKOUT / booked (confirm-full) , refine
-  - [ ] more photos
-  - [ ] un-gray the "Total (incl. VAT)" receipt block (owner dislikes grayed-out)
-  - [ ] reduce TEXT (too much overall)
-  - [x] INVESTIGATE access-link security: SECURE (lib/bookings/guest-access.ts , 256-bit randomBytes, only SHA-256 HASH stored, timingSafeEqual, TTL expiry, scoped to 1 booking = standard magic-link). Only inherent risk = URL leakage (forwarding), mitigated by expiry. No code flaw.
-  - [ ] LOADING stage (fake) before the booked page (flight-booking style)
-  - [ ] a way to ACCESS the walk-in from the booked section
-- [ ] FILTER sheet , refine
-  - [ ] selected chip = GRAY sunken, not blue
-  - [ ] REVERT the price refinement (no min-max range , owner: "don't do that")
-- [ ] RESULTS list card , refine
-  - [ ] search bar -> pill (per map)
-  - [ ] refine the card
-- [ ] SEARCH suggestions , 2 refined full-page variations (compare)
+- [x] MAP view (map-full) , refined at /dev/map-full v2
+  - [x] search bar shape -> PILL (rounded-full)
+  - [x] "Search this area" AUTOMATIC on pan (no tap; "Updating this area" pill)
+  - [x] store preview = draggable BOTTOM SHEET (grab handle) above the bottom nav bar
+  - [x] preview photo BIGGER + WIDER (16:9)
+  - [x] more store details (open-until, distance, category)
+  - [x] service PRICES in the preview (Buzz Cut / Skin Fade / Beard trim)
+  - [ ] exact bottom-sheet drag interaction , BLOCKED on owner screenshot (first version shipped)
+- [x] CHECKOUT / booked (confirm-full) , refined at /dev/confirm-full v2
+  - [x] more photos (salon cover band)
+  - [x] un-grayed the total (white + hairline)
+  - [x] reduced TEXT
+  - [x] INVESTIGATE access-link security: SECURE (256-bit randomBytes, SHA-256 hash at rest, timingSafeEqual, TTL, scoped). Only inherent magic-link URL-leak risk, mitigated by expiry. No code flaw.
+  - [x] LOADING stage (fake, auto-advances -> confirmation, Replay button)
+  - [x] ACCESS the walk-in from booked , bottom nav (Bookings tab) on the confirmation
+- [x] FILTER sheet , refined at /dev/filter-refine v2
+  - [x] selected chip = GRAY sunken, not blue (passed the hardened gate)
+  - [x] REVERTED the price refinement (single control, no min-max range)
+- [x] RESULTS list card , refined at /dev/results-full
+  - [x] search bar -> pill
+  - [x] refined card (photo + heart + rating + searched-service price + Show N services)
+- [x] SEARCH suggestions , 2 full-page variations at /dev/suggest-full (A tabbed / B discovery-first)

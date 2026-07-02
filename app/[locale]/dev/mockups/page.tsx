@@ -16,8 +16,11 @@ const GROUPS: { title: string; note: string; items: { slug: string; label: strin
     title: "Full-page (v2, production)",
     note: "One full phone screen each, 390px iPhone aspect, refined , the current direction.",
     items: [
-      { slug: "map-full", label: "Map view", desc: "bar + pins + store preview, full screen" },
-      { slug: "confirm-full", label: "Checkout confirmation", desc: "receipt + card last-4 + account CTA" },
+      { slug: "map-full", label: "Map view", desc: "pill bar, auto area-search, drag sheet + prices" },
+      { slug: "confirm-full", label: "Checkout confirmation", desc: "loading beat, un-grayed receipt, photo, nav" },
+      { slug: "results-full", label: "Results list", desc: "pill bar + refined cards with prices" },
+      { slug: "suggest-full", label: "Search suggestions (2 ways)", desc: "A tabbed / B discovery-first" },
+      { slug: "filter-refine", label: "Filter sheet", desc: "gray selected, price untouched" },
     ],
   },
   {
@@ -32,7 +35,6 @@ const GROUPS: { title: string; note: string; items: { slug: string; label: strin
       { slug: "map-v2", label: "Map experience v2", desc: "bar, pins, preview, filter, results, suggestions" },
       { slug: "checkout-confirm", label: "Checkout beats", desc: "pay, receipt, walk-in, popup" },
       { slug: "map-bar", label: "Map bar", desc: "3 bar variations" },
-      { slug: "filter-refine", label: "Filter refine", desc: "now vs refined" },
       { slug: "map-extras", label: "Store preview + area search", desc: "#2 + #1" },
     ],
   },
