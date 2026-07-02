@@ -70,7 +70,7 @@ function PinVisual({ rating }: { rating: string }) {
   );
 }
 
-function Frame({ variant }: { variant: 1 | 2 | 3 }) {
+function Frame({ variant, look }: { variant: 1 | 2 | 3; look: 2 | 3 }) {
   const reduce = useReducedMotion();
   const [zoomed, setZoomed] = useState(false);
   const m = MOTIONS[variant];
@@ -106,14 +106,21 @@ function Frame({ variant }: { variant: 1 | 2 | 3 }) {
         {!zoomed && (
           <motion.span
             key="cluster"
-            className="absolute grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-s-border bg-s-bg-sunken text-[14px] font-bold text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.12),0_6px_16px_rgba(10,10,10,0.12)]"
+            className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ top: CY, left: CX }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={rt ? { opacity: 0 } : m.clusterExit}
             transition={rt ?? m.clusterT}
           >
-            {PINS.length}
+            {look === 3 ? (
+              <span className="relative block">
+                <span className="absolute -right-1 -top-1 h-full w-full rotate-6 rounded-xl border border-s-border bg-white" aria-hidden />
+                <span className="relative grid h-10 w-12 place-items-center rounded-xl border border-s-border bg-white text-[14px] font-bold text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.12),0_6px_16px_rgba(10,10,10,0.12)]">{PINS.length}</span>
+              </span>
+            ) : (
+              <span className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-s-bg-sunken text-[14px] font-bold text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.12),0_6px_16px_rgba(10,10,10,0.12)]">{PINS.length}</span>
+            )}
           </motion.span>
         )}
       </AnimatePresence>
@@ -137,21 +144,27 @@ export default function MapZoomMockup() {
   if (process.env.NODE_ENV === "production") notFound();
   const [mounted, setMounted] = useState(false);
   const [variant, setVariant] = useState<1 | 2 | 3>(1);
+  const [look, setLook] = useState<2 | 3>(2);
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
   const NAMES: Record<1 | 2 | 3, string> = { 1: "Burst", 2: "Soft", 3: "Cascade" };
   return (
     <main className="min-h-screen bg-s-bg-sunken py-4">
       <div className="mx-auto w-full max-w-[390px] px-3">
-        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-3">Zoom in = cluster opens into pins. Zoom out = pins merge back. Pick a motion.</p>
-        <div className="mb-3 flex items-center justify-center gap-2">
+        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-3">Zoom in = cluster opens into pins. Zoom out = pins merge back. Pick a motion + a cluster look.</p>
+        <div className="mb-2 flex items-center justify-center gap-2">
           {[1, 2, 3].map((n) => (
             <button key={n} onClick={() => setVariant(n as 1 | 2 | 3)} className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold ${variant === n ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border bg-white text-s-ink-2"}`}>
               M{n} {NAMES[n as 1 | 2 | 3]}
             </button>
           ))}
         </div>
-        <Frame variant={variant} />
+        <div className="mb-3 flex items-center justify-center gap-2">
+          <span className="text-[12px] font-semibold text-s-ink-2">Cluster:</span>
+          <button onClick={() => setLook(2)} className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold ${look === 2 ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border bg-white text-s-ink-2"}`}>Gray disc</button>
+          <button onClick={() => setLook(3)} className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold ${look === 3 ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border bg-white text-s-ink-2"}`}>Stacked cards</button>
+        </div>
+        <Frame variant={variant} look={look} />
         <p className="px-1 pt-3 text-center text-[12.5px] text-s-ink-2">
           M1 Burst = pins spring out fast. M2 Soft = calm crossfade (search-bar ease). M3 Cascade = pins pop one by one.
         </p>
