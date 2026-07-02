@@ -102,7 +102,19 @@ export async function GET(request: NextRequest) {
     if (q && q.length >= 2) {
       let emb: string | null = null;
       try {
-        emb = JSON.stringify(await generateEmbedding(q));
+        // Race the embedding call against a short timeout so a slow Gemini round-trip
+        // never blocks the whole search request. On timeout, fall back to null and let
+        // search_salons_ranked rank lexically (p_query_embedding accepts null).
+        const EMBED_TIMEOUT_MS = 500;
+        const vec = await Promise.race([
+          generateEmbedding(q).catch(() => null),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), EMBED_TIMEOUT_MS)),
+        ]);
+        if (vec) {
+          emb = JSON.stringify(vec);
+        } else {
+          console.warn("[api/salons GET] embedding slow (>500ms), lexical-only for:", q);
+        }
       } catch (e) {
         console.error("[api/salons GET] query embedding failed, lexical-only:", (e as Error).message);
       }
