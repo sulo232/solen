@@ -24,16 +24,16 @@ const SALON_MEDIUM = 340;
 const nearest = (arr: number[], v: number) => arr.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a));
 
 const SALONS = [
-  { name: "Supreme Style & Barber", rating: "4.9", count: "1'722", dist: "400 m", addr: "Kleinbasel, Basel", cat: "Barber", hours: "Open until 19:00",
+  { name: "Supreme Style & Barber", rating: "4.9", count: "1'722", dist: "400 m", addr: "Kleinbasel, Basel", cat: "Barber", hours: "Open until 19:00", more: 2, deals: false,
     services: [["Fade & Classic Men Haircut", "45 min", "from CHF 60"], ["One Grade All Over", "30 min", "CHF 35"], ["Beard Trim & Line Up", "20 min", "CHF 25"], ["Hot Towel Shave", "30 min", "CHF 40"], ["Kids Cut", "20 min", "CHF 30"]],
     review: { who: "Marco B.", stars: "5.0", text: "Best fade in Basel, in and out in 30 min." }, pin: { top: 250, left: 88 } },
-  { name: "Lashere Beauty", rating: "5.0", count: "1'156", dist: "700 m", addr: "Kreis 5, Basel", cat: "Nails", hours: "Open until 20:00",
+  { name: "Lashere Beauty", rating: "5.0", count: "1'156", dist: "700 m", addr: "Kreis 5, Basel", cat: "Nails", hours: "Open until 20:00", more: 1, deals: true,
     services: [["Brow lifting + Keratin", "30 min", "CHF 90"], ["Gel Manicure", "45 min", "CHF 65"], ["Classic Pedicure", "50 min", "CHF 70"]],
     review: { who: "Sara L.", stars: "5.0", text: "Immaculate studio, my brows have never looked better." }, pin: { top: 300, left: 262 } },
-  { name: "Zoltan Hair", rating: "5.0", count: "22", dist: "1.1 km", addr: "Nussgasse 3, Basel", cat: "Hair salon", hours: "Open until 18:30",
+  { name: "Zoltan Hair", rating: "5.0", count: "22", dist: "1.1 km", addr: "Nussgasse 3, Basel", cat: "Hair salon", hours: "Open until 18:30", more: 53, deals: false,
     services: [["Buzz Cut", "20 min", "CHF 50"], ["Shampoo, Cut & Style S", "45 min", "CHF 100"], ["Hair Treatment L", "10 min", "CHF 35"]],
     review: { who: "Jon P.", stars: "5.0", text: "Quiet, precise, no upsell. Exactly what I wanted." }, pin: { top: 360, left: 150 } },
-  { name: "Old Town Barbers", rating: "4.7", count: "88", dist: "2.4 km", addr: "Steinenvorstadt, Basel", cat: "Barber", hours: "Open until 19:00",
+  { name: "Old Town Barbers", rating: "4.7", count: "88", dist: "2.4 km", addr: "Steinenvorstadt, Basel", cat: "Barber", hours: "Open until 19:00", more: 4, deals: false,
     services: [["Skin Fade", "40 min", "CHF 55"], ["Beard Sculpt", "25 min", "CHF 30"], ["Cut & Beard", "55 min", "from CHF 75"]],
     review: { who: "Ali R.", stars: "4.5", text: "Solid classic barbershop, friendly team." }, pin: { top: 285, left: 330 } },
 ];
@@ -130,19 +130,26 @@ function Screen() {
           {mode === "list" ? (
             <>
               <p className="pb-3 pt-1 text-center text-[13px] text-s-ink-2">{SALONS.length * 5} salons in this area</p>
-              <div className="space-y-4">
+              {/* APPROVED borderless feed card, copied verbatim from /dev/map-full StoreCard (NOT re-invented). */}
+              <div className="space-y-6">
                 {SALONS.map((c, i) => (
-                  <button key={i} onClick={() => focus(i)} className="flex w-full gap-3 text-left active:opacity-90">
-                    <div className="relative h-[76px] w-[100px] shrink-0 overflow-hidden rounded-xl bg-s-bg-sunken">
-                      <span className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-white text-s-ink-2 shadow-sm"><Heart size={13} /></span>
+                  <button key={i} onClick={() => focus(i)} className="w-full text-left active:opacity-90">
+                    <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+                      {c.deals && <span className="absolute left-3 top-3 rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-s-ink shadow-sm">Deals</span>}
+                      <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white text-s-ink-2 shadow-sm"><Heart size={16} /></span>
+                      <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /></span>
                     </div>
-                    <div className="min-w-0 flex-1 pt-0.5">
+                    <div className="pt-2.5">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="truncate font-heading text-[15px] font-bold text-s-ink">{c.name}</p>
-                        <span className="flex shrink-0 items-center gap-1 text-[13.5px] font-semibold text-s-ink"><Star size={13} className="fill-s-star text-s-star" strokeWidth={0} /> {c.rating}</span>
+                        <p className="truncate font-heading text-[16px] font-bold text-s-ink">{c.name}</p>
+                        <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> {c.rating}</span>
                       </div>
-                      <p className="mt-0.5 truncate text-[12.5px] text-s-ink-2">{c.dist}, {c.addr}</p>
-                      <p className="truncate text-[12.5px] text-s-ink-2">{c.cat}, {c.count} reviews</p>
+                      <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{c.dist}, {c.addr}</p>
+                      <p className="truncate text-[13px] text-s-ink-2">{c.cat}, {c.count} reviews</p>
+                      <div className="mt-2.5 space-y-1.5">
+                        {c.services.slice(0, 3).map(([n, d, p]) => <ServiceRow key={n} n={n} d={d} p={p} />)}
+                      </div>
+                      <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">View {c.more} matching {c.more === 1 ? "service" : "services"}</span>
                     </div>
                   </button>
                 ))}
