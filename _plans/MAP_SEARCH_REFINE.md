@@ -348,3 +348,9 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [ ] add MORE filter chips (like the normal filter: Open now, Price, For whom, Rating, Deals)
 - [ ] apply to BOTH map-full and results-full
 - [ ] then add map-full + results-full to the approved-mockups ledger (freeze)
+
+## BATCH 11 (owner 2026-07-02): TWO states, mock the NO-SEARCH state before wiring. ATOMIC:
+- [ ] NO-SEARCH (browse) state for the MAP page: cards = salon only (photo + name + rating + meta + from-price), NO service-price rows / "View N"
+- [ ] NO-SEARCH (browse) state for the NORMAL/results page: same salon-only cards
+- [ ] SEARCHED state already approved (service prices + View N) , the two states are the spec, not 3 arbitrary variations
+- [ ] WIRE the real components only AFTER the browse state is approved too (owner: "make that mockup first")
