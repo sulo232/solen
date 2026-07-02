@@ -40,14 +40,17 @@ function StoreCard({ s }: { s: (typeof STORES)[number] }) {
         <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white text-s-ink-2 shadow-sm"><Heart size={16} /></span>
         <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /></span>
       </div>
-      <div className="pt-2.5">
-        <div className="flex items-start justify-between gap-2">
+      {/* price on the RIGHT, beneath the rating (owner: balanced right, gap under the review) */}
+      <div className="flex items-start justify-between gap-3 pt-2.5">
+        <div className="min-w-0">
           <p className="truncate font-heading text-[16px] font-bold text-s-ink">{s.name}</p>
-          <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
+          <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{s.dist}, {s.addr}</p>
+          <p className="truncate text-[13px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
         </div>
-        <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{s.dist}, {s.addr}</p>
-        <p className="truncate text-[13px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
-        <p className="mt-1.5 text-[13.5px] font-semibold text-s-ink">from CHF {s.from}</p>
+        <div className="flex shrink-0 flex-col items-end gap-2.5">
+          <span className="flex items-center gap-1 text-[14px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
+          <span className="text-[13.5px] font-semibold text-s-ink">from CHF {s.from}</span>
+        </div>
       </div>
     </button>
   );
