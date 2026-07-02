@@ -70,11 +70,13 @@ function Screen() {
             <button className="shrink-0 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Open now</button>
             <button className="flex shrink-0 items-center gap-1 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Price <ChevronDown size={14} className="text-s-ink-2" /></button>
             <button className="flex shrink-0 items-center gap-1 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">For whom <ChevronDown size={14} className="text-s-ink-2" /></button>
+            <button className="flex shrink-0 items-center gap-1 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Rating <ChevronDown size={14} className="text-s-ink-2" /></button>
+            <button className="shrink-0 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Deals</button>
           </div>
         </div>
 
         <div className="px-4 pt-1">
-          <p className="pb-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
+          <p className="pb-3 pt-1 text-center text-[13px] text-s-ink-2">19 salons in this area</p>
           <div className="space-y-6">{SALONS.map((s) => <Card key={s.name} s={s} />)}</div>
         </div>
       </div>

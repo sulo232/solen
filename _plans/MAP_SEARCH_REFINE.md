@@ -340,3 +340,11 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] moved FILTER chips INTO the sheet top (top), not above the map (matches reference IMG_6267)
 - [x] card more COMPACT (sheet opens higher, tighter); aspect-[3/2] kept (sheet opens higher = more cards visible; tighter); keep aspect-[3/2]
 - [x] results-full uses THIS borderless card + service prices + service PRICES (specific-service search)
+
+## BATCH 10 (owner 2026-07-02). Both map-full + results-full APPROVED; targeted tweaks. ATOMIC:
+- [ ] center the "N salons in this area" text (middle-align)
+- [ ] remove the BOLD on "N salons" ("bow thing")
+- [ ] "N salons" scrolls WITH the cards; FILTER chips stay sticky/pinned at top
+- [ ] add MORE filter chips (like the normal filter: Open now, Price, For whom, Rating, Deals)
+- [ ] apply to BOTH map-full and results-full
+- [ ] then add map-full + results-full to the approved-mockups ledger (freeze)
