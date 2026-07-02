@@ -9,18 +9,18 @@ Picked via AskUserQuestion: **enforcement hook** + **Vercel-style MCP server**. 
 template for deploying MCP servers , confirmed via web search, no need for the reel).
 
 ## Atomic asks
-- [ ] Download the IG reel , BLOCKED (login-gated, sandbox can't reach browser cookies). Owner chose **Skip it**. CLOSED as won't-do per owner.
+- [x] Download/watch the IG reel (CLOSED , owner picked Skip twice). Owner re-invoked `/watch` 2026-07-02. BLOCKED: 4 distinct attempts (anon; chrome cookies in-sandbox; chrome cookies out-of-sandbox 48 cookies; after yt-dlp update) all return IG "empty media response / no csrf token" , yt-dlp's Instagram extractor is broken/blocked for this reel regardless of auth. CONCRETE dependency to unblock: owner drops the .mp4 locally (I /watch the file) OR exports a Netscape cookies.txt from a logged-in IG session (I retry `yt-dlp --cookies`). Awaiting owner pick.
 - [x] Enforcement hook: a `Stop` gate that blocks ending the turn when this turn edited rendered UI (`*.tsx`/`*.css` under `app|src|components`) but never actually drove a browser (claude-in-chrome / preview_* / playwright / localhost-curl) to verify it. LIVE.
   - [x] Author `.claude/hooks/browser-verify-gate.sh`
   - [x] Self-test 17/17 (block/pass/ordering/prior-turn-stale/override/backend-only/mockup/boundary-noise + round-2 regressions O human-text-"tool_result", P curl:3001, Q isMeta-not-boundary)
   - [x] loop-reviewer round 1 FAIL -> 2 defects fixed (structural turn-boundary vs substring; curl any-port) -> re-verified green
   - [x] Wire into `.claude/settings.json` under `hooks.Stop`
-- [ ] Site-testing MCP server , FORK RESOLVED 2026-07-02: owner wants the one that "clicks through buttons / sees frontend" of what's being built = **LOCAL Playwright stdio MCP** (reaches localhost:3000; reuses `@playwright/test` already in repo). Vercel-remote rejected implicitly (can't reach localhost).
-  - [ ] Scaffold local stdio MCP at `scripts/mcp/site-tester/` (ESM, `@modelcontextprotocol/sdk`), crawl logic factored into a plain testable async fn
-  - [ ] Tool `test_site({url,maxPages,sameOriginOnly,viewport})` , crawl + click every interactive element, capture console/network/nav errors, structured pass/fail report (cap elements, log what's capped , no silent truncation)
-  - [ ] Tool `check_route({url})` , single-route smoke (status, console errors, rendered?, screenshot)
-  - [ ] Self-test the crawl fn against a live target (rule 12.5), README + register snippet
-  - [ ] loop-reviewer PASS
+- [x] Site-testing MCP server , FORK RESOLVED 2026-07-02: **LOCAL Playwright stdio MCP** at `scripts/mcp/site-tester/` (reaches localhost; reuses Playwright already in repo). BUILT + hardened over 4 review rounds.
+  - [x] Scaffold local stdio MCP (`crawl.mjs` engine + `index.mjs` server + `selftest.mjs` + `README.md`); `@modelcontextprotocol/sdk` added; engine import-clean (testable without the SDK)
+  - [x] Tool `test_site({url,maxPages,sameOriginOnly,viewport,maxElements})` , HERMETIC per-element (reload + re-find by stable locator per element -> no stale handles); reports pass/fail/**skip**, maxElements cap + `capped` (no silent truncation)
+  - [x] Tool `check_route({url})` , single-route smoke (status, console errors, renderedText, failedRequests, screenshot)
+  - [x] Self-test 74/74 against live fixtures (rule 12.5), README + register snippet written (not auto-wired)
+  - [x] loop-reviewer: R1 FAIL (stale-handle false pass) -> R2 FAIL (survived + delayed-nav mis-attribution) -> R3 rearchitect hermetic (class DEAD) FAIL only on hidden-element default-pass leaf -> R4 fix (skip branches set result:"skip" + summary.skipped + regression test) -> GREEN. Converged.
 
 ## Design decisions / caveats surfaced
 - The hook guards the LOCAL dev loop (what I do mid-turn). A Vercel-DEPLOYED MCP can only reach PUBLIC URLs and has serverless timeouts , it smoke-tests production, it does NOT verify localhost. Different moments; both wanted.
