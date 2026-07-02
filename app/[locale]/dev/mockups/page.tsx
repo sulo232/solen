@@ -40,9 +40,9 @@ const GROUPS: { title: string; note: string; items: { slug: string; label: strin
   },
 ];
 
-export default function MockupsIndex({ params }: { params: { locale: string } }) {
+export default async function MockupsIndex({ params }: { params: Promise<{ locale: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
-  const locale = params?.locale ?? "de";
+  const { locale } = await params;
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[560px] px-5 pb-16 pt-8">
