@@ -509,3 +509,5 @@ ROOT CAUSE (honest): I followed the COUNCIL's "Search this area BUTTON" over the
 - [x] 5/6 AUTO-UPDATE (live-verified, console): MapView moveend now AUTO-fires onAreaSearch on a USER zoom/pan (originalEvent-gated, debounced 450ms); removed the button + showAreaSearch; fitBounds no longer re-fits once the user moved. Verified: user zoom -> bounds refetch fired, no button, 0 errors. Empty area -> 0 (bounds filter + auto-fire compose).
 - [x] 2 BAR: map bar now flat white rounded-pill matching the normal bar (was frosted glass). 4 DONE (button removed).
 - [~] 3 FILTER MARK: removed the redundant ListIcon (≡) from the map bar (it duplicated the back button) , BEST GUESS at the "filter mark"; FLAG for owner confirm.
+- [ ] 2b BAR SIZE: measured normal=67px (two lines) vs map=46px (one line). Make map bar TWO lines (query/category + city) to match 67px height. bg/border/radius/padding already identical.
+- [x] 2b BAR SIZE DONE: map bar min-h-[67px] + two-line text -> measured IDENTICAL to the normal bar (both h=67, padTB=10px, radius=9999px, bg white, border 1px E4E4E7, px-3.5). Auto-update PASS-verified (verifier reproduced 8->0 Orte on pan, no button, 0 errors).

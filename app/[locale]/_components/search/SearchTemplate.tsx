@@ -1716,7 +1716,7 @@ export default function SearchTemplate({
                   2026-07-02): flat white rounded-pill, border-s-border, px-3.5 py-2.5, Search 18 +
                   14px text. NOT frosted glass. A back arrow is prepended; the redundant list-toggle
                   icon (did the same thing as back) is removed. */}
-              <div className="flex w-full items-center gap-2.5 rounded-pill border border-s-border bg-white px-3.5 py-2.5">
+              <div className="flex min-h-[67px] w-full items-center gap-2.5 rounded-pill border border-s-border bg-white px-3.5 py-2.5">
                 <button
                   type="button"
                   onClick={() => setMobileView("list")}
@@ -1733,9 +1733,16 @@ export default function SearchTemplate({
                   className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                 >
                   <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
-                  <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
-                    {/* No "Suchen" placeholder (owner) , show the query + city, or just the city. */}
-                    {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> {cityName}</span></> : cityName}
+                  {/* Two lines (query/category + city), matching the normal bar's content; the pill's
+                      min-h-[67px] pins the height IDENTICAL to the normal bar (owner: identical size).
+                      No "Suchen" placeholder (owner). */}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-body text-[14px] font-medium text-s-ink">
+                      {q || (activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null) || cityName}
+                    </span>
+                    {(q || activeCategory) && (
+                      <span className="block truncate font-body text-[12.5px] font-normal text-s-ink-2">{cityName}</span>
+                    )}
                   </span>
                 </button>
               </div>
