@@ -1712,39 +1712,31 @@ export default function SearchTemplate({
                 the two separate boxes (back button next to a search pill). Full-screen overlay
                 covers the global header, so this IS the entire map-view chrome. */}
             <div className="absolute inset-x-0 top-0 z-20 px-3 pt-3">
-              <div className="flex items-center gap-1 rounded-full border border-s-border bg-white/95 py-1.5 pl-1.5 pr-1.5 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_8px_24px_rgba(10,10,10,0.10)] backdrop-blur-xl">
+              {/* Map search bar = IDENTICAL shape/size to the normal (non-map) bar above (owner
+                  2026-07-02): flat white rounded-pill, border-s-border, px-3.5 py-2.5, Search 18 +
+                  14px text. NOT frosted glass. A back arrow is prepended; the redundant list-toggle
+                  icon (did the same thing as back) is removed. */}
+              <div className="flex w-full items-center gap-2.5 rounded-pill border border-s-border bg-white px-3.5 py-2.5">
                 <button
                   type="button"
                   onClick={() => setMobileView("list")}
                   aria-label={t("backToList")}
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+                  className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95"
                 >
-                  <ArrowLeft size={21} strokeWidth={2.2} aria-hidden />
+                  <ArrowLeft size={20} strokeWidth={2} aria-hidden />
                 </button>
-                {/* No divider line between back + search (owner 2026-07-02: "don't like that line"). */}
-                {/* Map-view search bar: opens the SAME improved overlay IN PLACE over the map (owner:
-                    implement all this in map view). Opens in the REGULAR state (no auto-keyboard/expand)
-                    , it's not the 3-section homepage search. */}
                 <button
                   type="button"
                   onClick={() => openSearchOverlay(false)}
                   aria-label={tChrome("editSearch")}
                   aria-haspopup="dialog"
-                  className="flex min-w-0 flex-1 items-center gap-2.5 py-1.5 pl-1 text-left"
+                  className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                 >
                   <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                   <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
                     {/* No "Suchen" placeholder (owner) , show the query + city, or just the city. */}
-                    {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> | {cityName}</span></> : cityName}
+                    {q ? <>{q}<span className="ml-1.5 font-normal text-s-ink-2"> {cityName}</span></> : cityName}
                   </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMobileView("list")}
-                  aria-label={t("backToList")}
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-transform active:scale-95"
-                >
-                  <ListIcon size={19} strokeWidth={2} aria-hidden />
                 </button>
               </div>
             </div>

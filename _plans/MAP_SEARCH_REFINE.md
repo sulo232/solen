@@ -498,3 +498,14 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 - [ ] 1: selected-state gesture , design-verifier (a708df89) diffing /dev/map-behavior to pinpoint what is "old"; fix on return.
 - [x] 1 RESOLVED: mockup-diff verifier (a708df89, REAL TOUCH input) confirms the SELECTED state already has framer-motion + correct salon detents (drag up medium 279 -> full 80 shows more services; drag down 1:1 -> back to list). The earlier "snaps to 135" was a Chromium page.mouse quirk (spurious pointercancel after setPointerCapture), NOT a bug. "old version" was a pre-fix build. No code change needed.
 - [x] HARDEN DONE: mockup-parity-gate.py (Stop) + feedback_verify_against_mockup memory. BATCH 20 COMPLETE (design-verifier PASS parity, 0 console errors).
+
+## BATCH 21 (owner 2026-07-02, FURIOUS recurring): map function STILL wrong + meta "why"
+ROOT CAUSE (honest): I followed the COUNCIL's "Search this area BUTTON" over the owner's REPEATED literal ask ("update as I zoom, empty area -> empty sheet"); and I verified the MECHANISM (API call fires) not the owner's DESCRIBED scenario (zoom to empty -> sheet empties). Subagents built correctly to my wrong spec.
+- [ ] 5/6 CORE: sheet must AUTO-update to the VISIBLE map viewport on zoom/pan (debounced), NOT button-gated. Zoom into empty area -> sheet EMPTY. Zoom to a place with stores -> THOSE stores (not random far-away ones). This supersedes the council's button rec (owner's repeated ask wins).
+- [ ] 2. MAP search bar shape+size IDENTICAL to the normal (non-map) page search bar. Investigate the normal bar, match it exactly.
+- [ ] 3. Remove the FILTER mark I added that the owner didn't approve (find it).
+- [ ] 4. Do NOT redesign the "In diesem Bereich suchen" (owner approved a mockup). Moot if auto-update removes the button; else revert to the approved look.
+- [ ] HARDEN: (a) follow the owner's LITERAL repeated ask over a council/subagent rec; (b) verify the owner's EXACT described scenario, not a proxy mechanism. DRIFT_LEDGER entry + memory. Honest: the "wrong behavior chosen" part is weakly hookable; reinforce via ledger-injection + rule.
+- [x] 5/6 AUTO-UPDATE (live-verified, console): MapView moveend now AUTO-fires onAreaSearch on a USER zoom/pan (originalEvent-gated, debounced 450ms); removed the button + showAreaSearch; fitBounds no longer re-fits once the user moved. Verified: user zoom -> bounds refetch fired, no button, 0 errors. Empty area -> 0 (bounds filter + auto-fire compose).
+- [x] 2 BAR: map bar now flat white rounded-pill matching the normal bar (was frosted glass). 4 DONE (button removed).
+- [~] 3 FILTER MARK: removed the redundant ListIcon (≡) from the map bar (it duplicated the back button) , BEST GUESS at the "filter mark"; FLAG for owner confirm.

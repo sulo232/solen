@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MapPin, Search } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
 import Supercluster from "supercluster";
 
@@ -73,7 +73,6 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   const mapRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<string, any>>(new Map());
-  const [showAreaSearch, setShowAreaSearch] = useState(false);
   const [mapError, setMapError] = useState(!process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Marker click handlers should always call the LATEST onSelect, but onSelect
@@ -81,6 +80,13 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   // which would otherwise rebuild every marker (and re-fit the map) every render.
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
+  // AUTO-update the sheet to the visible viewport on a USER zoom/pan (owner's repeated ask,
+  // supersedes the old "Search this area" button). Ref so the map-init effect doesn't rebuild
+  // the map when the parent passes a new inline onAreaSearch each render.
+  const onAreaSearchRef = useRef(onAreaSearch);
+  onAreaSearchRef.current = onAreaSearch;
+  // once the user has moved the map themselves, stop auto-fitting to results (they own the viewport).
+  const userMovedRef = useRef(false);
   // fitBounds should fire only when the SET of salons changes, not on every
   // re-render — repeated fitBounds is what made the map "move weirdly".
   const fittedSigRef = useRef<string>("");
@@ -186,13 +192,26 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     // (pinch / double-tap to zoom). The corner buttons were visual clutter.
     mapRef.current = map;
 
-    // Show area search button on pan/zoom (debounced)
+    // AUTO-search the visible area on a USER zoom/pan (owner: the sheet must reflect what's on
+    // screen , zoom into an empty area and the sheet goes empty; zoom to a place and it shows THOSE
+    // stores). Only user-initiated moves (e.originalEvent present) fire it , programmatic easeTo/
+    // fitBounds have no originalEvent, so the initial fit + the select-pan don't self-trigger.
+    // Debounced so a continuous pan/zoom fires once on settle.
     if (enhanced) {
-      const handleMove = () => {
+      const handleMove = (e: { originalEvent?: unknown } | undefined) => {
+        if (!e || !e.originalEvent) return;
+        userMovedRef.current = true;
         if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
         moveTimeoutRef.current = setTimeout(() => {
-          setShowAreaSearch(true);
-        }, 500);
+          const m = mapRef.current;
+          if (!m || !onAreaSearchRef.current) return;
+          const bounds = m.getBounds();
+          if (!bounds) return;
+          onAreaSearchRef.current({
+            north: bounds.getNorth(), south: bounds.getSouth(),
+            east: bounds.getEast(), west: bounds.getWest(),
+          });
+        }, 450);
       };
       map.on("moveend", handleMove);
     }
@@ -313,9 +332,11 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         markersRef.current.set(salonId, marker);
       });
 
-      // Fit bounds — only when the SET of salons changes.
+      // Fit bounds only when the SET of salons changes, and NEVER once the user has moved the
+      // map themselves (they own the viewport now; auto-fitting after an area-search would yank
+      // the map away from where they zoomed). owner 2026-07-02.
       const sig = filteredSalons.map((s) => s.id).join("|");
-      if (filteredSalons.length > 0 && sig !== fittedSigRef.current) {
+      if (filteredSalons.length > 0 && sig !== fittedSigRef.current && !userMovedRef.current) {
         fittedSigRef.current = sig;
         const bounds = new mapboxgl.LngLatBounds();
         filteredSalons.forEach((s) => bounds.extend([s.longitude, s.latitude]));
@@ -355,19 +376,8 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     mapRef.current.easeTo({ center: emptyCenter, zoom: 12, duration: 500 });
   }, [emptyCenter, filteredSalons]);
 
-  const handleAreaSearch = useCallback(() => {
-    const map = mapRef.current;
-    if (!map || !onAreaSearch) return;
-    const bounds = map.getBounds();
-    if (!bounds) return;
-    onAreaSearch({
-      north: bounds.getNorth(),
-      south: bounds.getSouth(),
-      east: bounds.getEast(),
-      west: bounds.getWest(),
-    });
-    setShowAreaSearch(false);
-  }, [onAreaSearch]);
+  // (area search is now AUTOMATIC on a user zoom/pan , see the moveend handler in the map-init
+  // effect above , so the manual "In diesem Bereich suchen" button + handler were removed.)
 
   return (
     <div className="relative w-full h-full min-h-[200px]">
@@ -393,19 +403,6 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         </div>
       )}
 
-      {/* "In diesem Bereich suchen" floating button */}
-      {enhanced && showAreaSearch && onAreaSearch && !mapError && (
-        <button
-          onClick={handleAreaSearch}
-          /* TOP, not bottom: the bottom sheet (z-31) covers bottom-0, which hid this button and
-             made "search this area" feel broken (owner 2026-07-02). Frosted pill, sentence case
-             (approved /dev/map-motion pill), no warm shadow. mockup-ok */
-          className="absolute left-1/2 top-[76px] z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-s-border bg-white/95 px-3.5 py-2 text-[13px] font-semibold text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_8px_24px_rgba(10,10,10,0.10)] backdrop-blur-xl active:scale-95"
-        >
-          <Search size={14} strokeWidth={2.4} className="text-s-ink-2" />
-          In diesem Bereich suchen
-        </button>
-      )}
     </div>
   );
 }
