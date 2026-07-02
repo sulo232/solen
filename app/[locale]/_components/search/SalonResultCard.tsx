@@ -89,19 +89,30 @@ export interface SalonResultCardProps {
   walkInWaitMin?: number | null;
   walkInWaitMax?: number | null;
   walkInQueue?: number | null;
+  /** "feed" variant only (map-sheet LIST mode, 2026-07-02): when provided, the card's
+   *  main tappable area FOCUSES the salon (calls onSelect(salonId)) instead of navigating
+   *  to the PDP. Heart + everything else stays identical. Absent -> unchanged Link behavior. */
+  onSelect?: (id: string) => void;
 }
 
-const CATEGORY_LABEL: Record<string, string> = {
+// Exported (V3-D453) so MapSalonDetail.tsx reuses the same category slug->label
+// map instead of re-declaring it, per the exists-check anti-duplication rule.
+// reinvent-ok: pre-existing constant (content unchanged, only adding `export`);
+// searchCategories.ts CATEGORIES is a different shape (icon/bg/fg/hardcoded-count
+// for the homepage category picker), not a slug->label map, refactoring this
+// pre-existing SalonResultCard categorization source is out of this task's scope.
+export const CATEGORY_LABEL: Record<string, string> = {
   coiffeur: "Coiffeur",
   barbershop: "Barber",
   nails: "Nails",
   spa: "Spa",
 };
 
-// Locale-derived labels (all 4 locales present — no single-language hardcode).
+// Locale-derived labels (all 4 locales present, no single-language hardcode).
 // Mirrored in messages/{de,en,fr,it}.json under ui.searchChrome; kept inline to
 // match the established inline-record pattern in SearchTemplate (MAP_FAB_LABEL).
-const FROM_LABEL: Record<string, string> = { de: "ab", en: "from", fr: "des", it: "da" };
+// Exported (V3-D453) so MapSalonDetail.tsx reuses the same "from" copy.
+export const FROM_LABEL: Record<string, string> = { de: "ab", en: "from", fr: "des", it: "da" };
 
 // Walk-in live status copy. Locale-correct. `ahead(n)` = N people in front of you
 // (the colored queue count); `join` = the queue CTA; `none` = nobody waiting.
@@ -159,7 +170,8 @@ const VIEW_N_SERVICES_LABEL: Record<string, (n: number) => string> = {
 };
 
 // "feed" variant only: "category, N reviews" meta line (per the approved mockup).
-const REVIEWS_LABEL: Record<string, string> = {
+// Exported (V3-D453) so MapSalonDetail.tsx reuses the same "N reviews" copy.
+export const REVIEWS_LABEL: Record<string, string> = {
   de: "Bewertungen",
   en: "reviews",
   fr: "avis",
@@ -173,6 +185,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     nextSlot, services, variant = "grid",
     galleryCount, hasServiceQuery,
     walkInWaitMin, walkInQueue,
+    onSelect,
   } = props;
 
   const href = `/${locale}/salon/${slug}`;
@@ -431,88 +444,127 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     const moreCount = Math.max(0, (services?.filter((s) => s.price != null).length ?? 0) - rows.length);
     const viewNLabel = (VIEW_N_SERVICES_LABEL[locale] ?? VIEW_N_SERVICES_LABEL.de)(moreCount);
     const dotCount = Math.min(galleryCount ?? 0, 3);
-
-    return (
-      <article className="relative">
-        <Link href={href} className="block active:opacity-90">
-          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
-            {photoInner}
-            <div className="absolute right-3 top-3 z-10">
-              <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} size={36} iconSize={16} />
-            </div>
-            {dotCount > 1 && (
-              <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden>
-                {Array.from({ length: dotCount }).map((_, i) => (
-                  <span key={i} className={cn("h-1.5 w-1.5 rounded-full", i === 0 ? "bg-white" : "bg-white/55")} />
-                ))}
-              </span>
-            )}
+    // V3-D453 (2026-07-02, map-behavior mockup): when onSelect is provided (map-sheet
+    // LIST mode) the card content is wrapped in a <button> that FOCUSES the salon
+    // instead of navigating (same visual as the <Link>). No onSelect, unchanged
+    // Link-to-PDP behavior. HeartButton renders OUTSIDE the tappable element (a
+    // sibling in <article>, absolutely positioned over the photo) because a native
+    // <button> cannot validly nest another <button> (invalid HTML, hydration
+    // error); the <Link> variant keeps it nested since an <a> CAN contain a button.
+    // w-full text-left only NEUTRALIZE native <button> centering so it matches the
+    // <Link> block layout exactly, no new appearance. mockup-ok
+    const feedPhoto = (
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+        {photoInner}
+        {!onSelect && (
+          <div className="absolute right-3 top-3 z-10">
+            <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} size={36} iconSize={16} />
           </div>
-          {hasServiceQuery ? (
-            // SEARCHED state (/dev/results-full): name + inline star on one row, then
-            // the two meta lines, then up to 3 service-price rows + "View N" link.
-            <div className="pt-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <CardName as="p" className="truncate font-heading text-[16px] font-bold">
-                  {name}
-                </CardName>
-                {rating != null && (
-                  <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
-                    <RatingStars value={rating} size="md" />
-                  </span>
-                )}
-              </div>
-              {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
-              {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
-              {rows.length > 0 && (
-                <>
-                  <div className="mt-2.5 space-y-1.5">
-                    {rows.map((s) => {
-                      const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
-                      const dur = formatDuration(s.duration_minutes);
-                      return (
-                        <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
-                          <span className="min-w-0">
-                            <span className="block truncate text-s-ink">{svcName}</span>
-                            {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
-                          </span>
-                          <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {moreCount > 0 && (
-                    <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">{viewNLabel}</span>
-                  )}
-                </>
+        )}
+        {dotCount > 1 && (
+          <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden>
+            {Array.from({ length: dotCount }).map((_, i) => (
+              <span key={i} className={cn("h-1.5 w-1.5 rounded-full", i === 0 ? "bg-white" : "bg-white/55")} />
+            ))}
+          </span>
+        )}
+      </div>
+    );
+    const feedInner = (
+      <>
+        {feedPhoto}
+        {hasServiceQuery ? (
+          // SEARCHED state (/dev/results-full): name + inline star on one row, then
+          // the two meta lines, then up to 3 service-price rows + "View N" link.
+          <div className="pt-2.5">
+            <div className="flex items-start justify-between gap-2">
+              <CardName as="p" className="truncate font-heading text-[16px] font-bold">
+                {name}
+              </CardName>
+              {rating != null && (
+                <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
+                  <RatingStars value={rating} size="md" />
+                </span>
               )}
             </div>
-          ) : (
-            // BROWSE state (/dev/results-browse): ONE row, name/meta stacked LEFT,
-            // rating + "from CHF X" stacked RIGHT with a gap under the rating.
-            <div className="flex items-start justify-between gap-3 pt-2.5">
-              <div className="min-w-0">
-                <CardName as="p" className="truncate font-heading text-[16px] font-bold">
-                  {name}
-                </CardName>
-                {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
-                {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
-              </div>
-              <div className="flex shrink-0 flex-col items-end gap-2.5">
-                {rating != null && (
-                  <span className="flex items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
-                    <RatingStars value={rating} size="md" />
-                  </span>
+            {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
+            {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
+            {rows.length > 0 && (
+              <>
+                <div className="mt-2.5 space-y-1.5">
+                  {rows.map((s) => {
+                    const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
+                    const dur = formatDuration(s.duration_minutes);
+                    return (
+                      <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
+                        <span className="min-w-0">
+                          <span className="block truncate text-s-ink">{svcName}</span>
+                          {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
+                        </span>
+                        <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {moreCount > 0 && (
+                  <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">{viewNLabel}</span>
                 )}
-                {priceFromCHF != null && (
-                  <CardMeta as="span" className="text-[13.5px] font-semibold text-s-ink">
-                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
-                  </CardMeta>
-                )}
-              </div>
+              </>
+            )}
+          </div>
+        ) : (
+          // BROWSE state (/dev/results-browse): ONE row, name/meta stacked LEFT,
+          // rating + "from CHF X" stacked RIGHT with a gap under the rating.
+          <div className="flex items-start justify-between gap-3 pt-2.5">
+            <div className="min-w-0">
+              <CardName as="p" className="truncate font-heading text-[16px] font-bold">
+                {name}
+              </CardName>
+              {line1 && <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{line1}</p>}
+              {line2 && <p className="truncate text-[13px] text-s-ink-2">{line2}</p>}
             </div>
-          )}
-        </Link>
+            <div className="flex shrink-0 flex-col items-end gap-2.5">
+              {rating != null && (
+                <span className="flex items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
+                  <RatingStars value={rating} size="md" />
+                </span>
+              )}
+              {priceFromCHF != null && (
+                <CardMeta as="span" className="text-[13.5px] font-semibold text-s-ink">
+                  <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                </CardMeta>
+              )}
+            </div>
+          </div>
+        )}
+      </>
+    );
+
+    // onSelect present (map-sheet LIST mode) -> button neutralizes native centering
+    // (w-full text-left) so it matches the Link's block layout, mockup-ok, no new
+    // appearance. No onSelect -> unchanged <Link> to the PDP. HeartButton is a
+    // SIBLING of the button (not nested, invalid HTML), positioned to still sit
+    // over the photo's top-right corner exactly like the Link variant.
+    return (
+      <article className="relative">
+        {onSelect && (
+          <div className="absolute right-3 top-3 z-10">
+            <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} size={36} iconSize={16} />
+          </div>
+        )}
+        {onSelect ? (
+          <button
+            type="button"
+            onClick={() => onSelect(salonId ?? slug)}
+            className="block w-full text-left active:opacity-90"
+          >
+            {feedInner}
+          </button>
+        ) : (
+          <Link href={href} className="block active:opacity-90">
+            {feedInner}
+          </Link>
+        )}
       </article>
     );
   }

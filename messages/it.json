@@ -5906,6 +5906,8 @@
     "clearAll": "Cancella tutti i filtri",
     "backToList": "Torna alla lista",
     "dragList": "Trascina la lista",
+    "allSalons": "Tutti i saloni",
+    "viewStore": "Vedi il salone",
     "emptyTitle": "Nessun salone trovato.",
     "emptyBody": "Prova un'altra citta, un altro servizio o rimuovi i filtri.",
     "clearFilters": "Cancella i filtri",

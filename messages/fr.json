@@ -5917,6 +5917,8 @@
     "clearAll": "Effacer tous les filtres",
     "backToList": "Retour a la liste",
     "dragList": "Faire glisser la liste",
+    "allSalons": "Tous les salons",
+    "viewStore": "Voir le salon",
     "emptyTitle": "Aucun salon trouve.",
     "emptyBody": "Essayez une autre ville, un autre service ou retirez les filtres.",
     "clearFilters": "Effacer les filtres",

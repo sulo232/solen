@@ -5924,6 +5924,8 @@
     "clearAll": "Clear all filters",
     "backToList": "Back to list",
     "dragList": "Drag list",
+    "allSalons": "All salons",
+    "viewStore": "View store",
     "emptyTitle": "No salons found.",
     "emptyBody": "Try another city, another service or remove the filters.",
     "clearFilters": "Clear filters",

@@ -81,6 +81,7 @@ import {
 import { createPortal, flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
+import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
 import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
@@ -490,19 +491,43 @@ export default function SearchTemplate({
   const [sheetTopPx, setSheetTopPx] = React.useState<number | null>(null);
   const [sheetDragging, setSheetDragging] = React.useState(false);
   const sheetDragRef = React.useRef<{ startY: number; startTop: number; moved: boolean } | null>(null);
-  // V3-D381: THREE snaps — expanded (full list) / peek (half) / collapsed
+  // V3-D381: THREE snaps: expanded (full list), peek (half), collapsed
   // (mostly map + a horizontal swipeable card stub, the Google/Apple-Maps pattern).
+  // V3-D453: SALON mode reuses the same sheet with its OWN two detents (medium,
+  // full), per the owner-approved /dev/map-behavior mockup (SALON_DETENTS/SALON_MEDIUM).
   const sheetSnaps = () => {
     const h = typeof window !== "undefined" ? window.innerHeight : 800;
-    return { expanded: Math.round(h * 0.16), peek: Math.round(h * 0.55), collapsed: Math.round(h * 0.8) };
+    return {
+      expanded: Math.round(h * 0.16),
+      peek: Math.round(h * 0.55),
+      collapsed: Math.round(h * 0.8),
+      salonFull: Math.round(h * 0.12),
+      salonMedium: Math.round(h * 0.42),
+    };
   };
   // V3-D381: selectedId correlates the sheet cards with the map pins. A pin tap
   // selects its card; swiping the collapsed card stub selects + recenters the
   // matching pin (MapView already ink-fills selectedId + easeTo-recenters).
-  const [mapSelectedId, setMapSelectedId] = React.useState<string | null>(null);
+  // V3-D453: also drives LIST/SALON sheet mode (tap a pin OR a feed card moves to
+  // SALON mode at the medium detent; null goes back to LIST at peek).
+  const [mapSelectedId, setMapSelectedIdRaw] = React.useState<string | null>(null);
+  const setMapSelectedId = React.useCallback((id: string | null) => {
+    setMapSelectedIdRaw(id);
+    const { peek, salonMedium } = sheetSnaps();
+    setSheetTopPx(id ? salonMedium : peek);
+  }, []);
+  // V3-D453: whether the salon detail is at its FULL (dragged-up) detent, derived
+  // from the current sheet top vs the midpoint between salonFull/salonMedium, so a
+  // drag mid-flight (sheetDragging) already previews the fuller service list.
+  const isSalonFull = (() => {
+    if (!mapSelectedId) return false;
+    const { salonFull, salonMedium } = sheetSnaps();
+    const cur = sheetTopPx ?? salonMedium;
+    return cur < (salonFull + salonMedium) / 2;
+  })();
   const onSheetPointerDown = (e: React.PointerEvent) => {
-    const { peek } = sheetSnaps();
-    sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? peek, moved: false };
+    const { peek, salonMedium } = sheetSnaps();
+    sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? (mapSelectedId ? salonMedium : peek), moved: false };
     setSheetDragging(true);
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
   };
@@ -511,19 +536,34 @@ export default function SearchTemplate({
     if (!d) return;
     const delta = e.clientY - d.startY;
     if (Math.abs(delta) > 6) d.moved = true;
-    const { expanded, collapsed } = sheetSnaps();
-    setSheetTopPx(Math.max(expanded - 30, Math.min(collapsed + 40, d.startTop + delta)));
+    const { expanded, collapsed, salonFull } = sheetSnaps();
+    const minTop = mapSelectedId ? salonFull - 30 : expanded - 30;
+    const maxTop = mapSelectedId ? collapsed : collapsed + 40;
+    setSheetTopPx(Math.max(minTop, Math.min(maxTop, d.startTop + delta)));
   };
   const onSheetPointerUp = () => {
     const d = sheetDragRef.current;
     if (!d) return;
-    const { expanded, peek, collapsed } = sheetSnaps();
-    setSheetTopPx((cur) => {
-      const c = cur ?? peek;
-      if (!d.moved) return c <= (expanded + peek) / 2 ? peek : expanded; // tap = toggle peek/expanded
-      // drag = snap to nearest of the three
-      return [expanded, peek, collapsed].sort((a, b) => Math.abs(c - a) - Math.abs(c - b))[0];
-    });
+    const { expanded, peek, collapsed, salonFull, salonMedium } = sheetSnaps();
+    if (mapSelectedId) {
+      // SALON mode: drag up goes to the full detent; drag down past medium goes
+      // back to LIST (clears the selection, same result as the "All salons" chip).
+      setSheetTopPx((cur) => {
+        const c = cur ?? salonMedium;
+        if (c > salonMedium + 70) {
+          setMapSelectedId(null);
+          return peek;
+        }
+        return [salonFull, salonMedium].sort((a, b) => Math.abs(c - a) - Math.abs(c - b))[0];
+      });
+    } else {
+      setSheetTopPx((cur) => {
+        const c = cur ?? peek;
+        if (!d.moved) return c <= (expanded + peek) / 2 ? peek : expanded; // tap toggles peek/expanded
+        // drag snaps to the nearest of the three
+        return [expanded, peek, collapsed].sort((a, b) => Math.abs(c - a) - Math.abs(c - b))[0];
+      });
+    }
     sheetDragRef.current = null;
     setSheetDragging(false);
   };
@@ -1505,6 +1545,10 @@ export default function SearchTemplate({
           locale,
           rating: s.average_rating,
           photoUrl: s.cover_photo_url ?? undefined,
+          // V3-D453: raw address, plus galleryCount + hasServiceQuery, feed only.
+          address: s.address,
+          galleryCount: s.gallery_urls?.length ?? 0,
+          hasServiceQuery: q.length > 0,
           category: activeCategory ? undefined : safeCategory(s.categories),
           city:
             s.address ||
@@ -1586,44 +1630,70 @@ export default function SearchTemplate({
                 <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
               </div>
 
-              {/* V3-D386: no collapsed swiper — the sheet just lowers over the map
-                  (Fresha). Always the dropdown filter pills + count + vertical list. */}
-              <div
-                className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
-                style={{ scrollbarWidth: "none" }}
-              >
-                {filterPills.map((p) => (
-                  <button
-                    key={p.key}
-                    type="button"
-                    onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
-                    aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
-                    aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
-                    className={cn(
-                      "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
-                      "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
-                      "focus-visible:outline-none",
-                      p.active
-                        ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
-                        : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
-                    )}
+              {/* V3-D453: the ONE sheet morphs LIST/SALON. LIST mode keeps the filter
+                  pills + count + vertical feed cards (unchanged); SALON mode
+                  (mapSelectedId set) swaps the whole body for MapSalonDetail, matching
+                  the owner-approved /dev/map-behavior mockup. */}
+              {mapSelectedId ? (
+                (() => {
+                  const selectedSalon = salons.find((s) => s.id === mapSelectedId);
+                  if (!selectedSalon) return null;
+                  return (
+                    <div className="flex-1 overflow-y-auto px-4 pb-8 pt-1">
+                      <MapSalonDetail
+                        salon={selectedSalon}
+                        locale={locale}
+                        onBack={() => setMapSelectedId(null)}
+                        full={isSalonFull}
+                        isSaved={favoriteIds.has(selectedSalon.id)}
+                        backLabel={t("allSalons")}
+                        viewStoreLabel={t("viewStore")}
+                      />
+                    </div>
+                  );
+                })()
+              ) : (
+                <>
+                  {/* V3-D386: no collapsed swiper, the sheet just lowers over the map
+                      (Fresha). Always the dropdown filter pills + count + vertical list. */}
+                  <div
+                    className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
+                    style={{ scrollbarWidth: "none" }}
                   >
-                    {p.label}
-                    {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
-                  </button>
-                ))}
-              </div>
-              <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
-                {t.rich("salonsInArea", {
-                  count: salons.length,
-                  b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
-                })}
-              </div>
-              <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
-                {salons.map((s) => (
-                  <SalonResultCard key={s.id} variant="card" {...cardProps(s)} />
-                ))}
-              </div>
+                    {filterPills.map((p) => (
+                      <button
+                        key={p.key}
+                        type="button"
+                        onClick={() => (TOGGLE_PILLS.has(p.key) ? toggleBooleanParam(p.key, p.active) : openSection(p.key))}
+                        aria-haspopup={TOGGLE_PILLS.has(p.key) ? undefined : "dialog"}
+                        aria-pressed={TOGGLE_PILLS.has(p.key) ? p.active : undefined}
+                        className={cn(
+                          "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                          "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
+                          "focus-visible:outline-none",
+                          p.active
+                            ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
+                            : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
+                        )}
+                      >
+                        {p.label}
+                        {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
+                    {t.rich("salonsInArea", {
+                      count: salons.length,
+                      b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
+                    })}
+                  </div>
+                  <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
+                    {salons.map((s) => (
+                      <SalonResultCard key={s.id} variant="feed" onSelect={setMapSelectedId} {...cardProps(s)} />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         );

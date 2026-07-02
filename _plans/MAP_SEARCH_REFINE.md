@@ -424,3 +424,11 @@ DIAGNOSIS: map-behavior LIST (not-selected) card = a re-invented compact horizon
 - [x] council (2 lenses: enforceable-gate ab0fa4a1 + self-improve acd1f572) , converged: check a STRUCTURAL fact not a text marker; independent verifier is the ceiling; DRIFT_LEDGER for cross-session learning; anti-superficial test.
 - [x] REFINE: map-behavior LIST card replaced with the EXACT approved map-full borderless card (aspect-3/2 + service rows + View N services). Screenshot-verified matches.
 - [x] HARDEN: no-invented-ui-gate v2 = STRUCTURAL (import SalonResultCard OR canonical signature; a comment no longer satisfies it). Self-tested 8 incl. the v1 gaming attempt -> still DENY. + DRIFT_LEDGER.md + drift-ledger-inject.py (UserPromptSubmit, tested+wired) + anti-superficial one-line rule in feedback_rules_are_hooks.
+
+## BATCH 17 (owner APPROVED 2026-07-02): wire the approved map behavior into the REAL app
+Model (from /dev/map-behavior + council): ONE bottom sheet, morphs LIST <-> SALON. Tap pin OR card -> SALON_MEDIUM; drag up -> SALON_FULL (mini-PDP); drag down (scrollTop 0) -> LIST; explicit "All salons" chip; no double-tap (single tap focuses, "View store"/service -> PDP); pin gray-selected; map does NOT auto-close on pan. LIST cards = SalonResultCard variant="feed" (REUSE, do not invent).
+- [ ] build (coder): new component for the draggable map sheet (LIST/SALON detents + single-salon medium/full), reuse SalonResultCard variant="feed" for the list; wire into SearchTemplate mobile map block (replace the static sheet); MapView onSelect focuses the salon.
+- [ ] design-verifier vs /dev/map-behavior + LOCKFILE (REQUIRED by design-verify-gate); fix punch list; loop to PASS.
+- [ ] register the new component (COMPONENT_REGISTRY + components/<Name>.md); commit; tunnel link.
+
+- [x] BUILT + design-verifier PASS 7/7 (a02d2240): MapSalonDetail + SearchTemplate LIST(feed onSelect=focus)/SALON wiring + SalonResultCard additive onSelect + salon detents + i18n (allSalons/viewStore x4). Live-verified real Basel data, zero hydration errors, no fabricated data. Registered + component doc.

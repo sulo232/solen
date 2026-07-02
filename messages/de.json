@@ -5935,6 +5935,8 @@
     "clearAll": "Alle Filter zurücksetzen",
     "backToList": "Zurück zur Liste",
     "dragList": "Liste ziehen",
+    "allSalons": "Alle Salons",
+    "viewStore": "Salon ansehen",
     "emptyTitle": "Keine Salons gefunden.",
     "emptyBody": "Versuche eine andere Stadt, einen anderen Service oder lass die Filter weg.",
     "clearFilters": "Filter zurücksetzen",
