@@ -276,3 +276,30 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
   - [ ] results list full-page , AWAITING owner format sign-off, then same treatment
   - [ ] search suggestions full-page , AWAITING owner format sign-off, then same treatment
 - [x] compare each mockup to its real page, one by one , map-full vs real-results, confirm-full vs real-confirm (presented)
+
+## 🌊 BATCH 4 (owner 2026-07-02, voice; map-full loved, refine everything). ATOMIC:
+- [x] OVERALL selected-state (recurring, harden DONE): selected/active = GRAY sunken, NEVER blue OR black.
+  - [x] HARDENED no-black-selected-gate to ALSO block BLUE-selected (bg/border-s-accent) + const SEL classes; self-tested 8 cases
+  - [x] updated memory feedback_selected_state_ink_not_blue_ring , now GRAY (supersedes ink + blue)
+- [ ] MAP view (map-full) , refine
+  - [ ] search bar shape: rectangle -> PILL (rounded, like the normal search bar)
+  - [ ] "Search this area": AUTOMATIC on pan (no tap button)
+  - [ ] bottom store-preview = draggable BOTTOM SHEET (pull up/down) that coexists with the bottom nav bar
+  - [ ] preview photo BIGGER + WIDER aspect ratio
+  - [ ] more store details in the preview (from the PDP)
+  - [ ] show service PRICES in the preview when searching a service (e.g. "buzz cut")
+  - [ ] (exact bottom-sheet interaction BLOCKED on owner screenshot , build first version now)
+- [ ] CHECKOUT / booked (confirm-full) , refine
+  - [ ] more photos
+  - [ ] un-gray the "Total (incl. VAT)" receipt block (owner dislikes grayed-out)
+  - [ ] reduce TEXT (too much overall)
+  - [x] INVESTIGATE access-link security: SECURE (lib/bookings/guest-access.ts , 256-bit randomBytes, only SHA-256 HASH stored, timingSafeEqual, TTL expiry, scoped to 1 booking = standard magic-link). Only inherent risk = URL leakage (forwarding), mitigated by expiry. No code flaw.
+  - [ ] LOADING stage (fake) before the booked page (flight-booking style)
+  - [ ] a way to ACCESS the walk-in from the booked section
+- [ ] FILTER sheet , refine
+  - [ ] selected chip = GRAY sunken, not blue
+  - [ ] REVERT the price refinement (no min-max range , owner: "don't do that")
+- [ ] RESULTS list card , refine
+  - [ ] search bar -> pill (per map)
+  - [ ] refine the card
+- [ ] SEARCH suggestions , 2 refined full-page variations (compare)
