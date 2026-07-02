@@ -484,3 +484,4 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 - [x] 4 DONE: divider line removed from the map bar.
 - [x] 1-blue DONE: MapView declutter now hides POI/transit/rail labels on the custom style too (the blue "fonts like Azul"). Screenshot-verified gone.
 - [x] 2/3 DONE (verifier running): content-region scroll<->drag handoff , scroll-up expands the sheet, drag-down-at-top collapses smoothly; native scroll preserved when not at top. onContentPointerDown/Move/Up + shared endSheetDrag(). tsc clean.
+- [x] gesture verifier FAIL fixed: draggable=false on the shared card <Image> (native image-drag was firing pointercancel + killing drag-up-on-photo). Re-tested: drag-up-on-photo expands (464->135), 0 errors. Debug logs already removed. BATCH 19 COMPLETE.

@@ -223,6 +223,10 @@ function SalonResultCardInner(props: SalonResultCardProps) {
       src={photoUrl}
       alt={`Foto von ${name}`}
       fill
+      // draggable=false: the native image drag fires pointercancel and kills the map
+      // sheet's scroll<->drag gesture when a thumb starts on the photo (2026-07-02). mockup-ok
+      draggable={false}
+      style={{ WebkitUserDrag: "none" } as React.CSSProperties}
       sizes={
         variant === "list"
           ? "112px"
