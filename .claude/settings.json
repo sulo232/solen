@@ -82,6 +82,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/browser-verify-gate.sh"
+          }
+        ]
+      }
     ]
   }
 }
