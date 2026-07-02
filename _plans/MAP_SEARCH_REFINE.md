@@ -329,7 +329,7 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] PARKED (owner "talk later"): reuse this card style in the normal search bar for specific-cut searches for specific-cut searches , NOT now
 
 ## 🌊 BATCH 8 (owner 2026-07-02, refs IMG_6267-6272). "Make it EXACTLY like the reference, but app aspect ratio". ATOMIC:
-- [ ] rebuild map store cards EXACTLY like the reference: photo + optional Deals/Empfohlen badge (top-left) + heart (top-right) + carousel dots + name + star rating + "distance, address" + "category, N reviews" + service rows (name/duration + price) + "View N matching services" (blue link)
-- [ ] photo aspect ratio = the APP's MEASURED ratio aspect-[3/2] (1.5, real SalonResultCard), NOT the reference's ~1.67 "really rectangle" (owner: measured live, grounded)
-- [ ] scrollable feed of these cards (pager/Book/nav already removed last turn)
-- [ ] DO NOT touch: the search bar (owner: figured out), confirm-full + filter-refine (LOCKED/approved , owner: "don't change your locked in stuff")
+- [x] rebuilt map store cards EXACTLY like the reference: photo + optional Deals/Empfohlen badge (top-left) + heart (top-right) + carousel dots + name + star rating + "distance, address" + "category, N reviews" + service rows (name/duration + price) + "View N matching services" (blue link)
+- [x] photo aspect ratio = APP's MEASURED aspect-[3/2] (1.5, real SalonResultCard), NOT the reference's ~1.67 "really rectangle" (owner: measured live, grounded)
+- [x] scrollable feed of these cards (no pager/Book/nav)
+- [x] did NOT touch: the search bar (owner: figured out), confirm-full + filter-refine (LOCKED/approved , owner: "don't change your locked in stuff")
