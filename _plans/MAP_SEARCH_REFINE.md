@@ -390,3 +390,24 @@ Reference GROUNDING (viewed IMG_6267-6272): Fresha map = the BOTTOM SHEET is the
   - [x] Direction 2: medium (~two-thirds) , + hours + reviews row + 4 services. (RECOMMEND)
   - [x] Direction 3: full (~full) , mini-PDP (photo carousel + hours + amenity chips + 5 services + review snippet).
 - [x] link + recommendation given. Double-tap concern RESOLVED by this model: single tap focuses the salon in the sheet, "View store"/a service opens the PDP (no double-tap needed). AWAITING owner: pick a direction.
+
+### BATCH 15b (owner 2026-07-02): COUNCIL the map bottom-sheet BEHAVIOR
+Owner leans Direction 2 or 3, wants richer behaviour: e.g. swipe DOWN the single-salon sheet -> back to ALL stores (list). "can u ask llm council."
+- [ ] council (3 lenses): sheet state + gesture model (list-peek <-> list-expanded <-> single-salon <-> full/PDP); swipe-down-returns-to-list; how pin-tap vs card-tap vs swipe interact; 2-vs-3 content depth. Synthesize -> update interactive mockup -> owner approves.
+
+## BATCH 15b COUNCIL RESULT (2026-07-02) , map sheet behaviour , 3 lenses CONVERGED
+Lenses: map-patterns (a12f2ef5) + state-machine (ae5b6da8) + gesture-simplicity (a48b8c32).
+SYNTHESIS (agreed model):
+- ONE sheet, content MORPHS (crossfade + height tween ~180ms); tap PIN and tap CARD go to the SAME state.
+- States: LIST_PEEK / LIST_EXPANDED / SALON_MEDIUM (default on tap) / SALON_FULL (swipe up).
+- Tap pin/card -> SALON_MEDIUM (~half). Pin gray-selected; map pans so the pin sits above the sheet.
+- Swipe UP -> SALON_FULL = mini-PDP (amenities + more services + a review) , progressive disclosure is the reward for the up-gesture (so 2=default, 3=expanded; answers owner "2 or 3" = BOTH).
+- Swipe DOWN from SALON_MEDIUM (only when inner scrollTop===0, ~28px threshold) -> back to LIST. From SALON_FULL, swipe-down -> SALON_MEDIUM first (single-step). Owner's swipe-down instinct = CONFIRMED.
+- KEEP an explicit "All salons" back chip in the salon header (discoverable path; swipe = power-user shortcut). Both hit the same transition.
+- Tap a DIFFERENT pin while a salon is open -> swap in place to SALON_MEDIUM (never jump to full).
+- Pan the map: LIST -> sheet stays + "Search this area" pill (no auto-refetch); SALON -> sheet does NOT auto-close (anti-vanish: only a user action on the sheet changes it). [lens-1 wanted auto-dismiss; overruled by lens-2 anti-vanish + owner's prior "disappeared" pain.]
+- KILL double-tap-to-open (all 3): single tap focuses; "View store"/header -> PDP; service row -> booking.
+- Content: MEDIUM default (hours + reviews row + 4 services + View store); FULL on expand.
+- [ ] build interactive mockup /dev/map-behavior demonstrating the draggable detents + tap-focus + swipe-down-to-list + All-salons chip; link; owner approves -> real build.
+
+- [x] built /dev/map-behavior interactive (drag detents + tap-focus + swipe-down-to-list + All-salons chip); verified 4 states; link given. AWAITING owner OK on the model.
