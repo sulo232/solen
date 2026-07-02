@@ -432,3 +432,25 @@ Model (from /dev/map-behavior + council): ONE bottom sheet, morphs LIST <-> SALO
 - [ ] register the new component (COMPONENT_REGISTRY + components/<Name>.md); commit; tunnel link.
 
 - [x] BUILT + design-verifier PASS 7/7 (a02d2240): MapSalonDetail + SearchTemplate LIST(feed onSelect=focus)/SALON wiring + SalonResultCard additive onSelect + salon detents + i18n (allSalons/viewStore x4). Live-verified real Basel data, zero hydration errors, no fabricated data. Registered + component doc.
+
+## BATCH 18 (owner 2026-07-02): map MOTION + structure + cluster (council + mockups)
+- [ ] A. MOTION: the selected-store sheet should ENTER with a motion SIMILAR to the search-bar swipe-up animation (match it , investigate what that motion is first).
+- [ ] B. MOTION: everything too SNAP, no morphism , add smooth motion everywhere on the map sheet (list<->salon morph, sheet up/down).
+- [ ] C. MOTION: drag DOWN / back-to-list is too snap , smooth it.
+- [ ] D. BUG: scrolling causes OVERLAPS (investigate/measure, fix , functional not mockup).
+- [ ] E. STRUCTURE: map back button + search bar STILL two elements , unify into ONE single bar, looking like the NORMAL page's search bar.
+- [ ] F. DESIGN: cluster marker (the black "5"/"4" bubble) , owner dislikes plain black; redesign.
+- [ ] council (owner asked) on the motion vocabulary + cluster redesign; then INTERACTIVE mockups (motion needs to be felt) + unified-bar + cluster mockups.
+- [ ] G. DRAG the sheet from the whole TOP / empty-white area, not only the tiny handle (bigger drag zone).
+- [ ] H. LIVE LIST: when you zoom/pan the map, the sheet's stores don't update as you go , the list should reflect the current map viewport (search-this-area / live update). (relates to earlier #1 map-bar-city + onAreaSearch already exists in MapView.)
+Investigated: search-bar motion = framer-motion, ease [0.32,0.72,0,1], 0.4s slide-up (y 100%->0) + 0.24s content crossfade. Map sheet = CSS transition-[top] snap + instant list/salon swap (the "too snap"). Overlap = cards scroll UNDER the sticky pills+count header + clip mid-photo (needs a clean sticky header separation). Top bar = separate back button + search pill (not one bar). Cluster = ink #0A0A0A circle + white count (owner dislikes plain black).
+
+## BATCH 18 COUNCIL RESULT (2026-07-02)
+MOTION (lens a8bf80d4): port SearchOverlay framer-motion. EASE=[0.32,0.72,0,1]. Sheet top = motion.div animate top, transition tween EASE 0.32s (duration:0 while dragging). List<->salon = AnimatePresence crossfade opacity0->1 y8->0 / exit y-10, 0.24s. Salon entrance = crossfade + detent promote (concurrent). Drag-down-back = same. prefers-reduced-motion = duration:0.
+DRAG-ZONE (G): drag region = handle+pills+count (touch-none); scroll region = list; resolve drag-vs-scroll on first 6px: if scrollTop<=0 AND downward -> drag (preventDefault list), else scroll.
+OVERLAP (D): sticky top-0 z-10 bg-white on pills+count + a 1px border-s-border hairline (NO shadow) + scroll-pt-3.
+CLUSTER (F, 3 variations to pick): V1 white pill "N Salons" ink text + ink hairline (rec, word beats number to differ from rating pill); V2 gray sunken disc + ink N (quiet); V3 stacked-cards silhouette + N. NOT plain black.
+BAR (E): one frosted pill = back-arrow + search icon + query/city(2 lines) + list/map toggle (the map-full mockup). Live shows 2 separate boxes -> merge. Optional back-divider hairline.
+LIVE LIST (H): hybrid = "In diesem Bereich suchen" frosted button on pan (MapView already has debounced moveend + onAreaSearch + the button, UNWIRED in overlay). Wire onAreaSearch -> refetch /api/salons bounds -> replace sheet salons + count. Pins stay put during wait (button is the signal, no skeleton).
+
+- [x] MOCKUP built /dev/map-motion (interactive, framer-motion): morph list<->salon, drag from handle+pills, smooth snap, overlap-fixed sticky header, UNIFIED bar (one pill), Search-this-area button, 3 CLUSTER options (toggle). Verified render, 0 page errors. AWAITING owner: pick cluster + approve motion, then wire to real.
