@@ -37,33 +37,34 @@ function Pin({ selected, top, left }: { selected?: boolean; top: string; left: s
   );
 }
 
-// EXACTLY like the reference card, at the app's aspect-[3/2] photo. Whole card taps through (no Book).
+// BORDERLESS like the reference (measured: left margin all-white, no card box): rounded photo +
+// text on white + gray service boxes, cards separated by whitespace. App's aspect-[3/2] photo.
 function StoreCard({ s }: { s: (typeof STORES)[number] }) {
   return (
-    <button className="w-full overflow-hidden rounded-card border border-s-border bg-white text-left shadow-[0_1px_2px_rgba(10,10,10,0.06),0_6px_20px_rgba(10,10,10,0.08)] active:scale-[0.99]">
-      <div className="relative aspect-[3/2] w-full bg-s-bg-sunken">
+    <button className="w-full text-left active:opacity-90">
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
         {s.deals && <span className="absolute left-3 top-3 rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-s-ink shadow-sm">Deals</span>}
         <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white text-s-ink-2 shadow-sm"><Heart size={16} /></span>
         <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-white" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" />
         </span>
       </div>
-      <div className="p-3.5">
+      <div className="pt-2.5">
         <div className="flex items-start justify-between gap-2">
-          <p className="truncate font-heading text-[15.5px] font-bold text-s-ink">{s.name}</p>
-          <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink"><Star size={13} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
+          <p className="truncate font-heading text-[16px] font-bold text-s-ink">{s.name}</p>
+          <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
         </div>
-        <p className="mt-0.5 truncate text-[12.5px] text-s-ink-2">{s.dist}, {s.addr}</p>
-        <p className="truncate text-[12.5px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
-        <div className="mt-2.5 space-y-1.5">
+        <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{s.dist}, {s.addr}</p>
+        <p className="truncate text-[13px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
+        <div className="mt-3 space-y-2">
           {s.services.map(([n, d, p]) => (
-            <div key={n} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3 py-2 text-[13px]">
+            <div key={n} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
               <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
               <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
             </div>
           ))}
         </div>
-        <span className="mt-2.5 block text-[13px] font-semibold text-s-accent">View {s.more} matching {s.more === 1 ? "service" : "services"}</span>
+        <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">View {s.more} matching {s.more === 1 ? "service" : "services"}</span>
       </div>
     </button>
   );
@@ -107,7 +108,7 @@ function Screen() {
         <div className="absolute inset-x-0 bottom-0 top-[400px] z-20 flex flex-col rounded-t-[24px] border-t border-s-border bg-white shadow-[0_-2px_8px_rgba(10,10,10,0.06),0_-16px_40px_rgba(10,10,10,0.12)]">
           <div className="flex shrink-0 justify-center pt-2.5"><span className="h-1 w-10 rounded-full bg-s-border" /></div>
           <p className="shrink-0 px-4 pb-1 pt-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {STORES.map((s) => <StoreCard key={s.name} s={s} />)}
           </div>
         </div>
