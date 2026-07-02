@@ -7,26 +7,29 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
-import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
 import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
 
-// Toggle ONLY the selection-dependent styles of a salon price pill, IN PLACE. Selecting a
-// pin used to tear down + rebuild every marker, which flickered every price label on the map
+// Toggle ONLY the selection-dependent styles of a salon rating pill, IN PLACE. Selecting a
+// pin used to tear down + rebuild every marker, which flickered every label on the map
 // on each tap (owner 2026-07-01). Invariant styles are set once at creation; this flips the
 // rest via the CSS transition on the inner element.
+// Selected = GRAY sunken fill (owner-approved map-full mockup, 2026-07-02), NOT ink-black and
+// NOT blue. Ink text + s-border hairline stay in both states; only the fill + scale change.
+// Hex is inline because this is a vanilla-DOM mapbox marker (Tailwind classes can't apply);
+// the values ARE the canonical tokens (#F4F4F5=s-bg-sunken, #E4E4E7=s-border, #0A0A0A=s-ink).
 function applyPillSelection(inner: HTMLElement, isSelected: boolean) {
   inner.style.padding = isSelected ? "6px 12px" : "5px 11px";
   inner.style.fontSize = isSelected ? "13px" : "12.5px";
   inner.style.boxShadow = isSelected
-    ? "0 2px 4px rgba(10,10,10,0.16),0 10px 22px rgba(10,10,10,0.20)"
-    : "0 1px 2px rgba(10,10,10,0.10),0 4px 12px rgba(10,10,10,0.08)";
-  inner.style.background = isSelected ? "#0A0A0A" : "#ffffff";
-  inner.style.color = isSelected ? "#ffffff" : "#0A0A0A";
-  inner.style.border = "1px solid " + (isSelected ? "#0A0A0A" : "rgba(10,10,10,0.10)");
-  inner.style.transform = isSelected ? "scale(1.12)" : "scale(1)";
+    ? "0 2px 6px rgba(10,10,10,0.16),0 10px 24px rgba(10,10,10,0.14)"
+    : "0 1px 2px rgba(10,10,10,0.12),0 4px 12px rgba(10,10,10,0.10)";
+  inner.style.background = isSelected ? "#F4F4F5" : "#ffffff"; // drift-ok: token s-bg-sunken, inline for vanilla-DOM marker
+  inner.style.color = "#0A0A0A"; // drift-ok: token s-ink, inline for vanilla-DOM marker
+  inner.style.border = "1px solid #E4E4E7"; // drift-ok: token s-border, inline for vanilla-DOM marker
+  inner.style.transform = isSelected ? "scale(1.10)" : "scale(1)";
 }
 
 interface MapViewProps {
@@ -235,23 +238,29 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           return;
         }
 
-        // Individual salon — solid price pill, ink-filled when selected.
+        // Individual salon: rating pill (owner-approved map-full mockup, 2026-07-02),
+        // white pill + yellow star + rating number, gray-sunken when selected. Supersedes
+        // V3-D386 (price-only pill) per the owner's recent map approval.
         const salonId = props.salonId as string;
-        const minPrice = props.minPrice as number | null;
+        const rating = props.rating as number | null;
         const isSelected = salonId === selectedIdRef.current;
 
-        if (minPrice && minPrice > 0) {
-          // V3-D386 (user): price-only pill, no star. Invariant styles here; the
-          // selection-dependent bits (fill/size/shadow/scale) go through
-          // applyPillSelection so a select restyles IN PLACE (no marker rebuild).
+        if (rating && rating > 0) {
+          // Invariant styles here; the selection-dependent bits (fill/size/shadow/scale) go
+          // through applyPillSelection so a select restyles IN PLACE (no marker rebuild).
           inner.style.cssText += `
-            display:flex;align-items:center;justify-content:center;
+            display:flex;align-items:center;justify-content:center;gap:3px;
             border-radius:9999px;font-weight:600;white-space:nowrap;
           `;
           applyPillSelection(inner, isSelected);
-          inner.textContent = `ab ${formatCurrency(minPrice)}`;
+          // Lucide "star" glyph, filled semantic yellow (#FFC32B = s-star), the same icon as
+          // the mockup's Star fill-s-star strokeWidth 0. No review count (owner spec).
+          inner.innerHTML =
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" style="flex-shrink:0" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
+            `<span>${rating.toFixed(1)}</span>`;
           salonPillsRef.current.set(salonId, inner);
         } else {
+          // No rating yet (new salon): neutral location dot, no fabricated number.
           inner.style.cssText += `
             width:13px;height:13px;border-radius:50%;background:#0A0A0A;
             border:2px solid #ffffff;box-shadow:0 1px 4px rgba(10,10,10,0.20);

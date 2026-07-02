@@ -82,7 +82,6 @@ import { createPortal, flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
-import { CategoryHeroCarousel } from "./CategoryHeroCarousel";
 import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
@@ -1066,15 +1065,8 @@ export default function SearchTemplate({
         </div>
       </div>
 
-      {/* V3-D421 (2026-06-05): Top bewertet hero carousel. Black, photo-led FEATURED
-          carousel, ONLY on a category route in browse mode (no query + no active filter).
-          Owner placement (2026-06-05): directly under the sticky search band and ABOVE the
-          filter chips + fuer-dich icons (widget first, icons + filter beneath it). Top-
-          rated slice of the already-fetched salons (no extra fetch). Design "B".
-          Universal across categories. */}
-      {activeCategory && activeFilterCount === 0 && q.length === 0 && (
-        <CategoryHeroCarousel salons={salons} locale={locale} favoriteIds={favoriteIds} />
-      )}
+      {/* Top-bewertet hero carousel REMOVED (owner 2026-07-02: "remove the top bewertet").
+          See _design-system/REMOVED.md. The results grid leads directly now. */}
 
       {/* CHROME row: filter chips + Fuer-dich. The search band moved OUT (above) so it
           can stay pinned over the full results list; this container holds the rest of
@@ -1156,7 +1148,7 @@ export default function SearchTemplate({
                     p.active
                       // Owner 2026-07-01: selected = NEUTRAL (ink hairline + sunken fill + ink text),
                       // NOT blue. Supersedes the V3-D450 blue-pill , owner "don't like the blue, grey/sink it".
-                      ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
+                      ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
                       : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                   )}
                 >
@@ -1612,7 +1604,7 @@ export default function SearchTemplate({
                       "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
                       "focus-visible:outline-none",
                       p.active
-                        ? "border border-s-ink bg-s-bg-sunken text-s-ink font-semibold"
+                        ? "border border-transparent bg-s-bg-sunken text-s-ink font-semibold"
                         : "border border-s-border bg-white text-s-ink hover:bg-s-bg-sunken",
                     )}
                   >
