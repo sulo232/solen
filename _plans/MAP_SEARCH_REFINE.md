@@ -454,3 +454,13 @@ BAR (E): one frosted pill = back-arrow + search icon + query/city(2 lines) + lis
 LIVE LIST (H): hybrid = "In diesem Bereich suchen" frosted button on pan (MapView already has debounced moveend + onAreaSearch + the button, UNWIRED in overlay). Wire onAreaSearch -> refetch /api/salons bounds -> replace sheet salons + count. Pins stay put during wait (button is the signal, no skeleton).
 
 - [x] MOCKUP built /dev/map-motion (interactive, framer-motion): morph list<->salon, drag from handle+pills, smooth snap, overlap-fixed sticky header, UNIFIED bar (one pill), Search-this-area button, 3 CLUSTER options (toggle). Verified render, 0 page errors. AWAITING owner: pick cluster + approve motion, then wire to real.
+
+### BATCH 18b (owner 2026-07-02): cluster = V2 or V3 (leaning), + 3 detailed ZOOM in/out motions
+Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n out" , the cluster<->pins transition on map zoom.
+- [ ] interactive mockup: zoom-in (cluster -> pins) / zoom-out (pins -> cluster), 3 motion variants to pick:
+  - M1 Burst: pins spring OUT from the cluster center (stagger 0.04, spring), cluster scales up+fades.
+  - M2 Soft crossfade: cluster fades+scales 0.9, pins gentle fade + short travel (EASE 0.26, stagger 0.03).
+  - M3 Cascade: pins pop in one-by-one with overshoot (spring stiff 420, stagger 0.09), cluster shrinks+fades.
+- cluster look held at gray disc while judging MOTION (2 vs 3 is a separate pick).
+
+- [x] MOCKUP /dev/map-zoom (interactive, framer-motion): zoom-in cluster->pins / zoom-out pins->cluster, 3 motions M1 Burst / M2 Soft / M3 Cascade to pick. Verified render + video, 0 page errors. AWAITING owner: pick motion + cluster look (2/3).
