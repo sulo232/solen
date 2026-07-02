@@ -357,5 +357,5 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 
 ## BATCH 12 (owner 2026-07-02): GO BUILD the approved design into the real app. Staged (large, shared components):
 - [x] price tweak: browse card from-price on the right beneath rating (mockups) , committed
-- [ ] BUILD results page (mobile 1-col borderless card feed, searched + browse states) , coder dispatched (layered loop), preserve walk-in/slots/desktop; review + verify on return
+- [x] BUILT results page (mobile 1-col feed, searched + browse), verified vs mockup, desktop/walk-in preserved, committed
 - [ ] BUILD map page (bottom-sheet card feed + filters-in-sheet + pins + preview) , next loop after results
