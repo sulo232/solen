@@ -11,44 +11,52 @@
  */
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, Search, SlidersHorizontal, ChevronDown, Star, Heart, Home, Sparkles, CalendarDays, User, Map as MapIcon } from "lucide-react";
+import { ArrowLeft, Search, SlidersHorizontal, ChevronDown, Star, Heart, Map as MapIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 
 const SALONS = [
-  { name: "Zoltan Hair Zurich", rating: "5.0", count: 22, meta: "Hair salon , Zurich , 1.7 km", from: "50", svc: "Buzz Cut", dur: "20 min", price: "50" },
-  { name: "Supreme Style & Barber", rating: "4.9", count: 172, meta: "Barber , Basel , 2.0 km", from: "45", svc: "Buzz Cut", dur: "25 min", price: "45" },
-  { name: "Old Town Barbers", rating: "4.7", count: 88, meta: "Barber , Basel , 2.4 km", from: "40", svc: "Buzz Cut", dur: "20 min", price: "40" },
+  { name: "Zoltan Hair Zurich", rating: "5.0", count: "22", dist: "1.7 km", addr: "Nussgasse 3", cat: "Hair salon",
+    services: [["Buzz Cut", "20 min", "CHF 50"], ["Shampoo, Cut & Style S", "45 min", "CHF 100"]], more: 53 },
+  { name: "Supreme Style & Barber", rating: "4.9", count: "172", dist: "2.0 km", addr: "Kleinbasel", cat: "Barber",
+    services: [["Buzz Cut", "25 min", "CHF 45"], ["Skin Fade", "35 min", "CHF 65"]], more: 31 },
+  { name: "Old Town Barbers", rating: "4.7", count: "88", dist: "2.4 km", addr: "Steinenvorstadt", cat: "Barber",
+    services: [["Buzz Cut", "20 min", "CHF 40"]], more: 18 },
 ];
 
-// mirrors the real SalonResultCard "card" variant: name ink-anchor, rating + inline count,
-// cat/city/distance meta, from-price, a featured service, "View all services".
+// same BORDERLESS card as the map (owner: use this style on the normal search page too): rounded
+// photo + text on white + gray service rows (max 3) + "View N". Prices show for the searched service.
 function Card({ s }: { s: (typeof SALONS)[number] }) {
   return (
-    <div className="overflow-hidden rounded-[18px] border border-s-border bg-white">
-      <div className="relative h-[150px] bg-s-bg-sunken">
-        <button className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-s-ink-2 shadow-sm" aria-label="Save"><Heart size={16} /></button>
+    <button className="w-full text-left active:opacity-90">
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-s-bg-sunken">
+        <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white text-s-ink-2 shadow-sm"><Heart size={16} /></span>
+        <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-white" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /><span className="h-1.5 w-1.5 rounded-full bg-white/55" /></span>
       </div>
-      <div className="p-3.5">
+      <div className="pt-2.5">
         <div className="flex items-start justify-between gap-2">
-          <p className="truncate font-heading text-[15.5px] font-bold text-s-ink">{s.name}</p>
-          <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink"><Star size={13} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating} <span className="font-normal text-s-ink-2">({s.count})</span></span>
+          <p className="truncate font-heading text-[16px] font-bold text-s-ink">{s.name}</p>
+          <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
         </div>
-        <p className="mt-0.5 truncate text-[12.5px] text-s-ink-2">{s.meta}</p>
-        <p className="mt-1 text-[13.5px] font-semibold text-s-ink">from CHF {s.from}</p>
-        <div className="mt-3 flex items-center justify-between rounded-xl bg-s-bg-sunken px-3 py-2.5 text-[13px]">
-          <span className="min-w-0"><span className="block truncate font-medium text-s-ink">{s.svc}</span><span className="text-[12px] text-s-ink-3">{s.dur}</span></span>
-          <span className="shrink-0 font-semibold tabular-nums text-s-ink">CHF {s.price}</span>
+        <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{s.dist}, {s.addr}</p>
+        <p className="truncate text-[13px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
+        <div className="mt-2.5 space-y-1.5">
+          {s.services.slice(0, 3).map(([n, d, p]) => (   /* RULE: max 3 service rows */
+            <div key={n} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
+              <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+              <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
+            </div>
+          ))}
         </div>
-        <button className="mt-2 text-[13px] font-semibold text-s-accent">View all services</button>
+        <span className="mt-3 block text-[13.5px] font-semibold text-s-accent">View {s.more} matching services</span>
       </div>
-    </div>
+    </button>
   );
 }
 
 function Screen() {
   return (
     <div className="fixed inset-0 z-[9999] overflow-y-auto bg-white">
-      <div className="relative mx-auto min-h-[844px] w-full max-w-[390px] bg-white pb-20">
+      <div className="relative mx-auto min-h-[844px] w-full max-w-[390px] bg-white pb-8">
         {/* sticky pill search bar + chips */}
         <div className="sticky top-0 z-10 bg-white/95 px-3 pb-2 pt-3 backdrop-blur-xl">
           <div className="flex items-center gap-1 rounded-full border border-s-border bg-white py-1.5 pl-1.5 pr-1.5 shadow-[0_1px_2px_rgba(10,10,10,0.08),0_4px_16px_rgba(10,10,10,0.06)]">
@@ -65,17 +73,10 @@ function Screen() {
           </div>
         </div>
 
-        <div className="px-3 pt-1">
-          <p className="px-1 pb-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
-          <div className="space-y-3">{SALONS.map((s) => <Card key={s.name} s={s} />)}</div>
+        <div className="px-4 pt-1">
+          <p className="pb-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
+          <div className="space-y-6">{SALONS.map((s) => <Card key={s.name} s={s} />)}</div>
         </div>
-
-        <nav className="absolute inset-x-0 bottom-0 z-10 flex h-16 items-center justify-around border-t border-s-border bg-white/95 backdrop-blur-xl">
-          {[[Home, "Home", false], [Search, "Search", true], [Sparkles, "Inspo", false], [CalendarDays, "Bookings", false], [User, "Profile", false]].map(([Icon, label, on], i) => {
-            const I = Icon as typeof Home;
-            return <span key={i} className={`flex flex-col items-center gap-0.5 text-[12px] ${on ? "font-semibold text-s-ink" : "text-s-ink-3"}`}><I size={21} strokeWidth={on ? 2.4 : 2} /> {label as string}</span>;
-          })}
-        </nav>
       </div>
     </div>
   );

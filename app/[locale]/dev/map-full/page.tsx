@@ -56,8 +56,8 @@ function StoreCard({ s }: { s: (typeof STORES)[number] }) {
         </div>
         <p className="mt-0.5 truncate text-[13px] text-s-ink-2">{s.dist}, {s.addr}</p>
         <p className="truncate text-[13px] text-s-ink-2">{s.cat}, {s.count} reviews</p>
-        <div className="mt-3 space-y-2">
-          {s.services.map(([n, d, p]) => (
+        <div className="mt-2.5 space-y-1.5">
+          {s.services.slice(0, 3).map(([n, d, p]) => (   /* RULE: max 3 service rows per card */
             <div key={n} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
               <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
               <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
@@ -76,7 +76,7 @@ function Screen() {
       <div className="relative mx-auto h-full min-h-[844px] w-full max-w-[390px] overflow-hidden bg-white">
         <div className="absolute inset-0 [background:repeating-linear-gradient(0deg,transparent,transparent_31px,rgba(10,10,10,0.04)_32px),repeating-linear-gradient(90deg,transparent,transparent_31px,rgba(10,10,10,0.04)_32px)]" />
 
-        {/* search bar + filter chips , figured-out, unchanged */}
+        {/* search bar only over the map , filter chips moved INTO the sheet (owner + reference) */}
         <div className="absolute inset-x-3 top-3 z-20">
           <div className={`flex items-center gap-1 rounded-full py-1.5 pl-1.5 pr-1.5 ${FROST}`}>
             <button className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink active:scale-95" aria-label="Back"><ArrowLeft size={21} strokeWidth={2.2} /></button>
@@ -86,12 +86,6 @@ function Screen() {
               <p className="truncate text-[12.5px] leading-tight text-s-ink-2">Any time in Basel</p>
             </div>
             <button className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink active:scale-95" aria-label="List view"><MapIcon size={19} strokeWidth={2} /></button>
-          </div>
-          <div className="mt-2.5 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${FROST}`} aria-label="Filters"><SlidersHorizontal size={16} className="text-s-ink" /></button>
-            <button className={`shrink-0 rounded-full px-3.5 py-2 text-[13px] font-medium text-s-ink ${FROST}`}>Open now</button>
-            <button className={`flex shrink-0 items-center gap-1 rounded-full px-3.5 py-2 text-[13px] font-medium text-s-ink ${FROST}`}>Price <ChevronDown size={14} className="text-s-ink-2" /></button>
-            <button className={`flex shrink-0 items-center gap-1 rounded-full px-3.5 py-2 text-[13px] font-medium text-s-ink ${FROST}`}>For whom <ChevronDown size={14} className="text-s-ink-2" /></button>
           </div>
         </div>
 
@@ -105,9 +99,16 @@ function Screen() {
         <Pin top="250px" left="300px" />
 
         {/* SCROLLABLE feed of reference-exact cards (aspect-[3/2] photo). No pager, no Book, no nav. */}
-        <div className="absolute inset-x-0 bottom-0 top-[400px] z-20 flex flex-col rounded-t-[24px] border-t border-s-border bg-white shadow-[0_-2px_8px_rgba(10,10,10,0.06),0_-16px_40px_rgba(10,10,10,0.12)]">
+        <div className="absolute inset-x-0 bottom-0 top-[300px] z-20 flex flex-col rounded-t-[24px] border-t border-s-border bg-white shadow-[0_-2px_8px_rgba(10,10,10,0.06),0_-16px_40px_rgba(10,10,10,0.12)]">
           <div className="flex shrink-0 justify-center pt-2.5"><span className="h-1 w-10 rounded-full bg-s-border" /></div>
-          <p className="shrink-0 px-4 pb-1 pt-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
+          {/* filter chips INSIDE the sheet (owner + reference), not over the map */}
+          <div className="flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-1 pt-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <button className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border" aria-label="Filters"><SlidersHorizontal size={15} className="text-s-ink" /></button>
+            <button className="shrink-0 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Open now</button>
+            <button className="flex shrink-0 items-center gap-1 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Best match <ChevronDown size={14} className="text-s-ink-2" /></button>
+            <button className="flex shrink-0 items-center gap-1 rounded-full border border-s-border px-3.5 py-2 text-[13px] font-medium text-s-ink">Price <ChevronDown size={14} className="text-s-ink-2" /></button>
+          </div>
+          <p className="shrink-0 px-4 pb-1 pt-1.5 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> in this area</p>
           <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {STORES.map((s) => <StoreCard key={s.name} s={s} />)}
           </div>
