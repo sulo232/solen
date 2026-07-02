@@ -5908,7 +5908,7 @@
     "salonOne": "salon",
     "salonOther": "salons",
     "inCity": " a {city}",
-    "salonsInArea": "<b>{count}</b> salons dans cette zone",
+    "salonsInArea": "{count} lieux dans cette zone",
     "countrywide": "Suisse",
     "sortAria": "Tri : {label}",
     "loading": "Chargement…",

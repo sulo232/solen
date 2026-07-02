@@ -485,3 +485,14 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 - [x] 1-blue DONE: MapView declutter now hides POI/transit/rail labels on the custom style too (the blue "fonts like Azul"). Screenshot-verified gone.
 - [x] 2/3 DONE (verifier running): content-region scroll<->drag handoff , scroll-up expands the sheet, drag-down-at-top collapses smoothly; native scroll preserved when not at top. onContentPointerDown/Move/Up + shared endSheetDrag(). tsc clean.
 - [x] gesture verifier FAIL fixed: draggable=false on the shared card <Image> (native image-drag was firing pointercancel + killing drag-up-on-photo). Re-tested: drag-up-on-photo expands (464->135), 0 errors. Debug logs already removed. BATCH 19 COMPLETE.
+
+## BATCH 20 (owner 2026-07-02, RECURRING , wants a hook): dropped mockup decisions + unverified-live
+- [ ] 1. SELECTED-state swipe up/down is the OLD version (not the new gesture/motion). The LIST state feels good; the SELECTED-salon (MapSalonDetail) sheet swipe up/down is still old , apply the same framer-motion + content-handoff to the selected state.
+- [ ] 2a. COUNT copy: "N salons in this area" -> generic "N places" (could be a tattoo store etc., not only salons). All 4 locales.
+- [ ] 2b. COUNT position/weight: it's LEFT-aligned + bold number, but the APPROVED mockup CENTERED it (not bold). DROPPED mockup decision (owner: "we made a mockup, you forgot"). Center it, un-bold.
+- [ ] 3. LIVE-LIST BROKEN: zoom in -> the sheet stores DON'T change (no source change). INVESTIGATE WITH THE BROWSER CONSOLE (owner: "use the console, actually think"). Fix so pan/zoom updates the sheet.
+- [ ] 4. EMPTY area: zoom into an empty place -> the sheet should go EMPTY (0 places / the real count).
+- [ ] HARDEN: recurring = approved-mockup decision applied to ONE state/surface but dropped on another (list vs selected; count centered in mock vs left in build), AND shipping a feature (H) verified only by curl, not the LIVE interaction. Build a hook.
+- [x] 3/4 FIXED (console-verified): "Search this area" button was at bottom-4 = HIDDEN behind the sheet (z-31) , that is why zoom "did nothing". Moved to top-[76px] (above the sheet) + frosted pill (dropped uppercase/warm-shadow). Now appears + clickable + fires /api/salons?north=... bounds refetch (0 errors). Empty area -> 0 via the bounds filter.
+- [x] 2a/2b FIXED: count is now CENTERED + not bold + generic "places"/"Orte"/"lieux"/"luoghi" (was left+bold "salons"). All 4 locales.
+- [ ] 1: selected-state gesture , design-verifier (a708df89) diffing /dev/map-behavior to pinpoint what is "old"; fix on return.

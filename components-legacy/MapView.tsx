@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
 import Supercluster from "supercluster";
 
@@ -397,9 +397,12 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       {enhanced && showAreaSearch && onAreaSearch && !mapError && (
         <button
           onClick={handleAreaSearch}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-5 py-3.5 rounded-pill bg-white text-s-ink text-[12px] font-heading uppercase tracking-[.06em] shadow-warm-lg border border-s-border hover:bg-s-bg-surface transition-colors"
+          /* TOP, not bottom: the bottom sheet (z-31) covers bottom-0, which hid this button and
+             made "search this area" feel broken (owner 2026-07-02). Frosted pill, sentence case
+             (approved /dev/map-motion pill), no warm shadow. mockup-ok */
+          className="absolute left-1/2 top-[76px] z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-s-border bg-white/95 px-3.5 py-2 text-[13px] font-semibold text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_8px_24px_rgba(10,10,10,0.10)] backdrop-blur-xl active:scale-95"
         >
-          <MapPin size={14} className="text-s-ink-2" />
+          <Search size={14} strokeWidth={2.4} className="text-s-ink-2" />
           In diesem Bereich suchen
         </button>
       )}

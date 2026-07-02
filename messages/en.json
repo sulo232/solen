@@ -5915,7 +5915,7 @@
     "salonOne": "salon",
     "salonOther": "salons",
     "inCity": " in {city}",
-    "salonsInArea": "<b>{count}</b> salons in this area",
+    "salonsInArea": "{count} places in this area",
     "countrywide": "Switzerland",
     "sortAria": "Sorting: {label}",
     "loading": "Loading…",

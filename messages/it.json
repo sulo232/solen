@@ -5897,7 +5897,7 @@
     "salonOne": "salone",
     "salonOther": "saloni",
     "inCity": " a {city}",
-    "salonsInArea": "<b>{count}</b> saloni in questa zona",
+    "salonsInArea": "{count} luoghi in quest'area",
     "countrywide": "Svizzera",
     "sortAria": "Ordinamento: {label}",
     "loading": "Caricamento…",

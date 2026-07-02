@@ -643,7 +643,14 @@ export default function SearchTemplate({
       }
       if (c.mode === "drag") {
         beginSheetDrag(c.startY);
-        (el as HTMLElement).setPointerCapture?.(e.pointerId);
+        // `touch-action`/`setPointerCapture` are only applied once we've COMMITTED
+        // to "drag" (not at pointerdown), so a plain tap on a card's button still
+        // dispatches a normal click. Capturing the pointer earlier (before the 6px
+        // commit) redirects the browser's synthesized click to the capturing
+        // element instead of the tapped button, silently breaking "select a salon"
+        // and the heart button, tested + reverted (owner spec: no static capture).
+        el.style.touchAction = "none";
+        el.setPointerCapture?.(e.pointerId);
       }
     }
     if (c.mode === "drag") {
@@ -652,9 +659,12 @@ export default function SearchTemplate({
     }
     // mode "scroll" leaves native overflow-y scrolling alone.
   };
-  const onContentPointerUp = () => {
+  const onContentPointerUp = (e: React.PointerEvent) => {
     const c = contentDragRef.current;
-    if (c?.mode === "drag") endSheetDrag();
+    if (c?.mode === "drag") {
+      endSheetDrag();
+      (e.currentTarget as HTMLElement).style.touchAction = "";
+    }
     contentDragRef.current = null;
   };
   const [sortOpen, setSortOpen] = React.useState(false);
@@ -1800,11 +1810,10 @@ export default function SearchTemplate({
                         </button>
                       ))}
                     </div>
-                    <div className="px-4 pb-2 pt-1 font-body text-[12.5px] text-s-ink-2">
-                      {t.rich("salonsInArea", {
-                        count: salons.length,
-                        b: (chunks) => <span className="font-semibold text-s-ink tabular-nums">{chunks}</span>,
-                      })}
+                    {/* centered + not bold + generic "places" (owner 2026-07-02: approved map-full
+                        mockup centered it; "places" not "salons" since it may be a tattoo/other store). */}
+                    <div className="px-4 pb-2 pt-1 text-center font-body text-[12.5px] text-s-ink-2">
+                      {t("salonsInArea", { count: salons.length })}
                     </div>
                     <div className="h-px bg-s-border" aria-hidden />
                   </div>
