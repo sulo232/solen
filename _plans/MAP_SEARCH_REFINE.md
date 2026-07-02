@@ -319,11 +319,11 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] RESULTS + SEARCH BAR: LEFT ALONE this turn (no change). Owner: already figured out, stop changing them. results-full stays grounded in the real SalonResultCard.
 
 ## 🌊 BATCH 7 (owner 2026-07-02, voice). Map preview re-work + status Q. ATOMIC:
-- [ ] MAP photo ASPECT RATIO wrong -> use the REAL card ratio aspect-[3/2] (SalonResultCard "card" variant), not a fixed banner
-- [ ] REMOVE the swipe-between-pins pager (owner: "that's not okay")
-- [ ] instead: SCROLL DOWN (full page) through stores as distinct CARDS (rich "card" style, NOT thin rectangle rows, NOT one-at-a-time swipe) , "easy to distinguish between the sources"
-- [ ] REMOVE the Book button (owner: people mis-click it; tap the card instead)
-- [ ] REMOVE the bottom NAV bar , I FABRICATED it, Solen has none ("we don't have that, stop making stuff up"). Feed REMOVED.md.
-- [ ] refine THIS card style (the map store card)
-- [ ] ANSWER owner Q: status of the other screens (confirm-full, filter, results, suggestions) , approved? pending?
-- [ ] PARK (owner "we can talk about it"): reuse this card style in the normal search bar for specific-cut searches , NOT now
+- [x] MAP photo aspect-[3/2] (real card ratio) DONE -> use the REAL card ratio aspect-[3/2] (SalonResultCard "card" variant), not a fixed banner
+- [x] REMOVED swipe-between-pins pager (owner: "that's not okay")
+- [x] SCROLL feed of distinct rich CARDS (real card style) (rich "card" style, NOT thin rectangle rows, NOT one-at-a-time swipe) , "easy to distinguish between the sources"
+- [x] REMOVED Book button (tap card instead) (owner: people mis-click it; tap the card instead)
+- [x] REMOVED fabricated bottom nav (logged REMOVED.md) , I FABRICATED it, Solen has none ("we don't have that, stop making stuff up"). Feed REMOVED.md.
+- [x] card style = real SalonResultCard 'card' variant (the map store card)
+- [x] ANSWERED status of other screens (in reply): confirm-full + filter APPROVED/shipped; results + suggestions delivered, pending review (confirm-full, filter, results, suggestions) , approved? pending?
+- [x] PARKED (owner "talk later"): reuse this card style in the normal search bar for specific-cut searches for specific-cut searches , NOT now
