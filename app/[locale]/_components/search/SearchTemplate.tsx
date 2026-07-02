@@ -484,6 +484,11 @@ export default function SearchTemplate({
 
   // ── Data state ────────────────────────────────────────────────────────────
   const [salons, setSalons] = React.useState<Salon[]>([]);
+  // "Search this area": set when the user taps MapView's "In diesem Bereich suchen"
+  // button after panning/zooming. Overrides the city filter in buildUrl below and
+  // is reset to null whenever the underlying search changes (see the reset effect
+  // near the main fetch), so a fresh search never inherits a stale viewport box.
+  const [areaBounds, setAreaBounds] = React.useState<{ north: number; south: number; east: number; west: number } | null>(null);
   const [total, setTotal] = React.useState(0);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
@@ -667,7 +672,17 @@ export default function SearchTemplate({
     (pageNum: number, qOverride?: string) => {
       const sp = new URLSearchParams();
       if (activeCategory) sp.set("category", activeCategory);
-      if (activeCity) sp.set("city", activeCity);
+      // "Search this area" bounds override the city filter (a pan may leave the
+      // originally-searched city). /api/salons skips its city resolution when
+      // north/south/east/west are all present and valid.
+      if (areaBounds) {
+        sp.set("north", String(areaBounds.north));
+        sp.set("south", String(areaBounds.south));
+        sp.set("east", String(areaBounds.east));
+        sp.set("west", String(areaBounds.west));
+      } else if (activeCity) {
+        sp.set("city", activeCity);
+      }
       if (date) sp.set("date", date);
       if (sort) sp.set("sort", sort);
       if (minRating) sp.set("min_rating", String(minRating));
@@ -712,7 +727,7 @@ export default function SearchTemplate({
       if (queryString && queryString.length >= 2) sp.set("q", queryString);
       return `/api/salons?${sp.toString()}`;
     },
-    [activeCategory, activeCity, date, period, sort, minRating, minPrice, maxPrice, walkIn, deals, instantBookable, openNow, gender, amenityKey, coords, q],
+    [activeCategory, activeCity, areaBounds, date, period, sort, minRating, minPrice, maxPrice, walkIn, deals, instantBookable, openNow, gender, amenityKey, coords, q],
   );
 
   // ── Initial fetch + refetch on params change ──────────────────────────────
@@ -745,6 +760,19 @@ export default function SearchTemplate({
 
     return () => ac.abort();
   }, [buildUrl]);
+
+  // "Search this area" bounds are scoped to the CURRENT search. When the underlying
+  // search changes (city/category/query/filters via the URL), clear areaBounds so
+  // the next fetch falls back to the city again instead of filtering the new search
+  // by a stale viewport box. Keyed on the URL search-params string (not areaBounds
+  // itself), so setting bounds does NOT immediately wipe itself out.
+  const searchParamsKey = searchParams.toString();
+  const prevSearchParamsKeyRef = React.useRef(searchParamsKey);
+  React.useEffect(() => {
+    if (prevSearchParamsKeyRef.current === searchParamsKey) return;
+    prevSearchParamsKeyRef.current = searchParamsKey;
+    setAreaBounds(null);
+  }, [searchParamsKey]);
 
   // Walk-in live availability: only when the walk_in filter is on.
   // One batched /api/walkin/availability call for the loaded salons.
@@ -1586,6 +1614,10 @@ export default function SearchTemplate({
                 // When the picked city has no listings, recenter to the city so the map goes
                 // there (instead of a blank sheet + the previous city). owner 2026-07-01.
                 emptyCenter={activeCity ? [CITIES[activeCity].lng, CITIES[activeCity].lat] : null}
+                // "Search this area": MapView already renders the debounced
+                // "In diesem Bereich suchen" button on pan/zoom; wire its bounds
+                // into areaBounds so the list + pins refetch for the visible viewport.
+                onAreaSearch={(bounds) => setAreaBounds(bounds)}
               />
             </div>
             {/* Unified bar (owner-approved /dev/map-motion, 2026-07-02, mockup-ok): ONE frosted
@@ -1602,7 +1634,7 @@ export default function SearchTemplate({
                 >
                   <ArrowLeft size={21} strokeWidth={2.2} aria-hidden />
                 </button>
-                <span className="h-6 w-px shrink-0 bg-s-border" aria-hidden />
+                {/* No divider line between back + search (owner 2026-07-02: "don't like that line"). */}
                 {/* Map-view search bar: opens the SAME improved overlay IN PLACE over the map (owner:
                     implement all this in map view). Opens in the REGULAR state (no auto-keyboard/expand)
                     , it's not the 3-section homepage search. */}

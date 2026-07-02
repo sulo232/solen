@@ -468,3 +468,18 @@ Owner: "2 or 3 [cluster], can you make detailed 3 motions of when zoomed in n ou
 ### BATCH 18 OWNER PICKS (2026-07-02): cluster = WHITE disc + shadow + ink count (NOT gray, NOT black, NOT stacked). Motion = M2 Soft.
 
 ### BATCH 18 BUILT (2026-07-02, coder af44442a): into real app , cluster WHITE disc + M2 marker enter-motion (MapView); sheet framer-motion morph + unified bar + overlap sticky+hairline + drag-from-header (SearchTemplate). tsc clean, live-verified (white cluster, unified bar, overlap, 8 salons, 6 markers, 0 errors). design-verifier a5aee910 running. H (live-list) PARKED , needs /api/salons bounds param.
+
+### BATCH 18 H (live-list on map move) , UNPARKING (owner: finish it)
+- [ ] API /api/salons: accept north/south/east/west -> .gte/lte on latitude/longitude (real cols), SKIP city when bounded, keep category+filters. Must DISCRIMINATE (curl-prove subset).
+- [ ] SearchTemplate: areaBounds state + buildUrl(bounds, drop city) + onAreaSearch wire + clear-on-new-search. Count+pins derive from salons (auto-update).
+- [ ] verify: curl bounds returns a subset; live "In diesem Bereich suchen" button updates the list; commit.
+
+### BATCH 19 (owner 2026-07-02, voice): map sheet gestures + bar divider + live proximity
+- [ ] 1. PROXIMITY: zoom/move -> the sheet stores should match the VISIBLE map area (= live-list H, in progress). AMBIGUOUS sub: "fonts like Azul" , maybe the BLUE map place/transit labels; investigate + confirm with owner.
+- [ ] 2. SCROLL-UP EXPANDS: scrolling up in the sheet content should ALSO expand/open the sheet more (content-drag handoff at scrollTop 0, lens-1 rule , not fully implemented, drag is header-only now).
+- [ ] 3. SLIDE-DOWN JANK: with the sheet open, sliding down shows EMPTY SPACE + suddenly collapses. Fix , smooth collapse, no empty space below content.
+- [ ] 4. REMOVE the divider LINE in the map unified search bar (the w-px bg-s-border between back + search). Owner: "don't like that."
+- NOTE: #2/#3/#4 all touch SearchTemplate map sheet , batch AFTER the H coder (a36c44c) lands to avoid clobber.
+- [x] H DONE: /api/salons bounds (curl-proven: basel=8, tight-box=5, huge=8, subset not no-op) + onAreaSearch wired + clear-on-new-search. Desktop MapView left unwired (flagged).
+- [x] 4 DONE: divider line removed from the map bar.
+- [x] 1-blue DONE: MapView declutter now hides POI/transit/rail labels on the custom style too (the blue "fonts like Azul"). Screenshot-verified gone.

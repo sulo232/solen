@@ -52,7 +52,22 @@ export async function GET(request: NextRequest) {
     const idsParam = searchParams.get("ids");
     const serviceFilter = serviceIsCategory ? null : rawService;
     const q = searchParams.get("q")?.trim(); // free-text — semantic rank, combined with the filters below
-    const period = searchParams.get("period"); // morning|noon|afternoon|evening — open-slot time-of-day filter
+    const period = searchParams.get("period"); // morning|noon|afternoon|evening open-slot time-of-day filter
+
+    // "Search this area" (map pan/zoom): a viewport box that replaces the city
+    // filter. All 4 corners must be finite numbers and form a real box (north >
+    // south, east > west) or the box is ignored and the city path behaves as today.
+    const boundsNorth = parseFloat(searchParams.get("north") ?? "");
+    const boundsSouth = parseFloat(searchParams.get("south") ?? "");
+    const boundsEast = parseFloat(searchParams.get("east") ?? "");
+    const boundsWest = parseFloat(searchParams.get("west") ?? "");
+    const hasBounds =
+      Number.isFinite(boundsNorth) &&
+      Number.isFinite(boundsSouth) &&
+      Number.isFinite(boundsEast) &&
+      Number.isFinite(boundsWest) &&
+      boundsNorth > boundsSouth &&
+      boundsEast > boundsWest;
 
     // V3-D349: the category/search page (?with_slots=1) needs per-salon services
     // + next available slots for the Fresha-style booking card. Homepage feeds omit
@@ -113,6 +128,17 @@ export async function GET(request: NextRequest) {
     if (rankIndex) query = query.in("id", [...rankIndex.keys()]);
 
     if (category) query = query.contains("categories", [category]);
+
+    // "Search this area": direct predicates on salons.latitude/longitude. Bounds
+    // replace the city filter entirely (see the cityTask gate below) since panning
+    // may move the viewport outside the originally-searched city.
+    if (hasBounds) {
+      query = query
+        .gte("latitude", boundsSouth)
+        .lte("latitude", boundsNorth)
+        .gte("longitude", boundsWest)
+        .lte("longitude", boundsEast);
+    }
 
     if (idsParam) {
       const idArray = idsParam.split(",").filter(id => id.trim() !== "");
@@ -176,7 +202,11 @@ export async function GET(request: NextRequest) {
       | { kind: "empty" }
       | { kind: "ok"; cityId: string; hideTest: boolean };
     const cityTask: Promise<CityOutcome> = (async () => {
-      if (!city) return { kind: "skip" };
+      // Bounds override city: a "search this area" box already scopes the query via
+      // the lat/lng predicates above, so skip city resolution entirely (a stale city
+      // filter would AND-narrow the box down to the old city, silently no-op'ing pans
+      // outside it).
+      if (!city || hasBounds) return { kind: "skip" };
       // Resolve the city by slug OR localized name, case-insensitive: the search
       // overlay sends the display name ("Zuerich") while category pages send the
       // slug. Matching both means location filtering works from either entry point.

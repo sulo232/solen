@@ -157,23 +157,25 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       map.resize();
       // Uber-style clean detail on Fresha-colour streets: KEEP the drivable road
       // network (minor / service / street / arterials) so it reads as a real
-      // map, but hide the clutter that felt "busy" — POI + transit swarm, road
-      // labels, highway shields, building footprints, and pedestrian footpaths/
-      // steps. Iterate ids so it's robust to renames; try/catch so a style
-      // override lacking these layers fails silently. Skipped for a custom style.
-      if (!isBareStreets) return;
+      // map, but hide the clutter that felt "busy". Iterate ids so it's robust to
+      // renames; per-layer try/catch so one un-settable layer doesn't abort the rest.
+      // ALWAYS hide the coloured POI + transit label swarm (owner 2026-07-02: dislikes
+      // the blue map labels, "fonts like Azul") , that ran only on the bare fallback
+      // before, so the custom Solen Studio style still showed them. The heavier
+      // declutter (road labels / shields / buildings / footpaths) stays fallback-only.
+      const ALWAYS = /poi|transit|rail|station|airport|ferry/i;
+      const FALLBACK = /road-label|road-number|building|path|steps|pedestrian/i;
       try {
         for (const layer of map.getStyle()?.layers ?? []) {
-          if (/poi|transit|road-label|road-number|building|path|steps|pedestrian/i.test(layer.id)) {
-            map.setLayoutProperty(layer.id, "visibility", "none");
-          }
+          const hide = ALWAYS.test(layer.id) || (isBareStreets && FALLBACK.test(layer.id));
+          if (!hide) continue;
+          try { map.setLayoutProperty(layer.id, "visibility", "none"); } catch { /* layer lacks visibility, skip */ }
         }
         // Colours ≈ Fresha (streets-v12's own palette) with a light saturation
-        // bump so it isn't flat. Canvas-only filter — the B&W price-pill markers
-        // are DOM siblings of the canvas, so they stay untouched.
-        map.getCanvas().style.filter = "saturate(1.15)";
+        // bump so it isn't flat. Fallback only; the custom style is used as-is.
+        if (isBareStreets) map.getCanvas().style.filter = "saturate(1.15)";
       } catch (e) {
-        console.warn("[MapView] streets styling skipped:", e);
+        console.warn("[MapView] map declutter skipped:", e);
       }
     });
     // A transient tile/style error must NOT flip to the fallback + tear the map
