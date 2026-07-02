@@ -333,3 +333,10 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] photo aspect ratio = APP's MEASURED aspect-[3/2] (1.5, real SalonResultCard), NOT the reference's ~1.67 "really rectangle" (owner: measured live, grounded)
 - [x] scrollable feed of these cards (no pager/Book/nav)
 - [x] did NOT touch: the search bar (owner: figured out), confirm-full + filter-refine (LOCKED/approved , owner: "don't change your locked in stuff")
+
+## BATCH 9 (owner 2026-07-02). Map card compact + filters-in-sheet + service cap + normal-search mockup. ATOMIC:
+- [x] services grouped WITH the card (tight) as one cohesive unit (tighter internal spacing, "sit together")
+- [x] RULE: max 3 service rows per card (slice(0,3))
+- [x] moved FILTER chips INTO the sheet top (top), not above the map (matches reference IMG_6267)
+- [x] card more COMPACT (sheet opens higher, tighter); aspect-[3/2] kept (sheet opens higher = more cards visible; tighter); keep aspect-[3/2]
+- [x] results-full uses THIS borderless card + service prices + service PRICES (specific-service search)
