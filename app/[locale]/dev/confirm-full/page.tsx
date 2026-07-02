@@ -14,7 +14,7 @@
  */
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Calendar, Clock, CreditCard, Hash, UserPlus, ChevronRight, Loader2, Home, Search, Sparkles, CalendarDays, User, RotateCcw } from "lucide-react";
+import { Calendar, Scissors, CreditCard, Hash, UserPlus, ChevronRight, Loader2, Home, Search, Sparkles, CalendarDays, User, RotateCcw } from "lucide-react";
 import { notFound } from "next/navigation";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 
@@ -63,9 +63,20 @@ function Done({ replay }: { replay: () => void }) {
             </span>
             <ChevronRight size={18} className="shrink-0 text-s-ink-3" />
           </button>
-          <div className="space-y-2.5 p-4">
-            <div className="flex items-center gap-3"><Calendar size={17} className="shrink-0 text-s-ink-3" /><span className="text-[14px] font-semibold text-s-ink">Sunday, 14 June , 15:30</span></div>
-            <div className="flex items-center gap-3"><Clock size={17} className="shrink-0 text-s-ink-3" /><span className="text-[14px] text-s-ink">Women&apos;s cut &amp; blow-dry , 60 min , Lena</span></div>
+          {/* 3 sections: date, service, staff (with name + profile avatar) , owner 2026-07-02 */}
+          <div className="divide-y divide-s-border">
+            <div className="flex items-center gap-3 p-4">
+              <Calendar size={18} className="shrink-0 text-s-ink-3" />
+              <div className="min-w-0"><p className="text-[14px] font-semibold text-s-ink">Sunday, 14 June</p><p className="text-[12.5px] text-s-ink-2">15:30 to 16:30</p></div>
+            </div>
+            <div className="flex items-center gap-3 p-4">
+              <Scissors size={18} className="shrink-0 text-s-ink-3" />
+              <div className="min-w-0"><p className="text-[14px] font-semibold text-s-ink">Women&apos;s cut &amp; blow-dry</p><p className="text-[12.5px] text-s-ink-2">60 min</p></div>
+            </div>
+            <div className="flex items-center gap-3 p-4">
+              <span className="h-9 w-9 shrink-0 rounded-full bg-s-bg-sunken" />
+              <div className="min-w-0"><p className="text-[14px] font-semibold text-s-ink">Lena Brunner</p><p className="text-[12.5px] text-s-ink-2">Your stylist</p></div>
+            </div>
           </div>
           {/* receipt , WHITE + hairline (un-grayed) */}
           <div className="space-y-2.5 border-t border-s-border p-4">

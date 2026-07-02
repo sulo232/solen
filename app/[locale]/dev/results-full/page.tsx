@@ -15,11 +15,13 @@ import { ArrowLeft, Search, SlidersHorizontal, ChevronDown, Star, Heart, Home, S
 import { notFound } from "next/navigation";
 
 const SALONS = [
-  { name: "Zoltan Hair Zurich", rating: "5.0", meta: "Hair salon , 1.7 km , 22 reviews", svc: "Buzz Cut", dur: "20 min", price: "50", more: 53 },
-  { name: "Supreme Style & Barber", rating: "4.9", meta: "Barber , 2.0 km , 172 reviews", svc: "Buzz Cut", dur: "25 min", price: "45", more: 31 },
-  { name: "Old Town Barbers", rating: "4.7", meta: "Barber , 2.4 km , 88 reviews", svc: "Buzz Cut", dur: "20 min", price: "40", more: 18 },
+  { name: "Zoltan Hair Zurich", rating: "5.0", count: 22, meta: "Hair salon , Zurich , 1.7 km", from: "50", svc: "Buzz Cut", dur: "20 min", price: "50" },
+  { name: "Supreme Style & Barber", rating: "4.9", count: 172, meta: "Barber , Basel , 2.0 km", from: "45", svc: "Buzz Cut", dur: "25 min", price: "45" },
+  { name: "Old Town Barbers", rating: "4.7", count: 88, meta: "Barber , Basel , 2.4 km", from: "40", svc: "Buzz Cut", dur: "20 min", price: "40" },
 ];
 
+// mirrors the real SalonResultCard "card" variant: name ink-anchor, rating + inline count,
+// cat/city/distance meta, from-price, a featured service, "View all services".
 function Card({ s }: { s: (typeof SALONS)[number] }) {
   return (
     <div className="overflow-hidden rounded-[18px] border border-s-border bg-white">
@@ -29,14 +31,15 @@ function Card({ s }: { s: (typeof SALONS)[number] }) {
       <div className="p-3.5">
         <div className="flex items-start justify-between gap-2">
           <p className="truncate font-heading text-[15.5px] font-bold text-s-ink">{s.name}</p>
-          <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink"><Star size={13} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
+          <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink"><Star size={13} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating} <span className="font-normal text-s-ink-2">({s.count})</span></span>
         </div>
         <p className="mt-0.5 truncate text-[12.5px] text-s-ink-2">{s.meta}</p>
+        <p className="mt-1 text-[13.5px] font-semibold text-s-ink">from CHF {s.from}</p>
         <div className="mt-3 flex items-center justify-between rounded-xl bg-s-bg-sunken px-3 py-2.5 text-[13px]">
           <span className="min-w-0"><span className="block truncate font-medium text-s-ink">{s.svc}</span><span className="text-[12px] text-s-ink-3">{s.dur}</span></span>
           <span className="shrink-0 font-semibold tabular-nums text-s-ink">CHF {s.price}</span>
         </div>
-        <button className="mt-2 text-[13px] font-semibold text-s-accent">Show {s.more} services</button>
+        <button className="mt-2 text-[13px] font-semibold text-s-accent">View all services</button>
       </div>
     </div>
   );

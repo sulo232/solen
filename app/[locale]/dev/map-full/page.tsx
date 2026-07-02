@@ -30,7 +30,12 @@ function Pin({ selected, top, left }: { selected?: boolean; top: string; left: s
   );
 }
 
-const SERVICES = [["Buzz Cut", "20 min", "50"], ["Skin Fade", "35 min", "65"], ["Beard trim", "15 min", "30"]];
+const STORES = [
+  { name: "Supreme Style & Barber", rating: "4.9", meta: "Barber , Kleinbasel , 400 m", from: "45" },
+  { name: "Old Town Barbers", rating: "4.7", meta: "Barber , Steinenvorstadt , 700 m", from: "40" },
+  { name: "Zoltan Hair", rating: "5.0", meta: "Hair salon , Nussgasse , 1.1 km", from: "50" },
+  { name: "Clipper & Co", rating: "4.6", meta: "Barber , Gerbergasse , 1.4 km", from: "38" },
+];
 
 function Screen() {
   return (
@@ -69,33 +74,25 @@ function Screen() {
         <Pin top="340px" left="150px" selected />
         <Pin top="275px" left="300px" />
 
-        {/* draggable BOTTOM SHEET store preview (grab handle) , sits ABOVE the bottom nav */}
-        <div className="absolute inset-x-0 bottom-[64px] z-20 rounded-t-[24px] border-t border-s-border bg-white shadow-[0_-2px_8px_rgba(10,10,10,0.06),0_-16px_40px_rgba(10,10,10,0.12)]">
-          <div className="flex justify-center pt-2.5"><span className="h-1 w-10 rounded-full bg-s-border" /></div>
-          <div className="px-4 pb-4 pt-2">
-            {/* bigger, WIDER photo (16:9) */}
-            <div className="relative h-[128px] w-full overflow-hidden rounded-[16px] bg-s-bg-sunken">
-              <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-s-ink/70" /><span className="h-1.5 w-1.5 rounded-full bg-s-ink/25" /><span className="h-1.5 w-1.5 rounded-full bg-s-ink/25" />
-              </div>
-            </div>
-            <div className="mt-3 flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <p className="truncate font-heading text-[16px] font-bold text-s-ink">Supreme Style &amp; Barber</p>
-                <p className="truncate text-[12.5px] text-s-ink-2">Barber in Kleinbasel , 400 m , open until 19:00</p>
-              </div>
-              <span className="flex shrink-0 items-center gap-1 text-[13.5px] font-semibold text-s-ink"><Star size={14} className="fill-s-star text-s-star" strokeWidth={0} /> 4.9</span>
-            </div>
-            {/* matching service PRICES for the searched service */}
-            <div className="mt-3 space-y-1">
-              {SERVICES.map(([n, d, p]) => (
-                <div key={n} className="flex items-center justify-between rounded-xl bg-s-bg-sunken px-3 py-2 text-[13px]">
-                  <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
-                  <span className="shrink-0 font-semibold tabular-nums text-s-ink">CHF {p}</span>
-                </div>
-              ))}
-            </div>
-            <button className="mt-3 w-full rounded-full bg-s-ink py-3 text-[15px] font-bold text-white active:scale-[0.99]" /* selected-ok: primary commit CTA */>Book</button>
+        {/* draggable BOTTOM SHEET , grab handle + a SCROLLABLE list of COMPACT store rows (real
+            SalonResultCard "list" variant). Multiple stores, scroll for more, not "too much". */}
+        <div className="absolute inset-x-0 bottom-[64px] top-[420px] z-20 flex flex-col rounded-t-[24px] border-t border-s-border bg-white shadow-[0_-2px_8px_rgba(10,10,10,0.06),0_-16px_40px_rgba(10,10,10,0.12)]">
+          <div className="flex shrink-0 justify-center pt-2.5"><span className="h-1 w-10 rounded-full bg-s-border" /></div>
+          <p className="shrink-0 px-4 pb-1 pt-2 text-[13px] text-s-ink-2"><b className="text-s-ink">19 salons</b> here , drag up for more</p>
+          <div className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {STORES.map((s, i) => (
+              <button key={s.name} className={`flex w-full items-center gap-3 rounded-2xl p-2 text-left ${i === 0 ? "bg-s-bg-sunken" : ""}`}>
+                <span className="h-[64px] w-[64px] shrink-0 rounded-2xl bg-s-bg-sunken" />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="truncate font-heading text-[14.5px] font-bold text-s-ink">{s.name}</span>
+                    <span className="flex shrink-0 items-center gap-1 text-[12.5px] font-semibold text-s-ink"><Star size={12} className="fill-s-star text-s-star" strokeWidth={0} /> {s.rating}</span>
+                  </span>
+                  <span className="mt-0.5 block truncate text-[12.5px] text-s-ink-2">{s.meta}</span>
+                  <span className="mt-0.5 block text-[12.5px] font-medium text-s-ink">from CHF {s.from}</span>
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
