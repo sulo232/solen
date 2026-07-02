@@ -16,15 +16,17 @@
  * Real tokens, Lucide, no CDN.
  */
 import { useEffect, useState } from "react";
-import { Search, Scissors, Sparkle, Hand, Flower2, ChevronRight, AlertTriangle } from "lucide-react";
+import { Search, Scissors, Gem, Leaf, ChevronRight, AlertTriangle } from "lucide-react";
 import { notFound } from "next/navigation";
 
-const CATS: [string, typeof Scissors][] = [["Hair", Scissors], ["Barber", Sparkle], ["Nails", Hand], ["Spa", Flower2]];
+// reinvent-ok: 4 English REVIEW labels for a /dev decision mockup; icons grounded in the canonical
+// CATEGORIES (searchCategories.ts) , Coiffeur/Barbershop=Scissors, Nails=Gem, Spa=Leaf. Real wiring uses CATEGORY_PILLS.
+const CATS: [string, typeof Scissors][] = [["Hair", Scissors], ["Barber", Scissors], ["Nails", Gem], ["Spa", Leaf]];
 
 function Frame({ label, tone, children }: { label: string; tone: "bad" | "good" | "alt"; children: React.ReactNode }) {
   const ring = tone === "good" ? "border-s-accent" : "border-s-border";
   return (
-    <div className="w-[300px] shrink-0">
+    <div className="mx-auto w-full max-w-[320px] shrink-0 sm:mx-0 sm:w-[300px]">
       <p className={`mb-2 text-[13px] font-bold ${tone === "good" ? "text-s-accent" : tone === "bad" ? "text-s-ink-2" : "text-s-ink"}`}>{label}</p>
       <div className={`h-[560px] overflow-hidden rounded-[24px] border-2 ${ring} bg-white p-4`}>{children}</div>
     </div>
@@ -42,7 +44,7 @@ export default function CategoryFlowMockup() {
       <div className="mx-auto max-w-[1000px] px-4">
         <h1 className="font-heading text-[19px] font-bold text-s-ink">How categories should work</h1>
         <p className="mb-5 mt-1 text-[13px] text-s-ink-2">Category = the 4 fixed types (Hair / Barber / Nails / Spa). Free text = what you type ("balayage", "black hair"). Today they share one ambiguous field, which is the confusion. Recommend Model B.</p>
-        <div className="flex gap-5 overflow-x-auto pb-4">
+        <div className="flex flex-col gap-6 pb-4 sm:flex-row sm:justify-center sm:overflow-x-auto">
 
           {/* TODAY */}
           <Frame label="Today (the problem)" tone="bad">
