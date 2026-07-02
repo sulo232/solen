@@ -303,3 +303,4 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
   - [x] search bar -> pill
   - [x] refined card (photo + heart + rating + searched-service price + Show N services)
 - [x] SEARCH suggestions , 2 full-page variations at /dev/suggest-full (A tabbed / B discovery-first)
+- [x] DECISION resolved (no action): the gray-selected call does NOT diverge from the locked docs , LOCKFILE.md:1215 + CLAUDE.md:53/68 ALREADY say "calm GRAY fill, supersedes blue-border V3-D450 (owner 2026-06-29)". Gate + memory + both locked docs all agree = gray. My earlier "decide this" flag was off a STALE session-start CLAUDE.md snapshot; verified against the real files. Documented exceptions stay: avatar check-badge = ink (photo contrast); booking date/slot = blue.
