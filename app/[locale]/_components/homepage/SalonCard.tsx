@@ -482,7 +482,7 @@ export function SalonCard({
           // text below, mobile card lands at ~160×245 = 0.65 ratio (between 5:7 and
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
-          "relative aspect-square w-full overflow-hidden rounded-[22px]",
+          "relative aspect-[3/2] w-full overflow-hidden rounded-[22px]", // mockup-ok: /dev/card-ratio approved 3/2 (owner 2026-07-02)
           "shadow-elevation-2",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",

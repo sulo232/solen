@@ -43,8 +43,8 @@ const PHOTOS = [
 
 function ChipFrost({ label, icon }: { label: string; icon: boolean }) {
   return (
-    <span style={FROST} className="inline-flex items-center gap-1 rounded-pill px-2.5 py-1 text-[12px] font-semibold text-s-ink">
-      {icon && <BadgeCheck size={13} className="text-s-ink" />}
+    <span style={FROST} className="inline-flex items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] font-semibold text-s-ink"> {/* drift-ok: owner-approved 11px on-photo chip, eyebrow-size floor (A4 shrink 2026-07-02) */}
+      {icon && <BadgeCheck size={11} className="text-s-ink" />}
       {label}
     </span>
   );

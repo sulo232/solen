@@ -65,22 +65,29 @@ export default function CategoryFlowMockup() {
 
           {/* MODEL B */}
           <Frame label="Model B (recommended)" tone="good">
-            <p className="mb-2 text-[12px] font-semibold text-s-ink-2">1. Category , pick one of four</p>
-            <div className="flex gap-1 rounded-[14px] bg-s-bg-sunken p-1">
-              {CATS.map(([c, Icon]) => (
-                <button key={c} onClick={() => setCat(c)} className={`flex flex-1 flex-col items-center gap-1 rounded-[10px] py-2 text-[12px] font-medium transition-colors ${cat === c ? "bg-white text-s-ink shadow-sm" : "text-s-ink-2"}`}>
-                  <Icon size={16} /> {c}
-                </button>
-              ))}
+            <div className="flex h-full flex-col">
+              <p className="mb-2 text-[12px] font-semibold text-s-ink-2">Category</p>
+              <div className="flex gap-1 rounded-[12px] bg-s-bg-sunken p-1">
+                {CATS.map(([c, Icon]) => (
+                  <button key={c} onClick={() => setCat(c)} className={`flex flex-1 flex-col items-center gap-1 rounded-[9px] py-2.5 text-[12px] font-medium transition-colors ${cat === c ? "bg-white text-s-ink shadow-sm" : "text-s-ink-2"}`}>
+                    <Icon size={17} strokeWidth={cat === c ? 2.25 : 1.75} /> {c}
+                  </button>
+                ))}
+              </div>
+
+              <p className="mb-2 mt-5 text-[12px] font-semibold text-s-ink-2">Service</p>
+              <div className="flex items-center gap-2 rounded-pill border border-s-border bg-white px-3.5 py-3">
+                <Search size={17} className="text-s-ink-2" /><span className="text-[13.5px] text-s-ink-3">e.g. balayage, black hair</span>
+              </div>
+
+              <div className="mt-5 rounded-xl bg-s-bg-sunken p-3 text-[12.5px] leading-relaxed text-s-ink-2">
+                <p>Writes <span className="rounded bg-white px-1 font-mono text-[12px] text-s-ink">?category={cat.toLowerCase()}</span> and <span className="rounded bg-white px-1 font-mono text-[12px] text-s-ink">?q=...</span> as two clean params, no guessing.</p>
+              </div>
+
+              <button className="mt-auto flex w-full items-center justify-center gap-1.5 rounded-pill border border-s-border bg-white py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken">
+                <Search size={16} /> Search
+              </button>
             </div>
-            <p className="mb-2 mt-4 text-[12px] font-semibold text-s-ink-2">2. Free text , separate field</p>
-            <div className="flex items-center gap-2 rounded-pill border border-s-border bg-white px-3.5 py-2.5">
-              <Search size={16} className="text-s-ink-2" /><span className="text-[13.5px] text-s-ink-3">Service, e.g. balayage, black hair</span>
-            </div>
-            <div className="mt-4 rounded-xl bg-s-bg-sunken p-3 text-[12.5px] text-s-ink-2">
-              <p>Writes <span className="rounded bg-white px-1 font-mono text-[12px]">?category={cat.toLowerCase()}</span> AND <span className="rounded bg-white px-1 font-mono text-[12px]">?q=...</span> , two clean params, no guessing. The category is always one of the four, the text is always just text.</p>
-            </div>
-            <button className="mt-4 w-full rounded-pill bg-s-ink py-2.5 text-[14px] font-bold text-white" /* selected-ok: commit */>Search</button>
           </Frame>
 
           {/* MODEL C */}
