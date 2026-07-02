@@ -311,3 +311,9 @@ NEXT ORDER: #7 minimal fix (behavioral, now) -> mockups for #3/#4/#8 (English) -
 - [x] MAP view: bottom sheet = SCROLLABLE list of COMPACT store rows (real "list" style), "19 salons, drag up for more" , /dev/map-full; current search-bar style kept
 - [x] CONFIRM (booked): 3 sections (date / service / staff) + Lena Brunner name + profile avatar , /dev/confirm-full
 - [x] FILTER: IMPLEMENTED in the REAL FilterSheet.tsx (SheetChip selected = gray sunken, no ink border; price unchanged) , f29e2dd7c
+
+## 🌊 BATCH 6 (owner 2026-07-02, FURIOUS: "stop making unnecessary changes / redesigning approved things / guessing"). ATOMIC:
+- [x] HARDEN: approved-surface-guard.py built (blocks full rewrite / >500-char edit of an approved /dev mockup unless skip), self-tested 5 cases, wired PreToolUse; ledger ~/.claude/state/approved-mockups.txt = map-full/confirm-full/filter-refine; memory feedback_dont_redesign_approved.
+- [x] REVERTED map-full to the LOVED single-store preview (restored from 7ebec2803): big photo + prices + Book + grab handle. NOT a list.
+  - [x] answered "multiple stores" WITHOUT a list: a pager (< / 2 of 19 / >) swipes between pins, one preview each
+- [x] RESULTS + SEARCH BAR: LEFT ALONE this turn (no change). Owner: already figured out, stop changing them. results-full stays grounded in the real SalonResultCard.
