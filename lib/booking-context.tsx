@@ -60,6 +60,7 @@ export function BookingProvider({
   initialServices,
   initialStart,
   initialNote,
+  initialBundleId,
 }: {
   children: ReactNode;
   salonId: string;
@@ -69,6 +70,8 @@ export function BookingProvider({
   initialStart?: string;
   /** ?note=… — the discovery cut-instruction auto-fills the booking note (HairStep reads formData.customerNote). */
   initialNote?: string;
+  /** A5 BUG-1: ?bundle=<id> from the PDP bundle card. Seeds formData.bundleId so PayConfirmStep's POST includes bundle_id. */
+  initialBundleId?: string;
 }) {
   const [state, dispatch] = useReducer(bookingReducer, initialState, (base) => {
     let fd = base.formData;
@@ -106,6 +109,11 @@ export function BookingProvider({
     // reaches the hair step with "how to cut it" already written (owner 2026-06-14).
     if (initialNote && initialNote.trim()) {
       fd = { ...fd, customerNote: initialNote.trim() };
+    }
+    // A5 BUG-1: ?bundle=<id> (validated server-side against the active bundles of this salon) rides
+    // through to the POST /api/bookings body, so the server prices the discounted bundle, not the sum.
+    if (initialBundleId) {
+      fd = { ...fd, bundleId: initialBundleId };
     }
     return fd === base.formData ? base : { ...base, formData: fd };
   });

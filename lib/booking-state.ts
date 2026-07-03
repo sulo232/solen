@@ -24,6 +24,12 @@ export interface BookingFormData {
   services: SelectedService[];
   /** One-line wish for THIS appointment (hair step v3) — persists to bookings.customer_note. */
   customerNote?: string | null;
+  /**
+   * A5 BUG-1: the bundle id the user is booking, seeded from the PDP bundle card's ?bundle=<id>.
+   * Sent in the POST /api/bookings body so the server recomputes the discounted bundle price
+   * (loadPricedBundle) instead of the full undiscounted sum. Undefined for a non-bundle booking.
+   */
+  bundleId?: string;
   selectedStaffId: string | 'any'; // 'any' = next available
   selectedDate: Date | null;
   selectedTime: string | null; // '09:00', '09:30', etc.

@@ -24,7 +24,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
   const [products, setProducts] = useState<RetailProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: "", price: "", category: "nail_care" });
+  const [formData, setFormData] = useState({ name: "", price: "", category: "care" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
       if (res.ok) {
         const d = await res.json();
         if (d.product) setProducts((prev) => [...prev, d.product]);
-        setFormData({ name: "", price: "", category: "nail_care" });
+        setFormData({ name: "", price: "", category: "care" });
         setShowForm(false);
       }
     } finally {
@@ -129,10 +129,16 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               className="flex-1 px-3 py-2 rounded-input border border-s-border bg-white text-sm"
               aria-label={t("retail_cat_nail_care")}
             >
-              <option value="nail_care">{t("retail_cat_nail_care")}</option>
-              <option value="tools">{t("retail_cat_tools")}</option>
+              {/* A5 BUG-2: `nail_care` is NOT a valid DB category (never was in the CHECK) , the
+                  nail-care option now uses the valid `care` value. General categories added so a
+                  non-nail salon can classify products; all values are in the widened DB CHECK union. */}
+              <option value="care">{t("retail_cat_nail_care")}</option>
               <option value="polish">{t("retail_cat_polish")}</option>
+              <option value="tools">{t("retail_cat_tools")}</option>
               <option value="accessories">{t("retail_cat_accessories")}</option>
+              <option value="hair_care">{t("retail_cat_hair_care")}</option>
+              <option value="skin_care">{t("retail_cat_skin_care")}</option>
+              <option value="styling">{t("retail_cat_styling")}</option>
             </select>
           </div>
           <div className="flex gap-2">

@@ -8,7 +8,7 @@ import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string; note?: string }>;
+  searchParams: Promise<{ staff?: string; service?: string; services?: string; start?: string; note?: string; bundle?: string }>;
 }
 
 export async function generateMetadata({
@@ -27,7 +27,7 @@ export default async function BookingSalonPage({
   searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
-  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam, note: noteParam } = await searchParams;
+  const { staff: staffParam, service: serviceParam, services: servicesParam, start: startParam, note: noteParam, bundle: bundleParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -172,13 +172,30 @@ export default async function BookingSalonPage({
     if (sm.length > 0 && !sm.some((m) => m.service_id === initialService.id)) safeStaffId = undefined;
   }
 
+  // A5 BUG-1 (2026-07-03): the bundle card links with ?bundle=<id>; carry it into the wizard so
+  // PayConfirmStep's POST /api/bookings body includes bundle_id (the server then recomputes the
+  // discounted bundle price). Validate it is a REAL ACTIVE bundle for THIS salon (same style as the
+  // service/staff validation above); an invalid/foreign/inactive id is simply ignored (no crash),
+  // and the server's loadPricedBundle guard is the fail-closed backstop regardless.
+  let initialBundleId: string | undefined;
+  if (bundleParam) {
+    const { data: bundleRow } = await supabase
+      .from('service_bundles')
+      .select('id')
+      .eq('id', bundleParam)
+      .eq('salon_id', salon.id)
+      .eq('is_active', true)
+      .maybeSingle();
+    if (bundleRow) initialBundleId = bundleRow.id as string;
+  }
+
   // No bookable services (onboarded-but-empty, or all deactivated) → the wizard would dump
   // the user on a dead step 1. Show the empty state with real paths forward instead (audit #8).
   const hasServices = Array.isArray(services) && services.length > 0;
   const salonAny = salon as unknown as { phone: string | null; cover_photo_url: string | null; average_rating: number | null; review_count: number | null; address: string | null };
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam}>
+    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam} initialBundleId={initialBundleId}>
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}

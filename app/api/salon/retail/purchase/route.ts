@@ -42,9 +42,10 @@ export async function POST(req: NextRequest) {
   }
 
   // Get products and calculate total
+  // BUG-3: also select stock_count so we can block a sold-out product BEFORE the charge.
   const { data: products } = await admin
     .from("nail_retail_products")
-    .select("id, name, price")
+    .select("id, name, price, stock_count")
     .in("id", product_ids)
     .eq("salon_id", salon_id)
     .eq("is_active", true);
@@ -59,6 +60,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: "Some products are unavailable", code: "PRODUCTS_UNAVAILABLE" },
       { status: 400 },
+    );
+  }
+
+  // BUG-3 (oversell): block a sold-out product BEFORE creating the PaymentIntent. A tracked
+  // product (stock_count IS NOT NULL) with stock_count < 1 is out of stock. An untracked product
+  // (stock_count NULL) is unlimited and skipped , this matches the webhook decrement, which only
+  // decrements SKUs that return a flipped row and skips NULL-stock SKUs.
+  const outOfStock = products.filter((p) => p.stock_count != null && p.stock_count < 1);
+  if (outOfStock.length > 0) {
+    return NextResponse.json(
+      { error: "Some products are out of stock", code: "OUT_OF_STOCK", productIds: outOfStock.map((p) => p.id) },
+      { status: 409 },
     );
   }
 

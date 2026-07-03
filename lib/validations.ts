@@ -459,7 +459,15 @@ export const nailRetailProductSchema = z.object({
   name: z.string().min(2).max(200),
   description: z.string().max(1000).optional(),
   price: z.number().int().min(100).max(50000),
-  category: z.enum(['cuticle_oil','hand_cream','press_on','nail_kit','polish','other']),
+  // A5 BUG-2: this enum was nail-only, so a generalized-salon save with a non-nail category
+  // (hair_care/styling/etc.) failed Zod silently. Widened to the FULL DB CHECK union
+  // (migration 20260703090000_retail_generalize_a5.sql): the 6 original nail values + the
+  // general marketplace categories. Keep it in lockstep with the DB constraint.
+  category: z.enum([
+    'cuticle_oil','hand_cream','press_on','nail_kit','polish','other',
+    'care','styling','tools','accessories',
+    'hair_care','skin_care','nails',
+  ]),
 });
 
 export const nailPortfolioTagsSchema = z.object({

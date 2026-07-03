@@ -227,6 +227,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           salon_id: salon.id,
           service_id: formData.services[0].id,
           extra_service_ids: formData.services.slice(1).map((s) => s.id),
+          // A5 BUG-1: carry the bundle tag through so the server recomputes the discounted bundle
+          // price (loadPricedBundle) instead of the full sum. No client price is trusted; this id
+          // only selects which bundle to price against. Absent => a normal (non-bundle) booking.
+          bundle_id: formData.bundleId || undefined,
           staff_member_id: formData.selectedStaffId === 'any' ? null : formData.selectedStaffId,
           starts_at: startsAt,
           payment_method: paymentMethod,

@@ -16,6 +16,23 @@ export async function GET(req: NextRequest) {
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
+
+  // BUG-4: gate on SALON visibility before listing products, else an unlisted / test / inactive
+  // salon's products leak by salon_id. Same three visibility gates the public salon query + the
+  // service_bundles RLS use: is_active AND listed_on_marketplace IS NOT FALSE (null counts visible)
+  // AND NOT is_test. A hidden salon returns no products (empty list), never a leak.
+  const { data: salon } = await admin
+    .from("salons")
+    .select("id, is_active, listed_on_marketplace, is_test")
+    .eq("id", salonId)
+    .maybeSingle();
+  const visible =
+    !!salon &&
+    salon.is_active === true &&
+    salon.listed_on_marketplace !== false &&
+    salon.is_test !== true;
+  if (!visible) return NextResponse.json({ products: [] });
+
   const { data, error } = await admin
     .from("nail_retail_products")
     .select("*")
