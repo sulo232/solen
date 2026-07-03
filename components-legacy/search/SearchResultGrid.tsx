@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { SearchX } from "lucide-react";
 import SalonCard from "@/components-legacy/SalonCard";
 import { SkeletonCard } from "@/app/[locale]/_components/primitives";

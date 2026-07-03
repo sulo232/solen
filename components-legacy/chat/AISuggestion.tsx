@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, X, Loader2 } from "lucide-react";
 
 interface AISuggestionProps {

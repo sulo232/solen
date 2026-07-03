@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Search, X, ChevronLeft, ChevronRight, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {

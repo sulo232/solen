@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 // V3-D307: emojis (LOCKFILE §0 hard rule 1 — "No emoji. Anywhere in code/files/UI/commits") → lucide-react icons; inline rgba background tints → neutral s-bg-sunken (Layer 1 chrome per LOCKFILE §1)
 const FEATURE_MAP: Record<string, { Icon: LucideIcon }> = {

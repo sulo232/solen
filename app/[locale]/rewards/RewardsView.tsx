@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Award, Crown, Check, CalendarClock, Zap, Gift, Tag, BadgePercent, Clock, Search, Lock } from "lucide-react";
 import { LOYALTY, type LoyaltyStatus, type Tier } from "@/lib/loyalty/status";

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { FileText, Check } from "lucide-react";
 

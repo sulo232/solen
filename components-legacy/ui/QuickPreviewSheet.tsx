@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, MapPin, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import { RatingStars } from "@/app/[locale]/_components/primitives";

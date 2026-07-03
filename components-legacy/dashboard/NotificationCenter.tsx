@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Bell, X, ShieldAlert, AlertTriangle, Star, Calendar, ExternalLink } from "lucide-react";
 import Link from "next/link";
 

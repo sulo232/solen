@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 
 /**
  * EmptyStateFTU — Q60 Treatment A (first-time user, never-booked, full-screen).
@@ -52,7 +52,7 @@ export default function EmptyStateFTU({
     : {
         initial: { opacity: 0, y: 8 },
         animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.4, ease: [0.2, 0.8, 0.4, 1] },
+        transition: { duration: 0.4, ease: [0.2, 0.8, 0.4, 1] as const },
       };
 
   return (

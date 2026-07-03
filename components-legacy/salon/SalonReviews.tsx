@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Star, ShieldCheck, MessageSquare, Check, ChevronDown, Flag } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
 import ReviewForm from "@/components-legacy/ReviewForm";

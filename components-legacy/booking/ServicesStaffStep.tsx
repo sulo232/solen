@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
 import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
 import ToggleCircle from './ToggleCircle';

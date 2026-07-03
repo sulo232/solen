@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Palette, Heart, FolderOpen, StickyNote, Tags, Hand } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import DesignHistoryTimeline from "@/components-legacy/nail/DesignHistoryTimeline";
 import NailPreferencesForm from "./NailPreferencesForm";
 import HandChart from "@/components-legacy/nail/HandChart";

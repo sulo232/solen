@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Calendar, Share2, MapPin } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { formatPrice } from "@/lib/format";
 import { shareOrCopy } from "@/lib/share";
 import { markFirstBooking } from "@/components-legacy/ui/PWAInstallPrompt";

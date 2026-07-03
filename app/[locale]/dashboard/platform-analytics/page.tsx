@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Store, UsersRound, Calendar, DollarSign, Star, BarChart3 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";

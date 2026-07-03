@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Check, X, AlertTriangle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 

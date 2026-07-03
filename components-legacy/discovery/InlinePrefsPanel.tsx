@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, Sparkles, X, Check } from "lucide-react";
 import { useLocale } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 interface InlinePrefsPanelProps {
   onSave: (prefs: Record<string, string | null>) => void;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, Check } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import type { SelectedService } from '@/lib/booking-state';

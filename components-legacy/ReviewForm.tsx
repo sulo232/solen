@@ -18,7 +18,7 @@ import {
   GraduationCap,
   Repeat,
 } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, type Variants } from "motion/react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
@@ -200,14 +200,14 @@ export default function ReviewForm({
     }
   };
 
-  // Animation variants (framer-motion). Reduced motion: opacity fades only.
-  const backdropVariants = {
+  // Animation variants (motion/react). Reduced motion: opacity fades only.
+  const backdropVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
     exit: { opacity: 0 },
   };
 
-  const sheetVariants = {
+  const sheetVariants: Variants = {
     hidden: { y: "100%", opacity: 0 },
     visible: {
       y: 0,
@@ -221,12 +221,12 @@ export default function ReviewForm({
     },
   };
 
-  const contentVariants = {
+  const contentVariants: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.05 } },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 16, opacity: 0 },
     visible: {
       y: 0,
@@ -235,7 +235,7 @@ export default function ReviewForm({
     },
   };
 
-  const revealVariants = {
+  const revealVariants: Variants = {
     hidden: { height: 0, opacity: 0 },
     visible: {
       height: "auto",

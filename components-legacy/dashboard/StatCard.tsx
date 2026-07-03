@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import MiniSparkline from "@/components-legacy/dashboard/MiniSparkline";

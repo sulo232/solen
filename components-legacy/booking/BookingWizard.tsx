@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';

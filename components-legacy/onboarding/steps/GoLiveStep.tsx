@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Rocket, Check, X, PartyPopper, AlertTriangle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations, useLocale } from "next-intl";
 

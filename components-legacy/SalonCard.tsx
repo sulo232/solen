@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   Star, MapPin, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal, Scissors,

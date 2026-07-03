@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle, RotateCcw } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
 interface ErrorFallbackProps {

@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Star, Users } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 import type { StaffMember } from "@/lib/types";
 

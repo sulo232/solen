@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
 import { RatingStars } from "@/app/[locale]/_components/primitives";
 

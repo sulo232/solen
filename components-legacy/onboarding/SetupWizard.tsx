@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 

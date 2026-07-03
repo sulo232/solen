@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { ArrowLeft, Monitor, Tablet, Smartphone, RotateCcw, Pencil, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";

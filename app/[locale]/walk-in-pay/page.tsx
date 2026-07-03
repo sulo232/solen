@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Star, MapPin, Lock, Check, AlertTriangle, ArrowLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";

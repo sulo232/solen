@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { X, Copy, Check, ChevronDown, ChevronUp, Trash2, Loader2, ClipboardList } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import type { ElementSelectedData } from "./DeviceFrame";

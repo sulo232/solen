@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { User, Building2, ChevronRight, Mail } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";

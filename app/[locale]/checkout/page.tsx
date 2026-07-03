@@ -11,7 +11,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper, AlertCircle, CheckCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";

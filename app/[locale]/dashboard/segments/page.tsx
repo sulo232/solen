@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   Zap, DollarSign, AlertTriangle, UserPlus, Heart, Users,
   ChevronDown, ChevronUp, Mail,

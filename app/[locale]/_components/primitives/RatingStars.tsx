@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion, useAnimationControls } from "framer-motion";
+import { motion, useReducedMotion, useAnimationControls } from "motion/react";
 
 /**
  * RatingStars - the canonical rating display and interactive input (CONTRADICTIONS.md §4).

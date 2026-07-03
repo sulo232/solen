@@ -1,7 +1,7 @@
 'use client';
 
 import { Plus, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 // Smoothly cross-fades the plus into the check instead of an instant icon swap.
 export default function ToggleCircle({

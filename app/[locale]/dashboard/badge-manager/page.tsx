@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   Star, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal, CircleCheck,

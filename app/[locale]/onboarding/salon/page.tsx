@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { modalVariants } from "@/lib/animations";
 import { Plus, X, Upload, Link as LinkIcon, Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";

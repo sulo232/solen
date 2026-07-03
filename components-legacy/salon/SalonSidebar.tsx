@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Star, Zap } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTranslations, useLocale } from "next-intl";
 import { formatPrice } from "@/lib/format";
 import type { Service } from "@/lib/types";

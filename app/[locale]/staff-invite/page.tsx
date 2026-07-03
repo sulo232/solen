@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Users, Check, AlertTriangle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 
