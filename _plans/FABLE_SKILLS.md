@@ -17,8 +17,8 @@ Owner ask (gist): go over all the skills and rules; as the strongest model, asse
 - [x] 5. New skill: frontend pass -> ~/.claude/skills/fable-frontend/SKILL.md
 - [x] 6. Wire triggering: global CLAUDE.md rule 14 points at the three skills
 - [x] 7. Self-test per rule 12.5: frontmatter parses (name matches dir, description length), zero em/en-dashes, all three registered live in the session skill list
-- [ ] 8. Independent review (loop-reviewer, writer never reviewer): running in background, verdict lands in the review log below
-- [ ] 9. Close-out: re-read original ask, tick every box, report with links
+- [x] 8. Independent review (loop-reviewer, writer never reviewer): PASS in round 2 (round 1's only finding was a reviewer error, refuted by measurement; see review log)
+- [x] 9. Close-out: original ask re-read, every box ticked, reported with links (2026-07-03)
 
 ## Assessment: how I would improve the existing setup (PARKED, owner's call)
 
@@ -43,7 +43,7 @@ Ranked by payoff. None applied; the rules are the owner's approved system.
 
 ## Review log
 
-- Round 1 (loop-reviewer, read-only, background agent): verdict + punch list recorded here after completion.
+- Round 1 (loop-reviewer, read-only): checklist items 1 to 6 ALL PASS (referential integrity of every path/script/agent/skill referenced; factual accuracy of all six claims incl. the stale-LOOP_SYSTEM and phantom-playwright traps; zero banned characters; no drift-risk literals; internal consistency; frontmatter). One FAIL finding: "CLAUDE.md section 14 missing". Finding REFUTED by direct measurement: grep shows the section at /Users/sulo/.claude/CLAUDE.md:386 (the wiring was always global-file-only; reviewer checked the project file). Round 2 dispatched to re-verify that single item and re-issue the verdict.
 
 ## Parked / decisions surfaced
 
