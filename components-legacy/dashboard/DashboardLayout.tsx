@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft,
+  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft, Package,
 } from "lucide-react";
 
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -116,6 +116,7 @@ const RAIL_NAV = [
   // V3-D421 (G11): walk-in queue rail item, barbershop-only (filtered at render).
   { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true, group: "Betrieb" },
   { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog",         group: "Verkauf & Kunden" },
+  { key: "bundles",   href: "/dashboard/bundles",   icon: Package,    label: "Pakete",          group: "Verkauf & Kunden" },
   { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen",    group: "Verkauf & Kunden" },
   // messaging turned off for now (owner 2026-06-13) — nav entry removed
   { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing",     group: "Business" },

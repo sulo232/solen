@@ -233,3 +233,8 @@ Replaced the fabricated walk-in analytics (`Math.random`/`Math.sin` sparklines, 
 - **What:** Fresha's team step also offers "choose a different team member per service" for multi-service carts; Solen supports ONE stylist per booking (`formData.selectedStaffId`). StaffStep filters to staff capable of ALL selected services, so mixed carts (e.g. cut + nails) can collapse to "Keine Präferenz" only.
 - **Blocker:** booking schema stores a single `staff_member_id` per booking; per-service assignment needs per-line staff + slot intersection logic.
 - **Next steps:** if demanded, add per-service staff rows on StaffStep + extend slot engine to intersect availability per line item.
+
+## app/api/salons/[slug]/route.ts , 500 on anonymous review_replies (found 2026-07-03, B-2 verify)
+- Symptom: `(r.review_replies ?? []).filter is not a function` 500s when the endpoint is hit anonymously for at least muse-beauty-studio's reviews shape.
+- Blast radius: LOW , the PDP page /de/salon/<slug> still renders 200; only this sub-endpoint errors. Pre-existing, NOT from A5.
+- Next: review_replies likely comes back as an object (single) not an array in some shape; coerce to array before .filter, or fix the select. Verify anon vs authed shapes.

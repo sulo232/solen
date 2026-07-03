@@ -470,6 +470,20 @@ export const nailRetailProductSchema = z.object({
   ]),
 });
 
+// A5 Phase B-2 (owner-authed bundle CRUD, 2026-07-03): mirrors the service_bundles /
+// service_bundle_items shape (migration 20260703090001_service_bundles_a5.sql). The
+// custom/percent value pairing is enforced here (client-side ergonomics); the DB CHECK
+// constraints are the backstop. service_ids is validated for >=2 items at the route
+// level (needs a clean BUNDLE_MIN_ITEMS code, not a raw Zod message).
+export const serviceBundleSchema = z.object({
+  name: z.string().min(2).max(200),
+  service_ids: z.array(uuid).min(2, "at least 2 services required"),
+  pricing_mode: z.enum(["sum", "custom", "percent"]),
+  custom_price: z.number().min(0).max(50000).optional(),
+  percent_off: z.number().int().min(1).max(99).optional(),
+  is_active: z.boolean().optional().default(false),
+});
+
 export const nailPortfolioTagsSchema = z.object({
   nail_style: z.string().max(50).optional(),
   nail_shape: z.string().max(50).optional(),
