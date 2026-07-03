@@ -10,6 +10,7 @@ import { validateBody, createBookingSchema } from "@/lib/validations";
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
+import { loadPricedBundle } from "@/lib/pricing/bundle";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -289,80 +290,40 @@ export async function POST(request: NextRequest) {
   let bundleEndsAt: string | null = null;
   let validBundleId: string | null = null;
   if (bundle_id) {
-    // Load bundle + its item set server-side (admin client: RLS hides is_active=false bundles, and
-    // the bundle must be re-checkable regardless of the caller's read scope).
+    // A5 FIX-2: load + guard + price the bundle via the shared util (admin client: RLS hides
+    // is_active=false bundles, and the bundle must be re-checkable regardless of read scope).
+    // The util runs Guards 1-4 (exists+active+salon, >=2 items, exact selected-set match, every
+    // item live+active+in-salon) and recomputes the price from pricing_mode; same numbers as the
+    // display endpoint + pay-intent by construction. Its typed error code maps to the same 400s.
     const admin = createAdminSupabaseClient();
-    const { data: bundle } = await admin
-      .from("service_bundles")
-      .select("id, salon_id, pricing_mode, custom_price, percent_off, is_active")
-      .eq("id", bundle_id)
-      .single();
-
-    // Guard 1: bundle must exist, be active, and belong to THIS booking's salon.
-    if (!bundle || bundle.is_active !== true || bundle.salon_id !== slot.salon_id) {
-      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
-    }
-
-    const { data: bundleItems } = await admin
-      .from("service_bundle_items")
-      .select("service_id")
-      .eq("bundle_id", bundle.id);
-
-    const bundleServiceIds = [...new Set((bundleItems ?? []).map((i) => i.service_id as string))];
-
-    // Guard 2: a bundle is only bookable with >= 2 items (never a 0 CHF / single-service bundle).
-    if (bundleServiceIds.length < 2) {
-      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
-    }
-
-    // Guard 3: the selected services (primary + extras) must be EXACTLY the bundle's item set:
-    // no missing item, no extra service smuggled in. Compare as sets of ids.
     const selectedIds = [...new Set([service_id, ...(extra_service_ids ?? [])])];
-    const bundleSet = new Set(bundleServiceIds);
-    const selectedSet = new Set(selectedIds);
-    const exactMatch =
-      selectedSet.size === bundleSet.size &&
-      [...bundleSet].every((id) => selectedSet.has(id));
-    if (!exactMatch) {
-      return NextResponse.json({ message: "Selected services do not match the bundle", code: "BUNDLE_MISMATCH" }, { status: 400 });
+    const result = await loadPricedBundle(admin, {
+      bundleId: bundle_id,
+      salonId: slot.salon_id,
+      selectedServiceIds: selectedIds,
+    });
+    if (!result.ok) {
+      // FIX-3: machine error code + message, matching EVERY other 400 in this route's
+      // { message, code } shape (the client translates by `code`; `message` is the
+      // English fallback, same convention as GUEST_INFO_REQUIRED / SLOT_TAKEN above).
+      // BUNDLE_MISMATCH = selected services != the bundle's item set; BUNDLE_UNAVAILABLE =
+      // stale/inactive/<2-items/missing bundle.
+      const message = result.code === "BUNDLE_MISMATCH"
+        ? "Selected services do not match the bundle"
+        : "Bundle not available";
+      return NextResponse.json({ message, code: result.code }, { status: 400 });
     }
+    const pricedBundle = result.bundle;
 
-    // Load each bundle service's REAL price + duration + buffer (never the client's).
-    const { data: bundleSvcs } = await admin
-      .from("services")
-      .select("id, price, duration_minutes, buffer_minutes, is_active, salon_id")
-      .in("id", bundleServiceIds)
-      .eq("salon_id", slot.salon_id);
-
-    // Every bundle service must resolve, be active, and be in this salon (else the bundle is stale).
-    if (!bundleSvcs || bundleSvcs.length !== bundleServiceIds.length || bundleSvcs.some((s) => s.is_active === false)) {
-      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
-    }
-
-    // B-4b PRICE: recompute from pricing_mode. services.price + custom_price are CHF DECIMAL, so
-    // stay in CHF here (the Stripe boundary converts *100), rounded to 2dp CHF.
-    const sumChf = bundleSvcs.reduce((s, sv) => s + (Number(sv.price) || 0), 0);
-    let bundlePrice: number;
-    if (bundle.pricing_mode === "custom") {
-      bundlePrice = Number(bundle.custom_price) || 0;
-    } else if (bundle.pricing_mode === "percent") {
-      const pct = Number(bundle.percent_off) || 0;
-      bundlePrice = (sumChf * (100 - pct)) / 100;
-    } else {
-      // "sum" (and any unknown mode falls back to the plain sum, never a 0 CHF surprise).
-      bundlePrice = sumChf;
-    }
-    price = Math.round(bundlePrice * 100) / 100;
+    // B-4b PRICE: the util already recomputed from pricing_mode (CHF, 2dp). services.price +
+    // custom_price are CHF DECIMAL; the Stripe boundary converts *100, not here.
+    price = pricedBundle.priceChf;
 
     // B-4a DURATION: reserve the SUMMED duration (duration_minutes + buffer_minutes) of every
     // bundle service. Today extras never extend time (by design for add-ons); a bundle does.
-    const totalMinutes = bundleSvcs.reduce(
-      (m, sv) => m + (Number(sv.duration_minutes) || 0) + (Number(sv.buffer_minutes) || 0),
-      0,
-    );
     const startMs = new Date(slot.starts_at as string).getTime();
-    bundleEndsAt = new Date(startMs + totalMinutes * 60_000).toISOString();
-    validBundleId = bundle.id;
+    bundleEndsAt = new Date(startMs + pricedBundle.totalMinutes * 60_000).toISOString();
+    validBundleId = pricedBundle.id;
 
     // AVAILABILITY (B-4a): the primary slot only covers the single-service window; a bundle needs
     // the WIDENED window free for this staff member. Reuse the EXISTING conflict mechanism

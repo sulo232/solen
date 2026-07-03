@@ -11,6 +11,8 @@ import { SalonStickyTabNav } from "./SalonStickyTabNav";
 import { SalonAppCta } from "./SalonAppCta";
 import { SalonContact } from "./SalonContact";
 import { SalonServices } from "./SalonServices";
+import { SalonBundles } from "./SalonBundles";
+import { SalonProducts } from "./SalonProducts";
 import { SalonTeam } from "./SalonTeam";
 import { SalonReviews } from "./SalonReviews";
 import { SalonPortfolio } from "./SalonPortfolio";
@@ -77,6 +79,10 @@ export function SalonDetailV3() {
   const [lightboxOpen, setLightboxOpen] = React.useState(false);
   const [lightboxIndex, setLightboxIndex] = React.useState(0);
   const [galleryOpen, setGalleryOpen] = React.useState(false);
+  // A5 B-3/A-3: bundles + products load async inside their sections; these flags let the
+  // sections register their sticky-nav tab once their data confirms it exists.
+  const [hasBundles, setHasBundles] = React.useState(false);
+  const [hasProducts, setHasProducts] = React.useState(false);
 
   const heroRef = React.useRef<HTMLElement>(null);
 
@@ -149,6 +155,10 @@ export function SalonDetailV3() {
   const availableSections = new Set<TabKey>();
   if ((salon.gallery_urls?.length ?? 0) > 0 || salon.cover_photo_url) availableSections.add("photos");
   if (salon.services.length > 0) availableSections.add("services");
+  // A5 B-3/A-3: only register the tab once the async section confirms it has data
+  // (empty bundles/products render nothing, so no tab).
+  if (hasBundles) availableSections.add("bundles");
+  if (hasProducts) availableSections.add("products");
   if (salon.staff.length > 0) availableSections.add("team");
   if (salon.review_count > 0 || (salon.average_rating ?? 0) > 0) availableSections.add("reviews");
   // V3-D389: "Über uns" tab is now description-only (location moved to its own
@@ -267,6 +277,26 @@ export function SalonDetailV3() {
 
             <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
               {!walkinMode && <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />}
+
+            {/* A5 B-3: bundles between services and products (renders null until active bundles load). */}
+            {!walkinMode && (
+              <SalonBundles
+                salonId={salon.id}
+                slug={slug}
+                locale={locale}
+                onLoaded={setHasBundles}
+              />
+            )}
+
+            {/* A5 A-3: retail products after services (renders null until active products load). */}
+            {!walkinMode && (
+              <SalonProducts
+                salonId={salon.id}
+                category={primaryCategory}
+                locale={locale}
+                onLoaded={setHasProducts}
+              />
+            )}
 
             {!walkinMode && salon.staff.length > 0 && (
               <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />

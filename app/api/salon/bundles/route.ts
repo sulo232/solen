@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { computeBundlePriceChf } from "@/lib/pricing/bundle";
 
 // GET /api/salon/bundles?salon_id=xxx , Public: list ACTIVE service bundles for a salon.
 //
@@ -90,15 +91,14 @@ export async function GET(req: NextRequest) {
       // a bundle that resolved to <2 live services is never a bookable 0/1-item.
       if (bundleServices.length < 2) return null;
 
+      // A5 FIX-2: price via the SHARED util so the display, booking-write, and pay-intent charge
+      // all produce the SAME CHF (2dp) by construction. Anon client here (RLS is the boundary),
+      // so only the pure math , the guarded admin load lives in the write/charge paths.
       const sumPrice = bundleServices.reduce((acc, s) => acc + s.price, 0);
-      let bundlePrice = sumPrice;
-      if (b.pricing_mode === "percent" && b.percent_off != null) {
-        bundlePrice = sumPrice * (1 - b.percent_off / 100);
-      } else if (b.pricing_mode === "custom" && b.custom_price != null) {
-        bundlePrice = Number(b.custom_price);
-      }
-      // Round to 2 decimals (CHF), same rounding the bookings route uses.
-      bundlePrice = Math.round(bundlePrice * 100) / 100;
+      const bundlePrice = computeBundlePriceChf(b.pricing_mode, sumPrice, {
+        customPrice: b.custom_price,
+        percentOff: b.percent_off,
+      });
 
       return {
         id: b.id,

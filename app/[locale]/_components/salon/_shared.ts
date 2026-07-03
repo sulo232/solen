@@ -265,10 +265,16 @@ export function formatReviewDate(iso: string): string {
 // folded into hero gallery + lightbox per Fresha; loyalty was Solen-only and
 // added page noise without changing user behavior. Section components stay
 // rendered below — only the sticky-nav surface drops them.
+// A5 B-3/A-3 (2026-07-03): `bundles` + `products` tabs added between Services and Team.
+// Labels are the German fallback the other tabs use; the section components themselves
+// render fully i18n'd headings via useTranslations("salonDetail"). Both auto-hide when
+// the salon has no active bundles/products (availableSections gating in SalonDetailV3).
 export const TAB_SECTIONS = [
   { key: "photos", label: "Fotos" },
   { key: "about", label: "Über uns" },
   { key: "services", label: "Services" },     // identical in German
+  { key: "bundles", label: "Pakete" },
+  { key: "products", label: "Produkte" },
   { key: "team", label: "Team" },             // identical in German
   { key: "reviews", label: "Bewertungen" },
 ] as const;

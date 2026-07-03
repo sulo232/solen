@@ -8,6 +8,7 @@ import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { resolveMemberDiscount, getCurrentTier, tierAtLeast } from "@/lib/loyalty/perks";
 import { LOYALTY, type Tier } from "@/lib/loyalty/status";
+import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { createHash } from "crypto";
 
 // POST /api/stripe/booking-pay-intent
@@ -134,7 +135,41 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("[booking-pay-intent] failed to parse extras_addons:", e);
   }
-  const priceChf = Number(service.price) + extrasChf;
+  let priceChf = Number(service.price) + extrasChf;
+
+  // A5 FIX-1 (critical, money): when this booking was priced against a bundle, the charge base
+  // MUST be the recomputed BUNDLE price, not the undiscounted service+extras sum. Before this fix
+  // booking.bundle_id was selected (line ~62) and never used, so an online-pay percent/custom
+  // bundle would charge the FULL sum (seed: 440 charged vs 374 quoted). Recompute server-side via
+  // the SAME shared util + guards the bookings route uses (is_active, salon match, >=2 items,
+  // selected-set == item-set), BEFORE promo/member/tier discounts. A stale/inactive/mismatched
+  // bundle 400s here , NEVER a full-sum fallback (a wrong charge is worse than a blocked one).
+  if (booking.bundle_id) {
+    const selectedIds = [
+      booking.service_id,
+      ...(() => {
+        try {
+          const ex = (booking as { extras_addons?: string | null }).extras_addons
+            ? JSON.parse((booking as { extras_addons?: string }).extras_addons as string)
+            : [];
+          return Array.isArray(ex) ? ex.map((a: { id?: string }) => a?.id).filter(Boolean) as string[] : [];
+        } catch {
+          return [] as string[];
+        }
+      })(),
+    ].filter(Boolean) as string[];
+    const bundleResult = await loadPricedBundle(admin, {
+      bundleId: booking.bundle_id as string,
+      salonId: booking.salon_id as string,
+      selectedServiceIds: [...new Set(selectedIds)],
+    });
+    if (!bundleResult.ok) {
+      // Stale/inactive/mismatched bundle: refuse rather than charge the wrong (full-sum) amount.
+      return NextResponse.json({ error: "Bundle no longer available", code: bundleResult.code }, { status: 400 });
+    }
+    priceChf = bundleResult.bundle.priceChf; // the bundle price becomes the charge base
+  }
+
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
     return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
   }
