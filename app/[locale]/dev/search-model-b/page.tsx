@@ -1,24 +1,25 @@
 "use client";
 
 /**
- * /dev/search-model-b , R4-4 REWORK (owner 2026-07-03 #2): "make me a compare thingy
- * between the current and the not-current one. What the fuck is wrong with your search
- * bar? That shit is not what we have." The PRIOR version of this mockup invented a
- * search bar (a 4-segment category picker + a separate free-text field) that does not
- * exist anywhere in the real app , the owner rejected it outright.
+ * /dev/search-model-b , R4-4/A2 REWORK (owner 2026-07-04): "make mockup" , make the
+ * Model B mockup INTERACTIVE so the owner can feel it (tap a category pill, type a
+ * service, watch the two params stay independent) instead of reading a static caption.
+ * ONE interactive mockup, not variations. The prior static TODAY/MODEL-B compare stays
+ * as a small reference note above the interactive screen (owner: "keep or drop the
+ * static compare , the interactive Model B is the deliverable").
  *
- * This rework does NOT invent anything. It extracts the REAL top-of-category-page
- * anatomy near-verbatim from its actual source files (see Grounded-in below) and
- * renders it TWICE, stacked as labelled phone frames: TODAY (the real bar, unchanged,
- * with a caption calling out the ambiguity bug) and MODEL B (the exact same real bar,
- * with only the two things Model B actually changes highlighted via caption call-outs,
- * no new control invented). Static/non-functional per the compare-page brief.
+ * This does NOT invent a new bar. It extracts the REAL top-of-category-page anatomy
+ * near-verbatim from its actual source files (see Grounded-in below) , the ONLY delta
+ * from the real code is BEHAVIORAL: the category pill row and the search bar's line 2
+ * are wired to independent React state instead of one shared param, so tapping a pill
+ * never clears typed text and typing never reassigns the category. Same shape, same
+ * radius, same classes as production; nothing added, nothing removed.
  *
- * lang-ok: the de-DE chrome strings inside the phone frames ("Jetzt geöffnet", "Preis",
+ * lang-ok: the de-DE chrome strings inside the phone frame ("Jetzt geöffnet", "Preis",
  * "Für wen", "Beliebteste", "Suchen") are the REAL production copy, verbatim, because
  * this mockup's whole point is to prove it copies the real bar exactly (not a
  * translated approximation). All the ENGLISH review commentary (captions, callouts,
- * intro paragraph) is written in English per the mockup convention.
+ * intro paragraph, param readout) is written in English per the mockup convention.
  *
  * Reference: the real /de/coiffeur top was screenshotted live and viewed before writing
  * this file (scratchpad real_category_top.png) , home icon-button, city chip, category
@@ -29,30 +30,39 @@
  * + name + star + meta + a matched-service row + "View store" off-ramp), same shape as
  * SalonResultCard.tsx variant="feed" / /dev/map-full's StoreCard.
  *
- * Exists-check: npm run exists search-model-b = 0 (the route itself only); the REAL
- *   surfaces this mirrors are SearchTemplate.tsx (search bar / filter pills / count+sort)
- *   and Header.tsx (home button / city chip / category pills row).
- * Grounded-in (exact source lines copied near-verbatim, 2026-07-03):
+ * Exists-check: npm run exists search-model-b = 11 hits, all this same route (page
+ *   sections + exported symbol) , EXTENDING the existing R4-4 static compare, not a new
+ *   route. The REAL surfaces this interactive layer mirrors are SearchTemplate.tsx
+ *   (search bar / filter pills / count+sort) and Header.tsx (home button / city chip /
+ *   category pills row, incl. the 4th "spa" entry in HEADER_CATEGORIES L96-101 that the
+ *   prior static version was missing).
+ * Grounded-in (exact source lines copied near-verbatim, 2026-07-04):
  *   - Header.tsx L557-590 (home icon button, h-10 w-10 rounded-[13px] border)
  *   - Header.tsx L267-286 (MobileCityChip: MapPin + city name + ChevronDown pill)
  *   - Header.tsx L765-796 (burger button, h-10 w-10 rounded-[13px] border, Menu/X swap)
- *   - Header.tsx L803-856 (HEADER_CATEGORIES pill row: h-10 rounded-full border px-4,
- *     active = border-s-bg-sunken bg-s-bg-sunken font-semibold, 22px PNG icon + 15px label)
- *   - SearchTemplate.tsx L1145-1230 (the two-line search bar: rounded-pill border-s-border
+ *   - Header.tsx L96-101 + L803-856 (HEADER_CATEGORIES incl. spa + pill row: h-10
+ *     rounded-full border px-4, active = border-s-bg-sunken bg-s-bg-sunken font-semibold,
+ *     22px PNG icon + 15px label) , the ONLY change is `<Link>` -> `<button onClick>`
+ *     since this mockup has no router, classes/markup otherwise identical
+ *   - SearchTemplate.tsx L1220-1267 (the two-line search bar: rounded-pill border-s-border
  *     bg-white px-3.5 py-2.5, line1 14px medium "Suchen", line2 12.5px grey city, map
- *     icon-button h-9 w-9 rounded-full border)
- *   - SearchTemplate.tsx L1245-1330 (filter-pill row: sliders circle h-9 w-9 rounded-full
+ *     icon-button h-9 w-9 rounded-full border) , line 2 becomes a real `<input>` sharing
+ *     the identical text classes (14px/12.5px) instead of a static span
+ *   - SearchTemplate.tsx L1311-1393 (filter-pill row: sliders circle h-9 w-9 rounded-full
  *     border, pills h-9 rounded-pill border pl-3.5 pr-2.5 text-13.5px)
- *   - SearchTemplate.tsx L1355-1428 (result count "N Salons" 16px semibold + sort
+ *   - SearchTemplate.tsx L1421-1428 (result count "N Salons" 16px semibold + sort
  *     dropdown pill 13px)
  *   - SalonResultCard.tsx feed variant (FeedCard below mirrors its real anatomy:
  *     aspect-[3/2] photo, frosted heart, name + star, meta lines, matched-service row,
  *     "View store" off-ramp)
  * reinvent-ok: gradient photo stand-ins (drift-ok, mockup placeholders) and the sample
- *   salon name/photo are placeholder content for a static compare mockup, not a new
- *   data source. Real tokens, Lucide, no CDN, no em-dash, no middot.
+ *   salon name/photo are placeholder content for a static feed card, not a new data
+ *   source. The `?category=`/`?q=` param readout box is new UI but it is a DEV-ONLY
+ *   diagnostic label (not part of the real bar), same pattern as a11y/debug overlays ,
+ *   it is not presented as production chrome. Real tokens, Lucide, no CDN, no em-dash,
+ *   no middot, >=12px.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Home,
   Menu,
@@ -77,11 +87,12 @@ const FROST = {
   boxShadow: "0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4)",
 } as const;
 
-// Grounded in Header.tsx HEADER_CATEGORIES (icons under /public/icons/categories).
+// Grounded in Header.tsx HEADER_CATEGORIES L96-101 (icons under /public/icons/categories).
 const CATEGORIES = [
   { slug: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
   { slug: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
   { slug: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
+  { slug: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
 ];
 
 // mockup gradient placeholders , stand-ins for real salon photos (drift-ok).
@@ -118,8 +129,10 @@ function BurgerButton() {
   );
 }
 
-// Header.tsx L803-856 verbatim classes , category-tab pill row.
-function CategoryPillsRow({ active }: { active: string }) {
+// Header.tsx L803-856 verbatim classes , category-tab pill row. INTERACTIVE (A2): tapping
+// a pill calls `onSelect`, which ONLY ever writes the category param , it never touches
+// the typed text state in the parent (that is the whole Model B behavioral delta).
+function CategoryPillsRow({ active, onSelect }: { active: string; onSelect: (slug: string) => void }) {
   return (
     <div
       role="tablist"
@@ -130,36 +143,46 @@ function CategoryPillsRow({ active }: { active: string }) {
       {CATEGORIES.map((c) => {
         const isActive = c.slug === active;
         return (
-          <span
+          <button
             key={c.slug}
+            type="button"
             role="tab"
             aria-selected={isActive}
-            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 font-body text-[15px] leading-none ${
+            onClick={() => onSelect(c.slug)}
+            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 font-body text-[15px] leading-none transition-colors duration-150 ease-glide ${
               isActive
                 ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
-                : "border-s-border bg-white font-medium text-s-ink"
+                : "border-s-border bg-white font-medium text-s-ink hover:bg-s-bg-sunken"
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={c.iconSrc} alt="" className="h-[22px] w-[22px] shrink-0 object-contain" aria-hidden />
             {c.label}
-          </span>
+          </button>
         );
       })}
     </div>
   );
 }
 
-// SearchTemplate.tsx L1145-1230 verbatim classes , the two-line search bar. `line1` /
-// `line2` are the ONLY thing Model B changes (query moves to line2 while the pill row
-// keeps the category), everything else (shape, radius, padding, map icon) is identical.
-function SearchBar({ line1, line2 }: { line1: string; line2: string | null }) {
+// SearchTemplate.tsx L1220-1267 verbatim classes , the two-line search bar. INTERACTIVE
+// (A2): line 2 is a real `<input>` sharing the identical 12.5px grey classes, wired to
+// its OWN `q` state , typing here never touches the category state above (the pill row
+// owns category, this input owns free text; two params, two sources of truth).
+function SearchBar({ line1, value, onChange }: { line1: string; value: string; onChange: (v: string) => void }) {
   return (
     <div className="flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5">
       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-body text-[14px] font-medium text-s-ink">{line1}</span>
-        {line2 && <span className="block truncate font-body text-[12.5px] text-s-ink-2">{line2}</span>}
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Balayage, Bart, Maniküre..."
+          aria-label="Service suchen"
+          className="block w-full truncate border-0 bg-transparent p-0 font-body text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-3 focus:text-s-ink"
+        />
       </span>
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink">
         <MapIcon size={16} strokeWidth={2} aria-hidden />
@@ -255,24 +278,50 @@ function Callout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// One labelled phone frame , the REAL top-of-category-page anatomy, static.
+// The live param readout , a dev-only diagnostic strip showing the two params the
+// interactive frame is currently composing, plus the resulting URL. Not part of the
+// real bar; a debug label proving the behavioral delta (two independent params).
+function ParamReadout({ category, q, locale = "de" }: { category: string; q: string; locale?: string }) {
+  const composedUrl = useMemo(() => {
+    const params = q.trim() ? `?q=${encodeURIComponent(q.trim())}` : "";
+    return `/${locale}/${category}${params}`;
+  }, [category, q, locale]);
+
+  return (
+    <div className="rounded-xl border border-s-border bg-s-bg-sunken px-3.5 py-3">
+      <p className="font-body text-[12px] font-semibold text-s-ink-3">Live params</p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <Callout>category={category}</Callout>
+        <Callout>q={q.trim() || "(empty)"}</Callout>
+      </div>
+      <p className="mt-2 truncate font-mono text-[12.5px] font-medium text-s-ink">{composedUrl}</p>
+    </div>
+  );
+}
+
+// One labelled phone frame , the REAL top-of-category-page anatomy. INTERACTIVE
+// (A2): category + q are lifted to the parent so the readout can show them live;
+// this frame just wires the real components to that shared state.
 function PhoneFrame({
   label,
   caption,
   city,
   activeCategory,
-  searchLine1,
-  searchLine2,
+  onSelectCategory,
+  q,
+  onChangeQ,
   count,
 }: {
   label: string;
   caption: string;
   city: string;
   activeCategory: string;
-  searchLine1: string;
-  searchLine2: string | null;
+  onSelectCategory: (slug: string) => void;
+  q: string;
+  onChangeQ: (v: string) => void;
   count: number;
 }) {
+  const activeLabel = CATEGORIES.find((c) => c.slug === activeCategory)?.label ?? activeCategory;
   return (
     <div className="w-full">
       <div className="mb-2 flex items-center gap-2">
@@ -288,13 +337,13 @@ function PhoneFrame({
           <CityChip city={city} />
           <BurgerButton />
         </div>
-        {/* Category pills row. */}
+        {/* Category pills row , tap sets activeCategory ONLY, never touches q. */}
         <div className="mt-3">
-          <CategoryPillsRow active={activeCategory} />
+          <CategoryPillsRow active={activeCategory} onSelect={onSelectCategory} />
         </div>
-        {/* Search bar. */}
+        {/* Search bar , line 2 is a real input bound to q ONLY, never touches category. */}
         <div className="mt-3">
-          <SearchBar line1={searchLine1} line2={searchLine2} />
+          <SearchBar line1={activeLabel} value={q} onChange={onChangeQ} />
         </div>
         {/* Filter-pill row. */}
         <FilterPillRow />
@@ -313,73 +362,45 @@ export default function SearchModelBMockup() {
   if (process.env.NODE_ENV === "production") notFound();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  // Model B interactive state , TWO independent sources of truth. Tapping a category
+  // pill writes ONLY `category`; typing writes ONLY `q`. Neither setter ever reads or
+  // clears the other, which is the entire behavioral delta this mockup demonstrates.
+  const [category, setCategory] = useState("coiffeur");
+  const [q, setQ] = useState("Balayage");
+
   if (!mounted) return null;
 
   return (
     <main className="min-h-screen bg-s-bg-base py-6">
       <div className="mx-auto w-full max-w-[460px] px-4">
         <p className="font-body text-[12px] text-s-ink-3">
-          R4-4 rework: the search bar below is the REAL bar (SearchTemplate.tsx), copied verbatim.
-          Model B changes nothing about its shape, only what text sits on which line, called out below.
+          A2: interactive Model B , tap a category pill, type in the search bar's second
+          line, watch the two params below stay independent. Today (for reference): one
+          shared field mixes "which category" and "what service", so the backend
+          guess-matches it. Model B: category = pill tap (writes ?category=), service =
+          typed text (writes ?q=), and neither ever rewrites the other.
         </p>
 
-        <div className="mt-6 flex flex-col gap-10">
-          {/* TODAY , the real bar, unchanged. Typing a service while a category pill is
-              active writes ONE mixed param (?service=...), so the backend has to GUESS
-              whether the typed text is a category name or a free-text service query. */}
-          <div>
-            <PhoneFrame
-              label="Today"
-              caption="Real bar. Typing 'Balayage' while Coiffeur is active writes one ambiguous param."
-              city="Basel"
-              activeCategory="coiffeur"
-              searchLine1="Balayage"
-              searchLine2="Basel"
-              count={8}
-            />
-            <p className="mt-3 rounded-xl bg-s-bg-sunken px-3.5 py-3 font-body text-[12.5px] leading-relaxed text-s-ink-2">
-              The bug: the bar carries one string for both "which category" and "what service".
-              The backend guess-matches it against the category enum first, falling back to a
-              free-text service search only if it misses, so a typed term that happens to look
-              like a category slug (or a typo of one) silently mis-routes.
-            </p>
+        <div className="mt-6">
+          <PhoneFrame
+            label="Model B"
+            caption="Tap a pill, then type , the text stays put."
+            city="Basel"
+            activeCategory={category}
+            onSelectCategory={setCategory}
+            q={q}
+            onChangeQ={setQ}
+            count={8}
+          />
+
+          <div className="mt-3">
+            <ParamReadout category={category} q={q} />
           </div>
 
-          {/* MODEL B , the IDENTICAL real bar. The only deltas: (1) line 2 of the search
-              bar shows the TYPED SERVICE TEXT instead of the city, while the category stays
-              on the pill row above it (2 sources of truth, 2 params); (2) tapping a pill
-              never rewrites the text field. No new control, no segmented picker, no
-              separate free-text field , same bar, same shape, same radius. */}
-          <div>
-            <PhoneFrame
-              label="Model B"
-              caption="Same bar. Category lives on the pill row; the bar's line 2 shows the typed text."
-              city="Basel"
-              activeCategory="coiffeur"
-              searchLine1="Suchen"
-              searchLine2="Balayage"
-              count={8}
-            />
-            <div className="mt-3 flex flex-col gap-2">
-              <div className="flex items-center gap-2 rounded-xl bg-s-bg-sunken px-3.5 py-3">
-                <Callout>pill -&gt; ?category=coiffeur</Callout>
-                <p className="font-body text-[12.5px] leading-relaxed text-s-ink-2">
-                  The active Coiffeur pill is the only thing that writes the category param.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-s-bg-sunken px-3.5 py-3">
-                <Callout>text -&gt; ?q=balayage</Callout>
-                <p className="font-body text-[12.5px] leading-relaxed text-s-ink-2">
-                  The bar's second line is the free-text service query, a separate param.
-                </p>
-              </div>
-              <p className="rounded-xl bg-s-bg-sunken px-3.5 py-3 font-body text-[12.5px] leading-relaxed text-s-ink-2">
-                Tapping a different category pill never rewrites the typed text (and vice
-                versa), because the two are two separate URL params instead of one guessed
-                string. No new search bar, no segmented control, no invented UI.
-              </p>
-            </div>
-          </div>
+          <p className="mt-3 rounded-xl bg-s-bg-sunken px-3.5 py-3 font-body text-[12.5px] leading-relaxed text-s-ink-2">
+            Category = pill (?category). Service = what you type (?q). No guess-matching.
+          </p>
         </div>
       </div>
     </main>
