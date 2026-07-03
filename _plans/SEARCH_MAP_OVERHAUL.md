@@ -2,6 +2,14 @@
 
 > Owner: "make a plan first, research as the LLM council, write it down, you're the orchestrator (not the coder)." Ultracode ON. Each design item -> council + MULTIPLE mockups. Functional items -> investigate + fix. Nothing implemented before the plan + council.
 
+## FINAL STATUS (2026-07-03) , honest close-out
+DONE+committed: A1 (impl+PASS), A3 (V2), A4 (chip live), A5 (bundles+products full), B1 (count), B4-backend (embedding race + N+1 RPC + 9 wins), B5 (focus rings), C1/C2 + hooks.
+- [x] B2 city-lock: NO lock code (0 maxBounds/minZoom in MapView) + auto-update landed -> RESOLVED.
+- [ ] B6 scroll morph: CONFIRMED still boolean-snap (SearchTemplate.tsx:773 `scrolled` bool + hysteresis). FIXING now (continuous scrollY morph, coder a-pending).
+- [ ] B3 geocoder (street->city auto-select): net-new, DEFERRED (default: keep the city-name resolver that's done; add a geocoder later). Owner-optional.
+- [ ] B4 frontend load-time audit: DEFERRED, needs a prod build to measure honestly (backend perf done).
+- [ ] A2 Model B real UI: BLOCKED on owner fork , keep current search bar OR rebuild to segmented-category + separate text field. Backend ambiguity bug already fixed. No safe default (whole-search restructure) -> owner decides.
+
 ## A. DESIGN , need COUNCIL + MOCKUPS (multiple directions each)
 - [ ] A1. FILTER MENUS (inside FilterSheet): all the filter sections "look ass", renew everything. Council on the redesign; mockups for EACH menu (Sort / Availability / Rating / Price / For-whom / Amenities / Deals). 3+ directions.
 - [ ] A2. CATEGORY SYSTEM: owner still doesn't understand how categories work (recurring). VISUALIZE how it should work + the options (ways to do it). Council + mockups. (relates to search flow /dev/search-flow.)
