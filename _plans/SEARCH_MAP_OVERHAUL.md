@@ -39,17 +39,23 @@
 - [x] R3-A5: owner wants a MOCKUP instead of a text pick , /dev/bundles-products showing all 3 scopes ON the real PDP anatomy: (A) "Products" section (retail cards, CHF, pick-up-at-visit), (B) "Bundles" section (>=2 services grouped, save-%, Fresha mechanics; FLAG: service_packages graveyarded 2026-06-11, owner-driven exploration only), (C) what already ships (variants + add-ons in booking). Full-width real-size, service-row grammar from SalonServices.tsx. Recommend A (backend mostly exists). DISPATCH SERIALIZED after the round-3 coder (one-coherent-pass rule, no parallel frontend agents). (app/[locale]/dev/bundles-products/page.tsx , 3 options as PDP sections, gray-selected variants, pale −% bundle pill, rec A.)
 
 ## ROUND 4 (owner voice 2026-07-03 #2) , IMPLEMENT approved, fix inventions
-- [ ] R4-1 FILTER SHEETS: APPROVED , IMPLEMENT in the real FilterSheet.tsx (no more mockups).
-    - [ ] R4-1a sort = segmented track + MORPHING white pill (motion layoutId, no snap).
-    - [ ] R4-1b rating = swipeable bar (Any-3.0-3.5-4.0-4.5) replacing chips.
-    - [ ] R4-1c ALL bars/controls morph SMOOTHLY (animated thumb/fill, "don't snap").
-    - [ ] R4-1d Apply = neutral outline (owner de-blacked; LOCKFILE ink-CTA row amended by owner for filter sheets , log in TASTE_LOG).
-    - [ ] R4-1e selected = GRAY in sheets (owner supersedes V3-D450 blue-border here , log in TASTE_LOG).
-    - [ ] R4-1f price/for-whom/amenities keep approved treatments (slider / chips / chips).
-- [ ] R4-2 CARD SIZE: implement V2 (3/2 at ~250px) in the REAL homepage SalonCard rail ("V2, not V3"). Measure-verify ~250x167 at 412px.
-- [ ] R4-3 SPEC CHIP: M approved, NO CHECK MARK , frosted TEXT-ONLY 12px chip. IMPLEMENT: SalonResultCard feed chip + client-side match vs services (+ staff_members.specialties via API embed IF curl-proves, no silent no-op). i18n keys de/en/fr/it. Graveyard the icon variant.
-- [ ] R4-4 A2 COMPARE: rework /dev/search-model-b into CURRENT vs MODEL B compare.
-- [ ] R4-5 SEARCH BAR INVENTED (owner: "not what we have"): measure the REAL /de/coiffeur bar FIRST; compare mockup must copy it verbatim. Feed DRIFT_LEDGER.
+> DONE (coder, 2026-07-03): R4-1..R4-6 all landed + Playwright-verified live (screenshots in
+> scratchpad: r4_sheet_sort_before/r4_sheet_sort.png morph proof, r4_sheet_rating.png +
+> min_rating=3.5 URL commit proof, r4_sheet_price.png, r4_home_cards.png 245x163.5 (ratio
+> 1.500), r4_chip_live.png "Spezialist für Balayage" live on Atelier Haarwerk). staff_members
+> specialties embed PROVEN by curl (not services-only fallback). tsc: 0 new errors (4
+> pre-existing discovery-backfill errors unchanged).
+- [x] R4-1 FILTER SHEETS: APPROVED , IMPLEMENT in the real FilterSheet.tsx (no more mockups).
+    - [x] R4-1a sort = segmented track + MORPHING white pill (motion layoutId, no snap).
+    - [x] R4-1b rating = swipeable bar (Any-3.0-3.5-4.0-4.5) replacing chips.
+    - [x] R4-1c ALL bars/controls morph SMOOTHLY (animated thumb/fill, "don't snap").
+    - [x] R4-1d Apply = neutral outline (owner de-blacked; LOCKFILE ink-CTA row amended by owner for filter sheets , logged in TASTE_LOG).
+    - [x] R4-1e selected = GRAY in sheets (owner supersedes V3-D450 blue-border here , logged in TASTE_LOG; SheetChip already gray, confirmed unchanged).
+    - [x] R4-1f price/for-whom/amenities keep approved treatments (slider / chips / chips, untouched).
+- [x] R4-2 CARD SIZE: implement V2 (3/2 at ~250px) in the REAL homepage SalonCard rail ("V2, not V3"). Formula (100vw-44px)/1.5, at 412 = 245.3px card, height 163.5px, ratio 1.500 (3:2). Playwright-verified live on /de (getBoundingClientRect).
+- [x] R4-3 SPEC CHIP: M approved, NO CHECK MARK , frosted TEXT-ONLY 12px chip. IMPLEMENT: SalonResultCard feed chip + client-side match vs services + staff_members.specialties (API embed CURL-PROVEN 2026-07-03, e.g. Atelier Haarwerk staff specialty "Balayage"). i18n keys matchChipTerm de/en/fr/it added. BadgeCheck icon variant already graveyarded (REMOVED.md).
+- [x] R4-4 A2 COMPARE: rework /dev/search-model-b into CURRENT vs MODEL B compare. Two stacked phone frames (Today / Model B) built from Header.tsx + SearchTemplate.tsx real classes, near-verbatim, no invented bar/segmented control. Curl 200.
+- [x] R4-5 SEARCH BAR INVENTED (owner: "not what we have"): the real /de/coiffeur bar was screenshotted + viewed BEFORE writing (scratchpad real_category_top.png) and the compare mockup's regions (home button/city chip/burger/category pills/search bar/filter pills/count+sort) copy Header.tsx + SearchTemplate.tsx exact classes, no invented search bar.
 - [x] R4-6 A5 mockup built (/dev/bundles-products, rec A) , commit + link, owner picks scope.
 
 ## REWORK STATUS (2026-07-03) , all A1-A4 done via coder, committed, linked

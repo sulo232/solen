@@ -4516,6 +4516,8 @@
       "rating45": "4.5+",
       "rating40": "4.0+",
       "ratingAny": "Peu importe",
+      "ratingAndUp": "{value} et plus",
+      "ratingAria": "Note minimale",
       "apply": "Afficher {count} salons"
     },
     "progress": {
@@ -5883,6 +5885,7 @@
     "sectionAmenities": "Equipements",
     "sectionDeals": "Offres",
     "pillWalkIn": "Walk-in",
+    "matchChipTerm": "Spécialiste {term}",
     "pillOpenNow": "Ouvert",
     "pillAmenitiesCount": "Equipements {count}",
     "priceUpTo": "Jusqu'a CHF {amount}",

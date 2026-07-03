@@ -148,3 +148,26 @@ spa), so the chrome IA is broken. Full record + phase-2 list: [`_discovery-audit
 ### Applied in code?
 - Not yet , owner said "write it down" first. Next when greenlit: mockup of the real `/inspo` chrome
   (cards untouched) as a link, mockup-first.
+
+## FilterSheet per-filter sheets , Apply button + in-sheet selected state (owner voice 2026-07-03, R4-1)
+
+Owner approved `/dev/filter-menus` in full then said "just implement it" (2026-07-03). Two rows AMEND
+prior LOCKFILE conventions, scoped to filter sheets only:
+- **Apply/commit button in a filter sheet = neutral OUTLINE** (`bg-white border-s-border text-s-ink
+  rounded-pill`, `hover:bg-s-bg-sunken`), NOT the LOCKFILE §2.5 ink Primary CTA ("i dont like black
+  buttons"). Scope: FilterSheet.tsx Apply only , the ONE global commit CTA rule (LOCKFILE selected/active
+  row: "ink ONLY for the one commit button") still holds everywhere else (booking pay, checkout, etc).
+- **Selected/active state INSIDE a filter sheet = GRAY** (`bg-s-bg-sunken` + `border-transparent` + ink
+  text), superseding V3-D450's blue-border chip rule for sheet-internal controls specifically (sort
+  segment fill, gender/amenities/deals SheetChip). The filter PILL row OUTSIDE the sheet (SearchTemplate
+  chip strip) is UNCHANGED , still its existing neutral-sunken treatment, not touched by this decision.
+- Sort segmented control's active white pill now MORPHS between options via a shared `motion.span
+  layoutId` (duration 0.26, EASE [0.32,0.72,0,1]) instead of a hard swap ("make it morphing, don't snap,
+  more smooth"). Rating changed from a chip row to a swipeable discrete bar (Any/3.0/3.5/4.0/4.5) with
+  the same eased-glide fill/thumb.
+
+### Applied in code?
+- Yes , `app/[locale]/_components/search/FilterSheet.tsx`: Sort segmented pill morph, Rating chip row
+  -> `RatingBar` (discrete swipeable bar), Apply button -> neutral outline, in-sheet selected chips
+  confirmed gray (`SheetChip` was already `bg-s-bg-sunken`, unchanged). i18n keys `ratingAndUp` /
+  `ratingAria` added de/en/fr/it.

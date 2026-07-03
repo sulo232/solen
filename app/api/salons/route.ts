@@ -77,6 +77,14 @@ export async function GET(request: NextRequest) {
     const servicesCols = withSlots
       ? "id, name_de, name_en, duration_minutes, price, category"
       : "price";
+    // R4-3 (2026-07-03): when ?with_slots=1 (category/search page), also embed active
+    // staff specialties so SearchTemplate can build the on-photo specialization chip
+    // for a free-text query. Embed is PROVEN by curl before shipping; if it errors or
+    // returns nothing the chip logic falls back to services-only matching (no silent
+    // no-op). staff_members(specialties) is filtered to active staff via the embedded
+    // resource `is_active` predicate below (staff_members!inner is NOT used so salons
+    // with no active staff still return, just with an empty staff array).
+    const staffEmbed = withSlots ? ", staff_members(specialties, is_active)" : "";
 
     // Explicit public column list. Replaces the old `select('*')` which shipped all
     // ~98 salon columns to anonymous clients, including owner/payment internals
@@ -130,9 +138,14 @@ export async function GET(request: NextRequest) {
     }
     const semanticMode = rankIndex !== null;
 
+    // Assembled as a plain `string` (not a literal-typed template) so the dynamic
+    // staff_members embed doesn't trip the PostgREST select type-parser. The embed is
+    // runtime-proven (curl 2026-07-03) and rows are already read as Record<string,unknown>
+    // downstream, so the opaque select type is consistent with the existing handling.
+    const selectStr: string = `${salonCols}, services(${servicesCols})${staffEmbed}`;
     let query = supabase
       .from("salons")
-      .select(`${salonCols}, services(${servicesCols})`, { count: "exact" })
+      .select(selectStr, { count: "exact" })
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .eq("is_test", false);
@@ -441,11 +454,15 @@ export async function GET(request: NextRequest) {
       query = query.range(offset, offset + limit - 1);
     }
 
-    const { data, error, count } = await query;
+    const { data: rawData, error, count } = await query;
     if (error) {
       console.error("[api/salons GET] query error:", error.message);
       return NextResponse.json({ items: [], total: 0, page, limit });
     }
+    // The opaque-string select (staff_members embed) types `data` as an error union;
+    // rows are read as Record<string,unknown> throughout, so cast once here (runtime
+    // shape is the normal salon rows, curl-proven 2026-07-03).
+    const data = rawData as unknown as Record<string, unknown>[] | null;
 
     // Date-based availability filtering
     let availableIds: Set<string> | null = null;
@@ -575,8 +592,16 @@ export async function GET(request: NextRequest) {
       const avg_price = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : null;
       // "ab X CHF" map pills need the cheapest service price, not the average.
       const min_price = prices.length > 0 ? Math.min(...prices) : null;
+      // R4-3: flatten ACTIVE staff specialties into a deduped string[] the client uses
+      // for the specialization match-chip. Drop the raw staff_members embed from the
+      // payload (only the flat specialties list is needed downstream). Absent/empty when
+      // ?with_slots=1 was not set (embed not requested) or a salon has no active staff.
+      const staffMembers = (salon.staff_members as Array<{ specialties?: string[] | null; is_active?: boolean }> | null) ?? null;
+      const staff_specialties = staffMembers
+        ? [...new Set(staffMembers.filter((m) => m.is_active !== false).flatMap((m) => m.specialties ?? []))]
+        : [];
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { services: _services, ...rest } = salon;
+      const { services: _services, staff_members: _staff, ...rest } = salon;
 
       const salonId = salon.id as string;
 
@@ -584,6 +609,7 @@ export async function GET(request: NextRequest) {
         ...rest,
         avg_price,
         min_price,
+        ...(withSlots ? { staff_specialties } : {}),
         distance_meters: distanceMap ? distanceMap[salonId] : undefined,
         ...(withSlots ? { services: topServicesBySalon[salonId] ?? [] } : {}),
         ...(availableIds !== null

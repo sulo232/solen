@@ -158,6 +158,10 @@ type Salon = {
     duration_minutes?: number | null;
     slots?: string[] | null;
   }[];
+  // R4-3 (2026-07-03): deduped ACTIVE-staff specialties (from /api/salons ?with_slots=1
+  // staff_members embed, proven live 2026-07-03). Used to build the on-photo
+  // specialization match-chip for a free-text query. Empty/absent when not requested.
+  staff_specialties?: string[] | null;
 };
 
 const V3_CATS = ["coiffeur", "barbershop", "nails", "spa"] as const;
@@ -196,6 +200,30 @@ function nextSlotLabel(services: Salon["services"], locale: string): string | nu
   if (sameDay(earliest, today)) return `${SLOT_TODAY[locale] ?? SLOT_TODAY.de} ${hhmm}`;
   if (sameDay(earliest, tomorrow)) return `${SLOT_TOMORROW[locale] ?? SLOT_TOMORROW.de} ${hhmm}`;
   return `${SLOT_WEEKDAYS[earliest.getDay()]}. ${hhmm}`;
+}
+
+// R4-3 (2026-07-03, owner-approved /dev/spec-chip): resolve the on-photo
+// specialization chip for a salon when the user typed a free-text query. Matches the
+// lowercased query against this salon's REAL service names (name_de/name_en) and its
+// active-staff specialties (staff_specialties, from the proven /api/salons embed). On
+// a match, returns the localized "{term} specialist" label built from the MATCHED REAL
+// term (service name or specialty, truncated ~24 chars). NEVER fabricated: no query or
+// no match -> null (the card shows no chip). The translator is the `searchUi` `t`.
+function matchChipLabel(salon: Salon, query: string, t: Translator): string | null {
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return null;
+  // Candidate REAL terms in match priority: staff specialties first (they read as
+  // "specialist for X"), then service names. Only terms that CONTAIN the query match.
+  const serviceTerms = (salon.services ?? []).flatMap((s) =>
+    [s.name_de, s.name_en].filter((v): v is string => !!v),
+  );
+  const specialtyTerms = salon.staff_specialties ?? [];
+  const candidates = [...specialtyTerms, ...serviceTerms];
+  const hit = candidates.find((term) => term.toLowerCase().includes(q));
+  if (!hit) return null;
+  // Truncate the matched term to ~24 chars so the chip never overruns the photo.
+  const term = hit.length > 24 ? `${hit.slice(0, 23).trimEnd()}…` : hit;
+  return t("matchChipTerm", { term });
 }
 
 // V3-D451: sort option VALUES (stable URL params). Labels are resolved per-locale
@@ -1498,6 +1526,7 @@ export default function SearchTemplate({
                       photoUrl={s.cover_photo_url ?? undefined}
                       galleryCount={s.gallery_urls?.length ?? 0}
                       hasServiceQuery={q.length > 0}
+                      matchChip={q.length > 0 ? matchChipLabel(s, q, tx) : null}
                       category={activeCategory ? undefined : safeCategory(s.categories)}
                       city={
                         s.address ||
@@ -1675,6 +1704,7 @@ export default function SearchTemplate({
           address: s.address,
           galleryCount: s.gallery_urls?.length ?? 0,
           hasServiceQuery: q.length > 0,
+          matchChip: q.length > 0 ? matchChipLabel(s, q, tx) : null,
           category: activeCategory ? undefined : safeCategory(s.categories),
           city:
             s.address ||
@@ -2000,6 +2030,9 @@ export default function SearchTemplate({
           rating45: tFilter("rating45"),
           rating40: tFilter("rating40"),
           ratingAny: tFilter("ratingAny"),
+          // R4-1b: the rating BAR's "{value} and up" label + its aria-label.
+          ratingAndUp: (value: string) => tFilter("ratingAndUp", { value }),
+          ratingAria: tFilter("ratingAria"),
           forWhoHeading: t("sectionGender"),
           genderAny: t("genderAny"),
           genderFemale: t("genderFemale"),

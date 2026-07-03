@@ -37,6 +37,7 @@
  */
 
 import * as React from "react";
+import { motion } from "motion/react"; // mockup-ok: owner-approved /dev/filter-menus (R4-1 morph)
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -50,6 +51,11 @@ import {
   ModalFooter,
   useResponsiveOverlay,
 } from "../primitives";
+
+// R4-1 (2026-07-03, owner-approved /dev/filter-menus): shared search-bar ease. Drives
+// the Sort segmented pill morph + the rating bar fill glide (owner: "make it morphing,
+// don't snap, more smooth"). Same curve as SearchTemplate/booking. mockup-ok
+const EASE = [0.32, 0.72, 0, 1] as const;
 
 // V3-D391: price filter is a SLIDER (Fresha "Maximum price" model), not buckets.
 // Single max-price thumb — drag down to cap the price; at MAX = no filter. Live
@@ -132,6 +138,117 @@ function PriceSlider({
   );
 }
 
+// R4-1b (2026-07-03, owner-approved /dev/filter-menus): the Bewertung filter is a
+// SWIPEABLE DISCRETE BAR over 5 stops [Any, 3.0, 3.5, 4.0, 4.5] (min_rating),
+// replacing the old chip row. Dragging/tapping the track steps across the stops; the
+// STOPS stay discrete but the visual fill + thumb GLIDE (motion, EASE) so it never
+// snaps ("don't snap", owner). A star + selected value label sits above; tick labels
+// (>= 12px) sit under the track. Writes the same min_rating param the chips did.
+const RATING_STOPS: (number | null)[] = [null, 3.0, 3.5, 4.0, 4.5];
+
+function RatingBar({
+  minRating,
+  onChange,
+  anyLabel,
+  andUpLabel,
+  ariaLabel,
+}: {
+  minRating: number | null;
+  onChange: (value: string | null) => void;
+  // Copy passed in (resolved per-locale by the parent).
+  anyLabel: string;
+  andUpLabel: (value: string) => string;
+  ariaLabel: string;
+}) {
+  const idxFromRating = (r: number | null) => {
+    const i = RATING_STOPS.findIndex((s) => s === r);
+    return i >= 0 ? i : 0;
+  };
+  const [idx, setIdx] = React.useState(() => idxFromRating(minRating));
+  const idxRef = React.useRef(idx);
+  idxRef.current = idx;
+  const trackRef = React.useRef<HTMLDivElement>(null);
+  const dragging = React.useRef(false);
+  React.useEffect(() => setIdx(idxFromRating(minRating)), [minRating]);
+
+  const last = RATING_STOPS.length - 1;
+  const pct = (idx / last) * 100;
+  const stop = RATING_STOPS[idx];
+
+  const idxFromX = (clientX: number) => {
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return idxRef.current;
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    return Math.round(ratio * last);
+  };
+  // Commit the current stop to the URL param (null = "Any", clears min_rating).
+  const commit = (i: number) => {
+    const s = RATING_STOPS[i];
+    onChange(s == null ? null : String(s));
+  };
+  const down = (e: React.PointerEvent) => {
+    dragging.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    setIdx(idxFromX(e.clientX));
+  };
+  const move = (e: React.PointerEvent) => {
+    if (dragging.current) setIdx(idxFromX(e.clientX));
+  };
+  const up = () => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    commit(idxRef.current);
+  };
+  const label = stop == null ? anyLabel : andUpLabel(String(stop));
+
+  return (
+    <div className="pt-1">
+      {/* Selected value: star + the current stop. */}
+      <div className="mb-4 flex items-center gap-1.5 font-body text-[15px] font-semibold text-s-ink">
+        <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
+        {label}
+      </div>
+      {/* Swipeable/drag bar - ink track fill + ink thumb, stepping across the 5 stops.
+          The fill width + thumb position ANIMATE (motion, EASE) so the move eases even
+          though the stops are discrete ("don't snap"). While dragging, motion tracks
+          the finger 1:1 (duration 0); on release it eases to the settled stop. */}
+      <div
+        ref={trackRef}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        className="relative flex h-6 cursor-pointer touch-none select-none items-center"
+        role="slider"
+        aria-label={ariaLabel}
+        aria-valuemin={0}
+        aria-valuemax={last}
+        aria-valuenow={idx}
+        aria-valuetext={label}
+      >
+        <div className="h-1.5 w-full rounded-full bg-s-border" />
+        <motion.div
+          className="absolute h-1.5 rounded-full bg-s-ink"
+          animate={{ width: `${pct}%` }}
+          transition={dragging.current ? { duration: 0 } : { duration: 0.22, ease: EASE }}
+        />
+        <motion.div
+          className="absolute h-5 w-5 -translate-x-1/2 rounded-full border-2 border-s-ink bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]"
+          animate={{ left: `${pct}%` }}
+          transition={dragging.current ? { duration: 0 } : { duration: 0.22, ease: EASE }}
+        />
+      </div>
+      {/* Tick labels under the track - one per stop, >= 12px. */}
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+        {RATING_STOPS.map((s, i) => (
+          <span key={i} className={i === idx ? "font-semibold text-s-ink" : undefined}>
+            {s == null ? anyLabel : String(s)}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API - all state + writers are owned by SearchTemplate (single source of
 // truth). The sheet is a controlled, stateless view over the URL params.
@@ -155,10 +272,13 @@ export interface FilterSheetLabels {
   priceHeading: string;
   /** Group heading - "Bewertung". */
   ratingHeading: string;
-  /** Bewertung chips. */
+  /** Bewertung chips (rating45/40 legacy; the bar uses ratingAny + ratingAndUp). */
   rating45: string;
   rating40: string;
   ratingAny: string;
+  /** R4-1b rating BAR: "{value} and up" label + the bar's aria-label. */
+  ratingAndUp: (value: string) => string;
+  ratingAria: string;
   /** Für wen / Service type. */
   forWhoHeading: string;
   genderAny: string;
@@ -300,10 +420,14 @@ function FilterSheetContent({
 }: Omit<FilterSheetProps, "isOpen" | "onClose" | "resultCount" | "onReset">) {
   return (
     <>
-      {/* Sortieren — segmented control (writes `sort`). */}
+      {/* Sortieren - segmented control (writes `sort`). R4-1a (owner-approved
+          /dev/filter-menus): the selected white pill MORPHS between segments via a
+          shared motion layoutId (duration 0.26, EASE), so it glides instead of
+          snapping. The white pill on the sunken track = the "selected = gray track,
+          white active" recipe; NO black, NO blue. */}
       {(!section || section === "sort") && (
         <FilterGroup heading={section ? "" : labels.sortHeading}>
-          <div className="flex rounded-[12px] bg-s-bg-sunken p-1">
+          <div className="flex gap-1 rounded-[12px] bg-s-bg-sunken p-1">
             {sortOptions.map((opt) => {
               const isActive = opt.value === sort;
               return (
@@ -313,17 +437,25 @@ function FilterSheetContent({
                   onClick={() => onSortChange(opt.value)}
                   aria-pressed={isActive}
                   className={cn(
-                    "flex-1 rounded-[9px] px-2 py-2 text-center",
+                    "relative flex-1 whitespace-nowrap rounded-[9px] px-2 py-2 text-center",
                     "font-body text-[12.5px] leading-none",
-                    "transition-[background-color,color,box-shadow] duration-150 ease-glide",
+                    "transition-colors duration-150 ease-glide",
                     "focus-visible:outline-none",
                     isActive
-                      // Owner (2026-07-01): neutral, not blue , selected sort = sunken + ink.
-                      ? "bg-s-bg-sunken font-semibold text-s-ink"
+                      // Owner (2026-07-01): neutral, not blue. The white pill (below) is
+                      // the active fill; the label just goes semibold ink.
+                      ? "font-semibold text-s-ink"
                       : "font-medium text-s-ink-2 hover:text-s-ink",
                   )}
                 >
-                  {opt.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="filterSheetSortPill"
+                      transition={{ duration: 0.26, ease: EASE }}
+                      className="absolute inset-0 z-0 rounded-[9px] bg-white shadow-sm"
+                    />
+                  )}
+                  <span className="relative z-[1]">{opt.label}</span>
                 </button>
               );
             })}
@@ -364,30 +496,17 @@ function FilterSheetContent({
         </FilterGroup>
       )}
 
-      {/* Bewertung — min_rating chips (4.5+ / 4.0+ / Egal). */}
+      {/* Bewertung - R4-1b swipeable discrete bar (Any / 3.0 / 3.5 / 4.0 / 4.5),
+          replacing the old chip row. Writes the same min_rating param. */}
       {(!section || section === "rating") && (
         <FilterGroup heading={section ? "" : labels.ratingHeading}>
-          <div className="flex flex-wrap gap-2">
-            <SheetChip active={minRating === 4.5} onClick={() => onMinRatingChange(minRating === 4.5 ? null : "4.5")}>
-              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
-              4.5
-            </SheetChip>
-            <SheetChip active={minRating === 4.0} onClick={() => onMinRatingChange(minRating === 4.0 ? null : "4.0")}>
-              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
-              4.0
-            </SheetChip>
-            <SheetChip active={minRating === 3.5} onClick={() => onMinRatingChange(minRating === 3.5 ? null : "3.5")}>
-              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
-              3.5
-            </SheetChip>
-            <SheetChip active={minRating === 3.0} onClick={() => onMinRatingChange(minRating === 3.0 ? null : "3.0")}>
-              <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
-              3.0
-            </SheetChip>
-            <SheetChip active={minRating === null} onClick={() => onMinRatingChange(null)}>
-              {labels.ratingAny}
-            </SheetChip>
-          </div>
+          <RatingBar
+            minRating={minRating}
+            onChange={onMinRatingChange}
+            anyLabel={labels.ratingAny}
+            andUpLabel={labels.ratingAndUp}
+            ariaLabel={labels.ratingAria}
+          />
         </FilterGroup>
       )}
 
@@ -451,19 +570,21 @@ export function FilterSheet(props: FilterSheetProps) {
     </button>
   );
 
-  // Primary CTA recipe (LOCKFILE §2.5): white on s-ink, 15px/500. Applies the
-  // (already-live) URL params and closes - the list reacts to the params, so
-  // "apply" is just "close" here (params write on every tap = instant filtering).
+  // R4-1d (owner voice 2026-07-03, mockup-ok /dev/filter-menus): filter-sheet Apply is
+  // a NEUTRAL OUTLINE, not the LOCKFILE §2.5 ink Primary CTA ("i dont like black
+  // buttons" - amends the ink-CTA convention for filter sheets specifically, logged
+  // in TASTE_LOG.md). Applies the (already-live) URL params and closes - the list
+  // reacts to the params, so "apply" is just "close" here. No focus-visible utility
+  // here (the global focus system in globals.css already handles it, V3-D449).
   const applyButton = (
     <button
       type="button"
       onClick={onClose}
       className={cn(
-        "flex-1 rounded-pill bg-s-ink px-6 py-3 text-center",
-        "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-white tabular-nums",
-        "transition-[background-color,transform] duration-150 ease-glide",
-        "hover:bg-black active:scale-[0.98] active:duration-[80ms]",
-        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+        "flex-1 rounded-pill border border-s-border bg-white px-6 py-3 text-center",
+        "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-s-ink tabular-nums",
+        "transition-colors duration-150 ease-glide",
+        "hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]",
       )}
     >
       {labels.apply(resultCount)}

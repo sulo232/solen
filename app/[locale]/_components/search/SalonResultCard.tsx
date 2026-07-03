@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Store, MapPin, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FROST_GLASS } from "@/lib/frost-glass";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 
@@ -82,6 +83,13 @@ export interface SalonResultCardProps {
    *  /dev/results-full state); false/absent = browse state (/dev/results-browse:
    *  rating plus from-price column). */ // mockup-ok
   hasServiceQuery?: boolean;
+  /** R4-3 (2026-07-03, owner-approved /dev/spec-chip size M, NO icon): a frosted
+   *  TEXT-ONLY specialization chip rendered bottom-left of the feed-variant photo.
+   *  The FULLY-LOCALIZED label ("Balayage specialist" / "Spezialist für Balayage"),
+   *  built by SearchTemplate from a REAL matched service name or staff specialty when
+   *  the user typed a free-text query. NEVER fabricated: null/absent -> no chip.
+   *  BadgeCheck icon variant graveyarded (owner: text-only). */
+  matchChip?: string | null;
   /** Walk-in live status (variant A), shown only when the walk_in filter is active.
    *  Raw minutes from /api/walkin/availability (the card owns the copy + i18n):
    *  `walkInWaitMin`/`walkInWaitMax` = wait range; 0 → "Jetzt frei". `walkInQueue` = N waiting.
@@ -183,7 +191,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, address, distanceMeters, priceFromCHF, isSaved, salonId,
     nextSlot, services, variant = "grid",
-    galleryCount, hasServiceQuery,
+    galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
     onSelect,
   } = props;
@@ -464,6 +472,19 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           <div className="absolute right-3 top-3 z-10">
             <HeartButton isSaved={isSaved} salonName={name} salonId={salonId} size={36} iconSize={16} />
           </div>
+        )}
+        {/* R4-3: frosted TEXT-ONLY specialization chip, size M (12px / px-2.5 py-1 /
+            semibold ink), bottom-left of the photo. FROST_GLASS (lib/frost-glass.ts).
+            Rendered only when SearchTemplate resolved a REAL match for the typed query
+            (no fabrication). No icon (BadgeCheck graveyarded, owner 2026-07-03).
+            mockup-ok: owner-approved /dev/spec-chip size M, IMPLEMENT (SEARCH_MAP_OVERHAUL R4-3). */}
+        {matchChip && (
+          <span
+            className="absolute bottom-2.5 left-2.5 z-10 max-w-[calc(100%-20px)] truncate rounded-pill px-2.5 py-1 font-body text-[12px] font-semibold leading-none text-s-ink" // mockup-ok: /dev/spec-chip M approved
+            style={FROST_GLASS}
+          >
+            {matchChip}
+          </span>
         )}
         {dotCount > 1 && (
           <span className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden>

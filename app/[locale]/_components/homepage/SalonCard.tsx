@@ -450,15 +450,16 @@ export function SalonCard({
         "group flex shrink-0 flex-col snap-start",
         // V2-D60-cards-3 (2026-05-14): Airbnb-style RESPONSIVE widths.
         // Cards stretch to fill row at each breakpoint; card count changes:
-        //   mobile: viewport-relative — always 2 FULL cards + ~20% peek of the 3rd.
-        //          Formula: (100vw - 44px) / 2.2 → at 375 viewport ≈ 150px card,
-        //          at 414 viewport ≈ 168px. The "−44" accounts for section/frame
-        //          horizontal padding chrome; "/2.2" gives 2 cards + 0.2 peek.
+        //   mobile: viewport-relative - 1 FULL card + a peek of the next.
+        //          Formula: (100vw - 44px) / 1.5 -> at 412 viewport ~245px card
+        //          (R4-2, owner "V2, not V3": bigger card at ~250px with the next
+        //          card peeking, was /2.2 ~167px). The "-44" accounts for
+        //          section/frame horizontal padding chrome.
         //   sm 640+ : 3 cards · md 768+ : 4 · lg 1024+ : 5 · xl 1280+: 6
-        // No 2xl breakpoint — Section is capped at max-w-[1280px], so wider
+        // No 2xl breakpoint, Section is capped at max-w-[1280px], so wider
         // viewports keep the 6-card layout instead of shrinking cards to fit 7.
         // Formula per breakpoint: card-width = (100% - (N-1)*12gap) / N
-        "w-[calc((100vw-44px)/2.2)]",
+        "w-[calc((100vw-44px)/1.5)]", // mockup-ok: /dev/card-ratio V2 approved (owner 2026-07-03, R4-2)
         "sm:w-[calc((100%-24px)/3)]",
         "md:w-[calc((100%-36px)/4)]",
         "lg:w-[calc((100%-48px)/5)]",
