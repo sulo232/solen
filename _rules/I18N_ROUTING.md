@@ -1,5 +1,7 @@
 # Routing & Internationalisation (i18n) Rules (MANDATORY)
 
+> NOTE (2026-07-03): any reference to _tasks/SOLEN_DESIGN.md (rule 36) is superseded by _design-system/SOURCE.md + LOCKFILE.md. All i18n rules stay live.
+
 > **CONTEXT**: On 2026-03-25, an audit revealed that 90% of the UI remained in German when switching to English, internal links reverted to `/de/`, and layouts broke because German words are longer than English words. These rules prevent i18n and routing regressions.
 
 ---

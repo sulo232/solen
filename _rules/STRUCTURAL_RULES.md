@@ -1,5 +1,7 @@
 # Structural Consistency Rules (MANDATORY)
 
+> PARTIAL RETIREMENT (2026-07-03): references to _tasks/SOLEN_DESIGN.md (rules 43, 46, 47) are superseded by _design-system/SOURCE.md + LOCKFILE.md. The rule 46 dark-mode CSS variable requirement is superseded: Solen web is light-mode only. All other rules stay live.
+
 > **CONTEXT**: On 2026-03-25, a deep audit found 7 orphaned components never rendered anywhere, 3 features with backend APIs but no complete UI flow, 40+ files using a banned hover token, and a critical naming collision between an old and new `FilterBar.tsx`. These rules prevent structural chaos from recurring.
 
 ---

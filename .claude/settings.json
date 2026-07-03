@@ -15,6 +15,17 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/api-route-discriminate-reminder.py"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit",

@@ -191,3 +191,18 @@ When the user says "I pasted in the screenshot folder", "see the screenshot fold
 - **Functional rules** live in `_rules/*` (code safety, structural, i18n, security, db, lessons learned). Read the relevant one before related work.
 - **Incomplete features** → append to `_tasks/INCOMPLETE_FEATURES.md` (file:line · blocker · next steps). **Never delete entries.**
 - **Error handling** → never `.catch(() => {})`. Always `console.error("[Component] description:", err)`. Auth flows: log + redirect to login. Payment flows: log + user-visible error + retry.
+
+## Precedence chain (when two rules or docs disagree, 2026-07-03)
+
+Walk top down; higher wins. Latest DATED owner decision wins; "supersedes X" kills X everywhere, even where X still appears verbatim in an older doc or memory.
+
+1. The owner's live, literal, latest ask (a live rejection outranks an earlier approval)
+2. Hooks and gates (a deny message is an instruction, not an obstacle)
+3. _design-system/LOCKFILE.md frozen literals
+4. This file's pinned blocks (taste rules, design contract, binary triggers, exists protocol)
+5. _design-system/TASTE_LOG.md dated decisions
+6. Memory feedback files
+7. Global ~/.claude/CLAUDE.md rules
+8. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history)
+
+Full reasoning procedure: the fable-reasoning skill, section 6.

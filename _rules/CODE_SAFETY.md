@@ -1,5 +1,7 @@
 # Code Safety Rules (MANDATORY — ZERO EXCEPTIONS)
 
+> RETIRED LAW WARNING (2026-07-03): any rule here saying to auto-push after commit or to check Vercel is RETIRED. Current law: NEVER push (the owner pushes manually), deploy is Netlify from main. References to _tasks/SOLEN_DESIGN.md are superseded by _design-system/SOURCE.md + LOCKFILE.md. The rest of this file stays live.
+
 > **CONTEXT**: On 2026-03-17, an AI agent executed a roadmap and created a mega-commit that broke the entire production site. It imported 4 components that didn't exist, called 4 APIs that didn't exist, and deviated from the roadmap spec. This section exists to prevent that from EVER happening again.
 
 ---

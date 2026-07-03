@@ -4,13 +4,15 @@ description: Verify a live UI section matches the locked design reference (deleg
 argument-hint: <section> [<route>] [<reference-line-range>]
 ---
 
-Dispatch the `design-verifier` subagent to check whether the named section matches the locked design reference at `public/solen-coral.html`.
+Dispatch the `design-verifier` subagent to check whether the named section matches the locked design reference at `public/solen-styleguide.html`.
 
 # Args
 
+> REFERENCE CORRECTION (2026-07-03): public/solen-coral.html is RETIRED. The design-verifier agent's own chain is canonical: _design-system/LOCKFILE.md, then SOURCE.md, then public/solen-styleguide.html. Ignore any solen-coral reference below.
+
 - **section** (required) — short name of the section to verify (e.g. `hero`, `promise-pills`, `categories-grid`, `salon-cards`, `footer`)
 - **route** (optional, default `/de`) — live URL path to check
-- **reference-line-range** (optional) — e.g. `712-762` to scope the verifier to a specific block of `solen-coral.html`. If omitted, the verifier infers from the section name.
+- **reference-line-range** (optional) — e.g. `712-762` to scope the verifier to a specific block of `solen-styleguide.html`. If omitted, the verifier infers from the section name.
 
 # Examples
 
@@ -29,7 +31,7 @@ Dispatch the `design-verifier` subagent to check whether the named section match
    - `footer` → `components/layout/Footer.tsx`
    - `testimonials` → `components/TestimonialCarousel.tsx`
    - other → grep for it; if you can't find a single file, ask the user
-2. If reference-line-range is missing, **find it via grep on `public/solen-coral.html`**. Common anchors:
+2. If reference-line-range is missing, **find it via grep on `public/solen-styleguide.html`**. Common anchors:
    - `<!-- HERO -->` → starts at first match line
    - `<!-- SALON CARDS` → starts there
    - `<!-- FOOTER -->` → starts there

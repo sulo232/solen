@@ -41,6 +41,37 @@ Ranked by payoff. None applied; the rules are the owner's approved system.
 9. LESSONS_LEARNED.md stopped growing 2026-06-05 while lessons scatter to CLAUDE.md blocks + memory. Either resume appending or mark the file as index-to-elsewhere.
 10. SUBAGENT-DELEGATION GATE GAP: Stop-level gates (design-verify, gemini-check) only see the main transcript, so delegated work is systematically less gated. Compensation now baked into fable-execution section 9 (verification goes INTO the coder/reviewer briefs); a structural fix would be a SubagentStop gate.
 
+## Round 2: apply-all + enforcement hooks (owner go, 2026-07-03)
+
+Owner: "Apply all of them. And also make hooks too, because rules keep getting forgotten."
+
+- [ ] R1a LOOP_SYSTEM.md model-tiering section corrected to sonnet/haiku only
+- [ ] R1b verify.md repointed away from retired solen-coral.html
+- [ ] R1c refine.md section 2 stale design-verifier justification corrected
+- [ ] R1d1 fresha-section-capture tool-name translation banner
+- [ ] R1d2 pixel-ref-collect tool-name translation banner
+- [ ] R1d3 site-teardown tool-name translation banner
+- [ ] R1e1 memory feedback_check_skills_first superseded header
+- [ ] R1e2 memory feedback_90_10_color_rule superseded header
+- [ ] R1e3 memory feedback_selected_state_ink_not_blue_ring superseded header
+- [ ] R1e4 memory feedback_mockup_every_design_decision superseded header
+- [ ] R1f _rules historical banners (CODE_SAFETY, SOLEN_UI, SOLEN_PATTERNS, SYSTEMS, search-bar-rules, STRUCTURAL_RULES, I18N_ROUTING)
+- [ ] R1g memory feedback_balance_anchor_derive_and_measure check:dash reference corrected
+- [ ] R2a unfinished-batch-gate.py registered under Stop (global), self-tested
+- [ ] R2b vestigial coder-marker-subagentstop.py retired and deregistered
+- [ ] R3 MultiEdit added to matchers of mockup-gate, no-focus-ring-gate, no-caps-gate, orchestration-gate; Bash-write bypass decision stated in report
+- [ ] R4 precedence-chain block added to project CLAUDE.md
+- [ ] R5 rule 9 fix-routing sentence added to global CLAUDE.md
+- [ ] R6 one-system mapping note added to LOOP_SYSTEM.md
+- [ ] R7a skip-flag ledger hook built, self-tested, registered
+- [ ] R7b session-marker sweep hook built, self-tested, registered
+- [ ] R8 api-route discriminate-check reminder hook (project), self-tested, registered
+- [ ] R9 LESSONS_LEARNED.md ledger-status banner
+- [ ] R10 SubagentStop UI-work reminder hook built, self-tested, registered
+- [ ] R11 fable-skill-trigger hook (UserPromptSubmit) built, self-tested, registered
+- [ ] R12 independent review of the whole batch, punch list fixed
+- [ ] R13 close-out: original message re-read, boxes ticked, report
+
 ## Review log
 
 - Round 1 (loop-reviewer, read-only): checklist items 1 to 6 ALL PASS (referential integrity of every path/script/agent/skill referenced; factual accuracy of all six claims incl. the stale-LOOP_SYSTEM and phantom-playwright traps; zero banned characters; no drift-risk literals; internal consistency; frontmatter). One FAIL finding: "CLAUDE.md section 14 missing". Finding REFUTED by direct measurement: grep shows the section at /Users/sulo/.claude/CLAUDE.md:386 (the wiring was always global-file-only; reviewer checked the project file). Round 2 dispatched to re-verify that single item and re-issue the verdict.
