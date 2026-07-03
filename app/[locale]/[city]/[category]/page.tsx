@@ -3,9 +3,12 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import type { SalonCategory } from "@/lib/types";
-import type { CitySlug } from "@/lib/cities";
+import { getActiveCityBySlug, getActiveCities, getCityName, type CitySlug } from "@/lib/cities";
 
 export const dynamic = "force-dynamic";
+// DB `cities WHERE is_active` is the runtime gate (2026-07-04 city-rollout refactor); a city
+// enabled after build still resolves without a rebuild. See app/[locale]/[city]/page.tsx.
+export const dynamicParams = true;
 
 type Params = {
   locale: string;
@@ -13,14 +16,7 @@ type Params = {
   category: string;
 };
 
-const CITIES = ["basel", "zuerich", "bern"] as const;
 const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa"] as const;
-
-const CITY_NAMES: Record<string, Record<string, string>> = {
-  basel: { de: "Basel", en: "Basel", fr: "Bâle", it: "Basilea" },
-  zuerich: { de: "Zürich", en: "Zurich", fr: "Zurich", it: "Zurigo" },
-  bern: { de: "Bern", en: "Bern", fr: "Berne", it: "Berna" },
-};
 
 const CATEGORY_NAMES: Record<string, Record<string, string>> = {
   coiffeur: { de: "Coiffeur", en: "Hair Salon", fr: "Coiffeur", it: "Parrucchiere" },
@@ -30,11 +26,14 @@ const CATEGORY_NAMES: Record<string, Record<string, string>> = {
 };
 
 export async function generateStaticParams(): Promise<Params[]> {
+  // Pre-render the currently-active set for build-time SSG; NOT the gate (dynamicParams
+  // above handles a city enabled after this build without a rebuild).
+  const active = await getActiveCities();
   const params: Params[] = [];
   for (const locale of ["de", "en", "fr", "it"]) {
-    for (const city of CITIES) {
+    for (const c of active) {
       for (const category of CATEGORIES) {
-        params.push({ locale, city, category });
+        params.push({ locale, city: c.slug, category });
       }
     }
   }
@@ -48,11 +47,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, city, category } = await params;
 
-  if (!(CITIES as readonly string[]).includes(city) || !(CATEGORIES as readonly string[]).includes(category)) {
+  const row = await getActiveCityBySlug(city);
+  if (!row || !(CATEGORIES as readonly string[]).includes(category)) {
     return {};
   }
 
-  const cityName = CITY_NAMES[city]?.[locale] || city;
+  const cityName = getCityName(city, locale, row);
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
 
   const titles: Record<string, string> = {
@@ -122,11 +122,12 @@ export default async function Page({
   const { locale, city, category } = await params;
   unstable_setRequestLocale(locale);
 
-  if (!(CITIES as readonly string[]).includes(city) || !(CATEGORIES as readonly string[]).includes(category)) {
+  const row = await getActiveCityBySlug(city);
+  if (!row || !(CATEGORIES as readonly string[]).includes(category)) {
     notFound();
   }
 
-  const cityName = CITY_NAMES[city]?.[locale] || city;
+  const cityName = getCityName(city, locale, row);
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
 
   return (

@@ -87,8 +87,9 @@ import { CategoryBrowseRails } from "./CategoryBrowseRails";
 import { FilterSheet } from "./FilterSheet";
 import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
-import { getCityName, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, CITIES, type CitySlug } from "@/lib/cities";
+import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
+import { useActiveCities } from "@/hooks/useActiveCities";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -415,6 +416,10 @@ export default function SearchTemplate({
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
   const pathname = usePathname() ?? "/";
+  // 2026-07-04 city-rollout refactor: DB `cities WHERE is_active` is now the source of
+  // truth for city name/coords resolution (was the static CITIES fallback, which only
+  // covered basel/zuerich/bern , a newly-enabled city like Luzern resolved to nothing).
+  const { cities: activeCities } = useActiveCities();
   // Owner-approved /dev/map-motion (2026-07-02): sheet-top tween + list<->salon morph both
   // collapse to duration 0 when the user prefers reduced motion. mockup-ok.
   const reduce = useReducedMotion();
@@ -448,7 +453,7 @@ export default function SearchTemplate({
   const explicitCountrywide = urlCity === ALL_CITIES_PARAM;
   const activeCity: CitySlug | null =
     cityFilter ??
-    (urlCity ? slugFromCity(urlCity) : null) ??
+    (urlCity ? slugFromCity(urlCity, activeCities) : null) ??
     (!serviceFilter && !cityFilter && !explicitCountrywide ? DEFAULT_CITY_SLUG : null);
   const date = searchParams.get("date");
   const period = searchParams.get("period");
@@ -1031,7 +1036,10 @@ export default function SearchTemplate({
 
   // ── Computed ──────────────────────────────────────────────────────────────
   const hasMore = salons.length < total;
-  const cityName = activeCity ? getCityName(activeCity, locale) : t("countrywide");
+  // Resolved against the LIVE active-cities set (activeCities, from /api/cities) so a
+  // city outside the static CITIES fallback (e.g. Luzern) still shows its real name.
+  const activeCityRow = activeCity ? activeCities.find((c) => c.slug === activeCity) : undefined;
+  const cityName = activeCity ? getCityName(activeCity, locale, activeCityRow) : t("countrywide");
   const sortLabel =
     SORT_OPTIONS.find((s) => s.value === sort)?.label ?? t("sort_rating");
   // V3-D451: title of the FOCUSED filter sheet (the category whose pill opened it).
@@ -1563,7 +1571,7 @@ export default function SearchTemplate({
                         (s.quartier
                           ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
                           : undefined) ||
-                        (activeCity ? getCityName(activeCity, locale) : undefined)
+                        (activeCity ? cityName : undefined)
                       }
                       address={s.address}
                       distanceMeters={s.distance_meters ?? null}
@@ -1631,7 +1639,7 @@ export default function SearchTemplate({
                       (s.quartier
                         ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
                         : undefined) ||
-                      (activeCity ? getCityName(activeCity, locale) : undefined)
+                      (activeCity ? cityName : undefined)
                     }
                     distanceMeters={s.distance_meters ?? null}
                     priceFromCHF={s.avg_price ?? null}
@@ -1739,7 +1747,7 @@ export default function SearchTemplate({
           city:
             s.address ||
             (s.quartier ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1) : undefined) ||
-            (activeCity ? getCityName(activeCity, locale) : undefined),
+            (activeCity ? cityName : undefined),
           distanceMeters: s.distance_meters ?? null,
           priceFromCHF: s.avg_price ?? null,
           reviewCount: s.review_count ?? null,
@@ -1763,7 +1771,16 @@ export default function SearchTemplate({
                 enhanced
                 // When the picked city has no listings, recenter to the city so the map goes
                 // there (instead of a blank sheet + the previous city). owner 2026-07-01.
-                emptyCenter={activeCity ? [CITIES[activeCity].lng, CITIES[activeCity].lat] : null}
+                // getCityCoords resolves against the LIVE active-cities row first (a city
+                // outside the static CITIES fallback, e.g. Luzern, still centers correctly).
+                emptyCenter={
+                  activeCity
+                    ? (() => {
+                        const coords = getCityCoords(activeCity, activeCityRow);
+                        return coords ? [coords.lng, coords.lat] : null;
+                      })()
+                    : null
+                }
                 // "Search this area": MapView already renders the debounced
                 // "In diesem Bereich suchen" button on pan/zoom; wire its bounds
                 // into areaBounds so the list + pins refetch for the visible viewport.

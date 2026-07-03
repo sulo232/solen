@@ -19,9 +19,10 @@ import {
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
-import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
+import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { useActiveCities } from "@/hooks/useActiveCities";
 
 /**
  * MobileMenu — V3-D77 (2026-05-19).
@@ -90,6 +91,10 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
   // V3-D168 (2026-05-26): expand-on-tap dropdown state for the city
   // selector. Replaces the always-visible 3-pill row.
   const [cityDropdownOpen, setCityDropdownOpen] = React.useState(false);
+  // 2026-07-04 city-rollout refactor: DB `cities WHERE is_active` is now the source of
+  // truth for the picker list (was hardcoded CITY_SLUGS), so the admin Staedte toggle
+  // actually adds/removes a city here.
+  const { cities: activeCities } = useActiveCities();
   React.useEffect(() => {
     if (!open) return;
     const persisted = getPersistedCity();
@@ -199,7 +204,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   className="block h-6 w-6 shrink-0 rounded-full"
                   style={swissFlagStyle}
                 />
-                <span>{getCityName(currentCity, locale)}</span>
+                <span>{getCityName(currentCity, locale, activeCities.find((c) => c.slug === currentCity))}</span>
               </button>
 
               {cityDropdownOpen && (
@@ -208,22 +213,22 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   aria-label="Stadt wählen"
                   className="mt-2 overflow-hidden rounded-[14px] border border-s-border bg-s-bg-surface shadow-[0_4px_14px_rgba(26,18,9,0.06)]"
                 >
-                  {CITY_SLUGS.map((slug) => {
-                    const isActive = slug === currentCity;
+                  {activeCities.map((c) => {
+                    const isActive = c.slug === currentCity;
                     return (
                       <button
-                        key={slug}
+                        key={c.slug}
                         type="button"
                         role="option"
                         aria-selected={isActive}
-                        onClick={() => handleCityPick(slug)}
+                        onClick={() => handleCityPick(c.slug)}
                         className={cn(
                           "block w-full px-4 py-3 text-left font-body text-[14px]",
                           "transition-colors active:bg-s-bg-sunken",
                           isActive ? "font-bold text-s-ink" : "font-medium text-s-ink",
                         )}
                       >
-                        {getCityName(slug, locale)}
+                        {getCityName(c.slug, locale, c)}
                       </button>
                     );
                   })}

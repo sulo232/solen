@@ -4,7 +4,6 @@ import * as React from "react";
 import { ChevronDown, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  CITY_SLUGS,
   getCityName,
   type CitySlug,
 } from "@/lib/cities";
@@ -12,6 +11,7 @@ import {
   getPersistedCity,
   setPersistedCity,
 } from "@/lib/city-cookie";
+import { useActiveCities } from "@/hooks/useActiveCities";
 
 /**
  * DesktopCitySelector — V3-D157 (2026-05-25).
@@ -43,6 +43,9 @@ export default function DesktopCitySelector({ locale }: Props) {
   const [city, setCity] = React.useState<CitySlug>(DEFAULT_CITY);
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  // 2026-07-04 city-rollout refactor: DB `cities WHERE is_active` is now the source of
+  // truth for the picker list (was hardcoded CITY_SLUGS).
+  const { cities: activeCities } = useActiveCities();
 
   React.useEffect(() => {
     setMounted(true);
@@ -70,7 +73,7 @@ export default function DesktopCitySelector({ locale }: Props) {
 
   if (!mounted) return null;
 
-  const cityName = getCityName(city, locale);
+  const cityName = getCityName(city, locale, activeCities.find((c) => c.slug === city));
 
   const handlePick = (slug: CitySlug) => {
     setOpen(false);
@@ -122,15 +125,15 @@ export default function DesktopCitySelector({ locale }: Props) {
             "z-50",
           )}
         >
-          {CITY_SLUGS.map((slug) => {
-            const isActive = slug === city;
+          {activeCities.map((c) => {
+            const isActive = c.slug === city;
             return (
               <button
-                key={slug}
+                key={c.slug}
                 type="button"
                 role="option"
                 aria-selected={isActive}
-                onClick={() => handlePick(slug)}
+                onClick={() => handlePick(c.slug)}
                 className={cn(
                   "block w-full px-3 py-2 text-left font-body text-[13px]",
                   "transition-colors hover:bg-s-bg-sunken",
@@ -139,7 +142,7 @@ export default function DesktopCitySelector({ locale }: Props) {
                     : "font-medium text-s-ink",
                 )}
               >
-                {getCityName(slug, locale)}
+                {getCityName(c.slug, locale, c)}
               </button>
             );
           })}

@@ -23,9 +23,13 @@ interface CityPageProps {
   city: CitySlug;
   locale: string;
   initialCategory?: SalonCategory;
+  /** Resolved server-side (app/[locale]/[city]/page.tsx via getCityName + the live DB row) so a
+   *  city outside the static CITIES fallback (e.g. Luzern) still shows its real localized name
+   *  instead of falling back to the bare slug. Optional so existing direct callers keep working. */
+  cityName?: string;
 }
 
-export default function CityPage({ city, locale, initialCategory = undefined }: CityPageProps) {
+export default function CityPage({ city, locale, initialCategory = undefined, cityName: cityNameProp }: CityPageProps) {
   const t = useTranslations("home.featured") as any;
   const tCityPage = useTranslations("cityPage");
   const tNav = useTranslations("navigation");
@@ -35,7 +39,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
   const [activeCategory, setActiveCategory] = useState<SalonCategory | null>(initialCategory || null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
-  const cityName = getCityName(city, locale);
+  const cityName = cityNameProp ?? getCityName(city, locale);
 
   const fetchSalons = useCallback(() => {
     setLoading(true);

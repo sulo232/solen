@@ -4,12 +4,18 @@
 // /api/admin/cities endpoint , this is the net-new admin-authed GET+PATCH on the `cities`
 // table (list + is_active toggle) the rollout admin UI needs.
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// NOT edge (2026-07-04 city-rollout refactor): `bustActiveCitiesCache()` below mutates a
+// module-level in-memory cache in lib/cities.ts. Edge and Node.js runtimes are separate
+// module registries in Next.js, so an edge-runtime PATCH here could never bust the Node.js
+// runtime's cache that app/[locale]/[city]/page.tsx (default Node runtime, no `runtime`
+// export) actually reads , the toggle would silently wait out the 5-minute TTL instead of
+// applying immediately. Node runtime is required for the bust to reach the same instance.
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminCityToggleSchema } from "@/lib/validations";
+import { bustActiveCitiesCache } from "@/lib/cities";
 
 // GET /api/admin/cities: list ALL cities (active + inactive) for the admin rollout panel.
 // Admin-only (matches app/api/admin/commission/route.ts auth shape).
@@ -63,6 +69,11 @@ export async function PATCH(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!updated) return NextResponse.json({ error: "City not found" }, { status: 404 });
+
+  // Bust the server-side getActiveCities() TTL cache (lib/cities.ts) immediately, so
+  // /[city] route gating + /api/cities (which client nav reads) reflect the toggle
+  // right away instead of waiting out the 5-minute TTL.
+  bustActiveCitiesCache();
 
   await logAuditEvent(
     req,

@@ -13,8 +13,9 @@ import MobileMenu from "./MobileMenu";
 import { Logo } from "@/app/[locale]/_components/primitives";
 import NotificationBell from "./NotificationBell";
 import DesktopCitySelector from "./DesktopCitySelector";
-import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
+import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
+import { useActiveCities } from "@/hooks/useActiveCities";
 
 /**
  * V3 Header — V2-D46 (2026-05-09).
@@ -232,6 +233,9 @@ function MobileCityChip({ locale }: { locale: string }) {
   const [city, setCity] = React.useState<CitySlug>("basel");
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  // 2026-07-04 city-rollout refactor: DB `cities WHERE is_active` is now the source of
+  // truth for the picker list (was hardcoded CITY_SLUGS).
+  const { cities: activeCities } = useActiveCities();
 
   React.useEffect(() => {
     setMounted(true);
@@ -279,7 +283,7 @@ function MobileCityChip({ locale }: { locale: string }) {
         )}
       >
         <MapPin size={15} strokeWidth={2} aria-hidden className="text-s-ink-2" />
-        <span>{getCityName(city, locale)}</span>
+        <span>{getCityName(city, locale, activeCities.find((c) => c.slug === city))}</span>
         <ChevronDown
           size={14}
           strokeWidth={2.5}
@@ -293,19 +297,19 @@ function MobileCityChip({ locale }: { locale: string }) {
           aria-label="Stadt wählen"
           className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
         >
-          {CITY_SLUGS.map((slug) => (
+          {activeCities.map((c) => (
             <button
-              key={slug}
+              key={c.slug}
               type="button"
               role="option"
-              aria-selected={slug === city}
-              onClick={() => pick(slug)}
+              aria-selected={c.slug === city}
+              onClick={() => pick(c.slug)}
               className={cn(
                 "block w-full px-3.5 py-2.5 text-left font-body text-[14px] transition-colors hover:bg-s-bg-sunken",
-                slug === city ? "font-bold text-s-ink" : "font-medium text-s-ink",
+                c.slug === city ? "font-bold text-s-ink" : "font-medium text-s-ink",
               )}
             >
-              {getCityName(slug, locale)}
+              {getCityName(c.slug, locale, c)}
             </button>
           ))}
         </div>

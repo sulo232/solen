@@ -1,24 +1,35 @@
 "use client";
 
 import type { CitySlug } from "@/lib/cities";
-import { isValidCitySlug } from "@/lib/cities";
 
 const COOKIE_NAME = "solen-city";
 const STORAGE_KEY = "solen-city";
 const MAX_AGE_DAYS = 365;
+
+// A lightweight FORMAT check (lowercase slug-ish string), not a routing gate. This module
+// is client-only and cannot reach the DB, and the cookie/localStorage value was written by
+// our own `setPersistedCity()` (a trusted round-trip), so gating it against the hardcoded
+// 3-city CITY_SLUGS fallback (via `isValidCitySlug`) used to silently drop a persisted city
+// outside that list (e.g. Luzern, once enabled) back to null on the next page load. The
+// REAL gate (is this city currently active?) lives server-side in `isActiveCitySlug`
+// (lib/cities.ts) at the /[city] route boundary.
+const SLUG_FORMAT = /^[a-z][a-z0-9-]{1,40}$/;
+function looksLikeSlug(v: string): v is CitySlug {
+  return SLUG_FORMAT.test(v);
+}
 
 /** Get the persisted city from cookie or localStorage */
 export function getPersistedCity(): CitySlug | null {
   // 1. Try cookie
   if (typeof document !== "undefined") {
     const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_NAME}=([^;]*)`));
-    if (match && isValidCitySlug(match[1])) return match[1];
+    if (match && looksLikeSlug(match[1])) return match[1];
   }
 
   // 2. Fallback to localStorage
   if (typeof localStorage !== "undefined") {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && isValidCitySlug(stored)) return stored as CitySlug;
+    if (stored && looksLikeSlug(stored)) return stored as CitySlug;
   }
 
   return null;

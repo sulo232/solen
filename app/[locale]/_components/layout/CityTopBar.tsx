@@ -4,7 +4,6 @@ import * as React from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
   CITIES,
-  CITY_SLUGS,
   getCityName,
   type CitySlug,
 } from "@/lib/cities";
@@ -12,6 +11,7 @@ import {
   getPersistedCity,
   setPersistedCity,
 } from "@/lib/city-cookie";
+import { useActiveCities } from "@/hooks/useActiveCities";
 
 /**
  * CityTopBar — V3-D142 (2026-05-25), restored at V3-D158 (2026-05-25).
@@ -114,6 +114,9 @@ export default function CityTopBar({ locale }: Props) {
   // false on desktop.
   const [hiddenByMenu, setHiddenByMenu] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  // 2026-07-04 city-rollout refactor: DB `cities WHERE is_active` is now the source of
+  // truth for the picker list (was hardcoded CITY_SLUGS).
+  const { cities: activeCities } = useActiveCities();
 
   React.useEffect(() => {
     setMounted(true);
@@ -151,7 +154,7 @@ export default function CityTopBar({ locale }: Props) {
   if (!mounted || dismissed || hiddenByMenu) return null;
 
   const copy = COPY[locale as keyof typeof COPY] ?? COPY.de;
-  const cityName = getCityName(city, locale);
+  const cityName = getCityName(city, locale, activeCities.find((c) => c.slug === city));
 
   const handleDismiss = () => {
     const maxAge = DISMISSAL_DAYS * 24 * 60 * 60;
@@ -221,16 +224,16 @@ export default function CityTopBar({ locale }: Props) {
             aria-label={copy.aria_dropdown}
             className="absolute right-0 top-full z-10 mt-1 w-[160px] overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
           >
-            {CITY_SLUGS.map((slug) => {
-              const isActive = slug === city;
+            {activeCities.map((c) => {
+              const isActive = c.slug === city;
               return (
                 <button
-                  key={slug}
+                  key={c.slug}
                   type="button"
                   role="option"
                   aria-selected={isActive}
                   onClick={() => {
-                    setCity(slug);
+                    setCity(c.slug);
                     setOpen(false);
                   }}
                   className={`block w-full px-3 py-2 text-left font-body text-[13px] transition-colors hover:bg-s-bg-sunken ${
@@ -239,7 +242,7 @@ export default function CityTopBar({ locale }: Props) {
                       : "font-medium text-s-ink"
                   }`}
                 >
-                  {getCityName(slug, locale)}
+                  {getCityName(c.slug, locale, c)}
                 </button>
               );
             })}
