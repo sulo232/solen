@@ -11,13 +11,17 @@
  *   (salons.woman_owned boolean facet) and a rating chip, NOT a salon card. No SalonResultCard here.
  *
  * Real filter set (grounded in SearchTemplate.tsx filterPills + TOGGLE_PILLS + FilterSheet.tsx):
- *   Sort         -> segmented single-select (Rating / Price / Newest / Distance)   [openSection]
- *   Availability -> Open now (inline toggle in the real chip row; shown here as its own chip sheet)
- *   Rating       -> chips 4.5 / 4.0 / 3.5 / 3.0 / Any (min_rating)                 [openSection]
+ *   Sort         -> segmented single-select; white pill MORPHS between options     [openSection]
+ *   Rating       -> swipeable BAR over 5 stops Any/3.0/3.5/4.0/4.5 (min_rating)    [openSection]
  *   Price        -> slider, CHF 20..300 max-price (min_price/max_price)            [openSection]
  *   For whom     -> chips Alle / Damen / Herren / Non-binary (gender)              [openSection]
  *   Amenities    -> chip WRAP, 9 boolean facets (AMENITY_OPTIONS)                  [openSection]
- *   Deals        -> single chip toggle (inline in the real row; own sheet here)    [toggle]
+ *   Open now + Deals -> INLINE toggle chips (TOGGLE_PILLS), NOT sheets             [toggle]
+ *
+ * ROUND 3 (owner 2026-07-03): Price/For-whom/Amenities APPROVED (untouched). Sort
+ * gains a morphing white pill (motion/react shared layoutId, EASE). Availability +
+ * Deals lose their sheets -> one "Inline pills (no sheet)" section (Open now + Deals
+ * toggle chips). Rating chips -> a swipeable discrete bar. See _plans/SEARCH_MAP_OVERHAUL.md R3-A1.
  *
  * Owner-locked treatment (2026-07-02/03):
  *   - selected chip/segment = GRAY (bg-s-bg-sunken + border, ink text), never black, never blue.
@@ -31,7 +35,8 @@
  * Grounded-in: FilterSheet.tsx SheetChip/PriceSlider recipes + SearchTemplate AMENITY_OPTIONS/SORT_VALUES.
  * Real tokens, Lucide, no CDN, English only, no em-dash, no middot.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { motion } from "motion/react";
 import {
   Star,
   Wifi,
@@ -45,6 +50,9 @@ import {
   X,
 } from "lucide-react";
 import { notFound } from "next/navigation";
+
+// Shared search-bar ease , same curve the real SearchTemplate/booking flow use.
+const EASE = [0.32, 0.72, 0, 1] as const;
 
 // ── shared bits ──────────────────────────────────────────────────────────────
 
@@ -121,6 +129,9 @@ function Chip({
 }
 
 // Single-select segmented track = white pill on a sunken track (gray selected), never black.
+// The white selected pill MORPHS/SLIDES between segments via a shared layoutId
+// (motion/react) , the absolute white bg animates its position + size when the
+// value changes, so the pill glides rather than pops (owner R3-A1.sort).
 function Segmented({
   options,
   value,
@@ -130,6 +141,8 @@ function Segmented({
   value: string;
   onChange: (v: string) => void;
 }) {
+  // useId keeps the layoutId unique per Segmented instance (safe if reused).
+  const pillId = useId();
   return (
     <div className="flex gap-1 rounded-[12px] bg-s-bg-sunken p-1">
       {options.map((o) => {
@@ -140,11 +153,20 @@ function Segmented({
             type="button"
             onClick={() => onChange(o.value)}
             aria-pressed={on}
-            className={`flex-1 whitespace-nowrap rounded-[9px] px-2 py-2 text-center font-body text-[12.5px] leading-none transition-colors ${
-              on ? "bg-white font-semibold text-s-ink shadow-sm" : "font-medium text-s-ink-2 hover:text-s-ink"
+            className={`relative flex-1 whitespace-nowrap rounded-[9px] px-2 py-2 text-center font-body text-[12.5px] leading-none transition-colors ${
+              on ? "font-semibold text-s-ink" : "font-medium text-s-ink-2 hover:text-s-ink"
             }`}
           >
-            {o.label}
+            {/* The morphing white pill , one shared element that slides between
+                segments. transition tuned to the locked EASE + a 0.26s glide. */}
+            {on && (
+              <motion.span
+                layoutId={`sortPill-${pillId}`}
+                transition={{ duration: 0.26, ease: EASE }}
+                className="absolute inset-0 z-0 rounded-[9px] bg-white shadow-sm"
+              />
+            )}
+            <span className="relative z-[1]">{o.label}</span>
           </button>
         );
       })}
@@ -172,35 +194,42 @@ function SortSheet() {
   );
 }
 
-function AvailabilitySheet() {
-  const [on, setOn] = useState(false);
-  return (
-    <SheetCard title="Availability" onReset={() => setOn(false)}>
-      {/* single chip toggle , gray when on, never black */}
-      <div className="flex flex-wrap gap-2">
-        <Chip active={on} onClick={() => setOn((x) => !x)}>
-          Open now
-        </Chip>
-      </div>
-    </SheetCard>
-  );
-}
+// Rating = a SWIPEABLE BAR over 5 discrete stops (owner R3-A1.rating). A range
+// input steps across [Any, 3.0, 3.5, 4.0, 4.5]; dragging/swiping the ink thumb
+// changes the value, with a star + the selected value shown and tick labels under
+// the track. Replaces the old chip row.
+const RATING_STOPS = ["Any", "3.0", "3.5", "4.0", "4.5"] as const;
 
 function RatingSheet() {
-  const [v, setV] = useState<string | null>(null);
-  const opts = ["4.5", "4.0", "3.5", "3.0"];
+  // index into RATING_STOPS (0 = Any). The range slides 0..4.
+  const [idx, setIdx] = useState(0);
+  const stop = RATING_STOPS[idx];
   return (
-    <SheetCard title="Rating" onReset={() => setV(null)}>
-      <div className="flex flex-wrap gap-2">
-        {opts.map((r) => (
-          <Chip key={r} active={v === r} onClick={() => setV(v === r ? null : r)}>
-            <Star size={14} strokeWidth={0} className="fill-s-star" aria-hidden />
-            {r}
-          </Chip>
+    <SheetCard title="Rating" onReset={() => setIdx(0)}>
+      {/* Selected value , star + the current stop */}
+      <div className="mb-3 flex items-center gap-1.5 font-body text-[15px] font-semibold text-s-ink">
+        <Star size={16} strokeWidth={0} className="fill-s-star" aria-hidden />
+        {stop === "Any" ? "Any rating" : `${stop} and up`}
+      </div>
+      {/* Swipeable/drag bar , ink thumb + ink track fill. step across the 5 stops. */}
+      <input
+        type="range"
+        min={0}
+        max={RATING_STOPS.length - 1}
+        step={1}
+        value={idx}
+        onChange={(e) => setIdx(Number(e.target.value))}
+        aria-label="Minimum rating"
+        aria-valuetext={stop === "Any" ? "Any rating" : `${stop} and up`}
+        className="w-full accent-s-ink"
+      />
+      {/* Tick labels under the track , one per stop, >= 12px */}
+      <div className="mt-1.5 flex justify-between font-body text-[12px] text-s-ink-3">
+        {RATING_STOPS.map((s, i) => (
+          <span key={s} className={i === idx ? "font-semibold text-s-ink" : undefined}>
+            {s}
+          </span>
         ))}
-        <Chip active={v === null} onClick={() => setV(null)}>
-          Any
-        </Chip>
       </div>
     </SheetCard>
   );
@@ -285,16 +314,22 @@ function AmenitiesSheet() {
   );
 }
 
-function DealsSheet() {
-  const [on, setOn] = useState(false);
+// Availability (Open now) + Deals are TOGGLE_PILLS in the real app (SearchTemplate
+// TOGGLE_PILLS), not sheets , so they render as inline toggle chips, not bottom
+// sheets (owner R3-A1.availability + R3-A1.deals). Gray bg-s-bg-sunken + border
+// when on (the locked selected treatment), never black/blue.
+function InlinePills() {
+  const [openNow, setOpenNow] = useState(false);
+  const [deals, setDeals] = useState(false);
   return (
-    <SheetCard title="Deals" onReset={() => setOn(false)}>
-      <div className="flex flex-wrap gap-2">
-        <Chip active={on} onClick={() => setOn((x) => !x)}>
-          Deals only
-        </Chip>
-      </div>
-    </SheetCard>
+    <div className="flex flex-wrap gap-2">
+      <Chip active={openNow} onClick={() => setOpenNow((x) => !x)}>
+        Open now
+      </Chip>
+      <Chip active={deals} onClick={() => setDeals((x) => !x)}>
+        Deals
+      </Chip>
+    </div>
   );
 }
 
@@ -306,14 +341,14 @@ export default function FilterMenusMockup() {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  // Availability + Deals dropped from the sheet gallery , they're inline TOGGLE
+  // chips now (SearchTemplate TOGGLE_PILLS), shown in their own section below.
   const sheets: { key: string; note: string; node: React.ReactNode }[] = [
-    { key: "sort", note: "Sort , tap the Sort chip", node: <SortSheet /> },
-    { key: "availability", note: "Availability , open now toggle", node: <AvailabilitySheet /> },
-    { key: "rating", note: "Rating , tap the Rating chip", node: <RatingSheet /> },
+    { key: "sort", note: "Sort , tap the Sort chip (white pill slides between options)", node: <SortSheet /> },
+    { key: "rating", note: "Rating , swipeable bar (Any-4.5)", node: <RatingSheet /> },
     { key: "price", note: "Price , slider kept", node: <PriceSheet /> },
     { key: "gender", note: "For whom , gender chips", node: <ForWhomSheet /> },
     { key: "amenities", note: "Amenities , chip wrap (not a checklist)", node: <AmenitiesSheet /> },
-    { key: "deals", note: "Deals , single chip toggle", node: <DealsSheet /> },
   ];
 
   return (
@@ -333,6 +368,20 @@ export default function FilterMenusMockup() {
               {s.node}
             </div>
           ))}
+
+          {/* Inline pills (no sheet) , Open now + Deals are TOGGLE_PILLS in the real
+              app, so they live inline in the chip row, not behind a bottom sheet. */}
+          <div>
+            <p className="mb-2 pl-1 font-body text-[12.5px] font-semibold text-s-ink-3">
+              Inline pills (no sheet)
+            </p>
+            <div className="rounded-[20px] border border-s-border bg-white p-4">
+              <InlinePills />
+              <p className="mt-3 font-body text-[12px] text-s-ink-3">
+                Open now and Deals are single toggle chips in the filter row (no bottom sheet), matching the real app.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>

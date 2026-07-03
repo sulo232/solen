@@ -24,6 +24,49 @@
 ## Sequencing (orchestrator)
 1. PLAN (this doc). 2. Confirm C1 hook. 3. COUNCIL WORKFLOW: research A1-A5 + investigate B1-B6 in parallel -> structured directions + fix diagnoses. 4. Build MOCKUPS (multiple) for A1-A4 + B1/B6 from the synthesis. 5. Apply clear functional fixes (B1, B5 focus rings, B2/B3) with verification. 6. A5 bundles = plan + owner decision.
 
+## ROUND 3 (owner voice 2026-07-03) , atomic asks
+- [x] R3-A1.sort: KEEP layout, ADD morph/slide animation of the white pill between options (motion, EASE 0.32/0.72/0/1). (Segmented: motion.span layoutId=sortPill-<id>, filter-menus/page.tsx.)
+- [x] R3-A1.availability: NOT a sheet , just an inline "Open now" toggle chip (matches real app TOGGLE_PILLS). (InlinePills section, filter-menus/page.tsx.)
+- [x] R3-A1.rating: swipeable BAR (discrete slider Any-3.0-3.5-4.0-4.5), not chips. (RatingSheet range over RATING_STOPS, filter-menus/page.tsx.)
+- [x] R3-A1.price: APPROVED as-is.
+- [x] R3-A1.forwhom: APPROVED as-is.
+- [x] R3-A1.amenities: APPROVED as-is.
+- [x] R3-A1.deals: NOT a sheet , inline "Deals" toggle button/chip. (InlinePills section, filter-menus/page.tsx.)
+- [x] R3-A2: Model B shown IN A FULL-PAGE mockup of the real search page (new /dev route) so it reads in context. (/dev/search-model-b/page.tsx.)
+- [x] R3-A4: chip "still not figured out" , root cause: shown on HALF-size 2-col cards. Show on FULL-WIDTH feed card at real size + 3 size variants (S/M/L) to pick. (spec-chip/page.tsx, full-width FeedCard + SizeStrip S/M/L, rec M.)
+- [x] R3-A3: homepage stores TOO SMALL after 3/2 , mockup with 3 real-size rail variants: square@current (rollback) / 3/2@bigger / square@bigger. Owner picks; real SalonCard untouched until then. (card-ratio/page.tsx, 3 RailStrips 167sq/250x167/200sq, rec V2.)
+- [ ] R3-harden: real-size mockup gate (feed-grammar card inside a 2-col grid = deny) , build, self-test, wire.
+- [ ] R3-A5: owner wants a MOCKUP instead of a text pick , /dev/bundles-products showing all 3 scopes ON the real PDP anatomy: (A) "Products" section (retail cards, CHF, pick-up-at-visit), (B) "Bundles" section (>=2 services grouped, save-%, Fresha mechanics; FLAG: service_packages graveyarded 2026-06-11, owner-driven exploration only), (C) what already ships (variants + add-ons in booking). Full-width real-size, service-row grammar from SalonServices.tsx. Recommend A (backend mostly exists). DISPATCH SERIALIZED after the round-3 coder (one-coherent-pass rule, no parallel frontend agents).
+
+## REWORK STATUS (2026-07-03) , all A1-A4 done via coder, committed, linked
+- A1 per-filter sheets DONE (535143aba) , 7 sheets, amenities chips, slider, outline (non-black) Apply, gray selected.
+- A2 Model B refined + non-black Search button DONE (e3c2793ab).
+- A3 homepage SalonCard -> aspect-[3/2] DONE (e3c2793ab), design-verifier PASS (agent a259ab77: exact 1-line diff, live 157x105 = 3/2, no dropped decisions).
+- A4 spec-chip pill shrunk to 11px, style A DONE (e3c2793ab).
+- HOOKS hardened + tested: orchestration-gate v2 (main-agent blocked from app source + /dev; coders exempt via agent_type), link-gate v3 (catches coder-dispatched mockup turns).
+- A5 = OWNER DECISION PENDING (A retail products / B un-kill bundles / C nothing net-new). Research done.
+
+## REWORK BATCH (owner 2026-07-02, after mockup review) , ORCHESTRATE via coder, NOT hand-code
+> Owner FURIOUS about orchestrator-not-coder. FIXED the enforcement hook (orchestration-gate v2, tested):
+> main agent blocked from editing app source + /dev mockups; coder subagents exempt (agent_type distinguisher).
+> From here every A-build goes through the `coder` subagent.
+- [ ] A1.1 EACH filter = its OWN sheet (small per-filter sheet), NOT one big combined FilterSheet. Redo.
+- [ ] A1.2 amenities = CHIP-like (keep current chips), NOT the checklist I proposed.
+- [ ] A1.3 keep the price SLIDER.
+- [ ] A1.4 buttons NOT black (owner dislikes black buttons) , alternative treatment (investigate DS non-ink option).
+- [ ] A2.1 refine Model B (chosen direction) , cleaner + more complete.
+- [ ] A3.1 check: is my proposed card ratio the SAME as the SEARCH result cards' ratio?
+- [ ] A3.2 if same -> implement; if different -> implement SAME as search. (real code: SalonResultCard grid + SalonCard)
+- [x] A4.1 style A confirmed (frosted + badge icon).
+- [ ] A4.2 make the A4 pill SMALLER (owner: "the pill is too big").
+- [x] A5.1 research Fresha bundles/products , DONE. Fresha: BUNDLE = group of >=2 services, 4 pricing modes (sum/custom/%off/free), booked in sequence or parallel. MEMBERSHIP = prepaid or recurring session pool. PRODUCTS = separate online store + inventory (SKU, stock auto-decrement). ADD-ONS = optional per-service extras (name+price+duration). VARIANTS/OPTIONS = mutually-exclusive service tiers (short/med/long hair).
+- [x] A5.2 Solen backend mapped. service_options (VARIANTS) = WIRED in booking. service_addons (ADD-ONS) = WIRED in booking. service_packages (BUNDLES) = GRAVEYARDED (owner killed 2026-06-11, "never rebuild"), only legacy refund plumbing. Retail = nail_retail_products (nail-only, dashboard CRUD wired behind nail_features flag) + retail_purchases (Stripe path BUILT, NO customer UI) + retail_sales (drift, nothing writes it). SCOPE OPTIONS for owner:
+      - A: RETAIL PRODUCTS customer store , generalize nail_retail_products to all salons + build the customer PDP store + cart (backend mostly exists; net-new = generalize table + customer UI + wire the built Stripe path). MED-LARGE.
+      - B: SERVICE BUNDLES (Fresha "bundle") , service_packages is GRAVEYARDED. Needs an explicit owner UN-KILL + a bundle builder + display. FLAG: owner said "never rebuild".
+      - C: NOTHING NET-NEW , variants (service_options) + add-ons (service_addons) already shipped + wired in booking. If "bundle" meant tiers/add-ons, it's DONE.
+    -> DECISION for owner (A / B / C / mix). "mean 2" still ambiguous , point at an option.
+- [ ] LATEST-MSG (post-interrupt): system flagged 3 asks + a MEASUREMENT complaint, but the message TEXT did not reach me. BLOCKED on owner resend.
+
 ## PROGRESS (this session)
 - A1-A4 MOCKUPS built + committed + phone-verified (screenshots): A1 /dev/filter-menus (b432c7e06), A2 /dev/category-flow (239f010ab, phone-stack + canonical icons ce9d61463), A3 /dev/card-ratio (d9aea8d36), A4 /dev/spec-chip (6c0315132). AWAITING owner pick per item, then wire real code.
 - B5 FOCUS RINGS , DIAGNOSED + partially fixed (owner named 2 surfaces):
