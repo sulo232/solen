@@ -49,12 +49,23 @@ LATENT BUG (separate, added to ACTIVE.md): staff_services.price_override INTEGER
 - [x] FIX-3 (medium, 2026-07-03): the bundle validation errors in `/api/bookings` now return ONLY the machine code (`{ code: "BUNDLE_UNAVAILABLE" }` / `{ code: "BUNDLE_MISMATCH" }`), no raw English message , matches the route's existing `{ message, code }` 400 convention (client translates the code). The former inline raw-string errors were removed along with the inlined guards when FIX-2's util replaced them.
 - B-4b IS done as of this FIX pass (the pay-intent half was the gap; bookings-route recompute was already correct , FIX-1/2 close it).
 
+## R5 CONFIRMED PUNCH LIST (adversarial audit wf_1285ceb7, 2026-07-03)
+- [x] SEC-1 (HIGH): stock RPCs SECURITY DEFINER default-granted EXECUTE to PUBLIC/anon/authenticated , any user could mutate any salon's stock (proven: anon SELECT decrement moved 12->11). FIXED: migration retail_stock_rpcs_lockdown_a5 (revoke PUBLIC/anon/authenticated, grant service_role only; verified anon=false authed=false service=true).
+- [ ] BUG-1 (CRITICAL): bundle "Buchen" DROPS bundle_id , booking/page.tsx searchParams never reads `bundle`, booking-context has no field, PayConfirmStep POST omits bundle_id -> server bundle branch never runs -> every bundle books/charges FULL price (440 not 374). My earlier "374 proof" was a PROXY (coder curl'd bundle_id direct to the API, not the UI flow). FIX: plumb bundle param -> validate -> BookingProvider -> booking-context -> PayConfirmStep POST body. VERIFY THE REAL UI FLOW (click Buchen -> book -> price_paid 374), not a direct curl.
+- [ ] BUG-2 (HIGH): nailRetailProductSchema category enum (lib/validations.ts:462) is nail-only; the generalized DB CHECK + dashboard offer hair_care/styling/etc -> save silently fails Zod for non-nail categories. FIX: widen the enum to the DB CHECK union.
+- [ ] BUG-3 (HIGH): purchase route selects is_active but NOT stock_count + no availability branch -> a sold-out item can be paid for (oversell). FIX: select stock_count, 409 if any requested product stock < 1 before PI creation.
+- [ ] BUG-4 (MEDIUM): GET /api/salon/retail has no salon-visibility gate -> products of hidden salons (unlisted/is_test/inactive) leak. FIX: gate on the same salon-visibility predicate as service_bundles RLS.
+- REFUTED/non-issues: dashboard-reads-retail_sales (auditor read stale worktree; main reads retail_purchases); "worktree lacks A5 code" (the code + dev server live on MAIN, this session commits to MAIN , operational, not a defect).
+
 ## Sequencing (DAG fixed per council)
 1. [x] Council review (wf_988cb592) -> this v2.
 2. A-0 probes -> A-1 + B-1 migrations (apply_migration MCP) -> snapshot refresh + `npm run inventory`.
 3. Backend: A-2 de-gate + guard + curl proofs; B-4a/B-4b server logic + SQL/curl proofs (bundle price + duration correctness, RLS probes incl. a hidden-salon leak test). Backend may run while the R4 frontend coder finishes.
 4. Frontend (AFTER R4 lands): A-3 PDP products, A-4 dashboard retail, B-2 builder, B-3 PDP bundles. Coder-built, SENIOR_SCORECARD + design-verifier per surface.
 5. E2E on the test salon: seed 3 products + 1 bundle; buy a product (Stripe test; stock decrements once, idempotent); book a bundle (price = bundle price, ends_at = summed duration, both slots blocked); refund re-increments stock.
+
+## R5 AUDIT (owner 2026-07-03: "analyze for gaps n security and bugs")
+- [ ] Audit workflow over the A5 + R4 surface: 4 lenses (security/authz, money, functional gaps, regressions), adversarial verify per finding, live repro required. Punch list -> fix via coder.
 
 ## Parked / out of v1
 - Delivery shipping; memberships/recurring; product size-variants; multi-quantity carts; 'free' pricing mode; bundles on search cards (mockup explicitly excluded , new ask if wanted).

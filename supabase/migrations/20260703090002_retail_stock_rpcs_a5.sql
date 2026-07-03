@@ -43,3 +43,11 @@ AS $$
      AND stock_count IS NOT NULL
   RETURNING id;
 $$;
+
+-- R5-audit (HIGH security, applied live via apply_migration "retail_stock_rpcs_lockdown_a5"):
+-- SECURITY DEFINER functions default-grant EXECUTE to PUBLIC , lock to service_role only
+-- (called only by the webhook settle + refund via the admin/service client).
+REVOKE EXECUTE ON FUNCTION public.decrement_retail_stock(uuid) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.increment_retail_stock(uuid) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.decrement_retail_stock(uuid) TO service_role;
+GRANT EXECUTE ON FUNCTION public.increment_retail_stock(uuid) TO service_role;
