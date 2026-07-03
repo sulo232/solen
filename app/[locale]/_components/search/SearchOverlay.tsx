@@ -20,6 +20,7 @@ import {
   ArrowUpLeft,
   ChevronLeft,
   ChevronRight,
+  Loader2,
   X,
   Search,
   MapPin,
@@ -34,6 +35,7 @@ import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
+import { useGeocodeSuggest } from "../homepage/useGeocodeSuggest";
 import { useStyleLooks } from "../homepage/useStyleLooks";
 import { useInspoLooks } from "../homepage/useInspoLooks";
 import { useForYouLooks } from "../homepage/useForYouLooks";
@@ -145,6 +147,9 @@ export function SearchOverlay({
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: stadt || undefined });
+  // B3.3 (_plans/SEARCH_MAP_OVERHAUL.md): street/place -> city pick-list. Restricted server-side
+  // to enabled cities; empty candidates just fall through to the other suggestion groups below.
+  const { candidates: geoCandidates, loading: geoLoading } = useGeocodeSuggest(open ? serviceQ : "");
   // Autocomplete completions come from style-suggest (short style terms); the Looks strip is
   // fed by the RICH Inspo feed (search_discovery) so it shows real, plentiful looks.
   const { terms: styleTerms } = useStyleLooks(open ? serviceQ : "");
@@ -351,6 +356,17 @@ export function SearchOverlay({
     else openSalon(slug);
   }, [onSalonLocate, openSalon, close]);
   const openLookItem = React.useCallback((id: string) => { router.push(`/${locale}/inspo/${id}`); close(); }, [router, locale, close]);
+  // B3.3: picking a geocode candidate (street/place) selects that candidate's city , the SAME
+  // mechanism cityList()'s SuggestRow uses (setStadt to the display name), no hand-rolled city
+  // state. Returns to the composed service view (no auto-advance/auto-submit), matching the
+  // existing city-pick behavior; the map (when open) re-centers on its own via the city param.
+  const pickGeoCandidate = React.useCallback((c: { city_name: string }) => {
+    setStadt(c.city_name);
+    setServiceQ("");
+    setInputFocused(false);
+    setActiveStep("service");
+    collapse();
+  }, [collapse]);
 
   // i18n (all at top level)
   const searchHeadingTxt        = t("searchHeading");
@@ -384,6 +400,7 @@ export function SearchOverlay({
   const categoriesLabelTxt      = t("categoriesLabel");
   const groupSalonsTxt          = t("groupSalons");
   const groupStylistsTxt        = t("groupStylists");
+  const placesLabelTxt          = t("placesLabel");
   const looksLabelTxt           = t("looksLabel");
   const forYouTxt               = t("forYou");
   const seeAllResultsTxt        = t("seeAllResults");
@@ -472,6 +489,28 @@ export function SearchOverlay({
               <AutocompleteRow key={term} label={term} onClick={() => searchTerm(term)} />
             ))}
           </div>
+
+          {/* mockup-ok: B3.3 , street/place geocode candidates, restricted to enabled cities.
+              Reuses the EXISTING suggestion-row grammar 1:1 (SuggestRow + SectionLabel, same as
+              every other group on this screen) and the codebase's existing Loader2/animate-spin
+              spinner convention (SearchTemplate.tsx "load more"), so no new visual pattern is
+              introduced , purely functional wiring, not a design decision needing a mockup. ALL
+              matching candidates render as separate rows (never a blind auto-select) so a street
+              name that exists in multiple enabled cities shows as a real pick-list; a single
+              candidate still renders as one tappable row. Empty candidates render nothing here ,
+              falls through to the other suggestion groups, never an error state. */}
+          {(geoCandidates.length > 0 || geoLoading) && (
+            <>
+              <div className="mt-4 flex items-center gap-2">
+                <SectionLabel className="!mb-0">{placesLabelTxt}</SectionLabel>
+                {geoLoading && <Loader2 size={13} strokeWidth={2.2} className="animate-spin text-s-ink-3" aria-hidden />}
+              </div>
+              {geoCandidates.map((c) => (
+                <SuggestRow key={`${c.label}|${c.city_slug}`} name={c.label} Icon={MapPin}
+                  onClick={() => pickGeoCandidate(c)} />
+              ))}
+            </>
+          )}
 
           {/* Salons , the focal, bookable result. Rich card + rating + area + from-price. */}
           {results.salons.length > 0 && (
