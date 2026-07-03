@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   //    service, slot, time, staff, and — for guests — guest_email/name.
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons, promo_code")
+    .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons, promo_code, bundle_id")
     .eq("id", booking_id)
     .single();
   if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Service not found for this salon" }, { status: 404 });
   }
   // Multi-service: add the booking's server-set extras_addons (resolved at booking time from the
-  // services table — never the client) to the primary service price, so the charge = the full total.
+  // services table, never the client) to the primary service price, so the charge = the full total.
   let extrasChf = 0;
   try {
     const ex = (booking as { extras_addons?: string | null }).extras_addons

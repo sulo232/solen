@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
 
   const { slot_id, salon_id, service_id, staff_member_id, starts_at, is_first_visit,
           referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids, customer_note,
-          promo_code, gift_card_code } = validated;
+          promo_code, gift_card_code, bundle_id } = validated;
   const isOnlinePay = payment_method === "online";
 
   // gift_card_code is accepted by the schema (so the FE field is not a 400) but the
@@ -275,8 +275,118 @@ export async function POST(request: NextRequest) {
     }
   }
   const extrasTotal = extrasAddons.reduce((s, a) => s + a.price, 0);
-  const price = Math.round((Number(primaryPrice) + extrasTotal) * 100) / 100;
+  let price = Math.round((Number(primaryPrice) + extrasTotal) * 100) / 100;
   const firstVisit = is_first_visit ?? profile?.is_first_visit_default ?? true;
+
+  // A5 B-4: bundle-aware price + duration (net-new). When a bundle_id is present the server OWNS
+  // the price (recomputed from pricing_mode) and the reserved duration (summed over the bundle's
+  // services incl. buffer). The client value is never trusted: it only selects which bundle to
+  // price against, and every constraint is re-verified against the LIVE tables.
+  //   price   : replaces the standard primary+extras sum (B-4b).
+  //   ends_at : widened to slot.starts_at + total bundle duration (B-4a), which arms the GIST
+  //             exclusion constraint (prevent_double_booking) over the wider window when the slot
+  //             flips to 'booked' (the SAME conflict mechanism the calendar PATCH relies on).
+  let bundleEndsAt: string | null = null;
+  let validBundleId: string | null = null;
+  if (bundle_id) {
+    // Load bundle + its item set server-side (admin client: RLS hides is_active=false bundles, and
+    // the bundle must be re-checkable regardless of the caller's read scope).
+    const admin = createAdminSupabaseClient();
+    const { data: bundle } = await admin
+      .from("service_bundles")
+      .select("id, salon_id, pricing_mode, custom_price, percent_off, is_active")
+      .eq("id", bundle_id)
+      .single();
+
+    // Guard 1: bundle must exist, be active, and belong to THIS booking's salon.
+    if (!bundle || bundle.is_active !== true || bundle.salon_id !== slot.salon_id) {
+      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
+    }
+
+    const { data: bundleItems } = await admin
+      .from("service_bundle_items")
+      .select("service_id")
+      .eq("bundle_id", bundle.id);
+
+    const bundleServiceIds = [...new Set((bundleItems ?? []).map((i) => i.service_id as string))];
+
+    // Guard 2: a bundle is only bookable with >= 2 items (never a 0 CHF / single-service bundle).
+    if (bundleServiceIds.length < 2) {
+      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
+    }
+
+    // Guard 3: the selected services (primary + extras) must be EXACTLY the bundle's item set:
+    // no missing item, no extra service smuggled in. Compare as sets of ids.
+    const selectedIds = [...new Set([service_id, ...(extra_service_ids ?? [])])];
+    const bundleSet = new Set(bundleServiceIds);
+    const selectedSet = new Set(selectedIds);
+    const exactMatch =
+      selectedSet.size === bundleSet.size &&
+      [...bundleSet].every((id) => selectedSet.has(id));
+    if (!exactMatch) {
+      return NextResponse.json({ message: "Selected services do not match the bundle", code: "BUNDLE_MISMATCH" }, { status: 400 });
+    }
+
+    // Load each bundle service's REAL price + duration + buffer (never the client's).
+    const { data: bundleSvcs } = await admin
+      .from("services")
+      .select("id, price, duration_minutes, buffer_minutes, is_active, salon_id")
+      .in("id", bundleServiceIds)
+      .eq("salon_id", slot.salon_id);
+
+    // Every bundle service must resolve, be active, and be in this salon (else the bundle is stale).
+    if (!bundleSvcs || bundleSvcs.length !== bundleServiceIds.length || bundleSvcs.some((s) => s.is_active === false)) {
+      return NextResponse.json({ message: "Bundle not available", code: "BUNDLE_UNAVAILABLE" }, { status: 400 });
+    }
+
+    // B-4b PRICE: recompute from pricing_mode. services.price + custom_price are CHF DECIMAL, so
+    // stay in CHF here (the Stripe boundary converts *100), rounded to 2dp CHF.
+    const sumChf = bundleSvcs.reduce((s, sv) => s + (Number(sv.price) || 0), 0);
+    let bundlePrice: number;
+    if (bundle.pricing_mode === "custom") {
+      bundlePrice = Number(bundle.custom_price) || 0;
+    } else if (bundle.pricing_mode === "percent") {
+      const pct = Number(bundle.percent_off) || 0;
+      bundlePrice = (sumChf * (100 - pct)) / 100;
+    } else {
+      // "sum" (and any unknown mode falls back to the plain sum, never a 0 CHF surprise).
+      bundlePrice = sumChf;
+    }
+    price = Math.round(bundlePrice * 100) / 100;
+
+    // B-4a DURATION: reserve the SUMMED duration (duration_minutes + buffer_minutes) of every
+    // bundle service. Today extras never extend time (by design for add-ons); a bundle does.
+    const totalMinutes = bundleSvcs.reduce(
+      (m, sv) => m + (Number(sv.duration_minutes) || 0) + (Number(sv.buffer_minutes) || 0),
+      0,
+    );
+    const startMs = new Date(slot.starts_at as string).getTime();
+    bundleEndsAt = new Date(startMs + totalMinutes * 60_000).toISOString();
+    validBundleId = bundle.id;
+
+    // AVAILABILITY (B-4a): the primary slot only covers the single-service window; a bundle needs
+    // the WIDENED window free for this staff member. Reuse the EXISTING conflict mechanism
+    // (prevent_double_booking GIST over booked/blocked slots per staff, 20260328_...gist.sql) by
+    // pre-checking any booked/blocked slot for the same staff whose [starts_at, ends_at) overlaps
+    // the widened window. Two ranges [a,b) and [c,d) overlap iff a < d AND c < b. This is a
+    // fail-fast pre-check; the constraint itself is the hard backstop when the slot flips to booked.
+    const conflictStaffId = (staff_member_id ?? slot.staff_member_id) as string | null;
+    if (conflictStaffId) {
+      const { data: overlaps } = await admin
+        .from("availability_slots")
+        .select("id")
+        .eq("salon_id", slot.salon_id)
+        .eq("staff_member_id", conflictStaffId)
+        .in("status", ["booked", "blocked"])
+        .lt("starts_at", bundleEndsAt)            // existing.starts_at < window.ends_at
+        .gt("ends_at", slot.starts_at as string)  // existing.ends_at   > window.starts_at
+        .neq("id", resolvedSlotId)                // the slot we are about to book is not a conflict
+        .limit(1);
+      if (overlaps?.length) {
+        return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
+      }
+    }
+  }
 
   // T&S §3.1: check booking confirmation mode (instant vs manual_approval)
   const confirmMode = (slot.salons as any)?.booking_confirmation_mode ?? "instant";
@@ -349,7 +459,11 @@ export async function POST(request: NextRequest) {
       staff_member_id: staff_member_id ?? slot.staff_member_id,
       slot_id: resolvedSlotId,
       starts_at: slot.starts_at,
-      ends_at: slot.ends_at,
+      // A5 B-4a: a bundle reserves the SUMMED duration, so ends_at is widened past the single
+      // slot's end. The non-bundle path is unchanged (ends_at = the primary slot's end).
+      ends_at: bundleEndsAt ?? slot.ends_at,
+      // A5 B-4: tag the booking with the bundle it was priced against (null for a normal booking).
+      bundle_id: validBundleId,
       price_paid: price,
       extras_addons: extrasAddons.length ? JSON.stringify(extrasAddons) : null,
       status: bookingStatus,
@@ -386,10 +500,26 @@ export async function POST(request: NextRequest) {
 
   // 6. Mark slot as booked. `booked_by` is the user id or NULL for a guest (column is
   //    ON DELETE SET NULL / nullable). Use `db` so the guest path writes via service-role.
-  await db
+  //    A5 B-4a: for a bundle, WIDEN the slot's ends_at to the summed bundle window as it flips
+  //    to 'booked'. This makes the prevent_double_booking GIST exclusion constraint the HARD
+  //    backstop over the wider [starts_at, bundleEndsAt) range (the pre-check above is fail-fast;
+  //    the constraint closes any race). A 23P01 here means the window was taken between the
+  //    pre-check and this write: undo the just-inserted booking and return the route's 409.
+  const slotUpdate: Record<string, unknown> = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
+  if (bundleEndsAt) slotUpdate.ends_at = bundleEndsAt;
+  const { error: slotUpdateError } = await db
     .from("availability_slots")
-    .update({ status: "booked", booked_by: user?.id ?? null, booking_id: booking.id })
+    .update(slotUpdate)
     .eq("id", resolvedSlotId);
+  if (slotUpdateError) {
+    if (slotUpdateError.code === "23P01") {
+      // Widened window collided with another booked/blocked slot for this staff. Roll back the
+      // booking row we just wrote (no slot was flipped) so no orphan/unheld booking remains.
+      await db.from("bookings").delete().eq("id", booking.id);
+      return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
+    }
+    console.error("[bookings] slot booking update failed:", slotUpdateError);
+  }
 
   // 7. Send confirmation email to customer.
   // SP-G2: skip for online-pay bookings — they aren't confirmed/paid yet. The

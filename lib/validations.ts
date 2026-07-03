@@ -39,6 +39,11 @@ export const createBookingSchema = z
     // Multi-service: additional services booked with the primary; stored on the booking as
     // extras_addons. The route resolves their REAL prices server-side (never trusts the client).
     extra_service_ids: z.array(uuid).max(10).optional(),
+    // A5 B-4: optional bundle tag. When present the route loads the bundle server-side, REQUIRES
+    // the selected services (primary + extras) to be EXACTLY the bundle's item set, recomputes the
+    // price from pricing_mode (sum | custom | percent), and reserves the SUMMED bundle duration.
+    // The server NEVER trusts a client total; this id only selects which bundle to price against.
+    bundle_id: uuid.optional(),
     staff_member_id: uuid.nullable().optional(),
     starts_at: z.string().datetime().optional(),
     is_first_visit: z.boolean().optional(),
