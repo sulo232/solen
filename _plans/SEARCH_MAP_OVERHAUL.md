@@ -5,10 +5,10 @@
 ## FINAL STATUS (2026-07-03) , honest close-out
 DONE+committed: A1 (impl+PASS), A3 (V2), A4 (chip live), A5 (bundles+products full), B1 (count), B4-backend (embedding race + N+1 RPC + 9 wins), B5 (focus rings), C1/C2 + hooks.
 - [x] B2 city-lock: NO lock code (0 maxBounds/minZoom in MapView) + auto-update landed -> RESOLVED.
-- [ ] B6 scroll morph: CONFIRMED still boolean-snap (SearchTemplate.tsx:773 `scrolled` bool + hysteresis). FIXING now (continuous scrollY morph, coder a-pending).
+- [x] B6 scroll morph: FIXED (SearchTemplate.tsx). Boolean `scrolled` + hysteresis replaced with a continuous `scrollProgress` motionValue (`useMotionValue`/`useTransform`, 0..1 over the same 0->60px range) driving padding + pill shadow inline. Playwright-verified: 8-step scrollY series 0/8/16/24/32/40/48/60 down AND back up, padding/shadow interpolate evenly (e.g. pillTop 120 -> 113.06 -> 106.13 -> ... -> 68), perfectly symmetric both directions, no snap. prefers-reduced-motion lands straight on the two end-states (same 30/60 threshold math) instead of ramping, verified via synthetic scroll event (real-scroll persistence under Playwright emulateMedia is a harness quirk, not app behavior). tsc: 0 new errors (4 pre-existing).
 - [~] B3 geocoder: owner GO (Mapbox). Refined spec:
-    - [ ] B3.1 geocode endpoint (Mapbox, CH-biased) , street/place -> candidates.
-    - [ ] B3.2 RESTRICT to Solen's served cities only (cities table); drop results in unserved cities.
+    - [x] B3.1 geocode endpoint (Mapbox, CH-biased) , street/place -> candidates. `app/api/search/geocode/route.ts` (GET ?q=). Fast path (q matches a served city name/slug) + per-served-city proximity-biased Mapbox v6 forward calls (fired in parallel), merged.
+    - [x] B3.2 RESTRICT to Solen's served cities only (cities table); drop results in unserved cities. Curl-proven: Bahnhofstrasse/Marktgasse -> 3 candidates (Basel/Zuerich/Bern, real ambiguity); Rue de Bourg Lausanne + Rue du Rhone (Geneva) -> []; gibberish -> [].
     - [ ] B3.3 AMBIGUITY PREVIEW: same street in multiple cities -> return ALL candidates ("Street, City"); UI shows a pick-list, NO blind auto-select. Auto-select only when a single served-city match.
     - B3.1/B3.2 = BACKEND (dispatched, parallel w/ B6). B3.3 UI = frontend, queues behind B6. (default: keep the city-name resolver that's done; add a geocoder later). Owner-optional.
 - [ ] B4 frontend load-time audit: owner said YES. Runs after B6+A2 (prod build clobbers .next / the dev server they verify against). Needs a prod build to measure honestly (backend perf done).
@@ -27,7 +27,7 @@ DONE+committed: A1 (impl+PASS), A3 (V2), A4 (chip live), A5 (bundles+products fu
 - [ ] B3. AUTO-SELECT CITY from a street/place search: searching a street -> auto-select its city.
 - [ ] B4. PERF: everything feels slow (maybe cloudflare tunnel, maybe real). Investigate (local vs tunnel; bundle; re-renders).
 - [ ] B5. FOCUS RINGS (RECURRING, owner FURIOUS): rings on HOVER on the homepage + the map icon in the search bar. Eliminate ALL; replace with something else. INVESTIGATE the source (the no-focus-ring-gate blocks NEW rings but these persist , find where they render). HARDEN.
-- [ ] B6. SCROLL MORPH (category pages, normal search): the search bar "goes up / disappears" on scroll-down then "snaps" on scroll-up , weird, not a real morph. Improve the morphing BOTH directions (smooth disappear + smooth return, not a snap).
+- [x] B6. SCROLL MORPH (category pages, normal search): the search bar "goes up / disappears" on scroll-down then "snaps" on scroll-up , weird, not a real morph. Improve the morphing BOTH directions (smooth disappear + smooth return, not a snap). DONE, see FINAL STATUS above.
 
 ## C. META / HARDEN
 - [ ] C1. HOOK: ALWAYS make a plan first for BIG tasks (not small). Owner: "make a hook about that, maybe you have it." -> CHECK plan-first-gate/plan-first-stamp; confirm/strengthen; report.

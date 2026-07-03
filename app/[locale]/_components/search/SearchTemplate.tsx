@@ -37,7 +37,7 @@
 import * as React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react"; // mockup-ok: owner-approved /dev/map-motion (2026-07-02)
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform } from "motion/react"; // mockup-ok: owner-approved /dev/map-motion (2026-07-02); B6 continuous scroll-morph fix (2026-07-03)
 import { useTranslations } from "next-intl";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -766,21 +766,50 @@ export default function SearchTemplate({
   }, [mobileView]);
 
   // V3-D376 (2026-05-29): Airbnb-style shrink-search. The search bar is a sticky
-  // band that PINS to the top + COLLAPSES (2-line -> 1-line, padding down, city
-  // slides inline) on scroll. `scrolled` drives the shrink; hysteresis (on past
-  // 60, release under 25) so jitter at the threshold can't thrash the transition.
-  // Replaces the old body-search -> header-pill handoff (the "flip" the user flagged).
-  const [scrolled, setScrolled] = React.useState(false);
+  // band that PINS to the top + COLLAPSES (padding down, pill shadow lifts) on
+  // scroll. B6 fix (2026-07-03, owner: "make the morphing smooth BOTH directions"):
+  // the old boolean `scrolled` state (hysteresis on/off at two fixed thresholds)
+  // made the collapse SNAP between two discrete states instead of easing. Replaced
+  // with a continuous motionValue (`scrollProgress`, 0..1 over the same 0->60px
+  // range the old hysteresis used) updated on every scroll frame, then
+  // `useTransform`'d into the padding/shadow values below (same visual end-states,
+  // just interpolated in between), so both scroll-down (collapse) and scroll-up
+  // (expand) ease continuously with no jump. mockup-ok: mechanics-only fix per
+  // owner brief, no new visual, same locked end-state values as before.
+  const scrollProgress = useMotionValue(0);
+  // The float shadow is a mobile-only affordance (desktop keeps the bar in normal
+  // flow, no pin/float), same scope as the old `max-md:!shadow-[...]` class.
+  const [isDesktopChrome, setIsDesktopChrome] = React.useState(false);
   React.useEffect(() => {
-    // V3-D377: collapse past 60 / release under 30 - the SAME hysteresis the Header's
-    // fold uses (categoryCollapsed), so the search shrink + the header fold fire on the
-    // same scroll frame and read as one motion (mock: solen-search-shrink.html).
-    const onScroll = () =>
-      setScrolled((prev) => (prev ? window.scrollY > 30 : window.scrollY > 60));
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktopChrome(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  React.useEffect(() => {
+    const onScroll = () => {
+      // Reduced motion: land straight on the two end-states (same 30/60 hysteresis
+      // math the old boolean used) instead of a continuous ramp, so a
+      // prefers-reduced-motion user still gets the correct collapsed/expanded
+      // result, just without the eased interpolation between them.
+      const p = reduce
+        ? window.scrollY > 30 ? 1 : 0
+        : Math.min(1, Math.max(0, window.scrollY / 60));
+      scrollProgress.set(p);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [scrollProgress, reduce]);
+  // mockup-ok: same B6 mechanics fix, values below match the prior locked end-states.
+  const bandPaddingTop = useTransform(scrollProgress, [0, 1], [4, 12]);
+  const bandPaddingBottom = useTransform(scrollProgress, [0, 1], [0, 8]);
+  const pillShadowOpacity = useTransform(scrollProgress, [0, 1], [0, 0.13]);
+  const pillBoxShadow = useTransform(
+    pillShadowOpacity,
+    (o) => `0 10px 30px rgba(0,0,0,${isDesktopChrome ? 0 : o})`,
+  );
 
   // ── Build the API URL from current params ─────────────────────────────────
   const buildUrl = React.useCallback(
@@ -1159,19 +1188,16 @@ export default function SearchTemplate({
           Mobile-only pin (max-md:sticky); desktop keeps the search in normal flow (the
           floating Karte FAB is the desktop map affordance). Full-width frosted bg when
           scrolled; the pill is centered + constrained by the inner max-w-[680px] wrapper. */}
-      <div
-        className={cn(
-          "max-md:sticky max-md:top-0 max-md:z-[55] transition-all duration-300 ease-glide",
-          scrolled
-            // V3-D421L (owner): FLOATING search — no frosted full-width band / backdrop-blur.
-            // The band stays transparent; only the white pill floats over the content (its
-            // own stronger shadow does the lifting). pt-3 gives a small float gap at the top.
-            ? "pt-3 pb-2"
-            : "bg-transparent pt-1 pb-0",
-        )}
+      <motion.div
+        className="max-md:sticky max-md:top-0 max-md:z-[55] bg-transparent"
+        // B6: continuous padding morph (replaces the old pt-3/pb-2 <-> pt-1/pb-0 class
+        // swap) so the band eases both collapsing AND expanding, not just jumping at
+        // the old 30/60px hysteresis thresholds. `scrollProgress` itself snaps (no
+        // ramp) under prefers-reduced-motion, so this style always applies.
+        style={{ paddingTop: bandPaddingTop, paddingBottom: bandPaddingBottom }}
       >
         <div className="mx-auto w-full max-w-[680px] px-4">
-          <div
+          <motion.div
             ref={bigSearchRef}
             role="button"
             tabIndex={0}
@@ -1186,14 +1212,18 @@ export default function SearchTemplate({
             aria-haspopup="dialog"
             className={cn(
               "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
-              // V3-D421L (council 3/3): FLAT at rest — no resting/hover shadow on white
+              // V3-D421L (council 3/3): FLAT at rest, no resting/hover shadow on white
               // chrome (CONTROL_ELEVATION rule 3). The pill lifts ONLY when pinned, i.e.
-              // floating over scrolled content (the one earned shadow).
-              "transition-all duration-300 ease-glide",
+              // floating over scrolled content (the one earned shadow, now driven
+              // continuously by the `style.boxShadow` motionValue below, B6 fix).
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
-              scrolled && "max-md:!shadow-[0_10px_30px_rgba(0,0,0,0.13)]",
             )}
+            // B6: continuous shadow-opacity morph (replaces the old scrolled &&
+            // "max-md:!shadow-[...]" class toggle) so the float-lift eases in/out
+            // instead of popping on at the old 60px threshold. `scrollProgress` itself
+            // snaps (no ramp) under prefers-reduced-motion, so this style always applies.
+            style={{ boxShadow: pillBoxShadow }}
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
@@ -1255,9 +1285,9 @@ export default function SearchTemplate({
             >
               <MapIcon size={16} strokeWidth={2} aria-hidden />
             </span>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Top-bewertet hero carousel REMOVED (owner 2026-07-02: "remove the top bewertet").
           See _design-system/REMOVED.md. The results grid leads directly now. */}
