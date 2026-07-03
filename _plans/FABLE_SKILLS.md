@@ -72,7 +72,25 @@ Owner: "Apply all of them. And also make hooks too, because rules keep getting f
 - [x] R12 independent review: 10-point checklist, 9 PASS + 1 punch item (pre-existing em-dash swept into a + line of verify.md); fixed by sweeping all 9 em-dashes in that file, re-verified with the reviewer's own literal grep (0 hits). Batch = PASS.
 - [x] R13 close-out: original message re-read ("Apply all of them" + "make hooks too"), all boxes ticked, reported (2026-07-03)
 
+## Round 3: harden trigger + fable-backend (owner, 2026-07-03)
+
+Owner: "can u alrdy harden it and also make one too for security and backend bugs n speeds too"
+
+- [x] H1 fable-skill-trigger patterns widened (reasoning, frontend, execution; incl. German and colloquial complaint words)
+- [x] H2 new backend/security/perf trigger category added (api/db/auth/payment/security/slow keyword net -> fable-backend pointer)
+- [x] H3 new skill fable-backend written: S1 security pass, silent no-op proof procedure, measure-first performance, security-serious escalation
+- [x] H4 global rule 14 updated with fable-backend bullet
+- [x] H5 fable-execution routing cross-ref updated (server-side pass -> load fable-backend)
+- [x] H6 memory updated (project_fable_skills now 4 skills + hook v2; MEMORY.md index line)
+- [x] H7 hook self-tests rerun: backend EN + DE prompts fire fable-backend, reasoning+frontend combo fires both, trivial silent, once-per-session dedup proven (first test run had colliding session ids from sid[:12] truncation in the harness, not a hook bug; retested clean)
+- [x] H8 independent review round: loop-reviewer graded 8-item checklist -> verdict in review log
+- [x] H9 close-out report (2026-07-03)
+
+Round 2 leftover punch item (verify.md added-line em-dash) was already fixed and committed: c9cb8eaaf.
+
 ## Review log
+
+- Round 3 (loop-reviewer, read-only, 2026-07-03): PASS, all 8 items, no punch list. Verified: fable-backend frontmatter + description; all referenced paths resolve (lib/validations.ts, ratelimit, audit, salons route, dev-login, SECURITY_RULES, LESSONS_LEARNED, WORK_TYPES, council workflow, prod-write-guard); factual claims spot-checked against source (guard script contents, discriminate-reminder registration, 142-FK-index memory, short-day opening_hours, never-db-push wording); hook v2 compiles, registered, fail-open, all four categories; live behavior tests (backend fires, dedup, trivial silent, reasoning+frontend combo); zero em/en-dashes or emoji; rule 14 + fable-execution wiring; memory says 4 skills.
 
 - Round 2 batch review (loop-reviewer, read-only, 10-point): hooks compile + registered + functional spot-checks PASS; matcher widenings PASS; all 12 banners PASS; no _rules deletions PASS; doc corrections PASS; memory PASS (index 17.4KB, 108/108 files indexed); skill consistency PASS. One FAIL: em-dash on an added verify.md line; fixed (full sweep, 0 remain), verified with the same grep. Note: fable-skill-trigger hook FIRED LIVE mid-session on a task notification, proving hot-reload registration works without restart.
 - Round 1 (loop-reviewer, read-only): checklist items 1 to 6 ALL PASS (referential integrity of every path/script/agent/skill referenced; factual accuracy of all six claims incl. the stale-LOOP_SYSTEM and phantom-playwright traps; zero banned characters; no drift-risk literals; internal consistency; frontmatter). One FAIL finding: "CLAUDE.md section 14 missing". Finding REFUTED by direct measurement: grep shows the section at /Users/sulo/.claude/CLAUDE.md:386 (the wiring was always global-file-only; reviewer checked the project file). Round 2 dispatched to re-verify that single item and re-issue the verdict.
