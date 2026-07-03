@@ -5318,7 +5318,22 @@
     "shareError": "Impossibile condividere",
     "backToList": "Torna alla lista",
     "addToFavorites": "Aggiungi ai preferiti",
-    "removeFromFavorites": "Rimuovi dai preferiti"
+    "removeFromFavorites": "Rimuovi dai preferiti",
+    "productsPickup": "Ritira alla tua visita",
+    "productsAdd": "Aggiungi",
+    "productsSoldOut": "Esaurito",
+    "productsTotal": "Totale",
+    "productsCheckout": "Acquista",
+    "productsPaySecure": "Pagamento sicuro con Stripe",
+    "productsPay": "paga",
+    "productsPaid": "Pagamento ricevuto",
+    "productsPaidNote": "Ritira i tuoi prodotti alla prossima visita.",
+    "productsError": "Impossibile caricare i prodotti.",
+    "bundlesTitle": "Pacchetti",
+    "bundlesBook": "Prenota",
+    "bundlesSave": "risparmiati",
+    "bundlesError": "Impossibile caricare i pacchetti.",
+    "minutesUnit": "min"
   },
   "comingSoon": {
     "title": "In arrivo",

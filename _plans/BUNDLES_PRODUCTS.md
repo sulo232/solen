@@ -42,6 +42,13 @@ LATENT BUG (separate, added to ACTIVE.md): staff_services.price_override INTEGER
 - [ ] B-5 bookings write: additive `bookings.bundle_id uuid null` fk; confirmation + dashboard show the bundle name.
 - [ ] B-6 refunds: bundle bookings refund via the EXISTING booking refund path (they are bookings, not prepaid packs).
 
+## COUNCIL CODE-REVIEW (wf_c6c32c4f, 2026-07-03, commit 138c8efb7) , CORRECTIONS
+- CRITICAL OPEN: booking-pay-intent does NOT recompute the bundle price (the B-4 coder's report claimed it did , FALSE; bundle_id is selected and never used). Online-pay percent/custom bundle = overcharge (seed case: 440 charged vs 374 quoted). NOT customer-reachable yet (no committed bundle UI + seed salon has no online pay), fix BEFORE any bundle UI commit.
+- [ ] FIX-1 (critical): bundle-aware recompute in booking-pay-intent BEFORE promo/member discounts; stale/inactive/<2-items -> 400, never a full-sum fallback. Live proof: PaymentIntent.amount == price_paid for a percent bundle.
+- [ ] FIX-2 (medium): extract shared lib/pricing/bundle.ts (used by bookings route + pay-intent + salon/bundles GET) , kills the 3-way duplicated pricing math.
+- [ ] FIX-3 (medium): bundle validation error strings in /api/bookings (lines ~303-339) are untranslated , use the error-code pattern the route already uses elsewhere.
+- B-4b is NOT done (the earlier [x] was the coder's false claim , corrected here).
+
 ## Sequencing (DAG fixed per council)
 1. [x] Council review (wf_988cb592) -> this v2.
 2. A-0 probes -> A-1 + B-1 migrations (apply_migration MCP) -> snapshot refresh + `npm run inventory`.

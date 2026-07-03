@@ -5337,7 +5337,22 @@
     "shareError": "Unable to share",
     "backToList": "Back to list",
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "productsPickup": "Pick up at your visit",
+    "productsAdd": "Add",
+    "productsSoldOut": "Sold out",
+    "productsTotal": "Total",
+    "productsCheckout": "Buy",
+    "productsPaySecure": "Secure payment with Stripe",
+    "productsPay": "pay",
+    "productsPaid": "Payment received",
+    "productsPaidNote": "Pick up your products at your next visit.",
+    "productsError": "Could not load products.",
+    "bundlesTitle": "Bundles",
+    "bundlesBook": "Book",
+    "bundlesSave": "saved",
+    "bundlesError": "Could not load bundles.",
+    "minutesUnit": "min"
   },
   "comingSoon": {
     "title": "Coming Soon",

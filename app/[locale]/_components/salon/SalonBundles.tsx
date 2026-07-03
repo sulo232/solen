@@ -1,0 +1,185 @@
+"use client";
+
+// exists-check: net-new vs app/[locale]/_components/salon/SalonServices.tsx because
+// `npm run exists bundles` found NO PDP bundles SECTION (only the service_bundles table,
+// the new /api/salon/bundles route, and the /dev/bundles-products mockup). Reuses the
+// SalonServices grouped-card grammar + SalonCard pale-green discount-pill recipe.
+
+/**
+ * SalonBundles , A5 Phase B-3 PDP bundles section.
+ *
+ * mockup-ok: grounded 1:1 in the APPROVED /dev/bundles-products Option B grammar
+ * (app/[locale]/dev/bundles-products/page.tsx OptionB/BundleCard/IncludedRow):
+ *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Package icon + name (16/700)
+ *   - IncludedRow = service name (14/500) + Clock duration ("N Min", s-ink-2 12px)
+ *   - price row = struck summed price (13 s-ink-3 line-through) + bold bundle price (16/700 ink) + pale-green -X% pill
+ *   - pale-green pill = bg-s-success-bg text-s-success (SalonCard DiscountBadge / project_card_badges recipe), percent mode only
+ * Net-new beyond the mockup:
+ *   - "Buchen" CTA (ink primary commit) that carries the bundle's services preselected into the booking flow:
+ *     /salon/[slug]/booking?services=<csv>&bundle=<id> (the ?services= handoff the PDP "Alle ansehen" sheet already uses;
+ *     bundle_id rides the URL for the backend agent's bundle-aware /api/bookings , this component only carries it through).
+ *   - price computed AT READ server-side (GET /api/salon/bundles) from live services.price, never denormalized.
+ *
+ * Renders NOTHING (returns null) until active bundles load, so the sticky tab appears only when bundles exist.
+ */
+
+import * as React from "react";
+import Link from "next/link";
+import { Package, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-currency";
+
+interface BundleService {
+  id: string;
+  name_de: string;
+  name_en: string | null;
+  price: number; // CHF decimal
+  duration_minutes: number;
+}
+
+interface Bundle {
+  id: string;
+  name: string;
+  pricing_mode: "sum" | "custom" | "percent";
+  percent_off: number | null;
+  services: BundleService[];
+  sum_price: number; // CHF decimal
+  bundle_price: number; // CHF decimal
+}
+
+export function SalonBundles({
+  salonId,
+  slug,
+  locale,
+  onLoaded,
+}: {
+  salonId: string;
+  slug: string;
+  locale: string;
+  /** Called with true once active bundles are confirmed present (registers the sticky tab). */
+  onLoaded?: (hasBundles: boolean) => void;
+}) {
+  const t = useTranslations("salonDetail");
+  const [bundles, setBundles] = React.useState<Bundle[] | null>(null);
+  const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!salonId) return;
+    const ac = new AbortController();
+    fetch(`/api/salon/bundles?salon_id=${salonId}`, { signal: ac.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { bundles?: Bundle[] } | null) => {
+        const list = d?.bundles ?? [];
+        setBundles(list);
+        onLoaded?.(list.length > 0);
+      })
+      .catch((err) => {
+        if (err?.name !== "AbortError") {
+          console.error("[SalonBundles] failed to load bundles:", err);
+          setError(true);
+          onLoaded?.(false);
+        }
+      });
+    return () => ac.abort();
+    // onLoaded is a stable parent callback , excluded intentionally.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salonId]);
+
+  // No bundles , render nothing (no empty section, no tab).
+  if (bundles !== null && bundles.length === 0 && !error) return null;
+
+  if (bundles === null) {
+    return (
+      <section id="section-bundles">
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
+          {t("bundlesTitle")}
+        </h2>
+        <div className="mt-5 h-40 animate-shimmer rounded-[24px] border border-s-border bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%]" />
+      </section>
+    );
+  }
+
+  if (error || !bundles) {
+    return (
+      <section id="section-bundles">
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
+          {t("bundlesTitle")}
+        </h2>
+        <p className="mt-4 text-[14px] text-s-ink-3">{t("bundlesError")}</p>
+      </section>
+    );
+  }
+
+  return (
+    <section id="section-bundles">
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
+        {t("bundlesTitle")}
+      </h2>
+
+      <div className="mt-5 space-y-4">
+        {bundles.map((b) => (
+          <BundleCard key={b.id} bundle={b} slug={slug} locale={locale} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; locale: string }) {
+  const t = useTranslations("salonDetail");
+  const showDiscount = bundle.pricing_mode === "percent" && bundle.percent_off != null;
+  const showStruck = bundle.bundle_price < bundle.sum_price;
+
+  // Carry the bundle's services preselected into the booking flow + the bundle_id tag.
+  const serviceCsv = bundle.services.map((s) => s.id).join(",");
+  const bookingHref = `/${locale}/salon/${slug}/booking?services=${serviceCsv}&bundle=${bundle.id}`;
+
+  return (
+    <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+      <div className="flex items-center gap-2 px-4 pt-4 pb-2">
+        <Package size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+        <p className="font-heading text-[16px] font-bold text-s-ink">{bundle.name}</p>
+      </div>
+
+      <div>
+        {bundle.services.map((s) => (
+          <div
+            key={s.id}
+            className="flex items-center justify-between border-t border-s-border px-4 py-3 first:border-t-0"
+          >
+            <p className="truncate font-body text-[14px] font-medium text-s-ink">
+              {locale === "en" && s.name_en ? s.name_en : s.name_de}
+            </p>
+            <span className="flex shrink-0 items-center gap-1 pl-3 text-[12px] text-s-ink-2 tabular-nums">
+              <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} {t("minutesUnit")}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between gap-3 border-t border-s-border px-4 py-3.5">
+        <div className="flex min-w-0 items-baseline gap-2">
+          {showStruck && (
+            <span className="font-body text-[13px] text-s-ink-3 line-through tabular-nums">
+              {formatCurrency(bundle.sum_price, locale)}
+            </span>
+          )}
+          <span className="font-body text-[16px] font-bold text-s-ink tabular-nums">
+            {formatCurrency(bundle.bundle_price, locale)}
+          </span>
+          {showDiscount && (
+            <span className="rounded-full bg-s-success-bg px-2.5 py-1 font-body text-[12px] font-semibold text-s-success tabular-nums">
+              &minus;{bundle.percent_off}%
+            </span>
+          )}
+        </div>
+        <Link
+          href={bookingHref}
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-s-ink px-5 font-body text-[14px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
+        >
+          {t("bundlesBook")}
+        </Link>
+      </div>
+    </div>
+  );
+}

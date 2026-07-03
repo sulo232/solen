@@ -5329,7 +5329,22 @@
     "shareError": "Impossible de partager",
     "backToList": "Retour à la liste",
     "addToFavorites": "Ajouter aux favoris",
-    "removeFromFavorites": "Retirer des favoris"
+    "removeFromFavorites": "Retirer des favoris",
+    "productsPickup": "À récupérer lors de votre visite",
+    "productsAdd": "Ajouter",
+    "productsSoldOut": "Épuisé",
+    "productsTotal": "Total",
+    "productsCheckout": "Acheter",
+    "productsPaySecure": "Paiement sécurisé avec Stripe",
+    "productsPay": "payer",
+    "productsPaid": "Paiement reçu",
+    "productsPaidNote": "Récupérez vos produits lors de votre prochaine visite.",
+    "productsError": "Impossible de charger les produits.",
+    "bundlesTitle": "Forfaits",
+    "bundlesBook": "Réserver",
+    "bundlesSave": "économisé",
+    "bundlesError": "Impossible de charger les forfaits.",
+    "minutesUnit": "min"
   },
   "comingSoon": {
     "title": "Bientôt disponible",
