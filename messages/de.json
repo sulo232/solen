@@ -1610,6 +1610,7 @@
       "visualEditor": "Visual Editor",
       "discovery": "Discovery",
       "homepage": "Homepage",
+      "cities": "Städte",
       "sandbox": "Sandbox",
       "previewBanner": "Vorschau-Modus aktiv — du siehst das Dashboard als:",
       "previewExit": "Beenden",
@@ -2466,6 +2467,14 @@
       "eyebrow": "Barber",
       "title": "Barber Kunden",
       "subtitle": "Kundenverlauf, Leaderboard & automatische Erinnerungen"
+    },
+    "citiesAdminPage": {
+      "title": "Städte",
+      "subtitle": "Rollout-Städte aktivieren oder deaktivieren. Aktiv macht eine Stadt wähl- und suchbar; inaktiv blendet sie aus, ohne Salons zu löschen.",
+      "activeLabel": "Aktiv",
+      "inactiveLabel": "Inaktiv",
+      "displayOrder": "Reihenfolge {order}",
+      "errorMessage": "Konnte nicht gespeichert werden. Bitte erneut versuchen."
     },
     "commissionAdminPage": {
       "title": "Provision",

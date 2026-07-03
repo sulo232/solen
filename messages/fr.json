@@ -1572,6 +1572,7 @@
       "visualEditor": "Éditeur visuel",
       "discovery": "Découverte",
       "homepage": "Page d'accueil",
+      "cities": "Villes",
       "sandbox": "Sandbox",
       "previewBanner": "Mode aperçu actif — affichage du tableau de bord en tant que :",
       "previewExit": "Quitter",
@@ -2448,6 +2449,14 @@
       "eyebrow": "Barbier",
       "title": "Clients barbier",
       "subtitle": "Historique clients, classement et rappels automatiques"
+    },
+    "citiesAdminPage": {
+      "title": "Villes",
+      "subtitle": "Activer ou désactiver les villes de déploiement. Actif rend une ville sélectionnable et recherchable ; inactif la masque sans supprimer les salons.",
+      "activeLabel": "Actif",
+      "inactiveLabel": "Inactif",
+      "displayOrder": "Ordre {order}",
+      "errorMessage": "Échec de l'enregistrement. Veuillez réessayer."
     },
     "commissionAdminPage": {
       "title": "Commission",

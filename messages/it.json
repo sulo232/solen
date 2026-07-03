@@ -1574,6 +1574,7 @@
       "visualEditor": "Editor visuale",
       "discovery": "Scoperta",
       "homepage": "Homepage",
+      "cities": "Città",
       "sandbox": "Sandbox",
       "previewBanner": "Modalità anteprima attiva — visualizzando la dashboard come:",
       "previewExit": "Esci",
@@ -2430,6 +2431,14 @@
       "eyebrow": "Barbiere",
       "title": "Clienti barbiere",
       "subtitle": "Storico clienti, classifica e promemoria automatici"
+    },
+    "citiesAdminPage": {
+      "title": "Città",
+      "subtitle": "Attiva o disattiva le città del rollout. Attivo rende una città selezionabile e ricercabile; inattivo la nasconde senza eliminare i saloni.",
+      "activeLabel": "Attivo",
+      "inactiveLabel": "Inattivo",
+      "displayOrder": "Ordine {order}",
+      "errorMessage": "Salvataggio non riuscito. Riprova."
     },
     "commissionAdminPage": {
       "title": "Commissione",

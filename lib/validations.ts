@@ -623,6 +623,11 @@ export const adminFeatureFlagSchema = z.object({
   description: z.string().max(500).optional(),
 });
 
+export const adminCityToggleSchema = z.object({
+  id: z.string().uuid(),
+  is_active: z.boolean(),
+});
+
 export const reportDisputeSchema = z.object({
   issue_type: z.enum(['quality', 'no_show_by_salon', 'wrong_service', 'overcharge', 'other']),
   description: z.string().min(20, 'Description must be at least 20 characters').max(1000),

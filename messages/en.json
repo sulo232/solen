@@ -1600,6 +1600,7 @@
       "visualEditor": "Visual Editor",
       "discovery": "Discovery",
       "homepage": "Homepage",
+      "cities": "Cities",
       "sandbox": "Sandbox",
       "previewBanner": "Preview mode active — viewing dashboard as:",
       "previewExit": "Exit",
@@ -2456,6 +2457,14 @@
       "eyebrow": "Barber",
       "title": "Barber Clients",
       "subtitle": "Client history, leaderboard & automatic reminders"
+    },
+    "citiesAdminPage": {
+      "title": "Cities",
+      "subtitle": "Enable or disable rollout cities. Active makes a city selectable and searchable; inactive hides it without deleting salons.",
+      "activeLabel": "Active",
+      "inactiveLabel": "Inactive",
+      "displayOrder": "Order {order}",
+      "errorMessage": "Could not be saved. Please try again."
     },
     "commissionAdminPage": {
       "title": "Commission",
