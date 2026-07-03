@@ -45,35 +45,36 @@ Ranked by payoff. None applied; the rules are the owner's approved system.
 
 Owner: "Apply all of them. And also make hooks too, because rules keep getting forgotten."
 
-- [ ] R1a LOOP_SYSTEM.md model-tiering section corrected to sonnet/haiku only
-- [ ] R1b verify.md repointed away from retired solen-coral.html
-- [ ] R1c refine.md section 2 stale design-verifier justification corrected
-- [ ] R1d1 fresha-section-capture tool-name translation banner
-- [ ] R1d2 pixel-ref-collect tool-name translation banner
-- [ ] R1d3 site-teardown tool-name translation banner
-- [ ] R1e1 memory feedback_check_skills_first superseded header
-- [ ] R1e2 memory feedback_90_10_color_rule superseded header
-- [ ] R1e3 memory feedback_selected_state_ink_not_blue_ring superseded header
-- [ ] R1e4 memory feedback_mockup_every_design_decision superseded header
-- [ ] R1f _rules historical banners (CODE_SAFETY, SOLEN_UI, SOLEN_PATTERNS, SYSTEMS, search-bar-rules, STRUCTURAL_RULES, I18N_ROUTING)
-- [ ] R1g memory feedback_balance_anchor_derive_and_measure check:dash reference corrected
-- [ ] R2a unfinished-batch-gate.py registered under Stop (global), self-tested
-- [ ] R2b vestigial coder-marker-subagentstop.py retired and deregistered
-- [ ] R3 MultiEdit added to matchers of mockup-gate, no-focus-ring-gate, no-caps-gate, orchestration-gate; Bash-write bypass decision stated in report
-- [ ] R4 precedence-chain block added to project CLAUDE.md
-- [ ] R5 rule 9 fix-routing sentence added to global CLAUDE.md
-- [ ] R6 one-system mapping note added to LOOP_SYSTEM.md
-- [ ] R7a skip-flag ledger hook built, self-tested, registered
-- [ ] R7b session-marker sweep hook built, self-tested, registered
-- [ ] R8 api-route discriminate-check reminder hook (project), self-tested, registered
-- [ ] R9 LESSONS_LEARNED.md ledger-status banner
-- [ ] R10 SubagentStop UI-work reminder hook built, self-tested, registered
-- [ ] R11 fable-skill-trigger hook (UserPromptSubmit) built, self-tested, registered
-- [ ] R12 independent review of the whole batch, punch list fixed
-- [ ] R13 close-out: original message re-read, boxes ticked, report
+- [x] R1a LOOP_SYSTEM.md model-tiering section corrected to sonnet/haiku only
+- [x] R1b verify.md repointed away from retired solen-coral.html (banner + 3 path replacements)
+- [x] R1c refine.md section 2 stale design-verifier justification corrected (read-only since 2026-06-23; schema mismatch is the real reason)
+- [x] R1d1 fresha-section-capture tool-name translation banner (+ LOCKFILE-beats-embedded-lock line)
+- [x] R1d2 pixel-ref-collect tool-name translation banner
+- [x] R1d3 site-teardown tool-name translation banner (symlink target ~/.agents/skills)
+- [x] R1e1 memory feedback_check_skills_first superseded header (binary triggers win; emil-design-eng deleted)
+- [x] R1e2 memory feedback_90_10_color_rule superseded header (generous-blue v2 retired)
+- [x] R1e3 memory feedback_selected_state_ink: file header already good; fixed the STALE MEMORY.md index line instead (ink-fill claim -> gray sunken)
+- [x] R1e4 memory feedback_mockup_every_design_decision superseded-mechanics header
+- [x] R1f _rules historical banners (CODE_SAFETY, SOLEN_UI, SOLEN_PATTERNS, SYSTEMS, search-bar-rules, STRUCTURAL_RULES, I18N_ROUTING)
+- [x] R1g memory check:dash reference corrected (verified missing in worktree AND main package.json + scripts/)
+- [x] R2a unfinished-batch-gate.py registered under Stop (global); self-tested block + pass cases
+- [x] R2b coder-marker-subagentstop.py deregistered, moved to ~/.claude/hooks/_retired/ (with the old mockup-gate .bak)
+- [x] R3 MultiEdit added to mockup-gate, no-focus-ring-gate, no-caps-gate, orchestration-gate matchers. Bash-write bypass: ACCEPTED as-is (a Bash matcher on content gates would fire on every command with heavy false positives; skip-flag-ledger now at least logs the flag path)
+- [x] R4 precedence-chain block appended to project CLAUDE.md
+- [x] R5 rule 9 fix-routing clarification added to global CLAUDE.md (fix = route to coder, resolves rule 9 vs 13 conflict)
+- [x] R6 "One system, three descriptions" section added to LOOP_SYSTEM.md
+- [x] R7a skip-flag-ledger.py built, self-tested (log + no-log cases), registered PreToolUse Bash
+- [x] R7b session-marker-sweep.py built, self-tested (removes 48h+ markers, keeps fresh), registered SessionStart
+- [x] R8 api-route-discriminate-reminder.py built, self-tested (fires on route.ts once/session, silent on components), registered project PostToolUse
+- [x] R9 LESSONS_LEARNED.md ledger-status banner
+- [x] R10 subagent-uiwork-reminder.py built, self-tested (fires on UI-edit transcript, silent on read-only), registered SubagentStop
+- [x] R11 fable-skill-trigger.py built, self-tested (fires by category once/session, silent on trivial), registered UserPromptSubmit
+- [x] R12 independent review: 10-point checklist, 9 PASS + 1 punch item (pre-existing em-dash swept into a + line of verify.md); fixed by sweeping all 9 em-dashes in that file, re-verified with the reviewer's own literal grep (0 hits). Batch = PASS.
+- [x] R13 close-out: original message re-read ("Apply all of them" + "make hooks too"), all boxes ticked, reported (2026-07-03)
 
 ## Review log
 
+- Round 2 batch review (loop-reviewer, read-only, 10-point): hooks compile + registered + functional spot-checks PASS; matcher widenings PASS; all 12 banners PASS; no _rules deletions PASS; doc corrections PASS; memory PASS (index 17.4KB, 108/108 files indexed); skill consistency PASS. One FAIL: em-dash on an added verify.md line; fixed (full sweep, 0 remain), verified with the same grep. Note: fable-skill-trigger hook FIRED LIVE mid-session on a task notification, proving hot-reload registration works without restart.
 - Round 1 (loop-reviewer, read-only): checklist items 1 to 6 ALL PASS (referential integrity of every path/script/agent/skill referenced; factual accuracy of all six claims incl. the stale-LOOP_SYSTEM and phantom-playwright traps; zero banned characters; no drift-risk literals; internal consistency; frontmatter). One FAIL finding: "CLAUDE.md section 14 missing". Finding REFUTED by direct measurement: grep shows the section at /Users/sulo/.claude/CLAUDE.md:386 (the wiring was always global-file-only; reviewer checked the project file). Round 2 dispatched to re-verify that single item and re-issue the verdict.
 
 ## Parked / decisions surfaced
