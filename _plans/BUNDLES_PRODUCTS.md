@@ -71,6 +71,9 @@ LATENT BUG (separate, added to ACTIVE.md): staff_services.price_override INTEGER
 - [ ] BLOCKED (owner/external): full Stripe test-mode PRODUCT purchase end-to-end , NO salon has a stripe_account_id + accepts_online_payment (verified via SQL), so the Connect charge can't be exercised. Purchase LOGIC proven to the Stripe boundary (amount server-computed, stock 409, subset guard). Needs a test Connect account on a seed salon to finish. Same limit blocks online-pay BUNDLE charge proof (the pay-intent bundle recompute is code+guard verified; can't capture a real PI without Connect).
 - [ ] SENIOR_SCORECARD on SalonBundles + SalonProducts (design-verifier, running).
 - [ ] Bundle BUILDER dashboard = MOCKUP first (mockup-first rule), then owner approval, then build. Mockup running.
+- [~] SCORECARD RESULT (orchestrator eyeball of verifier screenshots, verifier died on rate limit before its written verdict): both sections ~5/5. Two MINOR polish nits for the next coder pass (not blockers): (1) SalonBundles.tsx , service rows show "90 Min"/"180 Min" (capital M) while the services section uses "90 min" , unify casing; (2) SalonProducts.tsx , product name column too tight, truncates at "Repair Sham..." , widen the name column / relax the truncation. Re-run the full 5-dimension scorecard verifier for the written verdict after the fixes.
+- [ ] RATE-LIMITED until ~21:20 Europe/Zurich: bundle-builder mockup (agent died at spawn) + the 2 scorecard nits , both need a (sonnet) coder; resume after reset.
+
 ## Parked / out of v1
 - Delivery shipping; memberships/recurring; product size-variants; multi-quantity carts; 'free' pricing mode; bundles on search cards (mockup explicitly excluded , new ask if wanted).
 - waxing_zone_packages DROP cleanup migration + graveyard line (do with the next housekeeping migration).
