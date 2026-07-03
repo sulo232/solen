@@ -38,6 +38,9 @@
 - [ ] R3-harden: real-size mockup gate (feed-grammar card inside a 2-col grid = deny) , build, self-test, wire.
 - [x] R3-A5: owner wants a MOCKUP instead of a text pick , /dev/bundles-products showing all 3 scopes ON the real PDP anatomy: (A) "Products" section (retail cards, CHF, pick-up-at-visit), (B) "Bundles" section (>=2 services grouped, save-%, Fresha mechanics; FLAG: service_packages graveyarded 2026-06-11, owner-driven exploration only), (C) what already ships (variants + add-ons in booking). Full-width real-size, service-row grammar from SalonServices.tsx. Recommend A (backend mostly exists). DISPATCH SERIALIZED after the round-3 coder (one-coherent-pass rule, no parallel frontend agents). (app/[locale]/dev/bundles-products/page.tsx , 3 options as PDP sections, gray-selected variants, pale −% bundle pill, rec A.)
 
+## ROUND 4 , DONE + design-verifier PASS (agent a64070ce, round 1)
+> Committed 0c346e3e4. Verifier measured: sort pill morph (mid-transition captured), rating bar -> ?min_rating=3.5, Apply outline rgb(255,255,255)/border #E4E4E7, cards 245.33x163.55 (1.5005 = 3:2), heart 44x44, chip = FROST_GLASS 12px text-only on exactly the matching salon (0 chips without ?q), compare page structurally identical to live /de/coiffeur. No focus rings (17 controls tabbed), no i18n leaks.
+
 ## ROUND 4 (owner voice 2026-07-03 #2) , IMPLEMENT approved, fix inventions
 > DONE (coder, 2026-07-03): R4-1..R4-6 all landed + Playwright-verified live (screenshots in
 > scratchpad: r4_sheet_sort_before/r4_sheet_sort.png morph proof, r4_sheet_rating.png +
