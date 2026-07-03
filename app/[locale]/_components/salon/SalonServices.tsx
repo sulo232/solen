@@ -1,13 +1,17 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
-import { SalonServicesSheet } from "./SalonServicesSheet";
 import { TabPill } from "../primitives/TabPill";
 import { PriceFrom } from "../primitives";
 import { cn } from "@/lib/utils";
+
+// B4 load audit (2026-07-04, finding #2): the full-screen "Alle ansehen" sheet
+// is click-triggered , same dynamic() pattern as SalonTeam.tsx:12.
+const SalonServicesSheet = dynamic(() => import("./SalonServicesSheet").then((m) => m.SalonServicesSheet), { ssr: false });
 
 /**
  * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",

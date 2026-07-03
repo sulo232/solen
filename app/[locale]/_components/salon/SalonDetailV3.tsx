@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -27,13 +28,16 @@ import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
-import { SalonLightbox } from "./SalonLightbox";
-import { SalonImageGallery } from "./SalonImageGallery";
 import type { SalonDetail, TabKey } from "./_shared";
 import { postalToCity, computeOpenStatus } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { generateSalonSchema } from "@/lib/seo";
+
+// B4 load audit (2026-07-04, finding #2): click-triggered overlays, loaded only
+// when opened (same dynamic() pattern as SalonTeam.tsx:12's StaffProfilePage).
+const SalonLightbox = dynamic(() => import("./SalonLightbox").then((m) => m.SalonLightbox), { ssr: false });
+const SalonImageGallery = dynamic(() => import("./SalonImageGallery").then((m) => m.SalonImageGallery), { ssr: false });
 
 /**
  * SalonDetailV3 — V2-D53.3 orchestrator (2026-05-11) · V3-D202 detox (2026-05-26).

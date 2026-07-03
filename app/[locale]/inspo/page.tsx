@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
@@ -18,10 +19,14 @@ import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
-import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
 import { Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+
+// B4 load audit (2026-07-04, finding #5): admin-only panel, render-gated by isAdmin already ,
+// dynamic-import so its 15.3KB never ships to the non-admin cohort (same dynamic() pattern as
+// SalonTeam.tsx:12 / MapView).
+const DiscoveryAdmin = dynamic(() => import("@/components-legacy/discovery/DiscoveryAdmin"), { ssr: false });
 
 // (Removed PROOF_SALON_ITEMS , the 3 hardcoded picsum salon previews. Real content now fills the feed, and the fake
 //  salon names/images were the "wrong images / wrong names" the owner flagged. Salon opt-in sync is the real path.)

@@ -84,8 +84,6 @@ import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
-import { FilterSheet } from "./FilterSheet";
-import { SearchOverlay } from "./SearchOverlay";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
@@ -104,6 +102,11 @@ const MapView = dynamic(() => import("@/components-legacy/MapView"), {
     <div className="h-full w-full animate-pulse rounded-[14px] bg-s-bg-sunken" />
   ),
 });
+
+// B4 load audit (2026-07-04, finding #3): both are interaction-gated overlays
+// (open on tap, state-gated already), same dynamic() pattern as MapView above.
+const FilterSheet = dynamic(() => import("./FilterSheet").then((m) => m.FilterSheet), { ssr: false });
+const SearchOverlay = dynamic(() => import("./SearchOverlay").then((m) => m.SearchOverlay), { ssr: false });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API
