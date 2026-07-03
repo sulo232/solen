@@ -151,7 +151,9 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
               {locale === "en" && s.name_en ? s.name_en : s.name_de}
             </p>
             <span className="flex shrink-0 items-center gap-1 pl-3 text-[12px] text-s-ink-2 tabular-nums">
-              <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} {t("minutesUnit")}
+              {/* Casing matches SalonServices.tsx formatDurationDE (owner-locked 2026-06-09: lowercase
+                  "min", no period) , NOT the shared minutesUnit i18n key ("Min", used by dashboard/services). */}
+              <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} min
             </span>
           </div>
         ))}

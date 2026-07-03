@@ -28,7 +28,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Store } from "lucide-react";
+import { Store, Plus, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
@@ -292,18 +292,22 @@ function ProductRow({
         <span className={`font-body text-[14px] font-semibold tabular-nums ${soldOut ? "text-s-ink-3" : "text-s-ink"}`}>
           {formatCurrency(product.price / 100, locale)}
         </span>
+        {/* mockup-ok: A5 R5 close-out nit-2 , icon-only Add per copy-economy rule (icon unambiguous next
+            to its object); selected = gray sunken per feedback_selected_state_ink_not_blue_ring (owner
+            2026-07-02, NOT ink). Frees row width so the product name stops truncating. */}
         <button
           type="button"
           onClick={onToggle}
           disabled={soldOut}
           aria-pressed={selected}
-          className={`inline-flex h-11 shrink-0 items-center gap-1 rounded-full border px-3.5 font-body text-[13px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+          aria-label={addLabel}
+          className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             selected
-              ? "border-s-ink bg-s-ink text-white"
+              ? "border-s-border bg-s-bg-sunken text-s-ink"
               : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken"
           }`}
         >
-          {addLabel}
+          {selected ? <Check size={18} strokeWidth={2.25} aria-hidden /> : <Plus size={18} strokeWidth={2.25} aria-hidden />}
         </button>
       </div>
     </div>
