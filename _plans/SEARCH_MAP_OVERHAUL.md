@@ -6,9 +6,9 @@
 DONE+committed: A1 (impl+PASS), A3 (V2), A4 (chip live), A5 (bundles+products full), B1 (count), B4-backend (embedding race + N+1 RPC + 9 wins), B5 (focus rings), C1/C2 + hooks.
 - [x] B2 city-lock: NO lock code (0 maxBounds/minZoom in MapView) + auto-update landed -> RESOLVED.
 - [ ] B6 scroll morph: CONFIRMED still boolean-snap (SearchTemplate.tsx:773 `scrolled` bool + hysteresis). FIXING now (continuous scrollY morph, coder a-pending).
-- [ ] B3 geocoder (street->city auto-select): net-new, DEFERRED (default: keep the city-name resolver that's done; add a geocoder later). Owner-optional.
-- [ ] B4 frontend load-time audit: DEFERRED, needs a prod build to measure honestly (backend perf done).
-- [ ] A2 Model B real UI: BLOCKED on owner fork , keep current search bar OR rebuild to segmented-category + separate text field. Backend ambiguity bug already fixed. No safe default (whole-search restructure) -> owner decides.
+- [ ] B3 geocoder: EXPLAINED to owner (Mapbox Geocoding, we already use Mapbox GL). Awaiting go/no-go. Net-new (default: keep the city-name resolver that's done; add a geocoder later). Owner-optional.
+- [ ] B4 frontend load-time audit: owner said YES. Runs after B6+A2 (prod build clobbers .next / the dev server they verify against). Needs a prod build to measure honestly (backend perf done).
+- [ ] A2: owner said MAKE MOCKUP (interactive Model B, real bar). Coder dispatches after B6 (frontend serialization). , keep current search bar OR rebuild to segmented-category + separate text field. Backend ambiguity bug already fixed. No safe default (whole-search restructure) -> owner decides.
 
 ## A. DESIGN , need COUNCIL + MOCKUPS (multiple directions each)
 - [ ] A1. FILTER MENUS (inside FilterSheet): all the filter sections "look ass", renew everything. Council on the redesign; mockups for EACH menu (Sort / Availability / Rating / Price / For-whom / Amenities / Deals). 3+ directions.
