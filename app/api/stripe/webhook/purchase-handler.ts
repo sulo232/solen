@@ -103,17 +103,47 @@ export async function handlePurchasePaid(pi: any): Promise<boolean> {
       // retail_purchase: /api/salon/retail/purchase inserted a pending row keyed on
       // the PI. Flip to paid + set paid_amount. Advance-only via the status guard so
       // a re-delivery never overwrites a row a refund already moved past 'paid'.
-      await admin
+      // .select() returns the row(s) that ACTUALLY transitioned, so a webhook retry
+      // (row already 'paid') matches 0 rows and the stock decrement below is skipped
+      // (idempotent: stock is decremented exactly once, on the real pending->paid flip).
+      const { data: settled } = await admin
         .from("retail_purchases")
         .update({
           status: "paid",
           paid_amount: paidAmount,
-          vat_amount: vat.vatRappen, // Rappen — VAT portion of paid_amount.
-          net_amount: vat.netRappen, // Rappen — paid_amount − vat_amount.
+          vat_amount: vat.vatRappen, // Rappen , VAT portion of paid_amount.
+          net_amount: vat.netRappen, // Rappen , paid_amount minus vat_amount.
           vat_rate: vat.ratePercent, // rate applied (0 if salon not registered).
         })
         .eq("stripe_payment_intent_id", pi.id)
-        .eq("status", "pending");
+        .eq("status", "pending")
+        .select("product_ids");
+
+      // A-5 stock: decrement each purchased SKU by 1 ONLY when this call performed the
+      // pending->paid transition. Atomic + guarded in the DB (decrement_retail_stock:
+      // SET stock_count = stock_count - 1 WHERE id=? AND stock_count IS NOT NULL AND
+      // stock_count >= 1). An out-of-stock / untracked SKU returns no row , log it, but
+      // NEVER fail the settle (payment already succeeded; stock is best-effort).
+      const settledRow = settled?.[0] as { product_ids: string[] | null } | undefined;
+      if (settledRow?.product_ids?.length) {
+        for (const productId of settledRow.product_ids) {
+          const { data: decremented, error: decErr } = await admin.rpc(
+            "decrement_retail_stock",
+            { p_product_id: productId },
+          );
+          if (decErr) {
+            console.error("[purchase-handler] stock decrement RPC failed:", decErr, {
+              pi: pi.id,
+              product_id: productId,
+            });
+          } else if (!decremented) {
+            console.error("[purchase-handler] stock not decremented (out of stock or untracked):", {
+              pi: pi.id,
+              product_id: productId,
+            });
+          }
+        }
+      }
     }
 
     if (salonId) {

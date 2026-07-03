@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
@@ -29,9 +29,6 @@ export async function GET(req: NextRequest) {
 
 // POST /api/salon/retail — Create retail product
 export async function POST(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
@@ -67,9 +64,6 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/salon/retail — Update product
 export async function PUT(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
@@ -103,9 +97,6 @@ export async function PUT(req: NextRequest) {
 
 // DELETE /api/salon/retail?id=xxx — Soft delete (deactivate)
 export async function DELETE(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;

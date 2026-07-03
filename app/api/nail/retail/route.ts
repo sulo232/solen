@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
 
@@ -27,9 +27,6 @@ export async function GET(req: NextRequest) {
 
 // POST — create a new retail product
 export async function POST(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
@@ -69,9 +66,6 @@ export async function POST(req: NextRequest) {
 
 // PATCH — update stock count for a product
 export async function PATCH(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;

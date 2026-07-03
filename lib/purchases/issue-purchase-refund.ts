@@ -81,6 +81,8 @@ interface ResolvedPurchase {
   salonId: string | null;
   userId: string | null;
   stripeAccountId: string | null;
+  // retail-only: the purchased SKUs, so a FULL refund re-increments their stock (A-5).
+  productIds: string[] | null;
 }
 
 /**
@@ -114,13 +116,14 @@ async function resolvePurchase(
       salonId: row.salon_id,
       userId: row.user_id,
       stripeAccountId: row.salons?.stripe_account_id ?? null,
+      productIds: null, // packages have no per-SKU stock.
     };
   }
 
   // retail
   const { data, error } = await db
     .from("retail_purchases")
-    .select("id, stripe_payment_intent_id, paid_amount, refunded_amount, salon_id, user_id, salons(stripe_account_id)")
+    .select("id, stripe_payment_intent_id, paid_amount, refunded_amount, salon_id, user_id, product_ids, salons(stripe_account_id)")
     .eq("id", id)
     .single();
   if (error || !data) return null;
@@ -130,6 +133,7 @@ async function resolvePurchase(
     refunded_amount: number | null;
     salon_id: string | null;
     user_id: string | null;
+    product_ids: string[] | null;
     salons: { stripe_account_id: string | null } | null;
   };
   return {
@@ -139,6 +143,7 @@ async function resolvePurchase(
     salonId: row.salon_id,
     userId: row.user_id,
     stripeAccountId: row.salons?.stripe_account_id ?? null,
+    productIds: row.product_ids ?? null,
   };
 }
 
@@ -336,8 +341,27 @@ export async function issuePurchaseRefund(
     };
   }
 
+  // 8b. A-5 stock RE-INCREMENT (retail, FULL refund only). Tied to the status
+  //     transition, not the amount: it runs ONLY when casRow is present (THIS call
+  //     performed the CAS, so a concurrent retry won't double-bump) AND the refund is
+  //     full (status === "refunded"). Partial refunds leave stock alone. Each SKU is
+  //     bumped +1 (v1 quantity = 1 per SKU per purchase). Untracked SKUs (NULL stock)
+  //     return no row and are skipped. Best-effort: a stock-bump failure never fails the
+  //     refund (the money already moved).
+  if (source === "retail" && status === "refunded" && purchase.productIds?.length) {
+    for (const productId of purchase.productIds) {
+      const { error: incErr } = await db.rpc("increment_retail_stock", { p_product_id: productId });
+      if (incErr) {
+        console.error("[issuePurchaseRefund] stock re-increment RPC failed:", incErr, {
+          purchase_id: id,
+          product_id: productId,
+        });
+      }
+    }
+  }
+
   // 9. salon_payouts reconciliation is intentionally NOT done here. The
-  //    `charge.refunded` Stripe webhook is the single canonical reconciler — it
+  //    `charge.refunded` Stripe webhook is the single canonical reconciler , it
   //    fires after every refunds.create (including this one) and recomputes the
   //    payout row from the charge's own figures. Decrementing here too would
   //    double-count (the same lesson as issue-refund.ts §9). Note: a payout row

@@ -2,16 +2,13 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, retailPurchaseSchema } from "@/lib/validations";
 import { getStripe } from "@/lib/stripe";
 
 // POST /api/salon/retail/purchase — Create Stripe PaymentIntent for retail purchase
 export async function POST(req: NextRequest) {
-  const disabled = await checkFeatureEnabled("nail_features");
-  if (disabled) return disabled;
-
   let stripe;
   try {
     stripe = getStripe();
@@ -53,6 +50,17 @@ export async function POST(req: NextRequest) {
     .eq("is_active", true);
 
   if (!products?.length) return NextResponse.json({ error: "No valid products" }, { status: 400 });
+
+  // Council guard: never charge a SUBSET. If any requested product was missing /
+  // inactive / from another salon, the DB returns fewer rows than requested , reject
+  // the whole purchase rather than silently pricing only the products that resolved.
+  const requestedIds = [...new Set(product_ids)];
+  if (products.length !== requestedIds.length) {
+    return NextResponse.json(
+      { error: "Some products are unavailable", code: "PRODUCTS_UNAVAILABLE" },
+      { status: 400 },
+    );
+  }
 
   const totalAmount = products.reduce((sum, p) => sum + p.price, 0);
   const platformFee = Math.round(totalAmount * 0.05); // 5% platform fee
