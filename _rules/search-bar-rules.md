@@ -1,5 +1,7 @@
 # 🔍 Search Bar Rules — Solen.ch
 
+> STALE REFERENCE WARNING (2026-07-03): text-embedding-004 is retired (404), use gemini-embedding-001 per lib/search/embeddings.ts. Any s-coral class named below is retired. The behavioral rules stay live.
+
 > **Every AI agent MUST read this file before modifying any search-related component.**
 
 ---

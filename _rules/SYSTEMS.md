@@ -1,5 +1,7 @@
 # Solen — Systems & Tools
 
+> STALE ROUTING WARNING (2026-07-03): the Figma-first design workflow and _tasks/SOLEN_DESIGN.md routing below are superseded. Design work routes through _design-system/SOURCE.md + LOCKFILE.md and the fable-frontend skill pipeline.
+
 > **Read this every session.** Match the user's request to a system, then follow it.
 
 ---

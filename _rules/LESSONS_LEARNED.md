@@ -1,5 +1,7 @@
 # Solen.ch — Lessons Learned & Common Pitfalls
 
+> LEDGER STATUS (2026-07-03): entries below stop at 2026-06-05. Newer lessons live in project CLAUDE.md pinned blocks and the memory feedback files, so check all three. This file remains the append target for backend and data footguns: keep appending here.
+
 > **MANDATORY**: Every AI agent MUST read this file before making changes.
 > **MANDATORY**: Every AI agent MUST append new entries here whenever they discover a new bug, footgun, or non-obvious pattern — whether they caused it or fixed it.
 

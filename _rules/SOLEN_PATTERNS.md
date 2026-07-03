@@ -1,5 +1,7 @@
 # Solen V3 — Patterns + Fresha translation playbook
 
+> RETIRED PALETTE WARNING (2026-07-03): the emerald/terracotta palette in Parts 1 to 3 is HISTORICAL, do not apply it (especially after context compaction). Only structure-level patterns remain live. Current colors: _design-system/LOCKFILE.md.
+
 > **Operational playbook for any new V3 surface.** Distills what we built on the homepage into reusable patterns + concrete rules + a Fresha→Solen adaptation guide. Auto-loaded by Claude on session start via `CLAUDE.md` "Topic-specific rules" table.
 >
 > **Hierarchy:** `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal *spec* docs. This file is the *playbook*: how to apply those locked specs to new surfaces. When the two disagree, SOURCE.md + LOCKFILE.md win. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived; do not treat it as authoritative.)
