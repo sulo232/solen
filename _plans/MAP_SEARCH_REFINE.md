@@ -511,3 +511,8 @@ ROOT CAUSE (honest): I followed the COUNCIL's "Search this area BUTTON" over the
 - [~] 3 FILTER MARK: removed the redundant ListIcon (≡) from the map bar (it duplicated the back button) , BEST GUESS at the "filter mark"; FLAG for owner confirm.
 - [ ] 2b BAR SIZE: measured normal=67px (two lines) vs map=46px (one line). Make map bar TWO lines (query/category + city) to match 67px height. bg/border/radius/padding already identical.
 - [x] 2b BAR SIZE DONE: map bar min-h-[67px] + two-line text -> measured IDENTICAL to the normal bar (both h=67, padTB=10px, radius=9999px, bg white, border 1px E4E4E7, px-3.5). Auto-update PASS-verified (verifier reproduced 8->0 Orte on pan, no button, 0 errors).
+
+## BATCH 22 (owner 2026-07-03, post mockup-review): 3 scoped frontend tweaks. ATOMIC:
+- [ ] A3 (REAL CODE): homepage SalonCard photo aspect-square -> aspect-[3/2] to MATCH search result cards (SalonResultCard feed uses aspect-[3/2]). Owner-approved via /dev/card-ratio. app/[locale]/_components/homepage/SalonCard.tsx ~L485. Do NOT touch SalonResultCard "grid" variant.
+- [ ] A4 (MOCKUP): /dev/spec-chip frosted specialization chip is TOO BIG. Keep style A (frost + BadgeCheck). SHRINK ChipFrost to ~px-2 py-0.5, text-[11px], icon 11 (both on-card + sample shrink together). Keep >= 11px + legible on photo.
+- [ ] A2 (MOCKUP): /dev/category-flow Model B refine to a polished screen (tighter spacing/hierarchy, aligned segmented 4-cat picker + separate free-text). Search button must NOT be solid black (owner: "i dont like black buttons") -> neutral outline (bg-white + border-s-border + text-s-ink, pill) OR soft sunken fill; pick cleaner. Keep English. Don't touch Today/Model C except for alignment.
