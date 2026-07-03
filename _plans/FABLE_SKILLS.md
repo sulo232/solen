@@ -88,7 +88,39 @@ Owner: "can u alrdy harden it and also make one too for security and backend bug
 
 Round 2 leftover punch item (verify.md added-line em-dash) was already fixed and committed: c9cb8eaaf.
 
+## Round 4: skill autopilot (owner, 2026-07-03)
+
+Owner: does not want to manually invoke /skills; make the SAFE skills automatic via hooks; give ideas; think risks and gaps so nothing breaks.
+
+- [x] A1 ideas + risk categorization of every skill (auto / nudge-only / stays manual, with why) delivered (table below + chat reply)
+- [x] A2 skill-autopilot.py built (video -> watch, url + analyze verb -> site-teardown, make-a-skill -> skill-creator, explicit council/deep-research asks; max 2 pointers per prompt; per-session dedup; fail-open)
+- [x] A3 memory-maintenance-nudge.py built (SessionStart, 120-file/220-line thresholds, 7-day cooldown, nudge-only because consolidate-memory edits files)
+- [x] A4 both registered in global settings.json (validated json after edit)
+- [x] A5 self-tests: 5 categories fire, 2 negatives silent, dedup silent, cap counts exactly 2, nudge fires/cooldown-silences/quiet-when-under-threshold
+- [x] A6 memory updated (project_fable_skills round 4 paragraph)
+- [x] A7 independent review round dispatched, verdict in review log
+- [x] A8 close-out (2026-07-03)
+- [x] A9 (found during build) session-marker-sweep extended to also sweep autopilot-*.txt state files
+
+### Round 4 risk table (the "so we don't fuck everything up" analysis)
+
+| skill | automation | why this level and not more |
+|---|---|---|
+| watch, site-teardown, skill-creator, llm-council, deep-research | AUTO via skill-autopilot pointer | read-only or file-producing, bounded cost, high-precision signals (teardown needs URL AND verb; council/research fire only on the owner's explicit ask) |
+| fable-reasoning/execution/frontend/backend | already AUTO (fable-skill-trigger v2) | methodology pointers, cheap |
+| pixel-spec-auto, fresha-section-capture, measure-first protocol | already AUTO (project binary-triggers hook) | fires on reference images / Fresha rebuilds / complaints |
+| gemini-visual-check, design-verifier, council, layered loop, harden | already AUTO (gemini-check-gate, design-verify-gate, council-trigger, loop-default, harden-when-flagged) | stop-gates and defaults, proven |
+| consolidate-memory | NUDGE only (memory-maintenance-nudge, weekly, size-gated) | it EDITS memory files; auto-running an editor unattended is how memories get merged wrong |
+| solen-drift-check full report | stays manual | pre-edit-drift-gate already blocks net-new drift at write time; a full scan per turn is slow for near-zero delta |
+| pixel-ref-collect broad auto | stays at binary-trigger scope | Playwright + Mobbin runs are expensive; false fire = minutes wasted, so it stays tied to the brand-named signal |
+| uiux-audit | stays manual | generic checklist that LOSES to LOCKFILE (precedence chain); auto-injecting it would push conflicting law into every UI turn |
+| huashu-design, screenshot-spec tier 3 | stays manual | creative exploration and human-annotation flows; auto-firing them fights the mockup-first pipeline |
+
+Safety invariants for ALL of it: hooks INJECT pointers, never execute (execution stays a model decision, so nothing expensive or destructive can be hook-launched); max 2 autopilot pointers per prompt + once per category per session (context budget); every hook fail-open (a hook bug can never block work); state files swept by session-marker-sweep. Known residual gap: keyword nets miss odd phrasings; protocol = owner reports a miss, the net gets widened (same as fable-trigger v1 -> v2).
+
 ## Review log
+
+- Round 4 (loop-reviewer, read-only, 2026-07-03): PASS, all 8 items, no punch list. Verified live: compile + fail-open on all three scripts, single registrations in valid settings.json, all six autopilot behavior cases (fire, two negatives, dedup, exact 2-pointer cap), nudge fire/cooldown/quiet, sweep covers autopilot state files, zero banned characters, injection-only safety invariant (no subprocess/exec anywhere), plan record complete. Non-blocking note kept for the future: the 2-pointer cap drops a third matching category by priority; widen the cap only if a real miss shows up.
 
 - Round 3 (loop-reviewer, read-only, 2026-07-03): PASS, all 8 items, no punch list. Verified: fable-backend frontmatter + description; all referenced paths resolve (lib/validations.ts, ratelimit, audit, salons route, dev-login, SECURITY_RULES, LESSONS_LEARNED, WORK_TYPES, council workflow, prod-write-guard); factual claims spot-checked against source (guard script contents, discriminate-reminder registration, 142-FK-index memory, short-day opening_hours, never-db-push wording); hook v2 compiles, registered, fail-open, all four categories; live behavior tests (backend fires, dedup, trivial silent, reasoning+frontend combo); zero em/en-dashes or emoji; rule 14 + fable-execution wiring; memory says 4 skills.
 
