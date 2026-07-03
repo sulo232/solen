@@ -22,3 +22,10 @@ machine-matched. Feed a new entry whenever the owner flags "you rebuilt/re-inven
 - owner: "why is it still the same problem over and over, i told you to fix the map function... is it the subagents or you not prompting them good?"
 - fix rule: (1) the owner's LITERAL repeated ask OVERRIDES a council/subagent recommendation , when they conflict, do what the owner said and flag the council disagreement. (2) VERIFY THE OWNER'S EXACT DESCRIBED SCENARIO (reproduce zoom-into-empty -> sheet-empty), not a proxy mechanism. (3) Don't redesign an already-approved element (the search-this-area pill / the map bar).
 - keywords: map, live list, search this area, zoom, viewport, bounds, auto update, in diesem bereich, map sheet, map function, empty area
+
+## 2026-07-03 , search-model-b mockup INVENTED a search bar (not the real one)
+- existing (REUSE THIS): the REAL category-page top in `app/[locale]/_components/search/SearchTemplate.tsx`: header (home icon-btn + city selector + burger), the LARGE category pills row (3D icons, gray-sunken active), the 67px TWO-LINE search bar (`rounded-pill border-s-border bg-white px-3.5`, "Suchen"/subline + map icon-btn inside right), then the filter-pill row. Measured live 380x67 at 412px.
+- invented instead (WRONG): a "Category" label + small segmented 4-tab control + a generic single-line search field , nothing like the real anatomy.
+- owner: "what the fuck is wrong with your search bar? that shit is not what we have."
+- fix rule: ANY mockup of the search/category page MUST copy the real SearchTemplate top verbatim (extract the real JSX; screenshot the real /de/coiffeur as reference). Model-B deltas are BEHAVIORAL (param separation), not a new bar.
+- keywords: search bar, suchleiste, category page, model b, composer, segmented, suchen, schweizweit, category pills, search template
