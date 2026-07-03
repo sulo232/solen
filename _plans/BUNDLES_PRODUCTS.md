@@ -73,6 +73,11 @@ LATENT BUG (separate, added to ACTIVE.md): staff_services.price_override INTEGER
 - [x] Bundle BUILDER dashboard = MOCKUP first (mockup-first rule), then owner approval, then build. Built `app/[locale]/dev/bundle-builder/page.tsx` (2026-07-03): Aurora dashboard form panel (name input, >=2 service checkbox picker, sum/percent/custom segmented control, percent/custom value field, Active toggle, gray-sunken selected states per the current owner rule) BESIDE a live preview that renders the real SalonBundles.tsx BundleCard grammar, wired to lib/pricing/bundle.ts computeBundlePriceChf so the preview price is provably the same number the live API computes. AWAITING OWNER APPROVAL before it becomes the real /dashboard/bundles page (B-2).
 - [x] SCORECARD RESULT nits fixed (2026-07-03): (1) SalonBundles.tsx duration casing unified to "N min" (lowercase, no period) matching SalonServices.tsx's formatDurationDE , the actual rendered services-card convention on this PDP (the shared `minutesUnit` i18n key was left untouched since dashboard/services/page.tsx also uses it); (2) SalonProducts.tsx Add control is now icon-only (Plus/Check pill, 44x44, aria-label kept), selected = gray-sunken (not ink) per feedback_selected_state_ink_not_blue_ring. Measured live: "Repair Shampoo 250ml" row scrollWidth(171)===clientWidth(171), no longer clipped. Full 5-dimension scorecard re-run still pending (design-verifier).
 
+## SCORECARD 5/5 PASS (design-verifier ae9ff2a6, 2026-07-03)
+Both A5 customer sections score 5/5, no punch list. Products: name 171/171 (no truncation), icon-only Add (gray selected). Bundles: "90 min"/"180 min" matches SalonServices formatDurationDE. Copy/Emphasis/Color/Type/Structure all Pass on both. Ship-gate clear.
+- [x] SCORECARD nits fixed + re-verified 5/5.
+- [x] Bundle-builder mockup APPROVED by owner 2026-07-03 -> B-2 real build IN PROGRESS (coder a2e9003).
+
 ## Parked / out of v1
 - Delivery shipping; memberships/recurring; product size-variants; multi-quantity carts; 'free' pricing mode; bundles on search cards (mockup explicitly excluded , new ask if wanted).
 - waxing_zone_packages DROP cleanup migration + graveyard line (do with the next housekeeping migration).
