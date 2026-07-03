@@ -67,6 +67,10 @@ LATENT BUG (separate, added to ACTIVE.md): staff_services.price_override INTEGER
 ## R5 AUDIT (owner 2026-07-03: "analyze for gaps n security and bugs")
 - [ ] Audit workflow over the A5 + R4 surface: 4 lenses (security/authz, money, functional gaps, regressions), adversarial verify per finding, live repro required. Punch list -> fix via coder.
 
+## R5 CLOSE-OUT (2026-07-03)
+- [ ] BLOCKED (owner/external): full Stripe test-mode PRODUCT purchase end-to-end , NO salon has a stripe_account_id + accepts_online_payment (verified via SQL), so the Connect charge can't be exercised. Purchase LOGIC proven to the Stripe boundary (amount server-computed, stock 409, subset guard). Needs a test Connect account on a seed salon to finish. Same limit blocks online-pay BUNDLE charge proof (the pay-intent bundle recompute is code+guard verified; can't capture a real PI without Connect).
+- [ ] SENIOR_SCORECARD on SalonBundles + SalonProducts (design-verifier, running).
+- [ ] Bundle BUILDER dashboard = MOCKUP first (mockup-first rule), then owner approval, then build. Mockup running.
 ## Parked / out of v1
 - Delivery shipping; memberships/recurring; product size-variants; multi-quantity carts; 'free' pricing mode; bundles on search cards (mockup explicitly excluded , new ask if wanted).
 - waxing_zone_packages DROP cleanup migration + graveyard line (do with the next housekeeping migration).
