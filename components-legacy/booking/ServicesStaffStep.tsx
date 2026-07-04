@@ -85,6 +85,13 @@ export default function ServicesStaffStep({
   // Auto-skip staff if only 1 staff member
   const singleStaff = staffList.length === 1;
 
+  // Add-on ids owned by a given base service (used by every mutation point
+  // below so they can't drift out of sync with each other).
+  const getOwnedAddonIds = (serviceId: string) =>
+    serviceAddons
+      .filter((a) => a.service_id === serviceId)
+      .map((a) => a.addon_service_id);
+
   const serviceName = (s: Service) => (locale === 'en' ? s.name_en : s.name_de);
   const serviceDesc = (s: Service) =>
     locale === 'en' ? s.description_en : s.description_de;
@@ -108,28 +115,21 @@ export default function ServicesStaffStep({
     };
 
     if (selectedServiceIds.has(service.id)) {
-      // Deselecting a service also clears its selected add-ons — otherwise an
-      // add-on stays in the cart/total with no UI to see or remove it.
-      const addonIds = serviceAddons
-        .filter((a) => a.service_id === service.id)
-        .map((a) => a.addon_service_id);
-      const removeIds = new Set([service.id, ...addonIds]);
-      const removed = formData.services.filter((s) => removeIds.has(s.id));
-      const removedPrice = removed.reduce((sum, s) => sum + s.price, 0);
-      const removedDuration = removed.reduce(
-        (sum, s) => sum + s.duration_minutes,
-        0
-      );
+      // Deselecting a service also clears its selected add-ons (otherwise an
+      // add-on stays in the cart/total with no UI to see or remove it).
+      const removeIds = new Set([service.id, ...getOwnedAddonIds(service.id)]);
+      const next = formData.services.filter((s) => !removeIds.has(s.id));
       updateFormData({
-        services: formData.services.filter((s) => !removeIds.has(s.id)),
-        totalPrice: formData.totalPrice - removedPrice,
-        totalDuration: formData.totalDuration - removedDuration,
+        services: next,
+        totalPrice: next.reduce((sum, s) => sum + s.price, 0),
+        totalDuration: next.reduce((sum, s) => sum + s.duration_minutes, 0),
       });
     } else {
+      const next = [...formData.services, selected];
       updateFormData({
-        services: [...formData.services, selected],
-        totalPrice: formData.totalPrice + service.price,
-        totalDuration: formData.totalDuration + service.duration_minutes,
+        services: next,
+        totalPrice: next.reduce((sum, s) => sum + s.price, 0),
+        totalDuration: next.reduce((sum, s) => sum + s.duration_minutes, 0),
       });
       // Auto-select if only 1 staff
       if (singleStaff) {
@@ -215,10 +215,7 @@ export default function ServicesStaffStep({
           duration_minutes: opt.duration_minutes,
         }
       : toSel(svc);
-    const ownAddonIds = serviceAddons
-      .filter((a) => a.service_id === serviceId)
-      .map((a) => a.addon_service_id);
-    const clear = new Set([serviceId, ...ownAddonIds]);
+    const clear = new Set([serviceId, ...getOwnedAddonIds(serviceId)]);
     const kept = formData.services.filter((s) => !clear.has(s.id));
     const additions = [
       svcLine,
@@ -238,10 +235,7 @@ export default function ServicesStaffStep({
   };
 
   const handleRemoveService = (serviceId: string) => {
-    const ownAddonIds = serviceAddons
-      .filter((a) => a.service_id === serviceId)
-      .map((a) => a.addon_service_id);
-    const clear = new Set([serviceId, ...ownAddonIds]);
+    const clear = new Set([serviceId, ...getOwnedAddonIds(serviceId)]);
     const next = formData.services.filter((s) => !clear.has(s.id));
     updateFormData({
       services: next,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
@@ -65,6 +65,14 @@ export default function ServiceDetailSheet({
   const [optionId, setOptionId] = useState<string | null>(initialOptionId);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Refs mirror the latest committed state so selectOption/toggle below can
+  // always read a provably current value even if they fire in rapid
+  // succession before React re-renders (stale-closure guard, no behavior
+  // change: the value they mirror is identical to the state itself).
+  const selRef = useRef(sel);
+  selRef.current = sel;
+  const optionIdRef = useRef(optionId);
+  optionIdRef.current = optionId;
 
   const name = (s: { name_de: string; name_en: string }) =>
     locale === 'en' ? s.name_en : s.name_de;
@@ -74,7 +82,6 @@ export default function ServiceDetailSheet({
   const chosenOption = optionId ? options.find((o) => o.id === optionId) ?? null : null;
   const basePrice = chosenOption ? chosenOption.price : service.price;
   const baseDuration = chosenOption ? chosenOption.duration_minutes : service.duration_minutes;
-  const canConfirm = !hasOptions || !!optionId;
 
   const total = useMemo(() => {
     const chosen = addons.filter((a) => sel.has(a.id));
@@ -85,10 +92,13 @@ export default function ServiceDetailSheet({
   }, [sel, addons, basePrice, baseDuration]);
 
   // Live-commit: pick an option -> the service enters the cart immediately
-  // with that option's price/duration, no separate confirm tap.
+  // with that option's price/duration, no separate confirm tap. Both
+  // handlers read the OTHER piece of state off its ref (not the render
+  // closure) so the onChange args are always freshly-computed and current,
+  // even if selectOption/toggle fire back to back.
   const selectOption = (id: string) => {
     setOptionId(id);
-    onChange(service.id, [...sel], id);
+    onChange(service.id, [...selRef.current], id);
   };
 
   const toggle = (id: string) =>
@@ -97,7 +107,9 @@ export default function ServiceDetailSheet({
       next.has(id) ? next.delete(id) : next.add(id);
       // Live-commit: only push to the cart once the selection is valid
       // (a required option must already be chosen).
-      if (canConfirm) onChange(service.id, [...next], optionId);
+      const currentOptionId = optionIdRef.current;
+      const nextCanConfirm = !hasOptions || !!currentOptionId;
+      if (nextCanConfirm) onChange(service.id, [...next], currentOptionId);
       return next;
     });
 
