@@ -142,3 +142,14 @@ WAVE 4: A5 bundles/products = OWNER DECISION (packages GRAVEYARD; retail_product
 - Fork3 URL shape: NO CHANGE (client-state fix; buildParams keeps navigating to /search as today).
 - Fork4 cross-category nav: KEEP current behavior (park the prettier /city/category routing).
 - API: ZERO server changes (category + q already independent ANDed params). Reuse CATEGORY_PILLS (SearchTemplate.tsx:303-314), SALON_CATEGORY_SLUGS (lib/validations.ts), SalonCategory (lib/types.ts), existing service/serviceQ state + buildParams. STRUCTURE=Model B mockup, AESTHETIC=locked DS (selected=gray sunken, blue sparse).
+
+## ROUND 8c (2026-07-04) , A2 BUILT + VERIFIED
+- [x] A2/Model B decoupled search SHIPPED (commit cc1e53984). Independently verified live (Playwright, 390px, hard assertions , NOT trusting the coder's self-report per drift-ledger):
+  - realBarPresent=true (the REAL SearchTemplate sticky bar, aria-haspopup=dialog, rounded-pill border-s-border , NOT an invented bar; line-1 now shows the active category "Coiffeur").
+  - overlay category pill row = exactly 4 (Coiffeur/Barber/Nails/Spa), button[role=tab], gray-sunken selected state (screenshot confirmed).
+  - SCENARIO A pass: pick Barber -> type "Balayage" -> Barber stays aria-selected AND input keeps "Balayage".
+  - SCENARIO B pass: type "Fade Cut" -> pick Nails -> input keeps "Fade Cut" AND Nails selected.
+  - submit -> /de/search?q=Fade+Cut&category=nails (BOTH params, independent).
+  - homepage hero overlay = 0 category pills (results-only gate holds); Header's own a[role=tab] category row untouched + still navigates ("keep both" confirmed , two coexisting rows, never simultaneous since the overlay covers the page).
+  - Awaiting owner visual sign-off (tunnel: mid-voted-cleaner-dear.trycloudflare.com/de/coiffeur).
+- [ ] STILL QUEUED (post-A2): booking live-commit council hardening (stale-closure robustness, delta->reduce total, dedup getOwnedAddonIds) , non-user-reachable, do next.
