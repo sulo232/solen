@@ -9,6 +9,7 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     scrollRestoration: true,
+    optimizePackageImports: ["lucide-react", "@phosphor-icons/react"], // B4 load win: tree-shake icon barrels
   },
   env: {
     NEXT_PUBLIC_MAPBOX_TOKEN: process.env.MAPBOX_API,
