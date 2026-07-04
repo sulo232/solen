@@ -1,8 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Calendar } from "lucide-react";
-import { PersonSimpleWalk } from "@phosphor-icons/react";
+import { Calendar, Footprints } from "lucide-react";
 
 type Mode = "book" | "walkin";
 
@@ -27,7 +26,7 @@ export default function SalonModeToggle({
   const l = COPY[locale] ?? COPY.de;
   const segs: { key: Mode; label: string; icon: ReactNode }[] = [
     { key: "book", label: l.book, icon: <Calendar className="w-[18px] h-[18px]" /> },
-    { key: "walkin", label: l.walkin, icon: <PersonSimpleWalk size={19} weight="bold" /> },
+    { key: "walkin", label: l.walkin, icon: <Footprints size={19} strokeWidth={2.25} /> },
   ];
   return (
     <div className="flex rounded-btn bg-s-sand p-1">

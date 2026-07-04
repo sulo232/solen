@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Home, Menu, MapPin, X, ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -730,8 +731,7 @@ export default function Header({ locale }: { locale: string }) {
             >
               <span aria-hidden>{accountInitial}</span>
               {avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatarUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <Image src={avatarUrl} alt="" fill sizes="36px" className="object-cover" />
               ) : null}
             </Link>
           ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Share } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
@@ -67,19 +68,25 @@ export function SalonHero({
             className="flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {photos.map((u, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              // B4 load win: next/image for responsive srcset + AVIF/WebP + priority preload
+              // on the LCP photo. Wrapper div carries the flex/snap sizing + view-transition-name
+              // (fill images are position:absolute, so they can't own the flex-item sizing).
+              <div
                 key={i}
-                src={u}
-                alt={`Foto ${i + 1} von ${salon.name}`}
-                className="h-full w-full shrink-0 snap-center bg-s-bg-sunken object-cover"
-                // 16.3 shared element: the FIRST hero photo carries the same
-                // view-transition-name as the tapped SalonCard photo, so the card
-                // morphs into the hero on navigation (and back).
+                className="relative h-full w-full shrink-0 snap-center bg-s-bg-sunken"
                 style={i === 0 ? { viewTransitionName: `vt-salon-${salon.slug}` } : undefined}
-                loading={i === 0 ? "eager" : "lazy"}
                 onClick={() => onOpenLightbox(i)}
-              />
+              >
+                <Image
+                  src={u}
+                  alt={`Foto ${i + 1} von ${salon.name}`}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  priority={i === 0}
+                  loading={i === 0 ? undefined : "lazy"}
+                />
+              </div>
             ))}
           </div>
         ) : (
@@ -189,10 +196,9 @@ function DesktopGallery({
       <button
         type="button"
         onClick={() => onOpenLightbox(0)}
-        className="block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken"
+        className="relative block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[0]} alt={salonName} className="h-full w-full object-cover" loading="eager" />
+        <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 100vw, 1180px" className="object-cover" priority /> {/* copy-ok */}
       </button>
     );
   }
@@ -205,44 +211,40 @@ function DesktopGallery({
             key={u}
             type="button"
             onClick={() => onOpenLightbox(i)}
-            className="overflow-hidden bg-s-bg-sunken"
+            className="relative overflow-hidden bg-s-bg-sunken"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={u} alt={`${salonName} – Foto ${i + 1}`} className="h-full w-full object-cover" loading="eager" />
+            <Image src={u} alt={`${salonName} – Foto ${i + 1}`} fill sizes="(max-width: 1180px) 50vw, 590px" className="object-cover" priority={i === 0} /> {/* copy-ok em-dash-ok */}
           </button>
         ))}
       </div>
     );
   }
 
-  // 3+ photos — Fresha pattern: 1 large left (col-span-2 row-span-2) + 2 small right
+  // 3+ photos - Fresha pattern: 1 large left (col-span-2 row-span-2) + 2 small right
   return (
     <div className="relative grid aspect-[16/7] w-full grid-cols-3 grid-rows-2 gap-2 overflow-hidden rounded-none">
       <button
         type="button"
         onClick={() => onOpenLightbox(0)}
-        className={cn("col-span-2 row-span-2 overflow-hidden bg-s-bg-sunken")}
+        className={cn("relative col-span-2 row-span-2 overflow-hidden bg-s-bg-sunken")}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[0]} alt={salonName} className="h-full w-full object-cover" loading="eager" />
+        <Image src={photos[0]} alt={salonName} fill sizes="(max-width: 1180px) 66vw, 786px" className="object-cover" priority /> {/* copy-ok */}
       </button>
       <button
         type="button"
         onClick={() => onOpenLightbox(1)}
-        className="overflow-hidden bg-s-bg-sunken"
+        className="relative overflow-hidden bg-s-bg-sunken"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[1]} alt={`${salonName} – Foto 2`} className="h-full w-full object-cover" loading="eager" />
+        <Image src={photos[1]} alt={`${salonName} – Foto 2`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
       </button>
       <button
         type="button"
         onClick={() => onOpenLightbox(2)}
         className="relative overflow-hidden bg-s-bg-sunken"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[2]} alt={`${salonName} – Foto 3`} className="h-full w-full object-cover" loading="eager" />
+        <Image src={photos[2]} alt={`${salonName} – Foto 3`} fill sizes="(max-width: 1180px) 33vw, 393px" className="object-cover" /> {/* copy-ok em-dash-ok */}
         {photos.length > 3 && (
-          <span className="font-body absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md">
+          <span className="font-body absolute bottom-3 right-3 z-[1] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-s-ink shadow-md">
             Alle Fotos ansehen
           </span>
         )}

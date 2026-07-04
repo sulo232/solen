@@ -9,7 +9,7 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     scrollRestoration: true,
-    optimizePackageImports: ["lucide-react", "@phosphor-icons/react"], // B4 load win: tree-shake icon barrels
+    optimizePackageImports: ["lucide-react"], // B4 load win: tree-shake icon barrel. @phosphor-icons/react removed (was a single-icon dep, migrated to lucide-react's Footprints).
   },
   env: {
     NEXT_PUBLIC_MAPBOX_TOKEN: process.env.MAPBOX_API,
@@ -76,6 +76,14 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "**.pexels.com",
+      },
+      // B4 load win: Header's account avatar (session.user.user_metadata.avatar_url/picture) is
+      // populated by Supabase from Google OAuth (the only signInWithOAuth provider in the app,
+      // app/api/auth/login/route.ts) - allowlisting this one known host lets that avatar use
+      // next/image instead of a raw <img>.
+      {
+        protocol: "https",
+        hostname: "**.googleusercontent.com",
       },
       // V3-D389 PROOF-ONLY: placeholder host for the salon-portfolio-in-Entdecken frontend proof. Remove with the
       // seeded PROOF_SALON_ITEMS once real opted-in salon photos (Supabase Storage, already allowlisted) flow in.
