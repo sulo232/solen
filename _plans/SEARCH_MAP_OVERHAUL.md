@@ -153,3 +153,8 @@ WAVE 4: A5 bundles/products = OWNER DECISION (packages GRAVEYARD; retail_product
   - homepage hero overlay = 0 category pills (results-only gate holds); Header's own a[role=tab] category row untouched + still navigates ("keep both" confirmed , two coexisting rows, never simultaneous since the overlay covers the page).
   - Awaiting owner visual sign-off (tunnel: mid-voted-cleaner-dear.trycloudflare.com/de/coiffeur).
 - [ ] STILL QUEUED (post-A2): booking live-commit council hardening (stale-closure robustness, delta->reduce total, dedup getOwnedAddonIds) , non-user-reachable, do next.
+
+## ROUND 8d (2026-07-04) , booking React-warning fix (council follow-up)
+- [x] Booking hardening committed (55b5397a2): stale-closure refs, delta->reduce total, dedup getOwnedAddonIds.
+- [ ] FIX the React warning the hardening coder flagged ("Cannot update a component (BookingProvider) while rendering ServiceDetailSheet", fires on add-on toggle): root = `toggle` calls onChange (-> updateFormData parent setState) INSIDE the setSel updater (ServiceDetailSheet.tsx:104-114), which runs during React's commit phase. FIX: hoist onChange out of the updater into event-handler scope (compute next off selRef.current, setSel(next) plain value, then onChange), mirroring selectOption. Behavior identical; kills the warning + the anti-pattern on the money path. Verify live: toggling an add-on still updates the total AND no console warning.
+- NOTE (parked, non-reachable): the same-JS-tick stale-overwrite in ServicesStaffStep.commitSheetSelection (reads formData.services from closure) , needs two clicks in one JS tick, impossible for a human; leave for a potential functional-update refactor if ever reachable.
