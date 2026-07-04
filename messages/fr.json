@@ -5393,7 +5393,9 @@
     "bundlesBook": "Réserver",
     "bundlesSave": "économisé",
     "bundlesError": "Impossible de charger les forfaits.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "serviceOptionsChip": "Options",
+    "serviceAddonsChip": "+ Extras"
   },
   "comingSoon": {
     "title": "Bientôt disponible",

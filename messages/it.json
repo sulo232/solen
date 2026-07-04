@@ -5382,7 +5382,9 @@
     "bundlesBook": "Prenota",
     "bundlesSave": "risparmiati",
     "bundlesError": "Impossibile caricare i pacchetti.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "serviceOptionsChip": "Opzioni",
+    "serviceAddonsChip": "+ Extra"
   },
   "comingSoon": {
     "title": "In arrivo",

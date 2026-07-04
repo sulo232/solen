@@ -5401,7 +5401,9 @@
     "bundlesBook": "Book",
     "bundlesSave": "saved",
     "bundlesError": "Could not load bundles.",
-    "minutesUnit": "min"
+    "minutesUnit": "min",
+    "serviceOptionsChip": "Options",
+    "serviceAddonsChip": "+ Extras"
   },
   "comingSoon": {
     "title": "Coming Soon",
