@@ -33,6 +33,11 @@ import {
 import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
+// A2/Model B (2026-07-04): the SAME category triples SearchTemplate's own category-tab row
+// uses (reuse, not a second list). SearchTemplate only ever reaches this file via a lazy
+// `next/dynamic(() => import("./SearchOverlay"))` call inside a callback, so this static
+// import back does not create an eager circular module-init cycle.
+import { CATEGORY_PILLS } from "./SearchTemplate";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import { useGeocodeSuggest } from "../homepage/useGeocodeSuggest";
@@ -92,7 +97,14 @@ export interface SearchOverlayProps {
   open: boolean;
   onClose: () => void;
   locale: string;
+  /** A picked category slug (coiffeur/barbershop/nails/spa), a salon/stylist name, or an
+   *  autocomplete term , whatever isn't the free-text query. Kept as one field (A2/Model B
+   *  split only pulls the CATEGORY slice out into its own state internally; this prop still
+   *  seeds that combined "resolved thing" the collapsed bar/step-row show). */
   initialService?: string;
+  /** A2/Model B (2026-07-04): free-text query, independent of initialService/category. Seeds
+   *  `serviceQ` , the ONLY thing the composer's text input ever binds to. */
+  initialQuery?: string;
   initialCity?: string;
   initialFocus?: "service" | "stadt" | "zeit";
   /** Homepage 3-section search passes true so tapping it auto-opens the keyboard on the
@@ -109,6 +121,9 @@ export interface SearchOverlayProps {
    *  away to the salon page. The map parent supplies this; when absent (normal results), store
    *  taps open the salon page as before. Keeps ONE overlay, context-aware navigation (not two). */
   onSalonLocate?: (s: { id: string; slug: string; name: string }) => void;
+  /** A2/Model B (2026-07-04): renders the persistent category pill row above the query input.
+   *  RESULTS-ONLY , SearchTemplate passes true, the homepage SearchBar omits it (false). */
+  showCategoryPills?: boolean;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -118,12 +133,14 @@ export function SearchOverlay({
   onClose,
   locale,
   initialService = "",
+  initialQuery = "",
   initialCity = "",
   initialFocus = "service",
   autoFocusService = false,
   serviceInputRef,
   extraParams,
   onSalonLocate,
+  showCategoryPills = false,
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
@@ -131,7 +148,14 @@ export function SearchOverlay({
 
   const [activeStep, setActiveStep] = React.useState<Step>("service");
   const [service, setService] = React.useState(initialService);
-  const [serviceQ, setServiceQ] = React.useState("");
+  // A2/Model B (2026-07-04): CATEGORY is its own state slice, written ONLY by the pill row
+  // (CategoryPillsRow below). It never reads or clears `serviceQ`, and `serviceQ` never reads
+  // or clears it , the whole point of the decoupling fix. Seeded from `service` when it happens
+  // to already be a category slug (e.g. reopening the composer on a category route).
+  const [category, setCategory] = React.useState<string>(
+    SALON_CATEGORY_SLUGS.includes(initialService.toLowerCase()) ? initialService.toLowerCase() : "",
+  );
+  const [serviceQ, setServiceQ] = React.useState(initialQuery);
   const [stadt, setStadt] = React.useState(initialCity);
   const [cityQ, setCityQ] = React.useState("");
   const [isoDate, setIsoDate] = React.useState(""); // URL `date` param
@@ -212,6 +236,8 @@ export function SearchOverlay({
   React.useEffect(() => {
     if (open) {
       setService(initialService);
+      setCategory(SALON_CATEGORY_SLUGS.includes(initialService.toLowerCase()) ? initialService.toLowerCase() : "");
+      setServiceQ(initialQuery);
       setStadt(initialCity);
       if (initialFocus === "stadt") setActiveStep("location");
       else if (initialFocus === "zeit") setActiveStep("date");
@@ -273,15 +299,20 @@ export function SearchOverlay({
     if (next) setActiveStep(next);
   }, [collapse]);
 
-  // URL contract (PRESERVED EXACTLY)
+  // URL contract (PRESERVED EXACTLY , A2/Model B, 2026-07-04): `q` and `category`/`service`
+  // are built from two fully INDEPENDENT state slices now (`serviceQ` and `category`), so
+  // both can be present at once and neither setter has ever cleared the other.
   const buildParams = React.useCallback(
     (over?: Partial<{ q: string; service: string; city: string; date: string; period: string }>) => {
       const sp = new URLSearchParams();
-      const qv = over?.q ?? serviceQ.trim(), sv = over?.service ?? service;
+      const qv = over?.q ?? serviceQ.trim();
+      // `over.service`/legacy `service` (a picked salon name or autocomplete term) still wins
+      // when explicitly supplied; otherwise the pill row's `category` slice drives ?category=.
+      const sv = over?.service ?? (category || service);
       const cv = over?.city ?? stadt, dv = over?.date ?? isoDate, pv = over?.period ?? zeitPeriod;
       if (qv && qv.length >= 2) sp.set("q", qv);
-      // A category slug (e.g. opening search from /coiffeur) filters by CATEGORY, not a
-      // text-match on service names , fixes the ?service=/?category= ambiguity.
+      // A category slug (e.g. opening search from /coiffeur, or the pill row) filters by
+      // CATEGORY, not a text-match on service names , fixes the ?service=/?category= ambiguity.
       if (sv) {
         if (SALON_CATEGORY_SLUGS.includes(sv.toLowerCase())) sp.set("category", sv.toLowerCase());
         else sp.set("service", sv);
@@ -293,7 +324,7 @@ export function SearchOverlay({
       if (extraParams) for (const [k, v] of Object.entries(extraParams)) sp.set(k, v);
       return sp;
     },
-    [serviceQ, service, stadt, isoDate, zeitPeriod, extraParams],
+    [serviceQ, category, service, stadt, isoDate, zeitPeriod, extraParams],
   );
 
   const navigate = React.useCallback(
@@ -304,16 +335,16 @@ export function SearchOverlay({
   // Recents store ONLY search + location, never date (owner: a stale date re-applied from a
   // past search gets fucked up). The live search still uses the date via navigate/buildParams.
   const handleSubmit = React.useCallback(() => {
-    push({ query: serviceQ.trim() || undefined, service: service || undefined, city: stadt || undefined });
+    push({ query: serviceQ.trim() || undefined, service: (category || service) || undefined, city: stadt || undefined });
     navigate(buildParams());
-  }, [push, serviceQ, service, stadt, buildParams, navigate]);
+  }, [push, serviceQ, category, service, stadt, buildParams, navigate]);
 
   const autoSearch = React.useCallback(
     (over: Partial<{ city: string; date: string; period: string }>) => {
-      push({ query: serviceQ.trim() || undefined, service: service || undefined, city: over.city ?? stadt ?? undefined });
+      push({ query: serviceQ.trim() || undefined, service: (category || service) || undefined, city: over.city ?? stadt ?? undefined });
       navigate(buildParams(over));
     },
-    [push, serviceQ, service, stadt, isoDate, zeitPeriod, buildParams, navigate],
+    [push, serviceQ, category, service, stadt, isoDate, zeitPeriod, buildParams, navigate],
   );
   void autoSearch; // export contract: preserved for external callers
 
@@ -329,7 +360,7 @@ export function SearchOverlay({
   }, [push, navigate]);
 
   const close = React.useCallback(() => { setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); onClose(); }, [expand, onClose]);
-  const reset = React.useCallback(() => { setService(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
+  const reset = React.useCallback(() => { setService(""); setCategory(""); setStadt(initialCity); setIsoDate(""); setSelKey(null); setDateLabel(""); setZeitPeriod(""); setServiceQ(""); setCityQ(""); setActiveStep("service"); setInputFocused(false); collapse(); }, [initialCity, collapse]);
 
   // Rich-search taps. searchTerm: run a specific autocomplete term as the query (keeps
   // city/date). openSalon: jump to that salon's PDP. openLookItem: open the tapped Inspo
@@ -339,8 +370,9 @@ export function SearchOverlay({
     // still set location + date (the Wo?/Wann? rows are hidden while the autocomplete is up). The
     // "Suchen {query}" primary row + the bottom Suchen still search immediately. (owner 2026-07-01:
     // "I can't select dates, you didn't implement the whole system" , the typed path skipped them.)
-    setService(term.trim());
-    setServiceQ("");
+    // A2/Model B (2026-07-04): a picked autocomplete term is free-text, so it writes `serviceQ`
+    // (the ONLY thing the query input ever binds to now) , it never touches `category`.
+    setServiceQ(term.trim());
     setInputFocused(false);
     setActiveStep("service");
     collapse();
@@ -415,11 +447,24 @@ export function SearchOverlay({
     { label: periodEveningShortTxt,   urlVal: PERIOD_CHIP_TO_URL[periodEveningShortTxt]   ?? "evening"   },
   ], [periodForenoonTxt, periodAfternoonShortTxt, periodEveningShortTxt]);
 
+  // A2/Model B (2026-07-04): the collapsed "service" row (shown while on the location/date
+  // step) must reflect BOTH independent slices , the picked category's label AND the typed
+  // query , not just one of them. Falls back to the legacy `service` value (a picked salon
+  // name/autocomplete term) when neither is set.
+  const categoryLabel = React.useMemo(
+    () => CATEGORY_PILLS.find((c) => c.slug === category)?.label ?? "",
+    [category],
+  );
+  const serviceRowValue = React.useMemo(
+    () => [categoryLabel, serviceQ.trim()].filter(Boolean).join(" ") || service,
+    [categoryLabel, serviceQ, service],
+  );
+
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
-    service:  { label: fieldServiceLabelTxt,  value: service,    placeholder: queryPlaceholderTxt     },
+    service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: queryPlaceholderTxt     },
     location: { label: locationHeadingTxt,    value: stadt && stadt !== ALL_CITIES_PARAM ? stadt : noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
     date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
-  }), [fieldServiceLabelTxt, service, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
+  }), [fieldServiceLabelTxt, serviceRowValue, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
   const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
@@ -446,14 +491,17 @@ export function SearchOverlay({
           <Search size={19} strokeWidth={2} className="text-s-ink-3" />
         </span>
       )}
-      <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={inputFocused ? serviceQ : service}
+      {/* A2/Model B (2026-07-04): the input ALWAYS binds to `serviceQ` only (never `service`),
+          focused or not , the free-text query and the category (pill row above) are two fully
+          independent state slices now, so there's nothing left to swap on focus. */}
+      <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
         enterKeyHint="search"
         placeholder={queryPlaceholderTxt} aria-label={queryPlaceholderTxt}
         className="min-w-0 flex-1 border-0 bg-transparent px-0 text-[15px] text-s-ink placeholder:text-s-ink-3 focus:outline-none focus-visible:border-s-border focus-visible:shadow-none focus-visible:outline-none" />
-      {inputFocused && serviceQ.length > 0 && (
+      {serviceQ.length > 0 && (
         <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
           aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-3">
           <X size={18} strokeWidth={2.2} />
@@ -601,7 +649,10 @@ export function SearchOverlay({
         {FEATURED_SALONS.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={sl.address} Icon={Store}
           onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
-        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); setServiceQ(""); advance("service"); }} />)}
+        {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
+            query , it only sets `service` (feeds ?category=/?service= via buildParams,
+            unchanged), same as picking the pill row never clears `serviceQ`. */}
+        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} sub={c.count} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />)}
         {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
             logged-out). Tapping a look opens it in Inspo. */}
         {forYouLooks.length > 0 && (
@@ -669,6 +720,14 @@ export function SearchOverlay({
                 <motion.div style={{ height: headingH, opacity: headingOp }} className="shrink-0 overflow-hidden">
                   <h2 className="px-4 pb-1 pt-4 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{searchHeadingTxt}</h2>
                 </motion.div>
+                {/* A2/Model B (2026-07-04): the category pill row sits ABOVE the query input,
+                    results-only (showCategoryPills). Picking a pill writes ONLY `category` , it
+                    never reads or clears `serviceQ` (the free-text query below it). */}
+                {showCategoryPills && (
+                  <div className="shrink-0 px-3 pb-2 pt-3">
+                    <CategoryPillsRow active={category} onSelect={setCategory} ariaLabel={categoriesLabelTxt} />
+                  </div>
+                )}
                 <div className="shrink-0 px-3 pb-1 pt-4">{serviceBar}</div>
                 <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-1"
                   onScroll={(e) => { expand.set(clamp01(e.currentTarget.scrollTop / EXPAND_DIST)); }}>
@@ -804,6 +863,43 @@ export function SearchOverlay({
 
 function SectionLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
+}
+
+// A2/Model B (2026-07-04): persistent category pill row, results-only (showCategoryPills).
+// mockup-ok: verbatim classes ported from Header.tsx's ALREADY-SHIPPED mobile category-tab
+// row (L807-858) and the owner-approved /dev/search-model-b mockup (design source of truth
+// for this feature) , same role="tablist"/role="tab" + aria-selected pattern, same selected
+// state (locked gray-sunken, never blue/ink). Tapping the active pill again deselects to
+// "any category" (matching the Model B mockup's toggle behavior) , it never touches serviceQ.
+function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onSelect: (slug: string) => void; ariaLabel: string }) {
+  return (
+    <div
+      role="tablist"
+      aria-label={ariaLabel}
+      className="flex items-center gap-2 overflow-x-auto scrollbar-none" // mockup-ok
+      style={{ scrollbarWidth: "none" }}
+    >
+      {CATEGORY_PILLS.map((c) => {
+        const isActive = c.slug === active;
+        return (
+          <button
+            key={c.slug}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onSelect(isActive ? "" : c.slug)}
+            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 font-body text-[15px] leading-none transition-colors duration-150 ease-glide ${isActive ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink" /* mockup-ok: locked selected state */ : "border-s-border bg-white font-medium text-s-ink" /* mockup-ok */}`}
+          >
+            {c.iconSrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={c.iconSrc} alt="" className="h-[22px] w-[22px] shrink-0 object-contain" aria-hidden />
+            ) : null}
+            {c.label}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 // Compact Inspo look card: fixed 3:4 photo + style name below, whole card taps to the look.

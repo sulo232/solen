@@ -300,7 +300,9 @@ const BROWSE_RAILS = false;
 // filters it server-side.
 const TOGGLE_PILLS = new Set(["deals", "open_now", "walk_in"]);
 
-const CATEGORY_PILLS: {
+// Exported (A2/Model B, 2026-07-04): SearchOverlay's new in-composer category pill row
+// reuses this SAME list, not a second one (owner contract: reuse canonical data).
+export const CATEGORY_PILLS: {
   slug: SalonCategory;
   route: string;
   label: string;
@@ -1239,7 +1241,11 @@ export default function SearchTemplate({
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
               <span className="block truncate font-body text-[14px] font-medium text-s-ink">
-                {q || tChrome("searchPlaceholder")}
+                {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
+                    BOTH when both are set, not one clobbering the other. */}
+                {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
+                  .filter(Boolean)
+                  .join(" ") || tChrome("searchPlaceholder")}
                 {/* city slides INLINE when collapsed so the info isn't lost */}
                 <span
                   className={cn(
@@ -2104,13 +2110,17 @@ export default function SearchTemplate({
         open={searchOverlayOpen}
         onClose={() => setSearchOverlayOpen(false)}
         locale={locale}
-        // Seed the current search so reopening shows it selected: category if present, else the
-        // free-text query (owner: reopening the bar should keep the applied search + location).
-        initialService={activeCategory ?? q}
+        // A2/Model B (2026-07-04): seed BOTH slices independently so reopening the composer
+        // shows the category pill AND the typed query at once, not one clobbering the other.
+        initialService={activeCategory ?? ""}
+        initialQuery={q}
         initialCity={activeCity ? cityName : ""}
         autoFocusService={autoFocusSearch}
         serviceInputRef={searchInputRef}
         extraParams={mapOpen ? { map: "1" } : undefined}
+        // A2/Model B: results/category pages get the persistent category pill row; the
+        // homepage hero (SearchBar.tsx) omits this prop (defaults to false).
+        showCategoryPills
         // MAP CONTEXT (owner + council 2026-07-01): tapping a store on the map recenters to its
         // pin (see the location) instead of opening the salon page. If the salon is already in the
         // current map results, select it (MapView eases to it + the sheet card highlights);
