@@ -5411,9 +5411,7 @@
     "bundlesBook": "Buchen",
     "bundlesSave": "gespart",
     "bundlesError": "Pakete konnten nicht geladen werden.",
-    "minutesUnit": "Min",
-    "serviceOptionsChip": "Optionen",
-    "serviceAddonsChip": "+ Extras"
+    "minutesUnit": "Min"
   },
   "comingSoon": {
     "title": "Kommt bald",

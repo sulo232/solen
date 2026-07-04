@@ -76,70 +76,6 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
       .limit(20),
   ]);
 
-  // A5.C (2026-07-04): batch-load service_options (variants) + service_addons
-  // (extras) for every service on this salon so the PDP can indicate "this
-  // service is customizable" without an N+1 (same batching pattern as the
-  // staff_services join above and the booking page's own load at
-  // app/[locale]/salon/[slug]/booking/page.tsx:147-164). Both queries are keyed
-  // off `.in("service_id", serviceIds)` , ONE query each, not one per service.
-  const services = servicesRes.data ?? [];
-  let servicesWithOptions = services;
-  const serviceIds = services.map((s) => s.id);
-  if (serviceIds.length > 0) {
-    const [optionsRes, addonsRes] = await Promise.all([
-      supabase
-        .from("service_options")
-        .select("id, service_id, name_de, name_en, price, duration_minutes, sort_order")
-        .in("service_id", serviceIds)
-        .order("sort_order", { ascending: true }),
-      supabase
-        .from("service_addons")
-        .select("id, service_id, addon_service_id, sort_order")
-        .in("service_id", serviceIds)
-        .order("sort_order", { ascending: true }),
-    ]);
-
-    const optionsByService = new Map<string, { id: string; name_de: string; name_en: string | null; price: number; duration_minutes: number }[]>();
-    (optionsRes.data ?? []).forEach((o) => {
-      const arr = optionsByService.get(o.service_id) ?? [];
-      arr.push({ id: o.id, name_de: o.name_de, name_en: o.name_en, price: o.price, duration_minutes: o.duration_minutes });
-      optionsByService.set(o.service_id, arr);
-    });
-
-    // addon_service_id points at ANOTHER row in `services` (the addon's own
-    // name + price) , resolve those via the already-fetched `services` list
-    // first, falling back to a single extra query only for addon services
-    // that aren't in the salon's active-services list (e.g. an addon marked
-    // inactive but still linked). Keeps this to at most 2 queries total.
-    const serviceById = new Map(services.map((s) => [s.id, s]));
-    const addonLinks = addonsRes.data ?? [];
-    const missingAddonIds = Array.from(
-      new Set(addonLinks.map((a) => a.addon_service_id).filter((id) => !serviceById.has(id)))
-    );
-    if (missingAddonIds.length > 0) {
-      const { data: extraServices } = await supabase
-        .from("services")
-        .select("id, name_de, name_en, price")
-        .in("id", missingAddonIds);
-      (extraServices ?? []).forEach((s) => serviceById.set(s.id, s as (typeof services)[number]));
-    }
-
-    const addonsByService = new Map<string, { id: string; name_de: string; name_en: string | null; price: number }[]>();
-    addonLinks.forEach((a) => {
-      const addonService = serviceById.get(a.addon_service_id);
-      if (!addonService) return;
-      const arr = addonsByService.get(a.service_id) ?? [];
-      arr.push({ id: addonService.id, name_de: addonService.name_de, name_en: addonService.name_en, price: addonService.price });
-      addonsByService.set(a.service_id, arr);
-    });
-
-    servicesWithOptions = services.map((s) => ({
-      ...s,
-      options: optionsByService.get(s.id) ?? [],
-      addons: addonsByService.get(s.id) ?? [],
-    }));
-  }
-
   // Attach service_ids to each staff member (which services they perform) so the UI can
   // filter services by a chosen staff/barber, staff_services is the same link the booking
   // flow uses.
@@ -175,7 +111,7 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
 
   return {
     ...salon,
-    services: servicesWithOptions,
+    services: servicesRes.data ?? [],
     staff: staffWithServices,
     reviews,
   } as unknown as SalonDetail;

@@ -3,7 +3,6 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
@@ -189,29 +188,15 @@ function ServiceRow({
   locale: string;
   slug: string;
 }) {
-  const t = useTranslations("salonDetail");
-
-  // A5.C (2026-07-04): a service with `options` (service_options, mutually-exclusive
-  // tiers like Short/Medium/Long hair) prices "ab" the CHEAPEST tier, not the base
-  // service.price, the booking picker is the one place the full tier list + prices
-  // show (unchanged); the PDP only needs to indicate "this is customizable" +
-  // the real starting price. Grounded in the approved /dev/bundles-products Option C
-  // panel + the existing service-row grammar (name/duration/price stack unchanged).
-  const hasOptions = (service.options?.length ?? 0) > 0;
-  const hasAddons = (service.addons?.length ?? 0) > 0;
-  const displayPrice = hasOptions
-    ? Math.min(...service.options!.map((o) => o.price))
-    : service.price;
-
   // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
   //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
-  //   - NO description line in the list view (Fresha doesn't show it, keeps density)
+  //   - NO description line in the list view (Fresha doesn't show it — keeps density)
   //   - NO Clock icon next to duration (Fresha is text-only)
   //   - Price format "ab {N} CHF" (German "ab" prefix, currency suffix)
   //   - BOTH mobile AND desktop variants get the same bordered card treatment now
-  //     (previously mobile was a bare list with no border, off-spec)
+  //     (previously mobile was a bare list with no border — off-spec)
   // V3-D346 (2026-05-28): name 600->500 + price bold->grey-normal per LOCKFILE §2.5
-  // card-hierarchy rule A13, exactly one ink anchor (the service name); duration + price recede.
+  // card-hierarchy rule A13 — exactly one ink anchor (the service name); duration + price recede.
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
@@ -221,23 +206,8 @@ function ServiceRow({
         <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <span className="font-body text-[14px] font-normal text-s-ink-2 md:text-[15px]">
-            <PriceFrom amount={displayPrice} label="ab" />
-          </span>
-          {/* Neutral gray indicator chips, LOCKFILE category-tag recipe
-              (bg-s-bg-sunken + text-s-ink-2, no fill/black/blue). Tapping through
-              to booking still opens the full options/add-ons picker, unchanged. */}
-          {hasOptions && (
-            <span className="rounded-full bg-s-bg-sunken px-2.5 py-1 font-body text-[12px] font-medium text-s-ink-2">
-              {t("serviceOptionsChip")}
-            </span>
-          )}
-          {hasAddons && (
-            <span className="rounded-full bg-s-bg-sunken px-2.5 py-1 font-body text-[12px] font-medium text-s-ink-2">
-              {t("serviceAddonsChip")}
-            </span>
-          )}
+        <div className="font-body mt-3 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
+          <PriceFrom amount={service.price} label="ab" />
         </div>
       </div>
       <Link

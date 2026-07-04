@@ -6,35 +6,6 @@
  * orchestrator becoming a re-export bottleneck.
  */
 
-/**
- * A5.C (2026-07-04): a mutually-exclusive tier of a service (e.g.
- * Short/Medium/Long hair), each with its own price + duration. Already
- * live in the booking flow (service_options table, ServicesStaffStep.tsx /
- * booking/page.tsx); surfaced read-only on the PDP so a customer can see a
- * service is customizable before entering booking.
- */
-export interface ServiceOption {
-  id: string;
-  name_de: string;
-  name_en: string | null;
-  price: number;
-  duration_minutes: number;
-}
-
-/**
- * A5.C (2026-07-04): an optional extra a customer can add to a service
- * (service_addons.addon_service_id -> another `services` row). Only the
- * fields the PDP indicator needs (name + price) are carried; duration is
- * omitted since the PDP never shows a duration for an add-on, only the
- * "+ Extras" indicator.
- */
-export interface ServiceAddon {
-  id: string;
-  name_de: string;
-  name_en: string | null;
-  price: number;
-}
-
 export interface Service {
   id: string;
   name_de: string;
@@ -46,11 +17,6 @@ export interface Service {
   duration_minutes: number;
   price: number;
   description_de: string | null;
-  /** A5.C: mutually-exclusive tiers (service_options). Empty array when none. */
-  options?: ServiceOption[];
-  /** A5.C: optional extras (service_addons, resolved to the addon service's
-   * name + price). Empty array when none. */
-  addons?: ServiceAddon[];
 }
 
 export interface StaffMember {
