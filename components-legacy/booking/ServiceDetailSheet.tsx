@@ -101,17 +101,21 @@ export default function ServiceDetailSheet({
     onChange(service.id, [...selRef.current], id);
   };
 
-  const toggle = (id: string) =>
-    setSel((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      // Live-commit: only push to the cart once the selection is valid
-      // (a required option must already be chosen).
-      const currentOptionId = optionIdRef.current;
-      const nextCanConfirm = !hasOptions || !!currentOptionId;
-      if (nextCanConfirm) onChange(service.id, [...next], currentOptionId);
-      return next;
-    });
+  const toggle = (id: string) => {
+    // Compute next off the ref (freshest) and commit via a plain setSel value,
+    // NOT inside a setSel updater , calling onChange (a parent setState) from
+    // within an updater fires during React's commit phase and triggers the
+    // "update a component while rendering another" warning. Event-handler scope
+    // (like selectOption) avoids it while staying current.
+    const next = new Set(selRef.current);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setSel(next);
+    // Live-commit: only push to the cart once the selection is valid
+    // (a required option must already be chosen).
+    const currentOptionId = optionIdRef.current;
+    const nextCanConfirm = !hasOptions || !!currentOptionId;
+    if (nextCanConfirm) onChange(service.id, [...next], currentOptionId);
+  };
 
   if (!mounted) return null;
 
