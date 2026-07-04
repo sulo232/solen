@@ -32,7 +32,9 @@ export interface SheetOption {
  *   • REQUIRED options (single-select radio, e.g. hair length) — when present,
  *     one MUST be chosen; its price + duration replace the service base.
  *   • OPTIONAL add-ons (multi-select).
- * Choices live in local state and commit only on Add/Update (commit-on-Add).
+ * Every pick commits LIVE to the cart via onChange (no separate confirm tap,
+ * "selected" in this sheet always matches "in the cart"). The bottom button
+ * is just a Fertig/Done close action; onRemove stays for removing from cart.
  */
 export default function ServiceDetailSheet({
   service,
@@ -42,7 +44,7 @@ export default function ServiceDetailSheet({
   initialOptionId,
   isInCart,
   locale,
-  onConfirm,
+  onChange,
   onRemove,
   onClose,
 }: {
@@ -53,11 +55,12 @@ export default function ServiceDetailSheet({
   initialOptionId: string | null;
   isInCart: boolean;
   locale: string;
-  onConfirm: (serviceId: string, addonIds: string[], optionId?: string | null) => void;
+  onChange: (serviceId: string, addonIds: string[], optionId?: string | null) => void;
   onRemove: (serviceId: string) => void;
   onClose: () => void;
 }) {
   const t = useTranslations('booking.serviceSelection');
+  const tCommon = useTranslations('common');
   const [sel, setSel] = useState<Set<string>>(() => new Set(initialAddonIds));
   const [optionId, setOptionId] = useState<string | null>(initialOptionId);
   const [mounted, setMounted] = useState(false);
@@ -81,10 +84,20 @@ export default function ServiceDetailSheet({
     };
   }, [sel, addons, basePrice, baseDuration]);
 
+  // Live-commit: pick an option -> the service enters the cart immediately
+  // with that option's price/duration, no separate confirm tap.
+  const selectOption = (id: string) => {
+    setOptionId(id);
+    onChange(service.id, [...sel], id);
+  };
+
   const toggle = (id: string) =>
     setSel((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
+      // Live-commit: only push to the cart once the selection is valid
+      // (a required option must already be chosen).
+      if (canConfirm) onChange(service.id, [...next], optionId);
       return next;
     });
 
@@ -134,7 +147,7 @@ export default function ServiceDetailSheet({
                   <button
                     key={o.id}
                     type="button"
-                    onClick={() => setOptionId(o.id)}
+                    onClick={() => selectOption(o.id)}
                     className="flex w-full items-center justify-between gap-3 py-4 text-left"
                   >
                     <span className="min-w-0">
@@ -223,11 +236,10 @@ export default function ServiceDetailSheet({
           )}
           <button
             type="button"
-            disabled={!canConfirm}
-            onClick={() => onConfirm(service.id, [...sel], optionId)}
-            className="rounded-btn bg-s-ink px-7 py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter,opacity] hover:brightness-[1.06] disabled:opacity-40"
+            onClick={onClose}
+            className="rounded-btn bg-s-ink px-7 py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter,opacity] hover:brightness-[1.06]"
           >
-            {isInCart ? t('update') : t('add')}
+            {tCommon('done')}
           </button>
         </div>
       </div>

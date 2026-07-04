@@ -194,17 +194,16 @@ export default function ServicesStaffStep({
   });
 
   // Commit the service + its chosen add-ons as one unit, rebuilding the cart
-  // from scratch so totals can't drift. Backs both "Add" and "Update".
-  const handleSheetConfirm = (
+  // from scratch so totals can't drift. Fires LIVE on every option pick /
+  // add-on toggle inside the sheet (no separate confirm tap); does NOT close
+  // the sheet, closing is a separate action (the sheet's Fertig/Done button).
+  const commitSheetSelection = (
     serviceId: string,
     addonIds: string[],
     optionId?: string | null
   ) => {
     const svc = serviceById.get(serviceId);
-    if (!svc) {
-      setSheetServiceId(null);
-      return;
-    }
+    if (!svc) return;
     // A chosen required option replaces the service's base price + duration.
     const opt = optionId ? serviceOptions.find((o) => o.id === optionId) : null;
     const svcLine: SelectedService = opt
@@ -236,7 +235,6 @@ export default function ServicesStaffStep({
       ...(singleStaff ? { selectedStaffId: staffList[0].id } : {}),
     });
     setError(null);
-    setSheetServiceId(null);
   };
 
   const handleRemoveService = (serviceId: string) => {
@@ -398,6 +396,13 @@ export default function ServicesStaffStep({
                       key={service.id}
                       onClick={(e) => {
                         if (hasAddons || hasOptions) {
+                          // No required option to pick: the service is valid
+                          // as-is, so it commits to the cart the moment the
+                          // sheet opens (add-ons then toggle live inside it).
+                          if (!hasOptions && !inCart) {
+                            flyToCart(e);
+                            commitSheetSelection(service.id, []);
+                          }
                           setSheetServiceId(service.id);
                         } else {
                           if (!inCart) flyToCart(e);
@@ -554,7 +559,7 @@ export default function ServicesStaffStep({
           initialOptionId={sheetInitialOptionId}
           isInCart={sheetInCart}
           locale={locale}
-          onConfirm={handleSheetConfirm}
+          onChange={commitSheetSelection}
           onRemove={handleRemoveService}
           onClose={() => setSheetServiceId(null)}
         />
