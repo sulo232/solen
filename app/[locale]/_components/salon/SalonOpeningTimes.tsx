@@ -15,12 +15,14 @@ import { cn } from "@/lib/utils";
  */
 export function SalonOpeningTimes({
   hours,
+  todayKey,
 }: {
   hours: Record<string, { open: string; close: string }> | null;
+  /** Precomputed server-side (2026-07-04 hydration fix); never derive from
+   * `new Date()` here. See lib/salon-detail.ts. */
+  todayKey: DayKey;
 }) {
   if (!hours) return null;
-
-  const todayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()]) as DayKey;
 
   return (
     <section id="section-hours" className="scroll-mt-24">

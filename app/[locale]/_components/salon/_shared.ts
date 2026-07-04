@@ -62,6 +62,11 @@ export interface SalonDetail {
   description_en: string | null;
   about_text_de: string | null;
   about_text_en: string | null;
+  // Additional locale variants (migration-backed columns, not surfaced in the UI
+  // yet, kept optional so the /api/salons/[slug] + server-loader response shape
+  // can be typed exactly without an `any` cast).
+  about_text_fr?: string | null;
+  about_text_it?: string | null;
   categories: string[];
   quartier: string;
   address: string;
@@ -95,6 +100,18 @@ export interface SalonDetail {
   is_featured?: boolean;
   parent_salon_id?: string | null;
   wifi_friendly?: boolean;
+  // Book/Walk-in toggle gate for barbershops (SalonDetailV3's walk-in panel).
+  walkin_enabled?: boolean;
+  // IANA timezone (migration 20260602120000_walkin_foundations, default
+  // 'Europe/Zurich'). Read server-side ONLY (lib/salon-detail.ts) to compute
+  // open/closed status in the salon's own local time; not rendered directly.
+  timezone?: string | null;
+  // Visibility/ownership fields the server loader reads to decide whether the
+  // salon is visible to the current viewer. Not rendered by any section, kept
+  // optional + typed here (instead of `any`) since /api/salons/[slug] and the
+  // server page both spread the raw `salons` row into this shape.
+  owner_id?: string;
+  is_active?: boolean;
   // Joined arrays from /api/salons/[slug]
   services: Service[];
   staff: StaffMember[];
@@ -171,12 +188,75 @@ function findNextOpening(
   return null;
 }
 
+export type OpenStatus = { isOpen: boolean; label: string; nextOpen: string | null };
+
+/**
+ * Resolves "now" in a given IANA timezone (salons.timezone, default
+ * 'Europe/Zurich') as a plain Date whose UTC getters (getUTCDay,
+ * getUTCHours, getUTCMinutes) read as that timezone's local wall-clock
+ * time. Used so open/closed status is based on the SALON's local time, not
+ * the server's or the visitor's.
+ *
+ * Must be read back with the UTC getters, not the local ones: this Date's
+ * underlying instant is built via Date.UTC() to encode the target
+ * timezone's wall-clock fields, so `.getHours()` (which re-projects through
+ * the RUNNING PROCESS's own local timezone) would silently return the wrong
+ * value whenever the server process's timezone differs from the target
+ * (e.g. a UTC-timezone serverless function reading an Europe/Zurich salon).
+ * computeOpenStatus() below always reads this Date via the UTC getters.
+ *
+ * Hydration-fix (2026-07-04): this is called ONCE, server-side (see
+ * lib/salon-detail.ts loadSalonDetail), and the resulting computeOpenStatus()
+ * output is passed down as a plain serializable prop. computeOpenStatus must
+ * never be called again in a component render body: doing so re-evaluates
+ * `new Date()` on the client with a different clock/timezone than the server
+ * used for the SSR HTML, which is exactly the hydration mismatch this fixes.
+ */
+export function nowInTimezone(timezone?: string | null): Date {
+  const tz = timezone || "Europe/Zurich";
+  try {
+    // en-US + these options gives numeric fields we can re-parse into a Date
+    // whose UTC getters (getUTCDay, getUTCHours, getUTCMinutes) equal the
+    // target timezone's local wall-clock time.
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).formatToParts(new Date());
+    const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "0";
+    // hour12:false can format midnight as "24"; normalize to 0.
+    const hour = Number(get("hour")) % 24;
+    return new Date(
+      Date.UTC(
+        Number(get("year")),
+        Number(get("month")) - 1,
+        Number(get("day")),
+        hour,
+        Number(get("minute")),
+        Number(get("second")),
+      ),
+    );
+  } catch {
+    // Unknown/invalid timezone string: fall back to the (UTC-encoded)
+    // Europe/Zurich wall-clock time, same shape as the success path so the
+    // caller's UTC getters keep working.
+    return nowInTimezone("Europe/Zurich");
+  }
+}
+
 export function computeOpenStatus(
-  hours: Record<string, { open: string; close: string }> | null
-): { isOpen: boolean; label: string; nextOpen: string | null } {
+  hours: Record<string, { open: string; close: string }> | null,
+  now: Date = nowInTimezone()
+): OpenStatus {
   if (!hours) return { isOpen: false, label: "Öffnungszeiten unbekannt", nextOpen: null };
-  const now = new Date();
-  const dayIdx = now.getDay();
+  // `now` is a nowInTimezone()-shaped Date (UTC fields = target timezone's
+  // wall clock), so it must be read with the UTC getters, not local ones.
+  const dayIdx = now.getUTCDay();
   const dayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][dayIdx]) as DayKey;
   const today = hours[dayKey];
 
@@ -195,7 +275,7 @@ export function computeOpenStatus(
 
   const [openH, openM] = today.open.split(":").map(Number);
   const [closeH, closeM] = today.close.split(":").map(Number);
-  const minsNow = now.getHours() * 60 + now.getMinutes();
+  const minsNow = now.getUTCHours() * 60 + now.getUTCMinutes();
   const minsOpen = openH * 60 + openM;
   const minsClose = closeH * 60 + closeM;
   if (minsNow < minsOpen) {

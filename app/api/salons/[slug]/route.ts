@@ -5,114 +5,25 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { autoTranslateDescription } from "@/lib/ai/translate";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, salonPolicyUpdateSchema } from "@/lib/validations";
+import { loadSalonDetail } from "@/lib/salon-detail";
 
+// B4 load audit (2026-07-04): the fetch/visibility/join logic that used to live
+// here was extracted to lib/salon-detail.ts so the salon PDP page.tsx (now a
+// server component) can call the exact same query server-side. This route stays
+// as the client-side refetch path (review flag reload, owner-preview refresh)
+// and now calls the shared loader instead of duplicating the query.
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const salon = await loadSalonDetail(slug);
 
-  // The [slug] param may be a UUID (owner settings page passes salon.id) or a slug.
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
-
-  // Explicit public column list (replaces `select("*")` which shipped all 98
-  // salon columns, including stripe_account_id / owner_id-adjacent fields /
-  // search_doc / score_details, to anonymous PDP visitors). This is exactly the
-  // set the PDP consumers read: the SalonDetail type + the section components
-  // (incl. SalonAbout's locale-keyed about_text_{locale}) + the inline
-  // walkin_enabled read, plus the columns this route's own logic needs (owner_id
-  // for the owner-preview check, is_active for the visibility gate). Same response
-  // shape for every field the UI uses; only unused/sensitive columns are dropped.
-  // Kept as one literal string so PostgREST can infer the row type (a runtime
-  // join() of the list collapses to GenericStringError).
-  let query = supabase
-    .from("salons")
-    .select(
-      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled"
-    )
-    .eq(isUuid ? "id" : "slug", slug);
-
-  const { data: salon, error } = await query.single();
-
-  if (error || !salon) {
+  if (!salon) {
     return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   }
 
-  // Regular users can only see active salons. Owner/Admin can see pending ones.
-  const isOwner = user?.id === salon.owner_id;
-  if (!isOwner && !salon.is_active) {
-    // If we want to allow admins, we'd check profile role, but owner check is enough for onboarding flow.
-    return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
-  }
-
-  // Fetch related data in parallel
-  const [servicesRes, staffRes, reviewsRes] = await Promise.all([
-    supabase.from("services").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    // V3-D233 (2026-05-27, staff-section-empty bug): JOIN to staff_portfolio_images
-    // was poisoning the whole query — that table doesn't exist in the schema
-    // (planned never migrated, or dropped). PostgREST silently returns [] on a
-    // missing relation. Dropped the join so the 4 active staff rows actually
-    // come back. Restore the join only when the staff_portfolio_images table
-    // is added (migration 032 was referenced in old session notes but never landed).
-    supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,
-    // which nulled every reviewer name for logged-out visitors. The server exposes
-    // ONLY display_name + avatar_url through this select — no broader profile access.
-    createAdminSupabaseClient()
-      .from("reviews")
-      .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")
-      .eq("salon_id", salon.id)
-      // Filter out auto-moderated (hidden) reviews: the admin client bypasses
-      // RLS, so without this an automod-hidden review would ship to the PDP
-      // (SalonReviews renders the bundled reviews directly). Matches the
-      // /api/reviews/salon/[salon_id] route's contract.
-      .eq("is_hidden", false)
-      .order("created_at", { ascending: false })
-      .limit(20),
-  ]);
-
-  // Attach service_ids to each staff member (which services they perform) so the UI can
-  // filter services by a chosen staff/barber — staff_services is the same link the booking
-  // flow uses. Additive: consumers that don't need it (SalonTeam) ignore the field.
-  const staff = staffRes.data ?? [];
-  let staffWithServices = staff;
-  if (staff.length > 0) {
-    const { data: links } = await supabase
-      .from("staff_services")
-      .select("staff_member_id, service_id")
-      .in("staff_member_id", staff.map((s) => s.id));
-    const byStaff = new Map<string, string[]>();
-    (links ?? []).forEach((l) => {
-      const arr = byStaff.get(l.staff_member_id) ?? [];
-      arr.push(l.service_id);
-      byStaff.set(l.staff_member_id, arr);
-    });
-    staffWithServices = staff.map((s) => ({
-      ...s,
-      service_ids: byStaff.get(s.id) ?? [],
-      // Aliases for SalonTeam.tsx which reads staff_average_rating / staff_review_count.
-      staff_average_rating: s.average_rating,
-      staff_review_count: s.review_count,
-    }));
-  }
-
-  // SECURITY: the admin client bypasses RLS, so review_replies includes is_public=false
-  // rows (owner/author-only per migration 041). Strip non-public replies before they ship
-  // in the response — the client only gates rendering, so unfiltered rows leak reply_text.
-  const reviews = (reviewsRes.data ?? []).map((r: any) => ({
-    ...r,
-    review_replies: (r.review_replies ?? []).filter((rp: any) => rp.is_public === true),
-  }));
-
-  return NextResponse.json({
-    ...salon,
-    services: servicesRes.data ?? [],
-    staff: staffWithServices,
-    reviews,
-  });
+  return NextResponse.json(salon);
 }
 
 // PATCH /api/salons/[slug] — salon owner updates their salon

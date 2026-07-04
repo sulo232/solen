@@ -6,8 +6,8 @@ import {
   ChevronDown,
   MapPin,
 } from "lucide-react";
-import type { SalonDetail } from "./_shared";
-import { DAY_KEYS, DAY_LABEL, type DayKey, computeOpenStatus } from "./_shared";
+import type { SalonDetail, OpenStatus } from "./_shared";
+import { DAY_KEYS, DAY_LABEL, type DayKey } from "./_shared";
 import { StatusInline } from "./StatusInline";
 import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
@@ -73,11 +73,17 @@ import { cn } from "@/lib/utils";
 export function SalonSidebar({
   salon,
   locale,
+  openStatus,
+  todayKey,
 }: {
   salon: SalonDetail;
   locale: string;
+  /** Precomputed server-side (2026-07-04 hydration fix); never call
+   * computeOpenStatus()/new Date() again here. See lib/salon-detail.ts. */
+  openStatus: OpenStatus;
+  todayKey: DayKey;
 }) {
-  const status = computeOpenStatus(salon.opening_hours);
+  const status = openStatus;
   const [showHours, setShowHours] = React.useState(false);
   const fullAddress = salon.address;
   const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
@@ -162,7 +168,6 @@ export function SalonSidebar({
         <ul className="mt-2 space-y-1.5 rounded-lg bg-s-bg-sunken/50 px-3 py-2.5">
           {DAY_KEYS.map((day) => {
             const h = salon.opening_hours![day];
-            const todayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()]) as DayKey;
             const isToday = day === todayKey;
             return (
               <li

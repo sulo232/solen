@@ -238,3 +238,7 @@ Replaced the fabricated walk-in analytics (`Math.random`/`Math.sin` sparklines, 
 - Symptom: `(r.review_replies ?? []).filter is not a function` 500s when the endpoint is hit anonymously for at least muse-beauty-studio's reviews shape.
 - Blast radius: LOW , the PDP page /de/salon/<slug> still renders 200; only this sub-endpoint errors. Pre-existing, NOT from A5.
 - Next: review_replies likely comes back as an object (single) not an array in some shape; coerce to array before .filter, or fix the select. Verify anon vs authed shapes.
+
+## PDP salon visibility gate incomplete (council note 2026-07-04, PRE-EXISTING)
+- lib/salon-detail.ts loadSalonDetail() gates on the salon existing but NOT on is_test / listed_on_marketplace, so a test/unlisted salon's PDP renders by slug. Pre-existing (not from the server-root refactor). Fix: add the marketplace-visibility predicate (is_active AND listed_on_marketplace IS NOT FALSE AND NOT is_test) , but verify it doesn't 404 legit not-yet-listed salons (preview links).
+- Also: app/[locale]/salon/[slug]/layout.tsx generates metadata for hidden salons even when the body 404s , tighten to the same gate.

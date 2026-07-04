@@ -3,8 +3,6 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import { useParams, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { SalonBreadcrumb } from "./SalonBreadcrumb";
 import { SalonHero } from "./SalonHero";
 import { SalonHeader } from "./SalonHeader";
@@ -28,8 +26,8 @@ import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
-import type { SalonDetail, TabKey } from "./_shared";
-import { postalToCity, computeOpenStatus } from "./_shared";
+import type { SalonDetail, TabKey, OpenStatus, DayKey } from "./_shared";
+import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { generateSalonSchema } from "@/lib/seo";
@@ -44,7 +42,9 @@ const SalonImageGallery = dynamic(() => import("./SalonImageGallery").then((m) =
  *
  * The monolithic 1145-line file was split into 17 focused section components
  * (each <200 lines, colocated in `salon/`). This file now:
- *   1. Fetches the salon via /api/salons/[slug]
+ *   1. Receives the salon as a PROP (fetched server-side by page.tsx, B4 load
+ *      audit 2026-07-04, was: fetched client-side via /api/salons/[slug] in a
+ *      useEffect after hydration)
  *   2. Tracks recently-viewed in localStorage (for Recently Viewed feed)
  *   3. Manages Lightbox open/index state
  *   4. Computes which sections have content (for sticky tab nav)
@@ -65,21 +65,29 @@ const SalonImageGallery = dynamic(() => import("./SalonImageGallery").then((m) =
  * Section IDs match the sticky tab nav keys (TAB_SECTIONS in _shared.ts):
  *   photos, services, team, reviews, portfolio, about, loyalty
  */
-export function SalonDetailV3() {
+export function SalonDetailV3({
+  salon,
+  openStatus,
+  todayKey,
+}: {
+  salon: SalonDetail;
+  /** Precomputed server-side (salon's own timezone), 2026-07-04 hydration fix.
+   * Never recompute via computeOpenStatus()/new Date() in this tree, both the
+   * server render and the client hydration must render this exact value. */
+  openStatus: OpenStatus;
+  todayKey: DayKey;
+}) {
   const params = useParams<{ locale: string; slug: string }>()!;
   const slug = params?.slug ?? "";
   const locale = params?.locale ?? "de";
   const searchParams = useSearchParams();
 
-  const [salon, setSalon] = React.useState<SalonDetail | null>(null);
   const [walkinMode, setWalkinMode] = React.useState(false); // barbershop Book/Walk-in switch
   // V3-D421k: walk-in result cards deep-link with ?walkin=1 → open the profile straight
   // in walk-in mode (the toggle still lets the user flip back to Book).
   React.useEffect(() => {
     if (searchParams?.get("walkin") === "1") setWalkinMode(true);
   }, [searchParams]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(false);
   const [lightboxOpen, setLightboxOpen] = React.useState(false);
   const [lightboxIndex, setLightboxIndex] = React.useState(0);
   const [galleryOpen, setGalleryOpen] = React.useState(false);
@@ -89,33 +97,6 @@ export function SalonDetailV3() {
   const [hasProducts, setHasProducts] = React.useState(false);
 
   const heroRef = React.useRef<HTMLElement>(null);
-
-  // Fetch salon detail
-  React.useEffect(() => {
-    if (!slug) return;
-    const ac = new AbortController();
-    fetch(`/api/salons/${slug}`, { signal: ac.signal })
-      .then((r) => {
-        if (r.status === 404) {
-          setError(true);
-          setLoading(false);
-          return null;
-        }
-        return r.ok ? r.json() : null;
-      })
-      .then((d: SalonDetail | null) => {
-        if (d) setSalon(d);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err?.name !== "AbortError") {
-          console.error("[SalonDetailV3] fetch failed:", err);
-          setLoading(false);
-          setError(true);
-        }
-      });
-    return () => ac.abort();
-  }, [slug]);
 
   // V3-D344 (2026-05-28): analytics + recently-viewed parity with the legacy
   // salon render, enabling V3 to become the default (?v3 gate flipped in page.tsx).
@@ -147,9 +128,6 @@ export function SalonDetailV3() {
     // Product analytics
     posthog?.capture("salon_profile_viewed", { salon_id: salon.id, salon_name: salon.name });
   }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories, posthog]);
-
-  if (loading) return <LoadingSkeleton />;
-  if (error || !salon) return <NotFound locale={locale} />;
 
   // Decide which sections have content → drives sticky tab nav visibility.
   // V3-D237 (2026-05-27, golden-route): dropped `portfolio` + `loyalty` tab keys
@@ -186,9 +164,11 @@ export function SalonDetailV3() {
   const openGallery = () => setGalleryOpen(true);
 
   const primaryCategory = (salon.categories[0] ?? "coiffeur").toLowerCase();
-  // Walk-in status must follow real opening hours — same source as the header's
+  // Walk-in status must follow real opening hours, same source as the header's
   // "Geschlossen · Öffnet …" so the panel can't say "open" while the salon is closed.
-  const salonOpen = computeOpenStatus(salon.opening_hours).isOpen;
+  // 2026-07-04: reads the server-precomputed openStatus prop instead of calling
+  // computeOpenStatus() again here (hydration fix, see page.tsx).
+  const salonOpen = openStatus.isOpen;
 
   // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
   // render (generateSalonSchema). Required before V3 became the default so salon
@@ -268,11 +248,11 @@ export function SalonDetailV3() {
         <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 xl:gap-12">
           {/* LEFT column — title + content sections */}
           <div className="min-w-0">
-            <SalonHeader salon={salon} />
+            <SalonHeader salon={salon} openStatus={openStatus} />
 
             {/* Book / Walk-in toggle — walk-in-enabled barbershops. Walk-in mode shows the
                 pay-gated queue join + hides bookable-service browsing (services + team). */}
-            {salon.categories?.includes("barbershop") && (salon as any).walkin_enabled && (
+            {salon.categories?.includes("barbershop") && salon.walkin_enabled && (
               <div className="mt-6 flex flex-col gap-5">
                 <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
                 {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}
@@ -331,7 +311,7 @@ export function SalonDetailV3() {
                 block + no side-by-side hours/amenities grid. */}
             <SalonLocation salon={salon} />
 
-            <SalonOpeningTimes hours={salon.opening_hours} />
+            <SalonOpeningTimes hours={salon.opening_hours} todayKey={todayKey} />
 
             <SalonAdditionalInfo salon={salon} />
 
@@ -369,7 +349,9 @@ export function SalonDetailV3() {
               at top-24; SalonSidebar internally manages collapse/expand. */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 pt-3">
-              {!walkinMode && <SalonSidebar salon={salon} locale={locale} />}
+              {!walkinMode && (
+                <SalonSidebar salon={salon} locale={locale} openStatus={openStatus} todayKey={todayKey} />
+              )}
             </div>
           </aside>
         </div>
@@ -402,46 +384,9 @@ export function SalonDetailV3() {
   );
 }
 
-function LoadingSkeleton() {
-  // V3-D202 (A24): swap `animate-pulse` for shimmer pattern per LoadingStates.md.
-  // Uses the same gradient + animate-shimmer pattern as <Skeleton> primitive.
-  const shimmer =
-    "bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%] animate-shimmer";
-  return (
-    <main className="min-h-screen bg-white pt-20 md:pt-24">
-      <div className="mx-auto w-full max-w-[1180px] md:px-6">
-        <div className={`aspect-[4/3] w-full ${shimmer} md:aspect-[16/7] md:rounded-card-lg`} />
-      </div>
-      <div className="mx-auto mt-5 w-full max-w-[1180px] px-4 md:mt-7 md:px-6">
-        <div className={`h-9 w-2/3 rounded ${shimmer} md:h-12`} />
-        <div className={`mt-3 h-5 w-1/2 rounded ${shimmer}`} />
-      </div>
-    </main>
-  );
-}
-
-function NotFound({ locale }: { locale: string }) {
-  return (
-    <main className="min-h-screen bg-white pt-28">
-      <div className="mx-auto flex max-w-md flex-col items-center px-6 text-center">
-        <div className="font-display text-[80px] font-black leading-none text-s-ink-3/30">
-          404
-        </div>
-        {/* V3-D335 (overnight T3): decorative accent span on error-state heading → ink per §1.5 forbidden table (no hero accent spans). */}
-        <h1 className="font-display mt-2 text-[clamp(18px,2vw,20px)] font-semibold tracking-normal text-s-ink">
-          Salon <span className="text-s-ink">nicht gefunden</span>.
-        </h1>
-        <p className="font-body mt-3 text-[15px] leading-relaxed text-s-ink-2">
-          Vielleicht wurde dieser Salon entfernt oder umbenannt.
-        </p>
-        <Link
-          href={`/${locale}/search`}
-          className="font-body mt-6 inline-flex items-center gap-2 rounded-full bg-s-ink px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-black"
-        >
-          Alle Salons ansehen
-          <ChevronRight size={14} strokeWidth={2.5} />
-        </Link>
-      </div>
-    </main>
-  );
-}
+// LoadingSkeleton + NotFound removed (B4 load audit, 2026-07-04): the salon fetch
+// (and its loading/not-found states) moved server-side into page.tsx, which calls
+// notFound() for a missing/hidden salon. That renders the global app/[locale]/not-found.tsx
+// (LOCKFILE §15.3 typographic 404), the same not-found idiom already used by the
+// sibling booking/ and reviews/ salon sub-routes. There is no more client-side
+// loading window to skeleton: the salon is present on first paint.

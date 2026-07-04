@@ -5,8 +5,7 @@ import { MapPin, Share } from "lucide-react";
 import { RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 import { StatusInline } from "./StatusInline";
-import type { SalonDetail } from "./_shared";
-import { computeOpenStatus } from "./_shared";
+import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
 
 /**
@@ -43,8 +42,16 @@ import { shareOrCopy } from "@/lib/share";
  *       them on the photo overlay). Could move to top-right of GALLERY per
  *       Fresha; deferred to keep this round surgical.
  */
-export function SalonHeader({ salon }: { salon: SalonDetail }) {
-  const status = computeOpenStatus(salon.opening_hours);
+export function SalonHeader({
+  salon,
+  openStatus,
+}: {
+  salon: SalonDetail;
+  /** Precomputed server-side (2026-07-04 hydration fix); never call
+   * computeOpenStatus()/new Date() again here. See lib/salon-detail.ts. */
+  openStatus: OpenStatus;
+}) {
+  const status = openStatus;
   const fullAddress = salon.address;
 
   // V3-D232: scroll to reviews on (N) click. Same anchor SalonSidebar uses.
