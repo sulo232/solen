@@ -22,30 +22,39 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] Fixed stale worktree `design-verifier.md` (was coral + not read-only) → synced to correct main copy (B&W/blue, `tools: Read,Grep,Glob,Bash`).
 
 ### A1 — Stale hooks (project)
-- [ ] `pre-page-commit-check.sh` — watches dead paths (`components/home/**`, `HomePage.tsx`, `SalonCard.tsx` moved to `app/[locale]/_components/homepage/**` + `components-legacy/`) and a receipt nothing writes. → REMOVE (dead ritual) or repoint. Recommend REMOVE.
-- [ ] `pre-sweep-check.sh` — keyed to retired coral palette + deleted `SOLEN_BUILD_LEARNINGS.md`. Superseded by `pre-edit-drift-gate.sh`. → RETIRE.
-- [ ] `pre-done-claim-check.sh` — orphaned AND calls `mcp__playwright__*` (not installed; we have Claude_Preview/Claude_in_Chrome). → retarget tools + wire under Stop, OR remove. Folds into the auto-council Stop hook (C3) — likely SUPERSEDED by that.
+- [x] `pre-page-commit-check.sh` — REMOVED (verified 2026-07-06: file absent from main + worktree `.claude/hooks`; find over both trees returns nothing).
+- [x] `pre-sweep-check.sh` — RETIRED (verified 2026-07-06: file absent everywhere; `pre-edit-drift-gate.sh` is live and registered).
+- [x] `pre-done-claim-check.sh` — REMOVED, superseded by the council Stop hook (verified 2026-07-06: file absent; `council-trigger.py` registered under global Stop). NOTE: LOOP_SYSTEM.md still claims it is registered under project Stop; that stale claim is fixed in the A5/doc pass.
 
-### A2 — Skills
-- [ ] Retarget 4 skills off `mcp__playwright__*` → `mcp__Claude_in_Chrome__*` / `mcp__Claude_Preview__*`: `fresha-section-capture`, `site-teardown` (also fix deleted `extract-typography.js`/`extract-colors.js` → `extract-everything.js`), `pixel-ref-collect`, `gemini-visual-check` (trigger note).
-- [ ] Remove 7 plugin-duplicate skills: `accessibility-review`, `design-critique`, `design-handoff`, `design-system-management`, `user-research`, `ux-writing`, `watch` (all exact dupes of installed `design:*` / `watch:watch`).
-- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto`; slim `screenshot-spec` to its manual-annotation tier.
+### A2 — Skills (atomized 2026-07-06; dispatched to coder)
+- [ ] Retarget `fresha-section-capture` off `mcp__playwright__*` → real preview/Chrome tools.
+- [ ] Retarget `site-teardown` off `mcp__playwright__*` + fix script refs (`extract-typography.js`/`extract-colors.js` → whatever actually exists in its scripts/ dir).
+- [ ] Retarget `gemini-visual-check` trigger note off `mcp__playwright__browser_take_screenshot` (never fires today) + add missing `name:` frontmatter field.
+- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto` (brand-sourced capture becomes a section of pixel-spec-auto; pixel-ref-collect dir archived). Retargeting of its playwright refs happens via the merge.
+- [ ] Slim `screenshot-spec` to its manual-annotation tier: drop the broad "AUTO-TRIGGER on any design image" claim; routing authority = project CLAUDE.md binary-triggers table (pixel-spec-auto first, screenshot-spec = escalation).
+- [x] Remove 6 of the 7 plugin-duplicate skills (`accessibility-review`, `design-critique`, `design-handoff`, `design-system-management`, `user-research`, `ux-writing`) — verified 2026-07-06: none exist in `~/.claude/skills` anymore.
+- [ ] Remove the last dupe `~/.claude/skills/watch` (plugin `watch:watch` is the provider) — archive, not delete.
+- [ ] Clean stale legacy dir `~/.agents/skills/` (old copies of huashu-design, screenshot-spec, site-teardown) — archive so only `~/.claude/skills` copies remain live.
 
-### A3 — Memory (92 → ~70, zero info loss)
-- [ ] Index 5 orphans into MEMORY.md: `user.md`, `feedback_no_parallel_agents_frontend.md`, `project_search_facts.md`, `reference_test_server_pattern.md` (skip RETIRED_).
-- [ ] Fix dead link MEMORY.md:55 (`feedback_no_vercel_deploy.md` → renamed RETIRED_).
-- [ ] Fix `user.md` stale DNA (coral/Anton/Figtree/Vercel → B&W/blue, Inter Tight/Inter, Netlify).
-- [ ] 8 merge clusters (mockup 8→2, color 5→2, copy/artifact 4→1, icons 3→1, autonomy/loop 5→2, verify/measure 6→2, links 3→1, killed-features 4→1). Carry verbatim: no-fabrication, never-push, dev-login route, selected-state override.
-- [ ] Add the dropped-Chinese decision as a memory + REMOVED.md line (anti-re-propose).
+### A3 — Memory (now 112 files → ~70, zero info loss)
+- [x] Index orphans into MEMORY.md — verified 2026-07-06: files↔index checked BOTH directions, 112 files = 112 index lines, zero orphans, zero dead links.
+- [x] Fix dead link MEMORY.md:55 — verified 2026-07-06: no dead links remain anywhere in the index.
+- [x] Fix `user.md` stale DNA — verified 2026-07-06: user.md already carries B&W pivot, Inter Tight/Inter, Netlify (updated 2026-06-28 note present).
+- [ ] 8 merge clusters (mockup 8→2, color 5→2, copy/artifact 4→1, icons 3→1, autonomy/loop 5→2, verify/measure 6→2, links 3→1, killed-features 4→1). Carry verbatim: no-fabrication, never-push, dev-login route, selected-state override. ALSO (2026-07-06 audit): tombstone the retired bodies inside `feedback_90_10_color_rule`, `feedback_check_skills_first`, `feedback_mockup_every_design_decision` (superseded essays shrink to 2-line pointers). Dispatched to coder.
+- [x] Add the dropped-Chinese decision as a memory — verified: `feedback_no_chinese_subagent_prompts.md` exists + indexed.
+- [ ] Add the dropped-Chinese REMOVED.md line (anti-re-propose) — verified missing 2026-07-06 (grep hit 0).
 
 ### A4 — Docs
-- [ ] Archive retired `_rules` design tier (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) → gut to a 1-line pointer to LOCKFILE/SOURCE/_inventory.
-- [ ] Archive `_tasks/SOLEN_LIVE_TRUTH.md` + repoint its 7 inbound "principal spec" refs to SOURCE/LOCKFILE.
-- [ ] Fix project CLAUDE.md success-green contradiction (#15803D line ~89 → #16A34A) + "generous blue v2" leftover prose.
-- [ ] Bulk-archive `_tasks/` one-shot logs into `_tasks/archive/`; regenerate >30-day DB snapshot.
+- [x] Archive retired `_rules` design tier — verified 2026-07-06: all 4 (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are 1-paragraph ARCHIVED stubs pointing at LOCKFILE/SOURCE/_inventory, full copies in `_rules/archive/`.
+- [ ] Archive `_tasks/SOLEN_LIVE_TRUTH.md` + repoint inbound "principal spec" refs (live refs verified 2026-07-06: `_rules/SOLEN_PATTERNS.md`, `_rules/SOLEN_UI.md`, `_rules/LESSONS_LEARNED.md`, `_rules/ROADMAP_RULES.md`, plus `_tasks/SOLEN_NEXT.md`, `_tasks/V2_REBUILD_LOG.md`, `_tasks/SYSTEM_AUDIT.md`) to SOURCE/LOCKFILE. Dispatched to coder.
+- [x] Fix project CLAUDE.md success-green contradiction — verified 2026-07-06: current text already states normal green `#16A34A`, `#15803D` appears only inside NOT-clauses, "generous" appears only inside the supersedes-note. Fixed in an earlier round.
+- [ ] Bulk-archive `_tasks/` one-shot .md logs into `_tasks/archive/` (keep INCOMPLETE_FEATURES.md + live-referenced files + all non-md scripts in place; grep inbound refs before each move). Dispatched to coder.
+- [x] Regenerate >30-day DB snapshot — verified 2026-07-06: `_inventory/_db-snapshot.json` + SURFACE.* regenerated today (Jul 6 00:00).
 
-### A5 — System-health check (the meta-fix)
-- [ ] Build a script/hook asserting the invariants: every hook on disk is wired (or shelved-on-purpose), every memory file indexed, every doc's referenced paths alive, no archived doc cited as canonical. This is what would have caught all of Part A. Run it in CI + a SessionStart nudge.
+### A5 — System-health check (the meta-fix; atomized 2026-07-06)
+- [ ] Build `~/.claude/hooks/system-health-check.py` (script mode) asserting: (1) every hook file in `~/.claude/hooks` + project `.claude/hooks` is registered in its settings.json or listed in a `SHELVED.txt` manifest; (2) every memory file is indexed in MEMORY.md and every index link resolves; (3) `*-skip.flag` files older than 24h get listed for deletion; (4) no `mcp__playwright__` or `mcp__claude_ai_` strings in live skills/settings.
+- [ ] Self-test per rule 12.5: one seeded violation (temp orphan hook file) must be detected; a clean run must pass silently. Record both outputs here.
+- [ ] Register as a SessionStart nudge (inject a one-line warning only when violations exist; silent otherwise; fail-open).
 
 ---
 
