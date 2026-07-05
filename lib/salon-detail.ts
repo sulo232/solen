@@ -34,7 +34,22 @@ export interface SalonDetailWithStatus {
  */
 export async function loadSalonDetail(slug: string): Promise<SalonDetail | null> {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  // Cheap cookie-presence guard (same pattern as /api/bookings/user and
+  // /api/discovery/feed): a real session always carries an "sb-" prefixed cookie
+  // (Supabase SSR auth cookie naming). Skip the auth.getSession() round-trip entirely
+  // when it's absent (the hot anonymous PDP path); user stays null, identical to what
+  // a null session yields today. next/headers cookies() is valid in both call paths
+  // (the page.tsx server component and the API route).
+  const { cookies } = await import("next/headers");
+  let hasSbCookie = false;
+  try {
+    hasSbCookie = (await cookies()).getAll().some((c) => c.name.startsWith("sb-"));
+  } catch {
+    hasSbCookie = false;
+  }
+  const { data: { session } } = hasSbCookie
+    ? await supabase.auth.getSession()
+    : { data: { session: null } };
   const user = session?.user ?? null;
 
   // The slug param may be a UUID (owner settings page passes salon.id) or a slug.

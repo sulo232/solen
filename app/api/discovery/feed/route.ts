@@ -15,10 +15,19 @@ export async function GET(req: NextRequest) {
     const { data: filters, error } = validateQuery(discoveryFeedSchema, req.nextUrl.searchParams);
     if (error) return NextResponse.json({ message: error.message }, { status: 400 });
 
-    // Optional auth for personalization
-    const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id ?? null;
+    // Optional auth for personalization. Cheap cookie-presence guard (same pattern as
+    // /api/bookings/user): a real session always carries an "sb-" prefixed cookie
+    // (Supabase SSR auth cookie naming). Skip the auth.getSession() round-trip entirely
+    // when it's absent (the hot anonymous path); userId stays null, identical to what
+    // a null session yields today.
+    const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith('sb-'));
+    let userId: string | null = null;
+    let supabase: Awaited<ReturnType<typeof createServerSupabaseClient>> | null = null;
+    if (hasSbCookie) {
+      supabase = await createServerSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      userId = session?.user?.id ?? null;
+    }
 
     const admin = createAdminSupabaseClient();
 
@@ -95,7 +104,7 @@ export async function GET(req: NextRequest) {
     // "suppress beard for female" rule. p_creator (owner_user_id) serves UserPostsSection (?creator=<userId>).
     // Returns the same light grid column set + a window count(*) for has_more.
     let userGender: string | null = null;
-    if (userId && (!filters.gender || filters.gender === "all")) {
+    if (userId && supabase && (!filters.gender || filters.gender === "all")) {
       const { data: profile } = await supabase.from("profiles").select("disc_gender").eq("id", userId).single();
       userGender = (profile?.disc_gender as string | undefined) ?? null;
     }

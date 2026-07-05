@@ -16,8 +16,10 @@
  *
  * Perf: priorities 1, 2, and the favorites sub-query for priority 3 run
  * concurrently via Promise.allSettled. The off_peak_deals lookup for priority
- * 3 still runs sequentially (depends on favorites ids). Priorities 4 and 5
- * are sequential because they only run when 1-3 all miss (short-circuit).
+ * 3 still runs sequentially (depends on favorites ids, so it cannot join that
+ * first wave). Priorities 4 and 5 only run when 1-3 all miss (short-circuit),
+ * so parallelizing them adds no wasted work on the common path; their queries
+ * have no data dependency on each other, so they also run via Promise.allSettled.
  */
 
 export const dynamic = "force-dynamic";
@@ -171,55 +173,72 @@ export async function GET(_request: NextRequest) {
     console.error("[live-state] deal fetch:", err);
   }
 
-  /* 4. REPLY - review reply in last 7d */
-  try {
-    const { data: replies } = await supabase
+  /* 4 (reply) + 5 (rebook): reached only when 1-3 all missed (the common early-return path never
+     runs these), so parallelizing here adds no wasted work. Their queries share no data dependency
+     (both key off userId/now-derived timestamps only), so fire them together and evaluate in
+     priority order, same allSettled pattern as priorities 1/2/3a above. */
+  const [replyResult, rebookResult] = await Promise.allSettled([
+    // 4. REPLY - review reply in last 7d
+    supabase
       .from("reviews")
       .select("id, salon_id, reply_text, reply_at, salons(slug, name)")
       .eq("user_id", userId)
       .not("reply_text", "is", null)
       .gte("reply_at", last7d.toISOString())
       .order("reply_at", { ascending: false })
-      .limit(1);
-
-    if (replies && replies.length > 0) {
-      const r: any = replies[0];
-      return NextResponse.json({
-        kind: "reply",
-        eyebrow: "Neue Antwort",
-        headline: r.salons?.name ?? "Salon",
-        meta: r.reply_text.slice(0, 80) + (r.reply_text.length > 80 ? "..." : ""),
-        href: `/salon/${r.salons?.slug ?? ""}/reviews`,
-      });
-    }
-  } catch (err) {
-    console.error("[live-state] reply fetch:", err);
-  }
-
-  /* 5. REBOOK - N days since last visit at any salon */
-  try {
-    const { data: pastBookings } = await supabase
+      .limit(1),
+    // 5. REBOOK - N days since last visit at any salon
+    supabase
       .from("bookings")
       .select("id, starts_at, salon_id, salons(slug, name)")
       .eq("user_id", userId)
       .eq("status", "completed")
       .lte("starts_at", cutoff.toISOString())
       .order("starts_at", { ascending: false })
-      .limit(5);
+      .limit(5),
+  ]);
 
-    if (pastBookings && pastBookings.length > 0) {
-      const b: any = pastBookings[0];
-      const daysSince = Math.round((now.getTime() - new Date(b.starts_at).getTime()) / (24 * 60 * 60 * 1000));
-      return NextResponse.json({
-        kind: "rebook",
-        eyebrow: "Bereit?",
-        headline: b.salons?.name ?? "Wieder buchen",
-        meta: `${daysSince} Tage seit deinem letzten Termin`,
-        href: `/salon/${b.salons?.slug ?? ""}`,
-      });
+  /* 4. REPLY - review reply in last 7d */
+  try {
+    if (replyResult.status === "rejected") {
+      console.error("[live-state] reply fetch:", replyResult.reason);
+    } else {
+      const replies = replyResult.value.data;
+      if (replies && replies.length > 0) {
+        const r: any = replies[0];
+        return NextResponse.json({
+          kind: "reply",
+          eyebrow: "Neue Antwort",
+          headline: r.salons?.name ?? "Salon",
+          meta: r.reply_text.slice(0, 80) + (r.reply_text.length > 80 ? "..." : ""),
+          href: `/salon/${r.salons?.slug ?? ""}/reviews`,
+        });
+      }
     }
   } catch (err) {
-    console.error("[live-state] rebook fetch:", err);
+    console.error("[live-state] reply resolve:", err);
+  }
+
+  /* 5. REBOOK - N days since last visit at any salon */
+  try {
+    if (rebookResult.status === "rejected") {
+      console.error("[live-state] rebook fetch:", rebookResult.reason);
+    } else {
+      const pastBookings = rebookResult.value.data;
+      if (pastBookings && pastBookings.length > 0) {
+        const b: any = pastBookings[0];
+        const daysSince = Math.round((now.getTime() - new Date(b.starts_at).getTime()) / (24 * 60 * 60 * 1000));
+        return NextResponse.json({
+          kind: "rebook",
+          eyebrow: "Bereit?",
+          headline: b.salons?.name ?? "Wieder buchen",
+          meta: `${daysSince} Tage seit deinem letzten Termin`,
+          href: `/salon/${b.salons?.slug ?? ""}`,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[live-state] rebook resolve:", err);
   }
 
   /* 6. EMPTY - fallback CTA */

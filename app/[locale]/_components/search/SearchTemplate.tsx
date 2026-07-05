@@ -86,7 +86,7 @@ import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
-import { formatDateLabel } from "@/lib/format";
+import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
@@ -179,32 +179,12 @@ function safeCategory(cats: string[] | undefined): V3Cat {
 }
 
 // V3-D357: earliest upcoming slot across a salon's services -> a short label
-// ("heute 15:30" / "morgen 09:00" / "Mi. 14:00"). Umlaut-free German; en/fr/it
-// relative words inline. The next-slot is the booking hook + the content that
-// stops the card reading empty.
-const SLOT_TODAY: Record<string, string> = { de: "heute", en: "today", fr: "auj.", it: "oggi" };
-const SLOT_TOMORROW: Record<string, string> = { de: "morgen", en: "tomorrow", fr: "demain", it: "domani" };
-const SLOT_WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-function nextSlotLabel(services: Salon["services"], locale: string): string | null {
-  if (!services?.length) return null;
-  const now = Date.now();
-  let earliest: Date | null = null;
-  for (const svc of services) {
-    for (const iso of svc.slots ?? []) {
-      const t = new Date(iso);
-      if (t.getTime() > now && (!earliest || t < earliest)) earliest = t;
-    }
-  }
-  if (!earliest) return null;
-  const hhmm = earliest.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
-  if (sameDay(earliest, today)) return `${SLOT_TODAY[locale] ?? SLOT_TODAY.de} ${hhmm}`;
-  if (sameDay(earliest, tomorrow)) return `${SLOT_TOMORROW[locale] ?? SLOT_TOMORROW.de} ${hhmm}`;
-  return `${SLOT_WEEKDAYS[earliest.getDay()]}. ${hhmm}`;
-}
+// ("heute 15:30" / "morgen 09:00" / "Mi. 14:00"). Uses the shared Zurich-aware
+// nextAvailableSlotLabel (lib/format.ts) instead of a local implementation that
+// called toLocaleTimeString without a timeZone (browser-TZ bug, mislabels near
+// midnight for a non-Zurich runtime). Same output wording, also used by
+// CategoryBrowseRails.
+const nextSlotLabel = nextAvailableSlotLabel;
 
 // R4-3 (2026-07-03, owner-approved /dev/spec-chip): resolve the on-photo
 // specialization chip for a salon when the user typed a free-text query. Matches the
@@ -959,14 +939,13 @@ export default function SearchTemplate({
   React.useEffect(() => {
     if (favoritesFetchedRef.current) return;
     favoritesFetchedRef.current = true;
-    fetch("/api/profile/favorites")
+    // ids_only=1: just the saved salon_ids for the heart fill state, no salon
+    // join (this mount only needs to know which hearts are saved).
+    fetch("/api/profile/favorites?ids_only=1")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        // API returns { items: salon[], total } keyed by `id`.
-        const items = data?.items ?? [];
-        setFavoriteIds(
-          new Set((items as { id: string }[]).map((s) => s.id)),
-        );
+        const ids = data?.salon_ids ?? [];
+        setFavoriteIds(new Set(ids as string[]));
       })
       .catch((err) =>
         console.error("[SearchTemplate] favorites fetch failed:", err),
