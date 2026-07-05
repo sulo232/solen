@@ -29,17 +29,19 @@ export async function GET(req: NextRequest) {
     .select("salon_id")
     .eq("user_id", user.id);
 
-  if (error || !data || data.length === 0) {
-    return NextResponse.json({ items: [], total: 0 });
-  }
-
-  const ids = data.map(f => f.salon_id);
+  const ids = (data ?? []).map(f => f.salon_id);
 
   // ids_only=1: the client just needs to know WHICH salon_ids are saved (heart
-  // fill state), no salon join needed. One cheap query only.
+  // fill state), no salon join needed. One cheap query only. Checked BEFORE the
+  // empty early-return so the response shape is the same regardless of favorite
+  // count (council 2026-07-06: zero-favorites used to fall into {items,total}).
   const { searchParams } = new URL(req.url);
   if (searchParams.get("ids_only") === "1") {
     return NextResponse.json({ salon_ids: ids });
+  }
+
+  if (error || ids.length === 0) {
+    return NextResponse.json({ items: [], total: 0 });
   }
 
   const { data: salons, error: sErr } = await supabase
