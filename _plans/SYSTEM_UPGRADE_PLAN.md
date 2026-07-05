@@ -26,15 +26,16 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] `pre-sweep-check.sh` — RETIRED (verified 2026-07-06: file absent everywhere; `pre-edit-drift-gate.sh` is live and registered).
 - [x] `pre-done-claim-check.sh` — REMOVED, superseded by the council Stop hook (verified 2026-07-06: file absent; `council-trigger.py` registered under global Stop). NOTE: LOOP_SYSTEM.md still claims it is registered under project Stop; that stale claim is fixed in the A5/doc pass.
 
-### A2 — Skills (atomized 2026-07-06; dispatched to coder)
-- [ ] Retarget `fresha-section-capture` off `mcp__playwright__*` → real preview/Chrome tools.
-- [ ] Retarget `site-teardown` off `mcp__playwright__*` + fix script refs (`extract-typography.js`/`extract-colors.js` → whatever actually exists in its scripts/ dir).
-- [ ] Retarget `gemini-visual-check` trigger note off `mcp__playwright__browser_take_screenshot` (never fires today) + add missing `name:` frontmatter field.
-- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto` (brand-sourced capture becomes a section of pixel-spec-auto; pixel-ref-collect dir archived). Retargeting of its playwright refs happens via the merge.
-- [ ] Slim `screenshot-spec` to its manual-annotation tier: drop the broad "AUTO-TRIGGER on any design image" claim; routing authority = project CLAUDE.md binary-triggers table (pixel-spec-auto first, screenshot-spec = escalation).
+### A2 — Skills (DONE 2026-07-06, coder + orchestrator-verified)
+- [x] Retarget `fresha-section-capture` — all `mcp__playwright__browser_*` calls in Steps 2-5 + Edge Cases → `mcp__claude-in-chrome__*`; correction banner added. Verified: grep leaves only the banner's descriptive mention.
+- [x] Retarget `site-teardown` — same retarget; script refs fixed to the only real script `extract-everything.js` (old typography/color steps merged, pipeline renumbered 7→6 steps).
+- [x] Retarget `gemini-visual-check` — `name:` frontmatter added; trigger now `mcp__Claude_Preview__preview_screenshot` / repo site-tester scripts (old phantom trigger could never fire).
+- [x] Merge `pixel-ref-collect` → `pixel-spec-auto` — "Brand-sourced reference collection" section (B1-B7) added with real tool names + description extended; old dir archived to `~/.claude/_archive/skills-2026-07-06/`.
+- [x] Slim `screenshot-spec` — auto-trigger posture removed from frontmatter AND body; now manual-annotation/escalation tier, routing authority = CLAUDE.md binary-triggers table.
 - [x] Remove 6 of the 7 plugin-duplicate skills (`accessibility-review`, `design-critique`, `design-handoff`, `design-system-management`, `user-research`, `ux-writing`) — verified 2026-07-06: none exist in `~/.claude/skills` anymore.
-- [ ] Remove the last dupe `~/.claude/skills/watch` (plugin `watch:watch` is the provider) — archive, not delete.
-- [ ] Clean stale legacy dir `~/.agents/skills/` (old copies of huashu-design, screenshot-spec, site-teardown) — archive so only `~/.claude/skills` copies remain live.
+- [x] Remove the last dupe `~/.claude/skills/watch` — archived to `~/.claude/_archive/skills-2026-07-06/watch` (plugin `watch:watch` is the provider).
+- [x] Clean stale legacy dir `~/.agents/skills/` — INCIDENT + FIX: the three entries in `~/.claude/skills` (huashu-design, screenshot-spec, site-teardown) were SYMLINKS into `~/.agents/skills`, so the coder's archive move left them dangling (SKILL.md unreadable). Orchestrator verification caught it; fixed by deleting the symlinks and moving the real dirs (with the coder's edits intact) INTO `~/.claude/skills` as the single live location. `~/.agents/skills` is now empty. All three skills re-verified live (registry lists them, SKILL.md reads, edits present).
+- [x] Bonus: `fable-frontend` trap-list bullet updated (it claimed the capture skills still script against the phantoms; now records the 2026-07-06 retarget).
 
 ### A3 — Memory (now 112 files → ~70, zero info loss)
 - [x] Index orphans into MEMORY.md — verified 2026-07-06: files↔index checked BOTH directions, 112 files = 112 index lines, zero orphans, zero dead links.
@@ -46,9 +47,9 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 
 ### A4 — Docs
 - [x] Archive retired `_rules` design tier — verified 2026-07-06: all 4 (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are 1-paragraph ARCHIVED stubs pointing at LOCKFILE/SOURCE/_inventory, full copies in `_rules/archive/`.
-- [ ] Archive `_tasks/SOLEN_LIVE_TRUTH.md` + repoint inbound "principal spec" refs (live refs verified 2026-07-06: `_rules/SOLEN_PATTERNS.md`, `_rules/SOLEN_UI.md`, `_rules/LESSONS_LEARNED.md`, `_rules/ROADMAP_RULES.md`, plus `_tasks/SOLEN_NEXT.md`, `_tasks/V2_REBUILD_LOG.md`, `_tasks/SYSTEM_AUDIT.md`) to SOURCE/LOCKFILE. Dispatched to coder.
+- [x] Archive `_tasks/SOLEN_LIVE_TRUTH.md` + repoint inbound refs — DONE 2026-07-06: moved to `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` with banner; the one live "principal spec" framing (`_rules/SOLEN_UI.md:7`) rewritten to SOURCE/LOCKFILE; all 7 remaining path mentions across the 4 `_rules` files + 35 path strings in 3 historical `_tasks` docs repointed to the archive path. Verified: zero `_tasks/SOLEN_LIVE_TRUTH.md` refs left outside `_rules/archive/`.
 - [x] Fix project CLAUDE.md success-green contradiction — verified 2026-07-06: current text already states normal green `#16A34A`, `#15803D` appears only inside NOT-clauses, "generous" appears only inside the supersedes-note. Fixed in an earlier round.
-- [ ] Bulk-archive `_tasks/` one-shot .md logs into `_tasks/archive/` (keep INCOMPLETE_FEATURES.md + live-referenced files + all non-md scripts in place; grep inbound refs before each move). Dispatched to coder.
+- [x] Bulk-archive `_tasks/` one-shot .md logs — DONE 2026-07-06: 30 zero-inbound-ref files moved to `_tasks/archive/`; 10 kept in root with live referrers documented (INCOMPLETE_FEATURES, APPLE_PAY_SETUP + REFUND_APPEAL_PLAN + CUSTOMER_FIX_PROGRESS + WALKIN_DASHBOARD_NEEDS cited from app/lib code, SOLEN_DESIGN 10 referrers, CONTRADICTION_AUDIT via CANON.md, SOLEN_NEXT/SYSTEM_AUDIT/V2_REBUILD_LOG via plans+rules). Non-md scripts untouched.
 - [x] Regenerate >30-day DB snapshot — verified 2026-07-06: `_inventory/_db-snapshot.json` + SURFACE.* regenerated today (Jul 6 00:00).
 
 ### A5 — System-health check (the meta-fix; atomized 2026-07-06)
