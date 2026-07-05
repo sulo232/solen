@@ -41,9 +41,9 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] Index orphans into MEMORY.md — verified 2026-07-06: files↔index checked BOTH directions, 112 files = 112 index lines, zero orphans, zero dead links.
 - [x] Fix dead link MEMORY.md:55 — verified 2026-07-06: no dead links remain anywhere in the index.
 - [x] Fix `user.md` stale DNA — verified 2026-07-06: user.md already carries B&W pivot, Inter Tight/Inter, Netlify (updated 2026-06-28 note present).
-- [ ] 8 merge clusters (mockup 8→2, color 5→2, copy/artifact 4→1, icons 3→1, autonomy/loop 5→2, verify/measure 6→2, links 3→1, killed-features 4→1). Carry verbatim: no-fabrication, never-push, dev-login route, selected-state override. ALSO (2026-07-06 audit): tombstone the retired bodies inside `feedback_90_10_color_rule`, `feedback_check_skills_first`, `feedback_mockup_every_design_decision` (superseded essays shrink to 2-line pointers). Dispatched to coder.
+- [x] Merge clusters — DONE 2026-07-06 (coder, orchestrator-verified): 112 → 90 files, all 9 clusters merged (mockup 7→2, color 4→2, icons 3→1, links 2→1, verify 6→2, autonomy 2-into-1, copy 4→2, killed-features 4→1, tombstones shrunk). Both-direction index check PASS (90 files = 90 index lines, zero dead links). 4 verbatim carries verified in place: no-fabrication (feedback_ui_copy_rules), never-push (feedback_no_auto_push), dev-login (feedback_verify_backend_access), selected-state gray (project_palette_b_w_pivot). Retired essays tombstoned. NOTE: plan said "~70"; the 9 named clusters mathematically yield 90 (22 removed); further consolidation would need merges outside the sanctioned clusters, parked as optional polish.
 - [x] Add the dropped-Chinese decision as a memory — verified: `feedback_no_chinese_subagent_prompts.md` exists + indexed.
-- [ ] Add the dropped-Chinese REMOVED.md line (anti-re-propose) — verified missing 2026-07-06 (grep hit 0).
+- [x] Add the dropped-Chinese REMOVED.md line — DONE 2026-07-06 via `npm run removed` (committed 9b39fec7d).
 
 ### A4 — Docs
 - [x] Archive retired `_rules` design tier — verified 2026-07-06: all 4 (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are 1-paragraph ARCHIVED stubs pointing at LOCKFILE/SOURCE/_inventory, full copies in `_rules/archive/`.
@@ -52,10 +52,11 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] Bulk-archive `_tasks/` one-shot .md logs — DONE 2026-07-06: 30 zero-inbound-ref files moved to `_tasks/archive/`; 10 kept in root with live referrers documented (INCOMPLETE_FEATURES, APPLE_PAY_SETUP + REFUND_APPEAL_PLAN + CUSTOMER_FIX_PROGRESS + WALKIN_DASHBOARD_NEEDS cited from app/lib code, SOLEN_DESIGN 10 referrers, CONTRADICTION_AUDIT via CANON.md, SOLEN_NEXT/SYSTEM_AUDIT/V2_REBUILD_LOG via plans+rules). Non-md scripts untouched.
 - [x] Regenerate >30-day DB snapshot — verified 2026-07-06: `_inventory/_db-snapshot.json` + SURFACE.* regenerated today (Jul 6 00:00).
 
-### A5 — System-health check (the meta-fix; atomized 2026-07-06)
-- [ ] Build `~/.claude/hooks/system-health-check.py` (script mode) asserting: (1) every hook file in `~/.claude/hooks` + project `.claude/hooks` is registered in its settings.json or listed in a `SHELVED.txt` manifest; (2) every memory file is indexed in MEMORY.md and every index link resolves; (3) `*-skip.flag` files older than 24h get listed for deletion; (4) no `mcp__playwright__` or `mcp__claude_ai_` strings in live skills/settings.
-- [ ] Self-test per rule 12.5: one seeded violation (temp orphan hook file) must be detected; a clean run must pass silently. Record both outputs here.
-- [ ] Register as a SessionStart nudge (inject a one-line warning only when violations exist; silent otherwise; fail-open).
+### A5 — System-health check (DONE 2026-07-06, coder + orchestrator-verified)
+- [x] Built `~/.claude/hooks/system-health-check.py`: CLI `--report` (exit 1 on violations, orchestrator-verified exit 1) + SessionStart hook mode (compact one-line additionalContext, always exit 0, fail-open). Asserts all 4 invariants: hook wiring both scopes w/ `SHELVED.txt` manifest (seeded: plan-archive.sh, sim-shot.sh) + reverse missing-path check; memory index both directions; stale flags >24h (report-only, never deletes); phantom strings (mcp__playwright in skills, mcp__claude_ai_ in settings).
+- [x] Self-tested per rule 12.5 BEFORE registering: seeded orphan hook detected; seeded unindexed memory file detected; clean-run honest (current true state: 2 orphan hooks from a CONCURRENT session (rejection-streak-escalator.py, repeat-mistake-detector.py, appeared ~00:41, left untouched on purpose) + 18 stale flags = 20 violations, exit 1); hook mode exit 0 verified twice (coder + orchestrator).
+- [x] Registered under global SessionStart (settings.json re-validated with json.tool by both coder and orchestrator).
+- [x] Bonus (same pass): removed the 5 dead `mcp__claude_ai_*` permission allowlist entries from global settings.json (0 remain); LOOP_SYSTEM.md stale claims corrected (pre-done-claim-check bullet dated correction at :80, allowlist item marked RESOLVED at :90).
 
 ---
 
