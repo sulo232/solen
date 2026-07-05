@@ -6,7 +6,7 @@
 
 > **Maintenance discipline:** when an item ships, strike it from this file in the same commit (V2-D05 incremental cleanup pattern). Stale entries here = drift.
 
-> **Authority:** see `_tasks/SOLEN_LIVE_TRUTH.md` §0c.1 row "Roadmap, deferred features, risk register, ops state". Created via V2-D38 (2026-05-09) from MASTER_ROADMAP.md keep/crop triage.
+> **Authority:** design truth = `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` (SOLEN_LIVE_TRUTH.md is ARCHIVED, do not cite it as spec). Historical origin: created via V2-D38 (2026-05-09) from MASTER_ROADMAP.md keep/crop triage.
 
 ---
 

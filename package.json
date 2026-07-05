@@ -12,6 +12,7 @@
     "inventory:check": "node scripts/inventory.mjs --check",
     "exists": "node scripts/exists.mjs",
     "health": "node scripts/system-health.mjs",
+    "check:invariants": "node scripts/check-invariants.mjs",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs"

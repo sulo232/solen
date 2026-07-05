@@ -22,13 +22,13 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] Fixed stale worktree `design-verifier.md` (was coral + not read-only) → synced to correct main copy (B&W/blue, `tools: Read,Grep,Glob,Bash`).
 
 ### A1 — Stale hooks (project)
-- [ ] `pre-page-commit-check.sh` — watches dead paths (`components/home/**`, `HomePage.tsx`, `SalonCard.tsx` moved to `app/[locale]/_components/homepage/**` + `components-legacy/`) and a receipt nothing writes. → REMOVE (dead ritual) or repoint. Recommend REMOVE.
-- [ ] `pre-sweep-check.sh` — keyed to retired coral palette + deleted `SOLEN_BUILD_LEARNINGS.md`. Superseded by `pre-edit-drift-gate.sh`. → RETIRE.
-- [ ] `pre-done-claim-check.sh` — orphaned AND calls `mcp__playwright__*` (not installed; we have Claude_Preview/Claude_in_Chrome). → retarget tools + wire under Stop, OR remove. Folds into the auto-council Stop hook (C3) — likely SUPERSEDED by that.
+- [x] `pre-page-commit-check.sh` — REMOVED. Verified 2026-07-06: absent from ~/.claude/hooks, project hooks, worktree hooks; zero settings.json references.
+- [x] `pre-sweep-check.sh` — RETIRED. Verified 2026-07-06: absent everywhere, zero settings refs; drift coverage lives in `pre-edit-drift-gate.sh`.
+- [x] `pre-done-claim-check.sh` — REMOVED (superseded). Verified absent 2026-07-06. The done-claim gap is now covered properly by the NEW evidence-based `~/.claude/hooks/verify-before-done-gate.py` (Stop; built from the 2026-07-06 retro, ~55 false-done incidents; see _plans/RETRO_2026-07-06.md).
 
 ### A2 — Skills
-- [ ] Retarget 4 skills off `mcp__playwright__*` → `mcp__Claude_in_Chrome__*` / `mcp__Claude_Preview__*`: `fresha-section-capture`, `site-teardown` (also fix deleted `extract-typography.js`/`extract-colors.js` → `extract-everything.js`), `pixel-ref-collect`, `gemini-visual-check` (trigger note).
-- [ ] Remove 7 plugin-duplicate skills: `accessibility-review`, `design-critique`, `design-handoff`, `design-system-management`, `user-research`, `ux-writing`, `watch` (all exact dupes of installed `design:*` / `watch:watch`).
+- [x] Retarget 4 skills off `mcp__playwright__*` — verified 2026-07-06: `site-teardown` fully retargeted (claude-in-chrome + `extract-everything.js`, no phantom refs), `fresha-section-capture` + `pixel-ref-collect` carry the TOOL-NAME TRANSLATION banner (2026-07-03), `gemini-visual-check` description retargeted to `mcp__Claude_Preview__preview_screenshot` (2026-07-06). `fable-frontend`'s remaining mention is the intentional trap-list WARNING about phantoms, not a usage.
+- [x] Remove 7 plugin-duplicate skills — verified 2026-07-06: all 7 absent from ~/.claude/skills (`watch` retired to ~/.claude/skills-retired/ last, 2026-07-06; plugin `watch:watch` + `design:*` remain the live copies).
 - [ ] Merge `pixel-ref-collect` → `pixel-spec-auto`; slim `screenshot-spec` to its manual-annotation tier.
 
 ### A3 — Memory (92 → ~70, zero info loss)
@@ -45,7 +45,7 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [ ] Bulk-archive `_tasks/` one-shot logs into `_tasks/archive/`; regenerate >30-day DB snapshot.
 
 ### A5 — System-health check (the meta-fix)
-- [ ] Build a script/hook asserting the invariants: every hook on disk is wired (or shelved-on-purpose), every memory file indexed, every doc's referenced paths alive, no archived doc cited as canonical. This is what would have caught all of Part A. Run it in CI + a SessionStart nudge.
+- [x] Built + tested + wired 2026-07-06: `scripts/check-invariants.mjs` (`npm run check:invariants`; checks hooks wired-vs-disk both directions, memory index orphans + dead links, doc paths alive from CLAUDE.md/ACTIVE.md; exit 1 on FAIL) + `.github/workflows/invariants.yml` (CI, `--repo-only`) + `~/.claude/hooks/invariants-nudge.py` (SessionStart, daily throttle, wired in settings.json). Proof it works: first full run immediately caught live drift (memory orphans + a dead index link from the in-flight memory-merge in the parallel session). Born alongside the 2026-07-06 retro (_plans/RETRO_2026-07-06.md).
 
 ---
 
