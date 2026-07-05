@@ -20,12 +20,12 @@
   {
    "rls": true,
    "name": "audit_log",
-   "rows": 22
+   "rows": 34
   },
   {
    "rls": true,
    "name": "availability_slots",
-   "rows": 221188
+   "rows": 165194
   },
   {
    "rls": true,
@@ -55,7 +55,7 @@
   {
    "rls": true,
    "name": "barber_walkin_queue",
-   "rows": 20
+   "rows": 21
   },
   {
    "rls": true,
@@ -70,7 +70,7 @@
   {
    "rls": true,
    "name": "bookings",
-   "rows": 951
+   "rows": 957
   },
   {
    "rls": true,
@@ -95,7 +95,7 @@
   {
    "rls": true,
    "name": "cities",
-   "rows": 3
+   "rows": 7
   },
   {
    "rls": true,
@@ -134,8 +134,13 @@
   },
   {
    "rls": true,
-   "name": "customer_segment_members",
+   "name": "credit_redemptions",
    "rows": 0
+  },
+  {
+   "rls": true,
+   "name": "customer_segment_members",
+   "rows": 14
   },
   {
    "rls": true,
@@ -170,7 +175,7 @@
   {
    "rls": true,
    "name": "discovery_interactions",
-   "rows": 66
+   "rows": 84
   },
   {
    "rls": true,
@@ -200,7 +205,7 @@
   {
    "rls": true,
    "name": "discovery_search_events",
-   "rows": 71
+   "rows": 127
   },
   {
    "rls": true,
@@ -220,7 +225,7 @@
   {
    "rls": true,
    "name": "feature_flags",
-   "rows": 13
+   "rows": 18
   },
   {
    "rls": true,
@@ -320,7 +325,7 @@
   {
    "rls": true,
    "name": "nail_retail_products",
-   "rows": 5
+   "rows": 7
   },
   {
    "rls": true,
@@ -355,7 +360,7 @@
   {
    "rls": true,
    "name": "platform_settings",
-   "rows": 1
+   "rows": 2
   },
   {
    "rls": true,
@@ -385,7 +390,7 @@
   {
    "rls": true,
    "name": "profiles",
-   "rows": 15
+   "rows": 35
   },
   {
    "rls": true,
@@ -410,7 +415,7 @@
   {
    "rls": true,
    "name": "referrals",
-   "rows": 10
+   "rows": 30
   },
   {
    "rls": true,
@@ -455,7 +460,7 @@
   {
    "rls": true,
    "name": "salon_analytics",
-   "rows": 0
+   "rows": 126
   },
   {
    "rls": true,
@@ -490,7 +495,7 @@
   {
    "rls": true,
    "name": "salon_drafts",
-   "rows": 1
+   "rows": 7
   },
   {
    "rls": true,
@@ -515,7 +520,7 @@
   {
    "rls": true,
    "name": "salon_page_views",
-   "rows": 247
+   "rows": 411
   },
   {
    "rls": true,
@@ -530,7 +535,7 @@
   {
    "rls": true,
    "name": "salons",
-   "rows": 23
+   "rows": 25
   },
   {
    "rls": true,
@@ -550,7 +555,7 @@
   {
    "rls": true,
    "name": "search_synonyms",
-   "rows": 65
+   "rows": 84
   },
   {
    "rls": true,
@@ -560,12 +565,12 @@
   {
    "rls": true,
    "name": "service_bundle_items",
-   "rows": 0
+   "rows": 2
   },
   {
    "rls": true,
    "name": "service_bundles",
-   "rows": 0
+   "rows": 1
   },
   {
    "rls": true,
@@ -635,7 +640,7 @@
   {
    "rls": true,
    "name": "staff_schedules",
-   "rows": 403
+   "rows": 402
   },
   {
    "rls": true,
@@ -645,11 +650,6 @@
   {
    "rls": true,
    "name": "staff_time_off",
-   "rows": 0
-  },
-  {
-   "rls": true,
-   "name": "test_table",
    "rows": 0
   },
   {
@@ -670,7 +670,7 @@
   {
    "rls": true,
    "name": "user_preferences",
-   "rows": 0
+   "rows": 1
   },
   {
    "rls": true,
@@ -686,6 +686,11 @@
    "rls": true,
    "name": "voucher_purchases",
    "rows": 2
+  },
+  {
+   "rls": true,
+   "name": "voucher_redemptions",
+   "rows": 0
   },
   {
    "rls": true,
@@ -723,6 +728,6 @@
    "rows": 2
   }
  ],
- "capturedAt": "2026-07-03",
+ "capturedAt": "2026-07-06",
  "rlsDisabled": []
 }
