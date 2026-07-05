@@ -29,20 +29,20 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 ### A2 — Skills
 - [x] Retarget 4 skills off `mcp__playwright__*` — verified 2026-07-06: `site-teardown` fully retargeted (claude-in-chrome + `extract-everything.js`, no phantom refs), `fresha-section-capture` + `pixel-ref-collect` carry the TOOL-NAME TRANSLATION banner (2026-07-03), `gemini-visual-check` description retargeted to `mcp__Claude_Preview__preview_screenshot` (2026-07-06). `fable-frontend`'s remaining mention is the intentional trap-list WARNING about phantoms, not a usage.
 - [x] Remove 7 plugin-duplicate skills — verified 2026-07-06: all 7 absent from ~/.claude/skills (`watch` retired to ~/.claude/skills-retired/ last, 2026-07-06; plugin `watch:watch` + `design:*` remain the live copies).
-- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto`; slim `screenshot-spec` to its manual-annotation tier.
+- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto`; slim `screenshot-spec` to its manual-annotation tier. (IN FLIGHT in the parallel session 2026-07-06 00:22: pixel-spec-auto already carries the merged brand-capture section and screenshot-spec is re-described as the manual tier, registry-verified; leaving the box to that session to close when the pixel-ref-collect dir is retired.)
 
 ### A3 — Memory (92 → ~70, zero info loss)
-- [ ] Index 5 orphans into MEMORY.md: `user.md`, `feedback_no_parallel_agents_frontend.md`, `project_search_facts.md`, `reference_test_server_pattern.md` (skip RETIRED_).
-- [ ] Fix dead link MEMORY.md:55 (`feedback_no_vercel_deploy.md` → renamed RETIRED_).
-- [ ] Fix `user.md` stale DNA (coral/Anton/Figtree/Vercel → B&W/blue, Inter Tight/Inter, Netlify).
+- [x] Index 5 orphans into MEMORY.md — verified 2026-07-06: user.md, feedback_no_parallel_agents_frontend, project_search_facts, reference_test_server_pattern all linked in the index.
+- [x] Dead link fixed — verified 2026-07-06: zero `feedback_no_vercel_deploy` references remain in MEMORY.md.
+- [x] `user.md` DNA — verified 2026-07-06: carries the B&W pivot block (updated 2026-06-28) with explicit SUPERSEDES of coral/Anton/Figtree.
 - [ ] 8 merge clusters (mockup 8→2, color 5→2, copy/artifact 4→1, icons 3→1, autonomy/loop 5→2, verify/measure 6→2, links 3→1, killed-features 4→1). Carry verbatim: no-fabrication, never-push, dev-login route, selected-state override.
-- [ ] Add the dropped-Chinese decision as a memory + REMOVED.md line (anti-re-propose).
+- [x] Dropped-Chinese decision — memory `feedback_no_chinese_subagent_prompts.md` existed; REMOVED.md graveyard line added 2026-07-06 via `npm run removed`.
 
 ### A4 — Docs
-- [ ] Archive retired `_rules` design tier (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) → gut to a 1-line pointer to LOCKFILE/SOURCE/_inventory.
-- [ ] Archive `_tasks/SOLEN_LIVE_TRUTH.md` + repoint its 7 inbound "principal spec" refs to SOURCE/LOCKFILE.
-- [ ] Fix project CLAUDE.md success-green contradiction (#15803D line ~89 → #16A34A) + "generous blue v2" leftover prose.
-- [ ] Bulk-archive `_tasks/` one-shot logs into `_tasks/archive/`; regenerate >30-day DB snapshot.
+- [x] `_rules` design tier — verified 2026-07-06: all four (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are ARCHIVED-header tombstones pointing at LOCKFILE/SOURCE/_inventory.
+- [x] SOLEN_LIVE_TRUTH — verified 2026-07-06: live file is an ARCHIVED tombstone (2026-06-28) pointing at the archive copy; the old "principal spec" citations in SOLEN_PATTERNS/SOLEN_UI/KEY_FEATURES/ROADMAP_RULES/LESSONS_LEARNED/SOURCE/CLAUDE.md are gone; the last live authority ref (SOLEN_NEXT.md) repointed to SOURCE/LOCKFILE 2026-07-06.
+- [x] CLAUDE.md success-green — verified 2026-07-06: #16A34A is the rule everywhere, #15803D appears only inside "NOT deep" prohibitions; "generous-blue v2" survives only inside the supersedes note (intentional history).
+- [ ] Bulk-archive `_tasks/` one-shot logs into `_tasks/archive/`; regenerate >30-day DB snapshot. (PARTIAL 2026-07-06: snapshot regenerated 00:11 by the parallel session; 43 .md files still at _tasks/ top level, archive criteria call still open.)
 
 ### A5 — System-health check (the meta-fix)
 - [x] Built + tested + wired 2026-07-06: `scripts/check-invariants.mjs` (`npm run check:invariants`; checks hooks wired-vs-disk both directions, memory index orphans + dead links, doc paths alive from CLAUDE.md/ACTIVE.md; exit 1 on FAIL) + `.github/workflows/invariants.yml` (CI, `--repo-only`) + `~/.claude/hooks/invariants-nudge.py` (SessionStart, daily throttle, wired in settings.json). Proof it works: first full run immediately caught live drift (memory orphans + a dead index link from the in-flight memory-merge in the parallel session). Born alongside the 2026-07-06 retro (_plans/RETRO_2026-07-06.md).
