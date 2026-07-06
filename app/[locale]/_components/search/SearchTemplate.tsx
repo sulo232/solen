@@ -86,7 +86,7 @@ import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
-import { formatDateLabel } from "@/lib/format";
+import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
@@ -120,6 +120,13 @@ export interface SearchTemplateProps {
   serviceFilter?: SalonCategory | null;
   /** Optional pre-applied city slug (for /[city]/coiffeur style routes). */
   cityFilter?: CitySlug | null;
+  /** V3-D454 (2026-07-06): whether the Angebote (deals) and Fuer-wen (gender)
+   *  filter surfaces have live data to discriminate on right now. Resolved
+   *  server-side via `getFilterAvailability()` (lib/search/filter-availability.ts)
+   *  and passed down from every SearchTemplate mount. Defaults to `{ deals: true,
+   *  gender: true }` (both shown) so a mount that omits this prop keeps the prior
+   *  behavior instead of silently hiding a filter. */
+  filterAvailability?: { deals: boolean; gender: boolean };
   /** Breadcrumb chain — last item = current page. */
   breadcrumb?: { label: string; href?: string }[];
   /** Compact hero block (category routes); /search omits. */
@@ -179,32 +186,12 @@ function safeCategory(cats: string[] | undefined): V3Cat {
 }
 
 // V3-D357: earliest upcoming slot across a salon's services -> a short label
-// ("heute 15:30" / "morgen 09:00" / "Mi. 14:00"). Umlaut-free German; en/fr/it
-// relative words inline. The next-slot is the booking hook + the content that
-// stops the card reading empty.
-const SLOT_TODAY: Record<string, string> = { de: "heute", en: "today", fr: "auj.", it: "oggi" };
-const SLOT_TOMORROW: Record<string, string> = { de: "morgen", en: "tomorrow", fr: "demain", it: "domani" };
-const SLOT_WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-function nextSlotLabel(services: Salon["services"], locale: string): string | null {
-  if (!services?.length) return null;
-  const now = Date.now();
-  let earliest: Date | null = null;
-  for (const svc of services) {
-    for (const iso of svc.slots ?? []) {
-      const t = new Date(iso);
-      if (t.getTime() > now && (!earliest || t < earliest)) earliest = t;
-    }
-  }
-  if (!earliest) return null;
-  const hhmm = earliest.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
-  if (sameDay(earliest, today)) return `${SLOT_TODAY[locale] ?? SLOT_TODAY.de} ${hhmm}`;
-  if (sameDay(earliest, tomorrow)) return `${SLOT_TOMORROW[locale] ?? SLOT_TOMORROW.de} ${hhmm}`;
-  return `${SLOT_WEEKDAYS[earliest.getDay()]}. ${hhmm}`;
-}
+// ("heute 15:30" / "morgen 09:00" / "Mi. 14:00"). Uses the shared Zurich-aware
+// nextAvailableSlotLabel (lib/format.ts) instead of a local implementation that
+// called toLocaleTimeString without a timeZone (browser-TZ bug, mislabels near
+// midnight for a non-Zurich runtime). Same output wording, also used by
+// CategoryBrowseRails.
+const nextSlotLabel = nextAvailableSlotLabel;
 
 // R4-3 (2026-07-03, owner-approved /dev/spec-chip): resolve the on-photo
 // specialization chip for a salon when the user typed a free-text query. Matches the
@@ -413,6 +400,7 @@ export default function SearchTemplate({
   locale,
   serviceFilter = null,
   cityFilter = null,
+  filterAvailability = { deals: true, gender: true },
   breadcrumb,
   hero = null,
   aboveSlot = null,
@@ -499,10 +487,18 @@ export default function SearchTemplate({
     { key: "sort", label: sort && sort !== "rating" ? sortLbl : t("sectionSort"), active: !!sort && sort !== "rating" },
     { key: "open_now", label: t("pillOpenNow"), active: openNow },
     { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
-    { key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender },
+    // V3-D454: hidden while no active service can discriminate by gender, UNLESS a
+    // stale link already has ?gender= set (the user must still see + be able to clear it).
+    ...(filterAvailability.gender || !!gender
+      ? [{ key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender }]
+      : []),
     { key: "rating", label: minRating ? `${minRating}` : t("sectionRating"), active: minRating != null },
     { key: "amenities", label: activeAmenities.length ? t("pillAmenitiesCount", { count: activeAmenities.length }) : t("sectionAmenities"), active: activeAmenities.length > 0 },
-    { key: "deals", label: t("sectionDeals"), active: deals },
+    // V3-D454: hidden while 0 listed salons have a real deal, UNLESS a stale link
+    // already has ?deals=true set (same active-param exception as gender above).
+    ...(filterAvailability.deals || deals
+      ? [{ key: "deals", label: t("sectionDeals"), active: deals }]
+      : []),
   ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
@@ -959,14 +955,13 @@ export default function SearchTemplate({
   React.useEffect(() => {
     if (favoritesFetchedRef.current) return;
     favoritesFetchedRef.current = true;
-    fetch("/api/profile/favorites")
+    // ids_only=1: just the saved salon_ids for the heart fill state, no salon
+    // join (this mount only needs to know which hearts are saved).
+    fetch("/api/profile/favorites?ids_only=1")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        // API returns { items: salon[], total } keyed by `id`.
-        const items = data?.items ?? [];
-        setFavoriteIds(
-          new Set((items as { id: string }[]).map((s) => s.id)),
-        );
+        const ids = data?.salon_ids ?? [];
+        setFavoriteIds(new Set(ids as string[]));
       })
       .catch((err) =>
         console.error("[SearchTemplate] favorites fetch failed:", err),
@@ -2046,11 +2041,14 @@ export default function SearchTemplate({
         onMinRatingChange={(value) => updateParam("min_rating", value)}
         gender={gender}
         onGenderChange={(value) => updateParam("gender", value)}
+        // V3-D454: hide-while-empty flags, same active-param exception as the pill row.
+        showGender={filterAvailability.gender || !!gender}
         amenityOptions={amenityOptions}
         amenities={activeAmenities}
         onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
         deals={deals}
         onDealsToggle={() => toggleBooleanParam("deals", deals)}
+        showDeals={filterAvailability.deals || deals}
         onReset={() => {
           // Clear every filter param the sheet/chips write. sort resets to the
           // default (rating) by deleting it.

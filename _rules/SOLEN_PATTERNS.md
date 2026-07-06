@@ -4,7 +4,7 @@
 
 > **Operational playbook for any new V3 surface.** Distills what we built on the homepage into reusable patterns + concrete rules + a Fresha→Solen adaptation guide. Auto-loaded by Claude on session start via `CLAUDE.md` "Topic-specific rules" table.
 >
-> **Hierarchy:** `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal *spec* docs. This file is the *playbook*: how to apply those locked specs to new surfaces. When the two disagree, SOURCE.md + LOCKFILE.md win. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived; do not treat it as authoritative.)
+> **Hierarchy:** `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal *spec* docs. This file is the *playbook*: how to apply those locked specs to new surfaces. When the two disagree, SOURCE.md + LOCKFILE.md win. (The old V2 `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` is archived; do not treat it as authoritative.)
 >
 > Last updated 2026-05-10 after V2-D49 series.
 
@@ -21,7 +21,7 @@
 - **Accent:** terracotta `#C97A57` (`s-accent`). Deep `#8E4A2D` for hover.
 - **4 cat colors:** Coiffeur=cream/terracotta, Barbershop=bone/ink, Nails=sage-pale/terra-deep, Spa=emerald-subtle/emerald-deep.
 - **Atmosphere:** body radial gradients (earth-tone) + 7 organic blurred AtmosphereBlobs + AtmosphereGrain (SVG noise) + center white wash for reading clarity (V2-D49h).
-- **Locked at:** `_tasks/SOLEN_LIVE_TRUTH.md` §1, §2, §5g, §5h.1.
+- **Locked at:** `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` §1, §2, §5g, §5h.1.
 
 ### 1.2 The color rule (THE law — §5h principle 9 + §5h.2, V2-D49j 2026-05-10)
 
@@ -165,7 +165,7 @@ All section primitives are exported from `app/[locale]/_components/homepage/Sect
 
 ### 3.1 Documentation hierarchy
 
-1. `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md`: the principal spec (rules win). (Old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.)
+1. `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md`: the principal spec (rules win). (Old V2 `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` is archived, not authoritative.)
 2. `_tasks/V2_REBUILD_LOG.md` V2-D## — the decision log.
 3. `public/solen-v2-*.html` — locked visual references.
 4. Component JSDoc — last source of truth, lowest priority.

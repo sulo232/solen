@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import type { SalonCategory } from "@/lib/types";
 import { getActiveCityBySlug, getActiveCities, getCityName, type CitySlug } from "@/lib/cities";
+import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export const dynamic = "force-dynamic";
 // DB `cities WHERE is_active` is the runtime gate (2026-07-04 city-rollout refactor); a city
@@ -129,15 +130,17 @@ export default async function Page({
 
   const cityName = getCityName(city, locale, row);
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
+  const filterAvailability = await getFilterAvailability();
 
   return (
     // V3-D262 (W4, 2026-05-27): rewired from broken handcrafted page (raw bare salon
-    // divs + no filters) to SearchTemplate — same pattern as /makeup + /waxing fix
+    // divs + no filters) to SearchTemplate, same pattern as /makeup + /waxing fix
     // (V3-D241 in W2). City + service filter inherited via SearchTemplate props.
     <SearchTemplate
       locale={locale}
       serviceFilter={category as SalonCategory}
       cityFilter={city as CitySlug}
+      filterAvailability={filterAvailability}
       breadcrumb={[
         { label: "Solen", href: `/${locale}` },
         { label: cityName, href: `/${locale}/${city}` },

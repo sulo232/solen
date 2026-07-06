@@ -34,7 +34,22 @@ export interface SalonDetailWithStatus {
  */
 export async function loadSalonDetail(slug: string): Promise<SalonDetail | null> {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  // Cheap cookie-presence guard (same pattern as /api/bookings/user and
+  // /api/discovery/feed): a real session always carries an "sb-" prefixed cookie
+  // (Supabase SSR auth cookie naming). Skip the auth.getSession() round-trip entirely
+  // when it's absent (the hot anonymous PDP path); user stays null, identical to what
+  // a null session yields today. next/headers cookies() is valid in both call paths
+  // (the page.tsx server component and the API route).
+  const { cookies } = await import("next/headers");
+  let hasSbCookie = false;
+  try {
+    hasSbCookie = (await cookies()).getAll().some((c) => c.name.startsWith("sb-"));
+  } catch {
+    hasSbCookie = false;
+  }
+  const { data: { session } } = hasSbCookie
+    ? await supabase.auth.getSession()
+    : { data: { session: null } };
   const user = session?.user ?? null;
 
   // The slug param may be a UUID (owner settings page passes salon.id) or a slug.
@@ -47,7 +62,7 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
   const { data: salon, error } = await supabase
     .from("salons")
     .select(
-      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone"
+      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
     )
     .eq(isUuid ? "id" : "slug", slug)
     .single();
@@ -60,14 +75,26 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
 
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([
-    supabase.from("services").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
+    supabase
+      .from("services")
+      .select(
+        "id, salon_id, name_de, name_en, description_de, description_en, price, duration_minutes, category, subcategory, is_active, sort_order, photo_urls, suitable_for, suitable_gender, buffer_minutes, curing_minutes, processing_minutes, finishing_minutes, material_type, station_required, daily_limit_per_staff, reminder_cycle_days, created_at"
+      )
+      .eq("salon_id", salon.id)
+      .eq("is_active", true),
+    supabase
+      .from("staff_members")
+      .select("id, name, avatar_url, specialties, average_rating, review_count")
+      .eq("salon_id", salon.id)
+      .eq("is_active", true),
     // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,
     // which nulled every reviewer name for logged-out visitors. The server exposes
     // ONLY display_name + avatar_url through this select, no broader profile access.
+    // No review_replies/review_photos embed: no PDP component reads them (the
+    // dedicated reviews page runs its own query for that).
     createAdminSupabaseClient()
       .from("reviews")
-      .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")
+      .select("id, rating, comment, created_at, profiles(display_name, avatar_url)")
       .eq("salon_id", salon.id)
       // Filter out auto-moderated (hidden) reviews: the admin client bypasses
       // RLS, so without this an automod-hidden review would ship to the PDP.
@@ -101,16 +128,29 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
     }));
   }
 
-  // SECURITY: the admin client bypasses RLS, so review_replies includes is_public=false
-  // rows (owner/author-only per migration 041). Strip non-public replies before they ship
-  // in the response, the client only gates rendering, so unfiltered rows leak reply_text.
-  const reviews = (reviewsRes.data ?? []).map((r: any) => ({
-    ...r,
-    review_replies: (r.review_replies ?? []).filter((rp: any) => rp.is_public === true),
-  }));
+  const reviews = reviewsRes.data ?? [];
+
+  // Moderation fields (verification_warnings, warning_count, frozen_at,
+  // frozen_reason) ship ONLY to the owner's own session; public callers
+  // (anonymous PDP visitors, other logged-in users) never see them.
+  // owner_id is stripped for ALL callers, including the owner: it is needed
+  // server-side for the isOwner gate above, and no client reads it.
+  const { owner_id, ...salonWithoutOwnerId } = salon as typeof salon & { owner_id?: string };
+  const publicSalon = isOwner
+    ? salonWithoutOwnerId
+    : (() => {
+        const { verification_warnings, warning_count, frozen_at, frozen_reason, ...rest } =
+          salonWithoutOwnerId as typeof salonWithoutOwnerId & {
+            verification_warnings?: unknown;
+            warning_count?: unknown;
+            frozen_at?: unknown;
+            frozen_reason?: unknown;
+          };
+        return rest;
+      })();
 
   return {
-    ...salon,
+    ...publicSalon,
     services: servicesRes.data ?? [],
     staff: staffWithServices,
     reviews,

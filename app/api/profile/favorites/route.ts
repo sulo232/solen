@@ -4,8 +4,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
+// Explicit public column list, same as app/api/salons/route.ts's salonCols (the
+// public card fields, never stripe_account_id / owner_id / search_doc / score_details).
+const salonCols =
+  "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at";
+
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
+
+  // Cheap cookie-presence guard: skip the getSession() round-trip entirely when
+  // no "sb-" prefixed cookie is present (logged-out callers), same response.
+  const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith("sb-"));
+  if (!hasSbCookie) return NextResponse.json({ items: [], total: 0 });
+
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user;
   if (!user) return NextResponse.json({ items: [], total: 0 });
@@ -17,16 +28,25 @@ export async function GET(req: NextRequest) {
     .from("favorites")
     .select("salon_id")
     .eq("user_id", user.id);
-  
-  if (error || !data || data.length === 0) {
+
+  const ids = (data ?? []).map(f => f.salon_id);
+
+  // ids_only=1: the client just needs to know WHICH salon_ids are saved (heart
+  // fill state), no salon join needed. One cheap query only. Checked BEFORE the
+  // empty early-return so the response shape is the same regardless of favorite
+  // count (council 2026-07-06: zero-favorites used to fall into {items,total}).
+  const { searchParams } = new URL(req.url);
+  if (searchParams.get("ids_only") === "1") {
+    return NextResponse.json({ salon_ids: ids });
+  }
+
+  if (error || ids.length === 0) {
     return NextResponse.json({ items: [], total: 0 });
   }
 
-  const ids = data.map(f => f.salon_id);
-
   const { data: salons, error: sErr } = await supabase
     .from("salons")
-    .select("*, services(price)")
+    .select(`${salonCols}, services(price)`)
     .in("id", ids)
     .eq("is_active", true)
     .eq("is_test", false);

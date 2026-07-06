@@ -6,6 +6,15 @@ import { createServerSupabaseClient } from '@/lib/supabase';
 
 export async function GET(req: NextRequest) {
   try {
+    // Cheap cookie-presence guard: a real session always carries an "sb-"
+    // prefixed cookie (Supabase SSR auth cookie naming). Skip the
+    // auth.getSession() round-trip entirely when it's absent (logged-out
+    // callers), same unauthorized response as a null session below.
+    const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith('sb-'));
+    if (!hasSbCookie) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     // Auth check
     const supabase = await createServerSupabaseClient();
     const { data: { session } } = await supabase.auth.getSession();
@@ -30,11 +39,22 @@ export async function GET(req: NextRequest) {
     const now = new Date().toISOString();
 
     // Build query based on tab
+    // Explicit column list, replacing the old `select('*')` which shipped all ~75
+    // bookings columns to the client, including access_token_hash,
+    // access_token_expires_at, policy_snapshot, crm_photo_url, gcal_event_id,
+    // outlook_event_id, stripe_setup_intent_id, stripe_payment_method_id. This is
+    // exactly what BookingCard / CancelBookingSheet / BookingsList's rebook call
+    // read (id, salon_id, service_id, starts_at, ends_at, price_paid, status,
+    // is_first_visit/is_recurring/sms/review flags in the Booking type) plus a
+    // conservative margin (user_id, slot_id, created_at) for downstream use.
     let query = supabase
       .from('bookings')
       .select(
         `
-        *,
+        id, user_id, salon_id, service_id, slot_id,
+        starts_at, ends_at, price_paid, status, created_at,
+        is_first_visit, is_recurring,
+        sms_sent_24h, sms_sent_1h, review_prompt_sent,
         salon:salons(id, slug, name, address, average_rating, review_count, cover_photo_url),
         service:services(id, name_de, name_en, duration_minutes, price),
         staff:staff_members(id, name, avatar_url)

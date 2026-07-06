@@ -324,6 +324,9 @@ export interface FilterSheetProps {
   // ── Für wen / Service type (services.suitable_gender) ──
   gender: string | null;
   onGenderChange: (value: string | null) => void;
+  /** V3-D454 (2026-07-06): hide the group while no active service can discriminate
+   *  by gender. Defaults to true (shown) so an omitted prop keeps prior behavior. */
+  showGender?: boolean;
 
   // ── Ausstattung / Amenities (salons boolean columns) ──
   amenityOptions: { col: string; label: string; icon?: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }> }[];
@@ -333,6 +336,9 @@ export interface FilterSheetProps {
   // ── Angebote (deals / last_minute_discount) ──
   deals: boolean;
   onDealsToggle: () => void;
+  /** V3-D454 (2026-07-06): hide the group while 0 listed salons have a real deal.
+   *  Defaults to true (shown) so an omitted prop keeps prior behavior. */
+  showDeals?: boolean;
 
   /** Clears every filter param (booleans + min_rating + sort). */
   onReset: () => void;
@@ -412,11 +418,13 @@ function FilterSheetContent({
   onMinRatingChange,
   gender,
   onGenderChange,
+  showGender = true,
   amenityOptions,
   amenities,
   onAmenityToggle,
   deals,
   onDealsToggle,
+  showDeals = true,
 }: Omit<FilterSheetProps, "isOpen" | "onClose" | "resultCount" | "onReset">) {
   return (
     <>
@@ -476,8 +484,10 @@ function FilterSheetContent({
         </FilterGroup>
       )}
 
-      {/* Für wen / Service type — services.suitable_gender (Alle / Damen / Herren). */}
-      {(!section || section === "gender") && (
+      {/* Für wen / Service type - services.suitable_gender (Alle / Damen / Herren).
+          V3-D454: hidden while no active service can discriminate by gender (showGender
+          stays true when a stale ?gender= link is active, passed in from SearchTemplate). */}
+      {showGender && (!section || section === "gender") && (
         <FilterGroup heading={section ? "" : labels.forWhoHeading}>
           <div className="flex flex-wrap gap-2">
             <SheetChip active={gender === null} onClick={() => onGenderChange(null)}>
@@ -527,8 +537,10 @@ function FilterSheetContent({
         </FilterGroup>
       )}
 
-      {/* V3-D391: Angebote / Last-Minute deals — the "more filters" the user asked for. */}
-      {(!section || section === "deals") && (
+      {/* V3-D391: Angebote / Last-Minute deals, the "more filters" the user asked for.
+          V3-D454: hidden while 0 listed salons have a real deal (showDeals stays true
+          when a stale ?deals=true link is active, passed in from SearchTemplate). */}
+      {showDeals && (!section || section === "deals") && (
         <FilterGroup heading={section ? "" : labels.dealsHeading}>
           <div className="flex flex-wrap gap-2">
             <SheetChip active={deals} onClick={onDealsToggle}>

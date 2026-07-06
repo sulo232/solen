@@ -18,9 +18,15 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
 
+    // Explicit public column list, same shape as app/api/salons/route.ts (selectStr).
+    // Replaces select('*') which shipped all ~98 salon columns to anonymous
+    // clients, including owner/payment internals. Never select search_doc,
+    // score_details, stripe_account_id, owner_id here.
     const { data, error } = await supabase
       .from("salons")
-      .select("*")
+      .select(
+        "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at",
+      )
       .eq("quartier", quartier)
       .contains("categories", [category])
       .neq("id", currentId)

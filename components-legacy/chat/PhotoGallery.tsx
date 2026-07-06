@@ -113,7 +113,9 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
                       body: JSON.stringify({ image_url: lightboxUrl, source_url: lightboxUrl }),
                     });
                     if (res.ok) setSaved((prev) => new Set(prev).add(lightboxUrl!));
-                  } catch {}
+                  } catch (err) {
+                    console.error("[PhotoGallery] nail-inspo save failed:", err);
+                  }
                   setSaving(false);
                 }}
                 className="mt-3 w-full py-2.5 rounded-btn border border-s-border bg-white text-s-ink text-sm font-medium hover:bg-s-bg-surface transition-colors flex items-center justify-center gap-2 disabled:opacity-50"

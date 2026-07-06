@@ -48,10 +48,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ items: [], total: 0, page: 1, limit: 20 });
   }
 
-  // Hydrate full salon rows for the ranked ids (already gated by the RPC).
+  // Explicit public column list, same shape as app/api/salons/route.ts (selectStr),
+  // plus opening_hours for the map QuickPreviewSheet. Replaces select('*') which
+  // shipped all ~98 salon columns to anonymous clients, including owner/payment
+  // internals. Never select search_doc, score_details, stripe_account_id, owner_id
+  // here. This endpoint is queued for deletion by _plans/SEARCH_BACKEND.md phase 4
+  // once its 3 consumers (SearchResults, SplitView, badge-manager) are repointed;
+  // until then it must not leak.
   const { data: rows, error: hydErr } = await supabase
     .from("salons")
-    .select("*, services(price)")
+    .select(
+      "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at, services(price)",
+    )
     .in("id", orderedIds);
   if (hydErr) {
     console.error("[salons/search] hydrate failed:", hydErr.message);

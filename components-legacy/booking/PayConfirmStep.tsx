@@ -51,12 +51,12 @@ interface PayConfirmStepProps {
 }
 
 export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmStepProps) {
-  const t = useTranslations('booking') as any;
+  const t = useTranslations('booking');
   // P1: NEW pay/confirm copy lives in its own `payConfirm` namespace (existing booking.* keys untouched).
-  const tp = useTranslations('payConfirm') as any;
+  const tp = useTranslations('payConfirm');
   // SP-1: the guest-form copy lives in the top-level `guestBookingForm` namespace (shared with
   // GuestBookingForm.tsx); read it directly rather than via a cross-namespace path.
-  const tg = useTranslations('guestBookingForm') as any;
+  const tg = useTranslations('guestBookingForm');
   const locale = useLocale();
   const router = useRouter();
   const { formData, goToStep, resetForm } = useBooking();
@@ -112,7 +112,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const chargeRef = useRef(false);
 
   const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-GB';
-  const cancellationHours = (salon as any).cancellation_window_hours ?? 24;
+  const cancellationHours = salon.cancellation_window_hours ?? 24;
 
   const dateLabel = formData.selectedDate
     ? new Intl.DateTimeFormat(localeCode, {
@@ -334,12 +334,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <div className="min-w-0 flex-1">
             <p className="truncate font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{salon.name}</p>
             <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px]">
-              {(salon as any).average_rating != null && Number((salon as any).average_rating) > 0 && (
+              {salon.average_rating != null && Number(salon.average_rating) > 0 && (
                 <span className="flex items-center gap-1">
                   <Star size={13} className="fill-s-star text-s-star" aria-hidden />
-                  <span className="font-semibold tabular-nums text-s-ink">{Number((salon as any).average_rating).toFixed(1)}</span>
-                  {(salon as any).review_count != null && Number((salon as any).review_count) > 0 && (
-                    <span className="tabular-nums text-s-accent">({(salon as any).review_count})</span>
+                  <span className="font-semibold tabular-nums text-s-ink">{Number(salon.average_rating).toFixed(1)}</span>
+                  {salon.review_count != null && Number(salon.review_count) > 0 && (
+                    <span className="tabular-nums text-s-accent">({salon.review_count})</span>
                   )}
                 </span>
               )}

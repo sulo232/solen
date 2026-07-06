@@ -22,30 +22,43 @@ Root cause tying the whole initiative together: *you build enforcement, but noth
 - [x] Fixed stale worktree `design-verifier.md` (was coral + not read-only) → synced to correct main copy (B&W/blue, `tools: Read,Grep,Glob,Bash`).
 
 ### A1 — Stale hooks (project)
-- [x] `pre-page-commit-check.sh` — REMOVED. Verified 2026-07-06: absent from ~/.claude/hooks, project hooks, worktree hooks; zero settings.json references.
-- [x] `pre-sweep-check.sh` — RETIRED. Verified 2026-07-06: absent everywhere, zero settings refs; drift coverage lives in `pre-edit-drift-gate.sh`.
-- [x] `pre-done-claim-check.sh` — REMOVED (superseded). Verified absent 2026-07-06. The done-claim gap is now covered properly by the NEW evidence-based `~/.claude/hooks/verify-before-done-gate.py` (Stop; built from the 2026-07-06 retro, ~55 false-done incidents; see _plans/RETRO_2026-07-06.md).
+- [x] `pre-page-commit-check.sh` — REMOVED (verified 2026-07-06: file absent from main + worktree `.claude/hooks`; find over both trees returns nothing).
+- [x] `pre-sweep-check.sh` — RETIRED (verified 2026-07-06: file absent everywhere; `pre-edit-drift-gate.sh` is live and registered).
+- [x] `pre-done-claim-check.sh` — REMOVED, superseded (verified 2026-07-06: file absent; `council-trigger.py` under global Stop). The done-claim gap is additionally covered by the parallel session's evidence-based `~/.claude/hooks/verify-before-done-gate.py` (Stop hook, born from _plans/RETRO_2026-07-06.md). LOOP_SYSTEM.md stale claim corrected in the A5 pass.
 
-### A2 — Skills
-- [x] Retarget 4 skills off `mcp__playwright__*` — verified 2026-07-06: `site-teardown` fully retargeted (claude-in-chrome + `extract-everything.js`, no phantom refs), `fresha-section-capture` + `pixel-ref-collect` carry the TOOL-NAME TRANSLATION banner (2026-07-03), `gemini-visual-check` description retargeted to `mcp__Claude_Preview__preview_screenshot` (2026-07-06). `fable-frontend`'s remaining mention is the intentional trap-list WARNING about phantoms, not a usage.
-- [x] Remove 7 plugin-duplicate skills — verified 2026-07-06: all 7 absent from ~/.claude/skills (`watch` retired to ~/.claude/skills-retired/ last, 2026-07-06; plugin `watch:watch` + `design:*` remain the live copies).
-- [ ] Merge `pixel-ref-collect` → `pixel-spec-auto`; slim `screenshot-spec` to its manual-annotation tier. (IN FLIGHT in the parallel session 2026-07-06 00:22: pixel-spec-auto already carries the merged brand-capture section and screenshot-spec is re-described as the manual tier, registry-verified; leaving the box to that session to close when the pixel-ref-collect dir is retired.)
+### A2 — Skills (DONE 2026-07-06, coder + orchestrator-verified)
+- [x] Retarget `fresha-section-capture` — all `mcp__playwright__browser_*` calls in Steps 2-5 + Edge Cases → `mcp__claude-in-chrome__*`; correction banner added. Verified: grep leaves only the banner's descriptive mention.
+- [x] Retarget `site-teardown` — same retarget; script refs fixed to the only real script `extract-everything.js` (old typography/color steps merged, pipeline renumbered 7→6 steps).
+- [x] Retarget `gemini-visual-check` — `name:` frontmatter added; trigger now `mcp__Claude_Preview__preview_screenshot` / repo site-tester scripts (old phantom trigger could never fire).
+- [x] Merge `pixel-ref-collect` → `pixel-spec-auto` — "Brand-sourced reference collection" section (B1-B7) added with real tool names + description extended; old dir archived to `~/.claude/_archive/skills-2026-07-06/`.
+- [x] Slim `screenshot-spec` — auto-trigger posture removed from frontmatter AND body; now manual-annotation/escalation tier, routing authority = CLAUDE.md binary-triggers table.
+- [x] Remove 6 of the 7 plugin-duplicate skills (`accessibility-review`, `design-critique`, `design-handoff`, `design-system-management`, `user-research`, `ux-writing`) — verified 2026-07-06: none exist in `~/.claude/skills` anymore.
+- [x] Remove the last dupe `~/.claude/skills/watch` — archived to `~/.claude/_archive/skills-2026-07-06/watch` (plugin `watch:watch` is the provider).
+- [x] Clean stale legacy dir `~/.agents/skills/` — INCIDENT + FIX: the three entries in `~/.claude/skills` (huashu-design, screenshot-spec, site-teardown) were SYMLINKS into `~/.agents/skills`, so the coder's archive move left them dangling (SKILL.md unreadable). Orchestrator verification caught it; fixed by deleting the symlinks and moving the real dirs (with the coder's edits intact) INTO `~/.claude/skills` as the single live location. `~/.agents/skills` is now empty. All three skills re-verified live (registry lists them, SKILL.md reads, edits present).
+- [x] Bonus: `fable-frontend` trap-list bullet updated (it claimed the capture skills still script against the phantoms; now records the 2026-07-06 retarget).
 
-### A3 — Memory (92 → ~70, zero info loss)
-- [x] Index 5 orphans into MEMORY.md — verified 2026-07-06: user.md, feedback_no_parallel_agents_frontend, project_search_facts, reference_test_server_pattern all linked in the index.
-- [x] Dead link fixed — verified 2026-07-06: zero `feedback_no_vercel_deploy` references remain in MEMORY.md.
-- [x] `user.md` DNA — verified 2026-07-06: carries the B&W pivot block (updated 2026-06-28) with explicit SUPERSEDES of coral/Anton/Figtree.
-- [ ] 8 merge clusters (mockup 8→2, color 5→2, copy/artifact 4→1, icons 3→1, autonomy/loop 5→2, verify/measure 6→2, links 3→1, killed-features 4→1). Carry verbatim: no-fabrication, never-push, dev-login route, selected-state override.
-- [x] Dropped-Chinese decision — memory `feedback_no_chinese_subagent_prompts.md` existed; REMOVED.md graveyard line added 2026-07-06 via `npm run removed`.
+### A3 — Memory (now 112 files → ~70, zero info loss)
+- [x] Index orphans into MEMORY.md — verified 2026-07-06: files↔index checked BOTH directions, 112 files = 112 index lines, zero orphans, zero dead links.
+- [x] Fix dead link MEMORY.md:55 — verified 2026-07-06: no dead links remain anywhere in the index.
+- [x] Fix `user.md` stale DNA — verified 2026-07-06: user.md already carries B&W pivot, Inter Tight/Inter, Netlify (updated 2026-06-28 note present).
+- [x] Merge clusters — DONE 2026-07-06 (coder, orchestrator-verified): 112 → 90 files, all 9 clusters merged (mockup 7→2, color 4→2, icons 3→1, links 2→1, verify 6→2, autonomy 2-into-1, copy 4→2, killed-features 4→1, tombstones shrunk). Both-direction index check PASS (90 files = 90 index lines, zero dead links). 4 verbatim carries verified in place: no-fabrication (feedback_ui_copy_rules), never-push (feedback_no_auto_push), dev-login (feedback_verify_backend_access), selected-state gray (project_palette_b_w_pivot). Retired essays tombstoned. NOTE: plan said "~70"; the 9 named clusters mathematically yield 90 (22 removed); further consolidation would need merges outside the sanctioned clusters, parked as optional polish.
+- [x] Add the dropped-Chinese decision as a memory — verified: `feedback_no_chinese_subagent_prompts.md` exists + indexed.
+- [x] Add the dropped-Chinese REMOVED.md line — DONE 2026-07-06 via `npm run removed` (committed 9b39fec7d).
 
 ### A4 — Docs
-- [x] `_rules` design tier — verified 2026-07-06: all four (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are ARCHIVED-header tombstones pointing at LOCKFILE/SOURCE/_inventory.
-- [x] SOLEN_LIVE_TRUTH — verified 2026-07-06: live file is an ARCHIVED tombstone (2026-06-28) pointing at the archive copy; the old "principal spec" citations in SOLEN_PATTERNS/SOLEN_UI/KEY_FEATURES/ROADMAP_RULES/LESSONS_LEARNED/SOURCE/CLAUDE.md are gone; the last live authority ref (SOLEN_NEXT.md) repointed to SOURCE/LOCKFILE 2026-07-06.
-- [x] CLAUDE.md success-green — verified 2026-07-06: #16A34A is the rule everywhere, #15803D appears only inside "NOT deep" prohibitions; "generous-blue v2" survives only inside the supersedes note (intentional history).
-- [ ] Bulk-archive `_tasks/` one-shot logs into `_tasks/archive/`; regenerate >30-day DB snapshot. (PARTIAL 2026-07-06: snapshot regenerated 00:11 by the parallel session; 43 .md files still at _tasks/ top level, archive criteria call still open.)
+- [x] Archive retired `_rules` design tier — verified 2026-07-06: all 4 (UI_RULES, solen-color-60-30-10, KEY_FEATURES, UTILITIES_INDEX) are 1-paragraph ARCHIVED stubs pointing at LOCKFILE/SOURCE/_inventory, full copies in `_rules/archive/`.
+- [x] Archive SOLEN_LIVE_TRUTH (now at `_tasks/archive/SOLEN_LIVE_TRUTH.md`) + repoint inbound refs — DONE 2026-07-06: moved to `_tasks/archive/` with banner; the one live "principal spec" framing (`_rules/SOLEN_UI.md:7`) rewritten to SOURCE/LOCKFILE; 7 path mentions in `_rules` + 35 in historical `_tasks` docs repointed. ROUND 2 (loop-reviewer caught the round-1 "verified zero refs" claim as under-scoped, it only covered `_rules`): 2 more live refs found + fixed (`_design-system/SOURCE.md:21`, which also cited a nonexistent archive filename, now points at the real `_tasks/archive/SOLEN_LIVE_TRUTH.md`; `app/[locale]/_components/primitives/index.ts:11` JSDoc now cites the archive path + LOCKFILE as current law). Re-verified repo-wide (grep over _rules, _design-system, _plans, CLAUDE.md, app, lib, components-legacy, scripts): zero hits outside archive dirs.
+- [x] Fix project CLAUDE.md success-green contradiction — verified 2026-07-06: current text already states normal green `#16A34A`, `#15803D` appears only inside NOT-clauses, "generous" appears only inside the supersedes-note. Fixed in an earlier round.
+- [x] Bulk-archive `_tasks/` one-shot .md logs — DONE 2026-07-06: 30 zero-inbound-ref files moved to `_tasks/archive/`; 10 kept in root with live referrers documented (INCOMPLETE_FEATURES, APPLE_PAY_SETUP + REFUND_APPEAL_PLAN + CUSTOMER_FIX_PROGRESS + WALKIN_DASHBOARD_NEEDS cited from app/lib code, SOLEN_DESIGN 10 referrers, CONTRADICTION_AUDIT via CANON.md, SOLEN_NEXT/SYSTEM_AUDIT/V2_REBUILD_LOG via plans+rules). Non-md scripts untouched.
+- [x] Regenerate >30-day DB snapshot — verified 2026-07-06: `_inventory/_db-snapshot.json` + SURFACE.* regenerated today (Jul 6 00:00).
 
-### A5 — System-health check (the meta-fix)
-- [x] Built + tested + wired 2026-07-06: `scripts/check-invariants.mjs` (`npm run check:invariants`; checks hooks wired-vs-disk both directions, memory index orphans + dead links, doc paths alive from CLAUDE.md/ACTIVE.md; exit 1 on FAIL) + `.github/workflows/invariants.yml` (CI, `--repo-only`) + `~/.claude/hooks/invariants-nudge.py` (SessionStart, daily throttle, wired in settings.json). Proof it works: first full run immediately caught live drift (memory orphans + a dead index link from the in-flight memory-merge in the parallel session). Born alongside the 2026-07-06 retro (_plans/RETRO_2026-07-06.md).
+### A5 — System-health check (DONE 2026-07-06, coder + orchestrator-verified)
+- [x] Built `~/.claude/hooks/system-health-check.py`: CLI `--report` (exit 1 on violations, orchestrator-verified exit 1) + SessionStart hook mode (compact one-line additionalContext, always exit 0, fail-open). Asserts all 4 invariants: hook wiring both scopes w/ `SHELVED.txt` manifest (seeded: plan-archive.sh, sim-shot.sh) + reverse missing-path check; memory index both directions; stale flags >24h (report-only, never deletes); phantom strings (mcp__playwright in skills, mcp__claude_ai_ in settings).
+- [x] Self-tested per rule 12.5 BEFORE registering: seeded orphan hook detected; seeded unindexed memory file detected; clean-run honest (current true state: 2 orphan hooks from a CONCURRENT session (rejection-streak-escalator.py, repeat-mistake-detector.py, appeared ~00:41, left untouched on purpose) + 18 stale flags = 20 violations, exit 1); hook mode exit 0 verified twice (coder + orchestrator).
+- [x] Registered under global SessionStart (settings.json re-validated with json.tool by both coder and orchestrator).
+- [x] Bonus (same pass): removed the 5 dead `mcp__claude_ai_*` permission allowlist entries from global settings.json (0 remain); LOOP_SYSTEM.md stale claims corrected (pre-done-claim-check bullet dated correction at :80, allowlist item marked RESOLVED at :90).
+- [x] PARALLEL SESSION (same day, merged 2026-07-06): repo-level `scripts/check-invariants.mjs` (`npm run check:invariants`, CI via .github/workflows/invariants.yml) + `~/.claude/hooks/invariants-nudge.py`. TWO complementary checkers now exist: the .mjs covers repo docs/paths + CI, the .py covers global hook wiring/memory/flags/phantom strings at SessionStart. Overlap is partial; merging them into one is optional polish, noted in HANDOFF_2026-07-06.md.
+
 
 ---
 

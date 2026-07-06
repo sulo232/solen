@@ -8,7 +8,7 @@
  * - V2-D15-4 flat-pill discipline (no gradients, no inset gloss, no italic)
  *
  * Visual reference: `public/solen-v2-primitives.html` (locked V2-D16 2026-05-08).
- * Spec: `_tasks/SOLEN_LIVE_TRUTH.md` §F.1.
+ * Spec: `_tasks/archive/SOLEN_LIVE_TRUTH.md` §F.1 (ARCHIVED pre-B&W-pivot spec; current token law: `_design-system/LOCKFILE.md`).
  *
  * Composition pattern: each form field uses
  *   <FieldLabel> + <{Primitive}> + <FieldHelper>

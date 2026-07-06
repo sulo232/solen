@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
   params,
@@ -76,6 +77,7 @@ export default async function Page({
       jsonLd = generateCategoryListSchema("nails", salons, loc);
     }
   } catch { /* graceful degradation */ }
+  const filterAvailability = await getFilterAvailability();
 
   return (
     <>
@@ -96,7 +98,7 @@ export default async function Page({
       {/* V3-D350 (2026-05-28): unified Airbnb-style search is the default render
           (no flag). CategoryHero + SEO above/below slots dropped unconditionally;
           metadata + JSON-LD above are KEPT (the real SEO). */}
-      <SearchTemplate locale={loc} serviceFilter="nails" />
+      <SearchTemplate locale={loc} serviceFilter="nails" filterAvailability={filterAvailability} />
     </>
   );
 }

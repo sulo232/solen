@@ -143,7 +143,7 @@ Global CLAUDE.md, LOOP_SYSTEM.md; _design-system: LOCKFILE, SOURCE, CANON, COMPO
 ### Dead-but-cited (highest priority)
 | Doc | Verdict | Why |
 |---|---|---|
-| _tasks/SOLEN_LIVE_TRUTH.md | **ARCHIVE + repoint 7 refs** | Retired V2 (teal/Cooper BT) still cited as "principal spec" by SOLEN_PATTERNS, SOLEN_UI, KEY_FEATURES, ROADMAP_RULES, LESSONS_LEARNED, SOURCE, CLAUDE.md. An agent follows the pointer into dead truth. |
+| _tasks/archive/SOLEN_LIVE_TRUTH.archived.md | **ARCHIVE + repoint 7 refs** | Retired V2 (teal/Cooper BT) still cited as "principal spec" by SOLEN_PATTERNS, SOLEN_UI, KEY_FEATURES, ROADMAP_RULES, LESSONS_LEARNED, SOURCE, CLAUDE.md. An agent follows the pointer into dead truth. |
 | _rules/UI_RULES.md | **ARCHIVE / gut to pointer** | Retired Terracotta #E8624A + cream + dark-mode-default, framed "must not be broken." |
 | _rules/solen-color-60-30-10.md | **ARCHIVE** | Retired Sunset-Orange + Teal palette. |
 | _rules/KEY_FEATURES.md, UTILITIES_INDEX.md | **ARCHIVE / MERGE→_inventory** | CLAUDE.md itself names these "rotted," replaced by generated SURFACE+STATUS. |

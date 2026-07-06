@@ -4,7 +4,7 @@
 
 > ⚠️ PALETTE/COLOR SUPERSEDED (Design Language v2, 2026-06-09): the Earthen Wellness Light palette (emerald/terracotta/cream) and the LIVE_TRUTH token refs below are RETIRED. Current Solen = B&W chrome + blue #276EF1 INTERACTIVITY accent (links/tabs/secondary & ghost buttons/active states, used GENEROUSLY; OFF non-interactive text) + ONE ink #0A0A0A commit CTA, WHITE-first surfaces (cool-grey sunken #F4F4F5, NO cream), success FOCAL = deep green #15803D disc + white check, Inter Tight + Inter. The universal UX PRINCIPLES below stay valid — swap every emerald/terracotta/cream/10%-cap reference for the current palette. Canonical: CANON.md §0 + LOCKFILE §1/§1.5.
 
-> Principles checklist every agent (Claude Code, Claude Design, Cursor, fresh sessions) MUST walk through BEFORE producing any UI/UX output — new screen, component, redesign, layout change, color tweak, copy update. Forces a principle-check so output isn't generic AI slop. Universal UI/UX principles live here; Solen-specific tokens (palette, fonts, retired patterns) live in `_tasks/SOLEN_LIVE_TRUTH.md` (principal) + operational pattern playbook in `_rules/SOLEN_PATTERNS.md`. Both LIVE_TRUTH + this skill are required reading before shipping pixels. Historical Q-lock context: `_tasks/archive/SOLEN_DESIGN.archived.md` §20.
+> Principles checklist every agent (Claude Code, Claude Design, Cursor, fresh sessions) MUST walk through BEFORE producing any UI/UX output — new screen, component, redesign, layout change, color tweak, copy update. Forces a principle-check so output isn't generic AI slop. Universal UI/UX principles live here; Solen-specific tokens (palette, fonts, retired patterns) live in `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) + operational pattern playbook in `_rules/SOLEN_PATTERNS.md`. Both SOURCE.md/LOCKFILE.md + this skill are required reading before shipping pixels. Historical Q-lock context: `_tasks/archive/SOLEN_DESIGN.archived.md` §20.
 
 > **Hard stop**: before writing a single line of UI code or generating a mockup, walk through every principle below and answer how your design satisfies it. If you can't answer one, the design isn't ready. Don't output yet.
 
@@ -16,7 +16,7 @@ Solen is in active design overhaul. Multiple agents (Claude Code, Claude Design,
 
 This file is the **mental checklist every agent runs before producing UI**. It's not a rulebook. It's a forcing function: articulate *why* your design works before you commit to pixels.
 
-For Solen-specific locks (token hex, fonts, retired patterns, glass rules) → `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal source of truth. This skill sits *on top* of that: universal principles, not tokens. (The old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.)
+For Solen-specific locks (token hex, fonts, retired patterns, glass rules) → `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal source of truth. This skill sits *on top* of that: universal principles, not tokens. (The old V2 `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` is archived, not authoritative.)
 
 ---
 
@@ -328,7 +328,7 @@ A change to a primitive should propagate up. A change to a composite should neve
 
 | File | When |
 |---|---|
-| `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` | Always. Principal source of truth for tokens, retired patterns, locked decisions. (Old V2 `_tasks/SOLEN_LIVE_TRUTH.md` is archived, not authoritative.) |
+| `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` | Always. Principal source of truth for tokens, retired patterns, locked decisions. (Old V2 `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` is archived, not authoritative.) |
 | `_rules/SOLEN_PATTERNS.md` | Always. Operational playbook — every shipped V3 pattern with file path + Fresha translation rules. |
 | Live preview | `npm run dev` → `http://localhost:3000/de` for the current V3 visual reference. |
 | `_rules/I18N_ROUTING.md` | Before any copy or layout — text expands ~30% in DE/FR. |
