@@ -76,7 +76,7 @@ export default async function Page({
     if (salons?.length) {
       jsonLd = generateCategoryListSchema("coiffeur", salons, loc);
     }
-  } catch (e) { void e; /* graceful degradation, page renders without JSON-LD */ }
+  } catch { /* graceful degradation, page renders without JSON-LD */ }
   const filterAvailability = await getFilterAvailability();
 
   return (
