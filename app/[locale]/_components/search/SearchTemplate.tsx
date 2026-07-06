@@ -120,6 +120,13 @@ export interface SearchTemplateProps {
   serviceFilter?: SalonCategory | null;
   /** Optional pre-applied city slug (for /[city]/coiffeur style routes). */
   cityFilter?: CitySlug | null;
+  /** V3-D454 (2026-07-06): whether the Angebote (deals) and Fuer-wen (gender)
+   *  filter surfaces have live data to discriminate on right now. Resolved
+   *  server-side via `getFilterAvailability()` (lib/search/filter-availability.ts)
+   *  and passed down from every SearchTemplate mount. Defaults to `{ deals: true,
+   *  gender: true }` (both shown) so a mount that omits this prop keeps the prior
+   *  behavior instead of silently hiding a filter. */
+  filterAvailability?: { deals: boolean; gender: boolean };
   /** Breadcrumb chain — last item = current page. */
   breadcrumb?: { label: string; href?: string }[];
   /** Compact hero block (category routes); /search omits. */
@@ -393,6 +400,7 @@ export default function SearchTemplate({
   locale,
   serviceFilter = null,
   cityFilter = null,
+  filterAvailability = { deals: true, gender: true },
   breadcrumb,
   hero = null,
   aboveSlot = null,
@@ -479,10 +487,18 @@ export default function SearchTemplate({
     { key: "sort", label: sort && sort !== "rating" ? sortLbl : t("sectionSort"), active: !!sort && sort !== "rating" },
     { key: "open_now", label: t("pillOpenNow"), active: openNow },
     { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
-    { key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender },
+    // V3-D454: hidden while no active service can discriminate by gender, UNLESS a
+    // stale link already has ?gender= set (the user must still see + be able to clear it).
+    ...(filterAvailability.gender || !!gender
+      ? [{ key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender }]
+      : []),
     { key: "rating", label: minRating ? `${minRating}` : t("sectionRating"), active: minRating != null },
     { key: "amenities", label: activeAmenities.length ? t("pillAmenitiesCount", { count: activeAmenities.length }) : t("sectionAmenities"), active: activeAmenities.length > 0 },
-    { key: "deals", label: t("sectionDeals"), active: deals },
+    // V3-D454: hidden while 0 listed salons have a real deal, UNLESS a stale link
+    // already has ?deals=true set (same active-param exception as gender above).
+    ...(filterAvailability.deals || deals
+      ? [{ key: "deals", label: t("sectionDeals"), active: deals }]
+      : []),
   ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
@@ -2025,11 +2041,14 @@ export default function SearchTemplate({
         onMinRatingChange={(value) => updateParam("min_rating", value)}
         gender={gender}
         onGenderChange={(value) => updateParam("gender", value)}
+        // V3-D454: hide-while-empty flags, same active-param exception as the pill row.
+        showGender={filterAvailability.gender || !!gender}
         amenityOptions={amenityOptions}
         amenities={activeAmenities}
         onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
         deals={deals}
         onDealsToggle={() => toggleBooleanParam("deals", deals)}
+        showDeals={filterAvailability.deals || deals}
         onReset={() => {
           // Clear every filter param the sheet/chips write. sort resets to the
           // default (rating) by deleting it.

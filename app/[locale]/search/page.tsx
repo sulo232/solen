@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { buildAlternates } from "@/lib/seo";
+import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -36,6 +37,7 @@ export default async function SearchPage({ params }: Props) {
   // Server consumes `params` only; searchParams are read client-side via
   // useSearchParams inside SearchTemplate so URL filter chips stay live.
   const { locale } = await params;
+  const filterAvailability = await getFilterAvailability();
 
   return (
     <main className="min-h-screen bg-s-bg-base">
@@ -43,6 +45,7 @@ export default async function SearchPage({ params }: Props) {
         <SearchTemplate
           locale={locale}
           serviceFilter={null}
+          filterAvailability={filterAvailability}
           breadcrumb={[
             { label: "Solen", href: `/${locale}` },
             { label: "Suche" },

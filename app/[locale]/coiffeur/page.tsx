@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
   params,
@@ -75,7 +76,8 @@ export default async function Page({
     if (salons?.length) {
       jsonLd = generateCategoryListSchema("coiffeur", salons, loc);
     }
-  } catch { /* graceful degradation — page renders without JSON-LD */ }
+  } catch (e) { void e; /* graceful degradation, page renders without JSON-LD */ }
+  const filterAvailability = await getFilterAvailability();
 
   return (
     <>
@@ -98,7 +100,7 @@ export default async function Page({
           dropped unconditionally; the page leads with the search + 2-col card
           grid (the approved mockup — no big category image, like Uber/Fresha).
           generateMetadata + the JSON-LD above are KEPT (the real SEO). */}
-      <SearchTemplate locale={loc} serviceFilter="coiffeur" />
+      <SearchTemplate locale={loc} serviceFilter="coiffeur" filterAvailability={filterAvailability} />
     </>
   );
 }
