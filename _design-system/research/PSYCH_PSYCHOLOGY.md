@@ -1,8 +1,8 @@
 # Research compendium: UI/UX user psychology (fleet 2a, 2026-07-07)
 
-<!-- exists-check: net-new, part of _design-system/research/ evidence base (workstream 11); sibling of VIDEO_UXPEAK_PSYCHOLOGY.md -->
+<!-- exists-check: net-new, part of _design-system/research/ evidence base (workstream 11) -->
 
-Produced by 20 sonnet web-researchers (one subtopic each) + 1 synthesizer, workflow wf_7d6fab6f-13a. 147 raw findings. Claims here carry the synthesizer's ranking; cross-check contested items against the video claim-check file.
+Produced by 20 sonnet web-researchers (one subtopic each) + 1 synthesizer, workflow wf_7d6fab6f-13a (20/20 researchers returned, 147 raw findings). Cross-check contested items against VIDEO_UXPEAK_PSYCHOLOGY.md claim-check.
 
 # UI/UX Psychology Research Synthesis for Solen.ch
 
