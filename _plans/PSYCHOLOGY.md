@@ -8,10 +8,11 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [x] 1b video: transcript extracted (auto-captions flattened, ~2115 words)
 - [x] 1c video: 87 frames extracted (1 per 8s, 640px)
 - [x] 1d video: analysis brief written (_design-system/research/VIDEO_UXPEAK_PSYCHOLOGY.md; transcript + all 87 frames read by delegated subagents; claim-check fleet dispatched)
-- [ ] 2a fleet: UI/UX user psychology , RUNNING (workflow wf_7d6fab6f-13a, 20 sonnet researchers in waves of 4)
+- [x] 2a fleet: UI/UX user psychology DONE (20/20 researchers, 147 findings)
   - [x] 2a-i 20 researchers dispatched
-  - [ ] 2a-ii synthesis returned
-  - [ ] 2a-iii folded into compendium file
+  - [x] 2a-ii synthesis returned
+  - [x] 2a-iii folded into _design-system/research/PSYCH_PSYCHOLOGY.md
+- NOTE 2026-07-07: run wf_7d6fab6f-13a hit a server-side rate-limit storm mid-run (conversion 17-20, all retention, all business researchers failed with "server temporarily limiting"). Resuming same script with resumeFromRunId after cooldown; psychology + conversion 1-16 are cache hits. The empty-input business "synthesis" stub from the broken run is discarded.
 - [ ] 2b fleet: conversion , RUNNING (same workflow, sequential after 2a)
   - [x] 2b-i 20 researchers dispatched (queued in workflow)
   - [ ] 2b-ii synthesis returned
