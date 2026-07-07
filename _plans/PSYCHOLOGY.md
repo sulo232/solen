@@ -43,6 +43,14 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [x] 5d-ii memory: project_psychology_system.md written, project_fable_skills.md updated to five, MEMORY.md index line added
 - [x] 6 commits per verified chunk (plan/video/claim-check/4 compendia/PSYCHOLOGY.md/skill+hook/audit+changelist); closed by re-reading the original dictated message.
 
+## Enforcement follow-on (2026-07-07, owner: "AIs take suggestions but wont do it acc or forget as contexts pack up")
+Turned the checkable laws from advice into runtime enforcement, because docs/skills get forgotten as context packs (proven: the audit found the SAME bare-rating miss on 5 surfaces despite law 6 being written down).
+- [x] E1 gate `.claude/hooks/pre-edit-psychology-gate.py` , PreToolUse Edit/Write/MultiEdit, BLOCKS net-new law-6 (rating without count) + law-9 (hardcoded count literal like "14 Salons"). Net-new only, scoped to app/components tsx, fail-open, `psych-ok:`/skip-flag escapes.
+- [x] E2 self-tested 13 cases before wiring (rule 12.5): P1a/P1b/P2 block + pass, net-new allow (size change on already-bare), 14->15 allow, .ts scope, mockup scope, escape, decorative-star, singular "1 Salon", multiline, MultiEdit, malformed-JSON fail-open, skip-flag. All correct.
+- [x] E3 registered in .claude/settings.json (Edit + Write + MultiEdit).
+- [x] E4 loop-reviewer.md (global) gained a standing psychology lens for the UN-gateable judgment laws (peak-end, never-start-at-zero, guest-first, comparability, effort-over-delight, loss-framing), conditional on _design-system/PSYCHOLOGY.md existing.
+- [x] E5 documented: PSYCHOLOGY.md Enforcement section, fable-psychology skill, memory project_psychology_system.md.
+
 ## Constraints honored
 - Researcher/synthesis subagents: sonnet/haiku only (no opus, gate-enforced). Fan-out in waves of max 4 concurrent (rate-limit law in fable-execution).
 - Exists-check ran 2026-07-07: "psychology" 0 hits, "conversion"/"retention" only unrelated DB column/function. No prior psych system to extend , this is net-new, integrating INTO the existing design-system docs.
