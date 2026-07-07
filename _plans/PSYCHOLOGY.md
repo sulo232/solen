@@ -35,12 +35,12 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md
 - [ ] 4a canonical _design-system/PSYCHOLOGY.md (principles -> Solen laws, cross-linked to LOCKFILE / SOURCE / MOTION / TASTE_LOG)
 - [ ] 4b prioritized change list (motion timing, defaults/preselection, what we show) , visual changes queued as MOCKUP-FIRST candidates, NOT applied in this workstream
-- [ ] 5a new skill (sibling of fable-*) holding the psychology basis
-- [ ] 5b hook wiring so it auto-fires on design / conversion / retention work
-- [ ] 5c-i hook self-test: one should-fire input passes
-- [ ] 5c-ii hook self-test: one should-NOT-fire input stays silent
-- [ ] 5d-i global CLAUDE.md rule-14 list gains the new skill
-- [ ] 5d-ii memory entry written + MEMORY.md index line
+- [x] 5a new skill: ~/.claude/skills/fable-psychology/SKILL.md (router over _design-system/PSYCHOLOGY.md; registered, visible in skill list)
+- [x] 5b hook wiring: `psychology` category added to fable-skill-trigger.py (keywords: conversion/retention/churn/engagement/loyalty/defaults/urgency/social proof/notifications/... EN+DE)
+- [x] 5c-i hook self-test PASS: "improve retention on the confirmation screen so people rebook" fires fable-psychology (+frontend)
+- [x] 5c-ii hook self-test PASS: "rename the README heading and correct the typo" stays fully silent
+- [x] 5d-i global CLAUDE.md rule 14 updated (five skills, new bullet)
+- [x] 5d-ii memory: project_psychology_system.md written, project_fable_skills.md updated to five, MEMORY.md index line added
 - [ ] 6 commits per verified chunk; close by re-reading the original message
 
 ## Constraints honored
