@@ -22,8 +22,19 @@ Prior art (rule 12): [RETRO_2026-07-06.md](RETRO_2026-07-06.md) already mined 34
   - [x] 3b. Project CLAUDE.md , DONE: best-maintained file; add 200-byte precedence footnote naming dangerous _rules files
   - [x] 3c. LOOP_SYSTEM.md + _rules/* + memory index , DONE: CODE_SAFETY 4/6/14 dangerous, SYSTEMS.md 3/7 routes 404, Rule 32 dead in 2 files, ~35-40KB correctable; memory 91/91 clean, 1 stale pointer
 - [x] 4. Proposals mapped (P1-P14 in [META_AUDIT_REPORT.md](META_AUDIT_REPORT.md) section 5, each tagged fix/merge/new-hook/skill-edit; no duplicates , every proposal names the existing thing it extends)
-- [ ] 5. ASK owner per proposal: hook (auto-fires) vs skill (on-demand) vs skip , ASKED 2026-07-07 (4 questions covering P1-P14); BLOCKER: owner answers
-- [ ] 6. Implement approved items , HARD-BLOCKED by owner order: "before you actually implement... you have to ask me" (box 5 answers). Will be atomized into one box per approved proposal ONCE the owner picks hook-vs-skill per item; cannot atomize earlier because the item list IS the audit output.
+- [x] 5. ASK owner per proposal , ANSWERED 2026-07-07: coder git-guard YES as hook; pkill-guard SKIPPED (owner); wrong-surface readback SKIPPED (owner); verify-early = HOOK auto-fires; hook maintenance = FULL batch; docs dangerous + doc trims + skill fixes = ALL yes; llm-council keeps opus as documented exception (owner left it unselected)
+- [x] 6. Implement approved items , ALL 8 workflow tasks reviewer-PASSed (5 in round 1, 3 in round 2; run wf_24a77c5d-67b)
+  - [x] 6a. P1 false-positive fixes , notification guard live (spot-verified: this session's own hook misfires stop), no-verbose "Zoom (max 200%)" passes, design-verify/mockup-visual/reinvent/unfinished-batch tuned
+  - [x] 6b. P2 worktree-path fixes in link-gate.py + finish-autonomously-gate.py (cwd fallback, tested vs temp repo)
+  - [x] 6c. P12 dangerous docs , grep-verified: 0 "ALWAYS push" in CODE_SAFETY, SYSTEMS routes all resolve, /discover only as historical note, KEY_FEATURES restored + B2B_WORKFLOWS_IDEAS.md created
+  - [x] 6d. P10+P11 skills , site-tester/emil-design-eng phantoms gone (remaining mentions are explicit "does not exist" corrections), huashu SKIP clause + Chinese gate live (visible in session skill list), opus exception documented
+  - [x] 6e. P13 trims , LOOP_SYSTEM 9K->5.7K, SOLEN_PATTERNS 20K->8K, SOLEN_UI 41K->35K, AGENT_COORDINATION split to archive, SECURITY re-review stamped, precedence footnote added, memory pointer fixed
+  - [x] 6f. P3 consolidations , copy-lint-gate.py + mockup-content-gate.py live, 12 files in _retired/, settings valid, health-check hook-wiring=0
+  - [x] 6g. P4 hygiene , 3 orphan flags deleted, sweep extended to *-skip/*-ok >48h (stale flags 19->6), ledger rotation, collision-guard synthetic test run, gemini/parity scopes widened, exists-guard weighting
+  - [x] 6h. P9+P14 , SKILL REFS invariant live in --report (0 violations), council.workflow escalates on all-lens failure
+  - [x] 6i. P5 coder-git-guard.py live + wired (coder checkout DENIED / status allowed / main-thread unaffected, tested)
+  - [x] 6j. P8 verify-tooling-preflight.py + gemini-auto-fire.py live + wired (gemini-check-gate untouched as backstop)
+- [x] 7-close. Original dictation re-read; all asks delivered or owner-disposed. Parked (surfaced in final report): browser-verify-gate + site-tester MCP found STRANDED on claude/stoic-northcutt-3d001c (never merged; memory corrected); owner skips: pkill guard, wrong-surface readback, opus switch.
 - [ ] 7. Close: re-read original dictation, tick every box, report once
 
 ## Parked / notes

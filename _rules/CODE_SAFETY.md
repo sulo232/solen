@@ -38,18 +38,16 @@ ls -la app/api/some-endpoint/route.ts
 - Each commit message must reference the sub-phase: `"phase 1.1: fix layout overflow"`
 - After EACH commit: `npm run build` must pass BEFORE pushing
 
-## Rule 4: BUILD BEFORE COMMIT, PUSH AFTER BUILD — ALWAYS PUSH
+## Rule 4: BUILD BEFORE COMMIT, NEVER PUSH (current law, 2026-07-03)
 ```bash
 # This exact sequence. Every time. No exceptions.
 npm run build           # Step 1: MUST pass
 git add -A              # Step 2: only after build passes
 git commit -m "..."     # Step 3: descriptive message with phase number
-git push origin main    # Step 4: ALWAYS push after commit — never ask, just push
-# Step 5: Check Vercel deployment via MCP (list_deployments) — must show READY
-# Step 6: If errors → fix and push again. If READY → done.
+# Step 4: STOP. NEVER git push. The owner pushes manually.
 ```
-If `npm run build` fails → **DO NOT commit. DO NOT push. Fix the error first.**
-**IMPORTANT**: After executing a roadmap or task, ALWAYS commit AND push without asking. Do not stop to ask "should I push?" — the answer is always yes. Then verify the Vercel deployment status and fix any errors.
+If `npm run build` fails → **DO NOT commit. Fix the error first.**
+**IMPORTANT**: NEVER run `git push`, and never ask "should I push?" or mention pushing in the report. Commit often and autonomously (each verified chunk its own commit); the owner is the only one who pushes. Deploy is **Netlify**, auto-triggered from `main` on the owner's push; there is no Vercel step here.
 
 ## Rule 5: FOLLOW THE ROADMAP LITERALLY
 When executing a roadmap from `_tasks/`:
@@ -60,15 +58,8 @@ When executing a roadmap from `_tasks/`:
 - If the roadmap does NOT mention a component/feature → do NOT add it
 - **NEVER** ad-lib features, components, or API calls that aren't in the roadmap
 
-## Rule 6: CHECK VERCEL AFTER EVERY PUSH
-After every `git push`:
-```bash
-sleep 30
-npx vercel ls 2>&1 | head -5
-# Must show "● Ready" with a recent timestamp
-# If "● Error" → read logs, fix, and push again
-```
-Then check the live page:
+## Rule 6: NO DEPLOY-WAIT RITUAL (current law, 2026-07-03, historical: this rule formerly told the agent to sleep and poll Vercel after every push)
+This agent never pushes (Rule 4), so there is no post-push wait step to run here. Deploy is **Netlify**, auto-triggered from `main` when the owner pushes; Netlify's own build log is the deploy source of truth, not a local sleep/poll loop. If you need to sanity-check the LIVE site after the owner has pushed and deployed, a plain curl is enough:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 # Must return 200 or 307
@@ -92,10 +83,10 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 - If you think the existing component is wrong → STOP and ask the user before replacing it
 
 ## Rule 9: VERIFY PREVIEW ENVIRONMENTS
-> **INCIDENT**: Preview deployments crashed because `NEXT_PUBLIC_SUPABASE_URL` was only set for Production in Vercel, not Preview. The middleware tried to init Supabase with `undefined` → instant `MIDDLEWARE_INVOCATION_FAILED`.
+> **INCIDENT (historical, pre-Netlify-migration)**: Preview deployments crashed because `NEXT_PUBLIC_SUPABASE_URL` was only set for Production in Vercel, not Preview. The middleware tried to init Supabase with `undefined` → instant `MIDDLEWARE_INVOCATION_FAILED`. Deploy is Netlify now; the same class of bug applies to Netlify's Production/Deploy Preview/Branch deploy contexts.
 
-- When adding NEW environment variables, remind the user to set them for **ALL environments** (Production + Preview + Development) in Vercel
-- If a build works locally but preview fails → check if the env vars are set for Preview in Vercel
+- When adding NEW environment variables, remind the user to set them for **ALL environments** (Production, Deploy Previews, Branch deploys) in Netlify
+- If a build works locally but a deploy preview fails → check if the env vars are set for that context in Netlify
 - **NEVER** assume an env var is available — always use fallbacks or early-exit checks:
   ```typescript
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -165,15 +156,14 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 
 ## Rule 14: CODE REVIEW PROTOCOL
 
-Before EVERY push:
-1. `npm run build` — must pass
+Before EVERY commit (this agent never pushes, see Rule 4):
+1. `npm run build` (must pass; only when explicitly asked to build)
 2. `npx tsc --noEmit` — zero type errors
 3. `git diff --stat` — review changed files, ensure no unintended changes
 
-After EVERY push:
-1. Wait 60s for Vercel deploy
-2. `curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/` — must be 200 or 307
-3. Curl critical routes: /de, /de/coiffeur, /de/barbershop, /de/dashboard
+There is no "after every push" step for this agent (never pushes). Once the owner has pushed and Netlify has deployed, a plain live-site check is enough:
+1. `curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/` (must be 200 or 307)
+2. Curl critical routes: /de, /de/coiffeur, /de/barbershop, /de/dashboard
 
 After ALL phases complete:
 1. Visual browser check on every new page
@@ -194,7 +184,7 @@ After ALL phases complete:
 
 ## Rule 25: NEVER USE `getUser()` IN API ROUTES OR MIDDLEWARE
 
-> **CONTEXT**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from Vercel Edge → Supabase to validate the JWT. This call **times out** on Vercel's edge network, returning `user: null` even when the session cookie is valid.
+> **CONTEXT (historical, bug originally found on the old Vercel hosting)**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from the edge runtime to Supabase to validate the JWT. On the old Vercel Edge network this call **timed out**, returning `user: null` even when the session cookie is valid. The same risk (a network call that can time out on ANY edge runtime, Netlify included) is why the rule stays live regardless of host.
 
 **ALWAYS use `getSession()`** — it reads the JWT directly from cookies with **zero network calls**.
 
@@ -203,7 +193,7 @@ After ALL phases complete:
 const { data: { session } } = await supabase.auth.getSession();
 const user = session?.user ?? null;
 
-// BANNED — makes network call that TIMES OUT on Vercel Edge:
+// BANNED (makes a network call that can time out on the edge runtime):
 const { data: { user } } = await supabase.auth.getUser();
 ```
 

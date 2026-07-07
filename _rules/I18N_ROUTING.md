@@ -10,19 +10,20 @@
 
 ### Rule 32: ONE DISCOVERY PAGE — NO PARALLEL CATEGORY ROUTES
 
-> **INCIDENT**: `/discover/nails` existed as a separate page with its own layout, fragmenting navigation.
+> **INCIDENT**: `/discover/nails` existed as a separate page with its own layout, fragmenting navigation. **RENAMED (2026-07-03)**: the discovery feed route is now `/[locale]/inspo` ("Inspo"), not `/[locale]/discover`. The backend/internal naming ("discovery") is unchanged; only the URL and product-facing name moved. Do not recreate a `/discover` route.
 
-- The discovery experience MUST live at a single route: `/[locale]/discover`.
-- **NEVER** create `/[locale]/discover/[category-name]` as an independent page with its own layout.
-- Category separation is handled via `?category=VALUE` query params + in-place tab switching via `CategoryTabBar.tsx`.
-- If a category needs special content sections, extend `discover/page.tsx` WITHIN the same page — do not create a new route.
-- Adding a new beauty vertical? Add a tab to `DISCOVERY_CATEGORIES` in `components/discovery/CategoryTabBar.tsx` — NOT a new route.
-- Old category-specific discovery routes MUST redirect using `permanentRedirect()` → `/discover?category=X`.
+- The discovery experience MUST live at a single route: `/[locale]/inspo`.
+- **NEVER** create `/[locale]/inspo/[category-name]` as an independent page with its own layout.
+- Category separation is handled via `?category=VALUE` query params + in-place tab switching (or the progressive drill-down filter where applicable).
+- If a category needs special content sections, extend `inspo/page.tsx` WITHIN the same page: do not create a new route.
+- Adding a new beauty vertical? Add it to the existing category config used by the Inspo feed, NOT a new route.
+- Old category-specific discovery routes MUST redirect using `permanentRedirect()` → `/inspo?category=X`.
 
 ```bash
-# Verify no parallel category discovery routes exist:
-ls app/[locale]/discover/
-# Expected: page.tsx, error.tsx, [id]/ only.
+# Verify no NEW parallel category discovery routes exist:
+ls "app/[locale]/inspo/"
+# Current state (2026-07-07): page.tsx, error.tsx, loading.tsx, [id]/, board/, saved/ are structural sub-routes (item detail, board detail, saved list), NOT category pages.
+# nails/ is a pre-existing exception (a category-specific route with its own page.tsx) that predates this rule check; it is not sanctioned by this rule and should not be used as precedent for adding more category routes.
 ```
 
 ### Rule 33: ROUTER REFRESH FOR COOKIE PREFERENCES

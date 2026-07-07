@@ -1,5 +1,7 @@
 # Solen.ch Security Rules
 
+> Re-reviewed 2026-07-07, content verified against live code.
+
 ## 11. 🔒 SECURITY RULES (MANDATORY — ALL API ROUTES)
 
 > **CONTEXT**: A full security audit on 2026-03-17 found zero rate limiting, zero input validation, exposed credentials in git, and disabled RLS on critical tables. These rules exist to prevent security regressions.

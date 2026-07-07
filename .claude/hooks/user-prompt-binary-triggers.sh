@@ -20,6 +20,15 @@ set -uo pipefail
 INPUT=$(cat)
 PROMPT=$(echo "$INPUT" | jq -r '.prompt // empty' 2>/dev/null)
 [[ -z "$PROMPT" ]] && exit 0
+
+# NOTIFICATION GUARD (confirmed live 3x, 2026-07-06/07): background
+# <task-notification> blocks and "[SYSTEM NOTIFICATION ...]" text are NOT
+# owner messages, but land in "prompt" the same way. Skip silently so this
+# hook never injects trigger context onto a background event.
+if echo "$PROMPT" | grep -qE '^[[:space:]]*(<task-notification>|\[SYSTEM NOTIFICATION)' ; then
+  exit 0
+fi
+
 P=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
 
 TRIGGERS=()

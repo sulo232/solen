@@ -1,10 +1,8 @@
 # Solen UI — Think Before You Output
 
-> RETIRED PALETTE WARNING (2026-07-03): warm-ink #1A1209, brand teal, and any warm-palette guidance below are HISTORICAL. Current law: B&W pivot, ink #0A0A0A, cool hairline #E4E4E7, blue #276EF1 sparse on small clickable bits only. Canon: project CLAUDE.md taste rules + _design-system/LOCKFILE.md. Structural principles below stay live.
+> RETIRED PALETTE WARNING (2026-07-03, consolidated from two prior warning banners): earlier warm-palette / teal / terracotta / cream guidance in this file is HISTORICAL. Current law: B&W pivot, ink `#0A0A0A`, white-first surfaces with cool sunken `#F4F4F5`, blue `#276EF1` sparse on small clickable bits only, success FOCAL = deep green `#15803D` disc + white check, Inter Tight + Inter. The universal UX PRINCIPLES below stay live; swap every retired-palette reference for the current palette. Canonical: project CLAUDE.md taste rules + `_design-system/LOCKFILE.md`.
 
-> ⚠️ PALETTE/COLOR SUPERSEDED (Design Language v2, 2026-06-09): the Earthen Wellness Light palette (emerald/terracotta/cream) and the LIVE_TRUTH token refs below are RETIRED. Current Solen = B&W chrome + blue #276EF1 INTERACTIVITY accent (links/tabs/secondary & ghost buttons/active states, used GENEROUSLY; OFF non-interactive text) + ONE ink #0A0A0A commit CTA, WHITE-first surfaces (cool-grey sunken #F4F4F5, NO cream), success FOCAL = deep green #15803D disc + white check, Inter Tight + Inter. The universal UX PRINCIPLES below stay valid — swap every emerald/terracotta/cream/10%-cap reference for the current palette. Canonical: CANON.md §0 + LOCKFILE §1/§1.5.
-
-> Principles checklist every agent (Claude Code, Claude Design, Cursor, fresh sessions) MUST walk through BEFORE producing any UI/UX output — new screen, component, redesign, layout change, color tweak, copy update. Forces a principle-check so output isn't generic AI slop. Universal UI/UX principles live here; Solen-specific tokens (palette, fonts, retired patterns) live in `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) + operational pattern playbook in `_rules/SOLEN_PATTERNS.md`. Both SOURCE.md/LOCKFILE.md + this skill are required reading before shipping pixels. Historical Q-lock context: `_tasks/archive/SOLEN_DESIGN.archived.md` §20.
+> Principles checklist every agent (Claude Code, Claude Design, Cursor, fresh sessions) MUST walk through BEFORE producing any UI/UX output: new screen, component, redesign, layout change, color tweak, copy update. Forces a principle-check so output isn't generic AI slop. Universal UI/UX principles live here; Solen-specific tokens live in `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) + the operational playbook in `_rules/SOLEN_PATTERNS.md`. All three are required reading before shipping pixels.
 
 > **Hard stop**: before writing a single line of UI code or generating a mockup, walk through every principle below and answer how your design satisfies it. If you can't answer one, the design isn't ready. Don't output yet.
 
@@ -14,9 +12,7 @@
 
 Solen is in active design overhaul. Multiple agents (Claude Code, Claude Design, Cursor, future you) touch the same surfaces. Without a shared thinking layer, output drifts into generic SaaS aesthetics — gradient buttons, drop shadows everywhere, no empty states, decorative arrows, mismatched icons, cramped spacing.
 
-This file is the **mental checklist every agent runs before producing UI**. It's not a rulebook. It's a forcing function: articulate *why* your design works before you commit to pixels.
-
-For Solen-specific locks (token hex, fonts, retired patterns, glass rules) → `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal source of truth. This skill sits *on top* of that: universal principles, not tokens. (The old V2 `_tasks/archive/SOLEN_LIVE_TRUTH.archived.md` is archived, not authoritative.)
+This file is the **mental checklist every agent runs before producing UI**. It's not a rulebook. It's a forcing function: articulate *why* your design works before you commit to pixels. For Solen-specific locks (token hex, fonts, retired patterns, glass rules), `_design-system/SOURCE.md` (canonical) + `_design-system/LOCKFILE.md` (frozen literals) are the principal source of truth. This skill sits *on top* of that: universal principles, not tokens.
 
 ---
 
@@ -59,7 +55,7 @@ Active/selected states (selected tab in nav, active filter chip, "current" indic
 > Ask: *If this surface had three selected states, would I know which one is the active tab vs an active CTA? Or would brand color be doing too many jobs?*
 
 ### 2d. Button states use brightness + motion, never hue shifts
-Hover/active states on a colored button must NOT shift the hue toward a "darker version" with a different hex. Use **`filter: brightness(0.94)`** on hover and **`filter: brightness(0.88) + transform: scale(0.98)`** on active. Same hue, modulated brightness. The eye reads brightness shift as "same surface, less light" (physical/believable). Hue shift reads as "this turned into another color" (alien). Optionally add an arrow-translate or shadow-tighten for further pressed-feel without inventing colors. (For Solen V3, the ramp is emerald `#1F5C42` → brand-mid `#0F3D26` on hover → brand-deep `#0A2917` on active — these are intentional same-family steps, not hue shifts; equivalent to brightness reduction in the emerald hue.)
+Hover/active states on a colored button must NOT shift the hue toward a "darker version" with a different hex. Use **`filter: brightness(0.94)`** on hover and **`filter: brightness(0.88) + transform: scale(0.98)`** on active. Same hue, modulated brightness. The eye reads brightness shift as "same surface, less light" (physical/believable). Hue shift reads as "this turned into another color" (alien). Optionally add an arrow-translate or shadow-tighten for further pressed-feel without inventing colors.
 
 ### 3. Spacing rhythm
 Beginner UIs are cramped. Use a consistent scale (Solen uses a 4/8/12/16/24/32/48/64 rhythm). Mobile needs **more** space than you think. Stacked content needs vertical breathing room to group naturally.
@@ -91,8 +87,8 @@ If brand primary leaks into emotional/semantic uses, you have **brand-color floo
 - Tab bar selected state = bolder weight + ink color, NEVER brand-color flood.
 - Status colors (success / warning / error / info) are semantic tokens with their own hex, NOT derived from brand primary.
 
-### 5c. No colored-glow shadows. Warm-ink-tinted only.
-Drop shadows and box shadows use **warm-ink tint** (`rgba(26,18,9,0.x)` per LIVE_TRUTH §5b depth system) — never pure-black `rgba(0,0,0,0.x)`, never brand-color glow (`rgba(emerald, …)`, `rgba(amber, …)`). Q16 retired the `--sh-coral` / `--sh-amber` colored-glow tokens; never reintroduce. Black-grey shadows on a warm-ink palette read clinical / off-brand; warm-ink tint keeps shadows in the same tonal family as the rest of the system.
+### 5c. No colored-glow shadows.
+Drop shadows and box shadows use a neutral ink tint per the current depth system, never brand-color glow. Never reintroduce a colored-glow shadow token.
 
 > Ask: *Is this shadow elevating a surface (functional) or making the button feel "warmer/glowier" (decorative)? If decorative, kill it.*
 
@@ -164,11 +160,9 @@ Solen's blend: **calm + premium + warm**. Not playful-cartoony like Duolingo; no
 > Ask: *When the user opens this screen, what should they feel? Do the visuals, motion, and copy actually deliver that feeling — or do they just deliver the function?*
 
 ### 10. Brand fit
-Does this look like **Solen** — Swiss beauty marketplace, V3 Earthen Wellness Light: emerald `#1F5C42` + terracotta `#C97A57` heartbeat + cream substrate `#F5EBDD` + 4 cat colorways + Peace Sans display + Open Sauce One body, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
+Does this look like **Solen** (Swiss beauty marketplace, current B&W chrome + sparse blue accent + Inter Tight display + Inter body, calm and confident) or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
 
-Color rule (V2-D49j 2026-05-10, LIVE_TRUTH §5h.2): emerald = action only, terracotta = heartbeat words only. Never invert.
-
-Brand history (do not reintroduce): V1 forest green `#1B4D1B` (Q64) → V2 brand orange `#E8742A` (V2-D13/D14) → V3 dark teal `#043338` (V2-D15-3 lock 2026-05-07, retired V2-D48) → **V3 emerald `#1F5C42`** (V2-D48 Earthen Wellness Light, locked 2026-05-09). See `_tasks/V2_REBUILD_LOG.md` V2-D48 for the latest pivot.
+Color rule: the interactive blue accent is action-only and sparse; see project CLAUDE.md taste rules + `_design-system/LOCKFILE.md` for the current locked palette. Never invert a semantic color into decoration.
 
 > Ask: *If I removed the logo, would someone still recognize this as Solen? Or could it be any wellness app?*
 
@@ -176,20 +170,7 @@ Brand history (do not reintroduce): V1 forest green `#1B4D1B` (Q64) → V2 brand
 
 ## The output gate
 
-Before you write code or generate a mockup, write a one-sentence answer to each numbered principle above. Example:
-
-> 1. Flow — empty state shows "No favorites yet" with a CTA to browse; error state shows toast + retry; loading uses skeleton cards.
-> 2. Primary action — "Book now" emerald button (`bg-s-brand`), dominant. Secondary actions are ghost links.
-> 3. Spacing — uses 16/24/32 vertical rhythm. Mobile padding bumped from 16 → 20.
-> 4. Consistency — reuses `<SalonCard>`, existing emerald CTA pattern, existing radius token.
-> 5. Restraint — no gradients, no shadows. One emerald accent on action surfaces, terracotta on ONE heartbeat word, cream bg.
-> 6. Icons — all lucide outlined, 20px, 2.25 stroke.
-> 7. Feedback — button has hover/pressed/loading; save shows love-red filled heart + toast.
-> 8. Redundancy — removed decorative arrow above title; dividers replaced with spacing.
-> 9. Accessibility — emerald `#1F5C42` on cream `#F5EBDD` ≥ 7:1; tap targets 44px+; focus rings on all CTAs (always emerald per §5h.2).
-> 10. Brand fit — emerald `#1F5C42` action surfaces + terracotta `#C97A57` heartbeat word + 4 cat colorways + Peace Sans display once, square cover photos, line-art accents. Reads as Solen.
-
-If any answer is "I don't know" or "I didn't think about it," **stop and figure it out before outputting**.
+Before you write code or generate a mockup, write a one-sentence answer to each numbered principle above, grounded in the CURRENT locked palette and tokens (`_design-system/LOCKFILE.md`), not any retired palette. If any answer is "I don't know" or "I didn't think about it," **stop and figure it out before outputting**.
 
 ---
 
@@ -198,29 +179,12 @@ If any answer is "I don't know" or "I didn't think about it," **stop and figure 
 The principles above are the *thinking*. These are the **tactical rules of thumb** that turn a beginner-looking design into a polished one. Apply them when actually building:
 
 ### Typography
-- **One font is enough.** Don't pair two display fonts. Solen uses **Peace Sans** (display: hero h1, logo wordmark, footer cropped wordmark) + **Open Sauce One** (everything else — body, UI, section h2s, microcopy). V2-D42 lock 2026-05-09 — supersedes the V2-D15-3 Cooper BT + ITC Avant Garde Gothic Std pairing. Inter via Google Fonts is the cdnfonts-failure fallback. Tracking-normal everywhere — Peace Sans's chunky letters break at negative tracking. Each font has a clear role and they never compete in the same block.
-- **Tighten large text.** On display/headline sizes (32px+), pull letter-spacing to ~`-2%` to `-3%` and drop line-height to `110%–120%`. Default browser values look loose at scale.
-- **Cap font sizes and weights.** Aim for **~4 sizes and ~2 weights** on a typical surface. Beginners ship 6+ sizes and 4+ weights and the UI feels chaotic. Counting the sizes/weights on your screen is the fastest way to spot the mistake.
-- **Workhorse type scale (Solen's locked sizes — pick from these, don't invent):**
-
-  | Role | Size / Weight / Line height |
-  |---|---|
-  | Caption / micro | 11 / 400 / 16 |
-  | Caption emphasized | 12 / 600 / 18 |
-  | Secondary body / meta | 12 / 400 / 18 |
-  | List title / button-sm / rating | 13 / 600 / 20 |
-  | Default body | 14 / 400 / 22 |
-  | Default body emphasized / button-md | 14 / 700 / 22 |
-  | Section title | 20 / 600 / 28 |
-  | Page sub-heading | 24 / 600 / 32 |
-  | Page heading | 32 / 700 / 40 |
-  | Hero (Peace Sans only — ≤1 per page) | 48–104 / 900 / 1.15 |
-
-  Peace Sans appears at most once per page (the hero/landing headline + logo wordmark + ONE footer cropped wordmark). Everywhere else is Open Sauce One.
-- **Reuse sizes across roles.** Instead of inventing a new size for "decimal fractions" or "secondary numbers," reuse an existing size from the scale.
-- **Use monospace for variable-length numerics.** Counters, prices, timers, balances — anything that grows or changes — should use a monospace (or tabular-numerals) variant so digits don't jitter as values change.
-- **Group with line-height + space.** Tight line-height inside a paragraph, larger gap between paragraphs. Whitespace groups things — that's another form of hierarchy.
-- **Anti-pattern: pure black `#000000` for body text.** Solen uses warm-ink `#1A1209` (warm dark), not pure black. Pure black on white reads as cold/clinical against the brand's warm category (beauty/wellness).
+- **One font per role is enough.** Don't pair two display fonts. Solen's current fonts: Inter Tight (display/headings) + Inter (body) + JetBrains Mono (codes) per project CLAUDE.md; never Geist.
+- **Tighten large text.** On display/headline sizes (32px+), pull letter-spacing to ~`-2%` to `-3%` and drop line-height to `110%-120%`.
+- **Cap font sizes and weights.** Aim for **~4 sizes and ~2 weights** on a typical surface. Counting the sizes/weights on your screen is the fastest way to spot the mistake.
+- **Type scale:** pick from the locked sizes in project CLAUDE.md's design contract, don't invent new ones. Reuse existing sizes across roles instead of inventing one-offs.
+- **Use monospace for variable-length numerics.** Counters, prices, timers, balances should use a monospace (or tabular-numerals) variant so digits don't jitter.
+- **Group with line-height + space.** Tight line-height inside a paragraph, larger gap between paragraphs.
 
 ### Spacing
 - **Whitespace > grids.** A 12-column grid is a guideline, not a rule. Whitespace and visual rhythm matter more.
@@ -228,24 +192,24 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **~32px between unrelated items.** Closer for items that belong together (label + input, icon + text).
 
 ### Color
-- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen V3 (V2-D48 Earthen Wellness Light) that's emerald `#1F5C42` → brand-mid `#0F3D26` (hover) → brand-deep `#0A2917` (active) → pale `#A8CFB8` (atmosphere) → subtle `#D4EBD9` (pill bg). Plus terracotta `#C97A57` for heartbeat words only. History: V0 coral `#E8624A` → V1 forest green `#1B4D1B` (Q64) → V2 brand orange `#E8742A` (V2-D13/D14) → V3 dark teal `#043338` (V2-D15-3, retired V2-D48) → V3 emerald (current, V2-D48 2026-05-09).
-- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, **status-green `#16A34A` = success** (DISTINCT from brand emerald `#1F5C42` — different jobs, different hexes, never collapse them). Don't repurpose semantic colors for decoration — users learn the meaning across the web and you'll confuse them.
+- **Start with the locked palette**, don't invent a ramp. Current tokens (surfaces, ink, sparse blue accent, semantic colors) are locked in project CLAUDE.md's design contract + `_design-system/LOCKFILE.md`; read those before touching color.
+- **Semantic colors mean things.** Blue = trust/info/interactive accent, red = danger/error, yellow = warning/rating, green = success, each with its own token. Don't repurpose semantic colors for decoration.
 - **Color for purpose, not decoration.** If a color isn't doing a job (signaling state, drawing attention to a CTA, branding), it's noise.
-- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% cream substrate, ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (emerald on CTAs, key indicators, focus rings). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
-- **Reserve strong color for meaning.** If emerald is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two key indicators per screen — that's where it earns its weight. The §5h.2 color rule (V2-D49j) makes this concrete: emerald = action surfaces only, terracotta = ONE-OR-TWO heartbeat words per surface, never invert.
+- **80 / 17 / sparse split.** Current law: ~80% neutral surfaces + ink, ~17% ink/greys/hairlines/photos, and the interactive blue accent stays sparse on small clickable bits only (see project CLAUDE.md taste rules).
+- **Reserve strong color for meaning.** If an accent color is on every button, header, icon, and chip, it stops drawing the eye.
 
 ### Shadows
-- **Reduce opacity, increase blur.** Default `0 4px 6px rgba(26,18,9,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+. (Use warm-ink `rgba(26,18,9,…)` tint per §5c, never pure black.)
+- **Reduce opacity, increase blur.** Drop to ~5-10% opacity, push blur to 16-32px+, using a neutral ink tint (see §5c), never pure black.
 - **Cards = subtle. Popovers/floating = stronger.** Hierarchy: closer to the surface = lighter shadow.
 - **The shadow rule:** *if the shadow is the first thing you notice on a design, you're using it wrong.*
 
 ### Buttons
-- **Padding ratio:** rough rule — horizontal padding ≈ vertical padding × 2 (so a 40px-tall button has ~80px-equivalent in horizontal padding, depending on label length).
-- **Ghost buttons = sidebar links.** A nav item is just a button without a default background; it gets a fill on hover/active. They're the same primitive.
+- **Padding ratio:** horizontal padding ≈ vertical padding × 2.
+- **Ghost buttons = sidebar links.** A nav item is just a button without a default background; it gets a fill on hover/active.
 - **Min 4 states:** default, hover, pressed/active, disabled. Add loading (spinner) when the action triggers a network call.
 
 ### Icons
-- **Size to line-height.** If body text is 16/24, icons inline with body should be 24px. Mismatched sizes look amateur.
+- **Size to line-height.** If body text is 16/24, icons inline with body should be 24px.
 - **One library, one weight.** Solen = lucide outlined. Don't mix stroke widths within the same surface.
 
 ### Inputs
@@ -282,20 +246,18 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **Keep durations honest.** ≤200ms for state changes (hover, press), 200–400ms for transitions (modal open, route change), >400ms only for narrative moments. Faster feels snappier; slower feels broken.
 
 ### Emotional touchpoints (where to invest)
-Not every surface needs to be emotionally rich — that path leads to over-animated, distracting UI. Pick the **moments that matter** and invest there. For Solen, these are the highest-leverage emotional touchpoints:
+Not every surface needs to be emotionally rich. Pick the **moments that matter** and invest there:
 
-- **First impression** — landing page hero, first paint of the home feed, first-time-user onboarding. These set quality expectations for everything after. Polish here punches above its weight.
-- **Confirmation moments** — booking confirmed, favorite added, review submitted, payment succeeded. Users wait for these; reward them with a moment that says "yes, it worked, and we care that it did." Subtle bounce, soft glow, animated checkmark — fast (<400ms), warm, never gaudy.
-- **Progress / momentum** — bookings completed, streak of self-care visits, profile completion. Anything that gives a sense of *building something over time* deepens engagement. Animate the progress, don't just show a number.
-- **High-stakes interactions** — payment screens, booking the appointment, entering personal info. Polish here = trust. Slow, smooth transitions, no jank, no flashing layouts. The user is putting money or data on the line; the UI must feel handled.
-- **Tactile data** — anything the user explores by gesture (a calendar drag, a map pan, a price slider, a salon photo carousel). Make it respond *physically* — feel the inertia, see the highlight follow the finger. This is what cheap UIs miss and premium ones nail.
+- **First impression** (landing page hero, first paint of the home feed, first-time-user onboarding): polish here punches above its weight.
+- **Confirmation moments** (booking confirmed, favorite added, review submitted, payment succeeded): subtle bounce, soft glow, animated checkmark, fast (<400ms), warm, never gaudy.
+- **Progress / momentum** (bookings completed, streak of self-care visits, profile completion): animate the progress, don't just show a number.
+- **High-stakes interactions** (payment screens, booking the appointment, entering personal info): slow, smooth transitions, no jank, no flashing layouts.
+- **Tactile data** (anything the user explores by gesture: calendar drag, map pan, price slider, photo carousel): make it respond *physically*, feel the inertia.
 
-Skip the emotional layer on: utility screens (settings, terms of service, error messages), high-frequency repetitive actions (a search that runs 50 times a session shouldn't have a celebration animation — it'd be exhausting), and anywhere it would slow down a pro user.
+Skip the emotional layer on utility screens (settings, terms, error messages), high-frequency repetitive actions, and anywhere it would slow down a pro user.
 
 ### Visual pattern reuse (connect related parts)
-When two parts of the UI represent the same concept, give them the **same visual marker** so users connect them instantly. Example: a pulsing red dot on the "current voting period" in a graph + the same pulsing red dot on the "commit" indicator in the action panel — the user immediately understands these two things are linked, without reading any label. Reuse a shape, color, animation, or icon across separated UI regions to *teach* the relationship.
-
-Caveat: only reuse the marker when the things genuinely *are* related. Reusing a pattern for unrelated UI is worse than no reuse — it implies a connection that doesn't exist.
+When two parts of the UI represent the same concept, give them the **same visual marker** so users connect them instantly without reading a label. Reuse a shape, color, animation, or icon across separated UI regions to *teach* the relationship. Only reuse the marker when the things genuinely *are* related, otherwise it implies a connection that doesn't exist.
 
 ### Design systems mindset
 - A design system is a **shared language**, not a uniformity enforcer. Two designers/agents working from the same tokens should produce work that *feels* coherent without being identical.
@@ -305,12 +267,12 @@ Caveat: only reuse the marker when the things genuinely *are* related. Reusing a
 ### Token architecture — layers, not flat
 Tokens are layered. Don't flatten them into one bucket of named hex values:
 
-1. **Primitive tokens** — raw values: `emerald-900: #1F5C42`, `mono-300: #F0F0F0`, `scale-600: 16px`.
+1. **Primitive tokens**: raw values, e.g. `mono-300: #F0F0F0`, `scale-600: 16px`.
 2. **Semantic tokens** — role-based: `text-primary`, `border-default`, `surface-raised`, `status-positive`, `love-red`. They *reference* primitives.
 3. **Component tokens** — component-scoped: `button-primary-fill`, `card-padding`. They reference semantics.
 4. **Product composites** — domain widgets: `salonCard`, `bookingWizard`. They consume component tokens but live outside the design system core.
 
-A change to a primitive should propagate up. A change to a composite should never reach back to a primitive. **Semantic tokens are the layer that protects against brand pivots** — `love-red` stays `#FF4A6B` even if `brand-primary` flips from teal to emerald (which it did, V2-D48 2026-05-09).
+A change to a primitive should propagate up. A change to a composite should never reach back to a primitive. **Semantic tokens are the layer that protects against brand pivots**: `love-red` stays `#FF4A6B` even through a full palette pivot (this project has had several).
 
 ### State patterns — skeleton-first, sheet-for-confirmation
 - **Loading:** skeleton screens shaped like the eventual content for region/list/page fetches. Spinner reserved for inline button-state only (network call confirming the user's tap). Never use a full-page spinner for content loads.
@@ -372,7 +334,7 @@ These are signals that the agent skipped the checklist:
 - Repeating the parent heading in the row/cell below it ("Voting" heading + "Last 10 votes" row → just "Last 10")
 - 6+ font sizes or 4+ font weights on a single surface (count them — it's the fastest mistake to spot)
 - Proportional-width digits on counters, prices, or timers that change (causes visual jitter)
-- Brand color used so heavily it loses meaning ("if everything is brand-teal, nothing is brand-teal")
+- Brand color used so heavily it loses meaning ("if everything is the accent color, nothing is the accent color")
 - Designing only static screens and ignoring how the user moves between them
 - Skeumorphism stack-up (45 layers of shadows trying to feel "tactile")
 - Treating UI as purely functional — shipping features without thinking about how they *feel*
@@ -382,10 +344,9 @@ These are signals that the agent skipped the checklist:
 - Heavy animation on high-frequency utility actions (turns delight into noise)
 - **Colored shadows** of any kind on buttons, cards, or surfaces (`rgba(coral, 0.x)`, "warm glow," "amber halo") — use neutral grayscale shadows only for actual elevation
 - **Brand primary color tied to emotional / semantic UI atoms** (heart save = brand color, urgency-today = brand color, error/success = brand color). Brand is signal, not substrate (see §5b).
-- **Hue-shifted hover states** on colored buttons (e.g. swapping one hex for another that's perceptually a different hue). Use brightness shift only (`filter: brightness(0.94)`). Exception: V3 brand-teal hover gradient (LIVE_TRUTH §1) is an intentional lift-on-hover, not a flat hue swap.
+- **Hue-shifted hover states** on colored buttons (e.g. swapping one hex for another that's perceptually a different hue). Use brightness shift only (`filter: brightness(0.94)`).
 - **`mix-blend-mode: difference` on icons over real photos** (creates muddy gray on mid-tone backgrounds). Use white fill + dark hairline shadow instead.
-- **Pure black `#000000` for body text** in a warm-category app (beauty/wellness). Use warm-ink (`#1A1209`) instead.
-- **Tab-bar / nav selection done via brand-color flood** instead of weight + ink. Selection = bolder weight + dark color, never "the active tab is now coral/green."
+- **Tab-bar / nav selection done via brand-color flood** instead of weight + ink. Selection = bolder weight + dark color, never "the active tab is now the accent color."
 - **Flat token architecture** — primitives, semantics, components, and composites all jumbled into one named-hex bucket. Token layers exist for a reason; flattening them defeats them.
 - **Live availability / scarcity signals on every card** ("3 spots today" / "Last spot 14:30" everywhere). Real urgency only; max ~20% of cards in any viewport. When everything is scarce, nothing is.
 

@@ -203,6 +203,6 @@ Walk top down; higher wins. Latest DATED owner decision wins; "supersedes X" kil
 5. _design-system/TASTE_LOG.md dated decisions
 6. Memory feedback files
 7. Global ~/.claude/CLAUDE.md rules
-8. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history)
+8. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history) (_rules cleaned 2026-07-07; if push/Vercel/Figma/palette-flavored text ever resurfaces there, it is history, never law)
 
 Full reasoning procedure: the fable-reasoning skill, section 6.
