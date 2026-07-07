@@ -142,15 +142,17 @@ All search API routes MUST include these security layers (per CLAUDE.md S1):
 
 ## 6. Component Ownership
 
-| Component | Owner | May Modify |
-|---|---|---|
-| `HomeSearchBar.tsx` | Dev 2 (customer frontend) | Homepage team |
-| `FilterBar.tsx` | Dev 2 (customer frontend) | Category page team |
-| `SearchAutocomplete.tsx` | Dev 2 (customer frontend) | Search team |
-| `SalonCard.tsx` | Dev 2 (customer frontend) | Card display team |
-| `app/api/search/*` | Dev 1 (backend) | Backend team |
-| `lib/search/*` | Dev 1 (backend) | Backend team |
-| `search_embeddings` (table) | Dev 1 (infra) | Migration required |
+Ownership is per the current orchestrator/coder/reviewer layered-loop model (project CLAUDE.md rule 13), not per fixed dev roles; any coder sub-agent may touch these files within its scoped task.
+
+| Component | Area |
+|---|---|
+| `HomeSearchBar.tsx` | Customer frontend, homepage |
+| `FilterBar.tsx` | Customer frontend, category pages |
+| `SearchAutocomplete.tsx` | Customer frontend, search |
+| `SalonCard.tsx` | Customer frontend, card display |
+| `app/api/search/*` | Backend |
+| `lib/search/*` | Backend |
+| `search_embeddings` (table) | Infra, migration required |
 
 ---
 

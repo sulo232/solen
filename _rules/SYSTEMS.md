@@ -1,6 +1,6 @@
-# Solen — Systems & Tools
+# Solen: Systems & Tools
 
-> STALE ROUTING WARNING (2026-07-03): the Figma-first design workflow and _tasks/SOLEN_DESIGN.md routing below are superseded. Design work routes through _design-system/SOURCE.md + LOCKFILE.md and the fable-frontend skill pipeline.
+> Design work routes through _design-system/SOURCE.md (canonical) + _design-system/LOCKFILE.md (frozen literals, wins on conflict) and the fable-frontend skill pipeline (exists-check, ground, mockup-first, build whole, measured verify, tunnel link). This banner and the Quick Match table below are kept in sync; do not let one drift from the other.
 
 > **Read this every session.** Match the user's request to a system, then follow it.
 
@@ -10,45 +10,29 @@
 
 | User wants... | System | Key file |
 |---|---|---|
-| Design new UI / redesign a component | **Figma First** | `_rules/FIGMA_CODE_SYNC.md` |
-| Compare code to Figma / audit accuracy | **Figma Sync** | `_rules/FIGMA_CODE_SYNC.md` |
+| Design new UI / redesign a component | **Design System** | `_design-system/SOURCE.md` + `_design-system/LOCKFILE.md` + `fable-frontend` skill |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
-| Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` |
-| Animation / hover / interaction polish | **Animation** | `emil-design-eng` skill |
+| Wrong color / font / spacing / token | **Design Tokens** | `_design-system/LOCKFILE.md` (frozen values), `_design-system/SOURCE.md` (canonical) |
+| Animation / hover / interaction polish | **Animation** | `_design-system/MOTION.md` |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 
 ---
 
-## 1. Figma First
+## 1. Design System
 
-Design in Figma, get approval, then code. For any new or redesigned customer-facing UI.
+Design in the existing system, get approval on a mockup, then code. For any new or redesigned customer-facing UI.
 
-**Figma file key:** `cInKwtgkD8TjUSSLDT40eF`
+**Pipeline:** `fable-frontend` skill (`~/.claude/skills/fable-frontend/SKILL.md`) is the ordered pass: exists-check (`npm run exists <keyword>`) → ground every element in a source → dual-axis spec (structure = Fresha capture, aesthetic = LOCKFILE) → mockup-first approval → build the whole design → measured verification → tunnel-link delivery.
 
-**Tools:** `use_figma`, `get_screenshot`, `get_design_context`, `search_design_system`, `get_metadata` — all via Figma MCP.
+**Canonical docs:** `_design-system/SOURCE.md` (22-section canonical: tokens, motion, spacing, components, voice, a11y). On conflict, `_design-system/LOCKFILE.md` wins (frozen literal values).
 
-**Skills:** Always load `figma:figma-use` before calling `use_figma`. Use `figma:figma-implement-design` for code generation. Solen-specific loop: `.agents/skills/figma-solen-workflow`.
+**Component registry:** `_design-system/COMPONENT_REGISTRY.md` (read BEFORE building any component). New shared component = write `_design-system/components/<Name>.md` + registry entry in the same turn.
 
-**Loop:** Design → Screenshot → User approves → Implement → Verify on localhost.
-
-**Reference:** `_rules/FIGMA_CODE_SYNC.md` (section map with node IDs), `_rules/FIGMA.md` (file structure).
+**Loop:** Mockup (copy of the real page, treatment-only) → user approves → implement on the real component → verify on localhost.
 
 ---
 
-## 2. Figma Sync
-
-Compare Figma designs to live code. Find and fix mismatches. Figma is source of truth.
-
-**Section map:** `_rules/FIGMA_CODE_SYNC.md` maps 15 homepage sections with exact Figma node IDs to code files.
-
-**Loop:** Screenshot Figma section → Read code file → Spot differences → Fix one at a time → Verify.
-
-**Log mismatches in:** `_tasks/VISUAL_QA_REGISTRY.md` (Template B).
-
----
-
-## 3. Playwright
+## 2. Playwright
 
 Automated screenshots at 3 viewports. Diffs against baselines to catch regressions.
 
@@ -68,42 +52,29 @@ npx playwright show-report e2e/visual/report # view diff report
 
 ---
 
-## 4. QA Registry
+## 3. Design Tokens
 
-Persistent log of visual bugs. Any agent can read it, fix issues, mark them done.
+Tokens are LOCKED, not in flux. **Cite `_design-system/LOCKFILE.md` as authoritative** (frozen literal values: colors, radius, spacing, text sizes). `_design-system/SOURCE.md` is the canonical 22-section doc tokens live inside.
 
-**File:** `_tasks/VISUAL_QA_REGISTRY.md`
-**Audit workflow:** `.agents/workflows/ui-audit.md`
-
-**Statuses:** `[OPEN]` → `[FIXED]` → `[VERIFIED]`
-
-**Protocol:** Pick highest-severity `[OPEN]` → read file + line → make ONLY that change → `git diff` to verify scope → mark `[FIXED]`.
+Tailwind / CSS implementation lives in `tailwind.config.js` + `app/globals.css`: those are the actual code, not anchors; the LOCKFILE is the source of truth when they drift.
 
 ---
 
-## 5. Design Tokens — IN FLUX
+## 4. Animation
 
-The design system is being iterated. **Don't cite the previous locked tokens** (`s-coral` hexes, `s-ink`, banned-class lists, etc.) **as authoritative.** Ask the user, or read `_tasks/SOLEN_DESIGN.md` for current values.
-
-Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`. Tailwind / CSS implementation still lives in `tailwind.config.js` + `app/globals.css` — those are the actual code, not anchors.
-
----
-
-## 6. Animation
-
-Easing, timing, micro-interactions. Skills: `emil-design-eng`, `frontend-design`.
+Easing, timing, micro-interactions. Full principles + remaining-work list: `_design-system/MOTION.md` (read before motion work). Vocabulary is locked (Motion-22: shimmer, X-collapse, press tiers, cascade, heart burst, etc).
 
 **Rules:** Easing `cubic-bezier(0.23, 1, 0.32, 1)`. Duration 100-300ms. Enter from `opacity:0, y:12`. Press: `active:scale-[0.97]`. Stagger: 40-60ms.
 
 ---
 
-## 7. Feature Dev
+## 5. Feature Dev
 
 Building features, pages, API routes. Every feature needs all 8 layers: types, DB migration, API route, component, page, i18n (4 locales), imported + rendered, navigation entry.
 
 **Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`, `_rules/search-bar-rules.md`.
 
-**Check first:** `_tasks/INCOMPLETE_FEATURES.md` — might already be half-built.
+**Check first:** `_tasks/INCOMPLETE_FEATURES.md` (might already be half-built).
 
 ---
 
@@ -111,10 +82,8 @@ Building features, pages, API routes. Every feature needs all 8 layers: types, D
 
 | What | File | When |
 |---|---|---|
-| Intentional Figma deviations | `_rules/FIGMA_DEVIATIONS.md` | Code correctly differs from Figma — log it so audits don't re-flag |
 | Multi-agent coordination | `_rules/AGENT_COORDINATION.md` | Multiple agents active, shared file edits |
-| Asset generation | `_rules/GENERATION_TOOLS.md` | Need icons (Recraft.ai), animations (LottieFiles), UI icons (lucide-react) |
-| Solen context for skills | `.agents/skills/{design,review,refine}/SOLEN_CONTEXT.md` | Loaded automatically by those skills |
+| UI audit workflow | `.agents/workflows/ui-audit.md` | Sweeping the app for visual bugs |
 
 ---
 
