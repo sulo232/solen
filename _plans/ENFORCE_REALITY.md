@@ -19,7 +19,10 @@ Owner dictated batch, "completely unrelated to psychology... make new hooks or r
   - [x] D1 CLAUDE.md rule 17 (CLAUDE.md rule 17)
   - [x] D2 apology-spiral-gate.py (Stop, 2+ phrases or grovel): Stop-gate that blocks an apology-spiral final message (2+ apology phrases), with skip flag
   - [x] D3 self-tested (block spiral + allow single honest owning + quoted-error safe) hook (block spiral + allow single honest sorry)
-- [x] E. Proposed MORE (ranked list in closing report; owner to pick which to build) enforceable rules/hooks in the same spirit (owner: "think what to add more")
+- [x] E. MORE , all 3 BUILT (finish-autonomously: no stopping to ask):
+  - [x] E1 stat-source-gate.py (Stop): blocks unsourced persuasion stats; extends rule 15. Self-tested (block unsourced, allow sourced, allow 'tests pass'/'20% off').
+  - [x] E2 rule 18 contradiction-surfacing (disposition-tier rule; reality-check backs the file/version half).
+  - [x] E3 post-compact-reverify.py (SessionStart resume/compact) + rule 19. Self-tested (fires compact/resume, silent startup).
 - [x] F. both hooks registered in ~/.claude/settings.json + committed; each self-tested before wiring all hooks + commit + self-test each before wiring (rule 12.5)
 
 ## Design notes
