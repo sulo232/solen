@@ -34,7 +34,8 @@ Prior art (rule 12): [RETRO_2026-07-06.md](RETRO_2026-07-06.md) already mined 34
   - [x] 6h. P9+P14 , SKILL REFS invariant live in --report (0 violations), council.workflow escalates on all-lens failure
   - [x] 6i. P5 coder-git-guard.py live + wired (coder checkout DENIED / status allowed / main-thread unaffected, tested)
   - [x] 6j. P8 verify-tooling-preflight.py + gemini-auto-fire.py live + wired (gemini-check-gate untouched as backstop)
-- [x] 7-close. Original dictation re-read; all asks delivered or owner-disposed. Parked (surfaced in final report): browser-verify-gate + site-tester MCP found STRANDED on claude/stoic-northcutt-3d001c (never merged; memory corrected); owner skips: pkill guard, wrong-surface readback, opus switch.
+- [x] 7-close. Original dictation re-read; all asks delivered or owner-disposed. Owner skips: pkill guard, wrong-surface readback, opus switch.
+- [x] 8-bonus. Stranded enforcement REVIVED (found during close, finish-autonomously gate correctly refused the park): cherry-picked 879cc736c (browser-verify Stop gate + wiring) + 685d9bf19 (site-tester MCP) onto this branch. Conflicts resolved (ACTIVE.md kept current index; package.json took ONLY @modelcontextprotocol/sdk, dropped @phosphor-icons per Lucide-only rule; lock regenerated). Proof: selftest.mjs 74/74; gate self-test block(exit 2)/pass(exit 0); project settings JSON valid; health check wiring 0. Memory project_browser_verify_and_site_tester updated to revived-on-branch status.
 - [ ] 7. Close: re-read original dictation, tick every box, report once
 
 ## Parked / notes
