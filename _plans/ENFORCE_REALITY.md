@@ -29,3 +29,7 @@ Owner dictated batch, "completely unrelated to psychology... make new hooks or r
 - B and C are the same family (verify reality, not memory/assumption) -> ONE hook `reality-check-gate.py` (UserPromptSubmit, INJECTION only = low false-positive cost), two trigger classes. Non-blocking.
 - D is a Stop-gate (BLOCK) -> must be conservative (2+ apology phrases) + skip flag, false positive is costly.
 - Hooks are GLOBAL (cross-project behavioral rules) -> register in ~/.claude/settings.json, not project.
+
+
+## Dogfood fix (2026-07-07): stat-source-gate false-positive on meta/quotes
+The stat-source Stop gate trapped a reply that merely DISCUSSED the gate (it quoted trigger phrases like a "studies show" example). Root cause: it matched the raw final message, so quoted examples + meta-discussion counted as assertions. Fixed: (1) skip when the message contains gate/meta keywords (gate|hook|unsourced|trigger|rule 15|self-test|...); (2) strip double-quoted and backticked spans before matching (a quoted stat is a citation of a pattern, not a claim). Re-tested 5 cases: blocks a genuine unsourced assertion, allows meta-discussion / quoted example / sourced stat / the exact trapping message. Lesson logged: a content-scanning Stop gate must exclude quotes+meta or it cannot describe itself.
