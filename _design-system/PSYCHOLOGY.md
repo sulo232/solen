@@ -84,6 +84,15 @@ Boost and label ("Für dich"), keep the full catalog reachable; one behavioral s
 | Duolingo "+20% DAU from delayed signup" | single self-report | directional; A/B on our own funnel |
 | "UGC contributors return 4x more" | untraceable | Zhihu/Marketing Science: engaged contributors 11% vs 42% dormancy |
 
+## Enforcement (why these laws are not just advice)
+
+Docs get forgotten as context fills; only mechanical enforcement survives (owner 2026-07-07: "AIs take suggestions but wont do it acc or forget as contexts pack up"). So the laws are enforced at two tiers, not left as prose:
+
+- **Machine-checkable laws , a hard gate.** `.claude/hooks/pre-edit-psychology-gate.py` (PreToolUse on Edit/Write/MultiEdit) BLOCKS a net-new violation of law 6 (a rating rendered with no review count) and law 9 (a hardcoded count literal like "14 Salons"). These were the exact violations the audit found repeated across 5 surfaces. Net-new only, scoped to app/components tsx, fail-open; escape with `psych-ok: <reason>` on the line or `touch .claude/psych-gate-skip.flag`.
+- **Judgment laws , the loop-reviewer psychology lens.** The laws a regex can't check (peak-end warmth, never-start-at-zero, guest-first, comparability, effort-over-delight, loss-framing ethics) are checked by the loop-reviewer on every customer-facing UI diff, in fresh context (not the main thread's fading memory). See `~/.claude/agents/loop-reviewer.md`, "Standing psychology lens".
+
+New machine-checkable law -> extend the gate + self-test (one block, one pass) before wiring. New judgment law -> add a bullet to the reviewer lens.
+
 ## The improve loop (this file is a basis, not a monument)
 
 - Every A/B result, owner decision, or new study that touches a law gets a dated line appended to the law it affects (same pattern as TASTE_LOG).
