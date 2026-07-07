@@ -30,11 +30,11 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
   - [x] 2e-ii verdicts returned (1 refuted, 7 partially-supported with corrections)
   - [x] 2e-iii claim-check table filled in VIDEO_UXPEAK_PSYCHOLOGY.md
 - [x] 2f research compendium written to _design-system/research/ (5 files: 4 topics + video brief; 586 raw findings total)
-- [ ] 3a audit: per-surface psychology audit (home, search+map, salon PDP, booking flow, checkout/payment, auth/onboarding, Inspo, profile/loyalty, reviews, confirmation/queue, empty/error/loading states)
-- [ ] 3b audit findings verified (file:line spot-check pass, separate verifier)
-- [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md
-- [ ] 4a canonical _design-system/PSYCHOLOGY.md (principles -> Solen laws, cross-linked to LOCKFILE / SOURCE / MOTION / TASTE_LOG)
-- [ ] 4b prioritized change list (motion timing, defaults/preselection, what we show) , visual changes queued as MOCKUP-FIRST candidates, NOT applied in this workstream
+- [ ] 3a audit: per-surface psychology audit , RUNNING (workflow wf_2563f4ec-42b: 12 surface auditors, waves of 4; 4/12 returned as of 13:5x)
+- [ ] 3b audit findings verified (file:line spot-check pass, separate verifier) , stage 2 of the same running workflow
+- [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md , blocked on 3a/3b returning
+- [x] 4a canonical _design-system/PSYCHOLOGY.md WRITTEN + committed 3c43d9623 (15 evidence-tiered laws, hard lines, myth table, improve loop; cross-links to LOCKFILE/SOURCE/MOTION/TASTE_LOG semantics stated in header)
+- [ ] 4b prioritized change list (motion timing, defaults/preselection, what we show) , blocked on the audit findings (3c); visual changes will be queued MOCKUP-FIRST, not applied
 - [x] 5a new skill: ~/.claude/skills/fable-psychology/SKILL.md (router over _design-system/PSYCHOLOGY.md; registered, visible in skill list)
 - [x] 5b hook wiring: `psychology` category added to fable-skill-trigger.py (keywords: conversion/retention/churn/engagement/loyalty/defaults/urgency/social proof/notifications/... EN+DE)
 - [x] 5c-i hook self-test PASS: "improve retention on the confirmation screen so people rebook" fires fable-psychology (+frontend)
