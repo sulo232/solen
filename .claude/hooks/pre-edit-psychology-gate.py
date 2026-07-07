@@ -137,6 +137,27 @@ def line_has_ok(text, idx):
 RATINGSTARS_TAG = re.compile(r"<RatingStars\b[^>]*>")
 RATING_TOFIXED = re.compile(r"\b(?:rating|average_rating|averageRating|avgRating)\b\s*!?\s*\.\s*toFixed")
 HARDCODED_COUNT = re.compile(r"(?<![\w{.])\d{2,}\s+(Salons?|Bewertungen?|reviews?|Ergebnisse?|results?)\b")
+# P1c (HTML mockups only): a star MARKER (glyph, amber fill, or star class) followed
+# within a short window by a bare decimal rating (N.N) and NO count next to it. Real
+# mockups render this as `<span class="star">★</span> 4.8`. Verified against the live
+# mockups 2026-07-07. Decorative stars with no trailing decimal (`★ Start here`) never
+# match; a rating with a parenthesised count (`4.8 (54)`) is allowed by COUNT_NEAR.
+STAR_MARKER = re.compile(r"★|fill=[\"']#FFC32B[\"']|lucide-star|class=[\"'][^\"']*\bstar\b", re.I)
+RATING_DECIMAL = re.compile(r"\b[0-5]\.\d\b")  # a star-rating range value, not a version/price
+COUNT_NEAR = re.compile(r"\(\s*\d|count|review|bewertung", re.I)
+PRICEISH = re.compile(r"chf|€|\$|\bab\b|\bfrom\b|\bpreis\b|/\s*(mo|monat|month)", re.I)
+
+
+def bare_star_html(text):
+    """A star marker with a rating-range decimal in the next 60 chars and no count next
+    to it (and not a price). Matches the real mockup pattern `★</span> 4.8` / an amber
+    <svg fill="#FFC32B">...</svg> 4.9."""
+    out = []
+    for m in STAR_MARKER.finditer(text):
+        window = text[m.end():m.end() + 60]
+        if RATING_DECIMAL.search(window) and not COUNT_NEAR.search(window) and not PRICEISH.search(window):
+            out.append(m)
+    return out
 
 
 def bare_ratingstars(text):
@@ -173,6 +194,16 @@ if not bare_star_tofixed(old):
         violations.append(("P1 (law 6: stars never bare)",
                            "a <Star> icon plus rating.toFixed(...) with no review count in the block",
                            "render the count next to it, e.g. `{rating.toFixed(1)} ({reviewCount})`"))
+
+# ---- P1c: HTML mockup star marker + bare rating with no count (mockups only) ----
+if is_mockup_html and not bare_star_html(old):
+    for m in bare_star_html(new):
+        if line_has_ok(new, m.start()):
+            continue
+        violations.append(("P1 (law 6: stars never bare, mockup)",
+                           "a star + bare rating with no review count in the mockup",
+                           "put the count next to it (e.g. \"4.8 (54)\"), never a lone star + average"))
+        break
 
 # ---- P2: hardcoded count literal (fabricated number) ----
 if not HARDCODED_COUNT.search(old):  # old had no hardcoded count -> net-new
