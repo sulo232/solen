@@ -78,11 +78,18 @@ path = str(ti.get("file_path") or "")
 if not path:
     allow()
 
-# ---- scope: only design-surface tsx ----
+# ---- scope: design-surface tsx (real code + dev-route mockups) OR public/_mockups
+# HTML mockups (owner 2026-07-07: "the UI/UX one must trigger on mockups too, harden
+# everything"). CLAUDE.md binds the no-fabrication / stars-with-count laws to mockups.
+# On HTML the React-specific P1 checks (<RatingStars>, rating.toFixed) simply don't
+# match; the load-bearing one for mockups is P2 (a hardcoded count like "14 Salons"),
+# which is exactly the invented-count rule mockups already have to obey. ----
 low = path.lower()
-if not re.search(r"(app/|components/|components-legacy/).*\.tsx$", low):
+is_design_tsx = bool(re.search(r"(app/|components/|components-legacy/).*\.tsx$", low))
+is_mockup_html = "/_mockups/" in low and (low.endswith(".html") or low.endswith(".htm"))
+if not (is_design_tsx or is_mockup_html):
     allow()
-if any(s in low for s in ("/public/", "/_audits/", "/node_modules/", ".d.ts", "/_mockups/")):
+if any(s in low for s in ("/_audits/", "/node_modules/", ".d.ts")):
     allow()
 
 # ---- build (new, old) by tool ----
