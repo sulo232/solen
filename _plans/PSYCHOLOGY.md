@@ -13,23 +13,23 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
   - [x] 2a-ii synthesis returned
   - [x] 2a-iii folded into _design-system/research/PSYCH_PSYCHOLOGY.md
 - NOTE 2026-07-07: run wf_7d6fab6f-13a hit a server-side rate-limit storm mid-run (conversion 17-20, all retention, all business researchers failed with "server temporarily limiting"). Resuming same script with resumeFromRunId after cooldown; psychology + conversion 1-16 are cache hits. The empty-input business "synthesis" stub from the broken run is discarded.
-- [ ] 2b fleet: conversion , RUNNING (same workflow, sequential after 2a)
-  - [x] 2b-i 20 researchers dispatched (queued in workflow)
-  - [ ] 2b-ii synthesis returned
-  - [ ] 2b-iii folded into compendium file
-- [ ] 2c fleet: retention , RUNNING (same workflow, sequential after 2b)
-  - [x] 2c-i 20 researchers dispatched (queued in workflow)
-  - [ ] 2c-ii synthesis returned
-  - [ ] 2c-iii folded into compendium file
-- [ ] 2d fleet: business impact , RUNNING (same workflow, sequential after 2c)
-  - [x] 2d-i 20 researchers dispatched (queued in workflow)
-  - [ ] 2d-ii synthesis returned
-  - [ ] 2d-iii folded into compendium file
+- [x] 2b fleet: conversion DONE (20/20 researchers after resume, 147 findings)
+  - [x] 2b-i 20 researchers dispatched
+  - [x] 2b-ii synthesis returned
+  - [x] 2b-iii folded into _design-system/research/PSYCH_CONVERSION.md
+- [x] 2c fleet: retention DONE (20/20 researchers after resume, 143 findings)
+  - [x] 2c-i 20 researchers dispatched
+  - [x] 2c-ii synthesis returned
+  - [x] 2c-iii folded into _design-system/research/PSYCH_RETENTION.md
+- [x] 2d fleet: business impact DONE (20/20 researchers after resume, 149 findings)
+  - [x] 2d-i 20 researchers dispatched
+  - [x] 2d-ii synthesis returned
+  - [x] 2d-iii folded into _design-system/research/PSYCH_BUSINESS_IMPACT.md
 - [x] 2e fleet: video claim-check DONE (workflow wf_541a76c3-5d5)
   - [x] 2e-i 8 claim-checkers dispatched
   - [x] 2e-ii verdicts returned (1 refuted, 7 partially-supported with corrections)
   - [x] 2e-iii claim-check table filled in VIDEO_UXPEAK_PSYCHOLOGY.md
-- [ ] 2f research compendium written to _design-system/research/ (one file per topic + video brief done)
+- [x] 2f research compendium written to _design-system/research/ (5 files: 4 topics + video brief; 586 raw findings total)
 - [ ] 3a audit: per-surface psychology audit (home, search+map, salon PDP, booking flow, checkout/payment, auth/onboarding, Inspo, profile/loyalty, reviews, confirmation/queue, empty/error/loading states)
 - [ ] 3b audit findings verified (file:line spot-check pass, separate verifier)
 - [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md
