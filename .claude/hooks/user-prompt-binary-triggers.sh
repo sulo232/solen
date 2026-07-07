@@ -20,6 +20,15 @@ set -uo pipefail
 INPUT=$(cat)
 PROMPT=$(echo "$INPUT" | jq -r '.prompt // empty' 2>/dev/null)
 [[ -z "$PROMPT" ]] && exit 0
+
+# NOTIFICATION GUARD (confirmed live 3x, 2026-07-06/07): background
+# <task-notification> blocks and "[SYSTEM NOTIFICATION ...]" text are NOT
+# owner messages, but land in "prompt" the same way. Skip silently so this
+# hook never injects trigger context onto a background event.
+if echo "$PROMPT" | grep -qE '^[[:space:]]*(<task-notification>|\[SYSTEM NOTIFICATION)' ; then
+  exit 0
+fi
+
 P=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
 
 TRIGGERS=()
@@ -32,6 +41,14 @@ fi
 # 2. Reference image attached / pointed at → pixel-scan it, don't eyeball.
 if echo "$P" | grep -qE '\[image|screenshot|screen shot|(^|[^a-z])ss( |$|[^a-z])|ss folder|img_[0-9]+|attached.*(pic|image|photo|ref)|(pic|image|photo|ref).*attached'; then
   TRIGGERS+=("REFERENCE IMAGE in play → FIRST tool call: python3 ~/.claude/skills/pixel-spec-auto/scripts/extract.py <image> <outdir>. If detection fails (borderless cards), PIL pixel-sample the measurements directly. Never implement from eyeballing.")
+  # gemini-auto-fire (2026-07-07): record that a real reference is on the table this
+  # session, so a later screenshot PostToolUse call can inject the "run gemini-visual
+  # -check now" mandate instead of waiting for the Stop-time backstop.
+  SID=$(echo "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)
+  if [[ -n "$SID" ]]; then
+    mkdir -p "$HOME/.claude/state" 2>/dev/null
+    touch "$HOME/.claude/state/visual-ref-${SID}.flag" 2>/dev/null
+  fi
 fi
 
 # 3. Measurement-complaint vocabulary → the user SEES a concrete defect; measure it.

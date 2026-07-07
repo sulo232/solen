@@ -8,7 +8,7 @@ Dispatch the `design-verifier` subagent to check whether the named section match
 
 # Args
 
-> REFERENCE CORRECTION (2026-07-03): public/solen-coral.html is RETIRED. The design-verifier agent's own chain is canonical: _design-system/LOCKFILE.md, then SOURCE.md, then public/solen-styleguide.html. Ignore any solen-coral reference below.
+The design-verifier agent's own reference chain is canonical: `_design-system/LOCKFILE.md`, then `SOURCE.md`, then `public/solen-styleguide.html`.
 
 - **section** (required): short name of the section to verify (e.g. `hero`, `promise-pills`, `categories-grid`, `salon-cards`, `footer`)
 - **route** (optional, default `/de`): live URL path to check
