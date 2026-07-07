@@ -7,7 +7,7 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [x] 1a video: metadata fetched (yt-dlp; uxpeak, 11:34, uploaded 2026-07-02)
 - [x] 1b video: transcript extracted (auto-captions flattened, ~2115 words)
 - [x] 1c video: 87 frames extracted (1 per 8s, 640px)
-- [ ] 1d video: delegated sonnet analysis brief (principles + before/afters + research subtopics)
+- [x] 1d video: analysis brief written (_design-system/research/VIDEO_UXPEAK_PSYCHOLOGY.md; transcript + all 87 frames read by delegated subagents; claim-check fleet dispatched)
 - [ ] 2a fleet: UI/UX user psychology (20 researchers + synthesis)
 - [ ] 2b fleet: conversion (20 researchers + synthesis)
 - [ ] 2c fleet: retention (20 researchers + synthesis)
