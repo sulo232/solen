@@ -6,7 +6,7 @@ Owner dictated batch, "completely unrelated to psychology... make new hooks or r
 
 - [x] A. Review discipline: scope -> evidence -> attack -> verify -> report (report as a final pass after work is done)
   - [x] A1 documented in fable-execution 7.5 (5-phase harness) the 5-phase review harness as a named pattern (fable-execution / fable-reasoning)
-  - [x] A2 investigated: no prior 'report pass' convention found in skills/CLAUDE.md; implemented sensible phase-5 + FLAGGED for owner confirm I told you" referent , investigate; if not found, implement sensible version + FLAG for owner confirm
+  - [x] A2 investigated: no prior 'report pass' convention found in skills/CLAUDE.md; RESOLVED 2026-07-07: the owner dictated the full framework (the five gates); fable-execution 7.5 now carries it verbatim-faithful, flag closed
 - [x] B. Don't trust own memory: partial recognition from training != current knowledge; verify against live reality
   - [x] B1 CLAUDE.md rule 15 (CLAUDE.md rule 15)
   - [x] B2 reality-check-gate.py (memory class): inject a reality-check reminder on memory-trap prompt shapes (versions/latest/API/pricing/model-ids/dates)
