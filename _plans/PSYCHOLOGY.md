@@ -8,12 +8,27 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [x] 1b video: transcript extracted (auto-captions flattened, ~2115 words)
 - [x] 1c video: 87 frames extracted (1 per 8s, 640px)
 - [x] 1d video: analysis brief written (_design-system/research/VIDEO_UXPEAK_PSYCHOLOGY.md; transcript + all 87 frames read by delegated subagents; claim-check fleet dispatched)
-- [ ] 2a fleet: UI/UX user psychology (20 researchers + synthesis)
-- [ ] 2b fleet: conversion (20 researchers + synthesis)
-- [ ] 2c fleet: retention (20 researchers + synthesis)
-- [ ] 2d fleet: business impact (20 researchers + synthesis)
-- [ ] 2e fleet: video-raised subtopics (researchers + synthesis)
-- [ ] 2f research compendium written to _design-system/research/
+- [ ] 2a fleet: UI/UX user psychology , RUNNING (workflow wf_7d6fab6f-13a, 20 sonnet researchers in waves of 4)
+  - [x] 2a-i 20 researchers dispatched
+  - [ ] 2a-ii synthesis returned
+  - [ ] 2a-iii folded into compendium file
+- [ ] 2b fleet: conversion , RUNNING (same workflow, sequential after 2a)
+  - [x] 2b-i 20 researchers dispatched (queued in workflow)
+  - [ ] 2b-ii synthesis returned
+  - [ ] 2b-iii folded into compendium file
+- [ ] 2c fleet: retention , RUNNING (same workflow, sequential after 2b)
+  - [x] 2c-i 20 researchers dispatched (queued in workflow)
+  - [ ] 2c-ii synthesis returned
+  - [ ] 2c-iii folded into compendium file
+- [ ] 2d fleet: business impact , RUNNING (same workflow, sequential after 2c)
+  - [x] 2d-i 20 researchers dispatched (queued in workflow)
+  - [ ] 2d-ii synthesis returned
+  - [ ] 2d-iii folded into compendium file
+- [x] 2e fleet: video claim-check DONE (workflow wf_541a76c3-5d5)
+  - [x] 2e-i 8 claim-checkers dispatched
+  - [x] 2e-ii verdicts returned (1 refuted, 7 partially-supported with corrections)
+  - [x] 2e-iii claim-check table filled in VIDEO_UXPEAK_PSYCHOLOGY.md
+- [ ] 2f research compendium written to _design-system/research/ (one file per topic + video brief done)
 - [ ] 3a audit: per-surface psychology audit (home, search+map, salon PDP, booking flow, checkout/payment, auth/onboarding, Inspo, profile/loyalty, reviews, confirmation/queue, empty/error/loading states)
 - [ ] 3b audit findings verified (file:line spot-check pass, separate verifier)
 - [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md
@@ -21,8 +36,10 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
 - [ ] 4b prioritized change list (motion timing, defaults/preselection, what we show) , visual changes queued as MOCKUP-FIRST candidates, NOT applied in this workstream
 - [ ] 5a new skill (sibling of fable-*) holding the psychology basis
 - [ ] 5b hook wiring so it auto-fires on design / conversion / retention work
-- [ ] 5c self-test the hook: one should-fire input + one should-not (rule 12.5)
-- [ ] 5d rule-14 / autopilot listing updated + memory entry
+- [ ] 5c-i hook self-test: one should-fire input passes
+- [ ] 5c-ii hook self-test: one should-NOT-fire input stays silent
+- [ ] 5d-i global CLAUDE.md rule-14 list gains the new skill
+- [ ] 5d-ii memory entry written + MEMORY.md index line
 - [ ] 6 commits per verified chunk; close by re-reading the original message
 
 ## Constraints honored
