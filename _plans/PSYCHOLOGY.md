@@ -51,6 +51,12 @@ Turned the checkable laws from advice into runtime enforcement, because docs/ski
 - [x] E4 loop-reviewer.md (global) gained a standing psychology lens for the UN-gateable judgment laws (peak-end, never-start-at-zero, guest-first, comparability, effort-over-delight, loss-framing), conditional on _design-system/PSYCHOLOGY.md existing.
 - [x] E5 documented: PSYCHOLOGY.md Enforcement section, fable-psychology skill, memory project_psychology_system.md.
 
+## WORKLOG follow-on (2026-07-07, owner: "make a hook to always explain... in new sessions also, plain English but detailed, because right now I don't know what you did")
+- [x] W1 `_plans/WORKLOG.md` , plain-English "what got done" log, newest on top; seeded with a full entry for this session's psychology work.
+- [x] W2 `.claude/hooks/worklog.py` , SessionStart surfaces the newest entries (so a NEW session sees recent work in plain English) + stashes git HEAD; Stop BLOCKS if commits shipped without a WORKLOG update (escape: worklog-skip.flag).
+- [x] W3 self-tested: start surfaces + stashes; stop case A (commits, no log) blocks; case B (logged) allows; case C (no commits) allows; case D (skip flag) allows.
+- [x] W4 registered SessionStart + Stop in .claude/settings.json.
+
 ## Constraints honored
 - Researcher/synthesis subagents: sonnet/haiku only (no opus, gate-enforced). Fan-out in waves of max 4 concurrent (rate-limit law in fable-execution).
 - Exists-check ran 2026-07-07: "psychology" 0 hits, "conversion"/"retention" only unrelated DB column/function. No prior psych system to extend , this is net-new, integrating INTO the existing design-system docs.
