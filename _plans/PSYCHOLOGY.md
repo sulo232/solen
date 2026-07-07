@@ -30,18 +30,18 @@ Started 2026-07-07. Owner ask (dictated): watch the uxpeak video ("The UX Psycho
   - [x] 2e-ii verdicts returned (1 refuted, 7 partially-supported with corrections)
   - [x] 2e-iii claim-check table filled in VIDEO_UXPEAK_PSYCHOLOGY.md
 - [x] 2f research compendium written to _design-system/research/ (5 files: 4 topics + video brief; 586 raw findings total)
-- [ ] 3a audit: per-surface psychology audit , RUNNING (workflow wf_2563f4ec-42b: 12 surface auditors, waves of 4; 4/12 returned as of 13:5x)
-- [ ] 3b audit findings verified (file:line spot-check pass, separate verifier) , stage 2 of the same running workflow
-- [ ] 3c audit doc written to _audits/2026-07-07-psychology-audit.md , blocked on 3a/3b returning
+- [x] 3a audit: per-surface psychology audit DONE (workflow wf_2563f4ec-42b, resumed past a session-limit stall; 12/12 surfaces, 116 raw findings)
+- [x] 3b audit findings verified DONE (separate read-only verifier pass, all 12 surfaces; 113 kept as confirmed/wrong-line, 3 dropped as not-real/duplicate-of-law)
+- [x] 3c audit doc written to _design-system/research/PSYCH_AUDIT_2026-07-07.md (rerouted from gitignored _audits/; committed). 20 high-severity items.
 - [x] 4a canonical _design-system/PSYCHOLOGY.md WRITTEN + committed 3c43d9623 (15 evidence-tiered laws, hard lines, myth table, improve loop; cross-links to LOCKFILE/SOURCE/MOTION/TASTE_LOG semantics stated in header)
-- [ ] 4b prioritized change list (motion timing, defaults/preselection, what we show) , blocked on the audit findings (3c); visual changes will be queued MOCKUP-FIRST, not applied
+- [x] 4b prioritized change list DONE: _design-system/research/AUDIT_CHANGELIST_2026-07-07.md (77 actionable: 40 [code], 37 [mockup-first]), grouped by the owner's three lenses (what-we-show / defaults+preselection / motion-timing) + rest. NOTHING applied , queued only, visual items stay mockup-first.
 - [x] 5a new skill: ~/.claude/skills/fable-psychology/SKILL.md (router over _design-system/PSYCHOLOGY.md; registered, visible in skill list)
 - [x] 5b hook wiring: `psychology` category added to fable-skill-trigger.py (keywords: conversion/retention/churn/engagement/loyalty/defaults/urgency/social proof/notifications/... EN+DE)
 - [x] 5c-i hook self-test PASS: "improve retention on the confirmation screen so people rebook" fires fable-psychology (+frontend)
 - [x] 5c-ii hook self-test PASS: "rename the README heading and correct the typo" stays fully silent
 - [x] 5d-i global CLAUDE.md rule 14 updated (five skills, new bullet)
 - [x] 5d-ii memory: project_psychology_system.md written, project_fable_skills.md updated to five, MEMORY.md index line added
-- [ ] 6 commits per verified chunk; close by re-reading the original message
+- [x] 6 commits per verified chunk (plan/video/claim-check/4 compendia/PSYCHOLOGY.md/skill+hook/audit+changelist); closed by re-reading the original dictated message.
 
 ## Constraints honored
 - Researcher/synthesis subagents: sonnet/haiku only (no opus, gate-enforced). Fan-out in waves of max 4 concurrent (rate-limit law in fable-execution).

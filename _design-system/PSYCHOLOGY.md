@@ -89,4 +89,4 @@ Boost and label ("Für dich"), keep the full catalog reachable; one behavioral s
 - Every A/B result, owner decision, or new study that touches a law gets a dated line appended to the law it affects (same pattern as TASTE_LOG).
 - A law proven wrong for Solen gets struck with a dated note, never silently deleted.
 - The fable-psychology skill loads this file at task start for design/conversion/retention work; keep the 15 laws tight enough to scan in one read.
-- Audit findings live in `_audits/2026-07-07-psychology-audit.md`; when a finding ships, tick it there and cross-reference the law.
+- Audit findings live in [`research/PSYCH_AUDIT_2026-07-07.md`](research/PSYCH_AUDIT_2026-07-07.md) (full per-surface, verifier-checked) and the prioritized queue [`research/AUDIT_CHANGELIST_2026-07-07.md`](research/AUDIT_CHANGELIST_2026-07-07.md); when a finding ships, tick it there and cross-reference the law. (Committed to research/ because `_audits/` is gitignored.)
