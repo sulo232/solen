@@ -20,8 +20,10 @@ Owner ask (dictation, 2026-07-08): "audit ALL the frontend, all of it. Find inco
 
 ### 1. Audit ALL frontend surfaces (comprehensive coverage)
 - [x] 1a. Customer surfaces , 14 buckets. DONE: 230 files read, 187 verified findings (71 high). Report: `_design-system/research/FRONTEND_AUDIT_2026-07-08.md`. Workflow `wf_1927222c-801`, 28 agents, 0 errors.
-- [ ] 1b. Dashboard surfaces (~55 routes, 7 buckets). **BLOCKED: WAVE 2 `wf_732cda98-10e` is still IN FLIGHT.** Evidence (measured 2026-07-08 12:10 to 12:19, not assumed): the 12th agent's transcript `agent-a0cf6d06cb9b22ea0.jsonl` grew 161,549 -> 496,977 bytes and its mtime tracks wall-clock; its last record is an `assistant` with `stop_reason: null` (mid-stream). `journal.jsonl` shows 12 started / 11 returned across a 9-minute poll. (Do NOT use `ps aux | grep wf_<id>` for liveness: the grep matches its own command line and always reports a false positive. Workflow agents run inside the parent `claude` process, not a separately named one. Use transcript mtime/size growth.) Results already computed and sitting in the journal, NOT yet in the report (report written 11:49, results landed 11:51 to 12:07): dash-core 9, dash-ops 12, dash-money 12, dash-category 11, dash-content 10, dash-growth 14, dash-admin 17 = **85 findings, 35 high**. Next action once the 12th result lands: read the `result` rows out of `journal.jsonl` and append the WAVE 2 sections to `FRONTEND_AUDIT_2026-07-08.md`. Do NOT synthesize while it runs, that races the 12th agent and would ship a report missing 1c entirely.
-- [ ] 1c. /dev mockup routes (~40) , triage: dead / graveyard / keep. **BLOCKED on 1b** (same run, `wf_732cda98-10e`). No `/dev` bucket appears among the 11 returned results, so the still-running 12th agent (`a0cf6d06cb9b22ea0`) is the `/dev` triage agent. Its ~497KB transcript is consistent with a ~40-route sweep.
+- [x] 1b. Dashboard surfaces , 7 buckets, DONE. 111 files read, 89 raw findings, 5 dropped by verifier, **84 confirmed (34 high)**. Workflow `wf_732cda98-10e`, 16 agents, 0 errors. Appended to `_design-system/research/FRONTEND_AUDIT_2026-07-08.md`.
+
+- [x] 1c. /dev route triage , DONE. **37 routes**: 22 keep-referenced, 10 dead-delete, 5 keep-active-mockup. Full table in the report. Deletions need a REMOVED.md line in the same turn.
+
 - [x] 1d. Global chrome (Header/Footer/nav/Breadcrumb) , covered in WAVE 1 `home` bucket (Header.tsx h-10 icon buttons flagged high) + `category-landings` (hand-rolled breadcrumb in behandlungen).
 
 ### 2. Check vs PSYCHOLOGY.md (15 laws)
@@ -47,14 +49,28 @@ Owner ask (dictation, 2026-07-08): "audit ALL the frontend, all of it. Find inco
 - [x] 5a. `_design-system/research/FRONTEND_AUDIT_2026-07-08.md` , 995 lines. Every surface, sectioned by aspect, each finding with severity + rule + file:line + problem + fix + [code]/[mockup]. Plus a cross-cutting-patterns table (fix the pattern, not the file). Committed `85031fab6`.
 
 ### 6. Mockups for every [mockup]-class fix
-- [ ] 6a. WAVE 1 yields **21 mockup-class findings** (indexed in the report's "Mockup queue" table). WAVE 2 will add more. Build after both waves land, sequential coherent pass, high first, real-page copies, treatment-only. **BLOCKED on 1b/1c** by the plan's own close condition ("build after BOTH waves land"). Building the 21 WAVE 1 mockups now would mean a second, incoherent pass once WAVE 2's mockup-class findings arrive, which is exactly what "sequential coherent pass" forbids. The 85 stranded WAVE 2 findings are not yet triaged into [code] vs [mockup] class, so the queue size is unknown.
+- [~] 6a. Mockup pass , IN PROGRESS. **1 of 9 built.**
+    - Queue re-derived from the patterns, not the files (the agents over-tagged: 7 of the 21 WAVE-1 `[mockup]` items were "swap bare Spinner for Skeleton", which the locked contract already specifies, so they are `[code]`).
+    - **Removed from the queue entirely:** the selected-state sweep (62 call-sites, the single largest block). Owner already approved the gray TabPill treatment by voice 2026-06-29 and `public/_mockups/selected-states-redesign.html` already exists. It is a `[code]` sweep, not a taste question. See the phantom-gate section of the report.
+    - [x] M1 fabricated data , `/de/dev/audit-fixes/fabrication`. 5 before/after pairs. Built by `coder`, graded by `loop-reviewer`, 1 punch item confirmed + fixed, 1 punch item refuted (see below). Verified 200 through the tunnel with content proof.
+    - [ ] M2 bare star -> star + count (12 sites, psych law 6)
+    - [ ] M3 tracked-caps -> sentence case (14 sites)
+    - [ ] M4 skeleton shapes for the 9 bare spinners
+    - [ ] M5 44px touch targets (16 sites, visible size change)
+    - [ ] M6 SearchOverlay hand-rolled date step -> shared DateTimePicker primitive
+    - [ ] M7 photo-first SalonCard on /behandlungen + /brand
+    - [ ] M8 SeeAllButton unification (3 dialects -> 1)
+    - [ ] M9 window.confirm -> Modal on the paid walk-in cancel
+
 
 ### 7. List every mockup at the end
-- [ ] 7a. Final index of all mockups with clickable tunnel links. **BLOCKED on 6a** (nothing to index until the mockups exist). Tunnel procedure is settled (global rule 0.5, `/tunnel` skill), so this is index-only once 6a lands.
+- [~] 7a. Mockup index , `/de/dev/audit-fixes` is live and is the single stable entry point (extends the existing `/dev/mockups` index rather than duplicating it). It gains a row per mockup as each lands. Tunnel link delivered in-chat each turn.
+
 
 ### 8. Heavy subagent fan-out + loop
 - [x] 8a. Audit = read-only sonnet fleet in waves of <=4 (rate-limit safe) via Workflow. WAVE 1: 28 agents, 3.89M subagent tokens, 726 tool calls, 47min.
-- [ ] 8b. Loop: WAVE1 customer [done] -> synthesize [done] -> WAVE2 dashboard/dev [**in flight**, see 1b] -> synthesize WAVE2 from `journal.jsonl` [next] -> mockup pass [blocked on the above]. The loop is not abandoned, it is waiting on one live long-running agent. Resume trigger (both must hold): `journal.jsonl` reaches 12 `result` rows AND `agent-a0cf6d06cb9b22ea0.jsonl` mtime stops advancing. **A CONCURRENT SESSION IS LIVE AND WORKING THIS PLAN.** Observed 2026-07-08 12:21: `app/[locale]/dev/audit-fixes/page.tsx` and `.../audit-fixes/fabrication/page.tsx` appeared in the git index seconds after an unrelated commit, staged by another orchestrator, not by this one. So WAVE 2's parent is attached and has already started a fix/mockup surface. Before resuming ANY box here: check `git status`, check `FRONTEND_AUDIT_2026-07-08.md` mtime for WAVE 2 sections, and check `/dev/audit-fixes` for existing mockups. Do not re-synthesize or re-build what the other session already produced (rule 12, no duplicate systems).
+- [x] 8b. Loop: WAVE1 customer [done] -> synthesize [done] -> WAVE2 dashboard + /dev [done] -> synthesize [done] -> mockup pass [in progress, M1 of M9]. Both audit waves complete; the estate is fully audited.
+
 
 ---
 
@@ -71,3 +87,17 @@ Any WAVE 1 row marked `plausible` (rather than `confirmed`) needs a second look 
 ## Parked / to surface at close
 - The 77 existing psychology findings are QUEUED-not-applied; this audit produces the unified plan, then mockups. Applying [code] fixes is a separate loop pass (workstream 11 "next").
 - Scale reality: "every mockup" = every [mockup]-class finding (visual treatment). [code]-class fixes (touch targets, bare star ratings, dead routes, hardcoded counts) are mechanical honesty/a11y fixes that do NOT need a mockup by design-system law (mockup-first governs VISUAL redesigns). Will be explicit about which findings get a mockup vs a spec'd code fix.
+
+## Turn log 2026-07-08 (later)
+
+- WAVE 2 completed: 84 findings (34 high), 5 dropped by the hardened verifier (vs 0 in WAVE 1). Estate total **271 findings, 105 high**.
+- **Root cause found for the largest finding class.** `no-black-selected` was cited as an active gate by CLAUDE.md:53, LOCKFILE.md:1215 and REMOVED.md:41. It never existed. Built it, self-tested 14/14, wired to PreToolUse Edit/Write/MultiEdit (commit `691724699`). The three citations are now true.
+- Mockup M1 built through the layered loop. The loop-reviewer raised 2 punch items:
+  1. CONFIRMED and fixed: the Finding-2 comment claimed the ReviewCard markup was copied verbatim; only the data array was.
+  2. REFUTED: the reviewer called `lang-ok` / `em-dash-ok` / `realsize-ok` self-invented phantom escape markers. It had grepped only the project `.claude/hooks/`. All three map to real, wired gates in the GLOBAL `~/.claude/hooks/` (mockup-content-gate.py, copy-lint-gate.py, mockup-realsize-gate.py). The coder was right. Verified before accepting the punch.
+- Two orchestrator errors worth recording: (a) called WAVE 2 "dead" at 12:18 when it was idle between chunk barriers, and it later completed normally; (b) grepped `1'200` and missed the `1&apos;200` entity, briefly doubting a correct agent finding. Both self-corrected against source.
+
+## Environment traps hit this turn (record so the next session does not re-hit them)
+- **Port 3000 serves a different git worktree** (`.claude/worktrees/stoic-northcutt-3d001c`), NOT the main checkout. New routes 404 there. The main checkout must be served separately (this turn: port 3010).
+- **This sandbox's DNS resolver cannot see fresh `*.trycloudflare.com` subdomains.** The tunnel registers fine at the Cloudflare edge; local `curl` returns 000 with "Could not resolve host". Verify with `curl --resolve <host>:443:104.16.0.1`. The link works for the owner regardless.
+- `cloudflared` needs `dangerouslyDisableSandbox` to bind its DNS socket.
