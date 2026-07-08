@@ -4,6 +4,19 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-08 , context-collapse system: doctrine, hook injection diet, budget nudge, law-file drafts
+
+**What you asked for:** the usage insights showed 64% of spend at >150k context. You wanted the full structure/philosophy for managing and collapsing context (when and how: /clear, /compact, auto hooks), plus actually fixing the bloated files and unnecessary standing context. Mid-run you added: bulk multi-topic messages must not mean /clear per topic.
+
+**What got done:**
+1. **Doctrine** at ~/.claude/CONTEXT_SYSTEM.md: cost model (baseline + working set + sediment), budget tiers (70k/120k/150k), the three collapse triggers (topic switch = /clear after the persist ritual; phase boundary = /compact with focus hint; big dump just landed = extract then compact), the persist-then-flush ritual, keep-out rules (bulk reads/DB/reports stay in subagents + files), maintenance cadence. Amended same day with your bulk-batch exception: a multi-topic bulk message is ONE working set: atomize, finish, collapse once at the end, never /clear mid-batch.
+2. **Hook injection diet** (coder + read-only reviewer, PASS): multi-ask, quiet-work, workstreams-pointer inject full text once per session then a one-liner; devils-advocate and fable-skill-trigger go silent on repeats (per category). Saves roughly 3-5KB per message on long sessions.
+3. **Context-budget nudge** inside plan-active-prompt.py: estimates tokens from the transcript (compact-boundary aware), fires once per session at ~120k and ~150k telling the session to propose the right collapse. Fired live the same day at 134k, proving itself.
+4. **Bloat fixes:** WORKLOG session-start excerpt trimmed to 2 newest entries / 2500 chars; session-marker-sweep now also prunes 10 per-session state-file families at 48h (12 stale files removed on first run; durable families like mistake-themes deliberately excluded).
+5. **Law-file compression DRAFTS** (originals untouched, swap = owner decision): ~/.claude/CLAUDE.compact-draft.md (24.0KB -> 13.2KB, 45%) and _plans/CLAUDE_MD_COMPACT_DRAFT.md (22.8KB -> 19.6KB, only 12%: the locked tables + literals are 22% of the file and must stay verbatim). Adversarial parity review found 3 small losses; all 3 re-added (eyebrows in the blue-ban list, anti-patterns pointer, size placeholder).
+
+**Not done / owner's court:** plugin prune (safe local offs: clangd-lsp, jdtls-lsp, huggingface-skills, zilliz via /plugin; the big catalog weight is claude.ai account-level), draft swap decision, memory consolidation (you rejected the 97-file audit dispatch mid-run; not relaunching without your yes). All recorded in _plans/CONTEXT_COLLAPSE.md.
+
 ## 2026-07-07 (later) , orchestrator upgrade: five gates, devil's advocate, model routing, Fable DNA
 
 **What you asked for:** the five-gates work discipline (scope / evidence / adversarial / verify / report), a devil's advocate pass before dispatching subagents, smarter model routing (Opus 4.8 for human-eye and big decisions, Sonnet for code, Haiku 4.5 for reading , researched, not guessed), optimizing dynamic workflows, and extracting Fable's working method before access to it ends. Plus (earlier in the day) enforced rules: don't trust memory, check things exist, own mistakes without apology spirals.

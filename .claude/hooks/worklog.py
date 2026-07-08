@@ -64,12 +64,12 @@ def main():
             text = open(worklog, encoding="utf-8").read()
             parts = text.split("\n## ")
             entries = ["## " + p for p in parts[1:]]  # skip the file header
-            newest = entries[:4]  # top of file = newest
+            newest = entries[:2]  # top of file = newest (2 max: context diet 2026-07-08)
             if not newest:
                 sys.exit(0)
             body = "\n\n".join(newest)
-            if len(body) > 4000:
-                body = body[:4000] + "\n... (truncated; see _plans/WORKLOG.md)"
+            if len(body) > 2500:
+                body = body[:2500] + "\n... (truncated; see _plans/WORKLOG.md)"
             ctx = ("RECENT WORK LOG (_plans/WORKLOG.md, newest first) , what was done in "
                    "recent sessions, plain English:\n\n" + body)
             print(json.dumps({"hookSpecificOutput": {
