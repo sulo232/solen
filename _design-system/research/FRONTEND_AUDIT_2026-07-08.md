@@ -1150,7 +1150,560 @@ Built as real-page copies with only the proposed treatment changed. Sequential, 
 
 ---
 
-## Not yet covered (WAVE 2)
+## Coverage
 
-- ~55 `/dashboard/*` owner+admin routes (design contract + consistency + states; psychology laws mostly n/a)
-- ~40 `/dev/*` internal mockup routes (triage: dead / graveyard / keep)
+WAVE 1 (customer) and WAVE 2 (dashboard + /dev triage) are both complete. The whole frontend estate is now audited.
+
+---
+
+# WAVE 2 , dashboard (owner + admin) surfaces and /dev route triage
+
+**Method.** 7 dashboard buckets + 1 `/dev` triage bucket. Same law stack, same audit-then-adversarial-verify structure. 16 agents, 0 errors, 111 files read. Workflow `wf_732cda98-10e`.
+
+**Tally.** 89 raw findings, **5 dropped by the verifier**, 84 confirmed , 34 high, 38 medium, 12 low. Fix class: 83 code, 1 mockup.
+
+The hardened verifier prompt worked: WAVE 2 dropped 5 findings where WAVE 1 dropped 0. Yield is now visible rather than hidden.
+
+**Psychology laws barely bind here** (owner-facing surface, little customer-derived data), which is why `fabrication`, `states-a11y` and `design-system` dominate instead.
+
+| dimension | findings |
+|---|---:|
+| States + accessibility | 22 |
+| Design contract | 20 |
+| Consistency / drift | 17 |
+| Fabricated data / dead controls | 11 |
+| Copy economy + i18n | 9 |
+| Icons | 3 |
+| Motion | 1 |
+| Dead route | 1 |
+
+## Dashboard, surface by surface
+
+### Dashboard money (earnings, revenue, analytics, commission, refunds, upcharge)  `dash-money`
+
+*12 files read · 11 findings (7 high) · 1 dropped by verifier*
+
+**Fabricated data / dead controls**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/revenue/page.tsx:133` · confirmed
+    - rule: A visual encoding meant to reflect real data must actually vary with it; a conditional that always resolves to the same output is a dead control.
+    - problem: Verified verbatim: `color: data.growth_percent >= 0 ? "text-s-coral" : "text-s-coral", bg: data.growth_percent >= 0 ? "bg-s-coral/5" : "bg-s-coral/5"` at lines 133-134. Both ternary branches are identical strings, so the growth KPI card's color never differentiates positive from negative growth; only the +/- sign in the text carries the real signal.
+    - fix: Give the two branches distinct classes, e.g. data.growth_percent >= 0 ? "text-s-success" : "text-s-error".
+- **HIGH** `[code]` `app/[locale]/dashboard/commission-admin/page.tsx:32` · confirmed
+    - rule: No fabricated data: a value must be wired to a live source, not silently substituted by an unlabeled default on a failed fetch (CLAUDE.md rule 1).
+    - problem: Verified: rate/loadedRate both seed at 15 (line 32-33). The fetch at line 38 only checks r.ok to throw, and the .catch at line 48 just console.errors with no error state set. loading still flips to false via .finally, so the form renders the stale 15% default with zero error banner. Because dirty = rate !== loadedRate (line 52) and both stay at the unchanged default, the admin could edit the rate off a false baseline and PUT a new platform-wide commission (line 60-64) with no optimistic-concurrency check against the real live value. This is the single most sensitive control in the bucket.
+    - fix: On fetch failure, set an explicit error flag and render the locked ErrorState component instead of the form, so the admin can never act on an unloaded default.
+
+**Design contract**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/revenue/page.tsx:71` · confirmed
+    - rule: Selected/active state must be calm gray fill, NEVER black/ink fill (gate no-black-selected, LOCKFILE §1215 / CLAUDE.md design contract).
+    - problem: The period picker's selected branch is `period === p ? "bg-s-coral text-white" : "text-s-ink-2 hover:text-s-ink"`. tailwind.config.js:81 aliases s-coral to `#0A0A0A` (pure ink), so the selected week/month/year pill is a solid black fill with white text, exactly the pattern the no-black-selected gate exists to block. The gate itself (.claude/hooks/no-black-selected-gate.py) matches on literal `bg-s-ink`, not the `s-coral` alias, so it silently escapes the gate. LOCKFILE §12.4 only exempts dashboard files from A9/accent-restriction, not from the selected-state contract, and this control is none of the three named exceptions (commit button, booking date/slot, avatar check-badge).
+    - fix: Swap the selected branch to bg-s-accent-bright text-white (verified this matches DashButton's primary variant at DashboardUI.tsx:233) or the calm-gray TabPill treatment, and drop the s-coral alias from this callsite.
+- **HIGH** `[code]` `app/[locale]/dashboard/earnings/page.tsx:108` · confirmed
+    - rule: LOCKFILE §12.4: dashboard files are exempt from A9 but explicitly NOT exempt from A5 (RETIRED tokens like s-coral).
+    - problem: Verified every cited line: earnings.tsx 108-109 (Wallet badge), 161 (fee text), 172 (invoice link icon+hover), 194 (Users icon), 220 (avatar circle), 228 (staff share text) all use s-coral/text-s-coral, which resolves to flat ink #0A0A0A per tailwind.config.js:81. Same pattern verified in revenue.tsx (KPI cards lines 98-134, top-salons badge 218, staff-commission cell 257, gift-card/tips icons 272-284) and platform-analytics.tsx (StatCard props lines 112/114/115/124). Every one of these was meant to carry a distinct accent color and instead renders muddy black, contradicting §12.2's vibrant-skin requirement.
+    - fix: Bulk-replace s-coral with the intended token per role: s-accent-bright (#276EF1) for primary/active accents, s-success/s-warning/s-error for semantic amounts.
+- **HIGH** `[code]` `app/[locale]/dashboard/revenue/page.tsx:159` · confirmed
+    - rule: Locked chart palette (V3-D204/D421), documented verbatim in this codebase's own sibling file.
+    - problem: Verified: stopColor="#1B4D1B" at 159-160, stroke="#1B4D1B" at line 186, activeDot fill="#1B4D1B" at line 190. Verified analytics/page.tsx carries the exact code comment at line 40: 'Locked chart palette (V3-D204/D421): primary series = accent-bright #276EF1 ... Replaces the old dark-green (#1B4D1B) + amber (#F3A864) hexes,' with ACCENT="#276EF1" defined at line 43. revenue.tsx renders the exact hex its own sibling file documents as retired.
+    - fix: Replace #1B4D1B with the locked #276EF1 accent (and #EAEFFE pale for any comparison series), matching analytics.tsx's ACCENT/ACCENT_PALE constants.
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/earnings/page.tsx:107` · confirmed
+    - rule: LOCKFILE §12.3: 'Dashboard cards/panels = rounded-card-lg (20px) ... Softer than the customer-site 16px.'
+    - problem: Verified LOCKFILE §12.3 wording matches the finding's quote exactly, and tailwind.config.js:249 defines card-lg as 20px. Verified rounded-[12px] at earnings.tsx lines 107, 118, 130, 192, and at revenue.tsx lines 140/153/199/234/271/282 and platform-analytics.tsx lines 65/122 (arbitrary value, matching neither 16px nor 20px). Verified the canonical DashPanel/DashStatCard/DashQuickAction primitives in DashboardUI.tsx (lines 99, 136, 195) already use rounded-card-lg for the identical card role, so a reusable canonical exists and is bypassed by hand-rolled markup.
+    - fix: Swap every rounded-[12px] card wrapper for rounded-card-lg, or replace the hand-rolled card markup with the existing DashPanel/DashStatCard primitives.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/earnings/page.tsx:101` · confirmed
+    - rule: Loading = <Skeleton> (shape matches final layout), NOT a bare spinner (LOCKED design contract table; COMPONENT_REGISTRY.md Skeleton entry).
+    - problem: Verified all 7 cited spinners exist exactly as claimed: earnings.tsx:101, revenue.tsx:81, analytics.tsx:174, platform-analytics.tsx:107 (all identical `<div className="flex justify-center py-..."><Spinner size="lg" /></div>`), commission-admin.tsx:85-88 (`<Loader2 ... className="animate-spin" />`), refunds.tsx:180 and upcharge.tsx:187 (both bare `<Spinner />`). None import Skeleton/SkeletonCard, which the registry defines specifically for shape-matched loading placeholders.
+    - fix: Replace each bare spinner with <Skeleton> blocks shaped like the page's KPI-card grid + table rows.
+- **HIGH** `[code]` `app/[locale]/dashboard/platform-analytics/page.tsx:93` · confirmed
+    - rule: Error uses ErrorState (inline); a failed fetch must never be visually indistinguishable from genuine empty data (COMPONENT_REGISTRY.md ErrorState entry).
+    - problem: Verified verbatim: `.catch(() => setStats(null)).finally(() => setLoading(false))` at line 93, then StatCard renders unconditionally with `stats?.total_salons ?? 0` etc at lines 112-116. A failed API call renders identically to a genuinely-zeroed marketplace, no error banner, no retry. Same root pattern verified present in earnings.tsx, revenue.tsx and analytics.tsx (all swallow the fetch error and fall through to a no-data or zero-filled success UI); none of these four pages render ErrorState.
+    - fix: Track a separate error boolean per page (as refunds.tsx and upcharge.tsx already do) and render the locked ErrorState with a retry action instead of falling through to a zero-filled UI.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/earnings/page.tsx:168` · confirmed
+    - rule: Interactive controls must be at least 44px (h-11), the a11y touch-target floor (LOCKED design contract table).
+    - problem: Verified: the invoice-download `<a>` at lines 168-176 is `p-2` (8px) padding around a 16px FileText icon, ~32px tap target. Verified the same under-44px pattern in revenue.tsx's period-picker buttons (px-3 py-1.5 text-xs, lines 66-76) and analytics.tsx's compare toggle (px-3 py-1.5, ~line 151) and tab buttons (px-3 py-2, ~line 166). Verified by contrast that refunds.tsx and upcharge.tsx correctly wrap actionable controls in min-h-[44px] (e.g. refunds.tsx:234/240/244/252, upcharge.tsx:162/208/272), proving the law is known and applied inconsistently within this same bucket.
+    - fix: Bump each control's padding/height to meet h-11/44px, matching the min-h-[44px] convention already used in refunds.tsx and upcharge.tsx.
+
+**Copy economy + i18n**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/earnings/page.tsx:153` · confirmed
+    - rule: i18n: user-facing strings/formats must go through the active locale, not be hardcoded to one language (project is de/en/fr/it).
+    - problem: Verified verbatim: `new Date(p.created_at).toLocaleDateString("de-CH")` at line 153, while `locale` from useLocale() is already in scope and correctly threaded into formatCurrency(p.gross_amount, locale) at line 159 on the very next line. Verified the same hardcoded "de-CH" in revenue.tsx's chart formatters (lines 167, 180) and the shared fmtDate helpers in refunds.tsx (lines 50-51) and upcharge.tsx (lines 51-52). All four pages otherwise use next-intl t() and have locale in scope, so this is a real, avoidable inconsistency, not a deliberate German-only design.
+    - fix: Pass the already-available locale variable into toLocaleDateString(locale, {...}) in place of the literal "de-CH" in all four files.
+
+**Motion**
+
+- **LOW** `[code]` `app/[locale]/dashboard/earnings/page.tsx:39` · confirmed
+    - rule: Motion-22 locked vocabulary; reuse the canonical easings/variants rather than hand-rolling divergent ones per file.
+    - problem: Verified earnings.tsx defines local containerVariants/itemVariants at lines 39-47 with a spring transition (stiffness 300, damping 24), while revenue.tsx (line 13) and platform-analytics.tsx (line 10) both import containerVariants/itemVariants from @/lib/animations. Verified lib/animations.ts's canonical itemVariants uses duration-based EASE_SOLEN ([0.23,1,0.32,1]), not a spring; the closest locked spring is EASE_BOUNCE (400/25), reserved for hearts/stamps. earnings.tsx's spring(300,24) is off-vocabulary and diverges from its sibling pages' reveal timing.
+    - fix: Delete the local variants and import containerVariants/itemVariants from @/lib/animations, matching the other pages in this bucket.
+
+**Dropped by the verifier** (kept for audit trail)
+
+- `app/[locale]/dashboard/commission-admin/page.tsx` , already-correct , Focus ring finding: claims the commission-rate input's outline-none (line 112) leaves keyboard users with zero visible focus indicator becau
+
+
+### Dashboard content (reviews, messages, products, bundles)  `dash-content`
+
+*7 files read · 9 findings (6 high) · 1 dropped by verifier*
+
+**Design contract**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/reviews/page.tsx:186` · confirmed
+    - rule: Design contract 'focus' row: inputs get ONE global ink edge + halo set in globals.css; 'primitives add NO extra outline (V3-D449 — no double ring)'; convention explicitly documented + followed in bundles/page.tsx:20-22 ('Inputs: NO per-input focus override')
+    - problem: Both textareas manually add a per-input focus override instead of inheriting the global recipe: `focus:outline-none focus:border-s-ink resize-none` (reply textarea, line 186) and `focus:outline-none focus:border-s-error resize-none` (flag textarea, line 229). CORRECTION to the auditor's mechanism: checked app/globals.css:367-377 — the global rule targets `textarea:focus-visible` and sets outline:none + border-color:#0A0A0A + box-shadow halo; the Tailwind `focus:` utilities here target `:focus` (higher specificity on border-color only) but never touch box-shadow, so the halo is likely NOT actually stripped visually. The real defect is that this is a redundant, inconsistent per-input override of a convention the codebase documents and follows elsewhere (bundles/page.tsx's own top comment + zero-focus-class inputClass at line 70) — exactly the drift V3-D449 exists to prevent, even if the visible halo survives today.
+    - fix: Remove focus:outline-none focus:border-s-ink / focus:border-s-error from both textareas and let the global :focus-visible recipe apply; keep the error-state red border as an unconditional (non-focus) class on the flag textarea if the red framing is still wanted.
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/reviews/page.tsx:130` · confirmed
+    - rule: Design contract: card shadow = shadow-elevation-2 rest / -3 hover; tailwind.config.js labels warm-* shadow aliases 'Legacy warm aliases (mapped to 3-level system)' and warm-md/warm-lg are byte-identical retired duplicates that map to neither elevation-2 nor elevation-3
+    - problem: Review cards use `shadow-warm-md` (`bg-white rounded-2xl border border-s-border shadow-warm-md p-4`). Verified in tailwind.config.js:266-267: warm-md and warm-lg are both `"0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)"` (byte-identical to each other) under the explicit comment '── Legacy warm aliases (mapped to 3-level system) ──', and neither matches elevation-2 (`0 2px 8px rgba(50,47,44,0.09)`, line 278) or elevation-3 (`0 6px 16px rgba(50,47,44,0.12)`, line 279). Same pattern recurs in app/[locale]/dashboard/bundles/page.tsx:170 and :516 (shadow-warm-lg on the bundle-form and delete-confirm modals).
+    - fix: Swap shadow-warm-md → shadow-elevation-2 on the review card (reviews/page.tsx:130), and shadow-warm-lg → shadow-elevation-3 on the two bundles.tsx modals (lines 170, 516).
+- **MEDIUM** `[code]` `app/[locale]/dashboard/bundles/page.tsx:170` · confirmed
+    - rule: CONSISTENCY_AUDIT.md §A: 'rounded-[12px] blocks → rounded-card / rounded-2xl (16); 169 uses for content blocks / option-cards / inputs' is a named, already-documented drift pattern
+    - problem: The modal panel (line 170: `rounded-[12px]`) and the service-checkbox list panel (line 195: `rounded-[12px]`) use the exact arbitrary-12px content-block radius CONSISTENCY_AUDIT.md already names as drift that should be rounded-card/16. NOTE: the auditor's broader claim of 'five different arbitrary radii, none routing through the token' is overstated — the preview panel's rounded-[20px]/rounded-[24px] (lines 335, 337, 373) and the segmented-button/chip rounded-[10px] (lines 246, 294) are NOT the same drift: the 24px preview card is an intentional 1:1 copy of the real customer BundleCard (app/[locale]/_components/salon/SalonBundles.tsx:138, also rounded-[24px], grounded per the file's own top comment), and 10px is a distinct smaller control-scale radius, not a 'content block'. Only the two 12px instances are the documented drift.
+    - fix: Change the two rounded-[12px] content-block containers (modal panel line 170, checkbox-list panel line 195) to rounded-card (16px) / rounded-2xl, matching the bundle-list panel's already-correct rounded-[16px] at line 560. Leave the preview panel (20/24px, grounded in the real customer card) and the 10px chip/segmented-button radius alone — they are not the same drift.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/reviews/page.tsx:118` · confirmed
+    - rule: Design contract 'states' row: loading = <Skeleton> (shape matches the final layout, NOT a bare spinner)
+    - problem: Full-page loading state is a bare centered spinner: `(!salonReady || loading) ? <div className="flex justify-center py-20"><Spinner size="lg" /></div> : ...`. No shape-matched skeleton for the review-card list that is about to render.
+    - fix: Replace with shape-matched <Skeleton> review-card placeholders, mirroring the pattern already used correctly in the same bucket at app/[locale]/dashboard/bundles/page.tsx:549-554 (`Array.from({length:3}).map(...) => <Skeleton key={i} height={72} rounded={16} />`).
+- **HIGH** `[code]` `app/[locale]/dashboard/products/page.tsx:45` · confirmed
+    - rule: Design contract 'states' row: loading = <Skeleton>, not a bare spinner
+    - problem: `loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : ...` is the page's only loading state, no skeleton shaped like the RetailManager panel that follows.
+    - fix: Swap for a <Skeleton>-based placeholder shaped like the RetailManager panel (header row + a few list rows), the same primitive bundles/page.tsx already uses correctly.
+- **HIGH** `[code]` `app/[locale]/dashboard/products/page.tsx:49` · confirmed
+    - rule: 'empty uses EmptyState with a real recovery action (never a dead end); error uses ErrorState' (COMPONENT_REGISTRY ErrorState/EmptyState rows)
+    - problem: `!salonId ? null : <RetailManager salonId={salonId} />` — if /api/profile fails (network error, 500, non-ok response) or returns a profile with no salon_id, the page silently renders nothing below the h1: no error message, no retry. The `.catch` only logs to console; it never sets any UI-visible error flag. A real fetch failure is a dead end the owner can't recover from without a blind reload.
+    - fix: Track a load-error boolean set in the .catch/`!r.ok` path and render <ErrorState> (profile/salon could not be resolved, with a retry that re-runs the /api/profile fetch) instead of null in the !salonId branch.
+- **HIGH** `[code]` `app/[locale]/dashboard/reviews/page.tsx:153` · confirmed
+    - rule: Design contract: touch target ≥44px (h-11), the a11y floor; icon-button wrapper canonical = h-11 w-11 (CONSISTENCY_AUDIT.md §A); aria-labels meaningful
+    - problem: The flag-review icon button is `className="text-s-ink/30 hover:text-s-error p-1 transition-colors"` wrapping a 14px Flag icon — total hit area is roughly 22x22px (14px icon + 4px padding each side), well under the 44px floor. It carries only a `title` attribute at line 156, no aria-label, so screen readers get no reliable accessible name.
+    - fix: Wrap the icon in an h-11 w-11 grid place-items-center hit target and add aria-label={t("flagTitle")} alongside (or instead of) title.
+- **HIGH** `[code]` `app/[locale]/dashboard/bundles/page.tsx:173` · confirmed
+    - rule: Design contract: touch target ≥44px (h-11); icon-button wrapper canonical = h-11 w-11
+    - problem: Modal close button has no size/padding classes: `<button onClick={onClose} aria-label={t("cancel")}><X size={18} className="text-s-ink/30" /></button>` — hit area is the bare 18px icon. Same pattern on the bundle-row edit button at line 585: `<button onClick={() => setEditTarget(b)} aria-label={t("edit")} className="text-s-ink shrink-0 grid place-items-center"><Pencil size={19} /></button>` — no width/height/padding, hit area ~19px. Both carry correct aria-labels but are far under the 44px floor.
+    - fix: Add an explicit h-11 w-11 grid place-items-center (or equivalent min-height/min-width) wrapper to both the modal close button (line 173) and the row edit button (line 585).
+
+**Copy economy + i18n**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/products/page.tsx:41` · confirmed
+    - rule: i18n: any user-facing string hardcoded in one language instead of going through next-intl is a finding
+    - problem: `<h1 ...>Produkte</h1>` is a hardcoded German literal. The file has no useTranslations import at all (imports are only useEffect/useState/DashboardLayout/RetailManager/Spinner), unlike the sibling page it was copied from. Confirmed against app/[locale]/dashboard/services/page.tsx:449, which renders the identical h1 treatment via `{t('title')}` under useTranslations('dashboard.services') — the i18n wiring was dropped in the copy, the visual treatment wasn't.
+    - fix: Add useTranslations('dashboard.products') (new key in messages/{de,en,fr,it}.json) and render {t('title')} instead of the literal string.
+
+**Dropped by the verifier** (kept for audit trail)
+
+- `app/[locale]/dashboard/reviews/page.tsx` , not-real , text-s-ink/40, /30, /20, /70 opacity fractions used for de-emphasized text instead of text-s-ink-2
+
+
+### Dashboard ops (bookings, calendar, clients, staff, services, queue)  `dash-ops`
+
+*6 files read · 12 findings (5 high) · 0 dropped by verifier*
+
+**Fabricated data / dead controls**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/calendar/page.tsx:1104` · confirmed
+    - rule: no fabricated / non-functional data-driven controls (CLAUDE.md taste rule 1 + silent-no-op law)
+    - problem: Desktop calendar legend (lines 1098-1118, category swatches at 1104-1106) advertises category colors via s-coral/s-blue/s-sage (defined, retired-aliased tokens), but the actual grid rendering uses SERVICE_CATEGORY_COLORS (lines 25-30, applied via catBorder at 572-583) which references s-cal-hair/s-cal-nails/s-cal-spa/s-cal-barber. Grepping tailwind.config.js and globals.css confirms these 4 tokens plus s-star-text are undefined anywhere, so Tailwind emits no CSS for them: the category-colored borders on booked slots silently do not render as intended. Legend also omits barber (only lists Hair/Nails/Spa) while the map covers 4 categories.
+    - fix: Wire the legend and SERVICE_CATEGORY_COLORS to the same, actually-defined tokens (e.g. the existing s-cat-coiffeur/barbershop/nails/spa set), add the missing barber legend entry, and verify visually that category-colored left borders render on booked slots.
+- **HIGH** `[code]` `app/[locale]/dashboard/clients/page.tsx:429` · confirmed
+    - rule: a control that renders yet does nothing counts as fabrication and is always high severity (task brief)
+    - problem: The client-tag color picker (options at lines 429-432) offers 6 named colors, but tagColor() (lines 225-235) maps blue, purple, and gray all to the identical class string "bg-s-bg-sunken text-s-ink-2". Picking blue or purple for a client tag saves a distinct string to the DB but produces a visually identical result to gray.
+    - fix: Give each named color a genuinely distinct swatch, or collapse the picker to only the colors that render differently (gray/red/orange/teal).
+
+**Design contract**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/bookings/page.tsx:50` · confirmed
+    - rule: the Avatar primitive is locked NOT colour-coded (deterministic B&W stone-ramp, V3-D202, COMPONENT_REGISTRY.md); reuse the primitive, don't hand-roll a duplicate
+    - problem: Bookings (lines 50-54), Clients (54-61), and Staff (17-21) each hand-roll an identical initials-avatar with a 5-hue colored gradient (AV_GRADS array + avGrad hash function, verified byte-identical in structure across all 3 files). COMPONENT_REGISTRY.md's locked Avatar primitive (primitives/Avatar.tsx) explicitly specifies a deterministic B&W stone-ramp background, NOT colour-coded, and none of the 3 pages import or use it.
+    - fix: Replace the 3 duplicated AV_GRADS/avGrad/initials blocks with <Avatar name={...} src={...} size="sm|md" /> from primitives/Avatar.tsx, or escalate the colour-coded-ops-avatar idea to the owner as a registry amendment rather than a silent triplicate.
+- **HIGH** `[code]` `app/[locale]/dashboard/calendar/page.tsx:353` · confirmed
+    - rule: LOCKFILE.md §12.4: dashboard is exempt from A9 (accent-restriction) but explicitly NOT exempt from A5 (RETIRED tokens like s-coral/s-amber) or A15 (raw Tailwind palette colour)
+    - problem: STAFF_COLORS (lines 353-362) mixes explicitly retired tokens (s-coral aliased to s-ink, s-plum aliased to s-ink-2, s-amber/s-amber-subtle aliased to s-warning, all commented "was X -> alias to Y" in tailwind.config.js) and the fully undefined s-star-text, with 5 raw Tailwind palette colors (blue-100/blue-300/blue-700, pink-*, emerald-*, orange-*, cyan-*). LOCKFILE §12.4 states dashboard files are explicitly NOT exempt from A5. s-coral alone recurs roughly 18 more times through the file as active UI color at the exact lines cited (336, 341, 583, 839, 845, 849, 874, 876, 880, 907, 932, 988, 1009, 1021, 1076, 1083, 1098, 1104).
+    - fix: Sweep calendar/page.tsx: s-coral -> s-ink or s-accent-bright per context, s-plum -> s-ink-2, s-amber* -> s-warning*, drop the undefined s-star-text, and replace the 5 raw Tailwind palette entries in STAFF_COLORS with token equivalents or the existing s-cat-* set.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/services/page.tsx:181` · confirmed
+    - rule: Toast is the locked confirmation/error/warning primitive (COMPONENT_REGISTRY.md); native browser dialogs are unstyled and invisible to the design system
+    - problem: Three error paths use native alert() confirmed verbatim at exactly the cited lines: photo-upload failure (181), photo-upload catch (185), CSV-import failure (590). primitives/Toast.tsx exists and is locked in COMPONENT_REGISTRY.md.
+    - fix: Replace all three alert(...) calls with toast.error(...) from primitives/Toast.tsx.
+
+**Consistency / drift**
+
+- **LOW** `[code]` `app/[locale]/dashboard/queue-display/page.tsx:29` · confirmed
+    - rule: raw hex where a token exists (CONSISTENCY_AUDIT.md canonical A); hairline token = border-s-border, not border-s-ink/{opacity}
+    - problem: queue-display uses raw hex bg-[#0A0A0A] (line 29) and bg-[#16A34A] (line 49) which exactly match the already-defined s-ink (#0A0A0A) and s-success (#16A34A) tokens. calendar/page.tsx's mobile agenda hardcodes raw hex pastel backgrounds at line 588 where an existing s-cat-* token set (coiffeur/barbershop/nails/spa) could be used instead. calendar grid's border-s-ink/5 occurrences confirmed exactly at all cited lines (865,867,873,893,907,949,951,954,970,988,1021,1076) instead of the canonical border-s-border hairline token; CONSISTENCY_AUDIT.md itself names this exact pattern as the single most-duplicated inconsistency in the app.
+    - fix: Swap the raw hexes for their token equivalents; swap border-s-ink/5 for border-s-border across the calendar grid.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/bookings/page.tsx:91` · confirmed
+    - rule: interactive controls >= 44px (h-11), the a11y floor (design contract table, CLAUDE.md)
+    - problem: Every modal close (X) button across the audited files is an unsized, unpadded <button> wrapping only an 18px icon: verified verbatim at bookings/page.tsx:91, calendar/page.tsx:108,190,300, services/page.tsx:89,570, staff/page.tsx:154,299 (8 occurrences, all matching the exact pattern <button onClick={onClose}><X size={18}.../></button>). The clickable target is roughly 18x18px, well under the locked 44px floor.
+    - fix: Wrap each close icon in a 44px hit-area, e.g. className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken", or extract a shared ModalCloseButton given the 8x duplication.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/staff/page.tsx:562` · confirmed
+    - rule: icon-button wrapper = h-11 w-11 (44px, a11y min), CONSISTENCY_AUDIT.md canonical
+    - problem: The 3 per-staff-card action buttons (toggle active, edit, delete) are w-10 h-10 (40px) at lines 562, 566, 570, all confirmed verbatim, under the locked 44px floor.
+    - fix: Bump w-10 h-10 -> w-11 h-11 on all three buttons; adjust the row gap if the card gets tight.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/bookings/page.tsx:273` · confirmed
+    - rule: loading = <Skeleton> shape-matching the final layout, NOT a bare spinner; empty = <EmptyState> with a real recovery action (design contract table + COMPONENT_REGISTRY.md)
+    - problem: Full-list loading states are bare, non-shape-matching Spinner blocks confirmed identically at bookings/page.tsx:274, services/page.tsx:512, staff/page.tsx:525, clients/page.tsx:157. Empty states are hand-rolled <p> text with no recovery action, verified at bookings:276-277, services:514,516, staff:527-529, clients:159-161. Both primitives.Skeleton and components-legacy/ui/EmptyState.tsx exist in the codebase (Skeleton locked in COMPONENT_REGISTRY.md) but are unused in all 4 files.
+    - fix: Swap the bare Spinner blocks for Skeleton-based list placeholders shaped like the real rows, and swap the hand-rolled empty <p> blocks for EmptyState with a recovery action (e.g. open the add modal).
+
+**Copy economy + i18n**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/calendar/page.tsx:705` · confirmed
+    - rule: i18n: any user-facing string/format hardcoded to one locale instead of the active next-intl locale is a finding
+    - problem: Every date/time display is hardcoded to de-CH regardless of the salon owner's dashboard locale, confirmed at all cited lines across bookings/page.tsx (146,290,293), calendar/page.tsx (280,281,330,677,705,706,827,829,830), clients/page.tsx (199,374,413), queue-display/page.tsx (14). The same files correctly thread useLocale() into formatCurrency(amount, locale) (bookings/page.tsx:149,318), proving the locale variable is already in scope and the de-CH hardcoding is a real inconsistency, not an intentional design choice.
+    - fix: Thread the existing locale variable into every toLocaleDateString/toLocaleTimeString call, mapping next-intl locale codes to Intl locale tags (e.g. fr -> fr-CH).
+- **LOW** `[code]` `app/[locale]/dashboard/clients/page.tsx:378` · confirmed
+    - rule: i18n: user-facing text goes through next-intl, not a hardcoded raw enum
+    - problem: Client-detail booking-history tab prints the raw status enum directly, confirmed verbatim at lines 378-380 (<DashStatusPill tone={...}>{b.status}</DashStatusPill>), while bookings/page.tsx:319 has the correct pattern one file over using STATUS_LABEL_KEYS run through t().
+    - fix: Reuse the STATUS_LABEL_KEYS-style lookup (extract to a shared helper) instead of rendering b.status raw.
+- **LOW** `[code]` `app/[locale]/dashboard/queue-display/page.tsx:36` · confirmed
+    - rule: never ALL-CAPS (feedback_ui_copy_rules); this binds production UI, not only mockups
+    - problem: queue-display renders 4 separate uppercase tracking-[...] labels, all confirmed verbatim: back link (36), date subtitle (43), LIVE badge (50), empty state (65).
+    - fix: Drop uppercase and letter-tracking on all 4, matching normal-case sentence copy used elsewhere in the dashboard.
+
+
+### Dashboard category (barber, coiffeur, nail, spa)  `dash-category`
+
+*6 files read · 11 findings (5 high) · 0 dropped by verifier*
+
+**Fabricated data / dead controls**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/coiffeur-crm/page.tsx:114` · confirmed
+    - rule: Solen no-fabrication law (CLAUDE.md taste rule 1: no fabricated data / a control that renders yet does nothing)
+    - problem: `<AllergyAlert allergies={null} />` is a literal hardcoded null on every render of the Consultations tab, even though `clientId` state exists (line 36) and the sibling `ConsultationNotes` component (rendered right below it, same tab) fetches a real per-client `allergies` field from `/api/dashboard/coiffeur/consultations?client_id=...` and displays it itself (ConsultationNotes.tsx lines 37-48, 200-203). AllergyAlert.tsx line 18 (`if (!hasAllergen) return null;`) means the safety alert can never fire for any client since the prop is a constant.
+    - fix: Fetch (or lift from ConsultationNotes' already-fetched data) the selected client's allergies/chemical-sensitivity/patch-test fields keyed by clientId and pass them to AllergyAlert instead of the literal null; don't render the slot at all when no client is selected.
+- **HIGH** `[code]` `app/[locale]/dashboard/spa-admin/page.tsx:100` · confirmed
+    - rule: Solen no-fabrication law (CLAUDE.md taste rule 1); silent no-op pattern (CLAUDE.md 'Silent no-ops' section)
+    - problem: `<ContraindicationAlert intakeData={null} />` is a literal hardcoded null in the Intake tab, gated behind `clientId ? (...) : <EmptyClientPrompt/>` (lines 98-105) so clientId is known at this point but never used to fetch intake data. ContraindicationAlert.tsx line 25 (`if (!intakeData) return null;`) means the pregnancy/heart-condition/recent-surgery warning silently never displays. Note: the real intake data (via IntakeFormTab -> /api/clients/{id}/intake, lib/intake-templates.ts spa_consultation template) uses different field names/types than ContraindicationAlert expects (`pregnant` boolean not `pregnancy`, `contraindications` free-text not a `heart_condition` boolean, `recent_surgery` is free-text not boolean) so the real fix needs a mapping layer, not just a passthrough - but the core defect (a safety alert wired to a constant that always resolves to 'no risk') is real.
+    - fix: Fetch the selected client's intake responses by clientId, map the relevant fields (pregnant/contraindications/recent_surgery text) into the IntakeData shape ContraindicationAlert expects (or extend ContraindicationAlert to read the raw responses shape), and pass real data instead of null.
+
+**Design contract**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/coiffeur-crm/page.tsx:94` · confirmed
+    - rule: LOCKFILE.md line 1215 (no-black-selected gate): every selected state other than the avatar check-badge = calm GRAY fill bg-s-bg-sunken + text-s-ink + semibold, NEVER black/ink; CLAUDE.md design-contract 'selected/active' row
+    - problem: Active tab class is `activeTab === id ? "bg-s-ink text-white hover:bg-black" : ...` (ternary spans lines 92-96, the ink branch is line 94), a literal black fill on a selected tab, exactly what the no-black-selected gate exists to block. Confirmed the barber-ops sibling page (same file family) correctly uses the dashboard-blue active-nav treatment (`bg-s-accent-bright/10 text-s-accent-bright`) per LOCKFILE §12.2, so this is a real inconsistency, not an intentional dashboard exception.
+    - fix: Swap the selected-tab classes to the dashboard active-nav blue (`bg-s-accent-bright/10 text-s-accent-bright`, matching barber-ops/page.tsx) or the calm-gray TabPill treatment; remove the ink/black fill.
+- **HIGH** `[code]` `app/[locale]/dashboard/nail-admin/page.tsx:65` · confirmed
+    - rule: LOCKFILE.md §12.4 (dashboard NOT exempt from A5 retired tokens incl. s-coral); RETIRED list; no-black-selected gate
+    - problem: Selected tab uses `bg-s-coral text-white shadow-elevation-2` (line 65). `s-coral` is on LOCKFILE's RETIRED list and §12.4 states dashboards are NOT exempt from that ban. Confirmed in tailwind.config.js line 81: `"s-coral": "#0A0A0A"` (comment: "was CTAs / active state / brand -> alias to s-ink (B&W pivot)") so this literally renders as ink black, the same banned fill as finding 3. `app/[locale]/dashboard/spa-admin/page.tsx` line 64 has the identical `bg-s-coral text-white shadow-elevation-2` bug.
+    - fix: Replace `bg-s-coral` with the calm-gray selected treatment (`bg-s-bg-sunken text-s-ink font-semibold`) or the dashboard blue active-nav treatment in both nail-admin/page.tsx:65 and spa-admin/page.tsx:64.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/barber-ops/page.tsx:78` · confirmed
+    - rule: LOCKFILE.md §12.3: 'Dashboard cards/panels = rounded-card-lg (20px)... Softer than the customer-site 16px'
+    - problem: Confirmed dashboard/page.tsx and DashboardUI.tsx consistently use `rounded-card-lg` (token = 20px in tailwind.config.js:249) for cards/panels. Confirmed none of the six audited pages use it: barber-ops uses `rounded-[16px]` (lines 78-79, 106); barber-clients/coiffeur-crm/nail-clients use `rounded-2xl` (16px); nail-admin/spa-admin use `rounded-[12px]`. Three different wrong values across the bucket, none matching the locked token.
+    - fix: Standardize all card/panel containers and skeleton placeholders on rounded-card-lg across the six pages.
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/spa-admin/page.tsx:76` · confirmed
+    - rule: CONSISTENCY_AUDIT.md: 'Hairlines: border-s-border (#E7E5E4)... the single most-duplicated treatment in the app'; flags `border-s-ink/[0-9.]+` -> use border-s-border
+    - problem: `<div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4 mb-4">` (line 76) and EmptyClientPrompt at line 127 (`border border-s-ink/[0.06] border-dashed`) both use the arbitrary ink-opacity border CONSISTENCY_AUDIT names by pattern. Confirmed sibling files in this bucket (barber-ops:106, coiffeur-crm:73/130/136/142/150) correctly use border-s-border.
+    - fix: Replace border-s-ink/[0.06] with border-s-border at both spots (lines 76 and 127).
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/barber-ops/page.tsx:34` · confirmed
+    - rule: COMPONENT_REGISTRY.md ErrorState entry: 'Use: any dashboard panel whose fetch can fail, so it never shows an indefinite spinner'; CLAUDE.md states row
+    - problem: `fetch("/api/profile")...catch((err) => console.error(...)).finally(() => setLoading(false))` (lines 34-44) has no failure UI; if it rejects, `salonId` stays undefined and render falls to `!salonId ? null` (line 81), rendering nothing with no retry. Confirmed on coiffeur-crm:106, nail-admin:77, spa-admin:93 which have the identical `!salonId ? null` construct. Correction: the auditor's claim that barber-clients and nail-clients repeat this 'verbatim' is not accurate; those two pages instead use `{salonId && <Component/>}` per-section (same missing-error-state defect, different code shape), not the `!salonId ? null` ternary.
+    - fix: On fetch failure (or missing salon_id after load), render the locked ErrorState primitive with a retry action instead of silently rendering null, in barber-ops.tsx and the other pages sharing this pattern (coiffeur-crm, nail-admin, spa-admin).
+- **MEDIUM** `[code]` `app/[locale]/dashboard/barber-ops/page.tsx:77` · confirmed
+    - rule: COMPONENT_REGISTRY.md Skeleton entry (locked primitive); CLAUDE.md states row: loading = <Skeleton>, USE it, don't hand-roll
+    - problem: Loading state is hand-rolled `animate-pulse` divs instead of the locked `<Skeleton>` primitive (primitives/Skeleton.tsx, registry-locked). Verified the same hand-rolled pattern repeats: barber-clients:41-44, coiffeur-crm:105/126, nail-admin:76, nail-clients:38-41, spa-admin:90-92 (all confirmed by direct read).
+    - fix: Replace the hand-rolled pulse divs with <Skeleton> (or <SkeletonCard>) across all six pages.
+
+**Copy economy + i18n**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/barber-ops/page.tsx:50` · confirmed
+    - rule: i18n: next-intl must wrap all user-facing strings (de/en/fr/it product)
+    - problem: The category eyebrow is a hardcoded literal, not translated: `<p ...>Barber</p>` (line 50) while the h1 two lines below correctly uses `{t("pageTitle")}`. Confirmed the identical bug in coiffeur-crm/page.tsx:66 ('Coiffeur'), nail-admin/page.tsx:50 ('Nails'), spa-admin/page.tsx:49 ('Spa'). Strong supporting evidence: sibling files in the same category bucket (barber-clients/page.tsx:31, nail-clients/page.tsx:31) correctly use `{t("eyebrow")}` for the identical UI slot, proving this is a real, fixable inconsistency with an existing correct pattern to copy.
+    - fix: Add an `eyebrow` translation key to each of the four namespaces (dashboardBarber, dashboardCoiffeur, nail_dashboard, dashboardSpa) and route the literal through t("eyebrow"), matching the barber-clients/nail-clients pattern.
+
+**Icons**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/nail-admin/page.tsx:4` · confirmed
+    - rule: Owner-named icon ban (memory feedback_icon_rules.md, 2026-06-23 dated): 'Never use the Lucide Sparkles (or Star) glyph as a decorative placeholder... not anywhere'
+    - problem: `Sparkles` is imported and used as the tab icon for the AI-art-generation feature (`{ id: "ai", labelKey: "tabAI", icon: Sparkles }`, line 18). The rule text is a blanket ban ('not anywhere') dated after an emphatic owner rejection. Caveat: this specific usage labels a genuine AI-generation feature (not a decorative filler on an image-less content tile, which was the original violation context), and Sparkles-for-AI already appears elsewhere in the live codebase (e.g. profile/intake-forms/page.tsx:118 'AI Analyse'), so this may be a pre-existing accepted convention rather than fresh drift. Flagging as confirmed on the letter of the rule, with reduced confidence on intent.
+    - fix: Swap Sparkles for a different Lucide icon not on the banned list (e.g. Wand2) for the AI tab, per the rule's letter.
+- **LOW** `[code]` `app/[locale]/dashboard/nail-admin/page.tsx:22` · confirmed
+    - rule: Icon-as-scanning-aid principle: distinct icon per meaningfully distinct thing
+    - problem: `{ id: "retail", labelKey: "tabRetail", icon: ShoppingBag }` and `{ id: "sales", labelKey: "tabSales", icon: ShoppingBag }` (lines 22-23) assign the identical icon to two adjacent, distinct tabs (Retail inventory vs. Sales dashboard).
+    - fix: Give the Sales tab a distinct icon, e.g. BarChart3 or TrendingUp, to differentiate it from Retail's ShoppingBag.
+
+
+### Dashboard admin (salons, users, approvals, cities, moderation, verification, cases)  `dash-admin`
+
+*14 files read · 16 findings (5 high) · 1 dropped by verifier*
+
+**Fabricated data / dead controls**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/approvals/page.tsx:37` · confirmed
+    - rule: Silent no-ops ("prove behavior, not existence") + no .catch(() => {})
+    - problem: approve() (lines 37-42) and reject() (44-56) never check response.ok and have no try/catch. The fetch to /api/admin/salons/${id}/approve (and /reject) is awaited unconditionally, then setSalons filters the row out regardless of the PATCH result. A 500/403/network failure still makes the salon vanish from the pending queue as if approved/rejected, with no revert path.
+    - fix: Check res.ok before mutating state, wrap in try/catch, console.error on failure, show a toast.error and leave the row in place. cities-admin/page.tsx:58-81 in the same bucket already does this correctly (optimistic update + revert-on-error) — mirror that pattern.
+- **HIGH** `[code]` `app/[locale]/dashboard/all-users/page.tsx:108` · confirmed
+    - rule: Silent no-ops
+    - problem: handleRoleChange (lines 108-115) has no try/catch and no response.ok check: it awaits the PATCH then unconditionally updates the role in local state. A failed PATCH (permission/validation error) still shows the new role selected. Note the sibling handleSuspendToggle in the SAME file (117-136) correctly wraps in try/catch — this is an internal inconsistency, not a stylistic choice.
+    - fix: Check res.ok, revert the select on failure, log + toast the error. Same shape as handleSuspendToggle two functions below it in this file.
+- **HIGH** `[code]` `app/[locale]/dashboard/all-salons/page.tsx:295` · confirmed
+    - rule: A control that renders yet does the wrong thing
+    - problem: Verified: each salon row's "Bearbeiten" link is href={`/${locale}/dashboard/settings`} (line 295-296), no salon id. settings/page.tsx:1414-1424 always loads the salon via fetch("/api/profile") -> fetch(`/api/salons/${p.salon_id}`), and I confirmed there is no useSearchParams-based salon override anywhere in that file (only a "verified" query param is read, at line 1406). Clicking Bearbeiten on any salon in the admin list opens the logged-in admin's OWN salon settings, never the clicked salon's.
+    - fix: Either wire settings/page.tsx to accept a ?salon_id= override for admin use, or point this link at a real admin-scoped salon-edit route if one exists (npm run exists salon edit admin first per the exists-check protocol).
+- **MEDIUM** `[code]` `app/[locale]/dashboard/badge-manager/page.tsx:257` · confirmed
+    - rule: Never .catch(() => {}) — always console.error("[Component] description:", err)
+    - problem: Verified: three fetch chains swallow errors with zero logging: .catch(() => setBadges([])) (line 257), .catch(() => setSalonResults([])) (line 270), .catch(() => setSalonBadges([])) (line 281). Every other data-fetch in this bucket logs via console.error before falling back.
+    - fix: Add console.error("[BadgeManager] failed to fetch badges:", err) (etc.) inside each catch.
+
+**Design contract**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/badge-manager/page.tsx:368` · confirmed
+    - rule: RETIRED tokens list (LOCKFILE §1 + §12.4 line 1190): s-coral is retired; dashboard is exempt from A9 (accent-restriction) but explicitly NOT exempt from A5 (retired tokens)
+    - problem: bg-s-coral is the page's entire primary-action color (line 368, the "+ Neues Badge" CTA), plus focus:border-s-coral (109, 119, 455, 509), text-s-coral/ring-s-coral (134, 411, 421, 429), bg-s-coral (186, 224, 521). Verified against LOCKFILE.md:1190 which names s-coral by name as a retired token dashboard files are NOT exempt from. Same pattern recurs pervasively in verification/page.tsx (78, 97, 126) and admin-sandbox/page.tsx (262, 269, 294, 307, 350, 351, 458).
+    - fix: Replace every s-coral reference in these three files with the dashboard's locked vibrant primitives: DashButton variant="primary" (accent-blue) for CTAs, text-s-accent/border-s-accent for focus/active states, matching cases/page.tsx which already uses bg-s-accent-bright/focus:border-s-accent correctly.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/all-salons/page.tsx:182` · confirmed
+    - rule: Selected/active state must be calm gray fill (bg-s-bg-sunken + text-s-ink + semibold), never ink/black — design contract table, gate no-black-selected
+    - problem: Verified: the status tab filter uses ink/black fill for the selected state: tab === value ? "bg-s-ink text-white hover:bg-black" : "bg-white border border-s-border text-s-ink-2..." (ternary at line 182-184, not 180 as originally cited — 180 is the opening of the className array). No dashboard exemption for this rule exists in LOCKFILE §12.4 (only A9 is exempted). Identical bug in review-moderation/page.tsx:156.
+    - fix: Selected tab = bg-s-bg-sunken text-s-ink font-semibold; unselected stays white + hairline (the TabPill treatment).
+- **MEDIUM** `[code]` `app/[locale]/dashboard/review-moderation/page.tsx:186` · confirmed
+    - rule: No decorative separators — taste rule #2
+    - problem: Verified: bare | characters at lines 186 and 190 between customer name / salon name / date in the review header row, identical to the banned middot-separator pattern with a different glyph.
+    - fix: Delete the | spans; use flex-wrap gap spacing to separate the fields instead.
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/badge-manager/page.tsx:29` · confirmed
+    - rule: A label must match the thing it labels (no fabricated/mismatched data)
+    - problem: Verified: COLOR_PRESETS maps { value: "#1B4D1B", labelKey: "colorCoral" } (line 29). #1B4D1B = RGB(27,77,27), a dark forest green, not coral. It is also the default color state for a new badge (line 76: useState(badge?.color ?? "#1B4D1B")). Any admin picking "Coral" gets a green swatch and a green badge.
+    - fix: Fix the hex to an actual coral value (e.g. #FF6B4A) or rename the label to match the green it actually renders.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/approvals/page.tsx:71` · confirmed
+    - rule: Use registered primitives, don't hand-roll — COMPONENT_REGISTRY.md (EmptyState is already imported and used by 4 sibling files in this exact bucket)
+    - problem: Verified: the empty state is hand-rolled (lines 71-74: bg-white rounded-2xl border p-12 text-center + ShieldCheck + text) instead of the EmptyState component. Confirmed EmptyState is imported and used in all-users.tsx:185, all-salons.tsx:208, review-moderation.tsx:169, badge-manager.tsx:383 — all in the same admin bucket. verification.tsx:139-141 independently hand-rolls a THIRD, differently-styled (dashed border) empty box for the same role.
+    - fix: Replace both hand-rolled blocks with <EmptyState icon={...} title={...} message={...} />, matching the other four files in this bucket.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/verification/page.tsx:68` · confirmed
+    - rule: One destructive-confirm pattern per app; every other file in this bucket uses a custom ConfirmModal/DeleteModal
+    - problem: Verified: if (!confirm(t('confirmDelete'))) return; at line 68 uses the native browser confirm() for a destructive delete, while all-salons.tsx (ConfirmModal, lines 51-93), all-users.tsx (ConfirmModal, lines 35-77), review-moderation.tsx (DeleteModal, 43-72) and badge-manager.tsx (DeleteModal, 198-233) all build a proper ink-branded modal for the identical action. admin-sandbox.tsx:110 does the same with confirm(t("confirmDeleteAll")), and cases/page.tsx:190/193 uses native alert() instead of the registered Toast primitive.
+    - fix: Route these through the existing ConfirmModal pattern and toast.error(...) instead of confirm()/alert().
+- **MEDIUM** `[code]` `app/[locale]/dashboard/cases/page.tsx:282` · confirmed
+    - rule: Raw hex/arbitrary shadow where a token exists — CONSISTENCY_AUDIT.md (arbitrary shadow-[...] and rounded-[Npx]/border-[hex] canonicals, lines 36-42)
+    - problem: Verified: the escalated-case card at line 282 uses border-[#dcd9d6] p-5 shadow-[0_1px_2px_rgba(0,0,0,.04),0_10px_28px_rgba(10,10,10,.07)] instead of tokens. The timeline dot border repeats the pattern at line 330: bg-white border-[#BBB8B5].
+    - fix: Map #dcd9d6/#BBB8B5 to the nearest s-border/s-ink-3 token and the arbitrary shadow to shadow-elevation-2/-3.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/admin-sandbox/page.tsx:234` · confirmed
+    - rule: Error colour = s-error token, never raw Tailwind red-* — CONSISTENCY_AUDIT.md line 43 ("50+ raw red-* in booking/profile/ui, parallel to ~180 s-error")
+    - problem: Verified: raw Tailwind red used directly instead of s-error: bg-red-50 text-red-500 hover:bg-red-100 (line 234, delete-all button), text-red-500 (248, 253), hover:bg-red-50 hover:text-red-500 (387, 393), bg-red-50 text-red-500 (425).
+    - fix: Replace with bg-s-error-bg text-s-error / hover:bg-s-error-bg, matching the correct s-error usage already in this bucket (e.g. cases.tsx:353 border-s-error/40 text-s-error).
+- **LOW** `[code]` `app/[locale]/dashboard/all-salons/page.tsx:200` · confirmed
+    - rule: Use a real token, not an undefined Tailwind color name
+    - problem: Verified: placeholder-dark/30 at line 200. tailwind.config.js has no "dark" color key (darkMode was removed 2026-05-02, confirmed via grep) so this compiles to nothing. Same dead class reused verbatim in all-users.tsx:177 and badge-manager.tsx:455.
+    - fix: Replace placeholder-dark/30 with placeholder-s-ink/30 (or placeholder:text-s-ink-3) in all three files.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/admin-sandbox/page.tsx:371` · confirmed
+    - rule: Icon-button wrapper locked to h-11 w-11 (44px, the a11y floor) / general "touch target: interactive controls >= 44px" row — design contract table
+    - problem: Verified: the reset/delete/expand icon-only buttons on every seeded-salon row are w-8 h-8 (32px) at lines 371, 384, and 397. badge-manager.tsx's color-swatch buttons are the same w-8 h-8 at line 152 (exact match for the "icon-button" rule since these are pure icon buttons, no label). The broader claim that px-3 py-1.5 text-xs action buttons elsewhere (all-salons.tsx:281/288, all-users.tsx:262/269, review-moderation.tsx:241-261) also fall short is true as code but is really the separate "touch target >= 44px" row, not the "icon-button" row, and that h-9/text-xs pattern is the near-universal convention across almost every admin page in this bucket (including cases/page.tsx's own h-9 action buttons) — it reads like a deliberate admin-density convention rather than an isolated miss, so treat that part as lower-confidence than the clean icon-button violations.
+    - fix: Bump the pure icon-only buttons (admin-sandbox 371/384/397, badge-manager 152) to h-11 w-11 first — that is the unambiguous violation. For the smaller text-label buttons across the bucket, escalate to the owner whether the admin-density convention is an intentional, undocumented exemption before mass-editing every file.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/approvals/page.tsx:69` · confirmed
+    - rule: Loading = <Skeleton> shape-matching the final layout, never a bare spinner — design contract table + COMPONENT_REGISTRY.md
+    - problem: Verified: {loading ? <div className="flex justify-center py-16"><Spinner size="lg" /></div> : ...} at line 69, a bare centered spinner not shaped like the pending-salon-card layout. Same pattern recurs at all-salons.tsx:206, all-users.tsx:183, review-moderation.tsx:167, cities-admin.tsx:94, badge-manager.tsx:376, cases.tsx:262/320/377 — this is a bucket-wide convention, not isolated to this file.
+    - fix: Swap the loading branch for a composite Skeleton shaped like the card list.
+
+**Copy economy + i18n**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/admin-sandbox/page.tsx:198` · confirmed
+    - rule: No em-dashes in UI copy (taste rule #10) + all user-facing strings go through next-intl
+    - problem: Verified: the "Platform Test-Salons" banner copy is hardcoded English at lines 197-200, bypassing t() even though every other string on the page is translated. The result/error strings a few lines down are hardcoded German AND contain em-dashes: "{n} Fehler — siehe Konsole" (line 248) and "Fehler beim Seeden — Console prüfen" (line 253).
+    - fix: Move all four strings into the adminSandbox i18n namespace and replace the em-dashes with a period/colon.
+
+**Dropped by the verifier** (kept for audit trail)
+
+- `app/[locale]/dashboard/badge-manager/page.tsx` , not-real , Sparkles/Zap in the badge icon picker (ICON_MAP, lines 18-22)
+
+
+### Dashboard growth (marketing, segments, loyalty, discovery, homepage-admin, gallery)  `dash-growth`
+
+*15 files read · 14 findings (4 high) · 0 dropped by verifier*
+
+**Fabricated data / dead controls**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/segments/page.tsx:127` · confirmed
+    - rule: dead-click contract (CLAUDE.md taste rule 1 / no-op controls)
+    - problem: The per-segment button (Mail icon + t("sendEmail")) has full hover-affordance styling (hover:border-s-coral hover:text-s-coral) but no onClick at all, verified by direct read of the file. It looks tappable and does nothing.
+    - fix: Wire the button to a real send-email action for the segment, or remove it until the feature ships.
+
+**Design contract**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/discovery-admin/page.tsx:54` · confirmed
+    - rule: retired-token ban (LOCKFILE §12.4 + RETIRED list: dashboard is exempt from A9 accent-restriction but NOT from A5 retired tokens s-coral/s-amber/s-sage) and no-black-selected gate intent (LOCKFILE line 1215)
+    - problem: Verified: tailwind.config.js:81 aliases s-coral to #0A0A0A (pure ink) with an explicit comment 'was CTAs/active state/brand', and LOCKFILE's RETIRED list (line 106) explicitly lists s-coral, s-sage, s-amber as 'never use in new code'. discovery-admin/page.tsx:54 renders the active tab as activeTab === tab ? "bg-s-coral text-white" : ... (spot-checked exact line, matches verbatim). Spot-checked and confirmed the same s-coral/s-amber pattern repeats widely: discovery-admin:182,185,202,218,223,308,313,376,392,491,509,516,545,567,706,716; discovery-posts:146,149,162,171,183; homepage-admin:88,111,129,135; help-editor:117-250; loyalty:94,109,114 (bg-s-coral CTA/icon) and loyalty:119 (text-s-sage for a success message, also on the RETIRED list).
+    - fix: Per LOCKFILE §12.2, dashboard active-nav/CTA should use s-accent-bright (#276EF1, confirmed defined in tailwind.config.js:224); a genuinely selected pill/tab (not nav/CTA) should use the calm-gray TabPill treatment (bg-s-bg-sunken text-s-ink font-semibold) per LOCKFILE line 1215. Replace s-sage success text with s-success. Route new call sites through DashButton/TabPill registry primitives.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/segments/page.tsx:99` · confirmed
+    - rule: no per-category/per-row raw colour (CLAUDE.md design contract: category tag = neutral bg-s-bg-sunken + text-s-ink-2, no per-category colour)
+    - problem: Verified against the LIVE database: customer_segments currently has 5 real rows each with a distinct raw hex color (#F59E0B, #D4AF77, #EC4899, #4ECDC4, #FF6B6B). segments/page.tsx:99-101 renders style={{ backgroundColor: seg.color + "15", color: seg.color }} on the icon chip and style={{ color: seg.color }} on the member count at line 111 (verified), bypassing every design token.
+    - fix: Drop the per-row inline hex; render the icon chip and count in the standard neutral treatment (bg-s-bg-sunken / text-s-ink), reserving color for the semantic icon table if a genuine distinction is needed.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/help-editor/page.tsx:145` · confirmed
+    - rule: focus-ring law (CLAUDE.md design contract: focus is a single global ink halo; primitives add no extra outline)
+    - problem: Verified: form inputs hand-roll focus:outline-none focus:ring-2 focus:ring-s-coral/30 at lines 145, 150, 161, 168, 176-177 (all grepped and confirmed), duplicating the global :focus-visible system already defined in app/globals.css (confirmed lines 358-369) and using the retired s-coral token. Same pattern confirmed at loyalty/page.tsx:109.
+    - fix: Delete the custom focus:ring-* classes; let the global :focus-visible ink-border + halo apply. If a dashboard-specific override is genuinely needed, use a non-retired token.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/marketing/page.tsx:70` · confirmed
+    - rule: shadow token canonical (CONSISTENCY_AUDIT.md: legacy shadow alias names -> elevation-1/2/3, flagged 'safe to collapse, churn-vs-tidy call')
+    - problem: Verified: shadow-warm-md is used at marketing/page.tsx:70, segments/page.tsx:93, homepage-admin/page.tsx:91 plus its toggle-thumb shadow-warm-sm at line 117, and help-editor/page.tsx:136 (all grepped and confirmed). warm-sm/warm-md are still defined tokens in tailwind.config.js (lines 265-266), not broken CSS, and CONSISTENCY_AUDIT.md explicitly frames the elevation-alias collapse as a lower-urgency 'churn-vs-tidy call', so this is real drift but softer than a hard-locked violation.
+    - fix: Swap shadow-warm-md/shadow-warm-sm to shadow-elevation-2/shadow-elevation-3 per the LOCKFILE design contract, as a tidy-up pass rather than an urgent fix.
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/segments/page.tsx:93` · confirmed
+    - rule: radius token canonical (CONSISTENCY_AUDIT.md: 'rounded-[12px] blocks -> rounded-card/rounded-2xl (16)'); NOTE: LOCKFILE §12.3 sets a dashboard-specific radius that differs from the customer-site canon the auditor cited
+    - problem: Verified: segments/page.tsx:93 uses rounded-[12px] on the card and rounded-[8px] on the icon chip (line 99), both grepped and confirmed. Same rounded-[12px] pattern confirmed at loyalty/page.tsx:92, discovery-admin/page.tsx:192,217,308,376,392,491,545,706, help-editor/page.tsx:117,136,218, homepage-admin/page.tsx:91. However, the auditor's cited target token (rounded-card/16px) is the CUSTOMER-facing canon; LOCKFILE §12.3 sets a SEPARATE, dashboard-specific rule: 'Dashboard cards/panels = rounded-card-lg (20px)' (confirmed token exists: tailwind.config.js:249, "card-lg": "20px"). The bracket-notation drift is real; the auditor's proposed replacement token is wrong for this surface.
+    - fix: Replace rounded-[12px] on dashboard cards/panels with rounded-card-lg (20px) per LOCKFILE §12.3, not rounded-card/16px (that canon is customer-site only). Pick a fixed small-chip radius token for the 8px icon-chip case.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/marketing/page.tsx:70` · confirmed
+    - rule: hairline token canonical (CONSISTENCY_AUDIT.md: 'border-s-ink/{op} -> border-s-border', ~480 stray uses vs 201 canonical, no dashboard exemption noted)
+    - problem: Verified: className="bg-white rounded-[16px] border border-s-ink/5 shadow-warm-md p-5" at line 70. Same border-s-ink/5 pattern confirmed at segments/page.tsx:93,119,135, loyalty/page.tsx:92, discovery-admin/page.tsx:545,706, homepage-admin/page.tsx:95 (all grepped and confirmed).
+    - fix: Replace border-s-ink/5 with border-s-border (#E4E4E7) at every cited call site.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `app/[locale]/dashboard/gallery/page.tsx:31` · confirmed
+    - rule: componentised states law (CLAUDE.md design contract: error = <ErrorState> inline, never an indefinite/blank state)
+    - problem: Verified: fetchSalon()'s .catch((err) => { console.error("Gallery page error:", err); }) (line 31-33) only logs, then .finally(() => setLoading(false)). With salon still null, if (!salon) return null; at line 53 renders a fully blank page with no error UI or retry. ErrorState exists at components-legacy/ui/ErrorState.tsx (registered, locked) and IS correctly used with onRetry in dashboard/marketing/page.tsx:74, confirming the fix pattern is real and adjacent.
+    - fix: On fetch failure set an error state and render <ErrorState onRetry={fetchSalon} .../>, mirroring marketing/page.tsx:73-74.
+- **HIGH** `[code]` `app/[locale]/dashboard/help-editor/page.tsx:236` · confirmed
+    - rule: touch-target floor (CLAUDE.md design contract: interactive controls >= 44px, h-11, the a11y floor)
+    - problem: Verified: the article row action buttons (publish/edit/delete) use className="p-1.5 rounded-btn ..." around a 14px Lucide icon at lines 236-237, 243-244, 249-250 (auditor cited 235, actual first button opens at 236) - roughly 26x26px hit box, well under the 44px floor. Also verified: discovery-admin drag-handle is w-7 h-7 at line 555, archive button w-6 h-6 at line 560, and the bulk-import-result dismiss button at line 195 (<button onClick={...} className="ml-auto text-s-ink/30 hover:text-s-ink-2">) has no padding class at all around a 14px XCircle icon.
+    - fix: Wrap each icon action in a >=40-44px hit area, keeping the visible icon small inside the larger tappable box, per the locked icon-button spec.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/marketing/page.tsx:72` · confirmed
+    - rule: componentised loading state (CLAUDE.md design contract: loading = <Skeleton> shape-matching, not a bare spinner)
+    - problem: Verified: {loadingSalon ? (<div className="flex justify-center py-8"><Spinner size="md" /></div>) : ...} at line 71-72. Same bare-spinner pattern confirmed at segments/page.tsx:79-80, loyalty/page.tsx:72-77 (a full DashboardLayout wraps a lone <Spinner />), homepage-admin/page.tsx:86-88 (<Loader2 className="animate-spin">, auditor cited 87-89, off by one line, same block), and help-editor/page.tsx:207-208. gallery/page.tsx:41-51 correctly uses <Skeleton> shapes for its own load, confirming the primitive is available and simply unused elsewhere.
+    - fix: Replace the centered Spinner/Loader2 block with <Skeleton> shapes matching each panel's final layout, following gallery/page.tsx's own pattern.
+- **MEDIUM** `[code]` `app/[locale]/dashboard/discovery-admin/page.tsx:235` · confirmed
+    - rule: componentised empty state (CLAUDE.md design contract: empty = <EmptyState>, don't hand-roll)
+    - problem: Verified exact matches: <p className="text-center text-s-ink/30 py-12">{t("stockEmpty")}</p> at line 235, and identical hand-rolled pattern at lines 527 (stagingEmpty), 663 (publishedEmpty), 736 (flaggedEmpty) - all four grepped and confirmed. discovery-posts/page.tsx:195 (emptyHistory) and help-editor/page.tsx:210-212 (emptyState) confirmed hand-rolled with no icon/action. marketing/page.tsx:76 and segments/page.tsx:82 confirmed correctly use the locked <EmptyState> primitive, proving it's available and adopted inconsistently.
+    - fix: Replace each hand-rolled <p>/<div> with <EmptyState icon title message />, adding a real recovery action where one exists (e.g. reload).
+- **LOW** `[code]` `app/[locale]/dashboard/discovery-admin/page.tsx:487` · confirmed
+    - rule: keyboard-path consistency (CLAUDE.md design contract: no missing keyboard path)
+    - problem: Verified: the Stock Import tab's tile div has role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && toggleSelect(photo.id)} at lines 209-215. The Staging tab's functionally identical tile at lines 487-490 (<div key={item.id} onClick={() => toggleSelect(item.id)} className={...}>) has no role, tabIndex, or onKeyDown - confirmed by direct read.
+    - fix: Add role="button" tabIndex={0} onKeyDown to the Staging tab's tile div, mirroring the Stock Import tab's pattern.
+
+**Copy economy + i18n**
+
+- **LOW** `[code]` `app/[locale]/dashboard/segments/page.tsx:139` · confirmed
+    - rule: i18n hardcode ban (project i18n contract: every user-facing string goes through next-intl, de/en/fr/it)
+    - problem: Verified: <p className="text-xs text-s-ink/30 text-center py-2">Keine Mitglieder</p> at line 139, hardcoded German inside a component that sources every other string via t(...). The member fallback {m.display_name ?? "Anonym"} is confirmed at line 147.
+    - fix: Add t("noMembers") and t("anonymous") translation keys and use them in place of the literals.
+
+**Icons**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/segments/page.tsx:16` · confirmed
+    - rule: banned-icon law (feedback_icon_rules memory, verbatim: 'Never use the lightning/zap icon [Lucide zap]')
+    - problem: Verified against the LIVE production database (Supabase project tocfnsmxmdxkrcmjzzdw, table customer_segments): a real, live row has name="Power Bookers", icon="Zap", color="#FF6B6B". ICON_MAP at segments/page.tsx:16-18 maps seg.icon strings straight to Lucide glyphs including Zap (imported line 7). This is stronger than the auditor's migration-file citation: the banned icon is confirmed live, not just seeded.
+    - fix: Update the live row's icon column (and/or the ICON_MAP fallback logic) to an allowed Lucide glyph, e.g. TrendingUp, for the Power Bookers segment.
+
+
+### Dashboard core (home, setup, settings, editors, layout/nav)  `dash-core`
+
+*17 files read · 9 findings (2 high) · 0 dropped by verifier*
+
+**Design contract**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/settings/page.tsx:52` · confirmed
+    - rule: LOCKFILE Section 1 RETIRED list: s-coral never use in new code; LOCKFILE line 1190 confirms dashboard files are exempt from A9 (accent-restriction) but explicitly NOT exempt from A5 (retired-token enforcement, naming s-coral/s-amber by name)
+    - problem: Verified s-coral used at settings/page.tsx line 52 (hours-editor day toggle: bg-s-coral text-white) and dozens more times through the same file (lines 256, 266, 269, 274, 277, 282, 320, 336, 370, 379, 388, 572, 594, 609, 612, 638-643, 699-743, and more), alternating in the SAME file with s-accent-bright for the identical selected/primary role (lines 137-138, 451-462, 852-943). Repo-wide grep confirms s-coral appears 288 times across 48 files under app/[locale]/dashboard + components-legacy/dashboard (auditor's narrower dash-core count of 180/33 is plausible as a subset; actual scope is at least as large, not smaller).
+    - fix: Sweep s-coral to s-accent-bright (the dashboard-scope token) across the flagged files; component-first via the shared DashboardUI primitives rather than file-by-file.
+- **LOW** `[code]` `components-legacy/dashboard/ActivityFeed.tsx:23` · confirmed
+    - rule: LOCKFILE Section 1 RETIRED list: s-amber PERMANENTLY KILLED V3-D320, drift-checker will reject any new s-amber usage
+    - problem: Verified EVENT_ICON_MAP.booking_cancelled (line 23) and .review_new (line 24) use iconBg: bg-s-amber/10. Verified components-legacy/dashboard/NotificationCenter.tsx TYPE_CONFIG.cancellation (line 26) and .low_slots (line 27) use the identical retired token. LOCKFILE line 108 confirms s-amber was permanently killed V3-D320 and the drift-checker rejects any new usage; line 1190 confirms dashboard files are NOT exempt from this rule.
+    - fix: Swap bg-s-amber/10 to bg-s-warning-bg (or bg-s-warning/10) in both files.
+- **LOW** `[code]` `components-legacy/dashboard/StatCard.tsx:68` · confirmed
+    - rule: CONSISTENCY_AUDIT.md rule A15: raw palette hex bypassing a semantic token; CLAUDE.md taste rule 4 (never use a dark .text token as a focal fill)
+    - problem: Verified deltaColors.up at line 68 is text-[#15803D] bg-[#16A34A]/10, a raw hex pair. LOCKFILE line 70 confirms #15803D was explicitly REVERTED 2026-06-10 (owner: normal green not deep) in favor of the single #16A34A used for both focal and inline success treatments, and a live s-success token exists for this exact purpose (LOCKFILE line 68: s-success.DEFAULT #16A34A / s-success.bg #E8F5E9).
+    - fix: Replace with text-s-success bg-s-success-bg (or bg-s-success/10 if the pale-10% variant is intentional).
+
+**Consistency / drift**
+
+- **MEDIUM** `[code]` `app/[locale]/dashboard/settings/page.tsx:255` · confirmed
+    - rule: CONSISTENCY_AUDIT.md: the same situation gets a different treatment + don't hand-roll, reuse the locked primitive
+    - problem: Verified LastMinuteTab's toggle at lines 255-259 is a bare <button> with no role or aria-checked, filled with retired tokens bg-s-coral / bg-s-sand. Verified SchedulingTab's daily-limit toggle at lines 1168-1172 IS aria-correct (role=switch aria-checked={limitEnabled}) but is an independent w-[38px] h-[23px] reimplementation. Verified the locked Switch primitive exists at app/[locale]/_components/primitives/Switch.tsx: w-11 h-6 (44x24px) track, role=switch, aria-checked, bg-s-ink when checked (not s-coral). Neither hand-rolled toggle reuses it.
+    - fix: Replace both hand-rolled toggles with <Switch checked={...} onCheckedChange={...} /> from the primitives library.
+- **MEDIUM** `[code]` `components-legacy/dashboard/DashboardLayout.tsx:181` · confirmed
+    - rule: Don't leave superseded/duplicate config in a live file; a component's data source of truth should be singular
+    - problem: Verified OWNER_NAV_GROUPS (lines 56-100) feeds filteredOwnerNavGroups (useMemo, lines 181-199) and categoryNavGroups (useMemo, lines 202-205, backed by getCategoryNavGroups import at line 21). Grepped the whole file and the rest of the repo: filteredOwnerNavGroups and OWNER_NAV_GROUPS are never referenced anywhere else (not passed as a prop, not destructured into JSX, not rendered). The live nav is driven entirely by RAIL_NAV (lines 114-131), a second, differently-grouped taxonomy (Verkauf & Kunden/Abrechnung vs OWNER_NAV_GROUPS's Spezial/Mehr). Confirmed dead code computed on every render.
+    - fix: Delete OWNER_NAV_GROUPS, filteredOwnerNavGroups, and categoryNavGroups (and the now-unused getCategoryNavGroups import) since RAIL_NAV is confirmed the sole live source; if categoryNavGroups was meant to drive a category-specific rail section, that wiring is missing and should be restored instead.
+- **LOW** `[code]` `components-legacy/dashboard/NotificationCenter.tsx:95` · confirmed
+    - rule: No malformed/no-op Tailwind classes; a hover state must actually apply
+    - problem: Verified line 95: className includes hover:bg-s-bg-sunken:bg-white/[0.06] transition-colors. A bare colon appended after a real utility name is not a recognized Tailwind variant, so this class never compiles to any CSS rule and the hover state silently does nothing.
+    - fix: Replace with a single valid class, e.g. hover:bg-s-bg-sunken.
+
+**States + accessibility**
+
+- **HIGH** `[code]` `components-legacy/dashboard/DashboardLayout.tsx:288` · confirmed
+    - rule: Design contract: 'touch target: interactive controls >= 44px (h-11), the a11y floor' / 'icon-button h-11 w-11'
+    - problem: Verified every icon-only control cited: desktop rail links w-10 h-10 = 40px at lines 288, 302, 311; desktop search trigger w-[38px] h-[38px] = 38px at line 430; mobile hamburger p-1.5 around a 20px Menu icon (~32px total) at lines 437-439; mobile search trigger p-1.5 around a 16px icon (~28px total) at lines 441-443. Companion file components-legacy/dashboard/NotificationCenter.tsx confirmed: bell trigger w-8 h-8 = 32px at line 95, close button p-1 around a 12px icon (~20px) at lines 131-133. CONSISTENCY_AUDIT.md line 39 states the canonical is h-11 w-11 (44px, a11y min) with no dashboard-chrome exemption (LOCKFILE line 1190 only exempts dashboard from A9 accent-restriction, not the a11y touch-target floor).
+    - fix: Bump every icon-only chrome control to h-11 w-11 (or pad the hit area to 44px while the icon stays visually smaller inside it), matching the locked icon-button spec.
+- **LOW** `[code]` `app/[locale]/dashboard/page.tsx:172` · confirmed
+    - rule: Design contract: loading = <Skeleton> (shape matches the final layout, NOT a bare spinner); COMPONENT_REGISTRY: use the locked primitive, don't hand-roll
+    - problem: Verified the loading branch: {loading ? (<div className=grid...>{[...Array(2)].map((_, i) => <div key={i} className=rounded-card-lg border border-s-border bg-white h-56 animate-pulse />)}</div>) : (...)}. This is a hand-rolled div (mapped twice), not the locked Skeleton primitive from app/[locale]/_components/primitives, even though DashboardLayout.tsx's own auth-loading skeleton (lines 253-267, one level up in the wrapper) correctly uses <Skeleton>. Line corrected from the auditor's cited 170-173 to the actual hand-rolled element at line 172 (170 is only the ternary opening).
+    - fix: Replace the bare animate-pulse div with <Skeleton height={224} rounded={16} /> (matching rounded-card-lg) for each of the two chart placeholders.
+
+**Copy economy + i18n**
+
+- **HIGH** `[code]` `components-legacy/dashboard/DashboardLayout.tsx:114` · confirmed
+    - rule: i18n: every user-facing string must go through next-intl (de/en/fr/it); a hardcoded single-language string is a finding
+    - problem: RAIL_NAV (lines 114-131, the file's own comment at 111-113 calls it the SINGLE source of truth for both the desktop rail and the mobile sidebar) hardcodes German label/group strings (Übersicht, Kalender, Warteschlange, Katalog, Pakete, Kund:innen, Marketing, Verkäufe, Team, Berichte, Rückerstattungen, Mehrbelastung, Fälle, Einstellungen, plus group labels Betrieb/Verkauf & Kunden/Business/Abrechnung/Mehr) and renders them verbatim: {label} at line 291 (desktop tooltip), {groupLabel} at line 373, {label} at line 380 (mobile sidebar row). ADMIN_NAV and STAFF_NAV in the same file correctly call t(key) at lines 304 and 357. Verified messages/en.json has dashboard.nav keys for the OLD taxonomy (overview, calendar, clients, services, marketing, team, settings) but is missing keys for the NEW RAIL_NAV taxonomy items (queue, catalog, bundles, sales, reports, refunds, upcharge, cases) and all five group labels, confirming this is an unfinished migration, not an intentional exception (the file's own comment at line 109-110 says i18n keys for the new taxonomy land in the i18n pass).
+    - fix: Add the missing dashboard.nav keys (RAIL_NAV items + 5 group labels) to messages/de.json, en.json, fr.json, it.json, then render t(key)/t(groupKey) instead of the literal label/groupLabel fields at lines 291, 373, 380.
+
+
+## /dev route triage
+
+37 routes triaged: **22** keep-referenced, **10** dead-delete, **5** keep-active-mockup
+
+| route | verdict | evidence |
+|---|---|---|
+| `/dev/confirm-preview` | dead-delete | Zero references anywhere in app/components/components-legacy/lib/_plans/_design-system. The file's own header states: 'Dev demo (m |
+| `/dev/map-browse` | dead-delete | Zero references outside its own file. Its own header states 'Exists-check: npm run exists map-browse = 0; the SEARCHED state is /d |
+| `/dev/map-interact` | dead-delete | Its core idea (floating store-preview popup on pin tap) is explicitly REJECTED and ALREADY logged: _design-system/REMOVED.md:50 'O |
+| `/dev/map-single` | dead-delete | Only reference is a comment in map-behavior/page.tsx:9 (dev-to-dev, not real code) and its own _plans log ('[x] MOCKUPS built at / |
+| `/dev/new-primitives` | dead-delete | Only historical mention is _design-system/REMOVED.md:46 ('only reference was dev/new-primitives showcase' for a now-deleted Status |
+| `/dev/no-results` | dead-delete | Its own header describes the C1 (single-CTA, cause-aware) no-results shape as 'owner-picked.' app/[locale]/_components/search/Sear |
+| `/dev/review-preview` | dead-delete | Zero references in app/components/components-legacy/lib/_plans/_design-system. Its own header: 'Not linked in nav... Dev-only rend |
+| `/dev/search-balance` | dead-delete | Zero references anywhere including _plans and _design-system. Proposes wiring the rich Inspo feed into the search overlay typing s |
+| `/dev/search-fixes` | dead-delete | Zero references anywhere including _plans and _design-system. An Inspo-look-card treatment proposal with no plan tracking and no r |
+| `/dev/search-trending` | dead-delete | Zero references anywhere including _plans and _design-system. Proposes 3 'liftup' redesigns for the search overlay's Trending chip |
+| `/dev/audit-fixes` | keep-active-mockup | Created 2026-07-08 as item 6a of the CURRENTLY ACTIVE _plans/FRONTEND_AUDIT.md (workstream #13 in ACTIVE.md). Index page for the a |
+| `/dev/audit-fixes/fabrication` | keep-active-mockup | Linked from /dev/audit-fixes (same file, same turn's work). Grounded-in comment lists 9 real source files read in full; part of op |
+| `/dev/category-flow` | keep-active-mockup | _plans/MAP_SEARCH_REFINE.md:518 has an OPEN '[ ] A2 (MOCKUP): /dev/category-flow Model B refine...' task, not yet closed. _plans/S |
+| `/dev/confirm-full` | keep-active-mockup | Owner-locked per _plans/MAP_SEARCH_REFINE.md:316,335 ('LOCKED/approved, dont change your locked in stuff') and protected in approv |
+| `/dev/search-morph` | keep-active-mockup | _plans/ACTIVE.md row 4 names this workstream and _plans/SEARCH_MORPH.md is its detail file; the mockup is described as the FROZEN  |
+| `/dev/bundle-builder` | keep-referenced | app/[locale]/dashboard/bundles/page.tsx:7,25 cite it verbatim ('promoted from the APPROVED mockup app/[locale]/dev/bundle-builder/ |
+| `/dev/bundles-products` | keep-referenced | app/[locale]/_components/salon/SalonBundles.tsx:5,11 and SalonProducts.tsx:5,11 cite it as the APPROVED grounding grammar (mockup- |
+| `/dev/card-ratio` | keep-referenced | app/[locale]/_components/homepage/SalonCard.tsx:462,486 cite it as owner-approved (2026-07-02/03). Still the live grounding refere |
+| `/dev/checkout-confirm` | keep-referenced | Linked from app/[locale]/dev/mockups/page.tsx:36 ('Checkout beats... kept for reference'). _plans/MAP_SEARCH_REFINE.md:232,259,261 |
+| `/dev/filter-menus` | keep-referenced | app/[locale]/_components/search/FilterSheet.tsx:40,55,141,432,585 cite it repeatedly as owner-approved grounding (R4-1). _design-s |
+| `/dev/filter-refine` | keep-referenced | FilterSheet.tsx:375 cites it directly. _plans/MAP_SEARCH_REFINE.md:313 'FILTER: IMPLEMENTED in the REAL FilterSheet.tsx.' Also in  |
+| `/dev/map-bar` | keep-referenced | Linked from app/[locale]/dev/mockups/page.tsx:37 (Component boards group, 'kept for reference'). No production citation beyond tha |
+| `/dev/map-behavior` | keep-referenced | app/[locale]/_components/search/SearchTemplate.tsx:544,1910 and MapSalonDetail.tsx:20,37,43 cite it repeatedly as the owner-approv |
+| `/dev/map-extras` | keep-referenced | Linked from app/[locale]/dev/mockups/page.tsx:38. Also cited by app/[locale]/dev/map-interact/page.tsx:5 as a sibling reference. I |
+| `/dev/map-full` | keep-referenced | Cited as 'the approved map' by map-single:10, map-motion:14,53, map-interact:6,10, map-browse:5, map-behavior:9,133, map-zoom:12.  |
+| `/dev/map-motion` | keep-referenced | SearchTemplate.tsx:40,94,416,1794,1837,1863,1907 cite it 6+ times as the owner-approved (2026-07-02) grounding for the unified sea |
+| `/dev/map-v2` | keep-referenced | Linked from app/[locale]/dev/mockups/page.tsx:35 ('Map experience v2... kept for reference', Component boards group). |
+| `/dev/map-zoom` | keep-referenced | components-legacy/MapView.tsx:35,259,267,316 cite it 4 times as 'owner-picked' grounding for the M2 Soft zoom-enter motion. Fully  |
+| `/dev/mockups` | keep-referenced | Functions as the owner's live navigation hub: its own header states 'owner 2026-07-02: all mockup link dead... ONE stable entry po |
+| `/dev/pin-label` | keep-referenced | Linked from app/[locale]/dev/mockups/page.tsx:29 ('Pin label, settled'). _plans/MAP_SEARCH_REFINE.md:219,245 record it SETTLED. co |
+| `/dev/primitives` | keep-referenced | _design-system/components/Toast.md:61,206 and DateTimePicker.md:27 cite it explicitly as the canonical live demo ('dev/primitives/ |
+| `/dev/results-browse` | keep-referenced | app/[locale]/_components/search/SalonResultCard.tsx:72,83,442,541 and SearchTemplate.tsx:150,1552 cite it repeatedly as the ground |
+| `/dev/results-full` | keep-referenced | SalonResultCard.tsx:71,83,171,442,502 and SearchTemplate.tsx:150,1552 cite it as the owner-approved (2026-07-02) grounding for the |
+| `/dev/search-model-b` | keep-referenced | app/[locale]/_components/search/SearchOverlay.tsx:870 cites it directly as 'design source of truth.' _plans/SEARCH_MAP_OVERHAUL.md |
+| `/dev/search-rich` | keep-referenced | _plans/SEARCH_MORPH.md:47-48 explicitly documents it as shipped: 'RICH SEARCH WIRED 2026-07-01 (mockup /dev/search-rich V2, owner  |
+| `/dev/spec-chip` | keep-referenced | SalonResultCard.tsx:86,480,483 and SearchTemplate.tsx:196 cite it as the owner-approved (2026-07-03, size M, no icon) grounding fo |
+| `/dev/suggest-full` | keep-referenced | Linked from /dev/mockups:22. _plans/MAP_SEARCH_REFINE.md:305,309 track it including the fabrication fix ('removed the FABRICATED p |
+
+Routes marked `dead-delete` or `graveyard-record` need a `_design-system/REMOVED.md` line in the same turn they are deleted (`npm run removed`), per the exists-check protocol.
