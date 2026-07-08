@@ -33,6 +33,48 @@ These are the same defect repeated. Fixing them at the primitive kills most of t
 | Raw hex instead of token | 2 | 2 |
 | Other / one-offs | 51 | 35 |
 
+
+---
+
+## Root cause of the biggest finding class: a phantom gate
+
+The audit found 20 ink/black-fill selected states on customer surfaces. A grep of the
+whole tree puts the real number at **62 across 44 files** (18 customer, 5 dashboard,
+39 components-legacy), plus 6 `ring-s-ink` / `border-s-ink` dialects of the same defect.
+
+This is not a taste question. The owner settled it by voice on **2026-06-29**: every
+selected/active state is the calm gray TabPill treatment (`bg-s-bg-sunken` + `text-s-ink`
++ semibold), never black/ink. It supersedes ink-fill (V3-D421) and blue-border (V3-D450).
+The approved mockup already exists at `public/_mockups/selected-states-redesign.html`.
+
+**Why it never got enforced:** three canonical documents cite a gate named
+`no-black-selected` as the enforcement.
+
+- `CLAUDE.md:53` , "NEVER black/ink fill on a selected state (gate `no-black-selected`)"
+- `_design-system/LOCKFILE.md:1215` , "(owner 2026-06-29, gate `no-black-selected`)"
+- `_design-system/REMOVED.md:41` , "hook no-black-selected-gate.py"
+
+**That gate did not exist.** Not as a file, not inside another hook, not in
+`.claude/settings.json`. Verified 2026-07-08 by `find`, by grep across `.claude/hooks/`,
+and by reading the settings `PreToolUse` chain. Three documents asserted an enforcement
+that had never been built, so the decision read as enforced and drifted for ~5 weeks.
+
+This is the exact failure mode the estate keeps hitting (memory `feedback_rules_are_hooks`:
+a rule that keeps getting broken has to become a hook, not advice) and it is precisely why
+rule 16 exists (a mention is not proof of existence). A doc citing a gate is not a gate.
+
+**Fixed 2026-07-08.** `.claude/hooks/no-black-selected-gate.py` now exists, self-tested
+14/14 (4 real audit violations block; commit-CTA, `variant === "primary"`, the correct gray
+treatment, the calendar `today` marker, `disabled`, the `Avatar` SelectedCheckBadge
+exception, the `selected-ok:` escape, the net-new rule, out-of-scope files, and border-only
+ink all pass). Wired into `PreToolUse` for Edit / Write / MultiEdit. The three citations
+above are now true.
+
+**Consequence for the mockup queue:** the selected-state sweep needs **no mockup**. The
+treatment is already owner-approved and a mockup already exists. It is a `[code]` sweep of
+62 call-sites, best done at the primitive. This removes the single largest block from the
+mockup list and moves it to the layered loop.
+
 ---
 
 ## Surface-by-surface plan
