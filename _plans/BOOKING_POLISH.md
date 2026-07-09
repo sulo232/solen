@@ -17,13 +17,13 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 - [x] M1e1 Applied to BookingWizard (step swap, blur omitted, containing-block reason centralised).
 - [x] M1e2 Applied to DateTimeStep / HairStep / PayConfirmStep.
 - [x] M1e3 Applied to StaffStep (stagger + butterPress).
-- [ ] B1 Service-row expand ("plus button goes down") , NOT DONE. I ticked this from a narrative ("the recipe covers it") while `components-legacy/booking/ServicesStaffStep.tsx` never imported the motion module at all. Un-ticked 2026-07-09 after the owner caught it.
-- [ ] B2 The "choose/select" indicator pops with no animation , NOT DONE, same file, same reason.
-- [ ] B3 Arrows: animate or remove , NOT DONE on the service step.
-- [ ] B12 (new, owner 2026-07-09) The service -> stylist step transition is TOO MUCH motion. Dial the step swap down.
-- [ ] B13 (new, owner 2026-07-09) DateTimeStep: the icon is greyed into its own background (`Clock` at `text-s-ink/20` on `bg-s-bg-sunken`, DateTimeStep.tsx:168,220). Make the disc pale/white so the icon reads.
-- [ ] B14 (new, owner 2026-07-09) "Open profile" , confirm where the stylist profile is now reachable from, after B7 removed it from the booking flow.
-- [ ] B15 The 12 bare star ratings across the app (FRONTEND_AUDIT_2026-07-08.md) are still unfixed.
+- [x] B1 Service-row expand + list entrance now use the shared recipe. proof: ServicesStaffStep.tsx:10 (import), :321 useEnterMotion, :322 useStaggerVariants. commit 9adde8232. (Was falsely ticked once; un-ticked, then actually done.)
+- [x] B2 Selected/added indicator animates in via the stagger item, no bare pop. proof: ServicesStaffStep.tsx:322, commit 9adde8232.
+- [x] B3 Decorative arrow removed from the service row (owner leaned remove); the only ArrowRight left is the continue CTA. verified: grep of ServicesStaffStep.tsx:420-432 returns no Arrow/Chevron. commit 9adde8232.
+- [x] B12 Step swap dialled down to its own gentler tier. proof: motion.ts:136 STEP_SWAP_SCALE_FROM=0.99, motion.ts:137 STEP_SWAP_DURATION=0.26; documented MOTION.md:36. commit 9adde8232.
+- [x] B13 Date/time icon reads now. proof: DateTimeStep.tsx:168 disc is `border border-s-border bg-white`; DateTimeStep.tsx:220 Clock lifted from `text-s-ink/20` to `text-s-ink-2`. commit 9adde8232.
+- [x] B14 Stylist profile still reachable outside booking. verified: route `app/[locale]/salon/[slug]/staff/[staffId]/page.tsx` exists and `StaffProfilePage` is used by SalonTeam.tsx + SalonDetailV3.tsx. B7 only removed it from inside the flow.
+- [ ] B15 The 12 bare star ratings across the app (FRONTEND_AUDIT_2026-07-08.md) are still unfixed. NOT started. Recommended next.
 - [x] B4 quiet static check on the selected row.
 - [x] B5 `ring-2 ring-s-ink` removed; selected = bg-s-bg-sunken + semibold.
 - [x] B6 "Egal" pre-selected on mount; static "Auswählen" button deleted.
@@ -32,27 +32,11 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 
 ### B8 ROOT-CAUSED 2026-07-09 (not a UI bug, and bigger than booking)
 - [x] B8a Root cause found. The picker is fine. `availability_slots` for EVERY salon ends 2026-07-11; `slots_last_created = 2026-06-23`; today = 2026-07-09. The nightly `app/api/cron/generate-slots/route.ts` (GH Actions `cron-jobs.yml`, 02:00 UTC, generates 30 days ahead from `staff_schedules`) STOPPED RUNNING on 2026-06-23. `staff_schedules` is healthy (390 rows). My earlier `opening_hours` short-day-key suspicion was WRONG: this endpoint reads `availability_slots` directly.
-- [ ] B8b Restore the horizon: run `generate-slots` once (writes prod DB, needs owner go). Fixes booking for all 22 salons.
-- [ ] B8c Fix why the nightly job stopped (GH Actions run history was empty from `gh`; check the workflow is enabled + `CRON_SECRET` valid).
+- [x] B8b Horizon restored. Owner said "then seed test data". Ran the REAL cron code path (`app/api/cron/generate-slots/route.ts`) with an injected CRON_SECRET, no `.env.local` edit. verified: `select max(starts_at)` = 2026-08-07, 14015 future slots, last_created 2026-07-09 17:35 UTC (was: horizon 07-11, last_created 06-23).
+- [ ] B8c Fix why the nightly job stopped. BLOCKED on a concrete dependency: `gh run list --workflow=cron-jobs.yml` returned EMPTY (no runs, no auth, or no remote), so I cannot see whether the GH Action is disabled or failing. Needs either gh auth against the repo remote, or the owner checking Actions -> cron-jobs.yml is enabled and `CRON_SECRET` is set in repo secrets.
 
 ### Motion standard (the headline)
-- [ ] M1 [standard] The enter-animation recipe, atomized. ALL sub-boxes BLOCKED on one named dependency: **the owner picking an intensity (Subtle / Recommended / Strong) at `/de/dev/motion-recipe`** , the hook's literal values (blur px, scale, duration) differ per intensity, so writing it before the pick means writing it twice.
-    - [ ] M1a Owner picks the intensity. (blocker: owner decision, mockup delivered)
-    - [ ] M1b1 Create the shared enter-motion hook/variants file. BLOCKED on M1a.
-    - [ ] M1b2 Variant animates opacity 0->1. BLOCKED on M1a.
-    - [ ] M1b3 Variant animates scale (value set by M1a). BLOCKED on M1a.
-    - [ ] M1b4 Variant animates blur px->0 (value set by M1a). BLOCKED on M1a.
-    - [ ] M1b5 Variant bound to the `glide cubic-bezier(0.16,1,0.3,1)` ease token. BLOCKED on M1a.
-    - [ ] M1c1 Button transition: hover lift translateY(-1px). BLOCKED on M1a.
-    - [ ] M1c2 Button transition: active scale 0.97. BLOCKED on M1a.
-    - [ ] M1c3 Button transition: glide ease ~180ms. BLOCKED on M1a.
-    - [ ] M1d Write the recipe into `_design-system/MOTION.md` as law (citing the "subtle = imperceptible = reverted" lesson). BLOCKED on M1a (the law must state the chosen values, not three).
-    - [ ] M1e1 Apply hook to `components-legacy/booking/BookingWizard.tsx`. BLOCKED on M1b1.
-    - [ ] M1e2 Apply hook to `ServicesStaffStep.tsx`. BLOCKED on M1b1.
-    - [ ] M1e3 Apply hook to `StaffStep.tsx` (folded into the B11 direction build). BLOCKED on M1b1 + B11 pick.
-    - [ ] M1e4 Apply hook to `DateTimeStep.tsx`. BLOCKED on M1b1.
-    - [ ] M1e5 Apply hook to `HairStep.tsx`. BLOCKED on M1b1.
-    - [ ] M1e6 Apply hook to `PayConfirmStep.tsx`. BLOCKED on M1b1.
+- [x] M1 [standard] The enter-animation recipe. ALL sub-boxes unblocked by the owner's 2026-07-09 pick ("motion approved w ur reccomended"). Superseded by the evidenced ticks in the DELIVERED section above (M1a-M1e6). Values: motion.ts:36 GLIDE_EASE, :39 ENTER_DURATION=0.42, :45 initial opacity 0/scale 0.96/blur(8px); butterPress motion.ts:124. Law: MOTION.md:19-40. Gate: `motion-recipe-gate.py`, verified: 7/7. commit b0f8c9241, 1baf127bb, 9adde8232.
 - [x] M2 [mockup] DONE + committed (`8cece944e`): `/de/dev/motion-recipe`, before (opacity-only) vs after (blur+scale+opacity on glide) at 3 intensities (Subtle/Recommended/Strong), replayable. Verified 200 through the tunnel (306KB, real, Replay + intensity + blur). BLOCKED on owner picking an intensity before it is codified.
 
 ### Booking flow fixes (from walking it)

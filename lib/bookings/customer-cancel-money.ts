@@ -1,0 +1,139 @@
+// lib/bookings/customer-cancel-money.ts
+//
+// THE single money-outcome chokepoint for a CUSTOMER-initiated booking cancel.
+// Extracted (audit finding #19, MEDIUM, 2026-07-09) out of the POST customer branch
+// of app/api/bookings/[id]/cancel/route.ts so every entry point that lets a
+// CUSTOMER cancel their own booking (the canonical /cancel route AND the public
+// HMAC quick-action link) applies the SAME fee/refund math instead of a divergent
+// no-refund no-fee no-op. Do NOT re-inline this logic at a new call site. call
+// applyCustomerCancelMoney() instead, same discipline as chargeFee/issueRefund.
+//
+// Prepaid booking: fee is netted OUT of the refund (refund = paid - fee), no
+// separate off-session charge on top. Not prepaid (pay-at-salon): nothing to
+// refund, the fee (if any, inside the free-cancel window) is charged off-session
+// against the saved card. Single-responsibility: money + the bookings columns
+// chargeFee/issueRefund already own. Audit logging is the CALLER's responsibility
+// (mirrors chargeFee/issueRefund's own convention). this function has no session
+// user to log against for a public/token-gated caller.
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { calculateCancellationFee } from "@/lib/cancellation-policy";
+import { toRappen } from "@/lib/stripe";
+import { chargeFee, FeeError, type ChargeFeeResult } from "@/lib/bookings/charge-fee";
+import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+
+export interface CustomerCancelBookingRow {
+  id: string;
+  starts_at: string;
+  paid_amount: number | null;
+  price_paid: number | null;
+  payment_intent_id: string | null;
+  payment_status: string | null;
+  stripe_customer_id: string | null;
+  stripe_payment_method_id: string | null;
+}
+
+export interface CustomerCancelSalonPolicy {
+  cancellation_fee_type?: string | null;
+  cancellation_fee_value?: number | null;
+  free_cancel_hours?: number | null;
+}
+
+export interface CustomerCancelMoneyResult {
+  /** Integer Rappen (policy fee for cancelling inside the free-cancel window). */
+  feeCents: number;
+  /** true = cancelling inside the window (a fee CAN apply); false = free/early cancel. */
+  isWithinWindow: boolean;
+  /** Integer Rappen actually refunded (0 when not prepaid, or fee fully absorbed the base). */
+  refundAmount: number;
+  feeChargeStatus: ChargeFeeResult["status"] | "none";
+  /** Integer Rappen actually off-session charged (0 unless feeChargeStatus === "charged"). */
+  feeChargedCents: number;
+  feeChargePaymentIntentId: string | null;
+}
+
+/**
+ * Apply the customer-cancel money outcome for a single booking. Callers must have
+ * already verified the actor is the booking's customer and already flipped
+ * booking.status to 'cancelled' (the cancellation is honored regardless of the
+ * money outcome, same discipline as the canonical /cancel route).
+ */
+export async function applyCustomerCancelMoney(
+  admin: SupabaseClient,
+  booking: CustomerCancelBookingRow,
+  salon: CustomerCancelSalonPolicy | null,
+  reason: string,
+): Promise<CustomerCancelMoneyResult> {
+  const baseCents = booking.paid_amount ?? toRappen(Number(booking.price_paid ?? 0));
+
+  const calc = calculateCancellationFee(
+    salon?.cancellation_fee_type,
+    salon?.cancellation_fee_value,
+    salon?.free_cancel_hours ?? 24,
+    baseCents,
+    new Date(booking.starts_at),
+  );
+  const feeCents = calc.feeCents;
+  const isWithinWindow = calc.isWithinWindow;
+
+  let refundAmount = 0;
+  let feeChargeStatus: CustomerCancelMoneyResult["feeChargeStatus"] = "none";
+  let feeChargedCents = 0;
+  let feeChargePaymentIntentId: string | null = null;
+
+  const wasPrepaid =
+    booking.paid_amount != null &&
+    booking.paid_amount > 0 &&
+    !!booking.payment_intent_id &&
+    booking.payment_status === "paid";
+
+  if (wasPrepaid) {
+    const refundCents = Math.max(0, baseCents - feeCents);
+    if (refundCents > 0) {
+      try {
+        await issueRefund({
+          db: admin,
+          source: "booking",
+          id: booking.id,
+          amountCents: refundCents,
+          actor: "customer",
+          reason,
+        });
+        refundAmount = refundCents;
+      } catch (e) {
+        // A failed refund does not roll back the cancellation, logged, pursued out-of-band
+        // (same discipline as the canonical /cancel route).
+        if (e instanceof RefundError) {
+          console.error(`[customer-cancel-money] issueRefund failed for booking ${booking.id} (${e.code}):`, e.message);
+        } else {
+          console.error(`[customer-cancel-money] issueRefund threw for booking ${booking.id}:`, e);
+        }
+      }
+    }
+    // feeCents >= baseCents means refundCents is 0: no refund, no charge (fee fully retained).
+  } else if (feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
+    try {
+      const result = await chargeFee({
+        db: admin,
+        source: "booking",
+        id: booking.id,
+        amountCents: feeCents,
+        kind: "cancellation",
+        actor: "system",
+        reason,
+      });
+      feeChargeStatus = result.status;
+      feeChargedCents = result.chargedCents ?? 0;
+      feeChargePaymentIntentId = result.paymentIntentId ?? null;
+    } catch (e) {
+      // NO_SAVED_CARD / INVALID_AMOUNT etc, log, do not fail the cancellation.
+      if (e instanceof FeeError) {
+        console.error(`[customer-cancel-money] chargeFee skipped for booking ${booking.id} (${e.code}):`, e.message);
+      } else {
+        console.error(`[customer-cancel-money] chargeFee threw for booking ${booking.id}:`, e);
+      }
+    }
+  }
+
+  return { feeCents, isWithinWindow, refundAmount, feeChargeStatus, feeChargedCents, feeChargePaymentIntentId };
+}

@@ -785,8 +785,12 @@ export const bookingCancelSchema = z.object({
   reason: z.string().max(500).optional(),
 });
 
+// "cancelled" retired (audit finding #15, 2026-07-09): PATCH /api/bookings/[id] used to also
+// handle a cancel with its own divergent ToS-fallback refund math. No live caller sent it (the
+// dashboard's cancel button posts to the canonical /api/bookings/[id]/cancel route); retired so
+// there is exactly one customer/salon-cancel path.
 export const bookingPatchSchema = z.object({
-  status: z.enum(["completed", "no_show", "cancelled"]),
+  status: z.enum(["completed", "no_show"]),
 });
 
 export const bookingInspoSchema = z.object({

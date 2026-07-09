@@ -6,8 +6,8 @@ import { sendEmail, bookingCancellation } from "@/lib/email";
 import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
 import { toRappen } from "@/lib/stripe";
-import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
@@ -140,27 +140,11 @@ export async function POST(
     }
   }
 
-  // CUSTOMER cancel = Lane A policy fee (SP-AC §B2). Compute in Rappen from the
-  // CANONICAL policy columns; charge the saved card AFTER the cancellation is honored.
-  let feeCents = 0;
-  let isWithinWindow = false;
-  if (isCustomer) {
-    const calc = calculateCancellationFee(
-      salon?.cancellation_fee_type,
-      salon?.cancellation_fee_value,
-      salon?.free_cancel_hours ?? 24,
-      baseCents,
-      new Date(booking.starts_at),
-    );
-    feeCents = calc.feeCents;
-    isWithinWindow = calc.isWithinWindow;
-  }
-
-  // Update booking status FIRST — the cancellation is honored regardless of the fee
-  // charge outcome (a requires_action/failed charge never rolls it back). The salon-owner
+  // Update booking status FIRST (the cancellation is honored regardless of the fee
+  // charge outcome (a requires_action/failed charge never rolls it back)). The salon-owner
   // refund's payment_status / refunded_amount are already persisted by issueRefund's CAS
   // above (the single writer of those columns); the customer path leaves fee_charge_* to
-  // chargeFee.
+  // applyCustomerCancelMoney's chargeFee call.
   const { error: updateError } = await supabase
     .from("bookings")
     .update({
@@ -172,77 +156,50 @@ export async function POST(
 
   if (updateError) return NextResponse.json({ message: updateError.message, code: "DB_ERROR" }, { status: 500 });
 
-  // CUSTOMER cancel money outcome depends on prepayment (audit fix A). Bookings are full
-  // prepay (the Stripe webhook captures paid_amount and sets payment_status='paid'). Prepaid:
-  // net the fee out of the refund via the SAME chokepoint the salon branch uses (issueRefund),
-  // refundCents = base minus fee, NO separate fee charge on top (the fee is retained by
-  // refunding less, matching the GET preview's "you'll get back CHF X" math exactly). Not
-  // prepaid (pay-at-salon, nothing was ever captured): keep the existing off-session fee
-  // charge against the saved card, there is nothing to refund.
+  // CUSTOMER cancel money outcome depends on prepayment (audit fix A), routed through the
+  // SAME chokepoint (lib/bookings/customer-cancel-money.ts) the public quick-action cancel
+  // link now also uses (audit finding #19, MEDIUM, 2026-07-09) instead of a re-inlined
+  // divergent version. Prepaid: net the fee out of the refund (refundCents = base minus fee,
+  // NO separate fee charge on top, matching the GET preview's "you'll get back CHF X" math
+  // exactly). Not prepaid (pay-at-salon, nothing was ever captured): off-session fee charge
+  // against the saved card, nothing to refund.
+  let feeCents = 0;
+  let isWithinWindow = false;
   let feeChargeStatus: "charged" | "requires_action" | "failed" | "none" = "none";
   let feeChargedCents = 0;
   if (isCustomer) {
-    const wasPrepaid =
-      (booking.paid_amount as number | null) != null &&
-      (booking.paid_amount as number) > 0 &&
-      !!paymentIntentId &&
-      booking.payment_status === "paid";
-
-    if (wasPrepaid) {
-      const refundCents = Math.max(0, baseCents - feeCents);
-      if (refundCents > 0) {
-        const adminForCustomerRefund = createAdminSupabaseClient();
-        try {
-          await issueRefund({
-            db: adminForCustomerRefund,
-            source: "booking",
-            id,
-            amountCents: refundCents,
-            actor: "customer",
-            reason: reason ?? "customer cancelled the booking",
-          });
-          refundResult = { refundAmount: refundCents, feeAmount: feeCents, isWithinWindow };
-        } catch (e) {
-          // A failed refund does not roll back the cancellation (same discipline as the
-          // fee-charge failure below), logged, pursued out-of-band.
-          if (e instanceof RefundError) {
-            console.error(`[cancel] issueRefund failed for booking ${id} (${e.code}):`, e.message);
-          } else {
-            console.error(`[cancel] issueRefund threw for booking ${id}:`, e);
-          }
-        }
-      }
-      // feeCents >= baseCents means refundCents is 0: no refund, no charge (fee fully retained).
-    } else if (feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
-      const admin = createAdminSupabaseClient();
-      try {
-        const result = await chargeFee({
-          db: admin,
-          source: "booking",
-          id,
-          amountCents: feeCents,
-          kind: "cancellation",
-          actor: "system",
-          reason: "customer cancellation inside policy window",
-        });
-        feeChargeStatus = result.status;
-        feeChargedCents = result.chargedCents ?? 0;
-        // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
-        await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
-          kind: "cancellation",
-          fee_cents: feeCents,
-          charged_cents: feeChargedCents,
-          status: result.status,
-          payment_intent_id: result.paymentIntentId,
-        });
-      } catch (e) {
-        // NO_SAVED_CARD / INVALID_AMOUNT etc, log, do not fail the cancellation.
-        if (e instanceof FeeError) {
-          console.error(`[cancel] chargeFee skipped for booking ${id} (${e.code}):`, e.message);
-        } else {
-          console.error(`[cancel] chargeFee threw for booking ${id}:`, e);
-        }
-      }
+    const adminForCustomerCancel = createAdminSupabaseClient();
+    const money = await applyCustomerCancelMoney(
+      adminForCustomerCancel,
+      {
+        id,
+        starts_at: booking.starts_at,
+        paid_amount: booking.paid_amount as number | null,
+        price_paid: booking.price_paid as number | null,
+        payment_intent_id: paymentIntentId,
+        payment_status: booking.payment_status,
+        stripe_customer_id: booking.stripe_customer_id,
+        stripe_payment_method_id: booking.stripe_payment_method_id,
+      },
+      salon,
+      reason ?? "customer cancelled the booking",
+    );
+    feeCents = money.feeCents;
+    isWithinWindow = money.isWithinWindow;
+    feeChargeStatus = money.feeChargeStatus;
+    feeChargedCents = money.feeChargedCents;
+    if (money.refundAmount > 0) {
+      refundResult = { refundAmount: money.refundAmount, feeAmount: money.feeCents, isWithinWindow: money.isWithinWindow };
+    }
+    if (money.feeChargeStatus !== "none") {
+      // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
+      await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
+        kind: "cancellation",
+        fee_cents: feeCents,
+        charged_cents: feeChargedCents,
+        status: money.feeChargeStatus,
+        payment_intent_id: money.feeChargePaymentIntentId,
+      });
     }
   }
 

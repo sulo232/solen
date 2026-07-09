@@ -386,13 +386,16 @@ export async function POST(request: NextRequest) {
   // times as they want"): the same customer re-confirming the same salon+time gets a
   // 409 instead of a second booking (auto-assign would otherwise grab another stylist's
   // slot at the identical time). Keyed on user_id (logged-in) or guest_phone (guest).
+  // Includes "pending_approval" (manual-approval salons, migration 075) alongside
+  // pending/confirmed, otherwise clicking back repeatedly on a manual-approval salon
+  // slips past this guard entirely (audit finding #13).
   {
     let dupQuery = db
       .from("bookings")
       .select("id")
       .eq("salon_id", slot.salon_id)
       .eq("starts_at", slot.starts_at)
-      .in("status", ["pending", "confirmed"])
+      .in("status", ["pending", "pending_approval", "confirmed"])
       .limit(1);
     dupQuery = user ? dupQuery.eq("user_id", user.id) : dupQuery.eq("guest_phone", guest_phone!);
     const { data: dup } = await dupQuery;
@@ -485,7 +488,13 @@ export async function POST(request: NextRequest) {
       await db.from("bookings").delete().eq("id", booking.id);
       return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
     }
+    // Audit finding #14: any OTHER slot-flip error was previously logged and swallowed, letting
+    // the route fall through to a 201 with the booking created but the slot never marked booked
+    // (re-bookable by anyone). Fail safe: roll back the just-inserted booking on ANY slot-flip
+    // error, mirroring the 23P01 branch above.
     console.error("[bookings] slot booking update failed:", slotUpdateError);
+    await db.from("bookings").delete().eq("id", booking.id);
+    return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
   } else if (!slotUpdateRows?.length) {
     // 0 rows matched: the slot was claimed by another request between the read and this write.
     // Roll back the booking row we just inserted so no orphan/unheld booking remains.

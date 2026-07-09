@@ -70,15 +70,23 @@ export async function POST(
   // availability_slots!inner join is no longer needed to derive the salon.
   const salonId = booking.salon_id;
 
-  // Find an available new slot (fail-fast; the CAS claim below is the real guard).
-  const { data: newSlot, error: slotError } = await supabase
+  // Find an available new slot (fail-fast; the CAS claim below is the real guard). Filtered by
+  // the booking's own service_id/staff_member_id (audit finding #18: an unfiltered query could
+  // match a slot for a DIFFERENT service/staff at the salon) and .limit(1).maybeSingle() instead
+  // of .single() (busy salons routinely have >1 matching slot in the window, which made .single()
+  // error and spuriously 409 the reschedule).
+  let newSlotQuery = supabase
     .from("availability_slots")
     .select("id")
     .eq("salon_id", salonId)
+    .eq("service_id", booking.service_id)
     .eq("status", "available")
     .gte("starts_at", new_starts_at)
-    .lte("ends_at", new_ends_at)
-    .single();
+    .lte("ends_at", new_ends_at);
+  if (booking.staff_member_id) {
+    newSlotQuery = newSlotQuery.eq("staff_member_id", booking.staff_member_id);
+  }
+  const { data: newSlot, error: slotError } = await newSlotQuery.limit(1).maybeSingle();
 
   if (slotError || !newSlot) {
     return NextResponse.json(

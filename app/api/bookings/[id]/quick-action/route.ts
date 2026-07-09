@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
+import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import crypto from "crypto";
 
 function verifyActionToken(token: string): { bookingId: string; action: string; valid: boolean } {
@@ -60,7 +61,9 @@ export async function GET(
   const admin = createAdminSupabaseClient();
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, status")
+    .select(
+      "id, status, starts_at, paid_amount, price_paid, payment_intent_id, payment_status, stripe_customer_id, stripe_payment_method_id, salons(cancellation_fee_type, cancellation_fee_value, free_cancel_hours)"
+    )
     .eq("id", bookingId)
     .single();
 
@@ -75,6 +78,29 @@ export async function GET(
     await admin.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
     // Free slot
     await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("booking_id", bookingId);
+
+    // Audit finding #19 (MEDIUM, 2026-07-09): this public one-click cancel used to set
+    // status='cancelled' and free the slot with NO refund and NO fee, stranding a prepaid
+    // customer's money. Route through the SAME chokepoint the canonical customer-cancel
+    // branch uses (lib/bookings/customer-cancel-money.ts) so a prepaid booking is refunded
+    // base minus fee, matching /api/bookings/[id]/cancel's customer branch exactly. The
+    // HMAC token IS the authorization here (same discipline as the read/update above).
+    await applyCustomerCancelMoney(
+      admin,
+      {
+        id: bookingId,
+        starts_at: booking.starts_at,
+        paid_amount: booking.paid_amount,
+        price_paid: booking.price_paid,
+        payment_intent_id: booking.payment_intent_id,
+        payment_status: booking.payment_status,
+        stripe_customer_id: booking.stripe_customer_id,
+        stripe_payment_method_id: booking.stripe_payment_method_id,
+      },
+      booking.salons as any,
+      "customer cancelled via one-click email link",
+    );
+
     return NextResponse.json({ result: "cancelled", booking_id: bookingId });
   }
 
