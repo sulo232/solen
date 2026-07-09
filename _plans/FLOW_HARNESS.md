@@ -18,8 +18,8 @@ The 2026-07-08 audit (271 findings) still stands as the findings list. But the D
 - [x] D. Booking enters guest-first with no manual login (verified logged-out 200, no /auth redirect); the dev-login bypass path is documented on the hub for flows that will need it later.
 - [x] E. Booking walks real screens / real animations / working back nav (the real BookingWizard, untouched).
 - [x] F. Drives the REAL frontend (real page.tsx + BookingWizard + real slug muse-beauty-studio), so it doubles as a live "does it work now" test.
-- [ ] G. Reachable over the cloudflare tunnel (phone) , not started this turn, dev server verified on :3010 only.
-- [x] H. REFERENCE FIRST: hub + booking wired 2026-07-08; awaiting owner sign-off before wiring the other 11 flows.
+- [~] G. Reachable over the cloudflare tunnel (phone) , BLOCKED by the environment, not the harness. Verified live 2026-07-09: hub 200 (all 12 flows, no error boundary) + booking guest-entry 200 (no /auth redirect) on a fresh server (:3012). Tunnel registered at CF edge zrh02, but the `next dev` background process is REAPED between tool calls in this session (origin went 200 -> 000 across two commands), so cloudflared 530s (origin gone). Same background-reap behavior that killed the audit workflow earlier. A persistent tunnel must be run from a real terminal (the owner's machine), where the server does not get reaped. Concrete owner path: `npm run dev` then `cloudflared tunnel --url http://localhost:3000`.
+- [x] H. REFERENCE FIRST: hub + booking wired + committed (`cf2b26cfd`) + verified live 2026-07-09. Awaiting owner eyeball of the booking pattern before wiring the other 11 flows.
 
 ## Build notes / architecture
 - Hub `/[locale]/dev/flows/page.tsx`: cards grouped by flow. Each wired card = a deep link into the real route at step 1 with a real seeded entity; through `/api/dev/login?to=` when a session is needed.
