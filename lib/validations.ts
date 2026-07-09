@@ -889,7 +889,10 @@ export const recurringBookingSchema = z.object({
   staff_member_id: z.string().uuid().optional(),
   frequency: z.enum(["weekly", "biweekly", "monthly"]),
   custom_interval_days: z.number().int().min(1).max(90).optional(),
-  preferred_day: z.number().int().min(0).max(6).optional(),
+  // Matches the DB CHECK (preferred_day text CHECK IN ('mon'..'sun'), supabase/migrations/014_new_schema.sql)
+  // and lib/types.ts PreferredDay. Was previously a 0-6 integer, which failed the CHECK on
+  // every insert (500) since there's no caller today to have masked the mismatch.
+  preferred_day: z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]).optional(),
   preferred_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
 });
 

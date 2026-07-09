@@ -100,11 +100,30 @@ export async function PATCH(
   }
   const isSalonOwner = booking.salons?.owner_id === user.id;
   const isBookingOwner = booking.user_id === user.id;
+  const isAdmin = actor === "admin";
 
   // A logged-in admin who is neither the customer nor the salon owner has no role in this
-  // binary status write — preserve the prior owner-only gate rather than silently granting it.
-  if (!isSalonOwner && !isBookingOwner) {
+  // binary status write (unless the new admin allowance below applies), preserve the prior
+  // owner-only gate rather than silently granting it.
+  if (!isSalonOwner && !isBookingOwner && !isAdmin) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  }
+
+  // Only the salon (or a platform admin) may mark a booking completed/no_show, otherwise
+  // a customer could self-complete their own booking to farm loyalty-tier / member-discount
+  // perks without ever being served (audit finding).
+  if ((status === "completed" || status === "no_show") && !isSalonOwner && !isAdmin) {
+    return NextResponse.json({ message: "Only the salon can set this status", code: "FORBIDDEN" }, { status: 403 });
+  }
+
+  // Transition guard: once a booking is in a terminal state, no further status writes are
+  // valid, re-cancelling an already-cancelled booking clobbers payment_status
+  // (refunded to none) and re-runs strike logic (audit finding).
+  if (["cancelled", "completed", "no_show"].includes(booking.status)) {
+    return NextResponse.json(
+      { message: `Booking is already ${booking.status}, no further status changes allowed`, code: "INVALID_TRANSITION" },
+      { status: 409 }
+    );
   }
 
   const updates: any = { status };

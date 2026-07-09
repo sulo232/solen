@@ -138,8 +138,15 @@ export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<b
 
 export function getClientIp(req: NextRequest): string {
   return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
+    // Platform-trusted headers first: x-forwarded-for's leftmost entry is attacker-supplied
+    // (an attacker can prepend any value), so every auth/OTP limiter keyed on it alone is
+    // trivially bypassed by rotating the header. Netlify's edge overwrites
+    // x-nf-client-connection-ip with the real connecting IP, so it can't be spoofed by the
+    // client; x-real-ip is the common trusted-proxy equivalent. Only fall back to the
+    // spoofable XFF parse when neither trusted header is present (local/dev).
+    req.headers.get("x-nf-client-connection-ip")?.trim() ||
+    req.headers.get("x-real-ip")?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown"
   );
 }

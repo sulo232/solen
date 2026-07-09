@@ -4,11 +4,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { sendEmail, recurringConfirmation } from "@/lib/email";
 import { validateBody, recurringBookingSchema } from "@/lib/validations";
+import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 export async function POST(request: NextRequest) {
+  const disabled = await checkFeatureEnabled("bookings");
+  if (disabled) return disabled;
+
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const body = await request.json();
   const { data: validated, error: validationError } = validateBody(recurringBookingSchema, body);
