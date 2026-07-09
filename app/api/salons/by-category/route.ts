@@ -57,6 +57,7 @@ export async function GET(request: NextRequest) {
     .contains("categories", [cat])
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)
+    .eq("is_test", false)
     .order("average_rating", { ascending: false })
     .order("review_count", { ascending: false });
 

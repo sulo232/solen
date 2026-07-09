@@ -25,6 +25,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Fehlende Parameter" }, { status: 400 });
     }
 
+    // Also rate limit on the TARGET phone number, not just the caller IP. IP-only limiting
+    // lets an attacker brute-force the 6-digit code for one victim number by rotating IPs; a
+    // normalized per-phone key caps attempts against a given number regardless of source.
+    const normalizedPhone = phone.replace(/[^\d+]/g, "");
+    const phoneRateLimited = await applyRateLimit(authLimiter, { ip: `phone-otp:${normalizedPhone}` });
+    if (phoneRateLimited) return phoneRateLimited;
+
     if (!redis) {
       // Allow bypassing in local dev if Redis isn't set up
       return NextResponse.json({ message: "Verifiziert (Simuliert - Redis fehlt)" });

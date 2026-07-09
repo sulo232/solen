@@ -54,7 +54,8 @@ export async function GET(request: NextRequest) {
     .from("salons")
     .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, latitude, longitude, is_top_pick")
     .eq("is_active", true)
-    .eq("listed_on_marketplace", true);
+    .eq("listed_on_marketplace", true)
+    .eq("is_test", false);
 
   if (cityId) query = query.eq("city_id", cityId);
 
@@ -66,7 +67,9 @@ export async function GET(request: NextRequest) {
     }
     const withDist = (data ?? [])
       .map((s) => ({ ...s, distance_km: haversineKm(lat, lng, s.latitude, s.longitude) }))
-      .sort((a, b) => a.distance_km - b.distance_km)
+      // Stable secondary sort by id: distance ties (or near-ties from float rounding)
+      // would otherwise order non-deterministically across requests.
+      .sort((a, b) => a.distance_km - b.distance_km || a.id.localeCompare(b.id))
       .slice(0, limit);
     return NextResponse.json({ items: withDist });
   }

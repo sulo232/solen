@@ -67,14 +67,9 @@ export async function POST(request: NextRequest) {
     trackServerEvent(data.user.id, "customer_signup", { method: "email" });
   }
 
-  // Supabase returns user with identities=[] if user already exists but is unconfirmed
-  // If identities array is empty, user already exists
-  if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return NextResponse.json(
-      { message: "Ein Konto mit dieser E-Mail existiert bereits. Bitte melde dich an." },
-      { status: 409 }
-    );
-  }
-
+  // SECURITY: Supabase returns user with identities=[] if the email already has a
+  // confirmed account. Do NOT surface that distinction to the client (it lets an
+  // attacker enumerate registered emails). Always return the same generic 200 response,
+  // whether the email is new or already registered.
   return NextResponse.json({ message: "Verification code sent", email });
 }

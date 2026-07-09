@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
+      .eq("is_test", false)
       .neq("id", salonId)
       .order("explore_score", { ascending: false })
       .limit(4);
@@ -59,6 +60,7 @@ export async function GET(request: NextRequest) {
         .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
         .eq("is_active", true)
         .eq("listed_on_marketplace", true)
+        .eq("is_test", false)
         .order("explore_score", { ascending: false })
         .limit(8);
 
@@ -79,6 +81,7 @@ export async function GET(request: NextRequest) {
     .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)
+    .eq("is_test", false)
     .order("explore_score", { ascending: false })
     .limit(8);
 

@@ -10,7 +10,8 @@ export async function GET() {
     .from("salons")
     .select("quartier")
     .eq("is_active", true)
-    .eq("listed_on_marketplace", true);
+    .eq("listed_on_marketplace", true)
+    .eq("is_test", false);
 
   if (error || !data) return NextResponse.json({ items: [] });
   

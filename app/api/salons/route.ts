@@ -219,13 +219,12 @@ export async function GET(request: NextRequest) {
     const validDate = !!date && /^\d{4}-\d{2}-\d{2}$/.test(date);
     const dateNarrows = validDate && !(period && PERIOD_HOURS[period]);
 
-    // City resolution (rows lookup + the test-salon-hide count) as one concurrent
-    // task. The count depends on cityId, so it chains inside this closure, but the
-    // whole task runs in parallel with the other filters.
+    // City resolution (slug/name lookup) as one concurrent task, running in parallel
+    // with the other filters.
     type CityOutcome =
       | { kind: "skip" }
       | { kind: "empty" }
-      | { kind: "ok"; cityId: string; hideTest: boolean };
+      | { kind: "ok"; cityId: string };
     const cityTask: Promise<CityOutcome> = (async () => {
       // Bounds override city: a "search this area" box already scopes the query via
       // the lat/lng predicates above, so skip city resolution entirely (a stale city
@@ -246,19 +245,7 @@ export async function GET(request: NextRequest) {
       );
       const cityId = cMatch?.id as string | undefined;
       if (!cityId) return { kind: "empty" };
-      // Auto-hide test salons when real salons already exist for this city+category.
-      let hideTest = false;
-      if (category) {
-        const { count: realCount } = await supabase
-          .from("salons")
-          .select("id", { count: "exact", head: true })
-          .eq("city_id", cityId)
-          .contains("categories", [category])
-          .eq("is_active", true)
-          .eq("is_test", false);
-        hideTest = (realCount ?? 0) > 0;
-      }
-      return { kind: "ok", cityId, hideTest };
+      return { kind: "ok", cityId };
     })();
 
     // Service sub-filter: salons offering a service whose name matches.
@@ -356,11 +343,10 @@ export async function GET(request: NextRequest) {
       periodTask, instantTask, dateTask, openNowTask,
     ]);
 
-    // Apply city resolution (rows + test-salon hide) in the original semantics.
+    // Apply city resolution in the original semantics.
     if (cityOutcome.kind === "empty") return emptyResult();
     if (cityOutcome.kind === "ok") {
       query = query.eq("city_id", cityOutcome.cityId);
-      if (cityOutcome.hideTest) query = query.eq("is_test", false);
     }
 
     // Service sub-filter.

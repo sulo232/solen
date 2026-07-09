@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
       .neq("id", currentId)
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
+      .eq("is_test", false)
       .order("solen_score", { ascending: false })
       .limit(limit);
 

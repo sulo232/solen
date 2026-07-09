@@ -7,6 +7,14 @@ import { getServerEnv } from "@/lib/env";
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
+/** Escape the few chars that would break out of an HTML text context. */
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export interface EmailPayload {
   to: string;
   subject: string;
@@ -346,7 +354,7 @@ export function adminNewSalonNotification(
   return {
     to,
     subject: `Neuer Salon wartet auf Genehmigung: ${vars.salon}`,
-    html: `<p>Ein neuer Salon hat sich registriert und wartet auf Genehmigung:</p><ul><li><strong>Name:</strong> ${vars.salon}</li><li><strong>E-Mail:</strong> ${vars.email}</li><li><strong>Adresse:</strong> ${vars.address}</li></ul><p><a href="https://solen.ch/de/dashboard/approvals">Jetzt prüfen →</a></p>`,
+    html: `<p>Ein neuer Salon hat sich registriert und wartet auf Genehmigung:</p><ul><li><strong>Name:</strong> ${escapeHtml(vars.salon)}</li><li><strong>E-Mail:</strong> ${escapeHtml(vars.email)}</li><li><strong>Adresse:</strong> ${escapeHtml(vars.address)}</li></ul><p><a href="https://solen.ch/de/dashboard/approvals">Jetzt prüfen →</a></p>`,
   };
 }
 

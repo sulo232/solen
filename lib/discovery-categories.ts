@@ -13,3 +13,18 @@ export const DISCOVERY_CATEGORIES: CategoryTab[] = [
   { key: "lashes", labelKey: "lashes" },
   { key: "brows", labelKey: "brows" },
 ];
+
+// Bridge from the discovery/Inspo taxonomy (discovery_items.category:
+// hair|beard|nails|makeup|waxing|lashes|brows) to the marketplace taxonomy
+// (services.category: coiffeur|nails|barbershop|spa). The two are NOT the same
+// namespace, only "nails" happens to spell the same in both, so any route that
+// joins a discovery category straight into services.category is a silent no-op
+// for every other category. Fall back to "coiffeur" for a category with no
+// direct marketplace equivalent (makeup, waxing).
+export const DISCOVERY_TO_MARKETPLACE_CATEGORY: Record<string, string> = {
+  hair: "coiffeur",
+  beard: "barbershop",
+  nails: "nails",
+  lashes: "spa",
+  brows: "spa",
+};

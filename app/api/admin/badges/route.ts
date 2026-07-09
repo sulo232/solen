@@ -13,8 +13,16 @@ const badgeCreateSchema = z.object({
   bg_color: z.string().max(50).optional(),
 });
 
-// GET /api/admin/badges — public list of all badge definitions
+// GET /api/admin/badges - admin only, list of all badge definitions
 export async function GET() {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { data: profile } = await supabase
+    .from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const admin = createAdminSupabaseClient();
   const { data: badges, error } = await admin
     .from("salon_badges")

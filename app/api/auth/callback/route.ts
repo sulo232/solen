@@ -12,8 +12,11 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const rawRedirect = searchParams.get("redirect") ?? searchParams.get("next") ?? "/de";
-  // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs
-  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/de";
+  // SECURITY: Only allow internal relative paths. Block external redirects, protocol-relative
+  // URLs, and backslashes (new URL() treats "\" as "/" per the WHATWG spec, so "/\evil.com"
+  // would otherwise pass the startsWith("/") check yet resolve to an external origin).
+  const isSafeRelativePath = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") && !rawRedirect.includes("\\");
+  const redirect = isSafeRelativePath ? rawRedirect : "/de";
 
   if (code) {
     // Build a Supabase client that sets cookies on the REDIRECT response

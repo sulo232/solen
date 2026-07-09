@@ -8,6 +8,7 @@ import DetailPage, { type SalonLite } from "@/components-legacy/discovery/Detail
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 import { discoveryAiLimiter, checkRateLimit } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
+import { DISCOVERY_TO_MARKETPLACE_CATEGORY } from "@/lib/discovery-categories";
 
 // The look-detail page is a full-bleed DARK hero. Override the global light theme-color (#F4F4F6) with a dark one so
 // the phone's status-bar area blends into the video instead of showing as a white strip above it (owner-reported).
@@ -147,11 +148,11 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
 
   // "Book this look" — the soft, honest salon list (owner call: real look→salon matching deferred). Salons that
   // offer a service in this look's category, ranked by rating; price is the cheapest such service ("ab CHF X").
-  // IMPORTANT: discovery uses its own taxonomy ("hair"/"beard"/"nails") but the services table uses the marketplace
-  // taxonomy ("coiffeur"/"barbershop"/"nails"/"spa"). Map across, else the join silently returns 0 salons (the bug
-  // the audit flagged in the old salons-for-style stub: every look is "hair", no service has category "hair").
-  const CATEGORY_ROUTES: Record<string, string> = { hair: "coiffeur", beard: "barbershop", nails: "nails", lashes: "spa", brows: "spa" };
-  const categoryRoute = CATEGORY_ROUTES[item.category] ?? "coiffeur";
+  // IMPORTANT: discovery uses its own taxonomy but the services table uses the marketplace
+  // taxonomy. Map across via the shared DISCOVERY_TO_MARKETPLACE_CATEGORY, else the join
+  // silently returns 0 salons (the bug the audit flagged in the old salons-for-style stub).
+  // reinvent-ok: imports the canonical map, does not redeclare it.
+  const categoryRoute = DISCOVERY_TO_MARKETPLACE_CATEGORY[item.category] ?? "coiffeur";
   const serviceCategory = categoryRoute; // route slug == services.category in this marketplace
   let salons: SalonLite[] = [];
   let salonTotal = 0;

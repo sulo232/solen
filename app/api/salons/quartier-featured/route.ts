@@ -10,6 +10,7 @@ export async function GET() {
     .select("quartier, cover_photo_url")
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)
+    .eq("is_test", false)
     .not("cover_photo_url", "is", null);
 
   if (error || !data) return NextResponse.json({ images: {} });

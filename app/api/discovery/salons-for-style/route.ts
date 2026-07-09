@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, discoveryFeedLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
+import { DISCOVERY_TO_MARKETPLACE_CATEGORY } from "@/lib/discovery-categories";
 
 export async function GET(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -20,6 +21,11 @@ export async function GET(req: NextRequest) {
 
   const supabase = await createServerSupabaseClient();
 
+  // Bridge discovery taxonomy to marketplace taxonomy before filtering services.category.
+  // Joining `category` straight in (as this route used to) is a silent no-op for every
+  // discovery category except "nails". Same bridge as app/[locale]/inspo/[id]/page.tsx.
+  const serviceCategory = DISCOVERY_TO_MARKETPLACE_CATEGORY[category] ?? "coiffeur";
+
   // Find salons that offer services in this category
   let query = supabase
     .from("salons")
@@ -29,7 +35,7 @@ export async function GET(req: NextRequest) {
     `)
     .eq("is_active", true)
     .eq("services.is_active", true)
-    .eq("services.category", category)
+    .eq("services.category", serviceCategory)
     .order("average_rating", { ascending: false })
     .limit(10);
 
