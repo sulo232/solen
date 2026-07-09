@@ -2,19 +2,26 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-07-08T12:55:53 (trigger: manual)
+- taken: 2026-07-09T20:52:58 (trigger: manual)
 - branch: main
 
 ## git
 ```
-e7a7026b3 plans: WAVE 2 done, mockup queue re-derived (9 not 21), phantom-gate + env traps recorded
-22c546219 frontend audit WAVE 2 (dashboard + /dev triage) + mockup 1 (fabricated data)
-c3ea01643 plans: record that a concurrent session is live on this plan
-1e7813c35 plans: dispose FRONTEND_AUDIT open boxes with measured blockers
-691724699 build the no-black-selected gate that 3 canonical docs already claimed existed
+6ede73e67 plan: tick delivered boxes WITH evidence; commit concurrent-session booking work
+9adde8232 fix the dropped service-step items + dial down the step swap
+e4ba06c20 fix(backend): batch 7 — slot ends_at, timezone split, slot-delete, cron availability (audit HIGH+M/L)
+683030958 security(backend): batch 6 — dashboard/reviews/loyalty/onboarding/cron MEDIUM/LOW
+f71822263 core root of 'you keep forgetting': checkboxes self-certified without evidence
 ```
 ```
-?? _plans/CONTEXT_SNAPSHOT.md
+M _plans/BACKEND_FIX_TRACKER.md
+ M _plans/BOOKING_POLISH.md
+ M _plans/DB_FIX_MIGRATIONS.md
+ M app/[locale]/salon/[slug]/booking/page.tsx
+ M components-legacy/booking/ServicesStaffStep.tsx
+ M components-legacy/booking/StaffStep.tsx
+ M components-legacy/booking/ToggleCircle.tsx
+?? components-legacy/booking/StaffProfileSheet.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)

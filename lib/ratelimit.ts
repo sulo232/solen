@@ -87,6 +87,8 @@ export const guestLookupLimiter = new Ratelimit({ redis, limiter: Ratelimit.slid
 // code probing). 3/hour per IP.
 export const resendAccessLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(3, "1 h"), analytics: true, prefix: "rl:guest:resend" });
 
+export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(1, "6 h"), analytics: true, prefix: "rl:offpeak:notify" });
+
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(

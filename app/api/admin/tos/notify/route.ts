@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { adminTosNotifySchema, validateBody } from "@/lib/validations";
 import { sendEmail, tosUpdateNotification } from "@/lib/email";
 import { CURRENT_TOS_VERSION, TOS_EFFECTIVE_DATE } from "@/lib/tos-version";
@@ -24,13 +24,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const admin = createAdminSupabaseClient();
+
     const body = await req.json();
     const { data, error: validationError } = validateBody(adminTosNotifySchema, body);
     if (validationError) {
       return NextResponse.json({ error: validationError.message }, { status: 400 });
     }
 
-    let query = supabase
+    let query = admin
       .from("profiles")
       // using or instead of neq to also capture nulls
       .select("id, email, locale")

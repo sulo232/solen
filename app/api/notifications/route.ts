@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { getActiveSalonId } from "@/lib/active-salon";
 
 export async function GET(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
@@ -11,13 +12,7 @@ export async function GET(req: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("salon_id, role")
-    .eq("id", session.user.id)
-    .single();
-
-  const salonId = profile?.salon_id;
+  const salonId = await getActiveSalonId(supabase, session.user.id);
   if (!salonId) return NextResponse.json({ notifications: [], unread_count: 0 });
 
   const notifications: Array<{

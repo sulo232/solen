@@ -1,14 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { getServerEnv, getPublicEnv } from "@/lib/env";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 const leadSchema = z.object({
   email: z.string().email(),
   salon_name: z.string().min(2),
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const rl = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rl) return rl;
+
   try {
     let supabaseUrl: string;
     let supabaseKey: string;

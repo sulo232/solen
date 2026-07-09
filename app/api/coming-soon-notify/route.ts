@@ -1,10 +1,14 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
-// POST /api/coming-soon-notify — Email capture for Coming Soon pages
-// Does NOT require authentication — anyone can sign up for notifications
+// POST /api/coming-soon-notify: Email capture for Coming Soon pages
+// Does NOT require authentication: anyone can sign up for notifications
 export async function POST(request: NextRequest) {
+  const rl = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rl) return rl;
+
   let body: { email?: string; feature?: string };
   try {
     body = await request.json();
