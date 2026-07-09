@@ -23,7 +23,7 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 - [x] B12 Step swap dialled down to its own gentler tier. proof: motion.ts:136 STEP_SWAP_SCALE_FROM=0.99, motion.ts:137 STEP_SWAP_DURATION=0.26; documented MOTION.md:36. commit 9adde8232.
 - [x] B13 Date/time icon reads now. proof: DateTimeStep.tsx:168 disc is `border border-s-border bg-white`; DateTimeStep.tsx:220 Clock lifted from `text-s-ink/20` to `text-s-ink-2`. commit 9adde8232.
 - [x] B14 Stylist profile still reachable outside booking. verified: route `app/[locale]/salon/[slug]/staff/[staffId]/page.tsx` exists and `StaffProfilePage` is used by SalonTeam.tsx + SalonDetailV3.tsx. B7 only removed it from inside the flow.
-- [ ] B15 The 12 bare star ratings across the app (FRONTEND_AUDIT_2026-07-08.md) are still unfixed. NOT started.
+- [x] B15 Bare star ratings fixed across the estate. reviewCount threaded through every card/row/autocomplete/carousel; where no count exists the star is omitted, not shown bare; the two-independent-ifs bug collapsed to one gate. SalonTeam no longer wears the salon's rating for a zero-review stylist (staff_average_rating/staff_review_count, badge omitted when none). verified: PayConfirmStep.tsx:347-352 single gate; SalonTeam.tsx:169-170. commit 6ef139456.
 
 ### Owner batch 2026-07-09 (walked the live flow again)
 - [x] B16 Root cause: framer-motion `layout` on the service row plus an add-on line that grew the row's measured height, so the ink check `rode along and slid downward`. Fix: the add-on line moved to a RESERVED slot that never changes row height, `layout` removed, and the check now uses the shared recipe (opacity+scale+blur, no rotate). proof: ServicesStaffStep.tsx:435-441, ToggleCircle.tsx.
