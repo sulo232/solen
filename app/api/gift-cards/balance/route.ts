@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, getClientIp } from "@/lib/ratelimit";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -17,11 +17,35 @@ const balanceLimiter = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOK
     })
   : null;
 
-// GET /api/gift-cards/balance?code=XXX — Check gift card balance (public, rate limited)
+// GET /api/gift-cards/balance?code=XXX : check gift card balance (public, rate limited)
+// GET /api/gift-cards/balance?salon_id=XXX : salon's own gift-card list (owner/admin only)
 export async function GET(req: NextRequest) {
   if (balanceLimiter) {
     const rateLimited = await applyRateLimit(balanceLimiter, { ip: getClientIp(req) });
     if (rateLimited) return rateLimited;
+  }
+
+  const salonId = new URL(req.url).searchParams.get("salon_id");
+  if (salonId) {
+    const supabase = await createServerSupabaseClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const admin = createAdminSupabaseClient();
+    const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
+    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+    if (salon?.owner_id !== user.id && profile?.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const { data: cards } = await admin
+      .from("gift_cards")
+      .select("id, code, original_amount, remaining_amount, purchaser_email, recipient_name, recipient_email, is_active, created_at, expires_at")
+      .eq("salon_id", salonId)
+      .order("created_at", { ascending: false });
+
+    return NextResponse.json({ items: cards ?? [] });
   }
 
   const code = new URL(req.url).searchParams.get("code");

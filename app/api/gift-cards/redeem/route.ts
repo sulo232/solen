@@ -53,18 +53,25 @@ export async function POST(req: NextRequest) {
     }, { status: 400 });
   }
 
-  // Deduct amount (optimistic lock via remaining_amount check)
+  // Deduct amount (optimistic lock via remaining_amount check). PostgREST returns
+  // no error when a filtered update matches zero rows, it just returns an empty
+  // result set, so a concurrent redeem that already changed remaining_amount would
+  // silently look like success without .select() to actually confirm a row was hit.
   const newRemaining = card.remaining_amount - validated.amount;
-  const { error } = await admin
+  const { data: updatedRows, error } = await admin
     .from("gift_cards")
     .update({
       remaining_amount: newRemaining,
       is_active: newRemaining > 0,
     })
     .eq("id", card.id)
-    .eq("remaining_amount", card.remaining_amount); // optimistic lock
+    .eq("remaining_amount", card.remaining_amount) // optimistic lock
+    .select("id");
 
-  if (error) return NextResponse.json({ error: "Redemption failed — try again" }, { status: 409 });
+  if (error) return NextResponse.json({ error: "Redemption failed, try again" }, { status: 409 });
+  if (!updatedRows || updatedRows.length === 0) {
+    return NextResponse.json({ error: "Balance changed concurrently, try again" }, { status: 409 });
+  }
 
   return NextResponse.json({
     data: {

@@ -39,17 +39,19 @@ export async function GET(request: NextRequest) {
   const days = periodDays[period] ?? 30;
   const periodStart = new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
 
-  // Gift cards purchased for this salon
+  // Gift cards purchased for this salon. The live gift_cards table has
+  // original_amount / remaining_amount / is_active, not amount / remaining_balance /
+  // status (those columns never existed, per _inventory/_db-columns.json).
   const { data: giftCards } = await admin
     .from("gift_cards")
-    .select("id, amount, remaining_balance, status, created_at")
+    .select("id, original_amount, remaining_amount, is_active, created_at")
     .eq("salon_id", salonId)
     .gte("created_at", periodStart);
 
   const totalSold = giftCards?.length ?? 0;
-  const totalGiftCardRevenue = (giftCards ?? []).reduce((s, gc) => s + (gc.amount ?? 0), 0);
-  const totalRedeemed = (giftCards ?? []).reduce((s, gc) => s + ((gc.amount ?? 0) - (gc.remaining_balance ?? 0)), 0);
-  const activeCards = (giftCards ?? []).filter(gc => gc.status === "active").length;
+  const totalGiftCardRevenue = (giftCards ?? []).reduce((s, gc) => s + (gc.original_amount ?? 0), 0);
+  const totalRedeemed = (giftCards ?? []).reduce((s, gc) => s + ((gc.original_amount ?? 0) - (gc.remaining_amount ?? 0)), 0);
+  const activeCards = (giftCards ?? []).filter(gc => gc.is_active === true).length;
 
   // Referral completions for this salon
   const { data: referrals } = await admin

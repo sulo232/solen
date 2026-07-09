@@ -3,8 +3,22 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
+import { stripe } from "@/lib/stripe";
 
-// GET /api/salon/go-live — Returns salon readiness state for the Go Live gate
+// A bare non-null stripe_account_id only means the salon clicked "Connect", not that
+// Stripe onboarding (KYC/bank/TOS) actually completed. Mirrors the live check already
+// done correctly in /api/stripe/connect/status.
+async function isStripeReady(accountId: string | null): Promise<boolean> {
+  if (!accountId) return false;
+  try {
+    const account = await stripe.accounts.retrieve(accountId);
+    return !!(account.charges_enabled && account.payouts_enabled);
+  } catch {
+    return false;
+  }
+}
+
+// GET /api/salon/go-live: returns salon readiness state for the Go Live gate
 export async function GET(_req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -21,7 +35,7 @@ export async function GET(_req: NextRequest) {
     .eq("salon_id", salon.id)
     .eq("is_active", true);
 
-  const hasStripe = !!salon.stripe_account_id;
+  const hasStripe = await isStripeReady(salon.stripe_account_id);
   const hasCoverPhoto = !!salon.cover_photo_url;
   const hasServices = (serviceCount ?? 0) >= 1;
   const canGoLive = hasStripe && hasCoverPhoto && hasServices;
@@ -47,8 +61,8 @@ export async function POST(_req: NextRequest) {
   const salon = await getActiveSalon<{ id: string; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, stripe_account_id, cover_photo_url");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
-  if (!salon.stripe_account_id) {
-    return NextResponse.json({ error: "Stripe Connect muss zuerst eingerichtet werden." }, { status: 400 });
+  if (!(await isStripeReady(salon.stripe_account_id))) {
+    return NextResponse.json({ error: "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto)." }, { status: 400 });
   }
   if (!salon.cover_photo_url) {
     return NextResponse.json({ error: "Ein Titelbild ist erforderlich." }, { status: 400 });

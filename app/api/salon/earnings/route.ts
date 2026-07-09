@@ -30,8 +30,13 @@ export async function GET(req: NextRequest) {
   }
 
   const payoutsList = payouts ?? [];
-  const total_earnings = payoutsList.filter(p => p.status === "paid").reduce((sum, p) => sum + Number(p.net_amount), 0);
-  const pending_balance = payoutsList.filter(p => p.status === "recorded" || p.status === "pending").reduce((sum, p) => sum + Number(p.net_amount), 0);
+  // salon_payouts.status is DB-constrained to 'recorded' | 'transferred' | 'failed'
+  // (supabase/migrations/20260601132922_salon_payouts.sql:32). No writer ever sets 'paid'
+  // or 'pending' (those values cannot exist in this column), so filtering on them left
+  // total_earnings permanently 0. 'transferred' is the real already-paid-out state,
+  // 'recorded' is the real still-pending state.
+  const total_earnings = payoutsList.filter(p => p.status === "transferred").reduce((sum, p) => sum + Number(p.net_amount), 0);
+  const pending_balance = payoutsList.filter(p => p.status === "recorded").reduce((sum, p) => sum + Number(p.net_amount), 0);
   
   return NextResponse.json({
     total_earnings,

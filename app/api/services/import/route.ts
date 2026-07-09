@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
     const category = categoryIdx !== -1 ? cols[categoryIdx] : defaultCategory;
 
     if (isNaN(price)) { errors.push(`Row ${i + 1}: Invalid price`); continue; }
+    if (price < 0) { errors.push(`Row ${i + 1}: Price cannot be negative`); continue; }
     if (isNaN(duration) || duration <= 0) { errors.push(`Row ${i + 1}: Invalid duration`); continue; }
 
     servicesToInsert.push({

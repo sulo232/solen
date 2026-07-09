@@ -20,6 +20,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
+  // Verify every referenced staff_member_id actually belongs to THIS salon, so an owner
+  // can't reference another salon's staff and pollute that salon's booking/analytics data.
+  const staffIds = [...new Set(slots.map((s: { staff_member_id?: string }) => s.staff_member_id).filter(Boolean))] as string[];
+  if (staffIds.length > 0) {
+    const { data: ownStaff } = await supabase
+      .from("staff_members")
+      .select("id")
+      .in("id", staffIds)
+      .eq("salon_id", salon_id);
+    const ownStaffIds = new Set((ownStaff ?? []).map((s) => s.id));
+    if (staffIds.some((id) => !ownStaffIds.has(id))) {
+      return NextResponse.json({ message: "staff_member_id does not belong to this salon", code: "STAFF_SALON_MISMATCH" }, { status: 400 });
+    }
+  }
+
   const toInsert = slots.map((slot: { service_id?: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string }) => ({
     salon_id,
     service_id: slot.service_id ?? null,

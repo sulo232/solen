@@ -22,9 +22,51 @@
 // INTEGER Rappen (migration 20260602100000_purchase_refunds).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { Redis } from "@upstash/redis";
 import { getStripe } from "@/lib/stripe";
 import { getRefundConfig } from "@/lib/bookings/refund-config";
 import { alertAdmin } from "@/lib/alert-admin";
+import { getServerEnv } from "@/lib/env";
+
+let redis: Redis | null = null;
+function getRedis(): Redis | null {
+  if (redis) return redis;
+  const env = getServerEnv();
+  if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) return null;
+  redis = new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN });
+  return redis;
+}
+
+// Short-lived per-purchase lock so two DIFFERING-amount refund calls (e.g. salon +
+// admin acting near-simultaneously, or a UI double-submit with an edited amount)
+// can't both read the same stale refunded_amount before either commits. The CAS
+// guard below only collapses SAME-amount retries, because the Stripe idempotency
+// key is keyed on amountCents too, so a different amount produces a different key
+// and a genuine second Stripe refund. Fails open (no lock) when Redis isn't
+// configured, matching this codebase's other Redis guards (nail/ai-budget.ts).
+async function acquireRefundLock(
+  source: PurchaseRefundSource,
+  id: string,
+): Promise<(() => Promise<void>) | null> {
+  const r = getRedis();
+  if (!r) return null; // no Redis configured -> fail open, matches nail/ai-budget.ts.
+  const key = `purchase-refund-lock:${source}:${id}`;
+  const token = crypto.randomUUID();
+  // Retry briefly (the lock TTL is 15s, covering resolve + Stripe call + CAS for
+  // the holder) so two near-simultaneous requests serialize instead of one
+  // silently proceeding unlocked the instant the first request holds the key.
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const acquired = await r.set(key, token, { nx: true, ex: 15 });
+    if (acquired) {
+      return async () => {
+        const current = await r.get(key);
+        if (current === token) await r.del(key);
+      };
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  return null; // still locked after retrying -> caller treats as a live conflict.
+}
 
 export type PurchaseRefundSource = "package" | "retail";
 
@@ -236,6 +278,23 @@ export async function issuePurchaseRefund(
     throw new PurchaseRefundError("INVALID_AMOUNT", "amountCents must be a positive integer (Rappen)");
   }
 
+  // 1b. Serialize concurrent refund calls for the SAME purchase (e.g. salon +
+  //     admin acting near-simultaneously with DIFFERENT amounts) so they can't
+  //     both read the same stale refunded_amount before either commits. When
+  //     Redis is configured and the lock is still held after retrying, this is
+  //     a live conflict, not a duplicate click, so it fails closed here rather
+  //     than silently letting a second real Stripe refund through uncounted.
+  const redisConfigured = !!getRedis();
+  const releaseLock = await acquireRefundLock(source, id);
+  if (redisConfigured && !releaseLock) {
+    throw new PurchaseRefundError(
+      "CONCURRENT_RETRY",
+      "Another refund for this purchase is in progress, retry shortly",
+    );
+  }
+
+  try {
+
   // 2. Resolve the purchase (admin client).
   const purchase = await resolvePurchase(db, source, id);
   if (!purchase) {
@@ -378,4 +437,8 @@ export async function issuePurchaseRefund(
     userId: purchase.userId,
     salonId: purchase.salonId,
   };
+
+  } finally {
+    if (releaseLock) await releaseLock();
+  }
 }

@@ -74,6 +74,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Only salon owners can assign services" }, { status: 403 });
   }
 
+  // Verify every service_id actually belongs to this staff member's salon, so a
+  // caller can't cross-reference another salon's service (name/price/duration
+  // would then leak onto this salon's public staff profile).
+  if (service_ids.length > 0) {
+    const { data: ownServices } = await supabase
+      .from("services")
+      .select("id")
+      .in("id", service_ids)
+      .eq("salon_id", staffMember.salon_id);
+
+    const ownIds = new Set((ownServices ?? []).map((s) => s.id));
+    const foreignIds = service_ids.filter((sid: string) => !ownIds.has(sid));
+    if (foreignIds.length > 0) {
+      return NextResponse.json({ error: "One or more service_ids do not belong to this salon" }, { status: 400 });
+    }
+  }
+
   // Delete existing assignments and re-insert
   await supabase
     .from("staff_services")
