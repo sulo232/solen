@@ -21,7 +21,8 @@ import type { DiscoveryItem } from "@/lib/types";
  */
 export default function CardSignals({ item }: { item: DiscoveryItem }) {
   const t = useTranslations("discover");
-  const hasRating = typeof item.rating === "number";
+  // B15 (PSYCHOLOGY law 6): a star never renders without its review count.
+  const hasRating = typeof item.rating === "number" && typeof item.review_count === "number" && item.review_count > 0;
   const hasPrice = typeof item.price_min === "number";
   const hasAvailability = !!item.availability_label;
 
@@ -30,9 +31,11 @@ export default function CardSignals({ item }: { item: DiscoveryItem }) {
   return (
     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
       {hasRating && (
+        // B15: star+count, the same locked "(N)" review-count pattern used everywhere else. mockup-ok
         <span className="inline-flex items-center gap-[3px] font-body text-[12px] font-normal text-s-ink-2 tabular-nums">
           <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
           {item.rating!.toFixed(1)}
+          <span className="text-s-accent">({item.review_count})</span>
         </span>
       )}
       {hasPrice && (

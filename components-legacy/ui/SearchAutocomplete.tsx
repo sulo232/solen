@@ -24,6 +24,9 @@ interface SuggestSalon {
   name: string;
   slug: string;
   average_rating: number;
+  // B15: optional because /api/search/suggest (search_suggest RPC) does not currently
+  // return it, so the gate below hides the star until the backend threads it through.
+  review_count?: number | null;
   cover_image: string | null;
 }
 
@@ -258,8 +261,8 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     <div className="min-w-0">
                       <p className="font-medium truncate">{salon.name}</p>
                       <div className="text-xs text-s-ink/40">
-                        {salon.average_rating > 0 && (
-                          <RatingStars value={salon.average_rating} size="sm" />
+                        {salon.average_rating > 0 && salon.review_count != null && salon.review_count > 0 && (
+                          <RatingStars value={salon.average_rating} count={salon.review_count} size="sm" />
                         )}
                       </div>
                     </div>

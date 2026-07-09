@@ -17,7 +17,9 @@ import { RatingStars } from "@/app/[locale]/_components/primitives";
  * shipping to en/fr/it.
  */
 interface StyleTerm { term: string; thumb: string | null; }
-interface SalonHit { id: string; name: string; slug: string; average_rating: number | null; cover_image: string | null; }
+// B15: review_count is optional because /api/search/suggest (search_suggest RPC) does not
+// currently return it, so the gate below hides the star until the backend threads it through.
+interface SalonHit { id: string; name: string; slug: string; average_rating: number | null; review_count?: number | null; cover_image: string | null; }
 
 interface SearchAutocompleteProps {
   query: string;
@@ -97,9 +99,10 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
               )}
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{s.name}</span>
-                {s.average_rating != null && (
+                {s.average_rating != null && s.review_count != null && s.review_count > 0 && (
                   <RatingStars
                     value={Number(s.average_rating)}
+                    count={s.review_count}
                     size="sm"
                     className="font-body text-[12.5px] text-s-ink-2"
                   />

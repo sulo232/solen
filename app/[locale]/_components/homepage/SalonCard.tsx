@@ -367,6 +367,9 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   name: string;
   /** 0-5 rating (1 decimal display). `null` shows em-dash. */
   rating: number | null;
+  /** Review count backing `rating`. PSYCHOLOGY law 6 (stars never bare): a star
+   *  only renders when BOTH rating and reviewCount are present, e.g. "4.8 (54)". */
+  reviewCount?: number | null;
   /** Photo URL. If absent, falls back to category-color tile w salon initial. */
   photoUrl?: string;
   /** Photo alt for screen readers — defaults to "Foto von [name]". */
@@ -411,6 +414,7 @@ export function SalonCard({
   salonId,
   name,
   rating,
+  reviewCount,
   photoUrl,
   photoAlt,
   category,
@@ -564,8 +568,14 @@ export function SalonCard({
           {/* V3-D346 (2026-05-28): rating recedes to grey-regular — gold star carries
               the signal; was 500/ink competing with the name. Matches the FeaturedStylists calm-down. */}
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
+          {/* B15 (2026-07-09, PSYCHOLOGY law 6): a star never renders without its
+              review count, so the gate requires both rating AND reviewCount. */}
           <CardMeta className="shrink-0 text-[13px] tabular-nums">
-            {rating != null ? <RatingStars value={rating} size="sm" /> : "—"}
+            {rating != null && reviewCount != null && reviewCount > 0 ? (
+              <RatingStars value={rating} count={reviewCount} size="sm" />
+            ) : (
+              "—" // em-dash-ok: pre-existing no-rating placeholder glyph, unchanged
+            )}
           </CardMeta>
         </div>
 

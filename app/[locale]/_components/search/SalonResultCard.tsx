@@ -281,7 +281,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             {name}
           </CardName>
           <CardMeta as="div" className="mt-0.5 flex items-center gap-2 text-[12px] leading-[1.35]">
-            {rating != null && <RatingStars value={rating} size="sm" />}
+            {rating != null && <RatingStars value={rating} count={reviewCount ?? undefined} size="sm" />}
             {line && (
               <span className="inline-flex min-w-0 items-center gap-0.5">
                 <MapPin size={11} className="shrink-0" /> <span className="truncate">{line}</span>
@@ -508,7 +508,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
               </CardName>
               {rating != null && (
                 <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
-                  <RatingStars value={rating} size="md" />
+                  <RatingStars value={rating} count={reviewCount ?? undefined} size="md" />
                 </span>
               )}
             </div>
@@ -551,7 +551,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             <div className="flex shrink-0 flex-col items-end gap-2.5">
               {rating != null && (
                 <span className="flex items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
-                  <RatingStars value={rating} size="md" />
+                  <RatingStars value={rating} count={reviewCount ?? undefined} size="md" />
                 </span>
               )}
               {priceFromCHF != null && (

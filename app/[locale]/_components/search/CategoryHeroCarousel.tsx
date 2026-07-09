@@ -146,10 +146,9 @@ export function CategoryHeroCarousel({
                     <h3 className="font-display text-[24px] font-bold leading-[1.05] tracking-[-0.02em] text-white">
                       {s.name}
                     </h3>
-                    {s.average_rating != null && (
+                    {s.average_rating != null && s.review_count != null && s.review_count > 0 && (
                       <div className="mt-1.5 flex items-center gap-1.5 font-body text-[13.5px] tabular-nums">
-                        <RatingStars value={s.average_rating} size="md" />
-                        {s.review_count ? `(${s.review_count})` : ""}
+                        <RatingStars value={s.average_rating} count={s.review_count} size="md" />
                       </div>
                     )}
                     {(price != null || addr) && (

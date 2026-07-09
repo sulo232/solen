@@ -153,9 +153,9 @@ export function MapSalonDetail({
         <CardName as="p" className="truncate font-heading text-[18px] font-bold">
           {salon.name}
         </CardName>
-        {salon.average_rating != null && (
+        {salon.average_rating != null && salon.review_count != null && salon.review_count > 0 && (
           <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-s-ink tabular-nums">
-            <RatingStars value={salon.average_rating} size="md" />
+            <RatingStars value={salon.average_rating} count={salon.review_count} size="md" />
           </span>
         )}
       </div>

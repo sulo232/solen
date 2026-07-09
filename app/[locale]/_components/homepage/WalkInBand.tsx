@@ -120,10 +120,13 @@ export default function WalkInBand() {
                       )}
                       <div className="mt-2.5 flex items-center gap-2">
                         <span className="truncate font-heading text-[14px] font-bold text-s-ink">{s.name}</span>
+                        {/* B15 (PSYCHOLOGY law 6): reviewCount was already gated on but never
+                            printed, a bare rating. Now shows the count it was gated on. mockup-ok */}
                         {s.reviewCount > 0 && (
-                          <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-s-ink-2">
+                          <span className="ml-auto flex shrink-0 items-center gap-1 text-[12px] font-semibold text-s-ink-2">
                             <Star size={11} className="fill-s-star text-s-star" />
                             {s.rating.toFixed(1)}
+                            <span className="text-s-accent">({s.reviewCount})</span>
                           </span>
                         )}
                       </div>

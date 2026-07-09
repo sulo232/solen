@@ -19,6 +19,8 @@ export interface SalonLite {
   name: string;
   slug: string;
   rating: number | null;
+  /** B15 (PSYCHOLOGY law 6): backs `rating`. A star never renders without its review count. */
+  reviewCount: number | null;
   priceFrom: number | null;
   serviceId: string | null;
 }
@@ -395,9 +397,11 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-s-bg-sunken font-heading text-[14px] font-bold tracking-[-0.02em] text-s-ink-2">{initials(s.name)}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">{s.name}</span>
-                    {s.rating != null && (
+                    {/* B15: star+count, the same locked "(N)" review-count pattern used everywhere else. mockup-ok */}
+                    {s.rating != null && s.reviewCount != null && s.reviewCount > 0 && (
                       <span className="mt-0.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-s-ink-2">
                         <Star size={13} className="text-s-star" fill="currentColor" /> {s.rating.toFixed(2)}
+                        <span className="text-s-accent">({s.reviewCount})</span>
                       </span>
                     )}
                   </span>

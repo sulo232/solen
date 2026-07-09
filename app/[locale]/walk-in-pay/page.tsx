@@ -429,16 +429,15 @@ export default function WalkInPayPage() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-heading text-[15px] font-semibold tracking-[-.01em] text-s-ink">{booking.salon_name}</div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px]">
-                    {booking.salon_rating != null && booking.salon_rating > 0 && (
+                    {booking.salon_rating != null && booking.salon_rating > 0 &&
+                      booking.salon_review_count != null && booking.salon_review_count > 0 && (
                       <span className="flex items-center gap-1.5">
                         <Star size={13} stroke="none" className="fill-s-star" aria-hidden />
                         <span className="font-heading font-semibold tabular-nums text-s-ink">{booking.salon_rating.toFixed(1)}</span>
-                        {booking.salon_review_count != null && (
-                          canOpenSalon ? (
-                            <button type="button" onClick={openSalon} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.salon_review_count})</button>
-                          ) : (
-                            <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>
-                          )
+                        {canOpenSalon ? (
+                          <button type="button" onClick={openSalon} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.salon_review_count})</button>
+                        ) : (
+                          <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>
                         )}
                       </span>
                     )}
@@ -475,16 +474,15 @@ export default function WalkInPayPage() {
                     <div className="truncate font-heading text-[15px] font-semibold text-s-ink">{booking.barber_name}</div>
                     <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px] text-s-ink-2">
                       {booking.barber_role && <span className="truncate">{booking.barber_role}</span>}
-                      {booking.barber_rating != null && booking.barber_rating > 0 && (
+                      {booking.barber_rating != null && booking.barber_rating > 0 &&
+                        booking.barber_review_count != null && booking.barber_review_count > 0 && (
                         <span className="flex items-center gap-1">
                           <Star size={12} stroke="none" className="fill-s-star" aria-hidden />
                           <span className="font-semibold tabular-nums text-s-ink">{booking.barber_rating.toFixed(1)}</span>
-                          {booking.barber_review_count != null && (
-                            canOpenBarber ? (
-                              <button type="button" onClick={openBarber} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.barber_review_count})</button>
-                            ) : (
-                              <span className="tabular-nums">({booking.barber_review_count})</span>
-                            )
+                          {canOpenBarber ? (
+                            <button type="button" onClick={openBarber} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.barber_review_count})</button>
+                          ) : (
+                            <span className="tabular-nums">({booking.barber_review_count})</span>
                           )}
                         </span>
                       )}

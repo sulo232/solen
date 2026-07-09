@@ -487,6 +487,9 @@ export interface DiscoveryItem {
       availability) ONLY when these are present — never faked. `price_min`/`price_max` already exist above. They wait
       for the booking/availability backend; until then they're undefined and the card stays clean B&W. */
   rating?: number | null;
+  /** B15 (PSYCHOLOGY law 6): backs `rating`. A star never renders without its review
+   *  count, so CardSignals requires both `rating` and `review_count` before showing a star. */
+  review_count?: number | null;
   /** Pre-localised, backend-provided urgency string, e.g. "Frei in 20 Min" / "Heute buchbar". Rendered as-is. */
   availability_label?: string | null;
   created_at: string;

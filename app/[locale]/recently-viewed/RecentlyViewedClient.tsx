@@ -106,13 +106,12 @@ export default function RecentlyViewedClient() {
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-heading text-[16px] font-semibold tracking-[-0.01em] text-s-ink">{s.name}</div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px]">
-                      {s.average_rating != null && s.average_rating > 0 && (
+                      {s.average_rating != null && s.average_rating > 0 &&
+                        s.review_count != null && s.review_count > 0 && (
                         <span className="flex items-center gap-1">
                           <Star size={13} className="fill-s-star text-s-star" aria-hidden />
                           <span className="font-semibold tabular-nums text-s-ink">{s.average_rating.toFixed(1)}</span>
-                          {s.review_count != null && s.review_count > 0 && (
-                            <span className="tabular-nums text-s-accent">({s.review_count})</span>
-                          )}
+                          <span className="tabular-nums text-s-accent">({s.review_count})</span>
                         </span>
                       )}
                       {s.address && <span className="truncate text-s-ink-2">{s.address}</span>}

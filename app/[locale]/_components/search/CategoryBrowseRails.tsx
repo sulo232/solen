@@ -38,6 +38,7 @@ export type RailSalon = {
   name: string;
   slug: string;
   average_rating: number | null;
+  review_count?: number | null;
   cover_photo_url: string | null;
   address?: string;
   city?: string;
@@ -104,6 +105,7 @@ function Rail({
               slug={s.slug}
               name={s.name}
               rating={s.average_rating}
+              reviewCount={s.review_count}
               category={cat}
               photoUrl={s.cover_photo_url ?? undefined}
               variant="availability"

@@ -344,13 +344,12 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <div className="min-w-0 flex-1">
             <p className="truncate font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{salon.name}</p>
             <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px]">
-              {salon.average_rating != null && Number(salon.average_rating) > 0 && (
+              {salon.average_rating != null && Number(salon.average_rating) > 0 &&
+                salon.review_count != null && Number(salon.review_count) > 0 && (
                 <span className="flex items-center gap-1">
                   <Star size={13} className="fill-s-star text-s-star" aria-hidden />
                   <span className="font-semibold tabular-nums text-s-ink">{Number(salon.average_rating).toFixed(1)}</span>
-                  {salon.review_count != null && Number(salon.review_count) > 0 && (
-                    <span className="tabular-nums text-s-accent">({salon.review_count})</span>
-                  )}
+                  <span className="tabular-nums text-s-accent">({salon.review_count})</span>
                 </span>
               )}
               {salon.address && <span className="truncate text-s-ink-2">{salon.address}</span>}

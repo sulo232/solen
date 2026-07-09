@@ -159,7 +159,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   try {
     const { data: salonRows } = await supabase
       .from("salons")
-      .select("id, name, slug, average_rating, services!inner(id, name_de, name_en, price, category, is_active)")
+      .select("id, name, slug, average_rating, review_count, services!inner(id, name_de, name_en, price, category, is_active)")
       .eq("is_active", true)
       .eq("services.is_active", true)
       .eq("services.category", serviceCategory)
@@ -184,6 +184,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
         name: s.name as string,
         slug: s.slug as string,
         rating: (s.average_rating as number | null) ?? null,
+        reviewCount: (s.review_count as number | null) ?? null,
         priceFrom: services.length ? Math.min(...services.map((x) => x.price as number)) : null,
         serviceId: chosen?.id ?? null,
       };

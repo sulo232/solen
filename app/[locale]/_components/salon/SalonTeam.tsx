@@ -135,7 +135,7 @@ export function SalonTeam({
             onClick={() => openProfile(s.id)}
             className="group w-[104px] shrink-0 snap-start text-left md:w-[112px]"
           >
-            <TeamMember member={s} salonAverageRating={salonAverageRating} />
+            <TeamMember member={s} />
           </button>
         ))}
       </div>
@@ -160,14 +160,15 @@ export function SalonTeam({
 
 function TeamMember({
   member,
-  salonAverageRating,
 }: {
   member: StaffMember;
-  salonAverageRating: number | null;
 }) {
+  // B15 (PSYCHOLOGY law 6): a personal rating badge must never substitute the
+  // salon's blended rating for a staff member with zero personal reviews, that
+  // reads as this stylist's own score when it isn't. Omit the badge instead.
   const hasRating = (member.staff_review_count ?? 0) > 0;
-  const displayRating = hasRating ? member.staff_average_rating : salonAverageRating;
-  const showRating = displayRating !== null && displayRating !== undefined && displayRating > 0;
+  const displayRating = member.staff_average_rating;
+  const showRating = hasRating && displayRating !== null && displayRating !== undefined && displayRating > 0;
 
   // V3-D234: role = first specialty (Fresha uses "Founder" / role text;
   // we don't have a role field but specialties carry the same signal).
