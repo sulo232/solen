@@ -102,6 +102,27 @@ export const createMessageSchema = z.object({
   image_url: z.string().url().optional().nullable(),
 });
 
+// customer_preferences was z.any(), so a caller could store an unbounded / arbitrarily
+// shaped JSON blob on their own profile. Known sub-keys (read by hair-dna derivation,
+// ForYouSalonRows, useCustomerPrefs) get a real shape; anything else is still allowed
+// through .catchall so we don't break an existing caller writing an unlisted key, but
+// the whole payload is capped in size so it can't grow into a several-MB blob.
+const customerPreferencesSchema = z.object({
+  allergies: z.string().max(500).optional(),
+  skinType: z.string().max(50).optional(),
+  stylistGender: z.enum(["male", "female", "no-preference"]).optional(),
+  accessibilityNeeds: z.string().max(500).optional(),
+  language: z.string().max(20).optional(),
+  notes: z.string().max(1000).optional(),
+  interests: z.array(z.string().max(60)).max(50).optional(),
+  categories: z.array(z.string().max(60)).max(50).optional(),
+  beauty: z.record(z.string(), z.unknown()).optional(),
+  persona: z.record(z.string(), z.unknown()).optional(),
+}).catchall(z.unknown()).refine(
+  (val) => JSON.stringify(val).length <= 20_000,
+  { message: "customer_preferences payload is too large" },
+);
+
 export const updateProfileSchema = z.object({
   display_name: z.string().min(1).max(100).optional(),
   avatar_url: z.string().url().optional().nullable(),
@@ -122,7 +143,7 @@ export const updateProfileSchema = z.object({
   disc_hair_length: z.string().max(30).nullable().optional(),
   disc_face_shape: z.string().max(30).nullable().optional(),
   disc_profile_set: z.boolean().optional(),
-  customer_preferences: z.any().optional(),
+  customer_preferences: customerPreferencesSchema.optional(),
 }).strict();
 
 export const createConversationSchema = z.object({
@@ -227,7 +248,7 @@ export const SALON_CATEGORY_SLUGS: readonly string[] = salonCategory.options;
 export const createSalonSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
-  categories: z.array(z.string()).min(1),
+  categories: z.array(salonCategory).min(1),
   city: z.string().min(1),
   address: z.string().min(5).max(200),
   phone: z.string().max(20).optional().or(z.literal("")),
@@ -245,7 +266,7 @@ export const createSalonSchema = z.object({
     name_en: z.string().optional().or(z.literal("")),
     name_fr: z.string().optional().or(z.literal("")),
     name_it: z.string().optional().or(z.literal("")),
-    category: z.string().optional(),
+    category: salonCategory.optional(),
     duration_minutes: z.number().min(5).max(480).default(60),
     price: z.number().min(0).default(0),
     description_de: z.string().optional().or(z.literal("")),

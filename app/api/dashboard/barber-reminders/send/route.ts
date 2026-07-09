@@ -35,6 +35,18 @@ export async function POST(req: NextRequest) {
     .from("salons").select("id, name").eq("id", salon_id).eq("owner_id", user.id).single();
   if (!salon) return NextResponse.json({ error: "Not your salon" }, { status: 403 });
 
+  // Verify client_id has actually been a customer of THIS salon, otherwise any
+  // registered user's UUID could be spammed with a reminder email + used to probe
+  // whether a given UUID is a real account.
+  const { data: hasBooked } = await admin
+    .from("bookings")
+    .select("id")
+    .eq("salon_id", salon_id)
+    .eq("user_id", client_id)
+    .limit(1)
+    .maybeSingle();
+  if (!hasBooked) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
+
   // Get client email
   const { data: authUser } = await admin.auth.admin.getUserById(client_id);
   const email = authUser?.user?.email;

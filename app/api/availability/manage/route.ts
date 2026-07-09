@@ -20,6 +20,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
+  // Owner-facing slot management: only the two manual states are legal here. 'booked'
+  // (and any other status) must only ever be set by the real booking-creation flow,
+  // never by a client passing an arbitrary string on this dashboard-availability route.
+  const ALLOWED_STATUSES = new Set(["available", "blocked"]);
+  if (slots.some((s: { status?: string }) => s.status !== undefined && !ALLOWED_STATUSES.has(s.status))) {
+    return NextResponse.json({ message: "status must be 'available' or 'blocked'", code: "INVALID_STATUS" }, { status: 400 });
+  }
+
   // Verify every referenced staff_member_id actually belongs to THIS salon, so an owner
   // can't reference another salon's staff and pollute that salon's booking/analytics data.
   const staffIds = [...new Set(slots.map((s: { staff_member_id?: string }) => s.staff_member_id).filter(Boolean))] as string[];

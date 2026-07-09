@@ -128,12 +128,12 @@ export async function POST(request: NextRequest) {
         .eq("salon_id", booking.salon_id)
         .eq("is_hidden", false);
 
-      if (stats && stats.length > 0) {
-        const avg = stats.reduce((sum, r) => sum + r.rating, 0) / stats.length;
+      if (stats) {
+        const avg = stats.length > 0 ? stats.reduce((sum, r) => sum + r.rating, 0) / stats.length : null;
         await admin
           .from("salons")
           .update({
-            average_rating: Math.round(avg * 10) / 10,
+            average_rating: avg !== null ? Math.round(avg * 100) / 100 : null,
             review_count: stats.length,
           })
           .eq("id", booking.salon_id);

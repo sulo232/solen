@@ -87,6 +87,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Service has an invalid duration", code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
+  // 2b. staff_member_id (when supplied) must belong to this salon too, same reasoning as
+  //     the service check above: a slot referencing another salon's staff pollutes that
+  //     salon's own analytics (bookings/reviews there are filtered by staff_member_id only).
+  if (staff_member_id) {
+    const { data: staffMember } = await supabase
+      .from("staff_members")
+      .select("id")
+      .eq("id", staff_member_id)
+      .eq("salon_id", salon_id)
+      .single();
+    if (!staffMember) {
+      return NextResponse.json({ message: "staff_member_id does not belong to this salon", code: "STAFF_SALON_MISMATCH" }, { status: 400 });
+    }
+  }
+
   // 3. Walk the weeks × enabled-weekdays × duration-steps and build the rows.
   const now = new Date();
   const monday = startOfWeekMonday(now);

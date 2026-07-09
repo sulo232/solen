@@ -130,6 +130,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
   }
 
+  // 2b. staff_member_id (when supplied) must belong to the same salon as the service,
+  //     otherwise a slot can cross-reference another salon's staff and pollute that
+  //     salon's analytics (bookings/reviews there are only filtered by staff_member_id).
+  if (staff_member_id) {
+    const { data: staffMember } = await supabase
+      .from("staff_members")
+      .select("id")
+      .eq("id", staff_member_id)
+      .eq("salon_id", service.salon_id)
+      .single();
+    if (!staffMember) {
+      return NextResponse.json({ message: "staff_member_id does not belong to this salon", code: "STAFF_SALON_MISMATCH" }, { status: 400 });
+    }
+  }
+
   // 3. Compute starts_at / ends_at. Mirror the PATCH route (/api/slots/[id]): a NAIVE local
   //    "YYYY-MM-DDTHH:MM:00" string (no Z) so it lands on the wall-clock time the owner picked,
   //    consistent with how existing slots are stored / read by the calendar.

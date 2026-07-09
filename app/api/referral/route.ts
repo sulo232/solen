@@ -36,10 +36,28 @@ export async function GET() {
         .select("id")
         .eq("referrer_id", session.user.id)
         .eq("status", "completed");
-        
+
       if (stats) friends_invited = stats.length;
     } catch {
       // Ignore if referrals table doesn't have these columns
+    }
+
+    // total_earned = sum of still-valid (unexpired) user_credits.remaining for this user.
+    // Was previously hardcoded to 0, so the checkout "Guthaben verfügbar" banner never showed.
+    try {
+      const nowIso = new Date().toISOString();
+      const { data: credits } = await supabase
+        .from("user_credits")
+        .select("remaining, expires_at")
+        .eq("user_id", session.user.id);
+
+      if (credits) {
+        total_earned = credits
+          .filter((c) => !c.expires_at || c.expires_at > nowIso)
+          .reduce((sum, c) => sum + (c.remaining ?? 0), 0);
+      }
+    } catch {
+      // Ignore if user_credits is unavailable; total_earned stays 0.
     }
 
     return NextResponse.json({ 

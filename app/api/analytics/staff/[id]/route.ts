@@ -22,7 +22,7 @@ export async function GET(
   // Get staff member's salon to verify ownership
   const { data: staff } = await admin
     .from("staff_members")
-    .select("id, salon_id, name")
+    .select("id, salon_id, name, user_id")
     .eq("id", staffId)
     .single();
 
@@ -42,7 +42,9 @@ export async function GET(
 
   const isOwner = salon?.owner_id === user.id;
   const isAdmin = profile?.role === "admin";
-  const isSelf = user.id === staffId;
+  // staffId is staff_members.id (a different id space than auth.users.id); the
+  // correct self-check is staff_members.user_id === the caller's auth uid.
+  const isSelf = staff.user_id === user.id;
 
   if (!isOwner && !isAdmin && !isSelf) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

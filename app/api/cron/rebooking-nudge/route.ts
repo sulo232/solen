@@ -66,6 +66,21 @@ export async function GET(request: NextRequest) {
 
     if (prefs && prefs.rebooking_enabled === false) continue;
 
+    // Cooldown / already-sent guard: the candidate query above has no send-once
+    // column, so a user who still hasn't rebooked would otherwise be re-matched
+    // and re-emailed every single day the cron runs. Reuses the existing
+    // `notifications` table (type='rebooking_nudge'), the same pattern already
+    // used for review_prompt tracking elsewhere in the codebase.
+    const { data: alreadyNudged } = await admin
+      .from("notifications")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("type", "rebooking_nudge")
+      .gte("created_at", cutoffStr)
+      .limit(1)
+      .maybeSingle();
+    if (alreadyNudged) continue;
+
     const { data: authUser } = await admin.auth.admin.getUserById(userId);
     const email = authUser?.user?.email;
     if (!email) continue;
@@ -94,6 +109,14 @@ export async function GET(request: NextRequest) {
         )
       );
       sent++;
+      // Record the send so the guard above can suppress a repeat within this cutoff window.
+      await admin.from("notifications").insert({
+        user_id: userId,
+        type: "rebooking_nudge",
+        title: "Rebooking nudge sent",
+        body: `Nudge email sent, ${daysSince} days since last visit`,
+        data: { salon_id: (booking as any).salon_id ?? null, days_since: daysSince },
+      });
     } catch {
       errors++;
     }

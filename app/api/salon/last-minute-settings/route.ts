@@ -23,10 +23,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch the salon to check ownership
+    // Fetch the salon to check ownership. `salons` has no `user_id` column and
+    // there is no `salon_admins` table live, the real ownership column is
+    // `owner_id`, matching every other salon-management route.
     const { data: salon, error: salonError } = await supabase
       .from("salons")
-      .select("id, user_id")
+      .select("id, owner_id")
       .eq("id", salonId)
       .single();
 
@@ -35,14 +37,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Check if user owns the salon (or is admin)
-    const isAdmin = await supabase
-      .from("salon_admins")
-      .select("id")
-      .eq("user_id", session.user.id)
-      .eq("salon_id", salonId)
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
       .single();
 
-    if (salon.user_id !== session.user.id && !isAdmin.data) {
+    if (salon.owner_id !== session.user.id && profile?.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -98,14 +99,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Verify ownership
+    // Verify ownership (owner_id is the live column, see GET above)
     const { data: salon } = await supabase
       .from("salons")
-      .select("user_id")
+      .select("owner_id")
       .eq("id", salon_id)
       .single();
 
-    if (salon?.user_id !== session.user.id) {
+    if (salon?.owner_id !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

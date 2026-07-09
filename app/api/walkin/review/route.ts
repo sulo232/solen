@@ -91,16 +91,16 @@ export async function POST(req: NextRequest) {
   // this is what makes per-staff counts real; the staff number drives the tip + status screens).
   try {
     const { data: salonRows } = await admin.from("reviews").select("rating").eq("salon_id", entry.salon_id).eq("is_hidden", false);
-    if (salonRows && salonRows.length > 0) {
-      const avg = salonRows.reduce((s, r) => s + r.rating, 0) / salonRows.length;
-      await admin.from("salons").update({ average_rating: Math.round(avg * 10) / 10, review_count: salonRows.length }).eq("id", entry.salon_id);
+    if (salonRows) {
+      const savg = salonRows.length > 0 ? salonRows.reduce((s, r) => s + r.rating, 0) / salonRows.length : null;
+      await admin.from("salons").update({ average_rating: savg !== null ? Math.round(savg * 100) / 100 : null, review_count: salonRows.length }).eq("id", entry.salon_id);
     }
     if (staffId) {
-      // Scope to THIS salon — a barber working at multiple salons must not cross-contaminate ratings.
+      // Scope to THIS salon, a barber working at multiple salons must not cross-contaminate ratings.
       const { data: staffRows } = await admin.from("reviews").select("rating").eq("staff_member_id", staffId).eq("salon_id", entry.salon_id).eq("is_hidden", false);
-      if (staffRows && staffRows.length > 0) {
-        const savg = staffRows.reduce((s, r) => s + r.rating, 0) / staffRows.length;
-        await admin.from("staff_members").update({ average_rating: Math.round(savg * 10) / 10, review_count: staffRows.length }).eq("id", staffId);
+      if (staffRows) {
+        const savg = staffRows.length > 0 ? staffRows.reduce((s, r) => s + r.rating, 0) / staffRows.length : null;
+        await admin.from("staff_members").update({ average_rating: savg !== null ? Math.round(savg * 100) / 100 : null, review_count: staffRows.length }).eq("id", staffId);
       }
     }
   } catch (e) {

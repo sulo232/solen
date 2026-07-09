@@ -43,6 +43,19 @@ export async function PATCH(request: NextRequest) {
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
+
+  // Ownership check (mirrors the GET handler above): resolve the row's own salon_id
+  // first, an authenticated user with no relationship to that salon must not be able
+  // to flip is_saved on it.
+  const { data: row } = await admin.from("nail_ai_staging").select("salon_id").eq("id", id).single();
+  if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", row.salon_id).single();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
+  if (salon?.owner_id !== session.user.id && profile?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { error } = await admin
     .from("nail_ai_staging")
     .update({ is_saved })
