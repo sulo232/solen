@@ -126,9 +126,25 @@ export function butterPress(tier: PressTier = "cta"): string {
 }
 
 /**
- * useStepSwapMotion, the ENTER RECIPE with `filter` deliberately OMITTED,
- * for an `AnimatePresence`-driven step/screen swap (`initial="enter"
- * animate="center" exit="exit"`).
+ * Step-swap tier (owner 2026-07-09: "the transition between the service and
+ * to choose the stylist is kinda too much motion"). A WHOLE-SCREEN swap must
+ * move LESS than a single card entering, not the same distance, so this is
+ * its own gentler tier, not the ENTER RECIPE's 0.96/420ms reused. The ENTER
+ * RECIPE itself (0.96 / 8px blur / 420ms) stays LOCKED and is untouched by
+ * this, this tier only applies inside `useStepSwapMotion`.
+ */
+const STEP_SWAP_SCALE_FROM = 0.99;
+const STEP_SWAP_DURATION = 0.26;
+const stepSwapTransition: Transition = { duration: STEP_SWAP_DURATION, ease: GLIDE_EASE };
+
+/**
+ * useStepSwapMotion, a gentler opacity+scale tier (0.99 / 260ms / glide) for
+ * an `AnimatePresence`-driven step/screen swap (`initial="enter"
+ * animate="center" exit="exit"`). Blur is deliberately OMITTED, same as the
+ * ENTER RECIPE would be here, for the reason below, and it is ALSO its own
+ * gentler tier, not the ENTER RECIPE's 0.96/420ms: a full-screen swap moving
+ * as far as a small card entering reads as "too much motion" (owner
+ * 2026-07-09).
  *
  * WHY no blur here, and ONLY here: a resting `filter: blur(0px)` is a
  * non-`none` CSS filter value, and per the CSS spec a non-`none` filter on
@@ -150,7 +166,7 @@ export function butterPress(tier: PressTier = "cta"): string {
 export function useStepSwapMotion(): { variants: Variants; transition: Transition } {
   const reduce = useReducedMotion();
   const finalState = { opacity: ENTER_RECIPE.animate.opacity, scale: ENTER_RECIPE.animate.scale };
-  const initialState = { opacity: ENTER_RECIPE.initial.opacity, scale: ENTER_RECIPE.initial.scale };
+  const initialState = { opacity: ENTER_RECIPE.initial.opacity, scale: STEP_SWAP_SCALE_FROM };
 
   if (reduce) {
     return {
@@ -160,6 +176,6 @@ export function useStepSwapMotion(): { variants: Variants; transition: Transitio
   }
   return {
     variants: { enter: initialState, center: finalState, exit: initialState },
-    transition: enterTransition,
+    transition: stepSwapTransition,
   };
 }

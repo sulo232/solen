@@ -165,7 +165,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
           onClick={() => goToStep(staffList.length > 1 ? 'staff' : 'services-staff')}
           className="flex items-center gap-2 rounded-full border border-s-border py-1.5 pl-1.5 pr-3 transition-colors hover:border-s-ink/25"
         >
-          <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
+          <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-full border border-s-border bg-white"> {/* mockup-ok: owner-specified fix, icon was blending into the sunken background */}
             {selectedStaff?.avatar_url ? (
               <Image
                 src={selectedStaff.avatar_url}
@@ -217,7 +217,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
               <p className="py-4 text-center text-sm text-s-ink-2">{slotsError}</p>
             ) : (
               <div className="py-8 text-center">
-                <Clock size={36} className="mx-auto mb-2 text-s-ink/20" />
+                <Clock size={36} className="mx-auto mb-2 text-s-ink-2" /> {/* mockup-ok: owner-specified fix, icon was near-invisible at /20 opacity */}
                 <p className="text-sm text-s-ink-2">{tTime('noSlotsAvailable')}</p>
               </div>
             )

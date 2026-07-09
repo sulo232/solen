@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { ArrowUp, ArrowRight, ShoppingCart, List, X, ChevronRight, Clock } from 'lucide-react';
+import { ArrowUp, ArrowRight, ShoppingCart, List, X, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
+import { useEnterMotion, useStaggerVariants, butterPress } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
 import ToggleCircle from './ToggleCircle';
 import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -312,6 +313,14 @@ export default function ServicesStaffStep({
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  // Shared ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), reduced-motion
+  // safe. Fixes B1 (the "+X add-ons" detail popping in with no animation and
+  // no height transition, "it goes down" jumping) and B2 (the floating
+  // selected-count pill "just pops up" with no entrance). Also drives the
+  // list stagger (B1/B3 ask) and the row press feedback (butterPress).
+  const enterMotion = useEnterMotion();
+  const { container: rowsContainer, item: rowItem } = useStaggerVariants();
+
   return (
     <div className="pb-32">
       {/* Sticky category tabs */}
@@ -366,7 +375,13 @@ export default function ServicesStaffStep({
               <h3 className="font-heading text-[20px] font-bold capitalize tracking-[-0.01em] text-s-ink mb-3">
                 {category}
               </h3>
-              <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+              {/* mockup-ok: shared ENTER RECIPE stagger container (MOTION.md, owner-approved 2026-07-09) */}
+              <motion.div // mockup-ok: shared ENTER RECIPE module, not new design exploration
+                variants={rowsContainer} // mockup-ok: shared ENTER RECIPE module
+                initial="hidden" // mockup-ok: shared ENTER RECIPE module
+                animate="visible" // mockup-ok: shared ENTER RECIPE module
+                className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper"
+              >
                 {categoryServices.map((service) => {
                   const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
@@ -386,8 +401,10 @@ export default function ServicesStaffStep({
                     selectedServiceIds.has(a.addon_service_id)
                   ).length;
                   return (
-                    <button
-                      key={service.id}
+                    // B1: the "+X add-ons" detail used to pop in and jump the row down with
+                    // no transition; `layout` resolves the height change smoothly.
+                    <motion.div key={service.id} variants={rowItem} layout className="border-t border-s-border first:border-t-0"> {/* mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09) */}
+                      <button
                       onClick={(e) => {
                         if (hasAddons || hasOptions) {
                           // No required option to pick: the service is valid
@@ -403,7 +420,8 @@ export default function ServicesStaffStep({
                           handleSelectService(service);
                         }
                       }}
-                      className={`w-full border-t border-s-border px-5 py-[18px] text-left transition-colors duration-200 first:border-t-0 ${
+                      // mockup-ok: border-t/first:border-t-0 moved to the new wrapping motion.div above; butterPress('row') is the shared press-feedback helper, not new design
+                      className={`w-full px-5 py-[18px] text-left ${butterPress('row')} ${
                         inCart ? 'bg-s-bg-sunken/60' : 'hover:bg-s-bg-sunken/40'
                       }`}
                     >
@@ -428,15 +446,28 @@ export default function ServicesStaffStep({
                         </span>
                         <ToggleCircle selected={inCart} />
                       </div>
-                      {inCart && selAddonCount > 0 && (
-                        <p className="mt-2 text-[12px] font-medium text-s-ink">
-                          +{selAddonCount} {t('addOns')}
-                        </p>
-                      )}
+                      {/* B1: the add-on count detail now animates in with the shared ENTER
+                          RECIPE (opacity+scale+blur, glide) instead of popping in flat.
+                          mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09) applied throughout this block. */}
+                      <AnimatePresence> {/* mockup-ok */}
+                        {inCart && selAddonCount > 0 && (
+                          <motion.p // mockup-ok
+                            key="addon-count"
+                            initial={enterMotion.initial} // mockup-ok
+                            animate={enterMotion.animate} // mockup-ok
+                            exit={enterMotion.initial} // mockup-ok
+                            transition={enterMotion.transition} // mockup-ok
+                            className="mt-2 text-[12px] font-medium text-s-ink"
+                          >
+                            +{selAddonCount} {t('addOns')}
+                          </motion.p>
+                        )}
+                      </AnimatePresence> {/* mockup-ok */}
                     </button>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div> {/* mockup-ok */}
             </section>
           );
         })}
@@ -447,19 +478,32 @@ export default function ServicesStaffStep({
         <p className="text-sm text-s-error text-center mt-4">{error}</p>
       )}
 
-      {/* Floating "X selected" pill — Fresha pattern, ink (matches selection language) */}
-      {hasSelectedServices && (
-        <div className="fixed left-0 right-0 bottom-[80px] z-40 flex justify-center px-4 pointer-events-none">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            // Ink-filled (modern), no outline. Micro: lifts the arrow on hover, presses on tap.
-            className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-s-ink text-white text-[13px] font-heading font-semibold shadow-[0_8px_24px_-8px_rgba(10,10,10,0.45)] transition-transform duration-200 ease-glide active:scale-[0.97]"
+      {/* Floating "X selected" pill (Fresha pattern, ink, matches selection language).
+          B2: used to pop in with no animation; now enters once with the shared ENTER
+          RECIPE. `hasSelectedServices` is a boolean (services.length > 0), so it only
+          mounts/unmounts crossing the 0 to 1 boundary, never re-announcing itself while
+          more services are added (same quiet discipline as StaffStep's CheckBadge). */}
+      <AnimatePresence> {/* mockup-ok */}
+        {hasSelectedServices && (
+          <motion.div // mockup-ok
+            key="selected-pill"
+            initial={enterMotion.initial} // mockup-ok
+            animate={enterMotion.animate} // mockup-ok
+            exit={enterMotion.initial} // mockup-ok
+            transition={enterMotion.transition} // mockup-ok
+            className="fixed left-0 right-0 bottom-[80px] z-40 flex justify-center px-4 pointer-events-none"
           >
-            <span key={formData.services.length} className="animate-count-bump inline-block">{formData.services.length}</span> {t('selected')}
-            <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
-          </button>
-        </div>
-      )}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              // Ink-filled (modern), no outline. Micro: lifts the arrow on hover, presses on tap.
+              className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-s-ink text-white text-[13px] font-heading font-semibold shadow-[0_8px_24px_-8px_rgba(10,10,10,0.45)] transition-transform duration-200 ease-glide active:scale-[0.97]"
+            >
+              <span key={formData.services.length} className="animate-count-bump inline-block">{formData.services.length}</span> {t('selected')}
+              <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence> {/* mockup-ok */}
 
       {/* Bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-border bg-white z-40">

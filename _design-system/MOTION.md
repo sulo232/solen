@@ -33,6 +33,11 @@ the owner's word for it was "raggedy". One property is a fade. Three is a materi
 - Source of truth in code: the shared enter-motion module. **Never hand-roll `initial`/`animate`
   per surface** , import the variants, same as `<SuccessMark>` is never rebuilt per screen.
 - `prefers-reduced-motion`: base state is the FINAL state; the animation only adds the entrance.
+- **Step swap = its own gentler tier** (owner 2026-07-09, "the transition between the service
+  and to choose the stylist is kinda too much motion"): opacity + scale **0.99**, **260ms**,
+  same `glide` ease, no blur (containing-block reason documented in `useStepSwapMotion`). A
+  full-screen swap must move LESS than a card entering, not the same distance as the 0.96/420ms
+  ENTER RECIPE. The ENTER RECIPE itself stays LOCKED at 0.96 / 8px blur / 420ms, unchanged.
 
 **Why blur is non-negotiable:** MOTION.md already records (below) that a subtle opacity-only fade
 was *imperceptible* to the owner and got reverted. Opacity alone is invisible; scale alone reads as
