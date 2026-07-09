@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import crypto from "crypto";
@@ -54,8 +54,11 @@ export async function GET(
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data: booking } = await supabase
+  // The HMAC token IS the authorization here (guest bookings have user_id NULL, so the
+  // RLS-bound client always returns 0 rows for them). Use the admin client for the
+  // token-gated read/update, mirroring app/api/walkin/confirm + app/api/bookings/guest-lookup.
+  const admin = createAdminSupabaseClient();
+  const { data: booking } = await admin
     .from("bookings")
     .select("id, status")
     .eq("id", bookingId)
@@ -64,14 +67,14 @@ export async function GET(
   if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
 
   if (action === "confirm" && booking.status === "pending") {
-    await supabase.from("bookings").update({ status: "confirmed" }).eq("id", bookingId);
+    await admin.from("bookings").update({ status: "confirmed" }).eq("id", bookingId);
     return NextResponse.json({ result: "confirmed", booking_id: bookingId });
   }
 
   if (action === "cancel" && ["confirmed", "pending"].includes(booking.status)) {
-    await supabase.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
+    await admin.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
     // Free slot
-    await supabase.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("booking_id", bookingId);
+    await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("booking_id", bookingId);
     return NextResponse.json({ result: "cancelled", booking_id: bookingId });
   }
 

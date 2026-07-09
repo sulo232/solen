@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import crypto from "crypto";
@@ -46,8 +46,11 @@ export async function GET(req: NextRequest) {
   const { bookingId, valid } = verifyHmacToken(token);
   if (!valid) return NextResponse.json({ error: "Invalid or expired token" }, { status: 403 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: booking } = await supabase
+  // The HMAC token IS the authorization here (guest bookings have user_id NULL, so the
+  // RLS-bound client always returns 0 rows for them). Use the admin client for the
+  // token-gated read, mirroring app/api/walkin/confirm + app/api/bookings/guest-lookup.
+  const admin = createAdminSupabaseClient();
+  const { data: booking } = await admin
     .from("bookings")
     .select("id, salon_id, service_id, staff_member_id, walkin_queue_id, starts_at, price_paid, payment_status, paid_via, salons(name, slug, stripe_account_id, cover_photo_url, average_rating, review_count, address, phone), services(name_de, duration_minutes), staff_members(name, avatar_url)")
     .eq("id", bookingId)
@@ -72,7 +75,6 @@ export async function GET(req: NextRequest) {
   let tracking_token: string | null = null;
   const queueId = (booking as any).walkin_queue_id;
   if (queueId) {
-    const admin = createAdminSupabaseClient();
     const { data: q } = await admin
       .from("barber_walkin_queue")
       .select("ticket_code, position, estimated_wait_minutes, tracking_token")

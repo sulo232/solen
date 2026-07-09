@@ -4,9 +4,26 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
+import { getServerEnv } from "@/lib/env";
+
+// Internal-only route (invoked server-to-server by app/api/reviews/route.ts).
+// Never public: it sends email as an open relay to any salon owner otherwise.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const cronSecret = getServerEnv().CRON_SECRET;
+    if (!cronSecret || req.headers.get("x-internal-secret") !== cronSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const admin = createAdminSupabaseClient();
     // We expect { review_id }
     const { review_id } = await req.json();
@@ -33,7 +50,7 @@ export async function POST(req: NextRequest) {
         html: `
           <h3>Neue Kundenbewertung</h3>
           <p>Dein Salon <strong>${review.salons.name}</strong> hat eine neue Bewertung mit ${starText} erhalten.</p>
-          ${review.comment ? `<blockquote>"${review.comment}"</blockquote>` : ""}
+          ${review.comment ? `<blockquote>"${escapeHtml(review.comment)}"</blockquote>` : ""}
           <p>
             <a href="https://solen.ch/de/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:#F25C54;color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">
               Bewertungen im Dashboard ansehen

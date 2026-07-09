@@ -3,6 +3,9 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { checkUserBanned } from "@/lib/feature-flags";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -37,16 +40,25 @@ export async function POST(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await request.json();
-  const { salon_id, client_id, booking_id, satisfaction_rating, skin_before, skin_after, products_used, follow_up_notes, next_visit_date } = body;
+  const banned = await checkUserBanned(session.user.id);
+  if (banned) return banned;
 
-  if (!salon_id || !client_id) return NextResponse.json({ error: "salon_id and client_id required" }, { status: 400 });
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: session.user.id });
+  if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
+  const salon = await getActiveSalon<{ id: string }>(admin, session.user.id, "id");
+  if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
+
+  const body = await request.json();
+  const { client_id, booking_id, satisfaction_rating, skin_before, skin_after, products_used, follow_up_notes, next_visit_date } = body;
+
+  if (!client_id) return NextResponse.json({ error: "client_id required" }, { status: 400 });
+
   const { data: outcome, error } = await admin
     .from("spa_treatment_outcomes")
     .insert({
-      salon_id,
+      salon_id: salon.id,
       client_id,
       booking_id: booking_id ?? null,
       satisfaction_rating,

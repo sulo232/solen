@@ -201,11 +201,17 @@ INSTRUCTIONS:
         score: r.score || 0,
       }));
 
-    // Enrich with full salon data
+    // Enrich with public salon data only. Explicit public column list, same shape
+    // as app/api/salons/route.ts (selectStr) / app/api/salons/search/route.ts.
+    // Replaces select('*') which shipped all ~98 salon columns to this unauthenticated
+    // response, including owner/payment internals. Never select search_doc,
+    // score_details, stripe_account_id, owner_id here.
     const salonIds = recommendations.map((r) => r.salon_id);
     const { data: enrichedSalons } = await supabase
       .from("salons")
-      .select("*")
+      .select(
+        "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at",
+      )
       .in("id", salonIds);
 
     const enrichedRecommendations = recommendations.map((r) => {

@@ -5,7 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, reviewRespondSchema } from "@/lib/validations";
-import { getAppUrl } from "@/lib/env";
+import { getAppUrl, getServerEnv } from "@/lib/env";
 
 // PATCH /api/reviews/[id]/respond — salon owner only
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -72,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
   fetch(`${baseUrl}/api/notify/review-replied`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-internal-secret": getServerEnv().CRON_SECRET ?? "" },
     body: JSON.stringify({ review_id: id, reply_text: replyText })
   }).catch((err) => console.error("[ReviewRespond] failed to send review-replied notification:", err));
 

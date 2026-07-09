@@ -7,7 +7,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createReviewSchema } from "@/lib/validations";
 import { trackServerEvent } from "@/lib/posthog-server";
-import { getAppUrl } from "@/lib/env";
+import { getAppUrl, getServerEnv } from "@/lib/env";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
   }
   fetch(`${baseUrl}/api/notify/review-posted`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-internal-secret": getServerEnv().CRON_SECRET ?? "" },
     body: JSON.stringify({ review_id: data.id })
   }).catch((err) => console.error("[ReviewsRoute] failed to send review-posted notification:", err));
 
