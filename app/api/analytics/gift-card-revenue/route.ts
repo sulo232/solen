@@ -53,16 +53,10 @@ export async function GET(request: NextRequest) {
   const totalRedeemed = (giftCards ?? []).reduce((s, gc) => s + ((gc.original_amount ?? 0) - (gc.remaining_amount ?? 0)), 0);
   const activeCards = (giftCards ?? []).filter(gc => gc.is_active === true).length;
 
-  // Referral completions for this salon
-  const { data: referrals } = await admin
-    .from("referrals")
-    .select("id, reward_amount, status, created_at")
-    .eq("salon_id", salonId)
-    .eq("status", "completed")
-    .gte("created_at", periodStart);
-
-  const totalReferrals = referrals?.length ?? 0;
-  const totalReferralRewards = (referrals ?? []).reduce((s, r) => s + (r.reward_amount ?? 0), 0);
+  // Referrals have no salon_id column (not salon-scoped), so a per-salon
+  // referral-reward figure is not computable; report honestly as 0.
+  const totalReferrals = 0;
+  const totalReferralRewards = 0;
 
   return NextResponse.json({
     salon_id: salonId,

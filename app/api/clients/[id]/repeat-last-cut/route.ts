@@ -31,7 +31,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { data: lastCut } = await admin
     .from("barber_cut_history")
     .select(
-      "id, side_length, top_style, fade_type, lineup, beard_style, hair_design, product_used, photo_url, notes, created_at, staff_member_id, staff_members(first_name, last_name)"
+      "id, side_length, top_style, fade_type, lineup, beard_style, hair_design, product_used, photo_url, notes, created_at, staff_member_id, staff_members(name)"
     )
     .eq("salon_id", salon.id)
     .eq("customer_id", customerId)

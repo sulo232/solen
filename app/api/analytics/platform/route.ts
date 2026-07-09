@@ -8,20 +8,23 @@ export async function GET() {
     const supabase = await createServerSupabaseClient();
     
     // We fetch category counts using basic pattern
-    // If table structure differs, this acts as a safe fallback that won't break the UI
     const [c1, c2, c3, c4] = await Promise.all([
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["coiffeur"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["barbershop"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["nails"]),
-      supabase.from("salons").select("id", { count: "exact", head: true }).eq("status", "active").contains("categories", ["spa"])
+      supabase.from("salons").select("id", { count: "exact", head: true }).eq("is_active", true).contains("categories", ["coiffeur"]),
+      supabase.from("salons").select("id", { count: "exact", head: true }).eq("is_active", true).contains("categories", ["barbershop"]),
+      supabase.from("salons").select("id", { count: "exact", head: true }).eq("is_active", true).contains("categories", ["nails"]),
+      supabase.from("salons").select("id", { count: "exact", head: true }).eq("is_active", true).contains("categories", ["spa"])
     ]);
-    
-    return NextResponse.json({ 
+
+    for (const res of [c1, c2, c3, c4]) {
+      if (res.error) console.error("[analytics/platform] category count query error:", res.error.message);
+    }
+
+    return NextResponse.json({
       categories: {
-        coiffeur: c1.count || 42,
-        barbershop: c2.count || 18,
-        nails: c3.count || 24,
-        spa: c4.count || 11
+        coiffeur: c1.count ?? 0,
+        barbershop: c2.count ?? 0,
+        nails: c3.count ?? 0,
+        spa: c4.count ?? 0
       }
     }, { status: 200 });
   } catch (err) {

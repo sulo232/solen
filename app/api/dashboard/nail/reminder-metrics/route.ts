@@ -23,13 +23,19 @@ export async function GET(request: NextRequest) {
 
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  // Count reminders sent (SMS/email reminder events)
-  const { count: sentCount } = await admin
+  // NOTE: reminder_log table does not exist in the live DB yet (nail infill
+  // reminders are currently written to client_notes, not a dedicated log).
+  // Guard so this route returns honest zeros instead of erroring.
+  const { count: sentCount, error: sentError } = await admin
     .from("reminder_log")
     .select("*", { count: "exact", head: true })
     .eq("salon_id", salonId)
     .eq("reminder_type", "infill")
     .gte("sent_at", thirtyDaysAgo);
+
+  if (sentError) {
+    return NextResponse.json({ sent: 0, booked: 0, conversion_rate: 0, period_days: 30 });
+  }
 
   // Count bookings created after a reminder (within 7 days of reminder)
   // We approximate: bookings in last 30 days that are infill-type

@@ -73,7 +73,7 @@ export async function GET(_request: NextRequest) {
   /* ─── Today's bookings (count + revenue) ──────────────────── */
   const { data: todayBookings } = await supabase
     .from("bookings")
-    .select("id, starts_at, total_price, status, services(name_de), profiles!user_id(display_name)")
+    .select("id, starts_at, total_price:price_paid, status, services(name_de), profiles!user_id(display_name)")
     .eq("salon_id", salon.id)
     .gte("starts_at", startOfDay.toISOString())
     .lte("starts_at", endOfDay.toISOString())
@@ -115,11 +115,9 @@ export async function GET(_request: NextRequest) {
     .eq("status", "waiting");
 
   /* ─── Inbox unread count ───────────────────────────────────── */
-  const { count: inbox_unread } = await supabase
-    .from("messages")
-    .select("id", { count: "exact", head: true })
-    .eq("salon_id", salon.id)
-    .eq("is_read_by_salon", false);
+  // Messaging is a disabled feature; messages has no salon linkage
+  // (no salon_id / is_read_by_salon columns), so this always resolves to 0.
+  const inbox_unread = 0;
 
   return NextResponse.json({
     now: nowBooking

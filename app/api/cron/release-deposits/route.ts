@@ -20,12 +20,14 @@ export async function GET(request: NextRequest) {
   const cutoffStr = cutoff.toISOString();
 
   // Find bookings with deposits held > 72h that are still pending
-  const { data: staleDeposits } = await admin
+  const { data: staleDeposits, error: staleDepositsError } = await admin
     .from("bookings")
-    .select("id, user_id, price_paid, salon_id, stripe_payment_intent_id")
+    .select("id, user_id, price_paid, salon_id, payment_intent_id")
     .eq("status", "pending")
     .lt("created_at", cutoffStr)
-    .not("stripe_payment_intent_id", "is", null);
+    .not("payment_intent_id", "is", null);
+
+  if (staleDepositsError) console.error("[cron/release-deposits] stale deposits query error:", staleDepositsError.message);
 
   let released = 0;
   let errors = 0;
@@ -57,7 +59,7 @@ export async function GET(request: NextRequest) {
         metadata: {
           amount: booking.price_paid,
           reason: "72h timeout",
-          payment_intent: booking.stripe_payment_intent_id,
+          payment_intent: booking.payment_intent_id,
         },
       });
 

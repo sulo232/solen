@@ -40,10 +40,10 @@ export async function GET(req: NextRequest) {
 
   const { data: services, error } = await supabase
     .from("services")
-    .select("id, name, name_de, name_en, duration_minutes, price, is_active")
+    .select("id, name:name_de, name_de, name_en, duration_minutes, price, is_active")
     .eq("salon_id", salonId)
     .eq("is_active", true)
-    .order("name", { ascending: true });
+    .order("name_de", { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

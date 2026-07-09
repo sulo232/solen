@@ -66,11 +66,12 @@ export async function POST(request: NextRequest) {
             break;
           }
           case "reviews_pending": {
-            const { count } = await admin
+            const { count, error } = await admin
               .from("reviews")
               .select("id", { count: "exact", head: true })
               .eq("salon_id", salonId)
-              .is("reply", null);
+              .is("salon_response", null);
+            if (error) console.error("[dashboard/batch] reviews_pending query error:", error.message);
             results[key] = { count: count ?? 0 };
             break;
           }
