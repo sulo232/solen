@@ -79,6 +79,13 @@ export async function POST(req: NextRequest) {
     if (pi.metadata?.booking_id && pi.metadata.booking_id !== bookingId) {
       return NextResponse.json({ error: "Payment does not match this booking" }, { status: 403 });
     }
+    // pi.metadata.booking_id is attacker-controlled at PI-creation time, so it can be
+    // spoofed to equal bookingId while the PI was actually created (and its Connect
+    // transfer_data destination set) against a different salon. Cross-check the PI's
+    // salon_id metadata against the booking's real salon before trusting either.
+    if (pi.metadata?.salon_id && booking.salon_id && pi.metadata.salon_id !== booking.salon_id) {
+      return NextResponse.json({ error: "Cross-tenant mismatch" }, { status: 403 });
+    }
     salonId = booking.salon_id;
     serviceId = booking.service_id ?? null;
     preferredBarberId = booking.staff_member_id ?? null;

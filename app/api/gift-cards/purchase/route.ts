@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, giftCardPurchaseSchema } from "@/lib/validations";
@@ -65,7 +65,11 @@ export async function POST(req: NextRequest) {
     // Create gift card record (active after payment succeeds via webhook)
     const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year
 
-    await supabase.from("gift_cards").insert({
+    // Written via the admin client: the session client's RLS insert policy requires the
+    // caller to be the salon owner, which silently blocks this insert for a customer buyer
+    // (P0 fix, 2026-07-10: charged with no gift card row ever created).
+    const admin = createAdminSupabaseClient();
+    const { error: insertError } = await admin.from("gift_cards").insert({
       salon_id: salon.id,
       code,
       original_amount: validated.amount,
@@ -79,6 +83,16 @@ export async function POST(req: NextRequest) {
       expires_at: expiresAt,
       is_active: false, // Activated after payment
     });
+
+    if (insertError) {
+      console.error("[gift-cards/purchase] insert failed:", insertError);
+      try {
+        await getStripe().paymentIntents.cancel(paymentIntent.id);
+      } catch (cancelErr) {
+        console.error("[gift-cards/purchase] PaymentIntent cancel failed:", cancelErr);
+      }
+      return NextResponse.json({ error: "Could not create gift card" }, { status: 500 });
+    }
 
     // NOTE: the recipient email + card activation (is_active:true) happen in the Stripe
     // webhook on payment_intent.succeeded (app/api/stripe/webhook/gift-card-handler.ts),
