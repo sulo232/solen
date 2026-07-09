@@ -426,14 +426,20 @@ export async function POST(req: NextRequest) {
         // payment_failed must not cancel a booking that an earlier-but-later-
         // delivered succeeded event already moved to 'paid' (or 'deposit_held') —
         // only cancel from a pre-payment state.
-        await admin.from("bookings").update({
+        const { data: cancelledRows } = await admin.from("bookings").update({
           status: "cancelled",
           payment_status: "none",
         }).eq("payment_intent_id", pi.id)
-          .in("payment_status", ["pending", "none", "card_saved"]);
-        // Free the slot
-        await admin.from("availability_slots").update({ status: "available" })
-          .eq("id", pi.metadata?.slot_id ?? "");
+          .in("payment_status", ["pending", "none", "card_saved"])
+          .select("id");
+        // Free the slot ONLY if this event actually cancelled a (still pre-payment)
+        // booking. A late payment_failed arriving after an earlier-but-later-delivered
+        // succeeded event already flipped the booking to paid/confirmed must NOT free a
+        // slot that belongs to a now-paid booking (fix D).
+        if (cancelledRows?.length) {
+          await admin.from("availability_slots").update({ status: "available" })
+            .eq("id", pi.metadata?.slot_id ?? "");
+        }
 
         // Notify customer about payment failure
         const { data: booking } = await admin
