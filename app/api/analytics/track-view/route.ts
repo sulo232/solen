@@ -4,11 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { cookies } from "next/headers";
 import { validateBody, trackViewSchema } from "@/lib/validations";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 // POST /api/analytics/track-view
 // Body: { salon_id: string, source: 'category_page' | 'search' | 'direct' | 'last_minute' }
 // No auth required. Rate-limited to 1 view per salon per session via cookie.
 export async function POST(request: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rateLimited) return rateLimited;
+
   let body: unknown;
   try {
     body = await request.json();

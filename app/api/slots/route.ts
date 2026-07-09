@@ -33,9 +33,13 @@ export async function GET(request: NextRequest) {
   const startOfRange = `${anchor}T00:00:00`;
   const endOfRange = `${endDate.toISOString().slice(0, 10)}T00:00:00`;
 
+  // Column allowlist: this GET has no auth check, so a client-supplied salon_id can be
+  // queried by anyone. select("*") used to also return booked_by/booking_id/client_id
+  // (customer-identifying columns) to any unauthenticated caller. Only the scheduling +
+  // price-quote fields the calendar UI renders are selected here.
   let query = supabase
     .from("availability_slots")
-    .select("*, services(id, name_de, name_en, duration_minutes, price), staff_members(id, name, avatar_url)")
+    .select("id, salon_id, service_id, staff_member_id, starts_at, ends_at, status, price_override, services(id, name_de, name_en, duration_minutes, price), staff_members(id, name, avatar_url)")
     .eq("salon_id", salon_id)
     .gte("starts_at", startOfRange)
     .lt("starts_at", endOfRange)
@@ -75,7 +79,7 @@ export async function GET(request: NextRequest) {
         const match = offPeakRules.find(
           (r) => slotTime >= r.start_time.slice(0, 5) && slotTime < r.end_time.slice(0, 5)
         );
-        const basePrice = (slot as any).price_override ?? slot.services?.price;
+        const basePrice = (slot as any).price_override ?? (slot as any).services?.price;
         if (match && basePrice) {
           (slot as any).discounted_price = Math.round(
             basePrice * (1 - match.discount_percent / 100)

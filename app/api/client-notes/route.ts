@@ -49,6 +49,18 @@ export async function POST(req: NextRequest) {
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { salon_id, customer_id, note, note_type, booking_id } = validated;
 
+  // These notes are salon-owner authored (dashboard/clients page). Verify the caller
+  // owns salon_id, otherwise any authenticated user could attach a note to an
+  // arbitrary salon.
+  const { data: salon } = await supabase
+    .from("salons")
+    .select("owner_id")
+    .eq("id", salon_id)
+    .single();
+  if (!salon || salon.owner_id !== user.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { data, error } = await supabase
     .from("client_notes")
     .insert({

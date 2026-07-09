@@ -9,6 +9,18 @@ import { sendEmail } from "@/lib/email";
 import { getActiveSalon } from "@/lib/active-salon";
 import crypto from "crypto";
 
+// Escapes values interpolated into the invite email HTML (staff_name / salon name are
+// caller-controlled or owner-set, sent from the trusted noreply@solen.ch address to any
+// address the caller supplies).
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 // GET /api/staff/invite — List pending invites for the owner's active salon
 export async function GET() {
   const supabase = await createServerSupabaseClient();
@@ -92,8 +104,8 @@ export async function POST(req: NextRequest) {
     await sendEmail({
       to: validated.email,
       subject: `Einladung als Mitarbeiter bei ${salon.name} — solen.ch`,
-      html: `<p>Hallo${validated.staff_name ? ` ${validated.staff_name}` : ""},</p>
-<p><strong>${salon.name}</strong> lädt dich ein, als Mitarbeiter auf solen.ch beizutreten.</p>
+      html: `<p>Hallo${validated.staff_name ? ` ${escapeHtml(validated.staff_name)}` : ""},</p>
+<p><strong>${escapeHtml(salon.name)}</strong> lädt dich ein, als Mitarbeiter auf solen.ch beizutreten.</p>
 <p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Einladung annehmen →</a></p>
 <p style="color:#999;font-size:12px;">Dieser Link ist 7 Tage gültig.</p>`,
     });

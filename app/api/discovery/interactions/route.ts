@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, discoveryFeedLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 
@@ -11,6 +12,12 @@ const schema = z.object({
 
 // Fire-and-forget interaction logging — no auth required (anonymous ok)
 export async function POST(req: NextRequest) {
+  // Anonymous access stays allowed (view tracking is legitimately anon), but bounded:
+  // this insert fires a trigger that unconditionally increments discovery_items.view_count,
+  // so an unthrottled caller could inflate any item's counts unboundedly.
+  const rateLimited = await applyRateLimit(discoveryFeedLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
   const body = await req.json();
   const { data, error } = validateBody(schema, body);
   if (error) return NextResponse.json({ ok: false }, { status: 400 });

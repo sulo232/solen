@@ -70,6 +70,19 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   const updatePayload: Record<string, any> = { starts_at: startsAt, ends_at: endsAt };
   if (body.staff_member_id !== undefined) {
+    // staff_member_id (when non-null) must belong to this slot's own salon, otherwise
+    // the owner could cross-reference another salon's staff member onto this slot.
+    if (body.staff_member_id) {
+      const { data: staffMember } = await supabase
+        .from("staff_members")
+        .select("id")
+        .eq("id", body.staff_member_id)
+        .eq("salon_id", slot.salon_id)
+        .single();
+      if (!staffMember) {
+        return NextResponse.json({ message: "staff_member_id does not belong to this salon", code: "STAFF_SALON_MISMATCH" }, { status: 400 });
+      }
+    }
     updatePayload.staff_member_id = body.staff_member_id;
   }
 

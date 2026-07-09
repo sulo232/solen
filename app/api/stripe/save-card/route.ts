@@ -39,6 +39,20 @@ export async function POST(req: NextRequest) {
   const { booking_id, salon_id } = validated;
 
   const admin = createAdminSupabaseClient();
+
+  // Ownership check (mirrors booking-pay-intent): a client-supplied booking_id must
+  // belong to the calling user, otherwise any authenticated caller could attach their
+  // card to another user's booking.
+  const { data: booking } = await admin
+    .from("bookings")
+    .select("id, user_id")
+    .eq("id", booking_id)
+    .single();
+  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  if (booking.user_id !== user.id) {
+    return NextResponse.json({ error: "Not authorized for this booking" }, { status: 403 });
+  }
+
   const { data: salon } = await admin
     .from("salons")
     .select("stripe_account_id, accepts_online_payment")
