@@ -7,10 +7,21 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 ### Motion standard (the headline)
 - [ ] M1 [standard] The enter-animation recipe, atomized. ALL sub-boxes BLOCKED on one named dependency: **the owner picking an intensity (Subtle / Recommended / Strong) at `/de/dev/motion-recipe`** , the hook's literal values (blur px, scale, duration) differ per intensity, so writing it before the pick means writing it twice.
     - [ ] M1a Owner picks the intensity. (blocker: owner decision, mockup delivered)
-    - [ ] M1b Shared enter hook/variants: opacity + scale + blur together, ease `glide cubic-bezier(0.16,1,0.3,1)`.
-    - [ ] M1c Button "butter" transition standard (hover lift, active scale 0.97, glide ~180ms).
-    - [ ] M1d Write the recipe into `_design-system/MOTION.md` as law (with the "subtle = imperceptible = reverted" lesson cited).
-    - [ ] M1e Apply the hook across the booking flow (currently opacity-only, `components-legacy/booking/*`).
+    - [ ] M1b1 Create the shared enter-motion hook/variants file. BLOCKED on M1a.
+    - [ ] M1b2 Variant animates opacity 0->1. BLOCKED on M1a.
+    - [ ] M1b3 Variant animates scale (value set by M1a). BLOCKED on M1a.
+    - [ ] M1b4 Variant animates blur px->0 (value set by M1a). BLOCKED on M1a.
+    - [ ] M1b5 Variant bound to the `glide cubic-bezier(0.16,1,0.3,1)` ease token. BLOCKED on M1a.
+    - [ ] M1c1 Button transition: hover lift translateY(-1px). BLOCKED on M1a.
+    - [ ] M1c2 Button transition: active scale 0.97. BLOCKED on M1a.
+    - [ ] M1c3 Button transition: glide ease ~180ms. BLOCKED on M1a.
+    - [ ] M1d Write the recipe into `_design-system/MOTION.md` as law (citing the "subtle = imperceptible = reverted" lesson). BLOCKED on M1a (the law must state the chosen values, not three).
+    - [ ] M1e1 Apply hook to `components-legacy/booking/BookingWizard.tsx`. BLOCKED on M1b1.
+    - [ ] M1e2 Apply hook to `ServicesStaffStep.tsx`. BLOCKED on M1b1.
+    - [ ] M1e3 Apply hook to `StaffStep.tsx` (folded into the B11 direction build). BLOCKED on M1b1 + B11 pick.
+    - [ ] M1e4 Apply hook to `DateTimeStep.tsx`. BLOCKED on M1b1.
+    - [ ] M1e5 Apply hook to `HairStep.tsx`. BLOCKED on M1b1.
+    - [ ] M1e6 Apply hook to `PayConfirmStep.tsx`. BLOCKED on M1b1.
 - [x] M2 [mockup] DONE + committed (`8cece944e`): `/de/dev/motion-recipe`, before (opacity-only) vs after (blur+scale+opacity on glide) at 3 intensities (Subtle/Recommended/Strong), replayable. Verified 200 through the tunnel (306KB, real, Replay + intensity + blur). BLOCKED on owner picking an intensity before it is codified.
 
 ### Booking flow fixes (from walking it)
