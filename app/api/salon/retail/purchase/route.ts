@@ -36,9 +36,12 @@ export async function POST(req: NextRequest) {
 
   // Get salon's Stripe account
   const { data: salon } = await admin
-    .from("salons").select("id, stripe_account_id").eq("id", salon_id).single();
+    .from("salons").select("id, stripe_account_id, accepts_online_payment").eq("id", salon_id).single();
   if (!salon?.stripe_account_id) {
     return NextResponse.json({ error: "Salon has no payment setup" }, { status: 400 });
+  }
+  if (!salon.accepts_online_payment) {
+    return NextResponse.json({ error: "Salon is not set up to accept online payments" }, { status: 400 });
   }
 
   // Get products and calculate total

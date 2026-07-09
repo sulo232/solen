@@ -32,11 +32,18 @@ export async function POST(req: NextRequest) {
   // Get salon info
   const { data: salon } = await supabase
     .from("salons")
-    .select("id, name, stripe_account_id")
+    .select("id, name, stripe_account_id, accepts_online_payment")
     .eq("id", validated.salon_id)
     .single();
 
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  // A salon can have stripe_account_id set (clicked Connect) before onboarding/KYC completes
+  // (charges_enabled false). Only gate when a Connect transfer would actually be attempted
+  // below (stripe_account_id set); a salon with no Connect account at all still sells gift
+  // cards straight to the platform balance, which is not the misroute this guards against.
+  if (salon.stripe_account_id && !salon.accepts_online_payment) {
+    return NextResponse.json({ error: "Salon is not set up to accept online payments" }, { status: 400 });
+  }
 
   // Generate unique gift card code (12 chars, uppercase alphanumeric)
   const code = nanoid(12).toUpperCase().replace(/[^A-Z0-9]/g, "X");

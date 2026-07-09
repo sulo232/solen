@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
         stripeAccountId: salonStripeId ?? null,
         applicationFeeCents: platformFee,
         idempotencyKey: `pre-charge:${booking.id}:${amountRappen}`,
-        metadata: { type: "pre_charge", booking_id: booking.id },
+        metadata: { type: "pre_charge", booking_id: booking.id, salon_id: booking.salon_id },
       });
 
       if (result.status !== "charged") {

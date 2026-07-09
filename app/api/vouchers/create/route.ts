@@ -14,20 +14,27 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getStripe, toRappen } from "@/lib/stripe";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { nanoid } from "nanoid";
 
-// Validation schema
+// Validation schema. customerId is deliberately NOT accepted from the client, the
+// original caller (app/[locale]/vouchers/buy, now hidden per that page's own note)
+// is a logged-in customer buying a voucher for themselves, so the buyer is derived
+// from the session below, never trusted from the request body.
 const CreateVoucherSchema = z.object({
   discountType: z.enum(["percent", "fixed"]),
   discountValue: z.number().positive(),
   recipientEmail: z.string().email().optional(),
   salonId: z.string().uuid().optional(),
-  customerId: z.string().uuid(),
 });
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const parsed = CreateVoucherSchema.safeParse(body);
 
@@ -38,8 +45,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { discountType, discountValue, recipientEmail, salonId, customerId } =
-      parsed.data;
+    const { discountType, discountValue, recipientEmail, salonId } = parsed.data;
+    const customerId = user.id;
 
     const stripe = getStripe();
     const admin = createAdminSupabaseClient();

@@ -48,9 +48,10 @@ export async function POST(req: NextRequest) {
 
   // Tips ride the salon's Connect account. No connected account → tip at the counter instead.
   const { data: salon } = await admin
-    .from("salons").select("stripe_account_id").eq("id", entry.salon_id).maybeSingle();
+    .from("salons").select("stripe_account_id, accepts_online_payment").eq("id", entry.salon_id).maybeSingle();
   const stripeAccountId = (salon as any)?.stripe_account_id;
-  if (!stripeAccountId) {
+  const acceptsOnlinePayment = (salon as any)?.accepts_online_payment;
+  if (!stripeAccountId || !acceptsOnlinePayment) {
     return NextResponse.json({ error: "This shop can't take tips online yet. Tip at the counter." }, { status: 409 });
   }
 

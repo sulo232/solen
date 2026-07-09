@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   // Fetch booking to get salon info
   const { data: booking } = await supabase
     .from("bookings")
-    .select("id, salon_id, staff_member_id, user_id, salons(stripe_account_id)")
+    .select("id, salon_id, staff_member_id, user_id, salons(stripe_account_id, accepts_online_payment)")
     .eq("id", validated.booking_id)
     .single();
 
@@ -39,11 +39,13 @@ export async function POST(req: NextRequest) {
   if (booking.user_id !== user.id) return NextResponse.json({ error: "Not your booking" }, { status: 403 });
 
   const stripeAccountId = (booking.salons as any)?.stripe_account_id;
+  const acceptsOnlinePayment = (booking.salons as any)?.accepts_online_payment;
   // Tips ride the salon's Connect account (100% to salon, no platform cut). With NO connected
-  // account the charge would silently land in Solen's balance instead of the salon's. Tips are
-  // not platform revenue, so that's a misroute. Block it; the customer tips at the counter.
-  // (Parity with /api/walkin/tip, which already guards this.)
-  if (!stripeAccountId) {
+  // account, or an account that hasn't finished onboarding (accepts_online_payment false, so
+  // charges_enabled is still false on Stripe's side), the charge would silently land in Solen's
+  // balance or fail to route. Tips are not platform revenue, so that's a misroute. Block it;
+  // the customer tips at the counter. (Parity with /api/walkin/tip, which already guards this.)
+  if (!stripeAccountId || !acceptsOnlinePayment) {
     return NextResponse.json({ error: "This salon can't take tips online yet. Tip at the counter." }, { status: 409 });
   }
 

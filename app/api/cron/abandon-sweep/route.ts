@@ -88,8 +88,20 @@ export async function GET(req: NextRequest) {
         // canceled -> genuinely abandoned, fall through to cancel + free slot.
       }
 
+      // 0. Void the dangling PI (if any) BEFORE cancelling, so it can never be
+      // confirmed later against a slot that's about to be reassigned. A PI that
+      // already transitioned (e.g. concurrently confirmed) legitimately errors on
+      // cancel: log and continue the sweep rather than fail it.
+      if (booking.payment_intent_id) {
+        try {
+          await getStripe().paymentIntents.cancel(booking.payment_intent_id);
+        } catch (err) {
+          console.error(`[cron/abandon-sweep] PI cancel failed for booking ${booking.id} (${booking.payment_intent_id}):`, err);
+        }
+      }
+
       // 1. Cancel the booking. payment_status stays "none" (no money moved).
-      const { error: updErr } = await admin
+      const { data: updRows, error: updErr } = await admin
         .from("bookings")
         .update({
           status: "cancelled",
@@ -101,11 +113,19 @@ export async function GET(req: NextRequest) {
         // pending+none. If the webhook confirmed it between our SELECT and now,
         // this matches 0 rows and we don't clobber a paid booking.
         .eq("status", "pending")
-        .eq("payment_status", "none");
+        .eq("payment_status", "none")
+        .select("id");
 
       if (updErr) {
         console.error(`[cron/abandon-sweep] failed to cancel booking ${booking.id}:`, updErr);
         errors++;
+        continue;
+      }
+
+      if (!updRows || updRows.length === 0) {
+        // 0 rows matched: the webhook confirmed it between our SELECT and now.
+        // Don't free the slot out from under an already-paid booking.
+        skippedPaid++;
         continue;
       }
 
