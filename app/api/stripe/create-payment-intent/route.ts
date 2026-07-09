@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminSupabaseClient();
   const { data: salon } = await admin
     .from("salons")
-    .select("name, stripe_account_id, accepts_online_payment")
+    .select("name, stripe_account_id, accepts_online_payment, payment_mode, deposit_percent")
     .eq("id", salon_id)
     .single();
 
@@ -71,17 +71,26 @@ export async function POST(req: NextRequest) {
   }
 
   const MIN_DEPOSIT_CHF = 0.5; // Stripe minimum for CHF
-  if (deposit_amount < MIN_DEPOSIT_CHF) {
-    return NextResponse.json({ error: `Deposit must be at least CHF ${MIN_DEPOSIT_CHF}` }, { status: 400 });
-  }
-  if (deposit_amount > truePriceChf + 0.01) {
-    return NextResponse.json({ error: "Deposit cannot exceed service price" }, { status: 400 });
-  }
   if (Math.abs(estimated_price - truePriceChf) > 0.01) {
     return NextResponse.json({ error: "Estimated price does not match service price" }, { status: 400 });
   }
 
-  const depositRappen = toRappen(deposit_amount);
+  // Server-DERIVED charge amount (not just bounded): the client-sent deposit_amount was
+  // previously only checked against a floor/ceiling, so a client could still pick any
+  // in-range figure below what the salon actually configured. Compute the real amount
+  // from salons.payment_mode/deposit_percent (mirrors booking-pay-intent's split) and
+  // reject a mismatched client value instead of trusting it.
+  const paymentMode = (salon as { payment_mode?: string }).payment_mode ?? "at_salon";
+  const depositPct = Math.min(100, Math.max(1, Number((salon as { deposit_percent?: number }).deposit_percent) || 20));
+  const serverDepositChf = paymentMode === "deposit"
+    ? Math.max(MIN_DEPOSIT_CHF, Math.round(truePriceChf * depositPct) / 100)
+    : truePriceChf; // prepay, or at_salon (customer's optional online-pay choice) => full price
+
+  if (Math.abs(deposit_amount - serverDepositChf) > 0.01) {
+    return NextResponse.json({ error: "Deposit amount does not match salon's payment terms" }, { status: 400 });
+  }
+
+  const depositRappen = toRappen(serverDepositChf);
 
   // Fetch configurable commission rate from platform_settings
   // (default lives in lib/constants/billing.ts — shared with packages/purchase)

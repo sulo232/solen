@@ -3,10 +3,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
+import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
+import { Redis } from "@upstash/redis";
+import { getServerEnv } from "@/lib/env";
 
 function hashCode(code: string): string {
   return createHash("sha256").update(code).digest("hex");
 }
+
+// Wrong-code attempt counter (brute-force cap on top of the rate limiter below).
+// Reuses the same Upstash instance the OTP-send flow uses (lib/ratelimit.ts /
+// verify-phone/send); fails open (no cap) when Redis isn't configured, matching
+// applyRateLimit's fail-open convention.
+const env = getServerEnv();
+const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
+  ? new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })
+  : null;
+const MAX_CODE_ATTEMPTS = 5;
 
 // POST /api/directory/:id/claim
 // Step 1 — no body (or body without `code`): generate + send 6-digit code
@@ -34,9 +47,15 @@ export async function POST(
   }
 
   const body = await req.json().catch(() => ({}));
+  const clientIp = getClientIp(req);
 
-  // ── Step 2: Verify code ──────────────────────────────────────────────────
+  // -- Step 2: Verify code -------------------------------------------------
   if (body.code) {
+    // Rate limit the verify step (brute-force surface), keyed by listing id + IP so one
+    // attacker can't hammer a single listing's code, without punishing other listings.
+    const rateLimited = await applyRateLimit(authLimiter, { ip: `directory-claim-verify:${id}:${clientIp}` });
+    if (rateLimited) return rateLimited;
+
     const { data: current } = await admin
       .from("salon_directory")
       .select("claim_verification_code, claim_verification_expires_at")
@@ -51,6 +70,24 @@ export async function POST(
       return NextResponse.json({ error: "Code expired. Please request a new one." }, { status: 400 });
     }
 
+    // Attempt cap: a 1,000,000-code space over a 15-min TTL is brute-forceable within the
+    // rate limiter's window alone, so also hard-cap wrong guesses per listing. Once exceeded,
+    // invalidate the stored code instead of allowing more tries within the remaining TTL.
+    const attemptsKey = `directory:claim-attempts:${id}`;
+    if (redis) {
+      const attempts = await redis.incr(attemptsKey);
+      if (attempts === 1) {
+        await redis.expire(attemptsKey, 15 * 60);
+      }
+      if (attempts > MAX_CODE_ATTEMPTS) {
+        await admin.from("salon_directory").update({
+          claim_verification_code: null,
+          claim_verification_expires_at: null,
+        }).eq("id", id);
+        return NextResponse.json({ error: "Too many incorrect attempts. Please request a new code." }, { status: 429 });
+      }
+    }
+
     const inputHashed = hashCode(String(body.code).trim());
     if (inputHashed !== current.claim_verification_code) {
       return NextResponse.json({ error: "Incorrect code" }, { status: 400 });
@@ -62,6 +99,8 @@ export async function POST(
       claim_verification_code: null,
       claim_verification_expires_at: null,
     }).eq("id", id);
+
+    if (redis) await redis.del(attemptsKey);
 
     return NextResponse.json({
       verified: true,
@@ -76,7 +115,12 @@ export async function POST(
     });
   }
 
-  // ── Step 1: Generate + send code ────────────────────────────────────────
+  // -- Step 1: Generate + send code -----------------------------------------
+  // Rate limit the send step too (email bombing / repeated-code-mint surface),
+  // keyed by listing id + IP.
+  const sendRateLimited = await applyRateLimit(authLimiter, { ip: `directory-claim-send:${id}:${clientIp}` });
+  if (sendRateLimited) return sendRateLimited;
+
   if (!entry.email) {
     return NextResponse.json(
       { error: "No email address on file for this listing. Contact support@solen.ch." },
@@ -91,6 +135,9 @@ export async function POST(
     claim_verification_code: hashCode(code),
     claim_verification_expires_at: expiresAt,
   }).eq("id", id);
+
+  // Fresh code sent: reset the wrong-guess counter so it doesn't count against the new code.
+  if (redis) await redis.del(`directory:claim-attempts:${id}`);
 
   await sendEmail({
     to: entry.email,

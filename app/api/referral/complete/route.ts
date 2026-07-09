@@ -60,6 +60,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Du hast bereits einen Empfehlungscode verwendet" }, { status: 409 });
   }
 
+  // Require a qualifying action before crediting (mirrors the booking-flow gate in
+  // app/api/bookings/route.ts, which only completes a referral on the referred user's
+  // first confirmed booking). Without this, a code alone paid out CHF 10 to both sides
+  // with no real transaction behind it, farmable at scale.
+  const { count: qualifyingBookingCount } = await admin
+    .from("bookings")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .in("status", ["confirmed", "completed"]);
+
+  if (!qualifyingBookingCount || qualifyingBookingCount < 1) {
+    return NextResponse.json(
+      { error: "Schliesse zuerst eine Buchung ab, um deine Empfehlung zu aktivieren" },
+      { status: 400 }
+    );
+  }
+
   const rewardAmount = referral.reward_amount ?? 10;
   const creditExpiry = new Date();
   creditExpiry.setMonth(creditExpiry.getMonth() + 6); // Credits expire in 6 months

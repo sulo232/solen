@@ -24,6 +24,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Ungültige Telefonnummer" }, { status: 400 });
     }
 
+    // Also rate limit on the TARGET phone number, not just the caller IP. IP-only limiting
+    // lets an attacker bomb one victim's phone with OTP SMS by rotating IPs; a normalized
+    // per-phone key caps SMS volume to a given number regardless of source.
+    const normalizedPhone = phone.replace(/[^\d+]/g, "");
+    const phoneRateLimited = await applyRateLimit(authLimiter, { ip: `phone-otp:${normalizedPhone}` });
+    if (phoneRateLimited) return phoneRateLimited;
+
     if (!redis) {
       return NextResponse.json({ message: "Redis nicht konfiguriert" }, { status: 500 });
     }
