@@ -7,6 +7,7 @@ import { ArrowRight, ShoppingCart, Users, Check, Star } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
 import { Avatar, useStaggerVariants, butterPress } from '@/app/[locale]/_components/primitives';
+import StaffProfileSheet from './StaffProfileSheet';
 import type { StaffMember } from '@/lib/types';
 
 interface StaffService {
@@ -31,10 +32,17 @@ interface StaffService {
  *       code here. The separate "Auswählen" pick button (a static label that
  *       never changed) is gone too: the whole row taps, and the check IS the
  *       state, so there is no leftover label to keep in sync.
- *   B7. Selection-only: the "Profil ansehen" deep link into the stylist's full
- *       profile (`setViewStaffId` + the embedded <StaffProfilePage> sheet) is
- *       removed. The standalone staff profile page/route is untouched, this
- *       step no longer opens it mid-booking.
+ *   B7. Selection-only: no way to pick the stylist's OTHER SERVICES from
+ *       inside booking (no services tab, no "Buchen" link, mid-flow).
+ *
+ * B19 (owner 2026-07-09, asked twice, dropped twice by the ORIGINAL B7 fix):
+ * B7 over-removed the whole profile path when the owner's actual ask was
+ * narrower, viewing who the stylist is and reading their reviews is fine
+ * mid-booking, picking a DIFFERENT service from their full profile is not.
+ * Restored as a secondary "Profil ansehen" text link per row (`viewStaffId` +
+ * the read-only `<StaffProfileSheet>`, NOT the old full `<StaffProfilePage>`,
+ * which has a services/"Buchen" tab that would re-break B7). See
+ * StaffProfileSheet.tsx for the selection-only guarantee.
  *
  * Also drops the ALL-CAPS language tag entirely (copy rule 4: a tag must add
  * a decision-relevant fact not already on the row; matches the /dev direction
@@ -49,7 +57,7 @@ export default function StaffStep({
 }: {
   staffList: StaffMember[];
   staffServices: StaffService[];
-  /** No longer used inside this selection-only step (B7); kept optional so
+  /** Not used for a booking link (B7 stays selection-only); kept optional so
    *  existing callers passing salonSlug do not need to change. */
   salonSlug?: string;
 }) {
@@ -57,6 +65,8 @@ export default function StaffStep({
   const tSel = useTranslations('booking.serviceSelection') as any;
   const locale = useLocale();
   const { formData, updateFormData, goToStep } = useBooking();
+  // B19: which stylist's read-only profile sheet is open, if any.
+  const [viewStaffId, setViewStaffId] = React.useState<string | null>(null);
 
   const selectedIds = formData.services.map((s) => s.id);
 
@@ -76,7 +86,7 @@ export default function StaffStep({
   const { container: rowsContainer, item: rowItem } = useStaggerVariants();
 
   const rowCls = (active: boolean) =>
-    `flex w-full items-center gap-3.5 rounded-[16px] p-4 text-left ${butterPress('row')} ${
+    `flex w-full cursor-pointer items-center gap-3.5 rounded-[16px] p-4 text-left ${butterPress('row')} ${
       active ? 'bg-s-bg-sunken' : 'bg-white'
     }`;
 
@@ -110,10 +120,20 @@ export default function StaffStep({
           const reviewCount = st.review_count ?? 0;
           const specialty = st.specialties?.[0] ?? null;
           return (
-            <motion.li key={st.id} variants={rowItem}>
-              <button
-                type="button"
+            <motion.li key={st.id} variants={rowItem}> {/* mockup-ok: pre-existing ENTER RECIPE stagger item, unchanged by B19 */}
+              {/* B19: row is now a div (not a button) so the "Profil ansehen" link
+                  below can be a REAL nested <button> (button-in-button is invalid
+                  HTML); role/tabIndex/onKeyDown restore the same button semantics. */}
+              <div
+                role="button"
+                tabIndex={0}
                 onClick={() => pick(st.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    pick(st.id);
+                  }
+                }}
                 aria-pressed={active}
                 className={rowCls(active)}
               >
@@ -133,9 +153,24 @@ export default function StaffStep({
                       {rating.toFixed(1)} ({reviewCount})
                     </span>
                   )}
+                  {/* mockup-ok: B19 (owner asked twice), text-s-accent is the LOCKED
+                      design-contract treatment for a small clickable text link, not new
+                      design. Secondary, clearly-secondary; stopPropagation so it never
+                      triggers the row's own selection tap. Opens a READ-ONLY sheet, see
+                      StaffProfileSheet.tsx for the selection-only guarantee. */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewStaffId(st.id);
+                    }}
+                    className="mt-1 block text-[12px] font-medium text-s-accent hover:underline"
+                  >
+                    {t('viewProfile')}
+                  </button>
                 </span>
                 {active ? <CheckBadge /> : <span className="h-6 w-6 shrink-0" aria-hidden />}
-              </button>
+              </div>
             </motion.li>
           );
         })}
@@ -163,6 +198,14 @@ export default function StaffStep({
           </button>
         </div>
       </div>
+
+      {/* B19: read-only profile + reviews, see StaffProfileSheet.tsx. */}
+      {viewStaffId && (() => {
+        const viewedStaff = list.find((s) => s.id === viewStaffId);
+        return viewedStaff ? (
+          <StaffProfileSheet staff={viewedStaff} locale={locale} onClose={() => setViewStaffId(null)} />
+        ) : null;
+      })()}
     </div>
   );
 }

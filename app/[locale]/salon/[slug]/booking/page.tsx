@@ -71,7 +71,11 @@ export default async function BookingSalonPage({
   const { data: staffRaw, error: staffError } = await supabase
     .from('staff_members')
     .select(
-      `id, name, avatar_url, specialties, is_active, average_rating, languages`
+      // B19 (owner 2026-07-09, restore "view profile" + reviews in the booking
+      // stylist picker): review_count + bio were missing here, so the picker's
+      // rating (which needs BOTH average_rating and review_count) and the new
+      // read-only profile sheet's bio were always silently empty. Added.
+      `id, name, avatar_url, specialties, is_active, average_rating, review_count, bio, languages`
     )
     .eq('salon_id', salon.id)
     .eq('is_active', true)

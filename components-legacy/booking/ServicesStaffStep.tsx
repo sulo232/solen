@@ -78,6 +78,13 @@ export default function ServicesStaffStep({
   const [error, setError] = useState<string | null>(null);
   const [showCatSheet, setShowCatSheet] = useState(false);
   const [sheetServiceId, setSheetServiceId] = useState<string | null>(null);
+  // B17 (owner 2026-07-09, "why is there still this pill even though I'm not
+  // scrolled down"): the floating "N chosen" pill used to render unconditionally
+  // the moment a service was selected. It is a scroll-back-to-top affordance for
+  // when the list has scrolled the bottom bar's own count out of easy reach, not
+  // a permanent second summary, so it must stay hidden until the user has
+  // actually scrolled down (see `topSentinelRef` + the IntersectionObserver below).
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const selectedServiceIds = new Set(formData.services.map((s) => s.id));
   const hasSelectedServices = formData.services.length > 0;
@@ -313,6 +320,22 @@ export default function ServicesStaffStep({
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  // B17: a 1px sentinel pinned at the very top of the content. While it is
+  // still intersecting the viewport, the user hasn't scrolled meaningfully
+  // yet, so the floating "N chosen" pill stays hidden; once it scrolls out
+  // (past the `rootMargin` threshold), the pill is allowed to mount.
+  const topSentinelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = topSentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHasScrolled(!entry.isIntersecting),
+      { rootMargin: '-120px 0px 0px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Shared ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), reduced-motion
   // safe. Fixes B1 (the "+X add-ons" detail popping in with no animation and
   // no height transition, "it goes down" jumping) and B2 (the floating
@@ -323,6 +346,8 @@ export default function ServicesStaffStep({
 
   return (
     <div className="pb-32">
+      {/* B17: 1px, non-visual scroll sentinel, see the effect above. */}
+      <div ref={topSentinelRef} aria-hidden className="h-px w-full" />
       {/* Sticky category tabs */}
       {categories.length > 1 && (
         <div
@@ -401,9 +426,19 @@ export default function ServicesStaffStep({
                     selectedServiceIds.has(a.addon_service_id)
                   ).length;
                   return (
-                    // B1: the "+X add-ons" detail used to pop in and jump the row down with
-                    // no transition; `layout` resolves the height change smoothly.
-                    <motion.div key={service.id} variants={rowItem} layout className="border-t border-s-border first:border-t-0"> {/* mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09) */}
+                    // B16 (owner 2026-07-09, "the check goes down"): the earlier B1 fix put
+                    // `layout` on this row so the "+X add-ons" line's appearance would FLIP-
+                    // animate the row's height smoothly. But `layout` projects a translate+
+                    // scale transform across the WHOLE row (it also shared this node with the
+                    // ENTER_RECIPE mount `scale` from `rowItem`, a documented Framer conflict)
+                    // whenever the box changed, so the ToggleCircle check, sitting just above
+                    // where the new line appears, visibly rode along and slid downward as the
+                    // row "settled" into its taller measured height. Fix: the add-on line now
+                    // lives in a RESERVED slot below (see hasAddons block) that never changes
+                    // the row's height, so there is nothing left for `layout` to smooth, and
+                    // `layout` is removed. The check's own transition is fixed separately in
+                    // ToggleCircle.tsx (shared ENTER RECIPE, opacity+scale+blur, no rotate).
+                    <motion.div key={service.id} variants={rowItem} className="border-t border-s-border first:border-t-0"> {/* mockup-ok: shared ENTER RECIPE stagger item (MOTION.md, owner-approved 2026-07-09) */}
                       <button
                       onClick={(e) => {
                         if (hasAddons || hasOptions) {
@@ -446,23 +481,22 @@ export default function ServicesStaffStep({
                         </span>
                         <ToggleCircle selected={inCart} />
                       </div>
-                      {/* B1: the add-on count detail now animates in with the shared ENTER
-                          RECIPE (opacity+scale+blur, glide) instead of popping in flat.
-                          mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09) applied throughout this block. */}
-                      <AnimatePresence> {/* mockup-ok */}
-                        {inCart && selAddonCount > 0 && (
-                          <motion.p // mockup-ok
-                            key="addon-count"
-                            initial={enterMotion.initial} // mockup-ok
-                            animate={enterMotion.animate} // mockup-ok
-                            exit={enterMotion.initial} // mockup-ok
-                            transition={enterMotion.transition} // mockup-ok
-                            className="mt-2 text-[12px] font-medium text-s-ink"
-                          >
-                            +{selAddonCount} {t('addOns')}
-                          </motion.p>
-                        )}
-                      </AnimatePresence> {/* mockup-ok */}
+                      {/* B16: reserved slot, always in the DOM (not exit-animated), so the
+                          "+X add-ons" text never changes the row's height, no reflow for
+                          `layout` to chase (see the B16 comment on the row's wrapper above).
+                          Only rows that HAVE add-ons ever render this slot; a plain CSS
+                          opacity crossfade is enough for an always-present element, the ENTER
+                          RECIPE governs true mount/entrance, this one never unmounts. */}
+                      {hasAddons && (
+                        <p
+                          aria-hidden={!(inCart && selAddonCount > 0)}
+                          className={`mt-2 text-[12px] font-medium text-s-ink transition-opacity duration-200 ease-glide ${
+                            inCart && selAddonCount > 0 ? 'opacity-100' : 'opacity-0'
+                          }`}
+                        >
+                          +{selAddonCount} {t('addOns')}
+                        </p>
+                      )}
                     </button>
                     </motion.div>
                   );
@@ -484,7 +518,7 @@ export default function ServicesStaffStep({
           mounts/unmounts crossing the 0 to 1 boundary, never re-announcing itself while
           more services are added (same quiet discipline as StaffStep's CheckBadge). */}
       <AnimatePresence> {/* mockup-ok */}
-        {hasSelectedServices && (
+        {hasSelectedServices && hasScrolled && (
           <motion.div // mockup-ok
             key="selected-pill"
             initial={enterMotion.initial} // mockup-ok
