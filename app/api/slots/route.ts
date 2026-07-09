@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, createSlotSchema } from "@/lib/validations";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
 
 // GET /api/slots?salon_id=&date=&service_id=&staff_member_id=
 export async function GET(request: NextRequest) {
@@ -60,14 +61,24 @@ export async function GET(request: NextRequest) {
       .eq("is_active", true);
 
     if (offPeakRules && offPeakRules.length > 0) {
+      // off_peak_slots.start_time/end_time are Zurich wall-clock; starts_at is a true UTC
+      // instant, so compare in Europe/Zurich, not a raw UTC string slice (was matching
+      // the wrong window whenever CH offset != 0, e.g. every slot during CEST).
+      const zurichTimeFmt = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Zurich",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      });
       for (const slot of slots) {
-        const slotTime = (slot.starts_at as string).slice(11, 16);
+        const slotTime = zurichTimeFmt.format(new Date(slot.starts_at as string));
         const match = offPeakRules.find(
           (r) => slotTime >= r.start_time.slice(0, 5) && slotTime < r.end_time.slice(0, 5)
         );
-        if (match && slot.services?.price) {
+        const basePrice = (slot as any).price_override ?? slot.services?.price;
+        if (match && basePrice) {
           (slot as any).discounted_price = Math.round(
-            slot.services.price * (1 - match.discount_percent / 100)
+            basePrice * (1 - match.discount_percent / 100)
           );
           (slot as any).off_peak_discount = match.discount_percent;
         }
@@ -145,19 +156,19 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 3. Compute starts_at / ends_at. Mirror the PATCH route (/api/slots/[id]): a NAIVE local
-  //    "YYYY-MM-DDTHH:MM:00" string (no Z) so it lands on the wall-clock time the owner picked,
-  //    consistent with how existing slots are stored / read by the calendar.
+  // 3. Compute starts_at / ends_at. The owner picks a Zurich wall-clock date+time in the
+  //    dashboard; convert it to the true UTC instant the cron and every consumer assume
+  //    (zurichWallClockToUtc, DST-safe) instead of storing the naive wall-clock as if it
+  //    were already UTC.
   const duration = service.duration_minutes ?? 60;
-  const startsAt = `${date}T${start_time}:00`;
-  const endDate = new Date(startsAt);
-  if (Number.isNaN(endDate.getTime())) {
+  const [startH, startM] = start_time.split(":").map(Number);
+  const startDate = zurichWallClockToUtc(date, startH, startM);
+  if (Number.isNaN(startDate.getTime())) {
     return NextResponse.json({ message: "Invalid date/time", code: "VALIDATION_ERROR" }, { status: 400 });
   }
-  endDate.setMinutes(endDate.getMinutes() + duration);
-  // Local "YYYY-MM-DDTHH:MM:SS" (strip the toISOString Z + ms) to keep the same naive shape.
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const endsAt = `${endDate.getFullYear()}-${pad(endDate.getMonth() + 1)}-${pad(endDate.getDate())}T${pad(endDate.getHours())}:${pad(endDate.getMinutes())}:${pad(endDate.getSeconds())}`;
+  const endDate = new Date(startDate.getTime() + duration * 60000);
+  const startsAt = startDate.toISOString();
+  const endsAt = endDate.toISOString();
 
   // 4. Insert one available slot via the RLS client (slots_manage_owner gates it again).
   const { data: slot, error: insertError } = await supabase

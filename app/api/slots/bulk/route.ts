@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, bulkCreateSlotsSchema, blockDaySchema } from "@/lib/validations";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
 
 // POST /api/slots/bulk — TWO shapes hit this one endpoint (matching the dashboard calendar):
 //
@@ -21,13 +22,6 @@ import { validateBody, bulkCreateSlotsSchema, blockDaySchema } from "@/lib/valid
 
 const DAY_OFFSET: Record<string, number> = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
 const pad = (n: number) => String(n).padStart(2, "0");
-
-// Local "YYYY-MM-DDTHH:MM:SS" (no Z) — matches the single-slot POST + the [id] PATCH route, so
-// every modal-created slot stores the wall-clock time the owner picked and the calendar reads it
-// back consistently (startsWith(dayIso) + new Date(...).getHours()).
-function naiveLocal(d: Date): string {
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
 
 // Current week's Monday at 00:00 local (same rule as the calendar's startOfWeek()).
 function startOfWeekMonday(base: Date): Date {
@@ -118,11 +112,13 @@ export async function POST(request: NextRequest) {
 
       const dayDate = new Date(monday);
       dayDate.setDate(dayDate.getDate() + w * 7 + offset);
+      const dateStr = `${dayDate.getFullYear()}-${pad(dayDate.getMonth() + 1)}-${pad(dayDate.getDate())}`;
 
-      const cursor = new Date(dayDate);
-      cursor.setHours(startH, startM, 0, 0);
-      const dayEnd = new Date(dayDate);
-      dayEnd.setHours(endH, endM, 0, 0);
+      // window.start/end are the Zurich wall-clock the owner picked; convert to the true
+      // UTC instant (same helper the cron uses) instead of storing the naive wall-clock
+      // as if it were already UTC (was landing 1-2h off, matching the CH DST offset).
+      let cursor = zurichWallClockToUtc(dateStr, startH, startM);
+      const dayEnd = zurichWallClockToUtc(dateStr, endH, endM);
 
       while (cursor.getTime() + duration * 60000 <= dayEnd.getTime()) {
         const slotEnd = new Date(cursor.getTime() + duration * 60000);
@@ -132,12 +128,12 @@ export async function POST(request: NextRequest) {
             salon_id,
             service_id,
             staff_member_id: staff_member_id ?? null,
-            starts_at: naiveLocal(cursor),
-            ends_at: naiveLocal(slotEnd),
+            starts_at: cursor.toISOString(),
+            ends_at: slotEnd.toISOString(),
             status: "available",
           });
         }
-        cursor.setTime(slotEnd.getTime());
+        cursor = new Date(slotEnd.getTime());
       }
     }
   }

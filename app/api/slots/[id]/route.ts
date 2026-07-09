@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation, bookingReschedule } from "@/lib/email";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -14,7 +15,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   if (!slot) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
   if (slot.salons?.owner_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
 
-  // Cancel booking if present
+  // A slot carrying a booking can never be DELETEd: bookings.slot_id is NOT NULL with
+  // ON DELETE RESTRICT, so even after the booking is cancelled the FK still points at this
+  // row and the delete below would throw 23503 -> 500 (booking cancelled, slot stuck
+  // "booked"). Cancel the booking and free the slot in place instead of deleting it.
   if (slot.status === "booked" && slot.booking_id) {
     await supabase.from("bookings").update({ status: "cancelled", cancellation_reason: "Slot removed by salon", cancelled_at: new Date().toISOString() }).eq("id", slot.booking_id);
     const admin = createAdminSupabaseClient();
@@ -22,6 +26,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     if (authUser?.user?.email) {
       try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString("de-CH") }, "de")); } catch {}
     }
+    const { error: freeError } = await supabase.from("availability_slots").update({ status: "available", booking_id: null, booked_by: null }).eq("id", id);
+    if (freeError) return NextResponse.json({ message: freeError.message, code: "DB_ERROR" }, { status: 500 });
+    return NextResponse.json({ success: true, freed: true });
   }
 
   const { error } = await supabase.from("availability_slots").delete().eq("id", id);
@@ -51,10 +58,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     startsAt = body.starts_at;
     endsAt = body.ends_at;
   } else if (body.date && body.start_time) {
-    startsAt = `${body.date}T${body.start_time}:00`;
-    const d = new Date(startsAt);
+    // body.date/start_time are the Zurich wall-clock the owner picked; convert to the true
+    // UTC instant (same helper the cron uses) instead of storing the naive wall-clock as if
+    // it were already UTC.
+    const [startH, startM] = (body.start_time as string).split(":").map(Number);
+    const d = zurichWallClockToUtc(body.date as string, startH, startM);
+    startsAt = d.toISOString();
     d.setMinutes(d.getMinutes() + duration);
-    endsAt = d.toISOString().split(".")[0];
+    endsAt = d.toISOString();
   }
 
   const updatePayload: Record<string, any> = { starts_at: startsAt, ends_at: endsAt };

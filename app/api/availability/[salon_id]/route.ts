@@ -34,12 +34,24 @@ export async function GET(
   const { data: allSlots, error } = await query;
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
+  // Group available slots by date. starts_at is a true UTC instant; bucket by the
+  // Europe/Zurich calendar day (not a raw UTC string slice) so this agrees with
+  // /api/availability/unavailable-dates, which already buckets in Zurich, a slot at
+  // e.g. 22:30 UTC is 00:30 the next Zurich day and must land in that next day's bucket.
+  const zurichDateFmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const toZurichDate = (isoInstant: string) => zurichDateFmt.format(new Date(isoInstant));
+
   // Group available slots by date; simultaneously track all dates and available dates.
   const grouped: Record<string, typeof allSlots> = {};
   const dateHasAvailable = new Set<string>();
   const allDatesWithSlots = new Set<string>();
   for (const slot of allSlots ?? []) {
-    const d = slot.starts_at.split("T")[0];
+    const d = toZurichDate(slot.starts_at);
     allDatesWithSlots.add(d);
     if (slot.status === "available") {
       dateHasAvailable.add(d);

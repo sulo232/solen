@@ -24,6 +24,11 @@ export async function GET(request: Request) {
       .eq("status", "available")
       .gt("starts_at", new Date().toISOString())
       .gt("salons.last_minute_discount_percent", 0)
+      // Same visibility gate as the rest of search (lib/search/filter-availability.ts):
+      // a hidden/test/unlisted salon must never surface a public deal.
+      .eq("salons.is_active", true)
+      .eq("salons.listed_on_marketplace", true)
+      .eq("salons.is_test", false)
       .order("starts_at", { ascending: true })
       .range(offset, offset + limit - 1);
 

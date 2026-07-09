@@ -3,24 +3,14 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
 
 // Cron: Generate availability_slots from staff_schedules. Nightly.
-// Bridges staff_schedules → availability_slots for the next 30 days.
+// Bridges staff_schedules -> availability_slots for the next 30 days.
 
-// staff_schedules times are SWISS WALL-CLOCK. The cron runs on UTC servers, so a
-// naive setHours() stored 09:00 CH as 09:00 UTC (= 11:00 CH) — every slot 2h late,
-// and any booking attempt before 11:00 local 409'd "Slot not available" because the
-// UI sends the correct Zurich instant. Resolve wall-clock → UTC via the zone offset
-// at that moment (DST-safe).
-function zurichWallClockToUtc(dateStr: string, hours: number, minutes: number): Date {
-  const guess = new Date(`${dateStr}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00Z`);
-  // Zone offset at that instant, independent of the PROCESS timezone: render the
-  // same instant in UTC and in Zurich, parse both the same way, diff them.
-  const asUtc = new Date(guess.toLocaleString("en-US", { timeZone: "UTC" }));
-  const asZurich = new Date(guess.toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
-  const offsetMs = asZurich.getTime() - asUtc.getTime();
-  return new Date(guess.getTime() - offsetMs);
-}
+// staff_schedules times are SWISS WALL-CLOCK. zurichWallClockToUtc (lib/time/zurich)
+// resolves wall-clock -> true UTC via the zone offset at that moment (DST-safe), shared
+// with the manual dashboard slot-create paths so both write the same instant convention.
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
@@ -36,7 +26,7 @@ export async function GET(req: NextRequest) {
   // Get all active salons (include categories for nail station limiting)
   const { data: salons } = await admin
     .from("salons")
-    .select("id, categories")
+    .select("id, categories, vacation_start, vacation_end")
     .eq("is_active", true);
 
   let totalGenerated = 0;
@@ -58,12 +48,18 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // All salon services — fallback list for staff with no explicit mappings.
+    // All salon services (fallback list for staff with no explicit mappings).
     const { data: salonServices } = await admin
       .from("services")
-      .select("id")
+      .select("id, duration_minutes, buffer_minutes")
       .eq("salon_id", salon.id);
     const salonServiceIds = (salonServices ?? []).map((s) => s.id);
+    // Per-service duration+buffer, keyed by service_id: used so each generated
+    // slot row's ends_at reflects its own service, not one shared per-staff value.
+    const salonServiceDuration = new Map<string, number>();
+    for (const s of salonServices ?? []) {
+      salonServiceDuration.set(s.id, (s.duration_minutes ?? 60) + (s.buffer_minutes ?? 0));
+    }
 
     // Get staff members
     const { data: staffMembers } = await admin
@@ -110,18 +106,26 @@ export async function GET(req: NextRequest) {
         .select("service_id, services(duration_minutes, buffer_minutes)")
         .eq("staff_member_id", staff.id);
 
-      // Default to 60 min slots if no services assigned
+      // Default to 60 min slots if no services assigned (grid step only; each row's
+      // own ends_at below is derived per-service, see the duration map)
       const slotDuration = staffServices?.[0]
         ? ((staffServices[0].services as any)?.duration_minutes ?? 60) + ((staffServices[0].services as any)?.buffer_minutes ?? 0)
         : 60;
+
+      // Per-service duration+buffer for this staff member's mapped services.
+      const staffServiceDuration = new Map<string, number>();
+      for (const s of staffServices ?? []) {
+        staffServiceDuration.set(s.service_id, ((s.services as any)?.duration_minutes ?? 60) + ((s.services as any)?.buffer_minutes ?? 0));
+      }
 
       // Generate slots for next 30 days
       for (let d = new Date(now); d < thirtyDaysFromNow; d.setDate(d.getDate() + 1)) {
         const dateStr = d.toISOString().split("T")[0];
         const dayOfWeek = d.getDay(); // 0=Sun
 
-        // Skip closures and time off
-        if (closureDates.has(dateStr) || offDates.has(dateStr)) continue;
+        // Skip closures, time off, and the salon's vacation range
+        const onVacation = !!(salon.vacation_start && salon.vacation_end && dateStr >= salon.vacation_start && dateStr <= salon.vacation_end);
+        if (closureDates.has(dateStr) || offDates.has(dateStr) || onVacation) continue;
 
         // Find schedule for this day
         const schedule = schedules.find((s) => s.day_of_week === dayOfWeek);
@@ -145,6 +149,13 @@ export async function GET(req: NextRequest) {
 
         while (slotStart.getTime() + slotDuration * 60000 <= dayEnd.getTime()) {
           const slotEnd = new Date(slotStart.getTime() + slotDuration * 60000);
+
+          // Skip slots already in the past (today's earlier hours) so the cron never
+          // (re)generates bookable inventory for a time that has already passed.
+          if (slotStart.getTime() <= now.getTime()) {
+            slotStart = slotEnd;
+            continue;
+          }
 
           // Skip if overlaps with a break
           const overlapsBreak = dayBreaks.some((b) => {
@@ -178,14 +189,20 @@ export async function GET(req: NextRequest) {
             const missing = serviceIds.filter((id) => !existingSvc.has(id));
             if (missing.length) {
               await admin.from("availability_slots").insert(
-                missing.map((service_id) => ({
-                  salon_id: salon.id,
-                  staff_member_id: staff.id,
-                  service_id,
-                  starts_at: slotStart.toISOString(),
-                  ends_at: slotEnd.toISOString(),
-                  status: "available",
-                })),
+                missing.map((service_id) => {
+                  // ends_at from THIS service's own duration+buffer, not the shared
+                  // per-staff slotDuration (staff-service order is nondeterministic,
+                  // so slot[0]'s duration was stamping every other service wrong).
+                  const duration = staffServiceDuration.get(service_id) ?? salonServiceDuration.get(service_id) ?? slotDuration;
+                  return {
+                    salon_id: salon.id,
+                    staff_member_id: staff.id,
+                    service_id,
+                    starts_at: slotStart.toISOString(),
+                    ends_at: new Date(slotStart.getTime() + duration * 60000).toISOString(),
+                    status: "available",
+                  };
+                }),
               );
               totalGenerated += missing.length;
             }

@@ -24,14 +24,17 @@ export async function DELETE(
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
-  // If the slot has a booking, cancel it and notify customer
+  // A slot carrying a booking can never be DELETEd: bookings.slot_id is NOT NULL with
+  // ON DELETE RESTRICT, so even after the booking is cancelled the FK still points at this
+  // row and the delete below would throw 23503 -> 500 (booking cancelled, slot stuck
+  // "booked"). Cancel the booking and free the slot in place instead of deleting it.
   if (slot.status === "booked" && slot.booking_id) {
     await supabase
       .from("bookings")
       .update({ status: "cancelled", cancellation_reason: "Slot removed by salon", cancelled_at: new Date().toISOString() })
       .eq("id", slot.booking_id);
 
-    // Notify the customer (use admin client — RLS restricts profiles to own data)
+    // Notify the customer (use admin client, RLS restricts profiles to own data)
     const admin = createAdminSupabaseClient();
     const { data: bookedUser } = await admin.from("profiles").select("id").eq("id", slot.booked_by).single();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
@@ -44,6 +47,14 @@ export async function DELETE(
         }, "de"));
       } catch { /* non-fatal */ }
     }
+
+    const { error: freeError } = await supabase
+      .from("availability_slots")
+      .update({ status: "available", booking_id: null, booked_by: null })
+      .eq("id", slot_id);
+    if (freeError) return NextResponse.json({ message: freeError.message, code: "DB_ERROR" }, { status: 500 });
+
+    return NextResponse.json({ data: { id: slot_id, deleted: false, freed: true } });
   }
 
   const { error } = await supabase.from("availability_slots").delete().eq("id", slot_id);
