@@ -3,10 +3,11 @@
 import { useEffect } from 'react';
 import { useBooking } from '@/lib/booking-context';
 import { useTranslations } from 'next-intl';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react'; // mockup-ok: applying owner-approved /dev/motion-recipe ENTER RECIPE (2026-07-09)
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
+import { GLIDE_EASE, ENTER_DURATION } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
   StaffStep,
@@ -102,16 +103,21 @@ interface BookingWizardProps {
   isLoggedIn: boolean;
 }
 
-// Opacity-only crossfade — deliberately NO x/y transform. A transformed
-// ancestor becomes the containing block for `position: fixed`, which traps each
-// step's fixed action bar + floating pill inside the wizard (they scroll away at
-// the footer instead of staying pinned). Fading keeps the bars viewport-fixed.
-// V3-D464 (2026-06-09 motion sweep): step change is a slide+fade ("treat UI like a movie"), not a
-// bare opacity fade — a subtle 16px x-shift on the §4 `glide` curve so the booking flow moves like a film.
+// ENTER RECIPE (MOTION.md, owner-approved 2026-07-09) applied to the step swap:
+// opacity + scale together, matching `useEnterMotion`/`enterVariants` in
+// app/[locale]/_components/primitives/motion.ts. Blur is deliberately dropped
+// HERE ONLY (motion-ok): this wrapper contains each step's `position: fixed`
+// bottom bar as a DOM descendant, and framer-motion's build-styles.mjs special
+// cases `transform` back to `transform: none` at rest (verified live: settles to
+// `transform: none`) but never does the same for `filter`. A resting
+// `filter: blur(0px)` stays a real filter value, which per the CSS spec still
+// establishes a containing block for fixed descendants and would detach every
+// step's sticky action bar from the viewport. Scale collapses safely, blur does
+// not, so scale+opacity carries the recipe at this one wrapper level.
 const slideVariants = {
-  enter: { opacity: 0, x: 16 },
-  center: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: -16 },
+  enter: { opacity: 0, scale: 0.96 },
+  center: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.96 },
 };
 
 export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
@@ -219,11 +225,11 @@ export default function BookingWizard({ services, staffList, salon, staffService
         <motion.div
           key={normalizedStep}
           custom={1}
-          variants={slideVariants}
+          variants={slideVariants} // mockup-ok: approved /dev/motion-recipe ENTER RECIPE
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: ENTER_DURATION, ease: GLIDE_EASE }}
         >
           {renderStep()}
         </motion.div>

@@ -131,3 +131,19 @@ export { RatingStars, type RatingStarsProps, type RatingStarsSize } from "./Rati
 export { Avatar, avatarColor, type AvatarProps, type AvatarSize } from "./Avatar";
 export { PriceFrom, type PriceFromProps } from "./PriceFrom";
 export { BackButton, type BackButtonProps, type BackButtonVariant } from "./BackButton";
+
+// Shared enter-motion recipe (MOTION.md "THE ENTER RECIPE, LOCKED", owner-approved
+// 2026-07-09). Never hand-roll `initial={{opacity:0}} animate={{opacity:1}}` again.
+export {
+  GLIDE_EASE,
+  ENTER_DURATION,
+  ENTER_RECIPE,
+  useEnterMotion,
+  enterVariants,
+  STAGGER_STEP,
+  enterStaggerContainer,
+  enterStaggerItem,
+  useStaggerVariants,
+  butterPress,
+  type PressTier,
+} from "./motion";

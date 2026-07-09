@@ -4,11 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { motion } from 'motion/react';
 import { ShieldCheck, AlertCircle, Scissors, Calendar, Star, CreditCard, Store, UserRound } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
 import { formatSwissPhoneInput } from '@/lib/format-phone';
-import { Avatar } from '@/app/[locale]/_components/primitives';
+import { Avatar, useEnterMotion } from '@/app/[locale]/_components/primitives';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
 import GuestBookingForm, {
@@ -308,14 +309,23 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
     }
   };
 
+  // ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), applied per-card, not the
+  // `space-y-5 pb-28` root: the root also holds the fixed bottom CTA bar (further down
+  // this tree), and a resting `filter: blur(0px)` never collapses to `none` (framer-
+  // motion only special cases `transform`), so it would establish a containing block
+  // and detach the bar from the viewport. Neither card below has a `position: fixed`
+  // descendant, so both are safe. mockup-ok: approved /dev/motion-recipe ENTER RECIPE
+  const summaryCardMotion = useEnterMotion();
+  const priceCardMotion = useEnterMotion(0.05);
+
   return (
     <div className="space-y-5 pb-28">
-      {/* Step title comes from the wizard header (matches the services + date steps) — no duplicate lockup / green eyebrow here. */}
+      {/* Step title comes from the wizard header (matches the services + date steps), no duplicate lockup / green eyebrow here. */}
       {/* (b) Booking summary — owner-approved mockup booking-pay-step (2026-06-11):
           white icon-led rows (walk-in-pay checkout language), normal-case Inter Tight,
           Ändern links jump back to the owning step, MwSt line + blue total. NO
           uppercase/tracked eyebrows (owner-banned). */}
-      <div className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+      <motion.div {...summaryCardMotion} className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         {/* Salon */}
         <div className="flex items-center gap-3">
           {salon.cover_photo_url ? (
@@ -396,10 +406,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Price card — per-service lines + included VAT + blue total (walk-in-pay pattern) */}
-      <div className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+      {/* Price card, per-service lines + included VAT + blue total (walk-in-pay pattern) */}
+      <motion.div {...priceCardMotion} className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         <div className="space-y-1.5">
           {formData.services.map((s) => (
             <div key={s.id} className="flex items-baseline justify-between gap-3 text-[14px]">
@@ -418,7 +428,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
           <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">{formatPrice(totalPrice, localeCode)}</span>
         </div>
-      </div>
+      </motion.div>
 
 
       {/* ── PHASE 'select' — payment-method selector + (guest) contact form + Buchen CTA ── */}

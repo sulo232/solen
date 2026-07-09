@@ -2,11 +2,11 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { ArrowRight, ShoppingCart, Users } from 'lucide-react';
+import { motion } from 'motion/react'; // mockup-ok: applying owner-approved Direction B (/dev/stylist-directions) + ENTER RECIPE
+import { ArrowRight, ShoppingCart, Users, Check, Star } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
-import { Avatar } from '@/app/[locale]/_components/primitives';
-import StaffProfilePage from '@/components-legacy/staff/StaffProfilePage';
+import { Avatar, useStaggerVariants, butterPress } from '@/app/[locale]/_components/primitives';
 import type { StaffMember } from '@/lib/types';
 
 interface StaffService {
@@ -15,31 +15,48 @@ interface StaffService {
 }
 
 /**
- * StaffStep — mockup 20 (owner-approved 2026-06-11), exact Fresha
- * "Teammitglied auswählen" bones + Solen skin.
+ * StaffStep, Direction B "rich tap-rows" (owner-picked 2026-07-09 from the three
+ * directions at /dev/stylist-directions/page.tsx). Full-width rows, avatar left,
+ * name + one specialty + rating-with-count, whole row is the tap target, "Egal"
+ * pinned first. Replaces the mockup-20 Fresha-bones card (2026-06-11) per the
+ * owner's live-flow walkthrough, which reported four defects, all fixed here:
  *
- * Own full step between services and Zeit: white cards on the sunken body,
- * "Keine Präferenz" first, then staff with avatar + rating badge, languages ·
- * role line, blue "Profil ansehen" (inline body link per blue v3), outline
- * "Auswählen" that fills ink when selected. Bottom bar carries the cart.
+ *   B4. Selected indicator is ONE quiet static check (no spring/pop animation),
+ *       so re-rendering an already-selected row never re-announces itself.
+ *   B5. Selected row = bg-s-bg-sunken + text-s-ink + semibold + the check.
+ *       The old focus-ring-style border treatment is gone; the row
+ *       background is never an ink/black fill.
+ *   B6. `selectedStaffId` already defaults to 'any' in lib/booking-context.tsx
+ *       (initialFormData), so "Egal" is pre-selected on mount with no extra
+ *       code here. The separate "Auswählen" pick button (a static label that
+ *       never changed) is gone too: the whole row taps, and the check IS the
+ *       state, so there is no leftover label to keep in sync.
+ *   B7. Selection-only: the "Profil ansehen" deep link into the stylist's full
+ *       profile (`setViewStaffId` + the embedded <StaffProfilePage> sheet) is
+ *       removed. The standalone staff profile page/route is untouched, this
+ *       step no longer opens it mid-booking.
+ *
+ * Also drops the ALL-CAPS language tag entirely (copy rule 4: a tag must add
+ * a decision-relevant fact not already on the row; matches the /dev direction
+ * mockup, which dropped it for the same reason). No "soonest slot" line either:
+ * there is no live per-staff next-availability endpoint to source one from, and
+ * inventing a time would be fabricated data (same call the mockup's own
+ * exists-check documented).
  */
 export default function StaffStep({
   staffList,
   staffServices,
-  salonSlug,
 }: {
   staffList: StaffMember[];
   staffServices: StaffService[];
-  salonSlug: string;
+  /** No longer used inside this selection-only step (B7); kept optional so
+   *  existing callers passing salonSlug do not need to change. */
+  salonSlug?: string;
 }) {
   const t = useTranslations('booking.staffStep') as any;
   const tSel = useTranslations('booking.serviceSelection') as any;
   const locale = useLocale();
   const { formData, updateFormData, goToStep } = useBooking();
-  // Profil ansehen opens the profile IN SELECTION MODE (sheet + "Auswählen" CTA,
-  // the existing onSelect contract) instead of navigating away to the page with
-  // its "Jetzt buchen" CTA (owner 2026-06-12: mid-booking it's a CHOICE).
-  const [viewStaffId, setViewStaffId] = React.useState<string | null>(null);
 
   const selectedIds = formData.services.map((s) => s.id);
 
@@ -55,94 +72,76 @@ export default function StaffStep({
   const pick = (id: string) => updateFormData({ selectedStaffId: id });
   const selected = formData.selectedStaffId;
 
-  const cardCls = (active: boolean) =>
-    `flex w-full items-center gap-3.5 rounded-[16px] bg-white p-4 text-left transition-shadow ${
-      active ? 'ring-2 ring-s-ink' : 'ring-0'
-    }`;
-  const pickBtnCls = (active: boolean) =>
-    `shrink-0 rounded-full px-[18px] py-2.5 font-heading text-[13.5px] font-semibold transition-colors ${
-      active ? 'bg-s-ink text-white' : 'border border-s-border bg-white text-s-ink'
+  // Shared stagger (MOTION.md ENTER RECIPE, reduced-motion safe).
+  const { container: rowsContainer, item: rowItem } = useStaggerVariants();
+
+  const rowCls = (active: boolean) =>
+    `flex w-full items-center gap-3.5 rounded-[16px] p-4 text-left ${butterPress('row')} ${
+      active ? 'bg-s-bg-sunken' : 'bg-white'
     }`;
 
   return (
     <div className="pb-32">
-      <ul className="salon-card-stagger flex flex-col gap-3 pt-1">
-        {/* Keine Präferenz */}
-        <li>
-          <div
-            role="button"
-            tabIndex={0}
+      <motion.ul variants={rowsContainer} initial="hidden" animate="visible" className="flex flex-col gap-2.5 pt-1">
+        {/* Egal (no preference), pinned first */}
+        <motion.li variants={rowItem}>
+          <button
+            type="button"
             onClick={() => pick('any')}
-            onKeyDown={(e) => e.key === 'Enter' && pick('any')}
             aria-pressed={selected === 'any'}
-            className={cardCls(selected === 'any')}
+            className={rowCls(selected === 'any')}
           >
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-              <Users size={24} strokeWidth={2} className="text-s-ink" />
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white">
+              <Users size={22} strokeWidth={2} className="text-s-ink" aria-hidden />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-body text-[16px] font-semibold text-s-ink">{t('any')}</span>
-              <span className="mt-0.5 block font-body text-[13.5px] text-s-ink-2">{t('maxAvailability')}</span>
+              <span className={`block text-[15px] font-heading ${selected === 'any' ? 'font-semibold' : 'font-medium'} text-s-ink`}>
+                {t('any')}
+              </span>
+              <span className="mt-0.5 block text-[13px] text-s-ink-2">{t('maxAvailability')}</span>
             </span>
-            <span className={pickBtnCls(selected === 'any')}>{t('choose')}</span>
-          </div>
-        </li>
+            {selected === 'any' ? <CheckBadge /> : <span className="h-6 w-6 shrink-0" aria-hidden />}
+          </button>
+        </motion.li>
 
         {list.map((st) => {
           const active = selected === st.id;
           const rating = st.average_rating != null && st.average_rating > 0 ? st.average_rating : null;
-          const langs = (st.languages ?? []).map((l) => l.toUpperCase()).join('/');
-          const role = st.specialties?.[0] ?? null;
-          const sub = [langs || null, role].filter(Boolean).join(' · ');
+          const reviewCount = st.review_count ?? 0;
+          const specialty = st.specialties?.[0] ?? null;
           return (
-            <li key={st.id}>
-              <div
-                role="button"
-                tabIndex={0}
+            <motion.li key={st.id} variants={rowItem}>
+              <button
+                type="button"
                 onClick={() => pick(st.id)}
-                onKeyDown={(e) => e.key === 'Enter' && pick(st.id)}
                 aria-pressed={active}
-                className={cardCls(active)}
+                className={rowCls(active)}
               >
                 <span className="shrink-0">
-                  <Avatar
-                    src={st.avatar_url}
-                    name={st.name}
-                    size={56}
-                    badge={rating != null ? { rating } : undefined}
-                  />
+                  <Avatar src={st.avatar_url} name={st.name} size={56} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-body text-[16px] font-semibold text-s-ink">{st.name}</span>
-                  {sub && <span className="mt-0.5 block truncate font-body text-[13.5px] text-s-ink-2">{sub}</span>}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setViewStaffId(st.id); }}
-                    className="mt-1 inline-block font-body text-[13.5px] font-semibold text-s-accent transition-opacity hover:opacity-80"
-                  >
-                    {t('viewProfile')}
-                  </button>
+                  <span className={`block truncate text-[15px] font-heading ${active ? 'font-semibold' : 'font-medium'} text-s-ink`}>
+                    {st.name}
+                  </span>
+                  {specialty && (
+                    <span className="mt-0.5 block truncate text-[13px] text-s-ink-2">{specialty}</span>
+                  )}
+                  {rating != null && reviewCount > 0 && (
+                    <span className="mt-1 inline-flex items-center gap-1 text-[12px] text-s-ink-2">
+                      <Star size={11} strokeWidth={0} className="fill-s-star" aria-hidden />
+                      {rating.toFixed(1)} ({reviewCount})
+                    </span>
+                  )}
                 </span>
-                <span className={pickBtnCls(active)}>{t('choose')}</span>
-              </div>
-            </li>
+                {active ? <CheckBadge /> : <span className="h-6 w-6 shrink-0" aria-hidden />}
+              </button>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
 
-      {/* Staff profile in selection mode — full-screen sheet over the step */}
-      {viewStaffId && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
-          <StaffProfilePage
-            staffId={viewStaffId}
-            salonSlug={salonSlug}
-            onClose={() => setViewStaffId(null)}
-            onSelect={(id) => { pick(id); setViewStaffId(null); }}
-          />
-        </div>
-      )}
-
-      {/* Bottom bar — same anatomy as the services step */}
+      {/* Bottom bar, same anatomy as the services step */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-s-border bg-white">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div>
@@ -157,7 +156,7 @@ export default function StaffStep({
           <button
             onClick={() => goToStep('datetime')}
             disabled={!selected}
-            className="group flex items-center gap-2 rounded-btn bg-s-ink px-6 py-3 font-heading text-sm font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
+            className={`group flex items-center gap-2 rounded-btn bg-s-ink px-6 py-3 font-heading text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50 ${butterPress('cta')}`}
           >
             {tSel('continue')}
             <ArrowRight size={16} strokeWidth={2.4} className="transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -165,5 +164,14 @@ export default function StaffStep({
         </div>
       </div>
     </div>
+  );
+}
+
+/** Quiet, static selected-row check. No spring/pop, present or absent only (B4). */
+function CheckBadge() {
+  return (
+    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-s-ink text-white">
+      <Check size={13} strokeWidth={2.75} aria-hidden />
+    </span>
   );
 }

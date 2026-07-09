@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { motion } from 'motion/react';
 import { Clock, ChevronDown, Users } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { parseDate, today, getLocalTimeZone, type CalendarDate } from '@internationalized/date';
-import { DateTimePicker } from '@/app/[locale]/_components/primitives';
+import { DateTimePicker, useEnterMotion } from '@/app/[locale]/_components/primitives';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { StaffMember } from '@/lib/types';
 import WaitlistModal from './WaitlistModal';
@@ -147,9 +148,17 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
       ? staffList.find((s) => s.id === formData.selectedStaffId) ?? null
       : null;
 
+  // ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), applied to the picker block
+  // only, not the `pb-28` root: the root also contains the fixed bottom CTA bar, and a
+  // resting `filter: blur(0px)` never collapses to `none` (framer-motion only special
+  // cases `transform`), so it would establish a containing block and detach the bar
+  // from the viewport. This block has no `position: fixed` descendant, so it is safe.
+  const enterMotion = useEnterMotion();
+
   return (
     <div className="pb-28">
-      {/* Stylist pill — opens the staff step. Date affordances live in the picker below. */}
+      <motion.div {...enterMotion}> {/* mockup-ok: approved /dev/motion-recipe ENTER RECIPE */}
+      {/* Stylist pill, opens the staff step. Date affordances live in the picker below. */}
       <div className="flex items-center gap-3 pt-1">
         <button
           type="button"
@@ -176,7 +185,7 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
         </button>
       </div>
 
-      {/* Date + time — shared DateTimePicker primitive (strip layout, blue selection).
+      {/* Date + time, shared DateTimePicker primitive (strip layout, blue selection).
           Replaces the bespoke day-strip + slot grid + month-popup that used to live
           here; the primitive now owns the strip, the grouped slots, the loading/empty
           states, and the "more dates" month sheet. Booking keeps the orchestration
@@ -215,10 +224,11 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
           }
         />
       </div>
+      </motion.div>
 
       {/* Waitlist (restructured, owner 2026-06-12): the FULL card appears only when
           the selected day genuinely has nothing free (it IS the answer then); on a
-          normal day it shrinks to one quiet ink line. One primary per screen —
+          normal day it shrinks to one quiet ink line. One primary per screen,
           the old always-on ink card competed with Weiter. */}
       {formData.selectedDate && !isLoadingSlots && slots.filter((sl) => sl.available).length === 0 && !slotsError ? (
         <div className="mt-5 rounded-2xl border border-s-border bg-[--raised] p-4">

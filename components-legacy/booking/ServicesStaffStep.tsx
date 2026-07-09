@@ -493,7 +493,7 @@ export default function ServicesStaffStep({
           <>
             <motion.div
               className="fixed inset-0 z-50 bg-black/40"
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 0 }} // motion-ok: backdrop scrim fade, opacity-only is correct for a full-screen dim overlay
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowCatSheet(false)}

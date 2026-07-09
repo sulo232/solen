@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { motion } from "motion/react";
 import { AlertTriangle, Check } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { HAIR_OPTS, HAIR_LENGTH_OPTS, HAIR_THICKNESS_OPTS, HAIR_BEARD_OPTS, type Choice } from "@/app/[locale]/onboarding/beautyFields";
-import { Avatar } from "@/app/[locale]/_components/primitives";
+import { Avatar, useEnterMotion } from "@/app/[locale]/_components/primitives";
 import type { StaffMember } from "@/lib/types";
 
 /**
@@ -113,6 +114,14 @@ export default function HairStep({
 
   const advance = () => goToStep("pay-confirm");
 
+  // ENTER RECIPE (MOTION.md, owner-approved 2026-07-09), applied per-card, not the
+  // `pb-32` root: the root also holds the fixed bottom action bar, and a resting
+  // `filter: blur(0px)` never collapses to `none` (framer-motion only special cases
+  // `transform`), so it would establish a containing block and detach the bar from
+  // the viewport. Neither card has a `position: fixed` descendant, so both are safe.
+  const cardOneMotion = useEnterMotion();
+  const cardTwoMotion = useEnterMotion(0.05);
+
   const handleNext = () => {
     // The note rides on THIS booking (bookings.customer_note), not the profile.
     updateFormData({ customerNote: note.trim() || null });
@@ -138,8 +147,8 @@ export default function HairStep({
     <div className="pb-32">
       <p className="text-[14px] text-s-ink-2">{t("hairSub")}</p>
 
-      {/* Card 1 — hair facts */}
-      <div className="mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+      {/* Card 1, hair facts. mockup-ok: approved /dev/motion-recipe ENTER RECIPE */}
+      <motion.div {...cardOneMotion} className="mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         {prefilled && (
           <div className="mb-4 flex items-center gap-2.5 rounded-[12px] bg-s-bg-sunken px-3 py-2.5 text-[13px] text-s-ink-2">
             <span>
@@ -153,10 +162,10 @@ export default function HairStep({
         <PillGroup label={t("hairTypeLabel")} opts={HAIR_OPTS.filter((o) => o.value !== "unknown")} value={hairType} onSelect={setHairType} />
         <PillGroup label={t("hairLengthLabel")} opts={HAIR_LENGTH_OPTS} value={hairLength} onSelect={setHairLength} />
         <PillGroup label={t("hairThicknessLabel")} opts={HAIR_THICKNESS_OPTS} value={hairThickness} onSelect={setHairThickness} />
-      </div>
+      </motion.div>
 
-      {/* Card 2 — for the barber: beard (barbershop carts) + the one-line note */}
-      <div className="mt-3 rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
+      {/* Card 2, for the barber: beard (barbershop carts) + the one-line note. mockup-ok: approved /dev/motion-recipe ENTER RECIPE */}
+      <motion.div {...cardTwoMotion} className="mt-3 rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         <div className="flex items-center gap-2.5">
           {staff ? (
             <>
@@ -195,9 +204,9 @@ export default function HairStep({
           />
           <p className="mt-1 text-right text-[11.5px] tabular-nums text-s-ink-3">{note.length}/500</p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Mismatch — non-blocking, one line */}
+      {/* Mismatch, non-blocking, one line */}
       {mismatch && (
         <div className="mt-3 flex items-start gap-2.5 rounded-[12px] bg-s-warning/10 px-3.5 py-2.5">
           <AlertTriangle size={15} className="mt-0.5 shrink-0 text-s-warning" aria-hidden />
