@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/supabase";
+import { getSessionUser, createAdminSupabaseClient } from "@/lib/supabase";
+import { claimSlot } from "@/lib/bookings/claim-slot";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 
 // Reschedule is allowed up to this many hours before the appointment (platform rule).
@@ -34,9 +35,24 @@ export async function POST(
       : NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  // Only an active booking can be rescheduled (audit gap: the previous version let a
+  // cancelled/completed/no_show booking through, which could resurrect a dead booking's
+  // slot claim).
+  if (booking.status !== "confirmed" && booking.status !== "pending") {
+    return NextResponse.json(
+      { error: "Booking cannot be rescheduled", code: "INVALID_STATUS" },
+      { status: 400 }
+    );
+  }
+
   // We still need a query client for the slot reads/writes below. resolveBookingActor
   // already proved entitlement, so this is no longer the ownership gate.
   const { supabase } = await getSessionUser();
+  // availability_slots UPDATE is owner-only under RLS, so a customer's session client
+  // silently no-ops every slot write. Slot state changes are a SYSTEM op: route them through
+  // the service-role client. Booking-row writes stay on `supabase` (bookings_update_own
+  // permits the owner). Council 2026-07-07.
+  const admin = createAdminSupabaseClient();
 
   // Check if reschedule window has passed (platform lead-time rule).
   const bookingDate = new Date(booking.starts_at);
@@ -54,7 +70,7 @@ export async function POST(
   // availability_slots!inner join is no longer needed to derive the salon.
   const salonId = booking.salon_id;
 
-  // Check if new slot is available
+  // Find an available new slot (fail-fast; the CAS claim below is the real guard).
   const { data: newSlot, error: slotError } = await supabase
     .from("availability_slots")
     .select("id")
@@ -71,21 +87,34 @@ export async function POST(
     );
   }
 
-  // Step 1: Free the old slot
-  const { error: freeError } = await supabase
-    .from("availability_slots")
-    .update({ status: "available", booking_id: null, booked_by: null })
-    .eq("id", booking.slot_id);
+  // Ordering matters: CLAIM the new slot FIRST, move the booking, then FREE the old slot LAST.
+  // Claim-before-free means the old slot is never released until the new one is secured, so
+  // there is no window where the old slot is bookable while the reschedule is half-done, and
+  // no rollback ever has to race to re-book the old slot. (Council 2026-07-07; supersedes the
+  // earlier free-then-claim order whose rollbacks re-claimed the old slot without a CAS guard.)
 
-  if (freeError) {
-    console.error("[Reschedule] Free slot error:", freeError);
+  // Step 1: CAS-claim the new slot (admin: availability_slots UPDATE is owner-only under RLS).
+  const { claimed, error: claimError } = await claimSlot(admin, newSlot.id, {
+    booking_id: bookingId,
+    booked_by: userId ?? booking.user_id,
+  });
+
+  if (claimError) {
+    console.error("[Reschedule] Claim new slot error:", claimError);
+    return NextResponse.json({ error: "Failed to claim new slot" }, { status: 500 });
+  }
+  if (!claimed) {
+    // A concurrent request claimed the new slot first. Nothing has changed yet (old slot still
+    // held by this booking, booking row untouched), so just return 409.
     return NextResponse.json(
-      { error: "Failed to free old slot" },
-      { status: 500 }
+      { error: "Slot no longer available", code: "SLOT_TAKEN" },
+      { status: 409 }
     );
   }
 
-  // Step 2: Update booking with new slot
+  // Step 2: Move the booking onto the new slot (session client; bookings_update_own allows the
+  // owner). If this fails, release the new slot we just claimed; the OLD slot was never freed,
+  // so the booking still validly holds it and no double-booking is possible.
   const { data: updatedBooking, error: updateError } = await supabase
     .from("bookings")
     .update({
@@ -99,16 +128,10 @@ export async function POST(
     .single();
 
   if (updateError) {
-    // Rollback: restore old slot if update fails
-    await supabase
+    await admin
       .from("availability_slots")
-      .update({
-        status: "booked",
-        booking_id: bookingId,
-        booked_by: userId ?? booking.user_id,
-      })
-      .eq("id", booking.slot_id);
-
+      .update({ status: "available", booking_id: null, booked_by: null })
+      .eq("id", newSlot.id);
     console.error("[Reschedule] Update error:", updateError);
     return NextResponse.json(
       { error: "Failed to reschedule booking" },
@@ -116,61 +139,14 @@ export async function POST(
     );
   }
 
-  // Step 3: Mark new slot as booked. TOCTOU guard (audit fix B): the claim only succeeds
-  // if the slot is STILL 'available' at write time, and .select("id") tells us whether it
-  // actually matched a row (two concurrent reschedules targeting the same slot must not
-  // both succeed).
-  const { data: bookRows, error: bookError } = await supabase
+  // Step 3: Free the OLD slot LAST (admin). The booking already points at the new slot, so if
+  // this fails the worst case is a stale 'booked' hold on the old slot, never a double-booking.
+  const { error: freeError } = await admin
     .from("availability_slots")
-    .update({
-      status: "booked",
-      booking_id: bookingId,
-      booked_by: userId ?? booking.user_id,
-    })
-    .eq("id", newSlot.id)
-    .eq("status", "available")
-    .select("id");
-
-  if (bookError) {
-    // Rollback both changes
-    await supabase
-      .from("bookings")
-      .update({
-        slot_id: booking.slot_id,
-        starts_at: booking.starts_at,
-        ends_at: booking.ends_at,
-      })
-      .eq("id", bookingId);
-
-    await supabase
-      .from("availability_slots")
-      .update({ status: "available", booking_id: null, booked_by: null })
-      .eq("id", newSlot.id);
-
-    console.error("[Reschedule] Book slot error:", bookError);
-    return NextResponse.json(
-      { error: "Failed to confirm new slot" },
-      { status: 500 }
-    );
-  }
-
-  if (!bookRows?.length) {
-    // 0 rows matched: another request claimed the new slot between the availability read
-    // and this write. Roll back the booking row to the old slot (never flipped, so no
-    // slot-side rollback is needed here) and return 409 SLOT_TAKEN.
-    await supabase
-      .from("bookings")
-      .update({
-        slot_id: booking.slot_id,
-        starts_at: booking.starts_at,
-        ends_at: booking.ends_at,
-      })
-      .eq("id", bookingId);
-
-    return NextResponse.json(
-      { error: "New time slot is not available", code: "SLOT_TAKEN" },
-      { status: 409 }
-    );
+    .update({ status: "available", booking_id: null, booked_by: null })
+    .eq("id", booking.slot_id);
+  if (freeError) {
+    console.error("[Reschedule] Failed to free old slot (stale hold, no double-booking):", freeError);
   }
 
   // Success - return updated booking
