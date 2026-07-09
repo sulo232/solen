@@ -193,12 +193,20 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (entry.tracking_token !== token) return NextResponse.json({ error: "Invalid token" }, { status: 403 });
   if (entry.status !== "waiting") return NextResponse.json({ error: "Cannot cancel — already in progress" }, { status: 400 });
 
-  const { error } = await admin
+  // Atomic compare-and-swap: gate the update on status still being "waiting" so two concurrent
+  // DELETEs with the same token can't both flip it and both reach the refund below (double
+  // refund / double transfer reversal). Only the request that actually wins the flip proceeds.
+  const { data: cancelled, error } = await admin
     .from("barber_walkin_queue")
     .update({ status: "cancelled", completed_at: new Date().toISOString() })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("status", "waiting")
+    .select("id");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!cancelled || cancelled.length === 0) {
+    return NextResponse.json({ error: "Cannot cancel, already in progress" }, { status: 400 });
+  }
 
   // Advance the queue: re-sequence the remaining waiting entries so positions + ETAs close
   // up behind the cancelled customer (same atomic RPC the operator PATCH uses). Without this,

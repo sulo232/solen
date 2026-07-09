@@ -44,6 +44,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Voucher not found" }, { status: 404 });
     }
 
+    // Verify the supplied payment_intent_id actually belongs to THIS voucher. Without this,
+    // any succeeded PI (e.g. from an unrelated purchase) could be paired with any voucher_id
+    // to activate it and read its code. stripe_payment_intent_id is written on the voucher row
+    // at creation time (app/api/vouchers/route.ts), before any charge, so it is the authoritative
+    // linkage between a voucher and the PI that is supposed to pay for it.
+    if (voucher.stripe_payment_intent_id !== payment_intent_id) {
+      return NextResponse.json({ error: "Payment does not match voucher" }, { status: 403 });
+    }
+
     // Mark voucher as confirmed (created but not yet "redeemed" in the sense of used)
     // remaining_amount is set equal to original amount since it hasn't been redeemed yet
     const { error: updateError } = await supabase

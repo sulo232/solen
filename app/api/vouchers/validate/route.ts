@@ -37,6 +37,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check the voucher was actually paid for. remaining_amount is written ONLY by the
+    // Stripe webhook (handleSalonVoucherPaid) or the confirm route AFTER payment_intent.succeeded
+    // (it is never set at insert time, see app/api/vouchers/route.ts) so NULL here means the
+    // purchase never completed / was never paid, not proof of a valid full-value voucher.
+    if (voucher.remaining_amount === null) {
+      return NextResponse.json({
+        valid: false,
+        message: "Gutschein noch nicht bezahlt",
+      });
+    }
+
     // Check if already redeemed
     if (voucher.redeemed_at) {
       return NextResponse.json({
