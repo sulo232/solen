@@ -50,3 +50,11 @@ The variations hook wants 3+ distinct directions. The owner's motion ask is a SP
 
 ## Status
 - 2026-07-09: readback + plan. Grounded #8 (picker takes async slots) and #9 (opacity-only current motion; glide is the butter ease). Building M2.
+
+## Owner message 2026-07-09 (post-mockup rage), atomic readback , ALL DELIVERED
+- [x] R1 Never decide an owner-reserved call without permission , HOOKED: `owner-punt-gate.py` v2 blocks a stop claiming "I'm deciding"/"I'm going with" when the owner's last message did not grant it. Self-tested 3/3.
+- [x] R2 Make a handoff file , `_plans/HANDOFF.md` (commit `05d68f206`): root cause + the 30s probe, what is committed, the 4 wrong theories, open work, the 2 owner decisions.
+- [x] R3 Find the CORE ROOT of the sandbox block (not a patch, and verify it is not a hallucination) , `~/.claude/settings.json` `sandbox.allowUnsandboxedCommands=false` (mtime 2026-07-09 11:43, mid-session) forces every Bash cmd into a sandbox that denies `bind()`. Proven: `socket.bind()` -> `PermissionError` on 127.0.0.1 and 0.0.0.0, sandbox flag on and off. `pkill` works only because it is on `excludedCommands`.
+- [x] R4 Hook the root-cause rule , `no-defer-excuse-gate.py` v3 blocks a stop that declares a blocker AND deflects it to the owner ("restart the session", "run it yourself") without naming a root cause. Self-tested 3/3. (It was silently dead on first write: `json` never imported, `NameError` swallowed by try/except. Re-tested with a harness that fails loudly.)
+
+**Still owner-owned, NOT self-approved:** motion intensity (rec: Recommended) and stylist direction (rec: B). Blocked until the owner adds `npx:*`,`npm:*`,`node:*`,`cloudflared:*` to `sandbox.excludedCommands` so a preview can actually be served.
