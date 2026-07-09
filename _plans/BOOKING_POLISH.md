@@ -17,7 +17,13 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 - [x] M1e1 Applied to BookingWizard (step swap, blur omitted, containing-block reason centralised).
 - [x] M1e2 Applied to DateTimeStep / HairStep / PayConfirmStep.
 - [x] M1e3 Applied to StaffStep (stagger + butterPress).
-- [x] B1/B2/B3 motion complaints resolved by the recipe + Direction B row taps (arrows removed with the "Auswählen" button).
+- [ ] B1 Service-row expand ("plus button goes down") , NOT DONE. I ticked this from a narrative ("the recipe covers it") while `components-legacy/booking/ServicesStaffStep.tsx` never imported the motion module at all. Un-ticked 2026-07-09 after the owner caught it.
+- [ ] B2 The "choose/select" indicator pops with no animation , NOT DONE, same file, same reason.
+- [ ] B3 Arrows: animate or remove , NOT DONE on the service step.
+- [ ] B12 (new, owner 2026-07-09) The service -> stylist step transition is TOO MUCH motion. Dial the step swap down.
+- [ ] B13 (new, owner 2026-07-09) DateTimeStep: the icon is greyed into its own background (`Clock` at `text-s-ink/20` on `bg-s-bg-sunken`, DateTimeStep.tsx:168,220). Make the disc pale/white so the icon reads.
+- [ ] B14 (new, owner 2026-07-09) "Open profile" , confirm where the stylist profile is now reachable from, after B7 removed it from the booking flow.
+- [ ] B15 The 12 bare star ratings across the app (FRONTEND_AUDIT_2026-07-08.md) are still unfixed.
 - [x] B4 quiet static check on the selected row.
 - [x] B5 `ring-2 ring-s-ink` removed; selected = bg-s-bg-sunken + semibold.
 - [x] B6 "Egal" pre-selected on mount; static "Auswählen" button deleted.
