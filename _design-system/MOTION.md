@@ -13,6 +13,35 @@ Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and 
 - **Color** (restrained, 80/17/3 holds) + **spacing** (8pt rhythm) measured on-principle , no change needed.
 - **SuccessMark** celebration component + the booking-confirmed moment (see below).
 
+## 🔒 THE ENTER RECIPE , LOCKED (owner approved 2026-07-09: "motion approved w ur reccomended but acc make rule abt it for any new stuff")
+
+**Every element entrance in Solen animates all THREE properties together, never one alone.**
+The booking flow shipped with `initial={{opacity:0}} animate={{opacity:1}}` and nothing else;
+the owner's word for it was "raggedy". One property is a fade. Three is a material arriving.
+
+| property | from | to |
+|---|---|---|
+| opacity | 0 | 1 |
+| scale | 0.96 | 1 |
+| blur | `blur(8px)` | `blur(0)` |
+
+- duration **420ms**, ease **`glide` `cubic-bezier(0.16, 1, 0.3, 1)`** (smooth, no overshoot).
+- This is the **Recommended** tier of the three shown at `/dev/motion-recipe`. Subtle (4px/0.98/320ms)
+  and Strong (12px/0.94/520ms) exist in that demo only; do not ship them without a new owner call.
+- Buttons additionally get the **butter transition**: bg + transform on `glide` ~180ms, hover
+  `translateY(-1px)`, press `active:scale-[0.97]` (row 0.98 / icon 0.94 per the 3-tier press rule).
+- Source of truth in code: the shared enter-motion module. **Never hand-roll `initial`/`animate`
+  per surface** , import the variants, same as `<SuccessMark>` is never rebuilt per screen.
+- `prefers-reduced-motion`: base state is the FINAL state; the animation only adds the entrance.
+
+**Why blur is non-negotiable:** MOTION.md already records (below) that a subtle opacity-only fade
+was *imperceptible* to the owner and got reverted. Opacity alone is invisible; scale alone reads as
+a zoom; blur is what makes the element feel like it resolves into place. Perceptibility is the point.
+
+**Enforced, not advised:** `.claude/hooks/motion-recipe-gate.py` (PreToolUse) BLOCKS a net-new
+framer-motion entrance in `app/**` or `components*/**` that animates opacity without scale AND blur.
+Legitimate exception (a backdrop/scrim fade, a colour cross-fade): put `motion-ok: <reason>` on the line.
+
 ## Motion principles (the "when to use")
 
 - **Easings** (LOCKFILE/SOURCE §4: snap / spring / glide / thud) used purposefully on EVERY interaction , press feedback, transitions, sheet + overlay entrances , consistently, never ad-hoc.
