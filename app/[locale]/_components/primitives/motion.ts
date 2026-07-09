@@ -124,3 +124,42 @@ const PRESS_SCALE: Record<PressTier, string> = {
 export function butterPress(tier: PressTier = "cta"): string {
   return `transition-all duration-[180ms] ease-glide hover:-translate-y-[1px] ${PRESS_SCALE[tier]}`;
 }
+
+/**
+ * useStepSwapMotion, the ENTER RECIPE with `filter` deliberately OMITTED,
+ * for an `AnimatePresence`-driven step/screen swap (`initial="enter"
+ * animate="center" exit="exit"`).
+ *
+ * WHY no blur here, and ONLY here: a resting `filter: blur(0px)` is a
+ * non-`none` CSS filter value, and per the CSS spec a non-`none` filter on
+ * an element establishes a containing block for its `position: fixed`
+ * descendants. A step-swap wrapper commonly renders a step's sticky bottom
+ * action bar as a `position: fixed` DOM descendant (BookingWizard does).
+ * Framer Motion resets `transform` back to `transform: none` at rest
+ * (verified live) but never does the same for `filter`, so keeping blur in
+ * the recipe here would silently detach every sticky bar from the
+ * viewport. Scale collapses safely, blur does not, so opacity+scale alone
+ * carries the recipe at this one level. This is the single source of truth
+ * for that exception, do not re-derive it per surface.
+ *
+ * Respects `prefers-reduced-motion`: all three states (`enter`, `center`,
+ * `exit`) collapse to the same final state (opacity 1, scale 1) with
+ * `duration: 0`, so a reduced-motion user never sees the animated
+ * opacity/scale swap.
+ */
+export function useStepSwapMotion(): { variants: Variants; transition: Transition } {
+  const reduce = useReducedMotion();
+  const finalState = { opacity: ENTER_RECIPE.animate.opacity, scale: ENTER_RECIPE.animate.scale };
+  const initialState = { opacity: ENTER_RECIPE.initial.opacity, scale: ENTER_RECIPE.initial.scale };
+
+  if (reduce) {
+    return {
+      variants: { enter: finalState, center: finalState, exit: finalState },
+      transition: { duration: 0 },
+    };
+  }
+  return {
+    variants: { enter: initialState, center: finalState, exit: initialState },
+    transition: enterTransition,
+  };
+}

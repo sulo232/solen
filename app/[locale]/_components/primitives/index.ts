@@ -146,4 +146,5 @@ export {
   useStaggerVariants,
   butterPress,
   type PressTier,
+  useStepSwapMotion,
 } from "./motion";

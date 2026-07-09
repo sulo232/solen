@@ -88,9 +88,10 @@ export default function WaitlistModal({
     <AnimatePresence>
       <motion.div
         className="fixed inset-0 z-50 bg-black/40"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        // motion-ok: translucent dim backdrop behind the sheet, a scrim, not content, opacity-only is correct.
+        initial={{ opacity: 0 }} // mockup-ok
+        animate={{ opacity: 1 }} // mockup-ok
+        exit={{ opacity: 0 }} // mockup-ok
         onClick={onClose}
       />
       <motion.div

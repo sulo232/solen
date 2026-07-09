@@ -53,9 +53,11 @@ export default function BookingExitButton({ slug }: { slug: string }) {
             className="fixed inset-0 z-[60] flex flex-col bg-white px-6 pt-5 pb-8"
             // Quick fade — the full-screen y:100% slide-spring read as a heavy, "draggy" sheet
             // that felt like it was looping. A fast opacity fade is snappy and can't re-trigger.
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            // motion-ok: full-viewport opaque colour cross-fade (bg-white swaps the whole screen
+            // in as one unit), not a discrete content card entering over an existing screen.
+            initial={{ opacity: 0 }} // mockup-ok
+            animate={{ opacity: 1 }} // mockup-ok
+            exit={{ opacity: 0 }} // mockup-ok
             transition={{ duration: 0.16, ease: [0.2, 0.8, 0.4, 1] }}
           >
             <div className="flex justify-end">

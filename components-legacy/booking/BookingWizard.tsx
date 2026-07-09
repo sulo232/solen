@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'motion/react'; // mockup-ok: applying o
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
-import { GLIDE_EASE, ENTER_DURATION } from '@/app/[locale]/_components/primitives';
+import { useStepSwapMotion } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
   StaffStep,
@@ -103,28 +103,17 @@ interface BookingWizardProps {
   isLoggedIn: boolean;
 }
 
-// ENTER RECIPE (MOTION.md, owner-approved 2026-07-09) applied to the step swap:
-// opacity + scale together, matching `useEnterMotion`/`enterVariants` in
-// app/[locale]/_components/primitives/motion.ts. Blur is deliberately dropped
-// HERE ONLY (motion-ok): this wrapper contains each step's `position: fixed`
-// bottom bar as a DOM descendant, and framer-motion's build-styles.mjs special
-// cases `transform` back to `transform: none` at rest (verified live: settles to
-// `transform: none`) but never does the same for `filter`. A resting
-// `filter: blur(0px)` stays a real filter value, which per the CSS spec still
-// establishes a containing block for fixed descendants and would detach every
-// step's sticky action bar from the viewport. Scale collapses safely, blur does
-// not, so scale+opacity carries the recipe at this one wrapper level.
-const slideVariants = {
-  enter: { opacity: 0, scale: 0.96 },
-  center: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.96 },
-};
+// Step swap uses `useStepSwapMotion` (app/[locale]/_components/primitives/motion.ts),
+// the ENTER RECIPE with blur deliberately omitted for this one wrapper level
+// (containing-block reasoning documented there, not re-derived here) and
+// full `prefers-reduced-motion` support.
 
 export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
   const t = useTranslations('booking') as any;
   const locale = useLocale();
   const router = useRouter();
   const { currentStep, goToStep, formData } = useBooking();
+  const { variants: stepSwapVariants, transition: stepSwapTransition } = useStepSwapMotion();
 
   // Hair step is part of the flow when ANY cart service belongs to a hair category.
   const cartIds = new Set(formData.services.map((s) => s.id));
@@ -225,11 +214,11 @@ export default function BookingWizard({ services, staffList, salon, staffService
         <motion.div
           key={normalizedStep}
           custom={1}
-          variants={slideVariants} // mockup-ok: approved /dev/motion-recipe ENTER RECIPE
+          variants={stepSwapVariants} // mockup-ok: approved /dev/motion-recipe ENTER RECIPE
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: ENTER_DURATION, ease: GLIDE_EASE }}
+          transition={stepSwapTransition}
         >
           {renderStep()}
         </motion.div>
