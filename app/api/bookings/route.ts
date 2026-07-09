@@ -468,10 +468,16 @@ export async function POST(request: NextRequest) {
   //    pre-check and this write: undo the just-inserted booking and return the route's 409.
   const slotUpdate: Record<string, unknown> = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
   if (bundleEndsAt) slotUpdate.ends_at = bundleEndsAt;
-  const { error: slotUpdateError } = await db
+  // TOCTOU guard (audit fix B): the update only claims the slot if it is STILL 'available'.
+  // Two concurrent requests both passing the read-time check above would otherwise both
+  // succeed here (last write wins). .select("id") tells us whether this request's write
+  // actually matched a row.
+  const { data: slotUpdateRows, error: slotUpdateError } = await db
     .from("availability_slots")
     .update(slotUpdate)
-    .eq("id", resolvedSlotId);
+    .eq("id", resolvedSlotId)
+    .eq("status", "available")
+    .select("id");
   if (slotUpdateError) {
     if (slotUpdateError.code === "23P01") {
       // Widened window collided with another booked/blocked slot for this staff. Roll back the
@@ -480,6 +486,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
     }
     console.error("[bookings] slot booking update failed:", slotUpdateError);
+  } else if (!slotUpdateRows?.length) {
+    // 0 rows matched: the slot was claimed by another request between the read and this write.
+    // Roll back the booking row we just inserted so no orphan/unheld booking remains.
+    await db.from("bookings").delete().eq("id", booking.id);
+    return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
   }
 
   // 7. Send confirmation email to customer.

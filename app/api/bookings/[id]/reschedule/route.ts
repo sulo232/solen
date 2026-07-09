@@ -116,15 +116,20 @@ export async function POST(
     );
   }
 
-  // Step 3: Mark new slot as booked
-  const { error: bookError } = await supabase
+  // Step 3: Mark new slot as booked. TOCTOU guard (audit fix B): the claim only succeeds
+  // if the slot is STILL 'available' at write time, and .select("id") tells us whether it
+  // actually matched a row (two concurrent reschedules targeting the same slot must not
+  // both succeed).
+  const { data: bookRows, error: bookError } = await supabase
     .from("availability_slots")
     .update({
       status: "booked",
       booking_id: bookingId,
       booked_by: userId ?? booking.user_id,
     })
-    .eq("id", newSlot.id);
+    .eq("id", newSlot.id)
+    .eq("status", "available")
+    .select("id");
 
   if (bookError) {
     // Rollback both changes
@@ -146,6 +151,25 @@ export async function POST(
     return NextResponse.json(
       { error: "Failed to confirm new slot" },
       { status: 500 }
+    );
+  }
+
+  if (!bookRows?.length) {
+    // 0 rows matched: another request claimed the new slot between the availability read
+    // and this write. Roll back the booking row to the old slot (never flipped, so no
+    // slot-side rollback is needed here) and return 409 SLOT_TAKEN.
+    await supabase
+      .from("bookings")
+      .update({
+        slot_id: booking.slot_id,
+        starts_at: booking.starts_at,
+        ends_at: booking.ends_at,
+      })
+      .eq("id", bookingId);
+
+    return NextResponse.json(
+      { error: "New time slot is not available", code: "SLOT_TAKEN" },
+      { status: 409 }
     );
   }
 

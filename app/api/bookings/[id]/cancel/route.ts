@@ -172,39 +172,76 @@ export async function POST(
 
   if (updateError) return NextResponse.json({ message: updateError.message, code: "DB_ERROR" }, { status: 500 });
 
-  // Charge the cancellation fee off-session against the saved card (Lane A). Only when a
-  // fee is owed AND the booking was prepaid with a saved card. A failed/requires_action
-  // charge does not roll back the cancellation; it is pursued out-of-band.
+  // CUSTOMER cancel money outcome depends on prepayment (audit fix A). Bookings are full
+  // prepay (the Stripe webhook captures paid_amount and sets payment_status='paid'). Prepaid:
+  // net the fee out of the refund via the SAME chokepoint the salon branch uses (issueRefund),
+  // refundCents = base minus fee, NO separate fee charge on top (the fee is retained by
+  // refunding less, matching the GET preview's "you'll get back CHF X" math exactly). Not
+  // prepaid (pay-at-salon, nothing was ever captured): keep the existing off-session fee
+  // charge against the saved card, there is nothing to refund.
   let feeChargeStatus: "charged" | "requires_action" | "failed" | "none" = "none";
   let feeChargedCents = 0;
-  if (isCustomer && feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
-    const admin = createAdminSupabaseClient();
-    try {
-      const result = await chargeFee({
-        db: admin,
-        source: "booking",
-        id,
-        amountCents: feeCents,
-        kind: "cancellation",
-        actor: "system",
-        reason: "customer cancellation inside policy window",
-      });
-      feeChargeStatus = result.status;
-      feeChargedCents = result.chargedCents ?? 0;
-      // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
-      await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
-        kind: "cancellation",
-        fee_cents: feeCents,
-        charged_cents: feeChargedCents,
-        status: result.status,
-        payment_intent_id: result.paymentIntentId,
-      });
-    } catch (e) {
-      // NO_SAVED_CARD / INVALID_AMOUNT etc. — log, do not fail the cancellation.
-      if (e instanceof FeeError) {
-        console.error(`[cancel] chargeFee skipped for booking ${id} (${e.code}):`, e.message);
-      } else {
-        console.error(`[cancel] chargeFee threw for booking ${id}:`, e);
+  if (isCustomer) {
+    const wasPrepaid =
+      (booking.paid_amount as number | null) != null &&
+      (booking.paid_amount as number) > 0 &&
+      !!paymentIntentId &&
+      booking.payment_status === "paid";
+
+    if (wasPrepaid) {
+      const refundCents = Math.max(0, baseCents - feeCents);
+      if (refundCents > 0) {
+        const adminForCustomerRefund = createAdminSupabaseClient();
+        try {
+          await issueRefund({
+            db: adminForCustomerRefund,
+            source: "booking",
+            id,
+            amountCents: refundCents,
+            actor: "customer",
+            reason: reason ?? "customer cancelled the booking",
+          });
+          refundResult = { refundAmount: refundCents, feeAmount: feeCents, isWithinWindow };
+        } catch (e) {
+          // A failed refund does not roll back the cancellation (same discipline as the
+          // fee-charge failure below), logged, pursued out-of-band.
+          if (e instanceof RefundError) {
+            console.error(`[cancel] issueRefund failed for booking ${id} (${e.code}):`, e.message);
+          } else {
+            console.error(`[cancel] issueRefund threw for booking ${id}:`, e);
+          }
+        }
+      }
+      // feeCents >= baseCents means refundCents is 0: no refund, no charge (fee fully retained).
+    } else if (feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
+      const admin = createAdminSupabaseClient();
+      try {
+        const result = await chargeFee({
+          db: admin,
+          source: "booking",
+          id,
+          amountCents: feeCents,
+          kind: "cancellation",
+          actor: "system",
+          reason: "customer cancellation inside policy window",
+        });
+        feeChargeStatus = result.status;
+        feeChargedCents = result.chargedCents ?? 0;
+        // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
+        await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
+          kind: "cancellation",
+          fee_cents: feeCents,
+          charged_cents: feeChargedCents,
+          status: result.status,
+          payment_intent_id: result.paymentIntentId,
+        });
+      } catch (e) {
+        // NO_SAVED_CARD / INVALID_AMOUNT etc, log, do not fail the cancellation.
+        if (e instanceof FeeError) {
+          console.error(`[cancel] chargeFee skipped for booking ${id} (${e.code}):`, e.message);
+        } else {
+          console.error(`[cancel] chargeFee threw for booking ${id}:`, e);
+        }
       }
     }
   }
