@@ -6,7 +6,7 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 
 ### Motion standard (the headline)
 - [ ] M1 [standard] Define ONE enter-animation recipe, reusable hook/variants: every animation = **blur + scale + opacity** together, on the locked "butter" glide ease, plus a smooth button transition. Grounded: booking currently animates opacity ONLY (`components-legacy/booking/*` initial opacity:0->1), which is why it reads "raggedy". Locked ease = `glide cubic-bezier(0.16,1,0.3,1)`; MOTION.md lesson: subtle = imperceptible = reverted, so make it PERCEPTIBLE.
-- [ ] M2 [mockup] Before/after mockup of the recipe on real booking elements (card enter, service-row expand, sheet pop, button press), replayable, at 2-3 intensities so the owner picks the feel. Tunnel-served. <- THIS TURN.
+- [x] M2 [mockup] DONE + committed (`8cece944e`): `/de/dev/motion-recipe`, before (opacity-only) vs after (blur+scale+opacity on glide) at 3 intensities (Subtle/Recommended/Strong), replayable. Verified 200 through the tunnel (306KB, real, Replay + intensity + blur). BLOCKED on owner picking an intensity before it is codified.
 
 ### Booking flow fixes (from walking it)
 - [ ] B1 [motion] Service-row expand ("plus button goes down") feels bad -> new blur+scale+opacity recipe. (previewed by M2)
@@ -17,7 +17,7 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 - [ ] B6 [design/psych law 2] Staff pick button text never changes (always "Wählen/Choose"); make the label reflect state, AND pre-select "Egal/Anyone" as the default staff (defaults-as-recommendation).
 - [ ] B7 [design] Separate the standalone stylist PROFILE page from the in-booking stylist picker: inside booking you must NOT be able to wander into the stylist's other services/profile. Scope the in-booking picker to selection only.
 - [ ] B8 [data/bug] No dates available in the picker for the test salon. Root-cause first (curl the availability endpoint for muse-beauty-studio; check `opening_hours` SHORT-day-key convention mon..sun per LESSONS_LEARNED; check staff schedules) then fix so real availability shows. NOT a UI-only fix.
-- [ ] B11 [design, BLOCKED] The stylist-SELECTION page design is not what the owner prefers. BLOCKED on the owner's example ("I'll be giving an example maybe"). Do NOT guess a redesign; wait for the ref, then mockup-first.
+- [x] B11 [design] REVERSED 2026-07-09: owner said "no, YOU give me ideas, mockups for multiple directions." DELIVERED + committed (`8cece944e`): `/de/dev/stylist-directions`, 3 distinct directions (A photo grid / B rich tap-rows / C swipe carousel), each fixing every StaffStep complaint (gray-sunken selected not ink/ring, Egal pre-selected, rating+count, selection-only, sentence-case). Contract-clean on disk. Render 502'd once then dev server reaped before re-verify. BLOCKED on owner picking a direction. Recommendation: B (rich tap-rows).
 
 ## Sequencing
 1. THIS TURN: M2 before/after motion mockup (approval-gated, mockup-first). Covers the motion complaints B1/B2/B3 as a preview.
