@@ -4,6 +4,31 @@ Owner walked `/de/dev/flows` -> Booking on their phone and gave live feedback. T
 
 ## Atomic asks
 
+### DELIVERED 2026-07-09 (owner approved "Recommended" + "Direction B")
+- [x] M1a Intensity locked = Recommended (opacity 0->1, scale 0.96->1, blur 8px->0, 420ms, glide).
+- [x] M1b1 Shared enter-motion module created: `app/[locale]/_components/primitives/motion.ts`.
+- [x] M1b2 Variant animates opacity 0->1.
+- [x] M1b3 Variant animates scale 0.96->1.
+- [x] M1b4 Variant animates blur 8px->0.
+- [x] M1b5 Bound to the `glide cubic-bezier(0.16,1,0.3,1)` ease token.
+- [x] M1b6 prefers-reduced-motion safe (base state = final state); `useStepSwapMotion` collapses all states, duration 0.
+- [x] M1c Rule written as law: `_design-system/MOTION.md` "THE ENTER RECIPE , LOCKED".
+- [x] M1d Rule ENFORCED: `~/.claude/hooks/motion-recipe-gate.py` (PreToolUse) denies a net-new opacity-only entrance. Self-tested 7/7, wired.
+- [x] M1e1 Applied to BookingWizard (step swap, blur omitted, containing-block reason centralised).
+- [x] M1e2 Applied to DateTimeStep / HairStep / PayConfirmStep.
+- [x] M1e3 Applied to StaffStep (stagger + butterPress).
+- [x] B1/B2/B3 motion complaints resolved by the recipe + Direction B row taps (arrows removed with the "Auswählen" button).
+- [x] B4 quiet static check on the selected row.
+- [x] B5 `ring-2 ring-s-ink` removed; selected = bg-s-bg-sunken + semibold.
+- [x] B6 "Egal" pre-selected on mount; static "Auswählen" button deleted.
+- [x] B7 in-booking picker is selection-only; standalone stylist profile untouched.
+- [x] B11 Direction B shipped into the real StaffStep. Commits `1baf127bb`, `414a2c600`.
+
+### B8 ROOT-CAUSED 2026-07-09 (not a UI bug, and bigger than booking)
+- [x] B8a Root cause found. The picker is fine. `availability_slots` for EVERY salon ends 2026-07-11; `slots_last_created = 2026-06-23`; today = 2026-07-09. The nightly `app/api/cron/generate-slots/route.ts` (GH Actions `cron-jobs.yml`, 02:00 UTC, generates 30 days ahead from `staff_schedules`) STOPPED RUNNING on 2026-06-23. `staff_schedules` is healthy (390 rows). My earlier `opening_hours` short-day-key suspicion was WRONG: this endpoint reads `availability_slots` directly.
+- [ ] B8b Restore the horizon: run `generate-slots` once (writes prod DB, needs owner go). Fixes booking for all 22 salons.
+- [ ] B8c Fix why the nightly job stopped (GH Actions run history was empty from `gh`; check the workflow is enabled + `CRON_SECRET` valid).
+
 ### Motion standard (the headline)
 - [ ] M1 [standard] The enter-animation recipe, atomized. ALL sub-boxes BLOCKED on one named dependency: **the owner picking an intensity (Subtle / Recommended / Strong) at `/de/dev/motion-recipe`** , the hook's literal values (blur px, scale, duration) differ per intensity, so writing it before the pick means writing it twice.
     - [ ] M1a Owner picks the intensity. (blocker: owner decision, mockup delivered)
