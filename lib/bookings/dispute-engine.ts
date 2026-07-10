@@ -274,8 +274,8 @@ export async function chargeUpcharge(args: ChargeUpchargeArgs): Promise<ChargeUp
   if (!bookingData) throw new ChargeUpchargeError("DISPUTE_NOT_FOUND", `Booking ${dispute.booking_id} not found`);
   const booking = bookingData as unknown as UpchargeBookingRow;
 
-  // 3. Re-enforce the +50% cap against NET retained payment (paid_amount − refunded_amount,
-  //    Rappen) — defense in depth; the request route already capped it, but the dispute may
+  // 3. Re-enforce the +50% cap against NET retained payment (paid_amount minus refunded_amount,
+  //    Rappen), defense in depth; the request route already capped it, but the dispute may
   //    be stale AND a refund may have landed since (netting prevents re-charging a refund).
   //    NEVER price_paid.
   const paidAmount = booking.paid_amount ?? 0;
@@ -284,7 +284,28 @@ export async function chargeUpcharge(args: ChargeUpchargeArgs): Promise<ChargeUp
   }
   const refundedAmount = booking.refunded_amount ?? 0;
   const netRetained = paidAmount - refundedAmount;
-  const cap = Math.max(0, Math.round(netRetained * 0.5));
+  // The cap is CUMULATIVE across every upcharge already charged on this booking, not a fresh
+  // 50%-of-net cap per dispute: without this, successive salon_approved upcharge disputes on
+  // the same booking would each independently pass a 50% cap and cumulative upcharge could far
+  // exceed 50%. Sum prior charged upcharges (excluding this dispute) and subtract from the base cap.
+  const { data: priorUpcharges, error: priorUpchargesError } = await db
+    .from("booking_disputes")
+    .select("resolved_amount")
+    .eq("booking_id", dispute.booking_id)
+    .eq("direction", "upcharge")
+    .eq("status", "charged")
+    .neq("id", disputeId);
+  if (priorUpchargesError) {
+    // Fail CLOSED: an unverified cumulative cap must never fall back to 0 (that
+    // silently reopens the old bypassable per-dispute 50% cap this query closes).
+    console.error("[dispute-engine] prior-upcharge cap query failed:", priorUpchargesError.message);
+    throw new ChargeUpchargeError("EXCEEDS_CAP", "Could not verify the cumulative upcharge cap; charge blocked");
+  }
+  const priorUpchargedCents = (priorUpcharges ?? []).reduce(
+    (sum, d) => sum + (Number((d as { resolved_amount: number | null }).resolved_amount) || 0),
+    0,
+  );
+  const cap = Math.max(0, Math.round(netRetained * 0.5) - priorUpchargedCents);
   if (amountCents > cap) {
     throw new ChargeUpchargeError("EXCEEDS_CAP", `Upcharge ${amountCents} exceeds 50% cap ${cap}`);
   }

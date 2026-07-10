@@ -26,7 +26,7 @@ export async function GET(
 
   const { data: booking, error } = await supabase
     .from("bookings")
-    .select("user_id, starts_at, status, paid_amount, price_paid, payment_intent_id, salons(owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours)")
+    .select("user_id, starts_at, status, paid_amount, price_paid, payment_intent_id, refunded_amount, salons(owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours)")
     .eq("id", id)
     .single();
   if (error || !booking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
@@ -52,7 +52,11 @@ export async function GET(
     feeCents = calc.feeCents;
     isWithinWindow = calc.isWithinWindow;
   }
-  const refundCents = Math.max(0, baseCents - feeCents);
+  // Net against any already-refunded balance (mirrors the POST/customer-cancel-money
+  // math) so a booking with a prior partial/full refund never previews a gross figure.
+  const alreadyRefunded = (booking.refunded_amount as number | null) ?? 0;
+  const remaining = Math.max(0, baseCents - alreadyRefunded);
+  const refundCents = Math.max(0, remaining - feeCents);
 
   return NextResponse.json({
     data: {
@@ -178,6 +182,7 @@ export async function POST(
         price_paid: booking.price_paid as number | null,
         payment_intent_id: paymentIntentId,
         payment_status: booking.payment_status,
+        refunded_amount: booking.refunded_amount as number | null,
         stripe_customer_id: booking.stripe_customer_id,
         stripe_payment_method_id: booking.stripe_payment_method_id,
       },

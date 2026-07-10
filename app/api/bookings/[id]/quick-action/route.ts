@@ -62,7 +62,7 @@ export async function GET(
   const { data: booking } = await admin
     .from("bookings")
     .select(
-      "id, status, starts_at, paid_amount, price_paid, payment_intent_id, payment_status, stripe_customer_id, stripe_payment_method_id, salons(cancellation_fee_type, cancellation_fee_value, free_cancel_hours)"
+      "id, status, starts_at, paid_amount, price_paid, payment_intent_id, payment_status, refunded_amount, stripe_customer_id, stripe_payment_method_id, salons(cancellation_fee_type, cancellation_fee_value, free_cancel_hours)"
     )
     .eq("id", bookingId)
     .single();
@@ -94,6 +94,7 @@ export async function GET(
         price_paid: booking.price_paid,
         payment_intent_id: booking.payment_intent_id,
         payment_status: booking.payment_status,
+        refunded_amount: booking.refunded_amount,
         stripe_customer_id: booking.stripe_customer_id,
         stripe_payment_method_id: booking.stripe_payment_method_id,
       },

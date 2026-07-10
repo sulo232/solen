@@ -29,6 +29,7 @@ export interface CustomerCancelBookingRow {
   price_paid: number | null;
   payment_intent_id: string | null;
   payment_status: string | null;
+  refunded_amount: number | null;
   stripe_customer_id: string | null;
   stripe_payment_method_id: string | null;
 }
@@ -81,14 +82,24 @@ export async function applyCustomerCancelMoney(
   let feeChargedCents = 0;
   let feeChargePaymentIntentId: string | null = null;
 
+  // Prepayment is evidenced by paid_amount + payment_intent_id, NOT payment_status:
+  // a PRIOR partial/full refund (e.g. a dispute resolved via issueRefund while the
+  // booking stayed 'confirmed') flips payment_status to 'partially_refunded' /
+  // 'refunded' while leaving paid_amount and payment_intent_id in place. Gating on
+  // payment_status === "paid" misclassified that booking as not-prepaid and let the
+  // ELSE branch charge a fresh off-session cancellation fee on top, double-charging.
   const wasPrepaid =
     booking.paid_amount != null &&
     booking.paid_amount > 0 &&
-    !!booking.payment_intent_id &&
-    booking.payment_status === "paid";
+    !!booking.payment_intent_id;
 
   if (wasPrepaid) {
-    const refundCents = Math.max(0, baseCents - feeCents);
+    // Net the fee against the REMAINING (un-refunded) balance, not the gross paid
+    // amount, so a booking that was already partially/fully refunded before this
+    // cancel doesn't get double-refunded on top of the prior refund.
+    const alreadyRefunded = booking.refunded_amount ?? 0;
+    const remaining = Math.max(0, baseCents - alreadyRefunded);
+    const refundCents = Math.max(0, remaining - feeCents);
     if (refundCents > 0) {
       try {
         await issueRefund({
@@ -110,7 +121,8 @@ export async function applyCustomerCancelMoney(
         }
       }
     }
-    // feeCents >= baseCents means refundCents is 0: no refund, no charge (fee fully retained).
+    // feeCents >= remaining means refundCents is 0: no refund, no charge (remaining
+    // balance fully absorbed by the fee, or already fully refunded previously).
   } else if (feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
     try {
       const result = await chargeFee({

@@ -140,22 +140,33 @@ export async function POST(req: NextRequest) {
             });
           }
 
-          await admin.from("bookings").update({
+          // ADVANCE-ONLY guard (Stripe does not guarantee event ordering), mirroring the
+          // payment_failed / setup_intent.succeeded guards below. A late payment_intent.succeeded
+          // (first delivery, so the processed_webhook_events claim above does not block it) must
+          // not resurrect a booking that was already cancelled/completed/no_show after this PI was
+          // created, only advance a booking still in a pre-payment/payable state (the same set
+          // booking-pay-intent's own payability check gates on, app/api/stripe/booking-pay-intent/route.ts).
+          const { data: confirmedRows } = await admin.from("bookings").update({
             status: "confirmed",
             payment_status: "paid",
             paid_amount: paidAmount,                           // Rappen
             platform_fee: pi.application_fee_amount ?? 0,      // Rappen (the fee issueRefund later reverses)
-            vat_amount: vat.vatRappen,                         // Rappen — VAT portion of paid_amount.
-            net_amount: vat.netRappen,                         // Rappen — paid_amount − vat_amount.
+            vat_amount: vat.vatRappen,                         // Rappen, VAT portion of paid_amount.
+            net_amount: vat.netRappen,                         // Rappen, paid_amount minus vat_amount.
             vat_rate: vat.ratePercent,                         // rate applied (0 if salon not registered).
             stripe_customer_id: custId,
             stripe_payment_method_id: pmId,
-          }).eq("payment_intent_id", pi.id);
-          // Confirm the held slot (booking-pay-intent re-verified it before charging).
-          if (pi.metadata?.slot_id) {
+          }).eq("payment_intent_id", pi.id)
+            .in("status", ["pending", "pending_approval", "confirmed"])
+            .select("id");
+          // Confirm the held slot ONLY if the booking update above actually advanced a still-live
+          // booking, AND only the slot still held by THIS booking (.eq("booking_id", bookingId)):
+          // a late event must never re-book a slot that was freed or reassigned after cancel.
+          if (pi.metadata?.slot_id && confirmedRows?.length) {
             await admin.from("availability_slots")
               .update({ status: "booked", booking_id: bookingId })
-              .eq("id", pi.metadata.slot_id);
+              .eq("id", pi.metadata.slot_id)
+              .eq("booking_id", bookingId);
           }
 
           // Promo redemption (fix 2026-06-30): booking-pay-intent re-validated the promo and put
