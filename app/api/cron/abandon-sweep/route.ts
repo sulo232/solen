@@ -142,6 +142,15 @@ export async function GET(req: NextRequest) {
         }
       }
 
+      // 3. Return any reserved promo use for this now-cancelled booking. Best-effort,
+      // idempotent (no-ops for a booking that never reserved), never blocks the sweep.
+      try {
+        const { error: releasePromoErr } = await admin.rpc("release_promo_use", { p_booking: booking.id });
+        if (releasePromoErr) console.error(`[cron/abandon-sweep] release_promo_use failed for booking ${booking.id}:`, releasePromoErr.message);
+      } catch (releasePromoCatchErr) {
+        console.error(`[cron/abandon-sweep] release_promo_use threw for booking ${booking.id}:`, releasePromoCatchErr);
+      }
+
       cancelled++;
     } catch (err) {
       console.error(`[cron/abandon-sweep] unexpected error for booking ${booking.id}:`, err);

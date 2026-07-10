@@ -445,8 +445,9 @@ export async function POST(request: NextRequest) {
       customer_note: customer_note?.trim() || null,
       // Promo fix (2026-06-30): persist the code the customer applied so booking-pay-intent
       // (which only receives booking_id) can RE-VALIDATE it server-side and subtract the
-      // discount, and the webhook can increment promo_codes.current_uses once paid. Stored
-      // uppercased (schema normalizes). Its presence here grants NO discount: every constraint
+      // discount, reserving the use atomically at checkout (reserve_promo_use), not via a
+      // later webhook increment. Stored uppercased (schema normalizes). Its presence here
+      // grants NO discount: every constraint
       // (active / expiry / usage / min-spend / applicability / min_tier) is re-checked at charge.
       promo_code: promo_code || null,
       policy_accepted_at: new Date().toISOString(),

@@ -199,8 +199,10 @@ export async function POST(req: NextRequest) {
   //     over-limit / min-tier-failing / min-spend-failing code is ignored (no discount), so it can
   //     never lower the charge. The discount is computed off the FULL service price (priceChf) the
   //     same way /api/promo/validate does, then capped so it can never exceed what is charged now
-  //     and never push below the Stripe minimum. promoCodeApplied is carried in PI metadata so the
-  //     webhook increments promo_codes.current_uses exactly once on payment success.
+  //     and never push below the Stripe minimum. The use is reserved atomically at checkout via
+  //     reserve_promo_use (below), not incremented later by the webhook; promoCodeApplied is carried
+  //     in PI metadata so the post-PI readback (below) can reconcile and release an orphaned
+  //     reservation if Stripe replays an earlier, differently-discounted PaymentIntent.
   //
   //     PRECEDENCE vs the Solen Plus member waiver (step 6b): INDEPENDENT, no double-discount.
   //     The PROMO is a price reduction the SALON bears (it lowers the gross, so it lowers the salon
@@ -209,6 +211,7 @@ export async function POST(req: NextRequest) {
   //     fee base), then the member waiver on the resulting commission.
   let promoDiscountRappen = 0;
   let promoCodeApplied: string | null = null;
+  let reserved = false; // lifted out of the promo block so the post-PI reconciliation (below) can read it
   if (booking.promo_code) {
     try {
       const { data: promo } = await admin
@@ -224,7 +227,8 @@ export async function POST(req: NextRequest) {
       if (promo) {
         if (promo.valid_from && new Date(promo.valid_from) > now) promoOk = false;
         if (promo.valid_until && new Date(promo.valid_until) < now) promoOk = false;
-        if (promo.max_uses !== null && (promo.current_uses ?? 0) >= promo.max_uses) promoOk = false;
+        // max_uses is no longer pre-checked here (stale current_uses read → race under
+        // concurrent checkouts). reserve_promo_use (below) enforces the cap atomically.
         if (fullPriceChf < (promo.min_booking_amount ?? 0)) promoOk = false;
         if (promo.salon_id && promo.salon_id !== booking.salon_id) promoOk = false;
         // min_tier gate (Solen Plus, LOYALTY_STRUCTURE.md §12.4): the server derives the LIVE tier;
@@ -246,7 +250,23 @@ export async function POST(req: NextRequest) {
         // the deposit down to that floor.
         promoDiscountRappen = Math.max(0, Math.min(discountRappen, baseAmountRappen - 50));
         if (promoDiscountRappen > 0) {
-          promoCodeApplied = promo.code;
+          // Atomically reserve ONE use for this booking now that a real (non-clamped) discount
+          // is about to be applied. reserve_promo_use is a SECURITY DEFINER RPC that enforces
+          // max_uses in one atomic statement (no read-then-write race across concurrent
+          // checkouts) and is idempotent per booking (safe to call again on a retry/replay).
+          // Only when it confirms a reservation do we keep the discount; if the promo is
+          // exhausted, drop it rather than charge the reduced amount for an unreserved use.
+          const { data: reservedResult } = await admin.rpc("reserve_promo_use", {
+            p_booking: booking.id,
+            p_code: promo.code,
+          });
+          reserved = reservedResult === true;
+          if (reserved) {
+            promoCodeApplied = promo.code;
+          } else {
+            promoDiscountRappen = 0;
+            promoCodeApplied = null;
+          }
         } else {
           promoDiscountRappen = 0;  // discount fully clamped away, treat as not applied
         }
@@ -436,6 +456,19 @@ export async function POST(req: NextRequest) {
   // Promo: read back from the RETURNED PI (replay-safe, same rule as the member discount above).
   // A replayed idempotent intent carries whatever promo was applied originally.
   const actualPromoCode = (paymentIntent.metadata?.promo_code as string) || null;
+
+  // Reconcile the promo reservation against the ACTUALLY-charged PI. If this request reserved a use
+  // (reserved === true) but Stripe replayed an earlier PI whose promo does NOT match what we reserved
+  // (idempotency-key replay of a pre-reservation full-price PI), the reservation is orphaned , the
+  // discount will never be charged on this booking. Release it so the promo pool is not over-counted.
+  if (reserved === true && actualPromoCode !== promoCodeApplied) {
+    try {
+      await admin.rpc("release_promo_use", { p_booking: booking.id });
+    } catch (relErr) {
+      console.error("[booking-pay-intent] orphaned promo reservation release failed:", relErr);
+    }
+  }
+
   const actualPromoDiscountRappen = Number(paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
 
   const bookingPatch: Record<string, unknown> = { payment_intent_id: paymentIntent.id };
