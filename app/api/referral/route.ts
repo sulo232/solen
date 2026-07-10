@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -10,19 +10,36 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Attempt to get user referral config or profile containing the code
-    const { data: profile } = await supabase
-      .from("profiles")
+    // Schema-drift fix: this used to read/write `profiles.referral_code`, a column that
+    // does not exist on the live `profiles` table. The code it minted there could never
+    // match a row in `referrals` (which every completion path looks up by referral_code),
+    // so a shared code was unrewardable end to end. The user's shareable code lives on
+    // `referrals` (referral_code + referrer_id); a pending row for every user is created
+    // by the trg_generate_referral_code trigger on profiles INSERT (migration 049). Use
+    // the admin client: a normal user has no INSERT policy on `referrals` (system-only,
+    // per that migration), so the fallback mint below needs the service role.
+    const admin = createAdminSupabaseClient();
+    const { data: pendingReferral } = await admin
+      .from("referrals")
       .select("referral_code")
-      .eq("id", session.user.id)
-      .single();
+      .eq("referrer_id", session.user.id)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    let referralCode = profile?.referral_code;
+    let referralCode = pendingReferral?.referral_code;
 
-    // If no referral code exists, optionally generate one
+    // If no pending referral row exists (trigger somehow missed, or the last one was
+    // already consumed and never rotated), mint one directly into `referrals`.
     if (!referralCode) {
-      referralCode = `SOLEN-${session.user.id.substring(0, 5).toUpperCase()}`;
-      await supabase.from("profiles").update({ referral_code: referralCode }).eq("id", session.user.id);
+      referralCode = `SOLEN-${session.user.id.replace(/-/g, "").substring(0, 8).toUpperCase()}`;
+      await admin
+        .from("referrals")
+        .upsert(
+          { referrer_id: session.user.id, referral_code: referralCode, status: "pending" },
+          { onConflict: "referral_code" },
+        );
     }
 
     // Try to get stats from user_referrals / user_credits table

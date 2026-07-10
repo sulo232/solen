@@ -11,6 +11,7 @@ import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
+import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -450,6 +451,11 @@ export async function POST(request: NextRequest) {
       // grants NO discount: every constraint
       // (active / expiry / usage / min-spend / applicability / min_tier) is re-checked at charge.
       promo_code: promo_code || null,
+      // Referral fix: persist the code ON the booking (referral completion now only
+      // runs once THIS booking is actually confirmed, see step 9 below and the
+      // payment_intent.succeeded branch of app/api/stripe/webhook/route.ts, which
+      // reads it back off the row for the online-pay path).
+      referral_code: referral_code || null,
       policy_accepted_at: new Date().toISOString(),
       policy_snapshot: policySnapshot,
     })
@@ -582,80 +588,24 @@ export async function POST(request: NextRequest) {
     }
   } catch { /* owner notification failure must not break booking */ }
 
-  // 9. Complete referral on first booking (if a referral_code was provided).
+  // 9. Complete referral on a CONFIRMED first booking, instant / in-person only.
   //    SP-1: referrals reward `referred_user_id = user.id`; a guest has no user id, so this is a
   //    logged-in-only feature. Guarding on `user` leaves the logged-in behavior unchanged.
-  if (referral_code && user) {
+  //    Reward-farming fix: this used to run (and pay out CHF 10/CHF 10) at booking CREATE
+  //    time, gated on a COUNT that excluded the just-created pending/pending_approval row,
+  //    so isFirstBooking was always true and the credits were issued before any payment.
+  //    Now gated on bookingStatus === "confirmed" (instant confirm or in-person, see step
+  //    T&S above), which is the ONLY status this route ever inserts a booking as WITHOUT a
+  //    pending payment/approval step in between. The online-pay path (bookingStatus
+  //    "pending") completes the referral later, in the Stripe webhook's
+  //    payment_intent.succeeded handler, once payment has actually succeeded.
+  if (referral_code && user && bookingStatus === "confirmed") {
     try {
       const admin = createAdminSupabaseClient();
-
-      // Only reward on first completed booking for this user
-      const { count: bookingCount } = await admin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("status", "confirmed");
-
-      // bookingCount includes the booking we just created — first booking = count of 1
-      const isFirstBooking = (bookingCount ?? 0) <= 1;
-
-      if (isFirstBooking) {
-        // Ensure user hasn't already received a referral reward
-        const { data: existingReferral } = await admin
-          .from("referrals")
-          .select("id")
-          .eq("referred_user_id", user.id)
-          .eq("status", "completed")
-          .maybeSingle();
-
-        if (!existingReferral) {
-          // Find the pending referral matching the provided code
-          const { data: referral } = await admin
-            .from("referrals")
-            .select("id, referrer_id, reward_amount")
-            .eq("referral_code", referral_code)
-            .is("referred_user_id", null)
-            .eq("status", "pending")
-            .maybeSingle();
-
-          if (referral && referral.referrer_id !== user.id) {
-            const rewardAmount = referral.reward_amount ?? 10;
-            const creditExpiry = new Date();
-            creditExpiry.setMonth(creditExpiry.getMonth() + 6);
-
-            // Mark referral complete
-            await admin
-              .from("referrals")
-              .update({
-                referred_user_id: user.id,
-                status: "completed",
-                completed_at: new Date().toISOString(),
-              })
-              .eq("id", referral.id);
-
-            // Credit referrer
-            await admin.from("user_credits").insert({
-              user_id: referral.referrer_id,
-              amount: rewardAmount,
-              remaining: rewardAmount,
-              source: "referral",
-              source_id: referral.id,
-              expires_at: creditExpiry.toISOString(),
-            });
-
-            // Credit referee
-            await admin.from("user_credits").insert({
-              user_id: user.id,
-              amount: rewardAmount,
-              remaining: rewardAmount,
-              source: "referral",
-              source_id: referral.id,
-              expires_at: creditExpiry.toISOString(),
-            });
-          }
-        }
-      }
-    } catch { /* referral failure must not break booking */ }
+      await completeReferralForFirstBooking(admin, user.id, referral_code);
+    } catch (err) {
+      console.error("[bookings] referral completion failed:", err);
+    }
   }
 
   // Surface the freshly-assigned reference_code on the returned row (the insert ran before the

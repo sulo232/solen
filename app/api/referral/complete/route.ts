@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, referralLimiter } from "@/lib/ratelimit";
 import { validateBody, completeReferralSchema } from "@/lib/validations";
+import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 
 // POST: Complete a referral — credit both users CHF 10
 export async function POST(req: NextRequest) {
@@ -77,39 +78,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const rewardAmount = referral.reward_amount ?? 10;
-  const creditExpiry = new Date();
-  creditExpiry.setMonth(creditExpiry.getMonth() + 6); // Credits expire in 6 months
-
-  // Update referral status
-  await admin
-    .from("referrals")
-    .update({
-      referred_user_id: user.id,
-      status: "completed",
-      completed_at: new Date().toISOString(),
-    })
-    .eq("id", referral.id);
-
-  // Credit the referrer
-  await admin.from("user_credits").insert({
-    user_id: referral.referrer_id,
-    amount: rewardAmount,
-    remaining: rewardAmount,
-    source: "referral",
-    source_id: referral.id,
-    expires_at: creditExpiry.toISOString(),
-  });
-
-  // Credit the referred user
-  await admin.from("user_credits").insert({
-    user_id: user.id,
-    amount: rewardAmount,
-    remaining: rewardAmount,
-    source: "referral",
-    source_id: referral.id,
-    expires_at: creditExpiry.toISOString(),
-  });
+  // CAS + dual-credit now live in the shared helper (also used by app/api/bookings/route.ts
+  // and the Stripe webhook's payment_intent.succeeded handler), so this route can no longer
+  // double-complete or double-credit on a retry, nor race another completion path for the
+  // same code into crediting twice.
+  const result = await completeReferralForFirstBooking(admin, user.id, referral.referral_code);
+  if (!result.completed) {
+    return NextResponse.json(
+      { error: "Ungültiger oder bereits verwendeter Empfehlungscode" },
+      { status: 409 },
+    );
+  }
+  const rewardAmount = result.rewardAmount ?? referral.reward_amount ?? 10;
 
   // Generate a new pending referral code for the referrer (so they can keep referring)
   const newCode = "SOLEN-" + referral.referrer_id.replace(/-/g, "").substring(0, 6).toUpperCase()

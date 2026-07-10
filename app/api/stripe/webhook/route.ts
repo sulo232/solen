@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
             stripe_payment_method_id: pmId,
           }).eq("payment_intent_id", pi.id)
             .in("status", ["pending", "pending_approval", "confirmed"])
-            .select("id");
+            .select("id, user_id, referral_code");
           // Confirm the held slot ONLY if the booking update above actually advanced a still-live
           // booking, AND only the slot still held by THIS booking (.eq("booking_id", bookingId)):
           // a late event must never re-book a slot that was freed or reassigned after cancel.
@@ -167,6 +167,18 @@ export async function POST(req: NextRequest) {
               .update({ status: "booked", booking_id: bookingId })
               .eq("id", pi.metadata.slot_id)
               .eq("booking_id", bookingId);
+          }
+
+          // Referral fix: complete a pending referral here, now that payment has actually
+          // succeeded, never at booking-create time (which could be abandoned before payment).
+          // Gated on confirmedRows being non-empty so this only runs when THIS event genuinely
+          // just advanced the booking to confirmed (not a late/duplicate delivery after the
+          // booking was already confirmed or moved past it). The helper's own compare-and-swap
+          // makes a second call (webhook retry) a safe no-op, never a double credit.
+          const confirmedRow = confirmedRows?.[0] as { id: string; user_id: string | null; referral_code: string | null } | undefined;
+          if (confirmedRow?.user_id && confirmedRow.referral_code) {
+            const { completeReferralForFirstBooking } = await import("@/lib/referral/complete-referral");
+            await completeReferralForFirstBooking(admin, confirmedRow.user_id, confirmedRow.referral_code);
           }
 
           // Promo redemption: the use is now RESERVED atomically at checkout (booking-pay-intent's
