@@ -14,6 +14,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Valid code required" }, { status: 400 });
   }
 
+  // Referral codes are alphanumeric. Strip everything else so user input can't
+  // break out of the .or() filter string (commas, dots, parens, etc).
+  const safeCode = code.toUpperCase().trim().replace(/[^A-Z0-9-]/g, "");
+  if (safeCode.length < 3) {
+    return NextResponse.json({ error: "Valid code required" }, { status: 400 });
+  }
+
   const supabase = await createServerSupabaseClient();
 
   // Check current user (for self-referral prevention)
@@ -24,7 +31,7 @@ export async function GET(req: NextRequest) {
   const { data: referral } = await supabase
     .from("referrals")
     .select("referrer_id, code, referral_code, max_uses, reward_amount, status")
-    .or(`code.eq.${code.toUpperCase().trim()},referral_code.eq.${code.toUpperCase().trim()}`)
+    .or(`code.eq.${safeCode},referral_code.eq.${safeCode}`)
     .is("referred_user_id", null)
     .single();
 

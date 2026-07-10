@@ -30,7 +30,10 @@ export async function GET(request: NextRequest) {
     .eq("is_active", true);
 
   if (treatment) {
-    serviceQuery = serviceQuery.or(`name_de.ilike.%${treatment}%,name_en.ilike.%${treatment}%`);
+    // Strip PostgREST .or() delimiters (commas, parens) from user input so
+    // treatment can't break out, mirroring app/api/help/route.ts.
+    const safeTreatment = treatment.replace(/[,()]/g, " ");
+    serviceQuery = serviceQuery.or(`name_de.ilike.%${safeTreatment}%,name_en.ilike.%${safeTreatment}%`);
   }
 
   if (categorySlug) {
@@ -49,7 +52,8 @@ export async function GET(request: NextRequest) {
       }
       // For level 2+3, search by treatment name
       if (cat.level >= 2) {
-        serviceQuery = serviceQuery.or(`name_de.ilike.%${cat.name_de}%,name_en.ilike.%${cat.name_de}%`);
+        const safeCatName = cat.name_de.replace(/[,()]/g, " ");
+        serviceQuery = serviceQuery.or(`name_de.ilike.%${safeCatName}%,name_en.ilike.%${safeCatName}%`);
       }
     }
   }
