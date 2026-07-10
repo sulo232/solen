@@ -4,6 +4,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AIVisionResult } from "@/lib/types";
 import { getServerEnv } from "@/lib/env";
+import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
 
 const VISION_PROMPT = `You are SO.LEN's AI stylist — an expert barber, hairdresser, and colorist based in Basel, Switzerland. You analyze hair and beauty images with the precision of a professional who has worked with EVERY hair type, skin tone, texture, density, and cultural background.
 
@@ -207,12 +208,25 @@ export async function analyzeDiscoveryImage(imageUrl: string, category?: string 
     throw new Error("GEMINI_API_KEY not configured");
   }
 
+  // SSRF guard: image_url is attacker-reachable (admin form + cron/backfill URLs sourced
+  // from third-party discovery items). Reject internal/private/metadata targets BEFORE the
+  // fetch. A blocked URL takes the same "return null" path as a failed fetch below, so the
+  // caller can't tell which check failed.
+  try {
+    await assertSafeFetchUrl(imageUrl);
+  } catch {
+    console.error("[ai-vision] Blocked fetch to disallowed URL");
+    return null;
+  }
+
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    // Fetch image as base64
-    const imageRes = await fetch(imageUrl);
+    // Fetch image as base64. redirect:"manual" so a 30x response can't bounce the fetch
+    // into internal space after the guard above already cleared the original host, a 3xx
+    // status makes `imageRes.ok` false and falls into the same failed-fetch branch.
+    const imageRes = await fetch(imageUrl, { redirect: "manual" });
     if (!imageRes.ok) {
       console.error(`[ai-vision] Failed to fetch image: ${imageRes.status}`);
       return null;
@@ -246,7 +260,11 @@ export async function analyzeDiscoveryImage(imageUrl: string, category?: string 
  */
 async function fetchImageBase64(url: string): Promise<{ data: string; mimeType: string } | null> {
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    // SSRF guard (same reasoning as analyzeDiscoveryImage above); redirect:"manual" so a
+    // 30x can't bounce the fetch into internal space, an unfollowed 3xx makes `res.ok`
+    // false and falls through to the existing null return below.
+    await assertSafeFetchUrl(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000), redirect: "manual" });
     if (!res.ok) return null;
     const contentType = res.headers.get("content-type") ?? "";
     if (!contentType.startsWith("image/")) return null;
