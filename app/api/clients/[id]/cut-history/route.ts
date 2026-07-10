@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { data: cut, error } = await admin
     .from("barber_cut_history")
-    .insert({ salon_id: salon.id, customer_id: customerId, ...validated })
+    .insert({ ...validated, salon_id: salon.id, customer_id: customerId })
     .select()
     .single();
 
