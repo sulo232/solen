@@ -48,7 +48,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Visit is not completed yet" }, { status: 400 });
   }
 
-  const staffId = entry.assigned_barber_id ?? entry.preferred_barber_id;
+  let staffId = entry.assigned_barber_id ?? entry.preferred_barber_id;
+
+  // Defense in depth: re-verify the staff id still belongs to this entry's salon before it is
+  // written anywhere (the review row's staff_member_id, and the staff_members UPDATE below).
+  // A poisoned assigned_barber_id must not be able to mutate another salon's staff row.
+  if (staffId) {
+    const { data: staffRow } = await admin
+      .from("staff_members")
+      .select("id")
+      .eq("id", staffId)
+      .eq("salon_id", entry.salon_id)
+      .maybeSingle();
+    if (!staffRow) staffId = null;
+  }
 
   // Best-effort moderation (never block the submit on an automod hiccup).
   let mod: { flagged: boolean; hidden: boolean; reason: string | null } = { flagged: false, hidden: false, reason: null };

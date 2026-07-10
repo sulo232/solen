@@ -89,11 +89,25 @@ export async function POST(req: NextRequest) {
     description: "Walk-in tip",
   };
 
+  // Defense in depth: re-verify the staff id still belongs to this entry's salon before it is
+  // written to the tips insert. A poisoned assigned_barber_id must not be able to attribute a
+  // tip to another salon's staff row.
+  let tipStaffId = entry.assigned_barber_id ?? entry.preferred_barber_id ?? null;
+  if (tipStaffId) {
+    const { data: staffRow } = await admin
+      .from("staff_members")
+      .select("id")
+      .eq("id", tipStaffId)
+      .eq("salon_id", entry.salon_id)
+      .maybeSingle();
+    if (!staffRow) tipStaffId = null;
+  }
+
   try {
     const pi = await getStripe().paymentIntents.create(piParams);
     await admin.from("tips").insert({
       salon_id: entry.salon_id,
-      staff_member_id: entry.assigned_barber_id ?? entry.preferred_barber_id ?? null,
+      staff_member_id: tipStaffId,
       walkin_queue_id: entry.id,
       user_id: entry.customer_id ?? null,
       amount: validated.amount,

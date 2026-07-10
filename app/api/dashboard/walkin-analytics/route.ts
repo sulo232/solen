@@ -34,6 +34,14 @@ export async function GET(request: Request) {
 
   const admin = createAdminSupabaseClient();
 
+  // Verify ownership or admin BEFORE any admin-client (RLS-bypassing) query. Covers every
+  // branch below, including ?breakdown=hourly.
+  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", userData.user.id).single();
+  if (salon?.owner_id !== userData.user.id && profile?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   // Walk-ins in period — the live queue, scoped to this salon + joined_at window.
   const { data: queue, error: queueError } = await admin
     .from("barber_walkin_queue")

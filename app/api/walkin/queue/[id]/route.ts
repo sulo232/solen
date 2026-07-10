@@ -46,6 +46,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  // A caller-supplied assigned_barber_id must belong to THIS salon, otherwise a poisoned id
+  // could reassign the entry to (and later mutate) another salon's staff row.
+  if (validated.assigned_barber_id) {
+    const { data: targetStaff } = await admin
+      .from("staff_members")
+      .select("id")
+      .eq("id", validated.assigned_barber_id)
+      .eq("salon_id", entry.salon_id)
+      .maybeSingle();
+    if (!targetStaff) {
+      return NextResponse.json({ error: "assigned_barber_id does not belong to this salon" }, { status: 400 });
+    }
+  }
+
   // Build update object
   const update: Record<string, any> = { status: validated.status };
   if (validated.assigned_barber_id) update.assigned_barber_id = validated.assigned_barber_id;
