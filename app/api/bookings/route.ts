@@ -190,8 +190,15 @@ export async function POST(request: NextRequest) {
   // the auto-assign `picked` (SlotRow) is assignable. Mirrors the file's existing `as any` style.
   type LooseSlot = Record<string, any> & { id: string; salon_id: string; starts_at: string; ends_at: string; staff_member_id: string | null; services?: { price?: number; name_de?: string; name_en?: string } | null; salons?: Record<string, any> | null };
   let slot = candidateSlots[0] as unknown as LooseSlot;
+  // SP-1 fix: auto-assign counting MUST use the admin (service-role) client, not `db`. For a
+  // logged-in customer `db` is the RLS session client, and bookings SELECT under RLS is
+  // restricted to the caller's own rows, so least_busy/round_robin balancing and the daily
+  // cap would silently see only the customer's own bookings instead of the salon's real load
+  // (mirrors the service-role mandate documented in lib/bookings/claim-slot.ts). Both helpers
+  // are read-only counters/pickers (no INSERT/UPDATE), so the admin client here is safe.
+  const adminForAssign = createAdminSupabaseClient();
   if (!slot_id && !staff_member_id && (autoMethod !== "manual" || dailyLimitOn)) {
-    const picked = await pickSlotForAnyStaff(db, candidateSlots as never, {
+    const picked = await pickSlotForAnyStaff(adminForAssign, candidateSlots as never, {
       method: autoMethod, dailyLimitOn, dailyLimit, salonId: slotSalonId, day: bookingDay,
     });
     if (!picked) {
@@ -199,7 +206,7 @@ export async function POST(request: NextRequest) {
     }
     slot = picked as unknown as LooseSlot;
   } else if (dailyLimitOn && slot.staff_member_id) {
-    const cnt = await countStaffBookingsOnDay(db, slotSalonId, slot.staff_member_id as string, bookingDay);
+    const cnt = await countStaffBookingsOnDay(adminForAssign, slotSalonId, slot.staff_member_id as string, bookingDay);
     if (cnt >= dailyLimit) {
       return NextResponse.json({ message: "Diese:r Stylist:in ist an diesem Tag ausgebucht.", code: "STAFF_DAILY_LIMIT" }, { status: 409 });
     }

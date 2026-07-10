@@ -14,7 +14,15 @@ type DbClient = { from: (table: string) => any }; // eslint-disable-line @typesc
 // Bookings that occupy capacity for the daily limit (cancelled / no_show release it).
 const ACTIVE_STATUSES = ["pending", "pending_approval", "confirmed", "completed"];
 
-/** Count a staff member's active bookings on a given YYYY-MM-DD (UTC day bounds). */
+/**
+ * Count a staff member's active bookings on a given YYYY-MM-DD (UTC day bounds).
+ *
+ * REQUIRES an admin (service-role) client. This aggregates bookings across ALL users for the
+ * salon; a caller's RLS session client only sees its own rows (customer's own bookings, or a
+ * salon owner's), which would undercount and make the per-stylist daily cap effectively never
+ * trigger (mirrors the service-role mandate in lib/bookings/claim-slot.ts). Read-only: no
+ * INSERT/UPDATE here, so passing the admin client introduces no RLS-bypass write risk.
+ */
 export async function countStaffBookingsOnDay(
   db: DbClient,
   salonId: string,
@@ -39,6 +47,12 @@ export async function countStaffBookingsOnDay(
  *   • manual/other — the first candidate (previous behaviour)
  * Honors the per-stylist daily limit (drops capped stylists; returns null if ALL are capped so the
  * caller can reject). Falls back to the first candidate on any error.
+ *
+ * REQUIRES an admin (service-role) client. The day-count and round-robin queries aggregate
+ * bookings across ALL users for the salon; a caller's RLS session client only sees its own rows,
+ * which would undercount and skew the least_busy/round_robin balance onto a garbage subset
+ * (mirrors the service-role mandate in lib/bookings/claim-slot.ts). Read-only: no INSERT/UPDATE
+ * here, so passing the admin client introduces no RLS-bypass write risk.
  */
 export async function pickSlotForAnyStaff(
   db: DbClient,
