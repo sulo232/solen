@@ -143,3 +143,9 @@ FOLLOW-UP (harden): the edit-then-commit-compound gate FALSE-POSITIVES on `git c
 
 ## Fourteenth , abuse surface (IN FLIGHT): missing rate-limit + missing input validation + notification abuse
 Focused workflow. Seeds: vouchers/create had no rate-limit (ring 13); spa/treatment-outcomes had no zod (ring 11). Sweeping the class breadth.
+
+## Fourteenth , DONE (commit 7528fb189)
+Ring 14 = abuse surface. 3 confirmed (all missing-rate-limit), 2 refuted. bookings/recurring (no limiter, creates confirmed bookings+slots+emails -> bookingLimiter), vouchers/confirm (unauth+unthrottled Stripe call -> generalLimiter by IP), salons/verify (unthrottled admin.auth.getUser(token) -> generalLimiter, edge kept). /refine PASS round 1.
+HARDEN DONE: no-verify-commit-gate.py -> v2.1. It false-tripped on `-F -` message heredocs AND on edit-only commands whose heredoc body merely MENTIONED a commit. Fix: strip heredoc BODIES before detection (a body is data, never a command), and exempt the stdin-message form; still blocks a real edit-heredoc (cat/tee/python) chained with a real commit. Tested 12/12.
+
+## Fifteenth , privileged-endpoint auth (IN FLIGHT): admin role checks + cron/webhook secrets + response over-exposure
