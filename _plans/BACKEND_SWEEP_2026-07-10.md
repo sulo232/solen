@@ -21,8 +21,11 @@ Next candidate rings (prose, not committed TODOs): RLS policy-predicate logic (o
 - **Batch 5** `1f65b45db` , gift-cards/purchase charged-but-no-card (RLS-blocked session insert, unchecked -> admin insert + check + cancel PI on failure), walk-in confirm cross-tenant PI guard (`pi.metadata.salon_id === booking.salon_id`).
 - **DB** `apply_migration audit_fix_price_offers_lock_amount` (verified live) , BEFORE UPDATE trigger `trg_price_offers_lock_customer_columns` stops a price-offer customer rewriting amount_chf/salon_id/customer_id/description via direct REST (the RLS UPDATE with_check was NULL). Additive; owner/service-role updates unaffected.
 
-## NOT hot-patched (flagged, see _tasks/INCOMPLETE_FEATURES.md)
-- `stripe/booking-pay-intent:227` promo max_uses race + `:338` member-discount use-cap race , bounded over-redemption; correct fix is atomic reserve-at-creation on the most critical money file, NOT a hot-patch. Recommend accept + schedule the refactor. **Owner call.**
+## Reserve-at-checkout refactor , DONE 2026-07-10 (owner: "stop punting, YOU do it")
+- `stripe/booking-pay-intent` promo max_uses race + member-discount use-cap race , FIXED with atomic reserve-at-checkout + idempotent release. Migrations `audit_fix_promo_reserve_at_checkout` + `audit_fix_member_discount_reserve` (advisory-locked SECURITY DEFINER reserve/release RPCs + booking marker flags), commits `03b081b9f` + `ccdd5fac2`. Both include the Stripe-idempotency-replay-orphan reconciliation + release-on-PI-create-failure. loop-reviewer PASS (round 1 caught the promo replay-leak, fixed + live-verified).
+- 6 dead Edge Functions , NEUTERED to inert 410 stubs via deploy_edge_function (reversible; source in supabase/functions/), removing the anon-invokable attack surface. No deletion tool exists in the MCP; neuter achieves the security goal.
+
+## Superseded flag (kept for history)
 - `conversations/[id]/messages:33` read-receipt no-op , messaging is a disabled feature; fix needs an RLS/design decision when revived. Latent.
 - Voucher redemption/spend path does not exist (buy-only). Incomplete feature; if built, use the gift-cards/redeem optimistic-lock pattern.
 
