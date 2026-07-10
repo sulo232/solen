@@ -2,6 +2,11 @@
 
 Owner ask: "go look into more of the same core issues, not only in the booking flow but everywhere. It's a loop." Follow-on to the 9-flow audit (`_plans/BACKEND_AUDIT_INDEX.md`, 141 findings, all fixed). This sweep covered the ~359 API routes the flow-audit never individually opened, hunting the SAME six recurring root-cause classes.
 
+## Loop tracking (durable)
+- [x] The backend security loop is tracked durably as workstream #15 in `_plans/ACTIVE.md` and by this record. Each ring commits its own fixes + a plan entry; status = ongoing (owner keeps saying "continue"). Rings done so far: routes, money-lib+webhooks, DB functions+edge functions, auth/storage/secrets, PostgREST filter injection.
+
+Next candidate rings (prose, not committed TODOs): RLS policy-predicate logic (over-permissive USING/with_check beyond table coverage), the ~18 not-deeply-swept cron job bodies, and business-logic/state-machine flaws across booking/payment/refund states.
+
 ## Method
 - Workflow: 10 domain finders (walk-in/queue, conversations/chat, gift-cards/vouchers/loyalty, admin-authz, dashboard-CRM/clients, staff/analytics, availability/slots/services, discovery/UGC, profile/account, stripe/money-crons) read every route in their domain, then EACH candidate got 3 default-refute skeptics (>=2/3 to confirm). All sonnet, read-only.
 - The money-credit + stripe-money-crons verifiers were killed by a session limit on the first run; the workflow was RESUMED (cached finders replay free) so those clusters got re-verified. Authoritative tally: **24 confirmed** (5 C, 4 H, 11 M, 4 L).
