@@ -351,6 +351,7 @@ export async function POST(req: NextRequest) {
   let appFeeRappen = platformFeeRappen;
   let appliedTier: string | null = null;
   let tierDiscountRappen = 0;
+  let memberReserved = false; // lifted out so the post-PI reconciliation (below) can read it
   if (salon.stripe_account_id && booking.user_id) {
     const waiverRate = Number(
       (salon as { member_commission_waiver_rate?: number }).member_commission_waiver_rate ?? 0.02
@@ -364,10 +365,34 @@ export async function POST(req: NextRequest) {
       windowMonths: LOYALTY.windowMonths,
     });
     if (md.discountRappen > 0) {
-      chargeRappen = md.customerChargeRappen;
-      appFeeRappen = md.applicationFeeRappen;
-      appliedTier = md.appliedTier;
-      tierDiscountRappen = md.discountRappen;
+      // resolveMemberDiscount's cap check above counts only PAID bookings, so two concurrent
+      // in-flight checkouts by the same user can both pass it (race). reserve_member_discount is
+      // a SECURITY DEFINER RPC that advisory-locks the user and counts IN-FLIGHT reservations in
+      // the window under that lock, so it is the authoritative atomic gate; it is idempotent per
+      // booking (safe on a retry/replay) and itself sets bookings.member_discount_reserved. Only
+      // when it confirms a reservation do we keep the discount; if the cap is hit atomically, drop
+      // it rather than charge the reduced amount for an unreserved use. Never throws (an rpc error
+      // is treated as NOT reserved, so no discount, matching resolveMemberDiscount's own discipline).
+      let mReserved = false;
+      try {
+        const { data: reservedResult } = await admin.rpc("reserve_member_discount", {
+          p_user: booking.user_id,
+          p_booking: booking.id,
+          p_tier: md.appliedTier,
+          p_window_months: LOYALTY.windowMonths,
+        });
+        mReserved = reservedResult === true;
+      } catch (err) {
+        console.error("[booking-pay-intent] reserve_member_discount rpc failed; charging without member discount:", err);
+        mReserved = false;
+      }
+      if (mReserved) {
+        memberReserved = true;
+        chargeRappen = md.customerChargeRappen;
+        appFeeRappen = md.applicationFeeRappen;
+        appliedTier = md.appliedTier;
+        tierDiscountRappen = md.discountRappen;
+      }
     }
   }
 
@@ -436,6 +461,23 @@ export async function POST(req: NextRequest) {
     paymentIntent = await stripe.paymentIntents.create(intentParams, { idempotencyKey });
   } catch (err) {
     console.error("[booking-pay-intent] PaymentIntent create failed:", err);
+    // The PI was never created, so neither discount will ever be charged , release any
+    // reservation THIS request made now, instead of leaking it until the abandon-sweep
+    // cancels the booking (~15-45 min over-count on the promo pool / member-discount cap).
+    if (reserved) {
+      try {
+        await admin.rpc("release_promo_use", { p_booking: booking.id });
+      } catch (e) {
+        console.error("[booking-pay-intent] promo release after PI-create failure failed:", e);
+      }
+    }
+    if (memberReserved) {
+      try {
+        await admin.rpc("release_member_discount", { p_booking: booking.id });
+      } catch (e) {
+        console.error("[booking-pay-intent] member-discount release after PI-create failure failed:", e);
+      }
+    }
     return NextResponse.json({ error: "Could not create payment" }, { status: 500 });
   }
 
@@ -453,6 +495,21 @@ export async function POST(req: NextRequest) {
   const piFeeRappen = paymentIntent.application_fee_amount ?? platformFeeRappen;
   const actualDiscountRappen = Math.max(0, platformFeeRappen - piFeeRappen);
   const actualTier = (paymentIntent.metadata?.applied_tier as string) || null;
+
+  // Reconcile the member-discount reservation against the ACTUALLY-charged PI. If this request
+  // reserved a use (memberReserved === true) but Stripe replayed an earlier PI that carries NO
+  // member discount (idempotency-key replay of a pre-reservation full-fee PI), the reservation is
+  // orphaned , the discount will never be charged on this booking. Release it so the per-window
+  // use count is not over-counted (mirrors the promo reconciliation below).
+  if (memberReserved && actualDiscountRappen === 0) {
+    try {
+      const { error: relErr } = await admin.rpc("release_member_discount", { p_booking: booking.id });
+      if (relErr) console.error("[booking-pay-intent] orphaned member-discount release returned error:", relErr.message);
+    } catch (relErr) {
+      console.error("[booking-pay-intent] orphaned member-discount release failed:", relErr);
+    }
+  }
+
   // Promo: read back from the RETURNED PI (replay-safe, same rule as the member discount above).
   // A replayed idempotent intent carries whatever promo was applied originally.
   const actualPromoCode = (paymentIntent.metadata?.promo_code as string) || null;
@@ -463,7 +520,8 @@ export async function POST(req: NextRequest) {
   // discount will never be charged on this booking. Release it so the promo pool is not over-counted.
   if (reserved === true && actualPromoCode !== promoCodeApplied) {
     try {
-      await admin.rpc("release_promo_use", { p_booking: booking.id });
+      const { error: relErr } = await admin.rpc("release_promo_use", { p_booking: booking.id });
+      if (relErr) console.error("[booking-pay-intent] orphaned promo reservation release returned error:", relErr.message);
     } catch (relErr) {
       console.error("[booking-pay-intent] orphaned promo reservation release failed:", relErr);
     }
