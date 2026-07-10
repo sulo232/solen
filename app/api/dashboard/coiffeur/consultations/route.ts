@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { consultationNoteSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // GET /api/dashboard/coiffeur/consultations?client_id=xxx
 export async function GET(req: NextRequest) {
@@ -40,6 +41,10 @@ export async function POST(req: NextRequest) {
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const admin = createAdminSupabaseClient();
+  const belongs = await clientBelongsToSalon(admin, salon.id, parsed.data.client_id);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const validated = parsed.data;
   const { data, error } = await supabase

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { z } from "zod";
 
 const noteSchema = z.object({
@@ -61,6 +62,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
+
+    const belongs = await clientBelongsToSalon(admin, validated.salon_id, customerId);
+    if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
     const { data: note, error } = await admin
       .from("client_notes")

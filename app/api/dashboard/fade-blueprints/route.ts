@@ -6,6 +6,7 @@ import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 const fadeBlueprintSchema = z.object({
   salon_id: z.string().uuid(),
@@ -92,6 +93,9 @@ export async function POST(req: NextRequest) {
     .eq("owner_id", user.id)
     .single();
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const belongs = await clientBelongsToSalon(admin, validated.salon_id, validated.client_id);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const { data, error } = await admin
     .from("fade_blueprints")

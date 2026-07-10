@@ -6,6 +6,8 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { getActiveSalon } from "@/lib/active-salon";
+import { validateBody, treatmentOutcomeSchema } from "@/lib/validations";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -51,22 +53,24 @@ export async function POST(request: NextRequest) {
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   const body = await request.json();
-  const { client_id, booking_id, satisfaction_rating, skin_before, skin_after, products_used, follow_up_notes, next_visit_date } = body;
+  const { data: validated, error: valError } = validateBody(treatmentOutcomeSchema, body);
+  if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  if (!client_id) return NextResponse.json({ error: "client_id required" }, { status: 400 });
+  const belongs = await clientBelongsToSalon(admin, salon.id, validated.client_id);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const { data: outcome, error } = await admin
     .from("spa_treatment_outcomes")
     .insert({
       salon_id: salon.id,
-      client_id,
-      booking_id: booking_id ?? null,
-      satisfaction_rating,
-      skin_before: skin_before || null,
-      skin_after: skin_after || null,
-      products_used: products_used ?? [],
-      follow_up_notes: follow_up_notes || null,
-      next_visit_date: next_visit_date || null,
+      client_id: validated.client_id,
+      booking_id: validated.booking_id ?? null,
+      satisfaction_rating: validated.satisfaction_rating,
+      skin_before: validated.skin_before || null,
+      skin_after: validated.skin_after || null,
+      products_used: validated.products_used ?? [],
+      follow_up_notes: validated.follow_up_notes || null,
+      next_visit_date: validated.next_visit_date || null,
     })
     .select()
     .single();

@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, formulaSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // GET /api/clients/[id]/formulas — Get client formulas (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -39,6 +40,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const admin = createAdminSupabaseClient();
+  const belongs = await clientBelongsToSalon(admin, salon.id, customerId);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const { data: formula, error } = await supabase
     .from("client_formulas")

@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { z } from "zod";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 const journalSchema = z.object({
   client_id: z.string().uuid(),
@@ -74,6 +75,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const parsed = journalSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+
+  const belongs = await clientBelongsToSalon(admin, salon.id, parsed.data.client_id);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const { data: entry, error } = await admin
     .from("wellness_journals")

@@ -6,6 +6,7 @@ import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, nailDesignHistorySchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // GET /api/clients/[id]/nail-history — Paginated design history (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -68,6 +69,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { id: customerId } = await params;
   const admin = createAdminSupabaseClient();
+
+  const belongs = await clientBelongsToSalon(admin, salon.id, customerId);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   // Resolve staff_member_id from booking if linked
   let staffMemberId: string | null = null;

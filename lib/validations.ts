@@ -410,6 +410,17 @@ export const consultationNoteSchema = z.object({
   notes: z.string().max(2000).optional(),
 });
 
+export const treatmentOutcomeSchema = z.object({
+  client_id: z.string().uuid(),
+  booking_id: z.string().uuid().optional(),
+  satisfaction_rating: z.number().int().min(1).max(5).optional(),
+  skin_before: z.string().max(1000).optional(),
+  skin_after: z.string().max(1000).optional(),
+  products_used: z.array(z.string()).optional(),
+  follow_up_notes: z.string().max(1000).optional(),
+  next_visit_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+});
+
 export const closureSchema = z.object({
   start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -1064,6 +1075,7 @@ export const intakeFormSchema = z.object({
   template_type: z.enum(["hair", "nail", "waxing", "makeup", "spa"]),
   responses: z.record(z.string().max(50), z.unknown()),
   template_key: z.string().max(100).optional(),
+  salon_id: z.string().uuid().optional(),
 });
 
 export const priceOfferSchema = z.object({

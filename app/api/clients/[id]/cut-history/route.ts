@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, cutHistorySchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // GET /api/clients/[id]/cut-history — Salon owner: paginated cut history
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -67,6 +68,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
   }
+
+  const belongs = await clientBelongsToSalon(admin, salon.id, customerId);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const { data: cut, error } = await admin
     .from("barber_cut_history")

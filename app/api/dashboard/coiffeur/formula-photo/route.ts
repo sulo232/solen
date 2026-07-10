@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { getActiveSalon } from "@/lib/active-salon";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // POST /api/dashboard/coiffeur/formula-photo
 // FormData fields: file (File), formula_id (string), type ("before"|"after"), client_id? (string)
@@ -78,6 +79,10 @@ export async function POST(req: NextRequest) {
 
   // Insert record into coiffeur_formula_photos (best-effort — table may not exist yet)
   if (formulaId) {
+    if (clientId) {
+      const belongs = await clientBelongsToSalon(admin, salon.id, clientId);
+      if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
+    }
     await admin.from("coiffeur_formula_photos").insert({
       formula_id: formulaId,
       client_id: clientId ?? null,

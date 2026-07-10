@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
 import { checkUserBanned } from "@/lib/feature-flags";
+import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 
 // GET /api/clients/[id]/photos — Get client photos (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -41,6 +42,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
+
+  const admin = createAdminSupabaseClient();
+  const belongs = await clientBelongsToSalon(admin, salon.id, customerId);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
