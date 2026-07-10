@@ -2,11 +2,14 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, referralValidateLimiter, getClientIp } from "@/lib/ratelimit";
 
-// GET /api/referral/validate?code=XXX — Check if referral code is valid
+// GET /api/referral/validate?code=XXX (check if referral code is valid)
 export async function GET(req: NextRequest) {
-  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  // Dedicated tight per-IP cap, not the generic generalLimiter: this endpoint is a
+  // public valid/invalid oracle for a guessable-shaped code, so it needs the same
+  // tighter defense as app/api/directory/[id]/claim/route.ts's verify step.
+  const rateLimited = await applyRateLimit(referralValidateLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
   const code = new URL(req.url).searchParams.get("code");

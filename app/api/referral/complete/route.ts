@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, referralLimiter } from "@/lib/ratelimit";
 import { validateBody, completeReferralSchema } from "@/lib/validations";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
+import { insertPendingReferralCode } from "@/lib/referral/code";
 
 // POST: Complete a referral — credit both users CHF 10
 export async function POST(req: NextRequest) {
@@ -90,15 +91,16 @@ export async function POST(req: NextRequest) {
   }
   const rewardAmount = result.rewardAmount ?? referral.reward_amount ?? 10;
 
-  // Generate a new pending referral code for the referrer (so they can keep referring)
-  const newCode = "SOLEN-" + referral.referrer_id.replace(/-/g, "").substring(0, 6).toUpperCase()
-    + Math.random().toString(36).substring(2, 4).toUpperCase();
-
-  await admin.from("referrals").insert({
-    referrer_id: referral.referrer_id,
-    referral_code: newCode,
-    status: "pending",
-  });
+  // Generate a new pending referral code for the referrer (so they can keep referring).
+  // CSPRNG, not derived from referrer_id + Math.random (both halves were guessable /
+  // brute-forceable via the public /api/referral/validate oracle), with a retry on
+  // unique collision. Best-effort: the reward above already completed, so a mint
+  // failure here must not fail the response for the just-credited user.
+  try {
+    await insertPendingReferralCode(admin, referral.referrer_id);
+  } catch (err) {
+    console.error("[referral] failed to mint next pending code for referrer:", err, { referrerId: referral.referrer_id });
+  }
 
   return NextResponse.json({
     success: true,

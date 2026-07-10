@@ -60,6 +60,17 @@ export const referralLimiter = new Ratelimit({
   prefix: "rl:referral",
 });
 
+// GET /api/referral/validate is a public, unauthenticated enumeration oracle (returns
+// valid:true/false for any code). generalLimiter (30/min) alone is loose enough to scan
+// through a lot of guesses, so this is a dedicated tighter cap on top, same pattern as
+// guestLookupLimiter below: a real user needs one attempt, 10/10min stops a scanner cold.
+export const referralValidateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "10 m"),
+  analytics: true,
+  prefix: "rl:referral:validate",
+});
+
 export const roadmapLimiter = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(5, "1 m"),

@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
+import { insertPendingReferralCode } from "@/lib/referral/code";
 
 export async function GET() {
   try {
@@ -31,15 +32,11 @@ export async function GET() {
     let referralCode = pendingReferral?.referral_code;
 
     // If no pending referral row exists (trigger somehow missed, or the last one was
-    // already consumed and never rotated), mint one directly into `referrals`.
+    // already consumed and never rotated), mint one directly into `referrals`. CSPRNG,
+    // not derived from user.id (that was guessable straight from the UUID), with a
+    // retry on unique collision.
     if (!referralCode) {
-      referralCode = `SOLEN-${user.id.replace(/-/g, "").substring(0, 8).toUpperCase()}`;
-      await admin
-        .from("referrals")
-        .upsert(
-          { referrer_id: user.id, referral_code: referralCode, status: "pending" },
-          { onConflict: "referral_code" },
-        );
+      referralCode = await insertPendingReferralCode(admin, user.id);
     }
 
     // Try to get stats from user_referrals / user_credits table
