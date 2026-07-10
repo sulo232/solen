@@ -155,3 +155,12 @@ Ring 15 = privileged-endpoint auth. 5 confirmed (1 HIGH, 2 MED, 2 LOW), 0 refute
 
 ## Convergence note (rings 9-15, 2026-07-10/11)
 Severity is trending down: ring 13 = 1 CRITICAL, 14 = 3 rate-limits, 15 = 1 HIGH + mostly MED/LOW, and finders increasingly return CLEAN (webhook/refund/payout, cron/webhook, validation, notification-abuse all clean). The recurring classes (getSession, service-role IDOR, CRM-ownership, response-exposure, rate-limit) are now each closed AND several are gated/shared-constant'd so they cannot re-drift. Remaining candidate rings (lower expected yield): booking/slot race invariants (double-booking under concurrency), a SECURITY DEFINER re-audit for RPCs added since ring 3, and residual input-validation. The high-value backend attack surface is substantially swept.
+
+## Open follow-ups (parked, non-blocking) , surfaced across rings 8-15
+- [ ] coiffeur/formula-photo writes the Storage object BEFORE the clientBelongsToSalon gate (storage-path IDOR residual; the DB insert is gated, the storage write is not). Table currently dormant.
+- [ ] notes/tags DELETE handlers not given the clientBelongsToSalon check (already triple-scoped by id+customer_id+salon_id, so no live IDOR; add for parity).
+- [ ] vouchers/confirm has 0 live callers (buy UI hidden, finalization moved to the salon-voucher webhook) , decide: retire vs keep the now-gated endpoint.
+- [ ] pending_approval referral completion: a manual-approval salon's first booking may never complete its referral (only completes on confirmed/webhook). Wire completion into the approve transition.
+- [ ] Reproducibility: the ~40 audit migrations (20260703+) are MCP-applied with no committed supabase/migrations/*.sql. Live DB is canonical (never db push), but a fresh-env rebuild from files would miss them. Backfill files if reproducibility matters.
+- [ ] Junk untracked sync-conflict files: app/api/**/route 2.ts (bookings, referral, referral/complete, stripe/webhook) , owner git clean.
+- [ ] no-getsession-authz-gate.py registered in .claude/settings.json (DONE 2026-07-10) , owner may want to review it is wired as intended next session start.
