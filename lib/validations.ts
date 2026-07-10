@@ -1106,7 +1106,8 @@ export const nailInspoBoardSchema = z.object({
 });
 
 export const retailPurchaseSchema = z.object({
-  product_ids: z.array(z.string().uuid()).min(1),
+  product_ids: z.array(z.string().uuid()).min(1)
+    .refine((arr) => new Set(arr).size === arr.length, { message: "duplicate product_ids" }),
   salon_id: z.string().uuid(),
 });
 

@@ -29,7 +29,13 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(retailPurchaseSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
-  const { product_ids, salon_id } = validated;
+  const { salon_id } = validated;
+  // FIX 2 (stock-drain via duplicate product_ids): dedupe once, up front, and use THIS
+  // array everywhere downstream (price lookup, PaymentIntent metadata, the stored
+  // retail_purchases row). The webhook settle handler loops the STORED array once per
+  // entry to decrement stock, so a raw duplicated id would drain stock N times while
+  // only ever being charged once.
+  const product_ids = [...new Set(validated.product_ids)];
 
   const admin = createAdminSupabaseClient();
 
@@ -57,8 +63,8 @@ export async function POST(req: NextRequest) {
   // Council guard: never charge a SUBSET. If any requested product was missing /
   // inactive / from another salon, the DB returns fewer rows than requested , reject
   // the whole purchase rather than silently pricing only the products that resolved.
-  const requestedIds = [...new Set(product_ids)];
-  if (products.length !== requestedIds.length) {
+  // product_ids is already deduped above, so this is a straight length compare.
+  if (products.length !== product_ids.length) {
     return NextResponse.json(
       { error: "Some products are unavailable", code: "PRODUCTS_UNAVAILABLE" },
       { status: 400 },
