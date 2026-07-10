@@ -75,6 +75,7 @@ interface BookingRow {
   paid_amount: number | null;
   price_paid: number | null;
   fee_charge_status: string | null;
+  fee_charge_claimed_at: string | null;
   stripe_customer_id: string | null;
   stripe_payment_method_id: string | null;
   policy_accepted_at: string | null;
@@ -109,7 +110,7 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
   const { data: bookingData, error: fetchError } = await db
     .from("bookings")
     .select(
-      "id, payment_intent_id, paid_amount, price_paid, fee_charge_status, stripe_customer_id, stripe_payment_method_id, policy_accepted_at, salon_id, salons(stripe_account_id)"
+      "id, payment_intent_id, paid_amount, price_paid, fee_charge_status, fee_charge_claimed_at, stripe_customer_id, stripe_payment_method_id, policy_accepted_at, salon_id, salons(stripe_account_id)"
     )
     .eq("id", id)
     .single();
@@ -168,8 +169,54 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
   //    to ONE Stripe charge. Keyed on (source, booking, kind, amount).
   const idempotencyKey = `fee:${source}:${id}:${kind}:${chargeCents}`;
 
+  // 6b. CLAIM-FIRST guard against the cross-kind race: the on-cancel hook (kind
+  //    'cancellation') and the no-show cron (kind 'no_show') can both read
+  //    fee_charge_status = null before either writes, since chargeOffSession is
+  //    keyed by (source, id, kind, amount) and different kinds don't share a
+  //    Stripe idempotency key. Claim fee_charge_claimed_at atomically BEFORE
+  //    calling Stripe, so only one caller can ever reach chargeOffSession for
+  //    this booking. Only null/'failed' rows are claimable (allows a first
+  //    attempt and a retry after a decline).
+  const claimedAt = new Date().toISOString();
+  // A claim older than STALE_CLAIM_MS is treated as crash-orphaned (the process died
+  // between the claim UPDATE and the post-charge casUpdate, so it never released the
+  // claim): reclaimable, so a hard process kill self-heals on the next attempt instead
+  // of permanently stranding the booking. 5 min is far longer than any Stripe round-trip
+  // (times out ~80s) and far longer than the microseconds between two genuinely
+  // concurrent claims, so an in-flight claim is never stolen.
+  const STALE_CLAIM_MS = 5 * 60 * 1000;
+  const staleBefore = new Date(Date.now() - STALE_CLAIM_MS).toISOString();
+  const { data: claimRow, error: claimErr } = await db
+    .from("bookings")
+    .update({ fee_charge_claimed_at: claimedAt, fee_charge_kind: kind })
+    .eq("id", id)
+    .or(`fee_charge_claimed_at.is.null,fee_charge_claimed_at.lt.${staleBefore}`)
+    .or("fee_charge_status.is.null,fee_charge_status.eq.failed")
+    .select("id")
+    .maybeSingle();
+
+  if (claimErr) {
+    console.error(`[charge-fee] claim write failed for booking ${id} (${kind}):`, claimErr.message);
+    return { status: "failed" };
+  }
+
+  if (!claimRow) {
+    // A concurrent chargeFee call already claimed this booking (or just resolved
+    // it). Re-read the status to report accurately, but never call Stripe here,
+    // the concurrent caller owns the charge.
+    const { data: refetched } = await db
+      .from("bookings")
+      .select("fee_charge_status")
+      .eq("id", id)
+      .single();
+    const raced = (refetched as { fee_charge_status: string | null } | null)?.fee_charge_status ?? null;
+    if (raced === "charged") return { status: "charged" };
+    if (raced === "requires_action") return { status: "requires_action" };
+    return { status: "failed" };
+  }
+
   // 7. Off-session charge via the shared primitive (the single place that talks to
-  //    Stripe paymentIntents.create for an off-session charge — no duplicate Stripe
+  //    Stripe paymentIntents.create for an off-session charge, no duplicate Stripe
   //    call, §10b#3). We charge first, then CAS the result onto a stale/null status
   //    row so a concurrent caller that already advanced the status loses the write
   //    (and Stripe collapsed via the shared idempotency key).
@@ -206,7 +253,11 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
   if (result.status === "failed") {
     // Any other Stripe error (decline, restricted account, etc.) -> failed, logged,
     // cron continues to the next booking.
-    await casUpdate(db, id, currentStatus, { fee_charge_status: "failed", fee_charge_kind: kind });
+    await casUpdate(db, id, currentStatus, {
+      fee_charge_status: "failed",
+      fee_charge_kind: kind,
+      fee_charge_claimed_at: null,
+    });
     console.error(`[charge-fee] charge failed for booking ${id} (${kind}):`, result.error);
     return { status: "failed" };
   }
@@ -254,6 +305,19 @@ async function casUpdate(
         kind: patch.fee_charge_kind ?? null,
         error: error.message,
         note: "Money captured at Stripe; bookings.fee_charge_status did NOT advance to 'charged'. Reconcile manually.",
+      });
+    }
+    // Alert ALSO when this was a claim-RELEASE write (the 'failed'/decline path
+    // clearing fee_charge_claimed_at back to null for a retry). If that write
+    // itself fails, the claim stays stuck set with no other signal than this
+    // console.error, permanently stranding the booking (never re-claimable /
+    // fee-chargeable again).
+    if (patch.fee_charge_claimed_at === null) {
+      void alertAdmin("fee-charge claim release failed", {
+        booking_id: id,
+        kind: patch.fee_charge_kind ?? null,
+        error: error.message,
+        note: "fee_charge_claimed_at is stuck set (release write failed); clear it manually so the booking can be re-claimed and re-charged.",
       });
     }
   }

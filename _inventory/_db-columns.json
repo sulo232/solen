@@ -201,6 +201,7 @@
    "estimated_price",
    "extras_addons",
    "extras_bleaching",
+   "fee_charge_claimed_at",
    "fee_charge_intent_id",
    "fee_charge_kind",
    "fee_charge_status",
