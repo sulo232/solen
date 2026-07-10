@@ -8,8 +8,7 @@ const PREVIEW_COOKIE = "solen_admin_preview";
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const { data: profile } = await supabase
@@ -50,8 +49,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(_request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const response = NextResponse.json({ ok: true });

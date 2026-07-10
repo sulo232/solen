@@ -9,8 +9,7 @@ import { getActiveSalon } from "@/lib/active-salon";
 // GET /api/dashboard/clients?category=barbershop — Get clients for salon owner
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

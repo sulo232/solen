@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     if (!userId) return NextResponse.json({ collections: [] });
 
     const admin = createAdminSupabaseClient();
@@ -67,8 +67,8 @@ export async function POST(req: NextRequest) {
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
 
     const rateLimited = await applyRateLimit(generalLimiter, { userId });

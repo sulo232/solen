@@ -8,8 +8,7 @@ export async function GET(req: NextRequest) {
   if (!salon_id) return NextResponse.json({ error: "Missing salon_id" }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return NextResponse.json({ booking: null });
 

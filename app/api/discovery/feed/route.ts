@@ -17,16 +17,16 @@ export async function GET(req: NextRequest) {
 
     // Optional auth for personalization. Cheap cookie-presence guard (same pattern as
     // /api/bookings/user): a real session always carries an "sb-" prefixed cookie
-    // (Supabase SSR auth cookie naming). Skip the auth.getSession() round-trip entirely
+    // (Supabase SSR auth cookie naming). Skip the auth.getUser() round-trip entirely
     // when it's absent (the hot anonymous path); userId stays null, identical to what
-    // a null session yields today.
+    // a null user yields today.
     const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith('sb-'));
     let userId: string | null = null;
     let supabase: Awaited<ReturnType<typeof createServerSupabaseClient>> | null = null;
     if (hasSbCookie) {
       supabase = await createServerSupabaseClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      userId = session?.user?.id ?? null;
+      const { data: { user } } = await supabase.auth.getUser();
+      userId = user?.id ?? null;
     }
 
     const admin = createAdminSupabaseClient();

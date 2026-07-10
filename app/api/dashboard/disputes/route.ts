@@ -29,8 +29,7 @@ const ALLOWED_STATUSES = new Set([
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Dedicated money/lookup limiter (§10b.12) — NOT the 30/min generalLimiter.

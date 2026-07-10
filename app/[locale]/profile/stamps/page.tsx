@@ -51,29 +51,30 @@ export default async function ProfileStampsPage({
   const supabase = await createServerSupabaseClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/stamps`)}`);
   }
 
+  // `loyalty_stamps!inner(...)` + the `.eq("loyalty_stamps.customer_id", ...)` embedded filter scope the
+  // stamp rows server-side to the verified user (same pattern as app/api/profile/live-state/route.ts),
+  // so no other customer's stamp data is ever fetched into this page.
   const { data: cardsRaw } = await supabase
     .from("loyalty_cards")
-    .select(`id, salon_id, stamps_needed, reward_text, is_active, salons(slug, name, cover_photo_url), loyalty_stamps(id, customer_id)`)
-    .eq("is_active", true);
+    .select(`id, salon_id, stamps_needed, reward_text, is_active, salons(slug, name, cover_photo_url), loyalty_stamps!inner(id, customer_id)`)
+    .eq("is_active", true)
+    .eq("loyalty_stamps.customer_id", user.id);
 
-  // Filter to this user's stamps + compute stamps_collected
+  // loyalty_stamps is now already scoped to this user's rows only (see query above).
   const enriched = ((cardsRaw ?? []) as unknown as LoyaltyCardRow[])
     .map((c) => {
-      const userStamps = (c.loyalty_stamps ?? []).filter(
-        (s: any) => s.customer_id === session.user.id
-      );
       return {
         id: c.id,
         salons: c.salons,
         stamps_needed: c.stamps_needed,
-        stamps_collected: userStamps.length,
+        stamps_collected: (c.loyalty_stamps ?? []).length,
         reward_text: c.reward_text,
       };
     })

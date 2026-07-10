@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
@@ -62,7 +62,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (disabled2) return disabled2;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rateLimited2 = await applyRateLimit(generalLimiter, { userId: user.id });

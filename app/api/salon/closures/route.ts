@@ -8,8 +8,7 @@ import { getActiveSalon } from "@/lib/active-salon";
 // GET /api/salon/closures — Get closures for the salon owner's salon
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
@@ -29,8 +28,7 @@ export async function GET(req: NextRequest) {
 // POST /api/salon/closures — Create a closure
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -59,8 +57,7 @@ export async function POST(req: NextRequest) {
 // DELETE /api/salon/closures — Delete a closure by id (query param)
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const closureId = new URL(req.url).searchParams.get("id");

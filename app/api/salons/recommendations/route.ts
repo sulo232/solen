@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
   // ── Personalized recommendations mode ──
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
     // Try to get user preferences

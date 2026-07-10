@@ -24,8 +24,7 @@ function escapeHtml(s: string): string {
 // GET /api/staff/invite — List pending invites for the owner's active salon
 export async function GET() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
@@ -49,8 +48,7 @@ export async function GET() {
 // POST /api/staff/invite — Salon owner invites a staff member
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

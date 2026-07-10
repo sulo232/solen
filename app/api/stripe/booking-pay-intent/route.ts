@@ -38,8 +38,8 @@ export async function POST(req: NextRequest) {
   // Mirrors walk-in/pay-intent's dual key. §10b#12 wants a dedicated
   // moneyLimiter; until SP-0/SP-2 adds it, reuse the 3/hour paymentLimiter.
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const userId = session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
 
   const rateLimited = await applyRateLimit(
     paymentLimiter,
@@ -311,7 +311,7 @@ export async function POST(req: NextRequest) {
       customerId = profile?.stripe_customer_id ?? null;
       if (!customerId) {
         const customer = await stripe.customers.create({
-          email: profile?.email ?? session?.user?.email ?? undefined,
+          email: profile?.email ?? user?.email ?? undefined,
           name: profile?.display_name ?? undefined,
           metadata: { solen_user_id: booking.user_id },
         });

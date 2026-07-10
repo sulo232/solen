@@ -13,8 +13,7 @@ export async function GET(req: NextRequest) {
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
@@ -43,8 +42,7 @@ export async function PUT(req: NextRequest) {
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

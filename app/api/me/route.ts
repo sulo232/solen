@@ -9,12 +9,12 @@ export async function GET() {
   const supabase = await createServerSupabaseClient();
 
   // Auth check
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ profile: null, lastBooking: null, nextBooking: null, favorites: [] });
   }
 
-  const userId = session.user.id;
+  const userId = user.id;
 
   // Rate limit by user ID
   const limited = await applyRateLimit(generalLimiter, { userId });

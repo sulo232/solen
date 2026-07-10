@@ -22,9 +22,9 @@ export default async function ProfileLooksPage({
 }) {
   const { locale } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (!user) {
     redirect(`/${locale}/auth/login?redirect=/${locale}/profile/looks`);
   }
 

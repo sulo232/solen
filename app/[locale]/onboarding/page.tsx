@@ -26,8 +26,7 @@ export default async function OnboardingPage({
   const sp = await searchParams;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/onboarding`)}`);
   }

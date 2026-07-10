@@ -9,8 +9,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: customerId } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
@@ -34,8 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: customerId } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");

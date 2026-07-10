@@ -8,15 +8,15 @@ export async function GET(req: NextRequest) {
   if (!salonId) return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
   
   // Verify ownership
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  if (salon?.owner_id !== session.user.id) {
-    const { data: userProfile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
+  if (salon?.owner_id !== user.id) {
+    const { data: userProfile } = await admin.from("profiles").select("role").eq("id", user.id).single();
     if (userProfile?.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }

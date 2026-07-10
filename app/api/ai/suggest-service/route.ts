@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
   const { data: validated, error: valError } = validateBody(suggestSchema, body);

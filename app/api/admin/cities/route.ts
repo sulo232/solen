@@ -21,8 +21,7 @@ import { bustActiveCitiesCache } from "@/lib/cities";
 // Admin-only (matches app/api/admin/commission/route.ts auth shape).
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
@@ -45,8 +44,7 @@ export async function GET(req: NextRequest) {
 // PATCH /api/admin/cities: toggle a city's is_active flag. Body: { id, is_active }.
 export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();

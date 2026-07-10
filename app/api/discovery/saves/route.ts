@@ -11,8 +11,8 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ items: [] });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ items: [] });
 
   // Default 3 (the ForYouSection peek); the Gespeichert page asks for up to 60 to show the full saved grid.
   const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "3", 10), 60);
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   const { data: saves } = await supabase
     .from("discovery_saves")
     .select("item_id")
-    .eq("user_id", session.user.id)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(limit);
 

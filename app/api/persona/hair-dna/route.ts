@@ -12,8 +12,7 @@ import { deriveHairDna, type BookingLite, type FormulaLite, type PersonaSelectio
 export async function GET() {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // 1) completed bookings (+ service category) — the history the DNA derives from

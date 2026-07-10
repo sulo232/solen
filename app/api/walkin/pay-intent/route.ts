@@ -107,8 +107,8 @@ export async function POST(req: NextRequest) {
 
   // Capture customer_id opportunistically if logged in; guest = null.
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const customerId = session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  const customerId = user?.id ?? null;
 
   // Platform commission (Connect).
   const { data: commissionSetting } = await admin

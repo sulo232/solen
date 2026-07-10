@@ -42,15 +42,17 @@ type UserRole = Database["public"]["Tables"]["profiles"]["Row"]["role"];
  *   - `{ user, supabase }` if authed
  *   - `NextResponse` (401) if not
  *
- * Per CLAUDE.md Rule 25: uses getSession (cookie-only, no network) not getUser
- * (which adds a network call to Supabase that can time out on Edge).
+ * Uses getUser() (verifies the JWT against the Supabase Auth server) rather
+ * than getSession() (trusts the client-supplied cookie without verifying its
+ * signature). getUser() fails CLOSED, returning null on any verification
+ * failure. This app deploys on Netlify Node functions, not Vercel Edge, so
+ * the extra network round-trip is safe.
  */
 export async function requireAuth(): Promise<
   { user: User; supabase: SupabaseClient } | NextResponse
 > {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json(
       { error: "Unauthorized", code: "UNAUTHENTICATED" },

@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
   // theme (style_name/name) is scored against the user's tag/texture/gender points, so a fades-leaning user sees the
   // Fades board first. Logged-out / cold users score 0 across the board -> the existing neutral sort_order.
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const userId = session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
 
   const admin = createAdminSupabaseClient();
   const { data: boards, error } = userId

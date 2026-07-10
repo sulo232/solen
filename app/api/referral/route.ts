@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session }, error: authError } = await supabase.auth.getSession();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (authError || !session?.user) {
+    if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,7 +22,7 @@ export async function GET() {
     const { data: pendingReferral } = await admin
       .from("referrals")
       .select("referral_code")
-      .eq("referrer_id", session.user.id)
+      .eq("referrer_id", user.id)
       .eq("status", "pending")
       .order("created_at", { ascending: false })
       .limit(1)
@@ -33,11 +33,11 @@ export async function GET() {
     // If no pending referral row exists (trigger somehow missed, or the last one was
     // already consumed and never rotated), mint one directly into `referrals`.
     if (!referralCode) {
-      referralCode = `SOLEN-${session.user.id.replace(/-/g, "").substring(0, 8).toUpperCase()}`;
+      referralCode = `SOLEN-${user.id.replace(/-/g, "").substring(0, 8).toUpperCase()}`;
       await admin
         .from("referrals")
         .upsert(
-          { referrer_id: session.user.id, referral_code: referralCode, status: "pending" },
+          { referrer_id: user.id, referral_code: referralCode, status: "pending" },
           { onConflict: "referral_code" },
         );
     }
@@ -51,7 +51,7 @@ export async function GET() {
       const { data: stats } = await supabase
         .from("referrals")
         .select("id")
-        .eq("referrer_id", session.user.id)
+        .eq("referrer_id", user.id)
         .eq("status", "completed");
 
       if (stats) friends_invited = stats.length;
@@ -66,7 +66,7 @@ export async function GET() {
       const { data: credits } = await supabase
         .from("user_credits")
         .select("remaining, expires_at")
-        .eq("user_id", session.user.id);
+        .eq("user_id", user.id);
 
       if (credits) {
         total_earned = credits

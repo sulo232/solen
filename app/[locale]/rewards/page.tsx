@@ -16,13 +16,13 @@ export default async function RewardsPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   const supabase = await createServerSupabaseClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/rewards`)}`);
   }
 
-  const status = await getLoyaltyStatus(supabase, session.user.id);
+  const status = await getLoyaltyStatus(supabase, user.id);
   return <RewardsView status={status} locale={locale} />;
 }

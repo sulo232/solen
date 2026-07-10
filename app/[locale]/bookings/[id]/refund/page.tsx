@@ -26,9 +26,9 @@ export default async function RefundStatusPage({
   try {
     const supabase = await createServerSupabaseClient();
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    isGuest = !session?.user;
+      data: { user },
+    } = await supabase.auth.getUser();
+    isGuest = !user;
   } catch (err) {
     // Cookie read can throw in some runtimes; default to guest (safer chrome, no PII).
     console.error("[refund-status] session probe failed:", err);

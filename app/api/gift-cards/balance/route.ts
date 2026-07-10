@@ -28,8 +28,7 @@ export async function GET(req: NextRequest) {
   const salonId = new URL(req.url).searchParams.get("salon_id");
   if (salonId) {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const admin = createAdminSupabaseClient();

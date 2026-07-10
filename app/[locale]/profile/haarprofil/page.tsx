@@ -23,8 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function HaarprofilPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/haarprofil`)}`);
   }

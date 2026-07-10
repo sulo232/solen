@@ -8,8 +8,7 @@ import { stripe } from "@/lib/stripe";
 // Returns saved payment methods for the current user.
 export async function GET() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ methods: [] });
 
   const admin = createAdminSupabaseClient();
@@ -48,8 +47,7 @@ export async function GET() {
 // Creates a SetupIntent to add a new card for the current user.
 export async function POST() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();

@@ -8,9 +8,9 @@ export async function GET(
 ) {
   const { payoutId } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!session?.user) {
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -25,7 +25,7 @@ export async function GET(
     return NextResponse.json({ error: "Payout not found" }, { status: 404 });
   }
 
-  if (payout.salons?.owner_id !== session.user.id) {
+  if (payout.salons?.owner_id !== user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 

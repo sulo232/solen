@@ -8,7 +8,7 @@ import { zurichWallClockToUtc } from "@/lib/time/zurich";
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), bookings(id, user_id, starts_at), services(name_de)").eq("id", id).single();
@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const body = await request.json();
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), services(duration_minutes, name_de)").eq("id", id).single();

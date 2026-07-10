@@ -27,11 +27,11 @@ function isoDate(d: Date) {
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { salon_id, feature } = await request.json();
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   // Verify test salon ownership
   const { data: salon } = await admin.from("salons").select("owner_id, name, categories").eq("id", salon_id).single();
   if (!salon) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (salon.owner_id !== session.user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (salon.owner_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (!salon.name.startsWith(TEST_PREFIX)) return NextResponse.json({ error: "Not a test salon" }, { status: 400 });
 
   // Get services for this salon
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         const startsAt = addHours(now, offsets[i]);
         return {
           salon_id,
-          user_id: session.user.id, // owner as placeholder customer
+          user_id: user.id, // owner as placeholder customer
           service_id: serviceId,
           starts_at: startsAt.toISOString(),
           ends_at: addHours(startsAt, 1).toISOString(),
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       ];
       const entries = ratings.map((rating, i) => ({
         salon_id,
-        user_id: session.user.id,
+        user_id: user.id,
         rating,
         comment: comments[i],
         service_id: serviceId,

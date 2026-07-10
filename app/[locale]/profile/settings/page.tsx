@@ -22,8 +22,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
   const { locale } = await params;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/settings`)}`);
   }

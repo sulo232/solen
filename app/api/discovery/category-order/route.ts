@@ -7,8 +7,8 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 export async function GET() {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id ?? null;
     if (!userId) return NextResponse.json({ order: [] });
 
     const admin = createAdminSupabaseClient();

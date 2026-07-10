@@ -5,14 +5,14 @@ import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!session?.user) {
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   // Find user's salon
-  const salon = await getActiveSalon<{ id: string }>(supabase, session.user.id, "id");
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
 
   if (!salon) {
     return NextResponse.json({ error: "Salon not found" }, { status: 404 });

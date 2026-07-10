@@ -7,8 +7,7 @@ import { validateBody, staffAcceptInviteSchema } from "@/lib/validations";
 // POST /api/staff/accept-invite — Accept staff invite via token
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(staffAcceptInviteSchema, body);

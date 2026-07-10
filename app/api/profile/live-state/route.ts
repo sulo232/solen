@@ -32,10 +32,7 @@ const REBOOK_CYCLE_DAYS = 28; // average gap that triggers rebook nudge
 
 export async function GET(_request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json(

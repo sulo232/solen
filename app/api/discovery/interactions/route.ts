@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ ok: false }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const userId = session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
 
   // Fire-and-forget. Two prior bugs kept discovery_interactions empty (task #9): (1) the column is `action`, not
   // `interaction_type` (phantom column), and (2) RLS only grants INSERT to `authenticated` for their own row, so

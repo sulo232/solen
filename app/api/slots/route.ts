@@ -102,8 +102,7 @@ export async function GET(request: NextRequest) {
 // G1 GET contract) so callers/tests can read the created row.
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   let body: unknown;

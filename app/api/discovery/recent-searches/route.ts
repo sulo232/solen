@@ -25,8 +25,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     if (!userId) return NextResponse.json({ terms: [] }); // logged-out → dropdown falls back to Trending
 
     const admin = createAdminSupabaseClient();
@@ -48,8 +48,8 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
 
     const admin = createAdminSupabaseClient();

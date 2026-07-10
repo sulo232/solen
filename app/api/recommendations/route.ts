@@ -40,8 +40,7 @@ export async function GET(req: NextRequest) {
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   // Rate limit: 10 req/min for authenticated users, 5 req/min for guests
   const identifier = user?.id || getClientIp(req);

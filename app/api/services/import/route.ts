@@ -6,8 +6,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 // POST /api/services/import — CSV import for services
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const formData = await req.formData();

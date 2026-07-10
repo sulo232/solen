@@ -9,9 +9,9 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!session?.user) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         salons (id, name)
         `
       )
-      .eq("buyer_id", session.user.id)
+      .eq("buyer_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {

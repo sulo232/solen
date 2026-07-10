@@ -53,14 +53,16 @@ export async function createServerSupabaseClient() {
 }
 
 /**
- * Get the authenticated user from the session cookie (no network call).
- * Use this in API routes instead of supabase.auth.getUser() which makes
- * a network request to Supabase that can timeout on Vercel Edge.
+ * Get the authenticated user, verified server-side against the Supabase Auth
+ * server (auth.getUser()). Unlike auth.getSession(), this does not trust the
+ * client-supplied cookie's JWT claims blindly, it fails CLOSED (returns
+ * null) if the token cannot be verified. This app deploys on Netlify Node
+ * functions (not Vercel Edge), so the extra network round-trip is safe.
  */
 export async function getSessionUser() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  return { supabase, user: session?.user ?? null };
+  const { data: { user } } = await supabase.auth.getUser();
+  return { supabase, user: user ?? null };
 }
 
 /**

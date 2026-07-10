@@ -44,17 +44,17 @@ function rand<T>(arr: T[]): T {
 // ─── GET: list test salons owned by admin ─────────────────────────────────────
 export async function GET() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data: salons } = await admin
     .from("salons")
     .select("id, name, slug, categories, address, is_active, created_at")
-    .eq("owner_id", session.user.id)
+    .eq("owner_id", user.id)
     .ilike("name", `${TEST_PREFIX}%`)
     .order("created_at", { ascending: false });
 
@@ -64,11 +64,11 @@ export async function GET() {
 // ─── POST: create test salon ──────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const adminClient = createAdminSupabaseClient();
-  const { data: profile } = await adminClient.from("profiles").select("role").eq("id", session.user.id).single();
+  const { data: profile } = await adminClient.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
   const { data: salon, error: salonErr } = await adminClient
     .from("salons")
     .insert({
-      owner_id: session.user.id,
+      owner_id: user.id,
       name,
       slug,
       categories,
@@ -126,17 +126,17 @@ export async function DELETE(request: NextRequest) {
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const adminClient = createAdminSupabaseClient();
-  const { data: profile } = await adminClient.from("profiles").select("role").eq("id", session.user.id).single();
+  const { data: profile } = await adminClient.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // Confirm it's a test salon owned by this admin
   const { data: salon } = await adminClient.from("salons").select("owner_id, name").eq("id", salonId).single();
   if (!salon) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (salon.owner_id !== session.user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (salon.owner_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (!salon.name.startsWith(TEST_PREFIX)) return NextResponse.json({ error: "Not a test salon" }, { status: 400 });
 
   // Delete in dependency order

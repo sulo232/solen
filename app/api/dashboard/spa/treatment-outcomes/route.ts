@@ -14,13 +14,13 @@ export async function GET(request: NextRequest) {
   if (!salonId || !clientId) return NextResponse.json({ error: "salon_id and client_id required" }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
-  if (salon?.owner_id !== session.user.id && profile?.role !== "admin") {
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -37,17 +37,17 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const banned = await checkUserBanned(session.user.id);
+  const banned = await checkUserBanned(user.id);
   if (banned) return banned;
 
-  const rateLimited = await applyRateLimit(generalLimiter, { userId: session.user.id });
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string }>(admin, session.user.id, "id");
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   const body = await request.json();

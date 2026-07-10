@@ -69,9 +69,9 @@ export default async function SalonReviewsPage({
 
   // Fetch reviews + the viewer's completed bookings in parallel.
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const userId = session?.user?.id ?? null;
+    data: { user },
+  } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
 
   const [reviewsRes, completedRes] = await Promise.all([
     admin

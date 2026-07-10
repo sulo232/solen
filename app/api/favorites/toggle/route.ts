@@ -28,8 +28,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
  */
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ message: "Anmeldung erforderlich", code: "UNAUTHENTICATED" }, { status: 401 });

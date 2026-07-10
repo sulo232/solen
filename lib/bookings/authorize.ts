@@ -33,9 +33,9 @@ const NONE: BookingActorResult = { actor: null, booking: null, userId: null };
 /**
  * Resolve who is acting on a booking. Resolution order (first match wins), all against
  * ONE service-role fetch of the booking:
- *   1. session present + booking.user_id === session.user.id   → 'customer'
- *   2. session present + profiles.role === 'admin'             → 'admin'
- *   3. session present + salons.owner_id === session.user.id   → 'salon'
+ *   1. verified user present + booking.user_id === user.id      → 'customer'
+ *   2. verified user present + profiles.role === 'admin'        → 'admin'
+ *   3. verified user present + salons.owner_id === user.id      → 'salon'
  *   4. else read the guest cookie for THIS bookingId, verifyAccessToken vs
  *      booking.access_token_hash (+ expiry)                    → 'guest'
  *   5. none                                                    → { actor: null }
@@ -44,7 +44,7 @@ const NONE: BookingActorResult = { actor: null, booking: null, userId: null };
  *
  * Failure-shape guidance for callers (§10b.7): a `null` actor from an UNAUTHENTICATED /
  * guest requester maps to a uniform 404 (no enumeration); only map an authenticated-
- * but-not-entitled user to 403 (their session already proves they exist). When
+ * but-not-entitled user to 403 (their identity already proves they exist). When
  * `booking` is null the id simply doesn't exist → 404.
  */
 export async function resolveBookingActor(
@@ -63,12 +63,13 @@ export async function resolveBookingActor(
 
   if (!booking) return NONE; // unknown id → caller returns 404
 
-  // Session (customer / salon / admin). getSession() reads the cookie, no network call.
+  // Identity (customer / salon / admin). getUser() verifies the JWT against the
+  // Supabase Auth server rather than trusting the client-supplied cookie's claims
+  // (getSession() would let a forged cookie with any user.id resolve as that user).
   const supabase = await createServerSupabaseClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (user) {
     // 1. Booking owner (logged-in customer).
@@ -102,7 +103,7 @@ export async function resolveBookingActor(
     return { actor: null, booking, userId: null };
   }
 
-  // 4. No session → guest cookie path. The cookie is booking-bound: a cookie minted for
+  // 4. No verified user → guest cookie path. The cookie is booking-bound: a cookie minted for
   //    a DIFFERENT booking can't authorize this one (no cross-booking replay).
   const cookie = readGuestCookie(req);
   if (

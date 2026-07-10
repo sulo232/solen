@@ -7,7 +7,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 // Returns percentile ranking for a salon in rating, booking volume, response time.
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salonId = request.nextUrl.searchParams.get("salon_id");

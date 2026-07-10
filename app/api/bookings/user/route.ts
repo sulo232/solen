@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
   try {
     // Cheap cookie-presence guard: a real session always carries an "sb-"
     // prefixed cookie (Supabase SSR auth cookie naming). Skip the
-    // auth.getSession() round-trip entirely when it's absent (logged-out
-    // callers), same unauthorized response as a null session below.
+    // auth.getUser() round-trip entirely when it's absent (logged-out
+    // callers), same unauthorized response as a null user below.
     const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith('sb-'));
     if (!hasSbCookie) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -17,8 +17,7 @@ export async function GET(req: NextRequest) {
 
     // Auth check
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

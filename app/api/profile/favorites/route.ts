@@ -17,8 +17,7 @@ export async function GET(req: NextRequest) {
   const hasSbCookie = req.cookies.getAll().some((c) => c.name.startsWith("sb-"));
   if (!hasSbCookie) return NextResponse.json({ items: [], total: 0 });
 
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ items: [], total: 0 });
 
   const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });
@@ -69,8 +68,7 @@ export async function GET(req: NextRequest) {
 // rate-limit; insert tolerates an already-saved row so re-saving is a no-op.
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });
@@ -98,8 +96,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });

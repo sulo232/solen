@@ -209,10 +209,8 @@ export async function POST(req: NextRequest) {
   // Auth user is read from the Supabase session cookie via the SSR client. The
   // ADMIN (service-role) client is used only for the privileged INSERT.
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const userId = session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
 
   // Session id: only ever from our httpOnly cookie; minted if absent/forged.
   const existingSid = sanitizeSessionId(req.cookies.get(SESSION_COOKIE)?.value);

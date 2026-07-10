@@ -21,9 +21,9 @@ export default async function ProfileFavoritesPage({
 }) {
   const { locale } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (!user) {
     redirect(`/${locale}/auth/login?redirect=/${locale}/profile/favorites`);
   }
 
@@ -31,7 +31,7 @@ export default async function ProfileFavoritesPage({
   const { data: favs } = await supabase
     .from("favorites")
     .select("salon_id, created_at")
-    .eq("user_id", session.user.id)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   const ids = (favs ?? []).map((f) => f.salon_id);

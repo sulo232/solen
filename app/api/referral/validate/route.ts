@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
 
   // Check current user (for self-referral prevention)
-  const { data: { session } } = await supabase.auth.getSession();
-  const currentUserId = session?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
+  const currentUserId = user?.id;
 
   // Look up referral by code or referral_code
   const { data: referral } = await supabase

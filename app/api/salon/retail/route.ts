@@ -47,8 +47,7 @@ export async function GET(req: NextRequest) {
 // POST /api/salon/retail — Create retail product
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -82,8 +81,7 @@ export async function POST(req: NextRequest) {
 // PUT /api/salon/retail — Update product
 export async function PUT(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -115,8 +113,7 @@ export async function PUT(req: NextRequest) {
 // DELETE /api/salon/retail?id=xxx — Soft delete (deactivate)
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const productId = new URL(req.url).searchParams.get("id");

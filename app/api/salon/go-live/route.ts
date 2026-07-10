@@ -21,8 +21,7 @@ async function isStripeReady(accountId: string | null): Promise<boolean> {
 // GET /api/salon/go-live: returns salon readiness state for the Go Live gate
 export async function GET(_req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url");
@@ -53,8 +52,7 @@ export async function GET(_req: NextRequest) {
 // POST /api/salon/go-live — Activate salon (owner-only, requires stripe + cover photo)
 export async function POST(_req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify ownership and requirements

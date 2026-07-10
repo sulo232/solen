@@ -93,13 +93,13 @@ export async function GET(req: NextRequest) {
     const mineTimes = new Set<string>();
     try {
       const supabase = await createServerSupabaseClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
         const { data: mine } = await adminClient
           .from('bookings')
           .select('starts_at')
           .eq('salon_id', salonId)
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .in('status', ['pending', 'confirmed'])
           .gte('starts_at', startOfDay)
           .lte('starts_at', endOfDay);

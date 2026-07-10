@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const salonId = req.nextUrl.searchParams.get("salon_id");
   const clientId = req.nextUrl.searchParams.get("client_id");
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     .from("salons")
     .select("id")
     .eq("id", salonId)
-    .eq("owner_id", session.user.id)
+    .eq("owner_id", user.id)
     .single();
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
@@ -75,8 +75,8 @@ export async function POST(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
   const { data: validated, error: valError } = validateBody(fadeBlueprintSchema, body);
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     .from("salons")
     .select("id")
     .eq("id", validated.salon_id)
-    .eq("owner_id", session.user.id)
+    .eq("owner_id", user.id)
     .single();
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

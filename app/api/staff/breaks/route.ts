@@ -8,8 +8,7 @@ import { getActiveSalon } from "@/lib/active-salon";
 // GET /api/staff/breaks — Get breaks for a staff member
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const staffMemberId = new URL(req.url).searchParams.get("staff_member_id");
@@ -36,8 +35,7 @@ export async function GET(req: NextRequest) {
 // POST /api/staff/breaks — Create a break (salon owner only)
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -69,8 +67,7 @@ export async function POST(req: NextRequest) {
 // DELETE /api/staff/breaks — Delete a break by id
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const breakId = new URL(req.url).searchParams.get("id");

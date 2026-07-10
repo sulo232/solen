@@ -11,13 +11,13 @@ export async function GET(request: NextRequest) {
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
-  if (salon?.owner_id !== session.user.id && profile?.role !== "admin") {
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
 // PATCH /api/dashboard/nail/ai-history — toggle is_saved
 export async function PATCH(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
   const { id, is_saved } = body as { id: string; is_saved: boolean };
@@ -51,8 +51,8 @@ export async function PATCH(request: NextRequest) {
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", row.salon_id).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
-  if (salon?.owner_id !== session.user.id && profile?.role !== "admin") {
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

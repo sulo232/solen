@@ -143,8 +143,8 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   supabase.rpc("increment_discovery_view", { p_item_id: id }).then(() => {});
 
   // Check auth
-  const { data: { session } } = await supabase.auth.getSession();
-  const isAuthenticated = !!session?.user;
+  const { data: { user } } = await supabase.auth.getUser();
+  const isAuthenticated = !!user;
 
   // "Book this look" — the soft, honest salon list (owner call: real look→salon matching deferred). Salons that
   // offer a service in this look's category, ranked by rating; price is the cheapest such service ("ab CHF X").

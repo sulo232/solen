@@ -5,9 +5,9 @@ import { waitlistSchema, validateBody } from "@/lib/validations";
 export async function POST(req: Request) {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session }, error: authError } = await supabase.auth.getSession();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (authError || !session?.user) {
+    if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const { data, error } = await supabase
       .from("booking_waitlist")
       .insert({
-        user_id: session.user.id,
+        user_id: user.id,
         salon_id,
         service_id: service_id || null,
         preferred_date,

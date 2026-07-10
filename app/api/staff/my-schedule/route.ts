@@ -7,8 +7,7 @@ import { validateBody, scheduleSchema } from "@/lib/validations";
 // GET /api/staff/my-schedule — Staff views their own schedule
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Find the staff member linked to this user
@@ -56,8 +55,7 @@ export async function GET(req: NextRequest) {
 // PUT /api/staff/my-schedule — Staff updates their schedule
 export async function PUT(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data: staff } = await supabase

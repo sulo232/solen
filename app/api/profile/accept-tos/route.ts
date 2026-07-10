@@ -7,8 +7,7 @@ import { logAuditEvent } from "@/lib/audit";
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 

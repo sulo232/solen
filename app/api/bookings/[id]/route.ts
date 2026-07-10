@@ -17,7 +17,7 @@ export async function GET(
 ) {
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   // Centralized authorization (Task B). resolveBookingActor replaces the ad-hoc
@@ -53,7 +53,7 @@ export async function PATCH(
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

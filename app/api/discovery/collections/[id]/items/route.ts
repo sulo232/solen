@@ -11,8 +11,8 @@ import { checkFeatureEnabled } from "@/lib/feature-flags";
  */
 async function requireUser() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.user?.id ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
 }
 
 async function ownsCollection(admin: ReturnType<typeof createAdminSupabaseClient>, id: string, userId: string) {

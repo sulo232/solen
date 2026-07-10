@@ -15,7 +15,7 @@ import { completeReferralForFirstBooking } from "@/lib/referral/complete-referra
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
   // row (user_id IS NULL) is rejected by RLS `bookings_insert_auth`, so the guest write MUST go
   // through the service-role admin client (§10b.6 — guest writes never rely on RLS).
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   const isGuest = !user;
   const db = isGuest ? createAdminSupabaseClient() : supabase;
 

@@ -49,8 +49,7 @@ export async function POST(req: NextRequest) {
 
   // ── Path A: registered user (session present) ──────────────────────────────
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });

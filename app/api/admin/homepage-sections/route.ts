@@ -19,8 +19,7 @@ const DEFAULT_SECTIONS: Record<string, boolean> = {
 // GET /api/admin/homepage-sections — get homepage section visibility (admin only)
 export async function GET() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -42,8 +41,7 @@ export async function GET() {
 // PUT /api/admin/homepage-sections — update homepage section visibility
 export async function PUT(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

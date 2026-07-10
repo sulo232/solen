@@ -9,10 +9,10 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const salonId = await getActiveSalonId(supabase, session.user.id);
+  const salonId = await getActiveSalonId(supabase, user.id);
   if (!salonId) return NextResponse.json({ notifications: [], unread_count: 0 });
 
   const notifications: Array<{
@@ -106,8 +106,8 @@ export async function PATCH(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   return NextResponse.json({ success: true });
 }

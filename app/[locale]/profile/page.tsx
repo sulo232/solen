@@ -76,8 +76,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   const tb = await getTranslations({ locale, namespace: "bookingCard" });
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile`)}`);
   }

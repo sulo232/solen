@@ -142,8 +142,7 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
 
   if (wantsMine) {
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const admin = createAdminSupabaseClient();
       const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
@@ -218,8 +217,7 @@ function bundleRpcErrorResponse(message: string | undefined): NextResponse {
 // create-inactive -> insert items -> activate sequence in ONE transaction.
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -272,8 +270,7 @@ export async function POST(req: NextRequest) {
 // sequence could orphan it on a failure between steps).
 export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -328,8 +325,7 @@ export async function PATCH(req: NextRequest) {
 // write) , this verb was previously missing both.
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

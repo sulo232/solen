@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   const { data: profile } = await admin
     .from("profiles")
     .select("role")
-    .eq("id", session.user.id)
+    .eq("id", user.id)
     .single();
 
   const { data: salon } = await admin
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     .eq("id", salonId)
     .single();
 
-  const isOwner = salon?.owner_id === session.user.id;
+  const isOwner = salon?.owner_id === user.id;
   const isAdmin = profile?.role === "admin";
   if (!isOwner && !isAdmin) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

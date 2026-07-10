@@ -22,8 +22,8 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
 
   // Auth: verify ownership or admin
   const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", session.user.id).single();
-  if (salon?.owner_id !== session.user.id && profile?.role !== "admin") {
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

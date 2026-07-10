@@ -14,13 +14,13 @@ import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/sup
 
 async function requireAdmin() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return null;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
   const admin = createAdminSupabaseClient();
   const { data: profile } = await admin
     .from("profiles")
     .select("role")
-    .eq("id", session.user.id)
+    .eq("id", user.id)
     .single();
   if (profile?.role !== "admin") return null;
   return admin;
