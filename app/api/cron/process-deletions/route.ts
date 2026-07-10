@@ -44,10 +44,67 @@ export async function GET(request: NextRequest) {
     // delete cascades to public.profiles, which fires the BEFORE DELETE trigger
     // (migration 20260602083300) that anonymizes these dependent rows in place
     // (keeps money, strips identity). Recorded verbatim in the audit row below.
-    const TABLES_CLEARED = ["profiles", "bookings", "booking_disputes", "case_events"];
+    const TABLES_CLEARED = [
+      "profiles",
+      "bookings",
+      "booking_disputes",
+      "case_events",
+      "user_credits",
+      "credit_redemptions",
+      "barber_loyalty_history",
+      "referrals",
+      "client_notes",
+      "account_actions",
+      "voucher_redemptions",
+      "vouchers",
+      "discovery_staging",
+      "hand_chart_notes",
+      "price_disputes",
+      "promo_codes",
+      "feature_flags",
+      "salon_badge_assignments",
+      "salon_documents",
+      "salons",
+      "site_content",
+    ];
 
     const results = [];
     for (const user of usersToDelete) {
+      // GDPR: these tables reference auth.users/profiles with ON DELETE NO ACTION, so the
+      // auth-user delete below fails (FK violation) unless the referencing rows are
+      // cleared/anonymized FIRST. NOT NULL columns are deleted; nullable columns are set to
+      // null (keeps the record, strips the user link). Run SEQUENTIALLY, not in parallel:
+      // credit_redemptions.credit_id references user_credits.id (NOT NULL, no cascade), so
+      // credit_redemptions is cleared before user_credits below.
+      const cleanups: Array<[string, { error: { message: string } | null }]> = [];
+      cleanups.push(["credit_redemptions", await admin.from("credit_redemptions").delete().eq("user_id", user.id)]);
+      cleanups.push(["user_credits", await admin.from("user_credits").delete().eq("user_id", user.id)]);
+      cleanups.push(["barber_loyalty_history", await admin.from("barber_loyalty_history").delete().eq("customer_id", user.id)]);
+      cleanups.push(["referrals (referrer_id)", await admin.from("referrals").delete().eq("referrer_id", user.id)]);
+      cleanups.push(["client_notes", await admin.from("client_notes").delete().eq("created_by", user.id)]);
+      cleanups.push(["account_actions", await admin.from("account_actions").delete().eq("admin_id", user.id)]);
+      cleanups.push(["referrals (referred_user_id)", await admin.from("referrals").update({ referred_user_id: null }).eq("referred_user_id", user.id)]);
+      cleanups.push(["voucher_redemptions", await admin.from("voucher_redemptions").update({ user_id: null }).eq("user_id", user.id)]);
+      cleanups.push(["vouchers (buyer_id)", await admin.from("vouchers").update({ buyer_id: null }).eq("buyer_id", user.id)]);
+      cleanups.push(["vouchers (redeemed_by)", await admin.from("vouchers").update({ redeemed_by: null }).eq("redeemed_by", user.id)]);
+      cleanups.push(["discovery_staging", await admin.from("discovery_staging").update({ approved_by: null }).eq("approved_by", user.id)]);
+      cleanups.push(["hand_chart_notes", await admin.from("hand_chart_notes").update({ created_by: null }).eq("created_by", user.id)]);
+      cleanups.push(["price_disputes", await admin.from("price_disputes").update({ resolved_by: null }).eq("resolved_by", user.id)]);
+      cleanups.push(["promo_codes", await admin.from("promo_codes").update({ created_by: null }).eq("created_by", user.id)]);
+      cleanups.push(["feature_flags", await admin.from("feature_flags").update({ updated_by: null }).eq("updated_by", user.id)]);
+      cleanups.push(["salon_badge_assignments", await admin.from("salon_badge_assignments").update({ assigned_by: null }).eq("assigned_by", user.id)]);
+      cleanups.push(["salon_documents", await admin.from("salon_documents").update({ reviewed_by: null }).eq("reviewed_by", user.id)]);
+      cleanups.push(["salons", await admin.from("salons").update({ approved_by: null }).eq("approved_by", user.id)]);
+      cleanups.push(["site_content", await admin.from("site_content").update({ updated_by: null }).eq("updated_by", user.id)]);
+
+      const failedCleanup = cleanups.find(([, r]) => r.error);
+      if (failedCleanup) {
+        const [failedTable, { error: cleanupError }] = failedCleanup;
+        console.error("[api/cron/process-deletions] pre-delete cleanup failed for", user.id, "at", failedTable, ":", cleanupError);
+        results.push({ id: user.id, success: false, error: `pre-delete cleanup failed (${failedTable}): ${cleanupError?.message}` });
+        continue;
+      }
+
       const { error } = await admin.auth.admin.deleteUser(user.id);
       if (error) {
         results.push({ id: user.id, success: false, error: error.message });
