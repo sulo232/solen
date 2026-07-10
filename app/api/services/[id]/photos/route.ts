@@ -33,6 +33,15 @@ export async function POST(
   const file = formData.get("file") as File | null;
   if (!file) return NextResponse.json({ error: "File required" }, { status: 400 });
 
+  // MIME allowlist, same shape as app/api/salons/[slug]/gallery/route.ts and
+  // app/api/reviews/[id]/photos/route.ts. Without this, `file.type` is
+  // client-controlled and gets passed straight through as the upload's
+  // Content-Type, letting arbitrary HTML/SVG get hosted on the trusted
+  // *.supabase.co domain via this public bucket.
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    return NextResponse.json({ error: "Only JPEG, PNG, or WebP images are allowed" }, { status: 400 });
+  }
+
   // Append to service photo_urls array
   const currentUrls = (service.photo_urls as string[]) ?? [];
   if (currentUrls.length >= 20) {

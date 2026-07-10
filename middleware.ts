@@ -134,9 +134,12 @@ export async function middleware(request: NextRequest) {
       }
     );
 
-    // SECURITY: Use getUser() for proper JWT verification — getSession() is not safe for auth decisions
-    // Defensive 4s timeout via Promise.race — guards against any edge runtime network hang
-    const userPromise = supabase.auth.getUser();
+    // SECURITY: Use getUser() for proper JWT verification, getSession() is not safe for auth decisions.
+    // Defensive 4s timeout via Promise.race, guards against any edge runtime network hang.
+    // A REJECTED getUser() (thrown, not just slow) must resolve to the same "no user" shape
+    // as the timeout branch, otherwise the rejection falls through to the outer catch below
+    // and previously fell back to the pass-through response (an auth bypass on a transient error).
+    const userPromise = supabase.auth.getUser().catch(() => ({ data: { user: null } }));
     const timeoutPromise = new Promise<{ data: { user: null }, error: Error }>((resolve) =>
       setTimeout(() => resolve({ data: { user: null }, error: new Error("Auth timeout") }), 4000)
     );
@@ -219,6 +222,21 @@ export async function middleware(request: NextRequest) {
     }
   } catch (err) {
     console.error("[middleware] Auth error:", err);
+
+    // Fail CLOSED for dashboard routes: an auth/role check that throws must not let the
+    // request through unauthenticated. This previously fell back to the plain pass-through
+    // `response`, so any exception inside the try block (DB blip, cookie parse error, etc.)
+    // bypassed the entire auth/role gate for /{locale}/dashboard/**. Non-dashboard paths are
+    // unaffected (still fall through to the pass-through response below).
+    const currentLocale = locales.find(
+      (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
+    );
+    if (currentLocale && pathname.startsWith(`/${currentLocale}/dashboard`)) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${currentLocale}/auth/login`;
+      url.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;
