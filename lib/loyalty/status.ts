@@ -72,14 +72,20 @@ interface BookingValueRow {
   final_price: number | null;
   price_paid: number | null;
   estimated_price: number | null;
+  paid_amount: number | null;
   refunded_amount: number | null;
 }
 
 /**
  * Count qualifying completed visits for a user in the rolling window and derive status.
- * Qualifying (spec §3) = status 'completed' + not refunded + gross value >= CHF floor.
+ * Qualifying (spec §3) = status 'completed' + not refunded + charged value >= CHF floor.
+ * The floor uses paid_amount (Rappen, the amount actually charged by the Stripe webhook)
+ * when an online charge happened; final_price is never written anywhere and price_paid is
+ * the pre-discount face price, so neither is safe against a discounted-booking gaming
+ * exploit. A completed booking with no online charge (paid in person) falls back to the
+ * recorded price, since there the visit genuinely happened at that price.
  * Refund timestamp isn't a column, so we exclude any refunded booking (the 72h nuance
- * is a phase-2 refinement once a refunded_at exists). Never throws — degrades to Base.
+ * is a phase-2 refinement once a refunded_at exists). Never throws, degrades to Base.
  */
 export async function getLoyaltyStatus(
   supabase: SupabaseClient,
@@ -91,7 +97,7 @@ export async function getLoyaltyStatus(
 
   const { data, error } = await supabase
     .from("bookings")
-    .select("final_price, price_paid, estimated_price, refunded_amount")
+    .select("final_price, price_paid, estimated_price, paid_amount, refunded_amount")
     .eq("user_id", userId)
     .eq("status", "completed")
     .gte("starts_at", windowStartISO);
@@ -104,8 +110,14 @@ export async function getLoyaltyStatus(
   const rows = (data ?? []) as unknown as BookingValueRow[];
   const visits = rows.filter((b) => {
     if ((b.refunded_amount ?? 0) > 0) return false;
-    const grossChf = b.final_price ?? b.price_paid ?? b.estimated_price ?? 0;
-    return grossChf >= LOYALTY.minVisitValueChf;
+    // Use the amount actually charged (paid_amount, Rappen) when there was an online
+    // charge. A completed booking with no online charge was paid in person, so the
+    // recorded price is the only signal there and is trusted (no discount to game).
+    const chargedChf =
+      b.paid_amount != null && b.paid_amount > 0
+        ? b.paid_amount / 100
+        : (b.price_paid ?? b.estimated_price ?? 0);
+    return chargedChf >= LOYALTY.minVisitValueChf;
   }).length;
 
   // Layer in the validity date from the monthly snapshot (loyalty_status), if present.

@@ -27,11 +27,15 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
   // Verify salon exists
-  const { data: salon } = await supabase
+  const { data: salon, error: salonError } = await supabase
     .from("salons")
     .select("id")
     .eq("id", validated.members[0]?.service_id ? body.salon_id : "")
     .single();
+
+  if (salonError || !salon) {
+    return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  }
 
   // Use the RPC for atomic slot reservation
   const salonId = body.salon_id;

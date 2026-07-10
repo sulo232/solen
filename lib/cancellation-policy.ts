@@ -1,34 +1,17 @@
 // Cancellation / no-show policy math.
 //
-// `calculateRefund` (legacy, percentage-only, paid-unit) is KEPT — the salon-owner
-// full-refund branch of the cancel route still uses its shape. SP-AC ADDS two
-// type-aware fee calculators that work in INTEGER RAPPEN end-to-end (REFUND_APPEAL_PLAN
-// §10b#5): the salon stores the fee as a CHF figure (cancellation_fee_value /
-// no_show_fee_value), this module converts at the boundary via toRappen and returns
-// the charge amount in Rappen, already capped at what the customer paid (fairness,
-// §10 "Abuse both ways" + §11). Do NOT overload calculateRefund — these are siblings.
+// SP-AC ADDS two type-aware fee calculators that work in INTEGER RAPPEN end-to-end
+// (REFUND_APPEAL_PLAN §10b#5): the salon stores the fee as a CHF figure
+// (cancellation_fee_value / no_show_fee_value), this module converts at the boundary
+// via toRappen and returns the charge amount in Rappen, already capped at what the
+// customer paid (fairness, §10 "Abuse both ways" + §11).
+//
+// `calculateRefund` (legacy, percentage-only, paid-unit) was removed 2026-07-10: it
+// had zero callers left (its cancellation-window logic was inverted relative to
+// calculateCancellationFee below) and every caller already uses the correct
+// calculateCancellationFee / calculateNoShowFee pair.
 
 import { toRappen } from "@/lib/stripe";
-
-/** @deprecated legacy paid-unit refund math — kept for the salon-owner full-refund branch. */
-export function calculateRefund(
-  paidAmount: number,
-  cancellationFeePercent: number,
-  cancellationWindowHours: number,
-  appointmentStartsAt: Date
-): { refundAmount: number; feeAmount: number; isWithinWindow: boolean } {
-  const now = new Date();
-  const hoursUntil = (appointmentStartsAt.getTime() - now.getTime()) / (1000 * 60 * 60);
-  const isWithinWindow = hoursUntil < cancellationWindowHours;
-
-  if (isWithinWindow) {
-    return { refundAmount: 0, feeAmount: paidAmount, isWithinWindow: true };
-  }
-
-  const feeAmount = Math.round(paidAmount * (cancellationFeePercent / 100));
-  const refundAmount = paidAmount - feeAmount;
-  return { refundAmount, feeAmount, isWithinWindow: false };
-}
 
 /** Structured policy fee shape. `'free'` => never charges. CHF figure at the boundary. */
 export type PolicyFeeType = "free" | "flat" | "percentage";

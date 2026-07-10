@@ -54,6 +54,21 @@ export async function anonymizeGuestPII(
   email: string,
 ): Promise<GuestAnonymizeResult> {
   const normalizedEmail = email.trim().toLowerCase();
+
+  // Guard against SQL-LIKE wildcard injection: `.ilike` treats `%` and `_` as
+  // wildcards, so an unvalidated email (e.g. "%") would match every guest row
+  // on the platform. Reject anything that isn't email-shaped BEFORE it reaches
+  // an .ilike query below. Underscores are VALID in real email addresses
+  // (john_doe@example.com), so they are allowed here; the wildcard risk is
+  // handled below by escaping `%` and `_` before the .ilike calls instead.
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    throw new Error("invalid guest email for erasure");
+  }
+
+  // Escape SQL-LIKE metacharacters so a literal `%` or `_` in a real email
+  // is matched literally by `.ilike`, not treated as a wildcard.
+  const emailPattern = normalizedEmail.replace(/[\\%_]/g, "\\$&");
+
   const tablesCleared: string[] = [];
 
   // 1. BOOKINGS — find this guest's bookings first (need the ids to reach their
@@ -68,7 +83,7 @@ export async function anonymizeGuestPII(
   const { data: guestBookings, error: findErr } = await admin
     .from("bookings")
     .select("id")
-    .ilike("guest_email", normalizedEmail);
+    .ilike("guest_email", emailPattern);
   if (findErr) throw findErr;
 
   const bookingIds = (guestBookings ?? []).map((b: { id: string }) => b.id);
@@ -99,7 +114,7 @@ export async function anonymizeGuestPII(
   const { data: guestDisputes, error: dFindErr } = await admin
     .from("booking_disputes")
     .select("id")
-    .ilike("guest_email", normalizedEmail);
+    .ilike("guest_email", emailPattern);
   if (dFindErr) throw dFindErr;
 
   const disputeIds = (guestDisputes ?? []).map((d: { id: string }) => d.id);

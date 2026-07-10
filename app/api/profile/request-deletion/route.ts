@@ -134,12 +134,27 @@ export async function POST(req: NextRequest) {
   const normalizedRef = normalizeReferenceCode(referenceCode);
   const normalizedEmail = email.trim().toLowerCase();
 
+  // Guard against SQL-LIKE wildcard injection: `.ilike` treats `%` and `_` as
+  // wildcards, so an unvalidated email (e.g. "%") would match ANY guest_email
+  // for the given reference_code, collapsing the two-factor ownership check
+  // (reference_code + email) down to reference_code alone. Reject anything
+  // that isn't email-shaped before the ownership query. Underscores are VALID
+  // in real email addresses (john_doe@example.com), so they are allowed here;
+  // the wildcard risk is handled below by escaping `%` and `_` before .ilike.
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return UNIFORM_OK;
+  }
+
+  // Escape SQL-LIKE metacharacters so a literal `%` or `_` in a real email is
+  // matched literally by `.ilike`, not treated as a wildcard.
+  const emailPattern = normalizedEmail.replace(/[\\%_]/g, "\\$&");
+
   // Prove ownership: the (reference_code, guest_email) pair must match one booking.
   const { data: matchedBooking } = await admin
     .from("bookings")
     .select("id")
     .eq("reference_code", normalizedRef)
-    .ilike("guest_email", normalizedEmail)
+    .ilike("guest_email", emailPattern)
     .maybeSingle();
 
   if (!matchedBooking) {
