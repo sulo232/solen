@@ -149,3 +149,9 @@ Ring 14 = abuse surface. 3 confirmed (all missing-rate-limit), 2 refuted. bookin
 HARDEN DONE: no-verify-commit-gate.py -> v2.1. It false-tripped on `-F -` message heredocs AND on edit-only commands whose heredoc body merely MENTIONED a commit. Fix: strip heredoc BODIES before detection (a body is data, never a command), and exempt the stdin-message form; still blocks a real edit-heredoc (cat/tee/python) chained with a real commit. Tested 12/12.
 
 ## Fifteenth , privileged-endpoint auth (IN FLIGHT): admin role checks + cron/webhook secrets + response over-exposure
+
+## Fifteenth , DONE (commit 7f8094929)
+Ring 15 = privileged-endpoint auth. 5 confirmed (1 HIGH, 2 MED, 2 LOW), 0 refuted. cron/webhook finder CLEAN (crons secret-gated). search/treatments leaked salons.* (stripe_account_id/owner_id/frozen_reason/etc) to anon -> shared SALON_PUBLIC_COLS allowlist (lib/salons/public-columns.ts). discover/nails + discovery/similar leaked discovery_items.flag_reason + owner_user_id -> shared DISCOVERY_ITEM_PUBLIC_COLS. admin/salon-of-month GET + admin/notify-new-salon POST unauth -> admin-gated. Shared constants stop the allowlist-drift class recurring. /refine PASS round 1.
+
+## Convergence note (rings 9-15, 2026-07-10/11)
+Severity is trending down: ring 13 = 1 CRITICAL, 14 = 3 rate-limits, 15 = 1 HIGH + mostly MED/LOW, and finders increasingly return CLEAN (webhook/refund/payout, cron/webhook, validation, notification-abuse all clean). The recurring classes (getSession, service-role IDOR, CRM-ownership, response-exposure, rate-limit) are now each closed AND several are gated/shared-constant'd so they cannot re-drift. Remaining candidate rings (lower expected yield): booking/slot race invariants (double-booking under concurrency), a SECURITY DEFINER re-audit for RPCs added since ring 3, and residual input-validation. The high-value backend attack surface is substantially swept.
