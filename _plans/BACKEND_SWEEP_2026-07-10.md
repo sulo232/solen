@@ -64,5 +64,10 @@ Scanned all 27 .or() call sites for interpolated user input. 24 were safe (serve
 - search/treatments: the treatment search term (and the category name) now strip [,()] like help/route.ts. Was public-data search-result manipulation.
 The DB side is clean here: all 28 SECURITY DEFINER functions have no dynamic SQL (checked in ring 3), so there is no server-side SQL injection surface.
 
+## Sixth , RLS policy-predicate logic (over-permissive USING/with_check)
+Scanned every permissive public-schema policy for an unconditional (`true`) predicate on a non-reference table. 15 hits; 14 are legitimately-public browse data (reviews, salon/staff photos, staff_services, discovery content, salon_directory). One real leak fixed + two LOW noted:
+- **staff_calendars , FIXED** (migration `audit_fix_staff_calendars_rls_deny`): its SELECT policy was `USING true`, so any anon caller could dump every salon's internal staff scheduling (block_type, personal time-off, and a free-text `note`) via direct PostgREST. The table is dead (ZERO code refs; its salon_id is INTEGER while salons.id is UUID, so it cannot even reference salons). Tightened to `USING (false)` (deny all non-service-role reads; service_role still bypasses for any future admin use). In-place ALTER, no drop.
+- LOW (noted, not fixed): `feature_flags` public read exposes `updated_by` (an admin uuid) + `description` (the app needs key+enabled client-side, so a blanket restrict would break feature-gating , a key+enabled view is the right fix later); `inventory` public read exposes per-salon `stock`/`min_stock` (commercial info; retail display needs name+price only).
+
 ## Recurring themes confirmed again (same as the 141-audit)
 Phantom-column silent no-ops were the single biggest class this sweep (10 of 24) , dashboards silently reporting 0 because a query named a column the live DB never had. Second: service-role routes missing their own ownership check. The DB/RLS LAYER itself is now clean; the remaining risk lives in code that trusts client identity/amounts or reads drifted columns.
