@@ -50,5 +50,11 @@ Focused workflow (3 finders + 3-skeptic verify) over auth/session/token code, st
 - `services/[id]/photos` uploads with `contentType: file.type` and no mime allowlist (unlike gallery/reviews) , low (served from the supabase.co storage origin, not solen.ch; SVG in <img> does not execute). Add the jpeg/png/webp allowlist for parity.
 - `calendar_tokens` Google OAuth access/refresh tokens are plaintext at the app layer (owner-locked by RLS; Supabase encrypts at rest at disk). Defense-in-depth: app-layer encryption of the refresh token.
 
+## Fifth , PostgREST filter injection (.or() breakout)
+Scanned all 27 .or() call sites for interpolated user input. 24 were safe (server constants, session UUIDs, or the help/route.ts pre-sanitized pattern). 2 took raw user input into a .or() filter string, where a comma/paren breaks out and injects extra OR conditions (commit d76684cd6):
+- referral/validate: the code param (only uppercased) is now sanitized to [A-Z0-9-] (the real SOLEN-XXXX shape), stripping every delimiter. Partly mitigated before (uppercase mangled operators, .single() errors on multi-match) but bad practice.
+- search/treatments: the treatment search term (and the category name) now strip [,()] like help/route.ts. Was public-data search-result manipulation.
+The DB side is clean here: all 28 SECURITY DEFINER functions have no dynamic SQL (checked in ring 3), so there is no server-side SQL injection surface.
+
 ## Recurring themes confirmed again (same as the 141-audit)
 Phantom-column silent no-ops were the single biggest class this sweep (10 of 24) , dashboards silently reporting 0 because a query named a column the live DB never had. Second: service-role routes missing their own ownership check. The DB/RLS LAYER itself is now clean; the remaining risk lives in code that trusts client identity/amounts or reads drifted columns.
