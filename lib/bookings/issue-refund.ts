@@ -128,17 +128,55 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   // 5. Resolve fee policy (D7).
   const appFee = refundApplicationFee ?? (await getRefundConfig()).refundApplicationFeeDefault;
 
-  // 6. Deterministic idempotency key — per (booking, prior-refunded-total, amount).
+  // 6. Deterministic idempotency key, per (booking, prior-refunded-total, amount).
   //    A double-click or Stripe retry collapses to one refund; keyed on the same
-  //    staleRefunded that gates the CAS below, so Stripe + DB stay in lockstep.
+  //    staleRefunded that gates the claim below, so Stripe + DB stay in lockstep.
   const idempotencyKey = `refund:${source}:${id}:${staleRefunded}:${amountCents}`;
 
-  // 7. Stripe call. reverse_transfer / refund_application_fee ONLY for Connect
-  //    destination charges (stripe_account_id present); omit both otherwise.
+  // 7. Compute the accounting totals up front so we can CLAIM them BEFORE
+  //    touching Stripe. priorPaymentStatus is kept for the rollback in step 9.
+  const priorPaymentStatus = booking.payment_status;
+  const newTotal = staleRefunded + amountCents;
+  const isFull = newTotal >= paidAmount;
+  const paymentStatus: IssueRefundResult["paymentStatus"] = isFull ? "refunded" : "partially_refunded";
+
+  // 8. CLAIM FIRST, atomic compare-and-set BEFORE calling Stripe, NOT
+  //    read-modify-write (salon + admin can both act). This closes the race where
+  //    two concurrent DIFFERENT-amount refunds (the Stripe idempotency key includes
+  //    amountCents, so it does NOT collapse them) could both reach refunds.create
+  //    before either wrote the DB, a real double-Stripe-refund, not just a DB
+  //    no-op. Whoever wins this CAS is the only caller allowed to call Stripe; the
+  //    loser is rejected here, before any money moves.
+  const { data: claimRow, error: casError } = await db
+    .from("bookings")
+    .update({ refunded_amount: newTotal, payment_status: paymentStatus })
+    .eq("id", id)
+    .eq("refunded_amount", staleRefunded) // CAS guard.
+    .select("id")
+    .maybeSingle();
+
+  if (casError) {
+    console.error("[issueRefund] CAS claim error:", casError);
+    throw new RefundError("CONCURRENT_RETRY", casError.message);
+  }
+
+  if (!claimRow) {
+    // CAS matched 0 rows -> a concurrent refund already advanced refunded_amount
+    // between our read and this claim. Do NOT call Stripe here, the caller
+    // surfaces CONCURRENT_RETRY and the retry re-reads the fresh total.
+    console.error(
+      `[issueRefund] CAS claim no-op (concurrent refund) for booking ${id}; refund not attempted`
+    );
+    throw new RefundError("CONCURRENT_RETRY", "refunded_amount advanced concurrently; retry");
+  }
+
+  // 9. Stripe call, only reached after winning the claim above. reverse_transfer /
+  //    refund_application_fee ONLY for Connect destination charges (stripe_account_id
+  //    present); omit both otherwise.
   const stripeAccountId = booking.salons?.stripe_account_id ?? null;
   const refundParams: Record<string, unknown> = {
     payment_intent: pi,
-    amount: amountCents, // Rappen — Stripe's smallest unit for CHF.
+    amount: amountCents, // Rappen, Stripe's smallest unit for CHF.
     reason: "requested_by_customer",
   };
   if (stripeAccountId) {
@@ -150,7 +188,28 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   try {
     refund = await getStripe().refunds.create(refundParams as any, { idempotencyKey });
   } catch (stripeErr: any) {
-    // A refund that throws is a genuine money-path failure — unlike a charge there
+    // Roll back the claim, we reserved newTotal but Stripe never issued the
+    // money, so the booking must not be left showing a refund that didn't happen.
+    // Guarded: only revert if the row is still at OUR claimed value; if a later
+    // (legitimate) refund has since stacked on top of it, leave the row alone and
+    // let the alert below surface the drift for manual reconciliation.
+    const { data: rollbackRow, error: rollbackError } = await db
+      .from("bookings")
+      .update({ refunded_amount: staleRefunded, payment_status: priorPaymentStatus })
+      .eq("id", id)
+      .eq("refunded_amount", newTotal)
+      .select("id")
+      .maybeSingle();
+    if (rollbackError) {
+      console.error("[issueRefund] claim rollback error:", rollbackError);
+    }
+    // rollback_reverted tells an admin apart a CLEAN revert (the row was still at
+    // OUR claimed newTotal, so the update above matched and undid it) from a
+    // NO-OP (a later legitimate refund already advanced refunded_amount past
+    // newTotal, so the .eq("refunded_amount", newTotal) guard matched 0 rows and
+    // the row was deliberately left alone, leaving drift for manual reconciliation).
+    const rollbackReverted = !rollbackError && !!rollbackRow;
+    // A refund that throws is a genuine money-path failure, unlike a charge there
     // is no "decline" business outcome here (the funds already moved IN; a failing
     // refund means already_refunded / insufficient platform balance / Stripe API
     // error). Always worth an alert. Keep the typed throw so callers map it to 500.
@@ -159,6 +218,7 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
       payment_intent: pi,
       amount_cents: amountCents,
       idempotency_key: idempotencyKey,
+      rollback_reverted: rollbackReverted,
       stripe_error_type: stripeErr?.type ?? stripeErr?.raw?.type ?? null,
       stripe_error_code: stripeErr?.code ?? stripeErr?.raw?.code ?? null,
       error: stripeErr?.message ?? String(stripeErr),
@@ -166,60 +226,19 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
     throw new RefundError("STRIPE_FAILED", stripeErr?.message ?? "Stripe refund failed");
   }
 
-  // 8. Atomic accounting — compare-and-set, NOT read-modify-write (salon + admin
-  //    can both act). The .eq("refunded_amount", staleRefunded) guard rejects the
-  //    write if another actor already advanced the total.
-  const newTotal = staleRefunded + amountCents;
-  const isFull = newTotal >= paidAmount;
-  const paymentStatus: IssueRefundResult["paymentStatus"] = isFull ? "refunded" : "partially_refunded";
+  // 10. salon_payouts reconciliation is intentionally NOT done here. The
+  //     `charge.refunded` Stripe webhook (app/api/stripe/webhook/route.ts) is the
+  //     single canonical reconciler, it fires after every `refunds.create`
+  //     (including this one) and recomputes gross/commission/net on the payout
+  //     row. Decrementing here as well double-counted the refund against the
+  //     salon's payout (the live double-decrement bug, REFUND_APPEAL_PLAN §10b#3).
+  //     Keep this chokepoint single-responsibility: Stripe refund + the booking
+  //     claim above; the webhook owns the ledger.
 
-  const { data: casRow, error: casError } = await db
-    .from("bookings")
-    .update({ refunded_amount: newTotal, payment_status: paymentStatus })
-    .eq("id", id)
-    .eq("refunded_amount", staleRefunded) // CAS guard.
-    .select("id")
-    .maybeSingle();
-
-  if (casError) {
-    console.error("[issueRefund] CAS update error:", casError);
-    throw new RefundError("CONCURRENT_RETRY", casError.message);
-  }
-
-  if (!casRow) {
-    // CAS matched 0 rows -> a concurrent refund already advanced the total.
-    // Because the Stripe idempotency key is keyed on the SAME staleRefunded,
-    // Stripe also collapsed this to the already-issued refund. Re-read and
-    // return the current state rather than double-counting.
-    const { data: fresh } = await db
-      .from("bookings")
-      .select("refunded_amount, paid_amount")
-      .eq("id", id)
-      .maybeSingle();
-    const freshTotal = (fresh?.refunded_amount as number | null) ?? newTotal;
-    const freshPaid = (fresh?.paid_amount as number | null) ?? paidAmount;
-    console.error(
-      `[issueRefund] CAS no-op (concurrent refund) for booking ${id}; ` +
-        `returning current refunded_amount=${freshTotal}`
-    );
-    return {
-      refundId: refund.id,
-      totalRefundedCents: freshTotal,
-      paymentStatus: freshTotal >= freshPaid ? "refunded" : "partially_refunded",
-    };
-  }
-
-  // 9. salon_payouts reconciliation is intentionally NOT done here. The
-  //    `charge.refunded` Stripe webhook (app/api/stripe/webhook/route.ts) is the
-  //    single canonical reconciler — it fires after every `refunds.create`
-  //    (including this one) and recomputes gross/commission/net on the payout
-  //    row. Decrementing here as well double-counted the refund against the
-  //    salon's payout (the live double-decrement bug, REFUND_APPEAL_PLAN §10b#3).
-  //    Keep this chokepoint single-responsibility: Stripe refund + the booking
-  //    CAS above; the webhook owns the ledger.
-
-  // 10. Return. case_events + audit are the CALLER's responsibility (it knows the
-  //     dispute id); this chokepoint is single-responsibility: money + booking row.
+  // 11. Return. The accounting was already recorded by the claim in step 8 (no
+  //     post-Stripe CAS needed). case_events + audit are the CALLER's
+  //     responsibility (it knows the dispute id); this chokepoint is
+  //     single-responsibility: money + booking row.
   return {
     refundId: refund.id,
     totalRefundedCents: newTotal,

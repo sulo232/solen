@@ -125,6 +125,10 @@ interface ResolvedPurchase {
   stripeAccountId: string | null;
   // retail-only: the purchased SKUs, so a FULL refund re-increments their stock (A-5).
   productIds: string[] | null;
+  // retail-only (package_purchases has no status column): the CURRENT status,
+  // captured so a Stripe-failure rollback can restore it exactly (claim-first
+  // inversion below writes 'refunded' / 'partially_refunded' optimistically).
+  status: string | null;
 }
 
 /**
@@ -159,13 +163,14 @@ async function resolvePurchase(
       userId: row.user_id,
       stripeAccountId: row.salons?.stripe_account_id ?? null,
       productIds: null, // packages have no per-SKU stock.
+      status: null, // package_purchases has no status column.
     };
   }
 
   // retail
   const { data, error } = await db
     .from("retail_purchases")
-    .select("id, stripe_payment_intent_id, paid_amount, refunded_amount, salon_id, user_id, product_ids, salons(stripe_account_id)")
+    .select("id, stripe_payment_intent_id, paid_amount, refunded_amount, salon_id, user_id, product_ids, status, salons(stripe_account_id)")
     .eq("id", id)
     .single();
   if (error || !data) return null;
@@ -176,6 +181,7 @@ async function resolvePurchase(
     salon_id: string | null;
     user_id: string | null;
     product_ids: string[] | null;
+    status: string | null;
     salons: { stripe_account_id: string | null } | null;
   };
   return {
@@ -186,6 +192,7 @@ async function resolvePurchase(
     userId: row.user_id,
     stripeAccountId: row.salons?.stripe_account_id ?? null,
     productIds: row.product_ids ?? null,
+    status: row.status,
   };
 }
 
@@ -193,6 +200,9 @@ async function resolvePurchase(
  * Atomic accounting CAS, per source. Mirrors issueRefund's
  * .eq("refunded_amount", staleRefunded) guard: rejects the write if another
  * actor already advanced the total. Returns the matched row (or null on no-op).
+ * `status` is typed as a plain string (not the narrower refund-status union) so
+ * this same helper can also drive the Stripe-failure ROLLBACK, which restores
+ * the purchase's PRIOR status (e.g. 'paid'), not a refund status.
  */
 async function casRefundedAmount(
   db: SupabaseClient,
@@ -200,7 +210,7 @@ async function casRefundedAmount(
   id: string,
   staleRefunded: number,
   newTotal: number,
-  status: "refunded" | "partially_refunded",
+  status: string,
 ) {
   const table = source === "package" ? "package_purchases" : "retail_purchases";
   // retail_purchases has a `status` column (migration 20260602100000);
@@ -321,19 +331,62 @@ export async function issuePurchaseRefund(
     throw new PurchaseRefundError("NO_PAYMENT", "Purchase has no Stripe payment_intent_id");
   }
 
-  // 5. Resolve fee policy (D7) — shared with booking refunds.
+  // 5. Resolve fee policy (D7), shared with booking refunds.
   const appFee = refundApplicationFee ?? (await getRefundConfig()).refundApplicationFeeDefault;
 
-  // 6. Deterministic idempotency key — per (source, purchase, prior-refunded-total,
+  // 6. Deterministic idempotency key, per (source, purchase, prior-refunded-total,
   //    amount). A double-click / Stripe retry collapses to one refund; keyed on the
-  //    same staleRefunded that gates the CAS below, so Stripe + DB stay in lockstep.
+  //    same staleRefunded that gates the claim below, so Stripe + DB stay in lockstep.
   const idempotencyKey = `refund:${source}:${id}:${staleRefunded}:${amountCents}`;
 
-  // 7. Stripe call. reverse_transfer / refund_application_fee ONLY for Connect
-  //    destination charges (stripe_account_id present); omit both otherwise.
+  // 7. Compute the accounting totals up front so we can CLAIM them BEFORE
+  //    touching Stripe. priorStatus is kept for the rollback in step 9 (retail
+  //    only, package_purchases has no status column).
+  const priorStatus = purchase.status;
+  const newTotal = staleRefunded + amountCents;
+  const isFull = newTotal >= paidAmount;
+  const status: IssuePurchaseRefundResult["status"] = isFull ? "refunded" : "partially_refunded";
+
+  // 8. CLAIM FIRST, atomic compare-and-set BEFORE calling Stripe, NOT
+  //    read-modify-write (salon + admin can both act, and the Redis lock above
+  //    fails open when Upstash is not configured, which it is not in this repo).
+  //    This closes the race where two concurrent DIFFERENT-amount refunds (the
+  //    Stripe idempotency key includes amountCents, so it does NOT collapse them)
+  //    could both reach refunds.create before either wrote the DB, a real
+  //    double-Stripe-refund, not just a DB no-op. Whoever wins this CAS is the
+  //    only caller allowed to call Stripe; the loser is rejected here, before any
+  //    money moves. The Redis lock stays as a secondary best-effort layer; this
+  //    CAS is the real guard.
+  const { data: claimRow, error: casError } = await casRefundedAmount(
+    db,
+    source,
+    id,
+    staleRefunded,
+    newTotal,
+    status,
+  );
+
+  if (casError) {
+    console.error("[issuePurchaseRefund] CAS claim error:", casError);
+    throw new PurchaseRefundError("CONCURRENT_RETRY", casError.message);
+  }
+
+  if (!claimRow) {
+    // CAS matched 0 rows -> a concurrent refund already advanced refunded_amount
+    // between our read and this claim. Do NOT call Stripe here, the caller
+    // surfaces CONCURRENT_RETRY and the retry re-reads the fresh total.
+    console.error(
+      `[issuePurchaseRefund] CAS claim no-op (concurrent refund) for ${source} ${id}; refund not attempted`,
+    );
+    throw new PurchaseRefundError("CONCURRENT_RETRY", "refunded_amount advanced concurrently; retry");
+  }
+
+  // 9. Stripe call, only reached after winning the claim above. reverse_transfer /
+  //    refund_application_fee ONLY for Connect destination charges (stripe_account_id
+  //    present); omit both otherwise.
   const refundParams: Record<string, unknown> = {
     payment_intent: pi,
-    amount: amountCents, // Rappen — Stripe's smallest unit for CHF.
+    amount: amountCents, // Rappen, Stripe's smallest unit for CHF.
     reason: "requested_by_customer",
   };
   if (purchase.stripeAccountId) {
@@ -345,12 +398,36 @@ export async function issuePurchaseRefund(
   try {
     refund = await getStripe().refunds.create(refundParams as any, { idempotencyKey });
   } catch (stripeErr: any) {
+    // Roll back the claim, we reserved newTotal (and, for retail, a refund
+    // status) but Stripe never issued the money, so the purchase must not be
+    // left showing a refund that didn't happen. Guarded: only revert if the row
+    // is still at OUR claimed value; if a later (legitimate) refund has since
+    // stacked on top of it, leave the row alone and let the alert below surface
+    // the drift for manual reconciliation.
+    const { data: rollbackRow, error: rollbackError } = await casRefundedAmount(
+      db,
+      source,
+      id,
+      newTotal,
+      staleRefunded,
+      priorStatus ?? "paid",
+    );
+    if (rollbackError) {
+      console.error("[issuePurchaseRefund] claim rollback error:", rollbackError);
+    }
+    // rollback_reverted tells an admin apart a CLEAN revert (the CAS above matched
+    // our claimed newTotal and undid it) from a NO-OP (a later legitimate refund
+    // already advanced refunded_amount past newTotal, so the CAS guard matched 0
+    // rows and the row was deliberately left alone, leaving drift for manual
+    // reconciliation, see the guard comment above).
+    const rollbackReverted = !rollbackError && !!rollbackRow;
     void alertAdmin("Stripe purchase refund threw", {
       source,
       purchase_id: id,
       payment_intent: pi,
       amount_cents: amountCents,
       idempotency_key: idempotencyKey,
+      rollback_reverted: rollbackReverted,
       stripe_error_type: stripeErr?.type ?? stripeErr?.raw?.type ?? null,
       stripe_error_code: stripeErr?.code ?? stripeErr?.raw?.code ?? null,
       error: stripeErr?.message ?? String(stripeErr),
@@ -358,52 +435,11 @@ export async function issuePurchaseRefund(
     throw new PurchaseRefundError("STRIPE_FAILED", stripeErr?.message ?? "Stripe refund failed");
   }
 
-  // 8. Atomic accounting — compare-and-set, NOT read-modify-write (salon + admin
-  //    can both act). The CAS guard rejects the write if another actor advanced
-  //    the total between the read and here.
-  const newTotal = staleRefunded + amountCents;
-  const isFull = newTotal >= paidAmount;
-  const status: IssuePurchaseRefundResult["status"] = isFull ? "refunded" : "partially_refunded";
-
-  const { data: casRow, error: casError } = await casRefundedAmount(
-    db,
-    source,
-    id,
-    staleRefunded,
-    newTotal,
-    status,
-  );
-
-  if (casError) {
-    console.error("[issuePurchaseRefund] CAS update error:", casError);
-    throw new PurchaseRefundError("CONCURRENT_RETRY", casError.message);
-  }
-
-  if (!casRow) {
-    // CAS matched 0 rows -> a concurrent refund already advanced the total.
-    // Because the Stripe idempotency key is keyed on the SAME staleRefunded,
-    // Stripe also collapsed this to the already-issued refund. Re-read and
-    // return current state rather than double-counting.
-    const fresh = await resolvePurchase(db, source, id);
-    const freshTotal = fresh?.refundedAmount ?? newTotal;
-    const freshPaid = fresh?.paidAmount ?? paidAmount;
-    console.error(
-      `[issuePurchaseRefund] CAS no-op (concurrent refund) for ${source} ${id}; ` +
-        `returning current refunded_amount=${freshTotal}`,
-    );
-    return {
-      refundId: refund.id,
-      totalRefundedCents: freshTotal,
-      status: freshTotal >= freshPaid ? "refunded" : "partially_refunded",
-      userId: purchase.userId,
-      salonId: purchase.salonId,
-    };
-  }
-
-  // 8b. A-5 stock RE-INCREMENT (retail, FULL refund only). Tied to the status
-  //     transition, not the amount: it runs ONLY when casRow is present (THIS call
-  //     performed the CAS, so a concurrent retry won't double-bump) AND the refund is
-  //     full (status === "refunded"). Partial refunds leave stock alone. Each SKU is
+  // 9b. A-5 stock RE-INCREMENT (retail, FULL refund only). Tied to the status
+  //     transition, not the amount: it runs when THIS call won the claim in step 8
+  //     (a concurrent retry already threw CONCURRENT_RETRY above and never reaches
+  //     here, so a double-bump is not possible) AND the refund is full
+  //     (status === "refunded"). Partial refunds leave stock alone. Each SKU is
   //     bumped +1 (v1 quantity = 1 per SKU per purchase). Untracked SKUs (NULL stock)
   //     return no row and are skipped. Best-effort: a stock-bump failure never fails the
   //     refund (the money already moved).
@@ -419,17 +455,19 @@ export async function issuePurchaseRefund(
     }
   }
 
-  // 9. salon_payouts reconciliation is intentionally NOT done here. The
-  //    `charge.refunded` Stripe webhook is the single canonical reconciler , it
-  //    fires after every refunds.create (including this one) and recomputes the
-  //    payout row from the charge's own figures. Decrementing here too would
-  //    double-count (the same lesson as issue-refund.ts §9). Note: a payout row
-  //    only exists if the original PI's payment_intent.succeeded wrote one; the
-  //    webhook's charge.refunded handler is a guarded no-op when there is none.
+  // 10. salon_payouts reconciliation is intentionally NOT done here. The
+  //     `charge.refunded` Stripe webhook is the single canonical reconciler, it
+  //     fires after every refunds.create (including this one) and recomputes the
+  //     payout row from the charge's own figures. Decrementing here too would
+  //     double-count (the same lesson as issue-refund.ts step 10). Note: a payout
+  //     row only exists if the original PI's payment_intent.succeeded wrote one;
+  //     the webhook's charge.refunded handler is a guarded no-op when there is none.
 
-  // 10. Notification + audit are the CALLER's responsibility (it owns the locale /
+  // 11. Notification + audit are the CALLER's responsibility (it owns the locale /
   //     case context); this chokepoint is single-responsibility: Stripe refund +
-  //     the purchase-row CAS. We return userId / salonId so the caller can notify.
+  //     the purchase-row claim. We return userId / salonId so the caller can
+  //     notify. The accounting was already recorded by the claim in step 8 (no
+  //     post-Stripe CAS needed).
   return {
     refundId: refund.id,
     totalRefundedCents: newTotal,

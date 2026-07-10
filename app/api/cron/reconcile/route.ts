@@ -19,19 +19,32 @@ import { getServerEnv } from "@/lib/env";
 // UNIT CONTRACT (verified against app/api/stripe/webhook/route.ts):
 //   - Stripe charge.amount_captured / amount_refunded are integer Rappen
 //     (smallest CHF unit). bookings.paid_amount / refunded_amount are ALSO
-//     integer Rappen. So those compares are direct integer == — no CHF floats.
+//     integer Rappen, so those compares are direct integer == (no CHF floats).
+//     package_purchases / retail_purchases.paid_amount / refunded_amount carry
+//     the same integer-Rappen contract (migration 20260602100000_purchase_refunds).
 //   - salon_payouts.gross/net are CHF numerics (the webhook writes pi.amount/100).
 //     We only assert the payout ROW EXISTS here; amount-level payout drift is the
 //     charge.amount_captured vs paid_amount check above plus the webhook's own
 //     charge.refunded recompute, so we don't re-derive CHF here.
 //
+// PACKAGE / RETAIL PURCHASE reconciliation (added alongside the booking checks):
+//   - live linkage confirmed against app/api/salon/retail/purchase/route.ts +
+//     app/api/stripe/webhook/purchase-handler.ts: the PI's metadata.type is set
+//     to "retail_purchase" at creation, and retail_purchases is keyed on
+//     stripe_payment_intent_id (unique). package_purchases has the same column
+//     but the Pakete creation routes (app/api/packages/*) were deleted 2026-06-13
+//     (_design-system/REMOVED.md), so no NEW charge will ever carry a
+//     package-purchase metadata.type; that branch below is defensive-only,
+//     covering a legacy row whose PI still happens to fall in the lookback window.
+//
 // SKIPPED (logged for honest coverage):
-//   - walk-in charges (pi.metadata.type === "walk_in") — ticket flow, no
+//   - walk-in charges (pi.metadata.type === "walk_in"): ticket flow, no
 //     scheduled-booking row / payout path (webhook skips them too).
-//   - voucher purchases (pi.metadata.type === "voucher") — handled by the
+//   - voucher purchases (pi.metadata.type === "voucher"): handled by the
 //     voucher-handler, not a booking.
-//   - any charge whose PI carries no booking_id metadata (non-booking / manual /
-//     test charges) — nothing in `bookings` to reconcile against.
+//   - any charge whose PI carries no booking_id metadata AND isn't a
+//     retail_purchase/package_purchase (non-booking / manual / test charges),
+//     nothing in `bookings` or the purchase tables to reconcile against.
 
 const LOOKBACK_MS = 48 * 60 * 60 * 1000;
 const PAGE_SIZE = 100;
@@ -43,11 +56,15 @@ type Mismatch = {
     | "refund_drift"
     | "missing_booking"
     | "missing_payout"
-    | "refund_without_db_record";
+    | "refund_without_db_record"
+    | "purchase_amount_drift"
+    | "purchase_refund_drift"
+    | "missing_purchase";
   payment_intent: string | null;
   charge_id?: string;
   refund_id?: string;
   booking_id?: string | null;
+  purchase_id?: string | null;
   detail: string;
 };
 
@@ -66,6 +83,7 @@ export async function GET(req: NextRequest) {
   const mismatches: Mismatch[] = [];
   const skipped = { walk_in: 0, voucher: 0, non_booking: 0 };
   let checked = 0;
+  let checkedPurchases = 0;
 
   // ---- 1. Charges from the last 48h ----------------------------------------
   try {
@@ -102,6 +120,57 @@ export async function GET(req: NextRequest) {
           skipped.voucher++;
           continue;
         }
+
+        // --- PACKAGE / RETAIL PURCHASE reconciliation, parallel to the booking
+        //     branch below (does not touch it). "retail_purchase" is the live
+        //     metadata.type (app/api/salon/retail/purchase/route.ts); "package_purchase"
+        //     is checked defensively for a legacy row (see the file header note),
+        //     no new charge carries it. Both tables are keyed on
+        //     stripe_payment_intent_id (confirmed live columns, migration
+        //     20260602100000_purchase_refunds). ---
+        if (meta.type === "retail_purchase" || meta.type === "package_purchase") {
+          checkedPurchases++;
+          const purchaseTable = meta.type === "retail_purchase" ? "retail_purchases" : "package_purchases";
+          const { data: purchase } = await admin
+            .from(purchaseTable)
+            .select("id, paid_amount, refunded_amount")
+            .eq("stripe_payment_intent_id", piId)
+            .maybeSingle();
+
+          if (!purchase) {
+            mismatches.push({
+              kind: "missing_purchase",
+              payment_intent: piId,
+              charge_id: charge.id,
+              detail: `Stripe charge ${charge.id} (PI ${piId}, type=${meta.type}) has no matching ${purchaseTable} row. captured=${charge.amount_captured} Rappen.`,
+            });
+            continue;
+          }
+
+          const dbPurchasePaid = purchase.paid_amount ?? 0;
+          if (charge.amount_captured !== dbPurchasePaid) {
+            mismatches.push({
+              kind: "purchase_amount_drift",
+              payment_intent: piId,
+              charge_id: charge.id,
+              purchase_id: purchase.id,
+              detail: `captured amount drift: Stripe=${charge.amount_captured} Rappen vs ${purchaseTable}.paid_amount=${dbPurchasePaid} Rappen.`,
+            });
+          }
+
+          const dbPurchaseRefunded = purchase.refunded_amount ?? 0;
+          if (charge.amount_refunded !== dbPurchaseRefunded) {
+            mismatches.push({
+              kind: "purchase_refund_drift",
+              payment_intent: piId,
+              charge_id: charge.id,
+              purchase_id: purchase.id,
+              detail: `refunded amount drift: Stripe=${charge.amount_refunded} Rappen vs ${purchaseTable}.refunded_amount=${dbPurchaseRefunded} Rappen.`,
+            });
+          }
+          continue;
+        }
+
         const metaBookingId = meta.booking_id || null;
         // A booking charge is identified by metadata.type === "booking" OR a
         // booking_id in metadata. Anything else has no row in `bookings`.
@@ -227,9 +296,13 @@ export async function GET(req: NextRequest) {
           .eq("payment_intent_id", piId)
           .maybeSingle();
 
-        // No booking on this PI: it's a walk-in / voucher / non-booking refund.
-        // The charge loop already accounts for skip categories; here we only
-        // flag the booking-linked refunds the DB under-recorded.
+        // No booking on this PI: it's a walk-in / voucher / non-booking refund,
+        // OR a package/retail purchase refund. The charge loop above now
+        // reconciles purchase refunds too, but only for a charge CREATED inside
+        // the 48h lookback; a refund today against an older purchase charge is
+        // NOT re-checked here (this section stays booking-only, scoped to the
+        // literal ask). Here we only flag the booking-linked refunds the DB
+        // under-recorded.
         if (!booking) continue;
 
         const dbRefunded = booking.refunded_amount ?? 0;
@@ -261,11 +334,12 @@ export async function GET(req: NextRequest) {
       charge_id: m.charge_id,
       refund_id: m.refund_id,
       booking_id: m.booking_id,
+      purchase_id: m.purchase_id,
     });
   }
 
   console.log(
-    `[cron/reconcile] checked=${checked} mismatches=${mismatches.length} ` +
+    `[cron/reconcile] checked bookings=${checked} purchases=${checkedPurchases} mismatches=${mismatches.length} ` +
       `skipped(walk_in=${skipped.walk_in}, voucher=${skipped.voucher}, non_booking=${skipped.non_booking})`
   );
 
@@ -277,6 +351,7 @@ export async function GET(req: NextRequest) {
           (m) =>
             `<li><strong>${m.kind}</strong> — ${m.detail}` +
             `${m.booking_id ? ` (booking ${m.booking_id})` : ""}` +
+            `${m.purchase_id ? ` (purchase ${m.purchase_id})` : ""}` +
             `${m.payment_intent ? ` [PI ${m.payment_intent}]` : ""}</li>`
         )
         .join("");
@@ -285,7 +360,7 @@ export async function GET(req: NextRequest) {
         subject: `[solen.ch] Reconciliation: ${mismatches.length} mismatch(es) in last 48h`,
         html:
           `<p>The daily Stripe↔DB reconciliation found <strong>${mismatches.length}</strong> ` +
-          `mismatch(es) (checked ${checked} booking charge(s)).</p>` +
+          `mismatch(es) (checked ${checked} booking charge(s), ${checkedPurchases} purchase charge(s)).</p>` +
           `<p>Skipped: walk-in ${skipped.walk_in}, voucher ${skipped.voucher}, non-booking ${skipped.non_booking}.</p>` +
           `<ul>${rows}</ul>` +
           `<p>This is read-only — no auto-fix was applied. Reconcile manually in Stripe + the DB.</p>`,
@@ -297,6 +372,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     checked,
+    checkedPurchases,
     skipped,
     mismatches,
   });

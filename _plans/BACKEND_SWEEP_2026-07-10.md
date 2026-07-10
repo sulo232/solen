@@ -21,5 +21,9 @@ Owner ask: "go look into more of the same core issues, not only in the booking f
 - `conversations/[id]/messages:33` read-receipt no-op , messaging is a disabled feature; fix needs an RLS/design decision when revived. Latent.
 - Voucher redemption/spend path does not exist (buy-only). Incomplete feature; if built, use the gift-cards/redeem optimistic-lock pattern.
 
+## Batch 6 (in progress) , purchase refund reconciliation gap + rollback-alert ambiguity
+- `app/api/cron/reconcile/route.ts` had ZERO reconciliation for package/retail PURCHASE refunds (only `bookings` was checked). Confirmed live linkage: retail_purchases is keyed on `stripe_payment_intent_id`, PI metadata.type="retail_purchase" set at creation (app/api/salon/retail/purchase/route.ts). package_purchases has no live creation route (Pakete killed 2026-06-11, routes deleted 2026-06-13, REMOVED.md) so its branch is defensive-only for legacy rows. Adding a parallel purchase_amount_drift / purchase_refund_drift / missing_purchase check in the same charge loop, bookings logic untouched.
+- `lib/bookings/issue-refund.ts` + `lib/purchases/issue-purchase-refund.ts` STRIPE_FAILED rollback: alertAdmin fired the same payload whether the CAS revert matched a row (clean) or no-op'd (drift left behind). Adding `rollback_reverted: boolean` to the alert payload from the revert's own `.select().maybeSingle()` result.
+
 ## Recurring themes confirmed again (same as the 141-audit)
 Phantom-column silent no-ops were the single biggest class this sweep (10 of 24) , dashboards silently reporting 0 because a query named a column the live DB never had. Second: service-role routes missing their own ownership check. The DB/RLS LAYER itself is now clean; the remaining risk lives in code that trusts client identity/amounts or reads drifted columns.
