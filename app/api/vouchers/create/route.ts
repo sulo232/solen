@@ -15,24 +15,55 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getStripe, toRappen } from "@/lib/stripe";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { checkFeatureEnabled } from "@/lib/feature-flags";
+import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { nanoid } from "nanoid";
 
 // Validation schema. customerId is deliberately NOT accepted from the client, the
 // original caller (app/[locale]/vouchers/buy, now hidden per that page's own note)
 // is a logged-in customer buying a voucher for themselves, so the buyer is derived
 // from the session below, never trusted from the request body.
-const CreateVoucherSchema = z.object({
-  discountType: z.enum(["percent", "fixed"]),
-  discountValue: z.number().positive(),
-  recipientEmail: z.string().email().optional(),
-  salonId: z.string().uuid().optional(),
-});
+// Caps (P0 fix, 2026-07-10): a purchased voucher is stored value, so discountValue
+// must be bounded , without a cap a client could mint an arbitrarily large fixed
+// discount. 500 CHF mirrors the gift-card purchase ceiling (giftCardPurchaseSchema,
+// 50000 Rappen). The percent cap is moot once percent is rejected below, but keeps
+// the schema internally consistent if that branch is ever revisited.
+const CreateVoucherSchema = z
+  .object({
+    discountType: z.enum(["percent", "fixed"]),
+    discountValue: z.number().positive(),
+    recipientEmail: z.string().email().optional(),
+    salonId: z.string().uuid().optional(),
+  })
+  .refine((data) => data.discountValue >= 1, {
+    message: "Wert muss mindestens 1 sein",
+    path: ["discountValue"],
+  })
+  .refine(
+    (data) => !(data.discountType === "percent" && data.discountValue > 100),
+    { message: "Prozentwert darf 100 nicht überschreiten", path: ["discountValue"] }
+  )
+  .refine(
+    (data) => !(data.discountType === "fixed" && data.discountValue > 500),
+    { message: "Gutschein darf CHF 500 nicht überschreiten", path: ["discountValue"] }
+  );
 
 export async function POST(req: NextRequest) {
   try {
+    // Fail-closed feature gate (mirrors app/api/gift-cards/purchase): blocks mint
+    // while the "vouchers" flag is off or on a verify error, FIRST, before auth.
+    const disabled = await checkFeatureEnabled("vouchers");
+    if (disabled) return disabled;
+
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Rate-limited: minting a voucher creates a Stripe coupon + promotion code +
+    // an is_active:false promo_codes row per call (mirrors the other payment-adjacent
+    // mint endpoints, e.g. gift-cards/purchase).
+    const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     const body = await req.json();
     const parsed = CreateVoucherSchema.safeParse(body);
@@ -47,20 +78,27 @@ export async function POST(req: NextRequest) {
     const { discountType, discountValue, recipientEmail, salonId } = parsed.data;
     const customerId = user.id;
 
+    // A purchased voucher is a stored-value instrument (the buyer pays a CHF amount
+    // for a matching CHF discount). A percent voucher has no fixed value to charge
+    // (buy 95%-off for CHF 95 mispriced it, and the discount is uncapped relative to
+    // the price paid), so purchasable vouchers must be fixed-amount only.
+    if (discountType === "percent") {
+      return NextResponse.json(
+        { error: "percent_voucher_not_purchasable" },
+        { status: 400 }
+      );
+    }
+
     const stripe = getStripe();
     const admin = createAdminSupabaseClient();
 
     // Step 1: Create Stripe Coupon
+    // discountType is narrowed to "fixed" here: the percent branch returns 400 above.
     const couponParams: any = {
       currency: "chf",
-      name: `Gutschein ${discountType === "percent" ? `${discountValue}%` : `CHF ${discountValue}`}`,
+      name: `Gutschein CHF ${discountValue}`,
+      amount_off: toRappen(discountValue), // CHF → Rappen
     };
-
-    if (discountType === "percent") {
-      couponParams.percent_off = discountValue;
-    } else {
-      couponParams.amount_off = toRappen(discountValue); // CHF → Rappen
-    }
 
     const coupon = await stripe.coupons.create(couponParams);
 
@@ -85,7 +123,13 @@ export async function POST(req: NextRequest) {
         salon_id: salonId ?? null,
         max_uses: 1,
         current_uses: 0,
-        is_active: true,
+        // CRITICAL (P0 fix, 2026-07-10): inert until paid. This row used to be inserted
+        // is_active:true, so any logged-in user could mint a working 100%-off /
+        // arbitrary-fixed discount code without ever paying, then redeem it on a
+        // booking , unlimited free services. Flipped to true ONLY by the Stripe webhook
+        // (app/api/stripe/webhook/voucher-handler.ts, handleVoucherPurchase) after the
+        // PaymentIntent below actually succeeds. Mirrors gift_cards.is_active (gift-card-handler.ts).
+        is_active: false,
         created_by: customerId,
       })
       .select()

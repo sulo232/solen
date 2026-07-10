@@ -30,6 +30,30 @@ export async function handleVoucherPurchase(pi: any): Promise<boolean> {
   }
 
   try {
+    // Activate the voucher (P0 fix, 2026-07-10): promo_codes is inserted is_active:false
+    // at mint time (app/api/vouchers/create), so the code is inert until this handler runs,
+    // which only fires on the VERIFIED payment_intent.succeeded event (the caller in
+    // app/api/stripe/webhook/route.ts), i.e. only after the PI is confirmed paid. Advance-only
+    // CAS (is_active false -> true): the returned row is non-null ONLY on the transition, so a
+    // Stripe re-delivery of the same event (or any retry) is a safe no-op, it neither
+    // re-activates an already-active code nor re-inserts voucher_purchases / re-sends the email
+    // below. Mirrors gift-card-handler.ts's is_active activation.
+    const { data: activated } = await admin
+      .from("promo_codes")
+      .update({ is_active: true })
+      .eq("id", promoCodeId)
+      .eq("is_active", false)
+      .select("id")
+      .maybeSingle();
+
+    if (!activated) {
+      // Already activated (re-delivery), still a voucher-purchase PI, so we own it (stop
+      // other handlers), but skip the rest so a retry never double-inserts voucher_purchases
+      // or re-sends the voucher-code email.
+      console.log(`[webhook/voucher] voucher ${voucherCode} already activated, skipping re-processing for PI ${pi.id}`);
+      return true;
+    }
+
     // Create voucher_purchases record
     await admin.from("voucher_purchases").insert({
       customer_id: customerId,

@@ -31,7 +31,13 @@ export async function POST(req: NextRequest) {
   const { data, error } = validateBody(validatePromoSchema, body);
   if (error) return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  // 6. Look up promo code (case-insensitive)
+  // 6. Look up promo code (case-insensitive). Deliberately no is_purchased_voucher
+  //    special-casing: a purchased voucher (app/api/vouchers/create) is inserted
+  //    is_active:false and only flipped true by the Stripe webhook after real payment
+  //    (voucher-handler.ts), so is_active alone already excludes an unpaid mint. This
+  //    lookup must stay identical to app/api/stripe/booking-pay-intent's re-validation
+  //    lookup (punch-list fix, 2026-07-10), so the checkout preview here and the real
+  //    charge there never disagree on whether a code is redeemable.
   const { data: promo, error: dbError } = await supabase
     .from("promo_codes")
     .select("*")

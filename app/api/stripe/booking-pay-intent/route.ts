@@ -218,6 +218,20 @@ export async function POST(req: NextRequest) {
         .from("promo_codes")
         .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, salon_id, valid_from, valid_until, is_active, min_tier")
         .eq("code", booking.promo_code.toUpperCase())
+        // is_active is the ONLY gate needed here (punch-list fix, 2026-07-10). A purchased
+        // voucher (app/api/vouchers/create, is_purchased_voucher:true) is inserted
+        // is_active:false and is flipped true ONLY by the Stripe webhook AFTER its
+        // PaymentIntent actually succeeds (voucher-handler.ts's handleVoucherPurchase), so an
+        // unpaid mint can never pass this filter , is_active alone already closes the
+        // mint-without-paying exploit. A blanket exclusion of is_purchased_voucher rows was
+        // tried here previously, but that left a genuinely PAID voucher with no working
+        // redemption path at all: a purchased voucher is deliberately a Stripe
+        // Promotion-Code-backed row that reuses this SAME promo_code checkout field (see
+        // vouchers/create's own top-of-file comment) , there is no separate redemption
+        // surface for it. So purchased vouchers are intentionally left in this lookup,
+        // identical to how /api/promo/validate's preview lookup already treats them (it never
+        // special-cased is_purchased_voucher), so the checkout preview and the real charge
+        // never disagree.
         .eq("is_active", true)
         .maybeSingle();
 
