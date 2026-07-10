@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// Runs on the Node runtime (not edge): it uses node:crypto (crypto.randomInt for the OTP),
+// which the edge bundler cannot resolve (UnhandledSchemeError "node:crypto"). Upstash is REST
+// so it works on Node too. Edge gave no benefit here and broke the build.
 
 import { NextRequest, NextResponse } from "next/server";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
