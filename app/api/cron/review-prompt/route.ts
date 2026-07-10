@@ -38,13 +38,15 @@ export async function GET(req: NextRequest) {
   const windowEnd = new Date(now.getTime() - 23 * 60 * 60 * 1000);
 
   // Find bookings completed ~24h ago that haven't been prompted
+  // Windowed on completed_at (not starts_at): a booking completed later than ~25h
+  // after it started would otherwise miss the window entirely and never get prompted.
   const { data: bookings, error: bookingsErr } = await supabase
     .from("bookings")
-    .select("id, user_id, salon_id, starts_at, status, review_prompt_sent, salons(name, slug, google_place_id, stripe_account_id), staff_members(name, avatar_url), profiles(display_name, banned_at, locale)")
+    .select("id, user_id, salon_id, starts_at, completed_at, status, review_prompt_sent, salons(name, slug, google_place_id, stripe_account_id), staff_members(name, avatar_url), profiles(display_name, banned_at, locale)")
     .eq("status", "completed")
     .eq("review_prompt_sent", false)
-    .gte("starts_at", windowStart.toISOString())
-    .lte("starts_at", windowEnd.toISOString())
+    .gte("completed_at", windowStart.toISOString())
+    .lte("completed_at", windowEnd.toISOString())
     .limit(50);
 
   if (bookingsErr) {

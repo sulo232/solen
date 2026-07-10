@@ -18,24 +18,38 @@ export async function GET(req: NextRequest) {
 
   // Get today's date in Swiss timezone
   const swissNow = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Zurich" });
-  const [, month, day] = swissNow.split("-").map(Number);
+  const [year, month, day] = swissNow.split("-").map(Number);
+  const yearStart = `${year}-01-01T00:00:00Z`;
 
   // Find profiles with birthday today
-  // birthday column is DATE type, extract month and day
+  // date_of_birth column is DATE type, extract month and day
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, display_name, birthday, staff_salon_id")
-    .not("birthday", "is", null);
+    .select("id, display_name, date_of_birth, staff_salon_id")
+    .not("date_of_birth", "is", null);
 
   const birthdayProfiles = (profiles ?? []).filter((p) => {
-    if (!p.birthday) return false;
-    const bday = new Date(p.birthday);
+    if (!p.date_of_birth) return false;
+    const bday = new Date(p.date_of_birth);
     return bday.getMonth() + 1 === month && bday.getDate() === day;
   });
 
   let sent = 0;
 
   for (const profile of birthdayProfiles) {
+    // Idempotency guard: mirrors the notifications-table sent-log pattern used by
+    // cron/rebooking-nudge (query before send, insert after send) so a re-run/overlapping
+    // tick doesn't re-send the birthday email to the same profile within the same year.
+    const { data: alreadySent } = await admin
+      .from("notifications")
+      .select("id")
+      .eq("user_id", profile.id)
+      .eq("type", "birthday_message")
+      .gte("created_at", yearStart)
+      .limit(1)
+      .maybeSingle();
+    if (alreadySent) continue;
+
     // Get user email
     const { data: userAuth } = await admin.auth.admin.getUserById(profile.id);
     const email = userAuth?.user?.email;
@@ -54,6 +68,14 @@ export async function GET(req: NextRequest) {
 </div>`,
       });
       sent++;
+      // Record the send so the guard above suppresses a repeat within this calendar year.
+      await admin.from("notifications").insert({
+        user_id: profile.id,
+        type: "birthday_message",
+        title: "Birthday message sent",
+        body: `Birthday email sent for ${swissNow}`,
+        data: { year },
+      });
     } catch { /* non-fatal */ }
   }
 

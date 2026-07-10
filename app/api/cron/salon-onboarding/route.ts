@@ -55,17 +55,34 @@ export async function GET(request: NextRequest) {
 
       const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
 
+      // Idempotency guard: mirrors the notifications-table sent-log pattern used by
+      // cron/rebooking-nudge (query before send, insert after send) so a re-run/overlapping
+      // tick doesn't re-send this drip stage to the same salon owner.
+      const notifType = `salon_onboarding_day${daysAgo}`;
+      const { data: alreadySent } = await admin
+        .from("notifications")
+        .select("id")
+        .eq("user_id", salon.owner_id)
+        .eq("type", notifType)
+        .eq("data->>salon_id", salon.id)
+        .maybeSingle();
+      if (alreadySent) { results.skipped++; continue; }
+
+      let didSend = false;
+
       try {
         if (daysAgo === 0) {
           // Day 0: Welcome
           await sendEmail(onboardingWelcome(email, { salonName: salon.name }, locale));
           results.sent++;
+          didSend = true;
         } else if (daysAgo === 2) {
-          // Day 2: Complete profile (only if profile < 80% — check description)
+          // Day 2: Complete profile (only if profile < 80%, check description)
           const hasDescription = !!salon.description_de;
           if (!hasDescription) {
             await sendEmail(onboardingCompleteProfile(email, { salonName: salon.name }, locale));
             results.sent++;
+            didSend = true;
           } else { results.skipped++; }
         } else if (daysAgo === 4) {
           // Day 4: Add services (only if 0 services)
@@ -77,12 +94,14 @@ export async function GET(request: NextRequest) {
           if (!count || count === 0) {
             await sendEmail(onboardingAddServices(email, { salonName: salon.name }, locale));
             results.sent++;
+            didSend = true;
           } else { results.skipped++; }
         } else if (daysAgo === 6) {
           // Day 6: Add cover photo (only if no cover photo)
           if (!salon.cover_photo_url) {
             await sendEmail(onboardingAddPhoto(email, { salonName: salon.name }, locale));
             results.sent++;
+            didSend = true;
           } else { results.skipped++; }
         } else if (daysAgo === 8) {
           // Day 8: Ready! (only if profile is complete)
@@ -96,7 +115,19 @@ export async function GET(request: NextRequest) {
           if (hasDescription && hasCover && (count ?? 0) > 0) {
             await sendEmail(onboardingReady(email, { salonName: salon.name }, locale));
             results.sent++;
+            didSend = true;
           } else { results.skipped++; }
+        }
+
+        // Record the send so the guard above suppresses a repeat of this stage.
+        if (didSend) {
+          await admin.from("notifications").insert({
+            user_id: salon.owner_id,
+            type: notifType,
+            title: "Salon onboarding drip sent",
+            body: `Onboarding day ${daysAgo} email sent`,
+            data: { salon_id: salon.id },
+          });
         }
       } catch {
         results.errors++;

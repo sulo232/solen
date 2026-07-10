@@ -127,8 +127,9 @@ export async function GET(req: NextRequest) {
         const onVacation = !!(salon.vacation_start && salon.vacation_end && dateStr >= salon.vacation_start && dateStr <= salon.vacation_end);
         if (closureDates.has(dateStr) || offDates.has(dateStr) || onVacation) continue;
 
-        // Find schedule for this day
-        const schedule = schedules.find((s) => s.day_of_week === dayOfWeek);
+        // Find schedule for this day. is_working defaults to true, so treat
+        // null/undefined as working; only an explicit false skips generation.
+        const schedule = schedules.find((s) => s.day_of_week === dayOfWeek && s.is_working !== false);
         if (!schedule) continue;
 
         // Check alternate week parity if applicable
@@ -216,6 +217,19 @@ export async function GET(req: NextRequest) {
 
   // Post-processing: station limiting for nail salons
   // Block excess concurrent slots when more staff slots exist than physical stations
+  //
+  // KNOWN LIMITATION (not fixed here, needs a schema change): this pass only ever
+  // flips available -> blocked. It never reverts, so once a slot is capacity-blocked
+  // it stays blocked forever even after concurrency drops (e.g. an overlapping slot
+  // gets cancelled). The straightforward fix, recompute over (available UNION blocked)
+  // each pass and revert what's no longer over capacity, is UNSAFE to add right now:
+  // availability_slots.status "blocked" is the exact same value written by the
+  // salon-owner's manual block endpoint (POST /api/slots/bulk, Branch B) and there is
+  // no block_reason/blocked_by column to tell the two apart. A blind revert would
+  // silently re-open a manually-blocked slot the moment its recomputed concurrency is
+  // back under the station/chair count, which is the common case, not an edge case.
+  // Needs: an availability_slots.block_reason ('manual' | 'capacity') column so this
+  // pass can safely revert only the rows IT authored, before this can be fixed.
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("nails")) continue;
     try {
@@ -263,6 +277,8 @@ export async function GET(req: NextRequest) {
   }
 
   // Post-processing: chair limiting for barbershops
+  // Same permanent-accumulation limitation as the nail-station pass above (no
+  // block_reason column to distinguish this pass's blocks from a manual owner block).
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("barbershop")) continue;
     try {

@@ -54,6 +54,18 @@ export async function GET(request: NextRequest) {
       const locale: EmailLocale = (profile.locale as EmailLocale) ?? "de";
       const name = profile.display_name || "dort";
 
+      // Idempotency guard: mirrors the notifications-table sent-log pattern used by
+      // cron/rebooking-nudge (query before send, insert after send) so a re-run/overlapping
+      // tick doesn't re-send this stage to the same profile.
+      const notifType = `welcome_series_day${daysAgo}`;
+      const { data: alreadySent } = await admin
+        .from("notifications")
+        .select("id")
+        .eq("user_id", profile.id)
+        .eq("type", notifType)
+        .maybeSingle();
+      if (alreadySent) continue;
+
       try {
         if (daysAgo === 0) {
           await sendEmail(welcomeDay0(email, { name }, locale));
@@ -65,6 +77,14 @@ export async function GET(request: NextRequest) {
           await sendEmail(welcomeDay7(email, { name }, locale));
           results.day7++;
         }
+        // Record the send so the guard above suppresses a repeat of this stage.
+        await admin.from("notifications").insert({
+          user_id: profile.id,
+          type: notifType,
+          title: "Welcome series email sent",
+          body: `Welcome series day ${daysAgo} email sent`,
+          data: {},
+        });
       } catch {
         results.errors++;
       }
