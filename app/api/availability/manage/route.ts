@@ -43,6 +43,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // block_reason: 'manual' marks an owner-created blocked row so the nightly
+  // capacity-limiter revert (generate-slots, block_reason='capacity' only) never
+  // re-opens it.
   const toInsert = slots.map((slot: { service_id?: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string }) => ({
     salon_id,
     service_id: slot.service_id ?? null,
@@ -50,6 +53,7 @@ export async function POST(request: NextRequest) {
     starts_at: slot.starts_at,
     ends_at: slot.ends_at,
     status: slot.status ?? "available",
+    block_reason: slot.status === "blocked" ? "manual" : null,
   }));
 
   const { data, error } = await supabase.from("availability_slots").insert(toInsert).select();

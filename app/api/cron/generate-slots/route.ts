@@ -218,18 +218,12 @@ export async function GET(req: NextRequest) {
   // Post-processing: station limiting for nail salons
   // Block excess concurrent slots when more staff slots exist than physical stations
   //
-  // KNOWN LIMITATION (not fixed here, needs a schema change): this pass only ever
-  // flips available -> blocked. It never reverts, so once a slot is capacity-blocked
-  // it stays blocked forever even after concurrency drops (e.g. an overlapping slot
-  // gets cancelled). The straightforward fix, recompute over (available UNION blocked)
-  // each pass and revert what's no longer over capacity, is UNSAFE to add right now:
-  // availability_slots.status "blocked" is the exact same value written by the
-  // salon-owner's manual block endpoint (POST /api/slots/bulk, Branch B) and there is
-  // no block_reason/blocked_by column to tell the two apart. A blind revert would
-  // silently re-open a manually-blocked slot the moment its recomputed concurrency is
-  // back under the station/chair count, which is the common case, not an edge case.
-  // Needs: an availability_slots.block_reason ('manual' | 'capacity') column so this
-  // pass can safely revert only the rows IT authored, before this can be fixed.
+  // Re-evaluated every pass: availability_slots.block_reason distinguishes this pass's
+  // own blocks ('capacity') from a salon-owner manual block ('manual') or a vacation
+  // block ('vacation'). Before recomputing, this salon's prior capacity blocks are
+  // reverted back to available so the pass re-decides from a clean slate; manual/
+  // vacation blocks are never touched (different block_reason), and booked slots are
+  // never touched (different status).
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("nails")) continue;
     try {
@@ -240,6 +234,20 @@ export async function GET(req: NextRequest) {
 
       const stationCount = stationConfig.station_count;
       const bufferMs = (stationConfig.sterilization_buffer_minutes || 0) * 60 * 1000;
+
+      // Revert this cron's own prior capacity blocks before re-applying the limit, so
+      // this pass recomputes over the current concurrency instead of accumulating
+      // forever. Scoped identically to the slot fetch below (same salon_id + future
+      // window). Only rows THIS pass authored (status='blocked' AND
+      // block_reason='capacity') are touched.
+      const { error: revertErr } = await admin
+        .from("availability_slots")
+        .update({ status: "available", block_reason: null })
+        .eq("salon_id", salon.id)
+        .eq("status", "blocked")
+        .eq("block_reason", "capacity")
+        .gte("starts_at", now.toISOString());
+      if (revertErr) console.error("[generate-slots] nail capacity-block revert failed for salon " + salon.id + ":", revertErr.message);
 
       // Get all future available slots for this salon
       const { data: slots } = await admin
@@ -265,9 +273,10 @@ export async function GET(req: NextRequest) {
         });
         // +1 for the slot itself
         if (concurrent.length + 1 > stationCount) {
-          await admin.from("availability_slots")
-            .update({ status: "blocked" })
+          const { error: blockErr } = await admin.from("availability_slots")
+            .update({ status: "blocked", block_reason: "capacity" })
             .eq("id", slot.id);
+          if (blockErr) console.error("[generate-slots] nail capacity block failed for salon " + salon.id + " slot " + slot.id + ":", blockErr.message);
         }
       }
     } catch (err) {
@@ -277,8 +286,9 @@ export async function GET(req: NextRequest) {
   }
 
   // Post-processing: chair limiting for barbershops
-  // Same permanent-accumulation limitation as the nail-station pass above (no
-  // block_reason column to distinguish this pass's blocks from a manual owner block).
+  // Same re-evaluate-every-pass approach as the nail-station pass above: revert this
+  // cron's own prior capacity blocks ('capacity') before recomputing, never touching
+  // manual ('manual') or vacation ('vacation') blocks or booked slots.
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("barbershop")) continue;
     try {
@@ -289,6 +299,17 @@ export async function GET(req: NextRequest) {
 
       const chairCount = chairConfig.chair_count;
       const bufferMs = (chairConfig.buffer_minutes || 0) * 60 * 1000;
+
+      // Revert this cron's own prior capacity blocks before re-applying the limit
+      // (same reasoning + scope as the nail-station pass above).
+      const { error: revertErr } = await admin
+        .from("availability_slots")
+        .update({ status: "available", block_reason: null })
+        .eq("salon_id", salon.id)
+        .eq("status", "blocked")
+        .eq("block_reason", "capacity")
+        .gte("starts_at", now.toISOString());
+      if (revertErr) console.error("[generate-slots] barber capacity-block revert failed for salon " + salon.id + ":", revertErr.message);
 
       const { data: slots } = await admin
         .from("availability_slots")
@@ -310,9 +331,10 @@ export async function GET(req: NextRequest) {
           return sStart < slotEndBuffered && sEnd > slotStart;
         });
         if (concurrent.length + 1 > chairCount) {
-          await admin.from("availability_slots")
-            .update({ status: "blocked" })
+          const { error: blockErr } = await admin.from("availability_slots")
+            .update({ status: "blocked", block_reason: "capacity" })
             .eq("id", slot.id);
+          if (blockErr) console.error("[generate-slots] barber capacity block failed for salon " + salon.id + " slot " + slot.id + ":", blockErr.message);
         }
       }
     } catch (err) {

@@ -208,10 +208,12 @@ async function blockDay(
   const dayStart = `${block_date}T00:00:00`;
   const dayEnd = `${next.toISOString().slice(0, 10)}T00:00:00`;
 
-  // Only flip `available` slots — never touch a booked appointment via the block button.
+  // Only flip `available` slots, never touch a booked appointment via the block button.
+  // block_reason: 'manual' marks this as an owner block so the nightly capacity-limiter
+  // revert (generate-slots, block_reason='capacity' only) never re-opens it.
   const { data: blocked, error: updateError } = await supabase
     .from("availability_slots")
-    .update({ status: "blocked" })
+    .update({ status: "blocked", block_reason: "manual" })
     .eq("salon_id", salon_id)
     .eq("status", "available")
     .gte("starts_at", dayStart)
