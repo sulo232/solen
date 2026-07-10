@@ -8,7 +8,22 @@ import { validateBody, adminSalonOfMonthSchema } from "@/lib/validations";
  * POST: Admin confirms the selection
  */
 export async function GET(req: NextRequest) {
+  const authSupabase = await createServerSupabaseClient();
+  const { data: { user } } = await authSupabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const supabase = createAdminSupabaseClient();
+
+  // Verify admin
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   // Get salon with highest average_rating among active salons with 5+ reviews
   const { data: candidates } = await supabase

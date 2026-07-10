@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryFeedLimiter, getClientIp } from "@/lib/ratelimit";
+import { DISCOVERY_ITEM_PUBLIC_COLS } from "@/lib/discovery/public-columns";
 
 export async function GET(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -29,10 +30,15 @@ export async function GET(req: NextRequest) {
 
   if (!source) return NextResponse.json({ items: [], total: 0 });
 
-  // Build query for similar items
+  // Build query for similar items. Explicit public column allowlist (see
+  // lib/discovery/public-columns.ts), replaces the old `select('*')` which shipped
+  // flag_reason (moderation note) and owner_user_id (uploader FK) to anonymous clients.
+  // Keeps the columns the scoring logic below reads (tags, texture, gender, face_shapes,
+  // like_count) plus category, which the ForYou caller falls back to when style_name is
+  // absent.
   let query = admin
     .from("discovery_items")
-    .select("*")
+    .select(DISCOVERY_ITEM_PUBLIC_COLS)
     .eq("status", "published")
     .eq("is_active", true)
     .neq("id", itemId);

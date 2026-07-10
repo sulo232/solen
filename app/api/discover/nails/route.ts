@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryFeedLimiter, discoveryLikeLimiter, getClientIp } from "@/lib/ratelimit";
+import { DISCOVERY_ITEM_PUBLIC_COLS } from "@/lib/discovery/public-columns";
 
 // GET /api/discover/nails — Nail discovery feed (public, rate limited)
 export async function GET(req: NextRequest) {
@@ -26,9 +27,13 @@ export async function GET(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
+  // Explicit public column allowlist (see lib/discovery/public-columns.ts), extended
+  // with the nail-specific fields this route filters/returns, replaces the old
+  // `select('*')` which shipped flag_reason (moderation note) and owner_user_id
+  // (uploader FK) to anonymous clients.
   let query = admin
     .from("discovery_items")
-    .select("*", { count: "exact" })
+    .select(`${DISCOVERY_ITEM_PUBLIC_COLS}, nail_shape, nail_style, save_count`, { count: "exact" })
     .eq("category", "nails")
     .eq("status", "published")
     .range(offset, offset + limit - 1);

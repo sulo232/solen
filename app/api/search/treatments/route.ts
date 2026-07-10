@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
@@ -71,10 +72,13 @@ export async function GET(request: NextRequest) {
   // Get unique salon IDs
   const salonIds = [...new Set(services.map((s) => s.salon_id))];
 
-  // Fetch salons
+  // Fetch salons. Explicit public column allowlist (see lib/salons/public-columns.ts),
+  // replaces the old `select('*')` which shipped internal owner/payment/moderation
+  // columns (stripe_account_id, owner_id, frozen_reason, rejection_reason, approved_by,
+  // warning_count, verification_warnings, score_details, phone) to anonymous clients.
   let salonQuery = supabase
     .from("salons")
-    .select("*", { count: "exact" })
+    .select(SALON_PUBLIC_COLS, { count: "exact" })
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)
     .in("id", salonIds);

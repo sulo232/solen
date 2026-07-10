@@ -12,6 +12,7 @@ import { autoTranslateDescription } from "@/lib/ai/translate";
 import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
 import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
+import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 
 // Time-of-day windows (local hour ranges) for the `period` availability filter.
 const PERIOD_HOURS: Record<string, [number, number]> = {
@@ -86,20 +87,13 @@ export async function GET(request: NextRequest) {
     // with no active staff still return, just with an empty staff array).
     const staffEmbed = withSlots ? ", staff_members(specialties, is_active)" : "";
 
-    // Explicit public column list. Replaces the old `select('*')` which shipped all
-    // ~98 salon columns to anonymous clients, including owner/payment internals
-    // (stripe_account_id, owner_id), the growing FTS doc (search_doc), the scoring
-    // jsonb (score_details), and moderation fields (verification_warnings,
-    // frozen_reason, rejection_reason). This is exactly the set the cards + their
-    // downstream filters read (audited across SearchTemplate / SearchResults /
-    // SalonResultCard / SplitView / CityPage / RecentlyViewed) plus the columns this
-    // route orders on (solen_score, average_rating, last_minute_discount_percent,
-    // created_at). The is_active / listed_on_marketplace / is_test / city_id filters
-    // are applied as .eq() predicates and do not need to be selected. Never select
-    // search_doc / score_details / stripe_account_id / owner_id here. Kept as one
-    // string literal so the supabase client can type the select.
-    const salonCols =
-      "id, slug, name, cover_photo_url, gallery_urls, categories, address, postal_code, quartier, latitude, longitude, opening_hours, average_rating, review_count, last_minute_discount_percent, walkin_enabled, accepts_online_payment, solen_score, created_at";
+    // Explicit public column allowlist, shared with app/api/search/treatments/route.ts.
+    // See lib/salons/public-columns.ts for the full rationale (replaces the old
+    // `select('*')` which shipped ~98 salon columns, including owner/payment internals
+    // and moderation fields, to anonymous clients). The is_active / listed_on_marketplace /
+    // is_test / city_id filters are applied as .eq() predicates and do not need to be
+    // selected.
+    const salonCols = SALON_PUBLIC_COLS;
 
     const supabase = await createServerSupabaseClient();
 
