@@ -81,3 +81,17 @@ Workflow over the ~19 not-deeply-swept crons + state-machine flows. **14 confirm
 
 ## Recurring themes confirmed again (same as the 141-audit)
 Phantom-column silent no-ops were the single biggest class this sweep (10 of 24) , dashboards silently reporting 0 because a query named a column the live DB never had. Second: service-role routes missing their own ownership check. The DB/RLS LAYER itself is now clean; the remaining risk lives in code that trusts client identity/amounts or reads drifted columns.
+
+## Eighth , booking-pricing-GDPR + loyalty + referral
+Workflow (find + 3-skeptic verify) over booking pricing, GDPR account deletion/export, loyalty tiering, referral completion. Fixed across commits `9fe194bb2` (GDPR), `73eb25d1c` (anonymize/export/dead-code + loyalty display), `81a207737` (referral cluster) + 2 live migrations.
+- **GDPR deletion , 19-FK blocking set.** app/api/cron/process-deletions cleared/anonymized only a partial set; the delete would FK-error and silently leave the user undeleted. Re-queried the authoritative complete set: DELETE the 6 NOT-NULL FKs (user_credits, credit_redemptions [before user_credits], barber_loyalty_history, referrals.referrer_id, client_notes, account_actions), SET NULL the 13 nullable _by/_id columns. Now the auth.users delete succeeds.
+- **anonymize-guest injection** , guest email/name interpolated into a filter, now validated + LIKE-escaped.
+- **Loyalty tier used final_price, not the actual charge.** Both layers fixed: display (lib/loyalty/status.ts, commit) AND the money-granting SQL (current_user_tier + recompute_loyalty_status, migration `audit_fix_loyalty_tier_uses_actual_charge`) now use `case when paid_amount>0 then paid_amount/100 else coalesce(price_paid,estimated_price) end`. A booking marked completed but never charged no longer counts toward a paid tier.
+- **Referral cluster (commit 81a207737):** phantom profiles.referral_code -> real referrals table (SOLEN-<8hex>); always-true completion gate -> completes only on a genuinely confirmed first booking via one shared helper; deferred-pay bookings complete in the Stripe webhook; DOUBLE-CREDIT TOCTOU closed with a live partial unique index `referrals_one_completed_per_referred_uidx` (helper catches 23505) + revert-on-credit-failure recoverability; referral-lookup email validated + LIKE-escaped.
+
+### Booking-pricing-GDPR follow-ups (flagged, not fixed)
+- pending_approval referral completion: a manual-approval salon's first booking never reaches 'confirmed' synchronously, so its referral only completes if/when the Stripe webhook or a later confirm fires; a cash/in-person manual-approval booking may never complete the referral. Wire completion into the approve transition too.
+- MIGRATION-FILE DRIFT (reviewer-raised, session-wide): the last ~40 migrations (everything from 20260703 onward, incl. this whole audit) are MCP-applied and recorded in the remote supabase_migrations log but have NO committed .sql file under supabase/migrations/. Live DB is canonical here (never db push), so it is not a live defect, but a fresh-env rebuild from files would miss them. Backfill files for reproducibility is its own task.
+
+## Ninth , auth / session / storage / service-role-IDOR / secrets (IN FLIGHT)
+Focused workflow (5 finders + 3-skeptic verify) over service-role IDOR, session/authz correctness, Supabase Storage RLS/paths, token entropy/secrets, throttle/injection/mass-assignment. Results pending; fix confirmed via coder+reviewer, then commit.
