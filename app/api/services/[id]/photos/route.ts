@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { checkUserBanned } from "@/lib/feature-flags";
 
 // POST /api/services/[id]/photos — Upload service photos to service-photos bucket
 export async function POST(
@@ -26,9 +27,18 @@ export async function POST(
   const owner = (service.salons as unknown as { owner_id: string })?.owner_id;
   if (owner !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
+
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
   if (!file) return NextResponse.json({ error: "File required" }, { status: 400 });
+
+  // Append to service photo_urls array
+  const currentUrls = (service.photo_urls as string[]) ?? [];
+  if (currentUrls.length >= 20) {
+    return NextResponse.json({ error: "Maximum of 20 photos allowed." }, { status: 400 });
+  }
 
   const ext = file.name.split(".").pop() ?? "jpg";
   const path = `${service.salon_id}/${serviceId}/${Date.now()}.${ext}`;
@@ -41,8 +51,6 @@ export async function POST(
 
   const { data: urlData } = supabase.storage.from("service-photos").getPublicUrl(path);
 
-  // Append to service photo_urls array
-  const currentUrls = (service.photo_urls as string[]) ?? [];
   const { error: updateError } = await supabase
     .from("services")
     .update({ photo_urls: [...currentUrls, urlData.publicUrl] })

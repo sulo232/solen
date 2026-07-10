@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
+import { checkUserBanned } from "@/lib/feature-flags";
 
 // GET /api/clients/[id]/photos — Get client photos (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -14,6 +15,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const { data, error } = await supabase
     .from("client_photos")
@@ -36,6 +40,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;

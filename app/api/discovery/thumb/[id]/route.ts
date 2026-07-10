@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 // V3-D160 (2026-05-26): TikTok thumbnail refresh proxy.
 //
@@ -63,7 +64,10 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-export async function GET(_req: NextRequest, ctx: RouteContext) {
+export async function GET(req: NextRequest, ctx: RouteContext) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
   const { id } = await ctx.params;
   if (!id) return new NextResponse("missing id", { status: 400 });
 

@@ -31,12 +31,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/de?verify=missing_salon`);
     }
 
-    const { error: updateError } = await admin
+    const { data: updatedSalon, error: updateError } = await admin
       .from("salons")
       .update({ last_verified_at: new Date().toISOString(), verification_warnings: 0 })
-      .eq("id", salonId);
+      .eq("id", salonId)
+      .eq("owner_id", user.id)
+      .select("id");
 
     if (updateError) throw updateError;
+
+    if (!updatedSalon || updatedSalon.length === 0) {
+      return NextResponse.redirect(`${origin}/de?verify=forbidden`);
+    }
 
     return NextResponse.redirect(`${origin}/de/dashboard?verify=success`);
   } catch {

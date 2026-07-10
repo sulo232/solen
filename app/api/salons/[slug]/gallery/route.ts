@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getServerEnv, getPublicEnv } from "@/lib/env";
+import { checkUserBanned } from "@/lib/feature-flags";
 
 const getSupabase = () => createClient(
   getPublicEnv().NEXT_PUBLIC_SUPABASE_URL,
@@ -37,6 +38,9 @@ export async function POST(
     if (salonError || !salon || salon.owner_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const banned = await checkUserBanned(user.id);
+    if (banned) return banned;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -141,6 +145,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const banned = await checkUserBanned(user.id);
+    if (banned) return banned;
+
     if (!url) {
       return NextResponse.json({ error: "No URL provided" }, { status: 400 });
     }
@@ -151,13 +158,27 @@ export async function DELETE(
       const urlParts = url.split("/salon-gallery/");
       if (urlParts.length === 2) {
         const filePath = urlParts[1];
-        
-        // Remove from storage
-        const { error: deleteError } = await getSupabase().storage
-          .from("salon-gallery")
-          .remove([filePath]);
-          
-        if (deleteError) console.error("Storage delete warning:", deleteError);
+
+        // Only remove objects inside the caller's own salon folder. filePath is
+        // derived from a client-supplied url and must not be trusted to point at
+        // this salon's storage prefix without this check. The object shape written
+        // by POST is exactly {slug}/{fileName}, so require exactly that: two
+        // non-empty segments, first segment equal to slug, no ".." segment
+        // anywhere (blocks traversal like "slug/../otherSalon/x.jpg").
+        const segs = filePath.split("/");
+        const isOwnSalonPath =
+          segs.length === 2 && segs[0] === slug && !!segs[1] && !segs.includes("..");
+
+        if (isOwnSalonPath) {
+          // Remove from storage
+          const { error: deleteError } = await getSupabase().storage
+            .from("salon-gallery")
+            .remove([filePath]);
+
+          if (deleteError) console.error("Storage delete warning:", deleteError);
+        } else {
+          console.warn("Refused cross-salon storage delete for URL", url);
+        }
       }
     } catch (e) {
       console.warn("Could not parse/delete storage object for URL", url);
@@ -210,6 +231,9 @@ export async function PATCH(
     if (salonError || !salon || salon.owner_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const banned = await checkUserBanned(user.id);
+    if (banned) return banned;
 
     if (!Array.isArray(urls)) {
       return NextResponse.json({ error: "Invalid URLs array" }, { status: 400 });

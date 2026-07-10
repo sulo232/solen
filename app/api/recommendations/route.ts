@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
   const user = session?.user ?? null;
 
   // Rate limit: 10 req/min for authenticated users, 5 req/min for guests
-  const identifier = user?.id || req.headers.get("x-forwarded-for") || "anonymous";
+  const identifier = user?.id || getClientIp(req);
   const rateLimited = await applyRateLimit(generalLimiter, { userId: identifier });
   if (rateLimited) return rateLimited;
 

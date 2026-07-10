@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { getServerEnv } from "@/lib/env";
+import crypto from "node:crypto";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -36,14 +37,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
 
     // Store in Redis (valid for 10 mins)
     await redis.set(`phone_otp:${phone}`, otp, { ex: 600 });
 
     const sevenApiKey = env.SEVEN_API_KEY;
     if (!sevenApiKey) {
-      console.warn("SEVEN_API_KEY is missing. OTP generated but not sent:", otp);
+      console.warn("SEVEN_API_KEY is missing. OTP generated but not sent (SMS skipped, dev-mode).");
       // In development without key, we return success so frontend can continue 
       // (maybe log it to console or show in UI if debug active).
       return NextResponse.json({ message: "SMS gesendet (Simuliert - Key fehlt)" });

@@ -2,11 +2,15 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 // GET /api/salons/recommendations — personalized salon recommendations
 // Query params: ?user_id=X (optional)
 // GET /api/salons/similar?salon_id=X — similar salons
 export async function GET(request: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rateLimited) return rateLimited;
+
   const { searchParams } = new URL(request.url);
   const salonId = searchParams.get("salon_id");
 
