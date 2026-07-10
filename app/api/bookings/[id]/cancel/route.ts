@@ -113,12 +113,17 @@ export async function POST(
   const baseCents = (booking.paid_amount as number | null) ?? toRappen(Number(booking.price_paid ?? 0));
   const paymentIntentId = booking.payment_intent_id;
 
-  // SALON-OWNER cancel = full refund (Lane B fast-track, REFUND_APPEAL_PLAN §11).
+  // SALON-OWNER cancel = full refund of the REMAINING balance (Lane B fast-track,
+  // REFUND_APPEAL_PLAN §11). Audit fix: this used to refund the gross baseCents even when a
+  // prior partial refund already existed, mirror the remaining-balance math every other refund
+  // path uses (issueRefund itself, the customer-cancel path below, GET preview above).
+  const alreadyRefundedCents = (booking.refunded_amount as number | null) ?? 0;
+  const remainingCents = Math.max(0, baseCents - alreadyRefundedCents);
   // Kept as-is (SP-3/SP-0 own the refund-chokepoint migration of this branch); SP-AC
   // does not touch the refund path beyond not breaking it.
   let refundResult = { refundAmount: 0, feeAmount: 0, isWithinWindow: false };
-  if (isSalonOwner && baseCents > 0 && paymentIntentId) {
-    refundResult = { refundAmount: baseCents, feeAmount: 0, isWithinWindow: true };
+  if (isSalonOwner && remainingCents > 0 && paymentIntentId) {
+    refundResult = { refundAmount: remainingCents, feeAmount: 0, isWithinWindow: true };
     // Route through the single refund chokepoint (REFUND_APPEAL_PLAN §10b#3) on the
     // admin client so the CAS write isn't fighting RLS. issueRefund owns the Stripe
     // call + the refunded_amount/payment_status persistence (so the booking update
@@ -129,7 +134,7 @@ export async function POST(
         db: adminForRefund,
         source: "booking",
         id,
-        amountCents: baseCents,
+        amountCents: remainingCents,
         actor: "salon",
         reason: reason ?? "salon cancelled the booking (full refund)",
       });
@@ -149,16 +154,34 @@ export async function POST(
   // refund's payment_status / refunded_amount are already persisted by issueRefund's CAS
   // above (the single writer of those columns); the customer path leaves fee_charge_* to
   // applyCustomerCancelMoney's chargeFee call.
-  const { error: updateError } = await supabase
+  // CAS: re-assert BOTH the status and slot_id read for this request's guard above (mirrors
+  // reschedule's CAS). A concurrent reschedule commits first, moving slot_id onto a NEW slot
+  // without touching status, so a status-only CAS would still match and this cancel would go
+  // on to free the STALE booking.slot_id snapshot below, orphaning the booking's real (new)
+  // slot as permanently 'booked'. Guarding slot_id too makes that race lose here (0 rows, 409)
+  // instead of silently freeing the wrong slot. .maybeSingle() so a lost race (0 rows) comes
+  // back as data=null instead of a PGRST116 error, distinguishable from a real DB error.
+  const { data: updatedBooking, error: updateError } = await supabase
     .from("bookings")
     .update({
       status: "cancelled",
       cancellation_reason: reason ?? null,
       cancelled_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("status", booking.status) // CAS
+    .eq("slot_id", booking.slot_id) // CAS: guard against a concurrent reschedule moving slot_id
+    .select()
+    .maybeSingle();
 
   if (updateError) return NextResponse.json({ message: updateError.message, code: "DB_ERROR" }, { status: 500 });
+  if (!updatedBooking) {
+    console.error("[Cancel] CAS lost: booking changed concurrently", { bookingId: id });
+    return NextResponse.json(
+      { message: "Booking changed concurrently, please retry", code: "CONFLICT" },
+      { status: 409 },
+    );
+  }
 
   // CUSTOMER cancel money outcome depends on prepayment (audit fix A), routed through the
   // SAME chokepoint (lib/bookings/customer-cancel-money.ts) the public quick-action cancel
@@ -208,11 +231,13 @@ export async function POST(
     }
   }
 
-  // Free the slot
+  // Free the slot. Use the FRESH slot_id from the CAS update above, not the stale
+  // pre-refund booking.slot_id snapshot (the CAS now guards slot_id too, so these match
+  // on the winning path, but the fresh value is the correct source of truth).
   await supabase
     .from("availability_slots")
     .update({ status: "available", booked_by: null, booking_id: null })
-    .eq("id", booking.slot_id);
+    .eq("id", updatedBooking.slot_id);
 
   // Notify waitlist entries for the freed slot
   const adminForWaitlist = createAdminSupabaseClient();

@@ -124,8 +124,23 @@ export async function PATCH(
   const updates: any = { status };
   if (status === "completed") updates.completed_at = new Date().toISOString();
 
-  const { error: updateErr } = await supabase.from("bookings").update(updates).eq("id", id);
+  // CAS: re-assert the status read + checked above. The terminal-state guard is otherwise
+  // check-then-act, so two concurrent salon PATCH calls (e.g. 'completed' vs 'no_show') could
+  // both pass the guard and last-write-wins. 0 matched rows = the booking's status changed
+  // concurrently between the read and this write, treat as a lost race, not a DB error.
+  const { data: updatedRows, error: updateErr } = await supabase
+    .from("bookings")
+    .update(updates)
+    .eq("id", id)
+    .eq("status", booking.status) // CAS
+    .select("id");
   if (updateErr) return NextResponse.json({ message: updateErr.message, code: "DB_ERROR" }, { status: 500 });
+  if (!updatedRows || updatedRows.length === 0) {
+    return NextResponse.json(
+      { message: "Booking status changed concurrently, please retry", code: "CONFLICT" },
+      { status: 409 }
+    );
+  }
 
   // Evaluate strikes and warnings
   if (status === "no_show") {

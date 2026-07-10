@@ -58,7 +58,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     update.completed_at = new Date().toISOString();
   }
 
-  // Capture the held card payment when the visit completes — the manual-capture hold
+  // CAS: claim the status transition FIRST, BEFORE any Stripe money action. Audit fix: money
+  // used to move (capture / fee capture / refund) before this claim, so a lost race left Stripe
+  // charged/refunded with no CAS signal to the caller. Re-asserting the status read at the top
+  // of the handler means two concurrent staff actions (e.g. 'complete' vs 'no_show') can no
+  // longer both pass and last-write-wins; only the winner proceeds to touch Stripe.
+  // .maybeSingle() (not .single()) so a lost race (0 rows) comes back as data=null instead of a
+  // PGRST116 error.
+  const { data: updated, error } = await admin
+    .from("barber_walkin_queue")
+    .update(update)
+    .eq("id", id)
+    .eq("status", entry.status) // CAS
+    .select()
+    .maybeSingle();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!updated) {
+    return NextResponse.json({ error: "Queue entry status changed concurrently, please retry" }, { status: 409 });
+  }
+
+  // Capture the held card payment when the visit completes: the manual-capture hold
   // becomes an actual charge. Idempotent: a double "done" tap won't double-charge.
   let paymentCaptured: boolean | null = null;
   if (validated.status === "completed" && entry.payment_intent_id) {
@@ -130,10 +149,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       console.error("[walkin/queue PATCH] hold release on cancel failed:", e);
     }
   }
-
-  const { data: updated, error } = await admin
-    .from("barber_walkin_queue").update(update).eq("id", id).select().single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Re-sequence the remaining waiting entries in ONE atomic statement (no N-update loop /
   // race) once someone leaves the active queue.

@@ -123,6 +123,12 @@ export async function POST(
   // Step 2: Move the booking onto the new slot (session client; bookings_update_own allows the
   // owner). If this fails, release the new slot we just claimed; the OLD slot was never freed,
   // so the booking still validly holds it and no double-booking is possible.
+  // CAS: re-assert the slot_id/status we read for THIS booking at the top of the handler.
+  // Without this, a concurrent second reschedule (which claims a DIFFERENT new slot via its
+  // own claimSlot CAS) or a concurrent cancel can both "win" here, last-write-wins clobbers
+  // the booking row, and the losing request's newly-claimed slot is left orphaned 'booked'
+  // with nothing pointing at it. .maybeSingle() (not .single()) so a lost race (0 rows) comes
+  // back as data=null instead of a PGRST116 error, distinguishable from a real DB error below.
   const { data: updatedBooking, error: updateError } = await supabase
     .from("bookings")
     .update({
@@ -132,18 +138,30 @@ export async function POST(
       updated_at: new Date().toISOString(),
     })
     .eq("id", bookingId)
+    .eq("slot_id", booking.slot_id) // CAS
+    .eq("status", booking.status) // CAS
     .select()
-    .single();
+    .maybeSingle();
 
-  if (updateError) {
+  if (updateError || !updatedBooking) {
+    // Either a real DB error, or the CAS lost (booking was concurrently rescheduled/cancelled
+    // between our read and this write). Either way, release the slot THIS request just
+    // claimed so it is never left orphaned as 'booked' with no booking pointing at it.
     await admin
       .from("availability_slots")
       .update({ status: "available", booking_id: null, booked_by: null })
       .eq("id", newSlot.id);
-    console.error("[Reschedule] Update error:", updateError);
+    if (updateError) {
+      console.error("[Reschedule] Update error:", updateError);
+      return NextResponse.json(
+        { error: "Failed to reschedule booking" },
+        { status: 500 }
+      );
+    }
+    console.error("[Reschedule] CAS lost: booking changed concurrently", { bookingId });
     return NextResponse.json(
-      { error: "Failed to reschedule booking" },
-      { status: 500 }
+      { error: "Booking changed concurrently, please retry", code: "CONFLICT" },
+      { status: 409 }
     );
   }
 

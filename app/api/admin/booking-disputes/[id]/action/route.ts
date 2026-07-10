@@ -41,23 +41,69 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { action, resolution_note } = validated;
 
+  // Guard set for dismiss/resolve_with_note/escalate/refund (audit finding: none of these had
+  // any status guard, unlike admin_approve/admin_reject which CAS on status==='escalated').
+  // Mirrors the dashboard's own action-button gating (app/[locale]/dashboard/cases/page.tsx,
+  // TERMINAL set plus `isEsc`): those four actions only render, and are only valid, on a
+  // still-open, non-escalated case; an escalated case shows admin_approve/admin_reject instead.
+  const TERMINAL_DISPUTE_STATUSES = new Set([
+    "admin_approved", "admin_rejected", "refunded", "charged", "void", "closed",
+  ]);
+  const isValidForGenericAction = (status: string) =>
+    !TERMINAL_DISPUTE_STATUSES.has(status) && status !== "escalated";
+
   if (action === "dismiss" || action === "resolve_with_note") {
-    await admin.from("booking_disputes").update({
-      status: "resolved",
+    if (!isValidForGenericAction(dispute.status)) {
+      return NextResponse.json(
+        { error: "Case cannot be resolved from its current status", status: dispute.status },
+        { status: 409 },
+      );
+    }
+    const targetStatus = action === "dismiss" ? "dismissed" : "resolved";
+    const { data: resolved, error: resolveError } = await admin.from("booking_disputes").update({
+      status: targetStatus,
       resolution: resolution_note ?? "Resolved by admin",
       resolved_by: user.id,
       resolved_at: new Date().toISOString(),
-    }).eq("id", disputeId);
+    })
+      .eq("id", disputeId)
+      .eq("status", dispute.status) // CAS: dispute must still be in the status read above
+      .select("id")
+      .maybeSingle();
+    if (resolveError) {
+      console.error("[booking-disputes] resolve/dismiss update failed:", resolveError.message);
+      return NextResponse.json({ error: resolveError.message }, { status: 500 });
+    }
+    if (!resolved) {
+      return NextResponse.json({ error: "Case status changed; reload" }, { status: 409 });
+    }
 
   } else if (action === "escalate") {
+    if (!isValidForGenericAction(dispute.status)) {
+      return NextResponse.json(
+        { error: "Case cannot be escalated from its current status", status: dispute.status },
+        { status: 409 },
+      );
+    }
     const mediationStart = new Date();
     const mediationDeadline = new Date(mediationStart.getTime() + 30 * 24 * 60 * 60 * 1000);
-    await admin.from("booking_disputes").update({
+    const { data: escalated, error: escalateError } = await admin.from("booking_disputes").update({
       status: "escalated",
       mediation_started_at: mediationStart.toISOString(),
       mediation_deadline_at: mediationDeadline.toISOString(),
-    }).eq("id", disputeId);
-    
+    })
+      .eq("id", disputeId)
+      .eq("status", dispute.status) // CAS: dispute must still be in the status read above
+      .select("id")
+      .maybeSingle();
+    if (escalateError) {
+      console.error("[booking-disputes] escalate update failed:", escalateError.message);
+      return NextResponse.json({ error: escalateError.message }, { status: 500 });
+    }
+    if (!escalated) {
+      return NextResponse.json({ error: "Case status changed; reload" }, { status: 409 });
+    }
+
     // Phase 7: Email to both parties on escalation
     try {
       const { data: parties } = await admin
@@ -91,7 +137,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
   } else if (action === "refund") {
-    // Admin-issued refund — routes through the shared issueRefund chokepoint
+    // Guard (audit finding): refund previously had no status check, so it could pay out on a
+    // dispute already resolved/rejected/refunded, bypassing that decision. Checked BEFORE any
+    // Stripe call.
+    if (!isValidForGenericAction(dispute.status)) {
+      return NextResponse.json(
+        { error: "Case cannot be refunded from its current status", status: dispute.status },
+        { status: 409 },
+      );
+    }
+    // Admin-issued refund, routes through the shared issueRefund chokepoint
     // (§10b#3), the single place that talks to Stripe refunds + writes
     // refunded_amount. amounts are integer Rappen; NEVER coalesce price_paid (CHF).
     const { data: disputeFetch } = await admin
@@ -138,13 +193,29 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Close the dispute. 'refunded' is the terminal refund state in the live
-    // booking_disputes_status_check enum.
-    await admin.from("booking_disputes").update({
+    // booking_disputes_status_check enum. CAS on the status guarded above: the money already
+    // moved via issueRefund's own CAS, so a lost race here (concurrent status change between
+    // the guard and this write) is logged, not retried or rolled back.
+    const { data: closed, error: closeError } = await admin.from("booking_disputes").update({
       status: "refunded",
       resolution: resolution_note ?? "Refund issued by admin",
       resolved_by: user.id,
       resolved_at: new Date().toISOString(),
-    }).eq("id", disputeId);
+    })
+      .eq("id", disputeId)
+      .eq("status", dispute.status) // CAS
+      .select("id")
+      .maybeSingle();
+    if (closeError) {
+      console.error(
+        `[booking-disputes] refund CAS update DB error for dispute ${disputeId}; refund already issued via Stripe:`,
+        closeError.message,
+      );
+    } else if (!closed) {
+      console.error(
+        `[booking-disputes] refund CAS no-op (concurrent status change) for dispute ${disputeId}; refund already issued via Stripe`,
+      );
+    }
 
     // Timeline event (caller owns case_events; issueRefund only touches money + booking).
     await admin.from("case_events").insert({
