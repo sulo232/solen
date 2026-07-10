@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { sendEmail, recurringConfirmation } from "@/lib/email";
 import { validateBody, recurringBookingSchema } from "@/lib/validations";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("bookings");
@@ -13,6 +14,9 @@ export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;

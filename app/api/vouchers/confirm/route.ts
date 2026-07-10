@@ -3,13 +3,23 @@ export const runtime = "nodejs"; // Use Node runtime for Stripe
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 /**
  * POST /api/vouchers/confirm
  * Called from checkout success page to finalize voucher purchase.
  * This should be called AFTER Stripe payment succeeds.
+ *
+ * Stays guest-accessible (no supabase.auth.getUser() gate): the voucher this route
+ * finalizes is created by POST /api/vouchers, which explicitly allows an
+ * unauthenticated buyer ("Allow both authenticated and guest purchases", buyerId can
+ * be null). Gating this route on a session would 401 a real guest finishing that
+ * flow. Rate-limited by IP instead, before the Stripe retrieve call.
  */
 export async function POST(req: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
   // Initialize Stripe
   const stripe = getStripe();
   const { payment_intent_id, voucher_id } = await req.json();

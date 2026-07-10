@@ -4,8 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 export async function GET(request: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rateLimited) return rateLimited;
+
   const { searchParams, origin } = new URL(request.url);
   const token = searchParams.get("token");
 
