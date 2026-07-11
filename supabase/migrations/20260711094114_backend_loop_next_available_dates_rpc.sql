@@ -1,6 +1,7 @@
--- exists-check: net-new vs salons_with_slot_in_hours (that one filters by hour window and returns matching ids; nothing returns the EARLIEST next date per salon; npm run exists next_available_dates = 0 matches)
--- Ring 2b (backend improvement loop): earliest next available Zurich date per salon, DISTINCT ON server-side.
--- Applied live via MCP apply_migration as backend_loop_next_available_dates_rpc on 2026-07-11.
+-- backfilled 2026-07-11 from supabase_migrations.schema_migrations
+-- (applied live via MCP apply_migration; file restored for fresh-env reproducibility)
+-- exists-check: net-new file backfill of an already-applied live migration; no local file existed
+-- Ring 2b: earliest next available Zurich date per salon, DISTINCT ON server-side.
 -- Replaces the route-side fetch of every future slot row (1,470 rows to keep 6;
 -- silently truncated at the PostgREST 1000-row cap). STABLE, public browse data.
 create or replace function public.next_available_dates(p_salon_ids uuid[], p_after timestamptz)
