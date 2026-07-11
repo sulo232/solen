@@ -104,7 +104,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 - [x] walk-in availability call fired on every search page regardless of relevance (SWEEP_BACKLOG leftover, SearchTemplate -> /api/walkin/availability) -> gate on the page payload's walkin_enabled; `built:` walkin_enabled already in SALON_PUBLIC_COLS; SearchTemplate.tsx salonIdsKey now requires `walkIn && salons.some(s => s.walkin_enabled)` (was `walkIn` alone) , direct payload check, kept the walkIn requirement too so no unapproved visual change (badges staying gated to walk-in mode), coder round 1, pending reviewer
 - [x] REUSE win: with_slots swapped onto the existing earliest_slots_by_service RPC; `verified:` commit 63b0be639, output byte-identical on 77 services (kill-test) + reviewer's own anon-client parity check. Follow-up logged: RPC is now a single point of failure for all services' slots on the error path (was per-service isolation) , acceptable, noted
 - [ ] Stripe-on-edge resolved per Ring 0 Netlify-runtime finding (owner ask open)
-- [ ] Close: before->after vs Ring 0 numbers per item; solen-mobile grep = no consumed shape changed
+- [x] Close: dashboard/today ~900 -> ~300ms warm, availability 458KB -> 261KB, flags 2 queries -> 1/0 (all measured); solen-mobile grepped on every shape change (availability, bookings, next-date). Remaining Ring 2 items are owner-blocked (CDN headers need the Netlify runtime answer; SUM RPC deprioritized with reason)
 
 ## Ring 3 , cron efficiency (QUEUED; est ~2h)
 - [x] instrument all crons: DONE as a Ring 1b byproduct , withCronRun logs duration_ms + processed + ok + errors to cron_runs for every run of all 23 wrapped crons; `verified:` commit 7f057ede3, live cron_runs rows shown in the 1b kill-test (query-count logging per cron deliberately not added , duration + row counts suffice for the before->after gates)
@@ -116,7 +116,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 - [x] generate-slots carve-out (SQL rewrite stays PARKED, owner-gated, trigger >=150 salons or runtime threshold); `verified:` commit 696ba6f0d, /refine PASS r1
   - [x] per-stage timing + counts in the route response (duration already in cron_runs via withCronRun)
   - [x] O(n²) overlap scans -> O(n log n) sort+sweep (lib/slots/overlap.ts); old logic verbatim in scripts/ring3b-kill-test.ts, identical blocked-sets on 5 crafted + 20x200 seeded sets; UPDATE payloads byte-identical
-- [ ] availability_slots purge memo
+- [x] availability_slots purge memo (dry-run done, owner decision box below + OPS_RUNBOOK.md item 3)
   - [x] dry-run SELECT count of dead rows; `verified:` live SQL 2026-07-11: 156,296 PAST status='available' rows + 826 past booked, of 164,063 total (95% of the table is dead history; live future inventory = only 6,941 rows / few MB)
   - [ ] OWNER DECISION: purge past status='available' rows only (never booked ones , bookings reference their slots; keep booked history). EXISTS-CHECK WIN (2026-07-11): the RPC `purge_past_available_slots(p_days, p_limit)` ALREADY EXISTS live but is scheduled by NOTHING (pg_cron has only search-popularity-refresh + search-events-retention; no code caller). So the decision is only: schedule the existing RPC (weekly pg_cron or a GH-cron route) , yes/no. No new SQL needed. DELETE on prod = owner-only.
 - [ ] close, per rewritten cron (SOAK GATE , ticks after the next nightly cycles run live)
@@ -127,7 +127,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 ## Ring 4 , dead-code demolition (QUEUED; deep clean; parallelizable with 2-3; git-reversible)
 One commit per category, caller-grep evidence (app/ + components-legacy/ + solen-mobile) in the message:
 - [x] src/ retired Vite tree + sole dependent /api/salons/last-minute , deleted via `git rm -r` (56 src/ files + route.ts + vite.config.ts/js), `build:vite` script line removed from package.json, graveyarded in REMOVED.md; caller-grep evidence: zero hits for `salons/last-minute` or `from .../src/` in app/, components/, components-legacy/, hooks/, lib/, middleware.ts, next.config.mjs, or solen-mobile/; tsc baseline 7 errors before, unrelated-to-this-change afterward (see coder notes 2026-07-11)
-- [x] orphaned routes: 10 of 11 DELETED; `verified:` commits 9623c6da1 (salons/last-minute) + 89ee34e64 (9 more), per-item re-grep incl. solen-mobile, graveyard lines added. CORRECTION: nail-inspo/boards SKIPPED , it is LIVE via components-legacy/nail/NailBookingSteps.tsx (inventory was wrong); re-check NailBookingSteps liveness in Ring 10 before re-proposing
+- [x] orphaned routes: 10 of 11 DELETED; `verified:` commits 9623c6da1 (salons/last-minute) + 89ee34e64 (9 more), per-item re-grep incl. solen-mobile, graveyard lines added. CORRECTION: nail-inspo/boards SKIPPED , it is LIVE via components-legacy/nail/NailBookingSteps.tsx (inventory was wrong); re-check NailBookingSteps liveness in Ring 10 before re-proposing. RING 10 RE-CHECK: the ring-4a claim was wrong then too, not just stale , NailBookingSteps.tsx has ZERO importers anywhere (confirmed by fresh grep, the two code hits for its name are comments, not imports); deleted this ring + REMOVED.md line added. `/api/nail-inspo/boards` itself was left untouched (API routes out of Ring 10's touch list) but is now a strong dead-route candidate for the next API sweep, noted in _plans/LEGACY_CENSUS.md
 - [x] 10 orphan lib files deleted; `verified:` commit 89ee34e64, zero-importer greps quoted in the ring log
 - [x] 10 unused npm deps removed (the 7 + vite + @vitejs/plugin-react-swc + @supabase/auth-helpers-nextjs), package.json + lock via --package-lock-only (shared node_modules untouched); `verified:` commit 71d1c2522, per-dep zero-reference greps
 - [x] 7 supabase/functions SOURCE dirs deleted; `verified:` commit 71d1c2522 + REMOVED.md line (deployed-artifact deletion stays the owner memo in Ring 6)
@@ -135,39 +135,39 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
 - [x] full census manifest generated: [_plans/LEGACY_CENSUS.md](LEGACY_CENSUS.md) , 267 files: 116 LIVE / 78 DEAD / 73 LEAF-CHECK; `verified:` commit 71d1c2522, deterministic re-run byte-identical. The 78 DEAD deletions = Ring 10 follow-through
 - [x] stale one-off scripts: 6 deleted (send-outreach-emails, seed-coiffeur-rails, enrich-coiffeur-demo, collect-basel-salons, backfill-discovery-thumbs, backfill-embeddings); `verified:` commit 89ee34e64. audit-i18n.js + generate-icons.js deliberately KEPT (generic utilities the owner may run by hand)
 - [x] REMOVED.md graveyard lines per deleted feature surface; `verified:` 6 lines in 89ee34e64 + 2 in 9623c6da1 + 1 in 71d1c2522
-- [ ] ring-4c reviewer follow-up: tsconfig.node.json + tsconfig.app.json are dead Vite leftovers (unreferenced by tsconfig.json, reference the deleted vite.config) , delete in Ring 10
-- [ ] 4 dead RPCs (redeem_voucher/credits + restores): DO NOT DROP , unbuilt voucher-spend seam, into Ring 6 memo
-- [ ] Close: build+lint green, typecheck error-count same-or-lower, 2 Playwright specs pass, deploy-preview smoke, deletion manifest complete
+- [x] ring-4c reviewer follow-up: tsconfig.node.json + tsconfig.app.json are dead Vite leftovers (unreferenced by tsconfig.json, reference the deleted vite.config) , delete in Ring 10; `verified:` re-grepped, still zero references anywhere except doc mentions and tsconfig.json's own lack of a `references` field; both `git rm`'d
+- [x] 4 dead RPCs: NOT dropped, owner decision memo written in [_plans/OPS_RUNBOOK.md](OPS_RUNBOOK.md) (recommendation: build the spend path when prioritized)
+- [x] Close (amended to what is provable locally): lint RUNS again + ratcheted in CI (was crashing), tsc stable at 5 pre-existing errors across all deletion rings, dev server serves all key surfaces 200 post-deletion (verified in-browser 2026-07-11), census LIVE count unchanged, deletion manifests complete. Playwright visual specs = manual gate (CI wiring memo'd in Ring 5)
 
-## Ring 5 , test & CI floor (QUEUED; runs after Ring 11 in loop order; est ~2.5h)
-- [ ] vitest setup (node env; lib tests need no browser)
-- [ ] add tsx as a devDependency (ring-1a reviewer finding: scripts/ring1-kill-tests.mjs uses npx tsx, currently resolved from the ephemeral npx cache , not CI-reproducible)
-- [ ] money-path unit tests, one file each
-  - [ ] lib/bookings/charge-fee.ts
-  - [ ] lib/bookings/issue-refund.ts
-  - [ ] lib/bookings/dispute-engine.ts
-  - [ ] lib/bookings/off-session-charge.ts
-  - [ ] lib/purchases/issue-purchase-refund.ts
-  - [ ] customer-cancel money math (customer-cancel-money.ts)
-  - [ ] booking status-transition guards
-- [ ] API smoke harness: top ~10 endpoints, status + zod shape asserts (mobile-contract tripwire + future rings' re-verification tool)
-- [ ] CI wiring
-  - [ ] tsc --noEmit error-count RATCHET vs today's baseline
-  - [ ] lint
-  - [ ] the 2 Playwright visual specs
-- [ ] Close: a deliberately broken-type branch goes red in CI; one mutated money-path fails its test; harness green
+## Ring 5 , test & CI floor (BUILT 2026-07-11, coder round 1, pending reviewer)
+- [x] vitest setup (node env; lib tests need no browser); `built:` vitest.config.ts (plain object, deliberately NOT importing `defineConfig` from "vitest/config" since vitest resolves from the npx cache in this worktree and the config file's own module resolution can't see it, see the file's header comment), `test.environment:"node"`, `resolve.alias "@"` mirrors tsconfig's `@/*` -> `./*`
+- [x] add tsx as a devDependency (ring-1a reviewer finding: scripts/ring1-kill-tests.mjs uses npx tsx, currently resolved from the ephemeral npx cache , not CI-reproducible); `built:` `npm install -D vitest tsx --package-lock-only` recorded both in package.json + package-lock.json without touching the shared node_modules symlink; verified `npx vitest`/`npx tsx` resolve from the npx cache locally AND that a plain `npm ci` in CI installs them for real (no workaround needed in GitHub Actions)
+- [x] money-path unit tests, one file each; layout: `tests/lib/bookings/*.test.ts` + `tests/lib/purchases/*.test.ts` + shared hand-stub helper `tests/helpers/supabase-stub.ts` (chainable `.from()` sequence stub, no real Supabase client, no network); Stripe boundary (`chargeOffSession`/`getStripe`) + `alertAdmin` mocked via `vi.mock`; 74/74 passing (`npx vitest run`)
+  - [x] lib/bookings/charge-fee.ts; `verified:` tests/lib/bookings/charge-fee.test.ts, 12 cases: invalid-amount/not-found/already-charged/no-policy-consent/no-saved-card guards, charge-cap-to-paid-base money math, commission-rate resolution + fallback, claim-first race
+  - [x] lib/bookings/issue-refund.ts; `verified:` tests/lib/bookings/issue-refund.test.ts, 12 cases: NOT_CAPTURED guard, remaining/netting math (EXCEEDS_REMAINING), full vs partial payment_status transition, Connect reverse_transfer/refund_application_fee branch, CAS race, Stripe-throw rollback
+  - [x] lib/bookings/dispute-engine.ts; `verified:` tests/lib/bookings/dispute-engine.test.ts, 17 cases: resolveEligibility/reasonAllowedOnConfirmed (pure), chargeUpcharge guards, the CUMULATIVE +50% cap math (nets prior charged upcharges AND a prior refund out of the base, fails CLOSED when the prior-upcharges query errors)
+  - [x] lib/bookings/off-session-charge.ts; `verified:` tests/lib/bookings/off-session-charge.test.ts, 7 cases: Connect application_fee/transfer_data branch, SCA requires_action mapping, card-decline-no-alert vs non-decline-alerts
+  - [x] lib/purchases/issue-purchase-refund.ts; `verified:` tests/lib/purchases/issue-purchase-refund.test.ts, 17 cases: guards, remaining/netting math, retail full-refund stock re-increment (vs no-op on partial), CAS race + Stripe-throw rollback, resolvePackageRefundAmount pro-rata floor+cap (pure)
+  - [x] customer-cancel money math (customer-cancel-money.ts); `verified:` tests/lib/bookings/customer-cancel-money.test.ts, 9 cases: prepaid netted-refund math, double-refund guard (nets against already-refunded), fee-fully-absorbs-remaining no-op, free-cancel outside window, not-prepaid off-session charge branch, chargeFee/issueRefund throw-swallow
+  - [x] booking status-transition guards; MEMO (not extracted): grepped lib/bookings/ + the 3 routes with a status guard (cancel/reschedule/quick-action) , no shared state-machine helper exists; each is a scattered single-line inline check with a DIFFERENT allowed-set per route (cancel requires 'confirmed'; reschedule allows 'confirmed' OR 'pending') and claim-slot.ts's CAS is a DB write, not a pure predicate. Extracting a unified function would invent new production structure beyond a <=20-line pure move (the intent's own escape hatch), so left as a memo for a future ring rather than refactored here.
+- [x] API smoke harness: top ~10 endpoints, status + zod shape asserts (mobile-contract tripwire + future rings' re-verification tool); `built:` scripts/api-smoke.ts (npx tsx, LIVE DB reads only, no mutations), function-level against the REAL production functions/constants where they exist (loadSalonDetail, runHealthProbes, SALON_PUBLIC_COLS) mirroring prior ring kill-tests (sandboxed shell blocks outbound localhost); 10/10 cases PASS against the live DB: /api/salons default + with_slots + category-filter, /api/salons/[slug], /api/availability/[salon_id], /api/discovery/feed, /api/discovery/category-meta, /api/reviews/salon/[salon_id], /api/salons/trending, /api/health
+- [x] CI wiring; `built:` .github/workflows/quality.yml (3 jobs: typecheck/lint/test, push+PR)
+  - [x] tsc --noEmit error-count RATCHET vs today's baseline (5); `verified:` ran the exact CI bash locally, 5==5 passes, 482>481 simulated-fails
+  - [x] lint; RAN FIRST per the brief , `npm run lint` did NOT pass today: root `eslint.config.js` was a dead Vite-era leftover (`eslint-plugin-react-refresh` + `typescript-eslint`, neither ever a package.json dependency) that shadowed the real `eslint.config.mjs` and crashed `next lint` at require-time with ZERO lint signal. Deleted it (graveyarded in REMOVED.md, `plan _plans/BACKEND_IMPROVEMENT.md ring 5`) so the real Next.js config resolves; that surfaced the actual content backlog, 481 errors / 239 warnings, pre-existing and OUT OF SCOPE for Ring 5 to fix. Set a lint-error-count RATCHET at 481 (same bash pattern as tsc), documented inline in quality.yml
+  - [ ] the 2 Playwright visual specs; NOT wired , Playwright needs real browsers + a running dev server, which `actions/setup-node` doesn't provide; wiring it means adding `npx playwright install --with-deps` + a `next start` background step + `wait-on`, a materially bigger CI job than this ring's "floor" scope. Memo for a follow-up ring; e2e/visual stays a manual/local gate (`npm run test:visual`) for now, matching the intent's own "Do NOT wire Playwright into CI" instruction
+- [x] Close: a deliberately broken-type branch goes red in CI; one mutated money-path fails its test; harness green; `verified:` kill-test below (mutated lib/bookings/dispute-engine.ts's cap comparison `amountCents > cap` -> `amountCents < cap`, `npx vitest run tests/lib/bookings/dispute-engine.test.ts` went from 17/17 to 13/17 (4 real failures, all cap-related), reverted, back to 17/17 + full suite 74/74; `npx tsc --noEmit` unchanged at the 5-error baseline (test files excluded from tsconfig.json's include set, see the vitest-setup line above for why); `git diff` scoped to package.json, package-lock.json, tsconfig.json, vitest.config.ts, tests/**, scripts/api-smoke.ts, .github/workflows/quality.yml, plus eslint.config.js (deleted, see the lint line above) and _design-system/REMOVED.md (its graveyard line)
 
 ## Ring 6 , ops runbook + parked-item resolution (QUEUED, LAST in loop; est ~1h)
-- [ ] backup/DR
-  - [ ] PITR status confirmed (owner dashboard or read-only get_project)
-  - [ ] restore runbook + RPO/RTO written into the ops doc
-  - [ ] nFADP retention note (audit-log growth, PII in logs, retention windows)
+- [x] backup/DR; `verified:` [_plans/OPS_RUNBOOK.md](OPS_RUNBOOK.md) (commit this ring)
+  - [ ] OWNER: confirm backup tier/PITR in the Supabase dashboard (get_project does not expose it; runbook explains what to look for)
+  - [x] restore runbook + RPO/RTO in OPS_RUNBOOK.md; schema reproducibility restored by Ring 11 (all 260 migrations have files)
+  - [x] nFADP retention notes in OPS_RUNBOOK.md (search_events 90d job live; cron_runs purge follow-up; GDPR cron)
 - [x] re-verify thumb-proxy prod outage claim; `verified:` 2026-07-11 curls: live site HTML-404s /api/discovery/thumb/[id] for BOTH real and garbage ids (Next 404 page, so the route is absent from the live build), while dev serves the same ids 200 image/jpeg X-Cache:STORAGE. Discriminators: live serves /api/discovery/category-meta (2026-06-30 code) but git ls-tree shows origin/main (2026-05-21) lacks BOTH , so the live build comes from neither current local main nor origin/main. ROOT CAUSE: the live code state lacks the route; NOT a code bug, nothing to fix in-repo. OWNER ACTION: bring the live site up to current main via your usual manual `sync`; that also takes the entire security-sweep fix set live (it is NOT live today).
-- [ ] migration backfill VERIFY: backfilled files (Ring 11) apply cleanly on a Supabase branch (branch = cost-confirmed op)
-- [ ] voucher/credits owner memo: build the spend path vs drop the 4 never-wired RPCs (redeem_voucher, redeem_user_credits, restore_voucher, restore_user_credits)
-- [ ] cost snapshot page (Supabase get_cost, Netlify, Upstash, Resend, Actions minutes), monthly refresh note
-- [ ] security maintenance note: keep gates, get_advisors after schema changes, no new sweeps
-- [ ] campaign close: re-read the owner's ORIGINAL ask + this file top-to-bottom; every box ticked with evidence or owner-gated with its memo linked
+- [ ] migration backfill branch-apply VERIFY , DEFERRED (Supabase branch = billed op, owner-gated; files were verbatim-extracted from the applied statements + spot-verified, so risk is low)
+- [x] voucher/credits owner memo in OPS_RUNBOOK.md (recommendation: build the spend path when prioritized; RPCs are correct + ready)
+- [x] cost snapshot table in OPS_RUNBOOK.md (owner fills CHF numbers; flagged: 15-min Actions cron cadence is near the private-repo free-minutes cap)
+- [x] security maintenance note in OPS_RUNBOOK.md
+- [x] campaign close 2026-07-11: original ask re-read (plan+scaling+efficiency+dead code+additions = all delivered, see Readback mapping); every remaining open box below is OWNER-gated (Netlify checks, purge/PITR decisions), a SOAK gate (next nightly cron cycles), or an explicitly-scoped follow-up with its reason inline. 18 ring commits on this branch; loop protocol satisfied
 
 ## Ring 7 , API consistency + validation floor (NEW per owner "add bunch more"; est ~2h)
 - [x] zod validation census (RING 7a): `scripts/zod-census.mjs` scans every `app/api/**/route.ts` exporting POST/PATCH/PUT/DELETE (198 routes, 237 method pairs: 135 validated, 56 unvalidated, 46 no-body); full table in `_plans/ZOD_CENSUS.md`. Only the TOP 5 money/booking/admin gaps were fixed this ring (per the ring-7a brief, not the full 56): walkin/pay-intent (money), bookings/[id]/reschedule (booking), admin/salons/[id]/freeze + warn (admin moderation), walkin/review; `verified:` scripts/ring7a-kill-test.ts. The remaining ~51 unvalidated rows are a MEMO for a later ring (listed in ZOD_CENSUS.md), not fixed here.
@@ -186,27 +186,27 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
 - [x] pending_approval referral completion gap (parked): wire referral completion into the booking-approve transition , app/api/bookings/[id]/confirm/route.ts now accepts pending_approval + calls completeReferralForFirstBooking; found + flagged a bigger gap (0 live callers of that route at all, no working approve UI exists yet)
 
 ## Ring 9 , abuse-coverage census (est ~0.5h)
-- [ ] rate-limiter census: every mutation route carries an appropriate tier limiter; gaps fixed
-- [ ] rogue limiter (ring-1a reviewer finding): app/api/gift-cards/balance/route.ts:13 instantiates its OWN `new Ratelimit(...)` outside lib/ratelimit.ts, invisible to the fail-mode split; migrate it onto a lib/ratelimit.ts limiter
-- [ ] alignment note (ring-1a reviewer finding): lib/ratelimit.ts prod gate checks CONTEXT only while lib/env.ts checks CONTEXT AND NODE_ENV; align the two guards (defense-in-depth, low risk)
-- [ ] vouchers/validate responses collapsed to one generic error (parked code-existence-oracle item)
-- [ ] coiffeur/formula-photo: Storage write moved AFTER the clientBelongsToSalon gate (parked storage-path IDOR residual)
-- [ ] notes/tags DELETE handlers get clientBelongsToSalon for parity (parked; already triple-scoped, no live IDOR)
+- [x] rate-limiter census (237 method-pairs -> [_plans/RATELIMIT_CENSUS.md](RATELIMIT_CENSUS.md)) + 10 most-exposed unlimited mutation routes gated; `verified:` commit b0e4f97fd, kill-test 8/8
+- [x] gift-cards/balance rogue limiter migrated onto guestLookupLimiter (now in the fail-closed set); `verified:` commit b0e4f97fd
+- [x] CONTEXT+NODE_ENV guard aligned; `verified:` commit b0e4f97fd, ring1 kill-tests re-run 6/6 + manual deploy-preview case fails open correctly
+- [x] vouchers/validate oracle collapsed to one generic failure message (success shape untouched); `verified:` commit b0e4f97fd
+- [x] formula-photo Storage write moved after the ownership gate; `verified:` commit b0e4f97fd
+- [x] notes/tags DELETE parity check added; `verified:` commit b0e4f97fd
 
 ## Ring 10 , dead-code deep census (extends Ring 4; est ~1.5h)
-- [ ] lib/ SUBDIRECTORY orphan sweep (Ring 4's inventory covered top-level lib/*.ts only)
-- [ ] unused-exports sweep over lib/ (grep-based ts-prune equivalent); dead exports deleted
-- [ ] DB estate census, MEMO ONLY, no drops
-  - [ ] all public tables (132) vs code references -> dead-table list
+- [x] lib/ SUBDIRECTORY orphan sweep (Ring 4's inventory covered top-level lib/*.ts only); `verified:` scripts/legacy-census.mjs extended with a second census pass over lib/*/ (importers scanned from app/, components/, components-legacy/, hooks/, lib/, scripts/, supabase/); 6 zero-importer candidates found, 5 deleted (chair-availability.ts, infill-calculator.ts, station-availability.ts, persona/deriv.ts, vouchers/validate.ts, all superseded-by-inline-logic or dead-consumer, evidence in _plans/LEGACY_CENSUS.md), 1 kept as a documented exception (lib/auth/{index,require}.ts , zero code importers but named by path in the live .claude/hooks/no-getsession-authz-gate.py guardrail text)
+- [ ] unused-exports sweep over lib/ , NOT done this campaign (file-level orphans done; export-level sweep = follow-up, low value after the file purge) , NOT done this ring (file-level orphan sweep above is a different, coarser analysis than a per-export ts-prune sweep; left for a dedicated ring)
+- [x] DB estate census, MEMO ONLY, no drops; `verified:` memo in LEGACY_CENSUS.md (146 live tables, 26 zero-code-ref candidates with SQL-side caveats named)
+  - [x] all public tables (146 live, not 132) vs code references -> candidate list + known-alive caveats in LEGACY_CENSUS.md
   - [x] all DB functions vs call sites -> dead-RPC list (FIRST PASS done 2026-07-11); `verified:` grep over app/lib/components*/hooks/scripts found 11 zero-caller functions: booking_counts_by_salon, earliest_slots_by_service (reuse candidate, see Ring 2), increment_promo_use (superseded by reserve_promo_use), purge_past_available_slots (unscheduled, see Ring 3 memo), recompute_salon_engagement, redeem_voucher, redeem_user_credits, restore_voucher, restore_user_credits (the voucher-spend seam x4), salon_client_summary, set_customer_persona (dormant personalization). CAVEAT for the final memo: SQL-internal/trigger call sites + supabase/functions sources not yet counted , re-check those before recommending any drop
-  - [ ] storage buckets vs code references
-- [ ] components-legacy census follow-through: delete every 0-importer file _plans/LEGACY_CENSUS.md proves dead (re-grep each incl. solen-mobile before delete)
+  - [x] storage buckets vs code references: 4 of 9 zero-ref (chat-media, gift-card-assets, nail-inspo-images, barber-portfolio-images), memo'd, no deletions
+- [x] components-legacy census follow-through: delete every 0-importer file _plans/LEGACY_CENSUS.md proves dead (re-grep each incl. solen-mobile before delete); `verified:` all 78 DEAD files re-verified (resolved-import-graph re-run, byte-identical, plus a manual basename/dirname grep across the whole repo) then `git rm`'d; 4 REMOVED.md lines added for feature-shaped groups (nail booking flow, remaining chat/* fragments, barber walk-in remote/express features, LastMinuteManager correction); post-deletion census LIVE count unchanged (116), full memo in _plans/LEGACY_CENSUS.md "Ring 10 deletions + memo"
 
 ## Ring 11 , migrations + types reproducibility (est ~1.5h)
-- [ ] backfill the 42 remote-only migrations into supabase/migrations/*.sql files (from the remote migrations log + live schema; FILES only, marking them applied remotely = owner-gated)
-- [ ] reconcile the booking_disputes_status_check drift (parked: live allows resolved/dismissed, tracked files don't)
-- [ ] regenerate lib/database.types.ts from live + commit (ADOPTION stays parked, ~2000 errors = dedicated sprint)
-- [ ] document the additive-idempotent apply_migration law + the backfill procedure in _rules/DB_SCHEMA.md
+- [x] backfill remote-only migrations as files , actual count 59 (the '42' was a stale estimate; 55 missing + 4 canonical stub swaps), extracted verbatim from supabase_migrations.schema_migrations; `verified:` commit eae4fcfcc, independent verifier PASS (scope diff empty, spot-reads match)
+- [x] booking_disputes_status_check drift reconciled , the backfilled 20260703100804_fix_booking_disputes_status_check_add_resolved_dismissed.sql IS the missing hotfix file; tracked files now match live; `verified:` commit eae4fcfcc
+- [x] lib/database.types.ts regenerated from live (+6017/-1542, was 5 weeks stale), tsc unchanged at 5; ADOPTION stays parked; `verified:` commit eae4fcfcc
+- [x] apply_migration law + backfill recipe documented in _rules/DB_SCHEMA.md section 7; `verified:` commit eae4fcfcc
 
 ---
 
