@@ -41,9 +41,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
     }
 
+    // Ring 2d: `*` shipped all ~63 booking columns (Stripe ids, access tokens, fee-charge
+    // internals, VAT/tier-discount breakdowns, reschedule/price-increase workflow fields) to
+    // the salon dashboard. List ONLY what the 4 dashboard consumers actually read (grepped:
+    // dashboard/page.tsx, dashboard/bookings/page.tsx, dashboard/clients/page.tsx,
+    // dashboard/upcharge/page.tsx) plus the server's own enrichment reads (user_id, guest_name
+    // below) and a small id/status/times/price/payment safety margin. No mobile consumer (the
+    // iOS app queries `bookings` directly via Supabase, never this route).
     let q = supabase
       .from("bookings")
-      .select("*, services(name_de, name_en), staff_members(name)", { count: "exact" })
+      .select(
+        "id, user_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, guest_name, reference_code, services(name_de, name_en), staff_members(name)",
+        { count: "exact" },
+      )
       .eq("salon_id", salonId)
       .order("starts_at", { ascending: false })
       .range(offset, offset + limit - 1);
@@ -60,12 +70,16 @@ export async function GET(request: NextRequest) {
       const { data: profs } = await supabase.from("public_profiles").select("id, display_name").in("id", userIds);
       (profs ?? []).forEach((p) => nameMap.set(p.id, p.display_name));
     }
+    // Ring 2d: the explicit multi-column select above (vs the old `*, services(...)`) makes
+    // PostgREST's TS inference type the embedded services/staff_members as arrays even though
+    // this is a to-one relation at runtime (same widening the POST handler's LooseSlot comment
+    // documents for the identical select-shape change there).
     const bookings = (data ?? []).map((b) => ({
       ...b,
       customer_name: (b.user_id ? nameMap.get(b.user_id) : null) ?? b.guest_name ?? "Gast",
       customer_avatar: null as string | null,
-      service_name: b.services?.name_de ?? b.services?.name_en ?? "Service",
-      staff_name: b.staff_members?.name ?? null,
+      service_name: (b.services as any)?.name_de ?? (b.services as any)?.name_en ?? "Service",
+      staff_name: (b.staff_members as any)?.name ?? null,
     }));
     return NextResponse.json({ bookings, total: count ?? 0, page, limit });
   }
@@ -462,7 +476,19 @@ export async function POST(request: NextRequest) {
     .select()
     .single();
 
-  if (bookingError) return NextResponse.json({ message: bookingError.message, code: "DB_ERROR" }, { status: 500 });
+  if (bookingError) {
+    // enforce_staff_daily_limit trigger (ring 16, race-CAS): a concurrent request filled the
+    // last slot for this stylist/day between our pre-check above and this INSERT. Map the
+    // trigger's RAISE to a clean 409 for the race loser instead of a 500 (the trigger is live
+    // but dormant today, 0 salons use the daily cap, so this is cheap race-loser politeness).
+    if (bookingError.message?.includes("staff_daily_limit_reached")) {
+      return NextResponse.json(
+        { error: "Diese:r Stylist:in ist an diesem Tag ausgebucht.", message: "Diese:r Stylist:in ist an diesem Tag ausgebucht.", code: "STYLIST_FULLY_BOOKED" },
+        { status: 409 },
+      );
+    }
+    return NextResponse.json({ message: bookingError.message, code: "DB_ERROR" }, { status: 500 });
+  }
 
   // 5. Stamp the human order number (SP-2 generator + 23505 retry against the unique index).
   //    Needs the booking id, so it runs post-insert with the service-role client. Failure here
@@ -553,7 +579,7 @@ export async function POST(request: NextRequest) {
         locale
       );
       await sendEmail(emailData);
-    } catch { /* email failure shouldn't break booking */ }
+    } catch (err) { console.error("[bookings] customer confirmation email failed:", err); }
   }
 
   // 8. Notify salon owner about the new booking (deferred for online-pay until
@@ -586,7 +612,7 @@ export async function POST(request: NextRequest) {
         await sendEmail(ownerEmailData);
       }
     }
-  } catch { /* owner notification failure must not break booking */ }
+  } catch (err) { console.error("[bookings] owner notification email failed:", err); }
 
   // 9. Complete referral on a CONFIRMED first booking, instant / in-person only.
   //    SP-1: referrals reward `referred_user_id = user.id`; a guest has no user id, so this is a

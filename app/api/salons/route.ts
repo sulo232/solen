@@ -522,42 +522,27 @@ export async function GET(request: NextRequest) {
       if (serviceIds.length > 0) {
         const nowIso = new Date().toISOString();
         const horizonIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-        // Pull EXACTLY the earliest 3 slots per service via one bounded query each,
-        // run concurrently. The old approach selected up to 3000 rows ordered by time
-        // across ALL service_ids, then kept the first 3 per service in JS, so for a
-        // full page it transferred far more than the ~180 slots actually shown (and a
-        // service whose slots sorted past the 3000 cap got zero, a latent correctness
-        // bug). Per-service .limit(3) crosses the wire with at most 3 rows per service
-        // (idx on service_id supports it), returning the same earliest-3-ascending set.
+        // Ring 2d: was N parallel per-service .limit(3) queries; now ONE call to the live
+        // `earliest_slots_by_service(p_service_ids, p_from, p_to, p_per)` RPC, which already
+        // existed with zero callers (Ring 10 dead-RPC census). Live-DB discriminate check
+        // (npx tsx, all 77 services with an available future slot, p_per 3 AND 1): the RPC's
+        // per-service starts_at arrays are byte-identical to the old per-service query's
+        // output (same status='available' filter, same time bounds, same earliest-N-ascending
+        // ordering), and it is anon-callable (tested with the same anon key this route uses).
         const slotsByService: Record<string, string[]> = {};
-        const perServiceResults = await Promise.all(
-          serviceIds.map((svcId) =>
-            supabase
-              .from("availability_slots")
-              .select("service_id, starts_at")
-              .eq("status", "available")
-              .eq("service_id", svcId)
-              .gte("starts_at", nowIso)
-              .lte("starts_at", horizonIso)
-              .order("starts_at", { ascending: true })
-              .limit(3),
-          ),
-        );
-        let slotErr: { message: string } | null = null;
-        for (const res of perServiceResults) {
-          if (res.error) {
-            slotErr = res.error;
-            continue;
-          }
-          for (const slot of res.data ?? []) {
-            const svcId = (slot as { service_id: string }).service_id;
-            const ts = (slot as { starts_at: string }).starts_at;
-            if (!slotsByService[svcId]) slotsByService[svcId] = [];
-            if (slotsByService[svcId].length < 3) slotsByService[svcId].push(ts);
-          }
-        }
+        const { data: slotRpcRows, error: slotErr } = await supabase.rpc("earliest_slots_by_service", {
+          p_service_ids: serviceIds,
+          p_from: nowIso,
+          p_to: horizonIso,
+          p_per: 3,
+        });
         if (slotErr) {
-          console.error("[api/salons GET] next-slots query error:", slotErr.message);
+          console.error("[api/salons GET] next-slots RPC error:", slotErr.message);
+        } else {
+          for (const row of (slotRpcRows ?? []) as Array<{ service_id: string; starts_at: string }>) {
+            if (!slotsByService[row.service_id]) slotsByService[row.service_id] = [];
+            slotsByService[row.service_id].push(row.starts_at);
+          }
         }
         for (const sid of Object.keys(topServicesBySalon)) {
           topServicesBySalon[sid] = topServicesBySalon[sid].map((s) => ({

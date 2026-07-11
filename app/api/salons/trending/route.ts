@@ -1,4 +1,5 @@
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 import { NextResponse } from "next/server";
 
 // This route is public, non-personalized aggregate data (no auth/session read anywhere
@@ -6,10 +7,17 @@ import { NextResponse } from "next/server";
 // createServerSupabaseClient calls cookies(), which forces the route dynamic and silently
 // DEFEATS `export const revalidate` below; createAdminSupabaseClient reads no cookies, so
 // ISR actually works. Precedent: app/api/metrics/global/route.ts (revalidate=86400, same
-// pattern). Selected columns (id, name, slug, cover_photo_url, city_id, average_rating,
-// review_count, is_top_pick) contain none of the sensitive salon columns (stripe_account_id,
-// owner_id, frozen_reason, search_doc, score_details), so no allowlist trim was needed.
+// pattern).
 export const revalidate = 86400; // Cache for 24 hours
+
+// Ring 2d: was a hand-typed inline column list, duplicating the sensitivity judgment
+// SALON_PUBLIC_COLS already makes. Intersect this widget's small field set (unchanged
+// response shape) against the shared allowlist (lib/salons/public-columns.ts) instead of
+// hardcoding a second one that could silently drift and re-admit a sensitive column later
+// without ever touching the shared list.
+const TRENDING_FIELDS = ["id", "name", "slug", "cover_photo_url", "city_id", "average_rating", "review_count", "is_top_pick"];
+const PUBLIC_COLS_SET = new Set(SALON_PUBLIC_COLS.split(",").map((c) => c.trim()));
+const TRENDING_COLS = TRENDING_FIELDS.filter((f) => PUBLIC_COLS_SET.has(f)).join(", ");
 
 export async function GET() {
   try {
@@ -19,7 +27,7 @@ export async function GET() {
     // We fetch a bit more fields to ensure rendering works client-side
     const { data, error } = await supabase
       .from("salons")
-      .select("id, name, slug, cover_photo_url, city_id, average_rating, review_count, is_top_pick")
+      .select(TRENDING_COLS)
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .eq("is_test", false)

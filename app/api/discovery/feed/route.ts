@@ -61,7 +61,13 @@ export async function GET(req: NextRequest) {
       }
       const list = (rows ?? []) as Array<Record<string, any>>;
       const total = list.length > 0 ? Number(list[0].total_count) : 0;
-      const items = list.map(({ total_count, ...rest }) => rest);
+      // Ring 2d: drop tiktok_embed_html (the raw TikTok oEmbed HTML blob, ~54% of a 20-item
+      // feed payload). The grid (ItemCard/VideoCard) never renders it, only truthy-checks it
+      // for the isVideo flag, and that check is already covered by tiktok_url/media_type
+      // (live-DB discriminate check: 0 of 935 rows with tiktok_embed_html set would flip
+      // isVideo if it were absent). The detail page (/inspo/[id]) fetches its own item
+      // separately and is unaffected.
+      const items = list.map(({ total_count, tiktok_embed_html, ...rest }) => rest);
       // V3-D409: log the search (page 1 only → one event per search action, not per scroll page) to power
       // trending terms. Service role bypasses RLS; failures are non-fatal.
       if (filters.page === 1) {
@@ -92,7 +98,8 @@ export async function GET(req: NextRequest) {
       if (!fyErr) {
         const fyList = (fyRows ?? []) as Array<Record<string, any>>;
         const fyTotal = fyList.length > 0 ? Number(fyList[0].total_count) : 0;
-        const fyItems = fyList.map(({ total_count, ...rest }) => rest);
+        // Ring 2d: same tiktok_embed_html trim as the search_discovery branch above.
+        const fyItems = fyList.map(({ total_count, tiktok_embed_html, ...rest }) => rest);
         return NextResponse.json({ items: fyItems, total: fyTotal, page: filters.page, limit, has_more: fyTotal > offset + limit });
       }
       console.error("[Discover] discovery_feed_for_you failed, falling back to neutral feed:", fyErr);
@@ -127,7 +134,8 @@ export async function GET(req: NextRequest) {
     }
     const list = (rows ?? []) as Array<Record<string, any>>;
     const total = list.length > 0 ? Number(list[0].total_count) : 0;
-    const items = list.map(({ total_count, ...rest }) => rest);
+    // Ring 2d: same tiktok_embed_html trim as the search_discovery branch above.
+    const items = list.map(({ total_count, tiktok_embed_html, ...rest }) => rest);
     return NextResponse.json({ items, total, page: filters.page, limit, has_more: total > offset + limit });
   } catch (e: any) {
     // Graceful fallback when Supabase admin client can't be created
