@@ -8547,6 +8547,10 @@ export type Database = {
           salon_id: string
         }[]
       }
+      booking_revenue_sum: {
+        Args: { p_salon_id: string; p_since: string }
+        Returns: number
+      }
       create_group_booking: {
         Args: {
           p_event_type: string

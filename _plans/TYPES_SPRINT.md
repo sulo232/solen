@@ -1,0 +1,14 @@
+# Typed-database adoption sprint (workstream 17, owner-approved 2026-07-11 PM: "make a big plan and execute it, dont ask jst go, its a loop")
+
+Goal: apply the generated `Database` types (lib/database.types.ts, regenerated from live in Ring 11) to all Supabase clients so a phantom column/table becomes a COMPILE error instead of a silent runtime null , this repo's recorded #1 silent failure mode.
+
+## Loop protocol
+Flip the clients first (errors become visible), probe the real error map, then fix in path-partitioned coder+reviewer waves (<=4 concurrent, disjoint paths). Per batch: real typing fixes ONLY (no `as any`, no @ts-ignore; `.returns<T>()` allowed only with a one-line justification), behavior byte-identical, tsc error count strictly decreasing (before/after quoted), commit per batch. Local intermediate commits may carry tsc errors (CI only runs on `main` push/PR); the FINAL state must be tsc=0 + vitest 76/76 + smoke 10/10 + e2e green. No owner check-ins (owner directive).
+
+## P0 finding: the 2,725-error census was 91% a LIBRARY-VERSION artifact, not code bugs
+First census after flipping `createServerClient<Database>`/`createBrowserClient<Database>`: 2,725 errors / 345 files, dominated by TS2339 "property does not exist on type 'never'". Discriminating probes (scripts/_probe-types.ts, deleted after) proved the row types collapse to `never` only through @supabase/ssr@0.5.2's generics; plain supabase-js 2.99 `createClient<Database>` infers star-selects, explicit columns, embedded relations, and rpc names perfectly. Root cause: installed @supabase/ssr 0.5.2 predates supabase-js 2.99's type machinery (physical upgrade blocked: node_modules is shared with the main repo). Fix: a TYPE-ONLY cast bridge `as unknown as TypedSupabaseClient` on each factory return (lib/supabase.ts, lib/supabase-browser.ts), zero runtime change, documented in the file, remove when ssr is upgraded to >=0.6. This is the sprint's ONE sanctioned `as unknown as`; the no-casts rule binds everywhere else. Also regenerated lib/database.types.ts (+booking_revenue_sum rpc from earlier today). Result: 2,725 -> 251 errors / 107 files. Full lists: scratchpad types-sprint-errors.txt (v1) / -v2.txt.
+
+## Boxes
+- [x] P0 probe: type the 3 client factories (lib/supabase.ts x2 + browser, lib/supabase-browser.ts), dump the full tsc error list to a file, bucket by directory, size the waves , verified: probe matrix isolated the ssr@0.5.2 root cause, bridge applied, census 2,725 -> 251 / 107 files (v2 buckets: discovery 32, dashboard 25, cron 23, admin 19, salon 15, bookings 15, stripe 13, salons 13, app/[locale] 11, search 10, loyalty 9, analytics 9, scripts 14, tail ~40)
+- [ ] Wave 1 (4 disjoint loops): A discovery+search+loyalty (51) · B dashboard+admin+analytics (53) · C cron+bookings+stripe (51) · D salon+salons+app/[locale]+scripts+tail (96)
+- [ ] Final: tsc=0, vitest, smoke, e2e all green; NOTE comment in lib/supabase.ts updated; plan + ACTIVE closed
