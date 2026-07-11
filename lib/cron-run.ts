@@ -13,6 +13,7 @@
 // A `cron_runs` write failure only console.error's.
 import { NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { reportError } from "@/lib/error-report";
 
 /**
  * Shape a cron handler may return. Any extra fields pass through untouched.
@@ -55,6 +56,10 @@ export async function withCronRun(
   } catch (err) {
     threw = err;
     console.error(`[cron-run] "${name}" handler threw:`, err);
+    // RING 1c: in addition to the cron_runs row below, surface the failure via
+    // the central reportError (console.error already above + a throttled admin
+    // alert), so a dead cron is visible without someone querying cron_runs.
+    await reportError(`cron:${name}`, err);
   }
 
   const durationMs = Date.now() - startedAt;

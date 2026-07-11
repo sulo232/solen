@@ -212,7 +212,7 @@ export function getAppUrl(): string {
  * every transactional email silently no-ops. Without CRON_SECRET, cron routes are
  * unauthenticated. Without ADMIN_EMAIL, alertAdmin has nowhere to send.
  */
-const PROD_REQUIRED_VARS = [
+export const PROD_REQUIRED_VARS = [
   "UPSTASH_REDIS_REST_URL",
   "UPSTASH_REDIS_REST_TOKEN",
   "CRON_SECRET",

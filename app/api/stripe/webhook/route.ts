@@ -7,6 +7,7 @@ import { paymentFailedNotification } from "@/lib/email-templates/booking-notific
 import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { reportError } from "@/lib/error-report";
 
 export const runtime = "nodejs";
 
@@ -771,6 +772,7 @@ export async function POST(req: NextRequest) {
     // transactional context. Without this, the event_id stays "claimed" and
     // Stripe gives up after its retry schedule — partial state is permanent.
     console.error("[stripe/webhook] handler failed, releasing claim:", handlerErr, { event_id: event.id, type: event.type });
+    await reportError("stripe-webhook", handlerErr, { eventType: event.type });
     await admin.from("processed_webhook_events").delete().eq("event_id", event.id);
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }

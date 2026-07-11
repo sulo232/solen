@@ -10,6 +10,7 @@ import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent, chargeUpcharge, ChargeUpchargeError } from "@/lib/bookings/dispute-engine";
 import { notifyUpchargeCharged } from "@/lib/bookings/notify-upcharge";
+import { reportError } from "@/lib/error-report";
 
 // SP-3 Endpoints 6 (POST salon upcharge request) + 7 (PATCH customer respond).
 //
@@ -337,6 +338,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   try {
     charge = await chargeUpcharge({ db: admin, disputeId: dispute.id, actorRole: actor, actorUserId: userId });
   } catch (e) {
+    await reportError("booking-dispute-upcharge-charge", e, { disputeId: dispute.id });
     // Structural errors only (NO_SAVED_CARD, EXCEEDS_CAP, etc.). The approval already
     // stands at salon_approved; surface the reason and let it be charged out-of-band.
     if (e instanceof ChargeUpchargeError) {
