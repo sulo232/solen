@@ -2,6 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
+import { alertAdmin } from "@/lib/alert-admin";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -100,6 +101,51 @@ export const resendAccessLimiter = new Ratelimit({ redis, limiter: Ratelimit.sli
 
 export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(1, "6 h"), analytics: true, prefix: "rl:offpeak:notify" });
 
+// Limiters guarding abuse-prone surfaces: credential stuffing (auth, which also covers
+// every OTP/verify-phone route, they all key off authLimiter), payment attempts, booking
+// spam, the three enumeration/brute-force oracles (guest reference_code lookup, referral
+// code validation, resend-access), and the authenticated referral money-crediting path
+// (userId-keyed, farmable for CHF credit rather than an enumeration target, but still
+// abuse-prone). If Upstash is unconfigured on a REAL production boot these must fail
+// CLOSED, failing open here would silently drop the exact protection they exist for.
+// Every other limiter (general browsing, discovery, admin, messaging, etc.) keeps
+// today's fail-open behavior since blocking those would break the product, not just
+// slow an attacker.
+const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
+  authLimiter,
+  paymentLimiter,
+  bookingLimiter,
+  guestLookupLimiter,
+  referralLimiter,
+  referralValidateLimiter,
+  resendAccessLimiter,
+]);
+
+const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
+
+// Set at most once per process. The underlying misconfiguration (Upstash unset in
+// prod) doesn't change between requests, so re-alerting on every request would just
+// spam the inbox into being ignored.
+let alertedMisconfiguredRedis = false;
+
+/**
+ * Pages ADMIN_EMAIL once when a non-abuse-prone limiter is about to fail open
+ * because Upstash is unconfigured on a real production boot. Fire-and-forget:
+ * alertAdmin is itself best-effort and never throws.
+ */
+function alertMisconfiguredRedisOnce(): void {
+  if (alertedMisconfiguredRedis) return;
+  alertedMisconfiguredRedis = true;
+  void alertAdmin(
+    "Rate limiting is fail-open in production",
+    "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are unset on a production boot " +
+      "(CONTEXT=production). Abuse-prone limiters (auth, payment, booking, guest lookup, " +
+      "referral validate, resend-access, referral complete) are failing closed, but every " +
+      "other rate limiter is disabled and requests to those routes are passing through " +
+      "unthrottled."
+  );
+}
+
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(
@@ -108,27 +154,34 @@ export async function applyRateLimit(
 ): Promise<NextResponse | null> {
   // Skip rate limiting if Upstash Redis is not configured
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
+    if (process.env.CONTEXT === "production") {
+      if (ABUSE_PRONE_LIMITERS.has(limiter)) {
+        // Fail CLOSED: no Redis to ask, so this is the same 429 a real limit hit
+        // returns, minus the X-RateLimit-* headers (we have no real limit/remaining/
+        // reset numbers to report without a Redis call, and fabricating them would
+        // be worse than omitting them).
+        return NextResponse.json(RATE_LIMITED_BODY, { status: 429 });
+      }
+      alertMisconfiguredRedisOnce();
+    }
     return null;
   }
   try {
     const key = "ip" in identifier ? identifier.ip : identifier.userId;
     const { success, limit, reset, remaining } = await limiter.limit(key);
     if (!success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
-        {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": String(limit),
-            "X-RateLimit-Remaining": String(remaining),
-            "X-RateLimit-Reset": String(reset),
-            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
-          },
-        }
-      );
+      return NextResponse.json(RATE_LIMITED_BODY, {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit": String(limit),
+          "X-RateLimit-Remaining": String(remaining),
+          "X-RateLimit-Reset": String(reset),
+          "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
+        },
+      });
     }
   } catch (err) {
-    // Redis connection failed — allow request through rather than blocking
+    // Redis connection failed, allow request through rather than blocking
     console.error("[ratelimit] Redis error, skipping rate limit:", err);
   }
   return null;
@@ -136,10 +189,17 @@ export async function applyRateLimit(
 
 /**
  * Boolean rate-limit check for contexts that can't return a NextResponse (server components, background work).
- * Returns true (allowed) when Redis is unconfigured or errors — fail-open, like applyRateLimit.
+ * Returns true (allowed) when Redis is unconfigured outside prod, or on a runtime Redis error, fail-open like
+ * applyRateLimit. On a real production boot with Redis unconfigured, abuse-prone limiters fail CLOSED (false).
  */
 export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<boolean> {
-  if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) return true;
+  if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
+    if (process.env.CONTEXT === "production") {
+      if (ABUSE_PRONE_LIMITERS.has(limiter)) return false;
+      alertMisconfiguredRedisOnce();
+    }
+    return true;
+  }
   try {
     const { success } = await limiter.limit(key);
     return success;
