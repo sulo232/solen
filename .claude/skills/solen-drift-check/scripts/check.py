@@ -66,7 +66,7 @@ ALLOWED_HEX = {
     # form (bg-[#0A0A0A]) toward the token. Non-token hex stays HARD.
     "#6B6B6B",  # s-ink-2 / s-ink-3
     "#E7E5E4",  # empty-star fill + avatar palette step (was s-border before V3-D447)
-    "#F5F5F4",  # s-bg-sunken / s-bg-active
+    "#F4F4F5",  # s-bg-sunken / s-bg-active (was transposed #F5F5F4; fixed 2026-07-11 , real value per LOCKFILE/CLAUDE.md)
     "#276EF1",  # s-accent (royal blue)
     "#D6D3D1",  # stone-300 (avatar initial palette step)
     "#A8A29E",  # stone-400 (avatar initial palette step)
@@ -112,7 +112,7 @@ RETIRED_TOKENS = {
     "s-sage",
     "s-wasabi",
     "s-droplet",
-    "s-pop",
+    # s-pop removed 2026-07-11: LOCKFILE un-retired it (V3-D424); a live urgency-badge token, not drift.
     "s-cool",
     # Atmosphere family
     "s-atm-warm",

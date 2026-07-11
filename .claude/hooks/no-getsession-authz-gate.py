@@ -48,7 +48,16 @@ def main():
     else:
         sys.exit(0)
 
-    if "auth.getSession()" not in new_text:
+    # A real (non-comment) getSession call is the trigger; a mention in a // or * comment is fine.
+    def _has_real_getsession(text):
+        for line in text.splitlines():
+            if "auth.getSession()" in line:
+                s = line.lstrip()
+                if not (s.startswith("//") or s.startswith("*") or s.startswith("/*")):
+                    return True
+        return False
+
+    if not _has_real_getsession(new_text):
         sys.exit(0)
 
     # Override flag (5 min TTL).
@@ -91,4 +100,7 @@ def main():
     sys.exit(2)
 
 
-main()
+try:
+    main()
+except Exception:
+    sys.exit(0)  # fail open , never wedge a turn on a hook bug (matches every sibling gate)

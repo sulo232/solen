@@ -113,9 +113,27 @@ if not new.strip():
 
 # A ternary true-branch string literal that paints an ink fill.
 # Captures the condition text immediately preceding the `?`.
+# 2026-07-10 fix: was same-line-only ([^\n?]), so a prettier-formatted multiline ternary
+#   isSelected
+#     ? "bg-s-ink text-white"
+#     : "bg-white"
+# (condition, newline, THEN `?`) never matched. [^?] lets the condition span across the
+# newline(s) prettier inserts (bounded to ~140 chars, non-greedy, so it still stops at the
+# nearest `?` and does not runaway-match across an unrelated distant one).
 INK_TERNARY = re.compile(
-    r"([^\n?]{0,90}?)\?\s*"          # condition (same line, bounded) then ?
-    r"[`\"']([^`\"']*?bg-s-ink[^`\"']*?)[`\"']",  # true-branch literal containing bg-s-ink
+    r"([^?]{0,140}?)\?\s*"           # condition (may span 1-2 newlines) then ?
+    # true-branch literal containing an ink OR blue/accent fill/border. 2026-07-11: added blue
+    # (bg-s-accent / border-s-accent) , the owner rejects BOTH black-when-selected AND
+    # blue-when-selected (2026-07-02); this gate was previously blind to blue (audit finding).
+    r"[`\"']([^`\"']*?(?:bg-s-ink|bg-s-accent|border-s-accent)[^`\"']*?)[`\"']",
+    re.IGNORECASE,
+)
+
+# Const-based selected classes: `const SEL = "border-s-accent bg-s-accent ..."` then
+# `selected ? SEL : REST` , the token is off the ternary line, so INK_TERNARY misses it.
+SEL_CONST = re.compile(
+    r"\b(SEL|SELECTED|ACTIVE|SEL_CLS|SELECTED_CLS|selectedCls|activeCls|selClass)\b\s*=\s*"
+    r"[\"'`][^\"'`]*\b(bg-s-ink|border-s-ink|bg-s-accent|border-s-accent)\b",
     re.IGNORECASE,
 )
 
@@ -129,7 +147,10 @@ SELECTION_COND = re.compile(
 # Condition is a variant / lifecycle test, not a selection. Never a violation.
 NOT_SELECTION = re.compile(
     r"\b(variant|primary|isPrimary|commit|submit|cta|disabled|isDisabled|loading|isLoading"
-    r"|pending|error|invalid|danger|destructive|today|isToday)\b",
+    r"|pending|error|invalid|danger|destructive|today|isToday"
+    # LOCKED design-contract exception: booking date / slot / calendar / time selection stays
+    # BLUE (not gray) , never flag it. (2026-07-11: ported the global gate's date-blue carve-out.)
+    r"|date|slot|calendar|time)\b",
     re.IGNORECASE,
 )
 
@@ -137,7 +158,9 @@ NOT_SELECTION = re.compile(
 # or a border-only treatment.
 def is_ink_fill(branch):
     b = branch.lower()
-    return "bg-s-ink" in b and ("text-white" in b or "text-s-bg" in b)
+    ink = "bg-s-ink" in b and ("text-white" in b or "text-s-bg" in b)
+    blue = "bg-s-accent" in b or "border-s-accent" in b  # blue-selected also banned (owner 2026-07-02)
+    return ink or blue
 
 
 def line_has_ok(text, idx):
@@ -162,6 +185,12 @@ def offenders(text):
         if not SELECTION_COND.search(cond):
             continue
         out.append(m)
+    # Const-based selected class (blue/ink off the ternary line). Same date/slot/commit exemption.
+    for m in SEL_CONST.finditer(text):
+        lo, hi = max(0, m.start() - 60), min(len(text), m.end() + 80)
+        if NOT_SELECTION.search(text[lo:hi]):
+            continue
+        out.append(m)
     return out
 
 
@@ -175,11 +204,11 @@ if not hits:
     allow()
 
 m = hits[0]
-found = (m.group(1).strip() + " ? \"" + m.group(2).strip() + "\"")[:120]
+found = m.group(0).strip()[:120]
 
 msg = [
-    "\U0001F6D1 no-black-selected gate (design contract, owner voice 2026-06-29):", "",
-    "  A selected/active state is being painted with an ink/black fill.",
+    "\U0001F6D1 no-black/blue-selected gate (design contract, owner voice 2026-06-29 + 2026-07-02):", "",
+    "  A selected/active state is being painted with an ink/black OR blue/accent fill/border.",
     "    found: " + found,
     "    fix:   selected = the calm gray TabPill treatment instead:",
     "             bg-s-bg-sunken  +  text-s-ink  +  font-semibold",
