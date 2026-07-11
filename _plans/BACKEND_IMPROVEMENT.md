@@ -10,17 +10,45 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 
 ---
 
-## Ring 0 , measurement baseline (IN FLIGHT this turn, read-only)
-- [ ] curl timings cold+warm: /api/salons (± filters), /api/discovery/feed, /api/salons/[slug], /api/dashboard/today, /api/dashboard/batch, /api/availability/[salon_id] (dev-login for auth-gated)
-- [ ] EXPLAIN ANALYZE: next_available_date scan (app/api/salons/route.ts:477), availability/[salon_id] second scan, dashboard/batch revenue query
-- [ ] Live table sizes + growth snapshot (execute_sql, read-only)
-- [ ] Response-header audit of the 3 `revalidate` routes (metrics/global, salons/trending, analytics/platform)
-- [ ] generate-slots baseline: static query-count analysis only (a live trigger WRITES slots to the live DB, skipped; wall-time comes from Ring 3 instrumentation)
-- [ ] OWNER ASK recorded: Netlify prod env presence (UPSTASH_*, CRON_SECRET, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_EMAIL) , if Upstash is unset, prod throttles are OFF today
-- [ ] OWNER ASK recorded: which runtime Netlify actually gives `runtime="edge"` routes (decides Ring 2 Stripe item)
+## Ring 0 , measurement baseline (DONE 2026-07-11)
+- [x] timings measured (in-browser fetch x3 on dev :3000; sandbox curl can't reach localhost , documented dev-noise caveat: run 1 includes Next compile; runs 2-3 are the comparable warm numbers)
+- [x] EXPLAIN ANALYZE: next_available_date scan, availability/[salon_id] scan, dashboard/batch revenue query
+- [x] Live table sizes + growth snapshot
+- [x] Response-header audit of the 3 `revalidate` routes (INCONCLUSIVE in dev , see results)
+- [x] generate-slots baseline: static analysis (live trigger skipped , WRITES slots to the live DB; wall-time comes from Ring 3 instrumentation)
+- [x] OWNER ASK recorded (see "Open owner asks" below)
+- [x] OWNER ASK recorded (Netlify runtime)
 
-### Ring 0 results
-(filled as measured)
+### Ring 0 results (measured 2026-07-11, dev server, live Supabase DB)
+**Timings (ms, 3 runs, warm = runs 2-3):**
+| endpoint | runs | payload |
+|---|---|---|
+| /api/health | 409 / 119 / 11 | 49 B |
+| /api/salons (no filters) | 1054 / 229 / 98 | 22.7 KB |
+| /api/salons?category+city | 208 / 219 / 205 | 9.2 KB |
+| /api/salons?category+city&with_slots=1 | 514 / 332 / 306 | 14.0 KB |
+| /api/discovery/feed?category=all&limit=20 | 317 / 255 / 240 | 59.1 KB |
+| /api/salons/pink-petal-nails (PDP) | 702 / 324 / 246 | 11.9 KB |
+| /api/availability/[salon_id] (busiest salon) | 473 / 289 / 192 | **458 KB (!)** |
+| /api/dashboard/today (dev-login owner) | 1437 / 1041 / **896 warm** | 112 B |
+| /api/dashboard/batch POST (3 keys) | 1851 / 803 / 545 | 106 B |
+
+**EXPLAIN ANALYZE (live DB):**
+- next_available_date scan (salons/route.ts:477): 0.73 ms, index-served, BUT returns **1,470 rows to keep 6** (earliest per salon). NOT a perf problem , a CORRECTNESS risk: PostgREST caps at 1000 rows, so with more unavailable salons later salons' next-date silently drops. Reclassified: fix = MIN()/DISTINCT ON RPC, correctness-motivated.
+- availability 14-day scan: 88 ms first-run, 957 rows, index scan , healthy. The previously-claimed "second full-range scan" is **ALREADY FIXED** (single all-status scan, route.ts:19 comment). Real cost = the 458 KB payload (repeats joined service/staff names on every slot row) , new Ring 2 item.
+- dashboard/batch revenue query: 2.7 ms, index-served, 956 total bookings. SUM-RPC fix = hygiene, deprioritized.
+
+**Table sizes (live):** availability_slots 164,063 rows / 76 MB (the ONLY real table); discovery_items 1,071 / 14 MB; bookings 956; everything else < 500 rows. Confirms the DO-NOT-DO trigger table.
+
+**Header audit:** all 3 revalidate routes return no cache-control in dev , dev doesn't exercise ISR, so INCONCLUSIVE here; the code-level finding stands (salons/trending + analytics/platform use the cookie-reading client => revalidate defeated; metrics/global uses admin client => works). Needs a prod-response check (deploy preview or owner curl) in Ring 2.
+
+**generate-slots static shape (Ring 3 input):** 4-level nesting (salon -> staff -> day -> slot) with an awaited SELECT + awaited INSERT per slot, then 2 per-salon passes with O(n²) JS overlap scans + per-blocked-slot awaited UPDATEs. At ~20 active salons x staff x ~26 days x ~16 slots/day the nightly run issues on the order of tens of thousands of sequential awaits. Instrument first, carve out the O(n²) scan; SQL rewrite stays parked.
+
+**Biggest user-visible targets (warm numbers):** dashboard/today ~900 ms (4 serial round-trips), dashboard/batch ~550-800 ms, availability payload 458 KB, PDP ~250 ms, salons+with_slots ~300 ms.
+
+### Open owner asks (Ring 0)
+- [ ] OWNER: check Netlify prod env has UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN, CRON_SECRET, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_EMAIL (Site settings -> Environment variables, or `netlify env:list`). If the two UPSTASH vars are missing, EVERY rate limit is silently OFF in prod today (lib/ratelimit.ts fails open).
+- [ ] OWNER: confirm which runtime Netlify gives routes declaring `runtime="edge"` (deploy log or Netlify functions tab) , decides the Ring 2 Stripe-on-edge item.
 
 ---
 
@@ -37,12 +65,13 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 - [ ] Feature-flag caching (lib/feature-flags.ts): request-memo + 30-60s TTL flags; ban checks <=10s TTL; discriminate proof (toggle flag, ban test user)
 - [ ] Fix 2 dead revalidate exports (salons/trending, analytics/platform , cookie client defeats ISR)
 - [ ] CDN s-maxage+SWR on anon variants of /api/salons, /api/discovery/feed, /api/salons/[slug] (headers only, NO Redis layer)
-- [ ] next_available_date scan bounded (14-day window or MIN() RPC)
-- [ ] dashboard/today 4 serial awaits -> Promise.all
-- [ ] dashboard/batch revenue -> DB SUM RPC (self-verifying vs JS sum before switchover)
+- [ ] next_available_date -> MIN()/DISTINCT ON RPC (reclassified by Ring 0: correctness fix , 1,470 rows fetched to keep 6, silent drop past the PostgREST 1000-row cap; query itself is 0.73 ms)
+- [ ] dashboard/today 4 serial awaits -> Promise.all (Ring 0 before-number: ~900 ms warm)
+- [ ] dashboard/batch revenue -> DB SUM RPC (deprioritized to hygiene by Ring 0: query is 2.7 ms at 956 bookings; self-verify vs JS sum before switchover)
 - [ ] bookings-list select("*") -> allowlist
-- [ ] availability/[salon_id] second scan folded into first
-- [ ] Stripe-on-edge resolved per Ring 0 Netlify-runtime finding
+- [ ] NEW (Ring 0 discovery): availability/[salon_id] payload trim , 458 KB per date-picker load (repeats joined service/staff fields on all 957 slot rows); dedupe joins into a lookup map or slim the per-slot shape. Before-number: 458,447 B
+- [x] availability/[salon_id] second scan , ALREADY FIXED (verified Ring 0: single all-status scan, route.ts:19), no work
+- [ ] Stripe-on-edge resolved per Ring 0 Netlify-runtime finding (owner ask open)
 - [ ] Close: before->after vs Ring 0 numbers per item; solen-mobile grep = no consumed shape changed
 
 ## Ring 3 , cron efficiency (QUEUED)
