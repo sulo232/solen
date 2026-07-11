@@ -1,0 +1,163 @@
+// exists-check: net-new vs lib/alert-admin.ts (that one is a single-event money-path
+// alert, no scheduled summary) and app/api/cron/reconcile (daily, but Stripe<->DB drift
+// only, not a general ops summary). No existing "digest"/daily-summary surface (npm run
+// exists digest: 0 matches). This is the founder daily digest: yesterday's booking volume
+// + cron health + pending reviews, one email, reusing lib/email.ts sendEmail and the new
+// lib/cron-run.ts withCronRun wrapper.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+import { NextRequest, NextResponse } from "next/server";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { sendEmail } from "@/lib/email";
+import { getServerEnv } from "@/lib/env";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import { withCronRun } from "@/lib/cron-run";
+
+/** Escape the few chars that would break out of an HTML text context. */
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Cron: founder daily digest email. Daily 05:15 UTC (after the 03:00/04:00 UTC batch
+// of daily crons has had time to run, so the cron-health section reflects that night's
+// runs). Composes yesterday's Europe/Zurich day: bookings created, bookings completed,
+// cron_runs failures in the last 24h, and the current pending-reviews backlog. Sends
+// ONE email to ADMIN_EMAIL. Only sections whose query succeeded are rendered, never a
+// fabricated 0.
+export async function GET(req: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  return withCronRun("daily-digest", async () => {
+    const adminEmail = getServerEnv().ADMIN_EMAIL;
+    if (!adminEmail) {
+      console.warn("[daily-digest] ADMIN_EMAIL not set, skipping");
+      return { skipped: true, reason: "no_admin_email" };
+    }
+
+    const admin = createAdminSupabaseClient();
+
+    // Yesterday's Europe/Zurich calendar day, resolved to a true UTC window
+    // (DST-safe) via the same helper generate-slots uses for wall-clock -> UTC.
+    const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Zurich" });
+    const [ty, tm, td] = todayStr.split("-").map(Number);
+    const yesterdayStr = new Date(Date.UTC(ty, tm - 1, td - 1)).toISOString().split("T")[0];
+    const dayStart = zurichWallClockToUtc(yesterdayStr, 0, 0);
+    const dayEnd = zurichWallClockToUtc(todayStr, 0, 0);
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const errors: string[] = [];
+    const sections: string[] = [];
+    let sectionsOk = 0;
+
+    // 1. Bookings created yesterday.
+    {
+      const { count, error } = await admin
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", dayStart.toISOString())
+        .lt("created_at", dayEnd.toISOString());
+      if (error) {
+        console.error("[daily-digest] bookings-created query failed:", error.message);
+        errors.push(`bookings-created query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        sections.push(`<li><strong>${count ?? 0}</strong> bookings created</li>`);
+      }
+    }
+
+    // 2. Bookings completed yesterday.
+    {
+      const { count, error } = await admin
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "completed")
+        .gte("completed_at", dayStart.toISOString())
+        .lt("completed_at", dayEnd.toISOString());
+      if (error) {
+        console.error("[daily-digest] bookings-completed query failed:", error.message);
+        errors.push(`bookings-completed query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        sections.push(`<li><strong>${count ?? 0}</strong> bookings completed</li>`);
+      }
+    }
+
+    // 3. cron_runs failures in the last 24h (name + error snippet).
+    {
+      const { data: failures, error } = await admin
+        .from("cron_runs")
+        .select("name, ran_at, errors")
+        .eq("ok", false)
+        .gte("ran_at", twentyFourHoursAgo)
+        .order("ran_at", { ascending: false })
+        .limit(20);
+      if (error) {
+        console.error("[daily-digest] cron_runs query failed:", error.message);
+        errors.push(`cron_runs query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        const rows = failures ?? [];
+        if (rows.length === 0) {
+          sections.push(`<li><strong>0</strong> cron failures in the last 24h</li>`);
+        } else {
+          const items = rows
+            .map((f) => {
+              const snippet = Array.isArray(f.errors) ? String(f.errors[0] ?? "") : String(f.errors ?? "");
+              return `<li style="color:#C0362C"><strong>${escapeHtml(f.name)}</strong>: ${escapeHtml(snippet).slice(0, 200)} (${escapeHtml(f.ran_at)})</li>`;
+            })
+            .join("");
+          sections.push(`<li><strong>${rows.length}</strong> cron failure(s) in the last 24h:<ul>${items}</ul></li>`);
+        }
+      }
+    }
+
+    // 4. Pending reviews (no salon response yet).
+    {
+      const { count, error } = await admin
+        .from("reviews")
+        .select("id", { count: "exact", head: true })
+        .is("salon_response", null);
+      if (error) {
+        console.error("[daily-digest] pending-reviews query failed:", error.message);
+        errors.push(`pending-reviews query failed: ${error.message}`);
+      } else {
+        sectionsOk++;
+        sections.push(`<li><strong>${count ?? 0}</strong> reviews awaiting a salon response</li>`);
+      }
+    }
+
+    if (sections.length > 0) {
+      try {
+        await sendEmail({
+          to: adminEmail,
+          subject: `Solen daily digest, ${yesterdayStr}`,
+          html:
+            `<div style="font-family:sans-serif;max-width:520px;margin:0 auto">` +
+            `<h2 style="color:#0A0A0A">Solen daily digest, ${yesterdayStr}</h2>` +
+            `<ul>${sections.join("")}</ul>` +
+            `<p style="color:#999;font-size:12px;margin-top:16px">Automated digest. Sent at ${new Date().toISOString()}.</p>` +
+            `</div>`,
+        });
+      } catch (err) {
+        console.error("[daily-digest] sendEmail failed:", err);
+        errors.push(`sendEmail failed: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
+
+    return {
+      sent: sections.length > 0 && errors.every((e) => !e.startsWith("sendEmail")),
+      sectionsOk,
+      sectionsTotal: 4,
+      processed: sectionsOk,
+      ...(errors.length ? { errors } : {}),
+    };
+  });
+}

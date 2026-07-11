@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // GET /api/cron/nail-infill-reminders — Daily cron: semi-auto infill reminders
 export async function GET(req: NextRequest) {
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("nail-infill-reminders", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error("[nail-infill-cron] Query error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return { error: error.message, errors: [error.message] };
   }
 
   let remindersCreated = 0;
@@ -87,5 +89,6 @@ export async function GET(req: NextRequest) {
     remindersCreated++;
   }
 
-  return NextResponse.json({ success: true, remindersCreated });
+  return { success: true, remindersCreated, processed: remindersCreated };
+  });
 }

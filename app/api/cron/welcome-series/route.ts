@@ -6,6 +6,7 @@ import { sendEmail } from "@/lib/email";
 import { welcomeDay0, welcomeDay3, welcomeDay7 } from "@/lib/email-templates/welcome-series";
 import type { EmailLocale } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // POST /api/cron/welcome-series
 // Daily cron: sends welcome emails to users created 0, 3, or 7 days ago.
@@ -18,6 +19,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("welcome-series", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
 
@@ -91,5 +93,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, ...results });
+  return { ok: true, ...results, processed: results.day0 + results.day3 + results.day7 };
+  });
 }

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getStripe } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Abandonment sweeper (C1 online-pay). Every 15 min.
 //
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("abandon-sweep", async () => {
   const admin = createAdminSupabaseClient();
   const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
 
@@ -51,7 +53,7 @@ export async function GET(req: NextRequest) {
 
   if (selErr) {
     console.error("[cron/abandon-sweep] failed to load stale bookings:", selErr);
-    return NextResponse.json({ error: "Query failed" }, { status: 500 });
+    return { error: "Query failed", errors: ["Query failed"] };
   }
 
   let cancelled = 0;
@@ -158,10 +160,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  return {
     scanned: (stale ?? []).length,
     cancelled,
     skippedPaid,
     errors,
+    processed: (stale ?? []).length,
+  };
   });
 }

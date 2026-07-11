@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getStripe } from "@/lib/stripe";
 import { sendEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Reconciliation (the money safety net). Daily.
 //
@@ -76,6 +77,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("reconcile", async () => {
   const admin = createAdminSupabaseClient();
   const stripe = getStripe();
   const since = Math.floor((Date.now() - LOOKBACK_MS) / 1000); // Stripe `created` is unix seconds.
@@ -370,10 +372,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  return {
     checked,
     checkedPurchases,
     skipped,
     mismatches,
+    processed: checked + checkedPurchases,
+  };
   });
 }

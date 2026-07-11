@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // GET /api/cron/release-deposits
 // Daily cron: deposits held > 72h without booking confirmation → release back.
@@ -14,6 +15,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("release-deposits", async () => {
   const admin = createAdminSupabaseClient();
   const cutoff = new Date();
   cutoff.setHours(cutoff.getHours() - 72);
@@ -69,5 +71,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, released, errors });
+  return { ok: true, released, errors, processed: released };
+  });
 }

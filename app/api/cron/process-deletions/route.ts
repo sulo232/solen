@@ -3,18 +3,20 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 export async function GET(request: NextRequest) {
-  try {
-    const cronSecret = getServerEnv().CRON_SECRET;
-    if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
-    const adminAuth = request.headers.get("Authorization");
-    // VERY simple auth for cron jobs — `CRON_SECRET` env var must match the secret
-    // sent by `.github/workflows/cron-jobs.yml` (GitHub Actions invokes this route)
-    if (adminAuth !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  const adminAuth = request.headers.get("Authorization");
+  // VERY simple auth for cron jobs: `CRON_SECRET` env var must match the secret
+  // sent by `.github/workflows/cron-jobs.yml` (GitHub Actions invokes this route)
+  if (adminAuth !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  return withCronRun("process-deletions", async () => {
+  try {
     const admin = createAdminSupabaseClient();
     
     // Find profiles with deletion_requested_at > 30 days ago
@@ -31,7 +33,7 @@ export async function GET(request: NextRequest) {
     if (fetchErr) throw fetchErr;
     
     if (!usersToDelete || usersToDelete.length === 0) {
-      return NextResponse.json({ message: "No users to delete" });
+      return { message: "No users to delete", processed: 0 };
     }
     
     // Delete them via Auth API (triggers will cascade data if set up correctly, or auth handles it)
@@ -126,9 +128,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ message: `Processed ${usersToDelete.length} users`, results });
+    return { message: `Processed ${usersToDelete.length} users`, results, processed: usersToDelete.length };
   } catch (err) {
     console.error("[api/cron/process-deletions] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return { error: "Internal error", errors: ["Internal error"] };
   }
+  });
 }

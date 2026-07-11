@@ -12,6 +12,7 @@ import {
 } from "@/lib/email-templates/salon-onboarding";
 import type { EmailLocale } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // GET /api/cron/salon-onboarding
 // Daily cron: adaptive 5-email drip for new salon owners.
@@ -23,6 +24,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("salon-onboarding", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const results = { sent: 0, skipped: 0, errors: 0 };
@@ -135,5 +137,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, ...results });
+  return { ok: true, ...results, processed: results.sent };
+  });
 }

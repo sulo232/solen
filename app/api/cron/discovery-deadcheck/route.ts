@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // GET /api/cron/discovery-deadcheck
 // Weekly cron: scans active discovery looks for DEAD TikToks — videos the creator deleted, made private, or turned
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("discovery-deadcheck", async () => {
   const admin = createAdminSupabaseClient();
   const { data: items, error } = await admin
     .from("discovery_items")
@@ -28,7 +30,7 @@ export async function GET(request: NextRequest) {
     .eq("is_active", true)
     .eq("status", "published")
     .not("tiktok_url", "is", null);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return { error: error.message, errors: [error.message] };
 
   let checked = 0;
   let hidden = 0;
@@ -59,11 +61,13 @@ export async function GET(request: NextRequest) {
   }
 
   console.log(`[deadcheck] checked ${checked}, hid ${hidden} dead TikToks, ${errors} errors`);
-  return NextResponse.json({
+  return {
     message: `Dead-TikTok scan: checked ${checked}, hid ${hidden}, ${errors} errors`,
     checked,
     hidden,
     errors,
     dead,
+    processed: checked,
+  };
   });
 }

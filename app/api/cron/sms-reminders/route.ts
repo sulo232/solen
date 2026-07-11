@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 /**
  * Cron handler: send SMS reminders for upcoming bookings.
@@ -21,10 +22,11 @@ export async function GET(req: NextRequest) {
   }
 
   if (!env.SEVEN_IO_API_KEY) {
-    console.warn("[sms-reminders] SEVEN_IO_API_KEY not set — skipping");
-    return NextResponse.json({ skipped: true, reason: "no_api_key" });
+    console.warn("[sms-reminders] SEVEN_IO_API_KEY not set, skipping");
+    return NextResponse.json({ ok: true, skipped: true, reason: "no_api_key" });
   }
 
+  return withCronRun("sms-reminders", async () => {
   const supabase = createAdminSupabaseClient();
   const now = Date.now();
 
@@ -131,5 +133,6 @@ export async function GET(req: NextRequest) {
     `[sms-reminders] sent24h=${sent24h} sent1h=${sent1h} errors=${errors}`
   );
 
-  return NextResponse.json({ sent24h, sent1h, errors });
+  return { sent24h, sent1h, errors, processed: sent24h + sent1h };
+  });
 }

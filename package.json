@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:vite": "vite build",
     "start": "next start",
     "lint": "next lint",
     "inventory": "node scripts/inventory.mjs",

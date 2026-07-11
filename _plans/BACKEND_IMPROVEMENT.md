@@ -66,20 +66,20 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 ---
 
 ## Ring 1 , fail-closed guardrails + alerting spine (QUEUED, first in loop; est ~1.5h)
-- [ ] lib/env.ts prod-required assertion
-  - [ ] assert UPSTASH_*, CRON_SECRET, Stripe keys + webhook secret, RESEND_API_KEY, ADMIN_EMAIL when Netlify CONTEXT=production
-  - [ ] preview/branch builds unaffected (kill-test both contexts locally via env override)
-- [ ] lib/ratelimit.ts fail-mode split
-  - [ ] classify limiters: auth/payment/abuse-prone = fail-CLOSED when Redis unconfigured in prod
-  - [ ] all other limiters = fail-open + alertAdmin, throttled to once per boot
-  - [ ] kill-test: Upstash unset in prod-mode = auth route blocked, browse route still serves, alert email fires
-- [ ] cron failure alerting
-  - [ ] every app/api/cron/* returns structured {ok, processed, errors}
-  - [ ] .github/actions/ping-cron asserts HTTP 2xx AND ok:true, hard-fails the job (GitHub then emails the owner for free)
-  - [ ] kill-test: one cron pointed at a forced 500 on a branch run = red workflow + email received
+- [x] lib/env.ts prod-required assertion; `verified:` commit bf37a7da3, /refine PASS round 2
+  - [x] assert UPSTASH_*, CRON_SECRET, Stripe keys + webhook secret, RESEND_API_KEY, ADMIN_EMAIL when Netlify CONTEXT=production; `verified:` assertProdRequiredEnv lib/env.ts:215-246, wired via instrumentation.ts register()
+  - [x] preview/branch builds unaffected; `verified:` gate = CONTEXT AND NODE_ENV both 'production'; dev-context kill-test scenario no-ops
+- [x] lib/ratelimit.ts fail-mode split; `verified:` commit bf37a7da3, /refine PASS round 2 (round 1 caught 2 missing abuse-prone limiters: referralValidateLimiter + resendAccessLimiter, both added)
+  - [x] classify limiters: 7 abuse-prone (auth, payment, booking, guest-lookup, referral-validate, resend-access, referral-complete) fail CLOSED when Redis unconfigured in prod; `verified:` ABUSE_PRONE_LIMITERS set, lib/ratelimit.ts:114-122
+  - [x] all other limiters fail-open + alertAdmin once per process; `verified:` lib/ratelimit.ts:125-146
+  - [x] kill-test; `verified:` scripts/ring1-kill-tests.mjs 6/6 (prod-unset-auth blocked, prod-unset-general allowed, dev-unset allowed, prod-set passthrough, referral-validate + resend-access blocked), reviewer re-ran independently
+- [x] cron failure alerting (RING 1b); `verified:` lib/cron-run.ts withCronRun wraps all 23 non-deprecated app/api/cron/* routes (reminders/route.ts left untouched, 410 deprecated no-op)
+  - [x] every app/api/cron/* returns structured {ok, processed, errors}; `verified:` lib/cron-run.ts:32-90 merges the handler result with computed ok/processed/errors; every route under app/api/cron/ (23 files) wrapped, auth/CRON_SECRET guard kept OUTSIDE the wrapper, existing response fields preserved
+  - [x] .github/actions/ping-cron asserts HTTP 2xx AND ok:true, hard-fails the job (GitHub then emails the owner for free); `verified:` .github/actions/ping-cron/action.yml hard asserts (jq -e '.ok == true', grep fallback if jq missing), exit 1 on any failing endpoint (was soft-fail exit 0)
+  - [x] kill-test: one cron pointed at a forced 500 on a branch run = red workflow + email received; `verified:` scripts/ring1b-kill-test.ts 2/2 (handler succeeds -> ok:true/200 + cron_runs row; handler throws -> ok:false/500 + cron_runs row with the error message), plus the action's assert logic simulated locally against a canned ok:false body -> exits 1. DEVIATION: sandbox blocks outbound localhost connections (curl to :3000 = "Operation not permitted"), so this exercises the real withCronRun/action-assert logic directly rather than an actual GitHub Actions branch run or a live curl; no literal CI run was triggered (coder does not push)
 - [ ] lib/error-report.ts: reportError() -> throttled alertAdmin email; wired into top-level catch of money/cron/webhook routes; remove the 3 placeholder Sentry config files (Sentry retry = parked owner option)
 - [ ] /api/health dependency probe: DB SELECT 1 + Redis ping + env-completeness, 200/503 with per-dep JSON; kill-test: broken DB creds locally = 503 (uptime-monitor signup = owner-gated memo)
-- [ ] founder daily digest email: yesterday's bookings, cron statuses, error count (Resend, reuse lib/alert-admin.ts plumbing); kill-test: digest received on dev trigger
+- [x] founder daily digest email: yesterday's bookings, cron statuses, error count (Resend, reuse lib/alert-admin.ts plumbing); kill-test: digest received on dev trigger; `verified:` app/api/cron/daily-digest/route.ts (CRON_SECRET-gated, node runtime, withCronRun-wrapped), composes yesterday's Europe/Zurich window (bookings created + completed counts), cron_runs failures in the last 24h, pending reviews (salon_response is null); all 4 queries live-tested against the DB with no phantom-column errors. DEVIATION: ADMIN_EMAIL is unset in this worktree's .env.local, so the actual send could not be triggered/confirmed end-to-end in dev; the route fails open on that case (skipped:true, reason:no_admin_email, ok:true) rather than fabricating a sent email
 
 ## Ring 2 , hot-path request cost (QUEUED; est ~2h)
 - [ ] feature-flag caching (lib/feature-flags.ts)
@@ -102,6 +102,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 - [ ] discovery/feed payload check: 59 KB for 20 items (Ring 0 number); verify per-item shape carries no unused heavy fields, trim if so
 - [ ] reviews sub-page unbounded load (SWEEP_BACKLOG leftover): app/[locale]/salon/[slug]/reviews/page.tsx selects ALL reviews + 3 joins -> .range(0,19) + paginate via the existing /api/reviews/salon/[salon_id] endpoint
 - [ ] walk-in availability call fired on every search page regardless of relevance (SWEEP_BACKLOG leftover, SearchTemplate -> /api/walkin/availability) -> gate on the page payload's walkin_enabled
+- [ ] REUSE opportunity (found 2026-07-11): the live RPC `earliest_slots_by_service(p_service_ids, p_from, p_to, p_per)` exists with ZERO callers , evaluate replacing the with_slots per-service parallel .limit(3) queries with this ONE RPC call (reuse-not-rebuild; discriminate-test identical output first)
 - [ ] Stripe-on-edge resolved per Ring 0 Netlify-runtime finding (owner ask open)
 - [ ] Close: before->after vs Ring 0 numbers per item; solen-mobile grep = no consumed shape changed
 
@@ -115,7 +116,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
   - [ ] O(n²) JS overlap scan -> sort + sweep, write semantics untouched
 - [ ] availability_slots purge memo
   - [x] dry-run SELECT count of dead rows; `verified:` live SQL 2026-07-11: 156,296 PAST status='available' rows + 826 past booked, of 164,063 total (95% of the table is dead history; live future inventory = only 6,941 rows / few MB)
-  - [ ] OWNER DECISION: purge past status='available' rows only (never booked ones , bookings reference their slots; keep booked history). Recommendation: yes, with a weekly purge cron thereafter. DELETE on prod = owner-only, never agent-executed.
+  - [ ] OWNER DECISION: purge past status='available' rows only (never booked ones , bookings reference their slots; keep booked history). EXISTS-CHECK WIN (2026-07-11): the RPC `purge_past_available_slots(p_days, p_limit)` ALREADY EXISTS live but is scheduled by NOTHING (pg_cron has only search-popularity-refresh + search-events-retention; no code caller). So the decision is only: schedule the existing RPC (weekly pg_cron or a GH-cron route) , yes/no. No new SQL needed. DELETE on prod = owner-only.
 - [ ] close, per rewritten cron
   - [ ] before->after wall time + query count from the new instrumentation
   - [ ] old-vs-new output diff on the same dev dataset (empty diff = pass)
@@ -138,6 +139,7 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
 
 ## Ring 5 , test & CI floor (QUEUED; runs after Ring 11 in loop order; est ~2.5h)
 - [ ] vitest setup (node env; lib tests need no browser)
+- [ ] add tsx as a devDependency (ring-1a reviewer finding: scripts/ring1-kill-tests.mjs uses npx tsx, currently resolved from the ephemeral npx cache , not CI-reproducible)
 - [ ] money-path unit tests, one file each
   - [ ] lib/bookings/charge-fee.ts
   - [ ] lib/bookings/issue-refund.ts
@@ -183,6 +185,8 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
 
 ## Ring 9 , abuse-coverage census (est ~0.5h)
 - [ ] rate-limiter census: every mutation route carries an appropriate tier limiter; gaps fixed
+- [ ] rogue limiter (ring-1a reviewer finding): app/api/gift-cards/balance/route.ts:13 instantiates its OWN `new Ratelimit(...)` outside lib/ratelimit.ts, invisible to the fail-mode split; migrate it onto a lib/ratelimit.ts limiter
+- [ ] alignment note (ring-1a reviewer finding): lib/ratelimit.ts prod gate checks CONTEXT only while lib/env.ts checks CONTEXT AND NODE_ENV; align the two guards (defense-in-depth, low risk)
 - [ ] vouchers/validate responses collapsed to one generic error (parked code-existence-oracle item)
 - [ ] coiffeur/formula-photo: Storage write moved AFTER the clientBelongsToSalon gate (parked storage-path IDOR residual)
 - [ ] notes/tags DELETE handlers get clientBelongsToSalon for parity (parked; already triple-scoped, no live IDOR)
@@ -192,7 +196,7 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
 - [ ] unused-exports sweep over lib/ (grep-based ts-prune equivalent); dead exports deleted
 - [ ] DB estate census, MEMO ONLY, no drops
   - [ ] all public tables (132) vs code references -> dead-table list
-  - [ ] all DB functions vs call sites -> dead-RPC list
+  - [x] all DB functions vs call sites -> dead-RPC list (FIRST PASS done 2026-07-11); `verified:` grep over app/lib/components*/hooks/scripts found 11 zero-caller functions: booking_counts_by_salon, earliest_slots_by_service (reuse candidate, see Ring 2), increment_promo_use (superseded by reserve_promo_use), purge_past_available_slots (unscheduled, see Ring 3 memo), recompute_salon_engagement, redeem_voucher, redeem_user_credits, restore_voucher, restore_user_credits (the voucher-spend seam x4), salon_client_summary, set_customer_persona (dormant personalization). CAVEAT for the final memo: SQL-internal/trigger call sites + supabase/functions sources not yet counted , re-check those before recommending any drop
   - [ ] storage buckets vs code references
 - [ ] components-legacy census follow-through: delete every 0-importer file _plans/LEGACY_CENSUS.md proves dead (re-grep each incl. solen-mobile before delete)
 

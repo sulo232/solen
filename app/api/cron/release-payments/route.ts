@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getStripe } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Release (capture) payments 24h after booking completion. Every hour.
 export async function GET(req: NextRequest) {
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("release-payments", async () => {
   const admin = createAdminSupabaseClient();
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
@@ -55,5 +57,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ released, failed });
+  return { released, failed, processed: released + failed };
+  });
 }

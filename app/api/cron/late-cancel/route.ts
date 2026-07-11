@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 /**
  * RETIRED (SP-AC §B4, REFUND_APPEAL_PLAN.md).
@@ -27,5 +28,5 @@ export async function GET(req: NextRequest) {
   if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  return NextResponse.json({ processed: 0, retired: true });
+  return withCronRun("late-cancel", async () => ({ processed: 0, retired: true }));
 }

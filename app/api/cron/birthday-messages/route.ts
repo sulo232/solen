@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Send birthday messages. Daily 8am CET.
 export async function GET(req: NextRequest) {
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("birthday-messages", async () => {
   const admin = createAdminSupabaseClient();
 
   // Get today's date in Swiss timezone
@@ -79,5 +81,6 @@ export async function GET(req: NextRequest) {
     } catch { /* non-fatal */ }
   }
 
-  return NextResponse.json({ sent, total_birthdays: birthdayProfiles.length });
+  return { sent, total_birthdays: birthdayProfiles.length, processed: sent };
+  });
 }

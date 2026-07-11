@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, rebookingNudge } from "@/lib/email";
 import type { EmailLocale } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // GET /api/cron/rebooking-nudge
 // Daily cron: users whose last booking was 28+ days ago get a nudge email.
@@ -16,6 +17,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("rebooking-nudge", async () => {
   const admin = createAdminSupabaseClient();
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 28);
@@ -122,5 +124,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent, errors });
+  return { ok: true, sent, errors, processed: sent };
+  });
 }

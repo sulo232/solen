@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Generate availability_slots from staff_schedules. Nightly.
 // Bridges staff_schedules -> availability_slots for the next 30 days.
@@ -19,6 +20,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("generate-slots", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -342,5 +344,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ generated: totalGenerated });
+  return { generated: totalGenerated, processed: totalGenerated };
+  });
 }

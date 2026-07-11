@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv, getAppUrl } from "@/lib/env";
 import { tipPromptEmail } from "@/lib/email";
 import { sendNotification } from "@/lib/notifications";
+import { withCronRun } from "@/lib/cron-run";
 
 // review_prompt notifications self-expire after this many days (auto-deleted earlier on review submit).
 const REVIEW_PROMPT_TTL_DAYS = 30;
@@ -28,9 +29,10 @@ export async function GET(req: NextRequest) {
   const resendApiKey = env.RESEND_API_KEY;
   if (!resendApiKey) {
     console.warn("[review-prompt] RESEND_API_KEY not set,skipping emails");
-    return NextResponse.json({ skipped: true, reason: "no_api_key" });
+    return NextResponse.json({ ok: true, skipped: true, reason: "no_api_key" });
   }
 
+  return withCronRun("review-prompt", async () => {
   const supabase = createAdminSupabaseClient();
   const now = new Date();
   // 23h–25h window: catch bookings completed ~24h ago
@@ -51,7 +53,7 @@ export async function GET(req: NextRequest) {
 
   if (bookingsErr) {
     console.error("[review-prompt] bookings query failed:", bookingsErr);
-    return NextResponse.json({ error: "bookings_query_failed" }, { status: 500 });
+    return { error: "bookings_query_failed", errors: ["bookings_query_failed"] };
   }
 
   // TTL: delete review_prompt notifications older than 30 days
@@ -300,5 +302,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ sent: sentCount, google_pushes: googlePushCount });
+  return { sent: sentCount, google_pushes: googlePushCount, processed: sentCount };
+  });
 }

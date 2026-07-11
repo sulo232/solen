@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { calculateVisitCycle } from "@/lib/barber/visit-cycle-algorithm";
 import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Daily smart visit-cycle reminders for barbershop clients
 export async function GET(req: NextRequest) {
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("barber-smart-reminders", async () => {
   const admin = createAdminSupabaseClient();
   let remindersCreated = 0;
   let smsSent = 0;
@@ -121,5 +123,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ remindersCreated, smsSent });
+  return { remindersCreated, smsSent, processed: remindersCreated };
+  });
 }
