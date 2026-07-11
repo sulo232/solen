@@ -64,3 +64,12 @@ Skip-flag ledger counts (last ~5 days): `media-read-ok` **213**, `plan-first` **
 
 ## Session-evidence seeds (as filed)
 - no-verify-commit-gate v2.1 heredoc-body-strip (DONE this session); readback phantom-fragment (#2, live); orphans confirmed CLOSED (#5-tier0 n/a); edit-then-commit body-strip (part of v2.1); defer-bulk + readback double-fire (#10/#tier2).
+
+## APPLIED 2026-07-11 (all except owner-excluded #10 + the SQL-guard twin)
+Tier 0 (live bugs, me, tested + committed 50abcd060): check.py hex+s-pop; no-black-selected blue+const+date (11/11); no-getsession fail-open+comment (6/6); readback current-turn-bound + meta-exclude (verified).
+Tier 1 (me, tested + committed c7c6b1e01): coder-git-guard + no-ai-assets heredoc-strip; pre-build-exists decoy-proof grep.
+Tier 2-3 gate consolidation (coder, 26 tests, verified independently): _stopgate_lib.py shared meta-exemption wired into all 5 stop/defer/punt gates (true-positives PRESERVED , genuine early-stops still block; exemption conservative by design), owner-punt PUNT-arm setup-noun; plan-first plan-coverage pass; exists/removed reason-required skip; delegate-media owner-reference exemption.
+Tier 4 rules/docs (subagent, committed 0d373c64e): SECURITY_RULES/CODE_SAFETY getSession->getUser, lessons-ledger, model-doc staleness, LAW/REPORT status, zone tombstone, ROADMAP/search-bar/precedence/dedup.
+Tier 5 skills (subagent): capture-pipeline->site-tester, huashu trigger, dead pointers, frontend-design carve-out, coderabbit routing.
+Tier 6 memory (subagent): feedback_rules_are_hooks 25.2->7.8KB, binary_triggers phantom-tools, aurora 15->1.7KB, deleted check_skills_first, backend_hardening ring-9.
+NOTE: global ~/.claude hooks/skills/memory/system-docs are LIVE ON DISK (not in this repo). EXCLUDED per owner: #10 (SOLEN_UI binding + compact-draft swap) and the mcp-prod-write-guard Bash/psql twin.
