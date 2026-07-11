@@ -76,5 +76,6 @@ export async function flushPostHog() {
     }
   } catch (error) {
     // Ignore internal shutdown errors
+    console.error("[posthog-server] flush/shutdown failed:", error);
   }
 }

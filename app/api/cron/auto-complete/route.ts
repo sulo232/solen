@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Auto-complete bookings. Every 15min.
 export async function GET(req: NextRequest) {
@@ -13,6 +14,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("auto-complete", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date().toISOString();
 
@@ -43,7 +45,7 @@ export async function GET(req: NextRequest) {
 
   const autoSalonIds = (autoSalons ?? []).map((s) => s.id);
   if (autoSalonIds.length === 0) {
-    return NextResponse.json({ completed: 0, reason: "no_auto_complete_salons" });
+    return { completed: 0, processed: 0, reason: "no_auto_complete_salons" };
   }
 
   query = query.in("salon_id", autoSalonIds);
@@ -59,5 +61,6 @@ export async function GET(req: NextRequest) {
     completed++;
   }
 
-  return NextResponse.json({ completed });
+  return { completed, processed: completed };
+  });
 }

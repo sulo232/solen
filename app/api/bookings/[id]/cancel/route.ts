@@ -9,6 +9,7 @@ import { toRappen } from "@/lib/stripe";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
+import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
 // policy math as POST (calculateCancellationFee) but mutates nothing — so the sheet can
@@ -77,6 +78,9 @@ export async function POST(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await request.json().catch(() => ({}));
   const { data: validated } = validateBody(bookingCancelSchema, body);
@@ -260,7 +264,7 @@ export async function POST(
           subject: `Ein Termin ist frei geworden bei ${booking.salons?.name ?? "einem Salon"}!`,
           html: `<p>Ein Termin für <strong>${booking.services?.name_de ?? "deinen Service"}</strong> am <strong>${new Date(booking.starts_at).toLocaleDateString("de-CH")}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
         });
-      } catch { /* non-fatal */ }
+      } catch (err) { console.error("[bookings/cancel] waitlist notification email failed:", err); }
     }
     await adminForWaitlist.from("waitlist").update({ notified_at: new Date().toISOString() }).eq("id", entry.id);
   }
@@ -315,7 +319,7 @@ export async function POST(
 
   try {
     await Promise.allSettled(promises);
-  } catch { /* non-fatal */ }
+  } catch (err) { console.error("[bookings/cancel] cancellation notification dispatch failed:", err); }
 
   return NextResponse.json({
     data: {

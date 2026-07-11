@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { logAuditEvent } from "@/lib/audit";
+import { validateBody, adminSalonActionReasonSchema } from "@/lib/validations";
 
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
@@ -12,10 +13,12 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const body = await req.json().catch(() => ({}));
-  if (!body.reason || typeof body.reason !== 'string') {
-    return NextResponse.json({ error: "Reason is required" }, { status: 400 });
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: valError } = validateBody(adminSalonActionReasonSchema, rawBody);
+  if (valError) {
+    return NextResponse.json({ error: "Reason is required", message: valError.message }, { status: 400 });
   }
+  const body = { reason: validated.reason };
 
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();

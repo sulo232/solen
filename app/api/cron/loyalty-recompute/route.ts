@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: recompute Solen Status (loyalty rank) for all customers. Monthly (1st).
 // Calls the security-definer SQL function that aggregates qualifying completed
@@ -16,11 +17,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("loyalty-recompute", async () => {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.rpc("recompute_loyalty_status");
   if (error) {
     console.error("[cron/loyalty-recompute] rpc failed:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return { error: error.message, errors: [error.message] };
   }
-  return NextResponse.json({ ok: true, rowsWritten: data ?? 0 });
+  return { ok: true, rowsWritten: data ?? 0, processed: data ?? 0 };
+  });
 }

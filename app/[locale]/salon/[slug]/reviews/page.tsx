@@ -9,9 +9,10 @@
  *   - Photo upload + new-review form
  *   - Dispute reporting
  *
- * Future v2 (Phase 7): infinite-scroll pagination if review count > 50.
- * Today: SalonReviews loads all reviews from the parent salon fetch,
- * which is fine for the typical 0-200 review range.
+ * Ring 2b (2026-07-11): the parent fetch narrows from the prior .limit(50)
+ * (bfa385699, 2026-06-30) to .range(0, 19), 20 reviews + 3 joins instead
+ * of 50. SalonReviews now pages further reviews client-side via the
+ * existing /api/reviews/salon/[salon_id] endpoint ("Mehr laden").
  */
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,10 @@ export default async function SalonReviewsPage({
   const userId = user?.id ?? null;
 
   const [reviewsRes, completedRes] = await Promise.all([
+    // Ring 2b: narrowed from the prior .limit(50) (bfa385699, 2026-06-30) to the
+    // first page (20, matching /api/reviews/salon/[salon_id]'s page size), still
+    // regardless of salon.review_count; further pages are loaded client-side via
+    // that existing paginated endpoint (SalonReviews "Mehr laden").
     admin
       .from("reviews")
       .select(`
@@ -85,7 +90,7 @@ export default async function SalonReviewsPage({
       .eq("salon_id", salon.id)
       .eq("is_hidden", false)
       .order("created_at", { ascending: false })
-      .limit(50),
+      .range(0, 19),
     userId
       ? supabase
           .from("bookings")

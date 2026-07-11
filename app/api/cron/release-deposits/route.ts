@@ -3,6 +3,13 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
+
+// RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
+function capErrors(errs: string[], max = 20): string[] {
+  if (errs.length <= max) return errs;
+  return [...errs.slice(0, max), `...and ${errs.length - max} more`];
+}
 
 // GET /api/cron/release-deposits
 // Daily cron: deposits held > 72h without booking confirmation → release back.
@@ -14,6 +21,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("release-deposits", async () => {
   const admin = createAdminSupabaseClient();
   const cutoff = new Date();
   cutoff.setHours(cutoff.getHours() - 72);
@@ -30,12 +38,12 @@ export async function GET(request: NextRequest) {
   if (staleDepositsError) console.error("[cron/release-deposits] stale deposits query error:", staleDepositsError.message);
 
   let released = 0;
-  let errors = 0;
+  const errorMsgs: string[] = [];
 
   for (const booking of staleDeposits ?? []) {
     try {
       // Cancel the booking
-      await admin
+      const { error: cancelErr } = await admin
         .from("bookings")
         .update({
           status: "cancelled",
@@ -43,15 +51,17 @@ export async function GET(request: NextRequest) {
           cancelled_at: new Date().toISOString(),
         })
         .eq("id", booking.id);
+      if (cancelErr) throw cancelErr;
 
       // Free the slot if any
-      await admin
+      const { error: slotErr } = await admin
         .from("availability_slots")
         .update({ status: "available", booked_by: null, booking_id: null })
         .eq("booking_id", booking.id);
+      if (slotErr) throw slotErr;
 
       // Log in audit_log
-      await admin.from("audit_log").insert({
+      const { error: auditErr } = await admin.from("audit_log").insert({
         actor_id: null,
         action: "deposit_auto_released",
         target_type: "booking",
@@ -62,12 +72,14 @@ export async function GET(request: NextRequest) {
           payment_intent: booking.payment_intent_id,
         },
       });
+      if (auditErr) throw auditErr;
 
       released++;
-    } catch {
-      errors++;
+    } catch (err) {
+      errorMsgs.push(`booking ${booking.id}: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
-  return NextResponse.json({ ok: true, released, errors });
+  return { ok: true, released, errors: capErrors(errorMsgs), processed: released };
+  });
 }

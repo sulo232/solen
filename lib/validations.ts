@@ -536,6 +536,37 @@ export const walkinJoinSchema = z.object({
   join_method: z.enum(['in_person', 'remote', 'kiosk']).default('in_person'),
 });
 
+// Ring 7a: walk-in payment intent (money surface). Mirrors walkinJoinSchema's field shapes
+// (customer_name/customer_phone/preferred_barber_id) for the same guest-or-logged-in walk-in
+// flow; salon_id/service_id/booking_id are server-trusted UUIDs, price is NEVER read from the
+// body (the route always recomputes it from the services row).
+export const walkinPayIntentSchema = z.object({
+  salon_id: z.string().uuid(),
+  service_id: z.string().uuid(),
+  customer_name: z.string().max(100).optional(),
+  customer_phone: z.string().max(20).optional(),
+  // Present when paying an existing walk-in booking (SMS payment-link flow).
+  booking_id: z.string().uuid().optional(),
+  // NOT .uuid(), NO .max(): the route's own preferred-barber block (pay-intent/route.ts:92-107)
+  // already treats a malformed/spoofed/empty/oversized value as "no preference" (Egal) via a
+  // UUID_RE test + staff-existence lookup, dropping it silently. .catch(undefined) means ANY
+  // per-field failure (wrong type, too long, whatever) degrades to "no preference" instead of
+  // 400ing the WHOLE payment for a bad optional preference, which is customer-hostile on a money
+  // endpoint (ring 7a fix-round punch list).
+  preferred_barber_id: z.string().optional().catch(undefined),
+});
+
+// Ring 7a: walk-in review, gated only by the queue tracking token (guest, no session).
+export const walkinReviewSchema = z.object({
+  token: z.string().min(8).max(64),
+  rating: z.number().int().min(1).max(5),
+  // No .max(): the route already truncates to 600 (review/route.ts:33, pre-existing behavior).
+  // A hard .max(600) here would 400-reject an over-length review instead of truncating it, so
+  // a long review silently vanished with no signal anywhere (ring 7a fix-round punch list).
+  // Truncate here too so the field passed downstream is already bounded.
+  comment: z.string().optional().transform((s) => s?.slice(0, 600)),
+});
+
 export const walkinUpdateSchema = z.object({
   status: z.enum(['waiting', 'in_chair', 'completed', 'no_show', 'cancelled']),
   assigned_barber_id: z.string().uuid().optional(),
@@ -700,6 +731,14 @@ export const adminHelpArticleSchema = z.object({
 });
 
 export const adminSalonRejectSchema = z.object({
+  reason: z.string().min(3).max(500),
+});
+
+// Ring 7a: same { reason } shape as adminSalonRejectSchema, shared by the two other
+// admin salon-moderation actions (freeze cascades to cancelling active bookings + Stripe
+// refunds; warn auto-escalates to a freeze at 3 warnings). Kept as its own export (not a
+// rename of adminSalonRejectSchema) so each route's import names the action it validates.
+export const adminSalonActionReasonSchema = z.object({
   reason: z.string().min(3).max(500),
 });
 
@@ -902,8 +941,13 @@ export const upchargeRespondSchema = z.object({
   customer_response: z.string().max(500).optional(),
 });
 
+// Ring 7a fix: this schema previously described a `new_slot_id`-based contract that no live
+// route ever imported (dead export). The actual handler (app/api/bookings/[id]/reschedule/
+// route.ts) reads new_starts_at + new_ends_at (a time RANGE, resolved to a slot server-side),
+// so the schema is corrected to match the real request shape instead of an imaginary one.
 export const bookingRescheduleSchema = z.object({
-  new_slot_id: z.string().uuid(),
+  new_starts_at: z.string().datetime(),
+  new_ends_at: z.string().datetime(),
 });
 
 export const expressRebookSchema = z.object({

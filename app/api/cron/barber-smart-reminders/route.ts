@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { calculateVisitCycle } from "@/lib/barber/visit-cycle-algorithm";
 import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Daily smart visit-cycle reminders for barbershop clients
 export async function GET(req: NextRequest) {
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("barber-smart-reminders", async () => {
   const admin = createAdminSupabaseClient();
   let remindersCreated = 0;
   let smsSent = 0;
@@ -35,58 +37,82 @@ export async function GET(req: NextRequest) {
       .not("customer_id", "is", null);
 
     // Deduplicate customer IDs
-    const uniqueCustomerIds = [...new Set((customers ?? []).map((c) => c.customer_id))];
+    const uniqueCustomerIds = [...new Set((customers ?? []).map((c) => c.customer_id))].filter(
+      (id): id is string => !!id
+    );
+    if (uniqueCustomerIds.length === 0) continue;
+
+    // RING 3a: batch the 3 previously per-customer reads (cut history, future
+    // bookings, existing reminder note) into ONE IN-list query each per salon,
+    // instead of one query per customer. Phone lookup has no bulk Admin-API
+    // equivalent (auth.users, not profiles), so it stays per-customer below,
+    // unchanged, and only runs for customers who already passed every
+    // eligibility check (same order as before batching).
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const [{ data: allCuts }, { data: futureBookingRows }, { data: existingNotes }, { data: profileRows }] =
+      await Promise.all([
+        admin
+          .from("barber_cut_history")
+          .select("customer_id, created_at")
+          .eq("salon_id", salon.id)
+          .in("customer_id", uniqueCustomerIds)
+          .order("created_at", { ascending: false }),
+        admin
+          .from("bookings")
+          .select("user_id")
+          .eq("salon_id", salon.id)
+          .in("user_id", uniqueCustomerIds)
+          .in("status", ["confirmed", "pending"])
+          .gt("starts_at", new Date().toISOString()),
+        admin
+          .from("client_notes")
+          .select("customer_id, note")
+          .eq("salon_id", salon.id)
+          .in("customer_id", uniqueCustomerIds)
+          .eq("note_type", "system")
+          .gte("created_at", sevenDaysAgo),
+        admin.from("profiles").select("id, display_name").in("id", uniqueCustomerIds),
+      ]);
+
+    const cutsByCustomer = new Map<string, Date[]>();
+    for (const row of allCuts ?? []) {
+      if (!row.customer_id) continue;
+      const list = cutsByCustomer.get(row.customer_id) ?? [];
+      if (list.length < 20) list.push(new Date(row.created_at)); // rows already sorted desc, mirrors the old .limit(20)
+      cutsByCustomer.set(row.customer_id, list);
+    }
+    const futureBookingCounts = new Map<string, number>();
+    for (const row of futureBookingRows ?? []) {
+      futureBookingCounts.set(row.user_id, (futureBookingCounts.get(row.user_id) ?? 0) + 1);
+    }
+    const hasExistingReminder = new Set(
+      (existingNotes ?? []).filter((n) => (n.note ?? "").includes("cut_reminder")).map((n) => n.customer_id)
+    );
+    const profileByCustomer = new Map((profileRows ?? []).map((p) => [p.id, p]));
+
+    const noteRows: { salon_id: string; customer_id: string; note: string; note_type: string; created_by: null }[] = [];
 
     for (const customerId of uniqueCustomerIds) {
-      if (!customerId) continue;
-
       // Get visit dates (most recent first)
-      const { data: cuts } = await admin
-        .from("barber_cut_history")
-        .select("created_at")
-        .eq("salon_id", salon.id)
-        .eq("customer_id", customerId)
-        .order("created_at", { ascending: false })
-        .limit(20);
-
+      const cuts = cutsByCustomer.get(customerId);
       if (!cuts || cuts.length < 3) continue;
 
-      const visitDates = cuts.map((c) => new Date(c.created_at));
-      const cycle = calculateVisitCycle(visitDates);
+      const cycle = calculateVisitCycle(cuts);
 
       if (cycle.confidence === "insufficient") continue;
       // Remind 2 days before due or when overdue
       if (cycle.daysOverdue < -2) continue;
 
       // Skip if client already has a future booking at this salon
-      const { count: futureBookings } = await admin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("salon_id", salon.id)
-        .eq("user_id", customerId)
-        .in("status", ["confirmed", "pending"])
-        .gt("starts_at", new Date().toISOString());
-
-      if ((futureBookings ?? 0) > 0) continue;
+      if ((futureBookingCounts.get(customerId) ?? 0) > 0) continue;
 
       // Skip if reminder already exists for this cycle
-      const { data: existingNote } = await admin
-        .from("client_notes")
-        .select("id")
-        .eq("salon_id", salon.id)
-        .eq("customer_id", customerId)
-        .eq("note_type", "system")
-        .ilike("note", "%cut_reminder%")
-        .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-        .maybeSingle();
-
-      if (existingNote) continue;
+      if (hasExistingReminder.has(customerId)) continue;
 
       // Get customer name
-      const { data: profile } = await admin
-        .from("profiles").select("display_name").eq("id", customerId).single();
+      const profile = profileByCustomer.get(customerId);
 
-      // Create reminder note
+      // Queue reminder note
       const noteData = {
         type: "cut_reminder",
         avgCycleDays: cycle.avgCycleDays,
@@ -96,15 +122,13 @@ export async function GET(req: NextRequest) {
         customerId,
         salonName: salon.name,
       };
-
-      await admin.from("client_notes").insert({
+      noteRows.push({
         salon_id: salon.id,
         customer_id: customerId,
         note: JSON.stringify(noteData),
         note_type: "system",
         created_by: null,
       });
-
       remindersCreated++;
 
       // Send SMS if customer has a phone number
@@ -119,7 +143,14 @@ export async function GET(req: NextRequest) {
         if (ok) smsSent++;
       }
     }
+
+    // Batch the reminder-note inserts for this salon into one call.
+    if (noteRows.length > 0) {
+      const { error: noteInsertErr } = await admin.from("client_notes").insert(noteRows);
+      if (noteInsertErr) console.error("[cron/barber-smart-reminders] client_notes batch insert failed:", noteInsertErr.message);
+    }
   }
 
-  return NextResponse.json({ remindersCreated, smsSent });
+  return { remindersCreated, smsSent, processed: remindersCreated };
+  });
 }

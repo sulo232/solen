@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
+import { withCronRun } from "@/lib/cron-run";
 
 const PER_RUN = 10; // bounded: 10 looks x ~10s AI ~= under the function limit
 
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
   }
   if (!getServerEnv().GEMINI_API_KEY) return NextResponse.json({ error: "GEMINI_API_KEY not set" }, { status: 503 });
 
+  return withCronRun("discovery-ai-backfill", async () => {
   const admin = createAdminSupabaseClient();
   // Oldest un-described, active, published looks that actually have an image to analyze.
   const { data: items, error } = await admin
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest) {
     .eq("status", "published")
     .order("created_at", { ascending: true })
     .limit(PER_RUN);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return { error: error.message, errors: [error.message] };
 
   let analyzed = 0, failed = 0;
   for (const it of items ?? []) {
@@ -69,5 +71,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, analyzed, failed, picked: items?.length ?? 0 });
+  return { ok: true, analyzed, failed, picked: items?.length ?? 0, processed: analyzed };
+  });
 }

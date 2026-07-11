@@ -42,6 +42,7 @@
     "supabase/functions",
     "remotion",
     "**/*.figma.tsx",
-    "**/*.figma.ts"
+    "**/*.figma.ts",
+    "tests/"
   ]
 }

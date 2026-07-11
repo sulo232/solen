@@ -5,7 +5,41 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { autoTranslateDescription } from "@/lib/ai/translate";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, salonPolicyUpdateSchema } from "@/lib/validations";
-import { loadSalonDetail } from "@/lib/salon-detail";
+import { loadSalonDetailWithAccess } from "@/lib/salon-detail";
+
+// Ring 5b: CDN response caching. netlify.toml's "/api/*" block (lines 31-35) is a
+// static/CDN header-injection rule and does NOT apply to this route's own function
+// response (identical Netlify precedence note as app/api/salons/route.ts); the
+// headers set below are what actually ships. This route has `export const runtime =
+// "edge"`, so it compiles to a Netlify Edge Function.
+//
+// The salon-preview seam: loadSalonDetailWithAccess (lib/salon-detail.ts) returns
+// `isOwnerView: true` when the caller is the salon's own owner, in which case the
+// payload can include moderation-only fields (verification_warnings, frozen_reason,
+// etc.) and can be for an is_active=false (pending/hidden) salon that a public visitor
+// would get a 404 for instead. Since Netlify's cache key is the slug URL alone, that
+// owner-preview response must NEVER be cached: a cached copy would risk leaking
+// moderation status, or an unapproved salon's detail page, to the next anonymous
+// visitor who hits the same slug within the TTL window. Only the non-owner (public)
+// response, which is identical for every anonymous or non-owner caller, is cached.
+export const PDP_CACHE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, max-age=0, must-revalidate",
+};
+export const PDP_NO_STORE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "private, no-store",
+  "Cache-Control": "no-store, no-cache, must-revalidate",
+};
+
+/**
+ * Pure header-selection, exported for ring5b-kill-test.ts: owner auth can't be
+ * simulated outside a live Next.js request (loadSalonDetailWithAccess resolves it via
+ * next/headers' cookies(), see the note there), so the owner-preview variant is tested
+ * by calling this exact function with isOwnerView=true instead of faking a session.
+ */
+export function salonDetailCacheHeaders(isOwnerView: boolean) {
+  return isOwnerView ? PDP_NO_STORE_HEADERS : PDP_CACHE_HEADERS;
+}
 
 // B4 load audit (2026-07-04): the fetch/visibility/join logic that used to live
 // here was extracted to lib/salon-detail.ts so the salon PDP page.tsx (now a
@@ -17,13 +51,13 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const salon = await loadSalonDetail(slug);
+  const result = await loadSalonDetailWithAccess(slug);
 
-  if (!salon) {
+  if (!result) {
     return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   }
 
-  return NextResponse.json(salon);
+  return NextResponse.json(result.salon, { headers: salonDetailCacheHeaders(result.isOwnerView) });
 }
 
 // PATCH /api/salons/[slug] — salon owner updates their salon

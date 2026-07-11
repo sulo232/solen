@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
 <p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Einladung annehmen →</a></p>
 <p style="color:#999;font-size:12px;">Dieser Link ist 7 Tage gültig.</p>`,
     });
-  } catch { /* email failure logged but non-fatal */ }
+  } catch (err) { console.error("[staff/invite] invite email failed:", err); }
 
   return NextResponse.json({ data: { id: invite.id, email: validated.email } }, { status: 201 });
 }

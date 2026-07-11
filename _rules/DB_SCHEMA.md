@@ -82,3 +82,43 @@
 | `v_trending_salons` | `salon_id`, `solen_score`, `recent_booking_count`, `trending_score` | Computes live trending score based on `solen_score` and recent 14-day bookings. |
 | `salon_drafts` | `id`, `user_id` (UNIQUE), `draft_data` (jsonb), `current_step`, `updated_at` | Wizard draft persistence. One draft per user. Auto-deleted on salon creation. |
 
+## 7. Migration law: additive-idempotent apply_migration, and how to re-backfill local files
+
+**Never `supabase db push` or `supabase db reset` against the live project.** All schema changes go
+through the Supabase MCP `apply_migration` tool, additive and idempotent only (`create table if not
+exists`, `add column if not exists`, `create or replace function`, `create policy` guarded by a
+`drop policy if exists` for the same name, never a bare `DROP TABLE` / destructive rewrite). This
+applies the SQL live AND records it in `supabase_migrations.schema_migrations` (columns: `version`,
+`name`, `statements text[]`), but it does NOT write a local file under `supabase/migrations/`. Over
+time this causes local/live drift: the live DB has more applied versions than the repo has files for.
+
+**How to detect drift.** Compare the local `supabase/migrations/*.sql` filenames (version prefix) against
+`select version, name from supabase_migrations.schema_migrations order by version` on the live project.
+Any live version with no matching local file is missing and should be backfilled.
+
+**How to backfill a missing migration file (the recipe used in ring 11, 2026-07-11):**
+1. For each missing version, run (read-only, via the Supabase MCP `execute_sql` tool):
+   ```sql
+   select array_to_string(statements, E'\n;\n') from supabase_migrations.schema_migrations where version = '<version>';
+   ```
+   Batch a few small ones per query; fetch large ones individually.
+2. Write `supabase/migrations/<version>_<name>.sql` with a short header noting it was backfilled
+   (date + "applied live via MCP apply_migration; file restored for fresh-env reproducibility") followed
+   by the SQL body verbatim, unmodified. Never edit the body to "clean it up": the file must match what
+   was actually applied.
+3. The pre-build exists-check hook can block a brand-new migration filename; run `npm run exists <name>`
+   once per file, and if still blocked, `touch .claude/exists-skip.flag` (consumed per write, re-touch as
+   needed).
+4. After backfilling, regenerate `lib/database.types.ts` via the MCP `generate_typescript_types` tool
+   and overwrite the file. The backfilled `.sql` files do not change the live schema (it was already
+   applied), so `npx tsc --noEmit` error count should be unchanged before/after; confirm with a count,
+   don't assume.
+5. If any hand-written stub files exist under invented version prefixes for schema that was actually
+   applied under a different (true remote) version, replace them: write the canonical file under the true
+   remote version with identical content, then delete the stub. Never leave two files describing the same
+   live migration under two different version numbers.
+
+This keeps `supabase/migrations/` a faithful, re-appliable record of the live schema for a fresh
+environment, even though the day-to-day apply path (MCP `apply_migration`) does not write local files
+on its own.
+

@@ -54,6 +54,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "File too large (max 10 MB)" }, { status: 400 });
   }
 
+  // Verify the client belongs to this salon BEFORE writing anything to Storage (ring 9
+  // parked finding: the upload used to run first, so an owner could burn a Storage write
+  // for a client_id that fails this check and gets thrown away below).
+  if (formulaId && clientId) {
+    const belongs = await clientBelongsToSalon(admin, salon.id, clientId);
+    if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
+  }
+
   const ext = file.name.split(".").pop() ?? "jpg";
   const storagePath = `${salon.id}/${clientId ?? "unknown"}/${Date.now()}-${type}.${ext}`;
 
@@ -77,12 +85,8 @@ export async function POST(req: NextRequest) {
 
   const photoUrl = publicUrlData.publicUrl;
 
-  // Insert record into coiffeur_formula_photos (best-effort — table may not exist yet)
+  // Insert record into coiffeur_formula_photos (best-effort, table may not exist yet)
   if (formulaId) {
-    if (clientId) {
-      const belongs = await clientBelongsToSalon(admin, salon.id, clientId);
-      if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
-    }
     await admin.from("coiffeur_formula_photos").insert({
       formula_id: formulaId,
       client_id: clientId ?? null,

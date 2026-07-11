@@ -101,8 +101,9 @@ function decodeCookie(value: string): { bookingId: string; raw: string } | null 
     if (parsed && typeof parsed.b === "string" && typeof parsed.t === "string") {
       return { bookingId: parsed.b, raw: parsed.t };
     }
-  } catch {
+  } catch (err) {
     // Malformed cookie → treat as no cookie. Never throw on attacker-controlled input.
+    console.error("[bookings/guest-access] cookie decode failed:", err);
   }
   return null;
 }

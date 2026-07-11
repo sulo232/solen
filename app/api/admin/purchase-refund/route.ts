@@ -11,6 +11,7 @@ import {
 } from "@/lib/purchases/issue-purchase-refund";
 import { notifyPurchaseRefundProcessed } from "@/lib/purchases/notify-purchase-refund";
 import { logAuditEvent } from "@/lib/audit";
+import { reportError } from "@/lib/error-report";
 
 // POST /api/admin/purchase-refund — Admin-triggered package OR retail refund.
 // Source-agnostic (body carries source + id). Mirrors the admin freeze route auth
@@ -99,6 +100,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (e) {
     console.error(`[admin-${source}-refund] issuePurchaseRefund failed:`, e);
+    await reportError(`admin-${source}-refund`, e, { id, amountCents });
     if (e instanceof PurchaseRefundError) {
       const status =
         e.code === "PURCHASE_NOT_FOUND" ? 404

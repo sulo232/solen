@@ -8,6 +8,7 @@ import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import { logAuditEvent } from "@/lib/audit";
+import { withCronRun } from "@/lib/cron-run";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("no-show", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
@@ -124,11 +126,12 @@ export async function GET(req: NextRequest) {
     if (newCount >= 3) {
       try {
         await logAuditEvent(req, "system", "customer_excessive_no_shows", "user", booking.user_id, { count: newCount });
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/no-show] audit log failed:", err); }
     }
 
     processed++;
   }
 
-  return NextResponse.json({ processed, charged });
+  return { processed, charged };
+  });
 }

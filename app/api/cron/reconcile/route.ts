@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getStripe } from "@/lib/stripe";
 import { sendEmail } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Reconciliation (the money safety net). Daily.
 //
@@ -37,13 +38,23 @@ import { getServerEnv } from "@/lib/env";
 //     package-purchase metadata.type; that branch below is defensive-only,
 //     covering a legacy row whose PI still happens to fall in the lookback window.
 //
+// GIFT-CARD reconciliation (Ring 8, closes the single biggest coverage gap; see
+// _plans/WEBHOOK_RESILIENCE.md): pi.metadata.type === "gift_card" charges are checked
+// against gift_cards (row exists + is_active flipped true), the only activation path
+// being gift-card-handler.ts's webhook CAS. A dropped/never-redelivered event used to
+// fall silently into the non_booking skip bucket below with zero detection.
+//
 // SKIPPED (logged for honest coverage):
 //   - walk-in charges (pi.metadata.type === "walk_in"): ticket flow, no
 //     scheduled-booking row / payout path (webhook skips them too).
-//   - voucher purchases (pi.metadata.type === "voucher"): handled by the
-//     voucher-handler, not a booking.
+//   - salon gift-voucher purchases (pi.metadata.type === "voucher", vouchers table)
+//     and discount/promo voucher purchases (pi.metadata.type === "voucher_purchase",
+//     promo_codes/voucher_purchases tables): handled by their own webhook handlers, not
+//     reconciled here. Same uncovered-class shape gift_card was in before this ring;
+//     memo'd (not fixed this ring, one miss closed per Ring 8's own scope) in
+//     _plans/WEBHOOK_RESILIENCE.md.
 //   - any charge whose PI carries no booking_id metadata AND isn't a
-//     retail_purchase/package_purchase (non-booking / manual / test charges),
+//     retail_purchase/package_purchase/gift_card (non-booking / manual / test charges),
 //     nothing in `bookings` or the purchase tables to reconcile against.
 
 const LOOKBACK_MS = 48 * 60 * 60 * 1000;
@@ -76,6 +87,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("reconcile", async () => {
   const admin = createAdminSupabaseClient();
   const stripe = getStripe();
   const since = Math.floor((Date.now() - LOOKBACK_MS) / 1000); // Stripe `created` is unix seconds.
@@ -114,6 +126,39 @@ export async function GET(req: NextRequest) {
         // --- skip non-booking charges, honestly counted ---
         if (meta.type === "walk_in") {
           skipped.walk_in++;
+          continue;
+        }
+
+        // --- GIFT-CARD activation reconciliation (Ring 8: the single biggest coverage
+        //     gap this cron had, closed here). gift-card-handler.ts's webhook CAS
+        //     (is_active false -> true) is the ONLY place a paid card is ever activated;
+        //     before this check, a dropped/never-redelivered payment_intent.succeeded
+        //     left real captured money with a permanently inert (is_active:false) card
+        //     and NOTHING in this cron would ever notice, the charge fell straight
+        //     into the "non_booking" skip bucket below. ---
+        if (meta.type === "gift_card") {
+          checkedPurchases++;
+          const { data: card } = await admin
+            .from("gift_cards")
+            .select("id, is_active")
+            .eq("stripe_payment_intent_id", piId)
+            .maybeSingle();
+          if (!card) {
+            mismatches.push({
+              kind: "missing_purchase",
+              payment_intent: piId,
+              charge_id: charge.id,
+              detail: `Stripe charge ${charge.id} (PI ${piId}, type=gift_card) has no matching gift_cards row. captured=${charge.amount_captured} Rappen.`,
+            });
+          } else if (charge.amount_captured > 0 && !card.is_active) {
+            mismatches.push({
+              kind: "purchase_amount_drift",
+              payment_intent: piId,
+              charge_id: charge.id,
+              purchase_id: card.id,
+              detail: `gift_cards ${card.id} is still is_active=false despite a captured charge (webhook never activated it).`,
+            });
+          }
           continue;
         }
         if (meta.type === "voucher") {
@@ -370,10 +415,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  return {
     checked,
     checkedPurchases,
     skipped,
     mismatches,
+    processed: checked + checkedPurchases,
+  };
   });
 }

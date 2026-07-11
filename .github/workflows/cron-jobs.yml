@@ -12,12 +12,14 @@ on:
     - cron: '0 */6 * * *'
     - cron: '0 2 * * *'
     - cron: '0 3 * * *'
+    - cron: '45 3 * * *'
     - cron: '0 8 * * *'
     - cron: '0 9 * * *'
     - cron: '0 10 * * *'
     - cron: '0 11 * * *'
     - cron: '0 4 1 * *'
     - cron: '0 5 * * 1'
+    - cron: '15 5 * * *'
   workflow_dispatch:
 
 jobs:
@@ -118,6 +120,17 @@ jobs:
           paths: /api/cron/style-affinity-recompute
           secret: ${{ secrets.CRON_SECRET }}
 
+  daily-03-45-utc:
+    if: github.event.schedule == '45 3 * * *'
+    name: Daily 03:45 UTC · db-backup (nightly data safety net)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/db-backup
+          secret: ${{ secrets.CRON_SECRET }}
+
   daily-08-utc:
     if: github.event.schedule == '0 8 * * *'
     name: Daily 08:00 UTC · barber-smart-reminders
@@ -182,4 +195,15 @@ jobs:
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/discovery-deadcheck
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-05-15-utc:
+    if: github.event.schedule == '15 5 * * *'
+    name: Daily 05:15 UTC · daily-digest (founder ops email)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/daily-digest
           secret: ${{ secrets.CRON_SECRET }}

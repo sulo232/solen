@@ -5,6 +5,13 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, guestLookupLimiter, getClientIp } from "@/lib/ratelimit";
 
+// Every failure branch below (not found, unpaid, redeemed, expired) returns this SAME
+// generic message. Distinct messages per branch turned this public endpoint into an
+// oracle: an attacker could tell "code doesn't exist" apart from "code exists but is
+// unpaid/redeemed/expired" without ever seeing the code's real state. Collapsed to one
+// message so every failure looks identical from the outside (ring 9 parked finding).
+const GENERIC_INVALID_MESSAGE = "Gutscheincode ungültig oder nicht einlösbar";
+
 export async function POST(req: NextRequest) {
   // Feature flag
   const disabled = await checkFeatureEnabled("bookings");
@@ -43,8 +50,8 @@ export async function POST(req: NextRequest) {
 
     if (dbError || !voucher) {
       return NextResponse.json(
-        { valid: false, message: "Ungültiger Gutscheincode" },
-        { status: 404 }
+        { valid: false, message: GENERIC_INVALID_MESSAGE },
+        { status: 200 }
       );
     }
 
@@ -55,7 +62,7 @@ export async function POST(req: NextRequest) {
     if (voucher.remaining_amount === null) {
       return NextResponse.json({
         valid: false,
-        message: "Gutschein noch nicht bezahlt",
+        message: GENERIC_INVALID_MESSAGE,
       });
     }
 
@@ -63,7 +70,7 @@ export async function POST(req: NextRequest) {
     if (voucher.redeemed_at) {
       return NextResponse.json({
         valid: false,
-        message: "Dieser Gutschein wurde bereits eingelöst",
+        message: GENERIC_INVALID_MESSAGE,
       });
     }
 
@@ -72,7 +79,7 @@ export async function POST(req: NextRequest) {
     if (voucher.expires_at && new Date(voucher.expires_at) < now) {
       return NextResponse.json({
         valid: false,
-        message: "Dieser Gutschein ist abgelaufen",
+        message: GENERIC_INVALID_MESSAGE,
       });
     }
 

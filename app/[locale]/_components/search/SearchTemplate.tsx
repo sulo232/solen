@@ -173,6 +173,10 @@ type Salon = {
   // staff_members embed, proven live 2026-07-03). Used to build the on-photo
   // specialization match-chip for a free-text query. Empty/absent when not requested.
   staff_specialties?: string[] | null;
+  // Ring 2b: already in SALON_PUBLIC_COLS (lib/salons/public-columns.ts). Gates the
+  // walk-in availability fetch below so it only fires when the just-returned page
+  // payload actually contains a walk-in salon, not just on the walk_in URL toggle.
+  walkin_enabled?: boolean | null;
 };
 
 const V3_CATS = ["coiffeur", "barbershop", "nails", "spa"] as const;
@@ -924,12 +928,18 @@ export default function SearchTemplate({
     setAreaBounds(null);
   }, [searchParamsKey]);
 
-  // Walk-in live availability: only when the walk_in filter is on.
+  // Walk-in live availability: only when the walk_in filter is on AND the
+  // just-returned page payload actually contains at least one walk-in salon.
   // One batched /api/walkin/availability call for the loaded salons.
   // Dep is the stable comma-joined ID string (not the salons array reference)
   // so the effect only re-fires when the actual set of IDs changes, not on
   // every render that produces a new array object with the same contents.
-  const salonIdsKey = walkIn ? salons.map((s) => s.id).join(",") : "";
+  // Ring 2b: the walkin_enabled check is a defensive, direct read of the payload
+  // (the walk_in=true server filter already guarantees every returned salon has
+  // walkin_enabled=true, so in practice this is a no-op today) rather than
+  // trusting the URL toggle as a proxy for what the data actually contains.
+  const salonIdsKey =
+    walkIn && salons.some((s) => s.walkin_enabled) ? salons.map((s) => s.id).join(",") : "";
   React.useEffect(() => {
     if (!walkIn || !salonIdsKey) {
       setWalkinAvail({});

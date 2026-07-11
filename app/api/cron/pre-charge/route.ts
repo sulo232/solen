@@ -7,6 +7,7 @@ import { toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("pre-charge", async () => {
   const admin = createAdminSupabaseClient();
   const fiveDaysFromNow = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
   const now = new Date().toISOString();
@@ -107,10 +109,11 @@ export async function GET(req: NextRequest) {
             subject: `Zahlung fehlgeschlagen — ${(booking.salons as any)?.name ?? "Salon"}`,
             html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
           });
-        } catch { /* email non-fatal */ }
+        } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
       }
     }
   }
 
-  return NextResponse.json({ charged, declined });
+  return { charged, declined, processed: charged + declined };
+  });
 }

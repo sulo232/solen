@@ -7,6 +7,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, bookingRefundSchema } from "@/lib/validations";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
+import { reportError } from "@/lib/error-report";
 
 // POST /api/bookings/[id]/refund — Salon-triggered manual refund
 export async function POST(
@@ -79,6 +80,7 @@ export async function POST(
     });
   } catch (e) {
     console.error("[refund] issueRefund failed:", e);
+    await reportError("booking-refund", e, { bookingId, amount });
     if (e instanceof RefundError) {
       const status =
         e.code === "BOOKING_NOT_FOUND" ? 404

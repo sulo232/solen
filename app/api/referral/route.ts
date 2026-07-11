@@ -52,8 +52,9 @@ export async function GET() {
         .eq("status", "completed");
 
       if (stats) friends_invited = stats.length;
-    } catch {
+    } catch (err) {
       // Ignore if referrals table doesn't have these columns
+      console.error("[referral] friends_invited lookup failed:", err);
     }
 
     // total_earned = sum of still-valid (unexpired) user_credits.remaining for this user.
@@ -70,8 +71,9 @@ export async function GET() {
           .filter((c) => !c.expires_at || c.expires_at > nowIso)
           .reduce((sum, c) => sum + (c.remaining ?? 0), 0);
       }
-    } catch {
+    } catch (err) {
       // Ignore if user_credits is unavailable; total_earned stays 0.
+      console.error("[referral] total_earned lookup failed:", err);
     }
 
     return NextResponse.json({ 

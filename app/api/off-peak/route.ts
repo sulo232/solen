@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
               );
               await sendEmail(payload).catch(console.error);
             }
-          } catch(e) { /* ignore single user error */ }
+          } catch (e) { console.error("[api/off-peak] single-user alert email failed:", e); }
         });
       }
     }

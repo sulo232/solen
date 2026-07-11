@@ -6,6 +6,7 @@ import { stripe, toRappen } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { validateBody, walkinPayIntentSchema } from "@/lib/validations";
 
 // POST /api/walkin/pay-intent
 // Create a manual-capture (hold) PaymentIntent for a barbershop walk-in.
@@ -21,17 +22,17 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(paymentLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json().catch(() => null);
-  const salon_id: string | undefined = body?.salon_id;
-  const service_id: string | undefined = body?.service_id;
-  const customer_name = String(body?.customer_name ?? "").trim();
-  const customer_phone = String(body?.customer_phone ?? "").trim();
+  const rawBody = await req.json().catch(() => null);
+  const { data: validated, error: valError } = validateBody(walkinPayIntentSchema, rawBody);
+  if (valError) {
+    return NextResponse.json({ error: "salon_id and service_id are required", message: valError.message }, { status: 400 });
+  }
+  const { salon_id, service_id } = validated;
+  const customer_name = (validated.customer_name ?? "").trim();
+  const customer_phone = (validated.customer_phone ?? "").trim();
   // booking_id: present when paying an existing walk-in booking (SMS payment-link flow).
   // Stamped into metadata so /api/walkin/confirm can verify the PI belongs to that booking.
-  const booking_id = String(body?.booking_id ?? "").trim();
-  if (!salon_id || !service_id) {
-    return NextResponse.json({ error: "salon_id and service_id are required" }, { status: 400 });
-  }
+  const booking_id = (validated.booking_id ?? "").trim();
 
   const admin = createAdminSupabaseClient();
 
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
   // before trusting it — an invalid id would later break the queue insert's FK. Drop silently
   // if absent/spoofed (barber preference is optional → "Egal").
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  let preferredBarberId = String(body?.preferred_barber_id ?? "").trim();
+  let preferredBarberId = (validated.preferred_barber_id ?? "").trim();
   if (preferredBarberId && UUID_RE.test(preferredBarberId)) {
     const { data: barber } = await admin
       .from("staff_members")

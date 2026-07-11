@@ -21,8 +21,9 @@ export async function createServerSupabaseClient() {
   let cookieStore: Awaited<ReturnType<typeof cookies>> | null = null;
   try {
     cookieStore = await cookies();
-  } catch {
-    // Fall through — cookieStore stays null, auth will be anonymous
+  } catch (err) {
+    // Fall through, cookieStore stays null, auth will be anonymous
+    console.error("[supabase] cookies() parse failed (malformed Cookie header):", err);
   }
   return createServerClient(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,

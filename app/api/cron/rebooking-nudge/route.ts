@@ -3,8 +3,16 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, rebookingNudge } from "@/lib/email";
-import type { EmailLocale } from "@/lib/email";
+import type { EmailLocale, EmailPayload } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
+import { runWithConcurrency } from "@/lib/concurrency";
+
+// RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
+function capErrors(errs: string[], max = 20): string[] {
+  if (errs.length <= max) return errs;
+  return [...errs.slice(0, max), `...and ${errs.length - max} more`];
+}
 
 // GET /api/cron/rebooking-nudge
 // Daily cron: users whose last booking was 28+ days ago get a nudge email.
@@ -16,6 +24,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("rebooking-nudge", async () => {
   const admin = createAdminSupabaseClient();
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 28);
@@ -51,76 +60,90 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  let sent = 0;
-  let errors = 0;
+  const candidateList = users ?? [];
+  const userIds = Array.from(new Set(candidateList.map((b: any) => b.user_id)));
 
-  for (const booking of users ?? []) {
+  // RING 3a: batch the 3 previously per-candidate reads (preference check,
+  // sent-once guard, email+locale lookup) into ONE IN-list query each,
+  // instead of one query per candidate.
+  const [{ data: prefRows }, { data: nudgedRows }, { data: profileRows }] = await Promise.all([
+    admin.from("notification_preferences").select("user_id, rebooking_enabled").in("user_id", userIds),
+    admin.from("notifications").select("user_id").eq("type", "rebooking_nudge").gte("created_at", cutoffStr).in("user_id", userIds),
+    admin.from("profiles").select("id, email, locale").in("id", userIds),
+  ]);
+
+  const prefsByUser = new Map((prefRows ?? []).map((p) => [p.user_id, p.rebooking_enabled]));
+  const alreadyNudgedUsers = new Set((nudgedRows ?? []).map((r) => r.user_id));
+  const profileByUser = new Map((profileRows ?? []).map((p) => [p.id, p]));
+
+  type Task = { userId: string; salonId: string | null; daysSince: number; payload: EmailPayload };
+  const tasks: Task[] = [];
+
+  for (const booking of candidateList) {
     const userId = (booking as any).user_id;
+    if (prefsByUser.get(userId) === false) continue;
+    if (alreadyNudgedUsers.has(userId)) continue;
 
-    // Check rebooking preference
-    const { data: prefs } = await admin
-      .from("notification_preferences")
-      .select("rebooking_enabled")
-      .eq("user_id", userId)
-      .single();
-
-    if (prefs && prefs.rebooking_enabled === false) continue;
-
-    // Cooldown / already-sent guard: the candidate query above has no send-once
-    // column, so a user who still hasn't rebooked would otherwise be re-matched
-    // and re-emailed every single day the cron runs. Reuses the existing
-    // `notifications` table (type='rebooking_nudge'), the same pattern already
-    // used for review_prompt tracking elsewhere in the codebase.
-    const { data: alreadyNudged } = await admin
-      .from("notifications")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("type", "rebooking_nudge")
-      .gte("created_at", cutoffStr)
-      .limit(1)
-      .maybeSingle();
-    if (alreadyNudged) continue;
-
-    const { data: authUser } = await admin.auth.admin.getUserById(userId);
-    const email = authUser?.user?.email;
+    const profile = profileByUser.get(userId);
+    const email = profile?.email;
     if (!email) continue;
-
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("locale")
-      .eq("id", userId)
-      .single();
 
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
     const daysSince = Math.floor(
       (Date.now() - new Date((booking as any).starts_at).getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    try {
-      await sendEmail(
-        rebookingNudge(
-          email,
-          {
-            service: (booking as any).services?.name_de ?? "Service",
-            salon: (booking as any).salons?.name ?? "Salon",
-            daysSince,
-          },
-          locale
-        )
-      );
-      sent++;
-      // Record the send so the guard above can suppress a repeat within this cutoff window.
-      await admin.from("notifications").insert({
-        user_id: userId,
-        type: "rebooking_nudge",
-        title: "Rebooking nudge sent",
-        body: `Nudge email sent, ${daysSince} days since last visit`,
-        data: { salon_id: (booking as any).salon_id ?? null, days_since: daysSince },
-      });
-    } catch {
-      errors++;
-    }
+    tasks.push({
+      userId,
+      salonId: (booking as any).salon_id ?? null,
+      daysSince,
+      payload: rebookingNudge(
+        email,
+        {
+          service: (booking as any).services?.name_de ?? "Service",
+          salon: (booking as any).salons?.name ?? "Salon",
+          daysSince,
+        },
+        locale
+      ),
+    });
   }
 
-  return NextResponse.json({ ok: true, sent, errors });
+  // Concurrency-capped sends (cap 5): one recipient's failure never blocks the rest,
+  // never one unbounded Promise.all over emails, never fully serial.
+  const sendResults = await runWithConcurrency(tasks, 5, async (task) => {
+    await sendEmail(task.payload);
+    return task;
+  });
+
+  let sent = 0;
+  const errorMsgs: string[] = [];
+  const notifRows: { user_id: string; type: string; title: string; body: string; data: Record<string, unknown> }[] = [];
+
+  sendResults.forEach((res, i) => {
+    const task = tasks[i];
+    if (res.status === "fulfilled") {
+      sent++;
+      notifRows.push({
+        user_id: task.userId,
+        type: "rebooking_nudge",
+        title: "Rebooking nudge sent",
+        body: `Nudge email sent, ${task.daysSince} days since last visit`,
+        data: { salon_id: task.salonId, days_since: task.daysSince },
+      });
+    } else {
+      const msg = res.reason instanceof Error ? res.reason.message : String(res.reason);
+      errorMsgs.push(`user ${task.userId}: ${msg}`);
+      console.error(`[cron/rebooking-nudge] send failed for user ${task.userId}:`, res.reason);
+    }
+  });
+
+  // Record the sends so the guard above can suppress a repeat within the cutoff window.
+  if (notifRows.length > 0) {
+    const { error: insErr } = await admin.from("notifications").insert(notifRows);
+    if (insErr) console.error("[cron/rebooking-nudge] notifications insert failed:", insErr.message);
+  }
+
+  return { sent, errors: capErrors(errorMsgs), processed: sent };
+  });
 }

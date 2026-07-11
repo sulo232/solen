@@ -20,19 +20,17 @@ export interface SalonDetailWithStatus {
 }
 
 /**
- * Shared salon-detail loader (B4 load audit, 2026-07-04).
- *
- * Extracted from GET /api/salons/[slug] so the exact same query/shape can be
- * called SERVER-SIDE from the salon PDP `page.tsx` (server component) instead
- * of only from the client fetch. The API route below now calls this too, so
- * there is a single source of truth for "what a salon-detail fetch returns".
- *
- * Returns `null` when the salon doesn't exist or isn't visible to the caller
- * (mirrors the API route's 404 branch: hidden salons are only visible to
- * their owner). Callers decide what "not found" means for their context
- * (notFound() for the page, a 404 JSON response for the API route).
+ * Ring 5b: like loadSalonDetail below, but also returns whether this response is the
+ * owner's own privileged view (moderation fields exposed, and/or an is_active=false
+ * salon a public visitor would get a 404 for instead). GET /api/salons/[slug] uses
+ * `isOwnerView` to decide CDN caching: only the non-owner (public) response is safe to
+ * edge-cache, because Netlify's cache key is the slug URL alone and that same URL can
+ * otherwise return two very different payloads depending on who's asking (see the
+ * caching note in app/api/salons/[slug]/route.ts).
  */
-export async function loadSalonDetail(slug: string): Promise<SalonDetail | null> {
+export async function loadSalonDetailWithAccess(
+  slug: string,
+): Promise<{ salon: SalonDetail; isOwnerView: boolean } | null> {
   const supabase = await createServerSupabaseClient();
   // Cheap cookie-presence guard (same pattern as /api/bookings/user and
   // /api/discovery/feed): a real session always carries an "sb-" prefixed cookie
@@ -151,11 +149,36 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
       })();
 
   return {
-    ...publicSalon,
-    services: servicesRes.data ?? [],
-    staff: staffWithServices,
-    reviews,
-  } as unknown as SalonDetail;
+    salon: {
+      ...publicSalon,
+      services: servicesRes.data ?? [],
+      staff: staffWithServices,
+      reviews,
+    } as unknown as SalonDetail,
+    isOwnerView: isOwner,
+  };
+}
+
+/**
+ * Shared salon-detail loader (B4 load audit, 2026-07-04).
+ *
+ * Extracted from GET /api/salons/[slug] so the exact same query/shape can be
+ * called SERVER-SIDE from the salon PDP `page.tsx` (server component) instead
+ * of only from the client fetch. The API route below now calls this too, so
+ * there is a single source of truth for "what a salon-detail fetch returns".
+ *
+ * Returns `null` when the salon doesn't exist or isn't visible to the caller
+ * (mirrors the API route's 404 branch: hidden salons are only visible to
+ * their owner). Callers decide what "not found" means for their context
+ * (notFound() for the page, a 404 JSON response for the API route).
+ *
+ * Thin wrapper over loadSalonDetailWithAccess (Ring 5b) for callers that only need the
+ * salon payload, not the owner-view flag (e.g. the PDP page.tsx via
+ * loadSalonDetailWithStatus below).
+ */
+export async function loadSalonDetail(slug: string): Promise<SalonDetail | null> {
+  const result = await loadSalonDetailWithAccess(slug);
+  return result?.salon ?? null;
 }
 
 /**

@@ -3,8 +3,9 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
-// GET /api/cron/nail-infill-reminders — Daily cron: semi-auto infill reminders
+// GET /api/cron/nail-infill-reminders. Daily cron: semi-auto infill reminders
 export async function GET(req: NextRequest) {
   // Verify cron secret
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("nail-infill-reminders", async () => {
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -31,11 +33,19 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error("[nail-infill-cron] Query error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return { error: error.message, errors: [error.message] };
   }
 
-  let remindersCreated = 0;
-
+  // Narrow to bookings that are actually due within the next 2 days (unchanged logic).
+  type DueBooking = {
+    id: string;
+    user_id: string;
+    salon_id: string;
+    starts_at: string;
+    dueDate: Date;
+    service: { name_de: string | null };
+  };
+  const due: DueBooking[] = [];
   for (const booking of bookings ?? []) {
     const service = Array.isArray(booking.services) ? booking.services[0] : booking.services;
     if (!service?.reminder_cycle_days) continue;
@@ -46,46 +56,74 @@ export async function GET(req: NextRequest) {
     // Only if due within next 2 days
     if (dueDate > twoDaysFromNow || dueDate < now) continue;
 
-    // Check no subsequent nail booking exists
-    const { count: futureBookings } = await admin
-      .from("bookings")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", booking.user_id)
-      .eq("salon_id", booking.salon_id)
-      .in("status", ["confirmed", "pending", "completed"])
-      .gt("starts_at", booking.starts_at);
-
-    if ((futureBookings ?? 0) > 0) continue;
-
-    // Check notification preferences
-    const { data: notifPrefs } = await admin
-      .from("notification_preferences")
-      .select("rebooking_enabled")
-      .eq("user_id", booking.user_id)
-      .single();
-    if (notifPrefs && !notifPrefs.rebooking_enabled) continue;
-
-    // Get customer name
-    const { data: profile } = await admin
-      .from("profiles").select("display_name").eq("id", booking.user_id).single();
-
-    // Create client_note as infill reminder notification
-    await admin.from("client_notes").insert({
-      salon_id: booking.salon_id,
-      customer_id: booking.user_id,
-      note: JSON.stringify({
-        type: "infill_reminder",
-        service_name: service.name_de,
-        customer_name: profile?.display_name ?? "Kunde",
-        customer_id: booking.user_id,
-        due_date: dueDate.toISOString().split("T")[0],
-        booking_id: booking.id,
-      }),
-      note_type: "infill_reminder",
-      created_by: "system",
-    });
-    remindersCreated++;
+    due.push({ id: booking.id, user_id: booking.user_id, salon_id: booking.salon_id, starts_at: booking.starts_at, dueDate, service });
   }
 
-  return NextResponse.json({ success: true, remindersCreated });
+  let remindersCreated = 0;
+
+  if (due.length > 0) {
+    const userIds = Array.from(new Set(due.map((b) => b.user_id)));
+    const salonIds = Array.from(new Set(due.map((b) => b.salon_id)));
+    const earliestStartsAt = due.reduce((min, b) => (b.starts_at < min ? b.starts_at : min), due[0].starts_at);
+
+    // RING 3a: batch the 3 previously per-booking reads (future-booking check,
+    // notification prefs, customer name) into ONE IN-list query each, instead
+    // of one query per due booking.
+    const [{ data: futureRows }, { data: prefRows }, { data: profileRows }] = await Promise.all([
+      admin
+        .from("bookings")
+        .select("user_id, salon_id, starts_at")
+        .in("user_id", userIds)
+        .in("salon_id", salonIds)
+        .in("status", ["confirmed", "pending", "completed"])
+        .gt("starts_at", earliestStartsAt),
+      admin.from("notification_preferences").select("user_id, rebooking_enabled").in("user_id", userIds),
+      admin.from("profiles").select("id, display_name").in("id", userIds),
+    ]);
+
+    const prefsByUser = new Map((prefRows ?? []).map((p) => [p.user_id, p.rebooking_enabled]));
+    const profileByUser = new Map((profileRows ?? []).map((p) => [p.id, p]));
+
+    const noteRows: { salon_id: string; customer_id: string; note: string; note_type: string; created_by: string }[] = [];
+
+    for (const booking of due) {
+      // Check no subsequent nail booking exists for this same user+salon.
+      const hasFuture = (futureRows ?? []).some(
+        (r) => r.user_id === booking.user_id && r.salon_id === booking.salon_id && r.starts_at > booking.starts_at
+      );
+      if (hasFuture) continue;
+
+      // Check notification preferences
+      const rebookingEnabled = prefsByUser.get(booking.user_id);
+      if (rebookingEnabled !== undefined && !rebookingEnabled) continue;
+
+      // Get customer name
+      const profile = profileByUser.get(booking.user_id);
+
+      noteRows.push({
+        salon_id: booking.salon_id,
+        customer_id: booking.user_id,
+        note: JSON.stringify({
+          type: "infill_reminder",
+          service_name: booking.service.name_de,
+          customer_name: profile?.display_name ?? "Kunde",
+          customer_id: booking.user_id,
+          due_date: booking.dueDate.toISOString().split("T")[0],
+          booking_id: booking.id,
+        }),
+        note_type: "infill_reminder",
+        created_by: "system",
+      });
+      remindersCreated++;
+    }
+
+    // Create client_notes as infill reminder notifications, batched into one insert.
+    if (noteRows.length > 0) {
+      const { error: insertErr } = await admin.from("client_notes").insert(noteRows);
+      if (insertErr) console.error("[nail-infill-cron] client_notes batch insert failed:", insertErr.message);
+    }
+  }
+
+  return { success: true, remindersCreated, processed: remindersCreated };
+  });
 }

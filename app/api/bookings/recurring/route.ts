@@ -26,10 +26,12 @@ export async function POST(request: NextRequest) {
   if (validationError) return NextResponse.json({ message: validationError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   const { salon_id, service_id, staff_member_id, frequency, custom_interval_days, preferred_day, preferred_time } = validated;
 
-  // Find the first available matching slot
+  // Find the first available matching slot. Ring 2d: `*` shipped every slot column; the
+  // handler below reads only id/starts_at/ends_at/staff_member_id/price_override off `firstSlot`
+  // (grepped every `firstSlot.` reference in this file).
   let slotQuery = supabase
     .from("availability_slots")
-    .select("*")
+    .select("id, starts_at, ends_at, staff_member_id, price_override")
     .eq("salon_id", salon_id)
     .eq("service_id", service_id)
     .eq("status", "available")
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
       const { data: salon } = await supabase.from("salons").select("name").eq("id", salon_id).single();
       try {
         await sendEmail(recurringConfirmation(user.email!, { frequency, service: service?.name_de ?? "Service", salon: salon?.name ?? "Salon" }, "de"));
-      } catch { /* non-fatal */ }
+      } catch (err) { console.error("[bookings/recurring] confirmation email failed:", err); }
     }
   }
 

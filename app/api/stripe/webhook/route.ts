@@ -7,6 +7,7 @@ import { paymentFailedNotification } from "@/lib/email-templates/booking-notific
 import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { reportError } from "@/lib/error-report";
 
 export const runtime = "nodejs";
 
@@ -158,7 +159,7 @@ export async function POST(req: NextRequest) {
             stripe_payment_method_id: pmId,
           }).eq("payment_intent_id", pi.id)
             .in("status", ["pending", "pending_approval", "confirmed"])
-            .select("id, user_id, referral_code");
+            .select("id, user_id, referral_code, promo_code");
           // Confirm the held slot ONLY if the booking update above actually advanced a still-live
           // booking, AND only the slot still held by THIS booking (.eq("booking_id", bookingId)):
           // a late event must never re-book a slot that was freed or reassigned after cancel.
@@ -175,7 +176,7 @@ export async function POST(req: NextRequest) {
           // just advanced the booking to confirmed (not a late/duplicate delivery after the
           // booking was already confirmed or moved past it). The helper's own compare-and-swap
           // makes a second call (webhook retry) a safe no-op, never a double credit.
-          const confirmedRow = confirmedRows?.[0] as { id: string; user_id: string | null; referral_code: string | null } | undefined;
+          const confirmedRow = confirmedRows?.[0] as { id: string; user_id: string | null; referral_code: string | null; promo_code: string | null } | undefined;
           if (confirmedRow?.user_id && confirmedRow.referral_code) {
             const { completeReferralForFirstBooking } = await import("@/lib/referral/complete-referral");
             await completeReferralForFirstBooking(admin, confirmedRow.user_id, confirmedRow.referral_code);
@@ -184,6 +185,29 @@ export async function POST(req: NextRequest) {
           // Promo redemption: the use is now RESERVED atomically at checkout (booking-pay-intent's
           // reserve_promo_use call), not counted here on success. No increment on this path anymore
           // (incrementing again here would double-count on top of the checkout-time reservation).
+          //
+          // promo_counted_at (Ring 8, additive column, migration
+          // 20260711150000_backend_loop_promo_counted_flag.sql) is NOT a second counter, it is a
+          // CAS-claimed audit/reconcile marker, set once the first time this webhook observes a
+          // promo-bearing booking as genuinely confirmed+paid (distinct from promo_use_reserved,
+          // which is set earlier at checkout, before payment succeeds). Gated on confirmedRow the
+          // same way the referral completion above is, so a late/duplicate delivery after the
+          // booking already advanced never re-claims it. Never calls increment_promo_use or
+          // reserve_promo_use again (both already ran/are idempotent at checkout), this is
+          // observability only, so a schema-cache miss (column not migrated yet) is caught, logged,
+          // and swallowed, never blocking the money-critical booking confirm above it.
+          if (confirmedRow?.id && confirmedRow.promo_code) {
+            try {
+              const { error: promoClaimErr } = await admin
+                .from("bookings")
+                .update({ promo_counted_at: new Date().toISOString() })
+                .eq("id", confirmedRow.id)
+                .is("promo_counted_at", null);
+              if (promoClaimErr) console.error("[StripeWebhook] promo_counted_at claim failed:", promoClaimErr.message);
+            } catch (promoClaimCatchErr) {
+              console.error("[StripeWebhook] promo_counted_at claim threw:", promoClaimCatchErr);
+            }
+          }
         } else {
           await admin.from("bookings").update({
             payment_status: "deposit_held",
@@ -558,13 +582,24 @@ export async function POST(req: NextRequest) {
 
     case "charge.dispute.closed": {
       // A card-network chargeback resolved. On `lost`, the funds were already
-      // withdrawn from the salon's connected balance (destination charge) — so
-      // decrement that PI's salon_payouts row like a refund, recomputing from the
-      // dispute's own amount (NOT from the already-mutated row) so repeated
-      // deliveries converge (idempotent; the top-level claim also dedups). On
-      // `won` the funds were returned: since `created` only logged (no ledger
-      // touch), there is nothing to restore — leave the ledger as-is. Either way,
-      // write an audit row with the outcome.
+      // withdrawn from the salon's connected balance (destination charge), so
+      // decrement that PI's salon_payouts row like a refund. UNLIKE charge.refunded,
+      // Stripe does not hand this handler a cumulative "amount disputed" fact on
+      // the charge (charge.refunded's amount_refunded trick has no dispute
+      // equivalent without an extra Stripe API call, which this handler avoids), so
+      // recomputing straight off the CURRENT row is not safe: decrementing
+      // payout.gross_amount by dispute.amount is only correct on the FIRST
+      // delivery. A claim-release retry (Stripe redelivery after a mid-flight
+      // crash, once the write already committed once) would decrement AGAIN off
+      // the already-lowered value, silently underpaying the salon (the ring 8 bug).
+      // Fixed with the same CAS-marker idempotency shape this file already uses
+      // for promo_counted_at (above) and the booking_disputes 'charged' transition
+      // (below): a single UPDATE ... WHERE lost_dispute_id IS NULL claims the
+      // decrement AND the marker atomically, so only the FIRST delivery for this
+      // dispute.id ever mutates the row; every later delivery finds the marker
+      // already set and no-ops. On `won` the funds were returned: since `created`
+      // only logged (no ledger touch), there is nothing to restore, leave the
+      // ledger as-is. Either way, write an audit row with the outcome.
       const dispute = event.data.object;
       console.warn("[stripe/webhook] Dispute closed:", dispute.id, dispute.status, dispute.amount / 100, "CHF");
       const disputePiId =
@@ -584,25 +619,52 @@ export async function POST(req: NextRequest) {
         disputeBookingId = disputeBooking?.id ?? null;
 
         if (dispute.status === "lost") {
-          // Mirror charge.refunded: derive the remaining gross from the charge's
-          // ORIGINAL capture minus the lost dispute amount, never from the
-          // (possibly already-decremented) row, so a duplicate delivery converges
-          // to the same value. Guarded read — no payout row ⇒ nothing to adjust.
+          // Guarded read (no payout row means nothing to adjust). Explicit column
+          // list, never select("*") on this table (a table that also carries
+          // salon_id/booking_id), only the fields this recompute actually needs.
           const { data: payout } = await admin
             .from("salon_payouts")
-            .select("*")
+            .select("id, gross_amount, commission_percent")
             .eq("stripe_payment_intent_id", disputePiId)
             .maybeSingle();
           if (payout) {
             const newGross = Math.max(0, payout.gross_amount - dispute.amount / 100); // Rappen → CHF
             const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
             const newNet = Math.round((newGross - newComm) * 100) / 100;
-            await admin.from("salon_payouts").update({
-              gross_amount: newGross,
-              commission_amount: newComm,
-              net_amount: newNet,
-            }).eq("id", payout.id);
-            ledgerAdjusted = true;
+            // CAS: the decrement AND the lost_dispute_id marker are claimed in the
+            // SAME update, gated on the marker still being unset. Only the delivery
+            // that wins this WHERE clause actually mutates the row, a retry or
+            // redelivery for the same dispute.id matches 0 rows and no-ops, so the
+            // row converges on a single decrement no matter how many times this
+            // event (or its retry) runs.
+            const { data: claimedRow, error: claimErr } = await admin
+              .from("salon_payouts")
+              .update({
+                gross_amount: newGross,
+                commission_amount: newComm,
+                net_amount: newNet,
+                lost_dispute_id: dispute.id,
+              })
+              .eq("id", payout.id)
+              .is("lost_dispute_id", null) // CAS guard: only the first delivery for THIS dispute wins.
+              .select("id")
+              .maybeSingle();
+            if (claimErr) {
+              // Column not migrated yet (PGRST204) or a genuine DB error: never apply
+              // a decrement we can't mark as claimed, that would reopen the exact
+              // double-decrement bug this CAS closes. Non-fatal, logged for the
+              // reconcile cron (mirrors the promo_counted_at graceful-degrade above).
+              console.error(
+                "[stripe/webhook] dispute lost ledger CAS failed:",
+                claimErr.message,
+                { event_id: event.id, dispute: dispute.id, payout_id: payout.id },
+              );
+            } else {
+              // claimedRow is null when an earlier delivery already set
+              // lost_dispute_id (this is that no-op retry); non-null only on the
+              // single delivery that actually won the CAS and mutated the row.
+              ledgerAdjusted = !!claimedRow;
+            }
           }
         }
       }
@@ -771,6 +833,7 @@ export async function POST(req: NextRequest) {
     // transactional context. Without this, the event_id stays "claimed" and
     // Stripe gives up after its retry schedule — partial state is permanent.
     console.error("[stripe/webhook] handler failed, releasing claim:", handlerErr, { event_id: event.id, type: event.type });
+    await reportError("stripe-webhook", handlerErr, { eventType: event.type });
     await admin.from("processed_webhook_events").delete().eq("event_id", event.id);
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }

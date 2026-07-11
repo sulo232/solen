@@ -7,6 +7,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, purchaseRefundSchema } from "@/lib/validations";
 import { issuePurchaseRefund, PurchaseRefundError } from "@/lib/purchases/issue-purchase-refund";
 import { notifyPurchaseRefundProcessed } from "@/lib/purchases/notify-purchase-refund";
+import { reportError } from "@/lib/error-report";
 
 // POST /api/salon/retail/[id]/refund — Salon-triggered retail-purchase refund.
 // Mirrors /api/bookings/[id]/refund auth. Retail is amount-only (full/partial);
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
   } catch (e) {
     console.error("[retail-refund] issuePurchaseRefund failed:", e);
+    await reportError("retail-refund", e, { purchaseId, amount });
     if (e instanceof PurchaseRefundError) {
       const status =
         e.code === "PURCHASE_NOT_FOUND" ? 404

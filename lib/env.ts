@@ -204,3 +204,43 @@ export function getAppUrl(): string {
   }
   return url;
 }
+
+/**
+ * Vars that are `.optional()` in the schema above (so a dev/preview boot without
+ * them doesn't crash) but are load-bearing in a REAL production deploy: without
+ * Upstash, rate limiting is off. Without Stripe, payments 500. Without Resend,
+ * every transactional email silently no-ops. Without CRON_SECRET, cron routes are
+ * unauthenticated. Without ADMIN_EMAIL, alertAdmin has nowhere to send.
+ */
+export const PROD_REQUIRED_VARS = [
+  "UPSTASH_REDIS_REST_URL",
+  "UPSTASH_REDIS_REST_TOKEN",
+  "CRON_SECRET",
+  "STRIPE_SECRET_KEY",
+  "STRIPE_WEBHOOK_SECRET",
+  "RESEND_API_KEY",
+  "ADMIN_EMAIL",
+] as const;
+
+/**
+ * Boot-time guard for a REAL production deploy only. Netlify sets `CONTEXT` to
+ * `production` / `deploy-preview` / `branch-deploy`, and combined with `NODE_ENV`
+ * this narrows to the one context that must never boot with a throttle-off,
+ * payment-broken, or email-silent config. Deploy previews, branch deploys, and
+ * local dev are unaffected regardless of which vars are missing there.
+ *
+ * Call once at server boot (see `instrumentation.ts`). Never call at request
+ * time, this is a startup assertion, not a per-request check.
+ */
+export function assertProdRequiredEnv(): void {
+  if (process.env.CONTEXT !== "production" || process.env.NODE_ENV !== "production") {
+    return;
+  }
+
+  const missing = PROD_REQUIRED_VARS.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(
+      `[lib/env] Production boot is missing required env var(s): ${missing.join(", ")}`
+    );
+  }
+}

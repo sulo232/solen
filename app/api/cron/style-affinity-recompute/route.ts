@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: recompute the Inspo "for-you" style-affinity points for all users (the DNA point system, owner 2026-06-23).
 // Calls the security-definer RPC that aggregates discovery behaviour (saves / likes / views / searches) into a
@@ -17,11 +18,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("style-affinity-recompute", async () => {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.rpc("recompute_user_style_affinity");
   if (error) {
     console.error("[cron/style-affinity-recompute] rpc failed:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return { error: error.message, errors: [error.message] };
   }
-  return NextResponse.json({ ok: true, rowsWritten: data ?? 0 });
+  return { ok: true, rowsWritten: data ?? 0, processed: data ?? 0 };
+  });
 }

@@ -54,7 +54,7 @@ export async function evaluateBookingPenalties(
         target_type: "booking",
         target_id: booking.salon_id,
       });
-    } catch { /* fire-and-forget */ }
+    } catch (err) { console.error("[strikes] audit_log insert failed:", err); }
   }
   
   if (status === "no_show") {

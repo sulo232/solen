@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -13,6 +14,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("pending-timeout", async () => {
   const admin = createAdminSupabaseClient();
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
@@ -59,7 +61,7 @@ export async function GET(req: NextRequest) {
             locale
           )
         );
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/pending-timeout] cancellation email failed:", err); }
     }
 
     // Since they were pending approval, payment was likely held/authorized, so we might need to cancel Stripe intent
@@ -69,11 +71,12 @@ export async function GET(req: NextRequest) {
         const { getStripe } = await import("@/lib/stripe");
         const stripe = getStripe();
         await stripe.paymentIntents.cancel(booking.payment_intent_id).catch((err) => console.error("[CronPendingTimeout] failed to cancel Stripe payment intent:", err));
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/pending-timeout] Stripe payment intent cancel failed:", err); }
     }
 
     cancelled++;
   }
 
-  return NextResponse.json({ cancelled });
+  return { cancelled, processed: cancelled };
+  });
 }

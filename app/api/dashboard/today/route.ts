@@ -6,8 +6,10 @@
  *
  * Auth: requires a salon-owner session. Returns 401 otherwise.
  *
- * v1 implementation runs sequential queries against bookings + reviews +
- * messages tables. Phase 7 may consolidate into a single SQL CTE if hot path.
+ * Ring 2a (2026-07-11): profile + active-salon lookup run in parallel
+ * (stage 1, both only need user.id), then todayBookings + walk_in_count run
+ * in parallel (stage 2, both only need salon.id). Was 4 serial awaits.
+ * Phase 7 may consolidate further into a single SQL CTE if still hot.
  */
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
@@ -27,12 +29,13 @@ export async function GET(_request: NextRequest) {
     );
   }
 
-  // Find the salon this user owns (or admin-preview salon)
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, role")
-    .eq("id", user.id)
-    .single();
+  // Find the salon this user owns (or admin-preview salon). `profile` and
+  // `salon` each only need user.id, so run them together (stage 1) instead
+  // of the old serial profile -> getActiveSalon awaits.
+  const [{ data: profile }, salon] = await Promise.all([
+    supabase.from("profiles").select("id, role").eq("id", user.id).single(),
+    getActiveSalon<{ id: string; average_rating: number | null }>(supabase, user.id, "id, average_rating"),
+  ]);
 
   if (!profile || (profile.role !== "salon_owner" && profile.role !== "admin")) {
     // Non-salon users see empty payload (TodayLiveCard renders fallback)
@@ -46,8 +49,6 @@ export async function GET(_request: NextRequest) {
       up_next: [],
     });
   }
-
-  const salon = await getActiveSalon<{ id: string; average_rating: number | null }>(supabase, user.id, "id, average_rating");
 
   if (!salon) {
     return NextResponse.json({
@@ -67,15 +68,24 @@ export async function GET(_request: NextRequest) {
   const endOfDay = new Date(now);
   endOfDay.setHours(23, 59, 59, 999);
 
-  /* ─── Today's bookings (count + revenue) ──────────────────── */
-  const { data: todayBookings } = await supabase
-    .from("bookings")
-    .select("id, starts_at, total_price:price_paid, status, services(name_de), profiles!user_id(display_name)")
-    .eq("salon_id", salon.id)
-    .gte("starts_at", startOfDay.toISOString())
-    .lte("starts_at", endOfDay.toISOString())
-    .in("status", ["confirmed", "completed", "in_progress"])
-    .order("starts_at", { ascending: true });
+  /* ─── Today's bookings (count + revenue) + walk-in queue ─────
+   * walk_in_count doesn't depend on todayBookings (both only need salon.id),
+   * so run stage 2 together instead of the old serial awaits. */
+  const [{ data: todayBookings }, { count: walk_in_count }] = await Promise.all([
+    supabase
+      .from("bookings")
+      .select("id, starts_at, total_price:price_paid, status, services(name_de), profiles!user_id(display_name)")
+      .eq("salon_id", salon.id)
+      .gte("starts_at", startOfDay.toISOString())
+      .lte("starts_at", endOfDay.toISOString())
+      .in("status", ["confirmed", "completed", "in_progress"])
+      .order("starts_at", { ascending: true }),
+    supabase
+      .from("barber_walkin_queue")
+      .select("id", { count: "exact", head: true })
+      .eq("salon_id", salon.id)
+      .eq("status", "waiting"),
+  ]);
 
   const today_count = todayBookings?.length ?? 0;
   const today_revenue = (todayBookings ?? []).reduce(
@@ -103,13 +113,6 @@ export async function GET(_request: NextRequest) {
       });
     }
   }
-
-  /* ─── Walk-in queue count ──────────────────────────────────── */
-  const { count: walk_in_count } = await supabase
-    .from("barber_walkin_queue")
-    .select("id", { count: "exact", head: true })
-    .eq("salon_id", salon.id)
-    .eq("status", "waiting");
 
   /* ─── Inbox unread count ───────────────────────────────────── */
   // Messaging is a disabled feature; messages has no salon linkage

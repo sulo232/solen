@@ -14,6 +14,34 @@ import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 
+// Ring 5b: CDN response caching for this anon browse endpoint. This GET handler never
+// reads a cookie or calls auth.getUser() anywhere (confirmed by ring5b-kill-test.ts
+// source-grep), and every row is always filtered to is_active=true /
+// listed_on_marketplace=true / is_test=false, so there is no owner-preview or
+// per-visitor branch: every success response is public, non-personalized data, safe to
+// edge-cache for ALL callers.
+//
+// netlify.toml's "/api/*" block (lines 31-35) sets a blanket `Cache-Control:
+// no-store, no-cache, must-revalidate`, but that block is a static/CDN header-injection
+// rule for assets served straight from the CDN's publish directory; it does NOT apply
+// to this route's own function response. This file exports `runtime = "edge"`, so it
+// compiles to a Netlify Edge Function, and per Netlify's docs, header rules configured
+// in netlify.toml/_headers are not applied to Function/Edge Function responses (only
+// the function's own response headers ship). So ANON_CACHE_HEADERS below is
+// authoritative and is not stripped by the /api/* no-store rule.
+//
+// `Netlify-CDN-Cache-Control` is the header Netlify's edge actually honors for CDN
+// caching (durable s-maxage/stale-while-revalidate support, separate from the
+// browser-facing `Cache-Control`); 60s is a conservative TTL for browse data.
+// Query-string variants are distinct cache keys on Netlify by default (no
+// normalization/canonicalization), so ?category=coiffeur and
+// ?category=coiffeur&page=2 cache independently, which is exactly what this endpoint's
+// per-filter-combination responses need.
+export const ANON_CACHE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, max-age=0, must-revalidate",
+};
+
 // Time-of-day windows (local hour ranges) for the `period` availability filter.
 const PERIOD_HOURS: Record<string, [number, number]> = {
   morning: [9, 12],
@@ -127,7 +155,7 @@ export async function GET(request: NextRequest) {
       });
       if (rErr) console.error("[api/salons GET] search_salons_ranked failed:", rErr.message);
       const ids = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id as string);
-      if (ids.length === 0) return NextResponse.json({ items: [], total: 0, page, limit });
+      if (ids.length === 0) return NextResponse.json({ items: [], total: 0, page, limit }, { headers: ANON_CACHE_HEADERS });
       rankIndex = new Map(ids.map((id: string, i: number): [string, number] => [id, i]));
     }
     const semanticMode = rankIndex !== null;
@@ -197,7 +225,7 @@ export async function GET(request: NextRequest) {
       if (searchParams.get(col) === "true") query = query.eq(col, true);
     }
 
-    const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit });
+    const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit }, { headers: ANON_CACHE_HEADERS });
 
     // Concurrent pre-queries. Each of the filters below resolves an independent
     // salon-id set (or a city lookup) that is AND-combined into the main query via
@@ -474,19 +502,25 @@ export async function GET(request: NextRequest) {
       const unavailableIds = salonIds.filter((id) => !availableIds!.has(id));
 
       if (unavailableIds.length > 0) {
-        const { data: nextSlots } = await supabase
-          .from("availability_slots")
-          .select("salon_id, starts_at")
-          .eq("status", "available")
-          .gt("starts_at", `${date}T23:59:59`)
-          .in("salon_id", unavailableIds)
-          .order("starts_at", { ascending: true });
-
-        // Get the earliest next date per salon
-        for (const slot of nextSlots ?? []) {
-          const sid = (slot as { salon_id: string; starts_at: string }).salon_id;
-          if (!nextDates[sid]) {
-            nextDates[sid] = (slot as { starts_at: string }).starts_at.split("T")[0];
+        // Ring 2b: single DISTINCT-ON RPC replaces the unbounded per-slot fetch (was
+        // pulling every future available row , 1,470 rows to keep 6, silently
+        // truncated at the PostgREST 1000-row cap). The RPC returns at most one row
+        // per salon, already the earliest starts_at, bucketed as an Europe/Zurich
+        // calendar day (to_char(... at time zone 'Europe/Zurich', 'YYYY-MM-DD')).
+        // NOTE: this is an intentional convention change from the old
+        // `starts_at.split("T")[0]` (raw UTC date) , the Zurich bucketing matches
+        // /api/availability/unavailable-dates and /api/availability/time-slots,
+        // which both already bucket in Zurich; the old UTC slice could show the
+        // wrong "next available" day for evening slots near midnight.
+        const { data: nextRows, error: nextErr } = await supabase.rpc("next_available_dates", {
+          p_salon_ids: unavailableIds,
+          p_after: `${date}T23:59:59`,
+        });
+        if (nextErr) {
+          console.error("[api/salons GET] next_available_dates RPC failed:", nextErr.message);
+        } else {
+          for (const row of (nextRows ?? []) as Array<{ salon_id: string; next_date: string }>) {
+            nextDates[row.salon_id] = row.next_date;
           }
         }
       }
@@ -516,42 +550,27 @@ export async function GET(request: NextRequest) {
       if (serviceIds.length > 0) {
         const nowIso = new Date().toISOString();
         const horizonIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-        // Pull EXACTLY the earliest 3 slots per service via one bounded query each,
-        // run concurrently. The old approach selected up to 3000 rows ordered by time
-        // across ALL service_ids, then kept the first 3 per service in JS, so for a
-        // full page it transferred far more than the ~180 slots actually shown (and a
-        // service whose slots sorted past the 3000 cap got zero, a latent correctness
-        // bug). Per-service .limit(3) crosses the wire with at most 3 rows per service
-        // (idx on service_id supports it), returning the same earliest-3-ascending set.
+        // Ring 2d: was N parallel per-service .limit(3) queries; now ONE call to the live
+        // `earliest_slots_by_service(p_service_ids, p_from, p_to, p_per)` RPC, which already
+        // existed with zero callers (Ring 10 dead-RPC census). Live-DB discriminate check
+        // (npx tsx, all 77 services with an available future slot, p_per 3 AND 1): the RPC's
+        // per-service starts_at arrays are byte-identical to the old per-service query's
+        // output (same status='available' filter, same time bounds, same earliest-N-ascending
+        // ordering), and it is anon-callable (tested with the same anon key this route uses).
         const slotsByService: Record<string, string[]> = {};
-        const perServiceResults = await Promise.all(
-          serviceIds.map((svcId) =>
-            supabase
-              .from("availability_slots")
-              .select("service_id, starts_at")
-              .eq("status", "available")
-              .eq("service_id", svcId)
-              .gte("starts_at", nowIso)
-              .lte("starts_at", horizonIso)
-              .order("starts_at", { ascending: true })
-              .limit(3),
-          ),
-        );
-        let slotErr: { message: string } | null = null;
-        for (const res of perServiceResults) {
-          if (res.error) {
-            slotErr = res.error;
-            continue;
-          }
-          for (const slot of res.data ?? []) {
-            const svcId = (slot as { service_id: string }).service_id;
-            const ts = (slot as { starts_at: string }).starts_at;
-            if (!slotsByService[svcId]) slotsByService[svcId] = [];
-            if (slotsByService[svcId].length < 3) slotsByService[svcId].push(ts);
-          }
-        }
+        const { data: slotRpcRows, error: slotErr } = await supabase.rpc("earliest_slots_by_service", {
+          p_service_ids: serviceIds,
+          p_from: nowIso,
+          p_to: horizonIso,
+          p_per: 3,
+        });
         if (slotErr) {
-          console.error("[api/salons GET] next-slots query error:", slotErr.message);
+          console.error("[api/salons GET] next-slots RPC error:", slotErr.message);
+        } else {
+          for (const row of (slotRpcRows ?? []) as Array<{ service_id: string; starts_at: string }>) {
+            if (!slotsByService[row.service_id]) slotsByService[row.service_id] = [];
+            slotsByService[row.service_id].push(row.starts_at);
+          }
         }
         for (const sid of Object.keys(topServicesBySalon)) {
           topServicesBySalon[sid] = topServicesBySalon[sid].map((s) => ({
@@ -609,7 +628,7 @@ export async function GET(request: NextRequest) {
           (rankIndex!.get((b as Record<string, unknown>).id as string) ?? 1e9),
       );
       const paged = items.slice(offset, offset + limit);
-      return NextResponse.json({ items: paged, total: items.length, page, limit });
+      return NextResponse.json({ items: paged, total: items.length, page, limit }, { headers: ANON_CACHE_HEADERS });
     }
 
     if (sort === "distance" && distanceMap) {
@@ -620,7 +639,7 @@ export async function GET(request: NextRequest) {
       items.sort((a, b) => (a.min_price ?? Infinity) - (b.min_price ?? Infinity));
     }
 
-    return NextResponse.json({ items, total: count ?? 0, page, limit });
+    return NextResponse.json({ items, total: count ?? 0, page, limit }, { headers: ANON_CACHE_HEADERS });
   } catch (err) {
     console.error("[api/salons GET] error:", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

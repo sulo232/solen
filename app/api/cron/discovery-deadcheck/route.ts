@@ -4,6 +4,13 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { withCronRun } from "@/lib/cron-run";
+
+// RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
+function capErrors(errs: string[], max = 20): string[] {
+  if (errs.length <= max) return errs;
+  return [...errs.slice(0, max), `...and ${errs.length - max} more`];
+}
 
 // GET /api/cron/discovery-deadcheck
 // Weekly cron: scans active discovery looks for DEAD TikToks — videos the creator deleted, made private, or turned
@@ -21,6 +28,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("discovery-deadcheck", async () => {
   const admin = createAdminSupabaseClient();
   const { data: items, error } = await admin
     .from("discovery_items")
@@ -28,11 +36,11 @@ export async function GET(request: NextRequest) {
     .eq("is_active", true)
     .eq("status", "published")
     .not("tiktok_url", "is", null);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return { error: error.message, errors: [error.message] };
 
   let checked = 0;
   let hidden = 0;
-  let errors = 0;
+  const errorMsgs: string[] = [];
   const dead: { id: string; style_name: string | null }[] = [];
 
   for (const it of items ?? []) {
@@ -45,7 +53,7 @@ export async function GET(request: NextRequest) {
       if (res.status === 400) {
         const { error: upErr } = await admin.from("discovery_items").update({ is_active: false }).eq("id", it.id);
         if (upErr) {
-          errors++;
+          errorMsgs.push(`item ${it.id}: hide failed: ${upErr.message}`);
           console.error("[deadcheck] hide failed:", it.id, upErr.message);
         } else {
           hidden++;
@@ -53,17 +61,19 @@ export async function GET(request: NextRequest) {
         }
       }
     } catch (e) {
-      errors++;
+      errorMsgs.push(`item ${it.id}: oembed exception: ${e instanceof Error ? e.message : String(e)}`);
       console.error("[deadcheck] oembed exception:", it.id, String(e));
     }
   }
 
-  console.log(`[deadcheck] checked ${checked}, hid ${hidden} dead TikToks, ${errors} errors`);
-  return NextResponse.json({
-    message: `Dead-TikTok scan: checked ${checked}, hid ${hidden}, ${errors} errors`,
+  console.log(`[deadcheck] checked ${checked}, hid ${hidden} dead TikToks, ${errorMsgs.length} errors`);
+  return {
+    message: `Dead-TikTok scan: checked ${checked}, hid ${hidden}, ${errorMsgs.length} errors`,
     checked,
     hidden,
-    errors,
+    errors: capErrors(errorMsgs),
     dead,
+    processed: checked,
+  };
   });
 }
