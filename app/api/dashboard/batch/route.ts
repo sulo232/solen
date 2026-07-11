@@ -55,13 +55,14 @@ export async function POST(request: NextRequest) {
             break;
           }
           case "revenue_month": {
-            const { data } = await admin
-              .from("bookings")
-              .select("price_paid")
-              .eq("salon_id", salonId)
-              .eq("status", "completed")
-              .gte("starts_at", monthStart);
-            const total = (data ?? []).reduce((sum, b) => sum + (b.price_paid ?? 0), 0);
+            const { data, error } = await admin.rpc("booking_revenue_sum", {
+              p_salon_id: salonId,
+              p_since: monthStart,
+            });
+            if (error) console.error("[dashboard/batch] revenue_month rpc error:", error.message);
+            // PostgREST returns the scalar numeric as a JSON number in practice, but
+            // coerce defensively in case it ever comes back as a numeric string.
+            const total = data == null ? 0 : Number(data);
             results[key] = { total };
             break;
           }
