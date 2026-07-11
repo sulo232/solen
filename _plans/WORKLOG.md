@@ -4,6 +4,20 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-11 , reference-lock: brand/aspect references now capture-not-guess, with a persistence lock
+
+**What you asked for:** "when I say I want this type of animation from Airbnb it just guesses... gets a wrong reference (web Uber Eats)... I like how the structure/aesthetic/motion/shader/shadow is and it doesn't grab it... it measures everything but forgets it mid-build and misses the philosophy." You asked for hooks/gates/rules and maybe a skill.
+
+**What got done:**
+1. **reference-lock skill** (~/.claude/skills/reference-lock/): identity resolution (brand + platform + surface, since web vs iOS is part of the reference), 5-aspect taxonomy (STRUCTURE / AESTHETIC / MOTION / DEPTH / MATERIAL), a verified capture ladder (live site video, Mobbin, owner recordings, Figma; memory-guessing only as a labeled last resort), a mandatory Philosophy section (max 6 lines) in every spec, and a durable spec tier at _design-system/references/<brand>--<surface>.md (tracked; heavy assets stay in gitignored _pixel-refs).
+2. **Trigger enforcement**: new REFERENCE category in the global ~/.claude/hooks/fable-skill-trigger.py, fires the skill mandate on brand-reference and aspect-liking language (4 regex arms, brand list split strict/loose to avoid booking/stripe false fires). Self-tested 4 positive + 4 negative + 3 regression prompts, all green. CLAUDE.md binary-triggers table row + memory files updated same turn.
+3. **Anti-forgetting lock**: the skill arms ~/.claude/state/active-ref-<projhash>.json; lessons-ledger-inject.py grew an active_ref_channel that re-injects the philosophy + spec path on every UI edit (once per session per spec, re-fires after every compaction via post-compact-reverify; 48h idle sweep). Tested T1-T6 + regression, lessons behavior byte-identical.
+4. **The missing motion primitive**: scripts/capture/record-interaction.mjs (committed) records capture.webm + animations.json (getAnimations timing/keyframes + computed transitions) for any external URL. Proven live: pulled 4 real fade-in keyframe animations with exact 150ms/linear/100ms-delay timing off airbnb.com.
+5. **Dangling pointers fixed**: fable-frontend no longer routes motion to the nonexistent watch skill; screenshot-spec and pixel-spec-auto now route motion to reference-lock.
+6. Independent loop-reviewer PASS on all 11 checklist items. Honest limit (reviewer): the persistence half is hard-enforced; the capture-not-guess half is a mechanical mandate but not a blocking gate, /harden it if guessing ever survives.
+
+**Record:** _plans/REFERENCE_LOCK.md (ACTIVE.md row 19).
+
 ## 2026-07-11 , weekly estate self-audit: estate healthy, 3 dead-law gates + 5 drift-gate divergences found
 
 **What you asked for:** the standing weekly self-audit (owner-sanctioned 2026-07-10): health-check, skip-flag ledger, hook injection sizes, mistake themes, lessons-ledger parse test, design-suggest gather, doc-vs-gate reconciliation, then report + commit _plans.
