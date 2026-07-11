@@ -38,10 +38,15 @@ export async function PATCH(
 
   await logAuditEvent(req, user.id, "salon.approve", "salon", id, { salon_name: salon.name });
 
-  // Send approval email to salon owner
+  // Send approval email to salon owner. The salon is already approved (DB write above
+  // committed) so a send failure here must not 500 the endpoint or mask the approval.
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
   if (ownerAuth?.user?.email) {
-    await sendEmail(salonApproved(ownerAuth.user.email, { salon: salon.name }));
+    try {
+      await sendEmail(salonApproved(ownerAuth.user.email, { salon: salon.name }));
+    } catch (err) {
+      console.error("[admin/salons/approve] approval email failed:", err, { salonId: id });
+    }
   }
 
   return NextResponse.json({ ok: true });

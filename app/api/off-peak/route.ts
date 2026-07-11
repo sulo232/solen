@@ -150,7 +150,9 @@ export async function POST(req: NextRequest) {
                 },
                 (profile.locale as "de" | "en" | "fr" | "it") || "de"
               );
-              await sendEmail(payload).catch(console.error);
+              // Let a send failure bubble to the [api/off-peak] catch below (labeled log),
+              // instead of a bare unlabeled console.error that swallowed the [Component] prefix.
+              await sendEmail(payload);
             }
           } catch (e) { console.error("[api/off-peak] single-user alert email failed:", e); }
         });

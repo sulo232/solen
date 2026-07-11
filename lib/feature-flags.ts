@@ -15,7 +15,7 @@ export const CLIENT_FEATURE_FLAGS = {
 // Per-process Map; a cold serverless instance always reads fresh. 30s TTL:
 // short enough that an owner toggle (incl. maintenance_mode) reaches every
 // warm instance within 30s, long enough to remove the 2 DB round-trips most
-// gated routes were paying on every request (116 call sites measured).
+// gated routes were paying on every request (used by most mutation routes).
 // Only a clean read (no query error) is cached; on a query error we still
 // compute + return the exact pre-caching fail-open default below, but we do
 // NOT cache it, so the next call re-checks the DB instead of trusting a
@@ -117,6 +117,14 @@ export async function checkFeatureEnabled(featureKey: FeatureKey): Promise<NextR
 // ─────────────────────────────────────────────────────────────────────────────
 type BanCacheEntry = { banned: boolean; reason?: string; expiresAt: number };
 const BAN_TTL_MS = 10 * 1000;
+// Unbounded growth guard: one entry per distinct userId ever checked on this
+// warm instance, entries only expire (never get deleted) on the 10s read
+// path. A busy instance could otherwise accumulate entries for as many users
+// as it serves over its lifetime. LRU eviction is overkill for a 10s TTL
+// cache, a full clear at a size cap is simpler and safe: worst case is one
+// extra DB read per active user right after the clear, no correctness risk
+// (bans still fail closed on the DB read path above).
+const BAN_CACHE_MAX_SIZE = 5000;
 const banCache = new Map<string, BanCacheEntry>();
 
 let __banDbQueryCount = 0;
@@ -166,6 +174,9 @@ export async function checkUserBanned(userId: string): Promise<NextResponse | nu
 
   const banned = !!profile?.banned_at;
   const reason = profile?.ban_reason ?? undefined;
+  if (banCache.size > BAN_CACHE_MAX_SIZE) {
+    banCache.clear();
+  }
   banCache.set(userId, { banned, reason, expiresAt: now + BAN_TTL_MS });
 
   return banResponse(banned, reason);

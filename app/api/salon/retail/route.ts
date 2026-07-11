@@ -33,9 +33,11 @@ export async function GET(req: NextRequest) {
     salon.is_test !== true;
   if (!visible) return NextResponse.json({ products: [] });
 
+  // Explicit columns (public, anonymous-accessible): excludes low_stock_threshold,
+  // an internal restock-alert setting the PDP's SalonProducts consumer never reads.
   const { data, error } = await admin
     .from("nail_retail_products")
-    .select("*")
+    .select("id, name, description, price, image_url, category, stock_count")
     .eq("salon_id", salonId)
     .eq("is_active", true)
     .order("created_at", { ascending: true });

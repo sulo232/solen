@@ -25,8 +25,10 @@ const MAX_ATTEMPTS = 5;
 
 const nano = customAlphabet(ALPHABET, CODE_LEN);
 
-/** A fresh CSPRNG referral code, e.g. "SOLEN-7K2QXAB93FGH". Never derived from a user id. */
-export function generateReferralCode(): string {
+/** A fresh CSPRNG referral code, e.g. "SOLEN-7K2QXAB93FGH". Never derived from a user id.
+ * Not exported: only used internally by insertPendingReferralCode below (zero
+ * external imports, ring5c dead-export sweep). */
+function generateReferralCode(): string {
   return `${PREFIX}${nano()}`;
 }
 

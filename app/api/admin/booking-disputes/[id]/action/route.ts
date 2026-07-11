@@ -9,6 +9,7 @@ import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
 import { writeCaseEvent } from "@/lib/bookings/dispute-engine";
 import { getServerEnv } from "@/lib/env";
+import { reportError } from "@/lib/error-report";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: disputeId } = await params;
@@ -229,9 +230,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // N1: notify the customer their refund was issued (this action's slice, Rappen).
     // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
-    await notifyRefundProcessed(admin, disputeFetch.booking_id, refundCents, "booking-disputes").catch((err) =>
-      console.error("[booking-disputes] admin refund notification failed:", err),
-    );
+    await notifyRefundProcessed(admin, disputeFetch.booking_id, refundCents, "booking-disputes").catch(async (err) => {
+      console.error("[booking-disputes] admin refund notification failed:", err);
+      await reportError("booking-disputes-admin-refund-notification", err, { disputeId, bookingId: disputeFetch.booking_id, refundCents });
+    });
 
   } else if (action === "admin_approve") {
     // SP-3 Endpoint 5 — admin final decision on an ESCALATED refund. Same
@@ -324,9 +326,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // N1: notify the customer their refund was issued (this action's slice, Rappen).
     // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
-    await notifyRefundProcessed(admin, dispute.booking_id, amount, "booking-disputes").catch((err) =>
-      console.error("[booking-disputes] admin approve notification failed:", err),
-    );
+    await notifyRefundProcessed(admin, dispute.booking_id, amount, "booking-disputes").catch(async (err) => {
+      console.error("[booking-disputes] admin approve notification failed:", err);
+      await reportError("booking-disputes-admin-approve-notification", err, { disputeId, bookingId: dispute.booking_id, amount });
+    });
 
   } else if (action === "admin_reject") {
     // SP-3 — admin denies an escalated refund. Terminal (admin_rejected).

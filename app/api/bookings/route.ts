@@ -12,6 +12,7 @@ import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
+import { reportError } from "@/lib/error-report";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -590,7 +591,10 @@ export async function POST(request: NextRequest) {
         locale
       );
       await sendEmail(emailData);
-    } catch (err) { console.error("[bookings] customer confirmation email failed:", err); }
+    } catch (err) {
+      console.error("[bookings] customer confirmation email failed:", err);
+      await reportError("booking-confirmation-email", err, { bookingId: booking.id });
+    }
   }
 
   // 8. Notify salon owner about the new booking (deferred for online-pay until

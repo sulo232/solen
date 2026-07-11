@@ -66,9 +66,10 @@ export async function POST(
 
     // N1: notify the customer their refund was issued (this action's slice, Rappen).
     // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
-    await notifyRefundProcessed(admin, bookingId, amount, "refund").catch((err) =>
-      console.error("[refund] refund notification failed:", err),
-    );
+    await notifyRefundProcessed(admin, bookingId, amount, "refund").catch(async (err) => {
+      console.error("[refund] refund notification failed:", err);
+      await reportError("refund-notification", err, { bookingId, amount });
+    });
 
     return NextResponse.json({
       data: {

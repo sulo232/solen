@@ -46,6 +46,11 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(notifyNewSalonSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
 
-  await sendEmail(adminNewSalonNotification(adminEmail, { salon: validated.salon_name, email: validated.email, address: validated.address ?? "" }));
+  try {
+    await sendEmail(adminNewSalonNotification(adminEmail, { salon: validated.salon_name, email: validated.email, address: validated.address ?? "" }));
+  } catch (err) {
+    console.error("[admin/notify-new-salon] send failed:", err);
+    return NextResponse.json({ error: "Failed to send notification" }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }

@@ -1,5 +1,7 @@
-// Basel neighborhood shortnames — local slang/shortened versions
-export const BASEL_NEIGHBORHOODS: Record<string, string> = {
+// Basel neighborhood shortnames (local slang/shortened versions).
+// Not exported: only used internally by getNeighborhood below (zero external
+// imports, ring5c dead-export sweep).
+const BASEL_NEIGHBORHOODS: Record<string, string> = {
   "4001": "Altstadt",
   "4051": "Altstadt",
   "4052": "Bachletten",

@@ -29,9 +29,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   }
 
   const badgeIds = assignments.map((a) => a.badge_id);
+  // Explicit columns: excludes auto_rule (internal auto-assignment logic),
+  // which no consumer of this public/dashboard endpoint reads.
   const { data: badges } = await admin
     .from("salon_badges")
-    .select("*")
+    .select("id, name_de, name_en, icon, color, bg_color, is_system")
     .in("id", badgeIds);
 
   return NextResponse.json({ badges: badges ?? [] });
