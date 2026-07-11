@@ -3,14 +3,14 @@
 Scope guard honored: hook scripts under ~/.claude/hooks + doctrine .md only; product code read-only; no push; commit only _plans.
 
 ## Audit checklist (mandate steps)
-- [x] 1. system-health-check.py --report
-- [x] 2. skip-flag ledger analysis
-- [x] 3. UserPromptSubmit injection-size profile
-- [x] 4. mistake-themes warning tier
-- [x] 5. newest 5 LESSONS_LEARNED entries parse via lessons-ledger-inject.py
-- [x] 6. design-suggest gather+record (SUGGESTIONS.md, no chips)
-- [x] 7. doc-vs-gate reconciliation (drift literals + phantom gate names)
-- [x] 8. report + ACTIVE row + WORKLOG + commit _plans
+- [x] 1. system-health-check.py --report , verified: ran live this session, output "TOTAL VIOLATIONS: 0" (all 5 sections listed in section 1 below)
+- [x] 2. skip-flag ledger analysis , verified: aggregated ~/.claude/state/skip-flag-ledger.log (711 lines) via awk/uniq; per-flag counts + per-day/per-session breakdowns in section 2 table
+- [x] 3. UserPromptSubmit injection-size profile , verified: piped a live JSON payload through all 16 hooks twice (fresh vs repeat session-id) + project binary-triggers; byte counts in section 3 table
+- [x] 4. mistake-themes warning tier , verified: read ~/.claude/state/mistake-themes-global.json, 2 themes x 1 session each, none at the 2-session threshold
+- [x] 5. newest 5 LESSONS_LEARNED entries parse , verified: piped matching Edit payloads through lessons-ledger-inject.py live; all 5 titles injected (salon-hours, salons/route x2-cap, BookingSuccess, ErrorFallback, SalonTabBar) + negative control silent (section 5)
+- [x] 6. design-suggest gather+record , verified: _design-system/SUGGESTIONS.md created this session (6 entries, each file:line re-checked by sed/grep against the working tree; stale pay-step star item dropped after reading PayConfirmStep.tsx:347-354); no chips emitted
+- [x] 7. doc-vs-gate reconciliation , verified: check.py:49/50/69/104/115 read directly and diffed against LOCKFILE.md lines 40-44/70/107/575 (section 7 table); phantom-gate grep = 0 misses, all 5 cited hook files exist on disk
+- [x] 8. report + ACTIVE row + WORKLOG + commit _plans , verified: this file + ACTIVE.md row 17 + WORKLOG 2026-07-11 entry committed as 7cf4c8cd0
 
 ---
 
