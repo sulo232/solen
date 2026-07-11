@@ -4,6 +4,18 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-11 , weekly estate self-audit: estate healthy, 3 dead-law gates + 5 drift-gate divergences found
+
+**What you asked for:** the standing weekly self-audit (owner-sanctioned 2026-07-10): health-check, skip-flag ledger, hook injection sizes, mistake themes, lessons-ledger parse test, design-suggest gather, doc-vs-gate reconciliation, then report + commit _plans.
+
+**What got done:**
+1. **Health check clean:** system-health-check.py = 0 violations across all 5 sections. Injection diets all hold (largest repeat payload 420B). Mistake themes: none at warning tier. Lessons-ledger injection: all 5 newest entries fire correctly on a matching Edit payload, negative control silent.
+2. **Skip-flag ledger is the red flag:** 3 gates are effectively dead law , plan-first (45 skips, accelerating), finish-autonomously (27 across 5 sessions), batch-items (25 across 8 sessions, and that one guards your #1 complaint, dropped sub-asks). Parked as an owner decision: raise the skip cost (logged reason + shorter TTL) or retire honestly.
+3. **Doc-vs-gate reconciliation found 5 literal divergences** between the drift checker (solen-drift-check check.py) and LOCKFILE sections 1-4. Top two: `s-pop` is still in RETIRED_TOKENS though LOCKFILE un-retired it 2026-06-02 (gate blocks legitimate urgency badges), and ALLOWED_HEX whitelists a transposed `#F5F5F4` while the real sunken token `#F4F4F5` is absent (wrong hex passes, right hex flags). Zero phantom gate names in design-doc prose. Fixes are 2 lines in check.py but that file is outside this audit's write scope, parked with exact lines + self-test recipe.
+4. **SUGGESTIONS.md seeded** (first run of the design-suggest record step): 6 verified S-effort suggestions (partner-page uppercase eyebrows x9, pay-step opacity hairlines x4, ink "Mehr lesen", 36px search touch targets, booking-action dead-end page, haptics leftover). One stale audit item caught and dropped: the pay-step star gating is already fixed in code. No chips emitted (audit cadence defers to this report).
+
+**Report:** _plans/SELF_AUDIT_2026-07-11.md (prioritized fix list at the bottom). ACTIVE.md row 17 (LAW) added. No product code touched; nothing in ~/.claude/hooks needed fixing.
+
 ## 2026-07-08 , context-collapse system: doctrine, hook injection diet, budget nudge, law-file drafts
 
 **What you asked for:** the usage insights showed 64% of spend at >150k context. You wanted the full structure/philosophy for managing and collapsing context (when and how: /clear, /compact, auto hooks), plus actually fixing the bloated files and unnecessary standing context. Mid-run you added: bulk multi-topic messages must not mean /clear per topic.
