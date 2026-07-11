@@ -15,7 +15,8 @@
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs",
-    "smoke": "tsx scripts/api-smoke.ts"
+    "smoke": "tsx scripts/api-smoke.ts",
+    "e2e": "tsx scripts/e2e-booking.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
