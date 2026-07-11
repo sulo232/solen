@@ -12,6 +12,7 @@ on:
     - cron: '0 */6 * * *'
     - cron: '0 2 * * *'
     - cron: '0 3 * * *'
+    - cron: '45 3 * * *'
     - cron: '0 8 * * *'
     - cron: '0 9 * * *'
     - cron: '0 10 * * *'
@@ -117,6 +118,17 @@ jobs:
         uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/style-affinity-recompute
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-03-45-utc:
+    if: github.event.schedule == '45 3 * * *'
+    name: Daily 03:45 UTC · db-backup (nightly data safety net)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/db-backup
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-08-utc:
