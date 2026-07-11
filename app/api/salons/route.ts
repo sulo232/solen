@@ -14,6 +14,34 @@ import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 
+// Ring 5b: CDN response caching for this anon browse endpoint. This GET handler never
+// reads a cookie or calls auth.getUser() anywhere (confirmed by ring5b-kill-test.ts
+// source-grep), and every row is always filtered to is_active=true /
+// listed_on_marketplace=true / is_test=false, so there is no owner-preview or
+// per-visitor branch: every success response is public, non-personalized data, safe to
+// edge-cache for ALL callers.
+//
+// netlify.toml's "/api/*" block (lines 31-35) sets a blanket `Cache-Control:
+// no-store, no-cache, must-revalidate`, but that block is a static/CDN header-injection
+// rule for assets served straight from the CDN's publish directory; it does NOT apply
+// to this route's own function response. This file exports `runtime = "edge"`, so it
+// compiles to a Netlify Edge Function, and per Netlify's docs, header rules configured
+// in netlify.toml/_headers are not applied to Function/Edge Function responses (only
+// the function's own response headers ship). So ANON_CACHE_HEADERS below is
+// authoritative and is not stripped by the /api/* no-store rule.
+//
+// `Netlify-CDN-Cache-Control` is the header Netlify's edge actually honors for CDN
+// caching (durable s-maxage/stale-while-revalidate support, separate from the
+// browser-facing `Cache-Control`); 60s is a conservative TTL for browse data.
+// Query-string variants are distinct cache keys on Netlify by default (no
+// normalization/canonicalization), so ?category=coiffeur and
+// ?category=coiffeur&page=2 cache independently, which is exactly what this endpoint's
+// per-filter-combination responses need.
+export const ANON_CACHE_HEADERS = {
+  "Netlify-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, max-age=0, must-revalidate",
+};
+
 // Time-of-day windows (local hour ranges) for the `period` availability filter.
 const PERIOD_HOURS: Record<string, [number, number]> = {
   morning: [9, 12],
@@ -127,7 +155,7 @@ export async function GET(request: NextRequest) {
       });
       if (rErr) console.error("[api/salons GET] search_salons_ranked failed:", rErr.message);
       const ids = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id as string);
-      if (ids.length === 0) return NextResponse.json({ items: [], total: 0, page, limit });
+      if (ids.length === 0) return NextResponse.json({ items: [], total: 0, page, limit }, { headers: ANON_CACHE_HEADERS });
       rankIndex = new Map(ids.map((id: string, i: number): [string, number] => [id, i]));
     }
     const semanticMode = rankIndex !== null;
@@ -197,7 +225,7 @@ export async function GET(request: NextRequest) {
       if (searchParams.get(col) === "true") query = query.eq(col, true);
     }
 
-    const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit });
+    const emptyResult = () => NextResponse.json({ items: [], total: 0, page, limit }, { headers: ANON_CACHE_HEADERS });
 
     // Concurrent pre-queries. Each of the filters below resolves an independent
     // salon-id set (or a city lookup) that is AND-combined into the main query via
@@ -600,7 +628,7 @@ export async function GET(request: NextRequest) {
           (rankIndex!.get((b as Record<string, unknown>).id as string) ?? 1e9),
       );
       const paged = items.slice(offset, offset + limit);
-      return NextResponse.json({ items: paged, total: items.length, page, limit });
+      return NextResponse.json({ items: paged, total: items.length, page, limit }, { headers: ANON_CACHE_HEADERS });
     }
 
     if (sort === "distance" && distanceMap) {
@@ -611,7 +639,7 @@ export async function GET(request: NextRequest) {
       items.sort((a, b) => (a.min_price ?? Infinity) - (b.min_price ?? Infinity));
     }
 
-    return NextResponse.json({ items, total: count ?? 0, page, limit });
+    return NextResponse.json({ items, total: count ?? 0, page, limit }, { headers: ANON_CACHE_HEADERS });
   } catch (err) {
     console.error("[api/salons GET] error:", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
