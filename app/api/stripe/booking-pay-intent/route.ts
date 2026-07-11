@@ -9,6 +9,8 @@ import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { resolveMemberDiscount, getCurrentTier, tierAtLeast } from "@/lib/loyalty/perks";
 import { LOYALTY, type Tier } from "@/lib/loyalty/status";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
+import { capStoredValueRappen, getAvailableCreditRappen, isMoneySpendFlagEnabled } from "@/lib/credits/redeem";
+import { bookingPayIntentSchema } from "@/lib/validations";
 import { createHash } from "crypto";
 
 // POST /api/stripe/booking-pay-intent
@@ -48,11 +50,15 @@ export async function POST(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const body = await req.json().catch(() => null);
-  const booking_id = String(body?.booking_id ?? "").trim();
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!booking_id || !UUID_RE.test(booking_id)) {
+  const parsedBody = bookingPayIntentSchema.safeParse(body);
+  if (!parsedBody.success) {
     return NextResponse.json({ error: "booking_id is required" }, { status: 400 });
   }
+  const booking_id = parsedBody.data.booking_id;
+  // Credits + voucher spend path: a voucher code offered fresh in THIS request's body (no
+  // FE field reaches here today, see lib/validations.ts's bookingPayIntentSchema comment).
+  // Re-validated live against the vouchers row by redeem_voucher itself below; never trusted.
+  const requestedVoucherCode = parsedBody.data.voucher_code ?? null;
 
   const admin = createAdminSupabaseClient();
 
@@ -543,26 +549,170 @@ export async function POST(req: NextRequest) {
 
   const actualPromoDiscountRappen = Number(paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
 
+  // 9b. CREDITS + VOUCHER SPEND (owner-approved 2026-07-11), applied AFTER promo + member
+  //     discount, and AFTER the PaymentIntent itself exists. Unlike promo/member-discount
+  //     (baked into intentParams before create), the credit/voucher ledger's restore
+  //     functions are keyed on the REAL Stripe PaymentIntent id, matching every other place
+  //     that restores against it later: issue-refund.ts (booking.payment_intent_id),
+  //     issue-purchase-refund.ts (purchase.stripe_payment_intent_id), and the webhook's
+  //     payment_intent.payment_failed handler (pi.id). That id does not exist until
+  //     paymentIntents.create returns, so redeem happens here against the RECONCILED
+  //     piChargeRappen/piFeeRappen (the real PI's actual amounts, replay-safe like the
+  //     promo/tier reconciliation above), then the just-created PI is SHRUNK via
+  //     paymentIntents.update (legal pre-confirmation, status requires_payment_method).
+  //     A failed update restores the just-applied redemption immediately so the ledger never
+  //     shows a spend that was never actually reflected in what is charged. This is the
+  //     closest available mirror of the promo "reserve then release-on-create-failure"
+  //     pattern given the ledger's real-PI-id keying (a considered, documented deviation:
+  //     redeem-then-shrink instead of reserve-then-create, forced by Stripe only assigning
+  //     the PI id at creation).
+  let creditAppliedRappen = 0;
+  let voucherAppliedRappen = 0;
+  let voucherCodeApplied: string | null = null;
+  let finalChargeRappen = piChargeRappen;
+  let finalFeeRappen = piFeeRappen;
+  const hasConnectFee = !!salon.stripe_account_id;
+
+  if (paymentIntent.status === "requires_payment_method") {
+    // Credits: logged-in customers only (referral credit is earned per-user), flag-gated.
+    if (booking.user_id) {
+      try {
+        const creditsOn = await isMoneySpendFlagEnabled(admin, "credits");
+        if (creditsOn) {
+          const balanceRappen = await getAvailableCreditRappen(admin, booking.user_id);
+          if (balanceRappen > 0) {
+            const capRappen = capStoredValueRappen({
+              desiredRappen: balanceRappen,
+              chargeRappen: finalChargeRappen,
+              appFeeRappen: finalFeeRappen,
+              hasConnectFee,
+            });
+            if (capRappen > 0) {
+              const { data: appliedChf, error: creditErr } = await admin.rpc("redeem_user_credits", {
+                p_user: booking.user_id,
+                p_amount: capRappen / 100,
+                p_booking: booking.id,
+                p_pi: paymentIntent.id,
+              });
+              if (creditErr) {
+                console.error("[booking-pay-intent] redeem_user_credits failed:", creditErr.message);
+              } else {
+                creditAppliedRappen = toRappen(Number(appliedChf) || 0);
+                finalChargeRappen -= creditAppliedRappen;
+                if (hasConnectFee) finalFeeRappen -= creditAppliedRappen;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[booking-pay-intent] credit redemption failed; charging without credit:", err);
+      }
+    }
+
+    // Voucher: guest-tolerant (a gift voucher is not tied to earning it), flag-gated. The
+    // RPC's own least(remaining, p_amount) caps against the LIVE vouchers row under a row
+    // lock, so requesting "everything left to spend" here is safe, it never over-applies.
+    if (requestedVoucherCode) {
+      try {
+        const vouchersOn = await isMoneySpendFlagEnabled(admin, "vouchers");
+        if (vouchersOn) {
+          const requestRappen = capStoredValueRappen({
+            desiredRappen: Number.MAX_SAFE_INTEGER,
+            chargeRappen: finalChargeRappen,
+            appFeeRappen: finalFeeRappen,
+            hasConnectFee,
+          });
+          if (requestRappen > 0) {
+            const { data: appliedChf, error: voucherErr } = await admin.rpc("redeem_voucher", {
+              p_code: requestedVoucherCode,
+              p_salon_id: booking.salon_id,
+              p_amount: requestRappen / 100,
+              p_user: booking.user_id ?? null,
+              p_booking: booking.id,
+              p_pi: paymentIntent.id,
+            });
+            if (voucherErr) {
+              console.error("[booking-pay-intent] redeem_voucher failed:", voucherErr.message);
+            } else {
+              voucherAppliedRappen = toRappen(Number(appliedChf) || 0);
+              if (voucherAppliedRappen > 0) {
+                voucherCodeApplied = requestedVoucherCode;
+                finalChargeRappen -= voucherAppliedRappen;
+                if (hasConnectFee) finalFeeRappen -= voucherAppliedRappen;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[booking-pay-intent] voucher redemption failed; charging without voucher:", err);
+      }
+    }
+
+    // Only touch Stripe when something was actually applied, and only when the target
+    // differs from the PI's current amount (a replay of an already-shrunk PI is then a
+    // pure no-op, never a redundant Stripe call).
+    if ((creditAppliedRappen > 0 || voucherAppliedRappen > 0) && finalChargeRappen !== piChargeRappen) {
+      try {
+        const updateParams: Parameters<typeof stripe.paymentIntents.update>[1] = {
+          amount: finalChargeRappen,
+        };
+        if (hasConnectFee) updateParams.application_fee_amount = finalFeeRappen;
+        await stripe.paymentIntents.update(paymentIntent.id, updateParams);
+      } catch (updateErr) {
+        console.error("[booking-pay-intent] PaymentIntent amount update for credit/voucher failed; restoring:", updateErr);
+        if (creditAppliedRappen > 0) {
+          try {
+            await admin.rpc("restore_user_credits", { p_pi: paymentIntent.id });
+          } catch (restoreErr) {
+            console.error("[booking-pay-intent] credit restore after failed PI update failed:", restoreErr);
+          }
+        }
+        if (voucherAppliedRappen > 0) {
+          try {
+            await admin.rpc("restore_voucher", { p_pi: paymentIntent.id });
+          } catch (restoreErr) {
+            console.error("[booking-pay-intent] voucher restore after failed PI update failed:", restoreErr);
+          }
+        }
+        // The ORIGINAL (pre-credit/voucher) PI amount is what will actually be charged now,
+        // so the in-memory figures and the response below must say so too.
+        creditAppliedRappen = 0;
+        voucherAppliedRappen = 0;
+        voucherCodeApplied = null;
+        finalChargeRappen = piChargeRappen;
+        finalFeeRappen = piFeeRappen;
+      }
+    }
+  }
+
   const bookingPatch: Record<string, unknown> = { payment_intent_id: paymentIntent.id };
   if (actualDiscountRappen > 0 && actualTier) {
     bookingPatch.applied_tier = actualTier;
     bookingPatch.tier_discount_amount = actualDiscountRappen; // Rappen, == the PI's application_fee reduction
   }
+  if (voucherCodeApplied) {
+    bookingPatch.voucher_code = voucherCodeApplied;
+  }
   await admin.from("bookings").update(bookingPatch).eq("id", booking.id);
 
-  const piChargeChf = piChargeRappen / 100;
+  const piChargeChf = finalChargeRappen / 100;
+  const creditAppliedChf = creditAppliedRappen ? creditAppliedRappen / 100 : 0;
+  const voucherAppliedChf = voucherAppliedRappen ? voucherAppliedRappen / 100 : 0;
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
-    amount: piChargeChf,                                 // charged NOW (full or deposit, minus promo + member discount)
+    amount: piChargeChf,                                 // charged NOW (full or deposit, minus promo + member discount + credit + voucher)
     full_price: priceChf,                                // full service price
     member_discount: actualDiscountRappen ? actualDiscountRappen / 100 : 0, // CHF off via Solen Plus (commission waiver)
     applied_tier: actualTier,                            // tier that funded the member discount (null when none)
     promo_code: actualPromoCode,                         // the validated promo code applied (null when none)
     promo_discount: actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0, // CHF off via the promo code
+    credit_applied: creditAppliedChf,                    // CHF off via the customer's referral credit balance
+    voucher_code: voucherCodeApplied,                    // the redeemed voucher code (null when none / not applied)
+    voucher_applied: voucherAppliedChf,                  // CHF off via the voucher
     payment_mode: paymentMode,                           // deposit | prepay
     deposit_percent: paymentMode === "deposit" ? depositPct : null,
-    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0)) - piChargeChf) * 100) / 100 : 0,
+    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100 : 0,
     service_name: service.name_de,
   });
 }

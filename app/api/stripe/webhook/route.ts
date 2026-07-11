@@ -482,6 +482,23 @@ export async function POST(req: NextRequest) {
           } catch (releasePromoCatchErr) {
             console.error("[StripeWebhook] release_promo_use threw:", releasePromoCatchErr);
           }
+
+          // Credits + voucher spend (owner-approved 2026-07-11): booking-pay-intent may have
+          // already redeemed against THIS PI (keyed on pi.id) before the customer's confirm
+          // attempt failed. Restore now, mirroring release_promo_use above. Both RPCs are
+          // idempotent (loop over matching ledger rows, no-op when there are none).
+          try {
+            const { error: restoreCreditsErr } = await admin.rpc("restore_user_credits", { p_pi: pi.id });
+            if (restoreCreditsErr) console.error("[StripeWebhook] restore_user_credits failed:", restoreCreditsErr.message);
+          } catch (restoreCreditsCatchErr) {
+            console.error("[StripeWebhook] restore_user_credits threw:", restoreCreditsCatchErr);
+          }
+          try {
+            const { error: restoreVoucherErr } = await admin.rpc("restore_voucher", { p_pi: pi.id });
+            if (restoreVoucherErr) console.error("[StripeWebhook] restore_voucher failed:", restoreVoucherErr.message);
+          } catch (restoreVoucherCatchErr) {
+            console.error("[StripeWebhook] restore_voucher threw:", restoreVoucherCatchErr);
+          }
         }
 
         // Notify customer about payment failure

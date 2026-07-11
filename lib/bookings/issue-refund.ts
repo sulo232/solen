@@ -235,6 +235,61 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   //     Keep this chokepoint single-responsibility: Stripe refund + the booking
   //     claim above; the webhook owns the ledger.
 
+  // 10b. CREDITS + VOUCHER SPEND restore (owner-approved 2026-07-11). Both RPCs are
+  //      keyed on `pi` (the SAME Stripe PaymentIntent id booking-pay-intent redeemed
+  //      against) and are all-or-nothing per PI (they loop over matching ledger rows
+  //      and delete them; there is no proportional/partial variant). Gated on isFull
+  //      (computed in step 7): a PARTIAL refund must NOT touch the credit/voucher
+  //      ledger, the redeemed amount stays spent until the booking is fully refunded,
+  //      otherwise a small partial refund would fully restore credits/vouchers that
+  //      are still backing the unrefunded remainder (over-restore). This chokepoint
+  //      covers every caller that refunds a booking (salon/admin refund, dispute
+  //      action, the customer-cancel path, cron reconcile), so restoring here once
+  //      covers all of them. A failed restore must NEVER block the refund that
+  //      already succeeded on Stripe: log + alert an admin for manual reconciliation.
+  if (isFull) {
+    try {
+      const { error: restoreCreditsErr } = await db.rpc("restore_user_credits", { p_pi: pi });
+      if (restoreCreditsErr) {
+        console.error("[issueRefund] restore_user_credits failed:", restoreCreditsErr.message, { booking_id: id, payment_intent: pi });
+        void alertAdmin("restore_user_credits failed after a successful refund", {
+          booking_id: id,
+          payment_intent: pi,
+          refund_id: refund.id,
+          error: restoreCreditsErr.message,
+        });
+      }
+    } catch (restoreCreditsCatchErr) {
+      console.error("[issueRefund] restore_user_credits threw:", restoreCreditsCatchErr, { booking_id: id, payment_intent: pi });
+      void alertAdmin("restore_user_credits threw after a successful refund", {
+        booking_id: id,
+        payment_intent: pi,
+        refund_id: refund.id,
+        error: String(restoreCreditsCatchErr),
+      });
+    }
+    try {
+      const { error: restoreVoucherErr } = await db.rpc("restore_voucher", { p_pi: pi });
+      if (restoreVoucherErr) {
+        console.error("[issueRefund] restore_voucher failed:", restoreVoucherErr.message, { booking_id: id, payment_intent: pi });
+        void alertAdmin("restore_voucher failed after a successful refund", {
+          booking_id: id,
+          payment_intent: pi,
+          refund_id: refund.id,
+          error: restoreVoucherErr.message,
+        });
+      }
+    } catch (restoreVoucherCatchErr) {
+      console.error("[issueRefund] restore_voucher threw:", restoreVoucherCatchErr, { booking_id: id, payment_intent: pi });
+      void alertAdmin("restore_voucher threw after a successful refund", {
+        booking_id: id,
+        payment_intent: pi,
+        refund_id: refund.id,
+        error: String(restoreVoucherCatchErr),
+      });
+    }
+  }
+
   // 11. Return. The accounting was already recorded by the claim in step 8 (no
   //     post-Stripe CAS needed). case_events + audit are the CALLER's
   //     responsibility (it knows the dispute id); this chokepoint is

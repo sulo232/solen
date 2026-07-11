@@ -158,6 +158,17 @@ export const createPaymentIntentSchema = z.object({
   deposit_amount: z.number().positive(),
 });
 
+// Credits + voucher spend path (owner-approved 2026-07-11). booking_id was previously read
+// with ad-hoc String()/regex parsing in the route; voucher_code is net new. No FE field
+// reaches this route today (grepped PayConfirmStep + booking-context: only promoCode
+// exists), so this is backend-only support ahead of the frontend wiring. The redeem_voucher
+// RPC re-validates the code against the LIVE vouchers row (salon match, expiry, remaining
+// balance) under a row lock, this schema only bounds the shape, never trusts the value.
+export const bookingPayIntentSchema = z.object({
+  booking_id: uuid,
+  voucher_code: z.string().min(1).max(30).regex(/^[A-Za-z0-9_-]+$/).transform((v) => v.toUpperCase().trim()).optional().nullable(),
+});
+
 export const validatePromoSchema = z.object({
   code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
   salon_id: uuid.optional(),
