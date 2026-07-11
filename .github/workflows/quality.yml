@@ -1,0 +1,77 @@
+name: quality
+
+# Ring 5 (test + CI floor, _plans/BACKEND_IMPROVEMENT.md). Three independent gates on
+# every push + PR: typecheck, lint, unit tests. Neither typecheck nor lint pass CLEAN
+# today (5 pre-existing tsc errors, 481 pre-existing lint errors), so both use a
+# RATCHET (fail only if the count goes UP from today's baseline) instead of a hard
+# zero, the same pattern already used elsewhere in this repo for gradual cleanup.
+# Playwright is deliberately NOT wired here (needs real browsers + a running dev
+# server; e2e/visual stays a manual/local gate, see the memo in _plans/BACKEND_IMPROVEMENT.md
+# ring 5).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: tsc --noEmit (ratchet vs baseline, currently 5 pre-existing errors)
+        run: |
+          set +e
+          npx tsc --noEmit > tsc-output.txt 2>&1
+          set -e
+          COUNT=$(grep -c "error TS" tsc-output.txt || true)
+          BASELINE=5
+          echo "tsc error count: $COUNT (baseline: $BASELINE)"
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::tsc error count went UP: $COUNT > $BASELINE baseline"
+            cat tsc-output.txt
+            exit 1
+          fi
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: npm run lint (ratchet vs baseline, currently 481 pre-existing errors)
+        run: |
+          set +e
+          npm run lint > lint-output.txt 2>&1
+          set -e
+          COUNT=$(grep -c "Error:" lint-output.txt || true)
+          BASELINE=481
+          echo "lint error count: $COUNT (baseline: $BASELINE)"
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::lint error count went UP: $COUNT > $BASELINE baseline"
+            cat lint-output.txt
+            exit 1
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: vitest run (money-path unit tests, tests/**/*.test.ts)
+        run: npx vitest run
