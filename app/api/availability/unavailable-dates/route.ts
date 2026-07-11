@@ -9,14 +9,14 @@ export async function GET(req: NextRequest) {
 
     if (!salonId) {
       return NextResponse.json(
-        { error: 'Missing salon_id' },
+        { error: 'Missing salon_id', code: 'VALIDATION_ERROR' },
         { status: 400 }
       );
     }
 
     if (serviceIds.length === 0) {
       return NextResponse.json(
-        { error: 'Missing service_ids' },
+        { error: 'Missing service_ids', code: 'VALIDATION_ERROR' },
         { status: 400 }
       );
     }
@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('[/api/availability/unavailable-dates]', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', code: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

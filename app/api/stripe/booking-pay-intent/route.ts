@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const parsedBody = bookingPayIntentSchema.safeParse(body);
   if (!parsedBody.success) {
-    return NextResponse.json({ error: "booking_id is required" }, { status: 400 });
+    return NextResponse.json({ error: "booking_id is required", code: "VALIDATION_ERROR" }, { status: 400 });
   }
   const booking_id = parsedBody.data.booking_id;
   // Credits + voucher spend path: a voucher code offered fresh in THIS request's body (no
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons, promo_code, bundle_id")
     .eq("id", booking_id)
     .single();
-  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  if (!booking) return NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
 
   // Authorize: a logged-in user may only pay their OWN booking. A guest booking
   // (user_id IS NULL) is payable without a session — the booking row is the
@@ -77,17 +77,17 @@ export async function POST(req: NextRequest) {
   // stronger gate and lands later). Reject a guest trying to pay a user's booking.
   if (booking.user_id) {
     if (!userId || userId !== booking.user_id) {
-      return NextResponse.json({ error: "Not authorized for this booking" }, { status: 403 });
+      return NextResponse.json({ error: "Not authorized for this booking", code: "FORBIDDEN" }, { status: 403 });
     }
   }
 
   // Don't re-charge an already-paid booking (idempotent at the booking level).
   if (booking.payment_status === "paid") {
-    return NextResponse.json({ error: "Booking is already paid" }, { status: 409 });
+    return NextResponse.json({ error: "Booking is already paid", code: "ALREADY_PAID" }, { status: 409 });
   }
   // Only a live booking awaiting payment can be charged.
   if (!["pending", "pending_approval", "confirmed"].includes(booking.status ?? "")) {
-    return NextResponse.json({ error: "Booking is not payable" }, { status: 409 });
+    return NextResponse.json({ error: "Booking is not payable", code: "NOT_PAYABLE" }, { status: 409 });
   }
 
   // 2. Salon must accept online payment.
@@ -96,9 +96,9 @@ export async function POST(req: NextRequest) {
     .select("name, stripe_account_id, accepts_online_payment, payment_mode, deposit_percent, member_commission_waiver_rate")
     .eq("id", booking.salon_id)
     .single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  if (!salon) return NextResponse.json({ error: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   if (!salon.accepts_online_payment) {
-    return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
+    return NextResponse.json({ error: "Salon does not accept online payments", code: "ONLINE_PAYMENT_NOT_ACCEPTED" }, { status: 400 });
   }
   // Connect guard (mirrors walk-in/pay-intent): without a connected account the PI below
   // would carry no transfer_data/application_fee, so the charge would land on the PLATFORM
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     .eq("id", booking.service_id)
     .single();
   if (!service || service.salon_id !== booking.salon_id || service.is_active === false) {
-    return NextResponse.json({ error: "Service not found for this salon" }, { status: 404 });
+    return NextResponse.json({ error: "Service not found for this salon", code: "NOT_FOUND" }, { status: 404 });
   }
   // Multi-service: add the booking's server-set extras_addons (resolved at booking time from the
   // services table, never the client) to the primary service price, so the charge = the full total.
@@ -177,7 +177,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
-    return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
+    return NextResponse.json({ error: "Service has no valid price", code: "INVALID_PRICE" }, { status: 400 });
   }
   // Charge per the salon's payment_mode (was: always the full price, ignoring the setting):
   //   prepay → full price now;  deposit → deposit_percent% now (rest paid at the salon);
@@ -313,7 +313,7 @@ export async function POST(req: NextRequest) {
       .eq("id", booking.slot_id)
       .single();
     if (!slot || (slot.status !== "booked" && slot.status !== "available") || (slot.booking_id && slot.booking_id !== booking.id)) {
-      return NextResponse.json({ error: "Slot no longer available" }, { status: 409 });
+      return NextResponse.json({ error: "Slot no longer available", code: "SLOT_TAKEN" }, { status: 409 });
     }
   }
 
@@ -351,7 +351,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("[booking-pay-intent] Stripe customer create/resolve failed:", err);
-    return NextResponse.json({ error: "Could not initialize payment" }, { status: 500 });
+    return NextResponse.json({ error: "Could not initialize payment", code: "PAYMENT_INIT_FAILED" }, { status: 500 });
   }
 
   // 6. Platform commission (Connect destination charge).
@@ -498,7 +498,7 @@ export async function POST(req: NextRequest) {
         console.error("[booking-pay-intent] member-discount release after PI-create failure failed:", e);
       }
     }
-    return NextResponse.json({ error: "Could not create payment" }, { status: 500 });
+    return NextResponse.json({ error: "Could not create payment", code: "PAYMENT_INIT_FAILED" }, { status: 500 });
   }
 
   // 9. Stamp the PI id onto the booking now so the webhook's booking_id-keyed

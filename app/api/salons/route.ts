@@ -642,7 +642,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ items, total: count ?? 0, page, limit }, { headers: ANON_CACHE_HEADERS });
   } catch (err) {
     console.error("[api/salons GET] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal error", code: "INTERNAL_ERROR" }, { status: 500 });
   }
 }
 
@@ -654,7 +654,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user) return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
@@ -737,13 +737,13 @@ export async function POST(request: NextRequest) {
       }
       if (insertErr && !insertErr.message?.includes("duplicate") && !insertErr.message?.includes("unique")) {
         console.error("[api/salons POST] salon insert:", insertErr.message);
-        return NextResponse.json({ error: "Failed to create salon", message: insertErr.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create salon", message: insertErr.message, code: "DB_ERROR" }, { status: 500 });
       }
     }
 
     if (!salon) {
       console.error("[api/salons POST] slug collision after 3 attempts");
-      return NextResponse.json({ error: "Failed to create salon" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to create salon", code: "DB_ERROR" }, { status: 500 });
     }
 
     const salonId = salon.id;
@@ -853,7 +853,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ id: salonId, slug });
   } catch (err) {
     console.error("[api/salons POST] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal error", code: "INTERNAL_ERROR" }, { status: 500 });
   }
 }
 

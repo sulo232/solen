@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   const rawBody = await req.json().catch(() => null);
   const { data: validated, error: valError } = validateBody(walkinPayIntentSchema, rawBody);
   if (valError) {
-    return NextResponse.json({ error: "salon_id and service_id are required", message: valError.message }, { status: 400 });
+    return NextResponse.json({ error: "salon_id and service_id are required", message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
   const { salon_id, service_id } = validated;
   const customer_name = (validated.customer_name ?? "").trim();
@@ -42,10 +42,10 @@ export async function POST(req: NextRequest) {
     .select("name, walkin_enabled, walkin_paused, stripe_account_id, accepts_online_payment")
     .eq("id", salon_id)
     .single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  if (!salon) return NextResponse.json({ error: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   // Phase 2 de-gate: walk-in is universal now (any category), gated on walkin_enabled.
   if (!(salon as any).walkin_enabled) {
-    return NextResponse.json({ error: "Walk-in is not enabled for this salon" }, { status: 403 });
+    return NextResponse.json({ error: "Walk-in is not enabled for this salon", code: "WALKIN_DISABLED" }, { status: 403 });
   }
   if ((salon as any).walkin_paused) {
     return NextResponse.json({ error: "This shop has paused new walk-ins right now", code: "walkins_paused" }, { status: 409 });
@@ -81,11 +81,11 @@ export async function POST(req: NextRequest) {
     .eq("id", service_id)
     .single();
   if (!service || service.salon_id !== salon_id || service.is_active === false) {
-    return NextResponse.json({ error: "Service not found for this salon" }, { status: 404 });
+    return NextResponse.json({ error: "Service not found for this salon", code: "NOT_FOUND" }, { status: 404 });
   }
   const priceChf = Number(service.price);
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
-    return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
+    return NextResponse.json({ error: "Service has no valid price", code: "INVALID_PRICE" }, { status: 400 });
   }
   const amountRappen = toRappen(priceChf);
 
@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("[walkin/pay-intent] create failed:", e);
     return NextResponse.json(
-      { error: "Could not start payment. Please try again." },
+      { error: "Could not start payment. Please try again.", code: "PAYMENT_INIT_FAILED" },
       { status: 502 },
     );
   }

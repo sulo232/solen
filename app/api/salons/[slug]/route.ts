@@ -69,7 +69,7 @@ export async function PATCH(
   const { slug } = await params;
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
 
@@ -81,12 +81,12 @@ export async function PATCH(
     .select("id, owner_id")
     .eq(isUuid ? "id" : "slug", slug)
     .maybeSingle();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  if (!salon) return NextResponse.json({ error: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
 
   // Verify ownership or admin
   const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
   if (salon.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
   }
 
   const body = await request.json();
@@ -131,7 +131,7 @@ export async function PATCH(
     const policySubset: Record<string, unknown> = {};
     for (const k of POLICY_KEYS) if (body[k] !== undefined) policySubset[k] = body[k];
     const { error: policyErr } = validateBody(salonPolicyUpdateSchema, policySubset);
-    if (policyErr) return NextResponse.json({ error: policyErr.message }, { status: 400 });
+    if (policyErr) return NextResponse.json({ error: policyErr.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
   const updates: Record<string, unknown> = {};
@@ -146,11 +146,11 @@ export async function PATCH(
   }
 
   if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: "No updates provided" }, { status: 400 });
+    return NextResponse.json({ error: "No updates provided", code: "NO_UPDATES" }, { status: 400 });
   }
 
   const { error } = await admin.from("salons").update(updates).eq("id", salon.id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: error.message, code: "DB_ERROR" }, { status: 500 });
 
   return NextResponse.json({ ok: true });
 }
