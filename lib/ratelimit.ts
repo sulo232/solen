@@ -154,7 +154,10 @@ export async function applyRateLimit(
 ): Promise<NextResponse | null> {
   // Skip rate limiting if Upstash Redis is not configured
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
-    if (process.env.CONTEXT === "production") {
+    // Same double-check lib/env.ts's assertProdRequiredEnv uses: CONTEXT alone is
+    // Netlify-set on deploy previews/branch deploys too, so pairing it with NODE_ENV
+    // is the defense-in-depth line that narrows this to a REAL production boot.
+    if (process.env.CONTEXT === "production" && process.env.NODE_ENV === "production") {
       if (ABUSE_PRONE_LIMITERS.has(limiter)) {
         // Fail CLOSED: no Redis to ask, so this is the same 429 a real limit hit
         // returns, minus the X-RateLimit-* headers (we have no real limit/remaining/
@@ -194,7 +197,8 @@ export async function applyRateLimit(
  */
 export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<boolean> {
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
-    if (process.env.CONTEXT === "production") {
+    // Same CONTEXT + NODE_ENV double-check as applyRateLimit above.
+    if (process.env.CONTEXT === "production" && process.env.NODE_ENV === "production") {
       if (ABUSE_PRONE_LIMITERS.has(limiter)) return false;
       alertMisconfiguredRedisOnce();
     }

@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { applyRateLimit, generalLimiter, getClientIp } from '@/lib/ratelimit';
 
 // Temporary in-memory store to mock the `hand_chart_notes` Supabase table
 const mockDb = new Map<string, any>();
@@ -15,7 +16,10 @@ export async function GET(req: Request) {
   return NextResponse.json({ notes });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
   const body = await req.json();
   const { clientId, notes } = body;
 

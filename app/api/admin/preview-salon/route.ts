@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,6 +52,9 @@ export async function DELETE(_request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const response = NextResponse.json({ ok: true });
   response.cookies.set(PREVIEW_COOKIE, "", {

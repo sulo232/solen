@@ -111,6 +111,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
   }
 
+  // Parity with POST above (pure defense-in-depth: the delete below is already
+  // triple-scoped by id + customer_id + salon_id, this just matches the explicit
+  // client-salon membership check POST already does).
+  const belongs = await clientBelongsToSalon(admin, salonId, customerId);
+  if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
+
   const { error } = await admin
     .from("client_notes")
     .delete()

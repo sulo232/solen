@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 import { waitlistSchema, validateBody } from "@/lib/validations";
+import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   try {
@@ -10,6 +11,9 @@ export async function POST(req: Request) {
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     const body = await req.json();
     const validation = validateBody(waitlistSchema, body);

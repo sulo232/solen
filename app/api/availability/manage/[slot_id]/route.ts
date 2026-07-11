@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 export async function DELETE(
   _request: NextRequest,
@@ -12,6 +13,9 @@ export async function DELETE(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { data: slot } = await supabase
     .from("availability_slots")

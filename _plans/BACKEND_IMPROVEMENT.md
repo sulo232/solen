@@ -178,12 +178,12 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
   - [ ] ownership failures return 404 per the established security convention
 - [ ] select("*") long-tail: after Ring 2 covers bookings/salons, sweep the remaining ~90 sites on small tables (mechanical, low blast radius)
 
-## Ring 8 , webhook + email resilience (money-adjacent; est ~1.5h)
-- [ ] webhook idempotency audit: all 5 stripe/webhook handler files re-read under the retry lens (processed_webhook_events claim + release-on-error); gaps listed with file:line
-- [ ] implement promo-increment idempotency (parked sweep item, fails-safe today): promo_counted CAS flag via additive column, webhook retry no longer over-counts current_uses
-- [ ] reconcile coverage map: which missed-webhook classes does cron/reconcile catch vs miss; close the biggest miss
-- [ ] vouchers/confirm retire-or-keep memo (0 live callers since the salon-voucher webhook took over finalization)
-- [ ] pending_approval referral completion gap (parked): wire referral completion into the booking-approve transition
+## Ring 8 , webhook + email resilience (money-adjacent; est ~1.5h) DONE 2026-07-11, see _plans/WEBHOOK_RESILIENCE.md
+- [x] webhook idempotency audit: all 5 stripe/webhook handler files re-read under the retry lens (processed_webhook_events claim + release-on-error); gaps listed with file:line , verdict table in WEBHOOK_RESILIENCE.md section 1 (14/17 branches idempotent; 2 notification-double-send gaps + 1 real charge.dispute.closed ledger-correctness bug found and memo'd, not fixed this ring, out of scope)
+- [x] implement promo-increment idempotency (parked sweep item, fails-safe today): promo_counted CAS flag via additive column, webhook retry no longer over-counts current_uses , re-verified the described bug was ALREADY fixed by the 2026-07-10 reserve-at-checkout refactor (0 increment_promo_use calls left in the webhook); still built promo_counted_at as a CAS audit/reconcile marker per the explicit ask (migration NOT applied, orchestrator applies live)
+- [x] reconcile coverage map: which missed-webhook classes does cron/reconcile catch vs miss; close the biggest miss , map in WEBHOOK_RESILIENCE.md section 3; closed gift-card activation (0% prior coverage), memo'd voucher/voucher_purchase + aged-purchase-refund + dispute-lost-ledger gaps
+- [x] vouchers/confirm retire-or-keep memo (0 live callers since the salon-voucher webhook took over finalization) , fresh grep confirmed 0 callers (web + solen-mobile); recommendation RETIRE to 410 (route untouched this ring per instruction)
+- [x] pending_approval referral completion gap (parked): wire referral completion into the booking-approve transition , app/api/bookings/[id]/confirm/route.ts now accepts pending_approval + calls completeReferralForFirstBooking; found + flagged a bigger gap (0 live callers of that route at all, no working approve UI exists yet)
 
 ## Ring 9 , abuse-coverage census (est ~0.5h)
 - [ ] rate-limiter census: every mutation route carries an appropriate tier limiter; gaps fixed

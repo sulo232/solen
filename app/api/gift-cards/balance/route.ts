@@ -2,28 +2,18 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, getClientIp } from "@/lib/ratelimit";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
-import { getServerEnv } from "@/lib/env";
-
-const env = getServerEnv();
-// Strict rate limit: 5 per minute per IP (brute-force protection)
-const balanceLimiter = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
-  ? new Ratelimit({
-      redis: new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN }),
-      limiter: Ratelimit.slidingWindow(5, "60 s"),
-      prefix: "rl:gc-balance",
-    })
-  : null;
+import { applyRateLimit, getClientIp, guestLookupLimiter } from "@/lib/ratelimit";
 
 // GET /api/gift-cards/balance?code=XXX : check gift card balance (public, rate limited)
 // GET /api/gift-cards/balance?salon_id=XXX : salon's own gift-card list (owner/admin only)
 export async function GET(req: NextRequest) {
-  if (balanceLimiter) {
-    const rateLimited = await applyRateLimit(balanceLimiter, { ip: getClientIp(req) });
-    if (rateLimited) return rateLimited;
-  }
+  // Was a standalone `new Ratelimit(...)` outside lib/ratelimit.ts (invisible to the
+  // fail-mode split, ring 1a finding). guestLookupLimiter fits this surface's actual
+  // risk profile (a public gift-card code -> balance lookup is the same enumeration
+  // shape as a guest booking-reference lookup) and is already in ABUSE_PRONE_LIMITERS,
+  // so an unconfigured-Upstash production boot now fails CLOSED here too.
+  const rateLimited = await applyRateLimit(guestLookupLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
 
   const salonId = new URL(req.url).searchParams.get("salon_id");
   if (salonId) {

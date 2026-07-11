@@ -9,6 +9,7 @@ import { toRappen } from "@/lib/stripe";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
+import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
 // policy math as POST (calculateCancellationFee) but mutates nothing — so the sheet can
@@ -77,6 +78,9 @@ export async function POST(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await request.json().catch(() => ({}));
   const { data: validated } = validateBody(bookingCancelSchema, body);

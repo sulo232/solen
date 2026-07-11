@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { validateBody, formulaSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/clients/[id]/formulas — Get client formulas (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -33,6 +34,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await req.json();
   const { data: validated, error: valError } = validateBody(formulaSchema, body);
