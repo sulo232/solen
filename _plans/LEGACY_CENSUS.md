@@ -6,93 +6,39 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 
 ## Summary
 
-- Total files scanned: 267
+- Total files scanned: 189
 - LIVE (>=1 live-tree importer): 116
-- LEAF-CHECK (0 live-tree, >=1 intra-legacy importer, trace by hand): 73
-- DEAD (0 importers anywhere): 78
+- LEAF-CHECK (0 live-tree, >=1 intra-legacy importer, trace by hand): 49
+- DEAD (0 importers anywhere): 24
 
 ## Files
 
 | file | live-tree importers | intra-legacy importers | verdict |
 |---|---|---|---|
-| components-legacy/admin/BookingDisputePanel.tsx | 0 | 0 | DEAD |
-| components-legacy/auth/TosPrompt.tsx | 0 | 0 | DEAD |
-| components-legacy/barber/BarbershopSections.tsx | 0 | 0 | DEAD |
-| components-legacy/barber/ExpressRebook.tsx | 0 | 0 | DEAD |
-| components-legacy/barber/RemoteQueueJoin.tsx | 0 | 0 | DEAD |
-| components-legacy/barber/WaitTimeDisplay.tsx | 0 | 0 | DEAD |
-| components-legacy/booking/StaffListSheet.tsx | 0 | 0 | DEAD |
-| components-legacy/booking/StaffPicker.tsx | 0 | 0 | DEAD |
-| components-legacy/BookingSuccess.tsx | 0 | 0 | DEAD |
-| components-legacy/BrowseByCitySection.tsx | 0 | 0 | DEAD |
-| components-legacy/coiffeur/CoiffeurSections.tsx | 0 | 0 | DEAD |
-| components-legacy/dashboard/DashboardHeaderStrip.tsx | 0 | 0 | DEAD |
-| components-legacy/dashboard/LastMinuteManager.tsx | 0 | 0 | DEAD |
-| components-legacy/dashboard/StatCard.tsx | 0 | 0 | DEAD |
-| components-legacy/dashboard/TodayLiveCard.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/BookCTA.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/CategoryPills.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/CommentSection.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/DescriptionCard.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/FeaturedBoards.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/ForYouSection.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/GenderToggle.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/PatternSelector.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/PickStylistFlow.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/ProductRecommendations.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/ProfileDiscoverySections.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/RelatedTikToks.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/SalonScript.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/ShareButton.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/SimilarStyles.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/SourceBadge.tsx | 0 | 0 | DEAD |
-| components-legacy/discovery/StyleNamePills.tsx | 0 | 0 | DEAD |
-| components-legacy/global/TOSUpdateBanner.tsx | 0 | 0 | DEAD |
-| components-legacy/home/CardFilterRow.tsx | 0 | 0 | DEAD |
-| components-legacy/home/CategoriesGrid.tsx | 0 | 0 | DEAD |
-| components-legacy/home/DiscoverSection.tsx | 0 | 0 | DEAD |
-| components-legacy/home/HeroAboveFold.tsx | 0 | 0 | DEAD |
-| components-legacy/home/NearbySection.tsx | 0 | 0 | DEAD |
-| components-legacy/home/PartnerBlock.tsx | 0 | 0 | DEAD |
-| components-legacy/home/QuartiersGrid.tsx | 0 | 0 | DEAD |
-| components-legacy/home/TrustStatsBanner.tsx | 0 | 0 | DEAD |
-| components-legacy/layout/BottomTabBar.tsx | 0 | 0 | DEAD |
-| components-legacy/layout/Footer.tsx | 0 | 0 | DEAD |
-| components-legacy/nail/NailBookingSteps.tsx | 0 | 0 | DEAD |
-| components-legacy/nail/NailsSections.tsx | 0 | 0 | DEAD |
-| components-legacy/notifications/NotificationItem.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/BeautyProfileCard.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/BeautyProfileEditModal.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/DeleteAccountModal.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/LiveActivityCard.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/PaymentMethodsSection.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/ProfileGroupedLists.tsx | 0 | 0 | DEAD |
-| components-legacy/profile/ProfileHero.tsx | 0 | 0 | DEAD |
-| components-legacy/ReviewBreakdown.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonHero.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonMobileCTA.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonOpeningHours.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonPageSkeleton.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonReviewsSummary.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonSectionNav.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonServices.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SalonSidebar.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/SimilarSalons.tsx | 0 | 0 | DEAD |
-| components-legacy/salon/StaffSection.tsx | 0 | 0 | DEAD |
-| components-legacy/search/SplitView.tsx | 0 | 0 | DEAD |
-| components-legacy/spa/SpaSections.tsx | 0 | 0 | DEAD |
-| components-legacy/StaffPortfolio.tsx | 0 | 0 | DEAD |
-| components-legacy/TutorialTour.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/EmptyStateFTU.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/GuidedSearch.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/PriceOfferModal.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/ReportContentButton.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/ServiceAutosuggest.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/sidebar.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/SortDropdown.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/SubCategoryChips.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/Toast.tsx | 0 | 0 | DEAD |
-| components-legacy/ui/TypingIndicator.tsx | 0 | 0 | DEAD |
+| components-legacy/coiffeur/AiMatcherModal.tsx | 0 | 0 | DEAD |
+| components-legacy/discovery/ReportButton.tsx | 0 | 0 | DEAD |
+| components-legacy/discovery/StaffPortfolio.tsx | 0 | 0 | DEAD |
+| components-legacy/discovery/UserPostsSection.tsx | 0 | 0 | DEAD |
+| components-legacy/home/SectionCarousel.tsx | 0 | 0 | DEAD |
+| components-legacy/icons/category/BarberIcon.tsx | 0 | 0 | DEAD |
+| components-legacy/icons/category/CoiffeurIcon.tsx | 0 | 0 | DEAD |
+| components-legacy/icons/category/NailsIcon.tsx | 0 | 0 | DEAD |
+| components-legacy/icons/category/SpaIcon.tsx | 0 | 0 | DEAD |
+| components-legacy/nail/AllergyWarning.tsx | 0 | 0 | DEAD |
+| components-legacy/nail/InspoBoard.tsx | 0 | 0 | DEAD |
+| components-legacy/nail/InspoUploader.tsx | 0 | 0 | DEAD |
+| components-legacy/nail/MaterialSelector.tsx | 0 | 0 | DEAD |
+| components-legacy/nail/ShapeLengthPicker.tsx | 0 | 0 | DEAD |
+| components-legacy/salon/ServiceCategoryFilter.tsx | 0 | 0 | DEAD |
+| components-legacy/search/MobileViewToggle.tsx | 0 | 0 | DEAD |
+| components-legacy/search/SearchCriteriaChips.tsx | 0 | 0 | DEAD |
+| components-legacy/search/SearchResultGrid.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/beauty-icons.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/date-picker.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/GlassModal.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/PhotoLightbox.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/ScrollableFilterRow.tsx | 0 | 0 | DEAD |
+| components-legacy/ui/Skeleton.tsx | 0 | 0 | DEAD |
 | components-legacy/booking/BookingCard.tsx | 0 | 3 | LEAF-CHECK |
 | components-legacy/booking/BookingExitButton.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/booking/BookingPaymentForm.tsx | 0 | 1 | LEAF-CHECK |
@@ -110,11 +56,10 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 | components-legacy/booking/StaffStep.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/booking/ToggleCircle.tsx | 0 | 2 | LEAF-CHECK |
 | components-legacy/booking/WaitlistModal.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/coiffeur/AiMatcherModal.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/barber/HeadDiagram.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/coiffeur/FormulaPhotoUpload.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/CommandPalette.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/dashboard/MiniSparkline.tsx | 0 | 2 | LEAF-CHECK |
+| components-legacy/dashboard/MiniSparkline.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/nail/NailPreferencesForm.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/NotificationCenter.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/dashboard/SalonSwitcher.tsx | 0 | 1 | LEAF-CHECK |
@@ -122,50 +67,27 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 | components-legacy/discovery/format.ts | 0 | 3 | LEAF-CHECK |
 | components-legacy/discovery/LikeButton.tsx | 0 | 3 | LEAF-CHECK |
 | components-legacy/discovery/ProgressiveFilter.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/discovery/ReportButton.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/discovery/SaveButton.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/discovery/SaveToBoardSheet.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/discovery/StaffPortfolio.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/discovery/TikTokPlayer.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/discovery/UserPostsSection.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/editor/DeviceFrame.tsx | 0 | 2 | LEAF-CHECK |
 | components-legacy/editor/EditPanel.tsx | 0 | 2 | LEAF-CHECK |
 | components-legacy/editor/RequestList.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/home/SectionCarousel.tsx | 0 | 2 | LEAF-CHECK |
-| components-legacy/icons/category/BarberIcon.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/icons/category/CoiffeurIcon.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/icons/category/NailsIcon.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/icons/category/SpaIcon.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/layout/PageTransition.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/nail/AllergyWarning.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/nail/DesignHistoryTimeline.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/nail/HandChart.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/nail/InspoBoard.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/nail/InspoUploader.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/nail/MaterialSelector.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/nail/NailDesignCard.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/nail/ShapeLengthPicker.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/ReviewForm.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/salon/ServiceCategoryFilter.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/search/MobileViewToggle.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/search/SearchCriteriaChips.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/search/SearchResultGrid.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/shared/BodyDiagram.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/shared/InteractiveZoneDiagram.tsx | 0 | 2 | LEAF-CHECK |
 | components-legacy/staff/StaffReviewsSheet.tsx | 0 | 2 | LEAF-CHECK |
-| components-legacy/ui/beauty-icons.tsx | 0 | 2 | LEAF-CHECK |
-| components-legacy/ui/CelebrationRing.tsx | 0 | 2 | LEAF-CHECK |
-| components-legacy/ui/date-picker.tsx | 0 | 1 | LEAF-CHECK |
+| components-legacy/ui/CelebrationRing.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/ui/FilterBottomSheet.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/ui/FilterDrawer.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/ui/GlassModal.tsx | 0 | 3 | LEAF-CHECK |
 | components-legacy/ui/ImageUploader.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/ui/PhotoLightbox.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/ui/SalonBadge.tsx | 0 | 1 | LEAF-CHECK |
-| components-legacy/ui/ScrollableFilterRow.tsx | 0 | 3 | LEAF-CHECK |
-| components-legacy/ui/SelectedCheckBadge.tsx | 0 | 3 | LEAF-CHECK |
-| components-legacy/ui/SignatureLockup.tsx | 0 | 4 | LEAF-CHECK |
-| components-legacy/ui/Skeleton.tsx | 0 | 2 | LEAF-CHECK |
+| components-legacy/ui/SelectedCheckBadge.tsx | 0 | 1 | LEAF-CHECK |
+| components-legacy/ui/SignatureLockup.tsx | 0 | 1 | LEAF-CHECK |
 | components-legacy/auth/SignIn.tsx | 1 | 0 | LIVE |
 | components-legacy/barber/WalkInPaymentForm.tsx | 2 | 0 | LIVE |
 | components-legacy/booking/BookingConfirmation.tsx | 2 | 0 | LIVE |
@@ -216,7 +138,7 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 | components-legacy/dashboard/WalkInModal.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/AIProcessingIndicator.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/AISuggestionPills.tsx | 1 | 0 | LIVE |
-| components-legacy/discovery/CategoryTabBar.tsx | 1 | 1 | LIVE |
+| components-legacy/discovery/CategoryTabBar.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/DetailPage.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/DiscoveryAdmin.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/DiscoveryEmptyState.tsx | 1 | 0 | LIVE |
@@ -225,21 +147,21 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 | components-legacy/discovery/FilterDrawer.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/ImportProgressBar.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/InlinePrefsPanel.tsx | 1 | 0 | LIVE |
-| components-legacy/discovery/ItemCard.tsx | 4 | 2 | LIVE |
-| components-legacy/discovery/MasonryGrid.tsx | 4 | 1 | LIVE |
+| components-legacy/discovery/ItemCard.tsx | 4 | 1 | LIVE |
+| components-legacy/discovery/MasonryGrid.tsx | 4 | 0 | LIVE |
 | components-legacy/discovery/PostFromDiscover.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/ProfileSetupModal.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/RecentSearches.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/SearchAutocomplete.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/SearchBar.tsx | 1 | 0 | LIVE |
 | components-legacy/discovery/ToSCheckbox.tsx | 1 | 1 | LIVE |
-| components-legacy/discovery/VideoCard.tsx | 4 | 2 | LIVE |
+| components-legacy/discovery/VideoCard.tsx | 4 | 1 | LIVE |
 | components-legacy/editor/EditorPage.tsx | 1 | 0 | LIVE |
 | components-legacy/layout/MotionProvider.tsx | 1 | 0 | LIVE |
 | components-legacy/layout/PageTransitionWrapper.tsx | 1 | 0 | LIVE |
 | components-legacy/loyalty/HeroStampCard.tsx | 1 | 0 | LIVE |
 | components-legacy/loyalty/StampCard.tsx | 2 | 0 | LIVE |
-| components-legacy/MapView.tsx | 1 | 1 | LIVE |
+| components-legacy/MapView.tsx | 1 | 0 | LIVE |
 | components-legacy/nail/TechPortfolio.tsx | 1 | 0 | LIVE |
 | components-legacy/onboarding/SetupWizard.tsx | 1 | 0 | LIVE |
 | components-legacy/onboarding/steps/GoLiveStep.tsx | 1 | 0 | LIVE |
@@ -259,26 +181,125 @@ Counts are DIRECT import edges only (path-resolved, not name-matched), not trans
 | components-legacy/salon/SalonModeToggle.tsx | 1 | 0 | LIVE |
 | components-legacy/salon/SalonReviews.tsx | 1 | 0 | LIVE |
 | components-legacy/salon/SalonWalkInPanel.tsx | 1 | 0 | LIVE |
-| components-legacy/SalonCard.tsx | 5 | 4 | LIVE |
+| components-legacy/SalonCard.tsx | 5 | 2 | LIVE |
 | components-legacy/shared/ClientSelectorDropdown.tsx | 3 | 0 | LIVE |
 | components-legacy/staff/StaffAvailability.tsx | 1 | 0 | LIVE |
-| components-legacy/staff/StaffProfilePage.tsx | 2 | 1 | LIVE |
+| components-legacy/staff/StaffProfilePage.tsx | 2 | 0 | LIVE |
 | components-legacy/ui/AddressAutocomplete.tsx | 1 | 0 | LIVE |
 | components-legacy/ui/Breadcrumb.tsx | 1 | 0 | LIVE |
 | components-legacy/ui/CategoryTree.tsx | 2 | 0 | LIVE |
 | components-legacy/ui/DateRangePicker.tsx | 1 | 0 | LIVE |
-| components-legacy/ui/EmptyState.tsx | 12 | 8 | LIVE |
+| components-legacy/ui/EmptyState.tsx | 12 | 6 | LIVE |
 | components-legacy/ui/ErrorFallback.tsx | 9 | 0 | LIVE |
 | components-legacy/ui/ErrorState.tsx | 4 | 1 | LIVE |
 | components-legacy/ui/ExpandableTabs.tsx | 1 | 0 | LIVE |
 | components-legacy/ui/ExportButton.tsx | 1 | 0 | LIVE |
-| components-legacy/ui/FilterBar.tsx | 2 | 1 | LIVE |
-| components-legacy/ui/ImageFallback.tsx | 1 | 3 | LIVE |
+| components-legacy/ui/FilterBar.tsx | 2 | 0 | LIVE |
+| components-legacy/ui/ImageFallback.tsx | 1 | 2 | LIVE |
 | components-legacy/ui/ImageUpload.tsx | 1 | 1 | LIVE |
-| components-legacy/ui/interactive-hover-button.tsx | 3 | 1 | LIVE |
-| components-legacy/ui/LanguageSwitcher.tsx | 1 | 1 | LIVE |
-| components-legacy/ui/PWAInstallPrompt.tsx | 1 | 1 | LIVE |
-| components-legacy/ui/QuickPreviewSheet.tsx | 2 | 1 | LIVE |
-| components-legacy/ui/SearchAutocomplete.tsx | 2 | 1 | LIVE |
+| components-legacy/ui/interactive-hover-button.tsx | 3 | 0 | LIVE |
+| components-legacy/ui/LanguageSwitcher.tsx | 1 | 0 | LIVE |
+| components-legacy/ui/PWAInstallPrompt.tsx | 1 | 0 | LIVE |
+| components-legacy/ui/QuickPreviewSheet.tsx | 2 | 0 | LIVE |
+| components-legacy/ui/SearchAutocomplete.tsx | 2 | 0 | LIVE |
 | components-legacy/ui/SolenExclusiveBadge.tsx | 1 | 0 | LIVE |
-| components-legacy/ui/Spinner.tsx | 49 | 40 | LIVE |
+| components-legacy/ui/Spinner.tsx | 49 | 36 | LIVE |
+
+## lib/ subdirectory orphan sweep (Ring 10)
+
+Targets: .ts/.tsx files under lib/*/ (subdirectories only; lib/*.ts top-level was Ring 4b). Importers scanned from app/, components/, components-legacy/, hooks/, lib/, scripts/, supabase/ (path-resolved, same regex-import approach as the census above).
+
+- Total lib/*/ files scanned: 53
+- 0-importer (orphan): 1
+
+| file | importers |
+|---|---|
+| lib/auth/index.ts | 0 |
+| lib/ai/recommendations.ts | app/api/recommendations/route.ts |
+| lib/auth/require.ts | lib/auth/index.ts |
+| lib/barber/visit-cycle-algorithm.ts | app/api/cron/barber-smart-reminders/route.ts |
+| lib/bookings/auto-assign.ts | app/api/bookings/route.ts |
+| lib/bookings/claim-slot.ts | app/api/bookings/[id]/reschedule/route.ts |
+| lib/bookings/notify-upcharge.ts | app/api/bookings/[id]/dispute/route.ts |
+| lib/dashboard/category-nav.ts | components-legacy/dashboard/DashboardLayout.tsx |
+| lib/discovery/hair-cuts.ts | components-legacy/discovery/ProgressiveFilter.tsx |
+| lib/discovery/public-columns.ts | app/api/discovery/similar/route.ts |
+| lib/email-templates/booking-notifications.ts | app/api/stripe/webhook/route.ts |
+| lib/email-templates/off-peak.ts | app/api/off-peak/route.ts |
+| lib/email-templates/welcome-series.ts | app/api/cron/welcome-series/route.ts |
+| lib/gdpr/anonymize-guest.ts | app/api/profile/request-deletion/route.ts |
+| lib/nail/ai-budget.ts | app/api/admin/nail/generate/route.ts |
+| lib/search/category-detect.ts | app/api/search/smart/route.ts |
+| lib/security/ssrf-guard.ts | lib/ai-vision.ts |
+| lib/ai/translate.ts | app/api/salons/[slug]/route.ts, app/api/salons/route.ts |
+| lib/barber/loyalty-qr.ts | app/api/loyalty/qr/[cardId]/route.ts, app/api/loyalty/stamp/route.ts |
+| lib/barber/walkin-availability.ts | app/api/walkin/availability/route.ts, app/api/walkin/nearby/route.ts |
+| lib/bookings/charge-fee.ts | app/api/cron/no-show/route.ts, lib/bookings/customer-cancel-money.ts |
+| lib/bookings/customer-cancel-money.ts | app/api/bookings/[id]/cancel/route.ts, app/api/bookings/[id]/quick-action/route.ts |
+| lib/bookings/notify-no-show-fee.ts | app/api/cron/no-show/route.ts, app/api/walkin/queue/[id]/route.ts |
+| lib/bookings/refund-config.ts | lib/bookings/issue-refund.ts, lib/purchases/issue-purchase-refund.ts |
+| lib/email-templates/salon-onboarding.ts | app/api/cron/salon-onboarding/route.ts, app/api/salons/route.ts |
+| lib/loyalty/perks.ts | app/api/promo/validate/route.ts, app/api/stripe/booking-pay-intent/route.ts |
+| lib/nail/ai-prompts.ts | app/api/admin/nail/generate/route.ts, components-legacy/dashboard/nail/AiArtGenerator.tsx |
+| lib/purchases/issue-purchase-refund.ts | app/api/admin/purchase-refund/route.ts, app/api/salon/retail/[id]/refund/route.ts |
+| lib/purchases/notify-purchase-refund.ts | app/api/admin/purchase-refund/route.ts, app/api/salon/retail/[id]/refund/route.ts |
+| lib/referral/code.ts | app/api/referral/complete/route.ts, app/api/referral/route.ts |
+| lib/slots/overlap.ts | app/api/cron/generate-slots/route.ts, scripts/ring3b-kill-test.ts |
+| lib/walkin/join.ts | app/api/walkin/queue/remote-join/route.ts, app/api/walkin/queue/route.ts |
+| lib/bookings/notify-refund.ts | app/api/admin/booking-disputes/[id]/action/route.ts, app/api/bookings/[id]/refund/route.ts, app/api/bookings/[id]/report/route.ts |
+| lib/bookings/off-session-charge.ts | app/api/cron/pre-charge/route.ts, lib/bookings/charge-fee.ts, lib/bookings/dispute-engine.ts |
+| lib/constants/categories.ts | app/[locale]/dashboard/settings/page.tsx, app/[locale]/onboarding/salon/page.tsx, components-legacy/onboarding/steps/SalonProfileStep.tsx |
+| lib/diagrams/interactive-zone.ts | components-legacy/dashboard/barber/HeadDiagram.tsx, components-legacy/shared/BodyDiagram.tsx, components-legacy/shared/InteractiveZoneDiagram.tsx |
+| lib/walkin/authz.ts | app/api/walkin/queue/status/route.ts, app/api/walkin/review/route.ts, app/api/walkin/tip/route.ts |
+| lib/bookings/reference.ts | app/api/bookings/guest-lookup/route.ts, app/api/bookings/resend-access/route.ts, app/api/bookings/route.ts, app/api/profile/request-deletion/route.ts |
+| lib/email-templates/audit-notifications.ts | lib/bookings/notify-no-show-fee.ts, lib/bookings/notify-refund.ts, lib/bookings/notify-upcharge.ts, lib/notifications.ts |
+| lib/salons/public-columns.ts | app/api/salons/route.ts, app/api/salons/trending/route.ts, app/api/search/treatments/route.ts, scripts/ring2d-kill-test.ts |
+| lib/bookings/dispute-engine.ts | app/api/admin/booking-disputes/[id]/action/route.ts, app/api/bookings/[id]/dispute/route.ts, app/api/bookings/[id]/escalate/route.ts, app/api/bookings/[id]/report/route.ts, app/api/stripe/webhook/route.ts |
+| lib/bookings/guest-access.ts | app/[locale]/confirmation/page.tsx, app/api/bookings/guest-lookup/route.ts, app/api/bookings/resend-access/route.ts, app/api/bookings/route.ts, lib/bookings/authorize.ts |
+| lib/pricing/bundle.ts | app/[locale]/dashboard/bundles/page.tsx, app/[locale]/dev/bundle-builder/page.tsx, app/api/bookings/route.ts, app/api/salon/bundles/route.ts, app/api/stripe/booking-pay-intent/route.ts |
+| lib/referral/complete-referral.ts | app/api/bookings/[id]/confirm/route.ts, app/api/bookings/route.ts, app/api/referral/complete/route.ts, app/api/stripe/webhook/route.ts, scripts/ring8-kill-test.ts |
+| lib/search/embeddings.ts | app/api/admin/search/generate-embeddings/route.ts, app/api/salons/route.ts, app/api/salons/search/route.ts, app/api/search/no-results/route.ts, app/api/search/smart/route.ts |
+| lib/time/zurich.ts | app/api/cron/daily-digest/route.ts, app/api/cron/generate-slots/route.ts, app/api/slots/[id]/route.ts, app/api/slots/bulk/route.ts, app/api/slots/route.ts |
+| lib/barber/wait-time-calculator.ts | app/api/walkin/queue-stats/route.ts, app/api/walkin/queue/route.ts, app/api/walkin/queue/status/route.ts, lib/barber/walkin-availability.ts, lib/barber/walkin-ticket.ts, lib/walkin/join.ts |
+| lib/barber/walkin-ticket.ts | app/api/bookings/walk-in/route.ts, app/api/dashboard/walkin-analytics/route.ts, app/api/stripe/webhook/route.ts, app/api/walkin/confirm/route.ts, app/api/walkin/queue/status/route.ts, lib/walkin/join.ts |
+| lib/bookings/authorize.ts | app/api/bookings/[id]/confirm/route.ts, app/api/bookings/[id]/dispute/route.ts, app/api/bookings/[id]/escalate/route.ts, app/api/bookings/[id]/report/route.ts, app/api/bookings/[id]/reschedule/route.ts, app/api/bookings/[id]/route.ts |
+| lib/bookings/issue-refund.ts | app/api/admin/booking-disputes/[id]/action/route.ts, app/api/admin/salons/[id]/freeze/route.ts, app/api/bookings/[id]/cancel/route.ts, app/api/bookings/[id]/refund/route.ts, app/api/bookings/[id]/report/route.ts, lib/bookings/customer-cancel-money.ts |
+| lib/loyalty/status.ts | app/[locale]/rewards/RewardsView.tsx, app/[locale]/rewards/page.tsx, app/api/loyalty/status/route.ts, app/api/promo/validate/route.ts, app/api/stripe/booking-pay-intent/route.ts, lib/loyalty/perks.ts |
+| lib/search/filter-availability.ts | app/[locale]/[city]/[category]/page.tsx, app/[locale]/barbershop/page.tsx, app/[locale]/coiffeur/page.tsx, app/[locale]/nails/page.tsx, app/[locale]/search/page.tsx, app/[locale]/spa/page.tsx |
+| lib/constants/billing.ts | app/api/admin/commission/route.ts, app/api/cron/pre-charge/route.ts, app/api/stripe/booking-pay-intent/route.ts, app/api/stripe/create-payment-intent/route.ts, app/api/stripe/webhook/purchase-handler.ts, app/api/stripe/webhook/route.ts, app/api/walkin/pay-intent/route.ts, lib/bookings/charge-fee.ts, lib/bookings/dispute-engine.ts |
+
+## Ring 10 memo (dead-code deep census follow-through, 2026-07-11)
+
+Hand-written notes for what the auto-generated tables above don't say by themselves.
+
+### (a) components-legacy: 78 DEAD files deleted
+
+Every file the ring 4c census marked DEAD (0 live-tree importers, 0 intra-legacy importers) was re-verified this ring with a fresh grep pass before deletion, not just carried over from the old table. The fresh pass matters because a DEAD file can be imported only by another DEAD file (import-chain rot), and the census's intra-legacy column exists precisely to catch that: a file with `intra > 0` was routed to LEAF-CHECK instead of straight deletion, even if its live-tree count was 0. All 78 re-confirmed as truly reachable from nowhere (`git status --short` shows exactly 78 `D  components-legacy/...` entries). Most are orphaned page-section variants superseded by a current equivalent (home/*Section*, salon/Salon*, discovery/*), or fragments of features already turned off (chat typing/price-offer UI, walk-in remote-join/express-rebook predating the pay-first queue flow). Feature-shaped groups got `_design-system/REMOVED.md` lines (nail booking steps, chat typing/price-offer fragments, walk-in express-rebook/remote-join/wait-time-display, plus a correction to a stale ring-4a KEEP note on `dashboard/LastMinuteManager.tsx` that had gone dead since); generic single-file dead UI leaves (skeletons, dropdowns, badges with no feature identity) did not get graveyard lines, per the intent's "feature-shaped groups only" instruction.
+
+### (b) lib/*/ orphan sweep: 5 deleted, 1 kept
+
+Of the lib/*/ subdirectory files with 0 importers found by the extended census (task 3), 5 were genuinely dead and deleted:
+
+- `lib/barber/chair-availability.ts`
+- `lib/nail/infill-calculator.ts`
+- `lib/nail/station-availability.ts`
+- `lib/persona/deriv.ts`
+- `lib/vouchers/validate.ts`
+
+1 pair was kept despite showing 0 (or effectively 0) importers under the regex-import scan: `lib/auth/index.ts` and `lib/auth/require.ts`. The census's import-graph approach only catches `from "..."` path references, and these two are named directly in prose by `.claude/hooks/no-getsession-authz-gate.py:84` ("Shared helpers already do this: lib/auth/require.ts requireAuth()/requireAdmin()...") as THE canonical post-getSession()-migration authz helpers for the whole backend (2026-07-10 migration, commit 9783e5711). A regex-based importer count can't see prose references or every alias path a route might use to reach `requireAuth`/`requireAdmin`/`requireSalonOwner`/`requireRole`; deleting a file a live enforcement gate calls out by name and path would be exactly the false-positive this ring was warned against. Kept, not deleted.
+
+### (c) tsconfig.app.json / tsconfig.node.json deleted
+
+Both were dead Vite leftovers (this project is Next.js, not Vite). Verified with a fresh grep before deletion: `tsconfig.json` has no `references` array pointing at either file, and neither `package.json` nor any `*.config.*` in the repo root mentions `tsconfig.node.json` or `tsconfig.app.json`. Zero referrers, safe delete.
+
+### (d) trending route: dormant, not dead
+
+`GET /api/salons/trending` has zero live frontend callers today (ring 2d finding, reconfirmed this ring: `lib/salons/public-columns.ts` importers list includes it only as a route file that imports the shared column allowlist, not as a caller of the route itself). Not deleted. It is now correctly cached (public-columns trim + revalidate fix landed in an earlier ring) and may be intended for a future surface (a "trending near you" section, an admin dashboard widget). Treating a 0-caller API route as dead code is a different judgment call than treating a 0-importer component as dead code: routes are public contracts that can be called by a surface not yet built, or by an external consumer outside this repo's static import graph (solen-mobile, an admin script, a future cron). Flagging for an explicit owner decision (keep dormant vs. delete vs. wire up) rather than silently removing it.
+
+### (e) NEW this round: 24 components-legacy files cascaded to 0-importer status
+
+Deleting the 78 confirmed-DEAD files in (a) removed the only importers of 24 other components-legacy files that were LEAF-CHECK (or otherwise non-zero) in the pre-deletion count, because their sole referrer was itself one of the 78 deleted files (the classic transitive-dead-code chain the census's intra-legacy column is designed to surface). A fresh `node scripts/legacy-census.mjs` run after the ring 10 deletions confirms these now sit at 0 live-tree / 0 intra-legacy importers, which is why they already appear as DEAD rows in the "Files" table above:
+
+`components-legacy/nail/InspoBoard.tsx`, `components-legacy/nail/InspoUploader.tsx`, `components-legacy/nail/AllergyWarning.tsx`, `components-legacy/nail/MaterialSelector.tsx`, `components-legacy/nail/ShapeLengthPicker.tsx`, `components-legacy/discovery/StaffPortfolio.tsx`, `components-legacy/discovery/ReportButton.tsx`, `components-legacy/discovery/UserPostsSection.tsx`, `components-legacy/home/SectionCarousel.tsx`, `components-legacy/icons/category/BarberIcon.tsx`, `components-legacy/icons/category/CoiffeurIcon.tsx`, `components-legacy/icons/category/NailsIcon.tsx`, `components-legacy/icons/category/SpaIcon.tsx`, `components-legacy/salon/ServiceCategoryFilter.tsx`, `components-legacy/search/MobileViewToggle.tsx`, `components-legacy/search/SearchCriteriaChips.tsx`, `components-legacy/search/SearchResultGrid.tsx`, `components-legacy/ui/beauty-icons.tsx`, `components-legacy/ui/date-picker.tsx`, `components-legacy/ui/GlassModal.tsx`, `components-legacy/ui/PhotoLightbox.tsx`, `components-legacy/ui/ScrollableFilterRow.tsx`, `components-legacy/ui/Skeleton.tsx`, `components-legacy/coiffeur/AiMatcherModal.tsx` (24 total; the census summary's DEAD count of 24, up from the pre-deletion residual of 0 among the surviving 189 files, is entirely this cascade, not a missed re-verification).
+
+These 24 were NOT deleted this ring (out of scope: the punch list and the ring 10 task both scoped this round to the pre-identified 78, not a second recursive pass), and are logged here explicitly as a **scoped-out next-ring candidate** rather than silently dropped. Only 1 of the 24 (`InspoBoard.tsx`) had been separately surfaced in reviewer notes this round; the other 23 were found only by this fresh census diff and had not been individually called out before. Next ring should re-run the same re-verify-then-delete protocol from task (1) on this list before touching it, since a second cascade is possible if any of these 24 themselves gate further LEAF-CHECK files.

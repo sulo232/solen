@@ -14,6 +14,9 @@
 // This is a MEMO for a later ring. It does NOT delete anything and does NOT walk the intra-legacy
 // chain transitively (deliberate: verdict LEAF-CHECK means "0 live-tree importers but >=1
 // intra-legacy importer, go trace that importer by hand before deleting").
+//
+// Ring 10 extension: also runs a lib/*/ SUBDIRECTORY orphan sweep (see below), same
+// resolved-import-graph approach, appended as a second section of the same report.
 
 import { readdirSync, readFileSync, existsSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, sep, dirname } from "node:path";
@@ -192,8 +195,77 @@ for (const r of rows) {
 }
 lines.push("");
 
+// ---------------------------------------------------------------------------
+// lib/ SUBDIRECTORY orphan sweep (Ring 10, extends the components-legacy census
+// above with the same resolved-import-graph approach). Targets are .ts/.tsx
+// files under lib/*/ (subdirectories only; lib/*.ts top-level files were
+// already swept in Ring 4b). Importers are scanned from every tree that can
+// legitimately reference a lib helper: app/, components/, components-legacy/,
+// hooks/, lib/ itself, scripts/, and supabase/ (so a helper only used by a
+// still-running script or an edge function is NOT flagged as an orphan).
+const isImporterSrc = (_full, name) => /\.(tsx|ts|jsx|js|mjs)$/.test(name);
+const LIB_DIR = join(REPO_ROOT, "lib");
+const IMPORTER_SCAN_DIRS = ["app", "components", "components-legacy", "hooks", "lib", "scripts", "supabase"]
+  .map((d) => join(REPO_ROOT, d))
+  .filter(existsSync);
+
+const libSubdirFiles = walk(LIB_DIR, isSrc).filter((f) => relative(LIB_DIR, f).split(sep).length > 1);
+const allImporterFiles = IMPORTER_SCAN_DIRS.flatMap((d) => walk(d, isImporterSrc));
+
+const libFileSet = new Set(libSubdirFiles.map(rel));
+const libImporters = new Map();
+for (const f of libSubdirFiles) libImporters.set(rel(f), new Set());
+
+for (const f of allImporterFiles) {
+  let src;
+  try {
+    src = readFileSync(f, "utf8");
+  } catch {
+    continue;
+  }
+  const importerRel = rel(f);
+  const importerDir = dirname(f);
+  for (const spec of extractSpecifiers(src)) {
+    if (!spec.startsWith(".") && !spec.startsWith("@/")) continue;
+    const resolved = resolveLocal(spec, importerDir);
+    if (!resolved) continue;
+    const targetRel = rel(resolved);
+    if (!libFileSet.has(targetRel)) continue;
+    if (targetRel === importerRel) continue;
+    libImporters.get(targetRel).add(importerRel);
+  }
+}
+
+const libRows = libSubdirFiles
+  .map((f) => {
+    const file = rel(f);
+    const importers = [...libImporters.get(file)].sort();
+    return { file, importerCount: importers.length, importers };
+  })
+  .sort((a, b) => a.importerCount - b.importerCount || a.file.localeCompare(b.file));
+const libOrphanCount = libRows.filter((r) => r.importerCount === 0).length;
+
+lines.push("## lib/ subdirectory orphan sweep (Ring 10)");
+lines.push("");
+lines.push(
+  "Targets: .ts/.tsx files under lib/*/ (subdirectories only; lib/*.ts top-level was Ring 4b). " +
+    "Importers scanned from app/, components/, components-legacy/, hooks/, lib/, scripts/, " +
+    "supabase/ (path-resolved, same regex-import approach as the census above).",
+);
+lines.push("");
+lines.push(`- Total lib/*/ files scanned: ${libRows.length}`);
+lines.push(`- 0-importer (orphan): ${libOrphanCount}`);
+lines.push("");
+lines.push("| file | importers |");
+lines.push("|---|---|");
+for (const r of libRows) {
+  lines.push(`| ${r.file} | ${r.importerCount === 0 ? "0" : r.importers.join(", ")} |`);
+}
+lines.push("");
+
 const outPath = join(REPO_ROOT, "_plans/LEGACY_CENSUS.md");
 writeFileSync(outPath, lines.join("\n"));
 console.log(
-  `Wrote ${rel(outPath)}: ${counts.total} files (${counts.LIVE} LIVE, ${counts["LEAF-CHECK"]} LEAF-CHECK, ${counts.DEAD} DEAD)`,
+  `Wrote ${rel(outPath)}: ${counts.total} components-legacy files (${counts.LIVE} LIVE, ${counts["LEAF-CHECK"]} LEAF-CHECK, ${counts.DEAD} DEAD); ` +
+    `${libRows.length} lib/*/ files (${libOrphanCount} 0-importer orphans)`,
 );

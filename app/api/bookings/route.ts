@@ -85,9 +85,20 @@ export async function GET(request: NextRequest) {
   }
 
   // ── Default: USER-scoped "my bookings" (unchanged contract → { items }).
+  // Ring 10 hygiene follow-up from ring 2d: `*` shipped every bookings column (Stripe/access-token
+  // internals included) here too. Trimmed to the same canonical Booking shape BookingCard.tsx /
+  // the sibling /api/bookings/user route already use for a user's own bookings (id through
+  // review_prompt_sent), same-user data so this is a payload-only change, not an access change.
+  // Fresh Ring 10 grep (web + solen-mobile) found ZERO live callers of this branch today: the
+  // actual Termine/"my bookings" page (profile/bookings, BookingsList.tsx) calls
+  // /api/bookings/user?tab=..., which already got this exact trim in an earlier ring. Trimming
+  // here anyway for defense in depth (an unused branch still leaks select("*") if ever re-wired).
   let query = supabase
     .from("bookings")
-    .select("*, salons(name, slug, cover_photo_url), services(name_de, name_en, duration_minutes), staff_members(name)", { count: "exact" })
+    .select(
+      "id, user_id, salon_id, service_id, slot_id, starts_at, ends_at, price_paid, status, is_first_visit, is_recurring, sms_sent_24h, sms_sent_1h, review_prompt_sent, salons(name, slug, cover_photo_url), services(name_de, name_en, duration_minutes), staff_members(name)",
+      { count: "exact" },
+    )
     .eq("user_id", user.id)
     .order("starts_at", { ascending: false })
     .range(offset, offset + limit - 1);
