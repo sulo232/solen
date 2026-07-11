@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser, createAdminSupabaseClient } from "@/lib/supabase";
 import { claimSlot } from "@/lib/bookings/claim-slot";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
+import { validateBody, bookingRescheduleSchema } from "@/lib/validations";
 
 // Reschedule is allowed up to this many hours before the appointment (platform rule).
 const RESCHEDULE_MIN_LEAD_HOURS = 24;
@@ -11,14 +12,15 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: bookingId } = await params;
-  const { new_starts_at, new_ends_at } = await req.json();
-
-  if (!new_starts_at || !new_ends_at) {
+  const body = await req.json().catch(() => null);
+  const { data: validated, error: valError } = validateBody(bookingRescheduleSchema, body);
+  if (valError) {
     return NextResponse.json(
-      { error: "new_starts_at and new_ends_at required" },
+      { error: "new_starts_at and new_ends_at required (ISO datetime)", message: valError.message },
       { status: 400 }
     );
   }
+  const { new_starts_at, new_ends_at } = validated;
 
   // Centralized authorization (Task B). Replaces getSessionUser + the ad-hoc
   // `.eq("customer_id", user.id)` ownership filter (which referenced a column that does

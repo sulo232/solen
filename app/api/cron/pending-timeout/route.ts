@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
             locale
           )
         );
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/pending-timeout] cancellation email failed:", err); }
     }
 
     // Since they were pending approval, payment was likely held/authorized, so we might need to cancel Stripe intent
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
         const { getStripe } = await import("@/lib/stripe");
         const stripe = getStripe();
         await stripe.paymentIntents.cancel(booking.payment_intent_id).catch((err) => console.error("[CronPendingTimeout] failed to cancel Stripe payment intent:", err));
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/pending-timeout] Stripe payment intent cancel failed:", err); }
     }
 
     cancelled++;

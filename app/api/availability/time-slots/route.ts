@@ -106,7 +106,7 @@ export async function GET(req: NextRequest) {
         const fmt = new Intl.DateTimeFormat('de-CH', { timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hour12: false });
         for (const b of mine ?? []) mineTimes.add(fmt.format(new Date(b.starts_at)));
       }
-    } catch { /* anon / cookie-less callers: no personal greying, the 409 guard remains */ }
+    } catch (err) { console.error("[availability/time-slots] mine-times lookup failed (anon / cookie-less callers: no personal greying, the 409 guard remains):", err); }
 
     // Every returned slot is already filtered to status='available' above, so it IS bookable.
     // DateTimeStep gates each slot on `slot.isAvailable`; emit it explicitly so the field the

@@ -260,7 +260,7 @@ export async function POST(
           subject: `Ein Termin ist frei geworden bei ${booking.salons?.name ?? "einem Salon"}!`,
           html: `<p>Ein Termin für <strong>${booking.services?.name_de ?? "deinen Service"}</strong> am <strong>${new Date(booking.starts_at).toLocaleDateString("de-CH")}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
         });
-      } catch { /* non-fatal */ }
+      } catch (err) { console.error("[bookings/cancel] waitlist notification email failed:", err); }
     }
     await adminForWaitlist.from("waitlist").update({ notified_at: new Date().toISOString() }).eq("id", entry.id);
   }
@@ -315,7 +315,7 @@ export async function POST(
 
   try {
     await Promise.allSettled(promises);
-  } catch { /* non-fatal */ }
+  } catch (err) { console.error("[bookings/cancel] cancellation notification dispatch failed:", err); }
 
   return NextResponse.json({
     data: {

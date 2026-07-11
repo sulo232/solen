@@ -24,7 +24,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const admin = createAdminSupabaseClient();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
-      try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString("de-CH") }, "de")); } catch {}
+      try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString("de-CH") }, "de")); } catch (err) { console.error("[slots/[id]] DELETE cancellation email failed:", err); }
     }
     const { error: freeError } = await supabase.from("availability_slots").update({ status: "available", booking_id: null, booked_by: null }).eq("id", id);
     if (freeError) return NextResponse.json({ message: freeError.message, code: "DB_ERROR" }, { status: 500 });
@@ -100,7 +100,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const admin = createAdminSupabaseClient();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
-      try { await sendEmail(bookingReschedule(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, "de")); } catch {}
+      try { await sendEmail(bookingReschedule(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, "de")); } catch (err) { console.error("[slots/[id]] PATCH reschedule email failed:", err); }
     }
   }
 

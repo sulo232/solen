@@ -45,7 +45,7 @@ export async function DELETE(
           salon: slot.salons?.name ?? "Salon",
           date: new Date(slot.starts_at).toLocaleDateString("de-CH"),
         }, "de"));
-      } catch { /* non-fatal */ }
+      } catch (err) { console.error("[availability/manage] cancellation email failed:", err); }
     }
 
     const { error: freeError } = await supabase

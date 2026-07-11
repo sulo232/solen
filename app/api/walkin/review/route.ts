@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { findQueueEntryByToken } from "@/lib/walkin/authz";
+import { validateBody, walkinReviewSchema } from "@/lib/validations";
 
 // POST /api/walkin/review — a guest walk-in rates their finished visit, gated ONLY on the
 // queue tracking token (the customer is usually a guest, no auth). Submitted from the merged
@@ -23,16 +24,14 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json().catch(() => null);
-  const token = typeof body?.token === "string" ? body.token : null;
-  const rating = body?.rating; // strict: reject strings/booleans/arrays (no Number() coercion)
-  const commentRaw = typeof body?.comment === "string" ? body.comment.trim().slice(0, 600) : "";
-  const comment = commentRaw.length > 0 ? commentRaw : null;
-
-  if (!token) return NextResponse.json({ error: "token required" }, { status: 400 });
-  if (typeof rating !== "number" || !Number.isInteger(rating) || rating < 1 || rating > 5) {
-    return NextResponse.json({ error: "rating must be an integer 1-5" }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const { data: validated, error: valError } = validateBody(walkinReviewSchema, rawBody);
+  if (valError) {
+    return NextResponse.json({ error: "token required, rating must be an integer 1-5", message: valError.message }, { status: 400 });
   }
+  const { token, rating } = validated;
+  const commentRaw = validated.comment?.trim().slice(0, 600) ?? "";
+  const comment = commentRaw.length > 0 ? commentRaw : null;
 
   const admin = createAdminSupabaseClient();
 

@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
             subject: `Zahlung fehlgeschlagen — ${(booking.salons as any)?.name ?? "Salon"}`,
             html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
           });
-        } catch { /* email non-fatal */ }
+        } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
       }
     }
   }

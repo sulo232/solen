@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
     if (rfm) {
       rfmMap = new Map(rfm.map((r: { client_id: string; segment_tag: string; total_spent: number }) => [r.client_id, { segment_tag: r.segment_tag, total_spent: r.total_spent }]));
     }
-  } catch { /* view may not exist yet */ }
+  } catch (err) { console.error("[salon/clients] RFM segments lookup failed (view may not exist yet):", err); }
 
   const clients = Array.from(clientMap.values()).map((c) => {
     const p = profileMap.get(c.user_id);

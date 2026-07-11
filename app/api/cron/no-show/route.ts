@@ -126,7 +126,7 @@ export async function GET(req: NextRequest) {
     if (newCount >= 3) {
       try {
         await logAuditEvent(req, "system", "customer_excessive_no_shows", "user", booking.user_id, { count: newCount });
-      } catch { /* ignore */ }
+      } catch (err) { console.error("[cron/no-show] audit log failed:", err); }
     }
 
     processed++;

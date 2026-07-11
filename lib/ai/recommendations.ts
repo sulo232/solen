@@ -44,8 +44,9 @@ function extractLocation(headers: Headers): string | null {
           ? parsed.city
           : parsed.city?.names?.en;
       if (city) return city;
-    } catch {
-      // malformed header — fall through to Vercel/null
+    } catch (err) {
+      // malformed header, fall through to Vercel/null
+      console.error("[ai/recommendations] x-nf-geo header parse failed:", err);
     }
   }
   return headers.get('x-vercel-ip-city') || null;
