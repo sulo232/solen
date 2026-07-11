@@ -89,6 +89,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
   - [ ] discriminate proof: toggle a real flag, responses differ within TTL; ban a test user, gating holds
 - [ ] fix 2 dead revalidate exports (salons/trending, analytics/platform , cookie client defeats ISR); prove via warm-hit timing + live-site response headers
 - [ ] CDN caching headers, s-maxage+SWR, anon variants only, NO Redis layer
+  - [ ] FIRST resolve the netlify.toml conflict (found Ring 0-adjacent, 2026-07-11): `[[headers]] for="/api/*"` forces Cache-Control no-store; confirm precedence vs function-set headers on Netlify (function headers usually win, but prove it) and carve out the cacheable routes from that blanket rule if needed
   - [ ] /api/salons
   - [ ] /api/discovery/feed
   - [ ] /api/salons/[slug]
@@ -113,8 +114,8 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
   - [ ] per-run timing + query-count instrumentation
   - [ ] O(n²) JS overlap scan -> sort + sweep, write semantics untouched
 - [ ] availability_slots purge memo
-  - [ ] dry-run SELECT count of dead rows (past, never-booked)
-  - [ ] owner decision memo (DELETE on prod = owner-only, never agent-executed)
+  - [x] dry-run SELECT count of dead rows; `verified:` live SQL 2026-07-11: 156,296 PAST status='available' rows + 826 past booked, of 164,063 total (95% of the table is dead history; live future inventory = only 6,941 rows / few MB)
+  - [ ] OWNER DECISION: purge past status='available' rows only (never booked ones , bookings reference their slots; keep booked history). Recommendation: yes, with a weekly purge cron thereafter. DELETE on prod = owner-only, never agent-executed.
 - [ ] close, per rewritten cron
   - [ ] before->after wall time + query count from the new instrumentation
   - [ ] old-vs-new output diff on the same dev dataset (empty diff = pass)
@@ -157,7 +158,7 @@ One commit per category, caller-grep evidence (app/ + components-legacy/ + solen
   - [ ] PITR status confirmed (owner dashboard or read-only get_project)
   - [ ] restore runbook + RPO/RTO written into the ops doc
   - [ ] nFADP retention note (audit-log growth, PII in logs, retention windows)
-- [ ] re-verify thumb-proxy prod outage claim (curl the live site); fix or close
+- [x] re-verify thumb-proxy prod outage claim; `verified:` 2026-07-11 curls: live site HTML-404s /api/discovery/thumb/[id] for BOTH real and garbage ids (Next 404 page, so the route is absent from the live build), while dev serves the same ids 200 image/jpeg X-Cache:STORAGE. Discriminators: live serves /api/discovery/category-meta (2026-06-30 code) but git ls-tree shows origin/main (2026-05-21) lacks BOTH , so the live build comes from neither current local main nor origin/main. ROOT CAUSE: the live code state lacks the route; NOT a code bug, nothing to fix in-repo. OWNER ACTION: bring the live site up to current main via your usual manual `sync`; that also takes the entire security-sweep fix set live (it is NOT live today).
 - [ ] migration backfill VERIFY: backfilled files (Ring 11) apply cleanly on a Supabase branch (branch = cost-confirmed op)
 - [ ] voucher/credits owner memo: build the spend path vs drop the 4 never-wired RPCs (redeem_voucher, redeem_user_credits, restore_voucher, restore_user_credits)
 - [ ] cost snapshot page (Supabase get_cost, Netlify, Upstash, Resend, Actions minutes), monthly refresh note
