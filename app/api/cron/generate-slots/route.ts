@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
 import { withCronRun } from "@/lib/cron-run";
+import { classifyOverlapBlocks } from "@/lib/slots/overlap";
 
 // Cron: Generate availability_slots from staff_schedules. Nightly.
 // Bridges staff_schedules -> availability_slots for the next 30 days.
@@ -32,6 +33,11 @@ export async function GET(req: NextRequest) {
     .eq("is_active", true);
 
   let totalGenerated = 0;
+  // RING 3b: lightweight stage timing + counts, returned in `stages` below
+  // (passes through withCronRun into the response body for the GH-actions
+  // log; cron_runs itself only stores ok/processed/duration_ms/errors).
+  let slotsChecked = 0;
+  const slotGenStartedAt = Date.now();
 
   for (const salon of salons ?? []) {
     // Get closures for this salon
@@ -180,6 +186,7 @@ export async function GET(req: NextRequest) {
               : salonServiceIds;
             if (!serviceIds.length) { slotStart = slotEnd; continue; }
 
+            slotsChecked++;
             // Existing rows for this staff+time (any service) in one query.
             const { data: existingRows } = await admin
               .from("availability_slots")
@@ -217,6 +224,8 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const slotGenerationElapsedMs = Date.now() - slotGenStartedAt;
+
   // Post-processing: station limiting for nail salons
   // Block excess concurrent slots when more staff slots exist than physical stations
   //
@@ -226,6 +235,10 @@ export async function GET(req: NextRequest) {
   // reverted back to available so the pass re-decides from a clean slate; manual/
   // vacation blocks are never touched (different block_reason), and booked slots are
   // never touched (different status).
+  let nailSlotsChecked = 0;
+  let nailSlotsBlocked = 0;
+  const nailStartedAt = Date.now();
+
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("nails")) continue;
     try {
@@ -262,24 +275,22 @@ export async function GET(req: NextRequest) {
 
       if (!slots?.length) continue;
 
-      // For each slot, count how many other slots overlap it (including buffer)
-      // If concurrent count > station_count, block the excess
-      for (const slot of slots) {
-        const slotStart = new Date(slot.starts_at);
-        const slotEndBuffered = new Date(new Date(slot.ends_at).getTime() + bufferMs);
-        const concurrent = slots.filter((s) => {
-          if (s.id === slot.id) return false;
-          const sStart = new Date(s.starts_at);
-          const sEnd = new Date(s.ends_at);
-          return sStart < slotEndBuffered && sEnd > slotStart;
-        });
-        // +1 for the slot itself
-        if (concurrent.length + 1 > stationCount) {
-          const { error: blockErr } = await admin.from("availability_slots")
-            .update({ status: "blocked", block_reason: "capacity" })
-            .eq("id", slot.id);
-          if (blockErr) console.error("[generate-slots] nail capacity block failed for salon " + salon.id + " slot " + slot.id + ":", blockErr.message);
-        }
+      nailSlotsChecked += slots.length;
+
+      // RING 3b: the O(n^2) all-pairs scan (for each slot, filter the whole
+      // array for overlap) is replaced by an O(n log n) sort + bounded-window
+      // classification. Same "concurrent count + 1 > capacity" decision per
+      // slot, same blocked-id set; see lib/slots/overlap.ts for the preserved
+      // predicate and scripts/ring3b-kill-test.ts for the equivalence proof
+      // (old O(n^2) logic copied verbatim vs this call, diffed on synthetic
+      // + randomized inputs).
+      const blockedIds = classifyOverlapBlocks(slots, bufferMs, stationCount);
+      nailSlotsBlocked += blockedIds.size;
+      for (const id of blockedIds) {
+        const { error: blockErr } = await admin.from("availability_slots")
+          .update({ status: "blocked", block_reason: "capacity" })
+          .eq("id", id);
+        if (blockErr) console.error("[generate-slots] nail capacity block failed for salon " + salon.id + " slot " + id + ":", blockErr.message);
       }
     } catch (err) {
       // Station check failure must NEVER break slot generation for other salons
@@ -287,10 +298,16 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const nailElapsedMs = Date.now() - nailStartedAt;
+
   // Post-processing: chair limiting for barbershops
   // Same re-evaluate-every-pass approach as the nail-station pass above: revert this
   // cron's own prior capacity blocks ('capacity') before recomputing, never touching
   // manual ('manual') or vacation ('vacation') blocks or booked slots.
+  let barberSlotsChecked = 0;
+  let barberSlotsBlocked = 0;
+  const barberStartedAt = Date.now();
+
   for (const salon of salons ?? []) {
     if (!salon.categories?.includes("barbershop")) continue;
     try {
@@ -323,27 +340,35 @@ export async function GET(req: NextRequest) {
 
       if (!slots?.length) continue;
 
-      for (const slot of slots) {
-        const slotStart = new Date(slot.starts_at);
-        const slotEndBuffered = new Date(new Date(slot.ends_at).getTime() + bufferMs);
-        const concurrent = slots.filter((s) => {
-          if (s.id === slot.id) return false;
-          const sStart = new Date(s.starts_at);
-          const sEnd = new Date(s.ends_at);
-          return sStart < slotEndBuffered && sEnd > slotStart;
-        });
-        if (concurrent.length + 1 > chairCount) {
-          const { error: blockErr } = await admin.from("availability_slots")
-            .update({ status: "blocked", block_reason: "capacity" })
-            .eq("id", slot.id);
-          if (blockErr) console.error("[generate-slots] barber capacity block failed for salon " + salon.id + " slot " + slot.id + ":", blockErr.message);
-        }
+      barberSlotsChecked += slots.length;
+
+      // RING 3b: same O(n log n) replacement as the nail pass above (identical
+      // predicate, see lib/slots/overlap.ts + scripts/ring3b-kill-test.ts).
+      const blockedIds = classifyOverlapBlocks(slots, bufferMs, chairCount);
+      barberSlotsBlocked += blockedIds.size;
+      for (const id of blockedIds) {
+        const { error: blockErr } = await admin.from("availability_slots")
+          .update({ status: "blocked", block_reason: "capacity" })
+          .eq("id", id);
+        if (blockErr) console.error("[generate-slots] barber capacity block failed for salon " + salon.id + " slot " + id + ":", blockErr.message);
       }
     } catch (err) {
       console.error(`[generate-slots] Chair limiting failed for salon ${salon.id}:`, err);
     }
   }
 
-  return { generated: totalGenerated, processed: totalGenerated };
+  const barberElapsedMs = Date.now() - barberStartedAt;
+
+  return {
+    generated: totalGenerated,
+    processed: totalGenerated,
+    // RING 3b: per-stage timing + counts for the GH-actions cron log (not
+    // persisted to cron_runs, which only keeps ok/processed/duration_ms/errors).
+    stages: {
+      slotGeneration: { elapsedMs: slotGenerationElapsedMs, slotsChecked, slotsInserted: totalGenerated },
+      nailCapacity: { elapsedMs: nailElapsedMs, slotsChecked: nailSlotsChecked, slotsBlocked: nailSlotsBlocked },
+      barberCapacity: { elapsedMs: barberElapsedMs, slotsChecked: barberSlotsChecked, slotsBlocked: barberSlotsBlocked },
+    },
+  };
   });
 }
