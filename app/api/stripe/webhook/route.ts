@@ -582,13 +582,24 @@ export async function POST(req: NextRequest) {
 
     case "charge.dispute.closed": {
       // A card-network chargeback resolved. On `lost`, the funds were already
-      // withdrawn from the salon's connected balance (destination charge) — so
-      // decrement that PI's salon_payouts row like a refund, recomputing from the
-      // dispute's own amount (NOT from the already-mutated row) so repeated
-      // deliveries converge (idempotent; the top-level claim also dedups). On
-      // `won` the funds were returned: since `created` only logged (no ledger
-      // touch), there is nothing to restore — leave the ledger as-is. Either way,
-      // write an audit row with the outcome.
+      // withdrawn from the salon's connected balance (destination charge), so
+      // decrement that PI's salon_payouts row like a refund. UNLIKE charge.refunded,
+      // Stripe does not hand this handler a cumulative "amount disputed" fact on
+      // the charge (charge.refunded's amount_refunded trick has no dispute
+      // equivalent without an extra Stripe API call, which this handler avoids), so
+      // recomputing straight off the CURRENT row is not safe: decrementing
+      // payout.gross_amount by dispute.amount is only correct on the FIRST
+      // delivery. A claim-release retry (Stripe redelivery after a mid-flight
+      // crash, once the write already committed once) would decrement AGAIN off
+      // the already-lowered value, silently underpaying the salon (the ring 8 bug).
+      // Fixed with the same CAS-marker idempotency shape this file already uses
+      // for promo_counted_at (above) and the booking_disputes 'charged' transition
+      // (below): a single UPDATE ... WHERE lost_dispute_id IS NULL claims the
+      // decrement AND the marker atomically, so only the FIRST delivery for this
+      // dispute.id ever mutates the row; every later delivery finds the marker
+      // already set and no-ops. On `won` the funds were returned: since `created`
+      // only logged (no ledger touch), there is nothing to restore, leave the
+      // ledger as-is. Either way, write an audit row with the outcome.
       const dispute = event.data.object;
       console.warn("[stripe/webhook] Dispute closed:", dispute.id, dispute.status, dispute.amount / 100, "CHF");
       const disputePiId =
@@ -608,25 +619,52 @@ export async function POST(req: NextRequest) {
         disputeBookingId = disputeBooking?.id ?? null;
 
         if (dispute.status === "lost") {
-          // Mirror charge.refunded: derive the remaining gross from the charge's
-          // ORIGINAL capture minus the lost dispute amount, never from the
-          // (possibly already-decremented) row, so a duplicate delivery converges
-          // to the same value. Guarded read — no payout row ⇒ nothing to adjust.
+          // Guarded read (no payout row means nothing to adjust). Explicit column
+          // list, never select("*") on this table (a table that also carries
+          // salon_id/booking_id), only the fields this recompute actually needs.
           const { data: payout } = await admin
             .from("salon_payouts")
-            .select("*")
+            .select("id, gross_amount, commission_percent")
             .eq("stripe_payment_intent_id", disputePiId)
             .maybeSingle();
           if (payout) {
             const newGross = Math.max(0, payout.gross_amount - dispute.amount / 100); // Rappen → CHF
             const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
             const newNet = Math.round((newGross - newComm) * 100) / 100;
-            await admin.from("salon_payouts").update({
-              gross_amount: newGross,
-              commission_amount: newComm,
-              net_amount: newNet,
-            }).eq("id", payout.id);
-            ledgerAdjusted = true;
+            // CAS: the decrement AND the lost_dispute_id marker are claimed in the
+            // SAME update, gated on the marker still being unset. Only the delivery
+            // that wins this WHERE clause actually mutates the row, a retry or
+            // redelivery for the same dispute.id matches 0 rows and no-ops, so the
+            // row converges on a single decrement no matter how many times this
+            // event (or its retry) runs.
+            const { data: claimedRow, error: claimErr } = await admin
+              .from("salon_payouts")
+              .update({
+                gross_amount: newGross,
+                commission_amount: newComm,
+                net_amount: newNet,
+                lost_dispute_id: dispute.id,
+              })
+              .eq("id", payout.id)
+              .is("lost_dispute_id", null) // CAS guard: only the first delivery for THIS dispute wins.
+              .select("id")
+              .maybeSingle();
+            if (claimErr) {
+              // Column not migrated yet (PGRST204) or a genuine DB error: never apply
+              // a decrement we can't mark as claimed, that would reopen the exact
+              // double-decrement bug this CAS closes. Non-fatal, logged for the
+              // reconcile cron (mirrors the promo_counted_at graceful-degrade above).
+              console.error(
+                "[stripe/webhook] dispute lost ledger CAS failed:",
+                claimErr.message,
+                { event_id: event.id, dispute: dispute.id, payout_id: payout.id },
+              );
+            } else {
+              // claimedRow is null when an earlier delivery already set
+              // lost_dispute_id (this is that no-op retry); non-null only on the
+              // single delivery that actually won the CAS and mutated the row.
+              ledgerAdjusted = !!claimedRow;
+            }
           }
         }
       }
