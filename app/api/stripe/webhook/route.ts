@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
             stripe_payment_method_id: pmId,
           }).eq("payment_intent_id", pi.id)
             .in("status", ["pending", "pending_approval", "confirmed"])
-            .select("id, user_id, referral_code");
+            .select("id, user_id, referral_code, promo_code");
           // Confirm the held slot ONLY if the booking update above actually advanced a still-live
           // booking, AND only the slot still held by THIS booking (.eq("booking_id", bookingId)):
           // a late event must never re-book a slot that was freed or reassigned after cancel.
@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
           // just advanced the booking to confirmed (not a late/duplicate delivery after the
           // booking was already confirmed or moved past it). The helper's own compare-and-swap
           // makes a second call (webhook retry) a safe no-op, never a double credit.
-          const confirmedRow = confirmedRows?.[0] as { id: string; user_id: string | null; referral_code: string | null } | undefined;
+          const confirmedRow = confirmedRows?.[0] as { id: string; user_id: string | null; referral_code: string | null; promo_code: string | null } | undefined;
           if (confirmedRow?.user_id && confirmedRow.referral_code) {
             const { completeReferralForFirstBooking } = await import("@/lib/referral/complete-referral");
             await completeReferralForFirstBooking(admin, confirmedRow.user_id, confirmedRow.referral_code);
@@ -185,6 +185,29 @@ export async function POST(req: NextRequest) {
           // Promo redemption: the use is now RESERVED atomically at checkout (booking-pay-intent's
           // reserve_promo_use call), not counted here on success. No increment on this path anymore
           // (incrementing again here would double-count on top of the checkout-time reservation).
+          //
+          // promo_counted_at (Ring 8, additive column, migration
+          // 20260711150000_backend_loop_promo_counted_flag.sql) is NOT a second counter, it is a
+          // CAS-claimed audit/reconcile marker, set once the first time this webhook observes a
+          // promo-bearing booking as genuinely confirmed+paid (distinct from promo_use_reserved,
+          // which is set earlier at checkout, before payment succeeds). Gated on confirmedRow the
+          // same way the referral completion above is, so a late/duplicate delivery after the
+          // booking already advanced never re-claims it. Never calls increment_promo_use or
+          // reserve_promo_use again (both already ran/are idempotent at checkout), this is
+          // observability only, so a schema-cache miss (column not migrated yet) is caught, logged,
+          // and swallowed, never blocking the money-critical booking confirm above it.
+          if (confirmedRow?.id && confirmedRow.promo_code) {
+            try {
+              const { error: promoClaimErr } = await admin
+                .from("bookings")
+                .update({ promo_counted_at: new Date().toISOString() })
+                .eq("id", confirmedRow.id)
+                .is("promo_counted_at", null);
+              if (promoClaimErr) console.error("[StripeWebhook] promo_counted_at claim failed:", promoClaimErr.message);
+            } catch (promoClaimCatchErr) {
+              console.error("[StripeWebhook] promo_counted_at claim threw:", promoClaimCatchErr);
+            }
+          }
         } else {
           await admin.from("bookings").update({
             payment_status: "deposit_held",

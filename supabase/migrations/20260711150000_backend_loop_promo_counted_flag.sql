@@ -1,0 +1,32 @@
+-- exists-check: `npm run exists promo_counted` -> 0 matches (2026-07-11). Net-new column.
+-- Ring 8 (backend improvement loop): promo-redemption CAS audit marker.
+-- NOT YET applied live as of this commit (the orchestrator applies it, additive,
+-- idempotent ADD COLUMN IF NOT EXISTS) before the webhook code that reads/writes it
+-- ships. Until applied, the webhook's claim write degrades gracefully (PostgREST
+-- PGRST204 "column not found in schema cache" is caught + logged, never blocks the
+-- money-critical booking confirm it sits next to, see app/api/stripe/webhook/route.ts).
+--
+-- Context: the promo-redemption counter (promo_codes.current_uses) is incremented
+-- ONCE per booking by the atomic reserve_promo_use() RPC at CHECKOUT time
+-- (app/api/stripe/booking-pay-intent/route.ts), guarded by bookings.promo_use_reserved
+-- so a checkout retry never double-reserves. increment_promo_use() (the OLD webhook-side
+-- increment call the Ring 8 plan flagged as non-idempotent-across-retries) was already
+-- removed from app/api/stripe/webhook/route.ts by the reserve-at-checkout refactor
+-- (commit 03b081b9f, 2026-07-10), the webhook's payment_intent.succeeded handler no
+-- longer touches promo_codes.current_uses at all, so a claim-release-and-retry cannot
+-- re-increment it (confirmed: 0 calls to increment_promo_use in app/api/stripe/webhook/**
+-- today; the function itself is a confirmed 0-caller dead RPC per the Ring 10 dead-RPC
+-- census in _plans/BACKEND_IMPROVEMENT.md).
+--
+-- promo_counted_at is therefore NOT a second redemption counter (that would
+-- double-count on top of promo_use_reserved). It is a CAS-claimed audit/reconcile
+-- marker: the webhook sets it exactly once, the first time it observes a promo-bearing
+-- booking as genuinely confirmed+paid, distinct from promo_use_reserved (set earlier,
+-- at checkout, before payment succeeds). A promo-bearing booking whose payment_status
+-- is 'paid' but whose promo_counted_at stays null for a long time is a signal the
+-- webhook never got to (or crashed before) finalizing it, a candidate for the
+-- reconcile cron to flag in a future ring. Additive + idempotent (project rule: never
+-- db push/reset; ADD COLUMN IF NOT EXISTS only).
+alter table public.bookings add column if not exists promo_counted_at timestamptz;
+comment on column public.bookings.promo_counted_at is
+  'CAS-claimed once by the Stripe webhook (payment_intent.succeeded) the first time a promo-bearing booking is observed confirmed+paid. NOT a redemption counter (reserve_promo_use at checkout already owns promo_codes.current_uses, guarded by promo_use_reserved), an audit/reconcile marker only. Claimed via UPDATE ... WHERE promo_counted_at IS NULL, so a webhook retry on the same booking is a safe no-op.';
