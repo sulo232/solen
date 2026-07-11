@@ -1,6 +1,8 @@
 # Structural Consistency Rules (MANDATORY)
 
 > PARTIAL RETIREMENT (2026-07-03): references to _tasks/SOLEN_DESIGN.md (rules 43, 46, 47) are superseded by _design-system/SOURCE.md + LOCKFILE.md. The rule 46 dark-mode CSS variable requirement is superseded: Solen web is light-mode only. All other rules stay live.
+>
+> TOMBSTONE, ZONE LANGUAGE (2026-07-11): Rule 42's "Page component MUST determine its **zone** (1-4) and pass it to child components as `zone` prop" and Rule 46's sub-section C ("Zone Compliance") are RETIRED. "V2" / "Zone 1/2/3/4" language is retired project-wide per `_design-system/SOURCE.md` (line ~318) and `_rules/I18N_ROUTING.md`; nothing in the live codebase implements a `zone` prop. Do not require or grep for it. The rest of rules 42 and 46 (directory structure, i18n, a11y, accessibility, pre-commit checklist) stay live.
 
 > **CONTEXT**: On 2026-03-25, a deep audit found 7 orphaned components never rendered anywhere, 3 features with backend APIs but no complete UI flow, 40+ files using a banned hover token, and a critical naming collision between an old and new `FilterBar.tsx`. These rules prevent structural chaos from recurring.
 
@@ -56,6 +58,11 @@ done
 ## Rule 42: SUB-SITE / FEATURE PAGE TEMPLATE (MANDATORY STRUCTURE)
 
 > **INCIDENT**: Different features used wildly different structures — some had API routes but no page, some had pages but no navigation entry point, some had components with hardcoded German.
+>
+> This is the file-tree TEMPLATE for a new feature page. It covers the same ground as the 8-layer
+> completeness CHECKLIST in Rule 40 (types/DB/API/component/page/i18n/import/nav) , Rule 40 is
+> canonical for "is this feature done", this rule is canonical for "where do the files go". Don't
+> restate Rule 40's checklist here if it changes; point back to it.
 
 When building a **new feature page** (e.g., `/profile/referral`, `/loyalty/stamp`, `/salon/[slug]/gift-card`), follow this exact structure:
 
@@ -74,7 +81,7 @@ Feature: [Name]
 ```
 
 **Mandatory rules for every new page:**
-- Page component MUST determine its **zone** (1-4) and pass it to child components as `zone` prop
+- ~~Page component MUST determine its **zone** (1-4) and pass it to child components as `zone` prop~~ RETIRED 2026-07-11, see banner at top of file , no `zone` prop exists in the live codebase
 - All user-facing text MUST use `useTranslations()` — zero hardcoded strings
 - All interactive elements MUST have `aria-label` props
 - Navigation entry point (link/button) MUST exist to reach the page — no hidden pages
@@ -144,10 +151,13 @@ Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-0
 - Use `text-s-ink dark:text-s-dm-text` and `bg-[--raised] dark:bg-s-dm-surface`
 - BANNED: `text-black`, raw `bg-white`
 
-### C. Zone Compliance — DECLARE AND ENFORCE
-- Every component that renders visible UI must know its zone (1-4)
-- Zone 1-2: Glass on floating UI, animations allowed
-- Zone 3-4: NO glass, NO animations
+### C. Zone Compliance, RETIRED 2026-07-11
+> This entire sub-section is retired, see the banner at the top of this file. "Zone 1-4" language
+> is retired project-wide; glass/animation scoping now lives in `_design-system/LOCKFILE.md`
+> (`CONTROL_ELEVATION.md` decision tree) instead of a per-component zone number.
+- ~~Every component that renders visible UI must know its zone (1-4)~~
+- ~~Zone 1-2: Glass on floating UI, animations allowed~~
+- ~~Zone 3-4: NO glass, NO animations~~
 
 ### D. Design System Compliance
 - Read `_tasks/SOLEN_DESIGN.md` before writing ANY styling (system is in flux — confirm current values)
@@ -166,7 +176,7 @@ Design:
 □ DESIGN INTENT stated: "This component should feel ___ because ___"
 □ Uses useTranslations() — ZERO hardcoded strings
 □ Keys added to all 4 locale files with actual translations
-□ Has zone prop or inherits zone from parent
+□ ~~Has zone prop or inherits zone from parent~~ RETIRED 2026-07-11, no zone prop exists
 □ No rgba(255,255,255,...) — uses var(--glass-*) tokens
 □ Hover states follow Rule 43
 □ Only lucide-react icons

@@ -69,7 +69,11 @@ Each phase must specify:
 - What to verify after deployment (curl command, expected HTTP status, etc.)
 - If the phase creates API routes: how to test them
 
-### R8: FINAL PHASE UPDATES CLAUDE.md
+### R8: FINAL PHASE UPDATES THE LIVE DOCS
+
+> **REWRITTEN 2026-07-11**: this used to point at "CLAUDE.md Section 2/3.2/6/11" , the current
+> `CLAUDE.md` has no numbered sections, it's organized in emoji-headed blocks + pointers to
+> `_rules/*` and `_design-system/*`. Below is the current mapping.
 
 If the roadmap introduces:
 - New utility files (e.g., `lib/something.ts`)
@@ -77,12 +81,13 @@ If the roadmap introduces:
 - New environment variables
 - New patterns that future code must follow
 
-Then the LAST phase of the roadmap MUST update:
-- `CLAUDE.md` Section 2 (Tech Stack) — if new dependencies
-- `CLAUDE.md` Section 3.2 (Directory Tree) — if new lib files
-- `CLAUDE.md` Section 6 (Schema Table) — if new tables/views
-- `CLAUDE.md` Section 11 (Security Rules) — if new security patterns
-- `.env.example` — if new env vars
+Then the LAST phase of the roadmap MUST update the file that actually owns that fact today:
+- New dependency / stack change → the one-line stack summary at the top of `CLAUDE.md`
+- New `lib/` util → `_rules/UTILITIES_INDEX.md`
+- New table/view → `_rules/DB_SCHEMA.md` (facts come from the live DB snapshot, not this file, per `CLAUDE.md`'s exists-check block)
+- New security pattern → `_rules/SECURITY_RULES.md`
+- New env var → `.env.example`
+- Anything that changes project-wide binding behavior → the relevant emoji-headed block in `CLAUDE.md` (e.g. Workflow rules, Silent no-ops, Exists-check protocol), not a numbered section, none exist
 
 ### R9: ROADMAP FILE NAMING
 

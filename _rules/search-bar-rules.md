@@ -115,7 +115,7 @@ Never make the user wait for AI results to see any results.
 - Embeddings are generated via `/api/admin/search/generate-embeddings`
 - Admin-only route (auth + role check per Rule S6 in CLAUDE.md)
 - Batch: max 10 concurrent Gemini requests, 1s cooldown between batches
-- Model: `text-embedding-004` (768 dimensions)
+- Model: `gemini-embedding-001` (`outputDimensionality: 768`, per `lib/search/embeddings.ts` , `text-embedding-004` is retired, 404s on `embedContent`)
 
 ### Rule S-8: The smart search API must handle Gemini failures gracefully
 

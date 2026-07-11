@@ -10,6 +10,8 @@
 
 ### Rule S1: EVERY NEW API ROUTE MUST HAVE THESE LAYERS
 
+> **UPDATED 2026-07-10**: `getSession()` is BANNED for any server-side identity/authz decision , it reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. The whole backend was migrated to `getUser()` on 2026-07-10 (commit `9783e5711`), and the live `.claude/hooks/no-getsession-authz-gate.py` PreToolUse gate now BLOCKS new `auth.getSession()` calls in `app/**` and `lib/**`. Use the shared helpers: `requireAuth()` / `requireAdmin()` / `requireSalonOwner()` / `requireRole()` in `lib/auth/require.ts`, or `getSessionUser()` in `lib/supabase.ts`. Both call `supabase.auth.getUser()` under the hood (verifies the JWT against the Supabase Auth server, fails CLOSED with `user: null` on any failure).
+
 When creating or modifying ANY API route in `app/api/`, you MUST include these checks **in this exact order**:
 
 ```typescript
@@ -19,11 +21,10 @@ export async function POST(req: NextRequest) {
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
 
-  // 2. Auth check
-  const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // 2. Auth check, use the shared helper (verifies the JWT, fails closed)
+  const auth = await requireAuth(); // lib/auth/require.ts
+  if (auth instanceof NextResponse) return auth;
+  const { user, supabase } = auth;
 
   // 3. Ban check
   const banned = await checkUserBanned(user.id);
@@ -49,6 +50,11 @@ export async function POST(req: NextRequest) {
   const { data } = await supabase.from("bookings").insert(body);
   return NextResponse.json({ data });
 }
+
+// ❌ ALSO WRONG, getSession() for an authz decision (forgeable cookie, BLOCKED by
+// no-getsession-authz-gate.py). Never do this server-side:
+const { data: { session } } = await supabase.auth.getSession();
+const user = session?.user ?? null; // an attacker can forge this
 ```
 
 **For public (unauthenticated) GET routes**, use IP-based rate limiting:

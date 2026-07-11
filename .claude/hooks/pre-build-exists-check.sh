@@ -23,7 +23,11 @@
 # surfaces, which is exactly where the rebuild risk lives.
 #
 # Override (you've already confirmed it's genuinely new):
-#   touch .claude/exists-skip.flag        # 30-minute TTL
+#   echo "<reason>" > .claude/exists-skip.flag        # 30-minute TTL
+#   (2026-07-11 estate-audit fix: a bare `touch` no longer skips , the flag must carry a
+#   non-blank reason on its first line. This is the project's #1 anti-duplication gate and
+#   it was the second-most waved-off skip flag in the ledger; raising the bypass cost from a
+#   silent touch to a written reason is deliberate friction, not a bug.)
 #
 # Registered via .claude/settings.json under hooks.PreToolUse "Write" matcher.
 
@@ -54,11 +58,14 @@ case "$FILE" in
   *) exit 0;;
 esac
 
-# 2. Override flag (30-min TTL), parity with the other hooks.
+# 2. Override flag (30-min TTL), parity with the other hooks. Honored ONLY with a non-blank
+# reason on its first line (2026-07-11 fix, this gate was the 2nd-most waved-off skip in the
+# ledger: 25 bare `touch`es) , `touch .claude/exists-skip.flag` alone no longer skips.
 FLAG="$PROJECT_DIR/.claude/exists-skip.flag"
 if [[ -f "$FLAG" ]]; then
   AGE=$(( $(date +%s) - $(stat -f %m "$FLAG" 2>/dev/null || stat -c %Y "$FLAG" 2>/dev/null || echo 0) ))
-  [[ $AGE -le 1800 ]] && exit 0
+  REASON=$(head -n1 "$FLAG" 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  [[ $AGE -le 1800 && -n "$REASON" ]] && exit 0
 fi
 
 # 2b. Mockups must carry an explicit Exists-check: line in their note (council
@@ -106,6 +113,7 @@ Run this (read-only, ~5s) before creating it:
   • DESIGN / mockups: also read _design-system/COMPONENT_REGISTRY.md — never hand-fake a
     component that already exists (the fake-calendar miss: DateTimePicker already did grid + blue).
 
-Override (only if you've ALREADY confirmed it's new): touch .claude/exists-skip.flag
+Override (only if you've ALREADY confirmed it's new): echo "<reason>" > .claude/exists-skip.flag
+  (a bare touch no longer skips , the flag needs a non-blank reason on its first line)
 EOF
 exit 2

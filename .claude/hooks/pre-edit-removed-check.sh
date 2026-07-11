@@ -16,7 +16,12 @@
 #   (b) named in _design-system/REMOVED.md with removal verbs and NOT a clear keep.
 # The block tells you to confirm with the owner it's still a LIVE surface first.
 #
-# Override (you confirmed it IS still wanted):  touch .claude/removed-edit-skip.flag  (30-min TTL)
+# Override (you confirmed it IS still wanted):
+#   echo "<reason>" > .claude/removed-edit-skip.flag   (30-min TTL)
+#   (2026-07-11 estate-audit fix: a bare `touch` no longer skips , the flag must carry a
+#   non-blank reason on its first line. This is the anti-revive twin of the anti-duplication
+#   gate above and was similarly waved off a lot; raising the bypass cost from a silent touch
+#   to a written reason is deliberate friction, not a bug.)
 # Registered in .claude/settings.json under hooks.PreToolUse "Edit" + "Write".
 
 set -uo pipefail
@@ -31,11 +36,14 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 # Only route PAGES (the resurrect-risk surface). Not route.ts/components/libs.
 case "$FILE" in *"/page.tsx") ;; *) exit 0 ;; esac
 
-# Acknowledged override (30-min TTL).
+# Acknowledged override (30-min TTL). Honored ONLY with a non-blank reason on its first line
+# (2026-07-11 fix, this gate was one of the two most-waved-off skips in the ledger: 14 bare
+# `touch`es) , `touch .claude/removed-edit-skip.flag` alone no longer skips.
 FLAG="$PROJECT_DIR/.claude/removed-edit-skip.flag"
 if [[ -f "$FLAG" ]]; then
   AGE=$(( $(date +%s) - $(stat -f %m "$FLAG" 2>/dev/null || stat -c %Y "$FLAG" 2>/dev/null || echo 0) ))
-  [[ "$AGE" -lt 1800 ]] && exit 0
+  REASON=$(head -n1 "$FLAG" 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  [[ "$AGE" -lt 1800 && -n "$REASON" ]] && exit 0
 fi
 
 # Route segment = the dir holding page.tsx. Skip dynamic ([..]) and locale roots.
@@ -58,7 +66,7 @@ HIT=""; HIT_STRONG=""
 if [[ -f "$REMOVED" ]]; then
   HIT=$(grep -in "[ /\"]$SEG\b" "$REMOVED" 2>/dev/null | head -3 || true)
   HIT_STRONG=$(printf '%s\n' "$HIT" | grep -iE "remov|delet|kill|never rebuild|do NOT re-?(add|surface|build)" \
-               | grep -viE "keep|kept|reviv|do NOT delete" || true)
+               | grep -viE "keep|kept|reviv|do NOT delete|un-?kill|restor|bring(ing)?[ -]back|brought[ -]back|reinstat|un-?delet|re-?enabl" || true)
 fi
 
 # Decide: block on a DEFINITIVE removal, or on de-linked WITH graveyard history. Never orphaned-alone.
@@ -77,6 +85,7 @@ fi
 
 The #1 recurring failure here is reviving a surface the owner removed. Before editing:
   - CONFIRM with the owner it is still a LIVE, wanted surface (do not assume from the file existing).
-  - If still wanted: touch $PROJECT_DIR/.claude/removed-edit-skip.flag (30-min) and retry.
+  - If still wanted: echo \"<reason>\" > $PROJECT_DIR/.claude/removed-edit-skip.flag (30-min) and retry.
+    (a bare touch no longer skips , the flag needs a non-blank reason on its first line)
   - If removed/superseded: do NOT edit it , delete the route + update REMOVED.md instead."
 exit 2

@@ -70,7 +70,7 @@ Easing, timing, micro-interactions. Full principles + remaining-work list: `_des
 
 ## 5. Feature Dev
 
-Building features, pages, API routes. Every feature needs all 8 layers: types, DB migration, API route, component, page, i18n (4 locales), imported + rendered, navigation entry.
+Building features, pages, API routes. Canonical 8-layer completeness checklist: `_rules/STRUCTURAL_RULES.md` Rule 40 (don't restate it here, it drifts).
 
 **Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`, `_rules/search-bar-rules.md`.
 

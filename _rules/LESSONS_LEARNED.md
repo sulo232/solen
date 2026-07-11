@@ -1,6 +1,6 @@
 # Solen.ch — Lessons Learned & Common Pitfalls
 
-> LEDGER STATUS (2026-07-03): entries below stop at 2026-06-05. Newer lessons live in project CLAUDE.md pinned blocks and the memory feedback files, so check all three. This file remains the append target for backend and data footguns: keep appending here.
+> LEDGER STATUS (updated 2026-07-11, supersedes the 2026-07-03 note): this file is the ONLY ledger the `~/.claude/hooks/lessons-ledger-inject.py` PreToolUse hook reads (hardcoded path, see `~/.claude/REGRESSION_SYSTEM.md`). The 2026-07-03 banner told agents to also check CLAUDE.md pinned blocks and memory feedback files "since newer lessons live there" , that left a month+ of lessons (entries stopped at 2026-06-05) invisible to the edit-time injector, which is the whole point of this file. Current law: feed EVERY new non-obvious bug/footgun here, in the same turn as the fix, not just backend/DB. CLAUDE.md pinned blocks and memory feedback files are still useful reading, but the injector does not see them , if a lesson only lives there, it will not resurface at edit time.
 
 > **MANDATORY**: Every AI agent MUST read this file before making changes.
 > **MANDATORY**: Every AI agent MUST append new entries here whenever they discover a new bug, footgun, or non-obvious pattern — whether they caused it or fixed it.

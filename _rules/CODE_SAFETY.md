@@ -36,18 +36,26 @@ ls -la app/api/some-endpoint/route.ts
 - If a roadmap has phases `1.1`, `1.2`, `1.3` → make **separate commits** for each
 - **NEVER** combine multiple phases into one mega-commit
 - Each commit message must reference the sub-phase: `"phase 1.1: fix layout overflow"`
-- After EACH commit: `npm run build` must pass BEFORE pushing
+- Build is NOT mandatory per commit , see Rule 4 below for the current build/push law
 
-## Rule 4: BUILD BEFORE COMMIT, NEVER PUSH (current law, 2026-07-03)
+## Rule 4: NEVER PUSH (current build/push law lives in project CLAUDE.md)
+
+> **SUPERSEDED FRAMING (2026-07-03 → 2026-07-11)**: this rule used to mandate `npm run build`
+> before every single commit ("Step 1: MUST pass, no exceptions"). That contradicts project
+> `CLAUDE.md`'s Surgical Edits rule ("Never `npm run build` unless asked, dev runs on port
+> 3000") and loses to it under the precedence chain (project CLAUDE.md pinned blocks outrank
+> legacy `_rules/*`). Current law: commit often and autonomously, no build gate on every commit
+> unless the owner explicitly asked for a build check.
+
 ```bash
-# This exact sequence. Every time. No exceptions.
-npm run build           # Step 1: MUST pass
-git add -A              # Step 2: only after build passes
-git commit -m "..."     # Step 3: descriptive message with phase number
-# Step 4: STOP. NEVER git push. The owner pushes manually.
+git add -A              # stage the verified change
+git commit -m "..."     # descriptive message with phase number
+# STOP. NEVER git push. The owner pushes manually.
 ```
-If `npm run build` fails → **DO NOT commit. Fix the error first.**
-**IMPORTANT**: NEVER run `git push`, and never ask "should I push?" or mention pushing in the report. Commit often and autonomously (each verified chunk its own commit); the owner is the only one who pushes. Deploy is **Netlify**, auto-triggered from `main` on the owner's push; there is no Vercel step here.
+If you WERE explicitly asked to build first: `npm run build` must pass before that commit , fix
+the error, don't commit a red build. **IMPORTANT**: NEVER run `git push`, and never ask "should I
+push?" or mention pushing in the report. Deploy is **Netlify**, auto-triggered from `main` on the
+owner's push; there is no Vercel step here.
 
 ## Rule 5: FOLLOW THE ROADMAP LITERALLY
 When executing a roadmap from `_tasks/`:
@@ -58,8 +66,8 @@ When executing a roadmap from `_tasks/`:
 - If the roadmap does NOT mention a component/feature → do NOT add it
 - **NEVER** ad-lib features, components, or API calls that aren't in the roadmap
 
-## Rule 6: NO DEPLOY-WAIT RITUAL (current law, 2026-07-03, historical: this rule formerly told the agent to sleep and poll Vercel after every push)
-This agent never pushes (Rule 4), so there is no post-push wait step to run here. Deploy is **Netlify**, auto-triggered from `main` when the owner pushes; Netlify's own build log is the deploy source of truth, not a local sleep/poll loop. If you need to sanity-check the LIVE site after the owner has pushed and deployed, a plain curl is enough:
+## Rule 6: NO DEPLOY-WAIT RITUAL (historical: this rule formerly told the agent to sleep and poll Vercel after every push; current push law is project CLAUDE.md, see Rule 4 above)
+This agent never pushes (project CLAUDE.md: owner pushes manually), so there is no post-push wait step to run here. Deploy is **Netlify**, auto-triggered from `main` when the owner pushes; Netlify's own build log is the deploy source of truth, not a local sleep/poll loop. If you need to sanity-check the LIVE site after the owner has pushed and deployed, a plain curl is enough:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 # Must return 200 or 307
@@ -182,22 +190,11 @@ After ALL phases complete:
 
 ---
 
-## Rule 25: NEVER USE `getUser()` IN API ROUTES OR MIDDLEWARE
+## Rule 25: SUPERSEDED 2026-07-10 , use `getUser()`, not `getSession()`
 
-> **CONTEXT (historical, bug originally found on the old Vercel hosting)**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from the edge runtime to Supabase to validate the JWT. On the old Vercel Edge network this call **timed out**, returning `user: null` even when the session cookie is valid. The same risk (a network call that can time out on ANY edge runtime, Netlify included) is why the rule stays live regardless of host.
-
-**ALWAYS use `getSession()`** — it reads the JWT directly from cookies with **zero network calls**.
-
-```typescript
-// CORRECT — reads JWT from cookies, no network call:
-const { data: { session } } = await supabase.auth.getSession();
-const user = session?.user ?? null;
-
-// BANNED (makes a network call that can time out on the edge runtime):
-const { data: { user } } = await supabase.auth.getUser();
-```
-
-Applies to: `middleware.ts`, ALL files in `app/api/`, `lib/supabase.ts` `getSessionUser()` helper.
+> **TOMBSTONE (2026-07-10)**: this rule (below, kept for history) told agents to ALWAYS use `getSession()` and BANNED `getUser()`. That is now backwards and actively dangerous: `getSession()` reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. The whole backend was migrated to `getUser()` on 2026-07-10 (commit `9783e5711`), and the live `.claude/hooks/no-getsession-authz-gate.py` PreToolUse gate now BLOCKS new `auth.getSession()` calls in `app/**`/`lib/**`. Current law: use `requireAuth()`/`requireAdmin()`/`requireSalonOwner()`/`requireRole()` (`lib/auth/require.ts`) or `getSessionUser()` (`lib/supabase.ts`) , both call `supabase.auth.getUser()`, which fails CLOSED (`user: null`) on any verification failure. See `_rules/SECURITY_RULES.md` Rule S1 for the current code sample. The edge-timeout concern below was real on the old Vercel Edge network; this app deploys on Netlify Node functions now, so the network round-trip is safe.
+>
+> **Original rule (historical, no longer followed):** `supabase.auth.getUser()` makes a **network call** from the edge runtime to Supabase to validate the JWT. On the old Vercel Edge network this call **timed out**, returning `user: null` even when the session cookie is valid. The fix at the time was "always use `getSession()`" , that guidance is retired; do not follow the code sample that used to be here.
 
 ## Rule 26: NO DEAD CODE — EVERY COMPONENT MUST BE IMPORTED AND RENDERED
 
