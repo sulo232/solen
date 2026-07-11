@@ -6,6 +6,12 @@ import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
 
+// RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
+function capErrors(errs: string[], max = 20): string[] {
+  if (errs.length <= max) return errs;
+  return [...errs.slice(0, max), `...and ${errs.length - max} more`];
+}
+
 /**
  * Cron handler: send SMS reminders for upcoming bookings.
  * Runs every 30 minutes. Protected by CRON_SECRET.
@@ -21,12 +27,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return withCronRun("sms-reminders", async () => {
+  // RING 3a (a Ring 1 B follow-up): this used to be an early return BEFORE
+  // withCronRun, so the skip never logged to cron_runs. Moved inside the
+  // wrapper so a no-api-key run still lands a row (ok:true, processed:0).
   if (!env.SEVEN_IO_API_KEY) {
     console.warn("[sms-reminders] SEVEN_IO_API_KEY not set, skipping");
-    return NextResponse.json({ ok: true, skipped: true, reason: "no_api_key" });
+    return { ok: true, skipped: true, reason: "no_api_key", processed: 0 };
   }
 
-  return withCronRun("sms-reminders", async () => {
   const supabase = createAdminSupabaseClient();
   const now = Date.now();
 
@@ -38,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   let sent24h = 0;
   let sent1h = 0;
-  let errors = 0;
+  const errorMsgs: string[] = [];
 
   // ── 24h reminders ──
   const { data: bookings24h } = await supabase
@@ -81,7 +90,7 @@ export async function GET(req: NextRequest) {
         .from("bookings")
         .update({ sms_sent_24h: true })
         .eq("id", booking.id);
-      errors++;
+      errorMsgs.push(`booking ${booking.id}: 24h SMS send failed (invalid phone or provider error)`);
     }
   }
 
@@ -125,14 +134,14 @@ export async function GET(req: NextRequest) {
         .from("bookings")
         .update({ sms_sent_1h: true })
         .eq("id", booking.id);
-      errors++;
+      errorMsgs.push(`booking ${booking.id}: 1h SMS send failed (invalid phone or provider error)`);
     }
   }
 
   console.log(
-    `[sms-reminders] sent24h=${sent24h} sent1h=${sent1h} errors=${errors}`
+    `[sms-reminders] sent24h=${sent24h} sent1h=${sent1h} errors=${errorMsgs.length}`
   );
 
-  return { sent24h, sent1h, errors, processed: sent24h + sent1h };
+  return { sent24h, sent1h, errors: capErrors(errorMsgs), processed: sent24h + sent1h };
   });
 }

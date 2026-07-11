@@ -6,6 +6,12 @@ import { getStripe } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
 
+// RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
+function capErrors(errs: string[], max = 20): string[] {
+  if (errs.length <= max) return errs;
+  return [...errs.slice(0, max), `...and ${errs.length - max} more`];
+}
+
 // Cron: Abandonment sweeper (C1 online-pay). Every 15 min.
 //
 // The C1 full-prepay flow (POST /api/bookings with payment_method:"online")
@@ -57,8 +63,8 @@ export async function GET(req: NextRequest) {
   }
 
   let cancelled = 0;
-  let skippedPaid = 0; // PI actually succeeded/in-flight — webhook will (or did) confirm it.
-  let errors = 0;
+  let skippedPaid = 0; // PI actually succeeded/in-flight, webhook will (or did) confirm it.
+  const errorMsgs: string[] = [];
 
   for (const booking of stale ?? []) {
     try {
@@ -74,7 +80,7 @@ export async function GET(req: NextRequest) {
           // PI lookup failed (e.g. deleted/unknown id). Log and skip this row —
           // do NOT cancel on uncertainty about whether money moved.
           console.error(`[cron/abandon-sweep] PI retrieve failed for booking ${booking.id} (${booking.payment_intent_id}):`, err);
-          errors++;
+          errorMsgs.push(`booking ${booking.id}: PI retrieve failed: ${err instanceof Error ? err.message : String(err)}`);
           continue;
         }
         // Anything that means money moved or is moving -> leave it for the webhook.
@@ -120,7 +126,7 @@ export async function GET(req: NextRequest) {
 
       if (updErr) {
         console.error(`[cron/abandon-sweep] failed to cancel booking ${booking.id}:`, updErr);
-        errors++;
+        errorMsgs.push(`booking ${booking.id}: cancel update failed: ${updErr.message}`);
         continue;
       }
 
@@ -139,7 +145,7 @@ export async function GET(req: NextRequest) {
           .eq("id", booking.slot_id);
         if (slotErr) {
           console.error(`[cron/abandon-sweep] failed to free slot ${booking.slot_id} for booking ${booking.id}:`, slotErr);
-          errors++;
+          errorMsgs.push(`booking ${booking.id}: slot free failed: ${slotErr.message}`);
           // Booking is already cancelled; surface the slot error but keep going.
         }
       }
@@ -156,7 +162,7 @@ export async function GET(req: NextRequest) {
       cancelled++;
     } catch (err) {
       console.error(`[cron/abandon-sweep] unexpected error for booking ${booking.id}:`, err);
-      errors++;
+      errorMsgs.push(`booking ${booking.id}: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
@@ -164,7 +170,7 @@ export async function GET(req: NextRequest) {
     scanned: (stale ?? []).length,
     cancelled,
     skippedPaid,
-    errors,
+    errors: capErrors(errorMsgs),
     processed: (stale ?? []).length,
   };
   });

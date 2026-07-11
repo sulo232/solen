@@ -35,13 +35,14 @@ export async function GET(request: NextRequest) {
     if (!usersToDelete || usersToDelete.length === 0) {
       return { message: "No users to delete", processed: 0 };
     }
-    
+    const dueUsers = usersToDelete;
+
     // Delete them via Auth API (triggers will cascade data if set up correctly, or auth handles it)
     // Wait, admin.auth.admin.deleteUser handles the CASCADE to profiles via the DB?
-    // Actually, destroying the auth user normally deletes the profile if it's CASCADE, 
+    // Actually, destroying the auth user normally deletes the profile if it's CASCADE,
     // but in Supabase, the user deletion might not cascade to `public.profiles` unless the foreign key is set to CASCADE.
     // However, calling admin.auth.admin.deleteUser(id) is the official way.
-    
+
     // Tables the registered-user deletion path anonymizes/clears. The auth-user
     // delete cascades to public.profiles, which fires the BEFORE DELETE trigger
     // (migration 20260602083300) that anonymizes these dependent rows in place
@@ -70,65 +71,89 @@ export async function GET(request: NextRequest) {
       "site_content",
     ];
 
-    const results = [];
-    for (const user of usersToDelete) {
-      // GDPR: these tables reference auth.users/profiles with ON DELETE NO ACTION, so the
-      // auth-user delete below fails (FK violation) unless the referencing rows are
-      // cleared/anonymized FIRST. NOT NULL columns are deleted; nullable columns are set to
-      // null (keeps the record, strips the user link). Run SEQUENTIALLY, not in parallel:
-      // credit_redemptions.credit_id references user_credits.id (NOT NULL, no cascade), so
-      // credit_redemptions is cleared before user_credits below.
-      const cleanups: Array<[string, { error: { message: string } | null }]> = [];
-      cleanups.push(["credit_redemptions", await admin.from("credit_redemptions").delete().eq("user_id", user.id)]);
-      cleanups.push(["user_credits", await admin.from("user_credits").delete().eq("user_id", user.id)]);
-      cleanups.push(["barber_loyalty_history", await admin.from("barber_loyalty_history").delete().eq("customer_id", user.id)]);
-      cleanups.push(["referrals (referrer_id)", await admin.from("referrals").delete().eq("referrer_id", user.id)]);
-      cleanups.push(["client_notes", await admin.from("client_notes").delete().eq("created_by", user.id)]);
-      cleanups.push(["account_actions", await admin.from("account_actions").delete().eq("admin_id", user.id)]);
-      cleanups.push(["referrals (referred_user_id)", await admin.from("referrals").update({ referred_user_id: null }).eq("referred_user_id", user.id)]);
-      cleanups.push(["voucher_redemptions", await admin.from("voucher_redemptions").update({ user_id: null }).eq("user_id", user.id)]);
-      cleanups.push(["vouchers (buyer_id)", await admin.from("vouchers").update({ buyer_id: null }).eq("buyer_id", user.id)]);
-      cleanups.push(["vouchers (redeemed_by)", await admin.from("vouchers").update({ redeemed_by: null }).eq("redeemed_by", user.id)]);
-      cleanups.push(["discovery_staging", await admin.from("discovery_staging").update({ approved_by: null }).eq("approved_by", user.id)]);
-      cleanups.push(["hand_chart_notes", await admin.from("hand_chart_notes").update({ created_by: null }).eq("created_by", user.id)]);
-      cleanups.push(["price_disputes", await admin.from("price_disputes").update({ resolved_by: null }).eq("resolved_by", user.id)]);
-      cleanups.push(["promo_codes", await admin.from("promo_codes").update({ created_by: null }).eq("created_by", user.id)]);
-      cleanups.push(["feature_flags", await admin.from("feature_flags").update({ updated_by: null }).eq("updated_by", user.id)]);
-      cleanups.push(["salon_badge_assignments", await admin.from("salon_badge_assignments").update({ assigned_by: null }).eq("assigned_by", user.id)]);
-      cleanups.push(["salon_documents", await admin.from("salon_documents").update({ reviewed_by: null }).eq("reviewed_by", user.id)]);
-      cleanups.push(["salons", await admin.from("salons").update({ approved_by: null }).eq("approved_by", user.id)]);
-      cleanups.push(["site_content", await admin.from("site_content").update({ updated_by: null }).eq("updated_by", user.id)]);
+    // RING 3a: the ~19 pre-delete cleanup ops used to run per-user, sequentially
+    // (19 awaited queries times N due users). They are now collapsed into ONE IN-list
+    // DELETE/UPDATE per table across ALL due users. FK order is preserved exactly:
+    // credit_redemptions.credit_id references user_credits.id (NOT NULL, no cascade),
+    // so the credit_redemptions IN-list delete for every due user still runs BEFORE
+    // the user_credits IN-list delete. The other 17 ops touch disjoint tables/columns
+    // with no ordering constraint against that pair or each other, so they run
+    // concurrently via Promise.all. A batch op failure is recorded (table + message)
+    // and does NOT throw/abort the run: the real per-user GDPR safety net is the
+    // auth.admin.deleteUser call below, which hits the SAME NOT NULL/NO ACTION FK
+    // constraint and fails for any individual user whose rows weren't actually
+    // cleared, exactly as the old per-user pre-check did (see equivalence table in
+    // the ring report).
+    const userIds = dueUsers.map((u) => u.id);
+    const batchErrors: string[] = [];
 
-      const failedCleanup = cleanups.find(([, r]) => r.error);
-      if (failedCleanup) {
-        const [failedTable, { error: cleanupError }] = failedCleanup;
-        console.error("[api/cron/process-deletions] pre-delete cleanup failed for", user.id, "at", failedTable, ":", cleanupError);
-        results.push({ id: user.id, success: false, error: `pre-delete cleanup failed (${failedTable}): ${cleanupError?.message}` });
-        continue;
-      }
+    const { error: credErr } = await admin.from("credit_redemptions").delete().in("user_id", userIds);
+    if (credErr) batchErrors.push(`credit_redemptions: ${credErr.message}`);
 
+    const batchOps: Array<[string, PromiseLike<{ error: { message: string } | null }>]> = [
+      ["user_credits", admin.from("user_credits").delete().in("user_id", userIds)],
+      ["barber_loyalty_history", admin.from("barber_loyalty_history").delete().in("customer_id", userIds)],
+      ["referrals (referrer_id)", admin.from("referrals").delete().in("referrer_id", userIds)],
+      ["client_notes", admin.from("client_notes").delete().in("created_by", userIds)],
+      ["account_actions", admin.from("account_actions").delete().in("admin_id", userIds)],
+      ["referrals (referred_user_id)", admin.from("referrals").update({ referred_user_id: null }).in("referred_user_id", userIds)],
+      ["voucher_redemptions", admin.from("voucher_redemptions").update({ user_id: null }).in("user_id", userIds)],
+      ["vouchers (buyer_id)", admin.from("vouchers").update({ buyer_id: null }).in("buyer_id", userIds)],
+      ["vouchers (redeemed_by)", admin.from("vouchers").update({ redeemed_by: null }).in("redeemed_by", userIds)],
+      ["discovery_staging", admin.from("discovery_staging").update({ approved_by: null }).in("approved_by", userIds)],
+      ["hand_chart_notes", admin.from("hand_chart_notes").update({ created_by: null }).in("created_by", userIds)],
+      ["price_disputes", admin.from("price_disputes").update({ resolved_by: null }).in("resolved_by", userIds)],
+      ["promo_codes", admin.from("promo_codes").update({ created_by: null }).in("created_by", userIds)],
+      ["feature_flags", admin.from("feature_flags").update({ updated_by: null }).in("updated_by", userIds)],
+      ["salon_badge_assignments", admin.from("salon_badge_assignments").update({ assigned_by: null }).in("assigned_by", userIds)],
+      ["salon_documents", admin.from("salon_documents").update({ reviewed_by: null }).in("reviewed_by", userIds)],
+      ["salons", admin.from("salons").update({ approved_by: null }).in("approved_by", userIds)],
+      ["site_content", admin.from("site_content").update({ updated_by: null }).in("updated_by", userIds)],
+    ];
+    const batchResults = await Promise.all(batchOps.map(([, p]) => p));
+    batchOps.forEach(([table], i) => {
+      const err = batchResults[i].error;
+      if (err) batchErrors.push(`${table}: ${err.message}`);
+    });
+    if (batchErrors.length) {
+      console.error("[api/cron/process-deletions] batch cleanup errors:", batchErrors);
+    }
+
+    // Per-user auth delete: the Admin API has no bulk delete, so this stays
+    // one call per user. It is also the real safety net (see comment above):
+    // it fails per user, isolated, if that user's dependent rows weren't
+    // actually cleared by the batch above.
+    const results: { id: string; success: boolean; error?: string }[] = [];
+    const deletedUsers: typeof dueUsers = [];
+    for (const user of dueUsers) {
       const { error } = await admin.auth.admin.deleteUser(user.id);
       if (error) {
         results.push({ id: user.id, success: false, error: error.message });
         continue;
       }
       results.push({ id: user.id, success: true });
+      deletedUsers.push(user);
+    }
 
-      // Accountability trail (revDSG Art. 25 / GDPR Art. 5(2)): one log row per
-      // processed erasure. user_email is NOT NULL — fall back to a stable
-      // sentinel keyed by id if the profile carried no email.
-      const { error: logErr } = await admin.from("data_deletion_log").insert({
-        user_email: user.email ?? `deleted-user:${user.id}`,
-        requested_at: user.deletion_requested_at ?? null,
-        completed_at: new Date().toISOString(),
-        tables_cleared: TABLES_CLEARED,
-      });
+    // Accountability trail (revDSG Art. 25 / GDPR Art. 5(2)): one log row per
+    // processed erasure. user_email is NOT NULL, so fall back to a stable
+    // sentinel keyed by id if the profile carried no email. Batched into a
+    // single insert for all users actually deleted this run.
+    if (deletedUsers.length > 0) {
+      const { error: logErr } = await admin.from("data_deletion_log").insert(
+        deletedUsers.map((user) => ({
+          user_email: user.email ?? `deleted-user:${user.id}`,
+          requested_at: user.deletion_requested_at ?? null,
+          completed_at: new Date().toISOString(),
+          tables_cleared: TABLES_CLEARED,
+        }))
+      );
       if (logErr) {
         console.error("[api/cron/process-deletions] deletion_log insert failed:", logErr);
       }
     }
 
-    return { message: `Processed ${usersToDelete.length} users`, results, processed: usersToDelete.length };
+    return { message: `Processed ${dueUsers.length} users`, results, processed: dueUsers.length };
   } catch (err) {
     console.error("[api/cron/process-deletions] error:", err);
     return { error: "Internal error", errors: ["Internal error"] };
