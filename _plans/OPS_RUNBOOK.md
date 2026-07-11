@@ -53,3 +53,13 @@ One page: how the backend is monitored, backed up, restored, and what it costs. 
 
 ## Security maintenance (the only security note in this campaign)
 The 2026-07 security campaign (141 findings + 16 sweep rings) is closed and structurally guarded (hooks, shared constants, DB triggers/indexes). Standing rules: run get_advisors after any schema change; keep the no-getsession gate wired; no new sweeps scheduled , next security look only on a real trigger (new payment flow, new auth surface, or an incident).
+
+
+## What to add next (owner ask 2026-07-11, recommended order)
+1. RECOMMENDED FIRST: free uptime monitor (UptimeRobot) on https://solen.ch/api/health , 5 min, alerts you when the site is down before customers notice. Only non-agent item (account signup).
+2. One scripted E2E booking test in CI (search -> book -> pay test-mode -> cancel) , the highest-value missing test.
+3. Playwright visual specs wired into CI (manual today; needs browser install + dev-server step in the workflow).
+4. A staging site (second Netlify site on a branch) , changes get seen live before customers; would have caught the thumbnail outage class.
+5. Sentry retry (parked option) , email alerts cover today; stack traces pay off as traffic grows.
+6. Web-vitals real-user monitoring (PostHog supports it).
+7. Watch-items: GitHub Actions minutes near the free cap (15-min cron cadence), tsc 4 -> 0, the typed-database adoption sprint.

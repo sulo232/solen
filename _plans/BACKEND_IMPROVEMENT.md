@@ -56,12 +56,12 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 
 ### Open owner asks (Ring 0) , BLOCKED on a concrete dependency: the owner's Netlify dashboard (account/credential surface, owner-only; unreachable from this sandbox)
 - [ ] OWNER: Netlify prod env presence check (Site settings -> Environment variables, or `netlify env:list`)
-  - [ ] UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN present? (if missing, EVERY rate limit is silently OFF in prod today , lib/ratelimit.ts fails open)
-  - [ ] CRON_SECRET present?
-  - [ ] STRIPE_WEBHOOK_SECRET present?
-  - [ ] RESEND_API_KEY + ADMIN_EMAIL present?
-  - [ ] answers recorded back into this file
-- [ ] OWNER: which runtime Netlify actually gives routes declaring `runtime="edge"` (Netlify functions tab / build log) , decides the Ring 2 Stripe-on-edge item
+  - [ ] UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN present? , BLOCKED: owner-only Netlify dashboard (credential surface, unreachable from any agent session)
+  - [ ] CRON_SECRET present? , BLOCKED: same owner-only Netlify dashboard
+  - [ ] STRIPE_WEBHOOK_SECRET present? , BLOCKED: same owner-only Netlify dashboard
+  - [ ] RESEND_API_KEY + ADMIN_EMAIL present? , BLOCKED: same owner-only Netlify dashboard
+  - [ ] answers recorded back into this file , BLOCKED: depends on the owner's dashboard answers above
+- [ ] OWNER: which runtime Netlify gives `runtime="edge"` routes , BLOCKED: owner-only Netlify dashboard/build log; decides the Ring 2 Stripe-on-edge cleanup (safe either way today: webhook is node, only create-payment-intent carries the hint)
 
 ---
 
@@ -86,13 +86,13 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
   - [x] TTL cache 30s for flags, maintenance+key collapsed to ONE .in() query (2 round-trips -> 1 uncached / 0 cached)
   - [x] ban checks: 10s TTL keyed by userId, error path never cached (fail-closed 503 preserved), window commented
   - [x] discriminate proof; `verified:` scripts/ring2a-kill-test.ts 7/7 vs live DB (query-COUNT assertions, TTL flip honored via temp flag row, cleaned up), reviewer re-ran independently
-  - [ ] follow-up (reviewer): banCache has no max-size eviction (slow leak on long-lived instances) , add LRU cap when next touching the file; also re-measure the stale "116 call sites" comment (live grep ~139)
+  - [x] follow-up CLOSED in 5c; `verified:` commit 8eed5293a , BAN_CACHE_MAX_SIZE=5000 cap in lib/feature-flags.ts:177-179, stale comment fixed at :18
 - [x] fix 2 dead revalidate exports (salons/trending, analytics/platform); `verified:` commit d334fe9e6, /refine PASS r1, admin client (metrics/global precedent), kill-test 6/6 live, behavior delta named. ISR effect itself needs a live-site header check post-`sync`
-- [ ] CDN caching headers, s-maxage+SWR, anon variants only, NO Redis layer
-  - [ ] FIRST resolve the netlify.toml conflict (found Ring 0-adjacent, 2026-07-11): `[[headers]] for="/api/*"` forces Cache-Control no-store; confirm precedence vs function-set headers on Netlify (function headers usually win, but prove it) and carve out the cacheable routes from that blanket rule if needed
-  - [ ] /api/salons
-  - [ ] /api/discovery/feed
-  - [ ] /api/salons/[slug]
+- [x] CDN caching headers, s-maxage+SWR, anon variants only, NO Redis layer; `verified:` commit c47a1be22, kill-test 17/17
+  - [x] netlify.toml conflict RESOLVED in 5b; `verified:` commit c47a1be22 , reviewer fetched live Netlify docs: custom [[headers]] do NOT apply to function responses, so route-set headers win; toml deliberately untouched
+  - [x] /api/salons; `verified:` commit c47a1be22
+  - [x] /api/discovery/feed; `verified:` commit c47a1be22
+  - [x] /api/salons/[slug]; `verified:` commit c47a1be22
 - [x] next_available_date -> MIN()/DISTINCT ON RPC (reclassified by Ring 0: correctness fix , 1,470 rows fetched to keep 6, silent drop past the PostgREST 1000-row cap; query itself is 0.73 ms); `built:` app/api/salons/route.ts:476-498 now calls the live `next_available_dates` RPC instead of the unbounded per-slot fetch; convention change to Zurich-bucketed dates (was raw UTC slice) , intentional, matches unavailable-dates/time-slots; `verified:` scripts/ring2b-kill-test.ts (RPC <=1 row/salon + matches manual MIN(starts_at) per salon, live DB, 6 busiest salons), coder round 1, pending reviewer
 - [x] dashboard/today 4 serial awaits -> 2 Promise.all stages; `verified:` commit 0ae066cf1; before ~900 ms warm -> after ~300-320 ms warm (measured in-browser 2026-07-11 post-change, fresh server boot); response shape byte-identical per reviewer diff read. NOTE: a post-change 500 on discovery/feed was diagnosed as dev-server hot-reload staleness from the deleted instrumentation-client.ts (fresh boot = 200, 271-331 ms warm, baseline unchanged) , not a code regression
 - [ ] dashboard/batch revenue -> DB SUM RPC , DEPRIORITIZED to hygiene (Ring 0: query is 2.7 ms at 956 bookings); do opportunistically when next touching dashboard/batch, not loop-blocking
@@ -243,7 +243,7 @@ One ring at a time (Ring 4 may parallel 2-3 on disjoint files); coder builds + r
 
 
 ## Owner follow-up batch (2026-07-11 PM: "ignore 1+netlify, 3 do again, 4 do, 5 too, backups + what to add")
-- [x] items 1 (site `sync`) + 2 (Netlify env check) acknowledged as IGNORE , owner's court, no further nagging
+- [x] items 1 (site `sync`) + 2 (Netlify env check) acknowledged as IGNORE; `verified:` owner message 2026-07-11 "alr igore 1 and netiligfy check" (quoted; owner's court, no further nagging)
 - [x] 3: backup check DONE myself; `verified:` supabase CLI backups list 2026-07-11: pitr_enabled=false, platform backups list EMPTY , recorded in OPS_RUNBOOK; the in-house export below is currently the only restorable backup
 - [x] 3b: in-house nightly backup SHIPPED + FIRST BACKUP SEEDED; `verified:` commit 9bcbfa2af, kill-test 10/10, bucket privacy live-probed (anon denied), backups/2026-07-11/ = 24 files / 2,450 rows / 2.8MB confirmed in storage.objects; daily 03:45 UTC scheduled
 - [x] 4a: purge DONE; `verified:` fn source read (safe by construction: >=1 day past, available-only, zero booking refs), initial purge 154,698 rows (164,063 -> 9,365 total, 0 still eligible), weekly pg_cron job 'purge-past-available-slots' Sun 04:15 UTC confirmed in cron.job; migration applied + file backfilled (commit c47a1be22)
@@ -252,4 +252,4 @@ One ring at a time (Ring 4 may parallel 2-3 on disjoint files); coder builds + r
 - [x] 5b: CDN caching headers SHIPPED; `verified:` commit c47a1be22, s-maxage=60 swr=300 anon-only, personalized paths no-store (cache-poisoning seams closed), Netlify precedence verified against live docs by the reviewer, kill-test 17/17
 - [x] 5c: hygiene bundle SHIPPED; `verified:` commit 8eed5293a , banCache cap, honest comment, 3 exposed select(*) trims + 12 justified keeps, 12 dead exports, all 23 non-cron sendEmail sites guarded (salon-approve was 500ing on email failure , real bug), notes/tags 404 parity confirmed no-fix-needed
 - [x] 5d: error-envelope SHIPPED; `verified:` commit 7855e608f , stable codes on all non-2xx of the 12 top routes, additive-only (mobile-consumed lowercase walkin codes untouched), kill-test 16/16
-- [x] 6: recommendations list delivered in the closing report (uptime monitor, Sentry option, Playwright-in-CI, E2E booking test, staging env, SEO/sitemap check, web-vitals, Actions-minutes watch, tsc-to-zero, database.types adoption sprint)
+- [x] 6: recommendations list delivered; `verified:` written into _plans/OPS_RUNBOOK.md "What to add next" section (this commit) + closing report
