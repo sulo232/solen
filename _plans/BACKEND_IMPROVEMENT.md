@@ -123,7 +123,7 @@ Owner ask: "full plan for the backend, improving in every way, scaling, efficien
 
 ## Ring 4 , dead-code demolition (QUEUED; deep clean; parallelizable with 2-3; git-reversible)
 One commit per category, caller-grep evidence (app/ + components-legacy/ + solen-mobile) in the message:
-- [ ] src/ retired Vite tree + sole dependent /api/salons/last-minute
+- [x] src/ retired Vite tree + sole dependent /api/salons/last-minute , deleted via `git rm -r` (56 src/ files + route.ts + vite.config.ts/js), `build:vite` script line removed from package.json, graveyarded in REMOVED.md; caller-grep evidence: zero hits for `salons/last-minute` or `from .../src/` in app/, components/, components-legacy/, hooks/, lib/, middleware.ts, next.config.mjs, or solen-mobile/; tsc baseline 7 errors before, unrelated-to-this-change afterward (see coder notes 2026-07-11)
 - [ ] 11 orphaned routes (gift-cards/purchase + redeem-stub, discover/nails, notifications/off-peak, conversations/[id]/messages + price-offer, persona/hair-dna, chat/suggest, chat-templates, nail-inspo/boards, salons/last-minute)
 - [ ] 10 orphan lib files (booking-email, commission-calculator, demo-data, discovery-algorithm, discovery-moderation, guest-saves, ics-generator, motion, registration-validation, tiktok-embed)
 - [ ] 7 unused npm deps (@reduxjs/toolkit, @fal-ai/client, swr, react-day-picker, react-use-measure, @vitejs/plugin-react, picocolors) + vite toolchain + @supabase/auth-helpers-nextjs (grep-gated)
