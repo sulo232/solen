@@ -30,6 +30,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # Uptime monitor (R1, 2026-07-11): piggybacked on this job so it costs zero
+      # extra Actions minutes (a separate scheduled job bills a rounded-up minute
+      # per run). Fails the run red on a down/erroring live site; GitHub then
+      # emails the owner. Retries once to ride out a single blip.
+      - name: Live site health check
+        run: |
+          for i in 1 2; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" -m 20 "https://solen.ch/api/health" || echo 000)
+            if [ "$status" = "200" ]; then echo "health OK"; exit 0; fi
+            echo "health attempt $i returned $status"; sleep 10
+          done
+          echo "::error::solen.ch/api/health unhealthy (last status $status)"; exit 1
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/auto-complete,/api/cron/pending-timeout,/api/cron/abandon-sweep
