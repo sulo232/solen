@@ -48,6 +48,7 @@ case "$FILE" in
   */app/*/route.ts|*/app/*/route.js) SURFACE="API endpoint";;
   */supabase/migrations/*.sql)       SURFACE="DB migration";;
   */lib/*.ts|*/lib/*.tsx)            SURFACE="lib module";;
+  */components/*.tsx|*/components-legacy/*.tsx) SURFACE="component";;
   */public/solen-*.html)             SURFACE="design mockup";;
   */public/_mockups/*.html)          SURFACE="design mockup";;
   *) exit 0;;
@@ -82,7 +83,7 @@ fi
 if [[ -n "$TRANSCRIPT" && -f "$TRANSCRIPT" ]]; then
   RAN=$(tail -n 150 "$TRANSCRIPT" \
     | jq -rc 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use" and .name=="Bash") | .input.command // empty' 2>/dev/null \
-    | grep -cE 'run exists|exists\.mjs' || true)
+    | grep -cE '(^|[;&|])[[:space:]]*npm[[:space:]]+run[[:space:]]+exists|[[:space:]/]exists\.mjs' || true)
   [[ "${RAN:-0}" -gt 0 ]] && exit 0
 fi
 
