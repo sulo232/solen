@@ -21,7 +21,10 @@ interface ReviewPhoto {
 }
 
 interface ReviewReply {
-  id: string;
+  // Ring 2b: optional , pages loaded via /api/reviews/salon/[salon_id] (the "Mehr
+  // laden" fetch below) select review_replies(reply_text, is_public) without an id
+  // column; id is never read by this component, only .reply_text / .is_public.
+  id?: string;
   reply_text: string;
   is_public: boolean;
 }
@@ -75,6 +78,16 @@ export default function SalonReviews({
   const t = useTranslations("salonDetail");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [reviewPage, setReviewPage] = useState(1);
+  // Ring 2b: the parent page now loads only the first page of reviews (was
+  // unbounded). loadedReviews starts as that first page and grows via
+  // /api/reviews/salon/[salon_id] (psych-ok: implementation comment, page size
+  // matches that endpoint's own fixed limit, not a user-facing stat) , the same
+  // paginated endpoint the dashboard reviews list already uses , when "Mehr
+  // laden" is clicked past what's already loaded. serverPage tracks which
+  // server page (1 = the parent's initial fetch) has been loaded.
+  const [loadedReviews, setLoadedReviews] = useState<EnrichedReview[]>(reviews);
+  const [serverPage, setServerPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
   // Fresha-style rating filter + sort sheet (structure source: Fresha reviews page).
@@ -88,7 +101,7 @@ export default function SalonReviews({
   const [flagSuccess, setFlagSuccess] = useState(false);
   const [flagError, setFlagError] = useState(false);
 
-  const sortedReviews = [...reviews].sort((a, b) => {
+  const sortedReviews = [...loadedReviews].sort((a, b) => {
     if (reviewSort === "highest") return b.rating - a.rating;
     if (reviewSort === "lowest") return a.rating - b.rating;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -99,7 +112,7 @@ export default function SalonReviews({
       ? sortedReviews.filter((r) => ratingFilter.has(Math.round(r.rating)))
       : sortedReviews;
   const reviewsVisible = filteredReviews.slice(0, reviewPage * 5);
-  const starCounts = [5, 4, 3, 2, 1].map((s) => reviews.filter((r) => Math.round(r.rating) === s).length);
+  const starCounts = [5, 4, 3, 2, 1].map((s) => loadedReviews.filter((r) => Math.round(r.rating) === s).length);
   const maxStarCount = Math.max(1, ...starCounts);
   const toggleRating = (s: number) => {
     setReviewPage(1);
@@ -151,13 +164,57 @@ export default function SalonReviews({
     setExpandedReviews(next);
   };
 
+  // Ring 2b: "Mehr laden" first reveals more of what's already loaded (5 at a
+  // time, unchanged); once that's exhausted and the salon has more reviews than
+  // loadedReviews holds, it fetches the next server page from the existing
+  // paginated endpoint and appends. That endpoint's review_replies select omits
+  // review_photos, so photos only render for the first (server-side) page , a
+  // known, accepted trade-off of reusing the existing endpoint as-is.
+  const handleShowMore = async () => {
+    if (reviewsVisible.length < filteredReviews.length) {
+      setReviewPage((p) => p + 1);
+      return;
+    }
+    if (loadedReviews.length >= reviewCount) return;
+    setLoadingMore(true);
+    try {
+      const nextPage = serverPage + 1;
+      const res = await fetch(`/api/reviews/salon/${salonId}?page=${nextPage}&sort=${reviewSort}`);
+      if (!res.ok) throw new Error(`reviews ${res.status}`);
+      const data = await res.json();
+      const mapped = ((data.items ?? []) as Array<{
+        id: string;
+        rating: number;
+        comment: string | null;
+        created_at: string;
+        profiles?: { display_name: string; avatar_url: string | null } | null;
+        review_replies?: { reply_text: string; is_public: boolean }[];
+      }>).map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        created_at: r.created_at,
+        profiles: r.profiles ?? undefined,
+        review_photos: [],
+        review_replies: r.review_replies ?? [],
+      })) as unknown as EnrichedReview[];
+      setLoadedReviews((prev) => [...prev, ...mapped]);
+      setServerPage(nextPage);
+      setReviewPage((p) => p + 1);
+    } catch (err) {
+      console.error("[SalonReviews] load more reviews failed:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
       <h2 className="font-heading text-[24px] font-bold tracking-[-0.01em] text-s-ink">
         {t("reviews")}
       </h2>
       <div className="mt-3 md:mt-0">
-        {reviews.length === 0 ? (
+        {loadedReviews.length === 0 ? (
           <EmptyState
             icon={MessageSquare}
             title={t("noReviews")}
@@ -387,10 +444,11 @@ export default function SalonReviews({
               })}
             </div>
 
-            {reviews.length > reviewsVisible.length && (
+            {(loadedReviews.length > reviewsVisible.length || loadedReviews.length < reviewCount) && (
               <button
-                onClick={() => setReviewPage((p) => p + 1)}
-                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
+                onClick={handleShowMore}
+                disabled={loadingMore}
+                className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150 disabled:opacity-50"
               >
                 {t("showMoreReviews")}
               </button>

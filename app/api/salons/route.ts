@@ -474,19 +474,25 @@ export async function GET(request: NextRequest) {
       const unavailableIds = salonIds.filter((id) => !availableIds!.has(id));
 
       if (unavailableIds.length > 0) {
-        const { data: nextSlots } = await supabase
-          .from("availability_slots")
-          .select("salon_id, starts_at")
-          .eq("status", "available")
-          .gt("starts_at", `${date}T23:59:59`)
-          .in("salon_id", unavailableIds)
-          .order("starts_at", { ascending: true });
-
-        // Get the earliest next date per salon
-        for (const slot of nextSlots ?? []) {
-          const sid = (slot as { salon_id: string; starts_at: string }).salon_id;
-          if (!nextDates[sid]) {
-            nextDates[sid] = (slot as { starts_at: string }).starts_at.split("T")[0];
+        // Ring 2b: single DISTINCT-ON RPC replaces the unbounded per-slot fetch (was
+        // pulling every future available row , 1,470 rows to keep 6, silently
+        // truncated at the PostgREST 1000-row cap). The RPC returns at most one row
+        // per salon, already the earliest starts_at, bucketed as an Europe/Zurich
+        // calendar day (to_char(... at time zone 'Europe/Zurich', 'YYYY-MM-DD')).
+        // NOTE: this is an intentional convention change from the old
+        // `starts_at.split("T")[0]` (raw UTC date) , the Zurich bucketing matches
+        // /api/availability/unavailable-dates and /api/availability/time-slots,
+        // which both already bucket in Zurich; the old UTC slice could show the
+        // wrong "next available" day for evening slots near midnight.
+        const { data: nextRows, error: nextErr } = await supabase.rpc("next_available_dates", {
+          p_salon_ids: unavailableIds,
+          p_after: `${date}T23:59:59`,
+        });
+        if (nextErr) {
+          console.error("[api/salons GET] next_available_dates RPC failed:", nextErr.message);
+        } else {
+          for (const row of (nextRows ?? []) as Array<{ salon_id: string; next_date: string }>) {
+            nextDates[row.salon_id] = row.next_date;
           }
         }
       }

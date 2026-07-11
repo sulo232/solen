@@ -17,12 +17,15 @@ export async function GET(
   const supabase = await createServerSupabaseClient();
 
   // Fetch all statuses in one scan so we can compute fully_booked_dates without a second query.
-  // Explicit column list replaces select * to avoid sending unused slot columns over the wire.
+  // Ring 2b: dropped the services(...)/staff_members(...) embeds, which repeated the
+  // same joined fields on every one of the up to ~1,000 slot rows (the busiest salon
+  // measured 458,447 bytes for 957 slots). The salon only has a handful of distinct
+  // services/staff, so those are fetched ONCE each below and returned as top-level
+  // lookup maps; slot rows keep only the ids (service_id, staff_member_id) needed to
+  // look them up client-side.
   let query = supabase
     .from("availability_slots")
-    .select(
-      "id, starts_at, ends_at, service_id, staff_member_id, status, price_override, services(name_de, name_en, duration_minutes, price), staff_members(name, avatar_url)"
-    )
+    .select("id, starts_at, ends_at, service_id, staff_member_id, status, price_override")
     .eq("salon_id", salon_id)
     .gte("starts_at", date_from)
     .lte("starts_at", date_to)
@@ -31,8 +34,27 @@ export async function GET(
   if (service_id) query = query.eq("service_id", service_id);
   if (staff_member_id) query = query.eq("staff_member_id", staff_member_id);
 
-  const { data: allSlots, error } = await query;
+  const [{ data: allSlots, error }, { data: salonServices, error: servicesError }, { data: salonStaff, error: staffError }] =
+    await Promise.all([
+      query,
+      supabase
+        .from("services")
+        .select("id, name_de, name_en, duration_minutes, price")
+        .eq("salon_id", salon_id),
+      supabase
+        .from("staff_members")
+        .select("id, name, avatar_url")
+        .eq("salon_id", salon_id),
+    ]);
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+  if (servicesError) console.error("[api/availability/[salon_id]] services lookup failed:", servicesError.message);
+  if (staffError) console.error("[api/availability/[salon_id]] staff lookup failed:", staffError.message);
+
+  const services: Record<string, { name_de: string | null; name_en: string | null; duration_minutes: number | null; price: number | null }> = {};
+  for (const s of salonServices ?? []) services[s.id] = { name_de: s.name_de, name_en: s.name_en, duration_minutes: s.duration_minutes, price: s.price };
+
+  const staff: Record<string, { name: string | null; avatar_url: string | null }> = {};
+  for (const m of salonStaff ?? []) staff[m.id] = { name: m.name, avatar_url: m.avatar_url };
 
   // Group available slots by date. starts_at is a true UTC instant; bucket by the
   // Europe/Zurich calendar day (not a raw UTC string slice) so this agrees with
@@ -61,5 +83,5 @@ export async function GET(
   }
   const fully_booked_dates = [...allDatesWithSlots].filter(d => !dateHasAvailable.has(d));
 
-  return NextResponse.json({ data: grouped, fully_booked_dates });
+  return NextResponse.json({ data: grouped, fully_booked_dates, services, staff });
 }
