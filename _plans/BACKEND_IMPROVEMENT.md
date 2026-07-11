@@ -240,3 +240,16 @@ Webhook resilience audit (Stripe retry idempotency + reconcile coverage map, Rin
 
 ## Cadence + verification
 One ring at a time (Ring 4 may parallel 2-3 on disjoint files); coder builds + read-only loop-reviewer grades the ring's binary close list; 24-48h nightly-cron soak between risky rings; every perf item = before-number -> ONE change -> same-number re-measure in the commit message; every behavioral surface gets a discriminate check; owner-gated items = decision memos with dry-run evidence, never executed. Commit per verified chunk, never push.
+
+
+## Owner follow-up batch (2026-07-11 PM: "ignore 1+netlify, 3 do again, 4 do, 5 too, backups + what to add")
+- [x] items 1 (site `sync`) + 2 (Netlify env check) acknowledged as IGNORE , owner's court, no further nagging
+- [x] 3: backup check DONE myself; `verified:` supabase CLI backups list 2026-07-11: pitr_enabled=false, platform backups list EMPTY , recorded in OPS_RUNBOOK; the in-house export below is currently the only restorable backup
+- [x] 3b: in-house nightly backup SHIPPED + FIRST BACKUP SEEDED; `verified:` commit 9bcbfa2af, kill-test 10/10, bucket privacy live-probed (anon denied), backups/2026-07-11/ = 24 files / 2,450 rows / 2.8MB confirmed in storage.objects; daily 03:45 UTC scheduled
+- [x] 4a: purge DONE; `verified:` fn source read (safe by construction: >=1 day past, available-only, zero booking refs), initial purge 154,698 rows (164,063 -> 9,365 total, 0 still eligible), weekly pg_cron job 'purge-past-available-slots' Sun 04:15 UTC confirmed in cron.job; migration applied + file backfilled (commit c47a1be22)
+- [x] 4b: credits/voucher SPEND path SHIPPED (flag-gated, flags live ON); `verified:` commit 57f9f11ff, kill-test 27/27 live, vitest 76/76; reviewer caught + fixed over-restore on PARTIAL refunds (isFull gate, mutation-proven). Known unverified edge: guest+voucher E2E (flagged)
+- [x] 5a: soak check run; `verified:` cron_runs holds only the kill-test digest row , scheduled runs hit the LIVE site which runs pre-loop code, so the soak gate stays pending the owner's `sync` (item 1 = owner's court, acknowledged)
+- [x] 5b: CDN caching headers SHIPPED; `verified:` commit c47a1be22, s-maxage=60 swr=300 anon-only, personalized paths no-store (cache-poisoning seams closed), Netlify precedence verified against live docs by the reviewer, kill-test 17/17
+- [x] 5c: hygiene bundle SHIPPED; `verified:` commit 8eed5293a , banCache cap, honest comment, 3 exposed select(*) trims + 12 justified keeps, 12 dead exports, all 23 non-cron sendEmail sites guarded (salon-approve was 500ing on email failure , real bug), notes/tags 404 parity confirmed no-fix-needed
+- [x] 5d: error-envelope SHIPPED; `verified:` commit 7855e608f , stable codes on all non-2xx of the 12 top routes, additive-only (mobile-consumed lowercase walkin codes untouched), kill-test 16/16
+- [x] 6: recommendations list delivered in the closing report (uptime monitor, Sentry option, Playwright-in-CI, E2E booking test, staging env, SEO/sitemap check, web-vitals, Actions-minutes watch, tsc-to-zero, database.types adoption sprint)
