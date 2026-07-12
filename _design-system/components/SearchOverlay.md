@@ -25,7 +25,16 @@ Layer 1 chrome (per §14.0 decision tree: a structural navigation/input surface)
 Selected pills/tabs use the soft-grey sink (`bg-s-bg-sunken` + ink text), mirroring
 `TabPill`. Input focus = a blue focus ring only (`s-accent`), never a persistent
 blue fill. The primary submit is ink (`bg-s-ink`). The ONLY solid blue is the
-date PICK inside `DateTimePicker`. No invented hex, no arbitrary Tailwind colors.
+date PICK (`SearchOverlay.tsx:840`, `bg-s-accent` on the selected day cell). No
+invented hex, no arbitrary Tailwind colors.
+
+**Correction 2026-07-12 (A3 registry audit finding 2e):** the date PICK is NOT
+rendered via the shared `DateTimePicker` primitive, despite earlier text on this
+page claiming so. `SearchOverlay.tsx` hand-builds its own calendar inline (local
+`isoDate`/`dateLabel`/`zeitPeriod`/`dateTab` state + month-grid math at
+`SearchOverlay.tsx:74-75`). This is a live violation of the locked design-contract
+row "date / time: ONE `DateTimePicker` primitive... NO bespoke date UI (V3-D445)."
+Flagged, not fixed here (doc-only change-set); code fix queued 2026-07-12.
 
 ## Public API
 
@@ -58,7 +67,10 @@ export function SearchOverlay(props: SearchOverlayProps): JSX.Element
 - `useSearchSuggest` — debounced as-you-type groups (services/salons/stylists).
 - `useRecentSearches` + `recentLabel()` — recent pills; click = restore all
   fields + auto-submit (per the hook's docstring).
-- `DateTimePicker` (single-date variant) — the Zeit segment's day picker.
+- ~~`DateTimePicker` (single-date variant) — the Zeit segment's day picker.~~
+  **False (corrected 2026-07-12).** The Zeit segment's day picker is a bespoke
+  inline calendar (`SearchOverlay.tsx:74-75,161-190,784-840`), NOT `DateTimePicker`.
+  This is a V3-D445 violation (see "Layer" above) — flagged, code fix queued.
 - `searchFeatured` (`FEATURED_SALONS`) + `searchTrending` (`TRENDING`) — resting content.
 - Categories are **reskinned inline** (the legacy `searchCategories.ts` uses a
   dead pre-B&W terracotta/cream palette + fake counts; the mockup shows a neutral

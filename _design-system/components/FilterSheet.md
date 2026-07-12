@@ -22,9 +22,12 @@ lives in `SearchTemplate` (`filterSheetOpen`) and arrives as `isOpen` / `onClose
 ## Layer
 
 Layer 1 chrome (per §14.0 decision tree: it's a structural filter affordance, not
-a semantic-state surface). No pastel, no accent fills. Active chips use the ink
-fill (`bg-s-ink text-white`), inactive use white + `s-border` hairline — same B&W
-contrast model as `TabPill` and the chip row.
+a semantic-state surface). No pastel, no accent fills. **Selected-state law
+(owner 2026-06-29, approved mockup `/dev/filter-refine`, supersedes V3-D450):**
+active chips use the calm GRAY sunken fill (`bg-s-bg-sunken text-s-ink
+font-semibold`, `border-transparent`), inactive use white + `s-border` hairline
+(`FilterSheet.tsx:374-379`) — the TabPill treatment, matching the design contract's
+"filter pill" row (never black/ink fill, never a blue border on a filter).
 
 ## Public API
 
@@ -79,8 +82,10 @@ returns the full set until an hours-aware filter lands.
 - Desktop (≥768px): `Modal` (`size="md"`) via `useResponsiveOverlay()`, same
   groups, `ModalFooter layout="between"` (reset left, apply right).
 - Group title = Section-H2 recipe (16px/600/ink, `tracking-[-0.01em]`).
-- Chips = Secondary-CTA at rest → Primary-CTA ink fill + leading `Check` when on,
-  36px min height, `rounded-pill`.
+- Chips = white + hairline at rest → calm gray sunken fill + `text-s-ink
+  font-semibold` when on (owner 2026-06-29, supersedes V3-D450; the fill alone
+  signals selected, no leading `Check`), 36px min height, `rounded-pill`
+  (`FilterSheet.tsx:351-385`, `SheetChip`).
 - Segmented control = `bg-s-bg-sunken` track, active segment = white pill +
   micro-shadow.
 - Apply button = Primary-CTA (`bg-s-ink text-white`, 15px/500), shows live count.
@@ -118,6 +123,11 @@ opacity-only under `prefers-reduced-motion`. Chip/segment state swaps =
   STRUCTURE from `public/solen-search-filters-variants.html` ("The shared Filter
   sheet"); AESTHETIC from LOCKFILE §1 tokens + §2.5 type roles. Reuses the `Sheet`
   primitive (+ `Modal` on desktop) rather than a bespoke overlay.
+- Owner (2026-06-29, approved mockup `/dev/filter-refine`): selected-chip fill
+  changed from ink (`bg-s-ink text-white`) to calm gray sunken (`bg-s-bg-sunken
+  text-s-ink font-semibold`), supersedes V3-D450. This doc still described the
+  old ink-fill recipe until 2026-07-12 (A3 registry audit finding 2b) even though
+  the code was already correct.
 
 ## Related
 
