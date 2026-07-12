@@ -24,10 +24,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const admin = createAdminSupabaseClient();
 
+  // Phantom-column fix: staff_portfolio_images has no "staff_member_id" column, only
+  // "staff_id" (see lib/database.types.ts, same fix as app/api/barber/[slug]/portfolio/route.ts).
   let query = admin
     .from("staff_portfolio_images")
     .select("*", { count: "exact" })
-    .eq("staff_member_id", staffId)
+    .eq("staff_id", staffId)
     .order("sort_order", { ascending: true })
     .range(offset, offset + limit - 1);
 

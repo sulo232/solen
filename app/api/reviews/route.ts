@@ -57,6 +57,12 @@ export async function POST(request: NextRequest) {
     salon_id: booking.salon_id,
   });
 
+  // Phantom-column fix: score_ergebnis / score_atmosphaere / score_preis_leistung are declared
+  // in supabase/migrations/20260324_review_dimensions.sql but the live `reviews` table has no
+  // such columns (confirmed via a direct select: 42703 "column reviews.score_ergebnis does not
+  // exist"), i.e. that migration was never applied. Writing them here made every review
+  // submission fail. The weighted `rating` above still folds these sub-scores in; only the raw
+  // per-dimension columns are dropped from the insert since they don't exist to write to.
   const { data, error } = await supabase
     .from("reviews")
     .insert({
@@ -69,9 +75,6 @@ export async function POST(request: NextRequest) {
       is_flagged: modResult.flagged,
       is_hidden: modResult.hidden,
       flag_reason: modResult.reason,
-      score_ergebnis: score_ergebnis ?? null,
-      score_atmosphaere: score_atmosphaere ?? null,
-      score_preis_leistung: score_preis_leistung ?? null,
     })
     .select()
     .single();

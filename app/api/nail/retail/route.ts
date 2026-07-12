@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
+import type { Database } from "@/lib/database.types";
 
 // GET — list retail products for a salon
 export async function GET(req: NextRequest) {
@@ -80,7 +81,7 @@ export async function PATCH(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   // RLS ensures only salon owner can update their own products
-  const update: Record<string, unknown> = {};
+  const update: Database["public"]["Tables"]["nail_retail_products"]["Update"] = {};
   if (typeof is_active === "boolean") update.is_active = is_active;
   if (typeof stock_count === "number" && stock_count >= 0) update.stock_count = stock_count;
 

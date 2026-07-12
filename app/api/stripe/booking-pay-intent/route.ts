@@ -12,6 +12,7 @@ import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { capStoredValueRappen, getAvailableCreditRappen, isMoneySpendFlagEnabled } from "@/lib/credits/redeem";
 import { bookingPayIntentSchema } from "@/lib/validations";
 import { createHash } from "crypto";
+import type { Database } from "@/lib/database.types";
 
 // POST /api/stripe/booking-pay-intent
 // FULL PREPAY at booking (the Fresha model). Creates an automatic-capture
@@ -690,7 +691,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const bookingPatch: Record<string, unknown> = { payment_intent_id: paymentIntent.id };
+  const bookingPatch: Database["public"]["Tables"]["bookings"]["Update"] = { payment_intent_id: paymentIntent.id };
   if (actualDiscountRappen > 0 && actualTier) {
     bookingPatch.applied_tier = actualTier;
     bookingPatch.tier_discount_amount = actualDiscountRappen; // Rappen, == the PI's application_fee reduction

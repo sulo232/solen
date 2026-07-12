@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
 
 // PATCH /api/staff/[id] — Update a staff member
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -26,12 +27,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const body = await req.json();
 
-  // Build update object from allowed fields
+  // Build update object from allowed fields. Phantom-column fix: staff_members has no
+  // "bio_de"/"bio_en" columns, only a single non-localized "bio" (confirmed against the live
+  // schema and lib/database.types.ts); no caller of this route currently sends either key, so
+  // they are dropped from the allowlist rather than guessed at a mapping.
   const allowedFields = [
     "name", "avatar_url", "specialties", "is_active", "commission_rate",
-    "bio_de", "bio_en", "languages", "instagram_url", "years_experience", "permissions",
-  ];
-  const update: Record<string, unknown> = {};
+    "languages", "instagram_url", "years_experience", "permissions",
+  ] as const;
+  const update: Database["public"]["Tables"]["staff_members"]["Update"] = {};
   for (const key of allowedFields) {
     if (key in body) update[key] = body[key];
   }

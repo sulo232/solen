@@ -845,8 +845,7 @@ export async function POST(request: NextRequest) {
     // Update user profile with onboarding status, TOS tracking, and role upgrade (if applicable)
     const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
     
-    // Using any type to dynamically attach role if needed
-    const updateData: Record<string, any> = { 
+    const updateData: Database["public"]["Tables"]["profiles"]["Update"] = {
       onboarding_completed: true,
       tos_accepted_version: CURRENT_TOS_VERSION,
       tos_accepted_at: new Date().toISOString()

@@ -126,12 +126,16 @@ export async function POST(request: NextRequest) {
         "War ok, aber nicht der beste Schnitt.",
         "Absolut empfehlenswert! Werde wiederkommen.",
       ];
+      // Phantom-column fix: reviews has no "service_id" column (confirmed against the live
+      // schema and lib/database.types.ts, only booking_id + staff_member_id link a review to
+      // what it's about); this insert already errored on every call (PostgREST unknown-column
+      // rejection) before this fix. There is no unambiguous real column to redirect the
+      // per-service tag to, so it is dropped rather than guessed.
       const entries = ratings.map((rating, i) => ({
         salon_id,
         user_id: user.id,
         rating,
         comment: comments[i],
-        service_id: serviceId,
         staff_member_id: staffId,
         created_at: new Date(Date.now() - i * 24 * 3_600_000).toISOString(),
       }));

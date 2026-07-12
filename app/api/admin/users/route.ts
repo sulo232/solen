@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody } from "@/lib/validations";
 import { z } from "zod";
+import type { Database } from "@/lib/database.types";
 
 const adminUserPatchSchema = z.object({
   user_id: z.string().uuid(),
@@ -56,7 +57,7 @@ export async function PATCH(req: NextRequest) {
   const { user_id, role, is_suspended } = validated;
 
   const admin = createAdminSupabaseClient();
-  const updates: Record<string, unknown> = {};
+  const updates: Database["public"]["Tables"]["profiles"]["Update"] = {};
   if (role !== undefined) updates.role = role;
   if (is_suspended !== undefined) updates.is_suspended = is_suspended;
 

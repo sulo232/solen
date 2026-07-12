@@ -6,6 +6,7 @@ import { autoTranslateDescription } from "@/lib/ai/translate";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, salonPolicyUpdateSchema } from "@/lib/validations";
 import { loadSalonDetailWithAccess } from "@/lib/salon-detail";
+import type { Database } from "@/lib/database.types";
 
 // Ring 5b: CDN response caching. netlify.toml's "/api/*" block (lines 31-35) is a
 // static/CDN header-injection rule and does NOT apply to this route's own function
@@ -114,7 +115,7 @@ export async function PATCH(
     // VAT/MWST registration (owner-settable). The rate itself is NOT here — 8.1% is fixed by
     // Swiss law; only whether the salon is registered + its UID. Mirrors /api/salons/mine.
     "vat_registered", "vat_number",
-  ];
+  ] as const;
 
   // SP-AC §B5: validate the policy subset (money-adjacent) with Zod, and gate it behind
   // the dedicated payment limiter (3/hour) — policy changes drive auto-charges. Only the
@@ -134,7 +135,7 @@ export async function PATCH(
     if (policyErr) return NextResponse.json({ error: policyErr.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
-  const updates: Record<string, unknown> = {};
+  const updates: Database["public"]["Tables"]["salons"]["Update"] = {};
   for (const key of allowed) {
     if (body[key] !== undefined) updates[key] = body[key];
   }

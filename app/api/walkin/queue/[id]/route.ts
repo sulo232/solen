@@ -8,6 +8,7 @@ import { validateBody, walkinUpdateSchema } from "@/lib/validations";
 import { getStripe } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
+import type { Database } from "@/lib/database.types";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -61,7 +62,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   // Build update object
-  const update: Record<string, any> = { status: validated.status };
+  const update: Database["public"]["Tables"]["barber_walkin_queue"]["Update"] = { status: validated.status };
   if (validated.assigned_barber_id) update.assigned_barber_id = validated.assigned_barber_id;
 
   if (validated.status === "in_chair") {

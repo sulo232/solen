@@ -13,6 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
+import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -521,7 +522,7 @@ export async function POST(request: NextRequest) {
   //    backstop over the wider [starts_at, bundleEndsAt) range (the pre-check above is fail-fast;
   //    the constraint closes any race). A 23P01 here means the window was taken between the
   //    pre-check and this write: undo the just-inserted booking and return the route's 409.
-  const slotUpdate: Record<string, unknown> = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
+  const slotUpdate: Database["public"]["Tables"]["availability_slots"]["Update"] = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
   if (bundleEndsAt) slotUpdate.ends_at = bundleEndsAt;
   // TOCTOU guard (audit fix B): the update only claims the slot if it is STILL 'available'.
   // Two concurrent requests both passing the read-time check above would otherwise both

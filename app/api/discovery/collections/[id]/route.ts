@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
+import type { Database } from "@/lib/database.types";
 
 /**
  * A single saved collection (V3-D414, Phase 2). Owner-scoped.
@@ -68,7 +69,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (!userId) return NextResponse.json({ error: "auth required" }, { status: 401 });
 
     const body = await req.json().catch(() => ({}));
-    const patch: Record<string, any> = {};
+    const patch: Database["public"]["Tables"]["discovery_collections"]["Update"] = {};
     if (typeof body?.name === "string") patch.name = body.name.trim().slice(0, 60);
     if (typeof body?.is_public === "boolean") patch.is_public = body.is_public;
     if (Object.keys(patch).length === 0) return NextResponse.json({ error: "nothing to update" }, { status: 400 });

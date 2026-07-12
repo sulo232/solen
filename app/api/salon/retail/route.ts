@@ -6,6 +6,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import type { Database } from "@/lib/database.types";
 
 // GET /api/salon/retail?salon_id=xxx — Public: list active retail products
 export async function GET(req: NextRequest) {
@@ -93,7 +94,7 @@ export async function PUT(req: NextRequest) {
   const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const updateData: Record<string, unknown> = {};
+  const updateData: Database["public"]["Tables"]["nail_retail_products"]["Update"] = {};
   if (body.name) updateData.name = body.name;
   if (body.description !== undefined) updateData.description = body.description;
   if (body.price) updateData.price = body.price;

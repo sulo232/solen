@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberProfileSchema } from "@/lib/validations";
+import type { Database } from "@/lib/database.types";
 
 // PUT /api/staff/[id]/slug — Set barber vanity URL slug
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -46,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Slug already taken", code: "SLUG_TAKEN" }, { status: 409 });
   }
 
-  const update: Record<string, any> = { slug: validated.slug };
+  const update: Database["public"]["Tables"]["staff_members"]["Update"] = { slug: validated.slug };
   if (validated.cover_photo_url) update.cover_photo_url = validated.cover_photo_url;
   if (validated.accent_color) update.accent_color = validated.accent_color;
 
