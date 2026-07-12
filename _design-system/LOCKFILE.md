@@ -1225,6 +1225,8 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 **Three node states — LITERAL recipes (UNIFIED BLUE, 2026-06-11):**
 
 > **Supersession note (2026-06-11, owner-approved booking-pay/-hair mockups, shipped in `BookingWizard.tsx`):** the 2026-06-10 green-family stepper + walk-in-blue-exception model is REPLACED by ONE blue stepper language everywhere. Owner on the green booking stepper: _"green doesn't really align with the design system… like in walk-in."_ **Blue = progress, green = state (success/confirmed), never the reverse.** The walk-in "exception" is now simply the rule.
+>
+> **Boundary vs the gray selected/active law (clarified 2026-07-12, consolidation):** the 2026-06-29 gray-fill rule governs SELECTION (a user choosing among options: pills, chips, list options, segments). A stepper communicates PROGRESS, not a choice — it is a different semantic class and stays blue per this section. Derivation: the 2026-06-29 contract row lists its own exceptions by choice-semantics (commit button, booking date/slot, avatar badge) and never names progress components; §1 already carries "§13.2 stepper discs" in the locked blue system-states list.
 
 | State | Disc | Glyph | Label |
 |---|---|---|---|
