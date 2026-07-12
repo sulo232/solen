@@ -60,7 +60,7 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
 
 ## Phase D , close
 - [ ] D1 consolidation report , DRAFT COMMITTED (sections 0-6 final, §7/§8 pending W2/W3 returns) , BLOCKED-ON: W2+W3 coder agents in flight, sections filled at their return
-- [ ] D2 chips emitted , BLOCKED-ON: W2/W3 reviewer PASS (chip list finalized in §6 of the report; emitting before the coder results would chip stale items)
+- [x] D2 chips emitted , DONE, verified: 7 spawn_task chips this session (task_f7510668 token regressions b/c/j, task_ae728f6e radius, task_65c411f4 CardName 14px, task_34f48e08 SearchOverlay V3-D445, task_6482ec0f shadows, task_2bcf91b8 press-scale, task_547a320b mobile ErrorState); owner decisions NOT chipped, they are §5 of the report
 - [ ] D3 commits per chunk , IN PROGRESS, 4 so far: ef8cdb7a8 (plan), 80691b351 (revive), 43b4f7a99 (W1), boundary-note commit; final W2/W3 + close commits pending , BLOCKED-ON: W2/W3 returns
 - [ ] D4 close on original message , BLOCKED-ON: last step after D1/D2 complete (W2/W3 in flight)
 
