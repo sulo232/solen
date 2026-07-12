@@ -39,6 +39,7 @@
    "target_type"
   ],
   "availability_slots": [
+   "block_reason",
    "booked_by",
    "booking_id",
    "client_id",
@@ -216,6 +217,7 @@
    "is_express_rebook",
    "is_first_visit",
    "is_recurring",
+   "member_discount_reserved",
    "net_amount",
    "outlook_event_id",
    "paid_amount",
@@ -230,6 +232,9 @@
    "price_increase_requested_at",
    "price_paid",
    "promo_code",
+   "promo_counted_at",
+   "promo_use_released",
+   "promo_use_reserved",
    "rebooked_from_id",
    "recurring_group_id",
    "reference_code",
@@ -411,6 +416,15 @@
    "id",
    "stripe_payment_intent_id",
    "user_id"
+  ],
+  "cron_runs": [
+   "duration_ms",
+   "errors",
+   "id",
+   "name",
+   "ok",
+   "processed",
+   "ran_at"
   ],
   "customer_segment_members": [
    "computed_at",
@@ -1161,7 +1175,9 @@
    "id",
    "is_flagged",
    "is_hidden",
+   "moderation_status",
    "rating",
+   "removal_reason",
    "salon_id",
    "salon_response",
    "salon_response_at",
@@ -1339,6 +1355,7 @@
    "created_at",
    "gross_amount",
    "id",
+   "lost_dispute_id",
    "net_amount",
    "salon_id",
    "status",
@@ -1368,6 +1385,7 @@
    "approved_at",
    "approved_by",
    "auto_assign_method",
+   "auto_complete_enabled",
    "average_rating",
    "booking_confirmation_mode",
    "calendar_color_by",
@@ -1926,5 +1944,5 @@
    "tension_areas"
   ]
  },
- "capturedAt": "2026-07-06"
+ "capturedAt": "2026-07-12"
 }
