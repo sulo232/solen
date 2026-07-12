@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         serviceQuery = serviceQuery.eq("category", categoryValue);
       }
       // For level 2+3, search by treatment name
-      if (cat.level >= 2) {
+      if ((cat.level ?? 0) >= 2) {
         const safeCatName = cat.name_de.replace(/[,()]/g, " ");
         serviceQuery = serviceQuery.or(`name_de.ilike.%${safeCatName}%,name_en.ilike.%${safeCatName}%`);
       }

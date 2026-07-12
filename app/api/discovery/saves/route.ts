@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ items: [] });
   }
 
-  const itemIds = saves.map((s) => s.item_id);
+  const itemIds = saves.map((s) => s.item_id).filter((v): v is string => v !== null);
 
   // Fetch the full items. Explicit anon-safe column allowlist (shared with
   // discovery/similar), not select("*"): excludes flag_reason (moderation

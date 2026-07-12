@@ -41,20 +41,20 @@ export async function GET(req: NextRequest) {
 
   // Fetch user profiles for comment authors
   const userIds = [...new Set((comments ?? []).map((c) => c.user_id))];
-  let profiles: Record<string, { display_name: string; avatar_url: string | null }> = {};
+  let profiles: Record<string, { display_name: string | null; avatar_url: string | null }> = {};
   if (userIds.length > 0) {
     const { data: profileData } = await supabase
       .from("public_profiles")
       .select("id, display_name, avatar_url")
       .in("id", userIds);
     for (const p of profileData ?? []) {
-      profiles[p.id] = { display_name: p.display_name, avatar_url: p.avatar_url };
+      if (p.id) profiles[p.id] = { display_name: p.display_name, avatar_url: p.avatar_url };
     }
   }
 
   const enriched = (comments ?? []).map((c) => ({
     ...c,
-    user: profiles[c.user_id] ?? { display_name: "Anonym", avatar_url: null },
+    user: (c.user_id ? profiles[c.user_id] : undefined) ?? { display_name: "Anonym", avatar_url: null },
   }));
 
   return NextResponse.json({

@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
         .eq("collection_id", c.id)
         .order("created_at", { ascending: false })
         .limit(4);
-      const ids = (saves ?? []).map((s) => s.item_id);
+      const ids = (saves ?? []).map((s) => s.item_id).filter((v): v is string => v !== null);
       let covers: string[] = [];
       if (ids.length) {
         const { data: items } = await admin

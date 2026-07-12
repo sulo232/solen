@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
   // Per-category chips (owner 2026-06-23): ?category=hair -> hair tags only; absent / 'all' -> global top tags.
   const categoryParam = req.nextUrl.searchParams.get("category");
-  const pCategory = categoryParam && categoryParam !== "all" ? categoryParam : null;
+  const pCategory = categoryParam && categoryParam !== "all" ? categoryParam : undefined;
 
   try {
     const admin = createAdminSupabaseClient();

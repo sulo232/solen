@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
   const { data: ranked, error: rankErr } = await supabase.rpc("search_salons_ranked", {
     p_q: q,
     p_limit: 60,
-    p_query_embedding: emb,
+    p_query_embedding: emb ?? undefined,
   });
   if (rankErr) console.error("[search/no-results] search_salons_ranked failed:", rankErr.message);
   const ids: string[] = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id);

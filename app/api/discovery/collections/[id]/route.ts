@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .eq("user_id", userId)
       .eq("collection_id", id)
       .order("created_at", { ascending: false });
-    const ids = (saves ?? []).map((s) => s.item_id);
+    const ids = (saves ?? []).map((s) => s.item_id).filter((v): v is string => v !== null);
 
     let items: Array<Record<string, any>> = [];
     if (ids.length) {

@@ -309,8 +309,8 @@ async function isClickMember(
     if (clickedType === "service") {
       const { data, error } = await supabase.rpc("search_suggest", {
         p_q: query,
-        p_city_id: cityId,
-        p_category: null,
+        p_city_id: cityId ?? undefined,
+        p_category: undefined,
       });
       if (error) {
         console.error("[search/event] search_suggest (service) failed:", error.message);
@@ -339,8 +339,8 @@ async function isClickMember(
       // suggest diverge at the margins.
       const { data: sug, error: sErr } = await supabase.rpc("search_suggest", {
         p_q: query,
-        p_city_id: cityId,
-        p_category: null,
+        p_city_id: cityId ?? undefined,
+        p_category: undefined,
       });
       if (sErr) {
         console.error("[search/event] search_suggest (salon) failed:", sErr.message);

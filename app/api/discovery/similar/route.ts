@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
   });
 
   // Sort by score descending, then by like_count
-  scored.sort((a, b) => b._score - a._score || b.like_count - a.like_count);
+  scored.sort((a, b) => b._score - a._score || (b.like_count ?? 0) - (a.like_count ?? 0));
 
   // Return top N without the internal score
   const results = scored.slice(0, limit).map(({ _score, ...item }) => item);

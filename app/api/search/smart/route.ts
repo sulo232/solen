@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ results: [], detected_category: null });
   }
 
-  const category = req.nextUrl.searchParams.get("category") || null;
+  const category = req.nextUrl.searchParams.get("category") || undefined;
   const citySlug = req.nextUrl.searchParams.get("city");
 
   try {
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
     const { data: matches, error } = await supabase.rpc("match_search_embeddings", {
       query_embedding: JSON.stringify(embedding),
       match_category: category,
-      match_city_id: cityId || null,
+      match_city_id: cityId,
       match_threshold: 0.5,
       match_count: 10,
     });

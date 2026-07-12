@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   // Count distinct style names
   const counts = new Map<string, number>();
-  (data ?? []).forEach((row: { style_name: string }) => {
+  (data ?? []).forEach((row: { style_name: string | null }) => {
     const name = row.style_name;
     if (name) counts.set(name, (counts.get(name) ?? 0) + 1);
   });

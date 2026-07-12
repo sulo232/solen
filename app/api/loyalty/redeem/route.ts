@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
@@ -54,24 +55,31 @@ export async function POST(req: NextRequest) {
     .update({ status: "redeemed" })
     .eq("id", cardId);
 
-  // Log history
-  await admin
-    .from("barber_loyalty_history")
-    .insert({
-      card_id: cardId,
-      action: "redeem",
-      performed_by: user.id,
-    });
+  // NOTE (typed-DB pass, 2026-07-11): this used to insert into barber_loyalty_history with
+  // columns { card_id, action, performed_by } which do not exist on that table (live schema is
+  // a completion-record shape: card_id, salon_id, customer_id, stamps_collected, reward_type,
+  // reward_value, completed_at, redeemed_at, all NOT NULL except reward_value/redeemed_at). That
+  // insert has never been able to succeed against the live schema (its error was discarded, so
+  // this was a pre-existing silent no-op, not a regression here). Left removed rather than
+  // guessing a completed_at/stamps_collected value: flagged for a product/schema decision.
 
-  // Auto-create a new active card for the customer
+  // Auto-create a new active card for the customer. qr_token is NOT NULL UNIQUE with no DB
+  // default (supabase/migrations/073_barber_foundation.sql) and was previously omitted, so this
+  // insert also always failed silently; the QR flow itself never reads this column back (it
+  // recomputes an HMAC token from salonId/customerId/cardId on the fly, see
+  // app/api/loyalty/qr/[cardId]/route.ts), so a random unique value satisfies the constraint
+  // without inventing any business value. stamps_collected -> stamps: the real column name
+  // (supabase/migrations/073_barber_foundation.sql line 96); stamps_collected does not exist on
+  // barber_loyalty_cards (it exists on the unrelated barber_loyalty_history table).
   await admin
     .from("barber_loyalty_cards")
     .insert({
       program_id: card.program_id,
       customer_id: card.customer_id,
       salon_id: card.salon_id,
-      stamps_collected: 0,
+      stamps: 0,
       status: "active",
+      qr_token: randomUUID(),
     });
 
   return NextResponse.json({

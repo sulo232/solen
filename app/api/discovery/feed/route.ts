@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
     const tagsAny = filters.tags
       ? filters.tags.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 10)
       : [];
-    const pTagsAny = tagsAny.length ? tagsAny : null;
+    const pTagsAny = tagsAny.length ? tagsAny : undefined;
 
     // V3-D405 (#20): when there's a search term, route through the relevance-ranked FTS RPC (search_discovery)
     // instead of a flat ILIKE. It ranks by ts_rank over name/author/style/tags/description, applies the same
@@ -98,10 +98,10 @@ export async function GET(req: NextRequest) {
     if (filters.search) {
       const { data: rows, error: rpcErr } = await admin.rpc("search_discovery", {
         q: filters.search,
-        p_category: filters.category && filters.category !== "all" ? filters.category : null,
-        p_gender: filters.gender && filters.gender !== "all" ? filters.gender : null,
-        p_texture: filters.texture || null,
-        p_style: filters.style || null,
+        p_category: filters.category && filters.category !== "all" ? filters.category : undefined,
+        p_gender: filters.gender && filters.gender !== "all" ? filters.gender : undefined,
+        p_texture: filters.texture || undefined,
+        p_style: filters.style || undefined,
         p_limit: limit,
         p_offset: offset,
       });
@@ -166,18 +166,18 @@ export async function GET(req: NextRequest) {
     // profile → p_user_gender null → neutral order (identical to before). This supersedes the old binary
     // "suppress beard for female" rule. p_creator (owner_user_id) serves UserPostsSection (?creator=<userId>).
     // Returns the same light grid column set + a window count(*) for has_more.
-    let userGender: string | null = null;
+    let userGender: string | undefined = undefined;
     if (userId && supabase && (!filters.gender || filters.gender === "all")) {
       const { data: profile } = await supabase.from("profiles").select("disc_gender").eq("id", userId).single();
-      userGender = (profile?.disc_gender as string | undefined) ?? null;
+      userGender = (profile?.disc_gender as string | undefined) ?? undefined;
     }
 
     const { data: rows, error: feedErr } = await admin.rpc("discovery_feed", {
-      p_category: filters.category && filters.category !== "all" ? filters.category : null,
-      p_gender: filters.gender && filters.gender !== "all" ? filters.gender : null,
-      p_texture: filters.texture || null,
-      p_style: filters.style || null,
-      p_creator: filters.creator || null,
+      p_category: filters.category && filters.category !== "all" ? filters.category : undefined,
+      p_gender: filters.gender && filters.gender !== "all" ? filters.gender : undefined,
+      p_texture: filters.texture || undefined,
+      p_style: filters.style || undefined,
+      p_creator: filters.creator || undefined,
       p_user_gender: userGender,
       p_limit: limit,
       p_offset: offset,

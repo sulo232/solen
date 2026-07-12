@@ -37,6 +37,9 @@ export async function POST(req: NextRequest) {
   }
 
   const { salonId, customerId, cardId } = result;
+  if (!salonId || !customerId || !cardId) {
+    return NextResponse.json({ error: "Invalid or tampered token" }, { status: 403 });
+  }
 
   const admin = createAdminSupabaseClient();
 
@@ -62,30 +65,31 @@ export async function POST(req: NextRequest) {
 
   const stampsRequired = (card.barber_loyalty_programs as any)?.stamps_required ?? 10;
 
-  if (card.stamps_collected >= stampsRequired) {
+  if (card.stamps >= stampsRequired) {
     return NextResponse.json({ error: "Card already complete" }, { status: 400 });
   }
 
-  // Increment stamps
-  const newStamps = card.stamps_collected + 1;
+  // Increment stamps. stamps_collected -> stamps: the real column name (barber_loyalty_cards
+  // has no stamps_collected column; that name exists only on the unrelated barber_loyalty_history
+  // table, supabase/migrations/073_barber_foundation.sql).
+  const newStamps = card.stamps + 1;
   const isComplete = newStamps >= stampsRequired;
 
   await admin
     .from("barber_loyalty_cards")
     .update({
-      stamps_collected: newStamps,
+      stamps: newStamps,
       status: isComplete ? "completed" : "active",
     })
     .eq("id", cardId);
 
-  // Log history
-  await admin
-    .from("barber_loyalty_history")
-    .insert({
-      card_id: cardId,
-      action: "stamp",
-      performed_by: user.id,
-    });
+  // NOTE (typed-DB pass, 2026-07-11): this used to insert into barber_loyalty_history with
+  // columns { card_id, action, performed_by } which do not exist on that table (live schema is
+  // a completion-record shape: card_id, salon_id, customer_id, stamps_collected, reward_type,
+  // reward_value, completed_at, redeemed_at, all NOT NULL except reward_value/redeemed_at). That
+  // insert has never been able to succeed against the live schema (its error was discarded, so
+  // this was a pre-existing silent no-op, not a regression here). Left removed rather than
+  // guessing a completed_at/reward_type value: flagged for a product/schema decision.
 
   return NextResponse.json({
     stamped: true,

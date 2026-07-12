@@ -54,10 +54,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       // 2) Fallback: FTS on the board's style keyword (no logging — this is not the /feed route).
       const { data: rows, error: rErr } = await admin.rpc("search_discovery", {
         q: board.style_name || board.name,
-        p_category: board.category || null,
-        p_gender: null,
-        p_texture: null,
-        p_style: null,
+        p_category: board.category ?? undefined,
+        p_gender: undefined,
+        p_texture: undefined,
+        p_style: undefined,
         p_limit: 40,
         p_offset: 0,
       });
