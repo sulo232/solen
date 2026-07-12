@@ -10,5 +10,19 @@ First census after flipping `createServerClient<Database>`/`createBrowserClient<
 
 ## Boxes
 - [x] P0 probe: type the 3 client factories (lib/supabase.ts x2 + browser, lib/supabase-browser.ts), dump the full tsc error list to a file, bucket by directory, size the waves , verified: probe matrix isolated the ssr@0.5.2 root cause, bridge applied, census 2,725 -> 251 / 107 files (v2 buckets: discovery 32, dashboard 25, cron 23, admin 19, salon 15, bookings 15, stripe 13, salons 13, app/[locale] 11, search 10, loyalty 9, analytics 9, scripts 14, tail ~40)
-- [ ] Wave 1 (4 disjoint loops): A discovery+search+loyalty (51) · B dashboard+admin+analytics (53) · C cron+bookings+stripe (51) · D salon+salons+app/[locale]+scripts+tail (96)
-- [ ] Final: tsc=0, vitest, smoke, e2e all green; NOTE comment in lib/supabase.ts updated; plan + ACTIVE closed
+- [x] Wave 1 (4 disjoint loops): A discovery+search+loyalty (51) · B dashboard+admin+analytics (53) · C cron+bookings+stripe (51) · D salon+salons+app/[locale]+scripts+tail (96) , verified: A PASS r1 (commit b11afeb63), B PASS r1 (73dcf271b), C PASS r3 after two behavior-drift rejections (6d2b845f6), D2 typed fixes in checkpoint 433bdde5d + close commit 5b3d28cc5; every remaining error fixed, reviewers re-ran tsc/vitest independently
+- [x] Final: tsc=0, vitest, smoke, e2e all green; NOTE comment in lib/supabase.ts updated; plan + ACTIVE closed , verified 2026-07-12: tsc 0 errors, vitest 76/76, smoke 10/10, e2e 22/22, all run AFTER the last code change; NOTE updated in P0 (15720bab9)
+
+## Real bugs the sprint caught (all pre-existing silent failures, now fixed)
+- app/api/vouchers/route.ts: selected salons.name_de/name_en (only `name` exists); Stripe description + salon_name in the response were literal "undefined" (council-confirmed independently).
+- app/api/loyalty/*: barber_loyalty_cards.stamps_collected -> stamps (real column); qr_token (NOT NULL, no default) never supplied on auto-created cards so the insert NEVER succeeded; barber_loyalty_history inserts used 3 nonexistent columns (writes silently failing, calls removed with NOTE comments).
+- app/api/services/import/route.ts: name_en hardcoded '' against a NOT NULL-typed column, every import 500'd; now mirrors name (sibling-route precedent).
+- profiles.tos_version -> tos_accepted_version (real column).
+- app/api/discovery/feed/route.ts: extra named exports broke the Next route-module contract; moved to lib/discovery/feed-cache-headers.ts.
+- Phantom RPC increment_field + discovery_likes/saves id-column mismatches (D2 round 1).
+
+## Side finding: mass graveyard resurrection (cleaned)
+175 files owner-deleted in the dead-code rings (ring4b/ring10) were sitting on disk UNTRACKED (chat/persona/chat-templates APIs, 81 components-legacy files, the src/ tree, TosPrompt, TOSUpdateBanner, discover/nails, lib/vouchers/validate) , a stray git checkout during ring 10 resurrected them; the census included their tsc errors, which is how the sprint surfaced it. All re-verified zero live importers (incl. solen-mobile) and re-deleted in 5b3d28cc5. LESSON: after any subagent git-checkout incident, run `git status --porcelain | grep '^??'` against the graveyard.
+
+## Council review of the P0 bridge (tier 3, 2026-07-12)
+Bridge confirmed type-only and runtime-safe (peer-dep verified, no instanceof checks, generics/casts erased). Dedup finding applied: duplicate createBrowserSupabaseClient removed from lib/supabase.ts. Two phantom-column findings were duplicates of wave fixes (vouchers, TosPrompt).
