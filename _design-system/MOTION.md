@@ -1,6 +1,6 @@
 # MOTION + the design-language pass (2026-06-09)
 
-Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and BIG mistakes to avoid)"** + **"The Secret Behind Weirdly Addictive Apps"** , plus owner calibration ("overmade the depths", "premium feel"). This doc is the durable record so it survives context compaction. Referenced from CLAUDE.md so it loads every session.
+Source: two Tim Gabe videos the owner shared , **"4 levels of UI/UX design (and BIG mistakes to avoid)"** + **"The Secret Behind Weirdly Addictive Apps"** , plus owner calibration ("overmade the depths", "premium feel"). This doc is the durable record so it survives context compaction. **Correction (2026-07-10, was stale "loads every session"):** the ENTER RECIPE (below) is gate-enforced (`~/.claude/hooks/motion-recipe-gate.py`, PreToolUse on Write/Edit/MultiEdit, registered in the global `~/.claude/settings.json`, verified live 2026-07-10) , the rest of this doc is read-on-demand (CLAUDE.md: "read before motion work").
 
 ## The thesis (do NOT lose this)
 
@@ -50,6 +50,7 @@ Legitimate exception (a backdrop/scrim fade, a colour cross-fade): put `motion-o
 ## Motion principles (the "when to use")
 
 - **Easings** (LOCKFILE/SOURCE §4: snap / spring / glide / thud) used purposefully on EVERY interaction , press feedback, transitions, sheet + overlay entrances , consistently, never ad-hoc.
+- **Gesture-driven elements are the ONE exception to fixed easings** (LOCKFILE §16.5, owner-approved 2026-07-10, from Apple's Designing Fluid Interfaces via the emilkowalski apple-design skill): anything a finger drives 1:1 (sheet drag, SearchMorph) releases into a SPRING seeded with the finger's velocity, decides dismiss-vs-return by velocity sign + momentum projection (not a bare position threshold), rubber-bands at hard edges, and stays grabbable mid-settle. Full formulas + house damping/response values live in §16.5, read it before touching any draggable surface. Verify gesture physics with a Playwright pointer script + video, never the Preview tab (it throttles rAF and lies).
 - **Celebratory moments** on emotional peaks → use `<SuccessMark>`. The peak is booking-confirmed (done); also walk-in-joined, review-posted, package/gift bought, payment settled.
 - **Haptics** on mobile where the platform allows (Android `navigator.vibrate`; iOS web is limited , use where real, never fake).
 - **Restraint in motion too** , purposeful + quick (150-300ms), never gratuitous. Motion is the lever; it is not decoration.

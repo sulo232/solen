@@ -100,7 +100,7 @@ This decision tree is the **canonical onboarding for every new component** (CLAU
 
 Solen uses **the colors humans already recognize** from a lifetime of UI exposure. We do not invent custom semantic colors. If a meaning has a universal hue, we adopt the universal hue and map to our token.
 
-> **HEX SUPERSEDED (2026-06-01, V3-D421), see `CANON.md` §1:** `s-accent` = **#276EF1** (Uber blue) and marks INTERACTIVITY — used generously on links, see-all/view-all, tabs/segments, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints, plus focus / spinner / input. Stays OFF non-interactive text including eyebrows (eyebrows remain text-s-ink-3). `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with CANON, CANON wins.
+> **HEX SUPERSEDED (2026-06-01, V3-D421), see LOCKFILE §1 (CANON folded into LOCKFILE 2026-07-10):** `s-accent` = **#276EF1**. The "generously on everything tappable" wording that stood here was the v2 model, RETIRED by LOCKFILE §1.5 v3 (2026-06-11): blue is the HYPERLINK color (review counts, inline body links, Mehr lesen, the sparse hyperlink set) + system states; see-all / tabs / secondary & ghost buttons / icon tints = INK with affordance. `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with LOCKFILE, LOCKFILE wins.
 
 | Universal semantic | Standard hue | Solen token | Hex | Where it shows up |
 |---|---|---|---|---|
@@ -135,7 +135,7 @@ When adding a new color token to `tailwind.config.js`, both forms MUST be define
 **Already-in-system examples** (use as reference when adding new tokens):
 - `s-success.DEFAULT #16A34A` (HSL 142, 76%, 36%) + `.bg #E8F5E9` (HSL 122, 28%, 93%)
 - `s-error.DEFAULT #D32F2F` (HSL 0, 65%, 51%) + `.bg #FFEBEE` (HSL 354, 100%, 96%)
-- `s-warning.DEFAULT #F1AE27` (HSL 40, 88%, 55%) + `.bg #FDF6E7` (HSL 41, 80%, 95%) — the accent's amber twin (CANON §1)
+- `s-warning.DEFAULT #F1AE27` (HSL 40, 88%, 55%) + `.bg #FDF6E7` (HSL 41, 80%, 95%) — the accent's amber twin (LOCKFILE §1)
 - `s-accent.DEFAULT #276EF1` (HSL 215, 88%, 55%) + `.pale #EAEFFE` (HSL 226, 92%, 96%) — V3-D204
 
 **What WE DON'T do:**
@@ -219,7 +219,7 @@ The interactivity signal. Used GENEROUSLY on anything tappable — links, see-al
 | `s-love.deep` | `#A23548` | Dark warm-red text on `.soft` bg |
 | `s-success` DEFAULT | `#16A34A` | Success state (same hue as brand — distinguish by context) |
 | `s-success.bg` | `#E8F5E9` | Success surface tint |
-| `s-warning` DEFAULT | `#F1AE27` | Warnings (the accent's amber twin, CANON §1) |
+| `s-warning` DEFAULT | `#F1AE27` | Warnings (the accent's amber twin, LOCKFILE §1) |
 | `s-warning.bg` | `#FDF6E7` | Warning surface tint |
 | `s-error` DEFAULT | `#D32F2F` | Errors |
 | `s-error.bg` | `#FFEBEE` | Error surface tint |
@@ -253,7 +253,7 @@ These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt 
 | `--shadow-warm-*` aliases | various | (warm tint legacy) | Use `elevation-1/2/3` |
 | `--ease-out-strong` `--ease-out-warm` `--ease-in-subtle` `--spring-bounce` `--ease-drawer` | various | V2-D16+ | Use canonical 4: `snap` / `spring` / `glide` / `thud` |
 
-**Active accent (v2, 2026-06-09):** Royal blue `s-accent #276EF1` is the INTERACTIVITY accent — used generously on all tappable affordances (links, tabs, ghost/secondary buttons, tappable rows, inline action labels). No longer "reserved / not introduced." See CANON.md §0 + §2.1 above. (Stale hex #1638C4 → #276EF1.)
+**Active accent (v3, 2026-06-11; v2 "generous" RETIRED):** Royal blue `s-accent #276EF1` is the HYPERLINK accent — hyperlink-reading text (review counts, inline body links, Mehr lesen) + system states only; tabs / ghost & secondary buttons / see-all / icon tints = INK with affordance. See LOCKFILE §1.5 v3 (CANON folded into LOCKFILE 2026-07-10). (Stale hex #1638C4 → #276EF1.)
 
 ### §2.3 · Color anti-patterns
 
@@ -286,7 +286,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 | `<ProgressStep state="current">` | Active step | blue / `s-accent` | filled circle bg, white number |
 | `<ProgressStep state="pending">` | Future step | muted / `s-ink-3` | hollow circle, ink-3 border |
 | Rating star (filled) | "This salon scored X" | yellow / `s-star` | `fill="#FFC32B"` (universal star convention) |
-| Rating star (empty) | Score remainder | grey / `s-border` | `fill="#E7E5E4"` |
+| Rating star (empty) | Score remainder | grey / `s-border` | `fill="#E4E4E7"` (corrected 2026-07-10; matches the live `s-border` token at SOURCE.md:211 and `RatingStars.tsx:183`'s `fill-s-border`) |
 | Heart (saved) | "You saved this" | pink / `--heart-active` | `fill="#FF3366"` |
 | Heart (unsaved) | Default | ink-stroke / `s-ink` | `stroke="var(--color-heading)" fill="none"` |
 | "NEW" badge (brand) | Brand identity moment, not semantic | blue / `s-accent` | `bg-s-accent text-white` (Layer 2, NOT Layer 3 — listed here for the decision boundary) |
@@ -303,7 +303,7 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 
 ## §3 · Typography — V3-D191 (2026-05-26)
 
-> **VALUES SUPERSEDED (2026-06-01, V3-D421).** The literal type values in this section predate the V3-D325/D327/D410 sweeps. Single source of truth is now `_design-system/CANON.md` §3 + LOCKFILE §2: body = **Inter 400** (not Hanken 300), display = **Inter Tight** (not Bricolage), headings **600** (Hero **700**, never 800), eyebrow tracking **0.08em**. This section stays for rationale; where a value here conflicts with CANON, CANON wins.
+> **VALUES SUPERSEDED (2026-06-01, V3-D421).** The literal type values in this section predate the V3-D325/D327/D410 sweeps. Single source of truth is now LOCKFILE §2 (CANON folded into LOCKFILE 2026-07-10): body = **Inter 400** (not Hanken 300), display = **Inter Tight** (not Bricolage), headings **600** (Hero **700**, never 800), eyebrow tracking **0.08em**. This section stays for rationale; where a value here conflicts with LOCKFILE, LOCKFILE wins.
 
 ### Fonts (locked)
 
@@ -326,7 +326,7 @@ The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
 |---|---|---|---|---|---|---|---|
 | Hero H1 | `font-display text-[clamp(36px,9vw,46px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(36, 9vw, 46) | **800** | -0.03em | 1.0 | sentence | Page hero only (`Termin in 30 Sekunden.`) — V3-D193 weight 900→800 |
 | Page H2 | `font-display text-[clamp(25px,4vw,40px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(25, 4vw, 40) | **800** | -0.03em | 1.0 | sentence | BusinessTeaser-style h2 — V3-D193 weight 900→800 |
-| Section H2 | `font-display text-[clamp(18px,2vw,23px)] font-bold leading-[1.2] tracking-[-0.03em] text-s-ink` | clamp(18, 2vw, 23) | **700** | -0.03em | 1.2 | sentence | "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration.", "Bewertungen" — V3-D193 weight 800→700 |
+| Section H2 | `font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink` | clamp(18, 2vw, 20) | **600** | -0.01em | 1.25 | sentence | "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration.", "Bewertungen" — **corrected 2026-07-10 to match LOCKFILE:227 (the CONSISTENCY_AUDIT.md fix flagged 2026-06-07, never applied); this row previously read clamp→23px/700/-0.03em, which conflicted with LOCKFILE. LOCKFILE wins on the aesthetic axis (dual-axis rule) — 20px/600 is canonical.** |
 | MobileCategoriesRow H2 | `font-display text-[clamp(18px,5vw,20px)] font-bold leading-[1.2] tracking-[-0.03em]` | clamp(18, 5vw, 20) | **700** | -0.03em | 1.2 | sentence | "Für dich" only — V3-D193 weight 800→700 |
 | Logo wordmark | `font-display font-extrabold leading-none tracking-normal` | per size variant | **800** | normal | 1 | sentence | "Solen" header logo — V3-D193 weight 900→800 |
 | Card name (h3) | `font-body text-[14px] font-medium leading-[1.25] tracking-[-0.01em] text-s-ink` | 14 | **500** | -0.01em | 1.25 | sentence | SalonCard name (V3-D191: 600→500) |
@@ -1205,10 +1205,10 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | Decision | Locked at | Where the lock lives |
 |---|---|---|
 | B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
-| Accent = blue `s-accent` #276EF1, NOT pixel-budgeted (v2 2026-06-09; forest emerald #16A34A retired as accent, survives as success-status hue) | v2 | CANON.md §0 |
-| Inter Tight (display + codes-as-tabular) + Inter (body) — Bricolage + Hanken + JetBrains Mono retired (mono retired 2026-06-10 / V3-D470; codes → Inter Tight tabular per LOCKFILE §13.4) | CANON §3 / V3-D410 / V3-D470 | This doc §3 |
+| Accent = blue `s-accent` #276EF1, sparse HYPERLINK scope (v3 2026-06-11 supersedes v2 "not budgeted"; forest emerald #16A34A retired as accent, survives as success-status hue) | v3 | LOCKFILE §1.5 v3 |
+| Inter Tight (display + codes-as-tabular) + Inter (body) — Bricolage + Hanken + JetBrains Mono retired (mono retired 2026-06-10 / V3-D470; codes → Inter Tight tabular per LOCKFILE §13.4) | LOCKFILE §2 / V3-D410 / V3-D470 | This doc §3 |
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
-| Blue `s-accent` #276EF1 = the interactivity accent — used generously on all tappable affordances (v2, 2026-06-09) | v2 | CANON.md §0 + SOURCE §1/§2.1 |
+| Blue `s-accent` #276EF1 = the HYPERLINK accent, sparse (v3 2026-06-11; the v2 "generous on all tappable" row is RETIRED) | v3 | LOCKFILE §1.5 v3 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
 | German `du` not `Sie` | (since launch) | This doc §18 |
 | `card` radius = 16px | V4 era | This doc §5 |

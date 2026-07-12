@@ -286,7 +286,11 @@ ACCENT_ALLOWED_HINTS = (
     "outline-s-accent",   # outline ring
     "ring-s-accent",      # focus ring
     "border-s-accent",    # input focus border / blue-ghost secondary button
-    # v2 interactivity markers — blue on these is CORRECT, not drift:
+    # v2-era interactivity markers, kept as FP-suppressors for this INFO rule (NOT law):
+    # under LOCKFILE §1.5 v3 blue on a tab/selected/tappable thing is only correct if it
+    # reads as a hyperlink (or is the locked booking date/slot exception). The BLOCKING
+    # enforcement for blue selected-states lives in no-black-selected-gate; tightening
+    # this list needs a live FP count first (parked, design-governance audit 2026-07-10).
     "href",               # a link
     "<a ",
     "<Link",
@@ -971,17 +975,19 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 ))
 
         # A9 — text-s-accent / bg-s-accent outside allowed contexts.
-        # Allowed (v2 rule 1): any interactivity marker in ACCENT_ALLOWED_HINTS (links / see-all / active tabs /
-        # ghost buttons / tappable rows / inline action labels / icon-tap-targets) + focus ring / Spinner / input-focus.
-        # Flag only blue on non-interactive text + a blue-filled primary.
+        # LAW = LOCKFILE §1.5 v3 (2026-06-11, supersedes v2 "generous" + the folded CANON §0):
+        # blue is the HYPERLINK color, not the clickability color. Allowed: hyperlink-reading text
+        # (review counts, inline body links, Mehr lesen, Passwort vergessen, Ändern jump-links)
+        # + system states (focus ring / Spinner / input focus / §13.2 stepper discs).
+        # See-all / active tabs / secondary+ghost buttons / icon tints = INK with affordance.
         # Heuristic: line contains text-s-accent OR bg-s-accent-pale,
         # but does NOT contain any ACCENT_ALLOWED_HINTS substring.
         if ACCENT_TEXT_RE.search(line) or ACCENT_BG_RE.search(line):
             if not any(hint in line for hint in ACCENT_ALLOWED_HINTS):
                 findings.append(Finding(
-                    file=rel, line=ln_no, rule="INFO A9: blue on possibly-non-interactive text (v2)",
+                    file=rel, line=ln_no, rule="INFO A9: blue outside the hyperlink scope (v3)",
                     snippet=line,
-                    recommendation="Design Language v2 (CANON §0): blue `s-accent` = INTERACTIVITY — CORRECT on links / see-all / active tabs / secondary & ghost buttons / tappable rows / inline action labels (those are whitelisted). WRONG only on NON-interactive text — eyebrows, body, prices, headings (→ ink/grey) — or as a FILLED primary CTA (→ bg-s-ink). If this line is a real tappable affordance, it's fine; if it's static text, swap to ink.",
+                    recommendation="LOCKFILE §1.5 v3 (2026-06-11): blue `s-accent` is the HYPERLINK color — CORRECT only on text that reads as an <a href> inside prose (review counts \"(12)\", inline body links, Mehr lesen, the one Passwort vergessen, checkout Ändern jump-links) plus locked system states (focus ring / Spinner / input focus / §13.2 stepper discs). WRONG on see-all / active tabs / secondary & ghost buttons / icon tints (→ INK + affordance: chevron / weight / position), on NON-interactive text — eyebrows, body, prices, headings (→ ink/grey) — and as a FILLED primary CTA (→ bg-s-ink). Squint test: ~3 blue strings max per viewport, 0-1 on forms.",
                 ))
 
         # A10 — rounded radius on <img> tags.

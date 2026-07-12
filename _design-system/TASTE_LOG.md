@@ -15,8 +15,8 @@ grounded in the real component (no invented layouts, no fabricated data).
 - [x] Round 1: Search result card (`SalonResultCard`)
 - [x] Round 2: Salon PDP (Book CTA + title)
 - [x] Round 3: Booking step (date / time) + audit conflicts B1/B2
-- [ ] Round 4: Pay step
-- [ ] Round 5: Confirmation
+- [x] Round 4: Pay step , covered by a different mechanism (owner-approved mockup, not the 2-4 option elicitation used in Rounds 1-3): commits `58098af8b` "approved redesign — blue icon stepper, hair step v3, pay step restyle" (2026-06-11) + `71ba0909c` "pay-step payment choice per approved mockup 24d-ink" (2026-06-12). Closed 2026-07-10 (governance backfill).
+- [x] Round 5: Confirmation , covered: commit `77f47b00b` "rebuild to senior scorecard 5/5 (the approved mockup)" (2026-06-09), cross-referenced in MOTION.md's DONE log ("Confirmation rebuilt to 5/5"). Also an approved-mockup rebuild, not the elicitation format. Closed 2026-07-10 (governance backfill).
 
 ---
 
@@ -29,9 +29,11 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 | Dimension | Decision | Why |
 |---|---|---|
 | **Elevation** | Soft, visible shadow (`elevation-2` family) | Gentle lift, the card family. Flat reads cheap; lifted too "app"; hairline too boxy. |
-| **Availability hook** | **Green availability pill** (semantic), not ink text | Green = available is *information*, the one intentional splash of life on a calm card. |
+| **Availability hook** | ~~Green availability pill (semantic), not ink text~~ **REVERSED (V3-D443, CONSISTENCY_AUDIT.md:8):** owner rejected the green pill; card availability is now **plain ink text**, no pill. Do NOT re-add (also locked in CLAUDE.md's design-contract "availability" row). | Green = available is *information*, the one intentional splash of life on a calm card. *(superseded rationale, kept for history)* |
 | **Price** | **Bold ink number**, units grey | The number is what you scan, so it carries the weight; `from`/`CHF` recede. |
 | **Card extras** | **Clean** | Name, rating (no count), one meta line (`category · city`), price, the one slot hook. No review-count, no distance, no badge. Re-confirms V3-D354. |
+
+- keywords: availability, availability pill, green pill, next slot, next available, plain text availability, card availability
 
 ### Cross-cutting rules promoted from this round
 - **Coherent emphasis** (-> CLAUDE.md taste rule #5): weight or colour maps to a
@@ -51,6 +53,12 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 
 ## Round 3: Booking date + time + audit conflicts B1/B2 (2026-06-07)
 
+> **B1 SUPERSEDED (owner 2026-06-29, gate `no-black-selected`; LOCKFILE §13.1 point 3):** the blue
+> selected-state below now applies ONLY to the calendar date + time slot exception. Every OTHER
+> selected state (active tab, radio, filter pill, chip, menu/list option, segmented control) moved to
+> calm GRAY fill (`bg-s-bg-sunken` + `text-s-ink` + semibold), never blue-border, never black/ink. Do
+> not re-litigate "active tab" or "radio" as blue , they are gray now.
+
 Shown on the REAL `DateTimePicker` primitive via a throwaway harness route, after
 the hand-drawn calendar mockup was rejected ("that aint actually the real
 calendar"). Confirmed verbatim: **"both b"**.
@@ -58,8 +66,10 @@ calendar"). Confirmed verbatim: **"both b"**.
 | Dimension | Decision | Why |
 |---|---|---|
 | **Time-slot layout** | **Grouped grid** (Vormittag / Nachmittag) | the `DateTimePicker` primitive ALREADY does this; the booking flow just runs a bespoke full-width-ink-rows version instead. |
-| **Selected-state colour (audit B1)** | **Blue `s-accent`** everywhere a single choice is active (calendar date, time slot, active tab, radio); **ink reserved for the ONE commit button** | one "selected" language; matches the search overlay; collapses the 5 dialects the audit found. |
+| **Selected-state colour (audit B1)** | ~~Blue `s-accent` everywhere a single choice is active (calendar date, time slot, active tab, radio)~~ **NARROWED 2026-06-29: blue survives ONLY for calendar date + time slot; active tab/radio/chip/menu-option are now GRAY** (`bg-s-bg-sunken`); **ink reserved for the ONE commit button** | one "selected" language; matches the search overlay; collapses the 5 dialects the audit found. |
 | **Card price weight (audit B2)** | **Bold ink number, name kept LARGER** as the anchor | resolves B2; amend rule A13 to "anchor by SIZE, name + price may both be ink if the name is larger." |
+
+- keywords: selected state, active state, selected colour, blue selected, gray selected, grey selected, filter pill selected, active tab, radio selected, no-black-selected, calendar date, time slot
 
 ### KEY FINDING (reframes round 3)
 The search overlay uses the `DateTimePicker` primitive (grouped grid + blue via
@@ -137,7 +147,7 @@ spa), so the chrome IA is broken. Full record + phase-2 list: [`_discovery-audit
 | **Filter model** | **Two-level progressive disclosure.** Top = category pills; tap a category -> expands to that category's sub-style pills (Hair reuses today's data-driven quick-chips; nails/barber/spa get their own). | Solves the council's "category collision" without a separate taxonomy fighting the feed. |
 | **Default feed** | **Blended "For You"** (all categories), scoped by the pills + search. Hybrid, not pure-segmented. | Owner likes blended-for-you; council's siloed-intent concern is handled by the pill scope on tap. |
 | **Feed cards** | **Keep as-is this pass** (owner "what we got rn"). | Card redesign is out of scope; chrome/IA first. |
-| **Selected pill state** | Blue border + blue text, NO fill; neutral resting pills. | Re-confirms the locked filter-pill rule (V3-D450). |
+| **Selected pill state** | ~~Blue border + blue text, NO fill; neutral resting pills.~~ **SUPERSEDED 2026-06-29 (out-of-scope discovery, flagged not fixed by this pass):** V3-D450 (cited here as still-locked) was itself superseded 9 days after this entry , selected pills are now GRAY (`bg-s-bg-sunken` + `text-s-ink`), never blue-border. See the Round-3 B1 supersession note above. | Re-confirms the locked filter-pill rule (V3-D450, now superseded). |
 
 ### Deferred (phase 2, data-coupled)
 - Per-category sub-taxonomy for nails/barber/spa (extend `/api/discovery/chip-terms` to be category-scoped).
@@ -172,7 +182,52 @@ prior LOCKFILE conventions, scoped to filter sheets only:
   confirmed gray (`SheetChip` was already `bg-s-bg-sunken`, unchanged). i18n keys `ratingAndUp` /
   `ratingAria` added de/en/fr/it.
 
+- keywords: filter, filter pill, filter chip, filter sheet, sort segment, price slider, filter button, filters neutral, blue filter, gray filter, grey filter, sheet chip, apply button
+
 ## 2026-07-06 , data-state filters: hide while empty (owner approved)
 - Decision: filter surfaces that point at data which cannot discriminate are HIDDEN, not shown-but-empty. Applied to the Angebote pill + FilterSheet group + deals sort + Angebote rail (while 0 listed salons carry a deal) and the Fuer-wen pill + group (while every active service is tagged for all genders). They reappear automatically when the data changes (cached availability check, ~5 min).
 - Why: a filter that always yields 0 results or never narrows is a dead control; showing it violates the no-fabricated-affordance principle (same family as taste rule 1). Seeding fake deals was rejected as data fabrication.
 - Record: mockup public/_mockups/sweep-datastate-filters.html (real-page captures, treatment-only); owner: "this is so good approved". Root-cause data facts: 0 deals live; 264/264 services tagged both genders (verified via SQL 2026-07-06).
+
+---
+
+## Locked-rule keyword index (governance backfill, 2026-07-10)
+
+These are LOCKFILE-locked calls that never ran through the Rounds 1-4 mockup-elicitation
+process but ARE among the most-relitigated rules per the design-governance audit
+(`_design-system/DESIGN_GOVERNANCE_AUDIT_2026-07-10.md` Part 2 finding 5). Cross-referenced
+here (not re-decided) so the upcoming TASTE_LOG injection hook can match them; source of truth
+stays LOCKFILE.
+
+### Blue is sparse (the hyperlink-only rule)
+Blue `s-accent #276EF1` lands ONLY on text that reads as a hyperlink (review counts, inline
+body links, "Mehr lesen", "Passwort vergessen", map/directions jump-links) plus locked system
+states (focus ring, Spinner, stepper discs). LOCKFILE:59, "v3 (2026-06-11, council): BLUE = THE
+HYPERLINK COLOR, not the clickability color (supersedes v2 'generous')."
+- keywords: blue sparse, blue accent, hyperlink blue, generous blue, blue everywhere, accent color, s-accent
+
+### Toast recipe (white pill + circle badge)
+V3-D462 (2026-06-13, Chime/Google-Photos recipe): white pill (`bg-white border-s-border
+shadow-elevation-3`), circle-badge tone icon (26px tint bg + saturated glyph), ink text, one
+blue text action, docked BOTTOM. Replaced the earlier pastel whole-pill tint. LOCKFILE §5
+(Toast/Toaster) + live `primitives/Toast.tsx:180-213`.
+- keywords: toast, toast recipe, toast pill, pastel toast, notification, snackbar, toast badge
+
+### Stepper is blue, never green
+LOCKFILE §13.2 supersession note (2026-06-11, owner-approved booking-pay/-hair mockups,
+shipped in `BookingWizard.tsx` + the live queue tracker): "the 2026-06-10 green-family stepper
++ walk-in-blue-exception model is REPLACED by ONE blue stepper language everywhere… Blue =
+progress, green = state (success/confirmed), never the reverse." Green on a stepper node = NEVER.
+- keywords: stepper, progress stepper, step tracker, stepper blue, stepper green, booking steps, walk-in tracker, step indicator
+
+### Eyebrow rules
+Eyebrow role (LOCKFILE:229, :301): 11px mobile / 12px desktop, weight 600, UPPERCASE,
+tracking 0.08em, `text-s-ink-3`, max ONE per surface (drift rule A7 flags >1). V3-D421 cut
+tracking 0.16em -> 0.08em and weight 700 -> 600.
+- keywords: eyebrow, eyebrow rules, uppercase label, section label, tracking, small caps
+
+### Radius scale
+Card/block = 16 (`rounded-card`); button/chip = pill; input = 16; sheet = 28; image = flush
+(0), with the SalonResultCard photo exception (`rounded-card`, V3-D350). CLAUDE.md design
+contract "radius" row.
+- keywords: radius, border radius, rounded, rounded card, rounded pill, rounded input, rounded sheet, corner radius

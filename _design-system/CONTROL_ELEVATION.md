@@ -64,7 +64,22 @@ job. The only legit "hybrid moment" is a **pressed state**: an elevated control 
    resting on white or `s-bg-sunken`. (Drift-check candidate: `bg-white` + `shadow-*` NOT over an image/hero/modal.)
 4. **Stepper state:** qty 1 shows a **trash** glyph; qty ≥2 shows **−**. Same chrome, swap glyph + `aria-label` only.
    Quantity numeral = `tabular-nums text-s-ink` (calm, not bold). Disabled `−/+` at min/max = `text-s-ink-3 opacity-30`.
-5. **Blue = interactivity (v2).** A resting secondary/ghost control MAY wear blue — the **blue-ghost** recipe `bg-white border border-s-accent text-s-accent` (white bg + blue border + blue text; the border clears the ≥3:1 contrast trap). The single primary stays ink (C). Blue also appears on `:focus-visible` rings, tappable text links, active tab/segmented states, and interactive icon tints. Blue marks INTERACTION, never non-interactive emphasis — never a blue-FILLED primary (reads as a 2nd primary), never blue on body/labels/prices/headings/eyebrows. (Drift A14 allows the blue-ghost recipe; it is NOT the banned white+shadow grey-haze.)
+5. ~~**Blue = interactivity (v2).** A resting secondary/ghost control MAY wear blue — the blue-ghost recipe... active tab/segmented states, and interactive icon tints.~~ **SUPERSEDED by LOCKFILE §1.5 v3 (2026-06-11) + the gray-selected lock (owner 2026-06-29); noted here 2026-07-10 (doc-vs-law drift, same class as the design-governance audit findings).** Current law: blue is the HYPERLINK color only (review counts, inline body links, Mehr lesen, the sparse set) + system states (focus ring / spinner / input focus / §13.2 stepper discs). Secondary/ghost buttons = NEUTRAL outline (`bg-white border-s-border text-s-ink`), NOT blue-ghost; tabs/segmented selected = calm gray `bg-s-bg-sunken`, never blue; icon tints = ink. Never a blue-FILLED primary; never blue on body/labels/prices/headings/eyebrows.
+
+---
+
+## MATERIALS: text on glass + material weight + a11y fallbacks (owner-approved 2026-07-10; Apple materials guidance via the emilkowalski apple-design skill)
+
+Applies to every translucent surface: `FROST_GLASS` controls, the sheet/backdrop blurs, dashboard glass panels.
+
+1. **Vibrancy — text over glass is never flat grey.** Over a blurred/translucent surface the background shifts under the text, so mid-grey (`s-ink-2/3`) loses legibility exactly when the photo behind is busy. On glass: use `s-ink` (or white over dark scrims) at weight **500+**, optionally a hair of positive tracking on small sizes. Semantic COLOR (green/red/blue) belongs on a solid layer, never on the glass foreground where the backdrop pollutes it.
+2. **Material weight encodes hierarchy.** A small control keeps the light 4px-blur `FROST_GLASS`; a large structural surface (sheet backdrop, nav layer, dashboard panel) reads as a thicker material: stronger blur (12-24px, the globals.css glass classes) + the deeper shadow it already carries. Small chip = thin glass, big surface = thick glass; never the reverse.
+3. **Never stack light glass on light glass.** Legibility collapses. A control sitting on a glass surface goes FLAT (B) or ink (C), not a second frost layer.
+4. **Three-signal a11y (the web trio; we previously handled only the first):**
+   - `prefers-reduced-motion` — already law (§16.5.8 / sheet fade path).
+   - `prefers-reduced-transparency: reduce` — every glass surface goes frosty-to-SOLID: background opacity → ~0.98, `backdrop-filter` dropped. Implemented centrally in globals.css via the `.frost-glass` utility + the glass classes.
+   - `prefers-contrast: more` — glass surfaces take a near-solid background + a defined `border-s-border` edge.
+5. **Implementation note (why the utility class exists):** the old `FROST_GLASS` inline-style object could never be overridden by the media queries above (inline styles beat stylesheets), so the recipe lives as the `.frost-glass` class in globals.css; `lib/frost-glass.ts` re-exports the class name for the 13 migrated callsites (count verified in the 2026-07-10 migration; grep `frost-glass` for the live list). New glass = the class, never a re-derived inline recipe.
 
 ---
 

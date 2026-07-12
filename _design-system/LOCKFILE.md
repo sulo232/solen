@@ -69,7 +69,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 | OPEN-status ONLY (Geöffnet text + open dot: StatusPill / StatusInline / Öffnungszeiten) | `s-open.DEFAULT` | `#1F8900` | — (Fresha's calmer open-green, owner 2026-06-12 "make the green more like fresha"; s-success stays the universal success green everywhere else) |
 | Success FOCAL (confirm / paid / done-step) | `s-success.DEFAULT` | `#16A34A` | white check on a solid **normal-green** disc. **Deep `#15803D` REVERTED 2026-06-10** (owner: normal green, not deep) — focal + inline now share `#16A34A`. The disc reads confident via SIZE + solid fill + white check + spring-pop, not via a darker hue. |
 | Error | `s-error.DEFAULT` / `.bg` | `#D32F2F` | `#FFEBEE` |
-| Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424) |
+| Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424). Derivation (folded from CANON §1/§8): amber = the accent's twin, same HSL S+L (88%/55%), hue 40°; if it ever reads too golden for a warning, the sanctioned deeper sibling is `#E09A0C` (same hue+sat, L ~46%) , owner pick required before swapping. |
 | Info | use `s-accent` | `#276EF1` | `#EAEFFE` |
 | Rating star | `s-star` | `#FFC32B` | — |
 | Save / heart | `--heart-active` | `#FF3366` | — |
@@ -485,6 +485,8 @@ border-s-border first:border-t-0`). NEVER separate bordered/shadowed cards per r
 | `elevation-3` (= `warm-xl` = `surface-hover` = `warm-float`) | `0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)` |
 | `pressed` | `0 1px 1px rgba(50,47,44,.12), inset 0 1px 2px rgba(50,47,44,.06)` |
 
+**Warm tint is intentional (folded from CANON §7, decided 2026-06-01):** shadow tokens stay warm-tinted `rgba(50,47,44, …)` even though surfaces/hairlines went COOL (v2 rule 4) , a deliberate beauty-domain softening. `FROST_GLASS` keeps its pure-black over-photo shadow (imperceptible over images, no conflict). Don't "fix" shadows to cool grey.
+
 **Fresha pattern lock (V3-D230):** the salon sidebar card has **NO box-shadow** — `boxShadow: none`. Only `border + radius`. Use shadow sparingly on Layer 1 surfaces; many cards in Fresha are flat.
 
 **Control elevation lock (V3-D420):** white + shadow on a CONTROL is allowed in exactly TWO places: (1) a control sitting OVER a photo (the `FROST_GLASS` recipe at `lib/frost-glass.ts`), and (2) the ONE ink primary CTA per region (`bg-s-ink` + at most `shadow-elevation-2`). On a flat white / `s-bg-sunken` surface a control casts NO shadow: text controls → `bg-s-bg-sunken` no shadow; icon-only controls → `bg-white border-s-border` no shadow (borderless grey on white is ~1.03:1, a contrast trap that also reads "inert"). Never stack fill + shadow + border at rest. The elevation-1-at-rest rule above is for SURFACES (cards), not controls. Full rule + decision tree: `_design-system/CONTROL_ELEVATION.md`.
@@ -608,8 +610,11 @@ toast.success(msg: string, opts?: { description?: string }): void
 toast.error(msg: string, opts?: { description?: string }): void
 toast.warning(msg: string, opts?: { description?: string }): void
 toast.info(msg: string, opts?: { description?: string }): void
-// Pastel bg + ink text + saturated lucide icon. Auto-dismiss 4s. Max 3 visible.
-// Toasts are transient inline status — pastel pattern is correct here (v2 rule 6 chip/badge carve-out).
+// V3-D462 (2026-06-13, owner-locked Chime/Google-Photos recipe): a CLEAN LIGHT
+// pill (bg-white, border-s-border, shadow-elevation-3), a colored CIRCLE BADGE
+// icon (26px tint-bg circle + saturated glyph), ink text, one blue text action
+// (no underline/chevron), docked at the BOTTOM. Replaces the earlier pastel
+// whole-pill tint (read too heavy). Auto-dismiss 4s. Max 3 visible.
 // The FOCAL booking/payment-confirmation moment is NOT a toast: it uses a normal-green s-success #16A34A disc + WHITE check (SuccessMark / §1 success-FOCAL / §13.2). Deep #15803D reverted 2026-06-10.
 ```
 
@@ -650,18 +655,11 @@ interface TabPillProps {
 // Active = ink-fill + white text; Inactive = white + hairline border + ink text.
 ```
 
-### StatusPill
+### StatusPill — DELETED (2026-06-30, REMOVED.md:46)
 
-```ts
-interface StatusPillProps {
-  isOpen: boolean;
-  label: string;
-  size?: "sm" | "md";
-  showDot?: boolean;  // default true
-  icon?: LucideIcon;  // optional override (e.g. Clock when closed)
-}
-// Open → text-s-success + green dot. Closed → text-s-closed (red) + red dot. (V3-D421: was grey.)
-```
+`salon/StatusPill.tsx` no longer exists (superseded by StatusInline, both SalonHeader + SalonSidebar
+switched; only remaining reference was the /dev/new-primitives showcase). Any open/closed status use
+goes through **StatusInline** below — do not rebuild StatusPill.
 
 ### StatusInline
 
@@ -862,6 +860,8 @@ When capturing a section, use these sources in this order:
 7. **`gemini-visual-check`** — multimodal second-eye on contested verifier verdicts
 
 For Solen-original surfaces (Entdecken / loyalty / referral) where no Fresha equivalent exists: **first-principles design with these locked primitives + tokens.** Don't force a Fresha-shaped wrapper on Solen content (uncanny valley).
+
+**CANON.md folded into this file (owner-approved 2026-07-10, design-governance audit finding 11).** CANON's live content is fully represented here: tokens = §1 (this file is FRESHER , s-accent.deep #1E54B7, s-open, s-urgency #C2410C, s-warning.text #B45309 all post-date CANON); restraint/blue = §1.5 v3 (supersedes CANON §0's 2026-06-10 lock AND CANON §2's dead "generous" model); typography = §2 + §13.4; closed-red = §1; control elevation = §3 + CONTROL_ELEVATION.md; staff selected badge = §13.3 + components/SelectedCheckBadge.md; warm shadows = §3. CANON's old self-claimed precedence ("CANON > LOCKFILE") is retired: precedence is code reality + THIS FILE > SOURCE-as-prose, per the CLAUDE.md chain. CANON.md remains only as a tombstone pointer. Still-open CANON housekeeping carried to the design-governance audit PARKED list: R4 (archive the pre-B&W Hanken-era mockups out of the served `public/` root).
 
 ---
 
@@ -1418,6 +1418,44 @@ Subtle parallax is permitted on home/category heroes only. No scrolljacking, eve
 | Card grids | 40ms stagger rise-in |
 | Hero imagery (marketing only) | fly-in + slow bob (4s ease-in-out loop), ONE element max |
 | Toast / chips | slide-up + settle (§4 glide) |
+
+### §16.5 — Gesture-release physics (owner-approved 2026-07-10; source: Apple "Designing Fluid Interfaces" WWDC 2018 via the emilkowalski apple-design skill)
+
+**SCOPE (read first).** This section governs ONLY elements a pointer gesture drives 1:1: the Sheet drag-to-dismiss, the SearchMorph drag expansion, and any future draggable surface. It does NOT reopen §4: non-gesture transitions (entrances, route changes, hovers, toggles) keep the locked 4-easing + canonical-duration set, and swipe galleries keep native CSS scroll-snap (§16.2, no JS physics there). The principle: a scripted transition has a duration; a gesture release has a VELOCITY, and discarding it is what reads as "web-janky" vs "native".
+
+**16.5.1 Tracking (during the gesture).**
+- 1:1 with the pointer, respecting the GRAB OFFSET (where the finger landed on the element, never re-centering on grab).
+- `setPointerCapture` on the handle so tracking survives leaving the element's bounds.
+- Keep a short position+timestamp history (last ~5 `pointermove` events or ~100ms) — release velocity comes from this history, not from the last event pair (a single pair is noise).
+- ~10px hysteresis before committing to a drag (protects taps and scroll); `touch-action: none` on the handle only.
+- Feedback is continuous DURING the gesture; never animate only at the end.
+
+**16.5.2 Release decision — velocity first, position second.** At pointer-up, with `vy` = release velocity (px/s, + = downward) and `dy` = current offset:
+- `vy > +250` → DISMISS, regardless of position (a real flick commits).
+- `vy < -250` → RETURN home, regardless of position (the user changed their mind mid-drag; the old bare `dy > 90px` rule wrongly dismissed here).
+- otherwise → project momentum and decide from where the gesture is GOING, not where it stopped:
+  `project(v) = (v / 1000) * d / (1 - d)` with `d = 0.998` (Apple's exponential-decay form, NOT the physics-textbook v²/2a);
+  `projected = dy + project(vy)`; DISMISS when `projected > 0.25 * sheetHeight`, else return home.
+
+**16.5.3 Velocity handoff.** The settle animation starts FROM the current dragged position AT the release velocity (the `motion` package `animate(..., { type: "spring", velocity })` — `motion@12` is already a dependency). A fixed-duration CSS transition from the release point discards the velocity and shows a seam; that is the exact defect this section removes.
+
+**16.5.4 Spring house values** (Apple's two-parameter model: damping ratio + response, not mass/stiffness):
+| Case | Damping (bounce) | Response |
+|---|---|---|
+| Return home / any default UI spring | 1.0 (bounce 0 — critically damped, no overshoot) | 0.35–0.4s |
+| Momentum release (a flick preceded it) | ~0.8 (bounce ~0.2) | 0.3s |
+Overshoot is EARNED by gesture momentum only — a bounce on something that merely faded in is banned. This composes with the §15 personality zones: functional zones stay damping 1.0.
+
+**16.5.5 Rubber-band at boundaries.** Dragging past a hard edge (sheet above its home position) resists progressively, never hard-stops:
+`follow = (over * dim * c) / (dim + c * |over|)` with `c = 0.55`, `dim` = the element's relevant dimension. A hard stop reads frozen; graduated resistance reads "alive, but there's nothing more here".
+
+**16.5.6 Interruptibility.** Never lock pointer input during an entry/exit; grabbing a settling element captures it FROM ITS LIVE on-screen transform (the presentation value), never from the logical start/end — restarting from a logical value is a visible jump. When a gesture re-targets, the spring carries the current velocity through (no hard-cut "brick wall"). 2D drags use independent X and Y springs.
+
+**16.5.7 Spatial consistency (small additions to existing law).** Enter and exit along the SAME path (a sheet born at the bottom dies to the bottom — already true, now law). Popovers/menus scale from their TRIGGER (`transform-origin` at the trigger), never from their own center. A reversible non-gesture transition mirrors its easing on the way back (inverse bezier), so out matches in.
+
+**16.5.8 Reduced motion.** 1:1 gesture tracking STAYS under `prefers-reduced-motion` (user-driven motion is not vestibular risk); only the RELEASE animation collapses — short opacity fade per the existing sheet law, no spring, no overshoot.
+
+**Verification law:** gesture physics is verified by a Playwright pointer-event script + video (the Preview tab throttles rAF and lies about motion — memory `reference_preview_tab_raf_throttle`). The two discriminating cases any implementation must pass: (a) fast small flick (~30px in 50ms) DISMISSES; (b) slow 150px drag released while moving UPWARD returns home. The old position-threshold code fails both.
 
 
 ### §13.8 — Brand + 3D icon assets (owner punch list, 2026-06-11)
