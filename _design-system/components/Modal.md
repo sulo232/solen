@@ -1,13 +1,15 @@
 <!-- exists-check: net-new doc, no existing components/*.md covers Modal , the component
-     has shipped in app/[locale]/_components/primitives/Modal.tsx since the V2-D18 era
-     (8 real dashboard call-sites + FilterSheet), had a registry mention nowhere and no
-     dedicated doc until this file (A3 registry audit finding 3, 2026-07-12). -->
+     has shipped in app/[locale]/_components/primitives/Modal.tsx since the V2-D18 era,
+     had a registry mention nowhere and no dedicated doc until this file (A3 registry
+     audit finding 3, 2026-07-12). Round-2 correction (2026-07-12): the original "8 real
+     dashboard call-sites" claim was false, each dashboard page hand-rolls its own local
+     modal; real call-sites are CookieConsent.tsx and search/FilterSheet.tsx. -->
 
 # Modal
 
 **File:** [app/[locale]/_components/primitives/Modal.tsx](../../app/[locale]/_components/primitives/Modal.tsx)
-**Layer:** 1 (chrome) — centered overlay shell, no semantic color of its own; children (`ModalHeader`/`ModalBody`/`ModalFooter`) carry any Layer 2/3 content the caller composes.
-**Status:** documented-from-code 2026-07-12, not owner-locked. Live, 8 real call-sites + 2 internal (composed by `Sheet.tsx` and `CookieConsent.tsx`).
+**Layer:** 1 (chrome), centered overlay shell, no semantic color of its own; children (`ModalHeader`/`ModalBody`/`ModalFooter`) carry any Layer 2/3 content the caller composes.
+**Status:** documented-from-code 2026-07-12, not owner-locked. Live, 2 real call-sites (`CookieConsent.tsx`, `search/FilterSheet.tsx`) + 8 dashboard hand-rolled modals not yet migrated (consolidation debt, see Real call-sites below).
 
 ---
 
@@ -78,11 +80,22 @@ Composition pattern (`Modal.tsx:22-27`, sibling-not-wrapper, V2-D17):
 
 ## Real call-sites
 
-8 real production call-sites (all `dashboard/*/page.tsx`) + `search/FilterSheet.tsx`, plus 2 internal composers:
+2 real call-sites, re-verified by import grep 2026-07-12 (round-2 correction, the previous "8 dashboard call-sites" claim was false):
 
-- `dashboard/all-salons`, `dashboard/calendar`, `dashboard/all-users`, `dashboard/bookings`, `dashboard/badge-manager`, `dashboard/review-moderation`, `dashboard/staff`, `dashboard/services` (each `page.tsx`)
-- `search/FilterSheet.tsx` — desktop fallback via `useResponsiveOverlay()`
-- Internal: `primitives/Sheet.tsx` composes nothing of Modal directly, but `useResponsiveOverlay()` (defined in `Sheet.tsx`) is the switch callers use to pick `Modal` on desktop; `primitives/CookieConsent.tsx`'s `CookieSettingsModal` renders `<Modal size="lg">`.
+- `primitives/CookieConsent.tsx:6` imports `{ Modal, ModalHeader, ModalBody, ModalFooter }`, its `CookieSettingsModal` renders `<Modal size="lg">` (`CookieConsent.tsx:340`).
+- `search/FilterSheet.tsx:43-53` imports `Modal` (barrel import from `../primitives`), renders it as the desktop shell via `useResponsiveOverlay()` (`FilterSheet.tsx:608`).
+- Internal: `primitives/Sheet.tsx` composes nothing of Modal directly, but `useResponsiveOverlay()` (defined in `Sheet.tsx`) is the switch callers use to pick `Modal` on desktop.
+
+**Not migrated (consolidation debt).** All 8 dashboard `page.tsx` files hand-roll their OWN local modal instead of importing this primitive (grep-verified 2026-07-12, no `Modal` import in any of these files):
+
+- `dashboard/all-salons/page.tsx`: local `ConfirmModal` (`page.tsx:51`)
+- `dashboard/all-users/page.tsx`: local `ConfirmModal` (`page.tsx:35`)
+- `dashboard/staff/page.tsx`: local `StaffModal` (`page.tsx:40`)
+- `dashboard/services/page.tsx`: local `ServiceModal` (`page.tsx:32`)
+- `dashboard/badge-manager/page.tsx`: local `BadgeModal` (`page.tsx:63`)
+- `dashboard/bookings/page.tsx`: local `SalonCancelModal` (`page.tsx:60`)
+- `dashboard/review-moderation/page.tsx`: local `DeleteModal` (`page.tsx:43`)
+- `dashboard/calendar/page.tsx`: local `SlotCreateModal`/`BulkCreateModal`/`SlotDetailModal` (`page.tsx:80,148,272`) plus `WalkInModal` imported from `components-legacy/dashboard/WalkInModal` (`page.tsx:10`), not this primitive
 
 ---
 
@@ -95,6 +108,6 @@ Composition pattern (`Modal.tsx:22-27`, sibling-not-wrapper, V2-D17):
 
 ## Related
 
-- [Sheet.md](Sheet.md) — the bottom-anchored mobile sibling; `useResponsiveOverlay()` picks between the two.
-- `FilterSheet.tsx` — the primary non-dashboard consumer, desktop path.
-- `CookieConsent.tsx` — `CookieSettingsModal` composes `Modal` + `Switch`.
+- [Sheet.md](Sheet.md): the bottom-anchored mobile sibling; `useResponsiveOverlay()` picks between the two.
+- `FilterSheet.tsx`: the primary non-dashboard consumer, desktop path.
+- `CookieConsent.tsx`: `CookieSettingsModal` composes `Modal` + `Switch`.

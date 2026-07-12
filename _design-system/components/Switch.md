@@ -1,13 +1,15 @@
 <!-- exists-check: net-new doc, no existing components/*.md covers Switch , shipped in
-     app/[locale]/_components/primitives/Switch.tsx with 5 real call-sites, had a
-     registry mention nowhere and no dedicated doc until this file (A3 registry audit
-     finding 3, 2026-07-12). -->
+     app/[locale]/_components/primitives/Switch.tsx, had a registry mention nowhere and
+     no dedicated doc until this file (A3 registry audit finding 3, 2026-07-12). Round-2
+     correction (2026-07-12): the original "5 real call-sites" list wrongly included
+     layout/CityTopBar.tsx (an unrelated copy string, not an import); re-verified by
+     import grep, 4 real call-sites. -->
 
 # Switch
 
 **File:** [app/[locale]/_components/primitives/Switch.tsx](../../app/[locale]/_components/primitives/Switch.tsx)
-**Layer:** 1 (chrome) — B&W on-state, no semantic color.
-**Status:** documented-from-code 2026-07-12, not owner-locked. Live, 5 real call-sites.
+**Layer:** 1 (chrome), B&W on-state, no semantic color.
+**Status:** documented-from-code 2026-07-12, not owner-locked. Live, 4 real call-sites.
 
 ---
 
@@ -15,7 +17,7 @@
 
 Boolean on/off toggle, distinct from a checkbox ("include in this list"). Track 44x24px, knob 20x20px, per the file's own doc comment (`Switch.tsx:23-31`). Anti-pattern flagged in the same comment: don't use a switch for "select 1 of 2-5 mutually exclusive options" (that's a radio group). Switch is on/off ONLY.
 
-**Note:** the file comment (`Switch.tsx:27`) says the on-state "uses brand-teal", but the shipped code renders `bg-s-ink` on-state (`Switch.tsx:83`) — ink, not teal. This doc describes the shipped code, not the stale comment.
+**Note:** the file comment (`Switch.tsx:27`) says the on-state "uses brand-teal", but the shipped code renders `bg-s-ink` on-state (`Switch.tsx:83`), ink, not teal. This doc describes the shipped code, not the stale comment.
 
 ---
 
@@ -56,7 +58,12 @@ Renders bare (just the `role="switch"` button) when no `label` is passed; render
 
 ## Real call-sites
 
-5 real call-sites: `dashboard/cities-admin/page.tsx`, `dashboard/bundles/page.tsx`, `profile/settings/SettingsForm.tsx`, `layout/CityTopBar.tsx`, `primitives/CookieConsent.tsx` (`CookieSettingsModal`, 3 rows: Notwendig/Analyse/Marketing).
+4 real call-sites, re-verified by import grep 2026-07-12 (round-2 correction, `layout/CityTopBar.tsx` was falsely claimed before, that file only contains an unrelated copy string "Switch city for local content:" at `CityTopBar.tsx:74`, it never imports `Switch`):
+
+- `profile/settings/SettingsForm.tsx:7` imports `Switch`, 2 rows (`SettingsForm.tsx:207,210`).
+- `dashboard/cities-admin/page.tsx:14` imports `Switch` (barrel import), 1 row (`page.tsx:99`).
+- `dashboard/bundles/page.tsx:46` imports `{ Skeleton, Switch }` (barrel import), 2 rows (`page.tsx:299,579`).
+- `primitives/CookieConsent.tsx:7` imports `Switch`, `CookieSettingsModal` renders 3 rows: Notwendig/Analyse/Marketing (`CookieConsent.tsx:363,374,385`).
 
 ---
 
@@ -69,5 +76,5 @@ Renders bare (just the `role="switch"` button) when no `label` is passed; render
 
 ## Related
 
-- [FieldLabel.md](FieldLabel.md) / `FieldHelper.tsx` — pair for form-field anatomy when a switch sits inside a longer form (vs. the built-in `label`/`subLabel` row pattern used in settings lists).
-- `CookieConsent.tsx` — the richest real consumer (3 switches in one modal).
+- [FieldLabel.md](FieldLabel.md) / `FieldHelper.tsx`: pair for form-field anatomy when a switch sits inside a longer form (vs. the built-in `label`/`subLabel` row pattern used in settings lists).
+- `CookieConsent.tsx`: the richest real consumer (3 switches in one modal).
