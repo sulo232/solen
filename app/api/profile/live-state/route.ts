@@ -146,11 +146,15 @@ export async function GET(_request: NextRequest) {
       const favorites = favoritesResult.value.data;
       if (favorites && favorites.length > 0) {
         const salonIds = favorites.map((f: any) => f.salon_id);
+        // off_peak_deals is a phantom table (caught by strict typing); the real off-peak table is
+        // off_peak_slots (app/api/off-peak/route.ts), a recurring WEEKLY schedule (day_of_week,
+        // not a specific valid_date), so "today" maps to today's day_of_week.
         const { data: deals } = await supabase
-          .from("off_peak_deals")
-          .select("salon_id, discount_percent, valid_date")
+          .from("off_peak_slots")
+          .select("salon_id, discount_percent, day_of_week")
           .in("salon_id", salonIds)
-          .eq("valid_date", now.toISOString().slice(0, 10))
+          .eq("day_of_week", now.getDay())
+          .eq("is_active", true)
           .limit(1);
 
         if (deals && deals.length > 0) {

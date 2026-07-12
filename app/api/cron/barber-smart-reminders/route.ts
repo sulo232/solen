@@ -76,13 +76,14 @@ export async function GET(req: NextRequest) {
 
     const cutsByCustomer = new Map<string, Date[]>();
     for (const row of allCuts ?? []) {
-      if (!row.customer_id) continue;
+      if (!row.customer_id || !row.created_at) continue;
       const list = cutsByCustomer.get(row.customer_id) ?? [];
       if (list.length < 20) list.push(new Date(row.created_at)); // rows already sorted desc, mirrors the old .limit(20)
       cutsByCustomer.set(row.customer_id, list);
     }
     const futureBookingCounts = new Map<string, number>();
     for (const row of futureBookingRows ?? []) {
+      if (!row.user_id) continue;
       futureBookingCounts.set(row.user_id, (futureBookingCounts.get(row.user_id) ?? 0) + 1);
     }
     const hasExistingReminder = new Set(
@@ -90,7 +91,7 @@ export async function GET(req: NextRequest) {
     );
     const profileByCustomer = new Map((profileRows ?? []).map((p) => [p.id, p]));
 
-    const noteRows: { salon_id: string; customer_id: string; note: string; note_type: string; created_by: null }[] = [];
+    const noteRows: { salon_id: string; customer_id: string; note: string; note_type: string; created_by: string }[] = [];
 
     for (const customerId of uniqueCustomerIds) {
       // Get visit dates (most recent first)
@@ -127,7 +128,7 @@ export async function GET(req: NextRequest) {
         customer_id: customerId,
         note: JSON.stringify(noteData),
         note_type: "system",
-        created_by: null,
+        created_by: "system",
       });
       remindersCreated++;
 

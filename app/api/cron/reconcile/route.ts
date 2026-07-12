@@ -141,7 +141,7 @@ export async function GET(req: NextRequest) {
           const { data: card } = await admin
             .from("gift_cards")
             .select("id, is_active")
-            .eq("stripe_payment_intent_id", piId)
+            .eq("stripe_payment_intent_id", piId ?? "")
             .maybeSingle();
           if (!card) {
             mismatches.push({
@@ -179,7 +179,7 @@ export async function GET(req: NextRequest) {
           const { data: purchase } = await admin
             .from(purchaseTable)
             .select("id, paid_amount, refunded_amount")
-            .eq("stripe_payment_intent_id", piId)
+            .eq("stripe_payment_intent_id", piId ?? "")
             .maybeSingle();
 
           if (!purchase) {

@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
       const { data: ranked, error: rErr } = await supabase.rpc("search_salons_ranked", {
         p_q: q,
         p_limit: 60,
-        p_query_embedding: emb,
+        p_query_embedding: emb ?? undefined,
       });
       if (rErr) console.error("[api/salons GET] search_salons_ranked failed:", rErr.message);
       const ids = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id as string);
@@ -301,7 +301,7 @@ export async function GET(request: NextRequest) {
     // Time-of-day (period) filter. DISTINCT salon_ids whose available slot's local
     // hour is in the window, server-side via the RPC (no row-cap, no JS scan). If a
     // date is set it scopes to that day, otherwise the next 14 days.
-    let periodTask: ReturnType<typeof supabase.rpc> | null = null;
+    let periodTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (period && PERIOD_HOURS[period]) {
       const [startH, endH] = PERIOD_HOURS[period];
       const lo = validDate ? `${date}T00:00:00` : new Date().toISOString();
@@ -320,7 +320,7 @@ export async function GET(request: NextRequest) {
     // DISTINCT salon_ids via the hour-window RPC over the full 0..24 range, so it no
     // longer pulls ~17k slot rows into JS just to dedupe ~21 ids (and no longer
     // silently drops salons past PostgREST's row cap).
-    let instantTask: ReturnType<typeof supabase.rpc> | null = null;
+    let instantTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (instant_bookable === "true") {
       instantTask = supabase.rpc("salons_with_slot_in_hours", {
         p_start_hour: 0,
@@ -334,7 +334,7 @@ export async function GET(request: NextRequest) {
     // DISTINCT-via-RPC approach (0..24 hour range is the whole day). Owner
     // 2026-06-13: picking a date should NARROW results, not just annotate the next
     // available slot (the post-query block below still computes those labels).
-    let dateTask: ReturnType<typeof supabase.rpc> | null = null;
+    let dateTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (dateNarrows) {
       dateTask = supabase.rpc("salons_with_slot_in_hours", {
         p_start_hour: 0,

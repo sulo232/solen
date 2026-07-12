@@ -62,7 +62,7 @@ export async function POST(
       .eq("id", id)
       .single();
 
-    if (!current?.claim_verification_code) {
+    if (!current?.claim_verification_code || !current.claim_verification_expires_at) {
       return NextResponse.json({ error: "No verification code found. Please request a new one." }, { status: 400 });
     }
 

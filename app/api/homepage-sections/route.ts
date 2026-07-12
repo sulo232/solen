@@ -26,7 +26,9 @@ export async function GET() {
     .eq("key", "homepage_sections")
     .single();
 
+  // value is a generic Json column; this key's value is always an object of section toggles.
+  const overrides = (setting?.value as Record<string, boolean> | null) ?? {};
   return NextResponse.json({
-    sections: { ...DEFAULT_SECTIONS, ...(setting?.value ?? {}) },
+    sections: { ...DEFAULT_SECTIONS, ...overrides },
   });
 }

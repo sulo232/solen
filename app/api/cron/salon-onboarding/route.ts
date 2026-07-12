@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
     return task;
   });
 
-  const notifRows: { user_id: string; type: string; title: string; body: string; data: Record<string, unknown> }[] = [];
+  const notifRows: { user_id: string; type: string; title: string; body: string; data: { salon_id: string } }[] = [];
   sendResults.forEach((res, i) => {
     const task = tasks[i];
     if (res.status === "fulfilled") {

@@ -14,10 +14,13 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Get the payout and ensure user owns the salon
+  // Get the payout and ensure user owns the salon. salons has no zip_code or city column
+  // (phantom, caught by strict typing): the real columns are postal_code and city_id (a FK to
+  // cities), so city name comes via the cities relation (same pattern noted in
+  // app/api/admin/seed-test-salons/route.ts: "city is not a column on salons, only city_id").
   const { data: payout } = await supabase
     .from("salon_payouts")
-    .select("*, salons(owner_id, name, address, zip_code, city, stripe_account_id), bookings(starts_at)")
+    .select("*, salons(owner_id, name, address, postal_code, cities(name_de), stripe_account_id), bookings(starts_at)")
     .eq("id", payoutId)
     .single();
 
@@ -64,7 +67,7 @@ export async function GET(
         <div style="text-align: right;">
           <h2>Abrechnung / Gutschrift</h2>
           <p><strong>Abrechnungs-Nr:</strong> ${payoutId.split('-')[0].toUpperCase()}</p>
-          <p><strong>Datum:</strong> ${new Date(payout.created_at).toLocaleDateString("de-CH")}</p>
+          <p><strong>Datum:</strong> ${new Date(payout.created_at ?? new Date().toISOString()).toLocaleDateString("de-CH")}</p>
         </div>
       </div>
 
@@ -73,7 +76,7 @@ export async function GET(
         <p>
           <strong>${payout.salons.name}</strong><br>
           ${payout.salons.address || ""}<br>
-          ${payout.salons.zip_code || ""} ${payout.salons.city || ""}<br>
+          ${payout.salons.postal_code || ""} ${payout.salons.cities?.name_de || ""}<br>
           Stripe ID: ${payout.salons.stripe_account_id || "N/A"}
         </p>
       </div>

@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
         description_fr: ai.description_fr, description_it: ai.description_it,
         salon_script_de: ai.salon_script_de, cut_guide: ai.cut_guide,
         price_min: ai.price_min ?? null, price_max: ai.price_max ?? null,
-        ai_analysis: ai,
+        ai_analysis: { ...ai },
       }).eq("id", it.id);
       if (upErr) { console.error("[cron/discovery-ai-backfill] update failed:", it.id, upErr.message); failed++; continue; }
       analyzed++;

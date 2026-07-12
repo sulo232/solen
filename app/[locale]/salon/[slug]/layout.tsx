@@ -54,19 +54,19 @@ export async function generateMetadata({
   let description = "";
   if (loc === "de") {
     description = `Buche jetzt bei ${salon.name} in ${salon.address ?? city}.`;
-    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} Bewertungen).`;
+    if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} Bewertungen).`;
     description += ` Online buchen, sofort bestätigt.`;
   } else if (loc === "fr") {
     description = `Réserve maintenant chez ${salon.name} à ${salon.address ?? city}.`;
-    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} avis).`;
+    if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} avis).`;
     description += ` Réservation en ligne, confirmation immédiate.`;
   } else if (loc === "it") {
     description = `Prenota ora da ${salon.name} a ${salon.address ?? city}.`;
-    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} recensioni).`;
+    if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} recensioni).`;
     description += ` Prenota online, conferma immediata.`;
   } else {
     description = `Book now at ${salon.name} in ${salon.address ?? city}.`;
-    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} reviews).`;
+    if ((salon.review_count ?? 0) > 0) description += ` ★ ${(salon.average_rating ?? 0).toFixed(1)} (${salon.review_count} reviews).`;
     description += ` Book online, instant confirmation.`;
   }
 

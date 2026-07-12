@@ -40,7 +40,7 @@ export async function DELETE(
 
     // Notify the customer (use admin client, RLS restricts profiles to own data)
     const admin = createAdminSupabaseClient();
-    const { data: bookedUser } = await admin.from("profiles").select("id").eq("id", slot.booked_by).single();
+    const { data: bookedUser } = await admin.from("profiles").select("id").eq("id", slot.booked_by ?? "").single();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
       try {

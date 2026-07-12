@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
 // GET /api/salon/clients?salon_id=xxx — List clients who have booked at this salon
@@ -67,14 +68,17 @@ export async function GET(req: NextRequest) {
   const tagMap = new Map<string, { tag: string; color: string }[]>();
   for (const t of allTags ?? []) {
     const list = tagMap.get(t.customer_id) ?? [];
-    list.push({ tag: t.tag, color: t.color });
+    list.push({ tag: t.tag, color: t.color ?? "" });
     tagMap.set(t.customer_id, list);
   }
 
-  // Fetch RFM segments (may not exist yet if migration hasn't run)
+  // Fetch RFM segments (may not exist yet if migration hasn't run). client_rfm_segments is a
+  // phantom table/view (caught by strict typing, npm run exists: 0 matches), so the typed client
+  // can't express this select; the untyped client keeps the existing try/catch fallback behavior.
   let rfmMap = new Map<string, { segment_tag: string; total_spent: number }>();
   try {
-    const { data: rfm } = await supabase
+    const untyped: SupabaseClient = supabase;
+    const { data: rfm } = await untyped
       .from("client_rfm_segments")
       .select("client_id, segment_tag, total_spent")
       .eq("salon_id", salonId)

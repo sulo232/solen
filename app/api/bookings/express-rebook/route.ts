@@ -28,11 +28,13 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Fetch source booking
+  // Fetch source booking. rebook_from_booking_id is optional in the schema (lib/validations.ts);
+  // when missing, this .eq() cannot match a row and the existing `if (!source)` 404 below
+  // handles it, same as before typing (type-only cast, no new branch).
   const { data: source } = await admin
     .from("bookings")
     .select("id, salon_id, service_id, staff_member_id, price_paid, services(name_de, duration_minutes), staff_members(name)")
-    .eq("id", rebook_from_booking_id)
+    .eq("id", rebook_from_booking_id as string)
     .eq("user_id", user.id)
     .single();
 
@@ -47,7 +49,7 @@ export async function POST(req: NextRequest) {
     .from("availability_slots")
     .select("id, starts_at, ends_at")
     .eq("salon_id", source.salon_id)
-    .eq("staff_member_id", source.staff_member_id)
+    .eq("staff_member_id", source.staff_member_id ?? "")
     .eq("status", "available")
     .gt("starts_at", now.toISOString())
     .order("starts_at", { ascending: true })

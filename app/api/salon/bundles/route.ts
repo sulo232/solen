@@ -18,6 +18,20 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, serviceBundleSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { computeBundlePriceChf } from "@/lib/pricing/bundle";
+import type { Database } from "@/lib/database.types";
+
+// save_service_bundle's generated Args type marks p_bundle_id/p_custom_price/p_percent_off as
+// required non-null (string/number), but the actual Postgres function declares them nullable with
+// DEFAULT NULL (the generator doesn't reflect nullable RPC arg defaults); the RPC genuinely needs
+// null for "create" / the inactive pricing mode, so callers assert against the real, wider shape.
+type SaveServiceBundleArgs = Omit<
+  Database["public"]["Functions"]["save_service_bundle"]["Args"],
+  "p_bundle_id" | "p_custom_price" | "p_percent_off"
+> & {
+  p_bundle_id: string | null;
+  p_custom_price: number | null;
+  p_percent_off: number | null;
+};
 
 // Shared bundle-assembly: given any Supabase client (anon/session client -> RLS gates
 // visibility to active+marketplace-visible; admin client -> the caller must already be
@@ -236,16 +250,20 @@ export async function POST(req: NextRequest) {
   const { admin, salon } = await resolveOwnerSalon(user.id);
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { data: bundleId, error: rpcError } = await admin.rpc("save_service_bundle", {
+  const createArgs: SaveServiceBundleArgs = {
     p_salon_id: salon.id,
     p_bundle_id: null,
     p_name: validated.name,
     p_pricing_mode: validated.pricing_mode,
-    p_custom_price: validated.pricing_mode === "custom" ? validated.custom_price : null,
-    p_percent_off: validated.pricing_mode === "percent" ? validated.percent_off : null,
+    p_custom_price: validated.pricing_mode === "custom" ? validated.custom_price ?? null : null,
+    p_percent_off: validated.pricing_mode === "percent" ? validated.percent_off ?? null : null,
     p_is_active: validated.is_active === true,
     p_service_ids: [...new Set(validated.service_ids)],
-  });
+  };
+  const { data: bundleId, error: rpcError } = await admin.rpc(
+    "save_service_bundle",
+    createArgs as Database["public"]["Functions"]["save_service_bundle"]["Args"],
+  );
 
   if (rpcError || !bundleId) return bundleRpcErrorResponse(rpcError?.message);
 
@@ -292,16 +310,20 @@ export async function PATCH(req: NextRequest) {
   const { admin, salon } = await resolveOwnerSalon(user.id);
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { data: savedId, error: rpcError } = await admin.rpc("save_service_bundle", {
+  const updateArgs: SaveServiceBundleArgs = {
     p_salon_id: salon.id,
     p_bundle_id: bundleId,
     p_name: validated.name,
     p_pricing_mode: validated.pricing_mode,
-    p_custom_price: validated.pricing_mode === "custom" ? validated.custom_price : null,
-    p_percent_off: validated.pricing_mode === "percent" ? validated.percent_off : null,
+    p_custom_price: validated.pricing_mode === "custom" ? validated.custom_price ?? null : null,
+    p_percent_off: validated.pricing_mode === "percent" ? validated.percent_off ?? null : null,
     p_is_active: validated.is_active === true,
     p_service_ids: [...new Set(validated.service_ids)],
-  });
+  };
+  const { data: savedId, error: rpcError } = await admin.rpc(
+    "save_service_bundle",
+    updateArgs as Database["public"]["Functions"]["save_service_bundle"]["Args"],
+  );
 
   if (rpcError || !savedId) return bundleRpcErrorResponse(rpcError?.message);
 

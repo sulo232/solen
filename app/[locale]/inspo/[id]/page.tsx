@@ -62,6 +62,11 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
     // Save to DB (fire-and-forget — don't block page render)
     const admin = createAdminSupabaseClient();
     const freshThumb = (aiResult as any)._freshThumbnailUrl;
+    // products_needed is now an object (texture-adaptive), use products_flat for DB (same pattern as
+    // app/api/admin/discovery/backfill/route.ts, app/api/admin/discovery/import-tiktok/route.ts,
+    // app/api/cron/discovery-ai-backfill/route.ts).
+    const productsFlat = aiResult.products_flat
+      ?? (Array.isArray(aiResult.products_needed) ? aiResult.products_needed : []);
     const updates = {
       content_type: isTikTok ? "tiktok" as const : item.content_type,
       category: aiResult.category ?? item.category,
@@ -71,7 +76,7 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
       tags: aiResult.tags?.length > 0 ? aiResult.tags : item.tags,
       maintenance: aiResult.maintenance_level ?? item.maintenance,
       face_shapes: aiResult.face_shapes?.length > 0 ? aiResult.face_shapes : item.face_shapes,
-      products_needed: aiResult.products_needed ?? [],
+      products_needed: productsFlat,
       hair_type_match: aiResult.hair_type_match ?? [],
       description_en: aiResult.description_en,
       description_de: aiResult.description_de,
@@ -138,13 +143,19 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
     after(() => ensureAIData(item).catch((e) => console.error("[discover/[id]] background analyze failed:", e)));
   }
 
-  // Increment view count (fire-and-forget)
-  const supabase = await createServerSupabaseClient();
-  supabase.rpc("increment_discovery_view", { p_item_id: id }).then(() => {});
-
   // Check auth
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   const isAuthenticated = !!user;
+
+  // Increment view count (fire-and-forget). increment_discovery_view RPC never existed (phantom, caught by
+  // strict typing), so this was a silent no-op at runtime. view_count is bumped by the trg_view_count trigger
+  // via a discovery_interactions insert with action="view", written with the admin client since RLS only
+  // grants INSERT to the row's own user (same fix as app/api/discovery/interactions/route.ts).
+  createAdminSupabaseClient()
+    .from("discovery_interactions")
+    .insert({ item_id: id, user_id: user?.id ?? null, action: "view" })
+    .then(({ error }) => { if (error) console.error("[discover/[id]] view interaction insert failed:", error); });
 
   // "Book this look" — the soft, honest salon list (owner call: real look→salon matching deferred). Salons that
   // offer a service in this look's category, ranked by rating; price is the cheapest such service ("ab CHF X").

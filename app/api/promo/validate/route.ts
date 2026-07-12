@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false, message: "Dieser Code ist abgelaufen" });
   }
 
-  if (promo.max_uses !== null && promo.current_uses >= promo.max_uses) {
+  if (promo.max_uses !== null && (promo.current_uses ?? 0) >= promo.max_uses) {
     return NextResponse.json({ valid: false, message: "Dieser Code wurde bereits zu oft verwendet" });
   }
 

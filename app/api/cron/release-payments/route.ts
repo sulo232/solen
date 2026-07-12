@@ -34,6 +34,9 @@ export async function GET(req: NextRequest) {
   let failed = 0;
 
   for (const booking of bookings ?? []) {
+    // The query above already filters .not("payment_intent_id", "is", null), so this is
+    // always present here; this narrows the type to match.
+    if (!booking.payment_intent_id) continue;
     try {
       await getStripe().paymentIntents.capture(booking.payment_intent_id);
 

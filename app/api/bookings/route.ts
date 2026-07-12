@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     const nameMap = new Map<string, string | null>();
     if (userIds.length) {
       const { data: profs } = await supabase.from("public_profiles").select("id, display_name").in("id", userIds);
-      (profs ?? []).forEach((p) => nameMap.set(p.id, p.display_name));
+      (profs ?? []).forEach((p) => { if (p.id) nameMap.set(p.id, p.display_name); });
     }
     // Ring 2d: the explicit multi-column select above (vs the old `*, services(...)`) makes
     // PostgREST's TS inference type the embedded services/staff_members as arrays even though

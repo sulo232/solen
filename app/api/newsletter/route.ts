@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody } from "@/lib/validations";
@@ -21,7 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
+  // newsletter_subscribers is a phantom table: it does not exist in lib/database.types.ts, in any
+  // migration, or in the live DB (npm run exists newsletter_subscribers: 0 matches). This upsert has
+  // therefore always been a silent no-op (dbError caught below, generic 500 returned); no equivalent
+  // table exists to redirect to, so behavior is kept byte-identical (flagged in the coder report).
+  const supabase: SupabaseClient = await createServerSupabaseClient();
 
   // Upsert to avoid duplicate errors
   const { error: dbError } = await supabase

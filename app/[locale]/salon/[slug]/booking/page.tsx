@@ -197,6 +197,9 @@ export default async function BookingSalonPage({
   // the user on a dead step 1. Show the empty state with real paths forward instead (audit #8).
   const hasServices = Array.isArray(services) && services.length > 0;
   const salonAny = salon as unknown as { phone: string | null; cover_photo_url: string | null; average_rating: number | null; review_count: number | null; address: string | null };
+  // is_active is nullable in the DB but the query already filters .eq('is_active', true), so every
+  // returned row genuinely has it true; coalesce to satisfy BookingWizard's Service (non-null) type.
+  const bookingServices = services.map((s) => ({ ...s, is_active: s.is_active ?? true }));
 
   return (
     <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialNote={noteParam} initialBundleId={initialBundleId}>
@@ -207,7 +210,7 @@ export default async function BookingSalonPage({
         <main className="max-w-2xl mx-auto px-4 pt-3 pb-6">
           {hasServices ? (
             <BookingWizard
-              services={services}
+              services={bookingServices}
               staffList={staff}
               salon={salon as unknown as Salon}
               staffServices={staffServices}

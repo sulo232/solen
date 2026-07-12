@@ -108,7 +108,7 @@ export async function PATCH(
   // Transition guard: once a booking is in a terminal state, no further status writes are
   // valid, re-cancelling an already-cancelled booking clobbers payment_status
   // (refunded to none) and re-runs strike logic (audit finding).
-  if (["cancelled", "completed", "no_show"].includes(booking.status)) {
+  if (["cancelled", "completed", "no_show"].includes(booking.status ?? "")) {
     return NextResponse.json(
       { message: `Booking is already ${booking.status}, no further status changes allowed`, code: "INVALID_TRANSITION" },
       { status: 409 }
@@ -132,7 +132,7 @@ export async function PATCH(
     .from("bookings")
     .update(updates)
     .eq("id", id)
-    .eq("status", booking.status) // CAS
+    .eq("status", booking.status ?? "") // CAS
     .select("id");
   if (updateErr) return NextResponse.json({ message: updateErr.message, code: "DB_ERROR" }, { status: 500 });
   if (!updatedRows || updatedRows.length === 0) {

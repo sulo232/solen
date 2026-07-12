@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(intakeRecommendationSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { intake_id } = validated;
+  if (!intake_id) return NextResponse.json({ error: "intake_id required" }, { status: 400 });
 
   // Get the intake response
   const { data: intake } = await supabase

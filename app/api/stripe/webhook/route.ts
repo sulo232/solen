@@ -237,7 +237,8 @@ export async function POST(req: NextRequest) {
               .select("value")
               .eq("key", "commission")
               .single();
-            commissionPercent = commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+            const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+            commissionPercent = commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
             commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
           }
           const netAmount = Math.round((grossAmount - commissionAmount) * 100) / 100;
@@ -344,8 +345,8 @@ export async function POST(req: NextRequest) {
       if (isUpchargeCharge || isFeeCharge) {
         try {
           const chargeBookingId = pi.metadata?.booking_id ?? null;
-          // salon_id is not in the off-session PI metadata — resolve from the booking.
-          let chargeSalonId = pi.metadata?.salon_id ?? null;
+          // salon_id is not in the off-session PI metadata, resolve from the booking.
+          let chargeSalonId: string | null = pi.metadata?.salon_id ?? null;
           if (!chargeSalonId && chargeBookingId) {
             const { data: chargeBooking } = await admin
               .from("bookings")

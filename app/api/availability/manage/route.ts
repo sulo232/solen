@@ -32,6 +32,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "status must be 'available' or 'blocked'", code: "INVALID_STATUS" }, { status: 400 });
   }
 
+  // availability_slots.service_id is NOT NULL in the DB (the generated Insert type surfaced this,
+  // the app-level zod schema wrongly marked it optional); reject up front instead of hitting a raw
+  // DB constraint violation on insert below.
+  if (slots.some((s: { service_id?: string }) => !s.service_id)) {
+    return NextResponse.json({ message: "service_id is required", code: "VALIDATION_ERROR" }, { status: 400 });
+  }
+
   // Verify every referenced staff_member_id actually belongs to THIS salon, so an owner
   // can't reference another salon's staff and pollute that salon's booking/analytics data.
   const staffIds = [...new Set(slots.map((s: { staff_member_id?: string }) => s.staff_member_id).filter(Boolean))] as string[];
@@ -52,7 +59,8 @@ export async function POST(request: NextRequest) {
   // re-opens it.
   const toInsert = slots.map((slot: { service_id?: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string }) => ({
     salon_id,
-    service_id: slot.service_id ?? null,
+    // Non-null: the guard above already rejected any slot missing service_id.
+    service_id: slot.service_id as string,
     staff_member_id: slot.staff_member_id ?? null,
     starts_at: slot.starts_at,
     ends_at: slot.ends_at,

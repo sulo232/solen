@@ -67,10 +67,11 @@ export async function POST(
     .eq("id", id)
     .single();
 
-  if (fullBooking) {
-    const { data: profile } = await admin.from("profiles").select("locale").eq("id", fullBooking.user_id).single();
+  if (fullBooking && fullBooking.user_id) {
+    const fullBookingUserId = fullBooking.user_id;
+    const { data: profile } = await admin.from("profiles").select("locale").eq("id", fullBookingUserId).single();
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-    const { data: authUser } = await admin.auth.admin.getUserById(fullBooking.user_id);
+    const { data: authUser } = await admin.auth.admin.getUserById(fullBookingUserId);
     const email = authUser?.user?.email;
     if (email) {
       const dateStr = new Date(fullBooking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
@@ -78,7 +79,7 @@ export async function POST(
       const serviceName = (fullBooking.services as any)?.name_de ?? "Service";
       const salonName = (fullBooking.salons as any)?.name ?? "Salon";
       await sendNotification({
-        userId: fullBooking.user_id,
+        userId: fullBookingUserId,
         type: "booking_confirmed",
         title: `Buchung bestätigt: ${serviceName}`,
         body: `Ihre Buchung bei ${salonName} am ${dateStr} um ${timeStr} wurde bestätigt.`,

@@ -357,7 +357,8 @@ export async function POST(req: NextRequest) {
   // 6. Platform commission (Connect destination charge).
   const { data: commissionSetting } = await admin
     .from("platform_settings").select("value").eq("key", "commission").single();
-  const commissionRate = (commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
+  const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+  const commissionRate = (commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
   const platformFeeRappen = Math.round(amountRappen * commissionRate);
 
   // 6b. Solen Plus member discount (commission-waiver, LOYALTY_STRUCTURE.md §12.1).
@@ -384,7 +385,7 @@ export async function POST(req: NextRequest) {
       waiverRate,
       windowMonths: LOYALTY.windowMonths,
     });
-    if (md.discountRappen > 0) {
+    if (md.discountRappen > 0 && md.appliedTier) {
       // resolveMemberDiscount's cap check above counts only PAID bookings, so two concurrent
       // in-flight checkouts by the same user can both pass it (race). reserve_member_discount is
       // a SECURITY DEFINER RPC that advisory-locks the user and counts IN-FLIGHT reservations in
@@ -627,7 +628,11 @@ export async function POST(req: NextRequest) {
               p_code: requestedVoucherCode,
               p_salon_id: booking.salon_id,
               p_amount: requestRappen / 100,
-              p_user: booking.user_id ?? null,
+              // p_user is a plain nullable `uuid` param in the SQL function (no NOT NULL,
+              // used as a nullable redeemed_by/user_id downstream) -- the generated Args
+              // type is just non-optional (no SQL DEFAULT), it doesn't forbid null. Guest
+              // bookings genuinely pass null here (this path is explicitly guest-tolerant).
+              p_user: (booking.user_id ?? null) as string,
               p_booking: booking.id,
               p_pi: paymentIntent.id,
             });

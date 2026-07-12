@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   const { data: profile } = await admin
     .from("profiles")
-    .select("stripe_customer_id, full_name, email")
+    .select("stripe_customer_id, display_name, email")
     .eq("id", user.id)
     .single();
 
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   if (!customerId) {
     const customer = await stripe.customers.create({
       email: profile?.email ?? user.email ?? undefined,
-      name: profile?.full_name ?? undefined,
+      name: profile?.display_name ?? undefined,
       metadata: { supabase_id: user.id },
     });
     customerId = customer.id;

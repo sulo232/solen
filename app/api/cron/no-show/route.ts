@@ -118,14 +118,14 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Increment customer no_show_count.
-    const { data: profile } = await admin.from("profiles").select("no_show_count").eq("id", booking.user_id).single();
+    const { data: profile } = await admin.from("profiles").select("no_show_count").eq("id", booking.user_id ?? "").single();
     const newCount = (profile?.no_show_count ?? 0) + 1;
-    await admin.from("profiles").update({ no_show_count: newCount }).eq("id", booking.user_id);
+    await admin.from("profiles").update({ no_show_count: newCount }).eq("id", booking.user_id ?? "");
 
     // 4. Warning if > 3.
     if (newCount >= 3) {
       try {
-        await logAuditEvent(req, "system", "customer_excessive_no_shows", "user", booking.user_id, { count: newCount });
+        await logAuditEvent(req, "system", "customer_excessive_no_shows", "user", booking.user_id ?? undefined, { count: newCount });
       } catch (err) { console.error("[cron/no-show] audit log failed:", err); }
     }
 
