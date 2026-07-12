@@ -4,7 +4,7 @@
 > Superseded by [`salon/StatusInline.tsx`](../../app/[locale]/_components/salon/StatusInline.tsx)
 > (doc: [StatusInline.md](StatusInline.md)) — a split-color inline text treatment,
 > no pill chrome. See [`REMOVED.md:46`](../REMOVED.md) for the deletion record.
-> **Do NOT rebuild StatusPill or reference this `File:` path as live** — the
+> **Do NOT rebuild StatusPill or reference this `File:` path as live** —
 > everything below is kept for history only (the shape/API/provenance of the
 > component that used to exist here).
 

@@ -34,11 +34,11 @@ import { toast, Toaster } from "@/app/[locale]/_components/primitives/Toast";
 <Toaster />
 
 // Fire from anywhere — no hook, no provider:
-toast.show("Generic notice");                   // no dot
-toast.success("Look gespeichert");              // green dot
-toast.error("Buchung fehlgeschlagen");          // red dot, aria-live="assertive"
-toast.info("Diese Funktion kommt bald");        // royal-blue dot (s-accent)
-toast.warning("Verbindung instabil");           // amber dot
+toast.show("Generic notice");                   // no circle badge
+toast.success("Look gespeichert");              // green circle badge
+toast.error("Buchung fehlgeschlagen");          // red circle badge, aria-live="assertive"
+toast.info("Diese Funktion kommt bald");        // blue circle badge (s-accent)
+toast.warning("Verbindung instabil");           // amber circle badge
 
 // With action button:
 toast.info("Filter zurückgesetzt", {
@@ -220,4 +220,4 @@ Per `Toast.tsx:252-330` (`ToastItem`), motion is plain CSS transitions on inline
 - **[ComingSoon](ComingSoon.md)** — wraps any clickable surface, fires `toast.info("X kommt bald")` on click. Canonical implementation of §11 option D.
 - **[LoadingStates.md](LoadingStates.md) Pattern 4** — toast for optimistic mutation rollback.
 - **[Skeleton](Skeleton.md)** — sibling primitive for §10.1 loading skeletons.
-- **`app/[locale]/layout.tsx`** — mount `<Toaster />` here (currently mounts the legacy `<ToastProvider>` — will be migrated as routes touch auth flows).
+- **`app/[locale]/layout.tsx`** — mounts `<Toaster />` (the singleton portal, `layout.tsx:135`). Correction 2026-07-12: this line previously (falsely) said the layout still mounted the legacy `<ToastProvider>`; it does not, `layout.tsx:7-9`'s own comment confirms `ToastProvider` (`components-legacy/ui/Toast`) was retired.

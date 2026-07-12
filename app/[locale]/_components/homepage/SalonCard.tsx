@@ -43,12 +43,14 @@ const cardCategoryColors = {
   // CANON sweep (2026-06-01): retired the V2 hues (#142F4A/#E58840/#E9DFC8/
   // #F0C25A) — they're banned per CANON §1. Monogram fallback now mirrors the
   // B&W ink-on-stone pattern from SalonReviews `avatarColor()` (_shared.ts):
-  // s-bg-sunken (#F5F5F4) tile + s-ink (#0A0A0A) letter. Same treatment for
+  // s-bg-sunken (#F4F4F5) tile + s-ink (#0A0A0A) letter. Same treatment for
   // every category (chrome = no per-category semantic color).
-  coiffeur:   { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
-  barbershop: { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
-  nails:      { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
-  spa:        { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  // 2026-07-12 mockup-ok: transposed-hex bug fix, restores the already-LOCKED
+  // s-bg-sunken value (LOCKFILE §1, tailwind.config.js:155) , not a new visual choice.
+  coiffeur:   { bg: "#F4F4F5", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  barbershop: { bg: "#F4F4F5", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  nails:      { bg: "#F4F4F5", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  spa:        { bg: "#F4F4F5", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
 } as const;
 
 /** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */

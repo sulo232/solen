@@ -134,4 +134,4 @@ opacity-only under `prefers-reduced-motion`. Chip/segment state swaps =
 - `Sheet` / `Modal` / `useResponsiveOverlay` (primitives) — the overlay shells.
 - `SearchTemplate` — the sole consumer; owns open state + param writers + the
   inline chip row that shares the same params.
-- `TabPill` — the same active-ink / inactive-hairline chip grammar.
+- `TabPill` — the same active-gray-sunken / inactive-hairline chip grammar (corrected 2026-07-12; this line previously said "active-ink", which was wrong for both components).
