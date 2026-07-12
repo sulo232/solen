@@ -1573,6 +1573,7 @@
       "discovery": "Découverte",
       "homepage": "Page d'accueil",
       "cities": "Villes",
+      "featureFlags": "Feature Flags",
       "sandbox": "Sandbox",
       "previewBanner": "Mode aperçu actif — affichage du tableau de bord en tant que :",
       "previewExit": "Quitter",
@@ -2456,6 +2457,12 @@
       "activeLabel": "Actif",
       "inactiveLabel": "Inactif",
       "displayOrder": "Ordre {order}",
+      "errorMessage": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "featureFlagsAdminPage": {
+      "title": "Feature Flags",
+      "subtitle": "Activer ou désactiver les interrupteurs globaux. Chaque interrupteur agit immédiatement sur la plateforme.",
+      "notWiredHint": "pas encore relié à une fonctionnalité",
       "errorMessage": "Échec de l'enregistrement. Veuillez réessayer."
     },
     "commissionAdminPage": {

@@ -1601,6 +1601,7 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "cities": "Cities",
+      "featureFlags": "Feature Flags",
       "sandbox": "Sandbox",
       "previewBanner": "Preview mode active — viewing dashboard as:",
       "previewExit": "Exit",
@@ -2464,6 +2465,12 @@
       "activeLabel": "Active",
       "inactiveLabel": "Inactive",
       "displayOrder": "Order {order}",
+      "errorMessage": "Could not be saved. Please try again."
+    },
+    "featureFlagsAdminPage": {
+      "title": "Feature Flags",
+      "subtitle": "Enable or disable global feature switches. Each switch takes effect on the platform immediately.",
+      "notWiredHint": "not wired to any feature yet",
       "errorMessage": "Could not be saved. Please try again."
     },
     "commissionAdminPage": {
