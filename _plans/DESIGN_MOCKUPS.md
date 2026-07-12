@@ -5,10 +5,10 @@ Owner ask: "make me mockups" + AskUserQuestion pick: ALL THREE scopes (web decis
 Law binding this batch: mockup = copy of the REAL component/page, treatment-only, one language, real data, Lucide only, Exists-check line in every new mockup file, served + cloudflare tunnel link (never LAN/artifact), recommendation per decision (rule 2). No parallel frontend agents, one coherent pass.
 
 ## Infra
-- [ ] M0a npm ci in this worktree (no node_modules yet)
-- [ ] M0b .env.local symlinked from the main checkout
-- [ ] M0c socket-bind test passes (sandbox listen check), dev server up on :3000
-- [ ] M0d cloudflared tunnel minted + serving (curl 200 through it)
+- [x] M0a install , DONE (pre-compaction), verified: node_modules/.bin/next present, 521 top-level packages; dev server compiles
+- [x] M0b env , DONE, verified: .env.local -> /Users/sulo/Documents/solen/.env.local symlink; API routes return 200 (preview_logs)
+- [x] M0c dev server , UP on :3000 via preview_start (serverId 0f27e866). NOTE: bash-sandbox blocks BOTH listen() and outbound localhost connect (probes: 'Operation not permitted' x2), so in-sandbox curl to localhost is impossible this session; server manager + browser tools run outside the sandbox and work
+- [x] M0d tunnel , DONE, verified: https://equation-ball-crowd-record.trycloudflare.com minted via desktop-commander PID 54413 (outside the sandbox, so it CAN reach :3000); end-to-end proof curl /de -> 200 through the public edge
 
 ## Web decision mockups (real components, A/B side-by-side, 375px-first)
 - [ ] M1 /dev/decision-backbutton , real glass BackButton over a real salon hero photo, 40px vs 44px
