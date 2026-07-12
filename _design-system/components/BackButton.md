@@ -12,6 +12,8 @@ The frosted `ArrowLeft` back button was hand-rolled per surface **4×** (`SalonH
 
 Both: 40×40 round, centred 18px `ArrowLeft` (`strokeWidth 2.2`, `text-s-ink`), `active:scale-[0.96]`, `transition-[transform,background-color] duration-150`.
 
+**Open question, flagged 2026-07-12 (A3 registry audit finding 2c):** this ships at 40px (`h-10 w-10`), under the locked 44px touch-target floor (design contract: "icon-button `h-11 w-11`" / "touch target ≥ 44px"). Registry + this doc + the code all agree with each other at 40px, but all three disagree with the LOCKFILE floor. Not silently changed here — flagged as an open owner question (bump to 44px, or add a named exception like `SelectedCheckBadge`/`HeartButton`'s 32px save variant).
+
 ## API (props)
 `variant?: "glass" | "flat"` (default `flat`) · `label?: string` (accessible label → `aria-label`; defaults German "Zurück" — pass your i18n string) · plus all native `<button>` attributes (`onClick`, `type` overridden to `"button"`, etc.) via `React.ButtonHTMLAttributes`. `forwardRef` to the `<button>`. `className` composes (cn).
 

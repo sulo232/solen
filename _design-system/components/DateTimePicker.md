@@ -21,7 +21,13 @@ Any date and/or time selection: booking, search "Zeit", B2B closed-day toggles, 
 ## Don't reuse for
 Static date *display* (use a formatted string, not this). Range picking (vacation blocks) — not yet built; add a `range` variant here when needed, don't fork.
 
-## Consumers
-- `app/[locale]/_components/search/SearchOverlay.tsx` — calendar, single-date, accent.
-- `components-legacy/booking/DateTimeStep.tsx` — strip, date-and-time, accent, i18n labels + waitlist empty-state.
-- `app/[locale]/dev/primitives` — live demo of both layouts.
+## Consumers (re-verified 2026-07-12, A3 registry audit)
+- `app/[locale]/_components/homepage/SearchBar.tsx:542` — real call-site.
+- `components-legacy/booking/DateTimeStep.tsx:194` — strip, date-and-time, accent, i18n labels + waitlist empty-state.
+- `app/[locale]/dev/primitives` — live demo of both layouts (dev showcase, not production).
+
+**Correction 2026-07-12:** this list previously named `search/SearchOverlay.tsx` as a
+consumer. That was false — `SearchOverlay.tsx` has zero references to
+`DateTimePicker` and hand-builds its own inline calendar instead (a live V3-D445
+violation, see `COMPONENT_REGISTRY.md`'s SearchOverlay row and `SearchOverlay.md`).
+Removed from this list; not fixed here (doc-only change-set), code fix queued.

@@ -10,7 +10,7 @@
 
 **Public API.** `<SuccessMark size? className? />`. `size?: number` (visible disc diameter in px, default 58; the check scales to ~0.52×). No tone/variant — success is the only thing it renders.
 
-**Use for.** The ONE focal success/confirmation beat on a screen — `BookingConfirmation` (live), walk-in "joined the queue", review posted, gift/package purchased, payment settled. **Don't reuse for.** Routine or transient inline success (use a pastel `Toast tone="success"` — the chip/badge carve-out), a static "done/complete" status chip (use `StatusPill` or a plain `Check`), or any non-success state. One per screen, on the emotional peak only.
+**Use for.** The ONE focal success/confirmation beat on a screen — `BookingConfirmation` (live), walk-in "joined the queue", review posted, gift/package purchased, payment settled. **Don't reuse for.** Routine or transient inline success (use a pastel `Toast tone="success"` — the chip/badge carve-out), a static "done/complete" status chip (use `StatusInline` or a plain `Check`; `StatusPill` was deleted 2026-06-30, see `StatusPill.md`), or any non-success state. One per screen, on the emotional peak only.
 
 **Visual.** Normal-green `s-success #16A34A` solid disc + WHITE check (stroke). NOT a pale tint, and NOT deep `#15803D` (that was reverted 2026-06-10). The shipped component already fills `bg-s-success` (#16A34A) — code and doc now agree; the once-"pending" deep-green token swap is CANCELLED.
 

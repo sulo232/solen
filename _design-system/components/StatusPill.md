@@ -1,6 +1,14 @@
 # StatusPill
 
-**File:** [app/[locale]/_components/salon/StatusPill.tsx](../../app/[locale]/_components/salon/StatusPill.tsx)
+> **DELETED 2026-06-30.** `salon/StatusPill.tsx` no longer exists in the codebase.
+> Superseded by [`salon/StatusInline.tsx`](../../app/[locale]/_components/salon/StatusInline.tsx)
+> (doc: [StatusInline.md](StatusInline.md)) — a split-color inline text treatment,
+> no pill chrome. See [`REMOVED.md:46`](../REMOVED.md) for the deletion record.
+> **Do NOT rebuild StatusPill or reference this `File:` path as live** — the
+> everything below is kept for history only (the shape/API/provenance of the
+> component that used to exist here).
+
+**File (historical, no longer exists):** [app/[locale]/_components/salon/StatusPill.tsx](../../app/[locale]/_components/salon/StatusPill.tsx)
 **Layer:** 3 (semantic UI — color IS the meaning: green = open, red = closed. Universal "open/closed" convention per §1.)
 **Locked since:** V3-D201 (2026-05-26 · salon Phase A A4)
 **SOURCE.md links:** [§1 universal colors](../SOURCE.md#§1--brand-positioning) · [§2.5 catalog](../SOURCE.md#§25--semantic-ui-surfaces-catalog-v3-d197-2026-05-26) · [§14.0 decision tree](../SOURCE.md#§140--the-color-layer-decision-tree-first-question-before-writing-any-class)

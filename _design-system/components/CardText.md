@@ -36,7 +36,7 @@ User, 2026-05-28: *"using too bold ... multiple times that destroys my eye"* + *
 ## Use for / Don't reuse for
 
 - **Use:** the name + meta of any salon card, stylist card, service row, review item, package card, venue-nearby card, search result.
-- **Don't:** section headings (use an `h2` at 600), CTA button labels (Primary/Secondary CTA recipe), semantic status (use `StatusPill` — color IS the message), or a commerce card's headline price/total (may stay `text-s-ink` but use `font-semibold`, not these).
+- **Don't:** section headings (use an `h2` at 600), CTA button labels (Primary/Secondary CTA recipe), semantic status (use `StatusInline` — color IS the message; `StatusPill` was deleted 2026-06-30, see `StatusPill.md`), or a commerce card's headline price/total (may stay `text-s-ink` but use `font-semibold`, not these).
 
 ## Gotcha — cn() is clsx, not tailwind-merge
 
