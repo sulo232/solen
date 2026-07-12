@@ -33,8 +33,13 @@ export async function GET() {
     .eq("key", "homepage_sections")
     .single();
 
+  const storedSections =
+    setting?.value && typeof setting.value === "object" && !Array.isArray(setting.value)
+      ? setting.value
+      : {};
+
   return NextResponse.json({
-    sections: { ...DEFAULT_SECTIONS, ...(setting?.value ?? {}) },
+    sections: { ...DEFAULT_SECTIONS, ...storedSections },
   });
 }
 

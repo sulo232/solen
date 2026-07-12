@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
+
+type AvailabilitySlotInsert = Database["public"]["Tables"]["availability_slots"]["Insert"];
 
 /**
  * POST /api/admin/seed-test-salons
@@ -23,7 +26,7 @@ async function requireAdmin() {
     .eq("id", user.id)
     .single();
   if (profile?.role !== "admin") return null;
-  return admin;
+  return { admin, userId: user.id };
 }
 
 // ---------------------------------------------------------------------------
@@ -109,8 +112,9 @@ const CITY_DATA: Record<string, { name: string; lat: number; lng: number }> = {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
-  const admin = await requireAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { admin, userId } = auth;
 
   const body = await req.json().catch(() => ({}));
   const selectedCities: string[] = body.cities ?? ["basel", "zuerich", "bern"];
@@ -160,9 +164,15 @@ export async function POST(req: NextRequest) {
           .insert({
             slug,
             name,
+            // NOTE: this insert previously errored on every call and never created a
+            // single test salon: `city`/`city_name` are not columns on salons (only
+            // city_id, a FK to cities.id + cities.slug/name_de, dropped here), and
+            // `address`/`owner_id` (both NOT NULL) were missing entirely. owner_id/address
+            // follow the same convention as app/api/admin/test-salon/route.ts (owner_id
+            // = the seeding admin, address = a plausible placeholder street).
+            owner_id: userId,
+            address: `Bahnhofstrasse 1, ${cityInfo.name}`,
             city_id,
-            city: citySlug,
-            city_name: cityInfo.name,
             quartier: tpl.quartier[citySlug] ?? "Zentrum",
             categories: [tpl.category],
             cover_photo_url: tpl.cover_photo_url,
@@ -194,8 +204,8 @@ export async function POST(req: NextRequest) {
         }
         salonId = inserted.id;
 
-        // Seed services
-        await admin.from("services").insert(
+        // Seed services (select id back: availability_slots.service_id is NOT NULL, see below)
+        const { data: insertedServices } = await admin.from("services").insert(
           tpl.services.map((s) => ({
             salon_id: salonId,
             name_de: s.name_de,
@@ -205,25 +215,32 @@ export async function POST(req: NextRequest) {
             price: s.price,
             is_active: true,
           }))
-        );
+        ).select("id");
 
-        // Seed 14-day availability (30-min slots, Mon–Sat 9–18)
-        const slots: Record<string, unknown>[] = [];
-        const now = new Date();
-        for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
-          const d = new Date(now);
-          d.setDate(d.getDate() + dayOffset);
-          if (d.getDay() === 0) continue; // skip Sunday
-          const dateStr = d.toISOString().split("T")[0];
-          const endHour = d.getDay() === 4 ? 20 : 18; // Thu open until 20
-          for (let hour = 9; hour < endHour; hour++) {
-            for (const min of [0, 30]) {
-              slots.push({
-                salon_id: salonId,
-                starts_at: `${dateStr}T${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}:00`,
-                ends_at: `${dateStr}T${String(hour + (min === 30 ? 1 : 0)).padStart(2, "0")}:${min === 30 ? "00" : "30"}:00`,
-                status: "available",
-              });
+        // Seed 14-day availability (30-min slots, Mon-Sat 9-18), attached to the salon's
+        // first seeded service: availability_slots.service_id is NOT NULL, previously
+        // unset here, so this insert silently failed on every call (no phantom column,
+        // a genuinely missing required field).
+        const primaryServiceId = insertedServices?.[0]?.id;
+        const slots: AvailabilitySlotInsert[] = [];
+        if (primaryServiceId) {
+          const now = new Date();
+          for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
+            const d = new Date(now);
+            d.setDate(d.getDate() + dayOffset);
+            if (d.getDay() === 0) continue; // skip Sunday
+            const dateStr = d.toISOString().split("T")[0];
+            const endHour = d.getDay() === 4 ? 20 : 18; // Thu open until 20
+            for (let hour = 9; hour < endHour; hour++) {
+              for (const min of [0, 30]) {
+                slots.push({
+                  salon_id: salonId,
+                  service_id: primaryServiceId,
+                  starts_at: `${dateStr}T${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}:00`,
+                  ends_at: `${dateStr}T${String(hour + (min === 30 ? 1 : 0)).padStart(2, "0")}:${min === 30 ? "00" : "30"}:00`,
+                  status: "available",
+                });
+              }
             }
           }
         }
@@ -242,8 +259,9 @@ export async function POST(req: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function DELETE() {
-  const admin = await requireAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { admin } = auth;
 
   const { error } = await admin
     .from("salons")
@@ -257,28 +275,31 @@ export async function DELETE() {
 // ---------------------------------------------------------------------------
 
 export async function GET() {
-  const admin = await requireAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { admin } = auth;
 
+  // NOTE: `city` is not a column on salons (only city_id, a FK to cities); switched
+  // to city_id below, this select previously errored on every call (42703 unknown column).
   const { data: testSalons } = await admin
     .from("salons")
-    .select("id, slug, name, city, categories, is_active")
+    .select("id, slug, name, city_id, categories, is_active")
     .eq("is_test", true)
-    .order("city")
+    .order("city_id")
     .order("name");
 
   // Per city+category real salon counts
   const { data: realCounts } = await admin
     .from("salons")
-    .select("city, categories")
+    .select("city_id, categories")
     .eq("is_test", false)
     .eq("is_active", true);
 
   const countMap: Record<string, number> = {};
   for (const row of realCounts ?? []) {
-    const cats = (row.categories as string[]) ?? [];
+    const cats = row.categories ?? [];
     for (const cat of cats) {
-      const key = `${row.city}:${cat}`;
+      const key = `${row.city_id}:${cat}`;
       countMap[key] = (countMap[key] ?? 0) + 1;
     }
   }

@@ -106,10 +106,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Phase 7: Email to both parties on escalation
     try {
+      const partyIds = [dispute.reporter_id, dispute.reported_id].filter(
+        (id): id is string => id != null,
+      );
       const { data: parties } = await admin
         .from("profiles")
         .select("id, email")
-        .in("id", [dispute.reporter_id, dispute.reported_id]);
+        .in("id", partyIds);
         
       const resendApiKey = getServerEnv().RESEND_API_KEY;
       if (!resendApiKey) {

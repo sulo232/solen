@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
         .limit(1)
         .single();
 
-      const lastVisitDate = lastBooking?.starts_at ?? note.created_at;
+      const lastVisitDate = lastBooking?.starts_at ?? note.created_at ?? new Date().toISOString();
       const daysAgo = Math.floor((Date.now() - new Date(lastVisitDate).getTime()) / (1000 * 60 * 60 * 24));
 
       const { data: recentSentNote } = await admin
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
         .limit(1)
         .maybeSingle();
 
-      const isOnCooldown = recentSentNote 
+      const isOnCooldown = recentSentNote?.created_at
         ? (Date.now() - new Date(recentSentNote.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000
         : false;
 

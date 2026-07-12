@@ -45,6 +45,19 @@ export async function POST(req: NextRequest) {
     .from("feature_requests").select("*").eq("id", validated.requestId).single();
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
+  // buildRoadmapUserPrompt() takes optional (string | undefined) fields; the DB row has
+  // (string | null) for these, so null is normalized to undefined here (same falsy fallback
+  // inside buildRoadmapUserPrompt either way).
+  const roadmapPromptInput = {
+    page_url: featureReq.page_url,
+    element_selector: featureReq.element_selector ?? undefined,
+    element_tag: featureReq.element_tag ?? undefined,
+    element_text: featureReq.element_text ?? undefined,
+    component_hint: featureReq.component_hint ?? undefined,
+    description: featureReq.description,
+    priority: featureReq.priority,
+  };
+
   // 8. Check API key — uses GEMINI_API_KEY from Netlify env
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) {
@@ -69,7 +82,7 @@ export async function POST(req: NextRequest) {
           contents: [
             {
               role: "user",
-              parts: [{ text: buildRoadmapUserPrompt(featureReq) }],
+              parts: [{ text: buildRoadmapUserPrompt(roadmapPromptInput) }],
             },
           ],
           generationConfig: {
@@ -118,7 +131,7 @@ export async function POST(req: NextRequest) {
         status: "roadmap_generated",
         roadmap_version: newVersion,
         token_usage: tokenUsage,
-        claude_prompt: buildRoadmapUserPrompt(featureReq),
+        claude_prompt: buildRoadmapUserPrompt(roadmapPromptInput),
       })
       .eq("id", validated.requestId);
 

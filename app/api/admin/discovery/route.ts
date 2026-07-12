@@ -64,6 +64,7 @@ export async function PATCH(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(adminDiscoveryItemSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { id, ...updates } = validated;
+  if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
   const { error } = await admin.from("discovery_items").update(updates).eq("id", id);

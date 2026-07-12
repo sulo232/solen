@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
             const bookingItems = (bookingsRes.data ?? []).map((b) => ({ type: "booking", ...b }));
             const reviewItems = (reviewsRes.data ?? []).map((r) => ({ type: "review", ...r }));
             const feed = [...bookingItems, ...reviewItems].sort((a, b) =>
-              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+              (b.created_at ? new Date(b.created_at).getTime() : 0) - (a.created_at ? new Date(a.created_at).getTime() : 0)
             ).slice(0, 8);
             results[key] = { feed };
             break;

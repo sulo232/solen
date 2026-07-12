@@ -197,8 +197,8 @@ export async function POST(req: NextRequest) {
           cut_guide: aiResult.cut_guide,
           price_min: aiResult.price_min ?? item.price_min,
           price_max: aiResult.price_max ?? item.price_max,
-          // Store the full rich AI analysis as JSONB
-          ai_analysis: aiResult,
+          // Store the full rich AI analysis as JSONB (spread to satisfy the Json index signature)
+          ai_analysis: { ...aiResult },
         })
         .eq("id", item.id);
 

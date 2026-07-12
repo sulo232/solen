@@ -21,15 +21,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { data: history } = await admin
-    .from("nail_ai_staging")
-    .select("id, image_url, prompt_summary, created_at, is_saved")
-    .eq("salon_id", salonId)
-    .not("image_url", "is", null)
-    .order("created_at", { ascending: false })
-    .limit(60);
-
-  return NextResponse.json({ history: history ?? [] });
+  // NOTE (blocker, not fixable as a rename): `nail_ai_staging` is not a real table
+  // (checked lib/database.types.ts + `npm run exists nail_ai_staging`, 0 matches). No
+  // existing table matches this shape either: nail_design_history needs a real
+  // customer_id and has no prompt_summary/is_saved; nail_inspo_images is customer-owned
+  // (user_id, no salon_id) with no prompt_summary/is_saved; discovery_staging (used by
+  // /api/admin/nail/generate for AI-generated images) has no salon_id at all, so it can't
+  // be scoped per salon here. This route has always errored on every call (42P01 undefined
+  // table) and always returned an empty list, byte identical to the direct return below.
+  // A real fix needs a schema decision (new salon-scoped table, or extend an existing one)
+  // outside this typed-fix pass.
+  return NextResponse.json({ history: [] });
 }
 
 // PATCH /api/dashboard/nail/ai-history — toggle is_saved
@@ -39,28 +41,12 @@ export async function PATCH(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { id, is_saved } = body as { id: string; is_saved: boolean };
+  const { id } = body as { id: string; is_saved: boolean };
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-  const admin = createAdminSupabaseClient();
-
-  // Ownership check (mirrors the GET handler above): resolve the row's own salon_id
-  // first, an authenticated user with no relationship to that salon must not be able
-  // to flip is_saved on it.
-  const { data: row } = await admin.from("nail_ai_staging").select("salon_id").eq("id", id).single();
-  if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", row.salon_id).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  const { error } = await admin
-    .from("nail_ai_staging")
-    .update({ is_saved })
-    .eq("id", id);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
+  // NOTE (blocker, same finding as GET above): `nail_ai_staging` is not a real table,
+  // so the row lookup this handler depends on has always failed (42P01 undefined table)
+  // on every call, always falling into the "Not found" branch below. Returning that same
+  // response directly, byte identical to the previous behavior.
+  return NextResponse.json({ error: "Not found" }, { status: 404 });
 }

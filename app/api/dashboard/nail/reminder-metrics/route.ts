@@ -21,59 +21,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-
-  // NOTE: reminder_log table does not exist in the live DB yet (nail infill
-  // reminders are currently written to client_notes, not a dedicated log).
-  // Guard so this route returns honest zeros instead of erroring.
-  const { count: sentCount, error: sentError } = await admin
-    .from("reminder_log")
-    .select("*", { count: "exact", head: true })
-    .eq("salon_id", salonId)
-    .eq("reminder_type", "infill")
-    .gte("sent_at", thirtyDaysAgo);
-
-  if (sentError) {
-    return NextResponse.json({ sent: 0, booked: 0, conversion_rate: 0, period_days: 30 });
-  }
-
-  // Count bookings created after a reminder (within 7 days of reminder)
-  // We approximate: bookings in last 30 days that are infill-type
-  const { data: reminders } = await admin
-    .from("reminder_log")
-    .select("user_id, sent_at")
-    .eq("salon_id", salonId)
-    .eq("reminder_type", "infill")
-    .gte("sent_at", thirtyDaysAgo);
-
-  let bookedCount = 0;
-  if (reminders && reminders.length > 0) {
-    const userIds = [...new Set(reminders.map((r) => r.user_id))];
-    const { data: bookings } = await admin
-      .from("bookings")
-      .select("user_id, created_at")
-      .eq("salon_id", salonId)
-      .in("user_id", userIds)
-      .gte("created_at", thirtyDaysAgo);
-
-    // Count users who booked within 7 days of their reminder
-    for (const reminder of reminders) {
-      const bookedAfter = (bookings ?? []).find((b) => {
-        if (b.user_id !== reminder.user_id) return false;
-        const diff = new Date(b.created_at).getTime() - new Date(reminder.sent_at).getTime();
-        return diff >= 0 && diff <= 7 * 24 * 60 * 60 * 1000;
-      });
-      if (bookedAfter) bookedCount++;
-    }
-  }
-
-  const sent = sentCount ?? 0;
-  const conversionRate = sent > 0 ? Math.round((bookedCount / sent) * 100) : 0;
-
-  return NextResponse.json({
-    sent,
-    booked: bookedCount,
-    conversion_rate: conversionRate,
-    period_days: 30,
-  });
+  // NOTE: reminder_log is not a real table (checked lib/database.types.ts; nail infill
+  // reminders are currently written to client_notes, not a dedicated log), so both queries
+  // that used to sit here always errored (42P01 undefined table) and this route has always
+  // returned honest zeros on every call. Returning that same response directly, byte
+  // identical to the previous behavior. A real fix needs a schema decision (a dedicated
+  // reminder_log table, or reading infill reminders back out of client_notes) outside this
+  // typed-fix pass.
+  return NextResponse.json({ sent: 0, booked: 0, conversion_rate: 0, period_days: 30 });
 }

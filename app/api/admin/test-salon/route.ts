@@ -140,11 +140,15 @@ export async function DELETE(request: NextRequest) {
   if (!salon.name.startsWith(TEST_PREFIX)) return NextResponse.json({ error: "Not a test salon" }, { status: 400 });
 
   // Delete in dependency order
+  // NOTE: `last_minute_slots` is not a real table (checked lib/database.types.ts + the
+  // migrations); the real last-minute state lives in salon_last_minute_settings
+  // (salon_id-scoped row), swapped in here. This delete previously errored on every call
+  // (42P01 undefined table), silently swallowed by Promise.all having no error handling.
   await Promise.all([
     adminClient.from("bookings").delete().eq("salon_id", salonId),
     adminClient.from("reviews").delete().eq("salon_id", salonId),
     adminClient.from("barber_walkin_queue").delete().eq("salon_id", salonId),
-    adminClient.from("last_minute_slots").delete().eq("salon_id", salonId),
+    adminClient.from("salon_last_minute_settings").delete().eq("salon_id", salonId),
   ]);
   await Promise.all([
     adminClient.from("services").delete().eq("salon_id", salonId),

@@ -85,17 +85,17 @@ export async function POST(req: NextRequest) {
 
   const photoUrl = publicUrlData.publicUrl;
 
-  // Insert record into coiffeur_formula_photos (best-effort, table may not exist yet)
+  // Attach the photo to the formula (best-effort, does not block the response).
+  // NOTE: `coiffeur_formula_photos` is not a real table (checked lib/database.types.ts,
+  // 0 matches anywhere in the repo); the real home for before/after formula photos is
+  // client_formulas.before_photo_url / after_photo_url (checked lib/database.types.ts).
+  // Switched from an insert-into-phantom-table to an update of the existing formula row.
   if (formulaId) {
-    await admin.from("coiffeur_formula_photos").insert({
-      formula_id: formulaId,
-      client_id: clientId ?? null,
-      salon_id: salon.id,
-      photo_url: photoUrl,
-      type,
-      uploaded_by: user.id,
-    });
-    // Ignore insert errors — the URL is still returned even if the table doesn't exist
+    await admin.from("client_formulas")
+      .update(type === "before" ? { before_photo_url: photoUrl } : { after_photo_url: photoUrl })
+      .eq("id", formulaId)
+      .eq("salon_id", salon.id);
+    // Ignore update errors, the URL is still returned even if the formula row is gone
   }
 
   return NextResponse.json({ url: photoUrl }, { status: 201 });

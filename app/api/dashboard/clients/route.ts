@@ -68,14 +68,16 @@ export async function GET(req: NextRequest) {
     .in("id", customerIds);
 
   // Get loyalty stamps count (barber)
+  // NOTE: barber_loyalty_cards has no `stamps_collected` column, the real column is
+  // `stamps` (checked lib/database.types.ts); switched below.
   let loyaltyMap = new Map<string, number>();
   if (category === "barbershop") {
     const { data: cards } = await admin
       .from("barber_loyalty_cards")
-      .select("customer_id, stamps_collected")
+      .select("customer_id, stamps")
       .eq("salon_id", salon.id);
     for (const card of cards ?? []) {
-      loyaltyMap.set(card.customer_id, (loyaltyMap.get(card.customer_id) ?? 0) + card.stamps_collected);
+      loyaltyMap.set(card.customer_id, (loyaltyMap.get(card.customer_id) ?? 0) + card.stamps);
     }
   }
 
