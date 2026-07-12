@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr";
-import { createBrowserClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPublicEnv, getServerEnv } from "@/lib/env";
 import type { Database } from "@/lib/database.types";
@@ -100,18 +99,7 @@ export function createAdminSupabaseClient() {
   ) as unknown as TypedSupabaseClient;
 }
 
-/**
- * Browser Supabase client — singleton for Client Components.
- * Safe to call multiple times (returns same instance).
- */
-let browserClient: TypedSupabaseClient | null = null;
-
-export function createBrowserSupabaseClient() {
-  if (browserClient) return browserClient;
-  const publicEnv = getPublicEnv();
-  browserClient = createBrowserClient<Database>(
-    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  ) as unknown as TypedSupabaseClient;
-  return browserClient;
-}
+// The browser client lives in lib/supabase-browser.ts (safe for "use client"
+// bundles). The duplicate createBrowserSupabaseClient that used to live here
+// was removed 2026-07-12 (council dedup finding; its last importer was the
+// owner-killed TOSUpdateBanner, REMOVED.md line 27).

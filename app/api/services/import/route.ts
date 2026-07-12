@@ -71,9 +71,10 @@ export async function POST(req: NextRequest) {
     servicesToInsert.push({
       salon_id: salonId,
       name_de: name,
-      // name_en is NOT NULL on the live services table (a CSV import has no EN name), so the
-      // fallback is "" not null.
-      name_en: "",
+      // services.name_en is NOT NULL live (same constraint documented in app/api/services/route.ts:58).
+      // A CSV import has no EN column mapping, so fall back to the German name (matches the
+      // sibling POST /api/services precedent) rather than "" which would insert a blank EN name.
+      name_en: name,
       category,
       duration_minutes: duration,
       price: price || 0,
