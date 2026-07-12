@@ -26,9 +26,13 @@ export async function GET(req: NextRequest) {
   }> = [];
 
   // Cancellation requests (bookings with status = cancelled_by_customer)
+  // bookings has no service_name or customer_id column (both phantom, caught by strict typing); the
+  // service name comes via the services relation (same pattern as every other bookings query in this
+  // codebase, e.g. app/api/bookings/route.ts, app/api/dashboard/today/route.ts). customer_id was never
+  // read below, so it's dropped rather than renamed to the real user_id column.
   const { data: cancellations } = await supabase
     .from("bookings")
-    .select("id, created_at, service_name, customer_id")
+    .select("id, created_at, services(name_de)")
     .eq("salon_id", salonId)
     .eq("status", "cancelled_by_customer")
     .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
@@ -40,9 +44,9 @@ export async function GET(req: NextRequest) {
       id: `cancel-${b.id}`,
       type: "cancellation",
       title: "Stornierungsanfrage",
-      body: b.service_name ?? "Termin wurde storniert",
+      body: b.services?.name_de ?? "Termin wurde storniert",
       link: "/dashboard/bookings",
-      created_at: b.created_at,
+      created_at: b.created_at ?? new Date().toISOString(),
       read: false,
     });
   });
@@ -64,19 +68,22 @@ export async function GET(req: NextRequest) {
       title: "Neue Bewertung",
       body: `${r.rating} Sterne Noch keine Antwort`,
       link: "/dashboard/reviews",
-      created_at: r.created_at,
+      created_at: r.created_at ?? new Date().toISOString(),
       read: false,
     });
   });
 
   // Walk-in alerts (waiting queue items older than 30 min)
+  // barber_walkin_queue has no created_at column (phantom, caught by strict typing); joined_at is
+  // the real equivalent (established convention, e.g. app/api/walkin/queue/route.ts,
+  // app/api/walkin/queue/status/route.ts).
   const { data: queue } = await supabase
     .from("barber_walkin_queue")
-    .select("id, created_at, customer_name")
+    .select("id, joined_at, customer_name")
     .eq("salon_id", salonId)
     .eq("status", "waiting")
-    .lte("created_at", new Date(Date.now() - 30 * 60 * 1000).toISOString())
-    .order("created_at", { ascending: true })
+    .lte("joined_at", new Date(Date.now() - 30 * 60 * 1000).toISOString())
+    .order("joined_at", { ascending: true })
     .limit(3);
 
   (queue ?? []).forEach((q) => {
@@ -86,7 +93,7 @@ export async function GET(req: NextRequest) {
       title: "Walk-in wartet",
       body: `${q.customer_name} wartet seit über 30 Minuten`,
       link: "/dashboard/barber-ops",
-      created_at: q.created_at,
+      created_at: q.joined_at ?? new Date().toISOString(),
       read: false,
     });
   });

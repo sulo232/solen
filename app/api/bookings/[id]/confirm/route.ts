@@ -24,11 +24,11 @@ export async function POST(
   // Centralized authorization (Task B). Confirming a booking is a salon-owner action,
   // so only actor 'salon' is allowed, identical to the prior salons.owner_id check.
   const { actor, booking, userId } = await resolveBookingActor(request, id);
-  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  if (!booking) return NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
   if (actor !== "salon") {
     return actor === null
-      ? NextResponse.json({ error: "Booking not found" }, { status: 404 })
-      : NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      ? NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 })
+      : NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
   }
 
   // actor === "salon" always has a non-null userId (resolveBookingActor only leaves it
@@ -39,7 +39,7 @@ export async function POST(
   const admin = createAdminSupabaseClient();
 
   if (!["pending", "pending_approval", "confirmed"].includes(booking.status ?? "")) {
-    return NextResponse.json({ error: "Booking cannot be confirmed in current state" }, { status: 400 });
+    return NextResponse.json({ error: "Booking cannot be confirmed in current state", code: "INVALID_STATUS" }, { status: 400 });
   }
   const wasAlreadyConfirmed = booking.status === "confirmed";
 
@@ -48,7 +48,7 @@ export async function POST(
     .update({ status: "confirmed" })
     .eq("id", id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: error.message, code: "DB_ERROR" }, { status: 500 });
 
   // Referral fix: complete a pending referral on the SAME transition the booking-create
   // path (status: "confirmed" at create, instant/in-person only) and the Stripe webhook
@@ -67,10 +67,11 @@ export async function POST(
     .eq("id", id)
     .single();
 
-  if (fullBooking) {
-    const { data: profile } = await admin.from("profiles").select("locale").eq("id", fullBooking.user_id).single();
+  if (fullBooking && fullBooking.user_id) {
+    const fullBookingUserId = fullBooking.user_id;
+    const { data: profile } = await admin.from("profiles").select("locale").eq("id", fullBookingUserId).single();
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-    const { data: authUser } = await admin.auth.admin.getUserById(fullBooking.user_id);
+    const { data: authUser } = await admin.auth.admin.getUserById(fullBookingUserId);
     const email = authUser?.user?.email;
     if (email) {
       const dateStr = new Date(fullBooking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
@@ -78,7 +79,7 @@ export async function POST(
       const serviceName = (fullBooking.services as any)?.name_de ?? "Service";
       const salonName = (fullBooking.salons as any)?.name ?? "Salon";
       await sendNotification({
-        userId: fullBooking.user_id,
+        userId: fullBookingUserId,
         type: "booking_confirmed",
         title: `Buchung bestätigt: ${serviceName}`,
         body: `Ihre Buchung bei ${salonName} am ${dateStr} um ${timeStr} wurde bestätigt.`,

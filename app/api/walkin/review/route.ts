@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   const rawBody = await req.json().catch(() => null);
   const { data: validated, error: valError } = validateBody(walkinReviewSchema, rawBody);
   if (valError) {
-    return NextResponse.json({ error: "token required, rating must be an integer 1-5", message: valError.message }, { status: 400 });
+    return NextResponse.json({ error: "token required, rating must be an integer 1-5", message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
   const { token, rating } = validated;
   const commentRaw = validated.comment?.trim().slice(0, 600) ?? "";
@@ -40,11 +40,11 @@ export async function POST(req: NextRequest) {
     id: string; salon_id: string; status: string;
     assigned_barber_id: string | null; preferred_barber_id: string | null; customer_id: string | null;
   }>(admin, token, "id, salon_id, status, assigned_barber_id, preferred_barber_id, customer_id");
-  if (!entry) return NextResponse.json({ error: "Queue entry not found" }, { status: 404 });
+  if (!entry) return NextResponse.json({ error: "Queue entry not found", code: "NOT_FOUND" }, { status: 404 });
 
   // Only a FINISHED visit can be rated (mirrors /api/reviews' completed-booking gate).
   if (entry.status !== "completed") {
-    return NextResponse.json({ error: "Visit is not completed yet" }, { status: 400 });
+    return NextResponse.json({ error: "Visit is not completed yet", code: "VISIT_NOT_COMPLETED" }, { status: 400 });
   }
 
   let staffId = entry.assigned_barber_id ?? entry.preferred_barber_id;
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
 
   if (upErr) {
     console.error("[walkin/review] upsert failed:", upErr.message);
-    return NextResponse.json({ error: "Could not save review" }, { status: 500 });
+    return NextResponse.json({ error: "Could not save review", code: "DB_ERROR" }, { status: 500 });
   }
 
   // Recompute averages from VISIBLE reviews. Salon (mirrors /api/reviews) + barber (new —

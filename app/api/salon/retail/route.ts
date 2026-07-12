@@ -6,6 +6,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, nailRetailProductSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import type { Database } from "@/lib/database.types";
 
 // GET /api/salon/retail?salon_id=xxx — Public: list active retail products
 export async function GET(req: NextRequest) {
@@ -33,9 +34,11 @@ export async function GET(req: NextRequest) {
     salon.is_test !== true;
   if (!visible) return NextResponse.json({ products: [] });
 
+  // Explicit columns (public, anonymous-accessible): excludes low_stock_threshold,
+  // an internal restock-alert setting the PDP's SalonProducts consumer never reads.
   const { data, error } = await admin
     .from("nail_retail_products")
-    .select("*")
+    .select("id, name, description, price, image_url, category, stock_count")
     .eq("salon_id", salonId)
     .eq("is_active", true)
     .order("created_at", { ascending: true });
@@ -91,7 +94,7 @@ export async function PUT(req: NextRequest) {
   const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const updateData: Record<string, unknown> = {};
+  const updateData: Database["public"]["Tables"]["nail_retail_products"]["Update"] = {};
   if (body.name) updateData.name = body.name;
   if (body.description !== undefined) updateData.description = body.description;
   if (body.price) updateData.price = body.price;

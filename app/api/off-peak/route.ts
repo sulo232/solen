@@ -103,33 +103,35 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // --- TRIGGER EMAIL NOTIFICATIONS ---
-  // If deals_enabled is false on profiles, skip.
+  // If deals_enabled is false, skip. deals_enabled lives on notification_preferences, not profiles
+  // (phantom column, caught by strict typing): resolve the opted-in user ids there first, then
+  // fetch locale from profiles for those ids (computed-filter pattern, same shape as the salons
+  // open-now filter: resolve matching ids, then .in(id, ids)).
   try {
+    // user_favorites is a phantom table (caught by strict typing); the real table is favorites.
     const { data: favorites } = await admin
-      .from("user_favorites")
+      .from("favorites")
       .select("user_id")
       .eq("salon_id", input.salon_id);
 
     if (favorites && favorites.length > 0) {
       const userIds = favorites.map(f => f.user_id);
-      
-      const { data: usersInfo } = await admin
-        .from("profiles")
-        .select(`
-          id,
-          deals_enabled,
-          locale,
-          users:id ( email ) 
-        `)
-        .in("id", userIds)
+
+      const { data: optedInPrefs } = await admin
+        .from("notification_preferences")
+        .select("user_id")
+        .in("user_id", userIds)
         .eq("deals_enabled", true);
 
+      const optedInIds = (optedInPrefs ?? []).map((p) => p.user_id);
+
+      const { data: usersInfo } = optedInIds.length > 0
+        ? await admin.from("profiles").select("id, locale").in("id", optedInIds)
+        : { data: [] as { id: string; locale: string | null }[] };
+
       if (usersInfo && usersInfo.length > 0) {
-        // Fire & forget emails
-        // The weird syntax for users:id (email) assumes we can join auth.users if exposed to the public schema.
-        // Wait, auth.users is NOT exposed to public by default.
-        // For V1, we will just use the `auth.admin.getUserById` or query a public view if available.
-        // Actually, Supabase has admin.auth.admin.getUserById(). Instead, let's do a loop over usersInfo.
+        // Fire & forget emails. Email itself is fetched via admin.auth.admin.getUserById below
+        // (auth.users isn't exposed to the public schema, so it can't be selected as a relation).
         let baseUrl: string;
         try {
           baseUrl = getAppUrl();
@@ -150,7 +152,9 @@ export async function POST(req: NextRequest) {
                 },
                 (profile.locale as "de" | "en" | "fr" | "it") || "de"
               );
-              await sendEmail(payload).catch(console.error);
+              // Let a send failure bubble to the [api/off-peak] catch below (labeled log),
+              // instead of a bare unlabeled console.error that swallowed the [Component] prefix.
+              await sendEmail(payload);
             }
           } catch (e) { console.error("[api/off-peak] single-user alert email failed:", e); }
         });

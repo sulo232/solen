@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
 
 // PUT /api/admin/content/[key] — admin only, update content
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
@@ -15,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const updates: Record<string, unknown> = {
+  const updates: Database["public"]["Tables"]["site_content"]["Update"] = {
     updated_at: new Date().toISOString(),
     updated_by: user.id,
   };

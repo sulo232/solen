@@ -98,7 +98,8 @@ export async function POST(req: NextRequest) {
     .select("value")
     .eq("key", "commission")
     .single();
-  const commissionRate = (commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
+  const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+  const commissionRate = (commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
   const platformFeeRappen = Math.round(depositRappen * commissionRate);
 
   const intentParams: Parameters<typeof stripe.paymentIntents.create>[0] = {

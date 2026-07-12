@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
   // the same { services[≤5], salons[≤3] } shape (cover_image alias preserved).
   const { data, error } = await supabase.rpc("search_suggest", {
     p_q: query,
-    p_city_id: cityId,
-    p_category: category,
+    p_city_id: cityId ?? undefined,
+    p_category: category ?? undefined,
   });
   if (error) {
     console.error("[search/suggest] search_suggest failed:", error.message);

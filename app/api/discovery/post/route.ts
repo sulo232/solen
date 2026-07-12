@@ -4,6 +4,9 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryPostLimiter } from "@/lib/ratelimit";
 import { validateBody, discoveryPostSchema } from "@/lib/validations";
 import { checkContentFlags } from "@/lib/content-flags";
+import type { Database } from "@/lib/database.types";
+
+type DiscoveryItemInsert = Database["public"]["Tables"]["discovery_items"]["Insert"];
 
 export async function POST(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -52,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   const status = flags.flagged ? "flagged" : "published";
 
-  const insertData: Record<string, unknown> = {
+  const insertData: DiscoveryItemInsert = {
     category: data.category,
     content_type: "user_post",
     media_type: data.media_type,

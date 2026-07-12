@@ -39,9 +39,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Slot no longer available" }, { status: 409 });
   }
 
-  // Get service price
+  // Get service price. service_id is optional in the schema (lib/validations.ts); when
+  // missing, this .eq() cannot match a row so service stays null (same as before typing).
   const { data: service } = await admin
-    .from("services").select("price").eq("id", service_id).single();
+    .from("services").select("price").eq("id", service_id as string).single();
 
   // Fix C: mirror app/api/bookings/route.ts's status logic. This route has no
   // payment_method field from the client (no online-pay UI wired here yet), so the
@@ -69,7 +70,9 @@ export async function POST(req: NextRequest) {
     .insert({
       user_id: user.id,
       salon_id: slot.salon_id,
-      service_id,
+      // service_id is optional in the schema; if missing here the insert hits the DB's
+      // NOT NULL constraint below, same failure mode as before typing (type-only cast).
+      service_id: service_id as string,
       slot_id,
       staff_member_id: staff_id ?? null,
       starts_at: slot.starts_at,

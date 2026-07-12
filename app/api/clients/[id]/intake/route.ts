@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { validateBody, intakeFormSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import type { Json } from "@/lib/database.types";
 
 // GET /api/clients/[id]/intake — Get intake form responses (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { data: validated, error: validationError } = validateBody(intakeFormSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { template_key, responses } = validated;
+  if (!template_key) return NextResponse.json({ error: "template_key is required" }, { status: 400 });
   const admin = createAdminSupabaseClient();
 
   // Determine salon_id: salon owner submitting for client, or client self-submitting
@@ -69,7 +71,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       salon_id: salonId,
       customer_id: customerId,
       template_key,
-      responses,
+      // responses is zod z.record(string, unknown) (JSON body field, always JSON-serializable at runtime);
+      // cast to the generated Json column type.
+      responses: responses as Json,
     })
     .select()
     .single();

@@ -26,8 +26,10 @@ const MAX_ATTEMPTS = 6; // same budget as createWalkinTicket
 // so this is NOT Math.random. Same dependency the walk-in ticket helper uses.
 const nano = customAlphabet(ALPHABET, CODE_LEN);
 
-/** Generate a fresh human order number, e.g. "SOL-7K2QX". */
-export function generateReferenceCode(): string {
+/** Generate a fresh human order number, e.g. "SOL-7K2QX".
+ * Not exported: only used internally in this file (zero external imports,
+ * ring5c dead-export sweep). */
+function generateReferenceCode(): string {
   return `${PREFIX}${nano()}`;
 }
 

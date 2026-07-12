@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
 
 // PATCH /api/admin/badges/[id] — admin only, update badge
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -15,8 +16,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const updates: Record<string, unknown> = {};
-  for (const key of ["name_de", "name_en", "icon", "color", "bg_color"]) {
+  const updates: Database["public"]["Tables"]["salon_badges"]["Update"] = {};
+  for (const key of ["name_de", "name_en", "icon", "color", "bg_color"] as const) {
     if (body[key] !== undefined) updates[key] = body[key];
   }
 

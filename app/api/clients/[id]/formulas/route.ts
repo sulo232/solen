@@ -6,6 +6,7 @@ import { validateBody, formulaSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import type { Json } from "@/lib/database.types";
 
 // GET /api/clients/[id]/formulas — Get client formulas (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -62,9 +63,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       processing_minutes: validated.processing_minutes ?? null,
       notes: validated.notes ?? null,
       shade_code: validated.shade_code ?? null,
-      root_formula: validated.root_formula ?? {},
-      mid_lengths_formula: validated.mid_lengths_formula ?? {},
-      ends_formula: validated.ends_formula ?? {},
+      // root_formula/mid_lengths_formula/ends_formula are zod z.record(string, unknown) (JSON body fields,
+      // always JSON-serializable at runtime); cast to the generated Json column type.
+      root_formula: (validated.root_formula ?? {}) as Json,
+      mid_lengths_formula: (validated.mid_lengths_formula ?? {}) as Json,
+      ends_formula: (validated.ends_formula ?? {}) as Json,
       staff_member_id: validated.staff_member_id ?? null,
     })
     .select()

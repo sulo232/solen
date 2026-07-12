@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
@@ -24,7 +25,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const admin = createAdminSupabaseClient();
+    // coming_soon_signups is a phantom table: it does not exist in lib/database.types.ts, in any
+    // migration, or in the live DB (npm run exists coming_soon_signups: 0 matches). This upsert has
+    // therefore always been a silent no-op that just falls into the catch-and-swallow below (no
+    // equivalent table exists to redirect to, so behavior is kept byte-identical here; flagged in the
+    // coder report as a genuine pre-existing bug for a product/DB decision).
+    const admin: SupabaseClient = createAdminSupabaseClient();
     const { error } = await admin
       .from("coming_soon_signups")
       .upsert({ email, feature }, { onConflict: "email,feature" });

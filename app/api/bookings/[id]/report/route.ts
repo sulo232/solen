@@ -10,6 +10,7 @@ import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
+import { reportError } from "@/lib/error-report";
 import {
   resolveEligibility,
   reasonAllowedOnConfirmed,
@@ -542,9 +543,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   // N1: notify the customer their refund was issued. Never blocks/rolls back the money
   // move — the refund already committed above (same discipline as the Stripe webhook).
-  await notifyRefundProcessed(admin, bookingId, amount, "booking-disputes").catch((err) =>
-    console.error("[booking-disputes] refund notification failed:", err),
-  );
+  await notifyRefundProcessed(admin, bookingId, amount, "booking-disputes").catch(async (err) => {
+    console.error("[booking-disputes] refund notification failed:", err);
+    await reportError("booking-disputes-refund-notification", err, { bookingId, amount });
+  });
 
   return NextResponse.json({
     status: "refunded",

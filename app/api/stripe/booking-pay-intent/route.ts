@@ -9,7 +9,10 @@ import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { resolveMemberDiscount, getCurrentTier, tierAtLeast } from "@/lib/loyalty/perks";
 import { LOYALTY, type Tier } from "@/lib/loyalty/status";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
+import { capStoredValueRappen, getAvailableCreditRappen, isMoneySpendFlagEnabled } from "@/lib/credits/redeem";
+import { bookingPayIntentSchema } from "@/lib/validations";
 import { createHash } from "crypto";
+import type { Database } from "@/lib/database.types";
 
 // POST /api/stripe/booking-pay-intent
 // FULL PREPAY at booking (the Fresha model). Creates an automatic-capture
@@ -48,11 +51,15 @@ export async function POST(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const body = await req.json().catch(() => null);
-  const booking_id = String(body?.booking_id ?? "").trim();
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!booking_id || !UUID_RE.test(booking_id)) {
-    return NextResponse.json({ error: "booking_id is required" }, { status: 400 });
+  const parsedBody = bookingPayIntentSchema.safeParse(body);
+  if (!parsedBody.success) {
+    return NextResponse.json({ error: "booking_id is required", code: "VALIDATION_ERROR" }, { status: 400 });
   }
+  const booking_id = parsedBody.data.booking_id;
+  // Credits + voucher spend path: a voucher code offered fresh in THIS request's body (no
+  // FE field reaches here today, see lib/validations.ts's bookingPayIntentSchema comment).
+  // Re-validated live against the vouchers row by redeem_voucher itself below; never trusted.
+  const requestedVoucherCode = parsedBody.data.voucher_code ?? null;
 
   const admin = createAdminSupabaseClient();
 
@@ -63,7 +70,7 @@ export async function POST(req: NextRequest) {
     .select("id, user_id, salon_id, service_id, slot_id, starts_at, staff_member_id, status, payment_status, guest_email, guest_name, extras_addons, promo_code, bundle_id")
     .eq("id", booking_id)
     .single();
-  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  if (!booking) return NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
 
   // Authorize: a logged-in user may only pay their OWN booking. A guest booking
   // (user_id IS NULL) is payable without a session — the booking row is the
@@ -71,17 +78,17 @@ export async function POST(req: NextRequest) {
   // stronger gate and lands later). Reject a guest trying to pay a user's booking.
   if (booking.user_id) {
     if (!userId || userId !== booking.user_id) {
-      return NextResponse.json({ error: "Not authorized for this booking" }, { status: 403 });
+      return NextResponse.json({ error: "Not authorized for this booking", code: "FORBIDDEN" }, { status: 403 });
     }
   }
 
   // Don't re-charge an already-paid booking (idempotent at the booking level).
   if (booking.payment_status === "paid") {
-    return NextResponse.json({ error: "Booking is already paid" }, { status: 409 });
+    return NextResponse.json({ error: "Booking is already paid", code: "ALREADY_PAID" }, { status: 409 });
   }
   // Only a live booking awaiting payment can be charged.
   if (!["pending", "pending_approval", "confirmed"].includes(booking.status ?? "")) {
-    return NextResponse.json({ error: "Booking is not payable" }, { status: 409 });
+    return NextResponse.json({ error: "Booking is not payable", code: "NOT_PAYABLE" }, { status: 409 });
   }
 
   // 2. Salon must accept online payment.
@@ -90,9 +97,9 @@ export async function POST(req: NextRequest) {
     .select("name, stripe_account_id, accepts_online_payment, payment_mode, deposit_percent, member_commission_waiver_rate")
     .eq("id", booking.salon_id)
     .single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+  if (!salon) return NextResponse.json({ error: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   if (!salon.accepts_online_payment) {
-    return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
+    return NextResponse.json({ error: "Salon does not accept online payments", code: "ONLINE_PAYMENT_NOT_ACCEPTED" }, { status: 400 });
   }
   // Connect guard (mirrors walk-in/pay-intent): without a connected account the PI below
   // would carry no transfer_data/application_fee, so the charge would land on the PLATFORM
@@ -122,7 +129,7 @@ export async function POST(req: NextRequest) {
     .eq("id", booking.service_id)
     .single();
   if (!service || service.salon_id !== booking.salon_id || service.is_active === false) {
-    return NextResponse.json({ error: "Service not found for this salon" }, { status: 404 });
+    return NextResponse.json({ error: "Service not found for this salon", code: "NOT_FOUND" }, { status: 404 });
   }
   // Multi-service: add the booking's server-set extras_addons (resolved at booking time from the
   // services table, never the client) to the primary service price, so the charge = the full total.
@@ -171,7 +178,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
-    return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
+    return NextResponse.json({ error: "Service has no valid price", code: "INVALID_PRICE" }, { status: 400 });
   }
   // Charge per the salon's payment_mode (was: always the full price, ignoring the setting):
   //   prepay → full price now;  deposit → deposit_percent% now (rest paid at the salon);
@@ -307,7 +314,7 @@ export async function POST(req: NextRequest) {
       .eq("id", booking.slot_id)
       .single();
     if (!slot || (slot.status !== "booked" && slot.status !== "available") || (slot.booking_id && slot.booking_id !== booking.id)) {
-      return NextResponse.json({ error: "Slot no longer available" }, { status: 409 });
+      return NextResponse.json({ error: "Slot no longer available", code: "SLOT_TAKEN" }, { status: 409 });
     }
   }
 
@@ -345,13 +352,14 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("[booking-pay-intent] Stripe customer create/resolve failed:", err);
-    return NextResponse.json({ error: "Could not initialize payment" }, { status: 500 });
+    return NextResponse.json({ error: "Could not initialize payment", code: "PAYMENT_INIT_FAILED" }, { status: 500 });
   }
 
   // 6. Platform commission (Connect destination charge).
   const { data: commissionSetting } = await admin
     .from("platform_settings").select("value").eq("key", "commission").single();
-  const commissionRate = (commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
+  const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+  const commissionRate = (commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT) / 100;
   const platformFeeRappen = Math.round(amountRappen * commissionRate);
 
   // 6b. Solen Plus member discount (commission-waiver, LOYALTY_STRUCTURE.md §12.1).
@@ -378,7 +386,7 @@ export async function POST(req: NextRequest) {
       waiverRate,
       windowMonths: LOYALTY.windowMonths,
     });
-    if (md.discountRappen > 0) {
+    if (md.discountRappen > 0 && md.appliedTier) {
       // resolveMemberDiscount's cap check above counts only PAID bookings, so two concurrent
       // in-flight checkouts by the same user can both pass it (race). reserve_member_discount is
       // a SECURITY DEFINER RPC that advisory-locks the user and counts IN-FLIGHT reservations in
@@ -492,7 +500,7 @@ export async function POST(req: NextRequest) {
         console.error("[booking-pay-intent] member-discount release after PI-create failure failed:", e);
       }
     }
-    return NextResponse.json({ error: "Could not create payment" }, { status: 500 });
+    return NextResponse.json({ error: "Could not create payment", code: "PAYMENT_INIT_FAILED" }, { status: 500 });
   }
 
   // 9. Stamp the PI id onto the booking now so the webhook's booking_id-keyed
@@ -543,26 +551,174 @@ export async function POST(req: NextRequest) {
 
   const actualPromoDiscountRappen = Number(paymentIntent.metadata?.promo_discount_rappen ?? 0) || 0;
 
-  const bookingPatch: Record<string, unknown> = { payment_intent_id: paymentIntent.id };
+  // 9b. CREDITS + VOUCHER SPEND (owner-approved 2026-07-11), applied AFTER promo + member
+  //     discount, and AFTER the PaymentIntent itself exists. Unlike promo/member-discount
+  //     (baked into intentParams before create), the credit/voucher ledger's restore
+  //     functions are keyed on the REAL Stripe PaymentIntent id, matching every other place
+  //     that restores against it later: issue-refund.ts (booking.payment_intent_id),
+  //     issue-purchase-refund.ts (purchase.stripe_payment_intent_id), and the webhook's
+  //     payment_intent.payment_failed handler (pi.id). That id does not exist until
+  //     paymentIntents.create returns, so redeem happens here against the RECONCILED
+  //     piChargeRappen/piFeeRappen (the real PI's actual amounts, replay-safe like the
+  //     promo/tier reconciliation above), then the just-created PI is SHRUNK via
+  //     paymentIntents.update (legal pre-confirmation, status requires_payment_method).
+  //     A failed update restores the just-applied redemption immediately so the ledger never
+  //     shows a spend that was never actually reflected in what is charged. This is the
+  //     closest available mirror of the promo "reserve then release-on-create-failure"
+  //     pattern given the ledger's real-PI-id keying (a considered, documented deviation:
+  //     redeem-then-shrink instead of reserve-then-create, forced by Stripe only assigning
+  //     the PI id at creation).
+  let creditAppliedRappen = 0;
+  let voucherAppliedRappen = 0;
+  let voucherCodeApplied: string | null = null;
+  let finalChargeRappen = piChargeRappen;
+  let finalFeeRappen = piFeeRappen;
+  const hasConnectFee = !!salon.stripe_account_id;
+
+  if (paymentIntent.status === "requires_payment_method") {
+    // Credits: logged-in customers only (referral credit is earned per-user), flag-gated.
+    if (booking.user_id) {
+      try {
+        const creditsOn = await isMoneySpendFlagEnabled(admin, "credits");
+        if (creditsOn) {
+          const balanceRappen = await getAvailableCreditRappen(admin, booking.user_id);
+          if (balanceRappen > 0) {
+            const capRappen = capStoredValueRappen({
+              desiredRappen: balanceRappen,
+              chargeRappen: finalChargeRappen,
+              appFeeRappen: finalFeeRappen,
+              hasConnectFee,
+            });
+            if (capRappen > 0) {
+              const { data: appliedChf, error: creditErr } = await admin.rpc("redeem_user_credits", {
+                p_user: booking.user_id,
+                p_amount: capRappen / 100,
+                p_booking: booking.id,
+                p_pi: paymentIntent.id,
+              });
+              if (creditErr) {
+                console.error("[booking-pay-intent] redeem_user_credits failed:", creditErr.message);
+              } else {
+                creditAppliedRappen = toRappen(Number(appliedChf) || 0);
+                finalChargeRappen -= creditAppliedRappen;
+                if (hasConnectFee) finalFeeRappen -= creditAppliedRappen;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[booking-pay-intent] credit redemption failed; charging without credit:", err);
+      }
+    }
+
+    // Voucher: guest-tolerant (a gift voucher is not tied to earning it), flag-gated. The
+    // RPC's own least(remaining, p_amount) caps against the LIVE vouchers row under a row
+    // lock, so requesting "everything left to spend" here is safe, it never over-applies.
+    if (requestedVoucherCode) {
+      try {
+        const vouchersOn = await isMoneySpendFlagEnabled(admin, "vouchers");
+        if (vouchersOn) {
+          const requestRappen = capStoredValueRappen({
+            desiredRappen: Number.MAX_SAFE_INTEGER,
+            chargeRappen: finalChargeRappen,
+            appFeeRappen: finalFeeRappen,
+            hasConnectFee,
+          });
+          if (requestRappen > 0) {
+            const { data: appliedChf, error: voucherErr } = await admin.rpc("redeem_voucher", {
+              p_code: requestedVoucherCode,
+              p_salon_id: booking.salon_id,
+              p_amount: requestRappen / 100,
+              // p_user is a plain nullable `uuid` param in the SQL function (no NOT NULL,
+              // used as a nullable redeemed_by/user_id downstream) -- the generated Args
+              // type is just non-optional (no SQL DEFAULT), it doesn't forbid null. Guest
+              // bookings genuinely pass null here (this path is explicitly guest-tolerant).
+              p_user: (booking.user_id ?? null) as string,
+              p_booking: booking.id,
+              p_pi: paymentIntent.id,
+            });
+            if (voucherErr) {
+              console.error("[booking-pay-intent] redeem_voucher failed:", voucherErr.message);
+            } else {
+              voucherAppliedRappen = toRappen(Number(appliedChf) || 0);
+              if (voucherAppliedRappen > 0) {
+                voucherCodeApplied = requestedVoucherCode;
+                finalChargeRappen -= voucherAppliedRappen;
+                if (hasConnectFee) finalFeeRappen -= voucherAppliedRappen;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[booking-pay-intent] voucher redemption failed; charging without voucher:", err);
+      }
+    }
+
+    // Only touch Stripe when something was actually applied, and only when the target
+    // differs from the PI's current amount (a replay of an already-shrunk PI is then a
+    // pure no-op, never a redundant Stripe call).
+    if ((creditAppliedRappen > 0 || voucherAppliedRappen > 0) && finalChargeRappen !== piChargeRappen) {
+      try {
+        const updateParams: Parameters<typeof stripe.paymentIntents.update>[1] = {
+          amount: finalChargeRappen,
+        };
+        if (hasConnectFee) updateParams.application_fee_amount = finalFeeRappen;
+        await stripe.paymentIntents.update(paymentIntent.id, updateParams);
+      } catch (updateErr) {
+        console.error("[booking-pay-intent] PaymentIntent amount update for credit/voucher failed; restoring:", updateErr);
+        if (creditAppliedRappen > 0) {
+          try {
+            await admin.rpc("restore_user_credits", { p_pi: paymentIntent.id });
+          } catch (restoreErr) {
+            console.error("[booking-pay-intent] credit restore after failed PI update failed:", restoreErr);
+          }
+        }
+        if (voucherAppliedRappen > 0) {
+          try {
+            await admin.rpc("restore_voucher", { p_pi: paymentIntent.id });
+          } catch (restoreErr) {
+            console.error("[booking-pay-intent] voucher restore after failed PI update failed:", restoreErr);
+          }
+        }
+        // The ORIGINAL (pre-credit/voucher) PI amount is what will actually be charged now,
+        // so the in-memory figures and the response below must say so too.
+        creditAppliedRappen = 0;
+        voucherAppliedRappen = 0;
+        voucherCodeApplied = null;
+        finalChargeRappen = piChargeRappen;
+        finalFeeRappen = piFeeRappen;
+      }
+    }
+  }
+
+  const bookingPatch: Database["public"]["Tables"]["bookings"]["Update"] = { payment_intent_id: paymentIntent.id };
   if (actualDiscountRappen > 0 && actualTier) {
     bookingPatch.applied_tier = actualTier;
     bookingPatch.tier_discount_amount = actualDiscountRappen; // Rappen, == the PI's application_fee reduction
   }
+  if (voucherCodeApplied) {
+    bookingPatch.voucher_code = voucherCodeApplied;
+  }
   await admin.from("bookings").update(bookingPatch).eq("id", booking.id);
 
-  const piChargeChf = piChargeRappen / 100;
+  const piChargeChf = finalChargeRappen / 100;
+  const creditAppliedChf = creditAppliedRappen ? creditAppliedRappen / 100 : 0;
+  const voucherAppliedChf = voucherAppliedRappen ? voucherAppliedRappen / 100 : 0;
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
-    amount: piChargeChf,                                 // charged NOW (full or deposit, minus promo + member discount)
+    amount: piChargeChf,                                 // charged NOW (full or deposit, minus promo + member discount + credit + voucher)
     full_price: priceChf,                                // full service price
     member_discount: actualDiscountRappen ? actualDiscountRappen / 100 : 0, // CHF off via Solen Plus (commission waiver)
     applied_tier: actualTier,                            // tier that funded the member discount (null when none)
     promo_code: actualPromoCode,                         // the validated promo code applied (null when none)
     promo_discount: actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0, // CHF off via the promo code
+    credit_applied: creditAppliedChf,                    // CHF off via the customer's referral credit balance
+    voucher_code: voucherCodeApplied,                    // the redeemed voucher code (null when none / not applied)
+    voucher_applied: voucherAppliedChf,                  // CHF off via the voucher
     payment_mode: paymentMode,                           // deposit | prepay
     deposit_percent: paymentMode === "deposit" ? depositPct : null,
-    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0)) - piChargeChf) * 100) / 100 : 0,
+    remaining_at_salon: paymentMode === "deposit" ? Math.round(((priceChf - (actualPromoDiscountRappen ? actualPromoDiscountRappen / 100 : 0) - creditAppliedChf - voucherAppliedChf) - piChargeChf) * 100) / 100 : 0,
     service_name: service.name_de,
   });
 }

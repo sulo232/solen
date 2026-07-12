@@ -47,7 +47,9 @@ export async function POST(
     return NextResponse.json({ error: "Only salon owners can issue refunds" }, { status: 403 });
   }
 
-  if (!["completed", "confirmed", "cancelled"].includes(booking.status)) {
+  // Array.prototype.includes requires a string arg; booking.status is string | null here.
+  // ?? "" is behaviorally inert (the array never contains ""), type-only cast, no new branch.
+  if (!["completed", "confirmed", "cancelled"].includes(booking.status ?? "")) {
     return NextResponse.json({ error: "Cannot refund this booking status" }, { status: 400 });
   }
 
@@ -66,9 +68,10 @@ export async function POST(
 
     // N1: notify the customer their refund was issued (this action's slice, Rappen).
     // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
-    await notifyRefundProcessed(admin, bookingId, amount, "refund").catch((err) =>
-      console.error("[refund] refund notification failed:", err),
-    );
+    await notifyRefundProcessed(admin, bookingId, amount, "refund").catch(async (err) => {
+      console.error("[refund] refund notification failed:", err);
+      await reportError("refund-notification", err, { bookingId, amount });
+    });
 
     return NextResponse.json({
       data: {

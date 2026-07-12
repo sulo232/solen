@@ -4,6 +4,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { validateBody, adminReviewActionSchema } from "@/lib/validations";
+import type { Database } from "@/lib/database.types";
 
 // PATCH /api/admin/reviews/[id] — admin only, update moderation fields
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -27,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { data: validated, error: validationError } = validateBody(adminReviewActionSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
 
-  const updates: Record<string, unknown> = {};
+  const updates: Database["public"]["Tables"]["reviews"]["Update"] = {};
   if (validated.moderation_status !== undefined) {
     updates.moderation_status = validated.moderation_status;
     updates.is_hidden = validated.moderation_status === "removed";

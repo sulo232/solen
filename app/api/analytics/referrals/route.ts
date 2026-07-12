@@ -31,32 +31,17 @@ export async function GET(req: NextRequest) {
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    // Attempt to fetch referral stats based on schema described in INCOMPLETE_FEATURES
-    const { data: rawStats, error } = await supabase
-      .from("referral_stats")
-      .select("*")
-      .eq("salon_id", salonId)
-      .maybeSingle();
-
-    if (error || !rawStats) {
-      // Fallback if table doesn't exist or no data
-      return NextResponse.json({
-        total_referrals: 0,
-        completed_referrals: 0,
-        total_revenue_from_referrals: 0,
-        top_referrers: []
-      });
-    }
-
-    // Referrals have no salon_id column (not salon-scoped), so a per-salon
-    // top-referrers breakdown is not computable; report honestly as empty.
-    const top_referrers: { name: string; referrals: number; revenue: number }[] = [];
-
+    // NOTE: `referral_stats` is not a real table (confirmed against lib/database.types.ts and
+    // `npm run exists referral_stats`, 0 matches anywhere), so this route has always hit the
+    // fallback below on every call (the query used to fail at runtime with a genuine Postgres
+    // "table does not exist" error, caught by the `error || !rawStats` branch that used to sit
+    // here). Skipping the always-failing query and returning the same fallback directly, byte
+    // identical to the response every caller has always received.
     return NextResponse.json({
-      total_referrals: rawStats.total_referrals || 0,
-      completed_referrals: rawStats.completed_referrals || 0,
-      total_revenue_from_referrals: rawStats.total_revenue || 0,
-      top_referrers
+      total_referrals: 0,
+      completed_referrals: 0,
+      total_revenue_from_referrals: 0,
+      top_referrers: []
     });
   } catch {
     // Graceful fallback for stub feature

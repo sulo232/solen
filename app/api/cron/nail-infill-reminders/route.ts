@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
   for (const booking of bookings ?? []) {
     const service = Array.isArray(booking.services) ? booking.services[0] : booking.services;
     if (!service?.reminder_cycle_days) continue;
+    if (!booking.user_id) continue; // guest booking (no user_id): nothing to notify
 
     const bookingDate = new Date(booking.starts_at);
     const dueDate = new Date(bookingDate.getTime() + service.reminder_cycle_days * 24 * 60 * 60 * 1000);

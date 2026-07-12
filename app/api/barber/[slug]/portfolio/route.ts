@@ -30,11 +30,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: "Not a barbershop" }, { status: 404 });
   }
 
-  // Build query with optional filters
+  // Build query with optional filters. Phantom-column fix: staff_portfolio_images has no
+  // "staff_member_id" column, only "staff_id" (see lib/database.types.ts); this filter was
+  // silently ignored at runtime before this fix (PostgREST 400s on an unknown column, so this
+  // endpoint returned an error rather than a portfolio, not a silent match-everything no-op).
   let query = admin
     .from("staff_portfolio_images")
     .select("*")
-    .eq("staff_member_id", barber.id)
+    .eq("staff_id", barber.id)
     .order("sort_order", { ascending: true });
 
   const barberStyle = req.nextUrl.searchParams.get("barber_style");

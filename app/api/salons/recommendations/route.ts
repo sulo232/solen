@@ -51,14 +51,16 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
-    // Try to get user preferences
+    // Try to get user preferences. user_preferences has no favorite_quartiers/favorite_services
+    // columns (phantom, caught by strict typing); the real columns are favorite_quartier_ids and
+    // favorite_service_slugs (same as app/api/profile/preferences/route.ts).
     const { data: prefs } = await admin
       .from("user_preferences")
-      .select("favorite_quartiers, favorite_services")
+      .select("favorite_quartier_ids, favorite_service_slugs")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (prefs?.favorite_quartiers?.length || prefs?.favorite_services?.length) {
+    if (prefs?.favorite_quartier_ids?.length || prefs?.favorite_service_slugs?.length) {
       let query = admin
         .from("salons")
         .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
@@ -68,8 +70,8 @@ export async function GET(request: NextRequest) {
         .order("explore_score", { ascending: false })
         .limit(8);
 
-      if (prefs.favorite_quartiers?.length > 0) {
-        query = query.in("quartier", prefs.favorite_quartiers);
+      if ((prefs.favorite_quartier_ids?.length ?? 0) > 0) {
+        query = query.in("quartier", prefs.favorite_quartier_ids ?? []);
       }
 
       const { data: personalized } = await query;

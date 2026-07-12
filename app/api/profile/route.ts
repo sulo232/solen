@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, updateProfileSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
+import type { Json } from "@/lib/database.types";
 
 const PREVIEW_COOKIE = "solen_admin_preview";
 
@@ -59,7 +60,14 @@ export async function PATCH(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(updateProfileSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { data, error } = await supabase.from("profiles").update(validated).eq("id", user.id).select().single();
+  // customer_preferences is a strongly-typed zod object (JSON body field, always JSON-serializable at
+  // runtime); cast to the generated Json column type.
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ ...validated, customer_preferences: validated.customer_preferences as Json | undefined })
+    .eq("id", user.id)
+    .select()
+    .single();
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
   return NextResponse.json({ data });

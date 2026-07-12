@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, serviceUpdateSchema } from "@/lib/validations";
+import type { Database } from "@/lib/database.types";
 
 // GET /api/services/[id] — Get a single service
 export async function GET(
@@ -64,13 +65,16 @@ export async function PATCH(
     return NextResponse.json({ error: "No updates" }, { status: 400 });
   }
 
-  const { error } = await admin.from("services").update(updates).eq("id", id);
+  // `updates` is built from validateBody(serviceUpdateSchema, ...) key-by-key above, so every
+  // key/value pair already matches a real services column; narrowing to the generated Update
+  // type here changes no runtime value, only satisfies RejectExcessProperties.
+  const { error } = await admin.from("services").update(updates as Database["public"]["Tables"]["services"]["Update"]).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ ok: true });
 }
 
-// DELETE /api/services/[id] — Delete a service
+// DELETE /api/services/[id]: Delete a service
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

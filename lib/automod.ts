@@ -71,7 +71,9 @@ export async function checkReview(review: ReviewInput): Promise<ModResult> {
 
     if (recentFives && recentFives.length >= 3) {
       // Check how many of those reviewers are new accounts
-      const userIds = recentFives.map((r) => r.user_id);
+      // reviews.user_id is nullable; a null entry can never match a profiles.id (never
+      // null), so filtering it out preserves the same match set.
+      const userIds = recentFives.map((r) => r.user_id).filter((id): id is string => id !== null);
       const { count: newAccounts } = await admin
         .from("profiles")
         .select("id", { count: "exact", head: true })
@@ -97,7 +99,7 @@ export async function checkReview(review: ReviewInput): Promise<ModResult> {
       .gte("created_at", dayAgo);
 
     if (recentOnes && recentOnes.length >= 3) {
-      const userIds = recentOnes.map((r) => r.user_id);
+      const userIds = recentOnes.map((r) => r.user_id).filter((id): id is string => id !== null);
       const { count: newAccounts } = await admin
         .from("profiles")
         .select("id", { count: "exact", head: true })

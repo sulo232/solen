@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
   });
 
   let sent = 0;
-  const notifRows: { user_id: string; type: string; title: string; body: string; data: Record<string, unknown> }[] = [];
+  const notifRows: { user_id: string; type: string; title: string; body: string; data: { year: number } }[] = [];
   sendResults.forEach((res, i) => {
     const profile = tasks[i];
     if (res.status === "fulfilled") {

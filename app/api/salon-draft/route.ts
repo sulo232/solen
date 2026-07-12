@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { generalLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { z } from "zod";
+import type { Json } from "@/lib/database.types";
 
 const MAX_DRAFT_SIZE = 50 * 1024; // 50KB
 
@@ -68,7 +69,9 @@ export async function PUT(req: NextRequest) {
     .upsert(
       {
         user_id: user.id,
-        draft_data: body.draft_data,
+        // draft_data is a zod z.record(string, unknown) (JSON body field, always JSON-serializable at
+        // runtime); cast to the generated Json column type.
+        draft_data: body.draft_data as Json,
         current_step: body.current_step,
         updated_at: new Date().toISOString(),
       },

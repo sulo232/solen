@@ -97,12 +97,15 @@ export async function POST(req: NextRequest) {
     if (!imageUrl) return NextResponse.json({ error: "No image generated" }, { status: 500 });
 
     // 11. Download and re-upload to Supabase Storage for persistence
+    // Also doubles as the discovery_staging.source_id (unique per source), same convention
+    // as app/api/admin/discovery/upload/route.ts (source_id = the generated storage file name).
+    const stagingSourceId = `ai-gen-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     let storedUrl = imageUrl;
     try {
       const imgRes = await fetch(imageUrl);
       if (imgRes.ok) {
         const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
-        const fileName = `ai-gen-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
+        const fileName = `${stagingSourceId}.webp`;
         const { error: uploadErr } = await admin.storage
           .from("nail-portfolio-images")
           .upload(fileName, imgBuffer, { contentType: "image/webp", upsert: false });
@@ -119,16 +122,20 @@ export async function POST(req: NextRequest) {
     }
 
     // 12. Create discovery staging entry
+    // NOTE: `title` and `ai_result` were dropped here, they are not columns on discovery_staging
+    // (see supabase/migrations/067_discovery.sql) so this insert previously errored on every call
+    // (42703 unknown column), silently swallowed below via console.error. `source_id` (NOT NULL)
+    // was also missing entirely, a second reason the insert always failed.
     const { data: staging, error: stagingErr } = await admin
       .from("discovery_staging")
       .insert({
         source: "ai_generated",
+        source_id: stagingSourceId,
         source_url: imageUrl,
         image_url: storedUrl,
-        title: `${style} – ${shape} ${material || "gel"} Nails`,
         category: "nails",
         status: "pending",
-        ai_result: { prompt, model: "fal-ai/flux/schnell", params: body },
+        auto_style: `${style} - ${shape} ${material || "gel"} Nails`,
       })
       .select("id")
       .single();

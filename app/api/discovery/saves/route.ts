@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryFeedLimiter, getClientIp } from "@/lib/ratelimit";
+import { DISCOVERY_ITEM_PUBLIC_COLS } from "@/lib/discovery/public-columns";
 
 export async function GET(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -29,12 +30,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ items: [] });
   }
 
-  const itemIds = saves.map((s) => s.item_id);
+  const itemIds = saves.map((s) => s.item_id).filter((v): v is string => v !== null);
 
-  // Fetch the full items
+  // Fetch the full items. Explicit anon-safe column allowlist (shared with
+  // discovery/similar), not select("*"): excludes flag_reason (moderation
+  // note) and owner_user_id/owner_salon_id (uploader FK).
   const { data: items } = await supabase
     .from("discovery_items")
-    .select("*")
+    .select(DISCOVERY_ITEM_PUBLIC_COLS)
     .in("id", itemIds)
     .eq("status", "published")
     .eq("is_active", true);

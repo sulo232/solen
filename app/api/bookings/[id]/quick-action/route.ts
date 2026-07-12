@@ -74,7 +74,9 @@ export async function GET(
     return NextResponse.json({ result: "confirmed", booking_id: bookingId });
   }
 
-  if (action === "cancel" && ["confirmed", "pending"].includes(booking.status)) {
+  // Array.prototype.includes requires a string arg; booking.status is string | null here.
+  // ?? "" is behaviorally inert (the array never contains ""), type-only cast, no new branch.
+  if (action === "cancel" && ["confirmed", "pending"].includes(booking.status ?? "")) {
     await admin.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
     // Free slot
     await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("booking_id", bookingId);

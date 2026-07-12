@@ -39,6 +39,9 @@ export async function GET(req: NextRequest) {
   let declined = 0;
 
   for (const booking of bookings ?? []) {
+    // The query above already filters .not("stripe_customer_id"/"stripe_payment_method_id",
+    // "is", null), so both are always present here; this narrows the type to match.
+    if (!booking.stripe_customer_id || !booking.stripe_payment_method_id) continue;
     const salonStripeId = (booking.salons as any)?.stripe_account_id;
 
     // Read commission rate
@@ -52,7 +55,8 @@ export async function GET(req: NextRequest) {
     // other charge path uses (webhook, booking-pay-intent, charge-fee, dispute-engine).
     // The old bare `?? 1` undercharged commission 15x vs the rest of the platform when
     // the settings row was missing (it is absent on the live DB today).
-    const ratePercent = settings?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+    const settingsValue = settings?.value as { rate_percent?: number } | null;
+    const ratePercent = settingsValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
     // price_paid is CHF (numeric); convert to Rappen at the boundary. Both the
     // Stripe amount and platform_fee are integer Rappen (fixes the live 100x bug).
     const amountRappen = toRappen(booking.price_paid ?? 0);
@@ -101,7 +105,9 @@ export async function GET(req: NextRequest) {
       declined++;
 
       // Notify customer about card decline
-      const { data: userAuth } = await admin.auth.admin.getUserById(booking.user_id);
+      const { data: userAuth } = booking.user_id
+        ? await admin.auth.admin.getUserById(booking.user_id)
+        : { data: null };
       if (userAuth?.user?.email) {
         try {
           await sendEmail({

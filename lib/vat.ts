@@ -13,10 +13,14 @@
 // so net + vat == gross EXACTLY, with no rounding drift on the total the
 // customer actually paid.
 
-/** Swiss standard VAT rate (Normalsatz), percent. Valid from 2024-01-01. */
-export const SWISS_STANDARD_VAT_PERCENT = 8.1;
+/** Swiss standard VAT rate (Normalsatz), percent. Valid from 2024-01-01.
+ * Not exported: only used internally in this file as the default rate
+ * (zero external imports, ring5c dead-export sweep). */
+const SWISS_STANDARD_VAT_PERCENT = 8.1;
 
-export interface VatBreakdown {
+// Not exported: callers of computeVatBreakdown (below) get this shape via its
+// return type, not a named import (zero external imports, ring5c sweep).
+interface VatBreakdown {
   /** Gross amount the customer paid, integer Rappen (unchanged from input). */
   grossRappen: number;
   /** Net amount excluding VAT, integer Rappen. Equals gross when not registered. */

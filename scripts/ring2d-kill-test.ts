@@ -108,9 +108,11 @@ async function main() {
 
   // ── (2b) LIVE: discovery_feed RPC per-item byte share (Ring 0 number: 59.1 KB / 20 items) ──
   {
+    // Every arg below has a SQL-side "default null"; undefined omits the key from the
+    // JSON body, which PostgREST resolves to the same default as an explicit null.
     const { data, error } = await admin.rpc("discovery_feed", {
-      p_category: null, p_gender: null, p_texture: null, p_style: null,
-      p_creator: null, p_user_gender: null, p_limit: 20, p_offset: 0, p_tags_any: null,
+      p_category: undefined, p_gender: undefined, p_texture: undefined, p_style: undefined,
+      p_creator: undefined, p_user_gender: undefined, p_limit: 20, p_offset: 0, p_tags_any: undefined,
     });
     const rowsData = (data ?? []) as Array<Record<string, unknown>>;
     const querySucceeded = error == null && rowsData.length > 0;

@@ -38,9 +38,11 @@ export async function GET(request: Request) {
   }
 
   // 1. Fetch staff members
+  // NOTE: staff_members has no `display_name` column, the real column is `name`
+  // (checked lib/database.types.ts); switched below.
   const { data: staffMembers, error: staffError } = await supabase
     .from("staff_members")
-    .select("id, user_id, display_name")
+    .select("id, user_id, name")
     .eq("salon_id", salonId);
 
   if (staffError || !staffMembers) {
@@ -97,7 +99,7 @@ export async function GET(request: Request) {
 
     return {
       staff_id: staff.id,
-      staff_name: staff.display_name || "Unbekannt",
+      staff_name: staff.name || "Unbekannt",
       bookings_count: bookingsCount,
       revenue: revenue,
       retention_pct: retentionPct,

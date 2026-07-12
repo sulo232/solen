@@ -48,6 +48,7 @@ export async function PUT(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(adminDiscoveryModerationSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { id, action } = validated;
+  if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
 

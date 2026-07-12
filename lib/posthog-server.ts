@@ -4,7 +4,9 @@ import { getPublicEnv } from "@/lib/env";
 // Singleton instance
 let posthogClient: PostHog | null = null;
 
-export function getPostHogClient() {
+// Not exported: only used internally by trackServerEvent/identifyServerUser below
+// (zero external imports, ring5c dead-export sweep).
+function getPostHogClient() {
   const key = getPublicEnv().NEXT_PUBLIC_POSTHOG_KEY;
   if (!key) {
     return null;

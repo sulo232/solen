@@ -135,12 +135,17 @@ describe("issuePurchaseRefund remaining/netting math", () => {
 
     expect(result.status).toBe("refunded");
     expect(result.totalRefundedCents).toBe(10000);
-    expect(db.rpc).toHaveBeenCalledTimes(2); // once per product id
+    // 2 stock re-increments (one per product id) + 2 credits/voucher spend-path restore calls
+    // (restore_user_credits, restore_voucher, added 2026-07-11, step 10b) that fire after every
+    // successful refund, harmless no-op here since nothing was ever redeemed against this PI.
+    expect(db.rpc).toHaveBeenCalledTimes(4);
     expect(db.rpc).toHaveBeenCalledWith("increment_retail_stock", { p_product_id: "prod-1" });
     expect(db.rpc).toHaveBeenCalledWith("increment_retail_stock", { p_product_id: "prod-2" });
+    expect(db.rpc).toHaveBeenCalledWith("restore_user_credits", { p_pi: "pi_1" });
+    expect(db.rpc).toHaveBeenCalledWith("restore_voucher", { p_pi: "pi_1" });
   });
 
-  it("does NOT re-increment stock on a partial refund", async () => {
+  it("does NOT re-increment stock NOR restore credits/voucher on a partial refund (step 10b gated on isFull)", async () => {
     const db = makeDbStub([
       { data: retailRow({ paid_amount: 10000, refunded_amount: 0 }), error: null },
       { data: { id: PURCHASE_ID }, error: null },
@@ -150,10 +155,17 @@ describe("issuePurchaseRefund remaining/netting math", () => {
     const result = await issuePurchaseRefund({ db, source: "retail", id: PURCHASE_ID, amountCents: 4000, actor: "admin", reason: "x" });
 
     expect(result.status).toBe("partially_refunded");
-    expect(db.rpc).not.toHaveBeenCalled();
+    // No stock re-increment on a partial refund. The credits/voucher spend-path restore
+    // (added 2026-07-11) is gated on isFull (fixed 2026-07-11 punch list): a partial refund
+    // must NOT restore an all-or-nothing per-PI ledger while the redeemed amount could still
+    // be backing the unrefunded remainder.
+    expect(db.rpc).not.toHaveBeenCalledWith("increment_retail_stock", expect.anything());
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_user_credits", expect.anything());
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_voucher", expect.anything());
+    expect(db.rpc).toHaveBeenCalledTimes(0);
   });
 
-  it("package purchases (no status column, no stock) refund the same amount math without touching rpc", async () => {
+  it("package purchases (no status column, no stock) refund the same amount math, restore still fires", async () => {
     const db = makeDbStub([
       { data: packageRow({ paid_amount: 10000, refunded_amount: 0 }), error: null },
       { data: { id: PURCHASE_ID }, error: null },
@@ -163,7 +175,12 @@ describe("issuePurchaseRefund remaining/netting math", () => {
     const result = await issuePurchaseRefund({ db, source: "package", id: PURCHASE_ID, amountCents: 10000, actor: "admin", reason: "x" });
 
     expect(result.status).toBe("refunded");
-    expect(db.rpc).not.toHaveBeenCalled();
+    // Packages have no per-SKU stock, so no increment_retail_stock call either way; the
+    // credits/voucher spend-path restore (added 2026-07-11) still fires, harmless no-op here.
+    expect(db.rpc).not.toHaveBeenCalledWith("increment_retail_stock", expect.anything());
+    expect(db.rpc).toHaveBeenCalledWith("restore_user_credits", { p_pi: "pi_1" });
+    expect(db.rpc).toHaveBeenCalledWith("restore_voucher", { p_pi: "pi_1" });
+    expect(db.rpc).toHaveBeenCalledTimes(2);
   });
 });
 

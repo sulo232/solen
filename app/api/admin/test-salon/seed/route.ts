@@ -72,23 +72,46 @@ export async function POST(request: NextRequest) {
     }
 
     case "bookings": {
+      // bookings.slot_id and bookings.service_id are both NOT NULL; without an active
+      // service there is nothing to attach a booking (or its backing slot) to.
+      if (!serviceId) {
+        return NextResponse.json({ seeded: "bookings", count: 0 });
+      }
+
       // Seed 6 bookings: 2 completed (past), 2 confirmed (future), 1 cancelled, 1 pending
       const now = new Date();
       const statuses = ["completed", "completed", "confirmed", "confirmed", "cancelled", "pending"];
       const offsets = [-48, -24, 2, 26, -72, 6]; // hours from now
+
+      // bookings.slot_id is a required FK to availability_slots (previously omitted here,
+      // so this insert always errored, 23502 null value in column "slot_id"): create one
+      // backing slot per booking first, then attach its id.
+      const slotEntries = statuses.map((_, i) => {
+        const startsAt = addHours(now, offsets[i]);
+        return {
+          salon_id,
+          service_id: serviceId,
+          starts_at: startsAt.toISOString(),
+          ends_at: addHours(startsAt, 1).toISOString(),
+          status: "booked",
+        };
+      });
+      const { data: insertedSlots } = await admin.from("availability_slots").insert(slotEntries).select("id");
+
       const entries = statuses.map((status, i) => {
         const startsAt = addHours(now, offsets[i]);
         return {
           salon_id,
           user_id: user.id, // owner as placeholder customer
           service_id: serviceId,
+          slot_id: insertedSlots?.[i]?.id,
           starts_at: startsAt.toISOString(),
           ends_at: addHours(startsAt, 1).toISOString(),
           price_paid: randInt(3000, 9000),
           status,
           is_first_visit: i % 3 === 0,
         };
-      });
+      }).filter((e): e is typeof e & { slot_id: string } => e.slot_id != null);
       const { data } = await admin.from("bookings").insert(entries).select();
       return NextResponse.json({ seeded: "bookings", count: data?.length ?? 0 });
     }
@@ -103,12 +126,16 @@ export async function POST(request: NextRequest) {
         "War ok, aber nicht der beste Schnitt.",
         "Absolut empfehlenswert! Werde wiederkommen.",
       ];
+      // Phantom-column fix: reviews has no "service_id" column (confirmed against the live
+      // schema and lib/database.types.ts, only booking_id + staff_member_id link a review to
+      // what it's about); this insert already errored on every call (PostgREST unknown-column
+      // rejection) before this fix. There is no unambiguous real column to redirect the
+      // per-service tag to, so it is dropped rather than guessed.
       const entries = ratings.map((rating, i) => ({
         salon_id,
         user_id: user.id,
         rating,
         comment: comments[i],
-        service_id: serviceId,
         staff_member_id: staffId,
         created_at: new Date(Date.now() - i * 24 * 3_600_000).toISOString(),
       }));
@@ -118,11 +145,16 @@ export async function POST(request: NextRequest) {
 
     case "reset": {
       // Clear all seeded data but keep salon structure (services + staff)
+      // NOTE: `last_minute_slots` is not a real table (checked lib/database.types.ts + the
+      // migrations); the real last-minute state lives in salon_last_minute_settings
+      // (salon_id-scoped row), swapped in here. This delete previously errored on every
+      // call (42P01 undefined table), silently swallowed by Promise.all having no error
+      // handling, same bug as app/api/admin/test-salon/route.ts DELETE.
       await Promise.all([
         admin.from("bookings").delete().eq("salon_id", salon_id),
         admin.from("reviews").delete().eq("salon_id", salon_id),
         admin.from("barber_walkin_queue").delete().eq("salon_id", salon_id),
-        admin.from("last_minute_slots").delete().eq("salon_id", salon_id),
+        admin.from("salon_last_minute_settings").delete().eq("salon_id", salon_id),
       ]);
       return NextResponse.json({ reset: true });
     }

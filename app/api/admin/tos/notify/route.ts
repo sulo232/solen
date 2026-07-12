@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
         await sendEmail(payload);
         sentCount++;
       } catch (err: any) {
+        console.error("[admin/tos/notify] send failed:", err, { email: user.email });
         errors.push({ email: user.email, error: err.message });
       }
     }

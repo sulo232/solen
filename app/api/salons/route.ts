@@ -13,6 +13,7 @@ import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
 import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
+import type { Database, Json } from "@/lib/database.types";
 
 // Ring 5b: CDN response caching for this anon browse endpoint. This GET handler never
 // reads a cookie or calls auth.getUser() anywhere (confirmed by ring5b-kill-test.ts
@@ -151,7 +152,7 @@ export async function GET(request: NextRequest) {
       const { data: ranked, error: rErr } = await supabase.rpc("search_salons_ranked", {
         p_q: q,
         p_limit: 60,
-        p_query_embedding: emb,
+        p_query_embedding: emb ?? undefined,
       });
       if (rErr) console.error("[api/salons GET] search_salons_ranked failed:", rErr.message);
       const ids = (ranked ?? []).map((r: { salon_id: string }) => r.salon_id as string);
@@ -301,7 +302,7 @@ export async function GET(request: NextRequest) {
     // Time-of-day (period) filter. DISTINCT salon_ids whose available slot's local
     // hour is in the window, server-side via the RPC (no row-cap, no JS scan). If a
     // date is set it scopes to that day, otherwise the next 14 days.
-    let periodTask: ReturnType<typeof supabase.rpc> | null = null;
+    let periodTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (period && PERIOD_HOURS[period]) {
       const [startH, endH] = PERIOD_HOURS[period];
       const lo = validDate ? `${date}T00:00:00` : new Date().toISOString();
@@ -320,7 +321,7 @@ export async function GET(request: NextRequest) {
     // DISTINCT salon_ids via the hour-window RPC over the full 0..24 range, so it no
     // longer pulls ~17k slot rows into JS just to dedupe ~21 ids (and no longer
     // silently drops salons past PostgREST's row cap).
-    let instantTask: ReturnType<typeof supabase.rpc> | null = null;
+    let instantTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (instant_bookable === "true") {
       instantTask = supabase.rpc("salons_with_slot_in_hours", {
         p_start_hour: 0,
@@ -334,7 +335,7 @@ export async function GET(request: NextRequest) {
     // DISTINCT-via-RPC approach (0..24 hour range is the whole day). Owner
     // 2026-06-13: picking a date should NARROW results, not just annotate the next
     // available slot (the post-query block below still computes those labels).
-    let dateTask: ReturnType<typeof supabase.rpc> | null = null;
+    let dateTask: ReturnType<typeof supabase.rpc<"salons_with_slot_in_hours">> | null = null;
     if (dateNarrows) {
       dateTask = supabase.rpc("salons_with_slot_in_hours", {
         p_start_hour: 0,
@@ -642,7 +643,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ items, total: count ?? 0, page, limit }, { headers: ANON_CACHE_HEADERS });
   } catch (err) {
     console.error("[api/salons GET] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal error", code: "INTERNAL_ERROR" }, { status: 500 });
   }
 }
 
@@ -654,7 +655,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user) return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
@@ -719,7 +720,9 @@ export async function POST(request: NextRequest) {
           instagram_url: instagram_url || null,
           website_url: website_url || null,
           tiktok_url: tiktok_url || null, // column exists (verified live schema 2026-07-01); was dropping the onboarding value + the PDP reads it
-          opening_hours: opening_hours || {},
+          // opening_hours is validated as z.record(z.string(), z.unknown()) (arbitrary JSON shape),
+          // cast to the generated Json column type (same pattern as app/api/salon-draft/route.ts).
+          opening_hours: (opening_hours || {}) as Json,
           is_active: false, // Pending approval
           last_minute_discount_percent: last_minute_discount_percent || 0,
           last_minute_window_hours: last_minute_window_hours || 0,
@@ -737,50 +740,60 @@ export async function POST(request: NextRequest) {
       }
       if (insertErr && !insertErr.message?.includes("duplicate") && !insertErr.message?.includes("unique")) {
         console.error("[api/salons POST] salon insert:", insertErr.message);
-        return NextResponse.json({ error: "Failed to create salon", message: insertErr.message }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create salon", message: insertErr.message, code: "DB_ERROR" }, { status: 500 });
       }
     }
 
     if (!salon) {
       console.error("[api/salons POST] slug collision after 3 attempts");
-      return NextResponse.json({ error: "Failed to create salon" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to create salon", code: "DB_ERROR" }, { status: 500 });
     }
 
     const salonId = salon.id;
 
-    // Insert services
+    // Insert services (select id back: availability_slots.service_id is NOT NULL, see below;
+    // same fix pattern as app/api/admin/seed-test-salons/route.ts).
+    let primaryServiceId: string | undefined;
     if (services?.length) {
-      const serviceRows = services.map((s: Record<string, unknown>) => ({
+      const serviceRows = services.map((s) => ({
         salon_id: salonId,
         name_de: s.name_de,
-        name_en: s.name_en || null,
-        name_fr: s.name_fr || null,
-        name_it: s.name_it || null,
+        // name_en is NOT NULL on the live services table, so the fallback is "" not null
+        // (see migrations/20260530_seed_noncoiffeur_services.sql: "services has no name_fr/name_it",
+        // those two were phantom columns here, dropped, they never existed on the table).
+        name_en: s.name_en || "",
         category: s.category || categories[0],
         duration_minutes: s.duration_minutes || 60,
         price: s.price || 0,
         description_de: s.description_de || null,
         is_active: true,
       }));
-      await admin.from("services").insert(serviceRows);
+      const { data: insertedServices } = await admin.from("services").insert(serviceRows).select("id");
+      primaryServiceId = insertedServices?.[0]?.id;
     }
 
     // Insert staff
     if (staff?.length) {
-      const staffRows = staff.map((s: Record<string, unknown>) => ({
+      // "role" (job title, e.g. "Barber") is a phantom column here: staff_members never had
+      // a "role" column (014_new_schema.sql), only "access_role" (a permission level, unused
+      // elsewhere in the codebase), which is not an unambiguous match for a job-title input.
+      // Dropped rather than mis-mapped; the field was never persisted before this fix either.
+      const staffRows = staff.map((s) => ({
         salon_id: salonId,
         name: s.name,
         avatar_url: s.avatar_url || null,
-        specialties: (s.specialties as string[]) || [],
-        role: s.role || null,
+        specialties: s.specialties || [],
         is_active: true,
       }));
       await admin.from("staff_members").insert(staffRows);
     }
 
-    // Generate availability slots for 14 days, excluding breaks
-    if (availability_template) {
-      const slots: Record<string, unknown>[] = [];
+    // Generate availability slots for 14 days, excluding breaks. Attached to the salon's
+    // first created service: availability_slots.service_id is NOT NULL, previously unset
+    // here, so this insert silently failed on every call (a genuinely missing required
+    // field, not a phantom column; same fix as app/api/admin/seed-test-salons/route.ts).
+    if (availability_template && primaryServiceId) {
+      const slots: Database["public"]["Tables"]["availability_slots"]["Insert"][] = [];
       const now = new Date();
 
       for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
@@ -813,6 +826,7 @@ export async function POST(request: NextRequest) {
 
           slots.push({
             salon_id: salonId,
+            service_id: primaryServiceId,
             starts_at: `${dateStr}T${minutesToTime(m)}:00`,
             ends_at: `${dateStr}T${minutesToTime(slotEnd)}:00`,
             status: "available",
@@ -831,8 +845,7 @@ export async function POST(request: NextRequest) {
     // Update user profile with onboarding status, TOS tracking, and role upgrade (if applicable)
     const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
     
-    // Using any type to dynamically attach role if needed
-    const updateData: Record<string, any> = { 
+    const updateData: Database["public"]["Tables"]["profiles"]["Update"] = {
       onboarding_completed: true,
       tos_accepted_version: CURRENT_TOS_VERSION,
       tos_accepted_at: new Date().toISOString()
@@ -853,7 +866,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ id: salonId, slug });
   } catch (err) {
     console.error("[api/salons POST] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal error", code: "INTERNAL_ERROR" }, { status: 500 });
   }
 }
 

@@ -33,5 +33,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to toggle save" }, { status: 500 });
   }
 
-  return NextResponse.json({ saved: result === true || result === "saved" });
+  return NextResponse.json({ saved: result === true });
 }

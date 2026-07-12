@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
   }
 
   const dueBookings = (bookings ?? []).filter((b) => b.status !== "cancelled");
-  const userIds = Array.from(new Set(dueBookings.map((b) => b.user_id)));
+  const userIds = Array.from(new Set(dueBookings.map((b) => b.user_id).filter((id): id is string => !!id)));
   const salonIds = Array.from(new Set(dueBookings.map((b) => b.salon_id)));
   const bookingIds = dueBookings.map((b) => b.id);
 

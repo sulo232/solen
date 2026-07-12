@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
   }
 
   // Rating percentile
-  const belowRating = allSalons.filter((s) => s.average_rating < salon.average_rating).length;
+  const salonRating = salon.average_rating ?? 0;
+  const belowRating = allSalons.filter((s) => (s.average_rating ?? 0) < salonRating).length;
   const ratingPercentile = Math.round(((allSalons.length - belowRating) / allSalons.length) * 100);
 
   // Booking volume percentile (last 30 days)
@@ -66,7 +67,8 @@ export async function GET(request: NextRequest) {
   const bookingPercentile = Math.round(((allSalons.length - belowBooking) / allSalons.length) * 100);
 
   // Review count percentile
-  const belowReviews = allSalons.filter((s) => s.review_count < salon.review_count).length;
+  const salonReviewCount = salon.review_count ?? 0;
+  const belowReviews = allSalons.filter((s) => (s.review_count ?? 0) < salonReviewCount).length;
   const reviewPercentile = Math.round(((allSalons.length - belowReviews) / allSalons.length) * 100);
 
   return NextResponse.json({

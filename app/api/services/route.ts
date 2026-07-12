@@ -58,7 +58,11 @@ export async function POST(req: NextRequest) {
       // "" || null → null → constraint violation. Fall back to the German name (always present)
       // so the EN locale shows the service name instead of the create 500-ing.
       name_en: name_en || name_de,
-      category: category || null,
+      // category is NOT NULL with a CHECK constraint on the live services table (no DB
+      // default). "" is not a member of the allowed set either, so a missing category still
+      // fails the same DB-level constraint (surfaced below as a 500), same as the prior
+      // `|| null` did, just type-correct for the required non-null column.
+      category: category || "",
       duration_minutes: duration_minutes || 60,
       price: price || 0,
       description_de: description_de || null,

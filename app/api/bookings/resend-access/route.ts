@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   // 2. Validate body. A 400 here is pre-lookup and leaks nothing about a code.
   const body = await req.json().catch(() => ({}));
   const { data: validated, error } = validateBody(resendAccessSchema, body);
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return NextResponse.json({ error: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const { code, email, phone } = validated;
   const norm = normalizeReferenceCode(code);

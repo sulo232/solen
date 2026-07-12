@@ -12,6 +12,8 @@ import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
+import { reportError } from "@/lib/error-report";
+import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -68,7 +70,7 @@ export async function GET(request: NextRequest) {
     const nameMap = new Map<string, string | null>();
     if (userIds.length) {
       const { data: profs } = await supabase.from("public_profiles").select("id, display_name").in("id", userIds);
-      (profs ?? []).forEach((p) => nameMap.set(p.id, p.display_name));
+      (profs ?? []).forEach((p) => { if (p.id) nameMap.set(p.id, p.display_name); });
     }
     // Ring 2d: the explicit multi-column select above (vs the old `*, services(...)`) makes
     // PostgREST's TS inference type the embedded services/staff_members as arrays even though
@@ -520,7 +522,7 @@ export async function POST(request: NextRequest) {
   //    backstop over the wider [starts_at, bundleEndsAt) range (the pre-check above is fail-fast;
   //    the constraint closes any race). A 23P01 here means the window was taken between the
   //    pre-check and this write: undo the just-inserted booking and return the route's 409.
-  const slotUpdate: Record<string, unknown> = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
+  const slotUpdate: Database["public"]["Tables"]["availability_slots"]["Update"] = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
   if (bundleEndsAt) slotUpdate.ends_at = bundleEndsAt;
   // TOCTOU guard (audit fix B): the update only claims the slot if it is STILL 'available'.
   // Two concurrent requests both passing the read-time check above would otherwise both
@@ -590,7 +592,10 @@ export async function POST(request: NextRequest) {
         locale
       );
       await sendEmail(emailData);
-    } catch (err) { console.error("[bookings] customer confirmation email failed:", err); }
+    } catch (err) {
+      console.error("[bookings] customer confirmation email failed:", err);
+      await reportError("booking-confirmation-email", err, { bookingId: booking.id });
+    }
   }
 
   // 8. Notify salon owner about the new booking (deferred for online-pay until

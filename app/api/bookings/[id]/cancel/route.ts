@@ -256,6 +256,7 @@ export async function POST(
     .limit(3);
 
   for (const entry of waitlistEntries ?? []) {
+    if (!entry.user_id) continue;
     const { data: waitlistUser } = await adminForWaitlist.auth.admin.getUserById(entry.user_id);
     if (waitlistUser?.user?.email) {
       try {
@@ -281,7 +282,7 @@ export async function POST(
 
   const promises: Promise<void>[] = [];
 
-  if (user.email) {
+  if (user.email && customerId) {
     const { sendNotification } = await import("@/lib/notifications");
     promises.push(sendNotification({
       userId: customerId,

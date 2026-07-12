@@ -62,7 +62,7 @@ export async function POST(
       .eq("id", id)
       .single();
 
-    if (!current?.claim_verification_code) {
+    if (!current?.claim_verification_code || !current.claim_verification_expires_at) {
       return NextResponse.json({ error: "No verification code found. Please request a new one." }, { status: 400 });
     }
 
@@ -139,18 +139,23 @@ export async function POST(
   // Fresh code sent: reset the wrong-guess counter so it doesn't count against the new code.
   if (redis) await redis.del(`directory:claim-attempts:${id}`);
 
-  await sendEmail({
-    to: entry.email,
-    subject: `Ihr Bestätigungscode für solen.ch: ${code}`,
-    html: `
-      <p>Guten Tag,</p>
-      <p>Sie haben beantragt, den Salon <strong>${entry.name}</strong> auf solen.ch zu beanspruchen.</p>
-      <p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${code}</strong></p>
-      <p>Der Code ist 15 Minuten gültig.</p>
-      <p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
-      <p>Das solen.ch Team</p>
-    `,
-  });
+  try {
+    await sendEmail({
+      to: entry.email,
+      subject: `Ihr Bestätigungscode für solen.ch: ${code}`,
+      html: `
+        <p>Guten Tag,</p>
+        <p>Sie haben beantragt, den Salon <strong>${entry.name}</strong> auf solen.ch zu beanspruchen.</p>
+        <p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${code}</strong></p>
+        <p>Der Code ist 15 Minuten gültig.</p>
+        <p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
+        <p>Das solen.ch Team</p>
+      `,
+    });
+  } catch (err) {
+    console.error("[directory/claim] verification code email failed:", err, { listingId: id });
+    return NextResponse.json({ error: "Failed to send verification code" }, { status: 500 });
+  }
 
   return NextResponse.json({ sent: true, email: entry.email.replace(/(.{2}).*(@.*)/, "$1***$2") });
 }

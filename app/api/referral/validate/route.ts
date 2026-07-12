@@ -14,14 +14,14 @@ export async function GET(req: NextRequest) {
 
   const code = new URL(req.url).searchParams.get("code");
   if (!code || code.length < 3) {
-    return NextResponse.json({ error: "Valid code required" }, { status: 400 });
+    return NextResponse.json({ error: "Valid code required", code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
   // Referral codes are alphanumeric. Strip everything else so user input can't
   // break out of the .or() filter string (commas, dots, parens, etc).
   const safeCode = code.toUpperCase().trim().replace(/[^A-Z0-9-]/g, "");
   if (safeCode.length < 3) {
-    return NextResponse.json({ error: "Valid code required" }, { status: 400 });
+    return NextResponse.json({ error: "Valid code required", code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
   const supabase = await createServerSupabaseClient();

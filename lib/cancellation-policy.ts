@@ -13,8 +13,10 @@
 
 import { toRappen } from "@/lib/stripe";
 
-/** Structured policy fee shape. `'free'` => never charges. CHF figure at the boundary. */
-export type PolicyFeeType = "free" | "flat" | "percentage";
+/** Structured policy fee shape. `'free'` => never charges. CHF figure at the boundary.
+ * Not exported: only used internally in this file (zero external imports,
+ * ring5c dead-export sweep). */
+type PolicyFeeType = "free" | "flat" | "percentage";
 
 /**
  * Convert a structured policy fee (type + CHF value) into an integer-Rappen charge,
@@ -22,10 +24,13 @@ export type PolicyFeeType = "free" | "flat" | "percentage";
  *
  * @param feeType    'free' | 'flat' | 'percentage' (anything else => 0, fail-safe).
  * @param feeValueChf the salon's stored fee figure (CHF for 'flat', percent 0-100 for 'percentage').
- * @param baseCents  the amount the customer paid, in Rappen — the fairness cap.
+ * @param baseCents  the amount the customer paid, in Rappen, the fairness cap.
  * @returns integer Rappen to charge (0 when free / no base / non-positive).
+ *
+ * Not exported: only used internally by calculateCancellationFee / calculateNoShowFee
+ * below (zero external imports, ring5c dead-export sweep).
  */
-export function computePolicyFeeCents(
+function computePolicyFeeCents(
   feeType: string | null | undefined,
   feeValueChf: number | null | undefined,
   baseCents: number

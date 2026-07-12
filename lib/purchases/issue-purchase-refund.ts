@@ -463,6 +463,63 @@ export async function issuePurchaseRefund(
   //     row only exists if the original PI's payment_intent.succeeded wrote one;
   //     the webhook's charge.refunded handler is a guarded no-op when there is none.
 
+  // 10b. CREDITS + VOUCHER SPEND restore (owner-approved 2026-07-11), mirroring
+  //      issue-refund.ts step 10b for structural symmetry across BOTH refund
+  //      chokepoints. Packages/retail purchases never redeem credits/vouchers
+  //      (only booking-pay-intent does, keyed to a booking's own PI), so this is a
+  //      harmless idempotent no-op here in practice, both RPCs loop over ledger
+  //      rows matching `pi` and simply find none. Gated on isFull (mirroring
+  //      issue-refund.ts) so this stays correct as defense-in-depth for whenever
+  //      that never-redeems invariant changes: a PARTIAL refund must not restore
+  //      an all-or-nothing per-PI ledger while a redeemed amount could still be
+  //      backing the unrefunded remainder. Never blocks the refund.
+  if (isFull) {
+    try {
+      const { error: restoreCreditsErr } = await db.rpc("restore_user_credits", { p_pi: pi });
+      if (restoreCreditsErr) {
+        console.error("[issuePurchaseRefund] restore_user_credits failed:", restoreCreditsErr.message, { source, purchase_id: id, payment_intent: pi });
+        void alertAdmin("restore_user_credits failed after a successful purchase refund", {
+          source,
+          purchase_id: id,
+          payment_intent: pi,
+          refund_id: refund.id,
+          error: restoreCreditsErr.message,
+        });
+      }
+    } catch (restoreCreditsCatchErr) {
+      console.error("[issuePurchaseRefund] restore_user_credits threw:", restoreCreditsCatchErr, { source, purchase_id: id, payment_intent: pi });
+      void alertAdmin("restore_user_credits threw after a successful purchase refund", {
+        source,
+        purchase_id: id,
+        payment_intent: pi,
+        refund_id: refund.id,
+        error: String(restoreCreditsCatchErr),
+      });
+    }
+    try {
+      const { error: restoreVoucherErr } = await db.rpc("restore_voucher", { p_pi: pi });
+      if (restoreVoucherErr) {
+        console.error("[issuePurchaseRefund] restore_voucher failed:", restoreVoucherErr.message, { source, purchase_id: id, payment_intent: pi });
+        void alertAdmin("restore_voucher failed after a successful purchase refund", {
+          source,
+          purchase_id: id,
+          payment_intent: pi,
+          refund_id: refund.id,
+          error: restoreVoucherErr.message,
+        });
+      }
+    } catch (restoreVoucherCatchErr) {
+      console.error("[issuePurchaseRefund] restore_voucher threw:", restoreVoucherCatchErr, { source, purchase_id: id, payment_intent: pi });
+      void alertAdmin("restore_voucher threw after a successful purchase refund", {
+        source,
+        purchase_id: id,
+        payment_intent: pi,
+        refund_id: refund.id,
+        error: String(restoreVoucherCatchErr),
+      });
+    }
+  }
+
   // 11. Notification + audit are the CALLER's responsibility (it owns the locale /
   //     case context); this chokepoint is single-responsibility: Stripe refund +
   //     the purchase-row claim. We return userId / salonId so the caller can

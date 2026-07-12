@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
+    console.error("[notify/review-posted] failed:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

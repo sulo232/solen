@@ -34,8 +34,14 @@ export async function GET(req: NextRequest) {
     .eq("key", "commission")
     .single();
 
+  const settingValue = setting?.value;
+  const ratePercent =
+    settingValue && typeof settingValue === "object" && !Array.isArray(settingValue)
+      ? settingValue.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT
+      : DEFAULT_COMMISSION_RATE_PERCENT;
+
   return NextResponse.json({
-    rate_percent: setting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT,
+    rate_percent: ratePercent,
     updated_at: setting?.updated_at ?? null,
   });
 }

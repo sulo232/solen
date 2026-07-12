@@ -179,16 +179,18 @@ async function main() {
       category: z.string().nullable().optional(),
       media_type: z.unknown().optional(),
     });
+    // Every arg below has a SQL-side "default null"; undefined omits the key from the
+    // JSON body, which PostgREST resolves to the same default as an explicit null.
     const { data, error } = await admin.rpc("discovery_feed", {
-      p_category: null,
-      p_gender: null,
-      p_texture: null,
-      p_style: null,
-      p_creator: null,
-      p_user_gender: null,
+      p_category: undefined,
+      p_gender: undefined,
+      p_texture: undefined,
+      p_style: undefined,
+      p_creator: undefined,
+      p_user_gender: undefined,
       p_limit: 5,
       p_offset: 0,
-      p_tags_any: null,
+      p_tags_any: undefined,
     });
     if (error) {
       record("GET /api/discovery/feed", false, `rpc error: ${error.message}`);

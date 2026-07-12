@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalonId } from "@/lib/active-salon";
+import type { Database } from "@/lib/database.types";
 
 // GET /api/salons/mine — returns the current user's ACTIVE salon (cookie-selected
 // if owned, else oldest) plus the full list of owned salons (for the switcher).
@@ -36,7 +37,7 @@ export async function PATCH(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const updateFields: Record<string, unknown> = {};
+  const updateFields: Database["public"]["Tables"]["salons"]["Update"] = {};
   if (typeof body.about_text_de === "string") updateFields.about_text_de = body.about_text_de;
   if (typeof body.about_text_en === "string") updateFields.about_text_en = body.about_text_en;
   if (typeof body.about_text_fr === "string") updateFields.about_text_fr = body.about_text_fr;

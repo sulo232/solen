@@ -1,13 +1,11 @@
 name: quality
 
 # Ring 5 (test + CI floor, _plans/BACKEND_IMPROVEMENT.md). Three independent gates on
-# every push + PR: typecheck, lint, unit tests. Neither typecheck nor lint pass CLEAN
-# today (5 pre-existing tsc errors, 481 pre-existing lint errors), so both use a
-# RATCHET (fail only if the count goes UP from today's baseline) instead of a hard
-# zero, the same pattern already used elsewhere in this repo for gradual cleanup.
-# Playwright is deliberately NOT wired here (needs real browsers + a running dev
-# server; e2e/visual stays a manual/local gate, see the memo in _plans/BACKEND_IMPROVEMENT.md
-# ring 5).
+# every push + PR: typecheck (hard zero since 2026-07-11), lint (ratchet, 481
+# pre-existing errors), unit tests. The `e2e` job runs the live-DB booking lifecycle
+# script (scripts/e2e-booking.ts) and the `visual` job runs the 2 Playwright specs
+# against a real build; both SKIP GREEN when their secrets aren't configured on the
+# repo (see each job's comment for the gh secret set one-liners).
 
 on:
   push:
@@ -24,16 +22,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
       - run: npm ci
-      - name: tsc --noEmit (ratchet vs baseline, currently 5 pre-existing errors)
+      - name: tsc --noEmit (hard zero, the 4 pre-existing errors were fixed 2026-07-11)
         run: |
           set +e
           npx tsc --noEmit > tsc-output.txt 2>&1
           set -e
           COUNT=$(grep -c "error TS" tsc-output.txt || true)
-          BASELINE=5
+          BASELINE=0
           echo "tsc error count: $COUNT (baseline: $BASELINE)"
           if [ "$COUNT" -gt "$BASELINE" ]; then
             echo "::error::tsc error count went UP: $COUNT > $BASELINE baseline"
@@ -47,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
       - run: npm ci
       - name: npm run lint (ratchet vs baseline, currently 481 pre-existing errors)
@@ -70,8 +68,109 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
       - run: npm ci
       - name: vitest run (money-path unit tests, tests/**/*.test.ts)
         run: npx vitest run
+
+  # E2E booking lifecycle (scripts/e2e-booking.ts, Ring 2 recommendations batch): drives
+  # the REAL route handlers (bookings create, booking-pay-intent, cancel) against the live
+  # DB's sanctioned test salon (testsalon-7a2dd244) with a real Stripe TEST-mode
+  # PaymentIntent, self-cleaning (deletes its own booking/slot rows, cancels its own PI,
+  # restores the salon's accepts_online_payment flag). Needs live-DB + Stripe TEST secrets
+  # this repo does not have configured today, so secrets-check is a STEP, not a job-level
+  # `if:`, so the job always reports SUCCESS: absent secrets means every later step is
+  # individually skipped instead of the workflow failing or showing a grey "skipped" check.
+  #
+  # To activate once the owner is ready (test-mode Stripe key + the SAME Supabase project
+  # this script targets, service-role key required for admin seed/cleanup):
+  #   gh secret set NEXT_PUBLIC_SUPABASE_URL --body "<https://xxxxx.supabase.co>"
+  #   gh secret set NEXT_PUBLIC_SUPABASE_ANON_KEY --body "<anon key>"
+  #   gh secret set SUPABASE_SERVICE_ROLE_KEY --body "<service role key>"
+  #   gh secret set STRIPE_SECRET_KEY --body "<sk_test_... , NEVER an sk_live_ key>"
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.STRIPE_SECRET_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Live-DB/Stripe secrets not set on this repo, skipping the e2e job (stays green). See the job comment in .github/workflows/quality.yml for the gh secret set one-liners."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: npm run e2e (live-DB booking lifecycle, self-cleaning)
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run e2e
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+
+  # Playwright visual specs (e2e/visual/, owner batch R3): real `next build` + `next start`
+  # on port 3001, chromium only. Needs the live project's public Supabase URL/anon key AND
+  # the service role key (getServerEnv() runs at module scope in several routes, so
+  # `next build` throws without it). Skips green while secrets are absent; activate with
+  # the same gh secret set one-liners as the e2e job above.
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: secrets-check
+        id: secrets-check
+        run: |
+          if [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] && [ -n "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" ] && [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set on this repo, skipping the visual job (stays green)."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: npm ci
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm ci
+      - name: install chromium
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: next build
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: next start (background) + wait for it
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: |
+          npx next start -p 3001 &
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null "http://localhost:3001"; then echo "server up"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::next start never became reachable"; exit 1
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: playwright visual specs
+        if: steps.secrets-check.outputs.has-secrets == 'true'
+        run: npx playwright test
+        env:
+          BASE_URL: http://localhost:3001

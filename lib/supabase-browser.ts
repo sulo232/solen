@@ -1,16 +1,17 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { getPublicEnv } from "@/lib/env";
+import type { Database } from "@/lib/database.types";
+import type { TypedSupabaseClient } from "@/lib/supabase";
 
 /**
- * Browser-side Supabase client — safe for "use client" components.
+ * Browser-side Supabase client (safe for "use client" components).
  * Does NOT import next/headers, so it can be bundled client-side.
- *
- * Database typing intentionally omitted; adoption is per-call via inline
- * generics on `.select()` / `.maybeSingle<T>()` / `.returns<T>()`.
+ * Fully typed with the generated Database schema (via the types sprint;
+ * ssr 0.12 infers it natively, no cast bridge needed).
  */
-export function createBrowserSupabaseClient() {
+export function createBrowserSupabaseClient(): TypedSupabaseClient {
   const env = getPublicEnv();
-  return createBrowserClient(
+  return createBrowserClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );

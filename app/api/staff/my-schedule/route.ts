@@ -88,7 +88,10 @@ export async function PUT(req: NextRequest) {
     .upsert(
       {
         staff_member_id: staff.id,
-        salon_id: (await supabase.from("staff_members").select("salon_id").eq("id", staff.id).single()).data?.salon_id,
+        // salon_id is NOT NULL on staff_schedules; null-check the .single() result before use
+        // (staff_members.salon_id is itself never null, so "" only hits if the staff row
+        // vanished between the two lookups, same DB-error-via-FK-violation outcome as before).
+        salon_id: (await supabase.from("staff_members").select("salon_id").eq("id", staff.id).single()).data?.salon_id ?? "",
         day_of_week: validated.day_of_week,
         start_time: validated.start_time,
         end_time: validated.end_time,

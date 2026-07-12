@@ -26,7 +26,10 @@ export async function POST(req: Request) {
       .from("booking_waitlist")
       .insert({
         user_id: user.id,
-        salon_id,
+        // salon_id is optional in the schema (lib/validations.ts) but NOT NULL in the DB;
+        // if missing, the insert below fails and hits the existing catch-all 500, same as
+        // before typing (type-only cast, no new branch).
+        salon_id: salon_id as string,
         service_id: service_id || null,
         preferred_date,
         status: "waiting"

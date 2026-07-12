@@ -33,5 +33,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to toggle like" }, { status: 500 });
   }
 
-  return NextResponse.json({ liked: result === true || result === "liked" });
+  return NextResponse.json({ liked: result === true });
 }

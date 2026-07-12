@@ -31,34 +31,26 @@ export async function GET(request: NextRequest) {
   const cutoffStr = cutoff.toISOString();
 
   // Find users whose most recent completed booking ended 28+ days ago
-  // and who haven't received a nudge in the last 28 days
-  let rpcResult: { data: unknown[] | null } = { data: null };
-  try {
-    const { data } = await admin.rpc("get_rebooking_candidates", { cutoff_date: cutoffStr });
-    rpcResult = { data };
-  } catch {
-    rpcResult = { data: null };
-  }
-  const { data: candidates } = rpcResult;
+  // and who haven't received a nudge in the last 28 days.
+  // Phantom-RPC fix (typed-DB sprint): "get_rebooking_candidates" does not exist in the
+  // live schema (confirmed against lib/database.types.ts's Functions list), so the RPC
+  // branch this used to try always errored server-side and fell through to this manual
+  // query every single run. Going straight to the manual query is the same runtime
+  // behavior this route already had on every invocation, just without the dead RPC hop.
+  const { data } = await admin
+    .from("bookings")
+    .select("user_id, salon_id, starts_at, services(name_de), salons(name)")
+    .eq("status", "completed")
+    .lt("starts_at", cutoffStr)
+    .order("starts_at", { ascending: false });
 
-  // Fallback: manual query if RPC doesn't exist
-  let users = candidates;
-  if (!users) {
-    const { data } = await admin
-      .from("bookings")
-      .select("user_id, salon_id, starts_at, services(name_de), salons(name)")
-      .eq("status", "completed")
-      .lt("starts_at", cutoffStr)
-      .order("starts_at", { ascending: false });
-
-    // Deduplicate by user_id (keep most recent booking per user)
-    const seen = new Set<string>();
-    users = (data ?? []).filter((b: any) => {
-      if (seen.has(b.user_id)) return false;
-      seen.add(b.user_id);
-      return true;
-    });
-  }
+  // Deduplicate by user_id (keep most recent booking per user)
+  const seen = new Set<string>();
+  const users = (data ?? []).filter((b: any) => {
+    if (seen.has(b.user_id)) return false;
+    seen.add(b.user_id);
+    return true;
+  });
 
   const candidateList = users ?? [];
   const userIds = Array.from(new Set(candidateList.map((b: any) => b.user_id)));
@@ -118,7 +110,7 @@ export async function GET(request: NextRequest) {
 
   let sent = 0;
   const errorMsgs: string[] = [];
-  const notifRows: { user_id: string; type: string; title: string; body: string; data: Record<string, unknown> }[] = [];
+  const notifRows: { user_id: string; type: string; title: string; body: string; data: { salon_id: string | null; days_since: number } }[] = [];
 
   sendResults.forEach((res, i) => {
     const task = tasks[i];

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { Database } from "@/lib/database.types";
 
 // POST /api/services/import — CSV import for services
 export async function POST(req: NextRequest) {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "CSV must have a 'Name' or 'Behandlung' or 'Service Name' column" }, { status: 400 });
   }
 
-  const servicesToInsert: Record<string, unknown>[] = [];
+  const servicesToInsert: Database["public"]["Tables"]["services"]["Insert"][] = [];
   const errors: string[] = [];
   const defaultCategory = salon.categories?.[0] ?? "coiffeur";
 
@@ -70,7 +71,10 @@ export async function POST(req: NextRequest) {
     servicesToInsert.push({
       salon_id: salonId,
       name_de: name,
-      name_en: null,
+      // services.name_en is NOT NULL live (same constraint documented in app/api/services/route.ts:58).
+      // A CSV import has no EN column mapping, so fall back to the German name (matches the
+      // sibling POST /api/services precedent) rather than "" which would insert a blank EN name.
+      name_en: name,
       category,
       duration_minutes: duration,
       price: price || 0,

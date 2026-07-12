@@ -53,3 +53,21 @@ One page: how the backend is monitored, backed up, restored, and what it costs. 
 
 ## Security maintenance (the only security note in this campaign)
 The 2026-07 security campaign (141 findings + 16 sweep rings) is closed and structurally guarded (hooks, shared constants, DB triggers/indexes). Standing rules: run get_advisors after any schema change; keep the no-getsession gate wired; no new sweeps scheduled , next security look only on a real trigger (new payment flow, new auth surface, or an incident).
+
+
+## What to add next (owner ask 2026-07-11, recommended order)
+1. RECOMMENDED FIRST: free uptime monitor (UptimeRobot) on https://solen.ch/api/health , 5 min, alerts you when the site is down before customers notice. Only non-agent item (account signup).
+2. One scripted E2E booking test in CI (search -> book -> pay test-mode -> cancel) , the highest-value missing test.
+3. Playwright visual specs wired into CI (manual today; needs browser install + dev-server step in the workflow).
+4. A staging site (second Netlify site on a branch) , changes get seen live before customers; would have caught the thumbnail outage class.
+5. Sentry retry (parked option) , email alerts cover today; stack traces pay off as traffic grows.
+6. Web-vitals real-user monitoring (PostHog supports it).
+7. Watch-items: GitHub Actions minutes near the free cap (15-min cron cadence), tsc 4 -> 0, the typed-database adoption sprint.
+
+
+## R-batch additions (owner "do all recommendations", 2026-07-11 PM)
+- Uptime monitor: LIVE as a piggybacked step on the every-15-min Actions job (red run + GitHub email on a down site; 1 retry to skip blips; zero extra Actions minutes). UptimeRobot stays an optional nicer upgrade (owner account).
+- Staging site (owner, ~10 min in the Netlify dashboard): Site settings -> Build & deploy -> Branch deploys -> add branch `staging` (or enable Deploy Previews for PRs). Then `git branch staging` in the repo; every change lands on staging.solen.netlify.app-style URL before main. No repo changes needed beyond the branch.
+- Sentry: BLOCKED on two owner steps , a Sentry account/DSN, and a physical dependency install (node_modules is shared across worktrees; a lock-only install cannot execute code). Email alerting via lib/error-report.ts covers the need today. If wanted later: `npm i @sentry/nextjs`, set SENTRY_DSN, re-add the two config files (deleted 2026-07-11, see git history).
+- Actions minutes: repo visibility unverifiable from the sandbox (TLS). If PRIVATE, note each scheduled job bills a rounded-up minute per run, so the current schedule is roughly 3,000+ min/month vs 2,000 free , check the Actions usage page; the right fix is merging ping jobs (as done for the uptime step), NOT slowing the booking timers.
+- Typed-database adoption: EXPLICITLY PARKED as its own sprint (~2000 type errors when the generated types are applied to the clients; plan's DO-NOT-DO table). Not silently skipped.

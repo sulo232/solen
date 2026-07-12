@@ -31,10 +31,10 @@ export async function GET(req: NextRequest) {
     (boards ?? []).map(async (b: Record<string, any>) => {
       const { data: rows } = await admin.rpc("search_discovery", {
         q: b.style_name || b.name,
-        p_category: b.category || null,
-        p_gender: null,
-        p_texture: null,
-        p_style: null,
+        p_category: b.category ?? undefined,
+        p_gender: undefined,
+        p_texture: undefined,
+        p_style: undefined,
         p_limit: 4,
         p_offset: 0,
       });

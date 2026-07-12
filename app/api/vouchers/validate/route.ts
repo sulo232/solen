@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   if (!code || !salon_id || typeof code !== "string" || code.trim().length < 4) {
     return NextResponse.json(
-      { error: "Missing code or salon_id" },
+      { error: "Missing code or salon_id", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("[VoucherValidate] error:", error);
     return NextResponse.json(
-      { error: "Fehler bei der Validierung" },
+      { error: "Fehler bei der Validierung", code: "INTERNAL_ERROR" },
       { status: 500 }
     );
   }

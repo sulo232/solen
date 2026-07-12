@@ -2,6 +2,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { NextRequest } from "next/server";
 import { getClientIp } from "@/lib/ratelimit";
 import { alertAdmin } from "@/lib/alert-admin";
+import type { Json } from "@/lib/database.types";
 
 
 export async function logAuditEvent(
@@ -19,7 +20,8 @@ export async function logAuditEvent(
       action,
       target_type: targetType,
       target_id: targetId ?? null,
-      metadata: metadata ?? {},
+      // metadata is caller-supplied arbitrary JSON; cast to the generated Json column type.
+      metadata: (metadata ?? {}) as Json,
       ip_address: getClientIp(req),
     });
   } catch (e) {

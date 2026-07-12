@@ -69,26 +69,31 @@ export async function GET(request: NextRequest) {
     .order("last_message_at", { ascending: false })
     .limit(limit);
 
-  // Merge and sort all events
+  // Merge and sort all events. created_at (and, for messages, last_message_at) are nullable
+  // columns; an event without a real timestamp can't be placed in the feed, so it's skipped
+  // rather than backfilled with a fabricated date.
   const events: { type: string; id: string; created_at: string; meta?: Record<string, unknown> }[] = [
-    ...(bookings ?? []).map((b) => ({
+    ...(bookings ?? []).flatMap((b) => (b.created_at ? [{
       type: b.status === "cancelled" ? "booking_cancelled" : "booking_new",
       id: b.id,
       created_at: b.created_at,
       meta: { status: b.status, starts_at: b.starts_at },
-    })),
-    ...(reviews ?? []).map((r) => ({
+    }] : [])),
+    ...(reviews ?? []).flatMap((r) => (r.created_at ? [{
       type: "review_new",
       id: r.id,
       created_at: r.created_at,
       meta: { rating: r.rating },
-    })),
-    ...(messages ?? []).map((m) => ({
-      type: "message_new",
-      id: m.id,
-      created_at: m.last_message_at ?? m.created_at,
-      meta: {},
-    })),
+    }] : [])),
+    ...(messages ?? []).flatMap((m) => {
+      const created_at = m.last_message_at ?? m.created_at;
+      return created_at ? [{
+        type: "message_new",
+        id: m.id,
+        created_at,
+        meta: {},
+      }] : [];
+    }),
   ];
 
   events.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

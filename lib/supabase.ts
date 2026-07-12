@@ -1,13 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
-import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPublicEnv, getServerEnv } from "@/lib/env";
+import type { Database } from "@/lib/database.types";
 
-// NOTE: `Database` type from `@/lib/database.types` is intentionally NOT applied
-// to the clients below. Adopting it globally surfaced ~2000 typecheck errors
-// against pre-existing untyped queries — that's a dedicated migration sprint,
-// not a single foundation pass. Use the typed client per-route by doing:
-//   `const supabase = (await createServerSupabaseClient()) as SupabaseClient<Database>;`
-// or by typing query results inline with `.maybeSingle<{ field: string }>()`.
+// Types sprint (workstream 17, 2026-07-11): the generated `Database` type IS now
+// applied to every client below, so a phantom column/table is a COMPILE error
+// instead of a silent runtime null (this repo's recorded #1 failure mode).
+// lib/database.types.ts is regenerated from the LIVE schema (recipe:
+// _rules/DB_SCHEMA.md section 7); regenerate it after every applied migration.
+// @supabase/ssr was upgraded to 0.12 (with supabase-js 2.110), which removed
+// the need for the interim type-bridge casts that briefly lived here.
+
+/** The one typed client shape every query in the app infers from. */
+export type TypedSupabaseClient = SupabaseClient<Database>;
 
 /**
  * Server-side Supabase client — use in Server Components, API routes, and Edge Functions.
@@ -25,7 +30,7 @@ export async function createServerSupabaseClient() {
     // Fall through, cookieStore stays null, auth will be anonymous
     console.error("[supabase] cookies() parse failed (malformed Cookie header):", err);
   }
-  return createServerClient(
+  return createServerClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
     publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
@@ -45,7 +50,7 @@ export async function createServerSupabaseClient() {
               cookieStore!.set(name, value, options)
             );
           } catch {
-            // setAll called from a Server Component — safe to ignore
+            // setAll called from a Server Component, safe to ignore
           }
         },
       },
@@ -73,7 +78,7 @@ export async function getSessionUser() {
 export function createAdminSupabaseClient() {
   const publicEnv = getPublicEnv();
   const serverEnv = getServerEnv();
-  return createServerClient(
+  return createServerClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
     serverEnv.SUPABASE_SERVICE_ROLE_KEY,
     {
@@ -89,18 +94,7 @@ export function createAdminSupabaseClient() {
   );
 }
 
-/**
- * Browser Supabase client — singleton for Client Components.
- * Safe to call multiple times (returns same instance).
- */
-let browserClient: ReturnType<typeof createBrowserClient> | null = null;
-
-export function createBrowserSupabaseClient() {
-  if (browserClient) return browserClient;
-  const publicEnv = getPublicEnv();
-  browserClient = createBrowserClient(
-    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-  return browserClient;
-}
+// The browser client lives in lib/supabase-browser.ts (safe for "use client"
+// bundles). The duplicate createBrowserSupabaseClient that used to live here
+// was removed (council dedup finding; its last importer was the owner-killed
+// TOSUpdateBanner, REMOVED.md line 27).

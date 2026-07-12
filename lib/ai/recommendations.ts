@@ -7,7 +7,10 @@
  * - Day of week
  */
 
-export interface RecommendationSignals {
+// Not exported: only used internally in this file (zero external imports,
+// ring5c dead-export sweep). extractSignalsFromHeaders' callers get the shape
+// via its return type, not a named import of this interface.
+interface RecommendationSignals {
   location: string | null;
   timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   dayOfWeek: number; // 0-6 (Sunday-Saturday)
@@ -17,7 +20,7 @@ export interface RecommendationSignals {
 /**
  * Get current time of day segment
  */
-export function getTimeOfDay(): RecommendationSignals['timeOfDay'] {
+function getTimeOfDay(): RecommendationSignals['timeOfDay'] {
   const hour = new Date().getHours();
 
   if (hour >= 6 && hour < 12) return 'morning';

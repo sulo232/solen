@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     const active = vouchers?.filter((v) => {
       const isExpired = v.expires_at && new Date(v.expires_at) < now;
       const isRedeemed = v.redeemed_at !== null;
-      return !isExpired && !isRedeemed && v.remaining_amount > 0;
+      return !isExpired && !isRedeemed && (v.remaining_amount ?? 0) > 0;
     }) ?? [];
 
     const used = vouchers?.filter((v) => {

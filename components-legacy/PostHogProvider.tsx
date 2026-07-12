@@ -20,6 +20,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       api_host: 'https://eu.i.posthog.com',
       person_profiles: 'identified_only',
       opt_out_capturing_by_default: true, // suppress ALL capture until opt-in
+      capture_performance: { web_vitals: true }, // R6: web-vitals RUM, gated by the same opt-in/opt-out toggle below
     });
     const sync = () => {
       if (analyticsConsented()) posthog.opt_in_capturing();

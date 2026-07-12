@@ -36,13 +36,17 @@ export interface LoyaltyStatus {
   validThrough: string | null; // loyalty_status.valid_through from the monthly snapshot; null until first recompute
 }
 
-export function tierFor(visits: number): Tier {
+// Not exported: only used internally in this file, by statusFromVisits below
+// (zero external imports, ring5c dead-export sweep).
+function tierFor(visits: number): Tier {
   if (visits >= LOYALTY.thresholds.platinum) return "platinum";
   if (visits >= LOYALTY.thresholds.gold) return "gold";
   return "base";
 }
 
-export function statusFromVisits(
+// Not exported: only used internally in this file, by getLoyaltyStatus below
+// (zero external imports, ring5c dead-export sweep).
+function statusFromVisits(
   visits: number,
   windowStartISO: string,
   validThrough: string | null = null

@@ -40,7 +40,8 @@ async function resolveCommissionPercent(
     .select("value")
     .eq("key", "commission")
     .single();
-  return commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+  const commissionSettingValue = commissionSetting?.value as { rate_percent?: number } | null;
+  return commissionSettingValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
 }
 
 /** Write/refresh the salon_payouts ledger row for a settled purchase PI (CHF). */

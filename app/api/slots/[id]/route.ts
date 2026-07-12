@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation, bookingReschedule } from "@/lib/email";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import type { Database } from "@/lib/database.types";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -68,7 +69,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     endsAt = d.toISOString();
   }
 
-  const updatePayload: Record<string, any> = { starts_at: startsAt, ends_at: endsAt };
+  const updatePayload: Database["public"]["Tables"]["availability_slots"]["Update"] = { starts_at: startsAt, ends_at: endsAt };
   if (body.staff_member_id !== undefined) {
     // staff_member_id (when non-null) must belong to this slot's own salon, otherwise
     // the owner could cross-reference another salon's staff member onto this slot.

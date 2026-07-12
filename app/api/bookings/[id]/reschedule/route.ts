@@ -17,7 +17,7 @@ export async function POST(
   const { data: validated, error: valError } = validateBody(bookingRescheduleSchema, body);
   if (valError) {
     return NextResponse.json(
-      { error: "new_starts_at and new_ends_at required (ISO datetime)", message: valError.message },
+      { error: "new_starts_at and new_ends_at required (ISO datetime)", message: valError.message, code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
@@ -30,12 +30,12 @@ export async function POST(
   // it. The relational fetch for the slot's salon_id is kept below, entitlement proven.
   const { actor, booking, userId } = await resolveBookingActor(req, bookingId);
   if (!booking) {
-    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    return NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
   }
   if (actor !== "customer" && actor !== "guest") {
     return actor === null
-      ? NextResponse.json({ error: "Booking not found" }, { status: 404 })
-      : NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      ? NextResponse.json({ error: "Booking not found", code: "NOT_FOUND" }, { status: 404 })
+      : NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
   }
 
   // userId is set for a logged-in customer, null for a token-verified guest
@@ -72,7 +72,7 @@ export async function POST(
 
   if (hoursUntilBooking < RESCHEDULE_MIN_LEAD_HOURS) {
     return NextResponse.json(
-      { error: "Cannot reschedule within 24 hours of booking" },
+      { error: "Cannot reschedule within 24 hours of booking", code: "RESCHEDULE_WINDOW_PASSED" },
       { status: 403 }
     );
   }
@@ -101,7 +101,7 @@ export async function POST(
 
   if (slotError || !newSlot) {
     return NextResponse.json(
-      { error: "New time slot is not available" },
+      { error: "New time slot is not available", code: "SLOT_TAKEN" },
       { status: 409 }
     );
   }
@@ -120,7 +120,7 @@ export async function POST(
 
   if (claimError) {
     console.error("[Reschedule] Claim new slot error:", claimError);
-    return NextResponse.json({ error: "Failed to claim new slot" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to claim new slot", code: "CLAIM_FAILED" }, { status: 500 });
   }
   if (!claimed) {
     // A concurrent request claimed the new slot first. Nothing has changed yet (old slot still
@@ -165,7 +165,7 @@ export async function POST(
     if (updateError) {
       console.error("[Reschedule] Update error:", updateError);
       return NextResponse.json(
-        { error: "Failed to reschedule booking" },
+        { error: "Failed to reschedule booking", code: "DB_ERROR" },
         { status: 500 }
       );
     }

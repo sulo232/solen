@@ -131,8 +131,9 @@ async function main() {
       { wiredCount, totalJsonReturns: returnCount },
     );
 
-    const { GET, feedCacheHeaders, FEED_CACHE_HEADERS, FEED_NO_STORE_HEADERS } = await import(
-      join(REPO_ROOT, "app/api/discovery/feed/route.ts")
+    const { GET } = await import(join(REPO_ROOT, "app/api/discovery/feed/route.ts"));
+    const { feedCacheHeaders, FEED_CACHE_HEADERS, FEED_NO_STORE_HEADERS } = await import(
+      join(REPO_ROOT, "lib/discovery/feed-cache-headers.ts")
     );
 
     // B1. Real anon invocation, neutral browse (no cookie -> userId resolves null).

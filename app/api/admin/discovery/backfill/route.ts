@@ -173,8 +173,8 @@ export async function POST(req: NextRequest) {
       // its allowed set so one bad value doesn't discard the whole analysis (e.g. texture_check on a
       // lash "D-curl"). Fall back to the item's existing value when the AI value isn't allowed.
       const safeGender = ["male", "female", "unisex"].includes(aiResult.gender) ? aiResult.gender : item.gender;
-      const safeTexture = ["straight", "wavy", "curly", "coily"].includes(aiResult.texture) ? aiResult.texture : item.texture;
-      const safeMaint = ["low", "medium", "high"].includes(aiResult.maintenance_level) ? aiResult.maintenance_level : item.maintenance;
+      const safeTexture = aiResult.texture !== null && ["straight", "wavy", "curly", "coily"].includes(aiResult.texture) ? aiResult.texture : item.texture;
+      const safeMaint = aiResult.maintenance_level !== null && ["low", "medium", "high"].includes(aiResult.maintenance_level) ? aiResult.maintenance_level : item.maintenance;
 
       const { error } = await admin
         .from("discovery_items")
@@ -197,8 +197,8 @@ export async function POST(req: NextRequest) {
           cut_guide: aiResult.cut_guide,
           price_min: aiResult.price_min ?? item.price_min,
           price_max: aiResult.price_max ?? item.price_max,
-          // Store the full rich AI analysis as JSONB
-          ai_analysis: aiResult,
+          // Store the full rich AI analysis as JSONB (spread to satisfy the Json index signature)
+          ai_analysis: { ...aiResult },
         })
         .eq("id", item.id);
 

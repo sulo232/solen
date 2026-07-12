@@ -98,29 +98,42 @@ describe("issueRefund remaining/netting math", () => {
   });
 
   it("allows a refund exactly equal to the remaining balance and marks the booking 'refunded' (full)", async () => {
-    const db = makeDbStub([
-      { data: bookingRow({ paid_amount: 10000, refunded_amount: 6000, payment_status: "partially_refunded" }), error: null }, // fetch
-      { data: { id: BOOKING_ID }, error: null }, // CAS claim
-    ]);
+    const db = makeDbStub(
+      [
+        { data: bookingRow({ paid_amount: 10000, refunded_amount: 6000, payment_status: "partially_refunded" }), error: null }, // fetch
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+      ],
+      () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
+    );
     refundsCreateMock.mockResolvedValue({ id: "re_1" });
 
     const result = await issueRefund({ db, source: "booking", id: BOOKING_ID, amountCents: 4000, actor: "admin", reason: "x" });
 
     expect(result.totalRefundedCents).toBe(10000);
     expect(result.paymentStatus).toBe("refunded");
+    // Full refund fires the credits/voucher spend-path restore (step 10b, gated on isFull).
+    expect(db.rpc).toHaveBeenCalledWith("restore_user_credits", { p_pi: "pi_1" });
+    expect(db.rpc).toHaveBeenCalledWith("restore_voucher", { p_pi: "pi_1" });
   });
 
   it("marks 'partially_refunded' when the new total is still below paid_amount", async () => {
-    const db = makeDbStub([
-      { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null },
-      { data: { id: BOOKING_ID }, error: null },
-    ]);
+    const db = makeDbStub(
+      [
+        { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null },
+        { data: { id: BOOKING_ID }, error: null },
+      ],
+      () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
+    );
     refundsCreateMock.mockResolvedValue({ id: "re_2" });
 
     const result = await issueRefund({ db, source: "booking", id: BOOKING_ID, amountCents: 3000, actor: "customer", reason: "x" });
 
     expect(result.totalRefundedCents).toBe(3000);
     expect(result.paymentStatus).toBe("partially_refunded");
+    // A partial refund must NOT restore the credits/voucher ledger (step 10b gated on
+    // isFull): the redeemed amount could still be backing the unrefunded remainder.
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_user_credits", expect.anything());
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_voucher", expect.anything());
   });
 
   it("passes reverse_transfer + refund_application_fee only for a Connect account", async () => {
@@ -149,6 +162,45 @@ describe("issueRefund remaining/netting math", () => {
     const params = refundsCreateMock.mock.calls[0][0];
     expect(params.reverse_transfer).toBeUndefined();
     expect(params.refund_application_fee).toBeUndefined();
+  });
+});
+
+describe("issueRefund credits/voucher spend-path restore (step 10b, gated on isFull)", () => {
+  // Standalone cases on top of the embedded assertions above (netting-math describe,
+  // mirrors issue-purchase-refund.test.ts:124-166). Added per the fix-round punch list
+  // to independently discriminate the isFull restore gate and push this file's count
+  // to the reviewer's stated >=76 total (deviation from the pure embedded-only mirror,
+  // explicitly accepted per the punch list's option (b)).
+  it("fires restore_user_credits and restore_voucher on a full refund", async () => {
+    const db = makeDbStub(
+      [
+        { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null }, // fetch
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+      ],
+      () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
+    );
+    refundsCreateMock.mockResolvedValue({ id: "re_5" });
+
+    await issueRefund({ db, source: "booking", id: BOOKING_ID, amountCents: 10000, actor: "admin", reason: "x" });
+
+    expect(db.rpc).toHaveBeenCalledWith("restore_user_credits", { p_pi: "pi_1" });
+    expect(db.rpc).toHaveBeenCalledWith("restore_voucher", { p_pi: "pi_1" });
+  });
+
+  it("does NOT fire restore_user_credits nor restore_voucher on a partial refund", async () => {
+    const db = makeDbStub(
+      [
+        { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null }, // fetch
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+      ],
+      () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
+    );
+    refundsCreateMock.mockResolvedValue({ id: "re_6" });
+
+    await issueRefund({ db, source: "booking", id: BOOKING_ID, amountCents: 2000, actor: "customer", reason: "x" });
+
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_user_credits", expect.anything());
+    expect(db.rpc).not.toHaveBeenCalledWith("restore_voucher", expect.anything());
   });
 });
 
