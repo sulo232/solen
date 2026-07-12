@@ -141,7 +141,10 @@ export async function GET(req: NextRequest) {
           const { data: card } = await admin
             .from("gift_cards")
             .select("id, is_active")
-            .eq("stripe_payment_intent_id", piId ?? "")
+            // postgrest-js's eq() type requires NonNullable, but the cast doesn't touch the
+            // runtime value: a null piId still sends eq.null over the wire (PostgREST IS-NULL
+            // match), byte-identical to pre-typing behavior.
+            .eq("stripe_payment_intent_id", piId as string)
             .maybeSingle();
           if (!card) {
             mismatches.push({
@@ -179,7 +182,10 @@ export async function GET(req: NextRequest) {
           const { data: purchase } = await admin
             .from(purchaseTable)
             .select("id, paid_amount, refunded_amount")
-            .eq("stripe_payment_intent_id", piId ?? "")
+            // postgrest-js's eq() type requires NonNullable, but the cast doesn't touch the
+            // runtime value: a null piId still sends eq.null over the wire (PostgREST IS-NULL
+            // match), byte-identical to pre-typing behavior.
+            .eq("stripe_payment_intent_id", piId as string)
             .maybeSingle();
 
           if (!purchase) {

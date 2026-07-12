@@ -47,6 +47,8 @@ export async function POST(
     return NextResponse.json({ error: "Only salon owners can issue refunds" }, { status: 403 });
   }
 
+  // Array.prototype.includes requires a string arg; booking.status is string | null here.
+  // ?? "" is behaviorally inert (the array never contains ""), type-only cast, no new branch.
   if (!["completed", "confirmed", "cancelled"].includes(booking.status ?? "")) {
     return NextResponse.json({ error: "Cannot refund this booking status" }, { status: 400 });
   }

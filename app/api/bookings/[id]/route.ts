@@ -108,6 +108,8 @@ export async function PATCH(
   // Transition guard: once a booking is in a terminal state, no further status writes are
   // valid, re-cancelling an already-cancelled booking clobbers payment_status
   // (refunded to none) and re-runs strike logic (audit finding).
+  // Array.prototype.includes requires a string arg; booking.status is string | null here.
+  // ?? "" is behaviorally inert (the array never contains ""), type-only cast, no new branch.
   if (["cancelled", "completed", "no_show"].includes(booking.status ?? "")) {
     return NextResponse.json(
       { message: `Booking is already ${booking.status}, no further status changes allowed`, code: "INVALID_TRANSITION" },
@@ -132,7 +134,10 @@ export async function PATCH(
     .from("bookings")
     .update(updates)
     .eq("id", id)
-    .eq("status", booking.status ?? "") // CAS
+    // postgrest-js's eq() type requires NonNullable, but the cast doesn't touch the runtime
+    // value: a null booking.status still sends eq.null over the wire (PostgREST IS-NULL match),
+    // byte-identical to pre-typing behavior.
+    .eq("status", booking.status as string) // CAS
     .select("id");
   if (updateErr) return NextResponse.json({ message: updateErr.message, code: "DB_ERROR" }, { status: 500 });
   if (!updatedRows || updatedRows.length === 0) {

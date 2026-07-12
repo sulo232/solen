@@ -49,7 +49,10 @@ export async function POST(req: NextRequest) {
     .from("availability_slots")
     .select("id, starts_at, ends_at")
     .eq("salon_id", source.salon_id)
-    .eq("staff_member_id", source.staff_member_id ?? "")
+    // postgrest-js's eq() type requires NonNullable, but the cast doesn't touch the runtime
+    // value: a null staff_member_id still sends eq.null over the wire (PostgREST IS-NULL
+    // match), byte-identical to pre-typing behavior.
+    .eq("staff_member_id", source.staff_member_id as string)
     .eq("status", "available")
     .gt("starts_at", now.toISOString())
     .order("starts_at", { ascending: true })
