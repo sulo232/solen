@@ -55,8 +55,8 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
 - [x] C1 mobile design-law inventory , DONE, verified: _plans/design-consolidation/C1_MOBILE.md §1 (5 docs + theme.ts, no MOBILE_LOCKFILE ever built); committed 80691b351
 - [x] C2 mobile internal inconsistencies , DONE, verified: C1_MOBILE.md §2 (4 found: filter-pill 3-way, D8/D17 see-all, 9 stale draft rows, THEMING semantic-color claim); committed 80691b351
 - [x] C3 web-vs-app divergences , DONE, C1_MOBILE.md §3 (13: 7 deliberate, 4 accidental, 2 reframed; s-error #DC2626 verified live tailwind.config.js:178)
-- [ ] C4 mobile canon , BLOCKED-ON: W3 coder agent running (dispatched 2026-07-12, THEMING.md canonization per orchestrator decisions); reviewer grades on return
-- [ ] C5 mobile gap rules , BLOCKED-ON: same W3 coder agent (44pt floor, ErrorState, toast recipe, safe-area/haptics/nav codify-dominant-pattern, dark-coverage rule)
+- [x] C4 mobile canon , DONE, verified: solen-mobile _design-system/THEMING.md (canon header :3-9, 26-row token tables vs theme.ts, parity table, 2a-2d resolutions); reviewer 10/11 PASS round 1, 2 punch items fixed same turn; solen-mobile commit fd6fa2d
+- [x] C5 mobile gap rules , DONE, verified: THEMING.md section 4 (7 rules each with derivation; haptics kept OPEN 24v19 per no-invention rule; press-state per-file values after reviewer punch); commit fd6fa2d
 
 ## Phase D , close
 - [ ] D1 consolidation report , DRAFT COMMITTED (sections 0-6 final, §7/§8 pending W2/W3 returns) , BLOCKED-ON: W2+W3 coder agents in flight, sections filled at their return

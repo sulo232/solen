@@ -91,6 +91,13 @@ These are CODE fixes on visible UI: queued as chips (§6), not applied here (moc
 
 (in flight , W2 coder + reviewer; section updated at close)
 
-## 8 , Mobile canon (W3)
+## 8 , Mobile canon (W3) , DONE (solen-mobile commit fd6fa2d)
 
-(in flight , W3 coder + reviewer; section updated at close)
+**THEMING.md is now THE mobile canon** (the promised MOBILE_LOCKFILE, fulfilled without a duplicate file; PLAN.md:47 pointer). Reviewer: 10/11 first-round PASS; the 2 punch items (press-state list composition, haptics off-by-ones) + 4 notes fixed and committed.
+
+- Token tables (26 rows, light + dark) verified line-for-line against src/lib/theme.ts, 10 previously undocumented tokens added.
+- 4 internal contradictions resolved: selected-fill = ink documented AS SHIPPED with the OPEN flag (web gray law + PLAN D14 disagree , owner question, new surfaces use gray meanwhile); see-all D17 grey-arrow wins over D8 (superseded inline in PLAN.md, registry row corrected); 5 registry rows flipped live (code-verified), 4 kept draft , the audit's claim they were live was WRONG, they are gallery-only (Chip, SlotChip, RatingRow, ServiceRow); semantic dark-mode pairs corrected (success #16A34A->#2BD17E, error #DC2626->#FF5A5A, save #FF3366->#FF4D7E).
+- Web-vs-mobile parity table: 7 deliberate divergences (each with a dated source), 4 ACCIDENTAL-OPEN (selected ink-fill; pre-V3-D138 3-tier ink scale; successBg/errorBg pale mismatches).
+- 7 gap rules, each with derivation: 44pt touch floor; ErrorState pattern (component to build, chipped); toast inherits web V3-D462; safe-area = useSafeAreaInsets (59 files, 0 SafeAreaView); press states = opacity dominant (51 files), spring-scale reserved for flagship surfaces (8 files, per-file values recorded, web 0.97/0.98 law noted as the reconcile target); haptics OPEN (24 wrapper vs 19 direct, no invented winner); dark-mode ~80% (89/111) + every-new-screen-theme-aware rule.
+- Two audit corrections surfaced by the coder and CONFIRMED by the reviewer: gallery-only imports (above) and 17 mock files still importing the static colors export.
+- Not committed: the concurrent session's src/ work (GlassCircle saturated-disc, Home ?v= variants) , verified unrelated to this doc task and left alone.
