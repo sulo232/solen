@@ -19,16 +19,27 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
 - [ ] A1 doc-vs-doc contradiction sweep (LOCKFILE vs SOURCE vs CANON vs CLAUDE.md blocks vs TASTE_LOG vs CONTROL_ELEVATION vs MOTION vs styleguide.html)
 - [ ] A2 stale-authority census (docs claiming dead precedence, e.g. CANON.md "this wins" vs folded-into-LOCKFILE 2026-07-10)
 - [ ] A3 registry-vs-code coverage (stale rows, phantom paths, undocumented shared primitives, component docs contradicting LOCKFILE)
-- [ ] A4 code-vs-law drift census (drift checker run + classes it misses: type scale, radius, shadow, spacing, active:scale, disabled opacity), incl. which CONTRADICTIONS.md 2026-06-08 items regressed
-- [ ] A5 drift-gate divergences verified (check.py vs LOCKFILE: s-pop, #F5F5F4 transposition + the other 3 from SELF_AUDIT_2026-07-11)
+- [ ] A4 code-vs-law drift census
+  - [ ] A4a drift checker fresh run vs committed _drift-report.md
+  - [ ] A4b unchecked-class census (secondary text, hairline, sunken, star, radius, shadow, press-scale, disabled opacity, type sizes, dead hovers)
+  - [ ] A4c CONTRADICTIONS.md 2026-06-08 regression-vs-known-debt verdicts
+- [ ] A5 drift-gate divergences verified
+  - [ ] A5a s-pop RETIRED_TOKENS claim verified vs check.py + LOCKFILE
+  - [ ] A5b #F5F5F4/#F4F4F5 ALLOWED_HEX transposition verified
+  - [ ] A5c remaining 3 SELF_AUDIT divergences verified (each CONFIRMED or STALE)
 
 ## Phase B , web synthesis + apply (docs = direct edits; code via coder)
 - [ ] B1 resolve every A1/A2 contradiction decisively per precedence chain (latest dated owner decision wins), each with citation
 - [ ] B2 SOURCE.md corrected (superseded text fixed or bannered)
 - [ ] B3 LOCKFILE.md cleaned (orchestrator-only writes; NO locked-row reopening)
-- [ ] B4 CANON.md + other stale docs bannered/merged
+- [ ] B4 stale docs bannered/merged
+  - [ ] B4a CANON.md status banner (authority line corrected)
+  - [ ] B4b every other stale-authority doc from A2 bannered (list from A2)
 - [ ] B5 COMPONENT_REGISTRY.md statuses corrected; missing component doc stubs added for undocumented shared primitives
-- [ ] B6 check.py aligned to LOCKFILE (via coder if >3 lines) + self-test (one should-block, one should-pass)
+- [ ] B6 check.py aligned to LOCKFILE
+  - [ ] B6a divergence fixes applied (via coder if >3 lines)
+  - [ ] B6b self-test: one should-block input blocks
+  - [ ] B6c self-test: one should-pass input passes
 - [ ] B7 gap-fill: add decisive missing rules derived from locked patterns (list produced in A-phase; each new rule cites its derivation; genuinely underivable = owner question, not invention)
 - [ ] B8 styleguide (public/solen-styleguide.html) spot-synced to consolidated tokens (stale rows patched)
 
