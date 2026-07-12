@@ -52,7 +52,7 @@ neutral vocabulary. Every grey in code must be one of these tokens — no new `r
 the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc neutrals are where
 "inconsistent everywhere" starts; drift-checker should flag any hex/rgba neutral outside this set.
 
-### Brand accent (Layer 2 — royal blue = INTERACTIVITY, v2 2026-06-09; generous on anything tappable, off everything that isn't)
+### Brand accent (Layer 2 — royal blue = THE HYPERLINK COLOR, v3 2026-06-11, SPARSE; heading corrected 2026-07-12, the old v2 "generous on anything tappable" wording was superseded by §1.5 v3 below)
 
 | Token | Hex | Usage |
 |---|---|---|
@@ -68,7 +68,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 | Success / open (inline chips/pills) | `s-success.DEFAULT` / `.bg` | `#16A34A` | `#E8F5E9` |
 | OPEN-status ONLY (Geöffnet text + open dot: StatusPill / StatusInline / Öffnungszeiten) | `s-open.DEFAULT` | `#1F8900` | — (Fresha's calmer open-green, owner 2026-06-12 "make the green more like fresha"; s-success stays the universal success green everywhere else) |
 | Success FOCAL (confirm / paid / done-step) | `s-success.DEFAULT` | `#16A34A` | white check on a solid **normal-green** disc. **Deep `#15803D` REVERTED 2026-06-10** (owner: normal green, not deep) — focal + inline now share `#16A34A`. The disc reads confident via SIZE + solid fill + white check + spring-pop, not via a darker hue. |
-| Error | `s-error.DEFAULT` / `.bg` | `#D32F2F` | `#FFEBEE` |
+| Error | `s-error.DEFAULT` / `.bg` | `#DC2626` | `#FEE2E2` | <!-- V3-D421 consolidated error onto the locked red (error == closed, ONE red system); code-verified tailwind.config.js:178; doc corrected 2026-07-12, was stale #D32F2F/#FFEBEE -->
 | Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424). Derivation (folded from CANON §1/§8): amber = the accent's twin, same HSL S+L (88%/55%), hue 40°; if it ever reads too golden for a warning, the sanctioned deeper sibling is `#E09A0C` (same hue+sat, L ~46%) , owner pick required before swapping. |
 | Info | use `s-accent` | `#276EF1` | `#EAEFFE` |
 | Rating star | `s-star` | `#FFC32B` | — |
@@ -76,7 +76,7 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 | Urgency (last-min / off-peak) | `s-urgency.DEFAULT` / `.bg` / `.border` | `#C2410C` | `#FFF1E6` / `rgba(194,65,12,0.22)` |
 | Surcharge / extra-charge (FOCAL) | `s-surcharge.DEFAULT` / `.bg` | `#EA580C` | `#FFEDD5` |
 | Escalated / urgency badge (vivid) | `s-pop` | `#C03001` | — |
-| Closed | `s-closed` | `#DC2626` | (distinct from error) |
+| Closed | `s-closed` | `#DC2626` | (same hex as `s-error` since V3-D421 — one red system; kept as a named alias in code) |
 | Disabled | `s-ink-3` | `#6B6B6B` | — |
 
 **🟠 Focal-vs-text rule (V3-D424, 2026-06-02):** the dark amber/orange tokens — `s-warning.text` (`#B45309`), `s-urgency` (`#C2410C`) — exist for **small text on a pale bg** (readability), and must **NEVER** be used as a focal/hero color (a big number, a status band): as a focal they read muddy/muted. For a vivid warm focal use **`s-surcharge`** (`#EA580C`) on its light `.bg`. General pattern: **focal/hero = the vivid `DEFAULT` token; small-text-on-pale = the dark `.text` token.** (Origin: repeatedly shipping muted oranges by grabbing `.text` tokens as focal fills.)
@@ -297,7 +297,7 @@ Hierarchy uses **size** + **position** + **tracking** — NOT compound family co
 | **Meta** | 12→13px | 400 | sentence | 0 | `s-ink-3` | unlimited |
 | **Primary CTA** | 15px | 500 | sentence | -0.005em | white on `s-ink` | 1-2 |
 | **Secondary CTA** | 15px | 500 | sentence | -0.005em | `s-ink` + `border-s-border` | 1-2 |
-| **Tab label** | 14px | 500 | sentence | 0 | `s-ink-2` (active: `s-accent` text + blue underline/indicator — active tab is interactive, blue per v2 rule 1) | (one nav per route) |
+| **Tab label** | 14px | 500 | sentence | 0 | `s-ink-2` (active: gray fill `bg-s-bg-sunken` + `text-s-ink` + semibold — the TabPill treatment per the 2026-06-29 selected/active law; corrected 2026-07-12, the old blue-underline note cited dead v2 rule 1. A distinct top-nav underline TabNav does not exist; if one is ever built its active color needs its own dated owner call) | (one nav per route) |
 | **Eyebrow** | 11→12px | 600 | **UPPERCASE** | 0.08em | `s-ink-3` | **max 1** |
 | **Tag / Status** | 10-12px | 600 | **UPPERCASE** | 0.06-0.08em | semantic (success/warn/error) | small footprint |
 
@@ -574,7 +574,8 @@ Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-pa
 ### Durations (only these — non-canonical = drift)
 
 ```
-80ms / 150ms / 200ms / 250ms / 300ms / 500ms
+80ms / 100ms / 150ms / 200ms / 250ms / 300ms / 500ms
+<!-- 100ms registered 2026-07-12 (consolidation): code-derived, 10 live usages incl. primitives Switch.tsx:98 (active press) + Sheet.tsx:47 (reduced-motion) + booking CTAs; the drift gate had allowed it since V3-D450-era with a mislabeled citation, LOCKFILE now records it -->
 ```
 
 ### Easing functions
@@ -1163,7 +1164,7 @@ User locked path: **AI placeholders during sweep, swap real photos lazily.** Pat
 ### Aspect ratios (canonical set, drift rule A11)
 
 Per Uber measurement: `1:1` (split-hero squares), `3:2` (alternating rows + card thumbs), `16:9` (magazine grid + newsroom), `21:9` (full-bleed wide heroes). Allowed values: `aspect-square`, `aspect-[3/2]`, `aspect-video`, `aspect-[21/9]`, `aspect-[4/3]` (PDP cover photos only). Anything else = drift A11.
-Example: Fresha closes "Closed" in burnt amber `#B7570B`. LOCKFILE has `s-urgency #9A3412` as urgency amber. → LOCKFILE wins (visually equivalent, our token is the source).
+Example: Fresha closes "Closed" in burnt amber `#B7570B`. LOCKFILE has `s-urgency #C2410C` as the urgency accent (V3-D424; this §11 aside previously said #9A3412, corrected 2026-07-12 to match §1 + live tailwind.config.js:186). → LOCKFILE wins (visually equivalent, our token is the source).
 
 ---
 
@@ -1177,10 +1178,10 @@ Dashboard IA mirrors Fresha for Business (verified via Mobbin web screens, 2026-
 ### §12.2 — Vibrant palette (full saturation, consistent with accent blue)
 | Role | Token | Notes |
 |---|---|---|
-| Primary CTA + active nav | `s-accent` `#276EF1` | The vibrant blue. Hover → darken via opacity/lightness (the old #185CE0 hover hex is folded into #276EF1 per CANON §1). (Dashboard ONLY — customer site keeps ink CTAs per §0.2.) |
+| Primary CTA + active nav | `s-accent` `#276EF1` | The vibrant blue. Hover → darken to `s-accent.deep #1E54B7` (DS-6, 2026-06-11, owner-approved; corrected 2026-07-12 — the old "folded into #276EF1" note predates the DS-6 re-activation). (Dashboard ONLY — customer site keeps ink CTAs per §0.2.) |
 | Status pill text | **saturated semantic** (`text-s-success`/`s-error`/`s-warning.text`/`s-ink-2`) | NEVER ink/black text on a colored pill. Resolves the §1 "pastel+ink" vs §2.5 "semantic text" conflict in favor of **§2.5 semantic text** for dashboard. |
 | `s-warning.text` | `#B45309` | Readable darker amber for warning text on `s-warning.bg` (amber DEFAULT fails contrast as text). |
-| Charts (data-vis) | accent-blue + universal semantics | Line/bar charts use `#276EF1` / `#16A34A` / `#D32F2F` — NOT chart-grey. (Chart-grey §1 Layer-4 is for the *customer* competitor-chart only.) |
+| Charts (data-vis) | accent-blue + universal semantics | Line/bar charts use `#276EF1` / `#16A34A` / `#DC2626` (one-red V3-D421; corrected 2026-07-12) — NOT chart-grey. (Chart-grey §1 Layer-4 is for the *customer* competitor-chart only.) |
 | Calendar service colors | service palette (W3, to be locked) | blue cut / pink color / orange beard / violet nails / green spa — vibrant, store-defined service types, tinted block bg + colored border. |
 
 ### §12.3 — Radii (rounder/modern)
@@ -1252,9 +1253,9 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 | **Status** (open/closed/pending) | pastel `.bg` + ink/semantic text pill | `StatusPill` | 3 (semantic) | inline live state |
 | **Rating** | filled star | `fill-s-star` #FFC32B | 3 (semantic) | review counts, ratings |
 | **Saved** | filled heart | `--heart-active` #FF3366 | 3 (semantic) | save/favourite |
-| **Notification count** | small filled pill on a bell/tab, white numeral | **red `s-error` #D32F2F** (recommended) | 3 (semantic) | unread count — see note |
+| **Notification count** | small filled pill on a bell/tab, white numeral | **red `s-error` #DC2626** (recommended) | 3 (semantic) | unread count — see note |
 
-**Notification-count note (owner-flag, OPEN):** the near-universal mobile convention is a **red count badge** (iOS springboard, Instagram, etc.). It reads as "unread count," NOT as "error," because context + shape differ (a tiny numeral pill riding a bell/tab icon, never an inline message). Recommended: red `s-error` #D32F2F, white `font-num` numeral, `99+` cap. The ink alternative (neutral count) is calmer but loses the instant "you have new things" signal. **Flagged for owner confirmation in QUESTIONS.md (Q-stepper-1)** — until confirmed, red is the default since it matches every reference.
+**Notification-count note (owner-flag, OPEN):** the near-universal mobile convention is a **red count badge** (iOS springboard, Instagram, etc.). It reads as "unread count," NOT as "error," because context + shape differ (a tiny numeral pill riding a bell/tab icon, never an inline message). Recommended: red `s-error` #DC2626, white `font-num` numeral, `99+` cap. The ink alternative (neutral count) is calmer but loses the instant "you have new things" signal. **Flagged for owner confirmation in QUESTIONS.md (Q-stepper-1)** — until confirmed, red is the default since it matches every reference.
 
 ### §13.4 — Codes are NOT mono (Inter Tight tabular)
 

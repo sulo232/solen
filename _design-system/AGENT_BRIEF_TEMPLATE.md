@@ -66,7 +66,7 @@ It replaces the 40-line manual orchestration of Mobbin queries + Playwright navi
 
 **Mission lock — repeat with every section:**
 
-> Exact copy of Fresha section anatomy, spacing, hierarchy, animations, click states. Only exceptions: Solen primitives (SalonCard / HeartButton / SearchBar / StatusPill / StatusInline / TabPill / MetaDot / Toast / Skeleton / ComingSoon / Step / FAQItem / BentoCard / MarketplaceVisual), tokens (`s-accent #276EF1`, `s-star #FFC32B`, heart `#FF3366`, `s-urgency #9A3412`), fonts (Inter Tight display, Inter body), and CTA discipline (primary CTAs stay `bg-s-ink` per V3-D192-fix lock). Everything else is exact-copy Fresha.
+> Exact copy of Fresha section anatomy, spacing, hierarchy, animations, click states. Only exceptions: Solen primitives (SalonCard / HeartButton / SearchBar / StatusInline / TabPill / Toast / Skeleton / ComingSoon / Step / FAQItem / BentoCard / MarketplaceVisual — StatusPill DELETED 2026-06-30, MetaDot banned V3-D232; list corrected 2026-07-12), tokens (`s-accent #276EF1`, `s-star #FFC32B`, heart `#FF3366`, `s-urgency #C2410C`), fonts (Inter Tight display, Inter body), and CTA discipline (primary CTAs stay `bg-s-ink` per V3-D192-fix lock). Everything else is exact-copy Fresha.
 
 **Anti-pattern this kills:** "screenshot whack-a-mole" (user's V3-D229 → V3-D230 incident). Treating each pasted user screenshot as a new bug, patching the surface delta, missing the structural gap. The skill forces you to see motion + click states + sizes + colors that static screenshots hide. If you find yourself eyeballing — stop, fire the skill, get the spec.
 
@@ -90,7 +90,7 @@ C. Universal-components rule (V3-D205):
 D. Color rules (V3-D197):
    - Decision tree first: ask if color carries semantic meaning → Layer 3 (use universal token). If brand identity moment → Layer 2 (`s-accent #276EF1`, SMALL footprint). Else → Layer 1 chrome (B&W).
    - NO category-specific colors. NO inventing hues.
-   - Universal colors: success=`s-success`, error=`s-error`, warning=`s-warning`, info=`s-accent`, rating=`s-star` (#FFC32B), save=`--heart-active` (#FF3366), urgency=`#9A3412 on #FFF1E6`, disabled=`s-ink-3`.
+   - Universal colors: success=`s-success`, error=`s-error`, warning=`s-warning`, info=`s-accent`, rating=`s-star` (#FFC32B), save=`--heart-active` (#FF3366), urgency=`s-urgency #C2410C on #FFF1E6` (V3-D424), disabled=`s-ink-3`.
    - Primary CTAs stay `bg-s-ink` (V3-D192-fix). Blue accent is small highlight only.
 
 E. Typography (V3-D190/D191/D193):

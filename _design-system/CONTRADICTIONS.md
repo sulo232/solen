@@ -1,6 +1,7 @@
 # Solen — Design Contradictions (systematic audit, 2026-06-08)
 
 > **STATUS — EXECUTED 2026-06-08. This is now a record, not a backlog.**
+> **Drift note (2026-07-12):** §1's filter-chip-selected recommendation (blue border/text) was itself superseded 2026-06-29 by the gray-fill law (CLAUDE.md design contract). And the 2026-07-12 consolidation census (A4) found 6 of the classes marked done here have since REGRESSED (hairline, sunken, radius, press-scale, disabled-opacity, dead-hover) — see _design-system/CONSOLIDATION_2026-07-12.md.
 > §0 bugs · §2 token sweep (185 files) · §1 filter state · §3 spacing/radius/shadow — done.
 > §4: all 4 consolidation primitives built + migrated app-wide (RatingStars / Avatar / PriceFrom / BackButton); legacy salon PDP tree retired (route 828→15 lines, 11 files); dead category/filter graveyard cleared (11 files); Toast + Skeleton consolidated; dead PhotoLightbox + ReportContentButton deleted.
 > **Left intentionally:** FilterBar→FilterSheet (live on `/angebote` + `/behandlungen`, works, recently restyled in §1 — a 3-route rebuild not worth the churn).
@@ -29,7 +30,7 @@ The genuinely *new-code* contradictions are the smaller hand-fix list at the bot
 - **Error state painted blue, not red**: `components-legacy/ui/AddressAutocomplete.tsx:49` error border = `border-s-accent` (blue). → `border-s-error` (universal-colour table: error = red).
 
 ## 1 · STATE treatments (same state, ≥2 looks)
-- **Filter chip selected** — 3 fills: canonical `border-s-accent + text-s-accent`, NO fill (`search/SearchTemplate.tsx:1083`, V3-D450) vs ink fill `bg-s-ink text-white` (`ui/SubCategoryChips.tsx:50`, `FilterBar.tsx:101`, `ScrollableFilterRow.tsx:104,127`, `FilterDrawer.tsx:121`, `FilterBottomSheet.tsx:110`) vs blue-wash fill (`search/FilterSheet.tsx:236`). → blue border + blue text, no fill.
+- **Filter chip selected** — 3 fills: canonical `border-s-accent + text-s-accent`, NO fill (`search/SearchTemplate.tsx:1083`, V3-D450) vs ink fill `bg-s-ink text-white` (`ui/SubCategoryChips.tsx:50`, `FilterBar.tsx:101`, `ScrollableFilterRow.tsx:104,127`, `FilterDrawer.tsx:121`, `FilterBottomSheet.tsx:110`) vs blue-wash fill (`search/FilterSheet.tsx:236`). → ~~blue border + blue text, no fill~~ **SUPERSEDED 2026-06-29: gray fill `bg-s-bg-sunken` + `text-s-ink` + semibold (CLAUDE.md design contract; V3-D450 dead)**.
 - **Pill hover (inactive)** — 4 ways: `hover:bg-s-bg-sunken` (`SearchTemplate.tsx:1084`) vs `hover:border-s-ink` (`FilterSheet.tsx:237`) vs `hover:border-s-ink/20 hover:text-s-ink/80` (`SubCategoryChips.tsx:51`) vs `hover:border-s-accent/40 hover:text-s-accent` (`ScrollableFilterRow.tsx:105`,`FilterBar.tsx:102`). → sink `bg-s-bg-sunken`.
 - **Input focus** — single ink edge (`primitives/TextInput.tsx:28`,`Select.tsx:26`,`Textarea.tsx:26`) vs double accent ring (`booking/GuestBookingForm.tsx:115` `focus:ring-2 focus:ring-s-accent-pale`, `ui/AddressAutocomplete.tsx:49` `focus:ring-2`). → single ink edge; route legacy inputs through `TextInput`.
 - **Selected list-row marker** — decorative leading dot (`ui/SortDropdown.tsx:128,132`) vs bg-tint + accent text, no dot (`ui/SearchAutocomplete.tsx:224,249,300`). → tint + accent text, NO dot (§0.11 bans pips).

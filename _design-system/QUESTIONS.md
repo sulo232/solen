@@ -150,12 +150,12 @@ When introducing a new token, both forms must be defined together. Pastel comput
 
 **Plus codify universal-color convention:** Solen uses the colors humans already recognize from a lifetime of UI exposure. We do NOT invent custom semantic hues. Standard mapping:
 - success → green `s-success #16A34A`
-- error → red `s-error #D32F2F`
+- error → red `s-error #DC2626` (one-red V3-D421; hex corrected 2026-07-12)
 - warning → amber `s-warning #F59E0B`
 - info / brand → blue `s-accent #1638C4`
 - rating → yellow `s-star #FFC32B`
 - save → hot pink `--heart-active #FF3366`
-- urgency → burnt amber `#9A3412 on #FFF1E6`
+- urgency → vermilion `s-urgency #C2410C on #FFF1E6` (V3-D424; hex corrected 2026-07-12)
 - disabled → muted grey `s-ink-3`
 
 **Plus §14.0 decision tree:** before writing ANY color class, answer 3 questions in order (does color = meaning? → brand? → default chrome). Every new component's .md must declare `Layer: 1 / 2 / 3` so it's grep-able.
@@ -342,10 +342,10 @@ When introducing a new token, both forms must be defined together. Pastel comput
 ### Q21 — Notification-count badge color: red or ink?
 **Severity:** LOW
 **SOURCE.md anchor:** LOCKFILE §13.3 (badge taxonomy)
-**Question:** Should the unread-notification count badge (the small numeral pill on the bell/tab) be red `s-error #D32F2F` or neutral ink?
+**Question:** Should the unread-notification count badge (the small numeral pill on the bell/tab) be red `s-error #DC2626` or neutral ink?
 **Observation:** Every other badge color is locked in §13.3 (selected=ink, done/success=green, rating=yellow, saved=pink). The count badge is the one open slot. Near-universal mobile convention (iOS springboard, Instagram) is a RED count pill.
 **Options:**
-- A. **Red `s-error #D32F2F`** + white numeral, `99+` cap (recommended). Matches every reference; reads as "unread count," not "error," because shape+context differ from an inline error message.
+- A. **Red `s-error #DC2626`** + white numeral, `99+` cap (recommended). Matches every reference; reads as "unread count," not "error," because shape+context differ from an inline error message.
 - B. **Ink** count pill. Calmer, on-brand B&W, but loses the instant "you have new things" signal — a neutral count is easy to miss.
 - C. **Blue `s-accent`.** Ties the count to the interactivity layer, but blue=interactivity not count, and it competes with real links.
 **Recommendation:** A (red) — the convention is strong enough that a tiny numeral pill on a bell reads as count, not error; the §13.3 default is already red pending this confirmation.
