@@ -35,7 +35,7 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
 - [x] B4 stale docs bannered/merged , verified: rollup of B4a-b below (each child carries commit evidence)
   - [x] B4a CANON tombstone (owner 'fold it' 2026-07-10) revived from stranded branch, 80691b351
   - [x] B4b stale docs bannered , commit 43b4f7a99, verified: V2_RECONCILIATION.md:3 (historical banner) + :10 (precedence strike) + rule-1 supersession; CONTRADICTIONS.md:4 (drift note) + §1 strike; MOTION.md x2 chains; TASTE_LOG.md:150 + CONSISTENCY_AUDIT.md:33 via revive 80691b351
-- [ ] B5 registry + component docs , W2 coder work COMPLETE (all 8 sub-items a-h below), all edits doc-only + the one authorized SalonCard.tsx hex fix; LOCKFILE.md untouched (git status confirms) , BLOCKED-ON: loop-reviewer grade (coder does not self-certify; parent box ticks on reviewer PASS)
+- [x] B5 registry + component docs , DONE, verified: loop-reviewer round 2 PASS 7/7 (round-1 FAIL on fabricated call-sites + em-dashes, round-2 punch closure grep-verified, convergence 5 fails -> 0); commits f0f322c29 (r1) + 91ca978c5 (r2); sub-items a-h each evidenced below
   - [x] B5a Toast.md rewritten to shipped V3-D462 recipe , DONE (white pill/circle-badge/bottom-dock/CSS-transition motion, cited Toast.tsx:190-380)
   - [x] B5b FilterSheet.md selected-state rewritten to 2026-06-29 gray law , DONE (Layer section + Visual signature + Provenance, cited FilterSheet.tsx:351-385)
   - [x] B5c StatusPill.md tombstone + Avatar/PriceFrom stale status text , DONE; also swept the two secondary phantom-StatusPill refs A3 flagged (SuccessMark.md:13, CardText.md:39) + SalonSidebar registry row Layer column, all -> StatusInline
