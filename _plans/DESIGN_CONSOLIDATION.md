@@ -40,7 +40,7 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
   - [x] B5b FilterSheet.md selected-state rewritten to 2026-06-29 gray law , DONE (Layer section + Visual signature + Provenance, cited FilterSheet.tsx:351-385)
   - [x] B5c StatusPill.md tombstone + Avatar/PriceFrom stale status text , DONE; also swept the two secondary phantom-StatusPill refs A3 flagged (SuccessMark.md:13, CardText.md:39) + SalonSidebar registry row Layer column, all -> StatusInline
   - [x] B5d SearchOverlay registry row corrected (V3-D445 violation recorded) , DONE; also fixed the same false DateTimePicker claim found in SearchOverlay.md (Layer + Reuse sections) and DateTimePicker.md's Consumers list (re-verified real call-sites: SearchBar.tsx:542 + DateTimeStep.tsx:194, not the 1-site A3 undercount)
-  - [x] B5e BackButton 40px-vs-44 floor note (owner question, no code change) , DONE, BackButton.md + registry API column
+  - [x] B5e BackButton 40px-vs-44 floor note , DONE, verified: BackButton.md:15 (open-question block, spot-checked by orchestrator) + registry API column; no code change
   - [ ] B5f registry rows for the 16 undocumented primitives + DateTimePicker row , IN PROGRESS
   - [ ] B5g 5 new component docs (Modal/Switch/Sheet/StatusInline/FieldLabel), literals from code only , IN PROGRESS (StatusInline.md done)
   - [ ] B5h SalonCard.tsx:48-51 #F5F5F4 -> #F4F4F5 , NOT STARTED
