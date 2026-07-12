@@ -41,8 +41,8 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
   - [x] B5c StatusPill.md tombstone + Avatar/PriceFrom stale status text , DONE; also swept the two secondary phantom-StatusPill refs A3 flagged (SuccessMark.md:13, CardText.md:39) + SalonSidebar registry row Layer column, all -> StatusInline
   - [x] B5d SearchOverlay registry row corrected (V3-D445 violation recorded) , DONE; also fixed the same false DateTimePicker claim found in SearchOverlay.md (Layer + Reuse sections) and DateTimePicker.md's Consumers list (re-verified real call-sites: SearchBar.tsx:542 + DateTimeStep.tsx:194, not the 1-site A3 undercount)
   - [x] B5e BackButton 40px-vs-44 floor note , DONE, verified: BackButton.md:15 (open-question block, spot-checked by orchestrator) + registry API column; no code change
-  - [ ] B5f registry rows , ROUND-1 FAIL (reviewer: PillToggle/Checkbox/Modal/Sheet/Switch rows carry FALSE call-site claims; Radio/Select/Textarea/FieldHelper/SkipLink unsampled, suspect) , BLOCKED-ON: round-2 coder dispatched 2026-07-12 with the verbatim punch list
-  - [ ] B5g 5 new component docs , ROUND-1 FAIL (reviewer: Modal.md 8 fabricated dashboard call-sites, Sheet.md + Switch.md 1 false call-site each; visual literals all verified OK; StatusInline/FieldLabel clean) + 45 banned em-dashes across the change-set , BLOCKED-ON: round-2 coder dispatched 2026-07-12
+  - [x] B5f registry rows , DONE round 2, verified: reviewer PASS (all 16 rows call-site claims grep-backed: Modal 2 real, Sheet 5+mobile, Switch 4, PillToggle/Checkbox/Radio/Select/Textarea/FieldHelper 0 external, SkipLink gap true); commit 91ca978c5
+  - [x] B5g 5 new component docs , DONE round 2, verified: reviewer PASS (Modal/Sheet/Switch call-sites corrected + 8 dashboard hand-rolled modals reframed as debt; zero em-dashes across 14 files, /usr/bin/grep-verified; FilterSheet.md dual dates); commit 91ca978c5
   - [x] B5h SalonCard.tsx:48-51 #F5F5F4 -> #F4F4F5 , DONE, verified: SalonCard.tsx:46-53 (comment + all 4 category rows), only that hex changed, nothing else in the file
 - [x] B6 check.py aligned to LOCKFILE , verified: rollup of B6a-c below (fix sha + block/pass probe evidence on the children)
   - [x] B6a check.py aligned , commit 43b4f7a99, verified: check.py A9 rule string "blue outside the hyperlink scope (v3)", ALLOWED_HEX comment lines for removed #9A3412/#15803D, CANONICAL_DURATIONS_MS comment, hairline rec #E4E4E7
@@ -59,10 +59,10 @@ Relationship to other workstreams: #13 (full-estate frontend audit) owns surface
 - [x] C5 mobile gap rules , DONE, verified: THEMING.md section 4 (7 rules each with derivation; haptics kept OPEN 24v19 per no-invention rule; press-state per-file values after reviewer punch); commit fd6fa2d
 
 ## Phase D , close
-- [ ] D1 consolidation report , DRAFT COMMITTED (sections 0-6 final, §7/§8 pending W2/W3 returns) , BLOCKED-ON: W2+W3 coder agents in flight, sections filled at their return
+- [x] D1 consolidation report , DONE, verified: _design-system/CONSOLIDATION_2026-07-12.md sections 0-8 all filled (§7/§8 completed after reviewer PASSes)
 - [x] D2 chips emitted , DONE, verified: 7 spawn_task chips this session (task_f7510668 token regressions b/c/j, task_ae728f6e radius, task_65c411f4 CardName 14px, task_34f48e08 SearchOverlay V3-D445, task_6482ec0f shadows, task_2bcf91b8 press-scale, task_547a320b mobile ErrorState); owner decisions NOT chipped, they are §5 of the report
-- [ ] D3 commits per chunk , IN PROGRESS, 4 so far: ef8cdb7a8 (plan), 80691b351 (revive), 43b4f7a99 (W1), boundary-note commit; final W2/W3 + close commits pending , BLOCKED-ON: W2/W3 returns
-- [ ] D4 close on original message , BLOCKED-ON: last step after D1/D2 complete (W2/W3 in flight)
+- [x] D3 commits per chunk , DONE, verified: ef8cdb7a8 plan / 80691b351 revive / 43b4f7a99 W1 / 180694ce8 boundary / report+§8 commits / f0f322c29 W2r1 / 91ca978c5 W2r2 / solen-mobile fd6fa2d / final close commit; never pushed
+- [x] D4 closed on the original message , readback items 1-6 each delivered with proof in the close report (this session's final message + CONSOLIDATION_2026-07-12.md §0)
 
 Premortem (gate 3): R1 resolving a contradiction in the wrong direction (older doc beats newer decision) -> every resolution cites the dated decision. R2 duplicating existing consolidation docs -> merge/banner CONTRADICTIONS/CANON/V2_RECONCILIATION, never add a parallel canon. R3 agents inventing values -> audit agents are read-only, findings must carry file:line. R4 overlap with #13 -> law-level only here. R5 mobile deliberate divergences mislabeled drift -> mobile agent splits deliberate vs accidental with dated sources. R6 rate limits -> waves of max 4 agents.
 

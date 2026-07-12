@@ -4,6 +4,20 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-12 , design-system consolidation: web canon solidified, mobile canon created, 17 contradictions killed
+
+**What you asked for:** "solidify the design system... web first, then the app... actually think and add many stuff... do this or don't, not do this or that... find inconsistency, everything."
+
+**What got done:**
+1. **Found a whole day of YOUR approved design law stranded on an unmerged branch** (the 2026-07-10 CANON fold + design-governance audit + TASTE_LOG fixes + drift-gate blue-law rewrite never reached main). Revived it (80691b351) instead of re-deriving.
+2. **17 doc-vs-doc contradictions found and resolved decisively** (43b4f7a99), always the latest dated decision: code font Inter Tight tabular (not JetBrains), blue = hyperlink-scope only (chips/buttons removed from CLAUDE.md's allowed list), input radius 12 (your 2026-06-08 call; 3 docs said 16), ONE red #DC2626 for error+closed (code-verified; docs said two reds), urgency #C2410C, accent hover #1E54B7, tab-active gray, s-pop un-retired note, styleguide hex fixes. 7 leads checked clean.
+3. **Drift gate reconciled with the law** (3 live divergences fixed + block/pass self-tested; 100ms registered from code reality with revert path noted).
+4. **Registry + component docs to code truth**: StatusPill tombstone, Toast/FilterSheet docs rewritten to shipped recipes, 16 new registry rows, 5 new component docs, SalonCard transposed hex fixed. Reviewer caught the round-1 coder FABRICATING call-sites (8 fake Modal call-sites); round 2 re-grepped everything, PASS 7/7.
+5. **Mobile canon created**: THEMING.md canonized (the never-built MOBILE_LOCKFILE), 26-row token tables code-verified, 4 internal contradictions resolved, web-vs-app parity table (7 deliberate, 4 accidental-open), 7 derived gap rules. Reviewer 10/11 round 1, punch fixed. solen-mobile fd6fa2d.
+6. **6 regressed drift classes + census** -> 7 chips emitted (token sweep, radius, CardName 14px, SearchOverlay V3-D445, shadows, press-scale, mobile ErrorState).
+
+**Report:** _design-system/CONSOLIDATION_2026-07-12.md. **Open for you (report §5):** BackButton 40px vs the 44px floor; disabled-opacity 40 vs 50; mobile selected-state ink vs web gray; 100ms duration registered (revertible); notification badge red vs ink (standing).
+
 ## 2026-07-11 , weekly estate self-audit: estate healthy, 3 dead-law gates + 5 drift-gate divergences found
 
 **What you asked for:** the standing weekly self-audit (owner-sanctioned 2026-07-10): health-check, skip-flag ledger, hook injection sizes, mistake themes, lessons-ledger parse test, design-suggest gather, doc-vs-gate reconciliation, then report + commit _plans.

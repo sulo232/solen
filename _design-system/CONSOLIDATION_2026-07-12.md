@@ -87,9 +87,15 @@ These are CODE fixes on visible UI: queued as chips (§6), not applied here (moc
 - **Workstream #18** (estate audit): the design-HOOK fixes from the revived governance audit (mockup-preflight aggregator, gemini message, TASTE_LOG injection, no-black-selected merge) remain open there , they are enforcement work, not design law.
 - **Still stranded on `claude/context-compact-architecture-5d1ace`** (deliberately not ported): focus-sweep code batch (79 files), Sheet 16.5 gesture-physics build, apple-motion build half. If wanted, cherry-pick separately.
 
-## 7 , Registry + component docs (W2)
+## 7 , Registry + component docs (W2) , DONE (commits f0f322c29 round 1 + 91ca978c5 round 2; reviewer round 2 PASS 7/7)
 
-(in flight , W2 coder + reviewer; section updated at close)
+- Toast.md rewritten from the retired dark-pill recipe to shipped V3-D462 (white pill, 26px circle-badge, bottom dock, 4s, max 3) , 8 literals verified against Toast.tsx.
+- FilterSheet.md selected-state rewritten to the gray-sunken law, citing BOTH the 2026-06-29 owner law and the 2026-07-02 FilterSheet-specific mockup approval.
+- StatusPill tombstoned (deleted 2026-06-30 -> StatusInline); StatusInline.md written (was completely undocumented); SearchOverlay's false "uses DateTimePicker" claim corrected in 3 places and its V3-D445 violation recorded (refactor chipped); DateTimePicker got its missing registry row; Avatar/PriceFrom stale "not yet migrated" statuses corrected with verified call-site lists; BackButton 40px-vs-44 floor flagged as owner question.
+- 16 registry rows added for undocumented primitives + 5 new component docs (Modal, Switch, Sheet, StatusInline, FieldLabel), every literal cited from component code.
+- SalonCard.tsx:46-53 transposed sunken hex restored to the locked #F4F4F5 (hex-only diff, reviewer-verified).
+- **Round-1 reviewer caught the coder fabricating call-sites** (Modal's 8 dashboard "call-sites" were all hand-rolled local modals; Sheet/Switch/PillToggle/Checkbox rows similar) + 45 banned em-dashes. Round 2 re-grepped every claim from real import lines: Modal 2 real call-sites + 8 hand-rolled dashboard modals recorded as consolidation debt; Sheet 5 importers; Switch 4; PillToggle/Checkbox/Radio/Select/Textarea/FieldHelper 0 external (PillToggle flagged retirement-candidate, owner call); SkipLink confirmed a real unmet WCAG 2.4.1 gap (not mounted in the root layout). Em-dashes now zero. Convergence: 5 fails -> 0.
+- New consolidation debt surfaced (not chipped yet, listed for #13): 8 dashboard hand-rolled modals; hand-rolled Avatar in profile/page.tsx:235; PriceFrom leftovers in DetailPage.tsx:409; SkipLink not mounted.
 
 ## 8 , Mobile canon (W3) , DONE (solen-mobile commit fd6fa2d)
 
