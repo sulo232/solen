@@ -13,6 +13,7 @@ import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
 import { isOpenNow, type OpeningHours } from "@/lib/salon-hours";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
+import type { Json } from "@/lib/database.types";
 
 // Ring 5b: CDN response caching for this anon browse endpoint. This GET handler never
 // reads a cookie or calls auth.getUser() anywhere (confirmed by ring5b-kill-test.ts
@@ -719,7 +720,9 @@ export async function POST(request: NextRequest) {
           instagram_url: instagram_url || null,
           website_url: website_url || null,
           tiktok_url: tiktok_url || null, // column exists (verified live schema 2026-07-01); was dropping the onboarding value + the PDP reads it
-          opening_hours: opening_hours || {},
+          // opening_hours is validated as z.record(z.string(), z.unknown()) (arbitrary JSON shape),
+          // cast to the generated Json column type (same pattern as app/api/salon-draft/route.ts).
+          opening_hours: (opening_hours || {}) as Json,
           is_active: false, // Pending approval
           last_minute_discount_percent: last_minute_discount_percent || 0,
           last_minute_window_hours: last_minute_window_hours || 0,
@@ -750,12 +753,13 @@ export async function POST(request: NextRequest) {
 
     // Insert services
     if (services?.length) {
-      const serviceRows = services.map((s: Record<string, unknown>) => ({
+      const serviceRows = services.map((s) => ({
         salon_id: salonId,
         name_de: s.name_de,
-        name_en: s.name_en || null,
-        name_fr: s.name_fr || null,
-        name_it: s.name_it || null,
+        // name_en is NOT NULL on the live services table, so the fallback is "" not null
+        // (see migrations/20260530_seed_noncoiffeur_services.sql: "services has no name_fr/name_it",
+        // those two were phantom columns here, dropped, they never existed on the table).
+        name_en: s.name_en || "",
         category: s.category || categories[0],
         duration_minutes: s.duration_minutes || 60,
         price: s.price || 0,
@@ -767,12 +771,15 @@ export async function POST(request: NextRequest) {
 
     // Insert staff
     if (staff?.length) {
-      const staffRows = staff.map((s: Record<string, unknown>) => ({
+      // "role" (job title, e.g. "Barber") is a phantom column here: staff_members never had
+      // a "role" column (014_new_schema.sql), only "access_role" (a permission level, unused
+      // elsewhere in the codebase), which is not an unambiguous match for a job-title input.
+      // Dropped rather than mis-mapped; the field was never persisted before this fix either.
+      const staffRows = staff.map((s) => ({
         salon_id: salonId,
         name: s.name,
         avatar_url: s.avatar_url || null,
-        specialties: (s.specialties as string[]) || [],
-        role: s.role || null,
+        specialties: s.specialties || [],
         is_active: true,
       }));
       await admin.from("staff_members").insert(staffRows);
