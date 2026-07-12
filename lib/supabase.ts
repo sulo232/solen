@@ -8,13 +8,8 @@ import type { Database } from "@/lib/database.types";
 // instead of a silent runtime null (this repo's recorded #1 failure mode).
 // lib/database.types.ts is regenerated from the LIVE schema (recipe:
 // _rules/DB_SCHEMA.md section 7); regenerate it after every applied migration.
-//
-// The `as unknown as SupabaseClient<Database>` on each return is a TYPE-ONLY
-// bridge: the installed @supabase/ssr (0.5.2) predates supabase-js 2.99's type
-// machinery, so its own generics collapse most row types to `never`. The ssr
-// factories just wrap supabase-js createClient at runtime, so asserting the
-// supabase-js client type restores full correct inference with zero runtime
-// change. Remove the casts when @supabase/ssr is upgraded to >=0.6.
+// 2026-07-12: @supabase/ssr upgraded 0.5.2 -> 0.12.0 (with supabase-js 2.110),
+// which removed the need for the interim type-bridge casts here.
 
 /** The one typed client shape every query in the app infers from. */
 export type TypedSupabaseClient = SupabaseClient<Database>;
@@ -60,7 +55,7 @@ export async function createServerSupabaseClient() {
         },
       },
     }
-  ) as unknown as TypedSupabaseClient;
+  );
 }
 
 /**
@@ -96,7 +91,7 @@ export function createAdminSupabaseClient() {
         persistSession: false,
       },
     }
-  ) as unknown as TypedSupabaseClient;
+  );
 }
 
 // The browser client lives in lib/supabase-browser.ts (safe for "use client"
