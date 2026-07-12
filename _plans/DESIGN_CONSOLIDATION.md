@@ -16,39 +16,39 @@ Grading against (binary close conditions):
 Relationship to other workstreams: #13 (full-estate frontend audit) owns surface-by-surface UI fixes vs law; THIS workstream owns the LAW itself (docs, tokens, gates, registry) + the inconsistency census. Code-level UI drift found here feeds #13 / chips, not direct edits (mockup-first).
 
 ## Phase A , web audit (read-only, parallel)
-- [ ] A1 doc-vs-doc contradiction sweep (LOCKFILE vs SOURCE vs CANON vs CLAUDE.md blocks vs TASTE_LOG vs CONTROL_ELEVATION vs MOTION vs styleguide.html)
-- [ ] A2 stale-authority census (docs claiming dead precedence, e.g. CANON.md "this wins" vs folded-into-LOCKFILE 2026-07-10)
-- [ ] A3 registry-vs-code coverage (stale rows, phantom paths, undocumented shared primitives, component docs contradicting LOCKFILE)
+- [x] A1 doc-vs-doc sweep , DONE: A1_DOC_CONTRA.md (17 contradictions C1-C17, 7 clean checks)
+- [x] A2 stale-authority census , DONE: A1_DOC_CONTRA.md §2 (7 items; CANON fold found STRANDED on branch context-compact-architecture-5d1ace, revived 80691b351)
+- [x] A3 registry-vs-code , DONE: A3_REGISTRY.md (1 phantom, 5 doc-vs-law violations, 16 undocumented primitives, 2 stale statuses)
 - [ ] A4 code-vs-law drift census
-  - [ ] A4a drift checker fresh run vs committed _drift-report.md
-  - [ ] A4b unchecked-class census (secondary text, hairline, sunken, star, radius, shadow, press-scale, disabled opacity, type sizes, dead hovers)
-  - [ ] A4c CONTRADICTIONS.md 2026-06-08 regression-vs-known-debt verdicts
+  - [x] A4a drift checker run , DONE: A4_CODE_DRIFT.md §1 (info scope 6021->10986 +82%; strict 30->46; SalonCard #F5F5F4 live bug)
+  - [x] A4b class census , DONE: §2 (a,d clean; b 69 / c 93 / e 413 / f 83 / g 170 / h 96 / j ~20 live)
+  - [x] A4c regression verdicts , DONE: b,c,e,g,h,j REGRESSED (audit-cited lines byte-unchanged); a,d genuinely swept
 - [ ] A5 drift-gate divergences verified
-  - [ ] A5a s-pop RETIRED_TOKENS claim verified vs check.py + LOCKFILE
-  - [ ] A5b #F5F5F4/#F4F4F5 ALLOWED_HEX transposition verified
-  - [ ] A5c remaining 3 SELF_AUDIT divergences verified (each CONFIRMED or STALE)
+  - [x] A5a s-pop , STALE: already fixed 2026-07-11 (50abcd060), check.py:115 comment confirms
+  - [x] A5b hex transposition , STALE: fixed 2026-07-11 (50abcd060); code fallout SalonCard.tsx:48-51 fixed via W2 coder
+  - [x] A5c D3/D4/D5 , CONFIRMED and FIXED in 43b4f7a99 (100ms registered in LOCKFILE §4; #15803D + #9A3412 dropped from ALLOWED_HEX)
 
 ## Phase B , web synthesis + apply (docs = direct edits; code via coder)
-- [ ] B1 resolve every A1/A2 contradiction decisively per precedence chain (latest dated owner decision wins), each with citation
-- [ ] B2 SOURCE.md corrected (superseded text fixed or bannered)
-- [ ] B3 LOCKFILE.md cleaned (orchestrator-only writes; NO locked-row reopening)
+- [x] B1 all 17 contradictions resolved , commits 80691b351 (revive) + 43b4f7a99 (W1); C16 settled by code-verify (tailwind:186 #C2410C), C12 FLIPPED (code has ONE red #DC2626, docs corrected, styleguide was right)
+- [x] B2 SOURCE.md corrected (s-pop note, input 12, deep #1E54B7, one-red, urgency #C2410C x4, 4 generous-blue passages inline-retired)
+- [x] B3 LOCKFILE cleaned by orchestrator only (v2 heading, error/closed rows, §2.5 tab row, §4 +100ms, §11 urgency, §12 deep, §13.2 boundary note; no locked row reopened, every edit records the later dated decision it applies)
 - [ ] B4 stale docs bannered/merged
-  - [ ] B4a CANON.md status banner (authority line corrected)
-  - [ ] B4b every other stale-authority doc from A2 bannered (list from A2)
-- [ ] B5 COMPONENT_REGISTRY.md statuses corrected; missing component doc stubs added for undocumented shared primitives
+  - [x] B4a CANON tombstone (owner 'fold it' 2026-07-10) revived from stranded branch, 80691b351
+  - [x] B4b V2_RECONCILIATION (historical banner + precedence strike + rule-1 supersession), CONTRADICTIONS (drift note + §1 strike), MOTION (chain completed x2); TASTE_LOG + CONSISTENCY_AUDIT fixed by revive
+- [ ] B5 registry + component docs , BLOCKED-ON: W2 coder agent running (dispatched 2026-07-12, Toast/FilterSheet/StatusPill docs, 8+ registry rows, 5 new docs, SalonCard hex); loop-reviewer grades on return
 - [ ] B6 check.py aligned to LOCKFILE
-  - [ ] B6a divergence fixes applied (via coder if >3 lines)
-  - [ ] B6b self-test: one should-block input blocks
-  - [ ] B6c self-test: one should-pass input passes
-- [ ] B7 gap-fill: add decisive missing rules derived from locked patterns (list produced in A-phase; each new rule cites its derivation; genuinely underivable = owner question, not invention)
-- [ ] B8 styleguide (public/solen-styleguide.html) spot-synced to consolidated tokens (stale rows patched)
+  - [x] B6a check.py: A9 v3 rewrite + hints comment (fold), #9A3412/#15803D dropped, duration comment corrected, hairline rec hex corrected
+  - [x] B6b should-block proof: retired-hex probe -> DRIFT GATE blocked, exit 2
+  - [x] B6c should-pass proof: locked values + duration-100 + text-s-urgency -> exit 0
+- [x] B7 gap-fill: 100ms registered (code-derived, 10 usages); §13.2 progress-vs-selection boundary (derivation cited); TopNavTab recorded nonexistent in §2.5 row; notification-badge stays OWNER-Q in QUESTIONS.md (hex corrected)
+- [x] B8 styleguide: --border #E4E4E7, --sunken #F4F4F5, --ink3 #6B6B6B, input radius 12; red swatch verified already-correct (one red #DC2626)
 
 ## Phase C , app (solen-mobile)
-- [ ] C1 mobile design-law inventory (PLAN.md, THEMING.md, mobile COMPONENT_REGISTRY, src theme code)
-- [ ] C2 mobile internal inconsistencies (docs vs src theme code)
-- [ ] C3 web-vs-app divergence list, split DELIBERATE (dated decision) vs ACCIDENTAL drift
-- [ ] C4 consolidated mobile canon written (tokens/type/dark-mode/components) cross-referencing web canon
-- [ ] C5 mobile gap-fill: decisive rules for gaps (or owner questions)
+- [x] C1 mobile design-law inventory , DONE, _plans/design-consolidation/C1_MOBILE.md §1 (5 docs + theme.ts, no MOBILE_LOCKFILE ever built)
+- [x] C2 mobile internal inconsistencies , DONE, C1_MOBILE.md §2 (4 found: filter-pill 3-way, D8/D17 see-all, 9 stale draft rows, THEMING semantic-color claim)
+- [x] C3 web-vs-app divergences , DONE, C1_MOBILE.md §3 (13: 7 deliberate, 4 accidental, 2 reframed; s-error #DC2626 verified live tailwind.config.js:178)
+- [ ] C4 mobile canon , BLOCKED-ON: W3 coder agent running (dispatched 2026-07-12, THEMING.md canonization per orchestrator decisions); reviewer grades on return
+- [ ] C5 mobile gap rules , BLOCKED-ON: same W3 coder agent (44pt floor, ErrorState, toast recipe, safe-area/haptics/nav codify-dominant-pattern, dark-coverage rule)
 
 ## Phase D , close
 - [ ] D1 consolidation report (_design-system/CONSOLIDATION_2026-07-12.md): every inconsistency, status FIXED / CHIPPED / OWNER-Q
