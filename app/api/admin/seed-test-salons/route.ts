@@ -181,7 +181,11 @@ export async function POST(req: NextRequest) {
             description_en: tpl.description_de, // fallback
             average_rating: tpl.average_rating,
             review_count: tpl.review_count,
-            min_price: tpl.min_price,
+            // Phantom-column fix: salons has no "min_price" column (confirmed against the live
+            // schema via a direct select and lib/database.types.ts); the real min price lives on
+            // the salon_min_prices materialized view, auto-refreshed from services.price by a
+            // trigger (see supabase/migrations/20260401_salon_min_prices.sql). Dropping this write
+            // does not change any real column value since the column never existed to write to.
             is_active: true,
             is_test: true,
             latitude: cityInfo.lat + (Math.random() - 0.5) * 0.02,

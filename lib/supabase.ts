@@ -8,8 +8,8 @@ import type { Database } from "@/lib/database.types";
 // instead of a silent runtime null (this repo's recorded #1 failure mode).
 // lib/database.types.ts is regenerated from the LIVE schema (recipe:
 // _rules/DB_SCHEMA.md section 7); regenerate it after every applied migration.
-// 2026-07-12: @supabase/ssr upgraded 0.5.2 -> 0.12.0 (with supabase-js 2.110),
-// which removed the need for the interim type-bridge casts here.
+// @supabase/ssr was upgraded to 0.12 (with supabase-js 2.110), which removed
+// the need for the interim type-bridge casts that briefly lived here.
 
 /** The one typed client shape every query in the app infers from. */
 export type TypedSupabaseClient = SupabaseClient<Database>;
@@ -96,5 +96,5 @@ export function createAdminSupabaseClient() {
 
 // The browser client lives in lib/supabase-browser.ts (safe for "use client"
 // bundles). The duplicate createBrowserSupabaseClient that used to live here
-// was removed 2026-07-12 (council dedup finding; its last importer was the
-// owner-killed TOSUpdateBanner, REMOVED.md line 27).
+// was removed (council dedup finding; its last importer was the owner-killed
+// TOSUpdateBanner, REMOVED.md line 27).

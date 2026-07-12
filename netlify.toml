@@ -7,7 +7,8 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "20"
+  # 22 because the @supabase/* 2.110 packages declare engines >= 22
+  NODE_VERSION = "22"
 
 # Next.js Runtime — handles SSR / ISR / middleware / image optimization.
 # Netlify auto-installs this for Next.js projects, but pinning it is safer.
